@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 
+
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
 except KeyError:
@@ -21,7 +22,6 @@ from middleware.independent.IndependentBlender import *
 # Definition of global variables
 ob = ''
 port_name = ''
-
 
 def init(contr):
 	global ob
@@ -49,36 +49,43 @@ def init(contr):
 	except AttributeError:
 		print "Component Dictionary not found!"
 		print "This component must be part of a scene"
+		
 
 	if ob['Init_OK']:
+		print '######## ALTIMETER INITIALIZATION ########'
 		port_name = '{0}/{1}'.format(parent.name, ob['Component_Type'])
-		
-		print '######## GPS INITIALIZATION ########'
 		print "OPENING PORTS '{0}'".format(port_name)
+		
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
-		print '######## GPS INITIALIZED ########'
-
+		#GameLogic.orsConnector.printOpenPorts()
+		
+		print '######## ALTIMETER INITIALIZED ########'
 
 
 def output(contr):
-	#global ob
-	#global port_name
 
 	if ob['Init_OK']:	
 
+		state_dict = GameLogic.componentDict[ob]
+		
+		############### Altitude ###################
 		if GameLogic.orsCommunicationEnabled:
-			position=ob.position	
-			x=position[0];
-			y=position[1];
-			z=position[2];
-			
-			p = GameLogic.orsConnector.getPort(port_name)	
-			bottle = p.prepare()
-			bottle.clear()
-			bottle.addDouble(x)
-			bottle.addDouble(y)
-			bottle.addDouble(z)			
-			#...and send it
-			p.write()
-			
-			print "GPS ENV sent  x: ",x," y: ",y," z:", z
+
+		# Compute the altitude : distance between the helicopter
+		#  and the first object on the -Z axis (within a range of 5000 m). 
+		
+			hitObj, hitPoint, hitNormal = ob.rayCast([0,0,-5000], None)
+			if hitObj:
+				altitude = ob.getDistanceTo(hitPoint)
+
+				if GameLogic.orsCommunicationEnabled:
+					p = GameLogic.orsConnector.getPort(port_name)
+					bottle = p.prepare()
+					bottle.clear()
+					bottle.addDouble(altitude)
+					#...and send it
+					p.write()	
+			else:
+				if GameLogic.orsVerbose:
+					print ' No ground -> no altitude!'				
+					print "Altitude sent : ",altitude
