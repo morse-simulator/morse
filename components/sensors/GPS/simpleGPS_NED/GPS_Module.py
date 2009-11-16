@@ -81,4 +81,4 @@ def output(contr):
 			#...and send it
 			p.write()
 			
-			print "GPS NED sent  x: ",x," y: ",y," z:", z
+			#print "GPS NED sent  x: ",x," y: ",y," z:", z

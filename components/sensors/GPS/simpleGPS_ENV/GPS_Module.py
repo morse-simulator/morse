@@ -81,4 +81,4 @@ def output(contr):
 			#...and send it
 			p.write()
 			
-			print "GPS ENV sent  x: ",x," y: ",y," z:", z
+			#print "GPS ENV sent  x: ",x," y: ",y," z:", z

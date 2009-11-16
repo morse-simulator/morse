@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
   cout << " * Listening status on " << atrv_output_port_gps << endl;
   
   cout << " * Enter destination coordinates, separated by a space" << endl;
-  cout << " * Example: 1.52 3.38 9.12" << endl;
+  cout << " * Example: 1.52 3.38 0.0" << endl;
   cout << " * NOTE: The third coordinate (Z) is not used in the case of ATRV" << endl;
 
   cout << " * Starting now..." << endl;
