@@ -19,28 +19,19 @@ if scriptRoot not in sys.path:
 	sys.path.append(libRoot)
 
 from middleware.independent.IndependentBlender import *
+import setup.ObjectData
 
-# Definition of global variables
-ob = ''
-port_name = ''
 structObject = ''
 
 
 def init(contr):
-	global ob
-	global port_name
 	global structObject
 
 	print '######## CAMERA INITIALIZATION ########'
 	print
 
-	# To get the game object this controller is on:
-	ob = contr.owner
-	parent = ob.parent
-	if not parent:
-		parent = ob
-
-	port_name = '{0}/{1}/clean'.format(parent.name, ob['Component_Type'])
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
@@ -103,6 +94,8 @@ def print_properties(ob):
 
 
 def update(contr):
+	ob = contr.owner
+
 	# refresh video
 	if hasattr(GameLogic, 'tv'):
 		GameLogic.tv[ob['camID']].refresh(True)
@@ -128,6 +121,9 @@ def decode_image (image_string):
 def grab(contr):
 	""" Capture the image currently viewed by the camera.
 		Convert the image and send it trough a port. """
+
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	if ob['Init_OK']:
 		# execute only when the 'grab_image' key is released

@@ -34,4 +34,3 @@ def measure_temp(contr):
 			# print "Exception: ", detail
 			# pass
 			sys.exc_clear()  # Clears the last exception thrown
-			

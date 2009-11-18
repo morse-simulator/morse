@@ -17,28 +17,16 @@ if scriptRoot not in sys.path:
 	sys.path.append(libRoot)
 
 from middleware.independent.IndependentBlender import *
+import setup.ObjectData
 
-
-# Definition of global variables
-ob = ''
-port_name = ''
 
 def init(contr):
-	global ob
-	global port_name
-
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
 
-	# To get the game object this controller is on:
-	ob = contr.owner
-	parent = ob.parent
-
-	# If there is no parent (when testing individual component)
-	#  set this component as its own parent
-	if not parent:
-		parent = ob
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	ob['Init_OK'] = False
 
@@ -49,31 +37,30 @@ def init(contr):
 	except AttributeError:
 		print "Component Dictionary not found!"
 		print "This component must be part of a scene"
-		
 
 	if ob['Init_OK']:
-		port_name = '{0}/acc/{1}'.format(parent.name, ob['Component_Type'])
-		
 		print '######## ACCELEROMETER INITIALIZATION ########'
-		
 		state_dict['position']=ob.position
 		state_dict['prevPosition']=(0.0, 0.0, 0.0)
 		state_dict['velocity']=(0.0, 0.0, 0.0)
 		state_dict['acceleration']=(0.0, 0.0, 0.0)
-		
+
 		speed_port_name = port_name + '/vxvyvz'
 		accel_port_name = port_name + '/axayaz'
 		print "OPENING PORTS '{0}', '{1}'".format(speed_port_name, accel_port_name)
-		
+
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 		GameLogic.orsConnector.registerBufferedPortBottle([accel_port_name])
-		
+
 		#GameLogic.orsConnector.printOpenPorts()
-		
+
 		print '######## ACCELEROMETER INITIALIZED ########'
-	
+
 
 def output(contr):
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+
 
 	if ob['Init_OK']:	
 		state_dict = GameLogic.componentDict[ob]

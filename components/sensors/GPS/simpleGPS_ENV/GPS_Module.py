@@ -17,28 +17,16 @@ if scriptRoot not in sys.path:
 	sys.path.append(libRoot)
 
 from middleware.independent.IndependentBlender import *
-
-# Definition of global variables
-ob = ''
-port_name = ''
+import setup.ObjectData
 
 
 def init(contr):
-	global ob
-	global port_name
-
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
 
-	# To get the game object this controller is on:
-	ob = contr.owner
-	parent = ob.parent
-
-	# If there is no parent (when testing individual component)
-	#  set this component as its own parent
-	if not parent:
-		parent = ob
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	ob['Init_OK'] = False
 
@@ -51,8 +39,6 @@ def init(contr):
 		print "This component must be part of a scene"
 
 	if ob['Init_OK']:
-		port_name = '{0}/{1}'.format(parent.name, ob['Component_Type'])
-		
 		print '######## GPS INITIALIZATION ########'
 		print "OPENING PORTS '{0}'".format(port_name)
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
@@ -61,10 +47,10 @@ def init(contr):
 
 
 def output(contr):
-	#global ob
-	#global port_name
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
-	if ob['Init_OK']:	
+	if ob['Init_OK']:
 
 		if GameLogic.orsCommunicationEnabled:
 			position=ob.position	
@@ -81,4 +67,5 @@ def output(contr):
 			#...and send it
 			p.write()
 			
-			#print "GPS ENV sent  x: ",x," y: ",y," z:", z
+			#print "GPS ENV ", ob.name, " sent  x: ",x," y: ",y," z:", z
+			ob['Coordinates'] = "%.3f, %.3f, %.3f" % (x, y, z)

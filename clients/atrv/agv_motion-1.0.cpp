@@ -133,19 +133,20 @@ int main(int argc, char* argv[]) {
     cout <<"cmd: "<<cmd<<endl;
     Bottle& cmdBottle = toUGVPort.prepare();
     cmdBottle.clear();
-    switch (cmd){
-    case 'w':			       
-      vx += 1.0;			  
-      break;
-    case 's':			       
-      vx -= 1.0;
-      break;
-    case 'a':
-      rz -= 1.0;
-      break;
-    case 'd':
-      rz += 1.0;			      
-      break;      
+    switch (cmd)
+	{
+		case 'w':
+		  vx += 1.0;			  
+		  break;
+		case 's':			       
+		  vx -= 1.0;
+		  break;
+		case 'a':
+		  rz -= 1.0;
+		  break;
+		case 'd':
+		  rz += 1.0;			      
+		  break;      
     }
     cmdBottle.addDouble(vx);
     cmdBottle.addDouble(vy);	

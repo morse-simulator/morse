@@ -18,27 +18,15 @@ if scriptRoot not in sys.path:
 	sys.path.append(libRoot)
 
 from middleware.independent.IndependentBlender import *
-
-# Definition of global variables
-ob = ''
-port_name = ''
+import setup.ObjectData
 
 def init(contr):
-	global ob
-	global port_name
-
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
 
-	# To get the game object this controller is on:
-	ob = contr.owner
-	parent = ob.parent
-
-	# If there is no parent (when testing individual component)
-	#  set this component as its own parent
-	if not parent:
-		parent = ob
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	ob['Init_OK'] = False
 
@@ -49,20 +37,18 @@ def init(contr):
 	except AttributeError:
 		print "Component Dictionary not found!"
 		print "This component must be part of a scene"
-		
 
 	if ob['Init_OK']:
 		print '######## ALTIMETER INITIALIZATION ########'
-		port_name = '{0}/{1}'.format(parent.name, ob['Component_Type'])
 		print "OPENING PORTS '{0}'".format(port_name)
-		
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		#GameLogic.orsConnector.printOpenPorts()
-		
 		print '######## ALTIMETER INITIALIZED ########'
 
 
 def output(contr):
+	# Get the object data
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
 	if ob['Init_OK']:	
 
