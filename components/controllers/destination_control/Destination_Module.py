@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+import math
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -34,7 +35,7 @@ def init(contr):
 
 	try:
 		# Get the dictionary for the component's state
-		state_dict = GameLogic.componentDict[ob]
+		robot_state_dict = GameLogic.robotDict[parent]
 		ob['Init_OK'] = True
 	except AttributeError:
 		print "Component Dictionary not found!"
@@ -44,10 +45,9 @@ def init(contr):
 		print '######## CONTROL INITIALIZATION ########'
 		print "OPENING PORT '{0}'".format(dest_port_name)
 		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
-		GameLogic.destination = ob.position
 		print '######## CONTROL INITIALIZED ########'
-	
-	
+
+
 
 def move(contr):
 	# Get the object data
@@ -58,62 +58,119 @@ def move(contr):
 	tolerance = 2
 	destination = []
 
+	# Direction tolerance for the movement (in degrees)
+	angle_tolerance = 5
+
 	# Get the dictionary for the robot's state
 	robot_state_dict = GameLogic.robotDict[parent]
 
-	if ob['Init_OK']:	
+	if ob['Init_OK']:
+
+		# Reset movement variables
+		vx, vy, vz = 0.0, 0.0, 0.0
+		rx, ry, rz = 0.0, 0.0, 0.0
 
 	############################### SPEED #################################
-		#retrieve the port we want to write on	
+		#retrieve the port we want to write on
 		p = GameLogic.orsConnector.getPort(dest_port_name)
-		
+
 		#non-blocking read of the port
-		dest = p.read(False)	
+		dest = p.read(False)
 
 		if dest!=None:
 			for i in range(3):
 				destination.append( dest.get(i).asDouble() )
 
-			print "GOT DESTINATION: ", destination			
-			GameLogic.destination = destination
+			robot_state_dict['moveStatus'] = "Transit"
+			print "GOT DESTINATION: ", destination
+			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			robot_state_dict['destination'] = destination
 
-		fps = GameLogic.getAverageFrameRate()
-		destination = GameLogic.destination
+			# DEBUGGING:
+			# Translate the marker to the target destination
+			scene = GameLogic.getCurrentScene()
+			target_ob = scene.objects['OBWayPoint']
+			area_ob = scene.objects['OBWP_Area']
+			destination[2] = 0
+			target_ob.position = destination
+			area_ob.scaling = (tolerance, tolerance, 1)
+
+		# Exit the function if there has been no command to move
+		if not robot_state_dict['moveStatus'] == "Transit":
+			return
+
+		scene = GameLogic.getCurrentScene()
+		target_ob = scene.objects['OBWayPoint']
+		destination = target_ob.position
 		# Ignore the altitude (Z)
 		destination[2] = 0
-			
+
 		# Calculate the direction needed
 		location_V = Mathutils.Vector(ob.position)
 		# Ignore the altitude (Z)
 		location_V[2] = 0
 		destination_V = Mathutils.Vector(destination)
+
 		distance_V = destination_V - location_V
 		distance = distance_V.length - tolerance
 
-		#print "GOT DISTANCE: ", distance_V
-		
-		vx, vy, vz = 0.0, 0.0, 0.0		
-		rx, ry, rz = 0.0, 0.0, 0.0
-		
-		if (distance > 0):
-			distance_V.normalize()
-			vx = destination[0]/fps
-			vy = destination[1]/fps
-			vz = destination[2]/fps
+		#print "GOT DISTANCE: ", distance
+
+		world_X_vector = Mathutils.Vector([1,0,0])
+		world_Y_vector = Mathutils.Vector([0,1,0])
+		distance_V.normalize()
+		target_angle = Mathutils.AngleBetweenVecs(distance_V, world_X_vector)
+		dot = distance_V.dot(world_Y_vector)
+		if dot < 0:
+			target_angle = target_angle * -1
+
+		try:
+			robot_angle = robot_state_dict['gyro_angle']
+		except KeyError as detail:
+			print "Gyroscope angle not found. Does the robot have a Gyroscope?"
+			print detail
+			# Force the robot to move towards the target, without rotating
+			robot_angle = target_angle
+
+		# Get the direction difference between the robot and the target
+		if target_angle < robot_angle:
+			angle_diff = robot_angle - target_angle
+			rotation_direction = -1
+		else:
+			angle_diff = target_angle - robot_angle
+			rotation_direction = 1
+
+		#print "Target ANGLE = ", target_angle
+		#print "Robot  ANGLE = ", robot_angle
+		#print "ANGLE Difference = ", angle_diff
+
+		if distance > 0:
+			# Test if the orientation of the robot is within tolerance to move
+			#  towards the target
+			if -angle_tolerance < angle_diff and angle_diff < angle_tolerance:
+				vx = 0.05
+			# If the angle is off, rotate first
+			else:
+				rz = 0.03 * rotation_direction
+		# If the target has been reached, change the status
+		elif distance <= 0:
+			robot_state_dict['moveStatus'] = "Stop"
+			print "TARGET REACHED"
+			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
 
 		msg_act = contr.actuators['Send_update_msg']
 		msg_act.propName = parent.name
-		msg_act.subject = 'Speed'		
+		msg_act.subject = 'Speed'
 		robot_state_dict['vx'] = vx
-		robot_state_dict['vy'] = vy	
-		robot_state_dict['vz'] = vz		
+		robot_state_dict['vy'] = vy
+		robot_state_dict['vz'] = vz
 
 		robot_state_dict['rx'] = rx
-		robot_state_dict['ry'] = ry	
-		robot_state_dict['rz'] = rz		
+		robot_state_dict['ry'] = ry
+		robot_state_dict['rz'] = rz
 
 		contr.activate(msg_act)
 
 		#print "Motion for robot '{0}'".format(parent.name)
 		#print "\tvx: ",vx," vy: ",vy," vz: ",vz
-		#print "\trx: ",rx," ry: ",ry," rz: ",rz 
+		#print "\trx: ",rx," ry: ",ry," rz: ",rz

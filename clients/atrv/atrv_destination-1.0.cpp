@@ -18,7 +18,7 @@ using namespace std;
 using namespace yarp::os;
 
 BufferedPort<Bottle> toATRVPort; //we send commands to the ATRV on this port
-BufferedPort<Bottle> fromATRVGPSPort; //we read status from the ATRV on this port
+BufferedPort<Bottle> fromATRVGPSPort; //we read GPS from the ATRV on this port
 
 
 void sigproc(int);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
   // If parameters are not given, use default values
   else if (argc == 1)
   {
-    robot_name = "OB_DALA";
+    robot_name = "OBATRV";
     component_name = "OBMotion_Controller";
   }
   else

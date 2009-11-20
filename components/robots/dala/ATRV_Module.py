@@ -32,6 +32,10 @@ def init(contr):
 	robot_state_dict['ry'] = 0.0
 	robot_state_dict['rz'] = 0.0
 
+	# Add movement status to the dictionary
+	robot_state_dict['moveStatus'] = "Stop"
+
+
 	print
 	print '######## ATRV INITIALIZED ########'
 	print
