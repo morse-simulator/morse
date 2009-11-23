@@ -1,7 +1,6 @@
 import sys, os
 import GameLogic
 import Mathutils
-import math
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -120,6 +119,7 @@ def move(contr):
 		world_Y_vector = Mathutils.Vector([0,1,0])
 		distance_V.normalize()
 		target_angle = Mathutils.AngleBetweenVecs(distance_V, world_X_vector)
+		# Correct the direction of the turn according to the angles
 		dot = distance_V.dot(world_Y_vector)
 		if dot < 0:
 			target_angle = target_angle * -1
@@ -140,17 +140,19 @@ def move(contr):
 			angle_diff = target_angle - robot_angle
 			rotation_direction = 1
 
-		#print "Target ANGLE = ", target_angle
-		#print "Robot  ANGLE = ", robot_angle
-		#print "ANGLE Difference = ", angle_diff
+		# Make a correction when the angles change signs
+		if angle_diff > 180:
+			angle_diff = 360 - angle_diff
+			rotation_direction = rotation_direction * -1
+
+		#print "Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction)
 
 		if distance > 0:
-			# Test if the orientation of the robot is within tolerance to move
-			#  towards the target
-			if -angle_tolerance < angle_diff and angle_diff < angle_tolerance:
-				vx = 0.05
-			# If the angle is off, rotate first
-			else:
+			# Move forward
+			vx = 0.05
+			# Test if the orientation of the robot is within tolerance
+			# If not, rotate the robot
+			if not (-angle_tolerance < angle_diff and angle_diff < angle_tolerance):
 				rz = 0.03 * rotation_direction
 		# If the target has been reached, change the status
 		elif distance <= 0:
