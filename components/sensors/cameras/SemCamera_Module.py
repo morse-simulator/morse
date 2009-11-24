@@ -10,7 +10,7 @@ added.
 
 Version: 1.0
 Date: 16 Nov. 2009
-Author: Séverin Lemaignan <severin.lemaignan@laas.fr>
+Author: Severin Lemaignan <severin.lemaignan@laas.fr>
 
 Copyright LAAS-CNRS 2009
 '''
