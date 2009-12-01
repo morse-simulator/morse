@@ -177,8 +177,8 @@ def move(contr):
 			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
 
 		msg_act = contr.actuators['Send_update_msg']
-		msg_act.propName = parent.name
 		msg_act.subject = 'Speed'
+		#msg_act.body = parent.name
 		robot_state_dict['vx'] = vx
 		robot_state_dict['vy'] = vy
 		robot_state_dict['vz'] = vz

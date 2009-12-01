@@ -21,16 +21,16 @@ def measure_temp(contr):
 			obj['Fire']
 			fire_radius = obj['Fire_Radius']
 			fire_pos = Mathutils.Vector(obj.position)
-			print "FIRE AT ", fire_pos
-			print "THERMO AT ", sensor_pos
+			#print "FIRE AT ", fire_pos
+			#print "THERMO AT ", sensor_pos
 			distance_vector = sensor_pos - fire_pos
 			distance = distance_vector.length - fire_radius
-			print "DISTANCE = ", distance
+			#print "DISTANCE = ", distance
 			
 			#print "Distance from robot {0} to fire source = {1}".format(temp_sensor.parent, distance)
 
 			# Trial and error formula for a decay of temperature with distance
-			temp_sensor['Temperature'] = 15 + 100 * e ** (-0.5 * distance)
+			temp_sensor['Temperature'] = 15 + 200 * e ** (-0.2 * distance)
 
 
 		except KeyError as detail:

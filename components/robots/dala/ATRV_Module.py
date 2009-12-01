@@ -1,10 +1,6 @@
 import GameLogic
 
-# Definition of global variables
-ob = ''
-
 def init(contr):
-	global ob
 
 	motion_act = contr.actuators['motion_actuator']
 
@@ -16,7 +12,6 @@ def init(contr):
 	motion_act.useLocalDRot = 1
 
 	# Get the current object
-	contr= GameLogic.getCurrentController()
 	ob = contr.owner
 
 	# Get the dictionary for the robot's state
@@ -43,8 +38,16 @@ def init(contr):
 
 def move(contr):
 	sensor = contr.sensors['Speed_msg']
+	ob = contr.owner
 
 	if sensor.positive:
+
+		""" NOT WORKING
+		# Exit if the message is not addresses to this object
+		for msg in sensor.bodies:
+			if msg != ob.name:
+				return
+		"""
 		
 		motion_act = contr.actuators['motion_actuator']
 		

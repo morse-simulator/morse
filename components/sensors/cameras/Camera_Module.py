@@ -34,7 +34,6 @@ def init(contr):
 	global structObject
 
 	print '######## CAMERA INITIALIZATION ########'
-	print
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
@@ -92,10 +91,14 @@ def init(contr):
 	# to make the unpacking of the captured images more efficient
 	structObject = struct.Struct('=BBB')
 
+	# Check that the conversion buffer could be initialized
 	if not convert.init_array(Image_Size):
 		ob['Init_OK'] = True
 
 	#print_properties(ob)
+
+	print '######## CAMERA INITIALIZED ########'
+
 
 def print_properties(ob):
 	# Read the list of properties
