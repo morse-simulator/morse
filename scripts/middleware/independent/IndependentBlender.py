@@ -103,9 +103,16 @@ class MiddlewareConnector:
 			img = yarp.ImageRgb()
 			img.setTopIsLowIndex(0)
 			img.setQuantum(1)
+
+			"""
+			# Using Python pointer (converted or not)
 			img.setExternal(img_pointer[0],img_X,img_Y)
+			"""
+			# Using the C pointer (converted)
+			img.setExternal(img_pointer,img_X,img_Y)
 			
-			# copy to image with "regular" YARP pixel order
+			# Copy to image with "regular" YARP pixel order
+			# Otherwise the image is upside-down
 			img2 = yarp.ImageRgb()
 			img2.copy(img)
 			

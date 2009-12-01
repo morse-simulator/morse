@@ -20,6 +20,12 @@ if scriptRoot not in sys.path:
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
 
+# Radius of tolerance for waypoints
+# Given in Blender units
+tolerance = 2
+
+# Direction tolerance for the movement (in degrees)
+angle_tolerance = 5
 
 def init(contr):
 	# Middleware initialization
@@ -46,6 +52,19 @@ def init(contr):
 		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
 		print '######## CONTROL INITIALIZED ########'
 
+		# Initialize the area object, according to the initial parameters
+		try:
+			scene = GameLogic.getCurrentScene()
+			target_ob = scene.objects[ob['TargetObject']]
+			area_ob = scene.objects['OBWP_Area']
+			area_ob.scaling = (tolerance, tolerance, 1)
+			initial_position = target_ob.position
+			initial_position[2] = 0.01
+			area_ob.position = initial_position
+			area_ob.setParent(target_ob)
+		except KeyError:
+			print "Warning: No area object in scene"
+
 
 
 def move(contr):
@@ -53,12 +72,7 @@ def move(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	dest_port_name = port_name + '/destination'
 
-	# Radius of tolerance for waypoints
-	tolerance = 2
 	destination = []
-
-	# Direction tolerance for the movement (in degrees)
-	angle_tolerance = 5
 
 	# Get the dictionary for the robot's state
 	robot_state_dict = GameLogic.robotDict[parent]
@@ -87,19 +101,21 @@ def move(contr):
 
 			# DEBUGGING:
 			# Translate the marker to the target destination
-			scene = GameLogic.getCurrentScene()
-			target_ob = scene.objects['OBWayPoint']
-			area_ob = scene.objects['OBWP_Area']
 			destination[2] = 0
+			scene = GameLogic.getCurrentScene()
+			target_ob = scene.objects[ob['TargetObject']]
 			target_ob.position = destination
-			area_ob.scaling = (tolerance, tolerance, 1)
 
-		# Exit the function if there has been no command to move
-		if not robot_state_dict['moveStatus'] == "Transit":
+		try:
+			# Exit the function if there has been no command to move
+			if not robot_state_dict['moveStatus'] == "Transit":
+				return
+		except KeyError:
+			# Also exit if there is no moveStatus property
 			return
 
 		scene = GameLogic.getCurrentScene()
-		target_ob = scene.objects['OBWayPoint']
+		target_ob = scene.objects[ob['TargetObject']]
 		destination = target_ob.position
 		# Ignore the altitude (Z)
 		destination[2] = 0

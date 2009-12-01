@@ -10,6 +10,7 @@ LDFLAGS = -I$(OPENROBOTS_BASE)/include -L$(OPENROBOTS_BASE)/lib -lYARP_OS -Wl,-r
 
 MOTION = agv_motion-1.0
 DESTINATION = atrv_destination-1.0
+CAMERAS = atrv_dest_cams-1.0
 
 all: $(ATRV)
 
@@ -17,6 +18,9 @@ $(MOTION): $(MOTION).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 $(DESTINATION): $(DESTINATION).o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+$(CAMERAS): $(CAMERAS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 tags:
