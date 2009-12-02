@@ -1,0 +1,17 @@
+Requirements / What you need to install before :
+ - Bender 2.4.9 (For the moment the simulator work only with this version.)
+ - Yarp version 2.2.3 or >
+ - libACE-5.6.3.so or > (necessary for Yarp)
+
+Download the source code of OpenRobots Simulator from this website:
+For this uses "bazard" and the following command: bzr branch lp:~blender-for-robotics/openrobots-simulator/ors
+
+Define the environment variable $ORS_ROOT by the path directory where you have installed OpenRobots Simulator.
+
+To test the simulator you can load some scenario from $ORS_ROOT/scenarii (.blend files)
+
+Before to start a simulation: Start the yarp's server with this command from a terminal "yarp server".
+
+To start a simulation, go on blender and press "P" to play the scenario.
+
+Tips : If you have any problem to start to play a simulation : start blender from a terminal and send us the error messages.
