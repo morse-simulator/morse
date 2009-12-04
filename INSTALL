@@ -1,17 +1,34 @@
 Requirements / What you need to install before :
- - Bender 2.4.9 (For the moment the simulator work only with this version.)
- - Yarp version 2.2.3 or >
- - libACE-5.6.3.so or > (necessary for Yarp)
+ - Python (2.6 or +)	     
+ - Blender 2.4.9 build with python 2.6 (For the moment the simulator work only with this version.)
+ - YARP version (2.2.3 or +)
+ - YARP python binding
+ - ACE ( 5.6.3 or +, required for YARP)
+
+ - bzr to get the code of the simulator
+
+The easiest way to install it is probably to use robotpkg (see  
+http://homepages.laas.fr/mallet/robotpkg for more instructions). You can install
+yarp and its dependancies using make install into devel/libpyyarp.
+
+You will probably need to set the environnement variable PYTHONPATH to 
+${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
+module.
 
 Download the source code of OpenRobots Simulator from this website:
-For this uses "bazard" and the following command: bzr branch lp:~blender-for-robotics/openrobots-simulator/ors
+For this, uses "bzr" and the following command: 
+	$ bzr branch lp:~blender-for-robotics/openrobots-simulator/ors
 
-Define the environment variable $ORS_ROOT by the path directory where you have installed OpenRobots Simulator.
+Define the environment variable $ORS_ROOT by the path directory where you have
+installed OpenRobots Simulator.
 
-To test the simulator you can load some scenario from $ORS_ROOT/scenarii (.blend files)
+To test the simulator you can load some scenario from $ORS_ROOT/scenarii (.blend
+files)
 
-Before to start a simulation: Start the yarp's server with this command from a terminal "yarp server".
+Before to start a simulation: Start the yarp's server with this command from a
+terminal "yarp server".
 
 To start a simulation, go on blender and press "P" to play the scenario.
 
-Tips : If you have any problem to start to play a simulation : start blender from a terminal and send us the error messages.
+Tips: If you have any problem to start to play a simulation: start blender
+from a terminal and send us the error messages.
