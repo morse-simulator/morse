@@ -49,29 +49,29 @@ int main(int argc, char* argv[]) {
 
   char cmd;
 
-  string port_prefix = "/openrobots_simu/" + robot_name + "/";
-  
+  string port_prefix = "/ors/robots/" + robot_name + "/";
+
   // Define the names for the comunication ports
   string atrv_motor_port = port_prefix + "Motion_Controller/destination";
   string atrv_output_port_gps = port_prefix + "GPS";
 
   string local_port_prefix = "/atrv_client/" + robot_name;
-  
+
   cout << "********* ATRV client *********" << endl;
   cout << "Display the ATRV drone gps position + move the ATRV in OpenRobots simulator" << endl;
   cout << "Press ctrl+c to exit." << endl;
-  
+
   //We catch ctrl+c to cleanly close the application
   signal( SIGINT,sigproc);
-  
-  
+
+
   //setvbuf(stdin, NULL, _IONBF, 0);
-  
+
   //Initialization of Yarp network
   Network::init();
-  
+
   cout << "\n * YARP network initialized." << endl;
-  
+
   //Connect to OpenRobots simulator
   toATRVPort.open((local_port_prefix + "/out/destination").c_str());
   fromATRVGPSPort.open((local_port_prefix + "/in/gps").c_str());
@@ -81,28 +81,28 @@ int main(int argc, char* argv[]) {
 
   cout << " * Writing commands to " << atrv_motor_port << endl;
   cout << " * Listening status on " << atrv_output_port_gps << endl;
-  
+
   cout << " * Enter destination coordinates, separated by a space" << endl;
   cout << " * Example: 1.52 3.38 0.0" << endl;
   cout << " * NOTE: The third coordinate (Z) is not used in the case of ATRV" << endl;
 
   cout << " * Starting now..." << endl;
-  
+
   double dest[3] = {0.0, 0.0, 0.0};
 
   while(true)
   {
     Bottle *incomingBottle;
-      
+
     //read on the ATRV output port, but don't wait.
     incomingBottle = fromATRVGPSPort.read(false);
-    
+
 
     if (incomingBottle != NULL)
     {
       double x = incomingBottle->get(0).asDouble();
       double y = incomingBottle->get(1).asDouble();
-      double z = incomingBottle->get(2).asDouble(); 
+      double z = incomingBottle->get(2).asDouble();
       cout << "Current ATRV GPS position ->  x: " << x << "  y: " << y <<"  z: "<< z <<endl;
     }
 
@@ -116,19 +116,19 @@ int main(int argc, char* argv[]) {
     Bottle& cmdBottle = toATRVPort.prepare();
     cmdBottle.clear();
     cmdBottle.addDouble(dest[X]);
-    cmdBottle.addDouble(dest[Y]);	
+    cmdBottle.addDouble(dest[Y]);
     cmdBottle.addDouble(dest[Z]);
 
-    cin.ignore();		
-    toATRVPort.write();    
-  }  
+    cin.ignore();
+    toATRVPort.write();
+  }
 }
 
 void sigproc(int sig){
   signal(SIGINT, sigproc); /*  */
   /* NOTE some versions of UNIX will reset signal to default
      after each call. So for portability reset signal each time */
-  
+
   cout << " * Exiting now!" << endl;
   toATRVPort.close();
   fromATRVGPSPort.close();

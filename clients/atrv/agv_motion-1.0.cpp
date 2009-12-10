@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
   char cmd;
 
-  string port_prefix = "/openrobots_simu/" + robot_name + "/";
+  string port_prefix = "/ors/robots/" + robot_name + "/";
   
   string ugv_motor_port = port_prefix + "Motion_Controller/vxvyvz";
   // string ugv_output_port_gps = port_prefix + "/gps";

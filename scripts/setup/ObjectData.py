@@ -10,6 +10,6 @@ def get_object_data(contr):
 	if not parent:
 		parent = ob
 
-	port_name = '{0}/{1}'.format(parent.name, ob['Component_Type'])
+	port_name = 'robots/{0}/{1}'.format(parent.name, ob['Component_Type'])
 
 	return (ob, parent, port_name)

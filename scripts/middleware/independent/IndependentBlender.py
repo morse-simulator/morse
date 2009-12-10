@@ -34,9 +34,9 @@ class MiddlewareConnector:
 
 		"""
 		for portName in portList:
-			portName = '/openrobots_simu/'+portName
+			portName = '/ors/'+portName
 			if portName not in yarpConnector._yarpPorts:
-				print '  * Middleware: Adding ', portName, ' buffered bottle port.'
+				print ('  * Middleware: Adding ', portName, ' buffered bottle port.')
 				port = yarp.BufferedPortBottle()
 				port.open(portName)
 				yarpConnector._yarpPorts[portName] = port
@@ -48,9 +48,9 @@ class MiddlewareConnector:
 
 		"""
 		for portName in portList:
-			portName = '/openrobots_simu/'+portName
+			portName = '/ors/'+portName
 			if portName not in yarpConnector._yarpPorts:
-				print '  * Middleware: Adding ', portName, ' buffered image port.'
+				print ('  * Middleware: Adding ', portName, ' buffered image port.')
 				port = yarp.BufferedPortImageRgb()
 				port.open(portName)
 				yarpConnector._yarpPorts[portName] = port
@@ -68,12 +68,12 @@ class MiddlewareConnector:
 			port.close()
 		
 		yarp.Network.fini()
-		print ' * Middleware: ports have been closed.'
+		print (' * Middleware: ports have been closed.')
 		"""
 	
 	def getPort(self, portName):
 		"""
-		port = '/openrobots_simu/' + portName
+		port = '/ors/' + portName
 		return yarpConnector._yarpPorts[port]
 		"""
 		return self.yarpConnector.getPort(portName)
@@ -91,7 +91,7 @@ class MiddlewareConnector:
 			#...and send it
 			yarp_port.writeStrict()
 		except KeyError as detail:
-			print "ERROR: Specified port does not exist: ", detail
+			print ("ERROR: Specified port does not exist: ", detail)
 
 
 	# Send an image using a port
@@ -120,11 +120,11 @@ class MiddlewareConnector:
 			yarp_port.write(img2)
 
 		except KeyError as detail:
-			print "ERROR: Specified port does not exist: ", detail
+			print ("ERROR: Specified port does not exist: ", detail)
 
 # nada = MiddlewareConnector()
 
 
 	def printOpenPorts(self):
-		print "THIS SHOULD BE MY LIST OF PORTS"
+		print ("THIS SHOULD BE MY LIST OF PORTS")
 		self.yarpConnector.printOpenPorts()

@@ -37,16 +37,16 @@ def init(contr):
 		#state_dict = GameLogic.componentDict[ob]
 		ob['Init_OK'] = True
 	except AttributeError:
-		print "Component Dictionary not found!"
-		print "This component must be part of a scene"
+		print ("Component Dictionary not found!")
+		print ("This component must be part of a scene")
 
 	if ob['Init_OK']:
-		print '######## GYROSCOPE INITIALIZATION ########'
+		print ('######## GYROSCOPE INITIALIZATION ########')
 		robot_state_dict['gyro_angle'] = 0.0
-		print "OPENING PORTS '{0}'".format(port_name)
+		print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		#GameLogic.orsConnector.printOpenPorts()
-		print '######## GYROSCOPE INITIALIZED ########'
+		print ('######## GYROSCOPE INITIALIZED ########')
 
 
 def output(contr):
@@ -79,7 +79,7 @@ def output(contr):
 			# Store the value in the sensor component's properties
 			#  (for display using Blender Debug)
 			ob['Gyro_angle'] = gyro_angle
-			#print "Gyroscope angle: ", gyro_angle, " >> Dot: ", dot
+			#print ("Gyroscope angle: ", gyro_angle, " >> Dot: ", dot)
 
 			if GameLogic.orsCommunicationEnabled:
 				p = GameLogic.orsConnector.getPort(port_name)
@@ -90,7 +90,7 @@ def output(contr):
 				p.write()	
 
 		except AttributeError as detail:
-			print "Can't determine angle"
-			print detail
+			print ("Can't determine angle")
+			print (detail)
 
 

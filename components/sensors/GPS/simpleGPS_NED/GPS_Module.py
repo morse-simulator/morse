@@ -35,14 +35,14 @@ def init(contr):
 		state_dict = GameLogic.componentDict[ob]
 		ob['Init_OK'] = True
 	except AttributeError:
-		print "Component Dictionary not found!"
-		print "This component must be part of a scene"
+		print ("Component Dictionary not found!")
+		print ("This component must be part of a scene")
 
 	if ob['Init_OK']:
-		print '######## GPS INITIALIZATION ########'
-		print "OPENING PORTS '{0}'".format(port_name)
+		print ('######## GPS INITIALIZATION ########')
+		print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
-		print '######## GPS INITIALIZED ########'
+		print ('######## GPS INITIALIZED ########')
 
 
 
@@ -67,5 +67,5 @@ def output(contr):
 			#...and send it
 			p.write()
 			
-			#print "GPS NED ", ob.name, " sent  x: ",x," y: ",y," z:", z
+			#print ("GPS NED ", ob.name, " sent  x: ",x," y: ",y," z:", z)
 			ob['Coordinates'] = "%.3f, %.3f, %.3f" % (x, y, z)

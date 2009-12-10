@@ -1,5 +1,6 @@
 import sys, os
 import GameLogic
+import json
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -50,7 +51,7 @@ def Create_Dictionaries ():
 			try:
 				# Look for the components tagged as such
 				child['Component_Tag']
-				component_list.append (child)
+				component_list.append (child['Component_Type'])
 				robot_state_dict['components'] = component_list
 				
 				# Create an empty dictionary for each component,
@@ -60,20 +61,60 @@ def Create_Dictionaries ():
 				# pass
 				sys.exc_clear()  # Clears the last exception thrown
 		#print "GameLogic[{0}] = {1}".format(name, obj)
-	
-	
+
+
 # Print the contents of the robot and component dictionaries
 def Check_Dictionaries():
 	print "------------------------------------"
 	print "GameLogic has the following robots:"
 	for obj, robot_state_dict in GameLogic.robotDict.iteritems():
-			print "\tROBOT: '{0}'".format(obj)
-			for component in robot_state_dict['components']:
-				print "\t\t- Component: '{0}'".format(component)
+		print "\tROBOT: '{0}'".format(obj)
+		for component in robot_state_dict['components']:
+			print "\t\t- Component: '{0}'".format(component)
 					
 	print "GameLogic has the following components:"
 	for obj, component_variables in GameLogic.componentDict.iteritems():
-			print "\tCOMPONENT: '{0}'".format(obj)
+		print "\tCOMPONENT: '{0}'".format(obj)
+
+
+# Create a port that publishes the list of components
+# This will consist of 3 nested bottles:
+##  1 Contains all the robots
+##	2 Contains the name and the list of components of a robot
+##  3 The list of components
+def Publish_Dictionaries(port_name):
+
+	if GameLogic.orsCommunicationEnabled:
+		p = GameLogic.orsConnector.getPort(port_name)
+		bottle = p.prepare()
+		bottle.clear()
+
+		# Create a structure of nested bottles
+		"""
+		for obj, robot_state_dict in GameLogic.robotDict.iteritems():
+			bottle2 = bottle.addList()
+			bottle2.addString(obj.name)
+			bottle3 = bottle2.addList()
+			for component in robot_state_dict['components']:
+				bottle3.addString(component.name)
+		"""
+
+		# Serialize the lists using JSON
+		scene_elems = []
+		for obj, robot_state_dict in GameLogic.robotDict.iteritems():
+			robot_list = [obj.name, robot_state_dict['components']]
+			scene_elems.append (robot_list)
+		message = json.dumps(scene_elems)
+
+		# print "LIST: ", scene_elems
+		# print "JSON: ", message
+		# print "BACK: ", json.loads(message)
+
+		bottle.addString(message)
+
+		#...and send it
+		p.write()
+
 
 
 def init(contr):
@@ -89,8 +130,35 @@ def init(contr):
 
 	GameLogic.orsCommunicationEnabled = True
 
+	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()
+
+	port_name = "admin"
+	print ("OPENING PORTS '{0}'".format(port_name))
+	GameLogic.orsConnector.registerBufferedPortBottle([port_name])
+	print ('======= COMPONENT DICTIONARY INITIALIZED =======')
+
 	Check_Dictionaries()
+
+	Publish_Dictionaries(port_name)
+
+def admin(contr):
+	port_name = "admin"
+
+	#retrieve the port we want to write on
+	p = GameLogic.orsConnector.getPort(port_name)
+
+	#non-blocking read of the port
+	command_data = p.read(False)
+
+	if command_data != None:
+		command = command_data.get(0).asString()
+
+		print " ===>> Communication with external agent established!"
+
+		if command == "list_robots":
+			print " ===>> Sending list of elements"
+			Publish_Dictionaries(port_name)
 
 
 def finish(contr):
@@ -103,7 +171,6 @@ def finish(contr):
 	if not sensor.positive and sensor.triggered:
 		print '######### FINALIZING... ########'
 
-		#YarpBlender.finalize()
 		GameLogic.orsConnector.finalize()
 
 		quitActuator = contr.actuators['Quit_sim']
