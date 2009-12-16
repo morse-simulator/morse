@@ -32,7 +32,7 @@ def init(contr):
 
 
 	print
-	print '######## ATRV INITIALIZED ########'
+	print ('######## ATRV INITIALIZED ########')
 	print
 
 
@@ -58,7 +58,7 @@ def move(contr):
 		vx = robot_state_dict['vx']
 		vy = robot_state_dict['vy']
 		vz = robot_state_dict['vz']
-		#print "{0} SETTING SPEED: {1}, {2}, {3}".format(ob.name, vx, vy, vz)
+		#print ("{0} SETTING SPEED: {1}, {2}, {3}".format(ob.name, vx, vy, vz))
 		
 		# Get the rotation values from the dictionary
 		rx = robot_state_dict['rx']

@@ -95,7 +95,7 @@ class MiddlewareConnector:
 
 
 	# Send an image using a port
-	def postImage(self, img_pointer, img_X, img_Y, port_name):
+	def postImageRGB(self, img_pointer, img_X, img_Y, port_name):
 		try:
 			yarp_port = self.yarpConnector.getPort(port_name)
 
@@ -122,7 +122,35 @@ class MiddlewareConnector:
 		except KeyError as detail:
 			print ("ERROR: Specified port does not exist: ", detail)
 
-# nada = MiddlewareConnector()
+
+	# Send an image using a port
+	def postImageRGBA(self, img_pointer, img_X, img_Y, port_name):
+		try:
+			yarp_port = self.yarpConnector.getPort(port_name)
+
+			# Wrap the data in a YARP image
+			img = yarp.ImageRgba()
+			img.setTopIsLowIndex(0)
+			img.setQuantum(1)
+
+			# Using Python pointer (converted or not)
+			img.setExternal(img_pointer[0],img_X,img_Y)
+			"""
+			# Using the C pointer (converted)
+			img.setExternal(img_pointer,img_X,img_Y)
+			"""
+			
+			# Copy to image with "regular" YARP pixel order
+			# Otherwise the image is upside-down
+			img2 = yarp.ImageRgba()
+			img2.copy(img)
+			
+			# Write the image
+			yarp_port.write(img2)
+
+		except KeyError as detail:
+			print ("ERROR: Specified port does not exist: ", detail)
+
 
 
 	def printOpenPorts(self):

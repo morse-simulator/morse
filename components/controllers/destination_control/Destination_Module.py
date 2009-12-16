@@ -43,14 +43,14 @@ def init(contr):
 		robot_state_dict = GameLogic.robotDict[parent]
 		ob['Init_OK'] = True
 	except AttributeError:
-		print "Component Dictionary not found!"
-		print "This component must be part of a scene"
+		print ("Component Dictionary not found!")
+		print ("This component must be part of a scene")
 
 	if ob['Init_OK']:
-		print '######## CONTROL INITIALIZATION ########'
-		print "OPENING PORT '{0}'".format(dest_port_name)
+		print ('######## CONTROL INITIALIZATION ########')
+		print ("OPENING PORT '{0}'".format(dest_port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
-		print '######## CONTROL INITIALIZED ########'
+		print ('######## CONTROL INITIALIZED ########')
 
 		# Initialize the area object, according to the initial parameters
 		try:
@@ -63,7 +63,7 @@ def init(contr):
 			area_ob.position = initial_position
 			area_ob.setParent(target_ob)
 		except KeyError:
-			print "Warning: No area object in scene"
+			print ("Warning: No area object in scene")
 
 
 
@@ -95,8 +95,8 @@ def move(contr):
 				destination.append( dest.get(i).asDouble() )
 
 			robot_state_dict['moveStatus'] = "Transit"
-			print "GOT DESTINATION: ", destination
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("GOT DESTINATION: " + repr(destination))
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 			robot_state_dict['destination'] = destination
 
 			# DEBUGGING:
@@ -129,7 +129,7 @@ def move(contr):
 		distance_V = destination_V - location_V
 		distance = distance_V.length - tolerance
 
-		#print "GOT DISTANCE: ", distance
+		#print ("GOT DISTANCE: %.4f" % distance)
 
 		world_X_vector = Mathutils.Vector([1,0,0])
 		world_Y_vector = Mathutils.Vector([0,1,0])
@@ -143,8 +143,8 @@ def move(contr):
 		try:
 			robot_angle = robot_state_dict['gyro_angle']
 		except KeyError as detail:
-			print "Gyroscope angle not found. Does the robot have a Gyroscope?"
-			print detail
+			print ("Gyroscope angle not found. Does the robot have a Gyroscope?")
+			print (detail)
 			# Force the robot to move towards the target, without rotating
 			robot_angle = target_angle
 
@@ -161,7 +161,7 @@ def move(contr):
 			angle_diff = 360 - angle_diff
 			rotation_direction = rotation_direction * -1
 
-		#print "Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction)
+		#print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
 		if distance > 0:
 			# Move forward
@@ -173,8 +173,8 @@ def move(contr):
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			robot_state_dict['moveStatus'] = "Stop"
-			print "TARGET REACHED"
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("TARGET REACHED")
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
 		msg_act = contr.actuators['Send_update_msg']
 		msg_act.subject = 'Speed'
@@ -189,6 +189,6 @@ def move(contr):
 
 		contr.activate(msg_act)
 
-		#print "Motion for robot '{0}'".format(parent.name)
-		#print "\tvx: ",vx," vy: ",vy," vz: ",vz
-		#print "\trx: ",rx," ry: ",ry," rz: ",rz
+		#print ("Motion for robot '{0}'".format(parent.name))
+		#print ("\tvx: ",vx," vy: ",vy," vz: ",vz)
+		#print ("\trx: ",rx," ry: ",ry," rz: ",rz)

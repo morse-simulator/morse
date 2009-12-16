@@ -15,7 +15,7 @@ class YarpConnector:
 		for portName in portList:
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
-				print ('  * YARP: Adding ', portName, ' buffered bottle port.')
+				print ('  * YARP: Adding ' + portName + ' buffered bottle port.')
 				port = yarp.BufferedPortBottle()
 				port.open(portName)
 				self._yarpPorts[portName] = port
@@ -25,7 +25,7 @@ class YarpConnector:
 		for portName in portList:
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
-				print ('  * YARP: Adding ', portName, ' buffered image port.')
+				print ('  * YARP: Adding ' + portName + ' buffered image port.')
 				port = yarp.BufferedPortImageRgb()
 				port.open(portName)
 				self._yarpPorts[portName] = port
@@ -36,7 +36,7 @@ class YarpConnector:
 		for portName in portList:
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
-				print ('  * YARP: Adding ', portName, ' port.')
+				print ('  * YARP: Adding ' + portName + ' port.')
 				port = yarp.Port()
 				port.open(portName)
 				self._yarpPorts[portName] = port

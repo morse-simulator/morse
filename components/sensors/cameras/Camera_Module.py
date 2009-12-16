@@ -33,7 +33,7 @@ Image_Size = 4 * Image_Size_X * Image_Size_Y
 def init(contr):
 	global structObject
 
-	print '######## CAMERA INITIALIZATION ########'
+	print ('######## CAMERA INITIALIZATION ########')
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
@@ -48,8 +48,8 @@ def init(contr):
 		#GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		GameLogic.orsConnector.registerPort([port_name])
 	except NotImplementedError as detail:
-		print "ERROR: Unable to create the port:"
-		print detail
+		print ("ERROR: Unable to create the port:")
+		print (detail)
 
 	# Create a key for a dictionary of cameras
 	#  necesary if there are more than one camera added to the scene
@@ -66,7 +66,7 @@ def init(contr):
 		#texture_name = texture_name + extension
 	# Store the key as an ID in the Empty object
 	ob['camID'] = key
-	print "KEY BEING USED IS: '{0}'".format(key)
+	print ("KEY BEING USED IS: '{0}'".format(key))
 
 	# Get the reference to the camera and screen
 	scene = GameLogic.getCurrentScene()
@@ -85,7 +85,7 @@ def init(contr):
 	#GameLogic.tv[key].source.background = [255,100,0,255]
 	# Define an image size. It must be powers of two. Default 512 * 512
 	GameLogic.tv[key].source.capsize = [Image_Size_X, Image_Size_Y]
-	print "EXPORTING AN IMAGE OF CAPSIZE: ", GameLogic.tv[key].source.capsize
+	print ("EXPORTING AN IMAGE OF CAPSIZE: ", GameLogic.tv[key].source.capsize)
 
 	# Create an instance of the Struct object,
 	# to make the unpacking of the captured images more efficient
@@ -97,16 +97,16 @@ def init(contr):
 
 	#print_properties(ob)
 
-	print '######## CAMERA INITIALIZED ########'
+	print ('######## CAMERA INITIALIZED ########')
 
 
 def print_properties(ob):
 	# Read the list of properties
 	properties = ob.getPropertyNames()
 
-	print "Properties of object: ", ob
+	print ("Properties of object: " + ob)
 	for prop in properties:
-		print prop, " = ", ob[prop]
+		print (prop + " = " + ob[prop])
 
 
 def update(contr):
@@ -134,12 +134,6 @@ def decode_image (image_string):
 		rgb = structObject.unpack(image_string[i:i+3])
 		image_buffer.extend ( rgb )
 
-	"""
-	print "PYTHON Converted string of length: ", length
-	print "\tFrom: '{0}'".format(image_string)
-	print "\tTo  : ", image_buffer
-	"""
-
 	return image_buffer
 
 
@@ -162,31 +156,28 @@ def grab(contr):
 				imX,imY = GameLogic.tv[ob['camID']].source.size
 				image_string = GameLogic.tv[ob['camID']].source.image
 
-				# Data conversion in Python (OLD)
-				#buf = decode_image (image_string)
-
-				# TESTING THE C LIBRARY
+				# USING THE C LIBRARY TO CONVERT THE IMAGE FORMAT
 				# The SWIG binding extracts the length of the string
 				info = convert.convert_image( image_string )
-				GameLogic.orsConnector.postImage(info, imX, imY, port_name)
-
+				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
 
 				"""
-				# TESTING THE C++ LIBRARY
+				# Don't do any conversion, send the image as RGBA (yarp 2.2.5)
+				data = array.array('B',image_string)
+				info = data.buffer_info()
+				GameLogic.orsConnector.postImageRGBA(info, imX, imY, port_name)
+				"""
+
+				"""
+				# TESTING THE C++ LIBRARY (STILL PENDING)
 				# nada = ors_image_yarp.convert_and_send_yarp( image_string, port_name )
 				"""
 
 				"""
-				# Trying to avoid the conversion altogether
-				data = array.array('B',image_string)
+				# Data conversion in Python (OLD)
+				buf = decode_image (image_string)
+				# Convert it to a form where we have access to a memory pointer
+				data = array.array('B',buf)
 				info = data.buffer_info()
-				GameLogic.orsConnector.postImage(info, imX, imY, port_name)
+				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
 				"""
-
-			"""
-			# Convert it to a form where we have access to a memory pointer
-			data = array.array('B',buf)
-			info = data.buffer_info()
-
-			GameLogic.orsConnector.postImage(info, imX, imY, port_name)
-			"""

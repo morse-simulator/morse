@@ -22,7 +22,7 @@ def move(contr):
 
 
 	for key, status in pressed_keys:
-		#print "GOT: {0}, STATUS {1}".format(key, status)
+		#print ("GOT: {0}, STATUS {1}".format(key, status))
 		if key == GameKeys.UPARROWKEY:
 			msg_act.propName = parent.name
 			msg_act.subject = 'Speed'

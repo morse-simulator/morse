@@ -35,20 +35,20 @@ def init(contr):
 		state_dict = GameLogic.componentDict[ob]
 		ob['Init_OK'] = True
 	except AttributeError:
-		print "Component Dictionary not found!"
-		print "This component must be part of a scene"
+		print ("Component Dictionary not found!")
+		print ("This component must be part of a scene")
 		
 
 	if ob['Init_OK']:
-		print '######## CONTROL INITIALIZATION ########'
+		print ('######## CONTROL INITIALIZATION ########')
 		speed_port_name = port_name + '/vxvyvz'
 		rotation_port_name = port_name + '/rxryrz'
-		print "OPENING PORTS '{0}', '{1}'".format(speed_port_name, rotation_port_name)
+		print ("OPENING PORTS '{0}', '{1}'".format(speed_port_name, rotation_port_name))
 
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 		GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])
 
-		print '######## CONTROL INITIALIZED ########'
+		print ('######## CONTROL INITIALIZED ########')
 	
 	
 def move(contr):
@@ -83,8 +83,8 @@ def move(contr):
 			rz = - cmd.get(5).asDouble()/fps
 
 			msg_act = contr.actuators['Send_update_msg']
-			msg_act.propName = parent.name
-			msg_act.to = parent.name
+			#msg_act.propName = parent.name
+			#msg_act.to = parent.name
 			msg_act.subject = 'Speed'		
 			robot_state_dict['vx'] = vx
 			robot_state_dict['vy'] = vy	
@@ -96,6 +96,6 @@ def move(contr):
 
 			contr.activate(msg_act)
 
-			#print "Motion for robot '{0}'".format(parent.name)
-			#print "\tvx: ",vx," vy: ",vy," vz: ",vz
-			#print "\trx: ",rx," ry: ",ry," rz: ",rz 
+			#print ("Motion for robot '{0}'".format(parent.name))
+			#print ("\tvx: ",vx," vy: ",vy," vz: ",vz)
+			#print ("\trx: ",rx," ry: ",ry," rz: ",rz )
