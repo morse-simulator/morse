@@ -23,10 +23,7 @@ class MiddlewareConnector:
 	def __init__(self):
 		""" Initialize the network and connect to the yarp server."""
 		self.yarpConnector = YarpConnector()
-		
-		self.yarpConnector._yarpPorts = dict()
 
-		yarp.Network.init()
 
 
 	def registerBufferedPortBottle(self, portList):

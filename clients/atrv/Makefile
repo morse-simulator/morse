@@ -12,7 +12,7 @@ MOTION = agv_motion-1.0
 DESTINATION = atrv_destination-1.0
 CAMERAS = atrv_dest_cams-1.0
 
-all: $(ATRV)
+all: $(MOTION) $(DESTINATION) $(CAMERAS)
 
 $(MOTION): $(MOTION).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
