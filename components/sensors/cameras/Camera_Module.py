@@ -156,17 +156,18 @@ def grab(contr):
 				imX,imY = GameLogic.tv[ob['camID']].source.size
 				image_string = GameLogic.tv[ob['camID']].source.image
 
+                                """
 				# USING THE C LIBRARY TO CONVERT THE IMAGE FORMAT
 				# The SWIG binding extracts the length of the string
 				info = convert.convert_image( image_string )
 				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
-
-				"""
+                                """
+			       
 				# Don't do any conversion, send the image as RGBA (yarp 2.2.5)
 				data = array.array('B',image_string)
 				info = data.buffer_info()
 				GameLogic.orsConnector.postImageRGBA(info, imX, imY, port_name)
-				"""
+			       
 
 				"""
 				# TESTING THE C++ LIBRARY (STILL PENDING)
