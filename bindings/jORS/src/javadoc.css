@@ -1,0 +1,37 @@
+/* Javadoc style sheet */
+
+/* Define colors, fonts and other style attributes here to override the defaults */
+
+/* Page background color */
+body { 
+	color:#000000;
+	font-family: sans-serif;
+	/*background: transparent url(https://www.laas.fr/~slemaign/images/robot_fond.jpg) no-repeat scroll center center*/
+}
+
+/* Headings */
+h1 { font-size: 145% }
+
+/* Tables */
+table {
+	border-collapse:collapse;
+}
+/* Table colors */
+.TableHeadingColor     { background: #f1b849; color:#000000 } /* Dark mauve */
+.TableSubHeadingColor  { background: #fae4b8; color:#000000 } /* Light mauve */
+.TableRowColor         { background:none; color:#000000 } /* White */
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 100%; font-family: Helvetica, Arial, sans-serif; color:#000000 }
+.FrameHeadingFont { font-size:  90%; font-family: Helvetica, Arial, sans-serif; color:#000000 }
+.FrameItemFont    { font-size:  90%; font-family: Helvetica, Arial, sans-serif; color:#000000 }
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#fae4b8; color:#000000} /* Light mauve */
+.NavBarCell1Rev { background-color:#9d6d11; color:#FFFFFF} /* Dark Blue */
+.NavBarFont1    { font-family: Arial, Helvetica, sans-serif; color:#000000;color:#000000;}
+.NavBarFont1Rev { font-family: Arial, Helvetica, sans-serif; color:#FFFFFF;color:#FFFFFF;}
+
+.NavBarCell2    { font-family: Arial, Helvetica, sans-serif; color:#000000}
+.NavBarCell3    { font-family: Arial, Helvetica, sans-serif; color:#000000}
+

@@ -97,18 +97,12 @@ def output(contr):
 			#GameLogic.orsConnector.printOpenPorts()
 		
 			speed_port_name = port_name + '/vxvyvz'
-			
-			#retrieve the YARP port we want to write on	
-			p = GameLogic.orsConnector.getPort(speed_port_name)	
-			bottle = p.prepare()
-			bottle.clear()
-			bottle.addDouble(vx)
-			bottle.addDouble(vy)
-			bottle.addDouble(vz)			
-			#...and send it
-			p.write()
 
-					
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			message_data = [ (vx, 'double'), (vy, 'double'), (vz, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, speed_port_name)
+
 			state_dict['prevVelocity']=state_dict['velocity']
 			state_dict['velocity']=v
 			
@@ -135,16 +129,11 @@ def output(contr):
 		
 			accel_port_name = port_name + '/axayaz'
 		
-			#retrieve the YARP port we want to write on	
-			p = GameLogic.orsConnector.getPort(accel_port_name)
-			bottle = p.prepare()
-			bottle.clear()
-			bottle.addDouble(ax)
-			bottle.addDouble(ay)
-			bottle.addDouble(az)			
-			#...and send it
-			p.write()
-			
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			message_data = [ (ax, 'double'), (ay, 'double'), (az, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, accel_port_name)
+
 			state_dict['prevAcceleration']=state_dict['acceleration']
 			state_dict['acceleration']=a
 			

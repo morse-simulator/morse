@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+import json
 
 
 try:
@@ -43,7 +44,7 @@ def init(contr):
 	if ob['Init_OK']:
 		print ('######## GYROSCOPE INITIALIZATION ########')
 		robot_state_dict['gyro_angle'] = 0.0
-		print ("OPENING PORTS '{0}'".format(port_name))
+		#print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		#GameLogic.orsConnector.printOpenPorts()
 		print ('######## GYROSCOPE INITIALIZED ########')
@@ -53,7 +54,7 @@ def output(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
-	if ob['Init_OK']:	
+	if ob['Init_OK']:
 		robot_state_dict = GameLogic.robotDict[parent]
 
 		############### Gyroscope ###################
@@ -81,16 +82,15 @@ def output(contr):
 			ob['Gyro_angle'] = gyro_angle
 			#print ("Gyroscope angle: ", gyro_angle, " >> Dot: ", dot)
 
-			if GameLogic.orsCommunicationEnabled:
-				p = GameLogic.orsConnector.getPort(port_name)
-				bottle = p.prepare()
-				bottle.clear()
-				bottle.addDouble(gyro_angle)
-				#...and send it
-				p.write()	
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			gyro_dict = {'degree': gyro_angle}
+			message = json.dumps(gyro_dict)
+			message_data = [ (message, 'string') ]
+
+			#message_data = [ (gyro_angle, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, port_name)
 
 		except AttributeError as detail:
 			print ("Can't determine angle")
 			print (detail)
-
-

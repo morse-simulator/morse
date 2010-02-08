@@ -2,6 +2,7 @@ import GameLogic
 import GameKeys
 
 def move(contr):
+	""" Interpret keyboard presses and assign them to movement for the robot."""
 	obj = contr.owner
 	parent = obj.parent
 	# Get the dictionary for the robot's state

@@ -43,11 +43,11 @@ def Create_Dictionaries ():
 			obj['Robot_Tag']
 			GameLogic.robotDict[obj] = {}
 		except KeyError:
-			# pass
-			sys.exc_clear()  # Clears the last exception thrown
+			pass
+			#sys.exc_clear()  # Clears the last exception thrown
 
 	# Get the components
-	for obj, robot_state_dict in GameLogic.robotDict.iteritems():
+	for obj, robot_state_dict in GameLogic.robotDict.items():
 		# Create an empty list for the components of this robot
 		component_list = []
 		for child in obj.childrenRecursive:
@@ -61,22 +61,22 @@ def Create_Dictionaries ():
 				#  and add it to GameLogic
 				GameLogic.componentDict[child] = {}
 			except KeyError:
-				# pass
-				sys.exc_clear()  # Clears the last exception thrown
+				pass
+				#sys.exc_clear()  # Clears the last exception thrown
 		#print ("GameLogic[{0}] = {1}".format(name, obj))
 
 
-# Print the contents of the robot and component dictionaries
 def Check_Dictionaries():
+	""" Print the contents of the robot and component dictionaries."""
 	print ("------------------------------------")
 	print ("GameLogic has the following robots:")
-	for obj, robot_state_dict in GameLogic.robotDict.iteritems():
+	for obj, robot_state_dict in GameLogic.robotDict.items():
 		print ("\tROBOT: '{0}'".format(obj))
 		for component in robot_state_dict['components']:
 			print ("\t\t- Component: '{0}'".format(component))
 
 	print ("GameLogic has the following components:")
-	for obj, component_variables in GameLogic.componentDict.iteritems():
+	for obj, component_variables in GameLogic.componentDict.items():
 		print ("\tCOMPONENT: '{0}'".format(obj))
 
 
@@ -85,42 +85,50 @@ def Check_Dictionaries():
 ##  1 Contains all the robots
 ##	2 Contains the name and the list of components of a robot
 ##  3 The list of components
-def Publish_Dictionaries(port_name):
-
+def Publish_Bottled_Dictionaries(port_name):
+	""" Prepare and send the dictionary data to a client program.
+		This creates a set of nested bottles, to be sent by a yarp port."""
 	if GameLogic.orsCommunicationEnabled:
 		p = GameLogic.orsConnector.getPort(port_name)
 		bottle = p.prepare()
 		bottle.clear()
 
 		# Create a structure of nested bottles
-		"""
-		for obj, robot_state_dict in GameLogic.robotDict.iteritems():
+		for obj, robot_state_dict in GameLogic.robotDict.items():
 			bottle2 = bottle.addList()
 			bottle2.addString(obj.name)
 			bottle3 = bottle2.addList()
 			for component in robot_state_dict['components']:
 				bottle3.addString(component.name)
-		"""
-
-		# Serialize the lists using JSON
-		scene_elems = []
-		for obj, robot_state_dict in GameLogic.robotDict.iteritems():
-			robot_list = [obj.name, robot_state_dict['components']]
-			scene_elems.append (robot_list)
-		message = json.dumps(scene_elems)
-
-		# print ("LIST: ", scene_elems)
-		# print ("JSON: ", message)
-		# print ("BACK: ", json.loads(message))
-
-		bottle.fromString(message)
 
 		#...and send it
 		p.write()
 
 
 
+def Publish_JSON_Dictionaries(port_name):
+	""" Prepare and send the dictionary data to a client program.
+		Data is sent as a serialised JSON string."""
+	if GameLogic.orsCommunicationEnabled:
+		# Serialize the lists using JSON
+		scene_elems = []
+		for obj, robot_state_dict in GameLogic.robotDict.items():
+			robot_list = [obj.name, robot_state_dict['components']]
+			scene_elems.append (robot_list)
+		message = json.dumps(scene_elems)
+
+		print ("LIST: {0}".format(scene_elems))
+		print ("JSON: {0}".format(message))
+		print ("BACK: {0}".format(json.loads(message)))
+
+		# Define the message structure to send.
+		# It is a list of tuples (data, type).
+		message_data = [ (message, 'string') ]
+		GameLogic.orsConnector.postMessage(message_data, port_name)
+
+
 def init(contr):
+	""" Open the communication ports for administration."""
 	print ('######## SCENE INITIALIZATION ########')
 	print
 	print ("Scripts path: " + scriptRoot)
@@ -136,45 +144,39 @@ def init(contr):
 	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()
 
-	print ("OPENING PORT '{0}'".format(in_port_name))
-	print ("OPENING PORT '{0}'".format(out_port_name))
+	#print ("OPENING PORT '{0}'".format(in_port_name))
+	#print ("OPENING PORT '{0}'".format(out_port_name))
 	GameLogic.orsConnector.registerBufferedPortBottle([in_port_name, out_port_name])
 	print ('======= COMPONENT DICTIONARY INITIALIZED =======')
 
 	Check_Dictionaries()
 
-	Publish_Dictionaries(out_port_name)
+	#Publish_JSON_Dictionaries(out_port_name)
 
 def admin(contr):
+	""" Respond to commands from the open communications port."""
 
-	#retrieve the port we want to write on
-	p_in = GameLogic.orsConnector.getPort(in_port_name)
-
-	#non-blocking read of the port
-	command_data = p_in.read(False)
-
-	if command_data != None:
-		command = command_data.get(0).toString()
-
-		print ("Data:\t\t'{0}'".format(command_data))
-		print ("Command:\t'{0}'".format(command_data.get(0).toString()))
+	# Define a list with the data we are expecting
+	data_types = ['string']
+	data_list = GameLogic.orsConnector.readMessage(data_types, in_port_name)
+	if data_list != None:
+		command = data_list[0]
 
 		print (" ===>> Communication with external agent established!")
-
+		print ("Command:\t'{0}'".format(command))
 		if command == "list_robots":
 			print (" ===>> Sending list of elements")
-			Publish_Dictionaries(out_port_name)
+			Publish_JSON_Dictionaries(out_port_name)
 
 
 def finish(contr):
 	"""Close the open ports."""
-
 	sensor = contr.sensors['ESC_KEY']
 
 	#execute only when the ESC key is released (if we don't test that,
 	#the code get executed two time, when pressed, and when released)
 	if not sensor.positive and sensor.triggered:
-		print ('######### FINALIZING... ########')
+		print ('######### CLOSING PORTS... ########')
 
 		GameLogic.orsConnector.finalize()
 
@@ -182,3 +184,21 @@ def finish(contr):
 		contr.activate(quitActuator)
 
 		print ('######### EXITING SIMULATION ########')
+
+
+
+def restart(contr):
+	"""Close the open ports."""
+	sensor = contr.sensors['F11_KEY']
+
+	#execute only when the F11 key is released (if we don't test that,
+	#the code get executed two time, when pressed, and when released)
+	if not sensor.positive and sensor.triggered:
+		print ('######### CLOSING PORTS... ########')
+
+		GameLogic.orsConnector.finalize()
+
+		restartActuator = contr.actuators['Restart_sim']
+		contr.activate(restartActuator)
+
+		print ('######### RESTARTING SIMULATION ########')

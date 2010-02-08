@@ -1,5 +1,6 @@
 import sys, os
 import GameLogic
+import json
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -40,7 +41,7 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## GPS INITIALIZATION ########')
-		print ("OPENING PORTS '{0}'".format(port_name))
+		#print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		print ('######## GPS INITIALIZED ########')
 
@@ -53,19 +54,23 @@ def output(contr):
 	if ob['Init_OK']:
 
 		if GameLogic.orsCommunicationEnabled:
-			position=ob.position	
-			x=position[0];
-			y=position[1];
-			z=position[2];
-			
-			p = GameLogic.orsConnector.getPort(port_name)	
-			bottle = p.prepare()
-			bottle.clear()
-			bottle.addDouble(x)
-			bottle.addDouble(y)
-			bottle.addDouble(z)			
-			#...and send it
-			p.write()
-			
+			x=ob.position[0];
+			y=ob.position[1];
+			z=ob.position[2];
+
+			"""
+			# Old style sending of the data as a bottle
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			message_data = [ (x, 'double'), (y, 'double'), (z, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, port_name)
+			"""
+
+			# Sending the data as a JSON string
+			position = {'x': x, 'y': y, 'z': z}
+			message = json.dumps(position)
+			message_data = [ (message, 'string') ]
+			GameLogic.orsConnector.postMessage(message_data, port_name)
+
 			#print ("GPS ENV ", ob.name, " sent  x: ",x," y: ",y," z:", z)
 			ob['Coordinates'] = "%.3f, %.3f, %.3f" % (x, y, z)

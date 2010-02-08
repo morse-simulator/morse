@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
   string	robot_name;
   string	component_name;
   int		num_cameras;
+  bool		connected = false;
 
   // Use parameters as the name of the robot and the component
   if (argc == 3)
@@ -107,8 +108,14 @@ int main(int argc, char* argv[]) {
   toATRVPort.open((local_port_prefix + "/out/destination").c_str());
   fromATRVGPSPort.open((local_port_prefix + "/in/gps").c_str());
 
-  Network::connect(toATRVPort.getName().c_str(), atrv_motor_port.c_str());
-  Network::connect(atrv_output_port_gps.c_str() ,fromATRVGPSPort.getName().c_str());
+  connected = Network::connect(toATRVPort.getName().c_str(), atrv_motor_port.c_str());
+  connected &= Network::connect(atrv_output_port_gps.c_str() ,fromATRVGPSPort.getName().c_str());
+
+  if (!connected)
+  {
+	  printf ("\nClient ERROR: Ports not found. Quitting\n");
+	  exit (1);
+  }
 
   cout << " * Writing commands to " << atrv_motor_port << endl;
   cout << " * Listening status on " << atrv_output_port_gps << endl;

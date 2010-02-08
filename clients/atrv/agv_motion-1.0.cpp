@@ -23,19 +23,17 @@ void usage (char* program_name);
 int main(int argc, char* argv[]) {
 
   string	robot_name;
-  string	component_name;
+  bool		connected = false;
 
   // Use parameters as the name of the robot and the component
   if (argc == 2)
   {
     robot_name = argv[1];
-    // component_name = argv[2];
   }
   // If parameters are not given, use default values
   else if (argc == 1)
   {
-    robot_name = "OB_DALA";
-    component_name = "OBMotion_Controller";
+    robot_name = "OBATRV";
   }
   else
   {
@@ -72,8 +70,15 @@ int main(int argc, char* argv[]) {
   toUGVPort.open((local_port_prefix + "/out/vxvyvz").c_str());
   fromUGVGPSPort.open((local_port_prefix + "/in/gps").c_str());
 
-  Network::connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
-  Network::connect(ugv_output_port_gps.c_str() ,fromUGVGPSPort.getName().c_str());
+  connected = Network::connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
+  connected &= Network::connect(ugv_output_port_gps.c_str() ,fromUGVGPSPort.getName().c_str());
+
+  if (!connected)
+  {
+	  printf ("\nClient ERROR: Ports not found. Quitting\n");
+	  exit (1);
+  }
+
 
   cout << " * Writing commands to " << ugv_motor_port << endl;
   cout << " * Listening status on " << ugv_output_port_gps << endl;

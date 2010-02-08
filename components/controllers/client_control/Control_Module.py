@@ -43,7 +43,7 @@ def init(contr):
 		print ('######## CONTROL INITIALIZATION ########')
 		speed_port_name = port_name + '/vxvyvz'
 		rotation_port_name = port_name + '/rxryrz'
-		print ("OPENING PORTS '{0}', '{1}'".format(speed_port_name, rotation_port_name))
+		#print ("OPENING PORTS '{0}', '{1}'".format(speed_port_name, rotation_port_name))
 
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 		GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])

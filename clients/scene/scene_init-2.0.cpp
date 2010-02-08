@@ -36,6 +36,10 @@ int main(int argc, char* argv[])
 	}
 
 	string command;
+	string robot_list;
+	bool waiting = true;
+
+	Bottle *incomingBottle;
 
 	// Define the names of the ports opened by this program
 	string local_admin_in_port = "/scene/admin/in/";
@@ -59,8 +63,6 @@ int main(int argc, char* argv[])
 
 	cout << "\n * YARP network initialized." << endl;
 
-
-
 	// Connect to Open Robots Simulator
 	LocalAdminInPort.open(local_admin_in_port.c_str());
 	LocalAdminOutPort.open(local_admin_out_port.c_str());
@@ -81,23 +83,21 @@ int main(int argc, char* argv[])
     LocalAdminOutPort.write();
 
 
-	bool waiting = true;
-	string robot_list;
-
 	cout << " * Waiting for the reply..." << endl;
 
 	while(waiting)
 	{
-		Bottle *incomingBottle;
-
 		// Read on the Blender output port, but don't wait.
 		incomingBottle = LocalAdminInPort.read(false);
 
-		cout << " RESPONSE: " <<  incomingBottle->toString().c_str() << endl;
-		// robot_list = (std::string) incomingBottle->get(0).toString();
+		if (incomingBottle != NULL)
+		{
+			cout << " RESPONSE: " <<  incomingBottle->toString().c_str() << endl;
+			robot_list = (std::string) incomingBottle->toString();
 
-		// if (! (robot_list == "") )
-			waiting = false;
+			if (! (robot_list == "") )
+				waiting = false;
+		}
 	}
 
 	cout << " * Got the list of scene elements: " << robot_list << endl;

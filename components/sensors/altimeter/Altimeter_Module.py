@@ -64,13 +64,11 @@ def output(contr):
 			if hitObj:
 				altitude = ob.getDistanceTo(hitPoint)
 
-				if GameLogic.orsCommunicationEnabled:
-					p = GameLogic.orsConnector.getPort(port_name)
-					bottle = p.prepare()
-					bottle.clear()
-					bottle.addDouble(altitude)
-					#...and send it
-					p.write()	
+				# Define the message structure to send.
+				# It is a list of tuples (data, type).
+				message_data = [ (altitude, 'double') ]
+				GameLogic.orsConnector.postMessage(message_data, port_name)
+
 			else:
 				if GameLogic.orsVerbose:
 					print ' No ground -> no altitude!'				

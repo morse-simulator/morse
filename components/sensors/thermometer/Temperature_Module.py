@@ -46,7 +46,7 @@ def init(contr):
 	if ob['Init_OK']:
 		print ('######## THERMOMETER INITIALIZATION ########')
 		robot_state_dict['temperature'] = 0.0
-		print ("OPENING PORTS '{0}'".format(port_name))
+		#print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		#GameLogic.orsConnector.printOpenPorts()
 		print ('######## THERMOMETER INITIALIZED ########')
@@ -94,11 +94,7 @@ def output(contr):
 				# pass
 				sys.exc_clear()  # Clears the last exception thrown
 
-
-			if GameLogic.orsCommunicationEnabled:
-				p = GameLogic.orsConnector.getPort(port_name)
-				bottle = p.prepare()
-				bottle.clear()
-				bottle.addDouble(temperature)
-				#...and send it
-				p.write()	
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			message_data = [ (temperature, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, port_name)

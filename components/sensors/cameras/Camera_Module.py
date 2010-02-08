@@ -66,7 +66,7 @@ def init(contr):
 		#texture_name = texture_name + extension
 	# Store the key as an ID in the Empty object
 	ob['camID'] = key
-	print ("KEY BEING USED IS: '{0}'".format(key))
+	print ("Camera: Key being used is: '{0}'".format(key))
 
 	# Get the reference to the camera and screen
 	scene = GameLogic.getCurrentScene()
@@ -85,7 +85,7 @@ def init(contr):
 	#GameLogic.tv[key].source.background = [255,100,0,255]
 	# Define an image size. It must be powers of two. Default 512 * 512
 	GameLogic.tv[key].source.capsize = [Image_Size_X, Image_Size_Y]
-	print ("EXPORTING AN IMAGE OF CAPSIZE: ", GameLogic.tv[key].source.capsize)
+	print ("Camera: Exporting an image of capsize: {0} pixels".format(GameLogic.tv[key].source.capsize))
 
 	# Create an instance of the Struct object,
 	# to make the unpacking of the captured images more efficient
@@ -140,7 +140,6 @@ def decode_image (image_string):
 def grab(contr):
 	""" Capture the image currently viewed by the camera.
 		Convert the image and send it trough a port. """
-
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
@@ -175,7 +174,7 @@ def grab(contr):
 				"""
 
 				"""
-				# Data conversion in Python (OLD)
+				# Data conversion in Python (OLD and SLOW)
 				buf = decode_image (image_string)
 				# Convert it to a form where we have access to a memory pointer
 				data = array.array('B',buf)

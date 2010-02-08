@@ -1,0 +1,24 @@
+*************************************
+* Installation instruction for jORS *
+*************************************
+
+Dependencies
+------------
+
+You need the YARP bindings for Java.
+
+By default, the Makefile expect following paths:
+$PREFIX/java/libjyarp/lib
+
+You can override these defaults by setting the $JYARP_LIB variable
+with your custom path.
+
+
+Installation
+------------
+
+> make PREFIX=[your prefix] install
+
+For the documentation:
+
+> make PREFIX=[your prefix] install-doc

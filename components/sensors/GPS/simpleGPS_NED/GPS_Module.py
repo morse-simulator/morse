@@ -40,7 +40,7 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## GPS INITIALIZATION ########')
-		print ("OPENING PORTS '{0}'".format(port_name))
+		#print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 		print ('######## GPS INITIALIZED ########')
 
@@ -58,14 +58,10 @@ def output(contr):
 			y=position[1];
 			z=-position[2];
 			
-			p = GameLogic.orsConnector.getPort(port_name)	
-			bottle = p.prepare()
-			bottle.clear()
-			bottle.addDouble(x)
-			bottle.addDouble(y)
-			bottle.addDouble(z)			
-			#...and send it
-			p.write()
-			
+			# Define the message structure to send.
+			# It is a list of tuples (data, type).
+			message_data = [ (x, 'double'), (y, 'double'), (z, 'double') ]
+			GameLogic.orsConnector.postMessage(message_data, port_name)
+
 			#print ("GPS NED ", ob.name, " sent  x: ",x," y: ",y," z:", z)
 			ob['Coordinates'] = "%.3f, %.3f, %.3f" % (x, y, z)

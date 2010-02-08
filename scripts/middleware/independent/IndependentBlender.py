@@ -13,143 +13,74 @@ except KeyError:
 sys.path.append(scriptRoot)
 sys.path.append(libRoot)
 
-import yarp
 from middleware.yarp.YarpBlender import *
-# from middleware.yarp import *
+middleware = "yarp"
+
+#from middleware.sockets.SocketsBlender import *
+#middleware = "sockets"
 
 class MiddlewareConnector:
-	""" Handle communication between Blender and YARP."""
+	""" Handle communication between Blender and the chosen middleware."""
 
 	def __init__(self):
-		""" Initialize the network and connect to the yarp server."""
-		self.yarpConnector = YarpConnector()
-
+		""" Initialize the network and connections."""
+		if middleware is "yarp":
+			self.connector = YarpConnector()
+		elif middleware is "sockets":
+			self.connector = SocketConnector()
+		else:
+			print ("Middleware ERROR: No middleware specified in 'IndependentBlender.py'")
+			#raise NoMiddleware ("Middleware to use not defined")
 
 
 	def registerBufferedPortBottle(self, portList):
-		self.yarpConnector.registerBufferedPortBottle(portList)
-
-		"""
-		for portName in portList:
-			portName = '/ors/'+portName
-			if portName not in yarpConnector._yarpPorts:
-				print ('  * Middleware: Adding ', portName, ' buffered bottle port.')
-				port = yarp.BufferedPortBottle()
-				port.open(portName)
-				yarpConnector._yarpPorts[portName] = port
-			else: raise NameError(portName + " port name already exist!")
-		"""
+		""" Open a buffered port bottle.
+			Mainly used for yarp binding."""
+		if middleware is "yarp":
+			self.connector.registerBufferedPortBottle(portList)
+		elif middleware is "sockets":
+			self.connector.openSocketsUDP(portList)
 
 	def registerBufferedPortImageRgb(self, portList):
-		self.yarpConnector.registerBufferedPortImageRgb(portList)
-
-		"""
-		for portName in portList:
-			portName = '/ors/'+portName
-			if portName not in yarpConnector._yarpPorts:
-				print ('  * Middleware: Adding ', portName, ' buffered image port.')
-				port = yarp.BufferedPortImageRgb()
-				port.open(portName)
-				yarpConnector._yarpPorts[portName] = port
-			else: raise NameError(portName + " port name already exist!")
-		"""
+		""" Open a buffered port bottle, for image transmission.
+			Currently not used."""
+		if middleware is "yarp":
+			self.connector.registerBufferedPortImageRgb(portList)
+		elif middleware is "sockets":
+			self.connector.openSocketsTCP(portList)
 
 	def registerPort(self, portList):
-		self.yarpConnector.registerPort(portList)
+		""" Open a new communications port."""
+		if middleware is "yarp":
+			self.connector.registerPort(portList)
+		elif middleware is "sockets":
+			self.connector.openSocketsTCP(portList)
 
-	#Closes the ports and release the network
 	def finalize(self):
-		self.yarpConnector.finalize()
-		"""
-		for port in yarpConnector._yarpPorts.itervalues():
-			port.close()
-		
-		yarp.Network.fini()
-		print (' * Middleware: ports have been closed.')
-		"""
+		""" Closes the ports and release the network."""
+		self.connector.finalize()
 	
 	def getPort(self, portName):
-		"""
-		port = '/ors/' + portName
-		return yarpConnector._yarpPorts[port]
-		"""
-		return self.yarpConnector.getPort(portName)
+		""" Retrieve a communications port, given its name."""
+		return self.connector.getPort(portName)
 
+	def readMessage(self, data_types, port_name, length=1024):
+		""" Read the specified data from a port."""
+		return self.connector.readMessage(data_types, port_name, length)
 
-	# Send a message using a port
-	def postMessage(self, message, port_name):
-		try:
-			yarp_port = self.yarpConnector.getPort(port_name)
-			
-			# prepare the YARP message...
-			bottle = yarp_port.prepare()
-			bottle.clear()
-			bottle.addString(message)
-			#...and send it
-			yarp_port.writeStrict()
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
+	def postMessage(self, message_data, port_name):
+		""" Send a message using a port."""
+		self.connector.postMessage(message_data, port_name)
 
-
-	# Send an image using a port
 	def postImageRGB(self, img_pointer, img_X, img_Y, port_name):
-		try:
-			yarp_port = self.yarpConnector.getPort(port_name)
+		""" Send an RGB image using a port."""
+		self.connector.postImageRGB(img_pointer, img_X, img_Y, port_name)
 
-			# Wrap the data in a YARP image
-			img = yarp.ImageRgb()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
-
-			"""
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
-			"""
-			# Using the C pointer (converted)
-			img.setExternal(img_pointer,img_X,img_Y)
-			
-			# Copy to image with "regular" YARP pixel order
-			# Otherwise the image is upside-down
-			img2 = yarp.ImageRgb()
-			img2.copy(img)
-			
-			# Write the image
-			yarp_port.write(img2)
-
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-
-
-	# Send an image using a port
 	def postImageRGBA(self, img_pointer, img_X, img_Y, port_name):
-		try:
-			yarp_port = self.yarpConnector.getPort(port_name)
-
-			# Wrap the data in a YARP image
-			img = yarp.ImageRgba()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
-
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
-			"""
-			# Using the C pointer (converted)
-			img.setExternal(img_pointer,img_X,img_Y)
-			"""
-			
-			# Copy to image with "regular" YARP pixel order
-			# Otherwise the image is upside-down
-			img2 = yarp.ImageRgba()
-			img2.copy(img)
-			
-			# Write the image
-			yarp_port.write(img2)
-
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-
-
+		""" Send an RGBA image using a port."""
+		self.connector.postImageRGBA(img_pointer, img_X, img_Y, port_name)
 
 	def printOpenPorts(self):
-		print ("THIS SHOULD BE MY LIST OF PORTS")
-		self.yarpConnector.printOpenPorts()
+		""" Get the list of ports currently opened."""
+		print ("Middleware: Currently opened ports:")
+		self.connector.printOpenPorts()

@@ -8,12 +8,15 @@ CC = g++
 CFLAGS = -g
 LDFLAGS = -I$(OPENROBOTS_BASE)/include -L$(OPENROBOTS_BASE)/lib -lYARP_OS -Wl,-rpath,$(OPENROBOTS_BASE)/lib
 
-RESSAC = new_ressac
+RESSAC = ressac_client
 
 all: $(RESSAC)
 
 $(RESSAC): $(RESSAC).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
 
 tags:
 	ctags *c *.h
