@@ -12,7 +12,7 @@ http://homepages.laas.fr/mallet/robotpkg for more instructions). You can install
 yarp and its dependancies using make install into devel/libpyyarp.
 
 You will probably need to set the environnement variable PYTHONPATH to 
-${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
+${ROBOTPKG_BASE}/lib/python2.6/dist-packages/ to let python finds the yarp
 module.
 
 Download the source code of OpenRobots Simulator from this website:
