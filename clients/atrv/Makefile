@@ -36,4 +36,7 @@ tags:
 clean:
 	-rm -f *.o
 
+distclean:	clean
+	rm -f ${MOTION} ${DESTINATION} ${CAMERAS} ${CONTROL}
+
 .PHONY: all clean tags

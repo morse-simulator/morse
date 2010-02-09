@@ -24,4 +24,7 @@ tags:
 clean:
 	-rm -f *.o
 
+distclean: clean
+	rm -f ${SCENE}
+
 .PHONY: all clean tags

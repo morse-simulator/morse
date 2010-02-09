@@ -24,4 +24,7 @@ tags:
 clean:
 	-rm -f *.o
 
+distclean: clean
+	rm ${RESSAC}
+
 .PHONY: all clean tags
