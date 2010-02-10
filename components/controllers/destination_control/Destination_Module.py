@@ -111,7 +111,7 @@ def move(contr):
 			json_data = message[0]
 
 			# Decode the JSON string
-			wp_list = json.loads (json_data)
+			wp_list = json.loads (json_data, encoding='UTF-8')
 			# Build a queue of the waypoints, called path
 			for wp in wp_list:
 				way_point = wp['point']

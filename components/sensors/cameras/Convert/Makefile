@@ -1,6 +1,6 @@
 CC=gcc
 LDFLAGS=
-CFLAGS=-I/usr/include/python2.6 -I/usr/lib/python2.6
+CFLAGS=-I/usr/include/python2.6 -I/usr/lib/python2.6 -fPIC
 
 CONVERT=convert
 TARGET=$(CONVERT)

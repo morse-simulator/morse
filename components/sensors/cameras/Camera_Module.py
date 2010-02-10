@@ -30,6 +30,11 @@ Image_Size_X = 512
 Image_Size_Y = 512
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
+# Background color for the captured images (Default is blue)
+#bg_color = [0, 0, 255, 255]
+# Gray
+bg_color = [143,143,143,255]
+
 def init(contr):
 	global structObject
 
@@ -82,7 +87,7 @@ def init(contr):
 	GameLogic.tv[key].source = VideoTexture.ImageRender(scene,camera)
 
 	# Set the background to be used for the render
-	#GameLogic.tv[key].source.background = [255,100,0,255]
+	GameLogic.tv[key].source.background = bg_color
 	# Define an image size. It must be powers of two. Default 512 * 512
 	GameLogic.tv[key].source.capsize = [Image_Size_X, Image_Size_Y]
 	print ("Camera: Exporting an image of capsize: {0} pixels".format(GameLogic.tv[key].source.capsize))
@@ -155,18 +160,18 @@ def grab(contr):
 				imX,imY = GameLogic.tv[ob['camID']].source.size
 				image_string = GameLogic.tv[ob['camID']].source.image
 
-                                """
+				"""
 				# USING THE C LIBRARY TO CONVERT THE IMAGE FORMAT
 				# The SWIG binding extracts the length of the string
 				info = convert.convert_image( image_string )
 				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
-                                """
-			       
+				"""
+
 				# Don't do any conversion, send the image as RGBA (yarp 2.2.5)
 				data = array.array('B',image_string)
 				info = data.buffer_info()
 				GameLogic.orsConnector.postImageRGBA(info, imX, imY, port_name)
-			       
+
 
 				"""
 				# TESTING THE C++ LIBRARY (STILL PENDING)

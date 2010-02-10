@@ -157,7 +157,7 @@ def decode_message(json_data):
 	#json_data = re.sub(r'"(.*)"', r'\1', json_data)
 	# Unescape all other quotation marks
 	#json_data = re.sub(r'\\(.)', r'\1', json_data)
-	clean_data = json.loads(json_data)
+	clean_data = json.loads(json_data, encoding='UTF-8')
 
 	return clean_data
 
