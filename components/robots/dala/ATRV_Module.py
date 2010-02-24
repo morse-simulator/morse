@@ -181,7 +181,7 @@ def measure_distance_to_robot(own_robot, target_robot):
 	distance_vector = target_pos - own_pos
 	distance = distance_vector.length
 
-	print "Distance from robot {0} to robot {1} = {2}".format(own_robot, target_robot, distance)
+	print ("Distance from robot {0} to robot {1} = {2}".format(own_robot, target_robot, distance))
 	return distance
 
 

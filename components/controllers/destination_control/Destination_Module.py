@@ -33,7 +33,7 @@ def init(contr):
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-	dest_port_name = port_name + '/destination'
+	dest_port_name = port_name + '/in'
 
 	ob['Init_OK'] = False
 
@@ -71,7 +71,7 @@ def init(contr):
 def move(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-	dest_port_name = port_name + '/destination'
+	dest_port_name = port_name + '/in'
 
 	destination = []
 
@@ -212,7 +212,7 @@ def move(contr):
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			if ob.name == "OBATRV2":
-				print "ATRV2 ARRIVED AT DESTINATION"
+				print ("ATRV2 ARRIVED AT DESTINATION")
 			# Switch to the next waypoint
 			scene = GameLogic.getCurrentScene()
 			target_ob = scene.objects[ob['TargetObject']]

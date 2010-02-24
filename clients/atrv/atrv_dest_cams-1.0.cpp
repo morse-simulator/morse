@@ -59,8 +59,8 @@ int main(int argc, char* argv[]) {
   string yarpview_path = "/home/gechever/openrobots/bin/yarpview";
 
   // Define the names for the comunication ports
-  string atrv_motor_port = port_prefix + "Motion_Controller/destination";
-  string atrv_output_port_gps = port_prefix + "GPS";
+  string atrv_motor_port = port_prefix + "Motion_Controller/in";
+  string atrv_output_port_gps = port_prefix + "GPS/out";
 
   string local_port_prefix = "/atrv_client/" + robot_name;
 

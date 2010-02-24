@@ -160,14 +160,14 @@ def port_setup(robot_name, num_cameras):
 	ors_in_port_name = port_prefix + "in"
 	ors_out_port_name = port_prefix + "out"
 
-	ors_Dest_port_name = port_prefix + "Motion_Controller/destination"
-	ors_GPS_port_name = port_prefix + "GPS"
+	ors_Dest_port_name = port_prefix + "Motion_Controller/in"
+	ors_GPS_port_name = port_prefix + "GPS/out"
 
 	local_in_port_name = local_port_prefix + "in/"
 	local_out_port_name = local_port_prefix + "out/"
 
-	local_GPS_port_name = local_port_prefix + "GPS/"
-	local_Dest_port_name = local_port_prefix + "destination/"
+	local_GPS_port_name = local_port_prefix + "GPS/in/"
+	local_Dest_port_name = local_port_prefix + "Motion_Controller/out/"
 
 	# Start the yarp network connection
 	yarp.Network.init()
