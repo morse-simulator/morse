@@ -92,6 +92,10 @@ def init(contr):
 	GameLogic.tv[key].source.capsize = [Image_Size_X, Image_Size_Y]
 	print ("Camera: Exporting an image of capsize: {0} pixels".format(GameLogic.tv[key].source.capsize))
 
+	# Set a filter to produce images in grayscale
+	# NOT WORKING. Don't know how to specify a filter
+	#GameLogic.tv[key].source.filter = Gray
+
 	# Create an instance of the Struct object,
 	# to make the unpacking of the captured images more efficient
 	structObject = struct.Struct('=BBB')
