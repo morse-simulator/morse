@@ -43,6 +43,8 @@ def init(contr):
 				robot_state_dict['sick_arc'] = child
 				ob['Init_OK'] = True
 				break
+			elif child.name == 'OBRay':
+				ob['Init_OK'] = True
 	except AttributeError:
 		print ("Component Dictionary not found!")
 		print ("This component must be part of a scene")
