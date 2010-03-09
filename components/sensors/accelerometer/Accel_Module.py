@@ -106,7 +106,7 @@ def output(contr):
 			state_dict['prevVelocity']=state_dict['velocity']
 			state_dict['velocity']=v
 			
-			print "Velocity sent  vx: ",vx," vy: ",vy," vz:", vz
+		#	print "Velocity sent  vx: ",vx," vy: ",vy," vz:", vz
 
 		############### ACC/axayaz ###################
 
@@ -137,4 +137,4 @@ def output(contr):
 			state_dict['prevAcceleration']=state_dict['acceleration']
 			state_dict['acceleration']=a
 			
-			print "Acceleration sent  ax: ",ax," ay: ",ay," az:", az
+		#	print "Acceleration sent  ax: ",ax," ay: ",ay," az:", az
