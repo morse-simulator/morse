@@ -1,50 +1,8 @@
 import sys, os
 import GameLogic
 import Mathutils
-
-try:
-   scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
-except KeyError:
-   scriptRoot = '.'
-
-try:
-   libRoot = os.path.join(os.environ['ORS_ROOT'],'lib')
-except KeyError:
-   libRoot = '.'
-
-if scriptRoot not in sys.path:
-	sys.path.append(scriptRoot)
-if scriptRoot not in sys.path:
-	sys.path.append(libRoot)
-
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
-
-
-def init(contr):
-	# Middleware initialization
-	if not hasattr(GameLogic, 'orsConnector'):
-		GameLogic.orsConnector = MiddlewareConnector()
-
-	# Get the object data
-	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-	dest_port_name = port_name + '/in'
-
-	ob['Init_OK'] = False
-
-	try:
-		# Get the dictionary for the component's state
-		robot_state_dict = GameLogic.robotDict[parent]
-		ob['Init_OK'] = True
-	except AttributeError:
-		print "Component Dictionary not found!"
-		print "This component must be part of a scene"
-
-	if ob['Init_OK']:
-		print '######## CONTROL INITIALIZATION ########'
-		print "OPENING PORT '{0}'".format(dest_port_name)
-		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
-		print '######## CONTROL INITIALIZED ########'
 
 
 
@@ -52,9 +10,9 @@ def move(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	dest_port_name = port_name + '/in'
+	speed_port_name = port_name + '/speed/in'
 
 	# Radius of tolerance for waypoints
-	tolerance = 2
 	destination = []
 
 	# Direction tolerance for the movement (in degrees)
@@ -69,8 +27,20 @@ def move(contr):
 		vx, vy, vz = 0.0, 0.0, 0.0
 		rx, ry, rz = 0.0, 0.0, 0.0
 
-	############################### SPEED #################################
-		#retrieve the port we want to write on
+	    ########################### SPEED ###############################
+		# Retrieve the port we want to read from
+		sp = GameLogic.orsConnector.getPort(speed_port_name)
+
+		#non-blocking read of the port
+		speed_msg = sp.read(False)
+
+		if speed_msg!=None:
+			robot_state_dict['speed'] = speed_msg.get(0).asDouble()
+			print ("SETTING SPEED TO: {0}".format(robot_state_dict['speed']))
+
+
+	    ########################### DESTINATION ###########################
+		# Retrieve the port we want to read from
 		p = GameLogic.orsConnector.getPort(dest_port_name)
 
 		#non-blocking read of the port
@@ -88,11 +58,11 @@ def move(contr):
 			# DEBUGGING:
 			# Translate the marker to the target destination
 			scene = GameLogic.getCurrentScene()
-			target_ob = scene.objects['OBWayPoint']
+			target_ob = scene.objects[ob['TargetObject']]
 			area_ob = scene.objects['OBWP_Area']
 			destination[2] = 0
 			target_ob.position = destination
-			area_ob.scaling = (tolerance, tolerance, 1)
+			area_ob.scaling = (robot_state_dict['tolerance'], robot_state_dict['tolerance'], 1)
 
 		try:
 			# Exit the function if there has been no command to move
@@ -103,7 +73,7 @@ def move(contr):
 			return
 
 		scene = GameLogic.getCurrentScene()
-		target_ob = scene.objects['OBWayPoint']
+		target_ob = scene.objects[ob['TargetObject']]
 		destination = target_ob.position
 		# Ignore the altitude (Z)
 		destination[2] = 0
@@ -115,7 +85,7 @@ def move(contr):
 		destination_V = Mathutils.Vector(destination)
 
 		distance_V = destination_V - location_V
-		distance = distance_V.length - tolerance
+		distance = distance_V.length - robot_state_dict['tolerance']
 
 		#print "GOT DISTANCE: ", distance
 
@@ -153,11 +123,12 @@ def move(contr):
 
 		if distance > 0:
 			# Move forward
-			vx = 0.05
+			vx = robot_state_dict['speed']
 			# Test if the orientation of the robot is within tolerance
 			# If not, rotate the robot
 			if not (-angle_tolerance < angle_diff and angle_diff < angle_tolerance):
-				rz = 0.03 * rotation_direction
+				#rz = 0.03 * rotation_direction
+				rz = (robot_state_dict['speed'] / 2) * rotation_direction
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			robot_state_dict['moveStatus'] = "Stop"

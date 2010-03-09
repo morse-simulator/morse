@@ -2,79 +2,22 @@ import sys, os
 import GameLogic
 import Mathutils
 import json
-from collections import deque
-
-try:
-	scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
-except KeyError:
-	scriptRoot = '.'
-
-try:
-	libRoot = os.path.join(os.environ['ORS_ROOT'],'lib')
-except KeyError:
-	libRoot = '.'
-
-if scriptRoot not in sys.path:
-	sys.path.append(scriptRoot)
-if scriptRoot not in sys.path:
-	sys.path.append(libRoot)
-
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
 
-
-# Direction tolerance for the movement (in degrees)
-angle_tolerance = 5
-
-# Default waypoint tolerance
-wp_tolerance = 1.0
-
-def init(contr):
-	# Middleware initialization
-	if not hasattr(GameLogic, 'orsConnector'):
-		GameLogic.orsConnector = MiddlewareConnector()
-
-	# Get the object data
-	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-	dest_port_name = port_name + '/in'
-
-	ob['Init_OK'] = False
-
-	try:
-		# Get the dictionary for the component's state
-		robot_state_dict = GameLogic.robotDict[parent]
-		ob['Init_OK'] = True
-	except AttributeError:
-		print ("Component Dictionary not found!")
-		print ("This component must be part of a scene")
-
-	if ob['Init_OK']:
-		print ('######## CONTROL INITIALIZATION ########')
-		robot_state_dict['destination'] = 0
-		robot_state_dict['tolerance'] = 1.5
-		robot_state_dict['path'] = deque()
-		robot_state_dict['wp_index'] = 0
-		#print ("OPENING PORT '{0}'".format(dest_port_name))
-		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
-		print ('######## CONTROL INITIALIZED ########')
-
-		# Initialize the area object, according to the initial parameters
-		try:
-			scene = GameLogic.getCurrentScene()
-			target_ob = scene.objects[ob['TargetObject']]
-			area_ob = scene.objects['OBWP_Area']
-			initial_position = target_ob.position
-			initial_position[2] = 0.01
-			area_ob.position = initial_position
-			area_ob.setParent(target_ob)
-		except KeyError:
-			print ("Controller WARNING: No area object in scene")
 
 
 def move(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	dest_port_name = port_name + '/in'
+	speed_port_name = port_name + '/speed/in'
+
+	# Default waypoint tolerance
+	wp_tolerance = 1.0
+
+	# Direction tolerance for the movement (in degrees)
+	angle_tolerance = 5
 
 	destination = []
 
@@ -87,9 +30,21 @@ def move(contr):
 		vx, vy, vz = 0.0, 0.0, 0.0
 		rx, ry, rz = 0.0, 0.0, 0.0
 
-	############################### SPEED #################################
+	    ########################### SPEED ###############################
+		# Retrieve the port we want to read from
+		sp = GameLogic.orsConnector.getPort(speed_port_name)
+
+		#non-blocking read of the port
+		speed_msg = sp.read(False)
+
+		if speed_msg!=None:
+			robot_state_dict['speed'] = speed_msg.get(0).asDouble()
+			print ("SETTING SPEED TO: {0}".format(robot_state_dict['speed']))
 
 
+	    ########################### DESTINATION #########################
+
+			"""
 		# Read the destination coordinates as a bottle
 		# Retrieve the port we want to read from
 		p = GameLogic.orsConnector.getPort(dest_port_name)
@@ -120,7 +75,6 @@ def move(contr):
 				way_point = wp['point']
 				way_point['tolerance'] = wp['radius']
 				robot_state_dict['path'].append(way_point)
-			"""
 
 			# Extract the cordinates of the next waypoint
 			scene = GameLogic.getCurrentScene()
@@ -208,11 +162,12 @@ def move(contr):
 
 		if distance > 0:
 			# Move forward
-			vx = 0.05
+			vx = robot_state_dict['speed']
 			# Test if the orientation of the robot is within tolerance
 			if not (-angle_tolerance < angle_diff and angle_diff < angle_tolerance):
 				# If not, rotate the robot
-				rz = 0.03 * rotation_direction
+				rz = (robot_state_dict['speed'] / 2) * rotation_direction
+				#rz = 0.03 * rotation_direction
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			if ob.name == "OBATRV2":

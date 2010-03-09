@@ -11,8 +11,6 @@ def move(contr):
 	dest_port_name = port_name + '/in'
 	speed_port_name = port_name + '/speed/in'
 
-	# Radius of tolerance for waypoints
-	tolerance = 2
 	destination = []
 
 	# Direction tolerance for the movement (in degrees)
@@ -36,8 +34,8 @@ def move(contr):
 		vx, vy, vz = 0.0, 0.0, 0.0
 		rx, ry, rz = 0.0, 0.0, 0.0
 
-	############################### SPEED ###############################
-		#retrieve the port we want to read from
+	    ########################### SPEED ###############################
+		# Retrieve the port we want to read from
 		sp = GameLogic.orsConnector.getPort(speed_port_name)
 
 		#non-blocking read of the port
@@ -48,8 +46,8 @@ def move(contr):
 			print ("SETTING SPEED TO: {0}".format(speed))
 
 
-	############################### DESTINATION ###############################
-		#retrieve the port we want to read from
+	    ########################### DESTINATION ###############################
+		# Retrieve the port we want to read from
 		p = GameLogic.orsConnector.getPort(dest_port_name)
 
 		#non-blocking read of the port
@@ -71,7 +69,7 @@ def move(contr):
 			area_ob = scene.objects['OBWP_Area']
 			destination[2] = 0
 			target_ob.position = destination
-			area_ob.scaling = (tolerance, tolerance, 1)
+			area_ob.scaling = (robot_state_dict['tolerance'], robot_state_dict['tolerance'], 1)
 
 		try:
 			# Exit the function if there has been no command to move
@@ -94,7 +92,7 @@ def move(contr):
 		destination_V = Mathutils.Vector(destination)
 
 		distance_V = destination_V - location_V
-		distance = distance_V.length - tolerance
+		distance = distance_V.length - robot_state_dict['tolerance']
 
 		#print "GOT DISTANCE: ", distance
 

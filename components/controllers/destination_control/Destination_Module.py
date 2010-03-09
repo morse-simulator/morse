@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+from collections import deque
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -48,21 +49,34 @@ def init(contr):
 		print ("OPENING PORT '{0}'".format(speed_port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 
+		#### INIT ROBOT DICTIONARY ####
 		robot_state_dict['speed'] = 0.05
+		robot_state_dict['destination'] = 0
+		robot_state_dict['tolerance'] = 1.5
+		robot_state_dict['path'] = deque()
+		robot_state_dict['wp_index'] = 0
 
+		#### INIT TARGET OBJECT ####
 		scene = GameLogic.getCurrentScene()
 		target_ob = scene.objects[ob['TargetObject']]
 		target_ob.setVisible(ob['Show_Target'])
 		try:
 			area_ob = scene.objects['OBWP_Area']
 			area_ob.setVisible(ob['Show_Target'])
+
+			initial_position = target_ob.position
+			initial_position[2] = 0.01
+			area_ob.position = initial_position
+			area_ob.setParent(target_ob)
 		except KeyError:
 			print ("Controller WARNING: No area object in scene")
 
+		#### MODE SELECTION ####
 		print ("Selecting Motion mode: {0}".format(ob['Operation_Mode']))
 		select(contr)
 
 		print ('######## CONTROL INITIALIZED ########')
+
 
 
 def select(contr):
