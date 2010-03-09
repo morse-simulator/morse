@@ -49,15 +49,16 @@ def Create_Dictionaries ():
 	# Get the components
 	for obj, robot_state_dict in GameLogic.robotDict.items():
 		# Create an empty list for the components of this robot
-		component_list = []
+		robot_state_dict['components'] = []
 		print ("PARENT: {0}, GRAND_P {1}".format(obj, obj.parent))
 		for child in obj.childrenRecursive:
 			try:
 				# Look for the components tagged as such
 				print ("\tchild: {0}".format(child))
 				child['Component_Tag']
-				component_list.append (child['Component_Type'])
-				robot_state_dict['components'] = component_list
+				#component_list.append (child['Component_Type'])
+				#robot_state_dict['components'] = component_list
+				robot_state_dict['components'].append (child['Component_Type'])
 
 				# Create an empty dictionary for each component,
 				#  and add it to GameLogic
