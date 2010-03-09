@@ -104,13 +104,13 @@ def move(contr):
 			distance_V.normalize()
 			fps = GameLogic.getAverageFrameRate()
 			if NED == True:
-				vy = distance_V[0] * speed
-				vx = distance_V[1] * speed
-				vz = -distance_V[2] * speed
+				vy = distance_V[0] * speed/fps
+				vx = distance_V[1] * speed/fps
+				vz = -distance_V[2] * speed/fps
 			else:
-				vx = distance_V[0] * speed
-				vy = distance_V[1] * speed
-				vz = distance_V[2] * speed
+				vx = distance_V[0] * speed/fps
+				vy = distance_V[1] * speed/fps
+				vz = distance_V[2] * speed/fps
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			robot_state_dict['moveStatus'] = "Stop"
