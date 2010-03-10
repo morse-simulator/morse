@@ -1,11 +1,16 @@
 CC=gcc
 LDFLAGS=
-CFLAGS=-I/usr/include/python2.6 -I/usr/lib/python2.6
+CFLAGS=-I/usr/include/python2.6 
+
+# Is there a better way to know if we have an x86_64 kernel ?
+ifneq (, $(filter x86_64, "$(shell uname -a))")
+	CFLAGS += -fPIC
+endif
 
 CONVERT=convert
 TARGET=$(CONVERT)
 
-all:_$(CONVERT).so
+all:_$(TARGET).so
 
 $(TARGET).o: $(TARGET).c $(TARGET)_wrap.c
 	@echo COMPILING
