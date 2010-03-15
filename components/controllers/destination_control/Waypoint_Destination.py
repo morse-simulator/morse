@@ -59,10 +59,13 @@ def move(contr):
 			# Translate the marker to the target destination
 			scene = GameLogic.getCurrentScene()
 			target_ob = scene.objects[ob['TargetObject']]
-			area_ob = scene.objects['OBWP_Area']
 			destination[2] = 0
 			target_ob.position = destination
-			area_ob.scaling = (robot_state_dict['tolerance'], robot_state_dict['tolerance'], 1)
+			try:
+				area_ob = scene.objects['OBWP_Area']
+				area_ob.scaling = (robot_state_dict['tolerance'], robot_state_dict['tolerance'], 1)
+			except KeyError:
+				pass
 
 		try:
 			# Exit the function if there has been no command to move
