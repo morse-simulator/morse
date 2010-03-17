@@ -31,3 +31,19 @@ def move(contr):
 			print "TELEPORT GOT DESTINATION: ", destination
 			#destination[2] = 0
 			parent.position = destination
+			change_status (contr, robot_state_dict, "Teleported", parent)
+
+
+
+def change_status (contr, robot_state_dict, new_status, parent):
+	""" Update the robot's movement status in the dictionary.
+		Also send a message to the parent indicating the change. """
+	msg_act = contr.actuators['Send_status_msg']
+	msg_act.subject = 'Status'
+	msg_act.body = parent.name
+	contr.activate(msg_act)
+
+	robot_state_dict['moveStatus'] = new_status
+	print ("Controller: Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
+
+

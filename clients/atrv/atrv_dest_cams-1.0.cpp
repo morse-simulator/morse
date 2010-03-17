@@ -109,12 +109,17 @@ int main(int argc, char* argv[]) {
   fromATRVGPSPort.open((local_port_prefix + "/in/gps").c_str());
 
   connected = Network::connect(toATRVPort.getName().c_str(), atrv_motor_port.c_str());
-  connected &= Network::connect(atrv_output_port_gps.c_str() ,fromATRVGPSPort.getName().c_str());
-
   if (!connected)
   {
-	  printf ("\nClient ERROR: Ports not found. Quitting\n");
+	  printf ("\nClient ERROR: Port '%s' not found. Quitting\n", atrv_motor_port.c_str());
 	  exit (1);
+  }
+
+  connected = Network::connect(atrv_output_port_gps.c_str() ,fromATRVGPSPort.getName().c_str());
+  if (!connected)
+  {
+	  printf ("\nClient WARNING: Port '%s' not found. Quitting\n", atrv_output_port_gps.c_str());
+	  // exit (1);
   }
 
   cout << " * Writing commands to " << atrv_motor_port << endl;

@@ -51,6 +51,7 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## SICK INITIALIZATION ########')
+		print ("Sick: Using arc object: '{0}'".format(robot_state_dict['sick_arc']))
 		# Prepare a list with the data for the header of the file
 		data = []
 		data.append("SICK on robot {0}\n".format(parent))
@@ -59,7 +60,7 @@ def init(contr):
 
 		# Open the output file, only to erase its previous contents
 		filename = "{0}_{1}.txt".format(parent,ob)
-		print ("Writing to file: '{0}'".format(filename))
+		print ("Sick: Writing to file: '{0}'".format(filename))
 		FILE = open(filename, 'wb')
 		FILE.writelines(data)
 		FILE.close()
@@ -135,9 +136,11 @@ def arc_sweep(contr):
 					vertex = mesh.getVertex(mat, v_index)
 					vertex_pos = vertex.getXYZ()
 
+					#print ("\tORIGINAL POINT: [%.2f, %.2f, %.2f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2]))
+
 					# Skip the center vertex
 					# NOTE: Make sure the center vertex of the arc
-					#  has coordinates 0.0, 0.0, 0.0
+					#  has local coordinates 0.0, 0.0, 0.0
 					if vertex_pos == [0.0, 0.0, 0.0]:
 						continue
 
@@ -189,6 +192,7 @@ def arc_sweep(contr):
 						vector_point.normalize()
 						vector_point = vector_point * ob['Laser_Range']
 
+						#print ("\tVECTOR POINT: [%.2f, %.2f, %.2f]" % (vector_point[0], vector_point[1], vector_point[2]))
 						# Move the vertex to the computed position
 						vertex.setXYZ(vector_point)
 
