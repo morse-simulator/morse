@@ -37,7 +37,6 @@ def init(contr):
 	try:
 		# Get the dictionary for the component's state
 		robot_state_dict = GameLogic.robotDict[parent]
-		#state_dict = GameLogic.componentDict[ob]
 		ob['Init_OK'] = True
 	except AttributeError:
 		print ("Component Dictionary not found!")
@@ -46,15 +45,11 @@ def init(contr):
 	if ob['Init_OK']:
 		print ('######## THERMOMETER INITIALIZATION ########')
 		robot_state_dict['temperature'] = 0.0
-		#print ("OPENING PORTS '{0}'".format(port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
-		#GameLogic.orsConnector.printOpenPorts()
 		print ('######## THERMOMETER INITIALIZED ########')
 
 
 def output(contr):
-	global e
-
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
@@ -88,11 +83,10 @@ def output(contr):
 				temperature = 15 + 200 * e ** (-0.2 * distance)
 				temp_sensor['Temperature'] = temperature
 
-
 			except KeyError as detail:
 				# print "Exception: ", detail
-				# pass
-				sys.exc_clear()  # Clears the last exception thrown
+				pass
+				# sys.exc_clear()  # Clears the last exception thrown
 
 			# Define the message structure to send.
 			# It is a list of tuples (data, type).
