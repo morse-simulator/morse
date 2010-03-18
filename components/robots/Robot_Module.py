@@ -55,13 +55,13 @@ def init(contr):
 	robot_state_dict['moveStatus'] = "Stop"
 
 	print
-	print ('######## ATRV INITIALIZATION ########')
+	print ('######## ROBOT INITIALIZATION ########')
 	#print ("OPENING PORTS '{0}'".format(port_name))
 	in_port_name = port_name + "/in"
 	out_port_name = port_name + "/out"
 	GameLogic.orsConnector.registerBufferedPortBottle([in_port_name, out_port_name])
 	#GameLogic.orsConnector.printOpenPorts()
-	print ('######## ATRV INITIALIZED ########')
+	print ('######## ROBOT INITIALIZED ########')
 
 
 def move(contr):

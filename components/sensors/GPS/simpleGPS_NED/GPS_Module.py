@@ -54,8 +54,8 @@ def output(contr):
 
 		if GameLogic.orsCommunicationEnabled:
 			position=ob.position	
-			x=position[0];
-			y=position[1];
+			y=position[0];
+			x=position[1];
 			z=-position[2];
 			
 			# Define the message structure to send.

@@ -66,7 +66,13 @@ def move(contr):
 			# Translate the marker to the target destination
 			scene = GameLogic.getCurrentScene()
 			target_ob = scene.objects['OBWayPoint']
-			destination[2] = 0
+			area_ob = scene.objects['OBWP_Area']
+			if NED == True:
+				d=destination[0]
+				destination[0] = destination[1]
+				destination[1] = d				
+				destination[2] = -destination[2]
+
 			target_ob.position = destination
 			try:
 				area_ob = scene.objects['OBWP_Area']
@@ -85,17 +91,23 @@ def move(contr):
 		scene = GameLogic.getCurrentScene()
 		target_ob = scene.objects['OBWayPoint']
 		destination = target_ob.position
+		destination[2] = -destination[2]
+
 		# Ignore the altitude (Z)
-		destination[2] = 0
+		#destination[2] = 0
 
 		# Calculate the direction needed
 		location_V = Mathutils.Vector(ob.position)
+		
 		# Ignore the altitude (Z)
-		location_V[2] = 0
-		destination_V = Mathutils.Vector(destination)
-
+		#location_V[2] = 0
+		destination_V = Mathutils.Vector(destination)		
+		destination_V[2]=-destination_V[2]
+		#print " pos: ",destination_V
 		distance_V = destination_V - location_V
-		distance = distance_V.length - robot_state_dict['tolerance']
+		#print "location_V ",location_V
+		#print "destination_V ",destination_V
+		distance = distance_V.length #- robot_state_dict['tolerance']
 
 		#print "GOT DISTANCE: ", distance
 
@@ -106,10 +118,11 @@ def move(contr):
 			# Move forward
 			distance_V.normalize()
 			fps = GameLogic.getAverageFrameRate()
+			
 			if NED == True:
-				vy = distance_V[0] * speed/fps
 				vx = distance_V[1] * speed/fps
-				vz = -distance_V[2] * speed/fps
+				vy = distance_V[0] * speed/fps
+				vz = 0 #distance_V[2] * speed/fps
 			else:
 				vx = distance_V[0] * speed/fps
 				vy = distance_V[1] * speed/fps
@@ -130,5 +143,5 @@ def move(contr):
 		contr.activate(msg_act)
 
 		#print "Motion for robot '{0}'".format(parent.name)
-		#print "\tvx: ",vx," vy: ",vy," vz: ",vz
+		#print "vx: ",vx," vy: ",vy," vz: ",vz
 		#print "\trx: ",rx," ry: ",ry," rz: ",rz
