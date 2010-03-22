@@ -28,7 +28,7 @@ def move(contr):
 			for i in range(3):
 				destination.append( dest.get(i).asDouble() )
 
-			print "TELEPORT GOT DESTINATION: ", destination
+			print ("TELEPORT GOT DESTINATION: {0}".format(destination))
 			#destination[2] = 0
 			parent.position = destination
 			change_status (contr, robot_state_dict, "Teleported", parent)

@@ -1,6 +1,8 @@
 import sys, os
 import GameLogic
 import json
+# Import this library to recover the Python version
+import platform
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -143,6 +145,11 @@ def init(contr):
 	GameLogic.orsConnector = MiddlewareConnector()
 
 	GameLogic.orsCommunicationEnabled = True
+
+	python_version = platform.python_version()
+	print ("Python Version: {0}".format(python_version))
+	GameLogic.pythonVersion = float(python_version[:3])
+
 
 	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()

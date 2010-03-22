@@ -107,6 +107,16 @@ def arc_sweep(contr):
 	if ob['Init_OK']:
 		robot_state_dict = GameLogic.robotDict[parent]
 
+		try:
+			#### ONLY FOR THE GRID TESTS ####
+			sensor = contr.sensors['Trigger']
+			# Exit the function unless the signal is positive
+			if not sensor.positive:
+				return
+		except KeyError:
+			pass
+			
+
 		############### SICK laser ###################
 		scene = GameLogic.getCurrentScene()
 
@@ -182,8 +192,13 @@ def arc_sweep(contr):
 						point_string = "[%.4f, %.4f, %.4f]\n" % (arc_point[0], arc_point[1], arc_point[2])
 						point_list.append(point_string)
 
-						# Send the vertex to the new location
-						vertex.setXYZ(arc_point)
+						# Do not move the point if it is at the origin
+						#  (because this breaks the arc and makes all
+						#  subsequent rays wrong.
+						if arc_point != [0.0, 0.0, 0.0]:
+							# Send the vertex to the new location
+							vertex.setXYZ(arc_point)
+
 					# Otherwise return the vertex to its original position
 					else:
 						# Create a vector object
@@ -198,7 +213,7 @@ def arc_sweep(contr):
 
 		# Write the detected points to a file
 		filename = "{0}_{1}.txt".format(parent,ob)
-		parent_position = "[%.4f, %.4f, %.4f]\n" % (parent.position[0], parent.position[1], parent.position[2])
+		parent_position = "[%.4f, %.4f, %.4f], %.4f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['gyro_angle'])
 		write_points_to_file(filename, point_list, parent_position)
 
 

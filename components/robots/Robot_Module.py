@@ -92,6 +92,7 @@ def move(contr):
 		rx = robot_state_dict['rx']
 		ry = robot_state_dict['ry']
 		rz = robot_state_dict['rz']
+		#print ("{0} SETTING ROTATION: {1}, {2}, {3}".format(ob.name, rx, vy, rz))
 
 		motion_act = contr.actuators['motion_actuator']
 		motion_act.dLoc = (vx, vy, vz) #Blender  > 2.49

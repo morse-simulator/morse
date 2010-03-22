@@ -22,7 +22,7 @@ from middleware.independent.IndependentBlender import *
 import setup.ObjectData
 
 #import ors_image_yarp
-from Convert import convert
+#from Convert import convert
 
 structObject = ''
 # Default size for an image of 512 * 512
@@ -37,6 +37,9 @@ bg_color = [143,143,143,255]
 
 def init(contr):
 	global structObject
+	global Image_Size_X
+	global Image_Size_Y
+	global Image_Size
 
 	print ('######## CAMERA INITIALIZATION ########')
 
@@ -59,8 +62,12 @@ def init(contr):
 	# Create a key for a dictionary of cameras
 	#  necesary if there are more than one camera added to the scene
 	key = 'Camera'
-	screen_name = 'OBCameraCube'
-	camera_name = 'OBCameraRobot'
+	if GameLogic.pythonVersion < 3:
+		screen_name = 'OBCameraCube'
+		camera_name = 'OBCameraRobot'
+	else:
+		screen_name = 'CameraCube'
+		camera_name = 'CameraRobot'
 	texture_name = 'IMplasma.png'
 	name_len = len(ob.name)
 	if name_len > 4 and ob.name.endswith('.00', name_len-4, name_len-1):
@@ -86,6 +93,15 @@ def init(contr):
 	GameLogic.tv[key] = VideoTexture.Texture(screen, matID)
 	GameLogic.tv[key].source = VideoTexture.ImageRender(scene,camera)
 
+	#### WARNING 2.5 ####
+	# As of 19 / 03 / 2010 Blender 2.5 is crashing when trying
+	#  to export images of size 512 X 512
+	# Temporarily restricting the size to 256 X 256
+	if GameLogic.pythonVersion > 3:
+		Image_Size_X = 256
+		Image_Size_Y = 256
+		Image_Size = 4 * Image_Size_X * Image_Size_Y
+
 	# Set the background to be used for the render
 	GameLogic.tv[key].source.background = bg_color
 	# Define an image size. It must be powers of two. Default 512 * 512
@@ -93,7 +109,7 @@ def init(contr):
 	print ("Camera: Exporting an image of capsize: {0} pixels".format(GameLogic.tv[key].source.capsize))
 
 	# Set a filter to produce images in grayscale
-	# NOT WORKING. Don't know how to specify a filter
+	# NOT YET IMPLEMENTED IN BLENDER.
 	#GameLogic.tv[key].source.filter = Gray
 
 	# Create an instance of the Struct object,
@@ -101,8 +117,9 @@ def init(contr):
 	structObject = struct.Struct('=BBB')
 
 	# Check that the conversion buffer could be initialized
-	if not convert.init_array(Image_Size):
-		ob['Init_OK'] = True
+	#if not convert.init_array(Image_Size):
+		#ob['Init_OK'] = True
+	ob['Init_OK'] = True
 
 	#print_properties(ob)
 
@@ -175,12 +192,6 @@ def grab(contr):
 				data = array.array('B',image_string)
 				info = data.buffer_info()
 				GameLogic.orsConnector.postImageRGBA(info, imX, imY, port_name)
-
-
-				"""
-				# TESTING THE C++ LIBRARY (STILL PENDING)
-				# nada = ors_image_yarp.convert_and_send_yarp( image_string, port_name )
-				"""
 
 				"""
 				# Data conversion in Python (OLD and SLOW)

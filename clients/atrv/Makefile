@@ -12,8 +12,9 @@ MOTION = agv_motion-1.0
 DESTINATION = atrv_destination-1.0
 CAMERAS = atrv_dest_cams-1.0
 CONTROL = atrv_status-1.0
+GRID = grid_move-1.0
 
-all: $(MOTION) $(DESTINATION) $(CAMERAS) $(CONTROL)
+all: $(MOTION) $(DESTINATION) $(CAMERAS) $(CONTROL) $(GRID)
 
 $(MOTION): $(MOTION).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
@@ -25,6 +26,9 @@ $(CAMERAS): $(CAMERAS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 $(CONTROL): $(CONTROL).o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+$(GRID): $(GRID).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 %.o: %.cpp

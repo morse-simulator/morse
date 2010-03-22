@@ -58,8 +58,8 @@ def move(contr):
 				destination.append( dest.get(i).asDouble() )
 
 			robot_state_dict['moveStatus'] = "Transit"
-			print "STRAIGHT GOT DESTINATION: ", destination
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("STRAIGHT GOT DESTINATION: {0}".format(destination))
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 			robot_state_dict['destination'] = destination
 
 			# DEBUGGING:
@@ -103,13 +103,13 @@ def move(contr):
 		#location_V[2] = 0
 		destination_V = Mathutils.Vector(destination)		
 		destination_V[2]=-destination_V[2]
-		#print " pos: ",destination_V
+		#print (" pos: {0}".format(destination_V))
 		distance_V = destination_V - location_V
-		#print "location_V ",location_V
-		#print "destination_V ",destination_V
+		#print ("location_V {0}".format(location_V))
+		#print ("destination_V {0}".format(destination_V))
 		distance = distance_V.length #- robot_state_dict['tolerance']
 
-		#print "GOT DISTANCE: ", distance
+		#print ("GOT DISTANCE: {0}".format(distance))
 
 
 
@@ -130,8 +130,8 @@ def move(contr):
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			robot_state_dict['moveStatus'] = "Stop"
-			print "TARGET REACHED"
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("TARGET REACHED")
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
 		msg_act = contr.actuators['Send_update_msg']
 		msg_act.propName = parent.name
@@ -142,6 +142,6 @@ def move(contr):
 
 		contr.activate(msg_act)
 
-		#print "Motion for robot '{0}'".format(parent.name)
-		#print "vx: ",vx," vy: ",vy," vz: ",vz
-		#print "\trx: ",rx," ry: ",ry," rz: ",rz
+		#print ("Motion for robot '{0}'".format(parent.name))
+		#print ("\tvx: %.4f, %4f, %4f" % (vx, vy, vz))
+		#print ("\trx: %.4f, %4f, %4f" % (rx, ry, rz))

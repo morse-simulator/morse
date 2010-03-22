@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+import math
 import json
 
 
@@ -60,7 +61,7 @@ def output(contr):
 		############### Gyroscope ###################
 
 		# Compute the angle with respect to the world
-		rot_matrix = ob.worldOrientation
+		rot_matrix = ob.orientation
 		local_X_vector = Mathutils.Vector(rot_matrix[0])
 
 		# Ignore the Z direction (keep the angle restrained to the XY plane)
@@ -70,7 +71,23 @@ def output(contr):
 		world_X_vector = Mathutils.Vector([1,0,0])
 		world_Y_vector = Mathutils.Vector([0,-1,0])
 		try:
-			gyro_angle = Mathutils.AngleBetweenVecs(local_X_vector, world_X_vector)
+			if GameLogic.pythonVersion < 3:
+				gyro_angle = Mathutils.AngleBetweenVecs(local_X_vector, world_X_vector)
+			else:
+				# In Blender 2.5, the angle function returns radians
+				gyro_angle = local_X_vector.angle(world_X_vector)
+				# Convert to degrees
+				gyro_angle = gyro_angle * 180 / math.pi
+
+				#### WARNING ####
+				# This is probably a temporary solution, while Blender 2.5
+				#  is made more stable
+				#
+				# Changing the sign of the Y coordinate in the local_X_vector
+				# Because it does not match in versions 2.49 and 2.5
+				local_X_vector[1] = local_X_vector[1] * -1
+			#print ("Local X Vector: {0}".format(local_X_vector))
+
 			dot = local_X_vector.dot(world_Y_vector)
 			if dot < 0:
 				gyro_angle = gyro_angle * -1

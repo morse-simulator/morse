@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+import math
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
 
@@ -51,8 +52,8 @@ def move(contr):
 				destination.append( dest.get(i).asDouble() )
 
 			robot_state_dict['moveStatus'] = "Transit"
-			print "WAYPOINT GOT DESTINATION: ", destination
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("WAYPOINT GOT DESTINATION: {0}".format(destination))
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 			robot_state_dict['destination'] = destination
 
 			# DEBUGGING:
@@ -90,12 +91,20 @@ def move(contr):
 		distance_V = destination_V - location_V
 		distance = distance_V.length - robot_state_dict['tolerance']
 
-		#print "GOT DISTANCE: ", distance
+		#print ("GOT DISTANCE: {0}".format(distance))
 
 		world_X_vector = Mathutils.Vector([1,0,0])
 		world_Y_vector = Mathutils.Vector([0,1,0])
 		distance_V.normalize()
-		target_angle = Mathutils.AngleBetweenVecs(distance_V, world_X_vector)
+		# Use the appropriate function to get the angle between two vectors
+		if GameLogic.pythonVersion < 3:
+			target_angle = Mathutils.AngleBetweenVecs(distance_V, world_X_vector)
+		else:
+			# In Blender 2.5, the angle function returns radians
+			target_angle = distance_V.angle(world_X_vector)
+			# Convert to degrees
+			target_angle = target_angle * 180 / math.pi
+
 		# Correct the direction of the turn according to the angles
 		dot = distance_V.dot(world_Y_vector)
 		if dot < 0:
@@ -104,8 +113,8 @@ def move(contr):
 		try:
 			robot_angle = robot_state_dict['gyro_angle']
 		except KeyError as detail:
-			print "Gyroscope angle not found. Does the robot have a Gyroscope?"
-			print detail
+			print ("Gyroscope angle not found. Does the robot have a Gyroscope?")
+			print (detail)
 			# Force the robot to move towards the target, without rotating
 			robot_angle = target_angle
 
@@ -122,7 +131,7 @@ def move(contr):
 			angle_diff = 360 - angle_diff
 			rotation_direction = rotation_direction * -1
 
-		#print "Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction)
+		#print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
 		if distance > 0:
 			# Move forward
@@ -135,8 +144,8 @@ def move(contr):
 		# If the target has been reached, change the status
 		elif distance <= 0:
 			robot_state_dict['moveStatus'] = "Stop"
-			print "TARGET REACHED"
-			print "Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus'])
+			print ("TARGET REACHED")
+			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
 		msg_act = contr.actuators['Send_update_msg']
 		msg_act.propName = parent.name
@@ -151,6 +160,6 @@ def move(contr):
 
 		contr.activate(msg_act)
 
-		#print "Motion for robot '{0}'".format(parent.name)
-		#print "\tvx: ",vx," vy: ",vy," vz: ",vz
-		#print "\trx: ",rx," ry: ",ry," rz: ",rz
+		#print ("Motion for robot '{0}'".format(parent.name))
+		#print ("\tvx: %.4f, %4f, %4f" % (vx, vy, vz))
+		#print ("\trx: %.4f, %4f, %4f" % (rx, ry, rz))

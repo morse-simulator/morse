@@ -58,10 +58,17 @@ def init(contr):
 
 		#### INIT TARGET OBJECT ####
 		scene = GameLogic.getCurrentScene()
+		# Remove the OB part of the object name, when using Blender 2.5
+		# Tested by checking for Python 3
+		if GameLogic.pythonVersion >= 3:
+			ob['TargetObject'] = ob['TargetObject'][2:]
 		target_ob = scene.objects[ob['TargetObject']]
 		target_ob.setVisible(ob['Show_Target'])
 		try:
-			area_ob = scene.objects['OBWP_Area']
+			if GameLogic.pythonVersion < 3:
+				area_ob = scene.objects['OBWP_Area']
+			else:
+				area_ob = scene.objects['WP_Area']
 			area_ob.setVisible(ob['Show_Target'])
 
 			initial_position = target_ob.position
