@@ -25,12 +25,19 @@ local_out_port_name = ""
 local_GPS_port_name = ""
 local_Dest_port_name = ""
 
+local_Radio_in_port_name = ""
+local_Radio_out_port_name = ""
+
+
 # Global variables for the ors names of the ports
 ors_in_port_name = ""
 ors_out_port_name = ""
 
 ors_GPS_port_name = ""
 ors_Dest_port_name = ""
+
+ors_Radio_in_port_name = ""
+ors_Radio_in_port_name = ""
 
 # Global variables for the yarp ports
 local_in_port = 0
@@ -79,7 +86,7 @@ def command_robot():
 		#raw_coords = raw_input("Input new coordinates: ")
 		#print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
 
-		command = raw_input("Enter command: [ (m)ove / (s)top / s(t)atus / (d)estination / e(x)it ] ")
+		command = raw_input("Enter command: [ (m)ove / (s)top / s(t)atus / (d)estination / (n)eighbours / e(x)it ] ")
 		
 		if command == "move" or command == "m":
 			command = {"command":"move"}
@@ -93,7 +100,7 @@ def command_robot():
 			command = {"command":"status"}
 			send_command(command)
 
-		elif command == "destination" or command =="d":
+		elif command == "destination" or command == "d":
 			wp_list = read_waypoints ()
 			message = json.dumps (wp_list)
 			print ("Read waypoints: {0}".format(message))
@@ -104,13 +111,31 @@ def command_robot():
 			bottle.addString(message)
 			local_Dest_port.write()
 
-		elif command == "ATRV2":
-			command = {"command":"distance", "robot":"OBATRV2"}
-			send_command(command)
+		elif command == "neighbours" or command == "n":
+			request = "Neighbours"
+			message = json.dumps (request)
+
+			# Send the json string through a yarp port
+			bottle = local_Radio_out_port.prepare()
+			bottle.clear()
+			bottle.addString(message)
+			local_Radio_out_port.write()
+
+			# Read the response
+			yarp_data = local_Radio_in_port.read(False)
+			if yarp_data != None:
+				# Read a string from the bottle
+				json_data = yarp_data.toString()
+				data = decode_message(json_data)
+				print ("Current robot neighbours:")
+				for key, value in data.items():
+					print ("\t{0}:\t{1}".format(key, value))
+
 
 		elif command == "exit" or command == "x":
 			print ("Exiting the function")
 			sys.exit()
+
 
 def send_command(command):
 	""" Send a message through the yarp output port."""
@@ -147,10 +172,15 @@ def port_setup(robot_name, num_cameras):
 	global local_GPS_port_name
 	global local_Dest_port_name
 
+	global local_Radio_in_port
+	global local_Radio_out_port
+
 	global ors_in_port_name
 	global ors_out_port_name
 	global ors_GPS_port_name
 	global ors_Dest_port_name
+	global ors_Radio_in_port_name
+	global ors_Radio_out_port_name
 
 	# Define the names for all the ports
 	port_prefix = "/ors/robots/" + robot_name + "/"
@@ -163,11 +193,17 @@ def port_setup(robot_name, num_cameras):
 	ors_Dest_port_name = port_prefix + "Motion_Controller/in"
 	ors_GPS_port_name = port_prefix + "GPS/out"
 
+	ors_Radio_out_port_name = port_prefix + "Radio/out"
+	ors_Radio_in_port_name = port_prefix + "Radio/in"
+
 	local_in_port_name = local_port_prefix + "in/"
 	local_out_port_name = local_port_prefix + "out/"
 
 	local_GPS_port_name = local_port_prefix + "GPS/in/"
 	local_Dest_port_name = local_port_prefix + "Motion_Controller/out/"
+
+	local_Radio_in_port_name = local_port_prefix + "Radio/in"
+	local_Radio_out_port_name = local_port_prefix + "Radio/out"
 
 	# Start the yarp network connection
 	yarp.Network.init()
@@ -183,12 +219,21 @@ def port_setup(robot_name, num_cameras):
 	local_Dest_port = yarp.BufferedPortBottle()
 	local_Dest_port.open(local_Dest_port_name)
 
+	local_Radio_out_port = yarp.BufferedPortBottle()
+	local_Radio_out_port.open(local_Radio_out_port_name)
+	local_Radio_in_port = yarp.BufferedPortBottle()
+	local_Radio_in_port.open(local_Radio_in_port_name)
+
 	# Connect the client ports to the simulator ports
 	yarp.Network.connect (local_out_port_name, ors_in_port_name)
 	yarp.Network.connect (ors_out_port_name, local_in_port_name)
 
 	yarp.Network.connect (ors_GPS_port_name, local_GPS_port_name)
 	yarp.Network.connect (local_Dest_port_name, ors_Dest_port_name)
+
+	yarp.Network.connect (local_Radio_out_port_name, ors_Radio_in_port_name)
+	yarp.Network.connect (ors_Radio_out_port_name, local_Radio_in_port_name)
+
 
 	# Connect the cameras to yarpview windows
 	print (" * Initializing yarpview windows.")
@@ -234,9 +279,10 @@ def main():
 	print (" * Writing destination to " + ors_Dest_port_name)
 	print (" * Listening to GPS on " + ors_GPS_port_name)
 
-	print (" * Enter destination coordinates, separated by a space")
-	print (" * Example: 1.52 3.38 0.0")
-	print (" * NOTE: The third coordinate (Z) is not used in the case of ATRV")
+	print (" * Writing commands to " + ors_Radio_in_port_name)
+	print (" * Listening status on " + ors_Radio_out_port_name)
+
+	print (" * Enter command:")
 
 	command_robot()
 

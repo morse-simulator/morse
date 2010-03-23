@@ -31,6 +31,7 @@ def init(contr):
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	ob['Init_OK'] = False
 
@@ -72,6 +73,7 @@ def laser_sweep(contr):
 	""" Do ray tracing from the SICK object towards the Ray_arrow object.
 		Return the points located. """
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	if ob['Init_OK']:
 		robot_state_dict = GameLogic.robotDict[parent]
@@ -103,6 +105,7 @@ def arc_sweep(contr):
 	""" Do ray tracing from the SICK object using a semicircle
 		Return the points located. """
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	if ob['Init_OK']:
 		robot_state_dict = GameLogic.robotDict[parent]

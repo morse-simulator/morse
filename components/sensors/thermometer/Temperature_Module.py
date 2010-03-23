@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+import json
 
 
 try:
@@ -31,6 +32,7 @@ def init(contr):
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	ob['Init_OK'] = False
 
@@ -52,6 +54,7 @@ def init(contr):
 def output(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	if ob['Init_OK']:	
 		robot_state_dict = GameLogic.robotDict[parent]
@@ -90,5 +93,7 @@ def output(contr):
 
 			# Define the message structure to send.
 			# It is a list of tuples (data, type).
+			temp_struct = {'temperature': temperature}
+			message = json.dumps(temp_struct)
 			message_data = [ (temperature, 'double') ]
 			GameLogic.orsConnector.postMessage(message_data, port_name)

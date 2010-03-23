@@ -1,6 +1,5 @@
 import sys, os
 import GameLogic
-import Mathutils
 import json
 import re
 
@@ -137,12 +136,6 @@ def report(contr):
 			robot_state_dict['moveStatus'] = "Moving to 0"
 			send_robot_status(robot_state_dict, out_port_name)
 
-		elif command == "distance":
-			target_robot = "{0}".format(data["robot"])
-			print (" ===>> Computing distance to robot: {0}".format(target_robot))
-			distance = measure_distance_to_robot (contr.owner, target_robot)
-			send_robot_distance(target_robot, distance, out_port_name)
-
 		elif command == "stop":
 			print (" ===>> Stopping robot")
 			robot_state_dict['moveStatus'] = "Stop"
@@ -167,30 +160,6 @@ def send_robot_status(robot_state_dict, out_port_name):
 	# Define the message structure to send.
 	# It is a list of tuples (data, type).
 	state = {'state': robot_state_dict['moveStatus']}
-	message = json.dumps(state)
-	message_data = [ (message, 'string') ]
-
-	#message_data = [ (robot_state_dict['moveStatus'], 'string') ]
-	GameLogic.orsConnector.postMessage(message_data, out_port_name)
-
-
-def measure_distance_to_robot(own_robot, target_robot):
-	scene = GameLogic.getCurrentScene()
-	target_robot = scene.objects[target_robot]	
-	own_pos = Mathutils.Vector(own_robot.position)
-	target_pos = Mathutils.Vector(target_robot.position)
-	distance_vector = target_pos - own_pos
-	distance = distance_vector.length
-
-	print ("Distance from robot {0} to robot {1} = {2}".format(own_robot, target_robot, distance))
-	return distance
-
-
-
-def send_robot_distance(target_robot, distance, out_port_name):
-	# Define the message structure to send.
-	# It is a list of tuples (data, type).
-	state = {'distance': distance}
 	message = json.dumps(state)
 	message_data = [ (message, 'string') ]
 
