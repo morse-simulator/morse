@@ -124,7 +124,7 @@ def move(contr):
 		#print ("GOT DISTANCE: %.4f" % distance)
 
 		try:
-			robot_angle = robot_state_dict['gyro_angle']
+			robot_angle = robot_state_dict['Yaw']
 		except KeyError as detail:
 			#print (detail)
 			# Force the robot to stay put, since we can't orient it

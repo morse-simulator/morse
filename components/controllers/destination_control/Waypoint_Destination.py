@@ -111,7 +111,7 @@ def move(contr):
 			target_angle = target_angle * -1
 
 		try:
-			robot_angle = robot_state_dict['gyro_angle']
+			robot_angle = robot_state_dict['Yaw']
 		except KeyError as detail:
 			print ("Gyroscope angle not found. Does the robot have a Gyroscope?")
 			print (detail)
