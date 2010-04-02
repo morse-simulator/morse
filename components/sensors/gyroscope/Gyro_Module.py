@@ -4,6 +4,7 @@ import Mathutils
 import math
 import json
 
+from Poster import poster
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -30,6 +31,7 @@ def init(contr):
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	ob['Init_OK'] = False
 
@@ -44,16 +46,22 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## GYROSCOPE INITIALIZATION ########')
-		robot_state_dict['gyro_angle'] = 0.0
-		#print ("OPENING PORTS '{0}'".format(port_name))
+		# Init the variables in the robot dictionary
+		robot_state_dict['Yaw'] = 0.0
+		robot_state_dict['Pitch'] = 0.0
+		robot_state_dict['Roll'] = 0.0
+		# Open the port
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
-		#GameLogic.orsConnector.printOpenPorts()
+
+		# Start the external poster module
+		posted = poster.init_data()
 		print ('######## GYROSCOPE INITIALIZED ########')
 
 
 def output(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
 
 	if ob['Init_OK']:
 		robot_state_dict = GameLogic.robotDict[parent]
@@ -108,6 +116,11 @@ def output(contr):
 
 		#message_data = [ (gyro_angle, 'double') ]
 		GameLogic.orsConnector.postMessage(message_data, port_name)
+
+		# Call to a SWIG method that will write a poster
+		pos = ob.position
+		posted = poster.post_data(pos[0], pos[1], pos[2], yaw, pitch, roll)
+		#poster.fake()
 
 
 
