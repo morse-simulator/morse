@@ -91,7 +91,7 @@ def move(contr):
 		scene = GameLogic.getCurrentScene()
 		target_ob = scene.objects['OBWayPoint']
 		destination = target_ob.position
-		destination[2] = -destination[2]
+		#destination[2] = destination[2]
 
 		# Ignore the altitude (Z)
 		#destination[2] = 0
@@ -101,8 +101,7 @@ def move(contr):
 		
 		# Ignore the altitude (Z)
 		#location_V[2] = 0
-		destination_V = Mathutils.Vector(destination)		
-		destination_V[2]=-destination_V[2]
+		destination_V = Mathutils.Vector(destination)				
 		#print (" pos: {0}".format(destination_V))
 		distance_V = destination_V - location_V
 		#print ("location_V {0}".format(location_V))
@@ -122,7 +121,7 @@ def move(contr):
 			if NED == True:
 				vx = distance_V[1] * speed/fps
 				vy = distance_V[0] * speed/fps
-				vz = 0 #distance_V[2] * speed/fps
+				vz = -distance_V[2] * speed/fps
 			else:
 				vx = distance_V[0] * speed/fps
 				vy = distance_V[1] * speed/fps
