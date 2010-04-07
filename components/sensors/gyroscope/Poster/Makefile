@@ -11,7 +11,7 @@ POSTER=poster
 TARGET=$(POSTER)
 STANDALONE=standalone
 
-all:_$(TARGET).so
+all:_$(TARGET).so $(STANDALONE)
 
 $(TARGET).o: $(TARGET).c $(TARGET)_wrap.c
 	@echo COMPILING

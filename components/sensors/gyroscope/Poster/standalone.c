@@ -3,9 +3,6 @@
 #include <string.h>
 #include "poster.h"
 
-// #include <poster_read.hh>
-// #include <poster_write.hh>
-
 #include <pomStruct.h>
 #include <posterLib.h>
 
@@ -26,6 +23,8 @@ int init_data (void)
 
 int post_data( double x, double y, double z, double yaw, double pitch, double roll )
 {
+	printf ("FROM C POSTER MODULE:\n");
+
 	// Variables to use for writing the poster
 	int offset = 0;
 
@@ -57,7 +56,6 @@ int post_data( double x, double y, double z, double yaw, double pitch, double ro
 	posterWrite (id, offset, &local_pom_pos, sizeof(POM_POS));
 
 	printf ("THIS .... ISN'T .... REALLY .... HAPPENING!!!!!!!!\n");
-	printf ("FROM C POSTER MODULE:\n");
 	printf ("\tyaw = %.4f\n", yaw);
 	printf ("\tpitch = %.4f\n", pitch);
 	printf ("\troll = %.4f\n", roll);
@@ -75,8 +73,9 @@ int finalize (void)
 
 int main (void)
 {
-	init_data();
+	// init_data();
+	printf ("THIS IS STANDALONE SPEAKING!");
 	post_data( 4, 3, 2, 0.0, 0.0, 0.0);
-	finalize();
+	// finalize();
 	return 0;
 }

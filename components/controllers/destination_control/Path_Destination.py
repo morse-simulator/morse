@@ -229,6 +229,7 @@ def change_status (contr, robot_state_dict, new_status, parent):
 def resize_area (tolerance):
 	""" Scale the area object to the tolerance of the waypoint. """
 	scene = GameLogic.getCurrentScene()
+	print ("RESIZING AREA TO: %.4f" % (tolerance))
 	try:
 		area_ob = scene.objects['OBWP_Area']
 		area_ob.scaling = (tolerance, tolerance, 1)
@@ -256,4 +257,3 @@ def get_next_waypoint (path, robot_state_dict, target_ob):
 		return destination, tolerance
 	except IndexError:
 		return None, None
-

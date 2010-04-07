@@ -54,7 +54,7 @@ def init(contr):
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 
 		# Start the external poster module
-		posted = poster.init_data()
+		#posted = poster.init_data()
 		print ('######## GYROSCOPE INITIALIZED ########')
 
 
@@ -119,7 +119,7 @@ def output(contr):
 
 		# Call to a SWIG method that will write a poster
 		pos = ob.position
-		posted = poster.post_data(pos[0], pos[1], pos[2], yaw, pitch, roll)
+		#posted = poster.post_data(pos[0], pos[1], pos[2], yaw, pitch, roll)
 		#poster.fake()
 
 

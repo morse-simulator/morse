@@ -216,8 +216,11 @@ def arc_sweep(contr):
 
 		# Write the detected points to a file
 		filename = "{0}_{1}.txt".format(parent,ob)
-		parent_position = "[%.4f, %.4f, %.4f], %.4f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['gyro_angle'])
-		write_points_to_file(filename, point_list, parent_position)
+		try:
+			parent_position = "[%.4f, %.4f, %.4f], %.4f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['Yaw'])
+			write_points_to_file(filename, point_list, parent_position)
+		except KeyError:
+			print "SICK: Gyroscope not available"
 
 
 def fill_vector(vector, point_list):

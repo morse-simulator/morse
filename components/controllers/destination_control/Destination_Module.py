@@ -44,9 +44,9 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## CONTROL INITIALIZATION ########')
-		print ("OPENING PORT '{0}'".format(dest_port_name))
+		#print ("OPENING PORT '{0}'".format(dest_port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([dest_port_name])
-		print ("OPENING PORT '{0}'".format(speed_port_name))
+		#print ("OPENING PORT '{0}'".format(speed_port_name))
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 
 		#### INIT ROBOT DICTIONARY ####

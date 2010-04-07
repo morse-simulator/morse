@@ -63,12 +63,13 @@ def init(contr):
 	#  necesary if there are more than one camera added to the scene
 	key = 'Camera'
 	if GameLogic.pythonVersion < 3:
-		screen_name = 'OBCameraCube'
+		screen_name = 'OBScreen'
 		camera_name = 'OBCameraRobot'
 	else:
 		screen_name = 'CameraCube'
 		camera_name = 'CameraRobot'
 	texture_name = 'IMplasma.png'
+	material_name = 'MAScreenMat'
 	name_len = len(ob.name)
 	if name_len > 4 and ob.name.endswith('.00', name_len-4, name_len-1):
 		extension = ob.name[name_len-4:]
@@ -76,6 +77,7 @@ def init(contr):
 		screen_name = screen_name + extension
 		camera_name = camera_name + extension
 		#texture_name = texture_name + extension
+		material_name = material_name + extension
 	# Store the key as an ID in the Empty object
 	ob['camID'] = key
 	print ("Camera: Key being used is: '{0}'".format(key))
@@ -89,7 +91,8 @@ def init(contr):
 	if not hasattr(GameLogic, 'tv'):
 		GameLogic.tv = {}
 
-	matID = VideoTexture.materialID(screen, texture_name)	
+	matID = VideoTexture.materialID(screen, material_name)
+	#matID = VideoTexture.materialID(screen, texture_name)
 	GameLogic.tv[key] = VideoTexture.Texture(screen, matID)
 	GameLogic.tv[key].source = VideoTexture.ImageRender(scene,camera)
 
