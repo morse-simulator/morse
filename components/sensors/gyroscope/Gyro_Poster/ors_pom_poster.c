@@ -1,30 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "poster.h"
+#include "ors_pom_poster.h"
 
-#include <pomStruct.h>
-#include <posterLib.h>
+#include <pom/pomStruct.h>
+//#include <posterLib.h>
 
-unsigned char*	poster_name = "MORSE_POM_POSTER";
-POSTER_ID id;
 
-int init_data (void)
+void* init_data (char*	poster_name)
 {
+	void* id;
+
 	STATUS s = posterCreate (poster_name, sizeof(POM_POS), &id);
 	if (s == ERROR)
 	{
-		printf ("Unable to create the POM poster\n");
-		return 1;
+		char buf[1024];
+		h2getErrMsg(errnoGet(), buf, sizeof(buf));
+		printf ("Unable to create the POM poster : %s\n",buf);
+		return (NULL);
 	}
+	/*
+	else
+		printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
+	*/
 
-	return 0;
+	return (id);
 }
 
-int post_data( double x, double y, double z, double yaw, double pitch, double roll )
+int post_data( void* id, double x, double y, double z, double yaw, double pitch, double roll )
 {
-	printf ("FROM C POSTER MODULE:\n");
-
 	// Variables to use for writing the poster
 	int offset = 0;
 
@@ -53,29 +57,24 @@ int post_data( double x, double y, double z, double yaw, double pitch, double ro
 	local_pom_pos.mainToBase = local_pom_euler_v;
 	local_pom_pos.VLocal = local_pom_euler_v;
 
+	// printf ("ABOUT TO DO THE ACTUAL 'posterWrite'\n");
+	// printf ("ID = %p\n", id);
 	posterWrite (id, offset, &local_pom_pos, sizeof(POM_POS));
 
-	printf ("THIS .... ISN'T .... REALLY .... HAPPENING!!!!!!!!\n");
-	printf ("\tyaw = %.4f\n", yaw);
-	printf ("\tpitch = %.4f\n", pitch);
+	/*
+	printf ("FROM C POSTER MODULE:");
+	printf ("\tyaw = %.4f", yaw);
+	printf ("\tpitch = %.4f", pitch);
 	printf ("\troll = %.4f\n", roll);
+	*/
 
 	return 0;
 }
 
 
-int finalize (void)
+int finalize (void* id)
 {
 	posterDelete(id);
 
-	return 0;
-}
-
-int main (void)
-{
-	// init_data();
-	printf ("THIS IS STANDALONE SPEAKING!");
-	post_data( 4, 3, 2, 0.0, 0.0, 0.0);
-	// finalize();
 	return 0;
 }

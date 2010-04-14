@@ -1,4 +1,4 @@
-%module poster
+%module ors_viam_poster
 %include "typemaps.i"
 /* Apply a typemap that preserves the length of a binary string.
    It also gets the length and passes it as an argument */
@@ -11,8 +11,10 @@
 
 %{
 /* Include the header in the wrapper code */
-#include "poster.h"
+#include "ors_viam_poster.h"
+#include <genPos/genPosStruct.h>
 %}
 
 /* Parse the header file to generate wrappers */
-%include "poster.h"
+%include "ors_viam_poster.h"
+%include "/home/gechever/openrobots/include/genPos/genPosStruct.h"

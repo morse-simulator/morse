@@ -4,24 +4,30 @@
 #include "poster.h"
 
 #include <pomStruct.h>
-#include <posterLib.h>
+//#include <posterLib.h>
 
-unsigned char*	poster_name = "MORSE_POM_POSTER";
-POSTER_ID id;
 
-int init_data (void)
+void* init_data (char*	poster_name)
 {
+	void* id;
+
 	STATUS s = posterCreate (poster_name, sizeof(POM_POS), &id);
 	if (s == ERROR)
 	{
-		printf ("Unable to create the POM poster\n");
-		return 1;
+		char buf[1024];
+		h2getErrMsg(errnoGet(), buf, sizeof(buf));
+		printf ("Unable to create the POM poster : %s\n",buf);
+		return (id);
 	}
+	/*
+	else
+		printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
+		*/
 
-	return 0;
+	return (id);
 }
 
-int post_data( double x, double y, double z, double yaw, double pitch, double roll )
+int post_data( void* id, double x, double y, double z, double yaw, double pitch, double roll )
 {
 	// Variables to use for writing the poster
 	int offset = 0;
@@ -51,30 +57,24 @@ int post_data( double x, double y, double z, double yaw, double pitch, double ro
 	local_pom_pos.mainToBase = local_pom_euler_v;
 	local_pom_pos.VLocal = local_pom_euler_v;
 
-	printf ("FROM C POSTER MODULE:\n");
-	printf ("\tyaw = %.4f\n", yaw);
-	printf ("\tpitch = %.4f\n", pitch);
-	printf ("\troll = %.4f\n", roll);
-
-	printf ("ABOUT TO DO THE ACTUAL 'posterWrite'\n");
+	// printf ("ABOUT TO DO THE ACTUAL 'posterWrite'\n");
+	// printf ("ID = %p\n", id);
 	posterWrite (id, offset, &local_pom_pos, sizeof(POM_POS));
 
+	/*
+	printf ("FROM C POSTER MODULE:");
+	printf ("\tyaw = %.4f", yaw);
+	printf ("\tpitch = %.4f", pitch);
+	printf ("\troll = %.4f\n", roll);
+	*/
+
 	return 0;
 }
 
 
-int finalize (void)
+int finalize (void* id)
 {
 	posterDelete(id);
-
-	return 0;
-}
-
-int fake (void)
-{
-	printf ("Calling the Standalone C poster writer\n");
-	system ("/home/gechever/LAAS/ors/components/sensors/gyroscope/Poster/standalone");
-	printf ("DONE!\n");
 
 	return 0;
 }

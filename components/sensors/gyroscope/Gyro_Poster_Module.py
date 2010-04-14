@@ -4,6 +4,7 @@ import Mathutils
 import math
 import json
 
+from Gyro_Poster import ors_pom_poster
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -52,6 +53,16 @@ def init(contr):
 		robot_state_dict['Roll'] = 0.0
 		# Open the port
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
+
+		# Start the external poster module
+		poster_name = "morse_" + ob['Component_Type'] + "_poster"
+		poster_name = poster_name.upper()
+		robot_state_dict[port_name] = ors_pom_poster.init_data(poster_name)
+		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
+		if robot_state_dict[port_name] == None:
+			print ("ERROR creating poster. This module may not work")
+			#ob['Init_OK'] = False
+
 		print ('######## GYROSCOPE INITIALIZED ########')
 
 
@@ -113,6 +124,24 @@ def output(contr):
 
 		#message_data = [ (gyro_angle, 'double') ]
 		GameLogic.orsConnector.postMessage(message_data, port_name)
+
+		# Call to a SWIG method that will write a poster
+		pos = ob.position
+		posted = ors_pom_poster.post_data(robot_state_dict[port_name], pos[0], pos[1], pos[2], yaw, pitch, roll)
+
+
+def finish(contr):
+	""" Procedures to kill the module when the program exits.
+		12 / 04 / 2010
+		Done for testing the closing of the poster. """
+
+	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	port_name = port_name + "/out"
+	robot_state_dict = GameLogic.robotDict[parent]
+
+	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	ors_pom_poster.finalize(robot_state_dict[port_name])
+	print ("Done!")
 
 
 
