@@ -6,16 +6,16 @@
 //#include <posterLib.h>
 
 
-void* locate_poster (char*	poster_name)
+void* init_data (char*	poster_name)
 {
 	void* id;
 
-	STATUS s = posterFind (poster_name, &id);
+	STATUS s = posterCreate (poster_name, sizeof(POM_POS), &id);
 	if (s == ERROR)
 	{
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
-		printf ("Unable to locate the GENPOS poster : %s\n",buf);
+		printf ("Unable to create the POM poster : %s\n",buf);
 		return (NULL);
 	}
 	/*
@@ -26,63 +26,76 @@ void* locate_poster (char*	poster_name)
 	return (id);
 }
 
-
-/*
-//int read_genPos_data( void* id, float *v, float *w )
-PyObject* read_genPos_data( void* id, float v, float w )
+POM_SENSOR_POS create_pom_sensor_pos( int blender_date, double x, double y, double z, double yaw, double pitch, double roll )
 {
-	GENPOS_CART_SPEED local_genPos;
-	int offset = 0;
+	POM_SENSOR_POS local_sensor_pos;
 
-	posterRead (id, offset, &local_genPos, sizeof(GENPOS_CART_SPEED));
+	// Declare local versions of the structures used
+	POM_EULER_V local_sensor_to_main;
+	POM_EULER_V local_main_to_base;
+	POM_EULER_V local_main_to_origin;
+	POM_EULER_V local_v_local;
 
-	// Read the variables we need for the speed
-	v = local_genPos.v;
-	w = local_genPos.w;
+	// Fill in the Sensor to Main
+	POM_EULER local_euler;
+	local_euler.yaw = yaw;
+	local_euler.pitch = pitch;
+	local_euler.roll = roll;
 
-	printf ("DATA READ FROM POSTER:");
-	printf ("\tv = %.4f", v);
-	printf ("\tw = %.4f\n", w);
+	local_euler.x = x;
+	local_euler.y = y;
+	local_euler.z = z;
 
-	PyObject *tuple, *list;
+	POM_EULER_VARIANCES var;
 
-	// tuple = Py_BuildValue("(iis)", 1, 2, "three");
-	// list = Py_BuildValue("[iis]", 1, 2, "three");
-	tuple = Py_BuildValue("(ii)", v, w);
+	// Fill in the POM_POS_EULER_V
+	local_sensor_to_main.euler = local_euler;
+	local_sensor_to_main.var = var;
+
+	// Fill in the Sensor to Main
+	POM_EULER local_stm_euler;
+	local_stm_euler.yaw = yaw;
+	local_stm_euler.pitch = pitch;
+	local_stm_euler.roll = roll;
+
+	local_stm_euler.x = x;
+	local_stm_euler.y = y;
+	local_stm_euler.z = z;
+
+	POM_EULER_VARIANCES var;
+
+	// Fill in the POM_POS_EULER_V
+	local_sensor_to_main.euler = local_euler;
+	local_sensor_to_main.var = var;
 
 
-	PyObject* py_v = PyInt_FromLong(v);
-	PyObject* py_w = PyInt_FromLong(w);
+	// Fill in the Main to Origin
+	POM_EULER local_mto_euler;
+	local_mto_euler.yaw = yaw;
+	local_mto_euler.pitch = pitch;
+	local_mto_euler.roll = roll;
 
-	PyObject* resTuple = PyTuple_New(2);
+	local_mto_euler.x = x;
+	local_mto_euler.y = y;
+	local_mto_euler.z = z;
 
-	PyTuple_SetItem(resTuple, 0, py_v);
-	PyTuple_SetItem(resTuple, 1, py_w);
+	POM_EULER_VARIANCES var;
 
-	return (resTuple);
-}
-*/
+	// Fill in the POM_POS_EULER_V
+	local_sensor_to_main.euler = local_mto_euler;
+	local_sensor_to_main.var = var;
 
 
-//int read_genPos_data( void* id, float *v, float *w )
-GENPOS_CART_SPEED read_genPos_data( void* id )
-{
-	GENPOS_CART_SPEED local_genPos;
-	int offset = 0;
-	float v;
-	float w;
 
-	posterRead (id, offset, &local_genPos, sizeof(GENPOS_CART_SPEED));
+	// Fill in the SENSOR_POS
+	local_sensor_pos.date = blender_date;
+	local_sensor_pos.pad = 0;
+	local_sensor_pos.sensorToMain = local_sensor_to_main;
+	local_sensor_pos.mainToBase = local_main_to_origin;
+	local_sensor_pos.mainToOrigin = local_main_to_origin;
+	local_sensor_pos.VLocal = local_v_local;
 
-	// Read the variables we need for the speed
-	v = local_genPos.v;
-	w = local_genPos.w;
-
-	// printf ("DATA READ FROM POSTER:");
-	// printf ("\tv = %.4f", v);
-	// printf ("\tw = %.4f\n", w);
-
-	return (local_genPos);
+	return 0;
 }
 
 

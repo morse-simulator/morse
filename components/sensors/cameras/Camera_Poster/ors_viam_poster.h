@@ -1,8 +1,7 @@
 #include <posterLib.h>
 #include <Python.h>
-#include <genPos/genPosStruct.h>
+#include <viam/viamStruct.h>
 
-void* locate_poster (char*	poster_name);
-//PyObject* read_genPos_data( void* id, float v, float w );
-GENPOS_CART_SPEED read_genPos_data( void* id );
+void* init_data (char*  poster_name);
+int post_viam_data( void* id, double x, double y, double z, double yaw, double pitch, double roll )
 int finalize ( void* id );
