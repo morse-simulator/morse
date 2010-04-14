@@ -1,2 +1,6 @@
 atrv
 *.blend1
+*.blend2
+*.blend3
+.nfs*
+*_wrap.c
