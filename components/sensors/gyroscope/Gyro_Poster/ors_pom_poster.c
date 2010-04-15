@@ -27,7 +27,7 @@ void* init_data (char*	poster_name)
 	return (id);
 }
 
-int post_data( void* id, double x, double y, double z, double yaw, double pitch, double roll )
+int post_data( void* id, double x, double y, double z, double yaw, double pitch, double roll, int date )
 {
 	// Variables to use for writing the poster
 	int offset = 0;
@@ -51,7 +51,7 @@ int post_data( void* id, double x, double y, double z, double yaw, double pitch,
 	//local_pom_euler_v.var = ?????;
 
 	// Fill in the POM_POS
-	//local_pom_pos.date = ????;
+	local_pom_pos.date = date;
 	local_pom_pos.pomTickDate = local_pom_pos.date;
 	local_pom_pos.mainToOrigin = local_pom_euler_v;
 	local_pom_pos.mainToBase = local_pom_euler_v;

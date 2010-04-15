@@ -3,6 +3,7 @@ import GameLogic
 import Mathutils
 import math
 import json
+from datetime import datetime;
 
 from Gyro_Poster import ors_pom_poster
 
@@ -125,9 +126,17 @@ def output(contr):
 		#message_data = [ (gyro_angle, 'double') ]
 		GameLogic.orsConnector.postMessage(message_data, port_name)
 
+		# Compute the current time ( we only requiere that the pom date
+		# increases using a constant step so real time is ok)
+		t = datetime.now()
+		date = int(t.hour * 3600* 1000 + t.minute * 60 * 1000 + 
+				   t.second * 1000 + t.microsecond / 1000)
+
 		# Call to a SWIG method that will write a poster
 		pos = ob.position
-		posted = ors_pom_poster.post_data(robot_state_dict[port_name], pos[0], pos[1], pos[2], yaw, pitch, roll)
+		posted = ors_pom_poster.post_data(robot_state_dict[port_name], 
+										  pos[0], pos[1], pos[2], 
+										  yaw, pitch, roll, date)
 
 
 def finish(contr):
