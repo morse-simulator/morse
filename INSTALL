@@ -15,23 +15,32 @@ For the YARP bindings
  - YARP python binding
  - ACE ( 5.6.3 or +, required for YARP)
 
-The easiest way to install YARP is probably to use robotpkg (see  
-http://homepages.laas.fr/mallet/robotpkg for more instructions). You can install
-yarp and its dependancies using make install into devel/libpyyarp.
+Instructions to create YARP-Python bindings are here:
+http://eris.liralab.it/wiki/YARP_and_Python
 
-You'll need to set the environnement variable PYTHONPATH to 
-${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
-module.
+Note that the easiest way to install YARP is probably to use robotpkg (see  
+http://homepages.laas.fr/mallet/robotpkg for more instructions). You can 
+install yarp and its dependancies using make install into devel/libpyyarp.
 
 Installation
 ------------
 
+Compiling the YARP Python binding will create two files: yarp.py and _yarp.so
+Copy them to the your Python lib directory (/usr/lib/python2.6/site-packages/)
+or at some place reachable from your PYTHONPATH environment variable.
+
+[NOTE FOR ROBOTPKG] You'll need to set the environnement variable PYTHONPATH to
+${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
+module.
+
 If not already done, download the source code of OpenRobots Simulator:
 $ git clone http://trac.laas.fr/git/robots/morse.git
 
-
 Set the environment variable $ORS_ROOT to the path directory where you have
 installed OpenRobots Simulator.
+
+Running a simulation
+--------------------
 
 To test the simulator you can load one of the example scenarii from
 $ORS_ROOT/scenarii (.blend files)
@@ -40,6 +49,14 @@ $ORS_ROOT/scenarii (.blend files)
  with this command from a terminal "yarp server".
 
 To start a simulation, go on blender and press "P" to play the scenario.
+
+To test the external control clients, open the Blender file:
+$ORS_ROOT/scenarii/indoors_1/indoor_scene-2.0.blend
+Start the simulation ('P')
+Run the C program:
+$ORS_ROOT/clients/atrv/atrv_destination-1.0
+Enter the coordinates where you want the robot to go. The robot will try to get
+there.
 
 Tips: If you have any problem to start to play a simulation: start blender
 from a terminal and send us the error messages.
