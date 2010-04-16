@@ -44,5 +44,6 @@ To start a simulation, go on blender and press "P" to play the scenario.
 Tips: If you have any problem to start to play a simulation: start blender
 from a terminal and send us the error messages.
 
+
 [1] For the moment the simulator work only with this version. 
 Blender 2.5 is being worked on.
