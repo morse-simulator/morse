@@ -4,3 +4,5 @@ atrv
 *.blend3
 .nfs*
 *_wrap.c
+*.o
+*.so
