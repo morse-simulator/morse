@@ -1,22 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "poster.h"
-
-#include <pomStruct.h>
-#include <poster_write.hh>
+#include "gyro_poster.hh"
 
 // unsigned char*	poster_name = "MORSE_POM_POSTER";
 // PosterWriter id;
 
-int init_data (unsigned char* poster_name)
+PosterWriter<POM_POS> init_data (unsigned char* poster_name)
 {
 	PosterWriter<POM_POS> writer(poster_name);
 
-	return 0;
+	return writer;
 }
 
-int post_data( double x, double y, double z, double yaw, double pitch, double roll )
+int post_data( PosterWriter writer, double x, double y, double z, double yaw, double pitch, double roll )
 {
 	// Variables to use for writing the poster
 	int offset = 0;
@@ -53,6 +50,14 @@ int post_data( double x, double y, double z, double yaw, double pitch, double ro
 	printf ("\tyaw = %.4f", yaw);
 	printf ("\tpitch = %.4f", pitch);
 	printf ("\troll = %.4f\n", roll);
+
+	return 0;
+}
+
+
+int finalize (PosterWriter writer)
+{
+	posterDelete(id);
 
 	return 0;
 }
