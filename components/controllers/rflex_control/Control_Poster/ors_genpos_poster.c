@@ -15,7 +15,7 @@ void* locate_poster (char*	poster_name)
 	{
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
-		printf ("Unable to locate the GENPOS poster : %s\n",buf);
+		printf ("Unable to locate the %s poster : %s\n", poster_name, buf);
 		return (NULL);
 	}
 	/*
