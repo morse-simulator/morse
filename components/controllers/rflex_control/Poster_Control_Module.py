@@ -53,7 +53,8 @@ def init(contr):
 		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 		GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])
 
-		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
+		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
+		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("piloSpeedRef")
 		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("BLENDER_GENPOS_POSTER")
 		print ("Poster ID found: {0}".format(robot_state_dict[port_name]))
 		if robot_state_dict[port_name] == None:
@@ -91,10 +92,12 @@ def move(contr):
 		msg_act = contr.actuators['Send_update_msg']
 		#msg_act.propName = parent.name
 		#msg_act.to = parent.name
-		msg_act.subject = 'Speed'		
-		robot_state_dict['vx'] = vx
 
-		robot_state_dict['rz'] = rz	
+		fps = GameLogic.getAverageFrameRate()		
+
+		msg_act.subject = 'Speed'		
+		robot_state_dict['vx'] = vx / fps
+		robot_state_dict['rz'] = rz	/ fps
 
 		contr.activate(msg_act)
 
