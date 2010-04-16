@@ -12,13 +12,7 @@
 %{
 /* Include the header in the wrapper code */
 #include "ors_viam_poster.h"
-#include <pom/pomStruct.h>
-#include <viam/viamStruct.h>
-#include <viam/viamtypes.h>
 %}
 
 /* Parse the header file to generate wrappers */
 %include "ors_viam_poster.h"
-%include "/home/gechever/openrobots/include/pom/pomStruct.h"
-%include "/home/gechever/openrobots/include/viam/viamStruct.h"
-%include "/home/gechever/openrobots/include/viam/viamtypes.h"
