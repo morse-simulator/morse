@@ -4,6 +4,7 @@ atrv
 *.blend3
 .nfs*
 *_wrap.c
+*_wrap.cxx
 *.o
 *.so
 *.pyc
