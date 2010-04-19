@@ -31,8 +31,8 @@ import setup.ObjectData
 
 structObject = ''
 # Default size for an image of 512 * 512
-Image_Size_X = 512
-Image_Size_Y = 512
+Image_Size_X = 640
+Image_Size_Y = 480
 Nb_image = 1
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
@@ -67,7 +67,7 @@ def init(contr):
 		print ("ERROR: Unable to create the port:")
 		print (detail)
 
-	# Create a key for a dictionary of cameras
+	# Create a key for a dictionary of first_camera
 	#  necesary if there are more than one camera added to the scene
 	key = 'Camera'
 	if GameLogic.pythonVersion < 3:
@@ -134,12 +134,11 @@ def init(contr):
 	# Start the external poster module
 	poster_name = "morse_" + ob['Component_Type'] + "_poster"
 	poster_name = poster_name.upper()
-	#cameras = ors_viam_poster.imageInitArray(1)
-	cameras = ors_viam_poster.simu_image_init()
-	cameras.camera_name = "Left"
-	cameras.width = Image_Size_X
-	cameras.height = Image_Size_Y
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, cameras)
+	first_camera = ors_viam_poster.simu_image_init()
+	first_camera.camera_name = "Left"
+	first_camera.width = Image_Size_X
+	first_camera.height = Image_Size_Y
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, first_camera, None)
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
@@ -265,7 +264,8 @@ def grab(contr):
 				first_camera.sensor.roll = roll
 #				first_camera.image_data = image_string
 
-				posted = ors_viam_poster.post_viam_poster(robot_state_dict[port_name], pom_robot_position, 1, first_camera, image_string)
+				posted = ors_viam_poster.post_viam_poster(robot_state_dict[port_name], 
+						pom_robot_position, 1, first_camera, image_string, None, None)
 
 
 

@@ -6,6 +6,11 @@
 #include <viam/viamtypes.h>
 #include <Python.h>
 
+/*
+ * XXX Swig has issues with varargs or C struct array, so for moment, we only
+ * consider case where nb_images == 1 or 2, hence the crappy API
+ */
+
 struct simu_image_init {
 	const char* camera_name;
 	size_t width, height;
@@ -14,7 +19,8 @@ struct simu_image_init {
 /*
  * Expect a list of simu_image_init* after nb_images */
 void* init_data(char*  poster_name, const char* bank_name, size_t nb_images,
-                const struct simu_image_init* init);
+                const struct simu_image_init* init1,
+				const struct simu_image_init* init2);
 
 struct pom_position {
 	double yaw, pitch, roll;
@@ -41,8 +47,10 @@ struct simu_image {
 int post_viam_poster(	void* id,
 						const struct pom_position* robot,
 						size_t nb_images,
-						const struct simu_image* img,
-                        char *img_data
+						const struct simu_image* img1,
+                        char *img_data1,
+						const struct simu_image* img2,
+						char *img_data2
 					);
 
 int finalize ( void* id );

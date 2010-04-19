@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "ors_viam_poster.h"
 
 static void create_camera_calibration(viam_cameracalibration_t*);
@@ -10,6 +11,28 @@ static int fill_image(ViamImageHeader* image, const struct pom_position* pos,
 static POM_SENSOR_POS create_pom_sensor_pos( int blender_date, 
 		const struct pom_position* robot, 
 		const struct pom_position* sensor);
+
+
+static void 
+fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header, 
+				 const struct simu_image_init* init,
+				 size_t* offset)
+{
+	strncpy ( header->name.id, init->camera_name, VIAM_ID_MAX);
+	header->name.id[VIAM_ID_MAX - 1]= '\0';
+
+	create_camera_calibration(& header->calibration);
+
+	header->nChannels = 1;
+	header->depth = 8;
+	header->width = init->width;
+	header->height = init->height;
+	header->widthStep = init->width * header->depth / 8 * header->nChannels; 
+	header->imageSize = init->height * header->widthStep;
+	header->dataOffset = 
+		(nb_images - (i + 1)) * sizeof(ViamImageHeader) + *offset;
+	*offset+= init->height * init->width;
+}
 
 /*
  * Create a poster, and fill it with information which don't change during the
@@ -21,7 +44,8 @@ static POM_SENSOR_POS create_pom_sensor_pos( int blender_date,
  * you must call finalize when you don't use anymore the POSTER_ID
  */
 void* init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
-                 const struct simu_image_init* init)
+                 const struct simu_image_init* init1, 
+				 const struct simu_image_init* init2)
 {
 	size_t poster_size = 0;
 	void *id;
@@ -29,8 +53,17 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	poster_size = sizeof(ViamImageBank);
 
 	// Compute the size of poster
-	for (size_t i = 0; i < nb_images; i++)
-		poster_size+= sizeof(ViamImageHeader) + init[i].width * init[i].height;
+	switch (nb_images) {
+		case 1:
+			poster_size+= sizeof(ViamImageHeader) + init1->width * init1->height;
+			break;
+		case 2:
+			poster_size+= sizeof(ViamImageHeader) + init1->width * init1->height;
+			poster_size+= sizeof(ViamImageHeader) + init2->width * init2->height;
+			break;
+		default:
+			assert(false);
+	}
 
 	STATUS s = posterCreate (poster_name, poster_size, &id);
 	if (s == ERROR)
@@ -55,23 +88,16 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	bank->nImages = nb_images;
 
 	size_t offset = 0;
-	size_t size_headers = sizeof(ViamImageHeader) * nb_images;
-	for (size_t i = 0; i < nb_images; i++)
-	{
-		strncpy ( bank->image[i].name.id, init[i].camera_name, VIAM_ID_MAX);
-		bank->image[i].name.id[VIAM_ID_MAX - 1]= '\0';
-
-		create_camera_calibration(& bank->image[i].calibration);
-
-		bank->image[i].nChannels = 1;
-		bank->image[i].depth = 8;
-		bank->image[i].width = init[i].width;
-		bank->image[i].height = init[i].height;
-		bank->image[i].widthStep = init[i].width * bank->image[i].depth / 8 * bank->image[i].nChannels; 
-		bank->image[i].imageSize = init[i].height * bank->image[i].widthStep;
-		bank->image[i].dataOffset = 
-			(nb_images - (i + 1)) * sizeof(ViamImageHeader) + offset;
-		offset+= init[i].height * init[i].width;
+	switch (nb_images) {
+		case 1:
+			fill_static_data(0, nb_images, &bank->image[0], init1, &offset);
+			break;
+		case 2:
+			fill_static_data(0, nb_images, &bank->image[0], init1, &offset);
+			fill_static_data(1, nb_images, &bank->image[1], init2, &offset);
+			break;
+		default:
+			assert(false);
 	}
 
 	posterGive(id);
@@ -219,8 +245,10 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 int post_viam_poster(	void* id,
 						const struct pom_position* robot,
 						size_t nb_images,
-						const struct simu_image* img,
-                        char* image_data
+						const struct simu_image* img1,
+                        char* image_data1,
+						const struct simu_image* img2,
+						char* image_data2
 					)
 {
 	ViamImageBank* bank =  posterAddr(id);
@@ -228,11 +256,18 @@ int post_viam_poster(	void* id,
 
 	assert(nb_images == bank->nImages);
 
-	for (size_t i = 0; i < nb_images; i++)
-	{
-		ViamImageHeader* image = &bank->image[i];
-		fill_image(image, robot, &img[i], image_data);
+	switch (nb_images) {
+		case 1:
+			fill_image(&bank->image[0], robot, img1, image_data1);
+			break;
+		case 2:
+			fill_image(&bank->image[0], robot, img1, image_data1);
+			fill_image(&bank->image[1], robot, img2, image_data2);
+			break;
+		default:
+			assert(false);
 	}
+
 	posterGive(id);
 
 	return 0;
