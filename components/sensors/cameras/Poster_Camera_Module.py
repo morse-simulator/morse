@@ -5,6 +5,7 @@ import array, struct
 
 import time
 from Camera_Poster import ors_viam_poster
+from Convert import convert
 from datetime import datetime;
 
 try:
@@ -52,6 +53,7 @@ def init(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
+	robot_state_dict = GameLogic.robotDict[parent]
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
@@ -132,7 +134,12 @@ def init(contr):
 	# Start the external poster module
 	poster_name = "morse_" + ob['Component_Type'] + "_poster"
 	poster_name = poster_name.upper()
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, Nb_image, Image_Size_X, Image_Size_Y)
+	#cameras = ors_viam_poster.imageInitArray(1)
+	cameras = ors_viam_poster.simu_image_init()
+	cameras.camera_name = "Left"
+	cameras.width = Image_Size_X
+	cameras.height = Image_Size_Y
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, cameras)
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
@@ -186,6 +193,7 @@ def grab(contr):
 		Convert the image and send it trough a port. """
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	robot_state_dict = GameLogic.robotDict[parent]
 
 	if ob['Init_OK']:
 		# execute only when the 'grab_image' key is released
@@ -201,7 +209,7 @@ def grab(contr):
 
 				# USING THE C LIBRARY TO CONVERT THE IMAGE FORMAT
 				# The SWIG binding extracts the length of the string
-				#info = convert.convert_image( image_string )
+				# info = convert.convert_image( image_string )
 				"""
 				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
 
@@ -232,7 +240,7 @@ def grab(contr):
 				pom_robot_position.pitch = robot_state_dict['Pitch']
 				pom_robot_position.roll = robot_state_dict['Roll']
 
-				# TODO : fill the sensor yaw / pîtch / roll
+				# TODO : fill the sensor yaw / pitch / roll
 				(yaw, pitch, roll) = (0.0, 0.0, 0.0)
 
 
@@ -243,7 +251,6 @@ def grab(contr):
 					      t.second * 1000 + t.microsecond / 1000)
 
 				first_camera = ors_viam_poster.simu_image()
-				first_camera.camera_name = "Left"
 				first_camera.width = Image_Size_X
 				first_camera.height = Image_Size_Y
 				first_camera.pom_tag = pom_date
@@ -256,9 +263,9 @@ def grab(contr):
 				first_camera.sensor.yaw = yaw
 				first_camera.sensor.pitch = pitch
 				first_camera.sensor.roll = roll
-				first_camera.image_data = image_string
+#				first_camera.image_data = image_string
 
-				posted = ors_viam_poster.post_viam_data(robot_state_dict[port_name], "stereo_bank", pom_robot_position, 1, first_camera)
+				posted = ors_viam_poster.post_viam_poster(robot_state_dict[port_name], pom_robot_position, 1, first_camera, image_string)
 
 
 
