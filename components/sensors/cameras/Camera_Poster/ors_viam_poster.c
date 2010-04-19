@@ -11,6 +11,15 @@ static POM_SENSOR_POS create_pom_sensor_pos( int blender_date,
 		const struct pom_position* robot, 
 		const struct pom_position* sensor);
 
+/*
+ * Create a poster, and fill it with information which don't change during the
+ * execution, including bank_name, camera_name, nb_images, size of images,
+ * camera calibration...
+ *
+ * Return a POSTER_ID on success, NULL otherwise
+ *
+ * you must call finalize when you don't use anymore the POSTER_ID
+ */
 void* init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
                  const struct simu_image_init* init)
 {
@@ -72,6 +81,10 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 
 
 
+/*
+ * Fill a POM_SENSOR_POS on the base of information returned by the simulator
+ * It is correct for the moment, but it is probably better to do it "in-place"
+ */
 POM_SENSOR_POS 
 create_pom_sensor_pos( int blender_date, const struct pom_position* robot, 
 										 const struct pom_position* sensor)
@@ -132,6 +145,10 @@ create_pom_sensor_pos( int blender_date, const struct pom_position* robot,
 }
 
 
+/*
+ * Build camera calibration, it must be completly revisited (in particular,
+ * don't harcode size in it
+ */
 void
 create_camera_calibration(viam_cameracalibration_t* local_calibration)
 {
@@ -156,6 +173,13 @@ create_bank_calibration(viam_bankcalibration_t* bank_calib)
 	(void) bank_calib;
 }
 
+/*
+ * Fill one image with the information computed by the simulator
+ * Information in blender are stored in column major, we assume line major,
+ * hence the transformation.
+ *
+ * We are filling too date tag, and position tag in this function
+ */
 static int
 fill_image(ViamImageHeader* image, const struct pom_position* robot, 
 								   const struct simu_image* img,
@@ -186,6 +210,12 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 	return 0;
 }
 
+/*
+ * Fill the complete poster with information computed by the simulator
+ * We still have some issues with passing args from python to C, so the
+ * prototyp of the function is not really correct (image_data must be in struct
+ * simu_image, and it must be an array of struct ...). Needs investigation.
+ */
 int post_viam_poster(	void* id,
 						const struct pom_position* robot,
 						size_t nb_images,
