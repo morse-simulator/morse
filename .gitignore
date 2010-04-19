@@ -6,3 +6,4 @@ atrv
 *_wrap.c
 *.o
 *.so
+*.pyc
