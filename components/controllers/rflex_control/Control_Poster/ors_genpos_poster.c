@@ -28,7 +28,8 @@ void* locate_poster (char*	poster_name)
 
 
 /*
-//int read_genPos_data( void* id, float *v, float *w )
+// OLD VERSION
+// Trying to pass the return value (two floats) as a python tuple
 PyObject* read_genPos_data( void* id, float v, float w )
 {
 	GENPOS_CART_SPEED local_genPos;
@@ -64,7 +65,9 @@ PyObject* read_genPos_data( void* id, float v, float w )
 */
 
 
-//int read_genPos_data( void* id, float *v, float *w )
+// Return the data structure to Python.
+// It will understand, since the definition of the structure is
+//  in the files included in SWIG
 GENPOS_CART_SPEED read_genPos_data( void* id )
 {
 	GENPOS_CART_SPEED local_genPos;

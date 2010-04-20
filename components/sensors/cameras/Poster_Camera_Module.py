@@ -5,7 +5,9 @@ import array, struct
 
 import time
 from Camera_Poster import ors_viam_poster
+from Convert import convert
 from datetime import datetime;
+from helpers.MorseTransformation import Transformation3d
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -30,8 +32,8 @@ import setup.ObjectData
 
 structObject = ''
 # Default size for an image of 512 * 512
-Image_Size_X = 512
-Image_Size_Y = 512
+Image_Size_X = 640
+Image_Size_Y = 480
 Nb_image = 1
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
@@ -52,6 +54,7 @@ def init(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 
+	robot_state_dict = GameLogic.robotDict[parent]
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
@@ -65,7 +68,7 @@ def init(contr):
 		print ("ERROR: Unable to create the port:")
 		print (detail)
 
-	# Create a key for a dictionary of cameras
+	# Create a key for a dictionary of first_camera
 	#  necesary if there are more than one camera added to the scene
 	key = 'Camera'
 	if GameLogic.pythonVersion < 3:
@@ -132,7 +135,11 @@ def init(contr):
 	# Start the external poster module
 	poster_name = "morse_" + ob['Component_Type'] + "_poster"
 	poster_name = poster_name.upper()
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, Nb_image, Image_Size_X, Image_Size_Y)
+	first_camera = ors_viam_poster.simu_image_init()
+	first_camera.camera_name = "Left"
+	first_camera.width = Image_Size_X
+	first_camera.height = Image_Size_Y
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, first_camera, None)
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
@@ -186,6 +193,7 @@ def grab(contr):
 		Convert the image and send it trough a port. """
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	robot_state_dict = GameLogic.robotDict[parent]
 
 	if ob['Init_OK']:
 		# execute only when the 'grab_image' key is released
@@ -201,7 +209,7 @@ def grab(contr):
 
 				# USING THE C LIBRARY TO CONVERT THE IMAGE FORMAT
 				# The SWIG binding extracts the length of the string
-				#info = convert.convert_image( image_string )
+				# info = convert.convert_image( image_string )
 				"""
 				GameLogic.orsConnector.postImageRGB(info, imX, imY, port_name)
 
@@ -221,20 +229,20 @@ def grab(contr):
 				"""
 
 				### POCOLIBS ###
-				pos = ob.position
-				robot_pos = parent.position
+				mainToOrigin = Transformation3d(parent)
+				sensorToOrigin = Transformation3d(ob)
+				mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
 
 				pom_robot_position =  ors_viam_poster.pom_position()
-				pom_robot_position.x = robot_pos[0]
-				pom_robot_position.y = robot_pos[1]
-				pom_robot_position.z = robot_pos[2]
+				pom_robot_position.x = mainToOrigin.x
+				pom_robot_position.y = mainToOrigin.y
+				pom_robot_position.z = mainToOrigin.z
+
+				## TODO must we get the information from robot_state_dict or
+				## just get the real value from the simulator
 				pom_robot_position.yaw = robot_state_dict['Yaw']
 				pom_robot_position.pitch = robot_state_dict['Pitch']
 				pom_robot_position.roll = robot_state_dict['Roll']
-
-				# TODO : fill the sensor yaw / pîtch / roll
-				(yaw, pitch, roll) = (0.0, 0.0, 0.0)
-
 
 				# Compute the current time ( we only requiere that the pom date
 				# increases using a constant step so real time is ok)
@@ -243,22 +251,22 @@ def grab(contr):
 					      t.second * 1000 + t.microsecond / 1000)
 
 				first_camera = ors_viam_poster.simu_image()
-				first_camera.camera_name = "Left"
 				first_camera.width = Image_Size_X
 				first_camera.height = Image_Size_Y
 				first_camera.pom_tag = pom_date
 				first_camera.tacq_sec = t.second
 				first_camera.tacq_usec = t.microsecond
 				first_camera.sensor = ors_viam_poster.pom_position()
-				first_camera.sensor.x = pos[0]	
-				first_camera.sensor.y = pos[1]	
-				first_camera.sensor.z = pos[2]	
-				first_camera.sensor.yaw = yaw
-				first_camera.sensor.pitch = pitch
-				first_camera.sensor.roll = roll
-				first_camera.image_data = image_string
+				first_camera.sensor.x = mainToSensor.x
+				first_camera.sensor.y = mainToSensor.y
+				first_camera.sensor.z = mainToSensor.z
+				first_camera.sensor.yaw = mainToSensor.yaw
+				first_camera.sensor.pitch = mainToSensor.pitch
+				first_camera.sensor.roll = mainToSensor.roll
+#				first_camera.image_data = image_string
 
-				posted = ors_viam_poster.post_viam_data(robot_state_dict[port_name], "stereo_bank", pom_robot_position, 1, first_camera)
+				posted = ors_viam_poster.post_viam_poster(robot_state_dict[port_name], 
+						pom_robot_position, 1, first_camera, image_string, None, None)
 
 
 

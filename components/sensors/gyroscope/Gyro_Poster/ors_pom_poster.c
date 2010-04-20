@@ -8,9 +8,9 @@
 //#include <posterLib.h>
 
 
-void* init_data (char*	poster_name)
+POSTER_ID init_data (char*	poster_name)
 {
-	void* id;
+	POSTER_ID id;
 
 	STATUS s = posterCreate (poster_name, sizeof(POM_POS), &id);
 	if (s == ERROR)
@@ -31,7 +31,7 @@ void* init_data (char*	poster_name)
 /*
  * Yaw, pitch, roll are in degree in input
  */
-int post_data( void* id, double x, double y, double z, double yaw, double pitch, double roll, int date )
+int post_data( POSTER_ID id, double x, double y, double z, double yaw, double pitch, double roll, int date )
 {
 	// Variables to use for writing the poster
 	int offset = 0;
@@ -82,7 +82,7 @@ int post_data( void* id, double x, double y, double z, double yaw, double pitch,
 }
 
 
-int finalize (void* id)
+int finalize (POSTER_ID id)
 {
 	posterDelete(id);
 

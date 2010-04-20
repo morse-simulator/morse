@@ -32,12 +32,6 @@ $(STANDALONE): $(STANDALONE).c
 #ld -o $@ $@.o $(LDFLAGS)
 	$(CC) -g -o $@ $@.c $(CFLAGS) $(LDFLAGS)
 
-$(GYRO_POSTER): $(GYRO_POSTER).cc
-	@echo "COMPILING ($@ C)"
-#$(CC) -c $@.c $(CFLAGS)
-#ld -o $@ $@.o $(LDFLAGS)
-	$(CCP) -g -o $@ $@.cc $(CFLAGS) $(LDFLAGS) -I./
-
 .PHONY: clean
 clean:
 	-rm -f *.o _$(TARGET).so $(TARGET)_wrap.? $(TARGET).py $(TARGET).pyc

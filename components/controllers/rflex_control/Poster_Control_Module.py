@@ -46,15 +46,14 @@ def init(contr):
 
 	if ob['Init_OK']:
 		print ('######## CONTROL INITIALIZATION ########')
-		speed_port_name = port_name + '/vxvyvz'
-		rotation_port_name = port_name + '/rxryrz'
-		#print ("OPENING PORTS '{0}', '{1}'".format(speed_port_name, rotation_port_name))
+		
+		#speed_port_name = port_name + '/vxvyvz'
+		#rotation_port_name = port_name + '/rxryrz'
+		#GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
+		#GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])
 
-		GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
-		GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])
-
-		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
-		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("piloSpeedRef")
+		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
+		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("piloSpeedRef")
 		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("BLENDER_GENPOS_POSTER")
 		print ("Poster ID found: {0}".format(robot_state_dict[port_name]))
 		if robot_state_dict[port_name] == None:
@@ -68,12 +67,6 @@ def init(contr):
 def move(contr):
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-
-	speed_port_name = port_name + '/vxvyvz'
-	rotation_port_name = port_name + '/rxryrz'
-
-	v = float(0.0)
-	w = float(0.0)
 
 	# Get the dictionary for the robot's state
 	robot_state_dict = GameLogic.robotDict[parent]
@@ -96,8 +89,13 @@ def move(contr):
 		fps = GameLogic.getAverageFrameRate()		
 
 		msg_act.subject = 'Speed'		
-		robot_state_dict['vx'] = vx / fps
-		robot_state_dict['rz'] = rz	/ fps
+		try:
+			robot_state_dict['vx'] = vx / fps
+			robot_state_dict['rz'] = rz	/ fps
+		# For the moment ignoring the division by zero
+		# It happens apparently when the simulation starts
+		except ZeroDivisionError:
+			pass
 
 		contr.activate(msg_act)
 

@@ -1,9 +1,8 @@
 import sys, os
 import GameLogic
-import Mathutils
-import math
 import json
 
+import helpers.MorseMath
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -65,34 +64,7 @@ def output(contr):
 
 		############### Gyroscope ###################
 
-		# Compute the angle with respect to the world
-		rot_matrix = ob.worldOrientation
-		#print_matrix (rot_matrix)
-
-		# Angles determined directly from the rotation matrix.
-		# Using the method described in:
-		#  http://planning.cs.uiuc.edu/node103.html
-		alpha = math.atan2 (rot_matrix[1][0], rot_matrix[0][0])
-		beta = math.atan2 (-rot_matrix[2][0], math.sqrt(math.pow(rot_matrix[2][1], 2) + math.pow(rot_matrix[2][2], 2)))
-		gamma = math.atan2 (rot_matrix[2][1], rot_matrix[2][2])
-
-		yaw = math.degrees(alpha)
-		roll = math.degrees(beta)
-		pitch = math.degrees(gamma)
-
-		#print ("Yaw: %.4f\tRoll: %.4f\tPitch: %.4f" % (yaw, roll, pitch))
-
-		#### WARNING ####
-		# This is probably a temporary solution, while Blender 2.5
-		#  is made more stable. Currently it provides a rotation matrix
-		#  with opposite signs to that of Blender 2.49b
-		#
-		# Change the signs of the angles
-		#  if the Blender version is 2.5
-		if GameLogic.pythonVersion >= 3:
-			yaw = yaw * -1
-			pitch = pitch * -1
-			roll = roll * -1
+		yaw, pitch, roll = helpers.MorseMath.euler_angle(ob)
 
 		# Store the values in the robot's dictionary
 		robot_state_dict['Yaw'] = yaw
@@ -115,9 +87,3 @@ def output(contr):
 		GameLogic.orsConnector.postMessage(message_data, port_name)
 
 
-
-def print_matrix (matrix):
-	print ("OBJECT'S ROTATION MATRIX:")
-	for row in matrix:
-		line = "[%.4f %.4f %.4f]" % (row[0], row[1], row[2])
-		print (line)
