@@ -7,6 +7,7 @@ import time
 from Camera_Poster import ors_viam_poster
 from Convert import convert
 from datetime import datetime;
+from helpers.MorseTransformation import Transformation3d
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -228,20 +229,20 @@ def grab(contr):
 				"""
 
 				### POCOLIBS ###
-				pos = ob.position
-				robot_pos = parent.position
+				mainToOrigin = Transformation3d(parent)
+				sensorToOrigin = Transformation3d(ob)
+				mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
 
 				pom_robot_position =  ors_viam_poster.pom_position()
-				pom_robot_position.x = robot_pos[0]
-				pom_robot_position.y = robot_pos[1]
-				pom_robot_position.z = robot_pos[2]
+				pom_robot_position.x = mainToOrigin.x
+				pom_robot_position.y = mainToOrigin.y
+				pom_robot_position.z = mainToOrigin.z
+
+				## TODO must we get the information from robot_state_dict or
+				## just get the real value from the simulator
 				pom_robot_position.yaw = robot_state_dict['Yaw']
 				pom_robot_position.pitch = robot_state_dict['Pitch']
 				pom_robot_position.roll = robot_state_dict['Roll']
-
-				# TODO : fill the sensor yaw / pitch / roll
-				(yaw, pitch, roll) = (0.0, 0.0, 0.0)
-
 
 				# Compute the current time ( we only requiere that the pom date
 				# increases using a constant step so real time is ok)
@@ -256,12 +257,12 @@ def grab(contr):
 				first_camera.tacq_sec = t.second
 				first_camera.tacq_usec = t.microsecond
 				first_camera.sensor = ors_viam_poster.pom_position()
-				first_camera.sensor.x = pos[0]	
-				first_camera.sensor.y = pos[1]	
-				first_camera.sensor.z = pos[2]	
-				first_camera.sensor.yaw = yaw
-				first_camera.sensor.pitch = pitch
-				first_camera.sensor.roll = roll
+				first_camera.sensor.x = mainToSensor.x
+				first_camera.sensor.y = mainToSensor.y
+				first_camera.sensor.z = mainToSensor.z
+				first_camera.sensor.yaw = mainToSensor.yaw
+				first_camera.sensor.pitch = mainToSensor.pitch
+				first_camera.sensor.roll = mainToSensor.roll
 #				first_camera.image_data = image_string
 
 				posted = ors_viam_poster.post_viam_poster(robot_state_dict[port_name], 
