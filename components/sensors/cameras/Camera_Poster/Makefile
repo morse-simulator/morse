@@ -1,7 +1,7 @@
 CC=gcc
 CCP=g++
 LDFLAGS=-L${ROBOTPKG_BASE}/lib -lposterLib
-CFLAGS=-I/usr/include/python2.6 -I${ROBOTPKG_BASE}/include -I${ROBOTPKG_BASE}/include/pom -std=gnu99
+CFLAGS=-I/usr/include/python2.6 -I${ROBOTPKG_BASE}/include -I${ROBOTPKG_BASE}/include/pom -std=gnu99 -O2
 
 # Is there a better way to know if we have an x86_64 kernel ?
 ifneq (, $(filter x86_64, "$(shell uname -a)"))
