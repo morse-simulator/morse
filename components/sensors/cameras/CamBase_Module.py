@@ -7,6 +7,7 @@ import time
 from Camera_Poster import ors_viam_poster
 #from Convert import convert
 from datetime import datetime;
+from helpers.MorseTransformation import Transformation3d
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -29,8 +30,8 @@ import setup.ObjectData
 #import ors_image_yarp
 
 # Default size for an image of 512 * 512
-Image_Size_X = 512
-Image_Size_Y = 512
+Image_Size_X = 640
+Image_Size_Y = 480
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 # Background color for the captured images (Default is blue)
@@ -127,19 +128,15 @@ def main(contr):
 			Nb_image = ob['Num_Cameras']
 
 			### POCOLIBS ###
-			pos = ob.position
-			robot_pos = parent.position
+			mainToOrigin = Transformation3d(parent)
 
 			pom_robot_position =  ors_viam_poster.pom_position()
-			pom_robot_position.x = robot_pos[0]
-			pom_robot_position.y = robot_pos[1]
-			pom_robot_position.z = robot_pos[2]
+			pom_robot_position.x = mainToOrigin.x
+			pom_robot_position.y = mainToOrigin.y
+			pom_robot_position.z = mainToOrigin.z
 			pom_robot_position.yaw = robot_state_dict['Yaw']
 			pom_robot_position.pitch = robot_state_dict['Pitch']
 			pom_robot_position.roll = robot_state_dict['Roll']
-
-			# TODO : fill the sensor yaw / pitch / roll
-			(yaw, pitch, roll) = (0.0, 0.0, 0.0)
 
 			# Compute the current time ( we only requiere that the pom date
 			# increases using a constant step so real time is ok)
@@ -155,24 +152,26 @@ def main(contr):
 			# Cycle throught the cameras on the base
 			# In normal circumstances, there will be two for stereo
 			for ors_camera_id in camera_list:
+				sensorToOrigin = Transformation3d(ors_camera_id)
+				mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
+
 				imX,imY = GameLogic.tv[ors_camera_id['camID']].source.size
 				image_string = GameLogic.tv[ors_camera_id['camID']].source.image
 
 				# Fill in the structure with the image information
 				camera_data = ors_viam_poster.simu_image()
 				camera_data.width = imX
-				camera_data.height = imX
+				camera_data.height = imY
 				camera_data.pom_tag = pom_date
 				camera_data.tacq_sec = t.second
 				camera_data.tacq_usec = t.microsecond
 				camera_data.sensor = ors_viam_poster.pom_position()
-				camera_data.sensor.x = pos[0]	
-				camera_data.sensor.y = pos[1]	
-				camera_data.sensor.z = pos[2]	
-				camera_data.sensor.yaw = yaw
-				camera_data.sensor.pitch = pitch
-				camera_data.sensor.roll = roll
-#					camera_data.image_data = image_string
+				camera_data.sensor.x = mainToSensor.x
+				camera_data.sensor.y = mainToSensor.y
+				camera_data.sensor.z = mainToSensor.z
+				camera_data.sensor.yaw = mainToSensor.yaw
+				camera_data.sensor.pitch = mainToSensor.pitch
+				camera_data.sensor.roll = mainToSensor.roll
 
 				ors_cameras.append(camera_data)
 				ors_images.append(image_string)
