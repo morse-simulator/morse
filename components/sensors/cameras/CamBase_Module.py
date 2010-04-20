@@ -30,8 +30,8 @@ import setup.ObjectData
 #import ors_image_yarp
 
 # Default size for an image of 512 * 512
-Image_Size_X = 640
-Image_Size_Y = 480
+Image_Size_X = 320
+Image_Size_Y = 240
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 # Background color for the captured images (Default is blue)
