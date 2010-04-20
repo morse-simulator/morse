@@ -252,6 +252,10 @@ int post_viam_poster(	void* id,
 					)
 {
 	ViamImageBank* bank =  posterAddr(id);
+	if (bank == NULL) {
+		fprintf(stderr, "calling %s but the poster has been destroyed\n", __func__);
+		return -1;
+	}
 	posterTake(id, POSTER_WRITE);
 
 	assert(nb_images == bank->nImages);
