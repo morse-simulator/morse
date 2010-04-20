@@ -3,9 +3,10 @@ import GameLogic
 import Mathutils
 import math
 import json
-from datetime import datetime;
+import datetime
 
 from Gyro_Poster import ors_pom_poster
+#from Plus import gyro_poster
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -59,6 +60,7 @@ def init(contr):
 		poster_name = "morse_" + ob['Component_Type'] + "_poster"
 		poster_name = poster_name.upper()
 		robot_state_dict[port_name] = ors_pom_poster.init_data(poster_name)
+		#robot_state_dict[port_name] = gyro_poster.init_data(poster_name)
 		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 		if robot_state_dict[port_name] == None:
 			print ("ERROR creating poster. This module may not work")
@@ -128,13 +130,14 @@ def output(contr):
 
 		# Compute the current time ( we only requiere that the pom date
 		# increases using a constant step so real time is ok)
-		t = datetime.now()
+		t = datetime.datetime.now()
 		date = int(t.hour * 3600* 1000 + t.minute * 60 * 1000 + 
 				   t.second * 1000 + t.microsecond / 1000)
 
 		# Call to a SWIG method that will write a poster
 		pos = ob.position
 		posted = ors_pom_poster.post_data(robot_state_dict[port_name], 
+		#posted = gyro_poster.post_data(robot_state_dict[port_name], 
 										  pos[0], pos[1], pos[2], 
 										  yaw, pitch, roll, date)
 
@@ -149,6 +152,7 @@ def finish(contr):
 	robot_state_dict = GameLogic.robotDict[parent]
 
 	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	#gyro_poster.finalize(robot_state_dict[port_name])
 	ors_pom_poster.finalize(robot_state_dict[port_name])
 	print ("Done!")
 

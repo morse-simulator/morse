@@ -5,14 +5,17 @@
 
 CC = g++
 
-CFLAGS = -g
-LDFLAGS = -I$(ROBOTPKG_BASE)/include -L$(ROBOTPKG_BASE)/lib -lYARP_OS -Wl,-rpath,$(ROBOTPKG_BASE)/lib
+CFLAGS = -g -I$(ROBOTPKG_BASE)/include
+LDFLAGS = -L$(ROBOTPKG_BASE)/lib -lYARP_OS -Wl,-rpath,$(ROBOTPKG_BASE)/lib
+POCOLIBSFLAGS = -lposterLib
+
 
 MOTION = agv_motion-1.0
 DESTINATION = atrv_destination-1.0
 CAMERAS = atrv_dest_cams-1.0
 CONTROL = atrv_status-1.0
 GRID = grid_move-1.0
+POCO_CLIENT = pocolibs_movement_client
 
 all: $(MOTION) $(DESTINATION) $(CAMERAS) $(CONTROL) $(GRID)
 
@@ -33,6 +36,13 @@ $(GRID): $(GRID).o
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
+
+$(POCO_CLIENT): $(POCO_CLIENT).c
+	@echo "COMPILING ($@ C)"
+#$(CC) -c $@.c $(CFLAGS)
+#ld -o $@ $@.o $(LDFLAGS)
+	$(CC) -g -o $@ $@.c $(CFLAGS) $(LDFLAGS) $(POCOLIBSFLAGS)
+
 
 tags:
 	ctags *c *.h

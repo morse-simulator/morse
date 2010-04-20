@@ -10,8 +10,6 @@ endif
 
 POSTER=ors_pom_poster
 TARGET=$(POSTER)
-STANDALONE=standalone_client
-GYRO_POSTER=gyro_poster
 
 all:_$(TARGET).so $(STANDALONE)
 
@@ -26,18 +24,6 @@ _$(TARGET).so: $(TARGET).o
 $(TARGET)_wrap.c: $(TARGET).i
 	@echo SWIG
 	swig -python $(TARGET).i
-
-$(STANDALONE): $(STANDALONE).c
-	@echo "COMPILING ($@ C)"
-#$(CC) -c $@.c $(CFLAGS)
-#ld -o $@ $@.o $(LDFLAGS)
-	$(CC) -g -o $@ $@.c $(CFLAGS) $(LDFLAGS)
-
-$(GYRO_POSTER): $(GYRO_POSTER).cc
-	@echo "COMPILING ($@ C)"
-#$(CC) -c $@.c $(CFLAGS)
-#ld -o $@ $@.o $(LDFLAGS)
-	$(CCP) -g -o $@ $@.cc $(CFLAGS) $(LDFLAGS) -I./
 
 .PHONY: clean
 clean:
