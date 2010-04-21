@@ -220,8 +220,8 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 
 	unsigned char* data = & image->data[image->dataOffset];
     size_t len = img->width * img->height;
-	for (size_t i = 0 ; i <  img->width; i++)
-	    for (size_t j = 0 ; j < img->height; j++)
+	for (size_t j = 0 ; j < img->height; j++)
+		for (size_t i = 0 ; i <  img->width; i++)
 	    {
             size_t index = (j * img->width + i) * 4;
             size_t index_ = ((img->height - j) * img->width + i);
