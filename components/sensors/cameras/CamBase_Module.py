@@ -111,6 +111,8 @@ def main(contr):
 	robot_state_dict = GameLogic.robotDict[parent]
 	local_dict = GameLogic.componentDict[ob]
 
+	camera_list = local_dict['camera_list']
+
 	if ob['Init_OK']:
 		"""
 		# execute only when the 'grab_image' key is released
@@ -123,7 +125,8 @@ def main(contr):
 		# extract VideoTexture image
 		if hasattr(GameLogic, 'tv'):
 
-			Nb_image = ob['Num_Cameras']
+			#Nb_image = ob['Num_Cameras']
+			Nb_image = len(camera_list)
 
 			### POCOLIBS ###
 			mainToOrigin = Transformation3d(parent)
@@ -144,8 +147,6 @@ def main(contr):
 
 			ors_cameras = []
 			ors_images = []
-
-			camera_list = local_dict['camera_list']
 
 			# Cycle throught the cameras on the base
 			# In normal circumstances, there will be two for stereo
