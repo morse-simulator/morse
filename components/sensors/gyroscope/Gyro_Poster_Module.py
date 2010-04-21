@@ -55,8 +55,10 @@ def init(contr):
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 
 		# Start the external poster module
-		poster_name = "morse_" + ob['Component_Type'] + "_poster"
-		poster_name = poster_name.upper()
+		#poster_name = "morse_" + ob['Component_Type'] + "_poster"
+		#poster_name = poster_name.upper()
+		poster_name = "pomPos"
+
 		robot_state_dict[port_name] = ors_pom_poster.init_data(poster_name)
 		#robot_state_dict[port_name] = gyro_poster.init_data(poster_name)
 		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))

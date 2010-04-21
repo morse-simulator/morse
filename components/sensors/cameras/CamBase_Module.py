@@ -66,8 +66,9 @@ def init(contr):
 
 	### POCOLIBS ###
 	# Start the external poster module
-	poster_name = "morse_" + ob['Component_Type'] + "_poster"
-	poster_name = poster_name.upper()
+	# poster_name = "morse_" + ob['Component_Type'] + "_poster"
+	# poster_name = poster_name.upper()
+	poster_name = "viamMorseBench"
 
 	camera_list = []
 	cameras = []
