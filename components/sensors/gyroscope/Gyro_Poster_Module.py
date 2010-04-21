@@ -108,9 +108,8 @@ def output(contr):
 				   t.second * 1000 + t.microsecond / 1000)
 
 		# Call to a SWIG method that will write a poster
-		pos = ob.position
+		pos = parent.position
 		posted = ors_pom_poster.post_data(robot_state_dict[port_name], 
-		#posted = gyro_poster.post_data(robot_state_dict[port_name], 
 										  pos[0], pos[1], pos[2], 
 										  yaw, pitch, roll, date)
 
