@@ -52,8 +52,8 @@ def init(contr):
 		#GameLogic.orsConnector.registerBufferedPortBottle([speed_port_name])
 		#GameLogic.orsConnector.registerBufferedPortBottle([rotation_port_name])
 
-		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
-		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("piloSpeedRef")
+		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("CLIENT_GENPOS_POSTER")
+		robot_state_dict[port_name] = ors_genpos_poster.locate_poster("piloSpeedRef")
 		#robot_state_dict[port_name] = ors_genpos_poster.locate_poster("BLENDER_GENPOS_POSTER")
 		print ("Poster ID found: {0}".format(robot_state_dict[port_name]))
 		if robot_state_dict[port_name] == None:

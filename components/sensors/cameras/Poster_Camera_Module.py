@@ -278,8 +278,10 @@ def finish(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 
-	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	print ("Component: {0} => Closing poster with id: {1}".format(ob, robot_state_dict[port_name]))
 	ors_viam_poster.finalize(robot_state_dict[port_name])
+	# Set the variable so that further calls to the main function will exit
+	ob['Init_OK'] = False
 	print ("Done!")
 
 

@@ -32,7 +32,6 @@ import setup.ObjectData
 # Default size for an image of 512 * 512
 Image_Size_X = 320
 Image_Size_Y = 240
-Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 # Background color for the captured images (Default is blue)
 #bg_color = [0, 0, 255, 255]
@@ -42,7 +41,6 @@ bg_color = [143,143,143,255]
 def init(contr):
 	global Image_Size_X
 	global Image_Size_Y
-	global Image_Size
 
 	print ('######## CAMERA BASE INITIALIZATION ########')
 
@@ -189,6 +187,8 @@ def finish(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 
-	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	print ("Component: {0} => Closing poster with id: {1}".format(ob, robot_state_dict[port_name]))
 	ors_viam_poster.finalize(robot_state_dict[port_name])
+	# Set the variable so that further calls to the main function will exit
+	ob['Init_OK'] = False
 	print ("Done!")

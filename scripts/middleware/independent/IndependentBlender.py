@@ -1,12 +1,12 @@
 import sys,os
 
 try:
-   scriptRoot = os.path.join(os.environ['BLENDER_ROBOTICS_ROOT'],'scripts')
+   scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
 except KeyError:
    scriptRoot = '.'
 
 try:
-   libRoot = os.path.join(os.environ['BLENDER_ROBOTICS_ROOT'],'lib')
+   libRoot = os.path.join(os.environ['ORS_ROOT'],'lib')
 except KeyError:
    libRoot = '.'
 
