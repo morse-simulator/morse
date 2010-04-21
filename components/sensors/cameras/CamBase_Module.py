@@ -2,6 +2,7 @@ import sys, os
 import GameLogic
 import VideoTexture
 import array
+import math
 
 import time
 from Camera_Poster import ors_viam_poster
