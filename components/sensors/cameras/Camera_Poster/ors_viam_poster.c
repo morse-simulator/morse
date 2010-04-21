@@ -10,7 +10,8 @@ static void create_bank_calibration(viam_bankcalibration_t*, size_t nb_images,
 		double baseline, double pixel_size);
 static int fill_image(ViamImageHeader* image, const struct pom_position* pos, 
 					 const struct simu_image* img, char* image_data);
-static POM_SENSOR_POS create_pom_sensor_pos( int blender_date, 
+static int create_pom_sensor_pos( int blender_date, 
+		POM_SENSOR_POS* pos,
 		const struct pom_position* robot, 
 		const struct pom_position* sensor);
 
@@ -114,63 +115,41 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
  * Fill a POM_SENSOR_POS on the base of information returned by the simulator
  * It is correct for the moment, but it is probably better to do it "in-place"
  */
-POM_SENSOR_POS 
-create_pom_sensor_pos( int blender_date, const struct pom_position* robot, 
-										 const struct pom_position* sensor)
+int
+create_pom_sensor_pos( int blender_date, 
+							POM_SENSOR_POS* pos,			 
+							const struct pom_position* robot, 
+							const struct pom_position* sensor)
 {
-	POM_SENSOR_POS local_sensor_pos;
-
-	// Declare local versions of the structures used
-	POM_EULER_V local_sensor_to_main;
-	POM_EULER_V local_main_to_base;
-	POM_EULER_V local_main_to_origin;
-	POM_EULER_V local_v_local;
-
-
 	// Fill in the Sensor to Main
 #define DEG_TO_RAD(x) ((x)*M_PI/180.)
-	POM_EULER local_stm_euler;
-	local_stm_euler.yaw = DEG_TO_RAD(sensor->yaw);
-	local_stm_euler.pitch = DEG_TO_RAD(sensor->pitch);
-	local_stm_euler.roll = DEG_TO_RAD(sensor->roll);
+	POM_EULER* local_stm_euler = & (pos->sensorToMain.euler);
+	local_stm_euler->yaw = DEG_TO_RAD(sensor->yaw);
+	local_stm_euler->pitch = DEG_TO_RAD(sensor->pitch);
+	local_stm_euler->roll = DEG_TO_RAD(sensor->roll);
 
-	local_stm_euler.x = sensor->x;
-	local_stm_euler.y = sensor->y;
-	local_stm_euler.z = sensor->z;
-
-	POM_EULER_VARIANCES sensor_var;
-
-	// Fill in the POM_POS_EULER_V
-	local_sensor_to_main.euler = local_stm_euler;
-	local_sensor_to_main.var = sensor_var;
+	local_stm_euler->x = sensor->x;
+	local_stm_euler->y = sensor->y;
+	local_stm_euler->z = sensor->z;
 
 
 	// Fill in the Main to Origin
-	POM_EULER local_mto_euler;
-	local_mto_euler.yaw = DEG_TO_RAD(robot->yaw);
-	local_mto_euler.pitch = DEG_TO_RAD(robot->pitch);
-	local_mto_euler.roll = DEG_TO_RAD(robot->roll);
+	POM_EULER* local_mto_euler = &(pos->mainToOrigin.euler);
+	local_mto_euler->yaw = DEG_TO_RAD(robot->yaw);
+	local_mto_euler->pitch = DEG_TO_RAD(robot->pitch);
+	local_mto_euler->roll = DEG_TO_RAD(robot->roll);
 #undef DEG_TO_RAD
 
-	local_mto_euler.x = robot->x;
-	local_mto_euler.y = robot->y;
-	local_mto_euler.z = robot->z;
+	local_mto_euler->x = robot->x;
+	local_mto_euler->y = robot->y;
+	local_mto_euler->z = robot->z;
 
-	POM_EULER_VARIANCES robot_var;
+	memcpy( &pos->mainToBase.euler, &pos->mainToOrigin.euler, sizeof(POM_EULER));
 
-	// Fill in the POM_POS_EULER_V
-	local_sensor_to_main.euler = local_mto_euler;
-	local_sensor_to_main.var = robot_var;
+	pos->date = blender_date;
+	pos->pad = 0;
 
-	// Fill in the SENSOR_POS
-	local_sensor_pos.date = blender_date;
-	local_sensor_pos.pad = 0;
-	local_sensor_pos.sensorToMain = local_sensor_to_main;
-	local_sensor_pos.mainToBase = local_main_to_origin;
-	local_sensor_pos.mainToOrigin = local_main_to_origin;
-	local_sensor_pos.VLocal = local_v_local;
-
-	return local_sensor_pos;
+	return 0;
 }
 
 
@@ -239,8 +218,7 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 
 	image->tacq_sec = img->tacq_sec;
 	image->tacq_usec = img->tacq_usec;
-	POM_SENSOR_POS local = create_pom_sensor_pos(img->pom_tag, robot, img->sensor);
-	memcpy(&image->pos, &local, sizeof(POM_SENSOR_POS));
+	create_pom_sensor_pos(img->pom_tag, &image->pos, robot, img->sensor);
 
 
 	unsigned char* data = & image->data[image->dataOffset];
