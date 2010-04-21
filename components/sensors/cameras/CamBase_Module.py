@@ -32,6 +32,8 @@ import setup.ObjectData
 # Default size for an image of 512 * 512
 Image_Size_X = 320
 Image_Size_Y = 240
+Image_focal = 35
+Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 # Background color for the captured images (Default is blue)
 #bg_color = [0, 0, 255, 255]
@@ -41,6 +43,8 @@ bg_color = [143,143,143,255]
 def init(contr):
 	global Image_Size_X
 	global Image_Size_Y
+	global Image_Size
+	global Image_focal
 
 	print ('######## CAMERA BASE INITIALIZATION ########')
 
@@ -80,6 +84,7 @@ def init(contr):
 			image_init.camera_name = camera_object.name
 			image_init.width = Image_Size_X
 			image_init.height = Image_Size_Y
+			image_init.focal = Image_focal
 			cameras.append(image_init)
 
 		except KeyError:
@@ -89,9 +94,16 @@ def init(contr):
 
 	#Nb_image = ob['Num_Cameras']
 	Nb_image = len(camera_list)
+	baseline = 0
+	if Nb_image == 2:
+		pos_cam0 = camera_list[0].position
+		pos_cam1 = camera_list[1].position
+		baseline = math.sqrt( math.pow(pos_cam0[0] - pos_cam1[0], 2) +
+							  math.pow(pos_cam0[1] - pos_cam1[1], 2) +	
+							  math.pow(pos_cam0[2] - pos_cam1[2], 2)) 
 
 	print ("Camera Base: Number of cameras found: {0}".format(Nb_image))
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, cameras[0], cameras[1])
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, baseline, cameras[0], cameras[1])
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
@@ -168,9 +180,9 @@ def main(contr):
 				camera_data.sensor.x = mainToSensor.x
 				camera_data.sensor.y = mainToSensor.y
 				camera_data.sensor.z = mainToSensor.z
-				camera_data.sensor.yaw = mainToSensor.yaw
-				camera_data.sensor.pitch = mainToSensor.pitch
-				camera_data.sensor.roll = mainToSensor.roll
+				camera_data.sensor.yaw = mainToSensor.yaw 
+				camera_data.sensor.pitch = mainToSensor.pitch 
+				camera_data.sensor.roll = mainToSensor.roll 
 
 				ors_cameras.append(camera_data)
 				ors_images.append(image_string)

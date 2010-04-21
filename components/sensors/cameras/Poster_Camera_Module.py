@@ -139,7 +139,7 @@ def init(contr):
 	first_camera.camera_name = "Left"
 	first_camera.width = Image_Size_X
 	first_camera.height = Image_Size_Y
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, first_camera, None)
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, 0, first_camera, None)
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
