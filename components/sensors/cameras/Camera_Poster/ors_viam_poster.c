@@ -216,7 +216,9 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 
 	image->tacq_sec = img->tacq_sec;
 	image->tacq_usec = img->tacq_usec;
-	image->pos = create_pom_sensor_pos(img->pom_tag, robot, img->sensor);
+	POM_SENSOR_POS local = create_pom_sensor_pos(img->pom_tag, robot, img->sensor);
+	memcpy(&image->pos, &local, sizeof(POM_SENSOR_POS));
+
 
 	unsigned char* data = & image->data[image->dataOffset];
     size_t len = img->width * img->height;
