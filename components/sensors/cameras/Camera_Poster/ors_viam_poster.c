@@ -4,8 +4,10 @@
 #include <stdbool.h>
 #include "ors_viam_poster.h"
 
-static void create_camera_calibration(viam_cameracalibration_t*);
-static void create_bank_calibration(viam_bankcalibration_t*);
+static void create_camera_calibration(viam_cameracalibration_t*, 
+									  const struct simu_image_init* init);
+static void create_bank_calibration(viam_bankcalibration_t*, size_t nb_images, 
+		double baseline, double pixel_size);
 static int fill_image(ViamImageHeader* image, const struct pom_position* pos, 
 					 const struct simu_image* img, char* image_data);
 static POM_SENSOR_POS create_pom_sensor_pos( int blender_date, 
@@ -21,7 +23,7 @@ fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header,
 	strncpy ( header->name.id, init->camera_name, VIAM_ID_MAX);
 	header->name.id[VIAM_ID_MAX - 1]= '\0';
 
-	create_camera_calibration(& header->calibration);
+	create_camera_calibration(& header->calibration, init);
 
 	header->nChannels = 1;
 	header->depth = 8;
@@ -44,6 +46,7 @@ fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header,
  * you must call finalize when you don't use anymore the POSTER_ID
  */
 void* init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
+				 double baseline,
                  const struct simu_image_init* init1, 
 				 const struct simu_image_init* init2)
 {
@@ -84,7 +87,7 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	strncpy ( bank->name.id, bank_name, VIAM_ID_MAX);
 	bank->name.id[VIAM_ID_MAX - 1]= '\0';
 
-	create_bank_calibration(&bank->calibration);
+	create_bank_calibration(&bank->calibration, nb_images, baseline, 1);
 	bank->nImages = nb_images;
 
 	size_t offset = 0;
@@ -176,27 +179,47 @@ create_pom_sensor_pos( int blender_date, const struct pom_position* robot,
  * don't harcode size in it
  */
 void
-create_camera_calibration(viam_cameracalibration_t* local_calibration)
+create_camera_calibration(viam_cameracalibration_t* local_calibration,
+	   	const struct simu_image_init* init)
 {
-	double calibration_matrix[9] = {14.63, 0.0, 256.0, 0.0, 14.63, 256.0, 0.0, 0.0, 1.0}; 
+	double identity[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
 
-	int i;
-	for (i=0; i<9; i++)
-		local_calibration->intrinsic[i] = calibration_matrix[i];
-	/*
-	local_calibration->intrirect = {};
-	local_calibration->distortion = {};
-	local_calibration->rectification = {};
-	local_calibration->rotation = {};
-	*/
-	local_calibration->width = 512;
-	local_calibration->height = 512;
+	memcpy(local_calibration->intrinsic, identity, sizeof(identity));
+	memcpy(local_calibration->rectification, identity, sizeof(identity));
+	memcpy(local_calibration->rotation, identity, sizeof(identity));
+
+	local_calibration->intrinsic[2] = init->width / 2;
+	local_calibration->intrinsic[5] = init->height / 2;
+	local_calibration->intrinsic[0] = init->width / 35.0 * init->focal;
+	local_calibration->intrinsic[4] = init->height / 24.0 * init->focal;
+
+	memcpy(local_calibration->intrirect, local_calibration->intrinsic, sizeof(identity));
+
+	for (size_t i = 0; i < 5; i++)
+		local_calibration->distortion[i] = 0;
+
+
+	local_calibration->width = init->width;
+	local_calibration->height = init->height;
 }
 
 void
-create_bank_calibration(viam_bankcalibration_t* bank_calib)
+create_bank_calibration(viam_bankcalibration_t* bank_calib, size_t nb_images, 
+		double baseline, double pixel_size)
 {
-	(void) bank_calib;
+	switch (nb_images) {
+		case 1:
+			bank_calib->type = VIAM_CAL_MONO;
+			break;
+		case 2:
+			bank_calib->type = VIAM_CAL_STEREO;
+			bank_calib->baseline = baseline;
+			// probably unused
+			bank_calib->pbaseline = baseline * pixel_size ;
+			break;
+		default:
+			assert(false);
+	}
 }
 
 /*

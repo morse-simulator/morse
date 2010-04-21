@@ -14,11 +14,13 @@
 struct simu_image_init {
 	const char* camera_name;
 	size_t width, height;
+	double focal;
 };
 
 /*
  * Expect a list of simu_image_init* after nb_images */
 void* init_data(char*  poster_name, const char* bank_name, size_t nb_images,
+				double baseline,
                 const struct simu_image_init* init1,
 				const struct simu_image_init* init2);
 
