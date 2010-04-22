@@ -139,7 +139,7 @@ def init(contr):
 	first_camera.camera_name = "Left"
 	first_camera.width = Image_Size_X
 	first_camera.height = Image_Size_Y
-	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, first_camera, None)
+	robot_state_dict[port_name] = ors_viam_poster.init_data(poster_name, "stereo_bank", Nb_image, 0, first_camera, None)
 	print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 	if robot_state_dict[port_name] == None:
 		print ("ERROR creating poster. This module may not work")
@@ -278,8 +278,10 @@ def finish(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 
-	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	print ("Component: {0} => Closing poster with id: {1}".format(ob, robot_state_dict[port_name]))
 	ors_viam_poster.finalize(robot_state_dict[port_name])
+	# Set the variable so that further calls to the main function will exit
+	ob['Init_OK'] = False
 	print ("Done!")
 
 

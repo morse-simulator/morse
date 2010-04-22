@@ -10,6 +10,9 @@ from Mathutils import *
 def euler_angle(ob):
 	rot_matrix = ob.orientation
 	matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+
+	# XXX If we want to have the right handle, we definivly need to transpose
+	# the matrix here, but why ?
 	matrix.transpose()
 	euler = matrix.toEuler()
 

@@ -55,8 +55,10 @@ def init(contr):
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
 
 		# Start the external poster module
-		poster_name = "morse_" + ob['Component_Type'] + "_poster"
-		poster_name = poster_name.upper()
+		#poster_name = "morse_" + ob['Component_Type'] + "_poster"
+		#poster_name = poster_name.upper()
+		poster_name = "pomPos"
+
 		robot_state_dict[port_name] = ors_pom_poster.init_data(poster_name)
 		#robot_state_dict[port_name] = gyro_poster.init_data(poster_name)
 		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
@@ -106,9 +108,8 @@ def output(contr):
 				   t.second * 1000 + t.microsecond / 1000)
 
 		# Call to a SWIG method that will write a poster
-		pos = ob.position
+		pos = parent.position
 		posted = ors_pom_poster.post_data(robot_state_dict[port_name], 
-		#posted = gyro_poster.post_data(robot_state_dict[port_name], 
 										  pos[0], pos[1], pos[2], 
 										  yaw, pitch, roll, date)
 
@@ -122,8 +123,10 @@ def finish(contr):
 	port_name = port_name + "/out"
 	robot_state_dict = GameLogic.robotDict[parent]
 
-	print ("Closing poster with id: {0}".format(robot_state_dict[port_name]))
+	print ("Component: {0} => Closing poster with id: {1}".format(ob, robot_state_dict[port_name]))
 	#gyro_poster.finalize(robot_state_dict[port_name])
 	ors_pom_poster.finalize(robot_state_dict[port_name])
+	# Set the variable so that further calls to the main function will exit
+	ob['Init_OK'] = False
 	print ("Done!")
 
