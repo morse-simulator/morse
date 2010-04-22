@@ -33,7 +33,7 @@ import setup.ObjectData
 # Default size for an image of 512 * 512
 Image_Size_X = 320
 Image_Size_Y = 240
-Image_focal = 35
+Image_focal = 25
 Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 # Background color for the captured images (Default is blue)
