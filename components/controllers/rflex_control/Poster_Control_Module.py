@@ -86,13 +86,17 @@ def move(contr):
 		#msg_act.propName = parent.name
 		#msg_act.to = parent.name
 
-		fps = GameLogic.getAverageFrameRate()		
-		fps = fps * 2.5
+		# Tick rate is the real measure of time in Blender.
+		# By default it is set to 60, regardles of the FPS
+		# If logic tick rate is 60, then: 1 second = 60 ticks
+		ticks = GameLogic.getLogicTicRate()
+		#fps = GameLogic.getAverageFrameRate()		
+		#fps = fps * 2.5
 
-		msg_act.subject = 'Speed'		
+		msg_act.subject = 'Speed'
 		try:
-			robot_state_dict['vx'] = vx / fps
-			robot_state_dict['rz'] = rz	/ fps
+			robot_state_dict['vx'] = vx / ticks
+			robot_state_dict['rz'] = rz	/ ticks
 		# For the moment ignoring the division by zero
 		# It happens apparently when the simulation starts
 		except ZeroDivisionError:
