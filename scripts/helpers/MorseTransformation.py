@@ -10,8 +10,8 @@ class Transformation3d:
 		else:
 			rot_matrix = ob.orientation
 			self.matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
-			# XXX transpose it because the rotation seems inverted
-			self.matrix.transpose()
+			# XXX It seems incorrect to transpose the matrix here, but in other
+			# context, we need to. It is very strange. Need more investigation
 
 			self.matrix.resize4x4()
 

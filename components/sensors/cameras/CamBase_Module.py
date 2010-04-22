@@ -182,9 +182,10 @@ def main(contr):
 				camera_data.sensor.x = mainToSensor.x
 				camera_data.sensor.y = mainToSensor.y
 				camera_data.sensor.z = mainToSensor.z
-				camera_data.sensor.yaw = mainToSensor.yaw 
+				# XXX +PI rotation is needed but I don't have any idea why !!
+				camera_data.sensor.yaw = mainToSensor.yaw + 180.0
 				camera_data.sensor.pitch = mainToSensor.pitch 
-				camera_data.sensor.roll = mainToSensor.roll 
+				camera_data.sensor.roll = mainToSensor.roll  
 
 				ors_cameras.append(camera_data)
 				ors_images.append(image_string)
