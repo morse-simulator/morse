@@ -6,7 +6,6 @@ import math
 
 import time
 from Camera_Poster import ors_viam_poster
-#from Convert import convert
 from datetime import datetime;
 from helpers.MorseTransformation import Transformation3d
 
@@ -30,17 +29,7 @@ import setup.ObjectData
 
 #import ors_image_yarp
 
-# Background color for the captured images (Default is blue)
-#bg_color = [0, 0, 255, 255]
-# Gray
-bg_color = [143,143,143,255]
-
 def init(contr):
-	global Image_Size_X
-	global Image_Size_Y
-	global Image_Size
-	global Image_focal
-
 	print ('######## CAMERA BASE INITIALIZATION ########')
 
 	# Get the object data
@@ -48,24 +37,17 @@ def init(contr):
 	robot_state_dict = GameLogic.robotDict[parent]
 	local_dict = GameLogic.componentDict[ob]
 	
-	# Default size for an image of 512 * 512
+	# Default image size
 	#Image_Size_X = 320
-	Image_Size_X = ob['cam_width']
+	#Image_Size_X = ob['cam_width']
 	#Image_Size_Y = 240
-	Image_Size_Y = ob['cam_height']
+	#Image_Size_Y = ob['cam_height']
 	#Image_focal = 25
-	Image_focal = ob['cam_focal']
+	#Image_focal = ob['cam_focal']
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
 		GameLogic.orsConnector = MiddlewareConnector()
-		
-	# Create YARP Connection port
-	try:
-		GameLogic.orsConnector.registerPort([port_name])
-	except NotImplementedError as detail:
-		print ("ERROR: Unable to create the port:")
-		print (detail)
 
 	### POCOLIBS ###
 	# Start the external poster module
@@ -77,21 +59,33 @@ def init(contr):
 	cameras = []
 	# Create a list of the cameras attached to this component
 	for child in ob.children:
+		# Skip this object if it is not a component
+		# It is most likely just a geometric shape object
 		try:
 			child['Component_Type']
+		except KeyError as detail:
+			continue
+
+		try:
 			camera_object = child
-			print ("Camera Base: Camera found with id: '{0}'".format(camera_object))
+			Image_Width = camera_object['cam_width']
+			Image_Height =camera_object['cam_height']
+			Image_focal = camera_object['cam_focal']
+			print ("Camera Base: Camera: '{0}' ({1} X {2}), focal: {3}".format(camera_object, Image_Width, Image_Height, Image_focal))
+
 			camera_list.append(camera_object)
 
 			#cameras = ors_viam_poster.imageInitArray(1)
 			image_init = ors_viam_poster.simu_image_init()
 			image_init.camera_name = camera_object.name
-			image_init.width = Image_Size_X
-			image_init.height = Image_Size_Y
+			image_init.width = Image_Width
+			image_init.height = Image_Height
 			image_init.focal = Image_focal
 			cameras.append(image_init)
 
-		except KeyError:
+		except KeyError as detail:
+			print ("Component property not found: {0}".format(detail))
+			# Return without doing nothing
 			pass
 
 	local_dict['camera_list'] = camera_list
@@ -115,21 +109,32 @@ def init(contr):
 	else:
 		ob['Init_OK'] = True
 
+
+	# Create YARP Connection port
+	try:
+		GameLogic.orsConnector.registerPort([port_name])
+	except NotImplementedError as detail:
+		print ("ERROR: Unable to create the port:")
+		print (detail)
+
+
 	print ('######## CAMERA BASE INITIALIZED ########')
 
 
 
 def main(contr):
 	""" Capture the image currently viewed by the camera.
-		Convert the image and send it trough a port. """
+		Collect the images from the cameras,
+		and create a poster with the data. """
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 	local_dict = GameLogic.componentDict[ob]
 
-	camera_list = local_dict['camera_list']
-
 	if ob['Init_OK']:
+
+		camera_list = local_dict['camera_list']
+
 		"""
 		# execute only when the 'grab_image' key is released
 		# (if we don't test that, the code get executed two times,
@@ -201,7 +206,6 @@ def finish(contr):
 	""" Procedures to kill the module when the program exits.
 		12 / 04 / 2010
 		Done for testing the closing of the poster. """
-
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 

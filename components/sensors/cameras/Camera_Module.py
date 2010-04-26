@@ -25,9 +25,6 @@ import setup.ObjectData
 #from Convert import convert
 
 structObject = ''
-# Default size for an image of 512 * 512
-#Image_Size_X = 320
-#Image_Size_Y = 240
 
 def get_cam_property(ob, parent, property):
 	"""Return the parent property if exists, else the object one"""
@@ -44,17 +41,37 @@ bg_color = [143,143,143,255]
 
 def init(contr):
 	global structObject
-	global Image_Size_X
-	global Image_Size_Y
 
 	print ('######## CAMERA INITIALIZATION ########')
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	
-	#if parent.Image_Size_X:
-	Image_Size_X = get_cam_property(ob, parent, 'cam_width')
-	Image_Size_Y = get_cam_property(ob, parent, 'cam_height')
+	try:
+		Image_Size_X = ob['cam_width']
+		Image_Size_Y = ob['cam_height']
+		Image_Focal = ob['cam_focal']
+	except KeyError:
+		# Set a default value for the image properties
+		# The performance is much better with power of two sizes:
+		#  4, 16, 32, ... 256, 512
+		Image_Size_X = ob['cam_width'] = 320
+		Image_Size_Y = ob['cam_height'] = 240
+		Image_Focal = ob['cam_focal'] = 25
+
+	#### WARNING 2.5 ####
+	# As of 19 / 03 / 2010 Blender 2.5 is crashing when trying
+	#  to export images of size 512 X 512
+	# Temporarily restricting the size to 256 X 256
+	if GameLogic.pythonVersion > 3:
+		Image_Size_X = 256
+		Image_Size_Y = 256
+
+	Image_Size = 4 * Image_Size_X * Image_Size_Y
+
+
+	#Image_Size_X = get_cam_property(ob, parent, 'cam_width')
+	#Image_Size_Y = get_cam_property(ob, parent, 'cam_height')
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
@@ -95,7 +112,8 @@ def init(contr):
 	screen = scene.objects[screen_name]
 	camera = scene.objects[camera_name]
 
-	camera.lens = get_cam_property(ob, parent, 'cam_focal')
+	camera.lens = Image_Focal
+	#camera.lens = get_cam_property(ob, parent, 'cam_focal')
 
 	# Link the objects using VideoTexture	
 	if not hasattr(GameLogic, 'tv'):
@@ -104,15 +122,6 @@ def init(contr):
 	matID = VideoTexture.materialID(screen, texture_name)	
 	GameLogic.tv[key] = VideoTexture.Texture(screen, matID)
 	GameLogic.tv[key].source = VideoTexture.ImageRender(scene,camera)
-
-	#### WARNING 2.5 ####
-	# As of 19 / 03 / 2010 Blender 2.5 is crashing when trying
-	#  to export images of size 512 X 512
-	# Temporarily restricting the size to 256 X 256
-	if GameLogic.pythonVersion > 3:
-		Image_Size_X = 256
-		Image_Size_Y = 256
-		Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 	# Set the background to be used for the render
 	GameLogic.tv[key].source.background = bg_color
