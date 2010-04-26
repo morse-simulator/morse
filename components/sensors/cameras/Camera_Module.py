@@ -26,9 +26,8 @@ import setup.ObjectData
 
 structObject = ''
 # Default size for an image of 512 * 512
-Image_Size_X = 320
-Image_Size_Y = 240
-Image_Size = 4 * Image_Size_X * Image_Size_Y
+#Image_Size_X = 320
+#Image_Size_Y = 240
 
 # Background color for the captured images (Default is blue)
 #bg_color = [0, 0, 255, 255]
@@ -45,6 +44,10 @@ def init(contr):
 
 	# Get the object data
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
+	
+	#if parent.Image_Size_X:
+	Image_Size_X = parent.Image_Size_X
+	Image_Size_Y = parent.Image_Size_Y
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):

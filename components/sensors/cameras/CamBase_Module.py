@@ -30,12 +30,6 @@ import setup.ObjectData
 
 #import ors_image_yarp
 
-# Default size for an image of 512 * 512
-Image_Size_X = 320
-Image_Size_Y = 240
-Image_focal = 25
-Image_Size = 4 * Image_Size_X * Image_Size_Y
-
 # Background color for the captured images (Default is blue)
 #bg_color = [0, 0, 255, 255]
 # Gray
@@ -53,6 +47,15 @@ def init(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	robot_state_dict = GameLogic.robotDict[parent]
 	local_dict = GameLogic.componentDict[ob]
+	
+	# Default size for an image of 512 * 512
+	#Image_Size_X = 320
+	Image_Size_X = ob['cam_width']
+	#Image_Size_Y = 240
+	Image_Size_Y = ob['cam_height']
+	#Image_focal = 25
+	Image_focal = ob['cam_focal']
+	Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
