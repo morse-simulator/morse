@@ -1,0 +1,7 @@
+General TODO list for MORSE
+---------------------------
+
+Linking issues
+--------------
+- when properties are added in linked components (eg, cameras), the new properties
+don't show up in the scene that import these components.
