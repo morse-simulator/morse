@@ -41,11 +41,27 @@ class MiddlewareConnector:
 		elif middleware is "sockets":
 			self.connector.openSocketsUDP(portList)
 
+	def registerBufferedPortImageMono(self, portList):
+		""" Open a buffered port bottle, for image transmission.
+			Currently not used."""
+		if middleware is "yarp":
+			self.connector.registerBufferedPortImageMono(portList)
+		elif middleware is "sockets":
+			self.connector.openSocketsTCP(portList)
+
 	def registerBufferedPortImageRgb(self, portList):
 		""" Open a buffered port bottle, for image transmission.
 			Currently not used."""
 		if middleware is "yarp":
 			self.connector.registerBufferedPortImageRgb(portList)
+		elif middleware is "sockets":
+			self.connector.openSocketsTCP(portList)
+
+	def registerBufferedPortImageRgba(self, portList):
+		""" Open a buffered port bottle, for image transmission.
+			Currently not used."""
+		if middleware is "yarp":
+			self.connector.registerBufferedPortImageRgba(portList)
 		elif middleware is "sockets":
 			self.connector.openSocketsTCP(portList)
 

@@ -20,6 +20,20 @@ class YarpConnector:
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
 
+
+	## XXX You need a special patch to export Mono Interface througth swig
+	def registerBufferedPortImageMono(self, portList):
+		""" Create a new Buffered Port Bottle, given an identifying name.
+			This is exclusively used for image data."""
+		for portName in portList:
+			portName = '/ors/'+portName
+			if portName not in self._yarpPorts:
+				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+				port = yarp.BufferedPortImageMono()
+				port.open(portName)
+				self._yarpPorts[portName] = port
+			else: raise NameError(portName + " port name already exist!")
+
 	def registerBufferedPortImageRgb(self, portList):
 		""" Create a new Buffered Port Bottle, given an identifying name.
 			This is exclusively used for image data."""
@@ -28,6 +42,18 @@ class YarpConnector:
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
 				port = yarp.BufferedPortImageRgb()
+				port.open(portName)
+				self._yarpPorts[portName] = port
+			else: raise NameError(portName + " port name already exist!")
+
+	def registerBufferedPortImageRgba(self, portList):
+		""" Create a new Buffered Port Bottle, given an identifying name.
+			This is exclusively used for image data."""
+		for portName in portList:
+			portName = '/ors/'+portName
+			if portName not in self._yarpPorts:
+				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+				port = yarp.BufferedPortImageRgba()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -171,11 +197,11 @@ class YarpConnector:
 			
 			# Copy to image with "regular" YARP pixel order
 			# Otherwise the image is upside-down
-			img2 = yarp.ImageRgba()
+			img2 = yarp_port.prepare()
 			img2.copy(img)
 			
 			# Write the image
-			yarp_port.write(img2)
+			yarp_port.write()
 
 		except KeyError as detail:
 			print ("ERROR: Specified port does not exist: ", detail)

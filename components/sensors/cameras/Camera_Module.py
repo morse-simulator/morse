@@ -52,9 +52,9 @@ def init(contr):
 		
 	#Create Connection port
 	try:
-		#GameLogic.orsConnector.registerBufferedPortImageRgb([port_name])
-		#GameLogic.orsConnector.registerBufferedPortBottle([port_name])
-		GameLogic.orsConnector.registerPort([port_name])
+		#XXX You need to add some patch to yarp.i to have access to Mono Interface
+		#GameLogic.orsConnector.registerBufferedPortImageMono([port_name])
+		GameLogic.orsConnector.registerBufferedPortImageRgba([port_name])
 	except NotImplementedError as detail:
 		print ("ERROR: Unable to create the port:")
 		print (detail)
