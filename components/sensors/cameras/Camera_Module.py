@@ -29,6 +29,14 @@ structObject = ''
 #Image_Size_X = 320
 #Image_Size_Y = 240
 
+def get_cam_property(ob, parent, property):
+	"""Return the parent property if exists, else the object one"""
+	if hasattr(parent,property):
+		return parent[property]
+	else:
+		return ob[property]
+
+
 # Background color for the captured images (Default is blue)
 #bg_color = [0, 0, 255, 255]
 # Gray
@@ -38,7 +46,6 @@ def init(contr):
 	global structObject
 	global Image_Size_X
 	global Image_Size_Y
-	global Image_Size
 
 	print ('######## CAMERA INITIALIZATION ########')
 
@@ -46,8 +53,8 @@ def init(contr):
 	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
 	
 	#if parent.Image_Size_X:
-	Image_Size_X = parent.Image_Size_X
-	Image_Size_Y = parent.Image_Size_Y
+	Image_Size_X = get_cam_property(ob, parent, 'cam_width')
+	Image_Size_Y = get_cam_property(ob, parent, 'cam_height')
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
@@ -87,6 +94,8 @@ def init(contr):
 	scene = GameLogic.getCurrentScene()
 	screen = scene.objects[screen_name]
 	camera = scene.objects[camera_name]
+
+	camera.lens = get_cam_property(ob, parent, 'cam_focal')
 
 	# Link the objects using VideoTexture	
 	if not hasattr(GameLogic, 'tv'):

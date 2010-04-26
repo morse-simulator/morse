@@ -55,7 +55,6 @@ def init(contr):
 	Image_Size_Y = ob['cam_height']
 	#Image_focal = 25
 	Image_focal = ob['cam_focal']
-	Image_Size = 4 * Image_Size_X * Image_Size_Y
 
 	# Middleware initialization
 	if not hasattr(GameLogic, 'orsConnector'):
