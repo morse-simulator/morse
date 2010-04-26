@@ -66,7 +66,6 @@ def move(contr):
 			# Translate the marker to the target destination
 			scene = GameLogic.getCurrentScene()
 			target_ob = scene.objects['OBWayPoint']
-			area_ob = scene.objects['OBWP_Area']
 			if NED == True:
 				d=destination[0]
 				destination[0] = destination[1]
