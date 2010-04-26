@@ -64,7 +64,7 @@ def init(contr):
 		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
 		if robot_state_dict[port_name] == None:
 			print ("ERROR creating poster. This module may not work")
-			#ob['Init_OK'] = False
+			ob['Init_OK'] = False
 
 		print ('######## GYROSCOPE INITIALIZED ########')
 
