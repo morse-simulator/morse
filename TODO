@@ -1,7 +1,84 @@
 General TODO list for MORSE
 ---------------------------
 
+File history:
+27/04/2010 - Arnaud + Severin: long list of things to do after the first 6 months of MORSE development
+
+---
+
+Code organisation
+-----------------
+Proposal:
+- One repo for the simulator itself (morse.git) (let's remove everything else,
+  including clients and scenarii) - if middleware are externalized (cf
+  "Middlewares" below), testing clients for component could stay there. Genom3
+  template will go there as well (some day...)
+- One repo for scenarii (morse-scenarii.git)
+
+Installation
+------------
+- make && make install ?? -> use CMake
+- Proposal for installation:
+   - $PREFIX/bin -> ors(.sh) (launch Blender + the ORS interface)
+   - $PREFIX/share/morse -> blend files for components
+   - $PREFIX/lib/site-package/morse -> python scripts for components
+   - $PREFIX/share/doc/morse -> ...something :)
+
+Architecture
+------------
+- moving to an object-oriented model. Each component should keep:
+   - its 3D transformation relative to world/parent/robot
+   - its static configuration + its instance configuration
+   - be sure that components can be remotely (ie by clients) configured
+   - an UI associated to its parameters
+   - noise functions   
+- naming of components
+- how components access other components? (eg: the cameras need the position of the robot)
+- unified time management ("what if we want to simulate at 2X?")
+
+User-interface
+--------------
+
+- Graphic tree of logic components and their interaction (no meshes, ... )
+- Possibility to control the camera when the game engine runs (with keyboard,
+  mouse, or attach some view to some robots)
+- [for CHRIS project] Ability to fully control a robot or a human as "first
+  person shooter" to interact with other robots
+
+Middlewares
+-----------
+- Rethink the architecture ; three proposals:
+   - Current solution: one abstract interface. Issues: only one middleware at
+     once ; coupling. In any case, current code must be rewritten (factories,
+	 etc)
+   - Components have "hooks" to export their data. Middleware lives in parallel
+     threads and "visit" the components. In this case, middlewares still lives
+	 in the Python VM. Advantage: better decoupling ; middleware can dynamically
+	 choose what they want to watch.
+   - External decoupling: Python components export their data as shared memory
+     (or possibly sockets?), external modules (written in any language) read
+	 this memory and format it for each middleware. Advantage: complete decoupling.
+	 If a middleware crashes/slowdowns, no impact on the simulator, language
+	 independant (may be good for Genom3). Issues: "one more copy", could be harder
+	 to manage (one more protocol to manage: what happen if we update the simulator
+	 but not the middleware, etc)
+
+-> Discuss what to do with the "YARP-JSON" bridge from IRIT
+
 Linking issues
 --------------
 - when properties are added in linked components (eg, cameras), the new properties
 don't show up in the scene that import these components.
+
+Coding style
+------------
+- code everything in Python 3 compatible Python
+- Replace all "print" by the Python logging interface
+- every simple function must have a function comment ( """ ... """) + setup the
+  documentation to be generated
+
+Other stuff 
+-----------
+- write, complete, update, add to repo the general documentation of the simulator
+- commit policy
+- Blender 2.5
