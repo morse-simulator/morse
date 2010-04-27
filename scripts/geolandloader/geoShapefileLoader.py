@@ -83,9 +83,10 @@ def distance2D(A, B):
 #--------------------------------------------------#
 def LoadBuildings(shp, hostObject):
 	# Default parameters for ground altitude and building height
-	BAlt    = 321
-	BHeight = 24
-	RoofHeight = 28
+	BAlt       = 321
+	BAltOffset = -5
+	BHeight    = 12
+	RoofHeight = 15
 	# Preparing Texture
 	buildingTex = Texture.New('buildingTex')
 	buildingTex.setType('Image')
@@ -110,17 +111,18 @@ def LoadBuildings(shp, hostObject):
 		N = len(groundCoverage)
 		print 'Building ', (i+1), 'with ', N, ' vertices'
 		buildingMesh  = Blender.Mesh.New('buildingMesh');
-		thisBuildingZ = 0
+		#--- Average the altitude of building first floor
+		if (N > 0):
+			thisBuildingZ = hostObject.findZOfClosestPoint(groundCoverage[0]) - BAltOffset
+		else:
+			thisBuildingZ = hostObject.meanZ - BAltOffset
 		for i in range(N-1):
 			# Get the Z of the closest vertices in DTM to adjust BZ
 			# for j = TODO
 			# Extend the vertices of the current building's mesh
 			buildingMesh.verts.extend(groundCoverage[i][0]   - hostObject.UTMXOrigin,
 										groundCoverage[i][1] - hostObject.UTMYOrigin ,
-										hostObject.meanZ)
-			thisBuildingZ = thisBuildingZ + hostObject.meanZ
-		#--- Average the altitude of building first floor
-		thisBuildingZ = thisBuildingZ / float(N-1)
+										thisBuildingZ)
 		#--- Filling the face of the building's ground
 		if (N == 5) or (N == 4):
 			ff = NMesh.Face([buildingMesh.verts]);
@@ -210,6 +212,7 @@ def LoadBuildings(shp, hostObject):
 
 
 
+#----------------------------------------------------------#
 def LoadRoads(shp, hostObject):
 	Nshapes = (shp.info())[0]
 	for i in range(Nshapes):
@@ -219,6 +222,7 @@ def LoadRoads(shp, hostObject):
 		#print Oshp.vertices()[0]
 
 
+#----------------------------------------------------------#
 def make_shapefile(filename):
 	obj = shapelib.SHPObject(shapelib.SHPT_POLYGON, 1, [[(10, 10), (20, 10), (20, 20), (10, 10)]])
 	print obj.extents()
@@ -228,6 +232,7 @@ def make_shapefile(filename):
 	del outfile
 
 
+#----------------------------------------------------------#
 #
 #       Test the DBF file module.
 #
@@ -239,6 +244,7 @@ def make_dbf(file):
 	dbf.add_field("INT", dbflib.FTInteger, 10, 0)
 	dbf.add_field("FLOAT", dbflib.FTDouble, 10, 4)
 
+#----------------------------------------------------------#
 def add_dbf_records(file):
 	# add some records to file
 	dbf = dbflib.open(file, "r+b")
@@ -247,6 +253,7 @@ def add_dbf_records(file):
 	# ... or as a sequence
 	dbf.write_record(1, ("Ogg", 2, -1000.1234))
 
+#----------------------------------------------------------#
 def list_dbf(file):
 	# print the contents of a dbf file to stdout
 	dbf = dbflib.DBFFile(file)
@@ -264,7 +271,7 @@ def list_dbf(file):
 	for i in range(dbf.record_count()):
 		print format % dbf.read_record(i)
 
-#####################################################
+#----------------------------------------------------------#
 #    Main method to load shapefiles according to
 #   the meaning of their contents which can be indicated
 #   by shpNature. 
@@ -285,9 +292,10 @@ def list_dbf(file):
 # shpNature : 31 : Buildings with flat roofs
 #
 # shpNature : 40 : Vegetation high grass
-# shpNature : 41 : Vegetation woods with nice trees
+# shpNature : 41 : Vegetation woods with nice trees: feuillus
+# shpNature : 42 : Vegetation woods with nice trees: coniferes
 #
-#####################################################
+#----------------------------------------------------------#
 def LoadShapefile(filename, shpNature, hostObject):
 	# The shapelib object
 	shp = []
