@@ -14,7 +14,11 @@ def euler_angle(ob):
 	# XXX If we want to have the right handle, we definivly need to transpose
 	# the matrix here, but why ?
 	matrix.transpose()
-	euler = matrix.toEuler()
+	# Use the correct function, depending on the version of Blender
+	if GameLogic.pythonVersion >= 3:
+		euler = matrix.to_euler()
+	else:
+		euler = matrix.toEuler()
 
 	return [euler.z, euler.x, euler.y]
 
