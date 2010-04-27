@@ -65,7 +65,7 @@ def move(contr):
 			# DEBUGGING:
 			# Translate the marker to the target destination
 			scene = GameLogic.getCurrentScene()
-			target_ob = scene.objects['OBWayPoint']
+			target_ob = scene.objects[ob['TargetObject']]
 			if NED == True:
 				d=destination[0]
 				destination[0] = destination[1]
@@ -88,7 +88,7 @@ def move(contr):
 			return
 
 		scene = GameLogic.getCurrentScene()
-		target_ob = scene.objects['OBWayPoint']
+		target_ob = scene.objects[ob['TargetObject']]
 		destination = target_ob.position
 		#destination[2] = destination[2]
 
