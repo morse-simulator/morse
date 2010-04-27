@@ -280,4 +280,27 @@ class DtmObject:
 		if self.verbose > 1:
 			print ' done.'
 
+	#------------------------------------------#
+	def distance2D(self, A, B):
+		x = B[0] - A[0]
+		y = B[1] - A[1]
+		return sqrt((x*x + y*y))
+
+	#------------------------------------------#
+	def findZOfClosestPoint(self, findcoors):
+		smallestDist = -1
+		smallestZ    = 0
+		for v in self.DTMO.verts:
+			if smallestDist == -1: # smallestDist init.
+				smallestDist = self.distance2D(findcoors, v.co)
+				smallestZ    = v.co[2]
+			else:
+				tmp = self.distance2D(findcoors, v.co)
+				if smallestDist > tmp:
+					smallestDist = tmp
+					smallestZ    = v.co[2]
+		return smallestZ
+
+
+
 
