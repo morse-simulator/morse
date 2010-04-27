@@ -189,6 +189,8 @@ def button(evt):     # Define what to do if a button is pressed, for example:
 				statusBuildings  = '-'
 				Blender.Window.Redraw();
 				LoadShapefile(fileBuildings, 31, dtmObject);
+				LoadShapefile('/data/caylus_SHP/BATI_INDUSTRIEL.SHP', 31, dtmObject);
+				LoadShapefile('/data/caylus_SHP/BATI_REMARQUABLE.SHP', 31, dtmObject);
 			else:
 				print '(WW) File ', fileBuildings, ' does not exist.'
 			
