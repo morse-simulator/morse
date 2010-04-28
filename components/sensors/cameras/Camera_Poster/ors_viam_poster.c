@@ -15,6 +15,7 @@ static int create_pom_sensor_pos( int blender_date,
 		const struct pom_position* robot, 
 		const struct pom_position* sensor);
 
+#define MAGIC_CALIBRATION_STUFF		200
 
 static void 
 fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header, 
@@ -88,7 +89,7 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	strncpy ( bank->name.id, bank_name, VIAM_ID_MAX);
 	bank->name.id[VIAM_ID_MAX - 1]= '\0';
 
-	create_bank_calibration(&bank->calibration, nb_images, baseline, 1);
+	create_bank_calibration(&bank->calibration, nb_images, baseline, MAGIC_CALIBRATION_STUFF);
 	bank->nImages = nb_images;
 
 	size_t offset = 0;
@@ -169,8 +170,8 @@ create_camera_calibration(viam_cameracalibration_t* local_calibration,
 
 	local_calibration->intrinsic[2] = init->width / 2;
 	local_calibration->intrinsic[5] = init->height / 2;
-	local_calibration->intrinsic[0] = init->width / 35.0 * init->focal;
-	local_calibration->intrinsic[4] = init->height / 24.0 * init->focal;
+	local_calibration->intrinsic[0] = MAGIC_CALIBRATION_STUFF;
+	local_calibration->intrinsic[4] = MAGIC_CALIBRATION_STUFF;
 
 	memcpy(local_calibration->intrirect, local_calibration->intrinsic, sizeof(identity));
 
