@@ -3,6 +3,7 @@ General TODO list for MORSE
 
 File history:
 27/04/2010 - Arnaud + Severin: long list of things to do after the first 6 months of MORSE development
+29/04/2010 - Arnaud + Severin: mark with a * things needed for release v0.1
 
 ---
 
@@ -17,8 +18,8 @@ Proposal:
 
 Installation
 ------------
-- make && make install ?? -> use CMake
-- Proposal for installation:
+* make && make install ?? -> use CMake
+* Proposal for installation:
    - $PREFIX/bin -> ors(.sh) (launch Blender + the ORS interface)
    - $PREFIX/share/morse -> blend files for components
    - $PREFIX/lib/site-package/morse -> python scripts for components
@@ -26,15 +27,15 @@ Installation
 
 Architecture
 ------------
-- moving to an object-oriented model. Each component should keep:
+* moving to an object-oriented model. Each component should keep:
    - its 3D transformation relative to world/parent/robot
    - its static configuration + its instance configuration
    - be sure that components can be remotely (ie by clients) configured
    - an UI associated to its parameters
    - noise functions   
-- naming of components
-- how components access other components? (eg: the cameras need the position of the robot)
-- unified time management ("what if we want to simulate at 2X?")
+* naming of components
+* how components access other components? (eg: the cameras need the position of the robot)
+* unified time management ("what if we want to simulate at 2X?")
 
 User-interface
 --------------
@@ -47,7 +48,7 @@ User-interface
 
 Middlewares
 -----------
-- Rethink the architecture ; three proposals:
+* Rethink the architecture ; three proposals:
    - Current solution: one abstract interface. Issues: only one middleware at
      once ; coupling. In any case, current code must be rewritten (factories,
 	 etc)
@@ -79,6 +80,6 @@ Coding style
 
 Other stuff 
 -----------
-- write, complete, update, add to repo the general documentation of the simulator
-- commit policy
+* write, complete, update, add to repo the general documentation of the simulator
+* commit policy
 - Blender 2.5
