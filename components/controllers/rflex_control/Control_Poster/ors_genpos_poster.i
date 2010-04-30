@@ -12,9 +12,7 @@
 %{
 /* Include the header in the wrapper code */
 #include "ors_genpos_poster.h"
-#include <genPos/genPosStruct.h>
 %}
 
 /* Parse the header file to generate wrappers */
 %include "ors_genpos_poster.h"
-%include "/home/gechever/openrobots/include/genPos/genPosStruct.h"
