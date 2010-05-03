@@ -4,7 +4,7 @@ General TODO list for MORSE
 File history:
 27/04/2010 - Arnaud + Severin: long list of things to do after the first 6 months of MORSE development
 29/04/2010 - Arnaud + Severin: mark with a * things needed for release v0.1
-
+03/05/2010 - Simon: added a "section" related to the management of the frame transformations
 ---
 
 Code organisation
@@ -77,6 +77,18 @@ Coding style
 - Replace all "print" by the Python logging interface
 - every simple function must have a function comment ( """ ... """) + setup the
   documentation to be generated
+
+Frame transformations
+-----------
+
+- Representation of all the frames defined within a robot (one frame per sensor,
+  one robot frame). 
+- Geo-referenced frames for initial geographic data (define and store a frame
+  transformation between the Blender reference frame and an abosolute
+  geo-reference frame)
+- Camera geometry: associate a projection matrix to each camera
+- Respect the usual standards (e.g. for cameras), define and document the other
+  choices
 
 Other stuff 
 -----------
