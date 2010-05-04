@@ -4,6 +4,11 @@ import Mathutils
 import json
 import math
 
+import time
+from Sick_Poster import ors_sick_poster
+from datetime import datetime;
+from helpers.MorseTransformation import Transformation3d
+
 
 try:
    scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
@@ -66,40 +71,19 @@ def init(contr):
 		FILE = open(filename, 'wb')
 		FILE.writelines(data)
 		FILE.close()
+
+		# YARP port
 		GameLogic.orsConnector.registerBufferedPortBottle([port_name])
+
+		### POCOLIBS ###
+		poster_name = "sickMorse"
+		robot_state_dict[port_name] = ors_sick_poster.init_data(poster_name)
+		print ("Poster ID generated: {0}".format(robot_state_dict[port_name]))
+		if robot_state_dict[port_name] == None:
+			print ("ERROR creating poster. This module may not work")
+			ob['Init_OK'] = False
+
 		print ('######## SICK INITIALIZED ########')
-
-
-def laser_sweep(contr):
-	""" Do ray tracing from the SICK object towards the Ray_arrow object.
-		Return the points located. """
-	ob, parent, port_name = setup.ObjectData.get_object_data(contr)
-	port_name = port_name + "/out"
-
-	if ob['Init_OK']:
-		robot_state_dict = GameLogic.robotDict[parent]
-
-		############### SICK laser ###################
-		scene = GameLogic.getCurrentScene()
-		ray_ob = scene.objects['OBRay_arrow']
-		target,point,normal = ob.rayCast(ray_ob,None,ob['Laser_Range'])
-
-		if target:
-			#print ("Laser detected: Object {0}, direction {1}".format(target, point))
-
-			# Define the message structure to send.
-			# It is a list of tuples (data, type).
-			sick_dict = {'point': point}
-			message = json.dumps(sick_dict)
-			message_data = [ (message, 'string') ]
-
-			GameLogic.orsConnector.postMessage(message_data, port_name)
-
-			# Add a point to the location of the ray intersection
-			ray_int_ob = scene.objects['OBRay_target']
-			ray_int_ob.position = point
-			intersect_act = contr.actuators['Register_intersection']
-			contr.activate(intersect_act)
 
 
 def arc_sweep(contr):
@@ -120,6 +104,7 @@ def arc_sweep(contr):
 		except KeyError:
 			pass
 			
+
 
 		############### SICK laser ###################
 		scene = GameLogic.getCurrentScene()
@@ -189,7 +174,6 @@ def arc_sweep(contr):
 						#print ("\tARC POINT: [%.2f, %.2f, %.2f]" % (arc_point[0], arc_point[1], arc_point[2]))
 
 						point_string = "[%.4f, %.4f, %.4f]\n" % (arc_point[0], arc_point[1], arc_point[2])
-						#point_list.append(point_string)
 
 						# Do not move the point if the ray intersection
 						#  happened at the origin
@@ -223,7 +207,58 @@ def arc_sweep(contr):
 			parent_position = "[%.4f, %.4f, %.4f], %.4f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['Yaw'])
 			write_points_to_file(filename, point_list, parent_position)
 		except KeyError:
-			print ("SICK: Gyroscope not available")
+			print "SICK: Gyroscope not available"
+
+
+		### POCOLIBS ###
+		mainToOrigin = Transformation3d(parent)
+		sensorToOrigin = Transformation3d(ob)
+		mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
+
+		pom_robot_position =  ors_sick_poster.pom_position()
+		pom_robot_position.x = mainToOrigin.x
+		pom_robot_position.y = mainToOrigin.y
+		pom_robot_position.z = mainToOrigin.z
+		pom_robot_position.yaw = robot_state_dict['Yaw']
+		pom_robot_position.pitch = robot_state_dict['Pitch']
+		pom_robot_position.roll = robot_state_dict['Roll']
+
+		pom_sensor_position = ors_sick_poster.pom_position()
+		pom_sensor_position.x = mainToSensor.x
+		pom_sensor_position.y = mainToSensor.y
+		pom_sensor_position.z = mainToSensor.z
+		# XXX +PI rotation is needed but I don't have any idea why !!
+		pom_sensor_position.yaw = mainToSensor.yaw + 180.0
+		pom_sensor_position.pitch = mainToSensor.pitch
+		pom_sensor_position.roll = mainToSensor.roll
+
+		# Compute the current time ( we only requiere that the pom date
+		# increases using a constant step so real time is ok)
+		t = datetime.now()
+		pom_date = int(t.hour * 3600* 1000 + t.minute * 60 * 1000 +
+				t.second * 1000 + t.microsecond / 1000)
+
+		pom_pos_data = ors_sick_poster.POM_SENSOR_POS()
+		ors_sick_poster.create_pom_sensor_pos(pom_date, pom_pos_data, pom_robot_position, pom_sensor_position)
+
+
+		# Fill in the structure with the image information
+		sensor_info = ors_sick_poster.SICK_MEASURES_HEADER_STR()
+		#sensor_info = ors_sick_poster.sick_struct()
+		sensor_info.np = len(point_list)
+		# Frame is one of
+		#  ( SICK_SICK_FRAME, SICK_ROBOT_FRAME, SICK_GLOBAL_FRAME )
+		sensor_info.frame = ors_sick_poster.SICK_SICK_FRAME
+		sensor_info.start_time = t.second
+		sensor_info.rcv_time = t.second
+		sensor_info.theta_min = 0.0
+		sensor_info.dtheta = math.radians(1) # Convert 1 degree to radians
+		sensor_info.sickPomPos = pom_pos_data
+
+		# Create the poster with the data for both images
+		posted = ors_sick_poster.post_sick_poster(robot_state_dict[port_name], sensor_info, sensor_data)
+
+
 
 
 def valid_range(point_vector, radius):
@@ -235,7 +270,6 @@ def valid_range(point_vector, radius):
 		return False
 	else:
 		return True
-
 
 
 def fill_vector(vector, point_list):
