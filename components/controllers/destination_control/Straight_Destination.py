@@ -3,6 +3,7 @@ import GameLogic
 import Mathutils
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
+from helpers import MorseMath
 
 
 def move(contr):
@@ -101,44 +102,72 @@ def move(contr):
 		# Ignore the altitude (Z)
 		#location_V[2] = 0
 		destination_V = Mathutils.Vector(destination)				
-		#print (" pos: {0}".format(destination_V))
+
 		distance_V = destination_V - location_V
-		#print ("location_V {0}".format(location_V))
+		#print ("\nlocation_V {0}".format(location_V))
 		#print ("destination_V {0}".format(destination_V))
-		distance = distance_V.length #- robot_state_dict['tolerance']
+		#print ("distance_V {0}".format(distance_V))
+		distance = distance_V.length - robot_state_dict['tolerance']
 
 		#print ("GOT DISTANCE: {0}".format(distance))
 
-
+		# Testing to get the correct transformation for the
+		#  movement of the robot using its local coordinate system
+		# The results were strange either using local or global coordinates
+		#rotation_matrix = MorseMath.get_rotation_matrix (parent)
+		#MorseMath.print_matrix_33(rotation_matrix)
+		#distance_V = distance_V * rotation_matrix
+		#print ("ROTATION distance_V {0}".format(distance_V))
+		#inverted_matrix = MorseMath.invert_rotation_matrix (parent)
+		#MorseMath.print_matrix_33(inverted_matrix)
+		#distance_V = inverted_matrix * distance_V
+		#print ("INVERTED distance_V {0}".format(distance_V))
 
 
 		if distance > 0:
 			# Move forward
 			distance_V.normalize()
-			fps = GameLogic.getAverageFrameRate()
+			#fps = GameLogic.getAverageFrameRate()
+			ticks = GameLogic.getLogicTicRate()
 			
 			if NED == True:
-				vx = distance_V[1] * speed/fps
-				vy = distance_V[0] * speed/fps
-				vz = -distance_V[2] * speed/fps
+				vx = distance_V[1] * speed/ticks
+				vy = distance_V[0] * speed/ticks
+				vz = -distance_V[2] * speed/ticks
 			else:
-				vx = distance_V[0] * speed/fps
-				vy = distance_V[1] * speed/fps
-				vz = distance_V[2] * speed/fps
+				vx = distance_V[0] * speed/ticks
+				vy = distance_V[1] * speed/ticks
+				vz = distance_V[2] * speed/ticks
+
+			# Correction of the movement direction,
+			#  with respect to the object's orientation
+			#movement_V = Mathutils.Vector(vx, vy, vz)
+			#(vx, vy, vz) = parent.getAxisVect(movement_V)
+
+				
 		# If the target has been reached, change the status
 		elif distance <= 0:
+			# Teleport robot to the desired destination
+			parent.position = target_ob.position
+
 			robot_state_dict['moveStatus'] = "Stop"
 			print ("TARGET REACHED")
 			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
-		msg_act = contr.actuators['Send_update_msg']
-		msg_act.propName = parent.name
-		msg_act.subject = 'Speed'
+		"""
 		robot_state_dict['vx'] = vx
 		robot_state_dict['vy'] = vy
 		robot_state_dict['vz'] = vz
 
+		msg_act = contr.actuators['Send_update_msg']
+		msg_act.propName = parent.name
+		msg_act.subject = 'Speed'
 		contr.activate(msg_act)
+		"""
+
+		# Give the movement instructions directly to the parent
+		# The second parameter specifies a "global" movement
+		parent.applyMovement([vx, vy, vz], False)
 
 		#print ("Motion for robot '{0}'".format(parent.name))
 		#print ("\tvx: %.4f, %4f, %4f" % (vx, vy, vz))
