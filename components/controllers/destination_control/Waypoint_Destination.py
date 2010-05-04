@@ -147,9 +147,7 @@ def move(contr):
 			print ("TARGET REACHED")
 			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
-		msg_act = contr.actuators['Send_update_msg']
-		msg_act.propName = parent.name
-		msg_act.subject = 'Speed'
+		"""
 		robot_state_dict['vx'] = vx
 		robot_state_dict['vy'] = vy
 		robot_state_dict['vz'] = vz
@@ -158,7 +156,17 @@ def move(contr):
 		robot_state_dict['ry'] = ry
 		robot_state_dict['rz'] = rz
 
+		msg_act = contr.actuators['Send_update_msg']
+		msg_act.propName = parent.name
+		msg_act.subject = 'Speed'
 		contr.activate(msg_act)
+		"""
+
+		# Give the movement instructions directly to the parent
+		# The second parameter specifies a "local" movement
+		parent.applyMovement([vx, vy, vz], True)
+		parent.applyRotation([rx, ry, rz], True)
+
 
 		#print ("Motion for robot '{0}'".format(parent.name))
 		#print ("\tvx: %.4f, %4f, %4f" % (vx, vy, vz))

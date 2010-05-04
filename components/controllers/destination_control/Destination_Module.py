@@ -52,7 +52,8 @@ def init(contr):
 		#### INIT ROBOT DICTIONARY ####
 		robot_state_dict['speed'] = 0.05
 		robot_state_dict['destination'] = 0
-		robot_state_dict['tolerance'] = 1.5
+		#robot_state_dict['tolerance'] = 1.5
+		robot_state_dict['tolerance'] = 0.5
 		robot_state_dict['path'] = deque()
 		robot_state_dict['wp_index'] = 0
 

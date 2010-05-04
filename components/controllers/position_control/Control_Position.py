@@ -68,33 +68,33 @@ def position(contr):
 		p = GameLogic.orsConnector.getPort(position_port_name)
 		
 		#non-blocking read of the port
-		cmd = p.read(False)	        
+		cmd = p.read(False)		
 		if cmd!=None:	
-                   	x =    cmd.get(0).asDouble()
+		   	x =    cmd.get(0).asDouble()
 			y =    cmd.get(1).asDouble()			
 			z =    cmd.get(2).asDouble()
-                        ax =   cmd.get(3).asDouble()
+			ax =   cmd.get(3).asDouble()
 			ay =   cmd.get(4).asDouble()			
 			az =   cmd.get(5).asDouble()
 
-                        print ("received position x : "+str(x)+" y: "+str(y)+" z: "+str(z))
-                        robot_state_dict['x'] = x
+			print ("received position x : "+str(x)+" y: "+str(y)+" z: "+str(z))
+			robot_state_dict['x'] = x
 			robot_state_dict['y'] = y	
 			robot_state_dict['z'] = z	
 
-                        robot_state_dict['ax'] = ax
+			robot_state_dict['ax'] = ax
 			robot_state_dict['ay'] = ay	
 			robot_state_dict['az'] = az
-                        print ("received rotation x : "+str(ax)+" y: "+str(ay)+" z: "+str(az))
-                        #ob.position=pos
-                        
-                        msg_act = contr.actuators['Send_update_msg']
+			print ("received rotation x : "+str(ax)+" y: "+str(ay)+" z: "+str(az))
+			#ob.position=pos
+			
+			msg_act = contr.actuators['Send_update_msg']
 			msg_act.propName = parent.name
 			msg_act.to = parent.name
 			msg_act.subject = 'Position'	
 
-                        contr.activate(msg_act)
-			                   
+			contr.activate(msg_act)
+					   
 			#fps = GameLogic.getAverageFrameRate()		
 			#vx =   cmd.get(0).asDouble()/fps
 			#vy =   cmd.get(1).asDouble()/fps			
@@ -112,7 +112,7 @@ def position(contr):
 			#robot_state_dict['vy'] = vy	
 			#robot_state_dict['vz'] = vz		
 
-                        #robot_state_dict['rx'] = rx
+			#robot_state_dict['rx'] = rx
 			#robot_state_dict['ry'] = ry	
 			#robot_state_dict['rz'] = rz		
 
