@@ -19,6 +19,4 @@
 */
 
 /* Parse the header file to generate wrappers */
-%include "/home/gechever/openrobots/include/pom/pomStruct.h"
-%include "/home/gechever/openrobots/include/sick/sickStruct.h"
 %include "ors_sick_poster.h"
