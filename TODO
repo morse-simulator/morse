@@ -5,6 +5,7 @@ File history:
 27/04/2010 - Arnaud + Severin: long list of things to do after the first 6 months of MORSE development
 29/04/2010 - Arnaud + Severin: mark with a * things needed for release v0.1
 03/05/2010 - Simon: added a "section" related to the management of the frame transformations
+04/05/2010 - Arnaud + Severin + Nicolas + Gilberto: review of the list, with aims at a first release
 ---
 
 Code organisation
@@ -18,22 +19,23 @@ Proposal:
 
 Installation
 ------------
-* make && make install ?? -> use CMake
+* make && make install ?? -> use CMake, with options (YARP, Pocolibs...)
 * Proposal for installation:
    - $PREFIX/bin -> ors(.sh) (launch Blender + the ORS interface)
    - $PREFIX/share/morse -> blend files for components
    - $PREFIX/lib/site-package/morse -> python scripts for components
    - $PREFIX/share/doc/morse -> ...something :)
+* Add empty templates for scenes, robots, components... + mechanism to copy these
+templates when creating a new scene.
 
 Architecture
 ------------
 * moving to an object-oriented model. Each component should keep:
    - its 3D transformation relative to world/parent/robot
    - its static configuration + its instance configuration
-   - be sure that components can be remotely (ie by clients) configured
    - an UI associated to its parameters
-   - noise functions   
-* naming of components
+   - noise functions
+* naming of components (Python files, .blend files)
 * how components access other components? (eg: the cameras need the position of the robot)
 * unified time management ("what if we want to simulate at 2X?")
 
@@ -43,6 +45,7 @@ User-interface
 - Graphic tree of logic components and their interaction (no meshes, ... )
 - Possibility to control the camera when the game engine runs (with keyboard,
   mouse, or attach some view to some robots)
+- Use this controllable camera by default when starting a simulation
 - [for CHRIS project] Ability to fully control a robot or a human as "first
   person shooter" to interact with other robots
 
@@ -62,10 +65,12 @@ Middlewares
 	 If a middleware crashes/slowdowns, no impact on the simulator, language
 	 independant (may be good for Genom3). Issues: "one more copy", could be harder
 	 to manage (one more protocol to manage: what happen if we update the simulator
-	 but not the middleware, etc)
+	 but not the middleware, etc), debugging, requests harder to implement.
 
 -> Discuss what to do with the "YARP-JSON" bridge from IRIT
 
+* Requests: be sure that components can be remotely (ie by clients) configured
+   
 Linking issues
 --------------
 - when properties are added in linked components (eg, cameras), the new properties
