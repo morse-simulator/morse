@@ -22,6 +22,7 @@ def euler_angle(ob):
 
 	return [euler.z, euler.x, euler.y]
 
+
 # euler_angle(object) returns a tuple yaw, pitch, roll, in degree,
 # corresponding to the transformation between the origin frame and the object
 # frame.
@@ -53,8 +54,37 @@ def euler_angle_old(ob):
 
 	return [yaw, pitch, roll]
 
-# print_matrix_33 prints a 3x3 @matrix on stdout
+
+def get_rotation_matrix(object):
+	""" Return a the rotation matrix of an object.
+		Used to transform another object to this one's coordinate system. """
+	# Obtain the rotation matrix of the object.
+	rot_matrix = object.worldOrientation
+	rotation_matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+	# According to the GE documentation, it has to be transposed first
+	rotation_matrix.transpose()
+
+	return rotation_matrix
+
+
+def invert_rotation_matrix(object):
+	""" Return a the inverse of the rotation matrix of an object.
+		Used to get the position of another object with respect to
+		this one. """
+	# Obtain the rotation matrix of the object.
+	rot_matrix = object.worldOrientation
+	inverted_matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+	# According to the GE documentation, it has to be transposed first
+	inverted_matrix.transpose()
+	# Then invert it, to use it to find the arc vertices
+	inverted_matrix.invert()
+
+	return inverted_matrix
+
+
+
 def print_matrix_33 (matrix):
+	""" print_matrix_33 prints a 3x3 @matrix on stdout """
 	for row in matrix:
 		line = "[%.4f %.4f %.4f]" % (row[0], row[1], row[2])
 		print (line)
