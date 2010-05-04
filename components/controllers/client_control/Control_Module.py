@@ -73,14 +73,16 @@ def move(contr):
 
 		if cmd!=None:	
 			
-			fps = GameLogic.getAverageFrameRate()		
-			vx =   cmd.get(0).asDouble()/fps
-			vy =   cmd.get(1).asDouble()/fps			
-			vz = - cmd.get(2).asDouble()/fps
+			#fps = GameLogic.getAverageFrameRate()		
+			ticks = GameLogic.getLogicTicRate()
+
+			vx =   cmd.get(0).asDouble()/ticks
+			vy =   cmd.get(1).asDouble()/ticks			
+			vz = - cmd.get(2).asDouble()/ticks
 			
-			rx =   cmd.get(3).asDouble()/fps
-			ry =   cmd.get(4).asDouble()/fps			
-			rz = - cmd.get(5).asDouble()/fps
+			rx =   cmd.get(3).asDouble()/ticks
+			ry =   cmd.get(4).asDouble()/ticks			
+			rz = - cmd.get(5).asDouble()/ticks
 
 			msg_act = contr.actuators['Send_update_msg']
 			#msg_act.propName = parent.name
