@@ -71,16 +71,10 @@ def invert_rotation_matrix(object):
 	""" Return a the inverse of the rotation matrix of an object.
 		Used to get the position of another object with respect to
 		this one. """
-	# Obtain the rotation matrix of the object.
-	rot_matrix = object.worldOrientation
-	inverted_matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
-	# According to the GE documentation, it has to be transposed first
-	inverted_matrix.transpose()
-	# Then invert it, to use it to find the arc vertices
+	inverted_matrix = get_rotation_matrix(object)
 	inverted_matrix.invert()
 
 	return inverted_matrix
-
 
 
 def print_matrix_33 (matrix):
