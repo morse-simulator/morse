@@ -20,3 +20,7 @@ for dir in script_dirs:
 print ("Welcome to the MORSE simulator")
 print ("==============================")
 print ("\nUsing path: {0}\n".format(sys.path))
+
+# For backwards compatibility with the current modules using YARP
+# TODO: This should be dynamic to allow users to choose a middleware
+import init_middleware
