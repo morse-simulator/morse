@@ -1,12 +1,16 @@
 import yarp
 
-class YarpConnector(MORSE_Middleware):
+#class Morse_Yarp_Class(Morse_Middleware.Morse_Middleware_Class):
+class Morse_Yarp_Class(object):
 	""" Handle communication between Blender and YARP."""
 
-	def __init__(self):
+	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
+		print ("@@@ Morse_Yarp object INSTANTING")
+		self.blender_obj = obj
 		self._yarpPorts = dict()
 		yarp.Network.init()
+		print ("@@@ Morse_Yarp object FINISHED INSTANTING")
 
 	def __del__(self):
 		""" Destructor method.

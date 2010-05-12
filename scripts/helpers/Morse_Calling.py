@@ -21,7 +21,8 @@ def sensor_action(contr):
 	# Get the intance of this objects class
 	sensor_object = GameLogic.componentDict[obj]
 	sensor_object.action()
-	
+
+
 def actuator_action(contr):
 	""" Call the 'action' method of the correct actuator. """
 	obj = contr.owner
@@ -30,3 +31,16 @@ def actuator_action(contr):
 	# Get the intance of this objects class
 	actuator_object = GameLogic.componentDict[obj]
 	actuator_object.action()
+
+
+def mw_action(contr):
+	""" Call the 'action' method of the correct middleware. """
+	# TODO: Right now there is nothing the mw should do, so just exit
+	return
+
+	obj = contr.owner
+	parent = obj.parent
+	
+	# Get the intance of this objects class
+	#mw_object = GameLogic.componentDict[obj]
+	#mw_object.action()

@@ -30,4 +30,9 @@ class Gyroscope_Class(Morse_Object.Morse_Object_Class):
 		self.robot_parent.pitch = self.pitch
 		self.robot_parent.roll = self.roll
 
+		# Store the data acquired by this sensor that could be sent
+		#  via a middleware.
+		# It is a list of tuples (name, data, type).
+		self.message_data = [ ('yaw', self.yaw, 'double'), ('pitch', self.pitch, 'double'), ('roll', self.roll, 'double') ]
+
 		#print ("[Y %.4f, P %.4f, R %.4f" % (self.yaw, self.pitch, self.roll))

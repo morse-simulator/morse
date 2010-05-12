@@ -24,28 +24,25 @@ def Create_Dictionaries ():
 	if not hasattr(GameLogic, 'robotDict'):
 		GameLogic.robotDict = {}
 
+	# Create a dictionary with the middlewares used
+	if not hasattr(GameLogic, 'mwDict'):
+		GameLogic.mwDict = {}
+
 	scene = GameLogic.getCurrentScene()
 
 	# Get the robots
 	for obj in scene.objects:
 		try:
 			obj['Robot_Tag']
-
+			# Create an object instance and store it
 			instance = Create_Instance (obj)
-
-			#GameLogic.robotDict[obj] = {}
 			GameLogic.robotDict[obj] = instance
-
-			"""
-			import morse_test.Sphere
-			instance = morse_test.Sphere.Sphere('cyan')
-			"""
 		except KeyError:
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
 								# Does not work in Python 3
 
-	# Get the components
+	# Get the robot and its instance
 	for obj, robot_instance in GameLogic.robotDict.items():
 		# Create an empty list for the components of this robot
 		robot_instance.components = []
@@ -56,14 +53,28 @@ def Create_Dictionaries ():
 				robot_instance.components.append (child)
 
 				# Create an instance of the component class
-				#  and add it to GameLogic
+				#  and add it to the component list of GameLogic
 				instance = Create_Instance (child, robot_instance)
 				GameLogic.componentDict[child] = instance
 
 			except KeyError:
 				pass
-				#sys.exc_clear()  # Clears the last exception thrown
-		#print ("GameLogic[{0}] = {1}".format(name, obj))
+				#sys.exc_clear()	# Clears the last exception thrown
+									# Does not work in Python 3
+
+
+	# Get the middlewares
+	for obj in scene.objects:
+		try:
+			obj['Middleware_Tag']
+			# Create an object instance and store it
+			instance = Create_Instance (obj)
+			GameLogic.mwDict[obj] = instance
+		except KeyError:
+			pass
+			#sys.exc_clear()	# Clears the last exception thrown
+								# Does not work in Python 3
+
 
 
 def Check_Dictionaries():
@@ -75,12 +86,18 @@ def Check_Dictionaries():
 		for component in robot_instance.components:
 			print ("\t\t- Component: '{0}'".format(component))
 
-	print ("GameLogic has the following components:")
+	print ("\nGameLogic has the following components:")
 	for obj, component_variables in GameLogic.componentDict.items():
 		print ("\tCOMPONENT: '{0}'".format(obj))
 
+	print ("\nGameLogic has the following middlewares:")
+	for obj, mw_variables in GameLogic.mwDict.items():
+		print ("\tMIDDLEWARE: '{0}'".format(obj))
+
 
 def Create_Instance(obj, parent=None):
+	""" Dynamically load a Python module and create an instance object
+		of the class defined within. """
 	# Read the path and class of the object from the Logic Properties
 	source_file = obj['Path'] + obj['Class']
 	module_name = re.sub('/', '.', source_file)
@@ -88,7 +105,7 @@ def Create_Instance(obj, parent=None):
 	# Import the module containing the class
 	__import__(module_name)
 	module = sys.modules[module_name]
-	# Create an instance of the object
+	# Create an instance of the object class
 	klass = getattr(module, obj['Class'] + '_Class')
 	instance = klass(obj, parent)
 
@@ -119,19 +136,12 @@ def Publish_JSON_Dictionaries(port_name):
 def init(contr):
 	""" Open the communication ports for administration."""
 	print ('\n######## SCENE INITIALIZATION ########')
-
-	# Middleware initialization
-	#if not hasattr(GameLogic, 'orsConnector'):
-	#GameLogic.orsConnector = MiddlewareConnector()
-
-
 	# Get the version of Python used, according to the pythonpath
 	# This is used to determine also the version of Blender
 	python_version = platform.python_version()
 	print ("Python Version: {0}".format(python_version))
 	# Chop the version to only 3 chars: #.#  and convert to a number
 	GameLogic.pythonVersion = float(python_version[:3])
-
 
 	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()
