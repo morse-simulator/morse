@@ -55,7 +55,7 @@ def Create_Dictionaries ():
 				# Create an instance of the component class
 				#  and add it to the component list of GameLogic
 				instance = Create_Instance (child, robot_instance)
-				GameLogic.componentDict[child] = instance
+				GameLogic.componentDict[child.name] = instance
 
 			except KeyError:
 				pass

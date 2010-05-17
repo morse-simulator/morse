@@ -29,7 +29,10 @@ class Morse_Object_Class(object):
 		""" Call the action functions that have been added to the list. """
 		self.default_action()
 		for function in self.action_functions:
-			function()
+			#function()
+			# Call the functions, giving the component's data
+			#  and name as parameters
+			function(self.message_data, self.blender_obj.name)
 
 	def print_position(self):
 		""" Print the current position of the blender object. """

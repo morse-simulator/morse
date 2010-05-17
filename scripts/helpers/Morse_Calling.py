@@ -19,7 +19,7 @@ def sensor_action(contr):
 	parent = obj.parent
 	
 	# Get the intance of this objects class
-	sensor_object = GameLogic.componentDict[obj]
+	sensor_object = GameLogic.componentDict[obj.name]
 	sensor_object.action()
 
 
@@ -29,7 +29,7 @@ def actuator_action(contr):
 	parent = obj.parent
 	
 	# Get the intance of this objects class
-	actuator_object = GameLogic.componentDict[obj]
+	actuator_object = GameLogic.componentDict[obj.name]
 	actuator_object.action()
 
 
@@ -42,5 +42,5 @@ def mw_action(contr):
 	parent = obj.parent
 	
 	# Get the intance of this objects class
-	#mw_object = GameLogic.componentDict[obj]
+	#mw_object = GameLogic.componentDict[obj.name]
 	#mw_object.action()

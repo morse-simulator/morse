@@ -1,21 +1,54 @@
 import yarp
+import sys
+import GameLogic
 
 #class Morse_Yarp_Class(Morse_Middleware.Morse_Middleware_Class):
 class Morse_Yarp_Class(object):
 	""" Handle communication between Blender and YARP."""
-
+	
 	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
-		print ("@@@ Morse_Yarp object INSTANTING")
 		self.blender_obj = obj
 		self._yarpPorts = dict()
-		yarp.Network.init()
-		print ("@@@ Morse_Yarp object FINISHED INSTANTING")
+		self._component_ports = dict()
+
+		# Get the Network attribute of yarp,
+		#  then call its init method
+		# Strange that we should do all this,
+		#  but it's the only way it seems to work
+		self._yarp_module = sys.modules['yarp']
+		#self._network = getattr(self._yarp_module, 'Network')
+		#self._network.init()
+		self._yarp_module.Network.init()
+
+		#yarp.Network.init()
+
+		self.init_components()
+
 
 	def __del__(self):
 		""" Destructor method.
 			Close all open ports. """
 		self.finalize()
+
+
+	def init_components(self):
+		# Read the list of components and its associacted middleware
+		# The file Component_Config.py is at the moment included
+		#  in the .blend file of the scene
+		import Component_Config
+		# Add the hook functions to the appropriate components
+		_component_list = Component_Config.component_list
+		for component_name, mw in _component_list.items():
+			print ("Component: '%s' is operated by '%s'" % (component_name, mw))
+			instance = GameLogic.componentDict['OB' + component_name]
+			# Add the yarp function to the component's action list
+			instance.action_functions.append(self.postMessage)
+
+			port_name = 'robots/{0}/{1}'.format(instance.robot_parent.blender_obj.name, component_name)
+			self.registerBufferedPortBottle([port_name])
+			#instance.port_name = port_name
+			self._component_ports[instance.blender_obj.name] = port_name
 
 
 	def registerBufferedPortBottle(self, portList):
@@ -24,7 +57,7 @@ class Morse_Yarp_Class(object):
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
-				port = yarp.BufferedPortBottle()
+				port = self._yarp_module.BufferedPortBottle()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -38,7 +71,7 @@ class Morse_Yarp_Class(object):
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
-				port = yarp.BufferedPortImageMono()
+				port = self._yarp_module.BufferedPortImageMono()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -50,7 +83,7 @@ class Morse_Yarp_Class(object):
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
-				port = yarp.BufferedPortImageRgb()
+				port = self._yarp_module.BufferedPortImageRgb()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -62,7 +95,7 @@ class Morse_Yarp_Class(object):
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
-				port = yarp.BufferedPortImageRgba()
+				port = self._yarp_module.BufferedPortImageRgba()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -74,7 +107,7 @@ class Morse_Yarp_Class(object):
 			portName = '/ors/'+portName
 			if portName not in self._yarpPorts:
 				#print ('Yarp Mid: Adding ' + portName + ' port.')
-				port = yarp.Port()
+				port = self._yarp_module.Port()
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
@@ -85,7 +118,9 @@ class Morse_Yarp_Class(object):
 		for port in self._yarpPorts.values():
 			port.close()
 		
-		yarp.Network.fini()
+		#self._network.fini()
+		self._yarp_module.Network.fini()
+		#yarp.Network.fini()
 		print ('Yarp Mid: ports have been closed.')
 	
 
@@ -133,22 +168,26 @@ class Morse_Yarp_Class(object):
 
 
 
-	def postMessage(self, message_data, port_name):
+	#def postMessage(self, message_data, port_name):
+	def postMessage(self, message_data, component_name):
 		""" Send a message through the given named port."""
+		# Extract the port_name from the local dictionary
+		port_name = self._component_ports[component_name]
+
 		try:
 			yarp_port = self.getPort(port_name)
 			
 			bottle = yarp_port.prepare()
 			bottle.clear()
-			# Data elements are tuples of (data, type)
+			# Data elements are tuples of (name, data, type)
 			for element in message_data:
-				msg_data, msg_type = element[0], element[1]
-				if msg_type == 'string':
-					bottle.addString(msg_data)
-				elif msg_type == 'int':
-					bottle.addInt(msg_data)
-				elif msg_type == 'double':
-					bottle.addDouble(msg_data)
+				variable_name, variable_data, variable_type = element[0], element[1], element[2]
+				if variable_type == 'string':
+					bottle.addString(variable_data)
+				elif variable_type == 'int':
+					bottle.addInt(variable_data)
+				elif variable_type == 'double':
+					bottle.addDouble(variable_data)
 				else:
 					print ("Yarp Mid ERROR: Unknown data type at 'postMessage'")
 
