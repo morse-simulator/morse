@@ -188,7 +188,7 @@ def arc_sweep(contr):
 						arc_point = vector_point * inverted_matrix
 						#print ("\tARC POINT: [%.2f, %.2f, %.2f]" % (arc_point[0], arc_point[1], arc_point[2]))
 
-						point_string = "[%.4f, %.4f, %.4f]\n" % (arc_point[0], arc_point[1], arc_point[2])
+						point_string = "[%.10f, %.10f, %.10f]\n" % (arc_point[0], arc_point[1], arc_point[2])
 						#point_list.append(point_string)
 
 						# Do not move the point if the ray intersection
@@ -213,14 +213,14 @@ def arc_sweep(contr):
 
 						# Add a point at 0,0,0 to the output file,
 						#  to mark that this ray did not find anything
-						point_string = "[%.4f, %.4f, %.4f]\n" % (0.0, 0.0, 0.0)
+						point_string = "[%.10f, %.10f, %.10f]\n" % (0.0, 0.0, 0.0)
 
 					point_list.append(point_string)
 
 		# Write the detected points to a file
 		filename = "{0}_{1}.txt".format(parent,ob)
 		try:
-			parent_position = "[%.4f, %.4f, %.4f], %.4f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['Yaw'])
+			parent_position = "[%.10f, %.10f, %.10f], %.10f\n" % (parent.position[0], parent.position[1], parent.position[2], robot_state_dict['Yaw'])
 			write_points_to_file(filename, point_list, parent_position)
 		except KeyError:
 			print ("SICK: Gyroscope not available")
