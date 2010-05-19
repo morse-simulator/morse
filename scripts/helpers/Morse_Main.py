@@ -76,7 +76,6 @@ def Create_Dictionaries ():
 								# Does not work in Python 3
 
 
-
 def Check_Dictionaries():
 	""" Print the contents of the robot and component dictionaries."""
 	print ("------------------------------------")
@@ -112,6 +111,31 @@ def Create_Instance(obj, parent=None):
 	return instance
 
 
+def Link_Middlewares():
+	""" Read the configuration script (inside the .blend file)
+		and assign the correct middleware and options to each component. """
+	# The file Component_Config.py is at the moment included
+	#  in the .blend file of the scene
+	import Component_Config
+	# Add the hook functions to the appropriate components
+	component_list = Component_Config.component_mw
+	for component_name, mw_name in component_list.items():
+		# Prefix the name of the component with 'OB'
+		# Will only be necessary until the change to Blender 2.5
+		if GameLogic.pythonVersion < 3:
+			component_name = 'OB' + component_name
+
+		print ("Component: '%s' operated by '%s'" % (component_name, mw_name))
+		# Look for the listed mw in the dictionary of active mw's
+		for mw_obj, mw_instance in GameLogic.mwDict.items():
+			if mw_name in mw_obj.name:
+				# Get the instance of the object
+				instance = GameLogic.componentDict[component_name]
+				# Make the middleware object take note of the component
+				mw_instance.register_component(component_name, instance)
+				# Add the yarp function to the component's action list
+				instance.action_functions.append(mw_instance.postMessage)
+
 
 def Publish_JSON_Dictionaries(port_name):
 	""" Prepare and send the dictionary data to a client program.
@@ -145,6 +169,7 @@ def init(contr):
 
 	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()
+	Link_Middlewares()
 
 	#print ("OPENING PORT '{0}'".format(in_port_name))
 	#print ("OPENING PORT '{0}'".format(out_port_name))
@@ -193,6 +218,10 @@ def finish(contr):
 		for obj, robot_instance in GameLogic.robotDict.items():
 			del obj
 
+		# Force the deletion of the middleware objects
+		for obj, mw_instance in GameLogic.mwDict.items():
+			del obj
+
 		quitActuator = contr.actuators['Quit_sim']
 		contr.activate(quitActuator)
 
@@ -215,11 +244,15 @@ def restart(contr):
 
 		# ALL THE FOLLOWING DOES NOT WORK
 
+		for obj, component_instance in GameLogic.componentDict.items():
+			del component_instance
+
 		for obj, robot_instance in GameLogic.robotDict.items():
 			del robot_instance
 
-		for obj, component_instance in GameLogic.componentDict.items():
-			del component_instance
+		# Force the deletion of the middleware objects
+		for obj, mw_instance in GameLogic.mwDict.items():
+			del obj
 
 		init(contr)
 

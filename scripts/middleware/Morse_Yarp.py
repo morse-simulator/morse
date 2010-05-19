@@ -23,7 +23,7 @@ class Morse_Yarp_Class(object):
 
 		#yarp.Network.init()
 
-		self.init_components()
+		#self.init_components()
 
 
 	def __del__(self):
@@ -38,7 +38,7 @@ class Morse_Yarp_Class(object):
 		#  in the .blend file of the scene
 		import Component_Config
 		# Add the hook functions to the appropriate components
-		_component_list = Component_Config.component_list
+		_component_list = Component_Config.component_mw
 		for component_name, mw in _component_list.items():
 			print ("Component: '%s' is operated by '%s'" % (component_name, mw))
 			instance = GameLogic.componentDict['OB' + component_name]
@@ -49,6 +49,53 @@ class Morse_Yarp_Class(object):
 			self.registerBufferedPortBottle([port_name])
 			#instance.port_name = port_name
 			self._component_ports[instance.blender_obj.name] = port_name
+
+
+	def register_component(self, component_name, component_instance):
+		""" Open the port used to communicate the specified component. """
+		parent_name = component_instance.robot_parent.blender_obj.name
+		port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
+		self.registerBufferedPortBottle([port_name])
+		#instance.port_name = port_name
+		self._component_ports[component_name] = port_name
+		#self._component_ports[instance.blender_obj.name] = port_name
+
+
+
+	def registerBufferedPortBottle(self, portList):
+		""" Create a new Buffered Port Bottle, given an identifying name. """
+		for portName in portList:
+			portName = '/ors/'+portName
+			if portName not in self._yarpPorts:
+				#print ('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
+				port = self._yarp_module.BufferedPortBottle()
+				port.open(portName)
+				self._yarpPorts[portName] = port
+			else: raise NameError(portName + " port name already exist!")
+
+
+	## XXX You need a special patch to export Mono Interface througth swig
+	def registerBufferedPortImageMono(self, portList):
+		""" Create a new Buffered Port Bottle, given an identifying name.
+			This is exclusively used for image data."""
+		for portName in portList:
+			portName = '/ors/'+portName
+			if portName not in self._yarpPorts:
+				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+				port = self._yarp_module.BufferedPortImageMono()
+				port.open(portName)
+				self._yarpPorts[portName] = port
+			else: raise NameError(portName + " port name already exist!")
+
+	def registerBufferedPortImageRgb(self, portList):
+		""" Create a new Buffered Port Bottle, given an identifying name.
+			This is exclusively used for image data."""
+		for portName in portList:
+			portName = '/ors/'+portName
+			if portName not in self._yarpPorts:
+				#print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+				port = self._yarp_module.BufferedPortImageRgb()
+				port.open(portName)
 
 
 	def registerBufferedPortBottle(self, portList):
