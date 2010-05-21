@@ -82,6 +82,8 @@ Coding style
 - Replace all "print" by the Python logging interface
 - every simple function must have a function comment ( """ ... """) + setup the
   documentation to be generated
+- Change the names of modules, variables, classes, etc. to comply with the
+  naming conventions in: http://www.python.org/dev/peps/pep-0008/
 
 Frame transformations
 -----------
