@@ -24,6 +24,10 @@ def Create_Dictionaries ():
 	if not hasattr(GameLogic, 'robotDict'):
 		GameLogic.robotDict = {}
 
+	# Create a dictionary with the modifiers
+	if not hasattr(GameLogic, 'modifierDict'):
+		GameLogic.modifierDict = {}
+
 	# Create a dictionary with the middlewares used
 	if not hasattr(GameLogic, 'mwDict'):
 		GameLogic.mwDict = {}
@@ -62,6 +66,18 @@ def Create_Dictionaries ():
 				#sys.exc_clear()	# Clears the last exception thrown
 									# Does not work in Python 3
 
+	# Get the middlewares
+	for obj in scene.objects:
+		try:
+			obj['Modifier_Tag']
+			# Create an object instance and store it
+			instance = Create_Instance (obj)
+			GameLogic.modifierDict[obj] = instance
+		except KeyError:
+			pass
+			#sys.exc_clear()	# Clears the last exception thrown
+								# Does not work in Python 3
+
 
 	# Get the middlewares
 	for obj in scene.objects:
@@ -74,6 +90,8 @@ def Create_Dictionaries ():
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
 								# Does not work in Python 3
+
+
 
 
 def Check_Dictionaries():
@@ -89,9 +107,14 @@ def Check_Dictionaries():
 	for obj, component_variables in GameLogic.componentDict.items():
 		print ("\tCOMPONENT: '{0}'".format(obj))
 
+	print ("\nGameLogic has the following modifiers:")
+	for obj, modifier_variables in GameLogic.modifierDict.items():
+		print ("\tMODIFIER: '{0}'".format(obj))
+
 	print ("\nGameLogic has the following middlewares:")
 	for obj, mw_variables in GameLogic.mwDict.items():
 		print ("\tMIDDLEWARE: '{0}'".format(obj))
+
 
 
 def Create_Instance(obj, parent=None):
@@ -137,6 +160,31 @@ def Link_Middlewares():
 				instance.action_functions.append(mw_instance.postMessage)
 
 
+def Add_Modifiers():
+	""" Read the configuration script (inside the .blend file)
+		and assign the correct data modifiers to each component. """
+	# The file Component_Config.py is at the moment included
+	#  in the .blend file of the scene
+	import Component_Config
+	# Add the hook functions to the appropriate components
+	component_list = Component_Config.component_modifier
+	for component_name, modifier_name in component_list.items():
+		# Prefix the name of the component with 'OB'
+		# Will only be necessary until the change to Blender 2.5
+		if GameLogic.pythonVersion < 3:
+			component_name = 'OB' + component_name
+
+		print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
+		# Look for the listed modifier in the dictionary of active modifier's
+		for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
+			if modifier_name in modifier_obj.name:
+				# Get the instance of the object
+				instance = GameLogic.componentDict[component_name]
+				# Add the modifier function to the component's action list
+				instance.modifier_functions.append(modifier_instance.json_serialise)
+
+
+
 def Publish_JSON_Dictionaries(port_name):
 	""" Prepare and send the dictionary data to a client program.
 		Data is sent as a serialised JSON string."""
@@ -169,6 +217,7 @@ def init(contr):
 
 	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
 	Create_Dictionaries()
+	Add_Modifiers()
 	Link_Middlewares()
 
 	#print ("OPENING PORT '{0}'".format(in_port_name))

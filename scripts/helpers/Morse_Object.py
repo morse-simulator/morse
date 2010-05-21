@@ -20,6 +20,7 @@ class Morse_Object_Class(object):
 
 		# Define lists of dynamically added functions
 		self.action_functions = []
+		self.modifier_functions = []
 		self.del_functions = []
 
 		print ("Instance of 'Morse_Object' created for %s" % obj.name)
@@ -34,8 +35,11 @@ class Morse_Object_Class(object):
 	def action(self):
 		""" Call the action functions that have been added to the list. """
 		self.default_action()
+		for function in self.modifier_functions:
+			# Call the modifier functions, which can alter
+			#  this component's data
+			self.message_data = function(self.message_data, self.blender_obj.name)
 		for function in self.action_functions:
-			#function()
 			# Call the functions, giving the component's data
 			#  and name as parameters
 			function(self.message_data, self.blender_obj.name)
