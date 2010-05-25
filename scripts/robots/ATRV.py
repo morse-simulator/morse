@@ -1,8 +1,8 @@
 import GameLogic
-import Morse_Object
+import MorseObject
 
 
-class ATRV_Class(Morse_Object.Morse_Object_Class):
+class ATRVClass(MorseObject.MorseObjectClass):
 	""" Class definition for the ATRV (DALA).
 		Sub class of Morse_Object. """
 
