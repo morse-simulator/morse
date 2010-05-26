@@ -60,6 +60,3 @@ class Transformation3d:
 		res += " yaw : " + str(self.yaw) + " pitch : " + str(self.pitch) 
 		res += " roll : " + str(self.roll)
 		return res
-		
-		
-	

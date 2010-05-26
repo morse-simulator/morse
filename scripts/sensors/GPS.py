@@ -5,12 +5,6 @@ import MorseMath
 class GPSClass(MorseObject.MorseObjectClass):
 	""" Class definition for the gyroscope sensor.
 		Sub class of Morse_Object. """
-	x = 0.0
-	y = 0.0
-	z = 0.0
-	global_x = 0.0
-	global_y = 0.0
-	global_z = 0.0
 
 	def __init__(self, obj, parent=None):
 		""" Constructor method.
@@ -19,6 +13,13 @@ class GPSClass(MorseObject.MorseObjectClass):
 		print ("######## GPS '%s' INITIALIZING ########" % obj.name)
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
+
+		self.local_data['x'] = 0.0
+		self.local_data['y'] = 0.0
+		self.local_data['z'] = 0.0
+		self._global_x = 0.0
+		self._global_y = 0.0
+		self._global_z = 0.0
 
 		# Get the global coordinates of defined in the scene
 		scene = GameLogic.getCurrentScene()
@@ -30,7 +31,7 @@ class GPSClass(MorseObject.MorseObjectClass):
 		script_empty = scene.objects[script_empty_name]
 		self.global_x = float(script_empty['UTMXOffset'])
 		self.global_y = float(script_empty['UTMYOffset'])
-		self.global_z = float(script_empty['AltitudeOffset'])
+		self.global_z = float(script_empty['UTMZOffset'])
 
 		print ('######## GPS INITIALIZED ########')
 
@@ -40,13 +41,12 @@ class GPSClass(MorseObject.MorseObjectClass):
 
 		# Get the coordinates of the object, and correct them
 		#  using the global settings of the scene
-		self.x = self.global_x + self.blender_obj.position[0]
-		self.y = self.global_y + self.blender_obj.position[1]
-		self.z = self.global_z + self.blender_obj.position[2]
+		x = self._global_x + self.blender_obj.position[0]
+		y = self._global_y + self.blender_obj.position[1]
+		z = self._global_z + self.blender_obj.position[2]
 
 		# Store the data acquired by this sensor that could be sent
 		#  via a middleware.
-		# It is a list of tuples (name, data, type).
-		self.message_data = [ ('x', self.x, 'double'), ('y', self.y, 'double'), ('z', self.z, 'double') ]
-
-		#print ("[Y %.4f, P %.4f, R %.4f" % (self.x, self.y, self.z))
+		self.local_data['x'] = float(x)
+		self.local_data['y'] = float(y)
+		self.local_data['z'] = float(z)

@@ -1,9 +1,14 @@
 import sys
-import GameLogic
 import re
 import json
+import GameLogic
+
 # Import this library to recover the Python version
 import platform
+
+# The file Component_Config.py is at the moment included
+#  in the .blend file of the scene
+import Component_Config
 
 
 # Global variables for the names of the input and output ports
@@ -137,35 +142,44 @@ def create_instance(obj, parent=None):
 def link_middlewares():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct middleware and options to each component. """
-	# The file Component_Config.py is at the moment included
-	#  in the .blend file of the scene
-	import Component_Config
 	# Add the hook functions to the appropriate components
 	component_list = Component_Config.component_mw
-	for component_name, mw_name in component_list.items():
+	for component_name, mw_data in component_list.items():
+		(mw_name, mw_io, mw_function) = mw_data
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
 		if GameLogic.pythonVersion < 3:
 			component_name = 'OB' + component_name
 
-		print ("Component: '%s' operated by '%s'" % (component_name, mw_name))
+		print ("Component: '%s' operated by '%s' as %sput" % (component_name, mw_name, mw_io))
 		# Look for the listed mw in the dictionary of active mw's
 		for mw_obj, mw_instance in GameLogic.mwDict.items():
 			if mw_name in mw_obj.name:
 				# Get the instance of the object
-				instance = GameLogic.componentDict[component_name]
-				# Make the middleware object take note of the component
-				mw_instance.register_component(component_name, instance)
-				# Add the yarp function to the component's action list
-				instance.action_functions.append(mw_instance.postMessage)
+				try:
+					instance = GameLogic.componentDict[component_name]
+				except KeyError as detail:
+					print ("Component listed in Component_Config.py not found in scene: {0}".format(detail))
+					continue
+
+				if mw_io == 'out':
+					# Make the middleware object take note of the component
+					mw_instance.register_component(component_name, instance, mw_io)
+					# Add the yarp function to the component's action list
+					function = getattr(mw_instance, mw_function)
+					instance.output_functions.append(function)
+
+				elif mw_io == 'in':
+					# Make the middleware object take note of the component
+					mw_instance.register_component(component_name, instance, mw_io)
+					# Add the yarp function to the component's action list
+					function = getattr(mw_instance, mw_function)
+					instance.input_functions.append(function)
 
 
 def add_modifiers():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct data modifiers to each component. """
-	# The file Component_Config.py is at the moment included
-	#  in the .blend file of the scene
-	import Component_Config
 	# Add the hook functions to the appropriate components
 	component_list = Component_Config.component_modifier
 	for component_name, modifier_name in component_list.items():
@@ -183,26 +197,6 @@ def add_modifiers():
 				# Add the modifier function to the component's action list
 				instance.modifier_functions.append(modifier_instance.json_serialise)
 
-
-
-def publish_JSON_dictionaries(port_name):
-	""" Prepare and send the dictionary data to a client program.
-		Data is sent as a serialised JSON string."""
-	# Serialize the lists using JSON
-	scene_elems = []
-	for obj, robot_instance in GameLogic.robotDict.items():
-		robot_list = [obj.name, robot_instance.components]
-		scene_elems.append (robot_list)
-	message = json.dumps(scene_elems)
-
-	print ("LIST: {0}".format(scene_elems))
-	print ("JSON: {0}".format(message))
-	print ("BACK: {0}".format(json.loads(message)))
-
-	# Define the message structure to send.
-	# It is a list of tuples (data, type).
-	message_data = [ (message, 'string') ]
-	#GameLogic.orsConnector.postMessage(message_data, port_name)
 
 
 def init(contr):
@@ -227,7 +221,6 @@ def init(contr):
 
 	check_dictionaries()
 
-	#publish_JSON_dictionaries(out_port_name)
 
 
 def admin(contr):
@@ -244,7 +237,6 @@ def admin(contr):
 		print ("Command:\t'{0}'".format(command))
 		if command == "list_robots":
 			print (" ===>> Sending list of elements")
-			publish_JSON_dictionaries(out_port_name)
 	"""
 
 

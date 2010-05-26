@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-import GameLogic
 import MorseTransformation
 
 class MorseObjectClass(object):
@@ -18,12 +17,15 @@ class MorseObjectClass(object):
 		# Create an instance of the 3d transformation class
 		self.position_3d = MorseTransformation.Transformation3d(obj)
 
+		# Dictionary to store the data used by each component
+		self.local_data = {}
+
 		# Define lists of dynamically added functions
-		self.action_functions = []
+		self.input_functions = []
+		self.output_functions = []
 		self.modifier_functions = []
 		self.del_functions = []
 
-		print ("Instance of 'MorseObject' created for %s" % obj.name)
 
 	def __del__(self):
 		""" Destructor method. """
@@ -34,15 +36,22 @@ class MorseObjectClass(object):
 
 	def action(self):
 		""" Call the action functions that have been added to the list. """
+		# First the input functions
+		for function in self.input_functions:
+			function(self)
+
+		# Call the regular action function of the component
 		self.default_action()
+
+		# Make a copy of the data before modifications
+		self.send_data = self.local_data
+		# Data modification functions
 		for function in self.modifier_functions:
-			# Call the modifier functions, which can alter
-			#  this component's data
-			self.message_data = function(self.message_data, self.blender_obj.name)
-		for function in self.action_functions:
-			# Call the functions, giving the component's data
-			#  and name as parameters
-			function(self.message_data, self.blender_obj.name)
+			self.send_data = function(self)
+
+		# Lastly output functions
+		for function in self.output_functions:
+			function(self)
 
 
 	def default_action():
@@ -51,6 +60,8 @@ class MorseObjectClass(object):
 		pass
 
 
-	def print_position(self):
+	def print_data(self):
 		""" Print the current position of the blender object. """
-		print ("%s is at %s" % (self.blender_obj.name, self.position_3d))
+		for variable, data in self.local_data.items():
+			res = variable + str(data) + " "
+		print ("%s" % res)

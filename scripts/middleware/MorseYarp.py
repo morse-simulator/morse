@@ -33,6 +33,11 @@ class MorseYarpClass(object):
 
 
 	def init_components(self):
+		""" Binding to robotics components.
+
+		Reads a dictionary of the components listed as using YARP.
+		NOT USED RIGHT NOW.
+		"""
 		# Read the list of components and its associacted middleware
 		# The file Component_Config.py is at the moment included
 		#  in the .blend file of the scene
@@ -51,15 +56,18 @@ class MorseYarpClass(object):
 			self._component_ports[instance.blender_obj.name] = port_name
 
 
-	def register_component(self, component_name, component_instance):
-		""" Open the port used to communicate the specified component. """
+	def register_component(self, component_name,
+			component_instance, io_direction):
+		""" Open the port used to communicate the specified component.
+		
+		The name of the port is postfixed with in/out, according to
+		the direction of the communication. """
 		parent_name = component_instance.robot_parent.blender_obj.name
-		port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
+		port_name = 'robots/{0}/{1}/{2}'.format(parent_name,
+				component_name, io_direction)
 		self.registerBufferedPortBottle([port_name])
 		#instance.port_name = port_name
 		self._component_ports[component_name] = port_name
-		#self._component_ports[instance.blender_obj.name] = port_name
-
 
 
 	def registerBufferedPortBottle(self, portList):
@@ -184,10 +192,15 @@ class MorseYarpClass(object):
 			print (" - Port name '{0}' = '{1}'".format(name, port))
 
 
-	def readMessage(self, data_types, port_name, length=1024):
-		""" Read a port expecting the data specified in data_types.
-			The data is expected to be of a specified length.
-			The data read is returned in a list."""
+	def read_message(self, component_instance):
+		""" Read incoming data from a simple port.
+
+		The argument is a copy of the component instance.
+		Data is writen directly into the 'local_data' dictionary
+		of the component instance.
+		"""
+		port_name = self._component_ports[component_instance.blender_obj.name]
+
 		try:
 			yarp_port = self.getPort(port_name)
 			message_data = yarp_port.read(False)
@@ -195,31 +208,32 @@ class MorseYarpClass(object):
 			if message_data != None:
 				# Data elements are of type defined in data_types
 				i = 0
-				data_list = []
-				for msg_type in data_types:
-					if msg_type == 'string':
-						msg_data = message_data.get(i).toString()
-					elif msg_type == 'int':
+				for variable, data in component_instance.local_data.items():
+					if isinstance(data, int):
 						msg_data = message_data.get(i).asInt()
-					elif msg_type == 'double':
+						component_instance.local_data[variable] = msg_data
+					elif isinstance(data, float):
 						msg_data = message_data.get(i).asDouble()
+						component_instance.local_data[variable] = msg_data
+					elif isinstance(data, basestring):
+						msg_data = message_data.get(i).toString()
+						component_instance.local_data[variable] = msg_data
 					else:
-						print ("Yarp Mid ERROR: Unknown data type at 'readMessage'")
-					data_list.append(msg_data)
+						print ("Yarp Mid ERROR: Unknown data type at 'read_message'")
+					print ("READ VARIABLE {0} = {1}".format(variable, msg_data))
 					i = i + 1
-
-				return data_list
 
 		except KeyError as detail:
 			print ("ERROR: Specified port does not exist: ", detail)
 
 
 
-	#def postMessage(self, message_data, port_name):
-	def postMessage(self, message_data, component_name):
-		""" Send a message through the given named port."""
-		# Extract the port_name from the local dictionary
-		port_name = self._component_ports[component_name]
+	def post_message(self, component_instance):
+		""" Send the data of a component through a simple port.
+
+		The argument is a copy of the component instance.
+		"""
+		port_name = self._component_ports[component_instance.blender_obj.name]
 
 		try:
 			yarp_port = self.getPort(port_name)
@@ -227,21 +241,22 @@ class MorseYarpClass(object):
 			bottle = yarp_port.prepare()
 			bottle.clear()
 			# Data elements are tuples of (name, data, type)
-			for element in message_data:
-				variable_name, variable_data, variable_type = element[0], element[1], element[2]
-				if variable_type == 'string':
-					bottle.addString(variable_data)
-				elif variable_type == 'int':
-					bottle.addInt(variable_data)
-				elif variable_type == 'double':
-					bottle.addDouble(variable_data)
+			for variable, data in component_instance.send_data.items():
+				if isinstance(data, int):
+					bottle.addInt(data)
+				elif isinstance(data, float):
+					bottle.addDouble(data)
+				elif isinstance(data, basestring):
+					bottle.addString(data)
 				else:
-					print ("Yarp Mid ERROR: Unknown data type at 'postMessage'")
+					print ("Yarp Mid ERROR: Unknown data type at 'post_message'")
 
 			#yarp_port.writeStrict()
 			yarp_port.write()
 		except KeyError as detail:
 			print ("ERROR: Specified port does not exist: ", detail)
+
+
 
 
 	def postImageRGB(self, img_pointer, img_X, img_Y, port_name):
