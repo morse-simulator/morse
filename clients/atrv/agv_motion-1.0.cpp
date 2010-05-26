@@ -45,9 +45,10 @@ int main(int argc, char* argv[]) {
 
   string port_prefix = "/ors/robots/" + robot_name + "/";
 
-  string ugv_motor_port = port_prefix + "Motion_Controller/vxvyvz";
+  string ugv_motor_port = "/ors/robots/OBATRV/OBMotion_Controller.001/in";
+  // string ugv_motor_port = port_prefix + "Motion_Controller/vxvyvz";
   // string ugv_output_port_gps = port_prefix + "/gps";
-  string ugv_output_port_gps = port_prefix + "GPS";
+  // string ugv_output_port_gps = port_prefix + "GPS";
 
   string local_port_prefix = "/ugv_client/" + robot_name;
 
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
   fromUGVGPSPort.open((local_port_prefix + "/in/gps").c_str());
 
   connected = Network::connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
-  connected &= Network::connect(ugv_output_port_gps.c_str() ,fromUGVGPSPort.getName().c_str());
+  // connected &= Network::connect(ugv_output_port_gps.c_str() ,fromUGVGPSPort.getName().c_str());
 
   if (!connected)
   {
@@ -81,7 +82,7 @@ int main(int argc, char* argv[]) {
 
 
   cout << " * Writing commands to " << ugv_motor_port << endl;
-  cout << " * Listening status on " << ugv_output_port_gps << endl;
+  // cout << " * Listening status on " << ugv_output_port_gps << endl;
 
   cout << " * KEYS: W/S: move forward/backward ; A/D: turn left/right ; any other key to stop." << endl;
   cout << " * Starting now..." << endl;
@@ -140,22 +141,22 @@ int main(int argc, char* argv[]) {
     cmdBottle.clear();
     switch (cmd)
 	{
-		case 'w':
+		case 'i':
 		  vx += 1.0;
 		  break;
-		case 's':
+		case 'k':
 		  vx -= 1.0;
 		  break;
-		case 'a':
+		case 'j':
 		  rz -= 1.0;
 		  break;
-		case 'd':
+		case 'l':
 		  rz += 1.0;
 		  break;
     }
     cmdBottle.addDouble(vx);
-    cmdBottle.addDouble(vy);
-    cmdBottle.addDouble(vz);
+    // cmdBottle.addDouble(vy);
+    // cmdBottle.addDouble(vz);
 
     /*
     cmdBottle.addDouble(ax);
@@ -163,8 +164,8 @@ int main(int argc, char* argv[]) {
     cmdBottle.addDouble(az);
     */
 
-    cmdBottle.addDouble(rx);
-    cmdBottle.addDouble(ry);
+    // cmdBottle.addDouble(rx);
+    // cmdBottle.addDouble(ry);
     cmdBottle.addDouble(rz);
 
     cin.ignore();
