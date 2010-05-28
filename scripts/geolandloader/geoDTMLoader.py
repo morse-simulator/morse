@@ -42,6 +42,7 @@ class DtmObject:
 	# Everything is in meters: UTM origins represents the position of the low left corner of the DTM
 	UTMXOrigin = 0
 	UTMYOrigin = 0
+	UTMZOrigin = 0
 	CellSize   = 0
 
 	# Blender objects 
@@ -204,6 +205,47 @@ class DtmObject:
 		# NODATA value
 		fubline = fub.readline()
 		self.NODATA = float((fubline.split())[1])
+
+		#---
+		# Feed the Scene_Script_Holder object with the georeferenced information
+		# blender (0,0,z) correspond to real utm (UTMXOrigin, UTMYOrigin, z)
+		# This information is saved in properties of the Scene_Script_Holder object.
+		#---
+		# Checking if the Scene_Script_Holder exists else no info saving. 
+
+		ooo = None
+		try:
+			ooo = Blender.Object.Get('Scene_Script_Holder')
+		except:
+			ooo = None
+
+		if ooo == None:
+			# Warn that no georeferencing is possible
+			print '[geoDTMLoader] This scene can not be georeferenced: Scene_Script_Holder does not exist'
+		else:
+			# Check existence of properties UTMXOffset and UTMYOffset
+			# Used to get real world georeferenced coordinates
+			# z_blender = z_reality
+			# x_reality = x_blender + UTMXOffset
+			# idem for y 
+			try:
+				px = ooo.getProperties('UTMXOffset')
+			except:
+				# No property with that name
+				px = None
+			if px != None:
+				px.setData(str(UTMXOrigin))
+
+			try:
+				py = ooo.getProperties('UTMYOffset')
+			except:
+				# No property with that name
+				py = None
+			if py != None:
+				py.setData(str(UTMYOrigin))
+
+			
+
 		#---
 		# To provide continuous reading
 		return fub
