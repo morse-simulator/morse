@@ -8,3 +8,4 @@ atrv
 *.o
 *.so
 *.pyc
+build/
