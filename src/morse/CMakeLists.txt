@@ -1,10 +1,10 @@
 
 INSTALL(FILES __init__.py init_middleware.py
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}/morse
+        DESTINATION ${PYTHON_INSTDIR}/morse
         )
 
 INSTALL(DIRECTORY actuators geolandloader helpers robots sensors robots setup
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}/morse
+        DESTINATION ${PYTHON_INSTDIR}/morse
         REGEX .*py. EXCLUDE
         )
 
