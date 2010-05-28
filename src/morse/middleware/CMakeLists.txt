@@ -1,10 +1,10 @@
 
-INSTALL(FILES __init__.py MorseJson.py
+INSTALL(FILES __init__.py json.py
 	    DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}/morse/middleware
 		)
 
 IF(BUILD_YARP2_SUPPORT)
-	INSTALL(FILES MorseYarp.py
+	INSTALL(FILES yarp.py
 			DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}/morse/middleware
 			)
 ENDIF(BUILD_YARP2_SUPPORT)
