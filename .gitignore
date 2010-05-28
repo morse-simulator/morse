@@ -8,3 +8,4 @@
 *.so
 *.pyc
 *~
+build/
