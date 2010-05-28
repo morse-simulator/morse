@@ -9,6 +9,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
 find_package(Python26Interp REQUIRED)
+find_package(PythonLibs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
 				${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(0,0,\"\"))"
@@ -16,7 +17,9 @@ EXECUTE_PROCESS(COMMAND
 					ERROR_VARIABLE PYTHON_STDERR
 					RESULT_VARIABLE PYTHON_ERR
 				)
-MESSAGE(STATUS "will install python files in ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}")
+
+SET(PYTHON_INSTDIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}) 
+MESSAGE(STATUS "will install python files in ${PYTHON_INSTDIR}")
 
 if (NOT PYTHONINTERP_FOUND)
 	MESSAGE(FATAL_ERROR "Can't find python 2.6 on your system")
@@ -35,6 +38,7 @@ endif(BUILD_YARP2_SUPPORT)
 
 if (BUILD_POCOLIBS_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
+	find_package(SWIG REQUIRED)
 endif(BUILD_POCOLIBS_SUPPORT)
 
 

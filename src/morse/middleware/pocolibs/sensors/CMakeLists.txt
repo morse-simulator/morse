@@ -1,0 +1,3 @@
+ADD_SUBDIRECTORY(Camera_Poster)
+ADD_SUBDIRECTORY(Gyro_Poster)
+ADD_SUBDIRECTORY(Sick_Poster)
