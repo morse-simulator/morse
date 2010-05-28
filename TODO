@@ -6,25 +6,15 @@ File history:
 29/04/2010 - Arnaud + Severin: mark with a * things needed for release v0.1
 03/05/2010 - Simon: added a "section" related to the management of the frame transformations
 04/05/2010 - Arnaud + Severin + Nicolas + Gilberto: review of the list, with aims at a first release
+28/05/2010 - Arnaud + Severin: update after "CMake operation"
 ---
 
 Code organisation
 -----------------
-Proposal:
-- One repo for the simulator itself (morse.git) (let's remove everything else,
-  including clients and scenarii) - if middleware are externalized (cf
-  "Middlewares" below), testing clients for component could stay there. Genom3
-  template will go there as well (some day...)
-- One repo for scenarii (morse-scenarii.git)
+[DEFERRED] - One repo for scenarii (morse-scenarii.git)
 
 Installation
 ------------
-* make && make install ?? -> use CMake, with options (YARP, Pocolibs...)
-* Proposal for installation:
-   - $PREFIX/bin -> ors(.sh) (launch Blender + the ORS interface)
-   - $PREFIX/share/morse -> blend files for components
-   - $PREFIX/lib/site-package/morse -> python scripts for components
-   - $PREFIX/share/doc/morse -> ...something :)
 * Add empty templates for scenes, robots, components... + mechanism to copy these
 templates when creating a new scene.
 
@@ -52,14 +42,14 @@ User-interface
 Middlewares
 -----------
 * Rethink the architecture ; three proposals:
-   - Current solution: one abstract interface. Issues: only one middleware at
+[DISCARDED] - Current solution: one abstract interface. Issues: only one middleware at
      once ; coupling. In any case, current code must be rewritten (factories,
 	 etc)
-   - Components have "hooks" to export their data. Middleware lives in parallel
+[ONGOING]   - Components have "hooks" to export their data. Middleware lives in parallel
      threads and "visit" the components. In this case, middlewares still lives
 	 in the Python VM. Advantage: better decoupling ; middleware can dynamically
 	 choose what they want to watch.
-   - External decoupling: Python components export their data as shared memory
+[DEFFERED]   - External decoupling: Python components export their data as shared memory
      (or possibly sockets?), external modules (written in any language) read
 	 this memory and format it for each middleware. Advantage: complete decoupling.
 	 If a middleware crashes/slowdowns, no impact on the simulator, language
@@ -99,6 +89,6 @@ Frame transformations
 
 Other stuff 
 -----------
-* write, complete, update, add to repo the general documentation of the simulator
-* commit policy
+- write, complete, update, add to repo the general documentation of the simulator
+- commit policy
 - Blender 2.5
