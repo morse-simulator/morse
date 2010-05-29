@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-import MorseTransformation
+import morse.helpers.transformation
 
 class MorseObjectClass(object):
 	""" Basic Class for all 3D objects (components) used in the simulation.
@@ -15,7 +15,7 @@ class MorseObjectClass(object):
 		self.robot_parent = parent
 
 		# Create an instance of the 3d transformation class
-		self.position_3d = MorseTransformation.Transformation3d(obj)
+		self.position_3d = morse.helpers.transformation.Transformation3d(obj)
 
 		# Dictionary to store the data used by each component
 		self.local_data = {}

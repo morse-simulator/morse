@@ -6,9 +6,9 @@ import GameLogic
 # Import this library to recover the Python version
 import platform
 
-# The file Component_Config.py is at the moment included
+# The file component_config.py is at the moment included
 #  in the .blend file of the scene
-import Component_Config
+import component_config
 
 
 # Global variables for the names of the input and output ports
@@ -126,14 +126,14 @@ def create_instance(obj, parent=None):
 	""" Dynamically load a Python module and create an instance object
 		of the class defined within. """
 	# Read the path and class of the object from the Logic Properties
-	source_file = obj['Path'] + obj['Class']
+	source_file = obj['Path']
 	module_name = re.sub('/', '.', source_file)
 	print ("Path to Component Class: %s" % module_name)
 	# Import the module containing the class
 	__import__(module_name)
 	module = sys.modules[module_name]
 	# Create an instance of the object class
-	klass = getattr(module, obj['Class'] + 'Class')
+	klass = getattr(module, obj['Class'])
 	instance = klass(obj, parent)
 
 	return instance
@@ -143,7 +143,7 @@ def link_middlewares():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct middleware and options to each component. """
 	# Add the hook functions to the appropriate components
-	component_list = Component_Config.component_mw
+	component_list = component_config.component_mw
 	for component_name, mw_data in component_list.items():
 		(mw_name, mw_io, mw_function) = mw_data
 		# Prefix the name of the component with 'OB'
@@ -159,7 +159,7 @@ def link_middlewares():
 				try:
 					instance = GameLogic.componentDict[component_name]
 				except KeyError as detail:
-					print ("Component listed in Component_Config.py not found in scene: {0}".format(detail))
+					print ("Component listed in component_config.py not found in scene: {0}".format(detail))
 					continue
 
 				if mw_io == 'out':
@@ -181,7 +181,7 @@ def add_modifiers():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct data modifiers to each component. """
 	# Add the hook functions to the appropriate components
-	component_list = Component_Config.component_modifier
+	component_list = component_config.component_modifier
 	for component_name, modifier_name in component_list.items():
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
