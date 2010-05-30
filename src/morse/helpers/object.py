@@ -14,6 +14,12 @@ class MorseObjectClass(object):
 		self.blender_obj = obj
 		self.robot_parent = parent
 
+		# Define the position of sensors with respect
+		#  to their robot parent
+		# TODO: implement this using morse.helpers.transformation
+		if not parent == None:
+			self.relative_position = obj.getVectTo(parent.blender_obj)
+
 		# Create an instance of the 3d transformation class
 		self.position_3d = morse.helpers.transformation.Transformation3d(obj)
 
@@ -54,9 +60,10 @@ class MorseObjectClass(object):
 			function(self)
 
 
+	@abstractmethod
 	def default_action():
 		""" Abstract model for the default action that should be
-			implemented by all subclasses of MorseObject_Class. """
+			implemented by all subclasses of MorseObjectClass. """
 		pass
 
 
