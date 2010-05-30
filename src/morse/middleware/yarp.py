@@ -1,10 +1,10 @@
 import sys
 import yarp
 import array
-import morse.helpers.middeware
+import morse.helpers.middleware
 
 #class MorseYarpClass(MorseMiddleware.MorseMiddlewareClass):
-class MorseYarpClass(morse.helpers.middeware.MorseMiddlewareClass):
+class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 	""" Handle communication between Blender and YARP."""
 
 	def __init__(self, obj, parent=None):
