@@ -176,6 +176,13 @@ def link_middlewares():
 					function = getattr(mw_instance, mw_function)
 					instance.input_functions.append(function)
 
+				elif mw_io == 'cam_out':
+					# Make the middleware object take note of the component
+					mw_instance.register_camera_component(component_name, instance, mw_io)
+					# Add the yarp function to the component's action list
+					function = getattr(mw_instance, mw_function)
+					instance.input_functions.append(function)
+
 
 def add_modifiers():
 	""" Read the configuration script (inside the .blend file)
