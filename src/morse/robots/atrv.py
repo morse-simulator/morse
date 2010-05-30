@@ -20,6 +20,6 @@ class ATRVClass(morse.helpers.object.MorseObjectClass):
 
 		print ('######## ROBOT INITIALIZED ########')
 
-	def action(self):
+	def default_action(self):
 		""" Main function of this component. """
 		pass
