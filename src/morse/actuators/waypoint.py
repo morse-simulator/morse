@@ -1,14 +1,16 @@
 import GameLogic
-import MORSEObject
 import Mathutils
 from collections import deque
+import morse.helpers.object
 
-class WaypointActuatorClass(MORSEObject.MORSEObjectClass):
-	""" Class definition of a waypoint motion controller.
-		This controller will receive a destination point and
-		make the robot move to that location by moving forward.
-		This controller is meant for land robots
-		that can not move sideways. """
+class WaypointActuatorClass(morse.helpers.object.MORSEObjectClass):
+	""" Waypoint motion controller
+
+	This controller will receive a destination point and
+	make the robot move to that location by moving forward.
+	This controller is meant for land robots
+	that can not move sideways.
+	"""
 
 	def __init__(self, obj, parent=None):
 
