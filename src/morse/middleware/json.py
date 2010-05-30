@@ -1,7 +1,7 @@
 import json
 import GameLogic
 
-class MorseJsonClass(object):
+class MorseJsonClass(object)
 	""" Serialise the data using JSON. """
 	
 	def __init__(self, obj, parent=None):

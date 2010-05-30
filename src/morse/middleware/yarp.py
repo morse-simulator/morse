@@ -1,11 +1,12 @@
-import yarp
 import sys
-import GameLogic
+import yarp
+import array
+import morse.helpers.middeware
 
 #class MorseYarpClass(MorseMiddleware.MorseMiddlewareClass):
-class MorseYarpClass(object):
+class MorseYarpClass(morse.helpers.middeware.MorseMiddlewareClass):
 	""" Handle communication between Blender and YARP."""
-	
+
 	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
 		self.blender_obj = obj
@@ -17,13 +18,8 @@ class MorseYarpClass(object):
 		# Strange that we should do all this,
 		#  but it's the only way it seems to work
 		self._yarp_module = sys.modules['yarp']
-		#self._network = getattr(self._yarp_module, 'Network')
-		#self._network.init()
 		self._yarp_module.Network.init()
-
 		#yarp.Network.init()
-
-		#self.init_components()
 
 
 	def __del__(self):
@@ -32,42 +28,30 @@ class MorseYarpClass(object):
 		self.finalize()
 
 
-	def init_components(self):
-		""" Binding to robotics components.
-
-		Reads a dictionary of the components listed as using YARP.
-		NOT USED RIGHT NOW.
-		"""
-		# Read the list of components and its associacted middleware
-		# The file Component_Config.py is at the moment included
-		#  in the .blend file of the scene
-		import Component_Config
-		# Add the hook functions to the appropriate components
-		_component_list = Component_Config.component_mw
-		for component_name, mw in _component_list.items():
-			print ("Component: '%s' is operated by '%s'" % (component_name, mw))
-			instance = GameLogic.componentDict['OB' + component_name]
-			# Add the yarp function to the component's action list
-			instance.action_functions.append(self.postMessage)
-
-			port_name = 'robots/{0}/{1}'.format(instance.robot_parent.blender_obj.name, component_name)
-			self.registerBufferedPortBottle([port_name])
-			#instance.port_name = port_name
-			self._component_ports[instance.blender_obj.name] = port_name
-
-
 	def register_component(self, component_name,
 			component_instance, io_direction):
 		""" Open the port used to communicate the specified component.
-		
+
 		The name of the port is postfixed with in/out, according to
 		the direction of the communication. """
 		parent_name = component_instance.robot_parent.blender_obj.name
 		port_name = 'robots/{0}/{1}/{2}'.format(parent_name,
 				component_name, io_direction)
 		self.registerBufferedPortBottle([port_name])
-		#instance.port_name = port_name
 		self._component_ports[component_name] = port_name
+
+	def register_camera_component(self, component_name,
+			component_instance, io_direction):
+		""" Open the port used to communicate the specified component.
+
+		The name of the port is postfixed with in/out, according to
+		the direction of the communication. """
+		parent_name = component_instance.robot_parent.blender_obj.name
+		port_name = 'robots/{0}/{1}/{2}'.format(parent_name,
+				component_name, io_direction)
+		self.registerBufferedPortImageRgba([port_name])
+		self._component_ports[component_name] = port_name
+
 
 
 	def registerBufferedPortBottle(self, portList):
@@ -94,6 +78,7 @@ class MorseYarpClass(object):
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
+
 
 	def registerBufferedPortImageRgb(self, portList):
 		""" Create a new Buffered Port Bottle, given an identifying name.
@@ -154,7 +139,7 @@ class MorseYarpClass(object):
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
-		
+
 	def registerPort(self, portList):
 		""" Open a simple yarp port.
 			Used to send image data (Works better than a buffered port)."""
@@ -166,18 +151,18 @@ class MorseYarpClass(object):
 				port.open(portName)
 				self._yarpPorts[portName] = port
 			else: raise NameError(portName + " port name already exist!")
-	
+
 
 	def finalize(self):
 		""" Close all currently opened ports and release the network."""
 		for port in self._yarpPorts.values():
 			port.close()
-		
+
 		#self._network.fini()
 		self._yarp_module.Network.fini()
 		#yarp.Network.fini()
 		print ('Yarp Mid: ports have been closed.')
-	
+
 
 	def getPort(self, portName):
 		""" Retrieve a yarp port associated to the given name."""
@@ -237,7 +222,7 @@ class MorseYarpClass(object):
 
 		try:
 			yarp_port = self.getPort(port_name)
-			
+
 			bottle = yarp_port.prepare()
 			bottle.clear()
 			# Data elements are tuples of (name, data, type)
@@ -258,6 +243,43 @@ class MorseYarpClass(object):
 
 
 
+	def post_image_RGBA(self, component_instance):
+		""" Send an RGBA image through the given named port."""
+		port_name = self._component_ports[component_instance.blender_obj.name]
+
+		try:
+			yarp_port = self.getPort(port_name)
+		except KeyError as detail:
+			print ("ERROR: Specified port does not exist: ", detail)
+			return
+
+		if component_instance.blender_obj['capturing']:
+			# Wrap the data in a YARP image
+			img = self._yarp_module.ImageRgba()
+			img.setTopIsLowIndex(0)
+			img.setQuantum(1)
+
+			# Get the image data from the camera instance
+			img_string = component_instance.send_data['image']
+			img_X = component_instance.image_size_X
+			img_Y = component_instance.image_size_Y
+
+			# Get a pointer to the image
+			data = array.array('B',img_string)
+			img_pointer = data.buffer_info()
+
+			# Using Python pointer (converted or not)
+			img.setExternal(img_pointer[0],img_X,img_Y)
+
+			# Copy to image with "regular" YARP pixel order
+			# Otherwise the image is upside-down
+			img2 = yarp_port.prepare()
+			img2.copy(img)
+
+			# Write the image
+			yarp_port.write()
+
+
 
 	def postImageRGB(self, img_pointer, img_X, img_Y, port_name):
 		""" Send an RGB image through the given named port."""
@@ -275,12 +297,12 @@ class MorseYarpClass(object):
 			"""
 			# Using the C pointer (converted)
 			img.setExternal(img_pointer,img_X,img_Y)
-			
+
 			# Copy to image with "regular" YARP pixel order
 			# Otherwise the image is upside-down
 			img2 = yarp.ImageRgb()
 			img2.copy(img)
-			
+
 			# Write the image
 			yarp_port.write(img2)
 
@@ -304,12 +326,12 @@ class MorseYarpClass(object):
 			# Using the C pointer (converted)
 			img.setExternal(img_pointer,img_X,img_Y)
 			"""
-			
+
 			# Copy to image with "regular" YARP pixel order
 			# Otherwise the image is upside-down
 			img2 = yarp_port.prepare()
 			img2.copy(img)
-			
+
 			# Write the image
 			yarp_port.write()
 
