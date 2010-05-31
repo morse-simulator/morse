@@ -86,7 +86,7 @@ def command_robot():
 		#raw_coords = raw_input("Input new coordinates: ")
 		#print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
 
-		command = raw_input("Enter command: [ (m)ove / (s)top / s(t)atus / (d)estination / (n)eighbours / e(x)it ] ")
+		command = raw_input("Enter command: [ (m)ove / (s)top / s(t)atus / (d)estination / (n)eighbours / (r)adius / e(x)it ] ")
 		
 		if command == "move" or command == "m":
 			command = {"command":"move"}
@@ -111,9 +111,16 @@ def command_robot():
 			bottle.addString(message)
 			local_Dest_port.write()
 
-		elif command == "neighbours" or command == "n":
-			request = "Neighbours"
-			message = json.dumps (request)
+		elif command == "neighbours" or command == "n" or \
+				command == "radius" or command == "r":
+
+			# Separate commands for the radio sensor
+			if command == "neighbours" or command == "n":
+				command = {"request": "Neighbours"}
+			elif command == "radius" or command == "r":
+				command = {"range": "10"}
+
+			message = json.dumps (command)
 
 			# Send the json string through a yarp port
 			bottle = local_Radio_out_port.prepare()

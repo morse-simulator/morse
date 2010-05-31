@@ -67,21 +67,32 @@ def output(contr):
 			return
 
 		# Interpret the request received
-		#json_data = data_list[0]
-		#data = decode_message(json_data)
-		#command = data["command"]
+		json_data = data_list[0]
+		data = decode_message(json_data)
 
-		neighbour_robots = {}
+		try:
+			new_range = data["range"]
+			ob['Range'] = float(new_range)
+			return
+		except KeyError:
+			pass
+		
+		try:
+			new_range = data["request"]
 
-		# Get the fire sources
-		for robot in GameLogic.robotDict.keys():
-			# Skip distance to self
-			if parent != robot:
-				distance = measure_distance_to_robot (parent, robot)
-				if distance <= ob['Range']:
-					neighbour_robots[robot.name] = distance
+			neighbour_robots = {}
 
-		send_robot_distance(neighbour_robots, out_port_name)
+			# Get the fire sources
+			for robot in GameLogic.robotDict.keys():
+				# Skip distance to self
+				if parent != robot:
+					distance = measure_distance_to_robot (parent, robot)
+					if distance <= ob['Range']:
+						neighbour_robots[robot.name] = distance
+
+			send_robot_distance(neighbour_robots, out_port_name)
+		except KeyError:
+			pass
 
 
 def measure_distance_to_robot(own_robot, target_robot):
@@ -98,3 +109,19 @@ def send_robot_distance(neighbour_robots, out_port_name):
 	message = json.dumps(neighbours)
 	message_data = [ (message, 'string') ]
 	GameLogic.orsConnector.postMessage(message_data, out_port_name)
+
+
+def decode_message(json_data):
+	""" Decode a data structure using JSON.
+		The data is initially a string.
+		Returns a Python object,
+		either an int, double, string, list or dictionary."""
+	# Remove the quotations at the start and end of the string
+	#json_data = re.sub(r'"(.*)"', r'\1', json_data)
+	# Unescape all other quotation marks
+	#json_data = re.sub(r'\\(.)', r'\1', json_data)
+	clean_data = json.loads(json_data, encoding='UTF-8')
+
+	return clean_data
+
+
