@@ -71,13 +71,12 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 			self.local_data['image'] = image_string
 
 
-
-
 	def _setup_video_texture(self):
 		""" Prepare this camera to use the VideoTexture module """
 		# Get the references to this cameras materials
 		#  necesary if there are more than one camera added to the scene
 		if GameLogic.pythonVersion < 3:
+			#screen_name = 'OBScreen'
 			screen_name = 'OBCameraCube'
 			camera_name = 'OBCameraRobot'
 		else:
