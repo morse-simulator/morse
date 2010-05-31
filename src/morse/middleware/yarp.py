@@ -38,8 +38,12 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		parent_name = component_instance.robot_parent.blender_obj.name
 		port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
 
-		# Get the reference to the function
-		function = getattr(self, function_name)
+		try:
+			# Get the reference to the function
+			function = getattr(self, function_name)
+		except AttributeError as detail:
+			print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+			return
 
 		# Choose what to do, depending on the function being used
 		# Data read functions

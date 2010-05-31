@@ -12,13 +12,24 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 			file.close()
 
 	def register_component(self, component_name,
-			component_instance, io_direction):
+			component_instance, function_name):
 		""" Open a text file to write the data
 
 		The name of the file is composed of the robot and sensor names.
 		Only useful for sensors.
 		"""
 		parent_name = component_instance.robot_parent.blender_obj.name
+
+		try:
+			# Get the reference to the function
+			function = getattr(self, function_name)
+		except AttributeError as detail:
+			print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+			return
+
+		# Data write functions
+		if function_name == "write_data":
+			component_instance.output_functions.append(function)
 
 		# Prepare a list with the data for the header of the file
 		data = []
@@ -32,6 +43,8 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		FILE.writelines(data)
 		self._file_list[component_name] = FILE
 		print ("File: '%s' opened for writing" % file_name)
+
+
 
 
 	def write_data(self, component_instance):
