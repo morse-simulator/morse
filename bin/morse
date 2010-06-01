@@ -1,0 +1,87 @@
+#!/usr/bin/python
+import sys
+
+VERSION = "0.1"
+
+class MorseError(Exception):
+    pass
+
+def check_status(verbose=False):
+    """Checks that the environment is correctly setup to run MORSE.
+    Raises exceptions when an error is detected.
+    """
+    #Check Python version
+    pass
+    #Check ORS_ROOT, else display default location
+    pass
+    #Check Blender version
+    pass
+    #Check morse_default.blend is found
+    pass
+
+def launch_simulator(scene=None):
+    """Starts Blender on an empty new scene or with a given scene."""
+    pass
+
+def launch_simulation(scene):
+    """Runs a specified simulation from a blend file without openening 
+    Blender.
+    """
+    if not scene:
+        raise MorseError()
+    pass
+
+def version():
+    print("morse " + VERSION + "\nCopyright LAAS-CNRS 2010")
+
+def help(cmd=None):
+    
+    if not cmd:
+        print ("""morse [command] [options]
+
+Known commands:
+  [None]        launchs the simulator interface.
+  run           runs a simulation without loading the simulator interface.
+  check         checks the environment is correctly setup to run morse.
+  help          displays this message and exits.
+  version       displays the version number and exits.
+  
+Use help [command] to get help on a specific command.""")
+        return
+
+    if cmd == "run":
+        print ("""morse run file_name
+
+Runs a simulation without loading the simulator interface. Equivalent
+to the sequence [open a Blend file in the simulator, switch to 
+fullscreen, press P].
+
+file_name must be a Blender file containing a simulation already
+set up.
+""")
+    else:
+        print("No help for \"" + cmd + "\".")
+        help()
+
+if __name__ == '__main__':
+    
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ["help", "--help", "-h"]:
+            if len(sys.argv) > 2:
+                help(sys.argv[2])
+            else:
+                help()
+            sys.exit()
+        elif sys.argv[1] in ["version", "--version", "-v"]:
+            version()
+            sys.exit()
+        elif sys.argv[1] in ["check"]:
+            try:
+                check_setup(True)
+            except MorseError as e:
+                print e.value()
+                sys.exit()
+            print("Your environment is correctly setup to run MORSE.")
+
+    else:
+        launch_simulator()
