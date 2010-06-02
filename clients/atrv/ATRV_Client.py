@@ -118,7 +118,7 @@ def command_robot():
 			if command == "neighbours" or command == "n":
 				command = {"request": "Neighbours"}
 			elif command == "radius" or command == "r":
-				command = {"range": "10"}
+				command = {"range": "100.0"}
 
 			message = json.dumps (command)
 
