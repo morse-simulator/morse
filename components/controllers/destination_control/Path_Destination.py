@@ -1,6 +1,7 @@
 import sys, os
 import GameLogic
 import Mathutils
+from collections import deque
 import json
 from middleware.independent.IndependentBlender import *
 import setup.ObjectData
@@ -70,11 +71,17 @@ def move(contr):
 
 			# Decode the JSON string
 			wp_list = json.loads (json_data, encoding='UTF-8')
+
+			# Reset the counter for the waypoints
+			robot_state_dict['wp_index'] = 0
+			robot_state_dict['path'] = deque()
+
 			# Build a queue of the waypoints, called path
 			for wp in wp_list:
 				way_point = wp['point']
 				way_point['tolerance'] = wp['radius']
 				robot_state_dict['path'].append(way_point)
+
 
 			# Extract the cordinates of the next waypoint
 			scene = GameLogic.getCurrentScene()
