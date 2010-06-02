@@ -2,6 +2,10 @@ import sys
 import array
 import morse.helpers.middleware
 
+from middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
+#from middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
+
+
 class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	""" Handle communication between Blender and YARP."""
 
@@ -38,9 +42,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		# Choose what to do, depending on the poster type
 		if poster_type == "genPos":
-			from middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
 			self._poster_dict[component_name] = ors_genpos_poster.locate_poster(poster_name)
-			self._imported_modules["genPos"] = sys.modules["ors_genpos_poster"]
 			function_name = "read_genpos"
 			try:
 				# Get the reference to the function
@@ -50,8 +52,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 				return
 			component_instance.output_functions.append(function)
 
+		"""
 		elif poster_type == "pom":
-			from pocolibs.sensors.Gyro_Poster import ors_pom_poster
 			self._poster_dict[component_name] = ors_pom_poster.locate_poster(poster_name)
 			function_name = "write_pom"
 			try:
@@ -61,19 +63,24 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
 				return
 			component_instance.output_functions.append(function)
+		"""
 	
 
 
 
 	def read_genpos(self, component_instance):
 		""" Read v,w from a genPos poster """
-		genPos_module = self._imported_modules["genPos"]
-		genpos_speed = genPos_module.read_genPos_data(component_instance.blender_obj.name)
-		#print ("Tuple type ({0}) returned".format(type(genpos_speed)))
-		#print ("Tuple data: ({0}, {1})".format(genpos_speed.v, genpos_speed.w))
+		# Read from the poster specified
+		genpos_speed = ors_genpos_poster.read_genPos_data(self._poster_dict[component_instance.blender_obj.name])
+		print ("Tuple type ({0}) returned".format(type(genpos_speed)))
+		print ("Tuple data: ({0}, {1})".format(genpos_speed.v, genpos_speed.w))
 
-		component_instance.local_data['v'] = genpos_speed.v
-		component_instance.local_data['w'] = genpos_speed.w
+		#component_instance.local_data['v'] = genpos_speed.v
+		#component_instance.local_data['w'] = genpos_speed.w
+
+		# Attempt to clear the memory
+		del genpos_speed
+		print ("THIS IS THE END OF THE POCOLIBS READ")
 
 
 	def write_pom(self, component_instance):
