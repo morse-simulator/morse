@@ -6,9 +6,9 @@
 //#include <posterLib.h>
 
 
-void* locate_poster (char*	poster_name)
+POSTER_ID locate_poster (char*	poster_name)
 {
-	void* id;
+	POSTER_ID id;
 
 	STATUS s = posterFind (poster_name, &id);
 	if (s == ERROR)
@@ -30,7 +30,7 @@ void* locate_poster (char*	poster_name)
 /*
 // OLD VERSION
 // Trying to pass the return value (two floats) as a python tuple
-PyObject* read_genPos_data( void* id, float v, float w )
+PyObject* read_genPos_data( POSTER_ID id, float v, float w )
 {
 	GENPOS_CART_SPEED local_genPos;
 	int offset = 0;
@@ -68,7 +68,7 @@ PyObject* read_genPos_data( void* id, float v, float w )
 // Return the data structure to Python.
 // It will understand, since the definition of the structure is
 //  in the files included in SWIG
-GENPOS_CART_SPEED read_genPos_data( void* id )
+GENPOS_CART_SPEED read_genPos_data( POSTER_ID id )
 {
 	GENPOS_CART_SPEED local_genPos;
 	int offset = 0;
@@ -89,7 +89,7 @@ GENPOS_CART_SPEED read_genPos_data( void* id )
 }
 
 
-int finalize (void* id)
+int finalize (POSTER_ID id)
 {
 	posterDelete(id);
 

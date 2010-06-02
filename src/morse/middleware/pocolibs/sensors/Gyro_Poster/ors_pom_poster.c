@@ -41,9 +41,9 @@ int post_data( POSTER_ID id, double x, double y, double z, double yaw, double pi
 	POM_EULER local_pom_euler;
 	POM_EULER_V local_pom_euler_v;
 
-	// Fill in the POM_POS_EULER 
+	// Fill in the POM_POS_EULER
 	// yaw, pitch, roll are expected in radian
-	
+
 #define DEG_TO_RAD(x) ((x)*M_PI/180.)
 
 	local_pom_euler.yaw = DEG_TO_RAD(yaw);
