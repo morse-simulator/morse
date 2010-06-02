@@ -20,10 +20,13 @@ int main(int argc, char* argv[])
 	char cmd;
 	char* poster_name = "p3dSpeedRef";
 
-	GENPOS_CART_STATE*  poster_struct;
+	GENPOS_CART_STATE  poster_struct;
 
-	poster_struct->v = 0.0;
-	poster_struct->w = 0.0;
+	poster_struct.v = 0.0;
+	poster_struct.w = 0.0;
+
+	//We catch ctrl+c to cleanly close the application
+	signal( SIGINT,sigproc);
 
 	STATUS s = posterCreate(poster_name, sizeof(GENPOS_CART_STATE), &id);
 	if (s == ERROR)
@@ -46,26 +49,23 @@ int main(int argc, char* argv[])
 		switch (cmd)
 		{
 			case 'i':
-				poster_struct->v += 1.0;
+				poster_struct.v += 1.0;
 				break;
 			case 'k':
-				poster_struct->v += 1.0;
+				poster_struct.v += 1.0;
 				break;
 			case 'j':
-				poster_struct->w -= 1.0;
+				poster_struct.w -= 1.0;
 				break;
 			case 'l':
-				poster_struct->w += 1.0;
+				poster_struct.w += 1.0;
 				break;
 		}
 
-		int err = posterWrite(id, 0, static_cast<void*>(poster_struct), sizeof(GENPOS_CART_STATE));
+		int err = posterWrite(id, 0, static_cast<void*>(&poster_struct), sizeof(GENPOS_CART_STATE));
 		if (err != sizeof(GENPOS_CART_STATE))
 			// throw PosterWriteException<T> (posterName, err);
 			printf ("Could not write the poster\n");
-
-		//We catch ctrl+c to cleanly close the application
-		signal( SIGINT,sigproc);
 	}
 
 }
