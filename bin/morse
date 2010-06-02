@@ -35,6 +35,15 @@ class MorseError(Exception):
     def __str__(self):
         return repr(self.value)
 
+def retrieve_blender_from_path():
+    try:
+        blenders_in_path = subprocess.Popen(['which', '-a', 'blender'], stdout=subprocess.PIPE).communicate()[0]
+        res = blenders_in_path.split('\n')[:-1]
+    except OSError:
+        return []
+    
+    return res
+    
 def check_blender_version(blender_path):
     try:
         version_str = subprocess.Popen([blender_path, '--version'], stdout=subprocess.PIPE).communicate()[0]
@@ -114,21 +123,24 @@ def check_setup():
 
     if blender_exec == "":
         #Then, check the version of the Blender executable in the path
-        blender_path = "blender"
-        blender_version_path = check_blender_version(blender_path)
+        for blender_path in retrieve_blender_from_path():
+            blender_version_path = check_blender_version(blender_path)
+            
+            if blender_version_path:
+                blender_exec = blender_path
+                logging.info("Found Blender in your PATH\n(" + blender_path + \
+                ", v." + blender_version_path + ").\nAlright, using it.")
+                break
         
         #Eventually, look for another Blender in the MORSE prefix
-        blender_prefix = os.path.join(os.path.normpath(prefix), os.path.normpath("bin/blender"))
-        blender_version_prefix = check_blender_version(blender_prefix)
-        
-        if blender_version_path:
-            blender_exec = blender_path
-            logging.info("Found Blender in your PATH (v." + blender_version_path + ". Alright.")
-        
-        else:
+        if blender_exec == "":
+            blender_prefix = os.path.join(os.path.normpath(prefix), os.path.normpath("bin/blender"))
+            blender_version_prefix = check_blender_version(blender_prefix)
+            
             if blender_version_prefix:
                 blender_exec = blender_prefix
-                logging.info("Found Blender in your prefix/bin (v." + blender_version_prefix + ". Alright.")
+                logging.info("Found Blender in your prefix/bin\n(" + blender_prefix + \
+                ", v." + blender_version_prefix + ").\nAlright, using it.")
                 
             else:
                 logging.error("Could not find a correct Blender executable, neither in the " + \
