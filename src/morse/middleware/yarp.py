@@ -3,7 +3,6 @@ import yarp
 import array
 import morse.helpers.middleware
 
-#class MorseYarpClass(MorseMiddleware.MorseMiddlewareClass):
 class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 	""" Handle communication between Blender and YARP."""
 
@@ -29,7 +28,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 
 	def register_component(self, component_name,
-			component_instance, function_name):
+			component_instance, mw_data):
 		""" Open the port used to communicate the specified component.
 
 		The name of the port is postfixed with in/out, according to
@@ -37,6 +36,10 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Compose the name of the port
 		parent_name = component_instance.robot_parent.blender_obj.name
 		port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
+
+		# Extract the information for this middleware
+		# This will be tailored for each middleware according to its needs
+		function_name = mw_data[1]
 
 		try:
 			# Get the reference to the function
@@ -113,7 +116,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 			bottle = yarp_port.prepare()
 			bottle.clear()
-			# Data elements are tuples of (name, data, type)
+			# Sort the data accodring to its type
 			for variable, data in component_instance.send_data.items():
 				if isinstance(data, int):
 					bottle.addInt(data)
@@ -257,61 +260,3 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		print ("Yarp Mid: List of ports:")
 		for name, port in self._yarpPorts.items():
 			print (" - Port name '{0}' = '{1}'".format(name, port))
-
-
-	def postImageRGB(self, img_pointer, img_X, img_Y, port_name):
-		""" Send an RGB image through the given named port."""
-		try:
-			yarp_port = self.getPort(port_name)
-
-			# Wrap the data in a YARP image
-			img = yarp.ImageRgb()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
-
-			"""
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
-			"""
-			# Using the C pointer (converted)
-			img.setExternal(img_pointer,img_X,img_Y)
-
-			# Copy to image with "regular" YARP pixel order
-			# Otherwise the image is upside-down
-			img2 = yarp.ImageRgb()
-			img2.copy(img)
-
-			# Write the image
-			yarp_port.write(img2)
-
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-
-
-	def postImageRGBA(self, img_pointer, img_X, img_Y, port_name):
-		""" Send an RGBA image through the given named port."""
-		try:
-			yarp_port = self.getPort(port_name)
-
-			# Wrap the data in a YARP image
-			img = yarp.ImageRgba()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
-
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
-			"""
-			# Using the C pointer (converted)
-			img.setExternal(img_pointer,img_X,img_Y)
-			"""
-
-			# Copy to image with "regular" YARP pixel order
-			# Otherwise the image is upside-down
-			img2 = yarp_port.prepare()
-			img2.copy(img)
-
-			# Write the image
-			yarp_port.write()
-
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)

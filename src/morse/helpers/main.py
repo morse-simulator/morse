@@ -145,13 +145,13 @@ def link_middlewares():
 	# Add the hook functions to the appropriate components
 	component_list = component_config.component_mw
 	for component_name, mw_data in component_list.items():
-		(mw_name, mw_function) = mw_data
+		mw_name = mw_data[0]
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
 		if GameLogic.pythonVersion < 3:
 			component_name = 'OB' + component_name
 
-		print ("Component: '%s' using middleware '%s.%s'" % (component_name, mw_name, mw_function))
+		print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
 		# Look for the listed mw in the dictionary of active mw's
 		for mw_obj, mw_instance in GameLogic.mwDict.items():
 			if mw_name in mw_obj.name:
@@ -163,7 +163,7 @@ def link_middlewares():
 					continue
 
 				# Make the middleware object take note of the component
-				mw_instance.register_component(component_name, instance, mw_function)
+				mw_instance.register_component(component_name, instance, mw_data)
 
 
 def add_modifiers():

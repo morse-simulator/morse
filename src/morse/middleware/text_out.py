@@ -20,6 +20,10 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		"""
 		parent_name = component_instance.robot_parent.blender_obj.name
 
+		# Extract the information for this middleware
+		# This will be tailored for each middleware according to its needs
+		function_name = mw_data[1]
+
 		try:
 			# Get the reference to the function
 			function = getattr(self, function_name)
