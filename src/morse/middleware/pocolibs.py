@@ -89,7 +89,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		robot = component_instance.robot_parent
 
 		poster_id = self._poster_dict[component_instance.blender_obj.name]
-		ors_pom_poster.post_data(poster_id, robot.x, robot.y, robot.z, robot.yaw, robot.pitch, robot.roll, pom_date)
+		ors_pom_poster.post_data(poster_id, robot.x, robot.y, robot.z,
+				robot.yaw, robot.pitch, robot.roll, pom_date)
 
 
 
