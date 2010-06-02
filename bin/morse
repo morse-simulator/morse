@@ -58,7 +58,20 @@ def check_blender_version(blender_path):
         return version
     else:
         return False
+
+def check_default_scene(prefix):
     
+    global default_scene_abspath
+    #Check morse_default.blend is found
+    default_scene_abspath = os.path.join(os.path.normpath(prefix), os.path.normpath(DEFAULT_SCENE_PATH))
+    
+    #logging.info("Looking for the MORSE default scene here: " + default_scene_abspath)
+    
+    if not os.path.exists(default_scene_abspath):
+        raise MorseError(default_scene_abspath)
+    else:
+        return default_scene_abspath
+
 def check_setup():
     """
     Checks that the environment is correctly setup to run MORSE.
@@ -89,15 +102,48 @@ def check_setup():
         ". Alright.")
     
     ###########################################################################
-    #Check ORS_ROOT, else display current executable prefix
+    #Detect MORSE prefix
+    #-> Check for $ORS_ROOT, then script current prefix
     try:
         prefix = os.environ['ORS_ROOT']
-        logging.info("ORS_ROOT environment variable is set. Using prefix " + prefix)
+        logging.info("$ORS_ROOT environment variable is set. Checking for default scene...")
+        
+        check_default_scene(prefix)
+        logging.info("Default scene found. The prefix seems ok. Using it.")
+        morse_prefix = prefix
+        
+    except MorseError:
+        logging.warning("Couldn't find the default scene from $ORS_ROOT prefix!\n" + \
+        "Did you move your installation? You should fix that!\n" + \
+        "Trying to look for alternative places...")
     except KeyError:
-        prefix = sys.prefix
-        logging.info("Using default prefix " + prefix)
+        pass
     
-    morse_prefix = prefix
+    if morse_prefix == "":
+        #Trying to use the script location as prefix (removing the trailing '/bin'
+        # if present)
+        logging.info("Trying to figure out a prefix from the script location...")
+        prefix = os.path.abspath(os.path.dirname(sys.argv[0]))
+        if prefix.endswith('bin'):
+            prefix = prefix[:-3]
+        
+        try:
+            check_default_scene(prefix)
+            
+            logging.info("Default scene found. The prefix seems ok. Using it.")
+            morse_prefix = prefix
+            os.environ['ORS_ROOT'] = prefix
+            logging.info("Setting $ORS_ROOT environment variable to default prefix [" + prefix + "]")
+        
+        except MorseError as me:
+            logging.error("Could not find the MORSE default scene (I was expecting it " + \
+                    "\nthere: " + me.value + ").\n" + \
+                    "If you've installed MORSE files in an exotic location, check that \n" + \
+                    "the $ORS_ROOT environment variable points to MORSE root directory.\n" + \
+                    "Else, try to reinstall MORSE.")
+            raise
+        
+    
     
     ###########################################################################
     #Check Blender version
@@ -149,22 +195,6 @@ def check_setup():
                 "\tYou can alternatively set the $ORS_BLENDER environment variable " + \
                 "to point to a specific Blender executable")
                 raise MorseError("Could not find Blender executable")
-    
-    ###########################################################################
-    #Check morse_default.blend is found
-    default_scene_abspath = os.path.join(os.path.normpath(prefix), os.path.normpath(DEFAULT_SCENE_PATH))
-    
-    logging.info("Looking for the MORSE default scene here: " + default_scene_abspath)
-    
-    if not os.path.exists(default_scene_abspath):
-        logging.error("Could not find the MORSE default scene (I was looking " + \
-        "here: " + default_scene_abspath + ").\n" + \
-        "\t- If you've installed MORSE files in an exotic location, check that " + \
-        "the $ORS_ROOT environment variable points to MORSE root directory.\n" + \
-        "\t- Else, try to reinstall MORSE.")
-        raise MorseError("MORSE default scene not found")
-    else:
-        logging.info("MORSE default scene found.")
 
 def create_copy_default_scene(filename = None):
     """
@@ -189,8 +219,6 @@ def create_copy_default_scene(filename = None):
     else:
         new_scene = os.path.normpath(filename)
 
-    print new_scene
-    print default_scene_abspath
     shutil.copy(default_scene_abspath, new_scene)
     
     return new_scene
@@ -216,7 +244,7 @@ def launch_simulator(scene=None):
     
     if not scene:
         scene = create_copy_default_scene()
-        print ("Creating new scene ./" + scene)
+        print ("Creating new scene " + scene)
         
     elif not os.path.exists(scene):
         print(scene + " does not exist!\nIf you want to create a new scene " + \
