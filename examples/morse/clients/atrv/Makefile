@@ -37,11 +37,11 @@ $(GRID): $(GRID).o
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
 
-$(POCO_CLIENT): $(POCO_CLIENT).c
+$(POCO_CLIENT): $(POCO_CLIENT).cpp
 	@echo "COMPILING ($@ C)"
 #$(CC) -c $@.c $(CFLAGS)
 #ld -o $@ $@.o $(LDFLAGS)
-	$(CC) -g -o $@ $@.c $(CFLAGS) $(LDFLAGS) $(POCOLIBSFLAGS)
+	$(CC) -g -o $@ $^ $(CFLAGS) $(LDFLAGS) $(POCOLIBSFLAGS)
 
 
 tags:
