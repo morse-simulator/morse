@@ -19,6 +19,6 @@ SWIG_LINK_LIBRARIES(${TARGET} ${POCOLIBS_LIBRARIES})
 INSTALL (FILES __init__.py
 		${CMAKE_CURRENT_BINARY_DIR}/_${TARGET}.so 
 		${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.py
-		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/controller/Control_Poster/
+		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/controllers/Control_Poster/
 		)
 
