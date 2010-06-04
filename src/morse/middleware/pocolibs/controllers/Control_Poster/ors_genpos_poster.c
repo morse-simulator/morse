@@ -3,8 +3,6 @@
 #include <string.h>
 #include "ors_genpos_poster.h"
 
-//#include <posterLib.h>
-
 
 POSTER_ID locate_poster (char*	poster_name)
 {
@@ -18,51 +16,12 @@ POSTER_ID locate_poster (char*	poster_name)
 		printf ("Unable to locate the %s poster : %s\n", poster_name, buf);
 		return (NULL);
 	}
-	/*
 	else
-		printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
-	*/
+		printf ("INIT ID = %p (pointer)   %d(integer)\n", id, id);
 
 	return (id);
 }
 
-
-/*
-// OLD VERSION
-// Trying to pass the return value (two floats) as a python tuple
-PyObject* read_genPos_data( POSTER_ID id, float v, float w )
-{
-	GENPOS_CART_SPEED local_genPos;
-	int offset = 0;
-
-	posterRead (id, offset, &local_genPos, sizeof(GENPOS_CART_SPEED));
-
-	// Read the variables we need for the speed
-	v = local_genPos.v;
-	w = local_genPos.w;
-
-	printf ("DATA READ FROM POSTER:");
-	printf ("\tv = %.4f", v);
-	printf ("\tw = %.4f\n", w);
-
-	PyObject *tuple, *list;
-
-	// tuple = Py_BuildValue("(iis)", 1, 2, "three");
-	// list = Py_BuildValue("[iis]", 1, 2, "three");
-	tuple = Py_BuildValue("(ii)", v, w);
-
-
-	PyObject* py_v = PyInt_FromLong(v);
-	PyObject* py_w = PyInt_FromLong(w);
-
-	PyObject* resTuple = PyTuple_New(2);
-
-	PyTuple_SetItem(resTuple, 0, py_v);
-	PyTuple_SetItem(resTuple, 1, py_w);
-
-	return (resTuple);
-}
-*/
 
 
 // Return the data structure to Python.
@@ -72,15 +31,16 @@ GENPOS_CART_SPEED read_genPos_data( POSTER_ID id )
 {
 	GENPOS_CART_SPEED local_genPos;
 	int offset = 0;
-	float v;
-	float w;
+	// float v;
+	// float w;
 
 	posterRead (id, offset, &local_genPos, sizeof(GENPOS_CART_SPEED));
 
 	// Read the variables we need for the speed
-	v = local_genPos.v;
-	w = local_genPos.w;
+	// v = local_genPos.v;
+	// w = local_genPos.w;
 
+	// printf ("Reading from poster ID = %p (pointer)   %d(integer)\n", id, id);
 	// printf ("DATA READ FROM POSTER:");
 	// printf ("\tv = %.4f", v);
 	// printf ("\tw = %.4f\n", w);

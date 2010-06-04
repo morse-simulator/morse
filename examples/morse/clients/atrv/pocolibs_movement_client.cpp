@@ -9,18 +9,16 @@
 
 using namespace std;
 
-
 POSTER_ID id;
 
 void sigproc(int);
-void usage (char* program_name);
 
 int main(int argc, char* argv[])
 {
 	char cmd;
 	char* poster_name = "p3dSpeedRef";
 
-	GENPOS_CART_STATE  poster_struct;
+	GENPOS_CART_SPEED  poster_struct;
 
 	poster_struct.v = 0.0;
 	poster_struct.w = 0.0;
@@ -28,7 +26,7 @@ int main(int argc, char* argv[])
 	//We catch ctrl+c to cleanly close the application
 	signal( SIGINT,sigproc);
 
-	STATUS s = posterCreate(poster_name, sizeof(GENPOS_CART_STATE), &id);
+	STATUS s = posterCreate(poster_name, sizeof(GENPOS_CART_SPEED), &id);
 	if (s == ERROR)
 	{
 		// throw PosterCreateException(posterName);
@@ -52,18 +50,21 @@ int main(int argc, char* argv[])
 				poster_struct.v += 1.0;
 				break;
 			case 'k':
-				poster_struct.v += 1.0;
+				poster_struct.v -= 1.0;
 				break;
 			case 'j':
-				poster_struct.w -= 1.0;
-				break;
-			case 'l':
 				poster_struct.w += 1.0;
 				break;
+			case 'l':
+				poster_struct.w -= 1.0;
+				break;
+			default:
+				continue;
 		}
+		printf ("Sending: v = %f, w = %f\n", poster_struct.v, poster_struct.w);
 
-		int err = posterWrite(id, 0, static_cast<void*>(&poster_struct), sizeof(GENPOS_CART_STATE));
-		if (err != sizeof(GENPOS_CART_STATE))
+		int err = posterWrite(id, 0, static_cast<void*>(&poster_struct), sizeof(GENPOS_CART_SPEED));
+		if (err != sizeof(GENPOS_CART_SPEED))
 			// throw PosterWriteException<T> (posterName, err);
 			printf ("Could not write the poster\n");
 	}
@@ -78,10 +79,4 @@ void sigproc(int sig){
   cout << " * Exiting now!" << endl;
   cout << "*******************************" << endl;
   exit(0);
-}
-
-void usage (char* program_name)
-{
-    printf ("Usage: %s [robot_name] [motion_component_name]\n", program_name);
-    exit (1);
 }

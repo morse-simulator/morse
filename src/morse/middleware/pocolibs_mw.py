@@ -42,27 +42,34 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		# Choose what to do, depending on the poster type
 		if poster_type == "genPos":
-			self._poster_dict[component_name] = ors_genpos_poster.locate_poster(poster_name)
-			function_name = "read_genpos"
-			try:
-				# Get the reference to the function
-				function = getattr(self, function_name)
-			except AttributeError as detail:
-				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-				return
-			component_instance.output_functions.append(function)
+			poster_id = ors_genpos_poster.locate_poster(poster_name)
+			print ("Located 'genPos' poster. ID=%d" % poster_id)
+			if poster_id != None:
+				self._poster_dict[component_name] = poster_id
+				function_name = "read_genpos"
+				try:
+					# Get the reference to the function
+					function = getattr(self, function_name)
+				except AttributeError as detail:
+					print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+					return
+				component_instance.output_functions.append(function)
+			else:
+				print ("Poster 'genPos' not created. Component will not work")
 
 		"""
 		elif poster_type == "pom":
-			self._poster_dict[component_name] = ors_pom_poster.locate_poster(poster_name)
-			function_name = "write_pom"
-			try:
-				# Get the reference to the function
-				function = getattr(self, function_name)
-			except AttributeError as detail:
-				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-				return
-			component_instance.output_functions.append(function)
+			poster_id = ors_pom_poster.locate_poster(poster_name)
+			if poster_id != None:
+				self._poster_dict[component_name] = poster_id
+				function_name = "write_pom"
+				try:
+					# Get the reference to the function
+					function = getattr(self, function_name)
+				except AttributeError as detail:
+					print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+					return
+				component_instance.output_functions.append(function)
 		"""
 	
 
@@ -71,16 +78,13 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def read_genpos(self, component_instance):
 		""" Read v,w from a genPos poster """
 		# Read from the poster specified
-		genpos_speed = ors_genpos_poster.read_genPos_data(self._poster_dict[component_instance.blender_obj.name])
-		print ("Tuple type ({0}) returned".format(type(genpos_speed)))
-		print ("Tuple data: ({0}, {1})".format(genpos_speed.v, genpos_speed.w))
+		poster_id = self._poster_dict[component_instance.blender_obj.name]
+		genpos_speed = ors_genpos_poster.read_genPos_data(poster_id)
+		#print ("Tuple type ({0}) returned".format(type(genpos_speed)))
+		#print ("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
 
-		#component_instance.local_data['v'] = genpos_speed.v
-		#component_instance.local_data['w'] = genpos_speed.w
-
-		# Attempt to clear the memory
-		del genpos_speed
-		print ("THIS IS THE END OF THE POCOLIBS READ")
+		component_instance.local_data['v'] = genpos_speed.v
+		component_instance.local_data['w'] = genpos_speed.w
 
 
 	def write_pom(self, component_instance):
