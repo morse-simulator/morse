@@ -1,8 +1,12 @@
 import sys
-import array
+import math
+import datetime
+import GameLogic
+
 import morse.helpers.middleware
 
 from middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
+from middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
 #from middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
 
 
@@ -57,19 +61,31 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			else:
 				print ("Poster 'genPos' not created. Component will not work")
 
+		elif poster_type == "viam":
+			poster_id = self._init_viam_poster(component_instance, poster_name)
+			self._poster_dict[component_name] = poster_id
+			function_name = "write_viam"
+			try:
+				# Get the reference to the function
+				function = getattr(self, function_name)
+			except AttributeError as detail:
+				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+				return
+			component_instance.output_functions.append(function)
+
 		"""
 		elif poster_type == "pom":
-			poster_id = ors_pom_poster.locate_poster(poster_name)
-			if poster_id != None:
-				self._poster_dict[component_name] = poster_id
-				function_name = "write_pom"
-				try:
-					# Get the reference to the function
-					function = getattr(self, function_name)
-				except AttributeError as detail:
-					print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-					return
-				component_instance.output_functions.append(function)
+			poster_id = self._init_viam_poster(component_instance, poster_name)
+			self._poster_dict[component_name] = poster_id
+			self._poster_dict[component_name] = poster_id
+			function_name = "write_pom"
+			try:
+				# Get the reference to the function
+				function = getattr(self, function_name)
+			except AttributeError as detail:
+				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+				return
+			component_instance.output_functions.append(function)
 		"""
 	
 
@@ -91,12 +107,11 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		""" Write the position to a poaster
 
 		The argument must be the instance to a morse gyroscope class. """
+		# Get the id of the poster already created
+		poster_id = self._poster_dict[component_instance.blender_obj.name]
 
-		# Compute the current time ( we only requiere that the pom date
-		# increases using a constant step so real time is ok)
-		t = datetime.now()
-		pom_date = int(t.hour * 3600* 1000 + t.minute * 60 * 1000 +
-				t.second * 1000 + t.microsecond / 1000)
+		# Compute the current time
+		pom_date, t = self._compute_date()
 
 		# Get the data from the gyroscope object
 		robot = component_instance.robot_parent
@@ -106,128 +121,106 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 				robot.yaw, robot.pitch, robot.roll, pom_date)
 
 
+	def write_viam(self, component_instance):
+		""" Write an image and all its data to a poster """
+		# Get the id of the poster already created
+		poster_id = self._poster_dict[component_instance.blender_obj.name]
+		parent = component_instance.robot_parent
 
-	def read_message(self, component_instance):
-		""" Read incoming data from a simple port.
+		mainToOrigin = parent.position_3d
 
-		The argument is a copy of the component instance.
-		Data is writen directly into the 'local_data' dictionary
-		of the component instance.
+		pom_robot_position =  ors_viam_poster.pom_position()
+		pom_robot_position.x = mainToOrigin.x
+		pom_robot_position.y = mainToOrigin.y
+		pom_robot_position.z = mainToOrigin.z
+		pom_robot_position.yaw = parent.yaw
+		pom_robot_position.pitch = parent.pitch
+		pom_robot_position.roll = parent.roll
+
+		# Compute the current time
+		pom_date, t = self._compute_date()
+
+		ors_cameras = []
+		ors_images = []
+
+		# Cycle throught the cameras on the base
+		# In normal circumstances, there will be two for stereo
+		for camera_name in component_instance.camera_list:
+			camera_instance = GameLogic.componentDict[camera_name]
+
+			sensorToOrigin = camera_instance.position_3d
+			mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
+
+			imX = camera_instance.image_size_X
+			imY = camera_instance.image_size_Y
+			image_string = camera_instance.local_data['image']
+
+			# Fill in the structure with the image information
+			camera_data = ors_viam_poster.simu_image()
+			camera_data.width = imX
+			camera_data.height = imY
+			camera_data.pom_tag = pom_date
+			camera_data.tacq_sec = t.second
+			camera_data.tacq_usec = t.microsecond
+			camera_data.sensor = ors_viam_poster.pom_position()
+			camera_data.sensor.x = mainToSensor.x
+			camera_data.sensor.y = mainToSensor.y
+			camera_data.sensor.z = mainToSensor.z
+			# XXX +PI rotation is needed but I don't have any idea why !!
+			camera_data.sensor.yaw = mainToSensor.yaw + 180.0
+			camera_data.sensor.pitch = mainToSensor.pitch
+			camera_data.sensor.roll = mainToSensor.roll
+
+			ors_cameras.append(camera_data)
+			ors_images.append(image_string)
+
+		# Write to the poster with the data for both images
+		posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
+
+
+
+
+	def _init_viam_poster(self, component_instance, poster_name):
+		""" Prepare the data for a viam poster """
+		cameras = []
+		pos_cam = []
+		# Get the names of the data for the cameras
+		for camera_name in component_instance.camera_list:
+			camera_instance = GameLogic.componentDict[camera_name]
+
+			# Create an image structure for each camera
+			image_init = ors_viam_poster.simu_image_init()
+			image_init.camera_name = camera_name
+			image_init.width = camera_instance.image_size_X
+			image_init.height = camera_instance.image_size_Y
+			image_init.focal = camera_instance.image_focal
+			pos_cam.append(camera_instance.blender_obj.position)
+			cameras.append(image_init)
+
+		baseline = 0
+		# This is the case for a stereo camera
+		if component_instance.num_cameras == 2:
+			baseline = math.sqrt( math.pow(pos_cam[0][0] - pos_cam[1][0], 2) +
+								  math.pow(pos_cam[0][1] - pos_cam[1][1], 2) +
+								  math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
+
+		# Create the actual poster
+		poster_id = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
+		print ("viam poster ID: {0}".format(poster_id))
+		if poster_id == None:
+			print ("ERROR creating poster. This module may not work")
+
+		return poster_id
+
+
+	def _compute_date(self):
+		""" Compute the current time
+
+		( we only requiere that the date
+		increases using a constant step so real time is ok)
 		"""
-		port_name = self._component_ports[component_instance.blender_obj.name]
+		t = datetime.datetime.now()
+		date = int(t.hour * 3600* 1000 + t.minute * 60 * 1000 +
+				t.second * 1000 + t.microsecond / 1000)
 
-		try:
-			yarp_port = self.getPort(port_name)
-			message_data = yarp_port.read(False)
-
-			if message_data != None:
-				# Data elements are of type defined in data_types
-				i = 0
-				for variable, data in component_instance.local_data.items():
-					if isinstance(data, int):
-						msg_data = message_data.get(i).asInt()
-						component_instance.local_data[variable] = msg_data
-					elif isinstance(data, float):
-						msg_data = message_data.get(i).asDouble()
-						component_instance.local_data[variable] = msg_data
-					elif isinstance(data, basestring):
-						msg_data = message_data.get(i).toString()
-						component_instance.local_data[variable] = msg_data
-					else:
-						print ("Yarp ERROR: Unknown data type at 'read_message'")
-					print ("READ VARIABLE {0} = {1}".format(variable, msg_data))
-					i = i + 1
-
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-
-
-	def post_message(self, component_instance):
-		""" Send the data of a component through a simple port.
-
-		The argument is a copy of the component instance.
-		"""
-		port_name = self._component_ports[component_instance.blender_obj.name]
-
-		try:
-			yarp_port = self.getPort(port_name)
-
-			bottle = yarp_port.prepare()
-			bottle.clear()
-			# Data elements are tuples of (name, data)
-			for variable, data in component_instance.send_data.items():
-				if isinstance(data, int):
-					bottle.addInt(data)
-				elif isinstance(data, float):
-					bottle.addDouble(data)
-				elif isinstance(data, basestring):
-					bottle.addString(data)
-				else:
-					print ("Yarp ERROR: Unknown data type at 'post_message'")
-
-			#yarp_port.writeStrict()
-			yarp_port.write()
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-
-
-	def post_image_RGBA(self, component_instance):
-		""" Send an RGBA image through the given named port."""
-		port_name = self._component_ports[component_instance.blender_obj.name]
-
-		try:
-			yarp_port = self.getPort(port_name)
-		except KeyError as detail:
-			print ("ERROR: Specified port does not exist: ", detail)
-			return
-
-		if component_instance.blender_obj['capturing']:
-			# Wrap the data in a YARP image
-			img = self._yarp_module.ImageRgba()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
-
-			# Get the image data from the camera instance
-			img_string = component_instance.send_data['image']
-			img_X = component_instance.image_size_X
-			img_Y = component_instance.image_size_Y
-
-			# Convert to an array object
-			data = array.array('B',img_string)
-			# Get the pointer to the data
-			img_pointer = data.buffer_info()
-
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
-
-			# Copy to image with "regular" YARP pixel order
-			# Otherwise the image is upside-down
-			img2 = yarp_port.prepare()
-			img2.copy(img)
-
-			# Write the image
-			yarp_port.write()
-
-
-	def finalize(self):
-		""" Close all currently opened ports and release the network."""
-		for port in self._yarpPorts.values():
-			port.close()
-
-		#self._network.fini()
-		self._yarp_module.Network.fini()
-		#yarp.Network.fini()
-		print ('Yarp Mid: ports have been closed.')
-
-
-	def getPort(self, portName):
-		""" Retrieve a yarp port associated to the given name."""
-		port = '/ors/' + portName
-		return self._yarpPorts[port]
-
-
-	def printOpenPorts(self):
-		""" Return a list of all currently opened ports."""
-		print ("Yarp Mid: List of ports:")
-		for name, port in self._yarpPorts.items():
-			print (" - Port name '{0}' = '{1}'".format(name, port))
+		return date, t
