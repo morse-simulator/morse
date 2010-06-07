@@ -11,9 +11,3 @@ def select(contr):
 	state_act = contr.actuators['State_Selector']
 	state_act.mask = mode
 	contr.activate(state_act)
-
-#def debug_1(contr):
-#	print "LAYER 1 NOW ACTIVE"
-#
-#def debug_2(contr):
-#	print "LAYER 2 NOW ACTIVE"
