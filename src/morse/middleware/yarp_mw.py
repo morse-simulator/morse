@@ -28,8 +28,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		self.finalize()
 
 
-	def register_component(self, component_name,
-			component_instance, mw_data):
+	def register_component(self, component_name, component_instance, mw_data):
 		""" Open the port used to communicate the specified component.
 
 		The name of the port is postfixed with in/out, according to

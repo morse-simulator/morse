@@ -11,8 +11,7 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		for component_name, file in self._file_list.items():
 			file.close()
 
-	def register_component(self, component_name,
-			component_instance, function_name):
+	def register_component(self, component_name, component_instance, mw_data):
 		""" Open a text file to write the data
 
 		The name of the file is composed of the robot and sensor names.
