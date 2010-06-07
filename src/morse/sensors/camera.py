@@ -1,7 +1,5 @@
 import GameLogic
 import VideoTexture
-import array
-#from Convert import convert
 import morse.helpers.object
 
 
@@ -62,12 +60,7 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 			#  encoded as RGBA
 			image_string = GameLogic.cameras[self.name].source.image
 
-			# Generate a pointer to the image string
-			#data = array.array('B',image_string)
-			#info = data.buffer_info()
-
 			# Fill in the exportable data
-			#self.local_data['image'] = info
 			self.local_data['image'] = image_string
 
 
@@ -89,7 +82,7 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 			extension = self.name[name_len-4:]
 			screen_name = screen_name + extension
 			camera_name = camera_name + extension
-			material_name = material_name + extension
+			#material_name = material_name + extension
 
 		# Get the reference to the camera and screen
 		scene = GameLogic.getCurrentScene()
