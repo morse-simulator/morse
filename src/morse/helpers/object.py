@@ -42,6 +42,9 @@ class MorseObjectClass(object):
 
 	def action(self):
 		""" Call the action functions that have been added to the list. """
+		# Update the component's position in the world
+		self.position_3d.update(self.blender_obj)
+
 		# First the input functions
 		for function in self.input_functions:
 			function(self)

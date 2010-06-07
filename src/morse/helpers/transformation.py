@@ -4,23 +4,10 @@ from Mathutils import *
 
 class Transformation3d:
 	def __init__(self, ob):
-		if ob == None:
-			self.matrix = Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1])
-			self.euler = Euler([0, 0, 0])
-		else:
-			rot_matrix = ob.orientation
-			self.matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
-			# XXX It seems incorrect to transpose the matrix here, but in other
-			# context, we need to. It is very strange. Need more investigation
-
-			self.matrix.resize4x4()
-
-			pos = ob.position
-			for i in range(0,3):
-				self.matrix[i][3] = pos[i]
-			self.matrix[3][3] = 1
-
-			self.euler = self.matrix.toEuler()
+		self.matrix = Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1])
+		self.euler = Euler([0, 0, 0])
+		if ob != None:
+			self.update(ob)
 
 	@property
 	def x(self):
@@ -53,6 +40,21 @@ class Transformation3d:
 		res.matrix = o2m * t3d.matrix
 		res.euler = res.matrix.toEuler()
 		return res
+
+	def update(self, ob):
+		rot_matrix = ob.orientation
+		self.matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+		# XXX It seems incorrect to transpose the matrix here, but in other
+		# context, we need to. It is very strange. Need more investigation
+		self.matrix.resize4x4()
+
+		pos = ob.position
+		for i in range(0,3):
+			self.matrix[i][3] = pos[i]
+		self.matrix[3][3] = 1
+
+		self.euler = self.matrix.toEuler()
+
 		
 
 	def __str__(self):
