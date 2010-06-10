@@ -47,13 +47,13 @@ fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header,
  *
  * you must call finalize when you don't use anymore the POSTER_ID
  */
-void* init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
+POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
 				 double baseline,
                  const struct simu_image_init* init1, 
 				 const struct simu_image_init* init2)
 {
 	size_t poster_size = 0;
-	void *id;
+	POSTER_ID id;
 
 	poster_size = sizeof(ViamImageBank);
 
@@ -81,6 +81,7 @@ void* init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 
 	printf("Succesfully create poster %s of size %zd\n", poster_name, poster_size); 
 
+	printf ("ID at 'init_data': %d\n", id);
 	ViamImageBank* bank  = posterAddr(id);
 
 	posterTake(id, POSTER_WRITE);
@@ -246,7 +247,7 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
  * prototyp of the function is not really correct (image_data must be in struct
  * simu_image, and it must be an array of struct ...). Needs investigation.
  */
-int post_viam_poster(	void* id,
+int post_viam_poster(	POSTER_ID id,
 						const struct pom_position* robot,
 						size_t nb_images,
 						const struct simu_image* img1,
@@ -255,6 +256,7 @@ int post_viam_poster(	void* id,
 						char* image_data2
 					)
 {
+	printf ("ID at 'post_viam_poster': %d\n", id);
 	ViamImageBank* bank =  posterAddr(id);
 	if (bank == NULL) {
 		fprintf(stderr, "calling %s but the poster has been destroyed\n", __func__);
@@ -262,6 +264,7 @@ int post_viam_poster(	void* id,
 	}
 	posterTake(id, POSTER_WRITE);
 
+	/*
 	assert(nb_images == bank->nImages);
 
 	switch (nb_images) {
@@ -275,6 +278,7 @@ int post_viam_poster(	void* id,
 		default:
 			assert(false);
 	}
+	*/
 
 	posterGive(id);
 
@@ -282,7 +286,7 @@ int post_viam_poster(	void* id,
 }
 
 
-int finalize (void* id)
+int finalize (POSTER_ID id)
 {
 	posterDelete(id);
 

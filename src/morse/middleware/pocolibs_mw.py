@@ -24,7 +24,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def __del__(self):
 		""" Destructor method.
 			Close all open posters. """
-		#for component_name, poster_id in self._pocolilbs_posters.items():
+		for component_name, poster_id in self._poster_dict.items()
 			#self.finalize(poster_id)
 
 
@@ -50,42 +50,26 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			print ("Located 'genPos' poster. ID=%d" % poster_id)
 			if poster_id != None:
 				self._poster_dict[component_name] = poster_id
-				function_name = "read_genpos"
-				try:
-					# Get the reference to the function
-					function = getattr(self, function_name)
-				except AttributeError as detail:
-					print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-					return
-				component_instance.output_functions.append(function)
+				function = _check_function_exists("read_genpos")
+				if function != None:
+					component_instance.output_functions.append(function)
 			else:
 				print ("Poster 'genPos' not created. Component will not work")
 
 		elif poster_type == "viam":
 			poster_id = self._init_viam_poster(component_instance, poster_name)
 			self._poster_dict[component_name] = poster_id
-			function_name = "write_viam"
-			try:
-				# Get the reference to the function
-				function = getattr(self, function_name)
-			except AttributeError as detail:
-				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-				return
-			component_instance.output_functions.append(function)
+			function = _check_function_exists("write_viam")
+			if function != None:
+				component_instance.output_functions.append(function)
 
 		"""
 		elif poster_type == "pom":
-			poster_id = self._init_viam_poster(component_instance, poster_name)
+			poster_id = self._init_pom_poster(component_instance, poster_name)
 			self._poster_dict[component_name] = poster_id
-			self._poster_dict[component_name] = poster_id
-			function_name = "write_pom"
-			try:
-				# Get the reference to the function
-				function = getattr(self, function_name)
-			except AttributeError as detail:
-				print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-				return
-			component_instance.output_functions.append(function)
+			function = _check_function_exists("write_pom")
+			if function != None:
+				component_instance.output_functions.append(function)
 		"""
 	
 
@@ -177,6 +161,21 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Write to the poster with the data for both images
 		posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
 
+
+	def finalize_poster(self, component_instance):
+		pass
+	
+
+
+	def _check_function_exists(self, function_name)
+		""" Checks that the function named exists."""
+		try:
+			# Get the reference to the function
+			function = getattr(self, function_name)
+			return function
+		except AttributeError as detail:
+			print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+			return None
 
 
 
