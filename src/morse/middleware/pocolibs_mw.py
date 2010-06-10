@@ -24,7 +24,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def __del__(self):
 		""" Destructor method.
 			Close all open posters. """
-		for component_name, poster_id in self._poster_dict.items()
+		pass
+		#for component_name, poster_id in self._poster_dict.items():
 			#self.finalize(poster_id)
 
 
@@ -167,7 +168,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	
 
 
-	def _check_function_exists(self, function_name)
+	def _check_function_exists(self, function_name):
 		""" Checks that the function named exists."""
 		try:
 			# Get the reference to the function
