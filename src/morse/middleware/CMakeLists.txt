@@ -4,7 +4,7 @@ INSTALL(FILES __init__.py json.py
 		)
 
 IF(BUILD_YARP2_SUPPORT)
-	INSTALL(FILES yarp.py
+	INSTALL(FILES yarp_mw.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 			)
 ENDIF(BUILD_YARP2_SUPPORT)
