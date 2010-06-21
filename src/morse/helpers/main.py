@@ -1,6 +1,5 @@
 import sys
 import re
-import json
 import GameLogic
 
 # Import this library to recover the Python version
@@ -10,10 +9,6 @@ import platform
 #  in the .blend file of the scene
 import component_config
 
-
-# Global variables for the names of the input and output ports
-in_port_name = "admin/in"
-out_port_name = "admin/out"
 
 
 # Create a list of the robots in the scene
@@ -202,31 +197,10 @@ def init(contr):
 	create_dictionaries()
 	add_modifiers()
 	link_middlewares()
-
-	#print ("OPENING PORT '{0}'".format(in_port_name))
-	#print ("OPENING PORT '{0}'".format(out_port_name))
-	#GameLogic.orsConnector.registerBufferedPortBottle([in_port_name, out_port_name])
 	print ('======= COMPONENT DICTIONARY INITIALIZED =======')
 
 	check_dictionaries()
 
-
-
-def admin(contr):
-	""" Respond to commands from the open communications port."""
-
-	"""
-	# Define a list with the data we are expecting
-	data_types = ['string']
-	data_list = GameLogic.orsConnector.readMessage(data_types, in_port_name)
-	if data_list != None:
-		command = data_list[0]
-
-		print (" ===>> Communication with external agent established!")
-		print ("Command:\t'{0}'".format(command))
-		if command == "list_robots":
-			print (" ===>> Sending list of elements")
-	"""
 
 
 def finish(contr):
@@ -275,10 +249,10 @@ def restart(contr):
 		# ALL THE FOLLOWING DOES NOT WORK
 
 		for obj, component_instance in GameLogic.componentDict.items():
-			del component_instance
+			del obj
 
 		for obj, robot_instance in GameLogic.robotDict.items():
-			del robot_instance
+			del obj
 
 		# Force the deletion of the middleware objects
 		for obj, mw_instance in GameLogic.mwDict.items():
