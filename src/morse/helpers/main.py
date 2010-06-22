@@ -202,6 +202,13 @@ def init(contr):
 	check_dictionaries()
 
 
+def admin(contr):
+	""" Method to listen to events during the simulation
+
+	Does nothing for the moment.
+	"""
+	return
+
 
 def finish(contr):
 	"""Close the open ports."""
