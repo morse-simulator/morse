@@ -1,7 +1,10 @@
 
-INSTALL(FILES __init__.py json.py
+INSTALL(FILES __init__.py json.py socket_mw.py
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
+
+INSTALL(DIRECTORY sockets
+		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 
 IF(BUILD_YARP2_SUPPORT)
 	INSTALL(FILES yarp_mw.py
@@ -11,5 +14,7 @@ ENDIF(BUILD_YARP2_SUPPORT)
 
 IF(BUILD_POCOLIBS_SUPPORT)
 	ADD_SUBDIRECTORY(pocolibs)
+	INSTALL(FILES pocolibs_mw.py
+			DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 ENDIF(BUILD_POCOLIBS_SUPPORT)
 
