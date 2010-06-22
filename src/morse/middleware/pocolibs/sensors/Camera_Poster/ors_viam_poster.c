@@ -256,7 +256,7 @@ int post_viam_poster(	POSTER_ID id,
 						char* image_data2
 					)
 {
-	printf ("ID at 'post_viam_poster': %d\n", id);
+	printf ("ID at 'post_viam_poster': %d (%d cameras)\n", id, nb_images);
 	ViamImageBank* bank =  posterAddr(id);
 	if (bank == NULL) {
 		fprintf(stderr, "calling %s but the poster has been destroyed\n", __func__);
@@ -264,7 +264,6 @@ int post_viam_poster(	POSTER_ID id,
 	}
 	posterTake(id, POSTER_WRITE);
 
-	/*
 	assert(nb_images == bank->nImages);
 
 	switch (nb_images) {
@@ -278,7 +277,6 @@ int post_viam_poster(	POSTER_ID id,
 		default:
 			assert(false);
 	}
-	*/
 
 	posterGive(id);
 

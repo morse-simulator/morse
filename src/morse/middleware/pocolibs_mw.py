@@ -51,7 +51,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			print ("Located 'genPos' poster. ID=%d" % poster_id)
 			if poster_id != None:
 				self._poster_dict[component_name] = poster_id
-				function = _check_function_exists("read_genpos")
+				function = self._check_function_exists("read_genpos")
 				if function != None:
 					component_instance.output_functions.append(function)
 			else:
@@ -60,7 +60,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		elif poster_type == "viam":
 			poster_id = self._init_viam_poster(component_instance, poster_name)
 			self._poster_dict[component_name] = poster_id
-			function = _check_function_exists("write_viam")
+			function = self._check_function_exists("write_viam")
 			if function != None:
 				component_instance.output_functions.append(function)
 
@@ -68,7 +68,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		elif poster_type == "pom":
 			poster_id = self._init_pom_poster(component_instance, poster_name)
 			self._poster_dict[component_name] = poster_id
-			function = _check_function_exists("write_pom")
+			function = self._check_function_exists("write_pom")
 			if function != None:
 				component_instance.output_functions.append(function)
 		"""
