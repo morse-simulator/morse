@@ -36,6 +36,8 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 		# Prepare the exportable data of this sensor
 		self.local_data['image'] = ''
 
+		self.capturing = False
+
 		# Prepare the camera object in Blender
 		self._setup_video_texture()
 
@@ -62,6 +64,9 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 
 			# Fill in the exportable data
 			self.local_data['image'] = image_string
+			self.capturing = True
+		else:
+			self.capturing = False
 
 
 	def _setup_video_texture(self):

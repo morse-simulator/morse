@@ -143,17 +143,18 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 			print ("ERROR: Specified port does not exist: ", detail)
 			return
 
-		if component_instance.blender_obj['capturing']:
-			# Wrap the data in a YARP image
-			img = self._yarp_module.ImageRgba()
-			img.setTopIsLowIndex(0)
-			img.setQuantum(1)
+		# Wrap the data in a YARP image
+		img = self._yarp_module.ImageRgba()
+		img.setTopIsLowIndex(0)
+		img.setQuantum(1)
 
-			# Get the image data from the camera instance
-			img_string = component_instance.send_data['image']
-			img_X = component_instance.image_size_X
-			img_Y = component_instance.image_size_Y
+		# Get the image data from the camera instance
+		img_string = component_instance.send_data['image']
+		img_X = component_instance.image_size_X
+		img_Y = component_instance.image_size_Y
 
+		# Check that an image exists:
+		if img_string != None:
 			# Convert to an array object
 			data = array.array('B',img_string)
 			# Get the pointer to the data

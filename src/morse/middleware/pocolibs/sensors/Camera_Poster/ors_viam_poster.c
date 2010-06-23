@@ -228,12 +228,16 @@ fill_image(ViamImageHeader* image, const struct pom_position* robot,
 	for (size_t j = 0 ; j < img->height; j++)
 		for (size_t i = 0 ; i <  img->width; i++)
 	    {
+			// printf("Computing index (%zu,%zu, %zu, %zu)\n",i,j, img->width, img->height);
             size_t index = (j * img->width + i) * 4;
             size_t index_ = ((img->height - 1 - j) * img->width  + i);
+
+			// printf("Reading image at index %zu\n", index);
 	    	unsigned char r = (unsigned char) image_data[index];
 	    	unsigned char g = (unsigned char) image_data[index+1];
 	    	unsigned char b = (unsigned char) image_data[index+2];
 
+			// printf("Writing image at index %zu\n", index_);
 	    	// RGB[A] -> GREY
 	    	data[index_] = 0.299*r + 0.587*g + 0.114*b;
 	    }
@@ -256,7 +260,7 @@ int post_viam_poster(	POSTER_ID id,
 						char* image_data2
 					)
 {
-	printf ("ID at 'post_viam_poster': %d (%d cameras)\n", id, nb_images);
+	// printf ("ID at 'post_viam_poster': %d (%d cameras)\n", id, nb_images);
 	ViamImageBank* bank =  posterAddr(id);
 	if (bank == NULL) {
 		fprintf(stderr, "calling %s but the poster has been destroyed\n", __func__);

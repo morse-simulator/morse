@@ -22,11 +22,10 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 
 	def __del__(self):
-		""" Destructor method.
-			Close all open posters. """
-		pass
-		#for component_name, poster_id in self._poster_dict.items():
-			#self.finalize(poster_id)
+		""" Close all open posters. """
+		for component_name, poster_id in self._poster_dict.items():
+			#print ("Killing poster %d for component %s" % (poster_id, component_name))
+			self._finalize_poster(poster_id)
 
 
 	def register_component(self, component_name,
@@ -140,6 +139,11 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			imY = camera_instance.image_size_Y
 			image_string = camera_instance.local_data['image']
 
+			# Don't create a poster if the camera is disabled
+			if image_string == None or not camera_instance.capturing:
+				#print ("Camera '%s' not capturing. Exiting viam poster" % camera_instance.blender_obj.name)
+				return
+
 			# Fill in the structure with the image information
 			camera_data = ors_viam_poster.simu_image()
 			camera_data.width = imX
@@ -163,7 +167,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
 
 
-	def finalize_poster(self, component_instance):
+	def _finalize_poster(self, poster_id):
 		pass
 	
 
@@ -204,11 +208,13 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 								  math.pow(pos_cam[0][1] - pos_cam[1][1], 2) +
 								  math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
 
-		# Create the actual poster
-		poster_id = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
-		print ("viam poster ID: {0}".format(poster_id))
-		if poster_id == None:
-			print ("ERROR creating poster. This module may not work")
+			# Create the actual poster
+			poster_id = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
+			print ("viam poster ID: {0}".format(poster_id))
+			if poster_id == None:
+				print ("ERROR creating poster. This module may not work")
+		elif component_instance.num_cameras == 1:
+			pass
 
 		return poster_id
 
