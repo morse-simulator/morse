@@ -28,8 +28,8 @@ class CameraClass(morse.helpers.object.MorseObjectClass):
 			# Provide default values for the image properties
 			# The performance is much better with power of two sizes:
 			#  4, 16, 32, ... 256, 512
-			self.image_size_X = obj['cam_width'] = 320
-			self.image_size_Y = obj['cam_height'] = 240
+			self.image_size_X = obj['cam_width'] = 256
+			self.image_size_Y = obj['cam_height'] = 256
 			self.image_focal = obj['cam_focal'] = 35
 
 		self.image_size = 4 * self.image_size_X * self.image_size_Y
