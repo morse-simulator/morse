@@ -5,6 +5,7 @@ import GameLogic
 
 import morse.helpers.middleware
 
+#from middleware.pocolibs.sensors.General_Poster import ors_poster
 from middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
 from middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
 #from middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
@@ -25,7 +26,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		""" Close all open posters. """
 		for component_name, poster_id in self._poster_dict.items():
 			#print ("Killing poster %d for component %s" % (poster_id, component_name))
-			self._finalize_poster(poster_id)
+			# Call the method to close a poster
+			ors_poster.finalize(poster_id)
 
 
 	def register_component(self, component_name,
@@ -167,9 +169,6 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
 
 
-	def _finalize_poster(self, poster_id):
-		pass
-	
 
 
 	def _check_function_exists(self, function_name):
