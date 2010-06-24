@@ -65,14 +65,12 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			if function != None:
 				component_instance.output_functions.append(function)
 
-		"""
 		elif poster_type == "pom":
 			poster_id = self._init_pom_poster(component_instance, poster_name)
 			self._poster_dict[component_name] = poster_id
 			function = self._check_function_exists("write_pom")
 			if function != None:
 				component_instance.output_functions.append(function)
-		"""
 	
 
 
@@ -90,7 +88,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 
 	def write_pom(self, component_instance):
-		""" Write the position to a poaster
+		""" Write the sensor position to a poaster
 
 		The argument must be the instance to a morse gyroscope class. """
 		# Get the id of the poster already created
@@ -216,6 +214,18 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			pass
 
 		return poster_id
+
+
+	def _init_pom_poster(self, component_instance, poster_name):
+		""" Prepare the data for a pom poster """
+		poster_id = ors_pom_poster.init_data(poster_name)
+		print ("pom poster ID: {0}".format(poster_id))
+		if poster_id == None:
+			print ("ERROR creating poster. This module may not work")
+
+		return poster_id
+
+
 
 
 	def _compute_date(self):
