@@ -1,7 +1,8 @@
 import GameLogic
+import Mathutils
 import morse.helpers.object
 
-class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
+class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 	""" Destination motion controller
 
 	This controller will receive a destination point and
@@ -28,11 +29,8 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 
 	def default_action(self):
 		""" Move the object towards the destination. """
-
 		parent = self.robot_parent
 		parent.move_status = "Transit"
-
-###### OLD STUFF  #####
 
 		# Get the orientation of the robot
 		try:
@@ -40,7 +38,6 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 				NED = True
 		except KeyError as detail:
 			NED = False
-
 
 		"""
 		# THIS HAS TO BE DONE WITH A REQUEST
@@ -81,11 +78,14 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 			return
 		"""
 
-		distance, global_vector, local_vector = self.blender_obj.getVectTo(destination)
+		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 
 		#print ("GOT DISTANCE: {0}".format(distance))
 
 		if distance > 0:
+			# Convert the list into a vector
+			global_vector = Mathutils.Vector(global_vector)
+			# Normlise the vector
 			global_vector.normalize()
 
 
@@ -97,9 +97,9 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 			if NED == True:
 				# Scale the speeds to the time used by Blender
 				try:
-					vx = global_vector[1] * speed / ticks
-					vy = global_vector[0] * speed / ticks
-					vz = -global_vector[2] * speed / ticks
+					vx = global_vector[1] * self.speed / ticks
+					vy = global_vector[0] * self.speed / ticks
+					vz = -global_vector[2] * self.speed / ticks
 				# For the moment ignoring the division by zero
 				# It happens apparently when the simulation starts
 				except ZeroDivisionError:
@@ -107,9 +107,9 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 			else:
 				# Scale the speeds to the time used by Blender
 				try:
-					vx = global_vector[0] * speed / ticks
-					vy = global_vector[1] * speed / ticks
-					vz = global_vector[2] * speed / ticks
+					vx = global_vector[0] * self.speed / ticks
+					vy = global_vector[1] * self.speed / ticks
+					vz = global_vector[2] * self.speed / ticks
 				# For the moment ignoring the division by zero
 				# It happens apparently when the simulation starts
 				except ZeroDivisionError:
@@ -119,7 +119,7 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 		elif distance <= self.tolerance:
 			# Reset movement variables
 			vx, vy, vz = 0.0, 0.0, 0.0
-			rx, ry, rz = 0.0, 0.0, 0.0
+			#rx, ry, rz = 0.0, 0.0, 0.0
 
 			parent.move_status = "Stop"
 			print ("TARGET REACHED")
@@ -127,7 +127,7 @@ class DestinationActuatorClass(morse.helpers.object.MORSEObjectClass):
 
 		# Give the movement instructions directly to the parent
 		# The second parameter specifies a "local" movement
-		parent.applyMovement([vx, vy, vz], True)
-		parent.applyRotation([rx, ry, rz], True)
+		parent.blender_obj.applyMovement([vx, vy, vz], True)
+		#parent.blender_obj.applyRotation([rx, ry, rz], True)
 
 
