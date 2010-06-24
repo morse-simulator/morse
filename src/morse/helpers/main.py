@@ -137,8 +137,13 @@ def create_instance(obj, parent=None):
 def link_middlewares():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct middleware and options to each component. """
-	# Add the hook functions to the appropriate components
-	component_list = component_config.component_mw
+	try:
+		component_list = component_config.component_mw
+	except AttributeError as detail:
+		# Exit gracefully if there are no modifiers specified
+		print ("No modifiers found in configuration file")
+		return
+
 	for component_name, mw_data in component_list.items():
 		mw_name = mw_data[0]
 		# Prefix the name of the component with 'OB'
@@ -164,8 +169,13 @@ def link_middlewares():
 def add_modifiers():
 	""" Read the configuration script (inside the .blend file)
 		and assign the correct data modifiers to each component. """
-	# Add the hook functions to the appropriate components
-	component_list = component_config.component_modifier
+	try:
+		component_list = component_config.component_modifier
+	except AttributeError as detail:
+		# Exit gracefully if there are no modifiers specified
+		print ("No modifiers found in configuration file")
+		return
+
 	for component_name, modifier_name in component_list.items():
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
