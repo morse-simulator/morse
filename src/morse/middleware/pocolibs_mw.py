@@ -5,10 +5,10 @@ import GameLogic
 
 import morse.helpers.middleware
 
-#from middleware.pocolibs.sensors.General_Poster import ors_poster
-from middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
-from middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
-#from middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
+#from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
+from morse.middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
+from morse.middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
+from morse.middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
 
 
 class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
@@ -27,7 +27,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		for component_name, poster_id in self._poster_dict.items():
 			#print ("Killing poster %d for component %s" % (poster_id, component_name))
 			# Call the method to close a poster
-			ors_poster.finalize(poster_id)
+			#ors_poster.finalize(poster_id)
+			pass
 
 
 	def register_component(self, component_name,
@@ -49,8 +50,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Choose what to do, depending on the poster type
 		if poster_type == "genPos":
 			poster_id = ors_genpos_poster.locate_poster(poster_name)
-			print ("Located 'genPos' poster. ID=%d" % poster_id)
 			if poster_id != None:
+				print ("Located 'genPos' poster. ID=%d" % poster_id)
 				self._poster_dict[component_name] = poster_id
 				function = self._check_function_exists("read_genpos")
 				if function != None:
@@ -101,8 +102,11 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		robot = component_instance.robot_parent
 
 		poster_id = self._poster_dict[component_instance.blender_obj.name]
-		ors_pom_poster.post_data(poster_id, robot.x, robot.y, robot.z,
-				robot.yaw, robot.pitch, robot.roll, pom_date)
+		ors_pom_poster.post_data(poster_id,
+				robot.position_3d.x, robot.position_3d.y,
+				robot.position_3d.z, robot.position_3d.yaw,
+				robot.position_3d.pitch, robot.position_3d.roll,
+				pom_date)
 
 
 	def write_viam(self, component_instance):
