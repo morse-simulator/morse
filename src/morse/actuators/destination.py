@@ -81,10 +81,12 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 
-		#print ("My position: {0}".format(self.blender_obj.position))
-		#print ("GOT DISTANCE: {0}".format(distance))
+		print ("My position: {0}".format(self.blender_obj.position))
+		print ("GOT DISTANCE: {0}".format(distance))
+		print ("Global vector: {0}".format(global_vector))
+		print ("Local  vector: {0}".format(local_vector))
 
-		if distance > 0:
+		if distance > self.tolerance:
 			# Tick rate is the real measure of time in Blender.
 			# By default it is set to 60, regardles of the FPS
 			# If logic tick rate is 60, then: 1 second = 60 ticks
@@ -112,7 +114,7 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 					pass
 
 		# If the target has been reached, change the status
-		elif distance <= self.tolerance:
+		else:
 			# Reset movement variables
 			vx, vy, vz = 0.0, 0.0, 0.0
 			#rx, ry, rz = 0.0, 0.0, 0.0
@@ -125,5 +127,3 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 		# The second parameter specifies a "local" movement
 		parent.blender_obj.applyMovement([vx, vy, vz], False)
 		#parent.blender_obj.applyRotation([rx, ry, rz], False)
-
-
