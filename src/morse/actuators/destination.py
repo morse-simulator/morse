@@ -17,12 +17,12 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 
 		self.tolerance = 0.5
 		self.speed = 5.0
-		self.destination = [0.0, 0.0, 0.0]
+		self.destination = self.blender_obj.position
 
 		#self.local_data['speed'] = 0.0
-		self.local_data['x'] = 0.0
-		self.local_data['y'] = 0.0
-		self.local_data['z'] = 0.0
+		self.local_data['x'] = self.destination[0]
+		self.local_data['y'] = self.destination[1]
+		self.local_data['z'] = self.destination[2]
 
 		print ('######## CONTROL INITIALIZED ########')
 
@@ -81,10 +81,10 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 
-		print ("My position: {0}".format(self.blender_obj.position))
-		print ("GOT DISTANCE: {0}".format(distance))
-		print ("Global vector: {0}".format(global_vector))
-		print ("Local  vector: {0}".format(local_vector))
+		#print ("My position: {0}".format(self.blender_obj.position))
+		#print ("GOT DISTANCE: {0}".format(distance))
+		#print ("Global vector: {0}".format(global_vector))
+		#print ("Local  vector: {0}".format(local_vector))
 
 		if distance > self.tolerance:
 			# Tick rate is the real measure of time in Blender.
