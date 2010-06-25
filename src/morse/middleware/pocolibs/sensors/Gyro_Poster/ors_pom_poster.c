@@ -4,9 +4,6 @@
 #include <math.h>
 #include "ors_pom_poster.h"
 
-#include <pom/pomStruct.h>
-//#include <posterLib.h>
-
 
 POSTER_ID init_data (char*	poster_name)
 {
@@ -17,13 +14,11 @@ POSTER_ID init_data (char*	poster_name)
 	{
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
-		printf ("Unable to create the POM poster : %s\n",buf);
+		printf ("Unable to create the %s poster : %s\n", poster_name, buf);
 		return (NULL);
 	}
-	/*
-	else
-		printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
-	*/
+
+	printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
 
 	return (id);
 }

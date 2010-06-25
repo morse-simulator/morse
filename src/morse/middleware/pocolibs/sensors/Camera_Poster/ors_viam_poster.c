@@ -79,9 +79,9 @@ POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 		return (NULL);
 	}
 
-	printf("Succesfully create poster %s of size %zd\n", poster_name, poster_size); 
+	printf("Succesfully created poster %s of size %zd\n", poster_name, poster_size); 
+	printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
 
-	printf ("ID at 'init_data': %d\n", id);
 	ViamImageBank* bank  = posterAddr(id);
 
 	posterTake(id, POSTER_WRITE);

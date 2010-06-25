@@ -5,7 +5,7 @@
 #include <Python.h>
 
 
-void* init_data(char*  poster_name);
+POSTER_ID init_data(char*  poster_name);
 
 struct pom_position {
 	double yaw, pitch, roll;
@@ -41,4 +41,4 @@ int post_sick_poster(	POSTER_ID id,
 						POM_SENSOR_POS* pom_sensor_pos,
 						char* sick_data);
 
-int finalize ( void* id );
+int finalize ( POSTER_ID id );

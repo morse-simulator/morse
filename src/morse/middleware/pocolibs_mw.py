@@ -5,10 +5,10 @@ import GameLogic
 
 import morse.helpers.middleware
 
-#from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
-from morse.middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
+from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
 from morse.middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
 from morse.middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
+from morse.middleware.pocolibs.controllers.Control_Poster import ors_genpos_poster
 
 
 class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
@@ -25,10 +25,9 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def __del__(self):
 		""" Close all open posters. """
 		for component_name, poster_id in self._poster_dict.items():
-			#print ("Killing poster %d for component %s" % (poster_id, component_name))
+			print ("Killing poster %d for component %s" % (poster_id, component_name))
 			# Call the method to close a poster
-			#ors_poster.finalize(poster_id)
-			pass
+			ors_poster.finalize(poster_id)
 
 
 	def register_component(self, component_name,
@@ -92,15 +91,13 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		""" Write the sensor position to a poaster
 
 		The argument must be the instance to a morse gyroscope class. """
-		# Get the id of the poster already created
-		poster_id = self._poster_dict[component_instance.blender_obj.name]
-
 		# Compute the current time
 		pom_date, t = self._compute_date()
 
 		# Get the data from the gyroscope object
 		robot = component_instance.robot_parent
 
+		# Get the id of the poster already created
 		poster_id = self._poster_dict[component_instance.blender_obj.name]
 		ors_pom_poster.post_data(poster_id,
 				robot.position_3d.x, robot.position_3d.y,
@@ -211,22 +208,22 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 			# Create the actual poster
 			poster_id = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
-			print ("viam poster ID: {0}".format(poster_id))
 			if poster_id == None:
 				print ("ERROR creating poster. This module may not work")
 		elif component_instance.num_cameras == 1:
 			pass
 
+		print ("viam poster ID: {0}".format(poster_id))
 		return poster_id
 
 
 	def _init_pom_poster(self, component_instance, poster_name):
 		""" Prepare the data for a pom poster """
 		poster_id = ors_pom_poster.init_data(poster_name)
-		print ("pom poster ID: {0}".format(poster_id))
 		if poster_id == None:
 			print ("ERROR creating poster. This module may not work")
 
+		print ("pom poster ID: {0}".format(poster_id))
 		return poster_id
 
 

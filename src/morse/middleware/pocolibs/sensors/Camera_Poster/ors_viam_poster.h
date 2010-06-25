@@ -19,7 +19,7 @@ struct simu_image_init {
 
 /*
  * Expect a list of simu_image_init* after nb_images */
-void* init_data(char*  poster_name, const char* bank_name, size_t nb_images,
+POSTER_ID init_data(char*  poster_name, const char* bank_name, size_t nb_images,
 				double baseline,
                 const struct simu_image_init* init1,
 				const struct simu_image_init* init2);
@@ -46,7 +46,7 @@ struct simu_image {
 /*
  * Expect a list of simu_image* after nb_images
  */
-int post_viam_poster(	void* id,
+int post_viam_poster(	POSTER_ID id,
 						const struct pom_position* robot,
 						size_t nb_images,
 						const struct simu_image* img1,
@@ -55,4 +55,4 @@ int post_viam_poster(	void* id,
 						char *img_data2
 					);
 
-int finalize ( void* id );
+int finalize ( POSTER_ID id );
