@@ -87,6 +87,9 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 		#print ("Local  vector: {0}".format(local_vector))
 
 		if distance > self.tolerance:
+			# Set the robot status
+			parent.move_status = "Transit"
+
 			# Tick rate is the real measure of time in Blender.
 			# By default it is set to 60, regardles of the FPS
 			# If logic tick rate is 60, then: 1 second = 60 ticks
@@ -120,8 +123,8 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 			#rx, ry, rz = 0.0, 0.0, 0.0
 
 			parent.move_status = "Stop"
-			print ("TARGET REACHED")
-			print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+			#print ("TARGET REACHED")
+			#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
 		# Give the movement instructions directly to the parent
 		# The second parameter specifies a "local" movement
