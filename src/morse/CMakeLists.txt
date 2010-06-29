@@ -1,9 +1,9 @@
 
-INSTALL(FILES __init__.py init_middleware.py
+INSTALL(FILES __init__.py #init_middleware.py
         DESTINATION ${PYTHON_INSTDIR}/morse
         )
 
-INSTALL(DIRECTORY actuators geolandloader helpers robots sensors robots 
+INSTALL(DIRECTORY actuators geolandloader helpers blender sensors robots 
         DESTINATION ${PYTHON_INSTDIR}/morse
         REGEX .*py. EXCLUDE
         )
