@@ -1,8 +1,8 @@
 $PREFIX --- lib -- pythonX -- site-packages -- morse
+						----- blender
 						----- actuators
 						----- sensors
 						----- ...
-						----- init_middleware.py
 						----- ...
 						-- [depending on middlewares] *.so + *.py
 	--- bin -- morse.sh [<- blender morse_default.blend]
