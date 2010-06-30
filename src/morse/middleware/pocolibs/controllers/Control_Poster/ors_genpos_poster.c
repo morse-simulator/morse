@@ -4,7 +4,7 @@
 #include "ors_genpos_poster.h"
 
 
-POSTER_ID locate_poster (char*	poster_name)
+POSTER_ID locate_poster (char*	poster_name, int* ok)
 {
 	POSTER_ID id;
 
@@ -14,10 +14,12 @@ POSTER_ID locate_poster (char*	poster_name)
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
 		printf ("Unable to locate the %s poster : %s\n", poster_name, buf);
+		*ok = 0;
 		return (NULL);
 	}
 	else
 		printf ("INIT ID = %p (pointer)   %d(integer)\n", id, id);
+		*ok = 1;
 
 	return (id);
 }

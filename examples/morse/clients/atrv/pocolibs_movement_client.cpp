@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 		return (1);
 	}
 
-	cout << " * KEYS: W/S: move forward/backward ; A/D: turn left/right ; any other key to stop." << endl;
+	cout << " * KEYS: i/k: move forward/backward ; j/l: turn left/right ; any other key to stop." << endl;
 	cout << " * Starting now..." << endl;
 
 	while(true)

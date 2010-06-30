@@ -5,7 +5,7 @@
 #include "ors_pom_poster.h"
 
 
-POSTER_ID init_data (char*	poster_name)
+POSTER_ID init_data (char*	poster_name, int* ok)
 {
 	POSTER_ID id;
 
@@ -15,10 +15,13 @@ POSTER_ID init_data (char*	poster_name)
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
 		printf ("Unable to create the %s poster : %s\n", poster_name, buf);
+        *ok = 0;
 		return (NULL);
 	}
 
 	printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
+
+    *ok = 1;
 
 	return (id);
 }

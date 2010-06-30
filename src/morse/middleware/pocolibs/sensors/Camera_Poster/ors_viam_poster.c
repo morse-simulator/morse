@@ -50,7 +50,7 @@ fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header,
 POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images, 
 				 double baseline,
                  const struct simu_image_init* init1, 
-				 const struct simu_image_init* init2)
+				 const struct simu_image_init* init2, int* ok)
 {
 	size_t poster_size = 0;
 	POSTER_ID id;
@@ -76,6 +76,7 @@ POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
 		printf ("Unable to create the %s poster : %s\n",poster_name, buf);
+        *ok = 0;
 		return (NULL);
 	}
 
@@ -107,6 +108,8 @@ POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	}
 
 	posterGive(id);
+
+    *ok = 1;
 
 	return (id);
 }

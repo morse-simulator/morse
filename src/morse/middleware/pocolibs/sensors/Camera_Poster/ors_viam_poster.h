@@ -22,7 +22,7 @@ struct simu_image_init {
 POSTER_ID init_data(char*  poster_name, const char* bank_name, size_t nb_images,
 				double baseline,
                 const struct simu_image_init* init1,
-				const struct simu_image_init* init2);
+				const struct simu_image_init* init2, int* ok);
 
 struct pom_position {
 	double yaw, pitch, roll;

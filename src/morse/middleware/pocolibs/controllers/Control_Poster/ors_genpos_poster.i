@@ -3,6 +3,7 @@
 /* Apply a typemap that preserves the length of a binary string.
    It also gets the length and passes it as an argument */
 %apply (char *STRING, int LENGTH) { (unsigned char *image_string, int length) };
+%apply int* OUTPUT {int* ok};
 
 /*
 %include "carrays.i"

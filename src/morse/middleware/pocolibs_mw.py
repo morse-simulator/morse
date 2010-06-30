@@ -17,8 +17,10 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
 		self.blender_obj = obj
-		# Will store the id's of posters, indexed by component name
+		# Store the id's of created posters, indexed by component name
 		self._poster_dict = dict()
+		# Dictionary for external posters
+		self._poster_in_dict = dict()
 		self._imported_modules = dict()
 
 
@@ -48,10 +50,11 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		# Choose what to do, depending on the poster type
 		if poster_type == "genPos":
-			poster_id = ors_genpos_poster.locate_poster(poster_name)
-			if poster_id != None:
+			poster_id, ok = ors_genpos_poster.locate_poster(poster_name)
+			# Use the value of 'ok' to determine if the poster was found
+			if ok != 0:
 				print ("Located 'genPos' poster. ID=%d" % poster_id)
-				self._poster_dict[component_name] = poster_id
+				self._poster_in_dict[component_name] = poster_id
 				function = self._check_function_exists("read_genpos")
 				if function != None:
 					component_instance.output_functions.append(function)
@@ -60,17 +63,19 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		elif poster_type == "viam":
 			poster_id = self._init_viam_poster(component_instance, poster_name)
-			self._poster_dict[component_name] = poster_id
-			function = self._check_function_exists("write_viam")
-			if function != None:
-				component_instance.output_functions.append(function)
+			if poster_id != None:
+				self._poster_dict[component_name] = poster_id
+				function = self._check_function_exists("write_viam")
+				if function != None:
+					component_instance.output_functions.append(function)
 
 		elif poster_type == "pom":
 			poster_id = self._init_pom_poster(component_instance, poster_name)
-			self._poster_dict[component_name] = poster_id
-			function = self._check_function_exists("write_pom")
-			if function != None:
-				component_instance.output_functions.append(function)
+			if poster_id != None:
+				self._poster_dict[component_name] = poster_id
+				function = self._check_function_exists("write_pom")
+				if function != None:
+					component_instance.output_functions.append(function)
 	
 
 
@@ -78,7 +83,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def read_genpos(self, component_instance):
 		""" Read v,w from a genPos poster """
 		# Read from the poster specified
-		poster_id = self._poster_dict[component_instance.blender_obj.name]
+		poster_id = self._poster_in_dict[component_instance.blender_obj.name]
 		genpos_speed = ors_genpos_poster.read_genPos_data(poster_id)
 		#print ("Tuple type ({0}) returned".format(type(genpos_speed)))
 		#print ("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
@@ -207,9 +212,11 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 								  math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
 
 			# Create the actual poster
-			poster_id = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
-			if poster_id == None:
+			poster_id, ok = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
+			if ok == 0:
 				print ("ERROR creating poster. This module may not work")
+				return None
+		# What to do if there is no second camera???
 		elif component_instance.num_cameras == 1:
 			pass
 
@@ -219,9 +226,10 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def _init_pom_poster(self, component_instance, poster_name):
 		""" Prepare the data for a pom poster """
-		poster_id = ors_pom_poster.init_data(poster_name)
-		if poster_id == None:
+		poster_id, ok = ors_pom_poster.init_data(poster_name)
+		if ok == 0:
 			print ("ERROR creating poster. This module may not work")
+			return None
 
 		print ("pom poster ID: {0}".format(poster_id))
 		return poster_id
