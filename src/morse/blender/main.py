@@ -187,7 +187,12 @@ def add_modifiers():
 		for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
 			if modifier_name in modifier_obj.name:
 				# Get the instance of the object
-				instance = GameLogic.componentDict[component_name]
+				try:
+					instance = GameLogic.componentDict[component_name]
+				except KeyError as detail:
+					print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+					continue
+
 				# Add the modifier function to the component's action list
 				instance.modifier_functions.append(modifier_instance.json_serialise)
 
