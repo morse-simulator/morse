@@ -28,9 +28,9 @@ class GPSClass(morse.helpers.object.MorseObjectClass):
 		if GameLogic.pythonVersion < 3:
 			script_empty_name = 'OB' + script_empty_name
 		script_empty = scene.objects[script_empty_name]
-		self.global_x = float(script_empty['UTMXOffset'])
-		self.global_y = float(script_empty['UTMYOffset'])
-		self.global_z = float(script_empty['UTMZOffset'])
+		self._global_x = float(script_empty['UTMXOffset'])
+		self._global_y = float(script_empty['UTMYOffset'])
+		self._global_z = float(script_empty['UTMZOffset'])
 
 		print ('######## GPS INITIALIZED ########')
 
