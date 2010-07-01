@@ -30,19 +30,19 @@ class ProximitySensorClass(morse.helpers.object.MorseObjectClass):
 
 		self.local_data['near_robots'] = {}
 
-		parent = self.blender_obj.robot_parent
+		parent = self.robot_parent.blender_obj
 
 		# Get the fire sources
 		for robot in GameLogic.robotDict.keys():
 			# Skip distance to self
 			if parent != robot:
-				distance = self.measure_distance_to_robot (parent.blender_obj, robot.blender_obj)
+				distance = self._measure_distance_to_robot (parent, robot)
 				if distance <= self.range:
-					self.local_data['near_robots'][robot.blender_obj.name] = distance
+					self.local_data['near_robots'][robot.name] = distance
 
 
 
-	def measure_distance_to_robot(own_robot, target_robot):
+	def _measure_distance_to_robot(self, own_robot, target_robot):
 		""" Compute the distance between two robots
 
 		Parameters are two blender objects
