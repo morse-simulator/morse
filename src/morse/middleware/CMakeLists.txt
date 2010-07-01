@@ -1,5 +1,5 @@
 
-INSTALL(FILES __init__.py json.py socket_mw.py text_mw.py
+INSTALL(FILES __init__.py socket_mw.py text_mw.py
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 

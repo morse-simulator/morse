@@ -9,3 +9,4 @@ INSTALL(DIRECTORY actuators geolandloader helpers blender sensors robots
         )
 
 ADD_SUBDIRECTORY(middleware)
+ADD_SUBDIRECTORY(modifiers)
