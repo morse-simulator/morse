@@ -58,7 +58,7 @@ class MorseUTMClass(object):
 		component_instance.modified_data['y'] += self._global_y
 		component_instance.modified_data['z'] += self._global_z
 
-		return modified_data
+		return component_instance.modified_data
 
 
 	def utm_to_blender(self, component_instance):
@@ -67,4 +67,4 @@ class MorseUTMClass(object):
 		component_instance.modified_data['y'] -= self._global_y
 		component_instance.modified_data['z'] -= self._global_z
 
-		return modified_data
+		return component_instance.modified_data

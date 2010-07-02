@@ -42,7 +42,7 @@ class MorseENUNEDClass(object):
 		component_instance.modified_data['y'] = component_instance.modified_data['x']
 		component_instance.modified_data['z'] = -component_instance.modified_data['z']
 
-		return modified_data
+		return component_instance.modified_data
 
 
 	def utm_to_blender(self, component_instance):
@@ -51,4 +51,4 @@ class MorseENUNEDClass(object):
 		component_instance.modified_data['y'] = component_instance.modified_data['x']
 		component_instance.modified_data['z'] = -component_instance.modified_data['z']
 
-		return modified_data
+		return component_instance.modified_data
