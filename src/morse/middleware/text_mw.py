@@ -58,5 +58,5 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		parent_position = component_instance.robot_parent.blender_obj.position
 		FILE = self._file_list[component_instance.blender_obj.name]
 		FILE.write("==> Data at location: {0}\n".format(parent_position))
-		for variable, data in component_instance.send_data.items():
+		for variable, data in component_instance.modified_data.items():
 			FILE.write("\t%s = %s\n" % (variable, repr(data)))
