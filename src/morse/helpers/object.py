@@ -27,9 +27,6 @@ class MorseObjectClass(object):
 		self.local_data = {}
 
 		# Define lists of dynamically added functions
-		self.input_functions = []
-		self.output_functions = []
-		self.modifier_functions = []
 		self.del_functions = []
 
 
@@ -40,33 +37,23 @@ class MorseObjectClass(object):
 		for function in self.del_functions:
 			function()
 
+
+	#@abstractmethod
 	def action(self):
-		""" Call the action functions that have been added to the list. """
-		# Update the component's position in the world
-		self.position_3d.update(self.blender_obj)
-
-		# First the input functions
-		for function in self.input_functions:
-			function(self)
-
-		# Call the regular action function of the component
+		""" Call the regular action function of the component.
+		
+		Can be redefined in some of the subclases (sensor and actuator).
+		"""
 		self.default_action()
-
-		# Make a copy of the data before modifications
-		self.send_data = self.local_data
-		# Data modification functions
-		for function in self.modifier_functions:
-			self.send_data = function(self)
-
-		# Lastly output functions
-		for function in self.output_functions:
-			function(self)
 
 
 	@abstractmethod
 	def default_action():
-		""" Abstract model for the default action that should be
-			implemented by all subclasses of MorseObjectClass. """
+		""" Base action performed by any object.
+
+		This method should be implemented by all subclasses that
+		will be instanced (GPS, v_Omega, ATRV, etc.).
+		"""
 		pass
 
 
