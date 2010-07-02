@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.object
+import morse.helpers.robot
 
 
-class ATRVClass(morse.helpers.object.MorseObjectClass):
+class ATRVClass(morse.helpers.robot.MorseRobotClass):
 	""" Class definition for the ATRV (DALA).
 		Sub class of Morse_Object. """
 
@@ -14,9 +14,6 @@ class ATRVClass(morse.helpers.object.MorseObjectClass):
 		# Call the constructor of the parent class
 		print ("######## ROBOT '%s' INITIALIZING ########" % obj.name)
 		super(self.__class__,self).__init__(obj, parent)
-
-		# Add the variable move_status to the object
-		self.move_status = "Stop"
 
 		print ('######## ROBOT INITIALIZED ########')
 
