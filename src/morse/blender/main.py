@@ -181,31 +181,32 @@ def add_modifiers():
 		print ("No modifiers found in configuration file")
 		return
 
-	for component_name, mod_data in component_list.items():
-		modifier_name = mod_data[0]
+	for component_name, mod_list in component_list.items():
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
 		if GameLogic.pythonVersion < 3:
 			component_name = 'OB' + component_name
 
-		print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
-		found = False
-		# Look for the listed modifier in the dictionary of active modifier's
-		for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
-			if modifier_name in modifier_obj.name:
-				found = True
-				# Get the instance of the object
-				try:
-					instance = GameLogic.componentDict[component_name]
-				except KeyError as detail:
-					print ("Component listed in component_config.py not found in scene: {0}".format(detail))
-					continue
+		for mod_data in mod_list:
+			modifier_name = mod_data[0]
+			print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
+			found = False
+			# Look for the listed modifier in the dictionary of active modifier's
+			for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
+				if modifier_name in modifier_obj.name:
+					found = True
+					# Get the instance of the object
+					try:
+						instance = GameLogic.componentDict[component_name]
+					except KeyError as detail:
+						print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+						continue
 
-				# Make the modifier object take note of the component
-				modifier_instance.register_component(component_name, instance, mod_data)
+					# Make the modifier object take note of the component
+					modifier_instance.register_component(component_name, instance, mod_data)
 
-		if not found:
-			print ("There is no '%s' modifier object in the scene." % modifier_name)
+			if not found:
+				print ("There is no '%s' modifier object in the scene." % modifier_name)
 
 
 def init(contr):
