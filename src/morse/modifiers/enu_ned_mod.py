@@ -1,28 +1,12 @@
 import GameLogic
 
-class MorseUTMClass(object):
-	""" Convert between Blender and UTM coordinates. """
+class MorseENUNEDClass(object):
+	""" Convert between ENU and NED coordinates. """
 	
 	def __init__(self, obj, parent=None):
 		""" Initialize the global UTM coordinates in the scene. """
 		self.blender_obj = obj
 		#self.init_components()
-
-		self._global_x = 0.0
-		self._global_y = 0.0
-		self._global_z = 0.0
-
-		# Get the global coordinates if defined in the scene
-		scene = GameLogic.getCurrentScene()
-		script_empty_name = 'Scene_Script_Holder'
-		# Prefix the name of the component with 'OB'
-		# Will only be necessary until the change to Blender 2.5
-		if GameLogic.pythonVersion < 3:
-			script_empty_name = 'OB' + script_empty_name
-		script_empty = scene.objects[script_empty_name]
-		self._global_x = float(script_empty['UTMXOffset'])
-		self._global_y = float(script_empty['UTMYOffset'])
-		self._global_z = float(script_empty['UTMZOffset'])
 
 
 	def __del__(self):
@@ -54,17 +38,17 @@ class MorseUTMClass(object):
 
 	def blender_to_utm(self, component_instance):
 		""" Convert the coordinates from Blender to UTM reference. """
-		component_instance.modified_data['x'] += self._global_x
-		component_instance.modified_data['y'] += self._global_y
-		component_instance.modified_data['z'] += self._global_z
+		component_instance.modified_data['x'] = component_instance.modified_data['y']
+		component_instance.modified_data['y'] = component_instance.modified_data['x']
+		component_instance.modified_data['z'] = -component_instance.modified_data['z']
 
 		return modified_data
 
 
 	def utm_to_blender(self, component_instance):
 		""" Convert the coordinates from UTM to Blender reference. """
-		component_instance.modified_data['x'] -= self._global_x
-		component_instance.modified_data['y'] -= self._global_y
-		component_instance.modified_data['z'] -= self._global_z
+		component_instance.modified_data['x'] = component_instance.modified_data['y']
+		component_instance.modified_data['y'] = component_instance.modified_data['x']
+		component_instance.modified_data['z'] = -component_instance.modified_data['z']
 
 		return modified_data
