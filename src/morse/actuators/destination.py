@@ -1,8 +1,8 @@
 import GameLogic
 import Mathutils
-import morse.helpers.object
+import morse.helpers.actuator
 
-class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
+class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 	""" Destination motion controller
 
 	This controller will receive a destination point and
@@ -57,15 +57,6 @@ class DestinationActuatorClass(morse.helpers.object.MorseObjectClass):
 
 		#print ("STRAIGHT GOT DESTINATION: {0}".format(destination))
 		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
-
-		"""
-		if NED == True:
-			d=destination[0]
-			destination[0] = destination[1]
-			destination[1] = d				
-			destination[2] = -destination[2]
-		"""
-
 
 		"""
 		# DON"T KNOW IF THIS IS NECESSARY NOW

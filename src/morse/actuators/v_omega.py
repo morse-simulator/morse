@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.object
+import morse.helpers.actuator
 
-class VWActuatorClass(morse.helpers.object.MorseObjectClass):
+class VWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 	""" Motion controller using linear and angular speeds
 
 	This class will read linear and angular speeds (V, W)
