@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.object
+import morse.helpers.sensor
 import morse.helpers.math
 
-class GyroscopeClass(morse.helpers.object.MorseObjectClass):
+class GyroscopeClass(morse.helpers.sensor.MorseSensorClass):
 	""" Gyroscope sensor """
 
 	def __init__(self, obj, parent=None):
@@ -24,8 +24,10 @@ class GyroscopeClass(morse.helpers.object.MorseObjectClass):
 
 	def default_action(self):
 		""" Get the yaw, pitch and roll of the blender object. """
-
-		yaw, pitch, roll = morse.helpers.math.euler_angle(self.blender_obj)
+		yaw = self.position_3d.yaw
+		pitch = self.position_3d.pitch
+		roll = self.position_3d.roll
+		#yaw, pitch, roll = morse.helpers.math.euler_angle(self.blender_obj)
 
 		# Store the values in the robot's object
 		self.robot_parent.yaw = yaw

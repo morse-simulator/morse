@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.object
+import morse.helpers.sensor
 
-class GPSClass(morse.helpers.object.MorseObjectClass):
+class GPSClass(morse.helpers.sensor.MorseSensorClass):
 	""" Class definition for the gyroscope sensor.
 		Sub class of Morse_Object. """
 
@@ -16,33 +16,15 @@ class GPSClass(morse.helpers.object.MorseObjectClass):
 		self.local_data['x'] = 0.0
 		self.local_data['y'] = 0.0
 		self.local_data['z'] = 0.0
-		self._global_x = 0.0
-		self._global_y = 0.0
-		self._global_z = 0.0
-
-		# Get the global coordinates of defined in the scene
-		scene = GameLogic.getCurrentScene()
-		script_empty_name = 'Scene_Script_Holder'
-		# Prefix the name of the component with 'OB'
-		# Will only be necessary until the change to Blender 2.5
-		if GameLogic.pythonVersion < 3:
-			script_empty_name = 'OB' + script_empty_name
-		script_empty = scene.objects[script_empty_name]
-		self._global_x = float(script_empty['UTMXOffset'])
-		self._global_y = float(script_empty['UTMYOffset'])
-		self._global_z = float(script_empty['UTMZOffset'])
 
 		print ('######## GPS INITIALIZED ########')
 
 
 	def default_action(self):
 		""" Main function of this component. """
-
-		# Get the coordinates of the object, and correct them
-		#  using the global settings of the scene
-		x = self._global_x + self.blender_obj.position[0]
-		y = self._global_y + self.blender_obj.position[1]
-		z = self._global_z + self.blender_obj.position[2]
+		x = self.position_3d.x
+		y = self.position_3d.y
+		z = self.position_3d.z
 
 		# Store the data acquired by this sensor that could be sent
 		#  via a middleware.
