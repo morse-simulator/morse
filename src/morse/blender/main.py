@@ -152,9 +152,11 @@ def link_middlewares():
 			component_name = 'OB' + component_name
 
 		print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
+		found = False
 		# Look for the listed mw in the dictionary of active mw's
 		for mw_obj, mw_instance in GameLogic.mwDict.items():
 			if mw_name in mw_obj.name:
+				found = True
 				# Get the instance of the object
 				try:
 					instance = GameLogic.componentDict[component_name]
@@ -164,6 +166,9 @@ def link_middlewares():
 
 				# Make the middleware object take note of the component
 				mw_instance.register_component(component_name, instance, mw_data)
+
+		if not found:
+			print ("There is no '%s' middleware object in the scene." % mw_name)
 
 
 def add_modifiers():
@@ -176,16 +181,19 @@ def add_modifiers():
 		print ("No modifiers found in configuration file")
 		return
 
-	for component_name, modifier_name in component_list.items():
+	for component_name, mod_data in component_list.items():
+		modifier_name = mod_data[0]
 		# Prefix the name of the component with 'OB'
 		# Will only be necessary until the change to Blender 2.5
 		if GameLogic.pythonVersion < 3:
 			component_name = 'OB' + component_name
 
 		print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
+		found = False
 		# Look for the listed modifier in the dictionary of active modifier's
 		for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
 			if modifier_name in modifier_obj.name:
+				found = True
 				# Get the instance of the object
 				try:
 					instance = GameLogic.componentDict[component_name]
@@ -193,9 +201,11 @@ def add_modifiers():
 					print ("Component listed in component_config.py not found in scene: {0}".format(detail))
 					continue
 
-				# Add the modifier function to the component's action list
-				instance.modifier_functions.append(modifier_instance.json_serialise)
+				# Make the modifier object take note of the component
+				modifier_instance.register_component(component_name, instance, mod_data)
 
+		if not found:
+			print ("There is no '%s' modifier object in the scene." % modifier_name)
 
 
 def init(contr):
