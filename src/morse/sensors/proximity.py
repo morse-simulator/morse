@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.object
+import morse.helpers.sensor
 
-class ProximitySensorClass(morse.helpers.object.MorseObjectClass):
+class ProximitySensorClass(morse.helpers.sensor.MorseSensorClass):
 	""" Distance sensor to detect nearby robots """
 
 	def __init__(self, obj, parent=None):
