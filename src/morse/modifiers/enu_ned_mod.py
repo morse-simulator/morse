@@ -1,10 +1,9 @@
 import GameLogic
 
-class MorseENUNEDClass(object):
+class MorseNEDClass(object):
 	""" Convert between ENU and NED coordinates. """
 	
 	def __init__(self, obj, parent=None):
-		""" Initialize the global UTM coordinates in the scene. """
 		self.blender_obj = obj
 		#self.init_components()
 
@@ -29,14 +28,14 @@ class MorseENUNEDClass(object):
 
 		# Choose what to do, depending on the function being used
 		# Data read functions
-		if function_name == "utm_to_blender":
+		if function_name == "ned_to_blender":
 			component_instance.input_modifiers.append(function)
 		# Data write functions
-		elif function_name == "blender_to_utm":
+		elif function_name == "blender_to_ned":
 			component_instance.output_modifiers.append(function)
 
 
-	def blender_to_utm(self, component_instance):
+	def blender_to_ned(self, component_instance):
 		""" Convert the coordinates from Blender to UTM reference. """
 		component_instance.modified_data['x'] = component_instance.modified_data['y']
 		component_instance.modified_data['y'] = component_instance.modified_data['x']
@@ -45,7 +44,7 @@ class MorseENUNEDClass(object):
 		return component_instance.modified_data
 
 
-	def utm_to_blender(self, component_instance):
+	def ned_to_blender(self, component_instance):
 		""" Convert the coordinates from UTM to Blender reference. """
 		component_instance.modified_data['x'] = component_instance.modified_data['y']
 		component_instance.modified_data['y'] = component_instance.modified_data['x']
