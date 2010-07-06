@@ -17,6 +17,12 @@ class GPSClass(morse.helpers.sensor.MorseSensorClass):
 		self.local_data['y'] = 0.0
 		self.local_data['z'] = 0.0
 
+		self.data_keys = ['x', 'y', 'z']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
+
 		print ('######## GPS INITIALIZED ########')
 
 

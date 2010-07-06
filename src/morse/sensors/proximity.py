@@ -21,6 +21,11 @@ class ProximitySensorClass(morse.helpers.sensor.MorseSensorClass):
 			# Set a default range of 100m
 			self.range = 100
 			
+		self.data_keys = ['near_robots']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
 
 		print ('######## PROXIMITY INITIALIZED ########')
 

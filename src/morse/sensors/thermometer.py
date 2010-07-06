@@ -18,6 +18,12 @@ class ThermometerClass(morse.helpers.sensor.MorseSensorClass):
 		self._global_temp = 15.0
 		self._fire_temp = 200.0
 
+		self.data_keys = ['temperature']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
+
 		# Get the global coordinates of defined in the scene
 		scene = GameLogic.getCurrentScene()
 		script_empty_name = 'Scene_Script_Holder'
