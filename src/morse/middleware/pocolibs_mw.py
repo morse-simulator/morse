@@ -57,7 +57,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 				self._poster_in_dict[component_name] = poster_id
 				function = self._check_function_exists("read_genpos")
 				if function != None:
-					component_instance.output_functions.append(function)
+					component_instance.input_functions.append(function)
 			else:
 				print ("Poster 'genPos' not created. Component will not work")
 

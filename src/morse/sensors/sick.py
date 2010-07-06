@@ -1,9 +1,9 @@
 import GameLogic
 import Mathutils
-import morse.helpers.object
+import morse.helpers.sensor
 import morse.helpers.math
 
-class SICKClass(morse.helpers.object.MorseObjectClass):
+class SICKClass(morse.helpers.sensor.MorseSensorClass):
 	""" SICK laser range sensor """
 
 	def __init__(self, obj, parent=None):

@@ -1,9 +1,9 @@
 import GameLogic
 import Mathutils
 from collections import deque
-import morse.helpers.object
+import morse.helpers.actuator
 
-class WaypointActuatorClass(morse.helpers.object.MORSEObjectClass):
+class WaypointActuatorClass(morse.helpers.actuator.MORSEActuatorClass):
 	""" Waypoint motion controller
 
 	This controller will receive a destination point and

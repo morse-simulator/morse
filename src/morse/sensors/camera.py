@@ -1,9 +1,9 @@
 import GameLogic
 import VideoTexture
-import morse.helpers.object
+import morse.helpers.sensor
 
 
-class CameraClass(morse.helpers.object.MorseObjectClass):
+class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
 	def __init__(self, obj, parent=None):
 		""" Constructor method.
