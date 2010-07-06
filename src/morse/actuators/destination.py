@@ -24,20 +24,18 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		self.local_data['y'] = self.destination[1]
 		self.local_data['z'] = self.destination[2]
 
+		self.data_keys = ['x', 'y', 'z']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
+
 		print ('######## CONTROL INITIALIZED ########')
 
 
 	def default_action(self):
 		""" Move the object towards the destination. """
 		parent = self.robot_parent
-		parent.move_status = "Transit"
-
-		# Get the orientation of the robot
-		try:
-			if parent.blender_obj['Orientation'] == 'NED':
-				NED = True
-		except KeyError as detail:
-			NED = False
 
 		"""
 		# THIS HAS TO BE DONE WITH A REQUEST
@@ -55,7 +53,7 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 		self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
-		#print ("STRAIGHT GOT DESTINATION: {0}".format(destination))
+		#print ("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
 		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
 		"""
@@ -86,26 +84,15 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 			# If logic tick rate is 60, then: 1 second = 60 ticks
 			ticks = GameLogic.getLogicTicRate()
 	
-			if NED == True:
-				# Scale the speeds to the time used by Blender
-				try:
-					vx = global_vector[1] * self.speed / ticks
-					vy = global_vector[0] * self.speed / ticks
-					vz = -global_vector[2] * self.speed / ticks
-				# For the moment ignoring the division by zero
-				# It happens apparently when the simulation starts
-				except ZeroDivisionError:
-					pass
-			else:
-				# Scale the speeds to the time used by Blender
-				try:
-					vx = global_vector[0] * self.speed / ticks
-					vy = global_vector[1] * self.speed / ticks
-					vz = global_vector[2] * self.speed / ticks
-				# For the moment ignoring the division by zero
-				# It happens apparently when the simulation starts
-				except ZeroDivisionError:
-					pass
+			# Scale the speeds to the time used by Blender
+			try:
+				vx = global_vector[0] * self.speed / ticks
+				vy = global_vector[1] * self.speed / ticks
+				vz = global_vector[2] * self.speed / ticks
+			# For the moment ignoring the division by zero
+			# It happens apparently when the simulation starts
+			except ZeroDivisionError:
+				pass
 
 		# If the target has been reached, change the status
 		else:
