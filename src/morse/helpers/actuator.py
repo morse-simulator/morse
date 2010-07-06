@@ -20,20 +20,29 @@ class MorseActuatorClass(morse.helpers.object.MorseObjectClass):
 		self.input_modifiers = []
 
 		# Define dictionary for modified data
-		self.modified_data = {}
+		self.modified_data = []
 
 
 	def action(self):
 		""" Call the action functions that have been added to the list. """
+		received = False
+		status = False
+
 		# First the input functions
 		for function in self.input_functions:
-			function(self)
+			status = function(self)
+			received = received or status
 
-		self.modified_data = self.local_data
+		if received:
+			# Data modification functions
+			for function in self.input_modifiers:
+				self.modified_data = function(self)
 
-		# Data modification functions
-		for function in self.input_modifiers:
-			self.modified_data = function(self)
+			#self.local_data = self.modified_data
+			i = 0
+			for variable in self.data_keys:
+				self.local_data[variable] = self.modified_data[i]
+				i = i + 1
 
 		# Call the regular action function of the component
 		self.default_action()

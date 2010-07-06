@@ -21,7 +21,7 @@ class MorseSensorClass(morse.helpers.object.MorseObjectClass):
 		self.output_modifiers = []
 
 		# Define dictionary for modified data
-		self.modified_data = {}
+		self.modified_data = []
 
 	#def __del__(self):
 	#	""" Destructor method. """
@@ -38,7 +38,12 @@ class MorseSensorClass(morse.helpers.object.MorseObjectClass):
 		self.default_action()
 
 		# Make a copy of the data before modifications
-		self.modified_data = self.local_data
+		#self.modified_data = self.local_data
+		i = 0
+		for variable in self.data_keys:
+			self.modified_data[i] = self.local_data[variable]
+			i = i + 1
+
 		# Data modification functions
 		for function in self.output_modifiers:
 			self.modified_data = function(self)

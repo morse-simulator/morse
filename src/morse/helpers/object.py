@@ -25,6 +25,8 @@ class MorseObjectClass(object):
 
 		# Dictionary to store the data used by each component
 		self.local_data = {}
+		# List that will hold the ordey of the dictionary keys
+		self.data_keys = []
 
 		# Define lists of dynamically added functions
 		self.del_functions = []
