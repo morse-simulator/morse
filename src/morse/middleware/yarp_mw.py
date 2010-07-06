@@ -162,7 +162,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		img.setQuantum(1)
 
 		# Get the image data from the camera instance
-		img_string = component_instance.modified_data['image']
+		img_string = component_instance.modified_data[0]
 		img_X = component_instance.image_size_X
 		img_Y = component_instance.image_size_Y
 
