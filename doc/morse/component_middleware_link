@@ -1,0 +1,18 @@
+Binding components with middlewares:
+
+The dictionary in component_config.py (inside the Blender files) 
+contain lists where the first item is the name of the middleware, and 
+the following items are data needed by each middleware.
+
+In the case of Yarp and Text, the second item will be the name of
+the function to be added to the component's action list
+For Pocolibs, the second item is the type of poster, and the third is
+the name of the poster.
+
+Example:
+
+component_mw = {"Gyroscope": ["Yarp", "post_message"],
+                "Motion_Controller": ["Yarp", "read_message"],
+                "Motion_Controller.001": ["Pocolibs", "genPos", "p3dSpeedRef"],
+                "CameraMain": ["Yarp", "post_image_RGBA"]}
+

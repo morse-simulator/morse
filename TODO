@@ -6,36 +6,16 @@ File history:
 29/04/2010 - Arnaud + Severin: mark with a * things needed for release v0.1
 03/05/2010 - Simon: added a "section" related to the management of the frame transformations
 04/05/2010 - Arnaud + Severin + Nicolas + Gilberto: review of the list, with aims at a first release
+28/05/2010 - Arnaud + Severin: update after "CMake operation"
+14/06/2010 - Gilberto: Remove completed tasks
 ---
 
 Code organisation
 -----------------
-Proposal:
-- One repo for the simulator itself (morse.git) (let's remove everything else,
-  including clients and scenarii) - if middleware are externalized (cf
-  "Middlewares" below), testing clients for component could stay there. Genom3
-  template will go there as well (some day...)
-- One repo for scenarii (morse-scenarii.git)
-
-Installation
-------------
-* make && make install ?? -> use CMake, with options (YARP, Pocolibs...)
-* Proposal for installation:
-   - $PREFIX/bin -> ors(.sh) (launch Blender + the ORS interface)
-   - $PREFIX/share/morse -> blend files for components
-   - $PREFIX/lib/site-package/morse -> python scripts for components
-   - $PREFIX/share/doc/morse -> ...something :)
-* Add empty templates for scenes, robots, components... + mechanism to copy these
-templates when creating a new scene.
+[DEFERRED] - One repo for scenarii (morse-scenarii.git)
 
 Architecture
 ------------
-* moving to an object-oriented model. Each component should keep:
-   - its 3D transformation relative to world/parent/robot
-   - its static configuration + its instance configuration
-   - an UI associated to its parameters
-   - noise functions
-* naming of components (Python files, .blend files)
 * how components access other components? (eg: the cameras need the position of the robot)
 * unified time management ("what if we want to simulate at 2X?")
 
@@ -52,14 +32,14 @@ User-interface
 Middlewares
 -----------
 * Rethink the architecture ; three proposals:
-   - Current solution: one abstract interface. Issues: only one middleware at
+[DISCARDED] - Current solution: one abstract interface. Issues: only one middleware at
      once ; coupling. In any case, current code must be rewritten (factories,
 	 etc)
-   - Components have "hooks" to export their data. Middleware lives in parallel
+[ONGOING]   - Components have "hooks" to export their data. Middleware lives in parallel
      threads and "visit" the components. In this case, middlewares still lives
 	 in the Python VM. Advantage: better decoupling ; middleware can dynamically
 	 choose what they want to watch.
-   - External decoupling: Python components export their data as shared memory
+[DEFFERED]   - External decoupling: Python components export their data as shared memory
      (or possibly sockets?), external modules (written in any language) read
 	 this memory and format it for each middleware. Advantage: complete decoupling.
 	 If a middleware crashes/slowdowns, no impact on the simulator, language
@@ -70,6 +50,9 @@ Middlewares
 -> Discuss what to do with the "YARP-JSON" bridge from IRIT
 
 * Requests: be sure that components can be remotely (ie by clients) configured
+
+* Add serialize methods to the data of each component. This will format the data according to the needs of each middleware/architecture.
+
    
 Linking issues
 --------------
@@ -82,6 +65,8 @@ Coding style
 - Replace all "print" by the Python logging interface
 - every simple function must have a function comment ( """ ... """) + setup the
   documentation to be generated
+- Change the names of modules, variables, classes, etc. to comply with the
+  naming conventions in: http://www.python.org/dev/peps/pep-0008/
 
 Frame transformations
 -----------
@@ -98,5 +83,5 @@ Frame transformations
 Other stuff 
 -----------
 * write, complete, update, add to repo the general documentation of the simulator
-* commit policy
+- commit policy
 - Blender 2.5

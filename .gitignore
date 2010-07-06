@@ -1,4 +1,3 @@
-atrv
 *.blend1
 *.blend2
 *.blend3
@@ -8,4 +7,9 @@ atrv
 *.o
 *.so
 *.pyc
+*~
 build/
+*.cmake
+CMakeFiles/
+CMakeCache.txt
+install_manifest.txt

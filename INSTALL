@@ -3,12 +3,22 @@
                           (c) LAAS/ONERA 2009-2010
 ===============================================================================
 
-Requirements / What you need to install before
-----------------------------------------------
+I/ Requirements - What you need to install before
+-------------------------------------------------
 
- - Python (2.6 or +)	     
+I.1 Common requirements
+-----------------------
+
+ - Python (2.6 or +)
  - Blender 2.49 build with Python 2.6 [1]
- - git to get the code of the simulator
+ - git to get the code of the simulator:
+ $ git clone http://trac.laas.fr/git/robots/morse.git
+
+If you plan to use the simulator with raw sockets of text files as "middleware",
+you don't need anything else.
+
+I.2 YARP
+--------
 
 For the YARP bindings
  - YARP version (2.2.5 or +)
@@ -22,9 +32,6 @@ Note that the easiest way to install YARP is probably to use robotpkg (see
 http://homepages.laas.fr/mallet/robotpkg for more instructions). You can 
 install yarp and its dependancies using make install into devel/libpyyarp.
 
-Installation
-------------
-
 Compiling the YARP Python binding will create two files: yarp.py and _yarp.so
 Copy them to the your Python lib directory (/usr/lib/python2.6/site-packages/)
 or at some place reachable from your PYTHONPATH environment variable.
@@ -33,34 +40,78 @@ or at some place reachable from your PYTHONPATH environment variable.
 ${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
 module.
 
-If not already done, download the source code of OpenRobots Simulator:
-$ git clone http://trac.laas.fr/git/robots/morse.git
+I.2 Pocolibs
+------------
 
-Set the environment variable $ORS_ROOT to the path directory where you have
-installed OpenRobots Simulator.
+To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install
+Pocolibs on your system.
 
-Running a simulation
---------------------
+The recommended way to do it is through robotpkg (see 
+http://homepages.laas.fr/mallet/robotpkg for more informations).
 
-To test the simulator you can load one of the example scenarii from
-$ORS_ROOT/scenarii (.blend files)
+To install:
+$ cd $ROBOTPKG/devel/pocolibs 
+$ make update
+
+II/ Installation
+----------------
+
+From your MORSE root directory:
+$ mkdir build && cd build
+$ cmake ..
+$ make install
+
+By default, MORSE will install in /usr/local. You can easily change that by 
+launching ccmake instead of cmake. You can also set there if you want YARP and
+Pocolibs bindings to be build.
+
+III/ Running a simulation
+-------------------------
 
 [YARP specific] Before to start a simulation: Start the YARP's server
  with this command from a terminal "yarp server".
 
+Launch MORSE by calling the morse executable:
+$ morse
+
+Several options are available, check them with:
+$ morse help
+
+Two environment variable have noticable effects:
+ - $PYTHONPATH specifies the directories where MORSE scripts are located. It will start with the MORSE installation prefix, followed by the path to the python scripts. It must also include the full path to the directory 'morse/blender' within the installed files. Example:
+
+	tcsh:
+	setenv PYTHONPATH {morse_install_prefix}/lib/python2.6/site-packages:{morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+
+	bash:
+	export PYTHONPATH={morse_install_prefix}/lib/python2.6/site-packages:{morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+
+
+ - $ORS_BLENDER that allows you to specify a custom Blender executable (else,
+ Blender is looked for in the path).
+ 
+ You can check your configuration is ok with:
+ $ morse check
+
+Once launched, you can test the simulator by loading one of the example scenarii
+from $ORS_ROOT/share/examples/morse/scenarii (.blend files)
+
 To start a simulation, go on blender and press "P" to play the scenario.
 
+IV/ Testing
+-----------
+
 To test the external control clients, open the Blender file:
-$ORS_ROOT/scenarii/indoors_1/indoor_scene-2.0.blend
+$ORS_ROOT/share/examples/morse/scenarii/indoors_1/indoor_scene-2.0.blend
 Start the simulation ('P')
 Run the C program:
-$ORS_ROOT/clients/atrv/atrv_destination-1.0
+$ORS_ROOT/share/examples/morse/clients/atrv/atrv_destination-1.0
 Enter the coordinates where you want the robot to go. The robot will try to get
 there.
 
+
 Tips: If you have any problem to start to play a simulation: start blender
 from a terminal and send us the error messages.
-
 
 [1] For the moment the simulator work only with this version. 
 Blender 2.5 is being worked on.

@@ -1,0 +1,22 @@
+$PREFIX --- lib -- pythonX -- site-packages -- morse
+						----- blender
+						----- actuators
+						----- sensors
+						----- ...
+						----- ...
+						-- [depending on middlewares] *.so + *.py
+	--- bin -- morse.sh [<- blender morse_default.blend]
+		-- --with-examples-> [ressac_client, etc.]
+	--- share -- data -- morse
+				-- components
+				-- morse_default.blend
+
+		  -- examples -- morse
+				    -- scenarii
+		  -- doc
+
+
+Flags:
+BUILD_EXAMPLES
+BUILD_YARP_SUPPORT
+BUILD_POCOLIBS_SUPPORT
