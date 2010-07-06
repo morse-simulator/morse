@@ -45,15 +45,18 @@ class MorseJsonClass(object):
 
 		Convert the data stored in the object's message data
 		into a single string field containing a json structure. """
-		new_data = dict()
+		new_data = []
 		# Convert the dictionary into a json string
-		new_data['json_data'] = json.dumps(component_instance.modified_data)
+		new_data.append(json.dumps(component_instance.local_data))
 		return new_data
 
 
 	def json_decode(self, component_instance):
 		""" Convert a JSON string into a dictionary. """
-		new_data = dict()
+		new_dict = dict()
+		new_data = []
 		# Convert the dictionary into a json string
-		new_data = json.loads(component_instance.modified_data)
-		return new_data['json_data']
+		new_dict = json.loads(component_instance.modified_data[0])
+		for key, data in new_dict:
+			new_data.append(data)
+		return new_data

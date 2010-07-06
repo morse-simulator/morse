@@ -73,7 +73,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		""" Read incoming data from a simple port.
 
 		The argument is a copy of the component instance.
-		Data is writen directly into the 'local_data' dictionary
+		Data is writen directly into the 'modified_data' dictionary
 		of the component instance.
 		"""
 		port_name = self._component_ports[component_instance.blender_obj.name]
@@ -85,20 +85,30 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 			if message_data != None:
 				# Data elements are of type defined in data_types
 				i = 0
-				for variable, data in component_instance.local_data.items():
+				#for variable, data in component_instance.modified_data.items():
+				#for variable in component_instance.data_keys:
+					#data = component_instance.modified_data[variable]
+				for data in component_instance.modified_data:
 					if isinstance(data, int):
 						msg_data = message_data.get(i).asInt()
-						component_instance.local_data[variable] = msg_data
+						component_instance.modified_data[i] = msg_data
+						#component_instance.modified_data[variable] = msg_data
 					elif isinstance(data, float):
 						msg_data = message_data.get(i).asDouble()
-						component_instance.local_data[variable] = msg_data
+						component_instance.modified_data[i] = msg_data
+						#component_instance.modified_data[variable] = msg_data
 					elif isinstance(data, basestring):
 						msg_data = message_data.get(i).toString()
-						component_instance.local_data[variable] = msg_data
+						component_instance.modified_data[i] = msg_data
+						#component_instance.modified_data[variable] = msg_data
 					else:
 						print ("Yarp ERROR: Unknown data type at 'read_message'")
-					print ("READ VARIABLE {0} = {1}".format(variable, msg_data))
 					i = i + 1
+
+				return True
+
+			else:
+				return False
 
 		except KeyError as detail:
 			print ("ERROR: Specified port does not exist: ", detail)
@@ -117,7 +127,10 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 			bottle = yarp_port.prepare()
 			bottle.clear()
 			# Sort the data accodring to its type
-			for variable, data in component_instance.modified_data.items():
+			#for variable, data in component_instance.modified_data.items():
+			#for variable in component_instance.data_keys:
+				#data = component_instance.modified_data[variable]
+			for data in component_instance.modified_data:
 				if isinstance(data, int):
 					bottle.addInt(data)
 				elif isinstance(data, float):
