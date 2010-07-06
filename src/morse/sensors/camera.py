@@ -38,6 +38,13 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
 		self.capturing = False
 
+		self.data_keys = ['image']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
+
+
 		# Prepare the camera object in Blender
 		self._setup_video_texture()
 
