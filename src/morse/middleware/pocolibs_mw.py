@@ -91,8 +91,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		#print ("Tuple type ({0}) returned".format(type(genpos_speed)))
 		#print ("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
 
-		component_instance.local_data['v'] = genpos_speed.v
-		component_instance.local_data['w'] = genpos_speed.w
+		component_instance.modified_data[0] = genpos_speed.v
+		component_instance.modified_data[1] = genpos_speed.w
 
 
 	def write_pom(self, component_instance):
