@@ -68,6 +68,9 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 				function = self._check_function_exists("write_viam")
 				if function != None:
 					component_instance.output_functions.append(function)
+				function_del = self._check_function_exists("del_viam")
+				if function_del != None:
+					component_instance.del_functions.append(function_del)
 
 		elif poster_type == "pom":
 			poster_id = self._init_pom_poster(component_instance, poster_name)
@@ -172,8 +175,9 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Write to the poster with the data for both images
 		posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
 
-
-
+	def del_viam(self, component_instance):
+		poster_id = self._poster_dict[component_instance.blender_obj.name]
+		ors_viam_poster.finalize(poster_id)
 
 	def _check_function_exists(self, function_name):
 		""" Checks that the function named exists."""

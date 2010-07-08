@@ -37,7 +37,7 @@ class MorseObjectClass(object):
 		print ("%s: I'm dying!!" % self.blender_obj.name)
 		# Call specific functions added to this object
 		for function in self.del_functions:
-			function()
+			function(self)
 
 
 	#@abstractmethod
