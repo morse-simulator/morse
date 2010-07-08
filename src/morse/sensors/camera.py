@@ -38,6 +38,9 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
 		self.capturing = False
 
+		# Variable to indicate this is a camera
+		self.camera_tag = True
+
 		self.data_keys = ['image']
 
 		# Initialise the copy of the data
