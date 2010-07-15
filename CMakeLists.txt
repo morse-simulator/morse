@@ -47,6 +47,7 @@ INSTALL (DIRECTORY doc data examples
 	     DESTINATION ${CMAKE_INSTALL_PREFIX}/share
          REGEX .*blend. EXCLUDE
          REGEX .*py. EXCLUDE
+		 REGEX .*clients.* EXCLUDE
 		)
 
 INSTALL(PROGRAMS bin/morse
