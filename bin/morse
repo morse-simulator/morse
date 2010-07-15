@@ -269,7 +269,7 @@ def launch_simulation(scene):
     sys.exit(1)
 
 def version():
-    print("morse " + VERSION + "\nCopyright LAAS-CNRS 2010")
+    print("morse " + VERSION + "\nCopyright LAAS-CNRS/ONERA 2010")
 
 def help(cmd=None):
     
