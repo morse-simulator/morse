@@ -63,7 +63,16 @@ $ make install
 
 By default, MORSE will install in /usr/local. You can easily change that by 
 launching ccmake instead of cmake. You can also set there if you want YARP and
-Pocolibs bindings to be build.
+Pocolibs bindings to be build. You can set up the different variables using
+the command line : 
+  - CMAKE_INSTALL_PREFIX controls where will be installed MORSE
+  - BUILD_POCOLIBS_SUPPORT controls the build of pocolibs support in MORSE
+  - BUILD_YARP2_SUPPORT controls the build of YARP support in MORSE
+  - CMAKE_BUILD_TYPE controls the optimisation stuff for C/C++ extension
+	(Release is a good choice).
+
+To build and install MORSE with YARP support in /opt, you need something like:
+$ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
 III/ Running a simulation
 -------------------------
@@ -78,13 +87,16 @@ Several options are available, check them with:
 $ morse help
 
 Two environment variable have noticable effects:
- - $PYTHONPATH specifies the directories where MORSE scripts are located. It will start with the MORSE installation prefix, followed by the path to the python scripts. It must also include the full path to the directory 'morse/blender' within the installed files. Example:
+ - $PYTHONPATH specifies the directories where MORSE scripts are located. It
+   will start with the MORSE installation prefix, followed by the path to the
+   python scripts. It must also include the full path to the directory
+   'morse/blender' within the installed files. Example:
 
 	tcsh:
-	setenv PYTHONPATH {morse_install_prefix}/lib/python2.6/site-packages:{morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+	setenv PYTHONPATH ${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
 
 	bash:
-	export PYTHONPATH={morse_install_prefix}/lib/python2.6/site-packages:{morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+	export PYTHONPATH=${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
 
 
  - $ORS_BLENDER that allows you to specify a custom Blender executable (else,
