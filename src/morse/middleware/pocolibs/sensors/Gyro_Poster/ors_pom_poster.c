@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+#include <pom/pomStruct.h>
+
 #include "ors_pom_poster.h"
 
 
@@ -19,7 +22,7 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 		return (NULL);
 	}
 
-	printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
+	printf ("INIT ID = %p (pointer)\n", id);
 
     *ok = 1;
 
@@ -29,7 +32,9 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 /*
  * Yaw, pitch, roll are in degree in input
  */
-int post_data( POSTER_ID id, double x, double y, double z, double yaw, double pitch, double roll, int date )
+int post_data( POSTER_ID id, double x, double y, double z, 
+						     double yaw, double pitch, double roll, 
+							 int date )
 {
 	// Variables to use for writing the poster
 	int offset = 0;

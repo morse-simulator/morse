@@ -1,10 +1,4 @@
 #include <posterLib.h>
-#include <stdarg.h>
-#include <pom/pomStruct.h>
-#include <viam/viamStruct.h>
-#include <viam/viamStruct.h>
-#include <viam/viamtypes.h>
-#include <Python.h>
 
 /*
  * XXX Swig has issues with varargs or C struct array, so for moment, we only

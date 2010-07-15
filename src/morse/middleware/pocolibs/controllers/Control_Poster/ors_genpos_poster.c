@@ -18,7 +18,7 @@ POSTER_ID locate_poster (char*	poster_name, int* ok)
 		return (NULL);
 	}
 	else
-		printf ("INIT ID = %p (pointer)   %d(integer)\n", id, id);
+		printf ("INIT ID = %p (pointer)\n", id);
 		*ok = 1;
 
 	return (id);

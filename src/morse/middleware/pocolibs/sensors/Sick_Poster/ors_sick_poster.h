@@ -1,9 +1,7 @@
 #include <posterLib.h>
-#include <stdarg.h>
-#include <pom/pomStruct.h>
-#include <sick/sickStruct.h>
-#include <Python.h>
+#include <posterLib.h>
 
+#include <pom/pomStruct.h> // XXX Fix the interface
 
 POSTER_ID init_data(char*  poster_name);
 
@@ -26,13 +24,6 @@ struct sick_struct {
 };
 
 
-/*
- * Create a full POM_SENSOR_POS
- */
-int create_pom_sensor_pos( int blender_date, 
-							POM_SENSOR_POS* pos,			 
-							const struct pom_position* robot, 
-							const struct pom_position* sensor);
 
 /*
  * Expect a list of sick_struct*

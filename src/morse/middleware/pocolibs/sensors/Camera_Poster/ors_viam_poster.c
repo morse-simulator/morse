@@ -1,8 +1,14 @@
+#include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <pthread.h>
+
+#include <pom/pomStruct.h>
+#include <viam/viamStruct.h>
+#include <viam/viamtypes.h>
 
 #include "ors_viam_poster.h"
 
@@ -116,7 +122,7 @@ POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	}
 
 	printf("Succesfully created poster %s of size %zd\n", poster_name, poster_size); 
-	printf ("INIT ID = %p (pointer)   %d(integer)\n", id);
+	printf ("INIT ID = %p (pointer)\n", id);
 
 	ViamImageBank* bank  = posterAddr(id);
 

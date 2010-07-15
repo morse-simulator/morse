@@ -1,11 +1,20 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
+#include <pom/pomStruct.h> 
+#include <sick/sickStruct.h>
+
 #include "ors_sick_poster.h"
 
 static int fill_sick_data(POM_SENSOR_POS* pom_sensor_pos, char* sick_data);
 
+static int create_pom_sensor_pos( int blender_date, 
+								  POM_SENSOR_POS* pos,			 
+								  const struct pom_position* robot, 
+							      const struct pom_position* sensor);
 
 /*
  * Create a poster, and fill it with information which don't change during the
