@@ -49,5 +49,9 @@ INSTALL (DIRECTORY doc data examples
          REGEX .*py. EXCLUDE
 		)
 
+INSTALL(PROGRAMS bin/morse
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+	    )
+
 
 
