@@ -48,8 +48,6 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		print ("File: '%s' opened for writing" % file_name)
 
 
-
-
 	def write_data(self, component_instance):
 		""" Write the current data to the adequate file
 
@@ -58,5 +56,8 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		parent_position = component_instance.robot_parent.blender_obj.position
 		FILE = self._file_list[component_instance.blender_obj.name]
 		FILE.write("==> Data at location: {0}\n".format(parent_position))
-		for variable, data in component_instance.modified_data.items():
+		i = 0
+		for variable in component_instance.data_keys:
+			data = component_instance.modified_data[i]
 			FILE.write("\t%s = %s\n" % (variable, repr(data)))
+			i = i + 1
