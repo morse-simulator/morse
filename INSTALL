@@ -12,7 +12,9 @@ I.1 Common requirements
  - Python (2.6 or +)
  - Blender 2.49 build with Python 2.6 [1]
  - git to get the code of the simulator:
- $ git clone http://trac.laas.fr/git/robots/morse.git
+	 $ git clone http://trac.laas.fr/git/robots/morse.git
+
+Note: The directory where you create the git clone will be refered to as $ORS_ROOT in this document.
 
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else.
