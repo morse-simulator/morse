@@ -25,8 +25,7 @@ import Blender
 import morse.helpers.sensor
 import morse.helpers.colors
 
-class MorseSemanticCameraClass(morse.helpers.sensor.MorseSensorClass):
-
+class SemanticCameraClass(morse.helpers.sensor.MorseSensorClass):
 
 	def __init__(self, obj, parent=None):
 		""" Constructor method.
@@ -38,13 +37,21 @@ class MorseSemanticCameraClass(morse.helpers.sensor.MorseSensorClass):
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
 
+		# Locate the Blender camera object associated with this sensor
+		main_obj = self.blender_obj
+		for obj in main_obj.children:
+			if hasattr(obj, 'lens'):
+				self.blender_cam = obj
+				print ("Camera object: {0}".format(self.blender_cam))
+				break
+
 		# TrackedObject is a dictionary containing the list of tracked objects 
 		# (->meshes with a class property set up) as keys
 		#  and the bounding boxes of these objects as value.
 		if not hasattr(GameLogic, 'trackedObjects'):
-			print ('  ### Initialization of trackedObjects variable...')
+			print ('\t--- Initialization of trackedObjects variable ---')
 			scene = GameLogic.getCurrentScene()
-			GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('objClass')!=0 ])
+			GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Description')!=0 ])
 			
 			# Store the bounding box of the marked objects
 			################## WARNING ################## 
@@ -73,33 +80,37 @@ class MorseSemanticCameraClass(morse.helpers.sensor.MorseSensorClass):
 		print ('######## SEMANTIC CAMERA INITIALIZED ########')
 
 
-    def default_action(self):
+	def default_action(self):
 		""" Do the actual semantic 'grab'.
 
-		Iterate over all the tracked objects, and check if they are visible for the robot.
+		Iterate over all the tracked objects,
+		and check if they are visible for the robot.
 		"""
-		camera = self.blender_obj
 		visibles = self.local_data['visible_objects']
 
 		# Grab an image from the texture
-        if self.blender_obj['capturing']:
+		if self.blender_obj['capturing']:
 
 			for obj in GameLogic.trackedObjects:
-				visible = self._check_visible(obj, camera)
+				visible = self._check_visible(obj)
 
 				# If the object is visible and not yet in the visible_objects list...
 				if visible and visibles.count(obj) == 0:
 					self.local_data['visible_objects'].append(obj)
-					print ("Semantic: {0}, ({1}, {2}) just appeared".format(obj.name, obj['objClass'], morse.helpers.Colors.retrieveHue(obj)))
+					for i in range(3):
+						obj.scaling[i] = obj.scaling[i] * 1.5
+					print ("Semantic: {0}, ({1}, {2}) just appeared".format(obj.name, obj['Description'], morse.helpers.colors.retrieveHue(obj)))
 
 				# If the object is not visible and was in the visible_objects list...
 				if not visible and visibles.count(obj) != 0:
 					self.local_data['visible_objects'].remove(obj)
-					print ("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['objClass']))
+					for i in range(3):
+						obj.scaling[i] = obj.scaling[i] / 1.5
+					print ("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['Description']))
 				
 
 				
-	def _check_visible(obj, camera):
+	def _check_visible(self, obj):
 		""" Check if an object lies inside of the camera frustrum. """
 		# TrackedObjects was filled at initialization
 		#  with the object's bounding boxes
@@ -107,14 +118,19 @@ class MorseSemanticCameraClass(morse.helpers.sensor.MorseSensorClass):
 		pos = obj.position
 		
 		#print ("\n--- NEW TEST ---")
-		#print ("OBJECT {0} AT {1}".format(obj, pos))
+		#print ("OBJECT '{0}' AT {1}".format(obj, pos))
+		#print ("CAMERA '{0}' AT {1}".format(self.blender_cam, self.blender_cam.position))
 		#print ("BBOX: >{0}<".format([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]))
 		#print ("BBOX: {0}".format(bb))
 
 		# Translate the bounding box to the current object position
 		#  and check if it is in the frustrum
-		if camera.boxInsideFrustum([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]) != camera.OUTSIDE:
+		test = self.blender_cam.boxInsideFrustum([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb])
+		#print ("TEST RESULT: {0}".format(test))
+		if test != self.blender_cam.OUTSIDE:
+		#if self.blender_cam.boxInsideFrustum([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]) != self.blender_cam.OUTSIDE:
 			# object is inside
+			#print ("\t>> {0} VISIBLE FROM {1}".format(obj, self.blender_cam))
 			return True
 
 		return False
