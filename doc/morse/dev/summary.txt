@@ -1,0 +1,32 @@
+{{ :morse:openrobots-simulator.png?50 |Logo MORSE}}
+====== Developers documentation ======
+
+
+===== Get involved! =====
+
+You can write to the list of developers of the project, writing to this address: [[mailto:morse-dev@laas.fr | morse-dev@laas.fr]].
+
+MORSE developement can be tracked online with CGIT: [[http://trac.laas.fr/git/morse | MORSE on CGIT]]
+
+You can as well fetch the latest version of the code with GIT:
+<code shell>
+$ git clone http://trac.laas.fr/git/robots/morse.git
+</code>
+
+Easy installation instructions will be added after the official release of MORSE 0.1.
+
+===== Workflow =====
+Principle of interaction with Blender and the game engine
+
+[[dev_workflow | Overview for MORSE workflow for developers]]
+
+===== Adding a new component =====
+Create a sensor. Explain the logic
+
+[[adding_component | Tutorial: Adding a new component]]
+
+===== With an example of a modifier =====
+
+EZ if in python, a bit more complex if we call an external library (cf impact on the dependencies) 
+
+[[adding_modifier | Tutorial: Creating a modifier]]

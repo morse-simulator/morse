@@ -1,0 +1,4 @@
+>> [[morse:dev:summary | Developer's documentation]]
+
+====== Creating a modifier ======
+

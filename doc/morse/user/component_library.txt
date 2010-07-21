@@ -1,0 +1,14 @@
+>> [[morse:user:summary | User documentation]]
+
+====== The MORSE Component Library ======
+
+See also [[supported_middlewares | the list of supported middlewares]].
+
+===== Sensors =====
+
+===== Actuators/Controllers =====
+
+===== Bare robotic bases =====
+
+===== Modifiers =====
+

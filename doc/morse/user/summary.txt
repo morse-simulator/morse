@@ -1,0 +1,31 @@
+{{ :morse:openrobots-simulator.png?50 |Logo MORSE}}
+====== User documentation ======
+
+===== Quickstart =====
+
+Un exemple de scène de base, avec un robot contrôlé au clavier et un capteur, jouable en quelques minutes. Expliquer comment enrichir le robot avec un second capteur. (exemple sans middleware, with output on sockets and/or text)
+
+[[tutorial | Go to the tutorial]]
+
+===== MORSE Worklow =====
+
+Présentation du workflow complet. Explication de la manière de définir un robot, ses scènes
+
+[[user_workflow | Discover the typical MORSE workflow]]
+
+===== Components library & Supported middlewares =====
+
+What is available (sensors, robots, actuators, scenes, middlewares)
+
+[[component_library | The MORSE component library]]
+
+[[supported_middlewares | Middleware support]]
+
+===== Advanced tutorials =====
+
+[[morse:user:advanced_tutorials:advanced_tutorials | List of all tutorials]]
+
+==== Setting up a YARP-based simulation ====
+- Usage example with Yarp. Simple dummy autonomous navigation towards a user-given target (x,y). The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? (sole difference: the goal is given through yarp, sensor data are exported with yarp -- maybe adda a camera, since it is trivial to displa an image with yarp).
+
+[[morse:user:advanced_tutorials:yarp_tutorial | YARP-based simulation tutorial]]

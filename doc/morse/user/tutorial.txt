@@ -1,0 +1,4 @@
+>> [[morse:user:summary | User documentation]]
+
+====== Getting started: a first example of MORSE usage ======
+
