@@ -25,7 +25,7 @@ class MorseGPSNoiseClass(object):
 			return
 
 		if function_name == "noisify":
-			component_instance.input_modifiers.append(function)
+			component_instance.output_modifiers.append(function)
 		else:
 			print ("Unknown function name for GPS Noise modifier. Check component_config.py file.")
 
@@ -33,7 +33,6 @@ class MorseGPSNoiseClass(object):
 
 	def noisify(self, component_instance):
 		for i in range(0, 2):
-			component_instance.modified_data[i] = 
-			morse.modifiers.gaussian.gaussian(0.1, component_instance.modified_data[i])
+			component_instance.modified_data[i] = morse.modifiers.gaussian.gaussian(0.1, component_instance.modified_data[i])
 
 		return component_instance.modified_data
