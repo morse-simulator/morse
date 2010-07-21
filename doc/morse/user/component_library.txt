@@ -6,6 +6,8 @@ See also [[supported_middlewares | the list of supported middlewares]].
 
 ===== Sensors =====
 
+[[:morse:sensors:sick | SICK laser]]
+
 ===== Actuators/Controllers =====
 
 ===== Bare robotic bases =====

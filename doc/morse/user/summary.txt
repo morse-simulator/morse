@@ -5,6 +5,9 @@
 
 Un exemple de scène de base, avec un robot contrôlé au clavier et un capteur, jouable en quelques minutes. Expliquer comment enrichir le robot avec un second capteur. (exemple sans middleware, with output on sockets and/or text)
 
+
+[[installation | Installing MORSE]]
+
 [[tutorial | Go to the tutorial]]
 
 ===== MORSE Worklow =====

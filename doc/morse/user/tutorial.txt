@@ -2,3 +2,55 @@
 
 ====== Getting started: a first example of MORSE usage ======
 
+
+=== Basic Blender commands ===
+
+Selection of an object: RMB over the object
+
+Geometric transformations of an object: Press the corresponding key, then move with the mouse. Press LMB to accept transformation, or RMB to cancel. Hold CTRL key while transforming, to use discrete intervals. The shortcut keys are 'G' for movement, 'S' for scaling and 'R' for rotation.
+
+Camera view shortcuts: Use the numeric keyboard
+* Top view: 7
+* Front view: 1
+* Side view: 3
+* Main camera view: 0
+* Toggle perspective/orthogonal view: 5
+
+Switch shading modes:
+* Wireframe/solid: Z
+* Wireframe/solid: SHIFT-Z
+* Solid/textured: ALT-Z
+
+
+=== Creation of scenario files ===
+
+Using the morse binary program, to open or create new simulation scenarios:
+* morse					Will create a new copy of the basic scenario file, ready to be modified
+* morse [Filename]		The MORSE smulator is started using the indicated files.
+* orse create [Filename]	It will create a new file with the name given, and ready to be editted.
+
+=== Adding components to files ===
+
+* Open file
+* Link elements (robots, scenarios sensors)  SHIFT-F1
+* Select the source Blender file, and then Objects
+* Select the objects to insert, using the RMB
+* Select the 'Link' and 'Relative Paths' toggle buttons
+* Click 'Load Library'
+* The objects will be inserted in the scene, at the origin, and with a cyan selection highlight
+* Select the parent object, then press SHIFT-G, then select 'Children' or press ENTER
+* Press the 'L' key, then select 'Selected Objects' or press ENTER
+* The object will now have a pink selection highlight, and can be moved/rotated/scaled
+
+=== Parenting components to a robot ===
+
+* Select the Empty object of the component, then hold SHIFT and select the robot
+* Press CTRL-P, then select 'Make parent' or press ENTER
+
+
+==== Start and stop a simulation ===
+
+Testing the Blender shortcuts: {{Shortcut|alt|D}}
+
+To start the simulation, press 'P'.
+To stop, press ESC. Under certain error conditions ESC may not work, in that case, an emergency exit key is F12, wich will try to exit without doing executing the cleanup functions. If this doesn't work, the command CTRL-\ on the terminal will kill Blender.
