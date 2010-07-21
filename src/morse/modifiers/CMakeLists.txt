@@ -1,0 +1,14 @@
+# build and install C modifiers
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+
+ADD_LIBRARY (gaussian SHARED gaussian.c)
+SET_TARGET_PROPERTIES (gaussian PROPERTIES PREFIX "")
+TARGET_LINK_LIBRARIES (gaussian ${PYTHON_LIBRARY})
+INSTALL(TARGETS gaussian
+		DESTINATION ${PYTHON_INSTDIR}/morse/modifiers)
+
+# install python files
+FILE(GLOB PYTHON_FILES *.py)
+INSTALL(FILES ${PYTHON_FILES}
+        DESTINATION ${PYTHON_INSTDIR}/morse/modifiers)
+
