@@ -6,7 +6,10 @@ See also [[supported_middlewares | the list of supported middlewares]].
 
 ===== Sensors =====
 
-[[:morse:sensors:sick | SICK laser]]
+[[morse:user:sensors:gps | GPS]]
+[[morse:user:sensors:gyroscope | Gyroscope]]
+[[morse:user:sensors:camera | Video camera]]
+[[morse:user:sensors:sick | SICK laser]]
 
 ===== Actuators/Controllers =====
 
