@@ -37,35 +37,10 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		""" Move the object towards the destination. """
 		parent = self.robot_parent
 
-		"""
-		# THIS HAS TO BE DONE WITH A REQUEST
-		########################### SPEED ###############################
-		# Retrieve the port we want to read from
-		sp = GameLogic.orsConnector.getPort(speed_port_name)
-
-		#non-blocking read of the port
-		speed_msg = sp.read(False)
-
-		if speed_msg!=None:
-			robot_state_dict['speed'] = speed_msg.get(0).asDouble()
-			print ("SETTING SPEED TO: {0}".format(speed))
-		"""
-
 		self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
 		#print ("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
 		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
-
-		"""
-		# DON"T KNOW IF THIS IS NECESSARY NOW
-		try:
-			# Exit the function if there has been no command to move
-			if not robot_state_dict['moveStatus'] == "Transit":
-				return
-		except KeyError:
-			# Also exit if there is no moveStatus property
-			return
-		"""
 
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)

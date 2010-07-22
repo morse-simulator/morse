@@ -1,15 +1,13 @@
 import GameLogic
 import Mathutils
-from collections import deque
 import morse.helpers.actuator
 
 class WaypointActuatorClass(morse.helpers.actuator.MORSEActuatorClass):
 	""" Waypoint motion controller
 
 	This controller will receive a destination point and
-	make the robot move to that location by moving forward.
-	This controller is meant for land robots
-	that can not move sideways.
+	make the robot move to that location by moving forward and turning.
+	This controller is meant for land robots that can not move sideways.
 	"""
 
 	def __init__(self, obj, parent=None):
@@ -18,94 +16,61 @@ class WaypointActuatorClass(morse.helpers.actuator.MORSEActuatorClass):
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
 
-		self.speed = 0.0
-		self.angle_tolerance = 5.0	# Angles in degrees
-		self.waypoint = []
-		self.wp_tolerance = 1.0
-		self.wp_list = deque()
-		self.wp_index = 0
+		self.tolerance = 0.5
+		self.destination = self.blender_obj.position
 
-		init_target_object(obj)
+		# Direction of the global vectors
+		self.world_X_vector = Mathutils.Vector([1,0,0])
+		self.world_Y_vector = Mathutils.Vector([0,1,0])
+
+		self.local_data['speed'] = 5.0
+		self.local_data['x'] = self.destination[0]
+		self.local_data['y'] = self.destination[1]
+		self.local_data['z'] = self.destination[2]
+
+		self.data_keys = ['x', 'y', 'z']
+
+		# Initialise the copy of the data
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
 
 		print ('######## CONTROL INITIALIZED ########')
 
-	def init_target_object(obj)
-		""" Setup the object that will be used as the target
-			for the robot movement (the target the robot will follow). """
-		scene = GameLogic.getCurrentScene()
-		# Prefix the name of the component with 'OB'
-		# Will only be necessary until the change to Blender 2.5
-		if GameLogic.pythonVersion < 3:
-			obj['TargetObject'] = 'OB' + obj['TargetObject']
-		self.target_ob = scene.objects[obj['TargetObject']]
-		self.target_ob.setVisible(obj['Show_Target'])
 
+	def default_action(self):
+		""" Move the object towards the destination. """
+		parent = self.robot_parent
+		self.speed = self.local_data['speed']
 
-	def default_action(contr):
-		""" Main function of this component.
-			It will provide a movement and rotation speed to the robot,
-			in the form of (v, w). """
+		self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
-		robot_state_dict['moveStatus'] = "Transit"
-		print ("WAYPOINT GOT DESTINATION: {0}".format(destination))
-		print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
-		robot_state_dict['destination'] = destination
+		#print ("WAYPOINT GOT DESTINATION: {0}".format(self.destination))
+		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
-		# Reset movement variables
-		vx, vy, vz = 0.0, 0.0, 0.0
-		rx, ry, rz = 0.0, 0.0, 0.0
+		# Vectors returned are already normalised
+		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 
-		# DEBUGGING:
-		# Translate the marker to the target destination
-		scene = GameLogic.getCurrentScene()
-		target_ob = scene.objects[ob['TargetObject']]
-		destination[2] = 0
-		target_ob.position = destination
-
-		try:
-			# Exit the function if there has been no command to move
-			if not robot_state_dict['moveStatus'] == "Transit":
-				return
-		except KeyError:
-			# Also exit if there is no moveStatus property
-			return
-
-		scene = GameLogic.getCurrentScene()
-		target_ob = scene.objects[ob['TargetObject']]
-		destination = target_ob.position
-		# Ignore the altitude (Z)
-		destination[2] = 0
-
-		# Calculate the direction needed
-		location_V = Mathutils.Vector(ob.position)
-		# Ignore the altitude (Z)
-		location_V[2] = 0
-		destination_V = Mathutils.Vector(destination)
-
-		distance_V = destination_V - location_V
-		distance = distance_V.length - robot_state_dict['tolerance']
-
+		#print ("My position: {0}".format(self.blender_obj.position))
 		#print ("GOT DISTANCE: {0}".format(distance))
+		#print ("Global vector: {0}".format(global_vector))
+		#print ("Local  vector: {0}".format(local_vector))
 
-		world_X_vector = Mathutils.Vector([1,0,0])
-		world_Y_vector = Mathutils.Vector([0,1,0])
-		distance_V.normalize()
 		# Use the appropriate function to get the angle between two vectors
 		if GameLogic.pythonVersion < 3:
-			target_angle = Mathutils.AngleBetweenVecs(distance_V, world_X_vector)
+			target_angle = Mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
 		else:
 			# In Blender 2.5, the angle function returns radians
-			target_angle = distance_V.angle(world_X_vector)
+			target_angle = global_vector.angle(self.world_X_vector)
 			# Convert to degrees
 			target_angle = target_angle * 180 / math.pi
 
 		# Correct the direction of the turn according to the angles
-		dot = distance_V.dot(world_Y_vector)
+		dot = global_vector.dot(self.world_Y_vector)
 		if dot < 0:
 			target_angle = target_angle * -1
 
 		try:
-			robot_angle = robot_state_dict['Yaw']
+			robot_angle = robot_parent.yaw
 		except KeyError as detail:
 			print ("Gyroscope angle not found. Does the robot have a Gyroscope?")
 			print (detail)
@@ -128,24 +93,30 @@ class WaypointActuatorClass(morse.helpers.actuator.MORSEActuatorClass):
 		#print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
 		if distance > 0:
-			# Move forward
-			vx = robot_state_dict['speed']
-			# Test if the orientation of the robot is within tolerance
-			# If not, rotate the robot
-			if not (-angle_tolerance < angle_diff and angle_diff < angle_tolerance):
-				#rz = 0.03 * rotation_direction
-				rz = (robot_state_dict['speed'] / 2) * rotation_direction
+			# Tick rate is the real measure of time in Blender.
+			# By default it is set to 60, regardles of the FPS
+			# If logic tick rate is 60, then: 1 second = 60 ticks
+			ticks = GameLogic.getLogicTicRate()
+			try:
+				# Move forward
+				vx = self.speed / ticks
+				# Test if the orientation of the robot is within tolerance
+				# If not, rotate the robot
+				if not (-angle_tolerance < angle_diff and angle_diff < angle_tolerance):
+					#rz = 0.03 * rotation_direction
+					rz = ((self.speed / ticks) / 2) * rotation_direction
+			# For the moment ignoring the division by zero
+			# It happens apparently when the simulation starts
+			except ZeroDivisionError:
+				pass
+
 		# If the target has been reached, change the status
 		elif distance <= 0:
-			robot_state_dict['moveStatus'] = "Stop"
-			print ("TARGET REACHED")
-			print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
+			parent.move_status = "Stop"
+			#print ("TARGET REACHED")
+			#print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
 		# Give the movement instructions directly to the parent
 		# The second parameter specifies a "local" movement
 		self.robot_parent.applyMovement([vx, vy, vz], True)
 		self.robot_parent.applyRotation([rx, ry, rz], True)
-
-		#print ("Motion for robot '{0}'".format(parent.name))
-		#print ("\tvx: %.4f, %4f, %4f" % (vx, vy, vz))
-		#print ("\trx: %.4f, %4f, %4f" % (rx, ry, rz))
