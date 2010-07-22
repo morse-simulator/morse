@@ -1,0 +1,15 @@
+====== Gyroscope sensor ======
+
+This sensor emulates a Gyroscope, providing the yaw, pitch and roll angles of the sensor object with respect to the Blender world reference axes.
+The angles are given in degrees.
+
+===== Applicable modifiers =====
+
+This sensor always provides perfect data.
+To obtain more realistic readings, it is recommended to add modifiers.
+
+	* Noise modifier: Adds random gaussian noise to the data
+
+===== Related components =====
+
+Some other components of MORSE require a Gyroscope to be linked to the robot, in order to function properly. The ''Motion controller'' actuator modules make use of the angles to instruct the robot to turn. If no Gyroscope is installed in the robot, the controllers will not work properly.
