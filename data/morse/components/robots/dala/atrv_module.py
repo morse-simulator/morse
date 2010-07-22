@@ -1,1 +1,0 @@
-/home/slemaign/softs-local/morse/data/morse/components/robots/robot_module.py
