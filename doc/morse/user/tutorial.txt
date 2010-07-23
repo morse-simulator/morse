@@ -7,19 +7,23 @@
 
 Selection of an object: RMB over the object
 
-Geometric transformations of an object: Press the corresponding key, then move with the mouse. Press LMB to accept transformation, or RMB to cancel. Hold CTRL key while transforming, to use discrete intervals. The shortcut keys are 'G' for movement, 'S' for scaling and 'R' for rotation.
+Geometric transformations of an object: Press the corresponding key, then move 
+with the mouse. Press LMB to accept transformation, or RMB to cancel. Hold 
+<key>C</key> key while transforming, to use discrete intervals. The shortcut 
+keys are <key>G</key> for translation, <key>S</key> for scaling and <key>R</key>
+ for rotation.
 
 Camera view shortcuts: Use the numeric keyboard
-  * Top view: **7**
-  * Front view: **1**
-  * Side view: **3**
-  * Main camera view: **0**
-  * Toggle perspective/orthogonal view: **5**
+  * Top view: <key>7</key>
+  * Front view: <key>1</key>
+  * Side view: <key>3</key>
+  * Main camera view: <key>0</key>
+  * Toggle perspective/orthogonal view: <key>5</key>
 
 Switch shading modes:
-  * Wireframe/solid: **Z**
-  * Wireframe/solid: **SHIFT-Z**
-  * Solid/textured: **ALT-Z**
+  * Wireframe/solid: <key>Z</key>
+  * Wireframe/solid: <key>S-Z</key>
+  * Solid/textured: <key>A-Z</key>
 
 
 ===== Creation of scenario files =====
@@ -30,28 +34,35 @@ Using the ''morse'' binary program, to open or create new simulation scenarios:
 
   $ morse [Filename]  % The MORSE simulator is started using the indicated files.
 
-  $ morse create [Filename]  % It will create a new file with the name given, and ready to be editted.
+  $ morse create [Filename]  % It will create a new file with the name given, and ready to be edited.
 
 ===== Adding components to files =====
 
   * Open file
-  * Link elements (robots, scenarios sensors) **SHIFT-F1**
+  * Link elements (robots, scenarios sensors) <key>S-F1</key>
   * Select the source Blender file, and then Objects
   * Select the objects to insert, using the RMB
   * Select the **Link** and **Relative Paths** toggle buttons
   * Click **Load Library**
-  * The objects will be inserted in the scene, at the origin, and with a cyan selection highlight
-  * Select the parent object, then press **SHIFT-G**, then select **Children** or press **ENTER**
-  * Press the **L** key, then select **Selected Objects** or press **ENTER**
-  * The object will now have a pink selection highlight, and can be moved/rotated/scaled
+  * The objects will be inserted in the scene, at the origin, and with a cyan 
+selection highlight
+  * Select the parent object, then press <key>S-G</key>, then select **Children** 
+or press <key>enter</key>
+  * Press the <key>L</key> key, then select **Selected Objects** or press 
+<key>enter</key>
+  * The object will now have a pink selection highlight, and can be 
+moved/rotated/scaled
 
 ===== Parenting components to a robot =====
 
-  * Select the Empty object of the component, then hold **SHIFT** and select the robot
-  * Press **CTRL-P**, then select **Make parent** or press **ENTER**
+  * Select the Empty object of the component, then hold <key>S</key> and select the robot
+  * Press <key>C-P</key>, then select **Make parent** or press <key>enter</key>
 
 
 ====== Start and stop a simulation =====
 
-To start the simulation, press the **P** key.
-To stop, press the **ESC** key. Under certain error conditions ESC may not work, in that case, an emergency exit key is **F12**, wich will try to exit without doing executing the cleanup functions. If this doesn't work, the command CTRL-\ on the terminal will kill Blender.
+To start the simulation, press the <key>P</key> key.
+To stop, press the <key>esc</key> key. Under certain error conditions ESC may 
+not work, in that case, an emergency exit key is <key>F12</key>, wich will try 
+to exit without doing executing the cleanup functions. If this doesn't work, the
+ command <key>C-\</key> on the terminal will kill Blender.
