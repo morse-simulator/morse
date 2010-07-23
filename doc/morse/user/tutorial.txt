@@ -5,10 +5,10 @@
 
 ===== Basic Blender commands =====
 
-Selection of an object: RMB over the object
+Selection of an object: <key>rmb</key> over the object
 
 Geometric transformations of an object: Press the corresponding key, then move 
-with the mouse. Press LMB to accept transformation, or RMB to cancel. Hold 
+with the mouse. Press <key>lmb</key> to accept transformation, or <key>rmb</key> to cancel. Hold 
 <key>C</key> key while transforming, to use discrete intervals. The shortcut 
 keys are <key>G</key> for translation, <key>S</key> for scaling and <key>R</key>
  for rotation.
@@ -41,7 +41,7 @@ Using the ''morse'' binary program, to open or create new simulation scenarios:
   * Open file
   * Link elements (robots, scenarios sensors) <key>S-F1</key>
   * Select the source Blender file, and then Objects
-  * Select the objects to insert, using the RMB
+  * Select the objects to insert, using the <key>rmb</key>
   * Select the **Link** and **Relative Paths** toggle buttons
   * Click **Load Library**
   * The objects will be inserted in the scene, at the origin, and with a cyan 
