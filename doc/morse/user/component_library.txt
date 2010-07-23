@@ -13,7 +13,20 @@ See also [[supported_middlewares | the list of supported middlewares]].
 
 ===== Actuators/Controllers =====
 
+  * [[morse:user:actuators:keyboard | Keyboard arrows]]
+  * [[morse:user:actuators:v_omega | Linear and angular speed (V, W)]]
+  * [[morse:user:actuators:destination | Stright line movement]]
+  * [[morse:user:actuators:waypoint | Waypoint destination]]
+
 ===== Bare robotic bases =====
+
+  * [[morse:user:robots:atrv | ATRV]]
+  * [[morse:user:robots:ressac | Yamaha RMax]]
+  * [[morse:user:robots:jido | NeoBotix platform with PA-10 robotic arm]]
 
 ===== Modifiers =====
 
+  * [[morse:user:modifiers:utm | UTM conversion]]
+  * [[morse:user:modifiers:ned | NED conversion]]
+  * [[morse:user:modifiers:json | JSON encoding/decoding]]
+  * [[morse:user:modifiers:gaussian | Gaussian noise]]

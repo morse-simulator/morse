@@ -1,3 +1,8 @@
 >> [[morse:user:summary | User documentation]]
 
 ====== Supported middlewares ======
+
+	* [[morse:user:middlewares:text | Text file output]]
+	* [[morse:user:middlewares:socket | Sockets]]
+	* [[morse:user:middlewares:yarp | YARP]]
+	* [[morse:user:middlewares:pocolibs | Pocolibs]]
