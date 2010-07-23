@@ -165,7 +165,9 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def read_message(self, component_instance):
 		""" Read a port expecting the data specified in data_types.
-			The data is expected to be of a specified length."""
+
+		The data is expected to be of a specified length.
+		Retuns True after reading data, or False if no data received. """
 		# Get the reference to the correct socket
 		in_socket = self._socket_dict[component_instance.blender_obj.name]
 
@@ -173,27 +175,20 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			message_data, CLIP = in_socket.recvfrom(self._message_size)
 		except socket.error as detail:
 			#print ("Socket ERROR: %s" % detail)
-			return
+			return False
 
 		pickled_data = cPickle.loads(message_data)
 
 		# Extract the values from the socket data
 		i = 0
-		for variable, data in component_instance.local_data.items():
-			if isinstance(data, int):
-				msg_data = pickled_data[i]
-				component_instance.local_data[variable] = msg_data
-			elif isinstance(data, float):
-				msg_data = pickled_data[i]
-				component_instance.local_data[variable] = msg_data
-			elif isinstance(data, basestring):
-				msg_data = pickled_data[i]
-				component_instance.local_data[variable] = msg_data
-			else:
-				print ("Socket ERROR: Unknown data type at 'read_message'")
+		for data in component_instance.modified_data:
+			msg_data = pickled_data[i]
+			component_instance.modified_data[i] = msg_data
 
-			print ("READ VARIABLE {0} = {1}".format(variable, msg_data))
+			print ("READ VARIABLE {0} = {1}".format(component_instance.data_keys[i], msg_data))
 			i = i + 1
+
+		return True
 
 
 	def post_message(self, component_instance):
@@ -206,10 +201,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 			data_list = []
 
-			# Data elements are tuples of (data, type)
-			for element in message_data:
-				msg_data, msg_type = element[0], element[1]
-
+			for msg_data in component_instance.modified_data:
 				##############################################################
 				# Temporary solution to sending lists of elements via a socket
 				##############################################################
@@ -219,8 +211,8 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 				message = ";".join([`data` for data in data_list])
 				#message = ", ".join(data_list) + "."
 
-			#print ("Socket Mid: Going to send string: '{0}'".format(message))
-			#out_socket.send(message)
+			print ("Socket Mid: Going to send string: '{0}'".format(message))
+			out_socket.send(message)
 
 		except KeyError as detail:
 			print ("Socket ERROR: Specified port does not exist: ", detail)
