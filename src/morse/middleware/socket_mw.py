@@ -22,7 +22,6 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		"""
 		# Compose the name of the port
 		parent_name = component_instance.robot_parent.blender_obj.name
-		port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
 
 		# Extract the information for this middleware
 		# This will be tailored for each middleware according to its needs
@@ -38,19 +37,16 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Choose what to do, depending on the function being used
 		# Data read functions
 		if function_name == "read_message":
-			port_name = port_name + '/in'
 			self.open_UDP_server(component_name)
 			component_instance.input_functions.append(function)
-		"""
 		# Data write functions
 		elif function_name == "post_message":
-			port_name = port_name + '/out'
-			self.registerBufferedPortBottle([port_name])
+			#self.open_UDP_server(component_name)
 			component_instance.output_functions.append(function)
+		"""
 		# Image write functions
 		elif function_name == "post_image_RGBA":
-			port_name = port_name + '/out'
-			self.registerBufferedPortImageRgba([port_name])
+			self.open_UDP_server(component_name)
 			component_instance.output_functions.append(function)
 		"""
 
@@ -193,35 +189,41 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def post_message(self, component_instance):
 		""" Send a message using a port."""
-		try:
-			out_socket = self.getPort(port_name)
-			
-			#(conn, addr) = out_socket.accept()
-			#print ('Socket Mid: Connected by', addr)
+		#out_socket = self._socket_dict[component_instance.blender_obj.name]
 
-			data_list = []
+		####
+		# TODO: CHANGE THIS TO BE READ DYNAMICALLY FROM component_config.py
+		####
+		ServerIP = '140.93.0.93'
+		ServerPort = '90001'
 
-			for msg_data in component_instance.modified_data:
-				##############################################################
-				# Temporary solution to sending lists of elements via a socket
-				##############################################################
-				# Create a string containing all the data
-				# The different elements will be separated by ';'
-				data_list.append(msg_data)
-				message = ";".join([`data` for data in data_list])
-				#message = ", ".join(data_list) + "."
+		sClient = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+		host = (ServerIP,ServerPort)
+		sClient.setblocking(0)
 
-			print ("Socket Mid: Going to send string: '{0}'".format(message))
-			out_socket.send(message)
+		#(conn, addr) = out_socket.accept()
+		#print ('Socket Mid: Connected by', addr)
 
-		except KeyError as detail:
-			print ("Socket ERROR: Specified port does not exist: ", detail)
+		data_list = []
+
+		for msg_data in component_instance.modified_data:
+			##############################################################
+			# Temporary solution to sending lists of elements via a socket
+			##############################################################
+			# Create a string containing all the data
+			# The different elements will be separated by ';'
+			data_list.append(msg_data)
+			message = ";".join([`data` for data in data_list])
+			#message = ", ".join(data_list) + "."
+
+		#print ("Socket Mid: Going to send string: '{0}'".format(message))
+		#sClient.send(message, host)
 
 
 	def post_image(self, component_instance):
-		""" Send an RGB image using a port."""
+		""" Send an RGB image using a port. (STILL INCOMPLETE)"""
 		try:
-			out_socket = self.getPort(port_name)
+			out_socket = self._socket_dict[component_instance.blender_obj.name]
 			
 			(conn, addr) = out_socket.accept()
 			print ('Socket Mid: Connected by', addr)
@@ -231,13 +233,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			print ("Socket ERROR: Specified port does not exist: ", detail)
 
 
-	def getPort(self, portName):
-		""" Retrieve the actual socket given its name."""
-		port = '/ors/' + portName
-		return self._socket_dict[port]
-
-
-	def printOpenPorts(self):
+	def print_open_sockets(self):
 		""" Display a list of all currently opened sockets."""
 		print ("Socket Mid: Currently opened sockets:")
 		for name, socket in self._socket_dict.iteritems():
