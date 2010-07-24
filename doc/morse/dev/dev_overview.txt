@@ -1,0 +1,68 @@
+>> [[morse:dev:summary | Developer's documentation]]
+
+====== A MORSE organization overview  ======
+
+=== Files hierarchy ===
+
+The source code of Morse is organised in the following way :
+  * bin : it contains the main entry point of the morse simulation
+  * config : it contains stuff for CMake 
+  * data : it contains the blender model of sensors / actuators
+  * doc : the documentation (in DokuWiki format)
+  * examples : it contains examples about :
+    * how to control the simulator (in clients)
+	* more or less elaborate scenarii (in scenarii)
+  * src : it contains all the python scripts used by the simulator : it is the
+		  core of the simulator
+	* morse/actuators : it contains implementation for various robot controllers
+	* morse/blender : it contains some scripts needed at the initialization of
+	  the game engine
+	* morse/helpers : it contains various helpers (math transformation) and
+	  base classes
+	* morse/middleware : it contains the code for linking with different
+	  middlewares 
+      * yarp
+      * pocolibs 
+      * socket
+      * text (for logging)
+	* modifiers : it contains implementation for various modifier to basic
+	  components
+	* robots : it contains instantiation of different robot classes
+	* sensors : it contains implementation for various robot sensors
+  
+
+=== Code organization ===
+
+The following diagram shows the class hierarchy currently used in MORSE.
+
+{{ :morse:morse_uml.png }}
+
+The main entry point for Blender for each component is the method **action**.
+Yet, it is not supposed to be overridden by leaf-classes. To modify the
+behaviour of a component, you need to modify the method **default_action**. The
+action of **action** depends if it is a sensor or an actuator (robot doesn't do
+anything alone). 
+
+== Behaviour of a sensor ==
+
+When Blender calls the method **action** for a sensor, the following things
+happen :
+  - update of the position of the sensor
+  - call **default_action**
+  - apply in order each function of output_modifiers (modify the content of the
+	sensor)
+  - apply in order each function of output_functions (output the content of the
+	sensor to different clients)
+
+== Behaviour of an actuator ==
+
+When Blender calls the method **action** for an actuator, the following things
+happen :
+  - apply in order each function of input_functions (receive input from
+	different clients)
+  - apply in order each function of input_modifiers (if needed)
+  - call **default_action**
+
+Another interesting point is the **local_data** dictionary : it contains a
+representation of the external state of the sensor (or the actuator) (for
+example, it will contains the position for a GPS)
