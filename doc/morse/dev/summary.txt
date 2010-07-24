@@ -15,6 +15,11 @@ $ git clone http://trac.laas.fr/git/robots/morse.git
 
 Easy installation instructions will be added after the official release of MORSE 0.1.
 
+===== Overview =====
+An overview of code organization in MORSE
+
+[[dev_overview | Overview for MORSE organization]]
+
 ===== Workflow =====
 Principle of interaction with Blender and the game engine
 
