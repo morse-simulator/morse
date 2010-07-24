@@ -2,3 +2,45 @@
 
 ====== Adding a new component ======
 
+There are two things to do when you want to add a sensor / an actuator :
+  * a blender part : creating a representation of the sensor on blender, and associate the script with the blender object
+  * the python script which contains the logic of the sensor
+
+=== The python part ===
+
+You need to implement a sub-class of morse.helpers.sensor.MorseSensorClass (respectively of morse.helpers.actuator.MorseActuatorClass)
+
+Important things to do :
+  * in the constructor of the object (**__init__**) :
+	* initialize each variable you want to expose to the world into local_data
+	* initialize correctly data_keys with the set of variable exposed in
+	  local_data : the order is important here, because this order will be used
+	  for the automatic serialization
+	* initialize correctly modified_data, with a copy of local_data (the
+	  easiest way is to copy-paste the following code)
+	[code]
+		for variable in self.data_keys:
+			self.modified_data.append(self.local_data[variable])
+	[/code]
+
+  * override default_action : it must contains the logic of our component.
+    Avoid to do some big computation here : the function is called often, and
+    it will be slow the whole processing of the Game Engine
+
+=== The blender part ===
+
+  - First, create a nice modelling of your object, and save it in $ORS_ROOT/dala/morse/components/sensors/
+  - Press <key>N</key> to display the properties of the object. Change its name.
+  - Press <key>F4</key> to enter in the logic mode
+    - Add the two following properties :
+	  * class of type string, which contains the name of the associated python class <Sensor>Class
+	  * path of type string, which contains the path of the associated python script morse/sensors/<Sensor	  - You can add more properties if needed for your components
+	- TODO **finish to explain how to link script to blender object**
+
+=== Getting data or exporting data ===
+
+A component is not really useful if it doesn't get any input (for an actuator)
+or if you can't use the output of sensor. You will use different middleware to
+import / export data. 
+
+Basically, you can use automatic serialization. TODO : fix the stuff about middleware
