@@ -1,8 +1,16 @@
+>> [[morse:user:summary | User documentation]]
+
 ====== MORSE installation ======
 
 ===== Requirements - What you need to install before =====
 
-====  Common requirements ====
+==== Hardware ====
+
+To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL:
+  * ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
+  * NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+
+==== Required software ====
 
   * Python (2.6 or +)
   * Blender 2.49 build with Python 2.6 ((For the moment the simulator works only with this version. Blender 2.5 is being worked on.))
@@ -10,13 +18,8 @@
 
   $ git clone http://trac.laas.fr/git/robots/morse.git
 
-
 If you plan to use the simulator with raw sockets of text files as "middleware",
-you don't need anything else.
-
-If you plan to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL
-    * ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
-	* NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
 ==== YARP ====
 
@@ -37,7 +40,7 @@ Copy them to the your Python lib directory (''/usr/lib/python2.6/site-packages/'
 or at some place reachable from your ''PYTHONPATH'' environment variable.
 
 [NOTE FOR ROBOTPKG] You'll need to set the environnement variable ''PYTHONPATH'' to ''${ROBOTPKG_BASE}/lib/python2.6/site-packages/''
-to let python finds the yarp module.
+to let python find the yarp module.
 
 ==== Pocolibs ====
 
@@ -109,16 +112,17 @@ You can check your configuration is ok with:
 Once launched, you can test the simulator by loading one of the example scenarii
 from $ORS_ROOT/share/examples/morse/scenarii (.blend files)
 
-To start a simulation, go on blender and press "P" to play the scenario.
+To start a simulation, go on Blender and press <key>P</key> to play the scenario.
 
 ===== Testing =====
 
 To test the external control clients:
-  * Open the Blender file: ''$ORS_ROOT/share/examples/morse/scenarii/indoors_1/indoor_scene-2.0.blend''
-  * Start the simulation ('P')
-  * Run the C program: ''$ORS_ROOT/share/examples/morse/clients/atrv/atrv_destination-1.0''
-  * Enter the coordinates where you want the robot to go. The robot will try to get there.
+  * Open the Blender file: ''$ORS_ROOT/share/examples/morse/scenarii/example-1-solved.blend''
+  * Start the simulation <key>P</key>
+  * On a separate terminal, run the Python program: 
+  $ python $ORS_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py
+  * Follow the client program's intructions to send movement commands to the robot and to read information back
 
 
 Tips: If you have any problem to start to play a simulation: start blender
-from a terminal and send us the error messages.
+from a terminal and send the error messages to <morse_dev@laas.fr>.

@@ -8,7 +8,9 @@ Un exemple de scène de base, avec un robot contrôlé au clavier et un capteur,
 
 [[installation | Installing MORSE]]
 
-[[tutorial | Go to the tutorial]]
+[[basic_morse | MORSE command reference]]
+
+[[tutorial | Quick tutorial]]
 
 ===== MORSE Worklow =====
 
