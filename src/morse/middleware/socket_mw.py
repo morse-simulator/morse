@@ -10,6 +10,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		self.blender_obj = obj
 		self._socket_dict = dict()
 		self._socket_ports = []
+		self._socket_clients = dict()
 		self._host = ''
 		self._base_port = 70000
 		self._message_size = 1024
@@ -37,11 +38,11 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Choose what to do, depending on the function being used
 		# Data read functions
 		if function_name == "read_message":
-			self.open_UDP_server(component_name)
+			self.open_UDP_server(component_name, component_instance)
 			component_instance.input_functions.append(function)
 		# Data write functions
 		elif function_name == "post_message":
-			#self.open_UDP_server(component_name)
+			#self.open_UDP_server(component_name, component_instance)
 			component_instance.output_functions.append(function)
 		"""
 		# Image write functions
@@ -51,7 +52,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		"""
 
 
-	def open_UDP_server(self, component_name):
+	def open_UDP_server(self, component_name, component_instance):
 		""" Create an UDP server, given a list of names. """
 		if component_name not in self._socket_dict:
 			print ("Socket MW: Adding socket '{0}'.".format(component_name))
@@ -73,7 +74,9 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			new_socket.setblocking(0)
 
 			# Register the port in the dictionary
-			self._socket_dict[component_name] = new_socket
+			#  using the name of the parent as index
+			self._socket_dict[component_instance.robot_parent] = new_socket
+			#self._socket_dict[component_name] = new_socket
 			self._socket_ports.append(socket_port)
 
 			print ("Component {0} listening on port: {1}".format(component_name, socket_port))
@@ -165,14 +168,16 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		The data is expected to be of a specified length.
 		Retuns True after reading data, or False if no data received. """
 		# Get the reference to the correct socket
-		in_socket = self._socket_dict[component_instance.blender_obj.name]
+		in_socket = self._socket_dict[component_instance.robot_parent]
+		#in_socket = self._socket_dict[component_instance.blender_obj.name]
 
 		try:
-			message_data, CLIP = in_socket.recvfrom(self._message_size)
+			message_data, host = in_socket.recvfrom(self._message_size)
 		except socket.error as detail:
 			#print ("Socket ERROR: %s" % detail)
 			return False
 
+		self._socket_clients[component_instance.robot_parent] = host
 		pickled_data = cPickle.loads(message_data)
 
 		# Extract the values from the socket data
@@ -180,8 +185,6 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		for data in component_instance.modified_data:
 			msg_data = pickled_data[i]
 			component_instance.modified_data[i] = msg_data
-
-			print ("READ VARIABLE {0} = {1}".format(component_instance.data_keys[i], msg_data))
 			i = i + 1
 
 		return True
@@ -189,20 +192,15 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def post_message(self, component_instance):
 		""" Send a message using a port."""
-		#out_socket = self._socket_dict[component_instance.blender_obj.name]
+		out_socket = self._socket_dict[component_instance.robot_parent]
+		#out_socket = self._socket_dict[component_instance.blender_obj]
 
-		####
-		# TODO: CHANGE THIS TO BE READ DYNAMICALLY FROM component_config.py
-		####
-		ServerIP = '140.93.0.93'
-		ServerPort = '90001'
-
-		sClient = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-		host = (ServerIP,ServerPort)
-		sClient.setblocking(0)
-
-		#(conn, addr) = out_socket.accept()
-		#print ('Socket Mid: Connected by', addr)
+		try:
+			# Check that a connection has already been established
+			#  for this robot
+			host = self._socket_clients[component_instance.robot_parent]
+		except KeyError as detail:
+			return
 
 		data_list = []
 
@@ -216,8 +214,8 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			message = ";".join([`data` for data in data_list])
 			#message = ", ".join(data_list) + "."
 
-		#print ("Socket Mid: Going to send string: '{0}'".format(message))
-		#sClient.send(message, host)
+		#print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
+		out_socket.sendto(message, host)
 
 
 	def post_image(self, component_instance):
