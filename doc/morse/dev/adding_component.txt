@@ -29,7 +29,7 @@ Important things to do :
 
 === The blender part ===
 
-  - First, create a nice modelling of your object, and save it in $ORS_ROOT/dala/morse/components/sensors/
+  - First, create a nice modelling of your object, and save it in $ORS_ROOT/data/morse/components/sensors/
   - Press <key>N</key> to display the properties of the object. Change its name.
   - Press <key>F4</key> to enter in the logic mode
     - Add the two following properties :
@@ -40,7 +40,47 @@ Important things to do :
 === Getting data or exporting data ===
 
 A component is not really useful if it doesn't get any input (for an actuator)
-or if you can't use the output of sensor. You will use different middleware to
+or if you can't use the output of sensor. You can use different middleware to
 import / export data. 
 
-Basically, you can use automatic serialization. TODO : fix the stuff about middleware
+Basically, you can use automatic serialization. If you want more specific
+behaviour, you need to add a method to the middleware provider of your choice
+(for example, if you want to export a new sensor through YARP, you need to add
+a method to MorseYarpClass, in $ORS_ROOT/src/morse/middleware/yarp_mw.py). The
+method must have the following prototype :
+
+[code]
+def your_method(self, component_instance)
+[/code]
+
+In this method, you can access / store component information through its array
+**modified_data**. In case of a sensor, it is not expected that you change the
+content of the sensor, but only read information in this array.
+
+After that, you need to register your new function into the middleware
+abstraction.  For that, you need to modify the method **register_component**.
+It is basically a switch case with the different possible function. It is this
+function which is called when parsing the configuration file for the scene, so
+it is the right place to initialize stuff (top open Yarp ports, socket, file
+...)
+
+== Middleware specific information ==
+
+= YARP =
+
+In MorseYarpClass, the different port_name are stored in a dictionary
+**_component_ports**, indexed by the name of the component
+(**component.blender_obj.name**). You can retrieve the associated port with the method
+**getPort( port_name)**
+
+= Pocolibs =
+
+In MorsePocolibsClass, the different poster_id are stored in a dictionary
+**_poster_dict**, indexed by the name of the component
+(**component.blender_obj.name**)
+
+= Text =
+
+In TextOutClass, the different files are stored in a dictionary
+**_file_list**, indexed by the name of the component
+(**component.blender_obj.name**)
