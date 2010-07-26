@@ -28,8 +28,9 @@ for variable in self.data_keys:
   - Press <key>N</key> to display the properties of the object. Change its name.
   - Press <key>F4</key> to enter in the logic mode
     - Add the two following properties :
-	  * class of type string, which contains the name of the associated python class <Sensor>Class
-	  * path of type string, which contains the path of the associated python script morse/sensors/<Sensor	  - You can add more properties if needed for your components
+	  * class of type string, which contains the name of the associated python class %%<Sensor>%%Class
+	  * path of type string, which contains the path of the associated python script morse/sensors/%%<Sensor>%%.py	 
+    - You can add more properties if needed for your components
 	- TODO **finish to explain how to link script to blender object**
 
 ==== Getting data or exporting data ====
