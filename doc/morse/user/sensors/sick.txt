@@ -1,3 +1,5 @@
+>> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
+
 ====== SICK laser range scanner ======
 
 This sensor emulates a laser range scanner, by generating a series of rays in predefined directions, and then computing whether they find any object within a certain distance of the sensor's origin.
@@ -7,9 +9,9 @@ __Note__: Objects in the scene with the **No collision** setting in their Game p
 ===== Confgurable Parameters =====
 
 The Empty object corresponding to this sensor has the following parameters:
-	* **Laser_Range**: (double) The distance in meters from the center of the sensor to which it is capable of detecting other objects
-	
-	* **Visible_arc**: (boolean) A toggle that determines whether the scanned area is displayed during the exection of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
+  * **Laser_Range**: (double) The distance in meters from the center of the sensor to which it is capable of detecting other objects
+  
+  * **Visible_arc**: (boolean) A toggle that determines whether the scanned area is displayed during the exection of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
 
 ==== Number and angle of rays ====
 
@@ -18,10 +20,10 @@ The easiest way to create the object in Blender is to **Add->Mesh->Circle**. In 
 
 The new object must have the following characteristics:
 
-	* Name: Its name must begin with 'Arc_', for the SICK Module to recognize it. The currently used method is to name the arcs according to the number of rays they have, for example: Arc_180, Arc_16, Arc_360
+  * Name: Its name must begin with 'Arc_', for the SICK Module to recognize it. The currently used method is to name the arcs according to the number of rays they have, for example: Arc_180, Arc_16, Arc_360
 
-	* Vertices: It is necessary that the vertex at the center of the circle is at local coordinates 0, 0, 0. This is the default case, so it should not be modified.
+  * Vertices: It is necessary that the vertex at the center of the circle is at local coordinates 0, 0, 0. This is the default case, so it should not be modified.
 
-	* Normals: For the circle to be visible in the GE, the normals of the faces must be facing up. Otherwise the object will not be displayed
+  * Normals: For the circle to be visible in the GE, the normals of the faces must be facing up. Otherwise the object will not be displayed
 
-	* Physics: Make sure that on the **Logic Panel** this object is set to **No collision**, otherwise it will push objects around
+  * Physics: Make sure that on the **Logic Panel** this object is set to **No collision**, otherwise it will push objects around

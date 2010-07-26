@@ -1,3 +1,5 @@
+>> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
+
 ====== Pan-tilt unit ======
 
 The purpose of this component is to link together one or more cameras, and provide them with the posibility to move together as a single unit.

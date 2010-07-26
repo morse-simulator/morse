@@ -1,3 +1,5 @@
+>> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
+
 ====== Video camera sensor ======
 
 This sensor emulates a single video camera. It generates a series of RGBA images. Images are ecoded as binary char arrays, with 4 bytes per pixel.
@@ -7,10 +9,10 @@ The cameras make use of Blender's **VideoTexture** module, which requires a grap
 ===== Configurable parameters =====
 
 The Empty object corresponding to this sensor has the following parameters:
-	* **capturing**: (boolean) flag that determines whether the camera should generate an image. It can be toggled on or off by pressing the 'Spacebar'
-	* **cam_width**: (double) generated image width in pixels
-	* **cam_height**: (double) generated image height in pixels
-	* **cam_focal**: (double) camera focal length as defined in Blender (note: in Blender this parameter unit is "milimeters". This is actually misleading, as there is no dimension associated to Blender units.)
+  * **capturing**: (boolean) flag that determines whether the camera should generate an image. It can be toggled on or off by pressing the 'Spacebar'
+  * **cam_width**: (double) generated image width in pixels
+  * **cam_height**: (double) generated image height in pixels
+  * **cam_focal**: (double) camera focal length as defined in Blender (note: in Blender this parameter unit is "milimeters". This is actually misleading, as there is no dimension associated to Blender units.)
 
 ===== Camera calibration matrix =====
 
@@ -21,9 +23,9 @@ The camera configuration parameters implicitely define a geometric camera in ble
 | 0 | 0 | 1 | 0 |
 
 where:
-	* **alpha_u** == ** alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose here that **cam_width** > **cam_height**. If not, then use **cam_height** in the formula) 
-	* **u_0** = **cam_height** / 2
-	* **v_0** = **cam_width** / 2
+  * **alpha_u** == ** alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose here that **cam_width** > **cam_height**. If not, then use **cam_height** in the formula) 
+  * **u_0** = **cam_height** / 2
+  * **v_0** = **cam_width** / 2
 
 ===== Applicable modifiers =====
 

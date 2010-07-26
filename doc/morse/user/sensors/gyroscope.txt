@@ -1,3 +1,5 @@
+>> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
+
 ====== Gyroscope sensor ======
 
 This sensor emulates a Gyroscope, providing the yaw, pitch and roll angles of the sensor object with respect to the Blender world reference axes.
@@ -8,7 +10,7 @@ The angles are given in degrees.
 This sensor always provides perfect data.
 To obtain more realistic readings, it is recommended to add modifiers.
 
-	* Noise modifier: Adds random gaussian noise to the data
+  * Noise modifier: Adds random gaussian noise to the data
 
 ===== Related components =====
 

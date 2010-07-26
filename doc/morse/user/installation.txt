@@ -41,21 +41,18 @@ Afterwards, install the yarp python bindings bindings:
   $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
   $ make update
 
-Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so''.
-Copy them to the your Python lib directory (''/usr/lib/python2.6/site-packages/'')
-or at some place reachable from your ''PYTHONPATH'' environment variable.
+Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so'', and install them in ''$ROBOTPKG_BASE/lib/python2.6/site-packages/''
+You'll need to set the environnement variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python2.6/site-packages/'' to let python find the yarp module.
 
-[NOTE FOR ROBOTPKG] You'll need to set the environnement variable ''PYTHONPATH'' to ''${ROBOTPKG_BASE}/lib/python2.6/site-packages/''
-to let python find the yarp module.
+If you are not using robotpkg to install yarp, then make sure to 
+copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
+
 
 ==== Pocolibs ====
 
-To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install
-Pocolibs on your system.
+To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
 
-The recommended way to do it is through ''robotpkg'' (see 
-[[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more
- informations).
+The recommended way to do it is through ''robotpkg'' (see [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more informations).
 
 To install:
   $ cd $ROBOTPKG_BASE/robotpkg/devel/pocolibs
@@ -66,19 +63,17 @@ To install:
 From your MORSE root directory:
   $ mkdir build && cd build
   $ cmake ..
-  $ make install
 
 By default, MORSE will install in ''/usr/local''. You can easily change that by 
 launching ccmake instead of cmake.
-
-You can also set there if you want YARP and
-Pocolibs bindings to be build. You can set up the different variables using
-the command line :
-  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE
-		Note: The install prefix directory will be refered to as ''$ORS_ROOT'' in this document.
+When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
+You can set up the different variables using the command line:
+  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be refered to as ''$ORS_ROOT'' in this document.
   * ''BUILD_POCOLIBS_SUPPORT'' controls the build of pocolibs support in MORSE
   * ''BUILD_YARP2_SUPPORT'' controls the build of YARP support in MORSE
   * ''CMAKE_BUILD_TYPE'' controls the optimisation stuff for C/C++ extension (Release is a good choice).
+
+  $ make install
 
 To build and install MORSE with YARP support in ''/opt'', you need something like:
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
@@ -110,8 +105,7 @@ Several options are available, check them with:
 You can check your configuration is ok with:
   $ morse check
 
-Once launched, you can test the simulator by loading one of the example scenarii
-from $ORS_ROOT/share/examples/morse/scenarii (.blend files)
+Once launched, you can test the simulator by loading one of the example scenarii from ''$ORS_ROOT/share/examples/morse/scenarii'' (.blend files)
 
 To start a simulation, go on Blender and press <key>P</key> to play the scenario.
 
@@ -123,7 +117,8 @@ To test the external control clients:
   * On a separate terminal, run the Python program:
   $ python $ORS_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py
   * Follow the client program's intructions to send movement commands to the robot and to read information back
-
+  * To finish the simulation, press <key>esc</key>
+  * To close Blender, press <key>C-q</key>, and then <key>enter</key>
 
 Tips: If you have any problem to start to play a simulation: start blender
 from a terminal and send the error messages to <morse_dev@laas.fr>.

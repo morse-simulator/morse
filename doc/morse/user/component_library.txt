@@ -2,7 +2,16 @@
 
 ====== The MORSE Component Library ======
 
-See also [[supported_middlewares | the list of supported middlewares]].
+The modular concept of morse is based on individual components with specific functions that replicate the parts of a real robot. Components in MORSE can belong to three main types:
+  * [[#Bare robotic bases | Robots]]
+  * [[#Sensors | Sensors]]
+  * [[#Actuators/Controllers | Actuators]]
+
+In general, Sensors generate data from the simulated world, to be used by external programs. Alternatively, Actuators read data from outside Blender to be applied inside the simulation. Both Sensors and Actuators must be linked to a Robot to function.
+
+The data generated inside Blender can be considered to be "perfect", because it is very accurate and is not affected by real phenomenons. To make the data generated more realistic, it is possible to use [[#Modifiers | Modifiers]] that will alter the data, such as adding noise, or changing the data with respect to other criteria.
+
+To interact with the outside world, components rely on Middlewares connected to Blender. See also [[supported_middlewares | the list of supported middlewares]].
 
 ===== Sensors =====
 

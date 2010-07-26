@@ -69,8 +69,13 @@ Binding the components in the scene with the middleware is done in a configurati
 
   - On the **Text Editor** window, select the file ''component_config.py''
   - Add the following items to the ''component_mw'' dictionary:
-    - ''"Gyroscope": ["Socket", "post_message"],''
-    - ''"Motion_Controller": ["Socket", "read_message"],''
+
+<code python>
+component_mw = {
+    "Gyroscope": ["Socket", "post_message"],
+    "Motion_Controller": ["Socket", "read_message"],
+	}
+</code>
 
 ==== Run the simulation ====
 Press <key>p</key> to start the Game Engine
@@ -87,4 +92,4 @@ Use the example client program to test the bindings in the simulation
   - Press <key>b</key> to print the readings of the gyroscope exported by MORSE
   - Press <key>q</key> to exit the client
 
-Finally exit the simulation, by pressing <key>esc</key> on the Blender window
+Finally exit the simulation, by pressing <key>esc</key> on the Blender window, then close Blender by pressing <key>C-q</key>, then <key>enter</key>.
