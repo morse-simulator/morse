@@ -1,0 +1,874 @@
+\documentclass[twoside,a4paper,10pt]{report}
+%%\usepackage[french]{babel} %% Use your own babel language
+\usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{pslatex}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage{pdflscape} %% Used for very big table
+\usepackage{moreverb}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{ulem}
+\usepackage{textcomp}
+\usepackage{wasysym}
+\usepackage{sectsty}
+\usepackage{wrapfig} %%Usefull for image 
+%\usepackage{fguill} %%Use this package for guillemot[left|right] useless with babel set to french
+\usepackage{eso-pic} %% Background
+\pagestyle{fancy}%
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{%
+	\markboth{\sffamily \chaptername\ \thechapter.\ #1}{}}
+
+\renewcommand{\sectionmark}[1]{%
+	\markright{{\sffamily #1}}{}}
+
+\fancypagestyle{plain}{%
+\fancyhf{}
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+\fancyhf{}
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{\leftmark}
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\settexitref}[2]{(\ref{#1}p\pageref{#1})}
+\newcommand{\dokutitlelevelone}[1]{\chapter{#1}}
+\newcommand{\dokutitleleveltwo}[1]{\section{#1}}
+\newcommand{\dokutitleleveltree}[1]{\subsection{#1}}
+\newcommand{\dokutitlelevelfour}[1]{\subsubsection{#1}}
+\newcommand{\dokutitlelevelfive}[1]{\paragraph{#1}}
+\newcommand{\dokufootnote}[1]{\footnote{#1}}
+\newcommand{\dokufootmark}[1]{\footnotemark[#1]}
+\newcommand{\dokubold}[1]{\textbf{#1}}
+\newcommand{\dokuitalic}[1]{\textsl{#1}}
+\newcommand{\dokumonospace}[1]{\texttt{#1}}
+\newcommand{\dokuunderline}[1]{\underline{#1}}
+\newcommand{\dokuoverline}[1]{\sout{#1}}
+\newcommand{\dokusupscript}[1]{\textsuperscript{#1}}
+\newcommand{\dokusubscript}[1]{$_{#1}$}
+\newcommand{\dokuhline}{\line(1,0){400}}
+\newcommand{\dokulabel}[1]{\label{#1}}
+\newcommand{\dokuitem}{\item}
+\newcommand{\dokuquoting}{\textbar}
+\newcommand{\dokutabularwidth}{\textwidth}
+\newcommand{\dokusupertabularheadbreak}{\small\sl continued from previous page}
+\newcommand{\dokusupertabulartailbreak}{\small\sl continued on next page}
+\newcommand{\dokuheadingstyle}[1]{\textbf{#1}}
+\definecolor{dokuheadingcolor}{rgb}{0,0,0.60}
+\newcommand{\dokubackground}[1]{%
+\AddToShipoutPicture{%
+  \AtTextCenter{%
+    \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
+      \rotatebox{25}{\textsf{\textbf{\textcolor[gray]{0.90}{#1}}}}}}%
+  }%
+ }%
+}
+
+\hypersetup{
+pdftitle = {The Modular OpenRobots Simulation Engine - User guide},
+pdfauthor = {LAAS-CNRS - ONERA},
+pdfkeywords = {simulation, blender, robotics},
+pdfcreator = {DokuTeXit},
+pdfproducer = {dokuwiki + TeXit + pdflatex}
+}
+\title{The Modular OpenRobots Simulation Engine - User guide}
+\author{LAAS-CNRS - ONERA}
+\date{\today}
+\dokubackground{@BG_TEXT@}
+\begin{document}
+\sffamily
+\allsectionsfont{\sffamily}
+\thispagestyle{empty}
+\maketitle
+\thispagestyle{empty}
+\cleardoublepage
+\tableofcontents
+\newpage
+\thispagestyle{plain}
+\cleardoublepage
+\newpage
+
+
+img /home/slemaign/openrobots/data/media/morse/openrobots-simulator.png
+
+
+
+\dokutitlelevelone{User documentation}
+\label{8dfab66ae1a0fa03c9f9c3a9dd0dd13e}%% user_documentation
+\label{a80da1282f2c775bbc5f2c92c836968b}%%Start: summary => /home/slemaign/openrobots/data/pages/summary.txt
+
+\dokutitleleveltwo{Quickstart}
+\label{1f921ae5a6816fd42a8d546be70f22cd}%% quickstart
+
+Un exemple de scène de base, avec un robot contrôlé au clavier et un capteur, jouable en quelques minutes. Expliquer comment enrichir le robot avec un second capteur. (exemple sans middleware, with output on sockets and/or text)
+
+
+\hyperref[ea09bb364ef1bffd889e76b7a59035fc]{ Installing MORSE}
+
+\hyperref[60efe788544a384827c39a9803dab85b]{ MORSE command reference}
+
+\hyperref[0575c8d592fb7b088226750aceec2b4e]{ Quick tutorial}
+
+
+\dokutitleleveltwo{MORSE Worklow}
+\label{a345cc68645f5fcc26c477d009dc5e0f}%% morse_worklow
+
+Présentation du workflow complet. Explication de la manière de définir un robot, ses scènes
+
+\hyperref[514bac84019bd5e09c0e2b525b09f429]{ Discover the typical MORSE workflow}
+
+
+\dokutitleleveltwo{Components library \& Supported middlewares}
+\label{0c88d1b20b693084703691e13ff5151f}%% components_library_supported_middlewares
+
+What is available (sensors, robots, actuators, scenes, middlewares)
+
+\hyperref[004fdec0cc1a00c19c57e892b7eb1400]{ The MORSE component library}
+
+\hyperref[9a05db9c4b60b0527010fd997682f523]{ Middleware support}
+
+
+\dokutitleleveltwo{Advanced tutorials}
+\label{1db3103f04a8f50e1168ef3c23748f71}%% advanced_tutorials
+
+\hyperref[1db3103f04a8f50e1168ef3c23748f71]{ List of all tutorials}
+
+
+\dokutitleleveltree{Setting up a YARP-based simulation}
+\label{a3bba0b321b28de69351875f85d854db}%% setting_up_a_yarp-based_simulation
+- Usage example with Yarp. Simple dummy autonomous navigation towards a user-given target (x,y). The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? (sole difference: the goal is given through yarp, sensor data are exported with yarp  maybe adda a camera, since it is trivial to displa an image with yarp).
+
+\hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ YARP-based simulation tutorial}
+
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{MORSE installation}
+\label{1d96fd68defedd8a755f2a95c80e618f}%% morse_installation
+\label{ea09bb364ef1bffd889e76b7a59035fc}%%Start: installation => /home/slemaign/openrobots/data/pages/installation.txt
+
+\dokutitleleveltwo{Requirements - What you need to install before}
+\label{27060cbab4a02c4805c03a15b2aad7d7}%% requirements_-_what_you_need_to_install_before
+
+\dokutitleleveltree{Hardware}
+\label{3ca14c518d1bf901acc339e7c9cd6d7f}%% hardware
+
+To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL:
+
+
+\begin{itemize}
+\dokuitem  ATI Radeon 9{\texttimes}00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
+\dokuitem  NVidia Geforce FX, 6{\texttimes}00, 7{\texttimes}00, 8{\texttimes}00, 9{\texttimes}00 and GTX 2{\texttimes}0 and newer.
+\end{itemize}
+
+\dokutitleleveltree{Required software}
+\label{accfa4c836a5caff827d9adbf6bea7dc}%% required_software
+
+\begin{itemize}
+\dokuitem  Python (2.6 or +)
+\dokuitem  Blender 2.49 build with Python 2.6 \dokufootnote{For the moment the simulator works only with this version. Blender 2.5 is being worked on.}
+\dokuitem  git to get the code of the simulator:
+\end{itemize}
+
+\small
+\begin{verbatimtab}
+$ git clone http://trac.laas.fr/git/robots/morse.git
+\end{verbatimtab}
+\normalsize
+
+If you plan to use the simulator with raw sockets of text files as "middleware",
+you don't need anything else. Otherwise, you need to install the software for other middlewares.
+
+
+\dokutitleleveltree{YARP}
+\label{ec46d0b85077d7a7fe8da2e2b4c70462}%% yarp
+
+For the YARP bindings
+
+
+\begin{itemize}
+\dokuitem  YARP version (2.2.5 or +)
+\dokuitem  YARP python binding
+\dokuitem  ACE ( 5.6.3 or +, required for YARP)
+\end{itemize}
+
+Instructions to create YARP-Python bindings are here: \href{http://eris.liralab.it/wiki/YARP_and_Python}{http://eris.liralab.it/wiki/YARP{{\textbackslash}textunderscore}and{{\textbackslash}textunderscore}Python}
+
+Note that the easiest way to install YARP is probably to use \dokumonospace{robotpkg} (see \href{http://homepages.laas.fr/mallet/robotpkg}{ robotpkg homepage} for more informations). Follow the instructions on installing \dokumonospace{robotpkg}. Then add the environment variable \dokumonospace{ROBOTPKG{\textunderscore}BASE} to your shell.
+Then to install \dokumonospace{yarp}:
+
+
+\small
+\begin{verbatimtab}
+$ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
+$ make update
+\end{verbatimtab}
+\normalsize
+Afterwards, install the yarp python bindings bindings:
+
+
+\small
+\begin{verbatimtab}
+$ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
+$ make update
+\end{verbatimtab}
+\normalsize
+
+Compiling the YARP Python binding will create two files: \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so}, and install them in \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/}
+You'll need to set the environnement variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the yarp module.
+
+If you are not using robotpkg to install yarp, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
+
+
+\dokutitleleveltree{Pocolibs}
+\label{15f13a3fccdd1ef095539316b61c03c8}%% pocolibs
+
+To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
+
+The recommended way to do it is through \dokumonospace{robotpkg} (see \href{http://homepages.laas.fr/mallet/robotpkg}{ robotpkg homepage} for more informations).
+
+To install:
+
+
+\small
+\begin{verbatimtab}
+$ cd $ROBOTPKG_BASE/robotpkg/devel/pocolibs
+$ make update
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltwo{Installation}
+\label{ea09bb364ef1bffd889e76b7a59035fc}%% installation
+
+From your MORSE root directory:
+
+
+\small
+\begin{verbatimtab}
+$ mkdir build && cd build
+$ cmake ..
+\end{verbatimtab}
+\normalsize
+
+By default, MORSE will install in \dokumonospace{/usr/local}. You can easily change that by launching ccmake instead of cmake.
+When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
+You can set up the different variables using the command line:
+
+
+\begin{itemize}
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be refered to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
+\dokuitem  \dokumonospace{BUILD{\textunderscore}POCOLIBS{\textunderscore}SUPPORT} controls the build of pocolibs support in MORSE
+\dokuitem  \dokumonospace{BUILD{\textunderscore}YARP2{\textunderscore}SUPPORT} controls the build of YARP support in MORSE
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimisation stuff for C/C++ extension (Release is a good choice).
+\end{itemize}
+
+\small
+\begin{verbatimtab}
+$ make install
+\end{verbatimtab}
+\normalsize
+
+To build and install MORSE with YARP support in \dokumonospace{/opt}, you need something like:
+
+
+\small
+\begin{verbatimtab}
+$ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
+\end{verbatimtab}
+\normalsize
+
+Two environment variables must be set to let the simulator know where to look for the installed components:
+
+
+
+\begin{itemize}
+\dokuitem  \dokumonospace{{\textdollar}PYTHONPATH} specifies the directories where MORSE scripts are located.  It will start with the MORSE installation prefix, followed by the path to the python scripts. It must also include the full path to the directory \dokumonospace{morse/blender} within the installed files. Example:
+\end{itemize}
+
+\small
+\begin{verbatimtab}
+tcsh:
+setenv PYTHONPATH
+$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+\end{verbatimtab}
+\normalsize
+
+\small
+\begin{verbatimtab}
+bash:
+export
+PYTHONPATH=$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+\end{verbatimtab}
+\normalsize
+
+\begin{itemize}
+\dokuitem  {\textdollar}ORS{\textunderscore}BLENDER that allows you to specify a custom Blender executable (else, Blender is looked for in the path).
+\end{itemize}
+
+\dokutitleleveltwo{Running a simulation}
+\label{70cc733d625ccafb4d56ea8f7dcb7973}%% running_a_simulation
+
+[YARP specific] Before starting a simulation: Start the YARP's server using this command in a separate terminal:
+
+
+\small
+\begin{verbatimtab}
+$ yarp server
+\end{verbatimtab}
+\normalsize
+
+Launch MORSE by calling the morse executable:
+
+
+\small
+\begin{verbatimtab}
+$ morse
+\end{verbatimtab}
+\normalsize
+
+Several options are available, check them with:
+
+
+\small
+\begin{verbatimtab}
+$ morse help
+\end{verbatimtab}
+\normalsize
+
+You can check your configuration is ok with:
+
+
+\small
+\begin{verbatimtab}
+$ morse check
+\end{verbatimtab}
+\normalsize
+
+Once launched, you can test the simulator by loading one of the example scenarii from \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii} (.blend files)
+
+To start a simulation, go on Blender and press  to play the scenario.
+
+
+\dokutitleleveltwo{Testing}
+\label{ae2b1fca515949e5d54fb22b8ed95575}%% testing
+
+To test the external control clients:
+
+
+\begin{itemize}
+\dokuitem  Open the Blender file: \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii/example-1-solved.blend}
+\dokuitem  Start the simulation 
+\dokuitem  On a separate terminal, run the Python program:
+\end{itemize}
+  {\textdollar} python {\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/clients/atrv/socket{\textunderscore}v{\textunderscore}omega{\textunderscore}client.py
+
+
+\begin{itemize}
+\dokuitem  Follow the client program's intructions to send movement commands to the robot and to read information back
+\dokuitem  To finish the simulation, press 
+\dokuitem  To close Blender, press , and then 
+\end{itemize}
+
+Tips: If you have any problem to start to play a simulation: start blender
+from a terminal and send the error messages to morse{\textunderscore}dev@laas.fr.
+
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{Getting started: basic MORSE usage}
+\label{cef0f135a902b28b4a51575ed8a2cec1}%% basic_morse_usage
+\label{60efe788544a384827c39a9803dab85b}%%Start: basic_morse => /home/slemaign/openrobots/data/pages/basic_morse.txt
+
+\dokutitleleveltwo{Basic Blender commands}
+\label{7809ce8524191dac30521dd680b9a379}%% basic_blender_commands
+
+\dokutitleleveltree{Selection of an object}
+\label{d461f4bc8beb6b0a8442d6d4da3a0c6d}%% selection_of_an_object
+ over the object
+
+
+\dokutitleleveltree{Geometric transformations of an object}
+\label{001ad77ecf37a2b719f6d1a347faed00}%% geometric_transformations_of_an_object
+Press the corresponding key, then move with the mouse.
+Press  to accept transformation, or  to cancel. Hold 
+ key while transforming, to use discrete intervals. The shortcut 
+keys are  for translation,  for scaling and 
+ for rotation.
+
+
+\dokutitleleveltree{Camera view shortcuts}
+\label{490b5cdd607bc3b8891df904de25d417}%% camera_view_shortcuts
+Use the numeric keyboard
+
+
+\begin{itemize}
+\dokuitem  Top view: 
+\dokuitem  Front view: 
+\dokuitem  Side view: 
+\dokuitem  Main camera view: 
+\dokuitem  Toggle perspective/orthogonal view: 
+\end{itemize}
+
+\dokutitleleveltree{Switch shading modes}
+\label{930ca388b865b6b10e3f5eb29f9bb084}%% switch_shading_modes
+
+\begin{itemize}
+\dokuitem  Wireframe/solid: 
+\dokuitem  Wireframe/solid: 
+\dokuitem  Solid/textured: 
+\end{itemize}
+
+\dokutitleleveltree{Opening and saving files}
+\label{0b2dd5c17c378b3048db1b45587a2d17}%% opening_and_saving_files
+
+\begin{itemize}
+\dokuitem  Open file: 
+\dokuitem  Save file: 
+\dokuitem  Save file as\ldots{} : 
+\dokuitem  Quit Blender: 
+\end{itemize}
+
+\dokutitleleveltree{Button pannels}
+\label{ec1467299d35fb7adfeb7b88dce3d414}%% button_pannels
+Selection of the type of pannel in the Buttons Window:
+
+
+\begin{itemize}
+\dokuitem  Logic buttons: 
+\dokuitem  Material buttons: 
+\dokuitem  Texture buttons: 
+\dokuitem  Object buttons: 
+\dokuitem  Editting buttons: 
+\end{itemize}
+
+\dokutitleleveltwo{Creation of scenario files}
+\label{477e85464263e092bdd386389bab76b2}%% creation_of_scenario_files
+
+Use the \dokumonospace{morse} binary program, to open or create new simulation scenarios:
+
+
+
+\small
+\begin{verbatimtab}
+$ morse
+\end{verbatimtab}
+\normalsize
+
+Will create a new copy of the basic scenario file, ready to be modified.
+
+
+
+\small
+\begin{verbatimtab}
+$ morse create [Filename]
+\end{verbatimtab}
+\normalsize
+
+It will create a new file with the name given, and ready to be edited.
+
+
+
+\small
+\begin{verbatimtab}
+$ morse [Filename]
+\end{verbatimtab}
+\normalsize
+
+The MORSE simulator is started using an existing file with the name specified.
+
+
+\dokutitleleveltwo{Adding components to files}
+\label{94afd3e6d92cbe0e7c018d7a85463367}%% adding_components_to_files
+
+\begin{itemize}
+\dokuitem  Open file
+\dokuitem  Link elements (robots, scenarios sensors) 
+\dokuitem  Select the source Blender file, and then Objects
+\dokuitem  Select the objects to insert, using the 
+\dokuitem  Select the \dokubold{Link} and \dokubold{Relative Paths} toggle buttons
+\dokuitem  Click \dokubold{Load Library}
+\dokuitem  The objects will be inserted in the scene, at the origin, and with a cyan selection highlight
+\dokuitem  Select the parent object, then press , then select \dokubold{Children} or press 
+\dokuitem  Press the  key, then select \dokubold{Selected Objects} or press 
+\dokuitem  The object will now have a pink selection highlight, and can be moved/rotated/scaled
+\end{itemize}
+
+\dokutitleleveltwo{Parenting components to a robot}
+\label{5c8528e5d80c7c0537856e0911e6cdc8}%% parenting_components_to_a_robot
+
+\begin{itemize}
+\dokuitem  Select the Empty object of the component, then hold  and select the robot
+\dokuitem  Press , then select \dokubold{Make parent} or press 
+\end{itemize}
+
+\dokutitleleveltwo{Start and stop a simulation}
+\label{466b971dc2d338787d665353c2a0f40a}%% start_and_stop_a_simulation
+
+To start the simulation, press the  key.
+To stop, press the  key. Under certain error conditions ESC may 
+not work, in that case, an emergency exit key is , wich will try 
+to exit without doing executing the cleanup functions. If this doesn't work, the
+ command  on the terminal will kill Blender.
+
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{Tutorial example}
+\label{d0e1bed8b40ec8e4f9cc0cc0a11ff110}%% tutorial_example
+\label{0575c8d592fb7b088226750aceec2b4e}%%Start: tutorial => /home/slemaign/openrobots/data/pages/tutorial.txt
+
+This tutorial assumes MORSE is properly installed. If not, follow the instructions \hyperref[ea09bb364ef1bffd889e76b7a59035fc]{ here}.
+
+
+\dokutitleleveltwo{Setup of the simulation scene}
+\label{80527725485ea9e7bedbc9d918895a02}%% setup_of_the_simulation_scene
+
+\dokutitleleveltree{Load sample file}
+\label{4238ab1e3d8f80f2fdec7f34e17e0f67}%% load_sample_file
+
+Open the MORSE simulator with the test file provided with the installation, by using this command:
+
+
+
+\small
+\begin{verbatimtab}
+$ morse $ORS_ROOT/share/examples/morse/scenarii/example-1.blend
+\end{verbatimtab}
+\normalsize
+
+This will load a scene with a robot in a room with some furniture.
+
+
+\dokutitleleveltree{Link an actuator}
+\label{81c6b973417d3e5000d27d9c1c805b96}%% link_an_actuator
+
+We'll add a motion controller to the robot, so that it can receive commands from an external program. The robot will then move according to the instructions received. In this case we'll add a controller that uses linear and angular speed (V, W).
+
+
+
+\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press  to open the Load Library browser
+\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/controllers}
+\dokuitem  Press  over the file \dokumonospace{morse{\textunderscore}vw{\textunderscore}control.blend}
+\dokuitem  Press  over the item \dokumonospace{Object}
+\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
+\dokuitem  Press  over the item \dokumonospace{Motion{\textunderscore}Controller}
+\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
+\dokuitem  Select the newly inserted object in the scene, either by  clicking over the object in the 3D View, or  over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Convert the object to local, by pressing  then hitting 
+\dokuitem  With the controller selected, hold down  and then  over the robot object
+\dokuitem  Press  and then hit  make the robot the parent of the controller
+\end{enumerate}
+
+\dokutitleleveltree{Link a Gyroscope sensor}
+\label{f019fe80659ff060e77872347a3add5c}%% link_a_gyroscope_sensor
+
+Next we'll add a sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
+
+
+
+\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press  to open the Load Library browser
+\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/sensors}
+\dokuitem  Press  over the file \dokumonospace{morse{\textunderscore}gyroscope.blend}
+\dokuitem  Press  over the item \dokumonospace{Object}
+\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
+\dokuitem  Press  over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
+\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
+\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by  clicking over the object in the 3D View, or  over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the child object, by pressing , then hitting 
+\dokuitem  Convert the object to local, by pressing  then hitting 
+\dokuitem  Switch to front view by pressing 
+\dokuitem  Press , then move the \dokumonospace{Gyroscope} object to the correct location with respect to the robot
+\dokuitem  Press  to accept the movement
+\dokuitem  With the \dokumonospace{Gyroscope} object selected, hold down  and then  over the robot object
+\dokuitem  Press  and then hit  make the robot the parent of the controller
+\end{enumerate}
+
+\dokutitleleveltree{Insert the middleware object}
+\label{fc2213e90f6f9853c66c14f9f79c3379}%% insert_the_middleware_object
+To use a middleware to exchange data from the simulator, it is necessary to link in an object that will represent the middleware.
+
+
+
+\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press  to open the Load Library browser
+\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/middleware}
+\dokuitem  Press  over the file \dokumonospace{socket{\textunderscore}empty.blend}
+\dokuitem  Press  over the item \dokumonospace{Object}
+\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
+\dokuitem  Press  over the item \dokumonospace{Socket{\textunderscore}Empty}
+\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
+\dokuitem  It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene
+\end{enumerate}
+
+\dokuunderline{Note}: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
+
+
+\dokutitleleveltree{Configuring the middlewares}
+\label{7c1b9786b6402b908e3042548cd3c1c6}%% configuring_the_middlewares
+Binding the components in the scene with the middleware is done in a configuration file within the Blender file.
+
+
+
+\begin{enumerate}\dokuitem  On the \dokubold{Text Editor} window, select the file \dokumonospace{component{\textunderscore}config.py}
+\dokuitem  Add the following items to the \dokumonospace{component{\textunderscore}mw} dictionary:
+\end{enumerate}
+
+\lstset{language=python}
+\begin{lstlisting}
+component_mw = {
+    "Gyroscope": ["Socket", "post_message"],
+    "Motion_Controller": ["Socket", "read_message"],
+	}
+
+\end{lstlisting}
+
+\dokutitleleveltree{Run the simulation}
+\label{62874528899bc63c891e142b192d89b7}%% run_the_simulation
+Press  to start the Game Engine
+
+
+\dokutitleleveltree{Connect with the client}
+\label{646d760bcdaf8445e5fb3dbad2c443e5}%% connect_with_the_client
+Use the example client program to test the bindings in the simulation
+
+
+
+\begin{enumerate}\dokuitem  On a separate terminal, navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/clients/atrv/}
+\dokuitem  Execute the command
+\end{enumerate}
+    {\textdollar} python socket{\textunderscore}v{\textunderscore}omega{\textunderscore}client.py
+
+
+\begin{enumerate}\dokuitem  Press  to give speed commands to the robot
+\dokuitem  Type a the linear and angular speeds, followed by  after each
+\dokuitem  The robot should start moving in MORSE
+\dokuitem  Press  to print the readings of the gyroscope exported by MORSE
+\dokuitem  Press  to exit the client
+\end{enumerate}
+
+Finally exit the simulation, by pressing  on the Blender window, then close Blender by pressing , then .
+
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{The MORSE user workflow}
+\label{2eb6dd59bcc0f89edd80bfe2fc4bec7f}%% the_morse_user_workflow
+\label{514bac84019bd5e09c0e2b525b09f429}%%Start: user_workflow => /home/slemaign/openrobots/data/pages/user_workflow.txt
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{The MORSE Component Library}
+\label{1d548ae3d571b50e147fca31be425d0f}%% the_morse_component_library
+\label{004fdec0cc1a00c19c57e892b7eb1400}%%Start: component_library => /home/slemaign/openrobots/data/pages/component_library.txt
+
+The modular concept of morse is based on individual components with specific functions that replicate the parts of a real robot. Components in MORSE can belong to three main types:
+
+
+\begin{itemize}
+\dokuitem  \hyperref[d69ac14cd721dd995822d4e984f48116]{ Robots}
+\dokuitem  \hyperref[029aee483db9ae244d7a5cb353e74602]{ Sensors}
+\dokuitem  \hyperref[2068e59180763f350d66a42e828e7f96]{ Actuators}
+\end{itemize}
+
+In general, Sensors generate data from the simulated world, to be used by external programs. Alternatively, Actuators read data from outside Blender to be applied inside the simulation. Both Sensors and Actuators must be linked to a Robot to function.
+
+The data generated inside Blender can be considered to be "perfect", because it is very accurate and is not affected by real phenomenons. To make the data generated more realistic, it is possible to use \hyperref[bf24b44a8cc99e648657b164c8aba758]{ Modifiers} that will alter the data, such as adding noise, or changing the data with respect to other criteria.
+
+To interact with the outside world, components rely on Middlewares connected to Blender. See also \hyperref[9a05db9c4b60b0527010fd997682f523]{ the list of supported middlewares}.
+
+
+\dokutitleleveltwo{Sensors}
+\label{029aee483db9ae244d7a5cb353e74602}%% sensors
+
+\begin{itemize}
+\dokuitem  \hyperref[11648e4e66e7ed6a86cb7f1d0cf604fe]{ GPS}
+\dokuitem  \hyperref[6b3b2d8500522343e080755f0e0aa4fe]{ Gyroscope}
+\dokuitem  \hyperref[dd6d2dcc679d12b9430a9787bab45b33]{ Video camera}
+\dokuitem  \hyperref[8d7d5ffd0031f2449cbeaef424c22d75]{ SICK laser}
+\end{itemize}
+
+\dokutitleleveltwo{Actuators/Controllers}
+\label{2068e59180763f350d66a42e828e7f96}%% controllers
+
+\begin{itemize}
+\dokuitem  \hyperref[388a56dbb62a010dc26a378981346247]{ Keyboard arrows}
+\dokuitem  \hyperref[cdf7afd8bc8dbb764b14c987cea8effd]{ Linear and angular speed (V, W)}
+\dokuitem  \hyperref[6990a54322d9232390a784c5c9247dd6]{ Stright line movement}
+\dokuitem  \hyperref[f75862c2bd0040eb683048c313dcaaa8]{ Waypoint destination}
+\end{itemize}
+
+\dokutitleleveltwo{Bare robotic bases}
+\label{d69ac14cd721dd995822d4e984f48116}%% bare_robotic_bases
+
+\begin{itemize}
+\dokuitem  \hyperref[4fd87f5742582d412dce2c6ad5304937]{ ATRV}
+\dokuitem  \hyperref[311954cf2f831f2289fb7fff75d15a7d]{ Yamaha RMax}
+\dokuitem  \hyperref[3c16132d99703978dacd02b0808a4270]{ NeoBotix platform with PA-10 robotic arm}
+\end{itemize}
+
+\dokutitleleveltwo{Modifiers}
+\label{bf24b44a8cc99e648657b164c8aba758}%% modifiers
+
+\begin{itemize}
+\dokuitem  \hyperref[b32d6491ce03dd4e6c877f3bfd9ff07e]{ UTM conversion}
+\dokuitem  \hyperref[f68daad189b2fffd0b8cab5e36ec9d96]{ NED conversion}
+\dokuitem  \hyperref[466deec76ecdf5fca6d38571f6324d54]{ JSON encoding/decoding}
+\dokuitem  \hyperref[304e2a3b544f6b9f267a151e1bcee487]{ Gaussian noise}
+\end{itemize}
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{Middleware Support}
+\label{4303941a1597ae94654bd96854480742}%% middleware_support
+\label{9a05db9c4b60b0527010fd997682f523}%%Start: supported_middlewares => /home/slemaign/openrobots/data/pages/supported_middlewares.txt
+
+\dokutitleleveltwo{Current list of compatible middlewares}
+\label{92515de7e8c9f43d6ca122cbbfd1809e}%% current_list_of_compatible_middlewares
+
+\begin{itemize}
+\dokuitem  \hyperref[1cb251ec0d568de6a929b520c4aed8d1]{ Text file output}
+\dokuitem  \hyperref[61f2529360aec54f5dc9804b842cf3fa]{ Sockets}
+\dokuitem  \hyperref[ec46d0b85077d7a7fe8da2e2b4c70462]{ YARP}
+\dokuitem  \hyperref[15f13a3fccdd1ef095539316b61c03c8]{ Pocolibs}
+\end{itemize}
+
+\dokutitleleveltwo{Expanding the middlewares}
+\label{b3a6313d335453f4c7ad970485acc1a1}%% expanding_the_middlewares
+
+New middlewares can be added to MORSE by following these \hyperref[6a8f80abb2f3d2288ad863e67f2499a4]{ instructions}. There is also an explanation of the "\hyperref[4e819c837d54a6ed09abc77a8560a66f]{ hooks}" connectivity used to share data between components and middlewares.
+
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
+
+
+\dokutitlelevelone{Advanced tutorials}
+\label{1db3103f04a8f50e1168ef3c23748f71}%% advanced_tutorials
+\label{1db3103f04a8f50e1168ef3c23748f71}%%Start: advanced_tutorials => /home/slemaign/openrobots/data/pages/advanced_tutorials.txt
+
+\begin{itemize}
+\dokuitem  \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ YARP-based simulation tutorial}
+\dokuitem  \hyperref[5c7d3aeca93d2be4626b023df992dc1d]{ Pocolibs (Genom) tutorial}
+\end{itemize}
+{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}  \hyperref[1db3103f04a8f50e1168ef3c23748f71]{ Advanced tutorials}
+
+
+\dokutitlelevelone{YARP-based simulation tutorial}
+\label{46a8ae159056a35cad5aad3f96f08029}%% yarp-based_simulation_tutorial
+\label{1dd029a60f7f3dd1deaf993ce4538edf}%%Start: yarp_tutorial => /home/slemaign/openrobots/data/pages/yarp_tutorial.txt
+
+\dokutitleleveltwo{Setup}
+\label{a0f848942ce863cf53c0fa6cc684007d}%% setup
+
+You need to install YARP and its Python bindings, by following the \hyperref[ec46d0b85077d7a7fe8da2e2b4c70462]{ instructions} in the installation page.
+
+Before running a simulation using YARP, it is necessary to open a new shell terminal and start the \dokumonospace{yarpserver} program:
+
+
+\small
+\begin{verbatimtab}
+$ yarpserver
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltwo{Configuring the scenario}
+\label{a5eb0127854ee2548f6841c01cbaee73}%% configuring_the_scenario
+
+You must link a YARP middleware object into the MORSE scenario file
+Create the bidings of the components with yarp, by editing the file \dokumonospace{component{\textunderscore}config.py} inside the Blender file.
+
+
+\dokutitleleveltree{Link a Camera sensor}
+\label{2e2e4de5af03ad71dd248a06e314e9d7}%% link_a_camera_sensor
+
+\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press  to open the Load Library browser
+\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/sensors}
+\dokuitem  Press  over the file \dokumonospace{morse{\textunderscore}camera.blend}
+\dokuitem  Press  over the item \dokumonospace{Object}
+\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
+\dokuitem  Press  over the items \dokumonospace{CameraMain}, \dokumonospace{CameraUser}, \dokumonospace{CameraCube}, \dokumonospace{CameraLens}
+\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
+\dokuitem  Select the newly inserted \dokumonospace{CameraMain} object in the scene, either by  clicking over the object in the 3D View, or  over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the child object, by pressing , then hitting 
+\dokuitem  Convert the object to local, by pressing  then hitting 
+\dokuitem  Switch to front view by pressing 
+\dokuitem  Press , then move the \dokumonospace{CameraMain} object to the correct location with respect to the robot
+\dokuitem  Press  to accept the movement
+\dokuitem  With the \dokumonospace{CameraMain} object selected, hold down  and then  over the robot object
+\dokuitem  Press  and then hit  make the robot the parent of the controller
+\end{enumerate}
+
+\dokutitleleveltree{Insert the middleware object}
+\label{fc2213e90f6f9853c66c14f9f79c3379}%% insert_the_middleware_object
+
+\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press  to open the Load Library browser
+\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/middleware}
+\dokuitem  Press  over the file \dokumonospace{yarp{\textunderscore}empty.blend}
+\dokuitem  Press  over the item \dokumonospace{Object}
+\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
+\dokuitem  Press  over the item \dokumonospace{Yarp{\textunderscore}Empty}
+\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
+\dokuitem  It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene 
+\end{enumerate}
+
+\dokuunderline{Note}: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
+
+
+\dokutitleleveltree{Configuring the middlewares}
+\label{7c1b9786b6402b908e3042548cd3c1c6}%% configuring_the_middlewares
+Binding the components in the scene with the middleware is done in a configuration file within the Blender file.
+
+
+
+\begin{enumerate}\dokuitem  On the \dokubold{Text Editor} window, select the file \dokumonospace{component{\textunderscore}config.py}
+\dokuitem  Add the following items to the \dokumonospace{component{\textunderscore}mw} dictionary:
+\begin{enumerate}\dokuitem  \dokumonospace{"CameraMain": ["Yarp", "post{\textunderscore}image{\textunderscore}RGBA"],}
+\dokuitem  \dokumonospace{"GPS": ["Yarp", "post{\textunderscore}message"],}
+\dokuitem  \dokumonospace{"Motion{\textunderscore}Controller": ["Yarp", "read{\textunderscore}message"],}
+\end{enumerate}
+
+\end{enumerate}
+
+\dokutitleleveltwo{Reading/writing data}
+\label{4531cd1c3fba04d65475a4caadd2beb1}%% writing_data
+
+When the simulation starts, it will print the names of the YARP ports that have been created for every corresponding component. These port names can be used to connect to the component from an external program or client.
+
+The simplest method to test the reading and writing of data is by using the termianl clients. For example, to read the GPS data of the robot through a port named \dokumonospace{/ors/robots/OBATRV/OBGPS/out}, you can type the following in a terminal:
+
+
+\small
+\begin{verbatimtab}
+$ yarp read /data/in /ors/robots/OBATRV/OBGPS/out
+\end{verbatimtab}
+\normalsize
+
+To enter speed commands through a port named \dokumonospace{/ors/robots/OBATRV/OBMotion{\textunderscore}Controller/in}, use the command
+
+
+\small
+\begin{verbatimtab}
+$ yarp write /data/out /ors/robots/OBATRV/OBMotion_Controller/in
+\end{verbatimtab}
+\normalsize
+Then type the three destination coordinates, separated by spaces, and press 
+
+To view the images of the camera though a port \dokumonospace{/ors/robots/OBATRV/OBCameraMain/out}:
+
+
+\small
+\begin{verbatimtab}
+$ yarpview /img/read &
+$ yarp connect /ors/robots/OBATRV/OBCameraMain/out /img/read
+\end{verbatimtab}
+\normalsize
+\end{document}
+
