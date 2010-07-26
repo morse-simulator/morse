@@ -9,11 +9,22 @@
 <key>rmb</key> over the object
 
 ==== Geometric transformations of an object ====
-Press the corresponding key, then move with the mouse.
-Press <key>lmb</key> to accept transformation, or <key>rmb</key> to cancel. Hold 
-<key>C</key> key while transforming, to use discrete intervals. The shortcut 
-keys are <key>g</key> for translation, <key>s</key> for scaling and <key>r</key>
- for rotation.
+
+=== Keyborad input ===
+
+To enter with the keyboard accurate transformation value, press <key>N</key>.
+
+=== With the mouse ===
+The shortcut keys are <key>g</key> for translation, <key>s</key> for scaling and
+ <key>r</key> for rotation.
+ 
+Press the desired key, then move with the mouse.
+
+Press <key>lmb</key> to accept transformation, or <key>rmb</key> to cancel.
+
+Tips:
+  * Hold <key>C</key> key while transforming, to use discrete intervals. 
+  * Press <key>X</key>, <key>Y</key> or <key>Z</key> to constraint the transformation on one axis.
 
 ==== Camera view shortcuts ====
 Use the numeric keyboard
@@ -80,7 +91,10 @@ The MORSE simulator is started using an existing file with the name specified.
 ===== Start and stop a simulation =====
 
 To start the simulation, press the <key>p</key> key.
-To stop, press the <key>esc</key> key. Under certain error conditions ESC may 
-not work, in that case, an emergency exit key is <key>F12</key>, wich will try 
-to exit without doing executing the cleanup functions. If this doesn't work, the
- command <key>C-\</key> on the terminal will kill Blender.
+
+To stop, press the <key>esc</key> key.
+
+/!\ Under certain error conditions ESC may not work, in that case, an emergency exit
+key is <key>F12</key>, wich will try to exit without doing executing the 
+cleanup functions. If this doesn't work, the command <key>C-\</key> on the 
+terminal will kill Blender.
