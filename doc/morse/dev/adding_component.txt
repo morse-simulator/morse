@@ -13,19 +13,14 @@ You need to implement a sub-class of morse.helpers.sensor.MorseSensorClass (resp
 Important things to do :
   * in the constructor of the object (**__init__**) :
 	* initialize each variable you want to expose to the world into local_data
-	* initialize correctly data_keys with the set of variable exposed in
-	  local_data : the order is important here, because this order will be used
-	  for the automatic serialization
-	* initialize correctly modified_data, with a copy of local_data (the
-	  easiest way is to copy-paste the following code)
+	* initialize correctly data_keys with the set of variable exposed in local_data : the order is important here, because this order will be used for the automatic serialization
+	* initialize correctly modified_data, with a copy of local_data (the easiest way is to copy-paste the following code)
 	<code python>
 		for variable in self.data_keys:
 			self.modified_data.append(self.local_data[variable])
 	</code>
 
-  * override default_action : it must contains the logic of our component.
-    Avoid to do some big computation here : the function is called often, and
-    it will be slow the whole processing of the Game Engine
+  * override default_action : it must contains the logic of our component. Avoid to do some big computation here : the function is called often, and it will be slow the whole processing of the Game Engine
 
 === The blender part ===
 
