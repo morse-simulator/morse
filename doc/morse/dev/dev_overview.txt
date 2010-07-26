@@ -32,29 +32,29 @@ The following diagram shows the class hierarchy currently used in MORSE.
 
 {{ :morse:morse_uml.png }}
 
-The main entry point for Blender for each component is the method **action**.
+The main entry point for Blender for each component is the method ''action''.
 Yet, it is not supposed to be overridden by leaf-classes. To modify the
-behaviour of a component, you need to modify the method **default_action**. The
-action of **action** depends if it is a sensor or an actuator (robot doesn't do
-anything alone). 
+behaviour of a component, you need to modify the method ''default_action''. The
+action of ''action'' depends if it is a sensor or an actuator (robot doesn't do
+anything by themself). 
 
 == Behaviour of a sensor ==
 
-When Blender calls the method **action** for a sensor, the following things
+When Blender calls the method ''action'' for a sensor, the following things
 happen :
   - update of the position of the sensor
-  - call **default_action**
-  - apply in order each function of output_modifiers (modify the content of the sensor)
-  - apply in order each function of output_functions (output the content of the sensor to different clients)
+  - call ''default_action''
+  - apply in order each function of ''output_modifiers'' (modify the content of the sensor)
+  - apply in order each function of ''output_functions'' (output the content of the sensor to different clients)
 
 == Behaviour of an actuator ==
 
-When Blender calls the method **action** for an actuator, the following things
+When Blender calls the method ''action'' for an actuator, the following things
 happen :
-  - apply in order each function of input_functions (receive input from different clients)
-  - apply in order each function of input_modifiers (if needed)
-  - call **default_action**
+  - apply in order each function of ''input_functions'' (receive input from different clients)
+  - apply in order each function of ''input_modifiers'' (if needed)
+  - call ''default_action''
 
-Another interesting point is the **local_data** dictionary : it contains a
+Another interesting point is the ''local_data'' dictionary : it contains a
 representation of the external state of the sensor (or the actuator) (for
 example, it will contains the position for a GPS)
