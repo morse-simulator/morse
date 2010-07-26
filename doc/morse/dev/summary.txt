@@ -1,3 +1,15 @@
+/*
+//Uncomment these line to display the "generate PDF" button that allow to fetch
+//the TEX source
+<texit info>
+author=LAAS-CNRS - ONERA
+title=The Modular OpenRobots Simulation Engine - Developers guide
+recurse=chapter
+backgroundtext=@BG_TEXT@
+date=\today
+keywords=simulation, blender, robotics
+</texit>
+*/
 {{ :morse:openrobots-simulator.png?50 |Logo MORSE}}
 ====== Developers documentation ======
 

@@ -1,11 +1,16 @@
 VERSION=0.1
+#GUIDE_TITLE=User Guide
+GUIDE_TITLE=Developers Guide
 BG_TEXT=DRAFT-v.$(VERSION)
 
-CONTENT=user_guide_content.tex
+
+GUIDE_TITLE_PROTECTED=$(shell echo $(GUIDE_TITLE) | sed 's/ /_/g' | tr A-Z a-z)
+
+CONTENT=$(GUIDE_TITLE_PROTECTED)_content.tex
 BLANK=blank.pdf
 COVER=cover.svg.in
 
-PDF=user_guide.pdf
+PDF=morse_$(GUIDE_TITLE_PROTECTED)-$(VERSION).pdf
 
 CONTENTpdf=$(CONTENT:.tex=.pdf)
 
@@ -26,7 +31,8 @@ $(COVERpdf): $(COVERsvg)
 	inkscape --export-pdf $(@) $(<)
 
 $(COVERsvg): $(COVER)
-	sed 's/@VERSION@/$(VERSION)/g' $(<) > $(@)
+	sed 's/@VERSION@/$(VERSION)/g' $(<) > $(@)-intermediate
+	sed 's/@GUIDE_TITLE@/$(GUIDE_TITLE)/g' $(@)-intermediate > $(@)
 
 clean:
 	rm -f *.aux *.log *.snm *.out *.toc *.nav *intermediate *~ $(COVERsvg) $(COVERpdf) $(CONTENTpdf)

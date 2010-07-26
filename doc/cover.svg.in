@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="109.93423"
-     inkscape:cy="801.99845"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="357.11015"
+     inkscape:cy="445.20998"
      inkscape:document-units="px"
      inkscape:current-layer="g3626"
      showgrid="false"
@@ -105,7 +105,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -154,58 +154,58 @@
          x="420.31436"
          y="1087.3185" />
       <g
-         transform="translate(50.507627,-102.02541)"
+         transform="translate(-262.16721,-87.883274)"
          id="text3698"
-         style="font-size:94.70869446000000380px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans">
+         style="font-size:94.70869446px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans">
         <path
            id="path3703"
            d="m 370.1672,790.8125 c -5.53948,1.03926 -13.76949,-3.06824 -17.03125,3.46875 -5.33235,14.1857 -10.74765,28.3373 -15.96875,42.5625 -5.63924,-15.56583 -11.87468,-30.91405 -17.71875,-46.40625 -5.65556,2.29176 -14.38989,-3.18705 -18.03125,3.34375 -0.44247,23.35068 -0.0589,46.79955 -0.1875,70.1875 5.81573,0.65402 18.43567,1.58426 16.1875,-7.875 -0.81682,-9.49692 -0.10378,-19.18198 -0.34375,-28.75 4.66454,12.15061 9.3212,24.30457 14.03125,36.4375 5.8099,1.656 14.31488,0.16999 14.84375,-7.15625 3.06267,-9.70906 7.19257,-19.18927 10.65625,-28.8125 0,12.05208 0,24.10417 0,36.15625 5.17121,-0.50023 14.08951,2.44347 16.34375,-4.1875 -0.75862,-22.97922 -0.2104,-46.31723 -0.375,-69.4375 -0.80208,0.15625 -1.60417,0.3125 -2.40625,0.46875 z"
-           style="fill:#000000;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans;fill-opacity:1" />
+           style="fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" />
         <path
            id="path3705"
            d="m 413.75,789.84375 c -19.06579,0.13083 -34.47046,18.37643 -33.03125,37.09375 -0.57006,16.61644 10.25723,34.65974 27.59375,37.21875 17.8573,4.32343 39.54612,-5.55566 43.625,-24.40625 5.63234,-17.98695 -1.52274,-41.598 -20.65625,-47.78125 -5.61196,-1.94431 -11.61229,-2.31961 -17.53125,-2.125 z m 5.25,15.0625 c 11.54814,0.16903 19.09199,12.4883 17.71875,23.25 0.42484,10.00924 -6.35566,21.5467 -17.34375,21.71875 -10.91176,1.32077 -21.2975,-7.68674 -21.375,-18.65625 -1.95205,-10.65366 3.45607,-25.18603 15.71875,-25.9375 1.75297,-0.21853 3.52063,-0.25977 5.28125,-0.375 z"
-           style="fill:#000000;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans;fill-opacity:1" />
+           style="fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" />
         <path
            id="path3707"
            d="m 463.90625,790.625 c -6.18486,0.3835 -3.28214,8.48793 -3.875,12.3125 0,20.42708 0,40.85417 0,61.28125 5.40439,-1.58399 13.84861,2.71553 17,-3.625 0.38961,-7.69727 -0.83735,-16.11557 0.0313,-23.5625 4.69294,0.60237 10.94578,-1.94139 14.7478,1.22359 5.36739,8.65203 10.80393,17.26102 16.1897,25.90141 5.27828,-1.81601 12.55202,2.57088 16.65625,-2.09375 0.94106,-4.70543 -4.54903,-8.16611 -6.27353,-12.20437 -3.01008,-5.12974 -8.20252,-10.8878 -9.60147,-15.79563 15.5976,-6.27514 17.74322,-31.72697 2.3125,-39.46875 -14.04798,-7.27408 -30.44573,-2.13892 -45.5,-4 -0.56166,0.0278 -1.1276,-0.0398 -1.6875,0.0313 z m 31.21875,15.15625 c 5.94283,-0.58431 12.02429,5.05724 9.21875,11.03125 -3.42395,6.77432 -11.84445,5.14088 -18.09375,4.8125 -2.82978,-0.23498 -7.33497,1.92043 -9.375,-0.15625 0.62069,-5.17038 -0.95528,-10.48681 0.21875,-15.59375 6.0068,-0.0805 12.03417,0.15018 18.03125,-0.0937 z"
-           style="fill:#000000;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans;fill-opacity:1" />
+           style="fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" />
         <path
            id="path3709"
            d="m 557.4375,789.84375 c -11.57667,-0.53116 -25.85198,5.56441 -27.25,18.375 -2.05511,11.03098 6.77926,21.13198 17.15625,23.46875 8.20706,3.1972 19.23031,1.78738 25.25,8.9375 1.69918,6.39556 -5.93839,9.8308 -11.1875,9.25 -7.15111,1.02696 -16.87209,-0.95975 -18.40625,-9.25 -4.47692,-5.32639 -11.13843,1.62794 -16.625,-0.0937 0.0663,14.54121 14.38473,24.59215 28.02798,24.20582 12.42238,1.05649 28.19599,-1.75539 33.56577,-14.48707 4.93235,-10.93484 -1.53508,-24.9741 -13.09375,-28.125 -8.91329,-4.08833 -20.65574,-2.51099 -27.9375,-9.625 -1.91904,-5.35519 4.80857,-8.47748 9.28125,-7.9375 6.02674,-0.85679 14.3837,0.68911 15.59375,7.6875 4.25434,3.38599 11.511,2.21305 15.4375,-1.1875 2.2401,-4.70799 -2.00472,-10.22039 -5.0625,-13.6875 -6.35857,-6.65844 -15.94299,-7.87296 -24.75,-7.53125 z"
-           style="fill:#000000;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans;fill-opacity:1" />
+           style="fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" />
         <path
            id="path3711"
            d="m 646.1875,790.28125 c -16.68683,1.17275 -33.66897,0.16309 -50.46875,0.5 0,24.39583 0,48.79167 0,73.1875 19.76042,0 39.52083,0 59.28125,0 -0.11322,-5.12867 2.33353,-14.2685 -4.78125,-15.71875 -12.42528,0.9582 -25.11312,0.31771 -37.65625,0.5 1.49074,-4.74884 -3.65491,-16.13408 4,-14.71875 11.26042,0 22.52083,0 33.78125,0 -0.0814,-5.08067 2.2876,-14.22361 -4.78125,-15.625 -10.76819,0.8157 -22.07846,0.52697 -32.75,0.375 0.40116,-4.18491 -1.70894,-8.95 0.28125,-12.78125 13.33333,0 26.66667,0 40,0 -0.11322,-5.12867 2.33353,-14.2685 -4.78125,-15.71875 -0.70196,-0.10537 -1.42208,-0.0867 -2.125,0 z"
-           style="fill:#000000;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans;fill-opacity:1" />
+           style="fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" />
       </g>
       <text
          id="text3747"
-         y="783.9314"
-         x="350.41052"
+         y="800.09381"
+         x="37.263237"
          style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
          xml:space="preserve"><tspan
-           y="783.9314"
-           x="350.41052"
+           y="800.09381"
+           x="37.263237"
            id="tspan3749"
            sodipodi:role="line">Modular OpenRobots Simulation Engine</tspan></text>
       <text
          id="text3751"
-         y="908.2326"
-         x="462.28363"
+         y="924.11078"
+         x="36.164757"
          style="font-size:43.4643631px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
          xml:space="preserve"><tspan
-           y="908.2326"
-           x="462.28363"
+           y="924.11078"
+           x="36.164757"
            id="tspan3753"
-           sodipodi:role="line">User Guide</tspan></text>
+           sodipodi:role="line">@GUIDE_TITLE@</tspan></text>
       <text
          id="text3755"
-         y="933.50507"
-         x="658"
+         y="960.5152"
+         x="38.493706"
          style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
          xml:space="preserve"><tspan
-           y="933.50507"
-           x="658"
+           y="960.5152"
+           x="38.493706"
            id="tspan3757"
            sodipodi:role="line">v.@VERSION@</tspan></text>
     </g>
