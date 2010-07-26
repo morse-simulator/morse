@@ -1,6 +1,7 @@
 digraph G {
 	fontname = "Bitstream Vera Sans"
 	fontsize = 8
+	bgcolor="transparent"
 					    
 	node [
 		fontname = "Bitstream Vera Sans"
@@ -38,7 +39,7 @@ digraph G {
 	]
 
 	DestinationActuator [
-		label = "{DestinationActuator | +tolerance : float\l speed : float\l destination : point\l | }"
+		label = "{DestinationActuator | +tolerance : float\l+ speed : float\l+ destination : point\l | }"
 	]
 
 	MorseRobot -> MorseObject
