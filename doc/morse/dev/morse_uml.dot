@@ -7,15 +7,18 @@ digraph G {
 		fontname = "Bitstream Vera Sans"
 		fontsize = 8
 		shape = "record"
+		color="white"
+		style="filled"
 	]
 
 	edge [
 		fontname = "Bitstream Vera Sans"
 		fontsize = 8
+		color="white"
 	]
 
 	MorseObject [
-		label = "{MorseObject | +blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ local_data : dict\l+ data_keys : array\l+ del_function : array\l| +default_action()\l+ action()\l }"
+		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ local_data : dict\l+ data_keys : array\l+ del_function : array\l| +default_action()\l+ action()\l }"
 	]
 
 	MorseRobot [
@@ -23,11 +26,11 @@ digraph G {
 	]
 
 	MorseSensor [
-		label = "{MorseSensor | +output_functions : array\l+output_modifiers : array\l+ modified_data : array\l |}"
+		label = "{MorseSensor | + output_functions : array\l+ output_modifiers : array\l+ modified_data : array\l |}"
 	]
 
 	MorseActuator [
-		label = "{MorseActuator | +input_functions : array\l+input_modifiers : array\l+ modified_data : array\l |}"
+		label = "{MorseActuator | + input_functions : array\l+ input_modifiers : array\l+ modified_data : array\l |}"
 	]
 
 	Gyroscope [
@@ -35,11 +38,11 @@ digraph G {
 	]
 
 	Camera [
-		label = "{Camera |+capturing : bool\l+camera_tag : bool | }"
+		label = "{Camera |+ capturing : bool\l+ camera_tag : bool | }"
 	]
 
 	DestinationActuator [
-		label = "{DestinationActuator | +tolerance : float\l+ speed : float\l+ destination : point\l | }"
+		label = "{DestinationActuator | + tolerance : float\l+ speed : float\l+ destination : point\l | }"
 	]
 
 	MorseRobot -> MorseObject
