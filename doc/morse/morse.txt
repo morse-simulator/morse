@@ -45,7 +45,7 @@ The first release of MORSE features the following set of sensors and actuators.
 
 ===== Documentation =====
 
-/!\ UNDER WORK /!\
+UNDER WORK
 
   * [[morse:user:summary | User's documentation]]
   * [[morse:dev:summary | Developers's documentation]]
