@@ -7,7 +7,7 @@ digraph G {
 		fontname = "Bitstream Vera Sans"
 		fontsize = 8
 		shape = "record"
-		color="white"
+		fillcolor="white"
 		style="filled"
 	]
 
