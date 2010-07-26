@@ -4,7 +4,7 @@
 
 This sensor emulates a single video camera. It generates a series of RGBA images. Images are ecoded as binary char arrays, with 4 bytes per pixel.
 
-The cameras make use of Blender's **VideoTexture** module, which requires a graphic card capable of GLSL shading. Also, the 3D view window in Blender must be set to draw **Textured** objects. 
+The cameras make use of Blender's **VideoTexture** module, which requires a graphic card capable of GLSL shading. Also, the 3D view window in Blender must be set to draw **Textured** objects.
 
 ===== Configurable parameters =====
 
@@ -23,7 +23,7 @@ The camera configuration parameters implicitely define a geometric camera in ble
 | 0 | 0 | 1 | 0 |
 
 where:
-  * **alpha_u** == ** alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose here that **cam_width** > **cam_height**. If not, then use **cam_height** in the formula) 
+  * **alpha_u** == ** alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose here that **cam_width** > **cam_height**. If not, then use **cam_height** in the formula)
   * **u_0** = **cam_height** / 2
   * **v_0** = **cam_width** / 2
 

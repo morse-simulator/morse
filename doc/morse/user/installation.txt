@@ -30,10 +30,7 @@ For the YARP bindings
 
 Instructions to create YARP-Python bindings are here: http://eris.liralab.it/wiki/YARP_and_Python
 
-Note that the easiest way to install YARP is probably to use ''robotpkg'' (see 
-[[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more 
-informations). Follow the instructions on installing ''robotpkg''. Then add
-the environment variable ''ROBOTPKG_BASE'' to your shell.
+Note that the easiest way to install YARP is probably to use ''robotpkg'' (see [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more informations). Follow the instructions on installing ''robotpkg''. Then add the environment variable ''ROBOTPKG_BASE'' to your shell.
 Then to install ''yarp'':
   $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
   $ make update
@@ -44,8 +41,7 @@ Afterwards, install the yarp python bindings bindings:
 Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so'', and install them in ''$ROBOTPKG_BASE/lib/python2.6/site-packages/''
 You'll need to set the environnement variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python2.6/site-packages/'' to let python find the yarp module.
 
-If you are not using robotpkg to install yarp, then make sure to 
-copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
+If you are not using robotpkg to install yarp, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
 
 
 ==== Pocolibs ====
@@ -64,8 +60,7 @@ From your MORSE root directory:
   $ mkdir build && cd build
   $ cmake ..
 
-By default, MORSE will install in ''/usr/local''. You can easily change that by 
-launching ccmake instead of cmake.
+By default, MORSE will install in ''/usr/local''. You can easily change that by launching ccmake instead of cmake.
 When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
 You can set up the different variables using the command line:
   * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be refered to as ''$ORS_ROOT'' in this document.
@@ -92,8 +87,7 @@ Two environment variables must be set to let the simulator know where to look fo
 
 ===== Running a simulation =====
 
-[YARP specific] Before starting a simulation: Start the YARP's server using 
-this command in a separate terminal:
+[YARP specific] Before starting a simulation: Start the YARP's server using this command in a separate terminal:
   $ yarp server
 
 Launch MORSE by calling the morse executable:

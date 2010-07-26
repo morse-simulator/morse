@@ -60,7 +60,7 @@ To use a middleware to exchange data from the simulator, it is necessary to link
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
   - Press <key>rmb</key> over the item ''Socket_Empty''
   - Press the button **Load Library**. You'll return to the 3D View
-  - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene 
+  - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene
 
 __Note__: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
 
