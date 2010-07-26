@@ -3,3 +3,4 @@
 ====== Advanced tutorials ======
 
   * [[yarp_tutorial | YARP-based simulation tutorial]]
+  * [[pocolibs_tutorial | Pocolibs (Genom) tutorial]]
