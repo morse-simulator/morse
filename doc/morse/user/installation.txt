@@ -32,8 +32,14 @@ Instructions to create YARP-Python bindings are here: http://eris.liralab.it/wik
 
 Note that the easiest way to install YARP is probably to use ''robotpkg'' (see 
 [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more 
-informations). You can install yarp and its dependancies using ''make install''
-into ''devel/libpyyarp''.
+informations). Follow the instructions on installing ''robotpkg''. Then add
+the environment variable ''ROBOTPKG_BASE'' to your shell.
+Then to install ''yarp'':
+  $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
+  $ make update
+Afterwards, install the yarp python bindings bindings:
+  $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
+  $ make update
 
 Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so''.
 Copy them to the your Python lib directory (''/usr/lib/python2.6/site-packages/'')
@@ -52,7 +58,7 @@ The recommended way to do it is through ''robotpkg'' (see
  informations).
 
 To install:
-  $ cd $ROBOTPKG/devel/pocolibs 
+  $ cd $ROBOTPKG_BASE/devel/pocolibs 
   $ make update
 
 ===== Installation =====
