@@ -62,6 +62,8 @@ To use a middleware to exchange data from the simulator, it is necessary to link
   - Press the button **Load Library**. You'll return to the 3D View
   - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene 
 
+__Note__: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
+
 ==== Configuring the middlewares ====
 Binding the components in the scene with the middleware is done in a configuration file within the Blender file.
 

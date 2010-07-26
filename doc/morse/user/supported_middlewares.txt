@@ -1,8 +1,14 @@
 >> [[morse:user:summary | User documentation]]
 
-====== Supported middlewares ======
+====== Middleware Support ======
 
-	* [[morse:user:middlewares:text | Text file output]]
-	* [[morse:user:middlewares:socket | Sockets]]
-	* [[morse:user:middlewares:yarp | YARP]]
-	* [[morse:user:middlewares:pocolibs | Pocolibs]]
+===== Current list of compatible middlewares =====
+
+  * [[morse:user:middlewares:text | Text file output]]
+  * [[morse:user:middlewares:socket | Sockets]]
+  * [[morse:user:middlewares:yarp | YARP]]
+  * [[morse:user:middlewares:pocolibs | Pocolibs]]
+
+===== Expanding the middlewares =====
+
+New middlewares can be added to MORSE by following these [[morse:user:middlewares:new_middleware | instructions]]. There is also an explanation of the "[[morse:user:middlewares:hooks | hooks]]" connectivity used to share data between components and middlewares.
