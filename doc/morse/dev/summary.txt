@@ -5,8 +5,8 @@
 author=LAAS-CNRS - ONERA
 title=The Modular OpenRobots Simulation Engine - Developers guide
 recurse=chapter
-backgroundtext=@BG_TEXT@
-date=\today
+backgroundtext=@BGTEXT@
+date=@DATE@
 keywords=simulation, blender, robotics
 </texit>
 */

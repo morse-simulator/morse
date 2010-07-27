@@ -1,44 +1,86 @@
 /*
-//Uncomment these line to display the "generate PDF" button that allow to fetch
-//the TEX source
 <texit info>
 author=LAAS-CNRS - ONERA
 title=The Modular OpenRobots Simulation Engine - User guide
 recurse=chapter
-backgroundtext=@BG_TEXT@
-date=\today
+backgroundtext=@BGTEXT@
+date=@DATE@
 keywords=simulation, blender, robotics
 </texit>
 */
+====== Introducing the Modular OpenRobots Simulation Engine ======
+
 {{ :morse:openrobots-simulator.png?50 |Logo MORSE}}
-====== User documentation ======
 
 Welcome to the official documentation for the MORSE project.
-For an global description of the project, consult the [[http://homepages.laas.fr/gechever/Documents/morse-21062010.pdf | article]] submitted to the [[http://www.simpar.org/ | Simpar 2010]] conference.
 
-===== Quickstart =====
+For an global description of the project, consult the 
+[[http://homepages.laas.fr/gechever/Documents/morse-21062010.pdf | article]] 
+submitted to the [[http://www.simpar.org/ | Simpar 2010]] conference.
 
-[[installation | Installing MORSE]]
+This first section will help you to find your way into the MORSE documentation.
 
-[[basic_morse | MORSE command reference]]
+===== What is MORSE? =====
 
-[[tutorial | Quick tutorial]]
+{{ :morse:simu_render_indoors.jpg?300|Introducing MORSE}}
 
-===== MORSE Worklow =====
+  * A versatile simulator for **generic mobile robots simulation** (single or multi robots),
+  * Enabling **realistic** and **dynamic** environments (with other interacting agents -humans- or objects), 
+  * Don't reinvent the wheel: critical components reused from other opensource projects (**Blender** for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
+  * **Seamless workflow**: since the simulator rely on Blender for both modelling and the realtime 3D engine, creating and modifying a simulated scene is straigthforward.
+  * Entierely scriptable in **Python**,
+  * Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labelled artifacts- in other cases),
+  * Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
+  * Fully open source, BSD-compatible.
+  
+{{ :morse:outdoor_example.jpg?300 |An ATRV in an outdoor scenario}}
 
-Présentation du workflow complet. Explication de la manière de définir un robot, ses scènes
 
-[[user_workflow | Discover the typical MORSE workflow]]
+===== Getting started =====
 
-===== Component library & Supported middlewares =====
+  - [[installation | Install MORSE]]
+  - [[basic_morse | Check the MORSE command reference]]
+  - [[tutorial | Jump to the tutorial]]
+  - [[equip_robot | Prepare a robot with specific equipment]]
 
-These pages present a list of all the currently existig components and its properties, as well as the data modifiers and middlewares used for interaction with external programs.
 
-  * [[component_library | The MORSE component library]]
-  * [[modifier_introduction | Data modifiers]]
-  * [[supported_middlewares | Middleware support]]
+===== The MORSE Workflow =====
+
+Discover the MORSE workflow: how to build a complete simulation scenario, from 
+the creation of a custom robot with predefined sensors and actuators to the 
+complete scene, including other robots or humans.
+
+[[user_workflow | Go to: the typical MORSE workflow]]
+
+===== Components library & Supported middlewares =====
+
+  * MORSE offers a set of predefined sensors and controllers that cover basic simulation needs in robotics. To know how to add new components, please refer to the developer documentation.
+
+The following page lists all the currently existing components and their properties:
+
+[[component_library | Go to: the MORSE component library]]
+
+  * The output (or input) of the simulator can be altered (for instance to add noise) by so called modifiers.
+
+[[modifier_introduction | Go to: Data modifiers]]
+
+  * MORSE relies on //middlewares// to integrate in your robotic architecture.
+
+We currently support only **[[http://eris.liralab.it/yarp/ | YARP]]**, 
+**[[https://softs.laas.fr/openrobots/wiki/pocolibs|pocolibs]]** and a simple 
+text-based socket protocol. More middlewares are expected to be added in the 
+next versions.
+
+[[supported_middlewares | Go to: Middleware support]]
 
 ===== Advanced tutorials =====
 
-Tutorials for more specific functionality and tasks can be found at the 
-[[morse:user:advanced_tutorials:advanced_tutorials | list of advanced tutorials]].
+[[morse:user:advanced_tutorials:advanced_tutorials | List of all tutorials]]
+
+==== Setting up a YARP-based simulation ====
+
+This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigation towards a user-given target (x,y). 
+The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? 
+(sole difference: the goal is given through yarp, sensor data are exported with yarp -- maybe add a camera, since it is trivial to displa an image with yarp).
+
+[[morse:user:advanced_tutorials:yarp_tutorial | Go to: YARP-based simulation tutorial]]
