@@ -1,0 +1,21 @@
+>> [[morse:user:summary | User documentation]]
+
+===== Modifiers =====
+
+Modifiers affect directly the data employed by sensors and actuators, and are specific to the data used by the components. Just like middlewares, they must implement a method called ''register_component'' that should add the corresponding function to the component's action list.
+
+===== List of existing modifiers =====
+
+  * [[morse:user:modifiers:utm | UTM conversion]]
+  * [[morse:user:modifiers:ned | NED conversion]]
+  * [[morse:user:modifiers:json | JSON encoding/decoding]]
+  * [[morse:user:modifiers:gps_noise | GPS noise]]
+
+===== Linking a modifier in a scene =====
+
+To be able to use a modifier inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is identical to the one used for middlewares, as explained in the [[tutorial | basic tutorial]], together with an explanation on how to configure the components to call middleware functions.
+
+
+===== Creating a new modifier =====
+
+The concept of a modifier is relatively simple. Their only function is to change the data stored in variables in the corresponding component, by using the concept of [[hooks]]. Creating a new modifier consists mainly of writing the Python script that will alter the data. The modifier should only work on the ''modified_data'' array of a MORSE component, and it is important to ensure the fields of the array are maintained with the same order and data type.

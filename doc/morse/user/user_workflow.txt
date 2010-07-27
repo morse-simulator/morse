@@ -1,3 +1,20 @@
 >> [[morse:user:summary | User documentation]]
 
 ====== The MORSE user workflow ======
+
+The general steps to follow to do a simulation in MORSE are the following:
+
+  * Create the robot configuration that matches the real robot
+  * Create a scenario file, based on the default MORSE file
+    $ morse create [file_name]
+  * Link in the robot
+  * Link in any aditional robots/sensors/actuators
+  * Link in the middleware and modifier objects
+  * Configure the components to use specific modifiers and middlewares
+  * Save the new scene
+  * Prepare the middleware environments (in the case of YARP or Pocolibs)
+  * Start the simulation
+  * Look at the terminal window to check that everything started correctly
+  * Start the client programs that will connect with the simulator
+  * Finish the simulation by pressing <key>esc</key>
+  * Quit Blender by pressing <key>C-q</key> and <key>enter</key>

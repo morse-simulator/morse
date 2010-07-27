@@ -24,27 +24,21 @@ For an global description of the project, consult the [[http://homepages.laas.fr
 
 [[tutorial | Quick tutorial]]
 
-[[equip_robot | Preparing a robot with specific equipment]]
-
 ===== MORSE Worklow =====
 
 Présentation du workflow complet. Explication de la manière de définir un robot, ses scènes
 
 [[user_workflow | Discover the typical MORSE workflow]]
 
-===== Components library & Supported middlewares =====
+===== Component library & Supported middlewares =====
 
-These pages present a list of all the currently existig components and its properties.
+These pages present a list of all the currently existig components and its properties, as well as the data modifiers and middlewares used for interaction with external programs.
 
-[[component_library | The MORSE component library]]
-
-[[supported_middlewares | Middleware support]]
+  * [[component_library | The MORSE component library]]
+  * [[modifier_introduction | Data modifiers]]
+  * [[supported_middlewares | Middleware support]]
 
 ===== Advanced tutorials =====
 
-[[morse:user:advanced_tutorials:advanced_tutorials | List of all tutorials]]
-
-==== Setting up a YARP-based simulation ====
-- Usage example with Yarp. Simple dummy autonomous navigation towards a user-given target (x,y). The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? (sole difference: the goal is given through yarp, sensor data are exported with yarp -- maybe adda a camera, since it is trivial to displa an image with yarp).
-
-[[morse:user:advanced_tutorials:yarp_tutorial | YARP-based simulation tutorial]]
+Tutorials for more specific functionality and tasks can be found at the 
+[[morse:user:advanced_tutorials:advanced_tutorials | list of advanced tutorials]].

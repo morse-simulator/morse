@@ -33,12 +33,3 @@ To interact with the outside world, components rely on Middlewares connected to 
   * [[morse:user:robots:atrv | iRobot ATRV]]
   * [[morse:user:robots:ressac | Yamaha RMax]]
   * [[morse:user:robots:jido | NeoBotix platform with PA-10 robotic arm]]
-
-===== Modifiers =====
-
-Modifiers affect directly the data employed by sensors and actuators, and are specific to the data used by the components. Just like middlewares, they must implement a method called ''register_component'' that should add the corresponding function to the component's action list.
-
-  * [[morse:user:modifiers:utm | UTM conversion]]
-  * [[morse:user:modifiers:ned | NED conversion]]
-  * [[morse:user:modifiers:json | JSON encoding/decoding]]
-  * [[morse:user:modifiers:gps_noise | GPS noise]]

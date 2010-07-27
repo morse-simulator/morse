@@ -11,6 +11,10 @@ Middlewares provide a means for the simulated data to be shared with external pr
   * [[morse:user:middlewares:yarp | YARP]]
   * [[morse:user:middlewares:pocolibs | Pocolibs]]
 
+===== Linking a middleware in a scene =====
+
+To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the [[tutorial | basic tutorial]]. Also there is an explanation on how to configure the components to call middleware functions.
+
 ===== Expanding the middlewares =====
 
-New middlewares can be added to MORSE by following these [[morse:user:middlewares:new_middleware | instructions]]. There is also an explanation of the "[[morse:user:middlewares:hooks | hooks]]" connectivity used to share data between components and middlewares.
+New middlewares can be added to MORSE by following these [[morse:user:middlewares:new_middleware | instructions]].

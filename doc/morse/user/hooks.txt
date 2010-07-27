@@ -13,6 +13,8 @@ When a component is linked to a middleware, a function described in the middlewa
 
 MORSE components have a property called ''modified_data''. It is a list that contains the data that can be exchanged with external programs. They also have a dictionary called ''local_data'' that has the names of the variables as well as their values, and is reserved for internal use in the component. Middlewares create the "hooks" to ''modified_data'' only.
 
+Data modifiers can also be applied to the ''modified_data'' array, to produce data that is more realistic. In the case of sensors, the modifiers are applied before the data is sent through the middleware. The opposite happens with actuators, which read data through middlewares and then change it using modifiers, before using it inside of Blender.
+
 ===== Configuration =====
 
 This binding is currently done via a Python file called ''component_config.py''

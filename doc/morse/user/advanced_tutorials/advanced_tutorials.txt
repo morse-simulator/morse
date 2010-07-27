@@ -2,5 +2,6 @@
 
 ====== Advanced tutorials ======
 
+  * [[equip_robot | Preparing a robot with specific equipment]]
   * [[yarp_tutorial | YARP-based simulation tutorial]]
   * [[pocolibs_tutorial | Pocolibs (Genom) tutorial]]
