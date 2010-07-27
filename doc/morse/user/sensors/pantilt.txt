@@ -7,6 +7,10 @@ It will also provide the connection interface to use the information of the came
 
 __Note__: The movement of the pan-tilt unit is not yet implemented, but will be a future development.
 
+===== Files =====
+Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_pty.blend''
+Python: ''$ORS_ROOT/src/morse/sensors/ptu.py''
+
 ===== Applicable modifiers =====
 
 The modifiers to the images should be done by configuring the individual cameras attached to this component.

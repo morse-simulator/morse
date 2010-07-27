@@ -1,0 +1,13 @@
+>> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
+
+====== Yamaha RMAX platform ======
+
+The base of the **Ressac** robot at ONERA.
+
+===== Files =====
+Blender: ''$ORS_ROOT/data/morse/components/robots/ressac.blend''
+Python: ''$ORS_ROOT/src/morse/robots/ressac.py''
+
+===== Adjustable parameters =====
+
+The rotation of the rotor is fixed and only for show. Its speed can be adjusted in the Logic pannel in Blender (shown with <key>F4</key>) when the rotor object is selected.

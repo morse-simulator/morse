@@ -13,16 +13,18 @@ keywords=simulation, blender, robotics
 {{ :morse:openrobots-simulator.png?50 |Logo MORSE}}
 ====== User documentation ======
 
+Welcome to the official documentation for the MORSE project.
+For an global description of the project, consult the [[http://homepages.laas.fr/gechever/Documents/morse-21062010.pdf | article]] submitted to the [[http://www.simpar.org/ | Simpar 2010]] conference.
+
 ===== Quickstart =====
-
-Un exemple de scène de base, avec un robot contrôlé au clavier et un capteur, jouable en quelques minutes. Expliquer comment enrichir le robot avec un second capteur. (exemple sans middleware, with output on sockets and/or text)
-
 
 [[installation | Installing MORSE]]
 
 [[basic_morse | MORSE command reference]]
 
 [[tutorial | Quick tutorial]]
+
+[[equip_robot | Preparing a robot with specific equipment]]
 
 ===== MORSE Worklow =====
 
@@ -32,7 +34,7 @@ Présentation du workflow complet. Explication de la manière de définir un rob
 
 ===== Components library & Supported middlewares =====
 
-What is available (sensors, robots, actuators, scenes, middlewares)
+These pages present a list of all the currently existig components and its properties.
 
 [[component_library | The MORSE component library]]
 

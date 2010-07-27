@@ -4,6 +4,12 @@
 
 This actuator does not require a connection with external data. It simply responds to the keyboard arrows to generate movement instructions for the robot attached.
 
+When parented to a robot, the user can press the arrow keys to modify the linear and angular velocities (V, W) of the robot.
+  * <key>Up</key> forward
+  * <key>Down</key> backwards
+  * <key>Left</key> turn left
+  * <key>Right</key> turn right
+
 ===== Files =====
 Blender: ''$ORS_ROOT/data/morse/components/controllers/morse_manual_control.blend''
 Python: ''$ORS_ROOT/src/morse/actuators/keyboard.py''
