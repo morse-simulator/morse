@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== GPS sensor ======
 
 This sensor emulates a GPS, providing the exact coordinates in the Blender scene. The coordinates provided by the GPS are with respect to the origin of the Blender coordinate reference.

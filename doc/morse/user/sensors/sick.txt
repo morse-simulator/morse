@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== SICK laser range scanner ======
 
 This sensor emulates a laser range scanner, by generating a series of rays in predefined directions, and then computing whether they find any object within a certain distance of the sensor's origin.

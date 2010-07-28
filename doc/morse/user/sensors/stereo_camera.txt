@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== Stereo Camera unit ======
 
 This is not an independent sensor, but the combination of two [[camera | cameras]] and the [[pantilt | pan-tilt unit]]. The cameras are already in position and parented to the pan-tilt.
