@@ -14,6 +14,11 @@ The data generated inside Blender can be considered to be "perfect", because it 
 
 To interact with the outside world, components rely on Middlewares connected to Blender. See also [[supported_middlewares | the list of supported middlewares]] for a further explanation.
 
+The following diagram shows the data flow from the Simulation to the sensor, then the modifiers and finally the middleware to send the data to external programs:
+
+{{ :morse:component_diagram.png?300|Component data flow}}
+
+
 ===== Sensors =====
 
   * [[morse:user:sensors:gps | GPS]]
