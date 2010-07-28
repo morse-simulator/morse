@@ -19,8 +19,16 @@ COVERpdf=$(COVERsvg:.svg=.pdf)
 
 all: $(PDF)
 
-$(PDF): $(CONTENTpdf) $(BLANK) $(COVERpdf)
-	pdftk $(COVERpdf) $(BLANK) $(CONTENTpdf) cat output $(@)
+$(PDF): $(COVERpdf) $(BLANK) $(CONTENTpdf)
+
+	@exec >$(PDF:.pdf=.tex);\
+	echo '\documentclass{report}';\
+	echo '\usepackage{pdfpages}';\
+	echo '\begin{document}';\
+	for a in $^; do echo '\includepdf[pages=-]{'$$a'}'; done;\
+	echo '\end{document}';
+	
+	pdflatex $(PDF:.pdf=.tex)
 
 $(CONTENTpdf): $(CONTENT)
 	sed 's/@BGTEXT@/$(BG_TEXT)/g' $(<) > $(<)-intermediate
@@ -36,7 +44,7 @@ $(COVERsvg): $(COVER)
 	sed 's/@GUIDE_TITLE@/$(GUIDE_TITLE)/g' $(@)-intermediate > $(@)
 
 clean:
-	rm -f *.aux *.log *.snm *.out *.toc *.nav *intermediate *~ $(COVERsvg) $(COVERpdf) $(CONTENTpdf)
+	rm -f *.aux *.log *.snm *.out *.toc *.nav *intermediate *~ $(COVERsvg) $(COVERpdf) $(CONTENTpdf) $(PDF:.pdf=.tex)
 
 distclean: clean
 	rm -f $(PDF)
