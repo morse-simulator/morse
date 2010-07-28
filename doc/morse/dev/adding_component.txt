@@ -2,13 +2,13 @@
 
 ====== Adding a new component ======
 
-There are two things to do when you want to add a sensor / an actuator :
-  * a blender part : creating a representation of the sensor on blender, and associate the script with the blender object
-  * the python script which contains the logic of the sensor
+Each component is basically represented by two files, which must be created when adding a new sensor or actuator:
+  * A Blender file: has the representation of the sensor on blender, and associate the script with the blender object
+  * A Python script: contains the logic of the sensor
 
 ==== The python part ====
 
-You need to implement a sub-class of morse.helpers.sensor.MorseSensorClass (respectively of morse.helpers.actuator.MorseActuatorClass)
+You need to implement a sub-class of ''morse.helpers.sensor.MorseSensorClass'' (respectively of ''morse.helpers.actuator.MorseActuatorClass'')
 
 Important things to do :
   * in the constructor of the object (''%%__init__%%'') :
@@ -20,30 +20,30 @@ for variable in self.data_keys:
 	self.modified_data.append(self.local_data[variable])
 </code>
 
-  * override ''default_action'' : it must contains the logic of our component. Avoid to do some big computation here : the function is called often, and it will be slow the whole processing of the Game Engine
+  * override ''default_action'' : it must contains the logic of our component. Avoid to do some big computation here : the function is called often, and it will slow down the whole processing of the Game Engine
 
 ==== The blender part ====
 
-  - First, create a nice modelling of your object, and save it in $ORS_ROOT/data/morse/components/sensors/
+  - First, create a nice modelling of your object, and save it in ''$MORSE_ROOT/data/morse/components/sensors/''
   - Press <key>N</key> to display the properties of the object. Change its name.
   - Press <key>F4</key> to enter in the logic mode
-    - Add the two following properties :
-      * class of type string, which contains the name of the associated python class %%<Sensor>%%Class
-      * path of type string, which contains the path of the associated python script ''morse/sensors/%%<Sensor>%%.py''	 
-    - You can add more properties if needed for your components
-  - TODO **finish to explain how to link script to blender object**
+    - Add the two following properties:
+      * **Class** of type string, which contains the name of the associated python class %%<Sensor>%%Class
+      * **Path** of type string, which contains the path to the associated python script ''morse/sensors/%%<Sensor>%%''	 
+    - You can add more properties if needed for your components. Additional properties can be used to configure the behaviour of the component, and can be integrated into a GUI in future versions of MORSE.
 
-==== Getting data or exporting data ====
+The names specified in the **Path** and **Class** properties must match exactly the location of the Python file and the name of the defined class, respectively.The information in these variables will be used to dinamically load the module and class during initialisation of the simulation.
+
+===== Getting data or exporting data =====
 
 A component is not really useful if it doesn't get any input (for an actuator)
-or if you can't use the output of sensor. You can use different middleware to
+or if you can't use the output of a sensor. You can use different middleware to
 import / export data. 
 
-Basically, you can use automatic serialization. If you want more specific
-behaviour, you need to add a method to the middleware provider of your choice
+In the simplest case, you can use automatic serialization, which will try to convert the data in ''modified_data'' array into the appropriate format to send throug the middleware. This works only for the basic data types of integer, float or string.
+If you want more specific behaviour for other data types, you need to add a method to the middleware provider of your choice
 (for example, if you want to export a new sensor through YARP, you need to add
-a method to MorseYarpClass, in $ORS_ROOT/src/morse/middleware/yarp_mw.py). The
-method must have the following prototype :
+a method to MorseYarpClass, in ''$MORSE_ROOT/src/morse/middleware/yarp_mw.py''). The method must have the following prototype :
 
 <code python>
 def your_method(self, component_instance)
@@ -55,19 +55,30 @@ content of the sensor, but only read information in this array.
 
 After that, you need to register your new function into the middleware
 abstraction.  For that, you need to modify the method ''register_component''.
-It is basically a switch case with the different possible function. It is this
-function which is called when parsing the configuration file for the scene, so
-it is the right place to initialize stuff (top open Yarp ports, socket, file
+It is basically a switch case with the different possible functions. This
+method is called when parsing the configuration file for the scene, so
+it is the right place to initialize stuff (opening Yarp ports, sockets, files
 ...)
 
-=== Middleware specific information ===
+==== Middleware specific information ====
 
 == YARP ==
 
 In MorseYarpClass, the different port_name are stored in a dictionary
 ''_component_ports'', indexed by the name of the component
-(''component.blender_obj.name''). You can retrieve the associated port with the method
-''getPort( port_name)''
+(''component.blender_obj.name''). You can retrieve the associated port with the method ''getPort(port_name)''
+
+Example:
+<code python>
+port_name = self._component_ports[component_instance.blender_obj.name]
+
+try:
+	yarp_port = self.getPort(port_name)
+except KeyError as detail:
+	print ("ERROR: Specified port does not exist: ", detail)
+	return
+</code>
+
 
 == Pocolibs ==
 
