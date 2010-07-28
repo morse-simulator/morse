@@ -33,8 +33,6 @@ Create the bidings of the components with yarp, by editing the file ''component_
   - With the ''CameraMain'' object selected, hold down <key>S</key> and then :RMB: over the robot object
   - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
 
-
-
 ==== Insert the middleware object ====
   - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
   - Navigate to the directory ''$ORS_ROOT/data/morse/components/middleware''
@@ -52,9 +50,14 @@ Binding the components in the scene with the middleware is done in a configurati
 
   - On the **Text Editor** window, select the file ''component_config.py''
   - Add the following items to the ''component_mw'' dictionary:
-    - ''"CameraMain": ["Yarp", "post_image_RGBA"],''
-    - ''"GPS": ["Yarp", "post_message"],''
-    - ''"Motion_Controller": ["Yarp", "read_message"],''
+ 
+<code python>
+component_mw = {
+    "CameraMain": ["Yarp", "post_image_RGBA"],
+    "GPS": ["Yarp", "post_message"],
+    "Motion_Controller": ["Yarp", "read_message"],
+	}
+</code>
 
 
 ===== Reading/writing data =====

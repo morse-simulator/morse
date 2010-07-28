@@ -13,7 +13,9 @@ Middlewares provide a means for the simulated data to be shared with external pr
 
 ===== Linking a middleware in a scene =====
 
-To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the [[tutorial | basic tutorial]]. Also there is an explanation on how to configure the components to call middleware functions.
+To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the [[tutorial | basic tutorial]] and the [[morse:user:advanced_tutorials:yarp_tutorial | yarp tutorial]]. Those pages also explain how to configure the components to use a given middleware.
+
+Binding a component to use a middleware is done in the file ''component_config.py'' that should be part of every MORSE scenario file. In that file, the dictionary ''component_mw'' lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware funtion that should be called by the component to share its data.
 
 ===== Expanding the middlewares =====
 
