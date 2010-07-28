@@ -117,6 +117,8 @@ pdfproducer = {dokuwiki + TeXit + pdflatex}
 
 
 
+
+
 \dokutitlelevelone{Introducing the Modular OpenRobots Simulation Engine}
 \label{55d4061a5aa52cfc82c5474279f29bd9}%% introducing_the_modular_openrobots_simulation_engine
 \label{a80da1282f2c775bbc5f2c92c836968b}%%Start: summary => /home/slemaign/openrobots/data/pages/summary.txt
@@ -152,10 +154,10 @@ This first section will help you to find your way into the MORSE documentation.
 \begin{itemize}
 \dokuitem  A versatile simulator for \dokubold{generic mobile robots simulation} (single or multi robots),
 \dokuitem  Enabling \dokubold{realistic} and \dokubold{dynamic} environments (with other interacting agents -humans- or objects), 
-\dokuitem  Don't reinvent the wheel: critical components reused from other opensource projects (\dokubold{Blender} for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
-\dokuitem  \dokubold{Seamless workflow}: since the simulator rely on Blender for both modelling and the realtime 3D engine, creating and modifying a simulated scene is straigthforward.
-\dokuitem  Entierely scriptable in \dokubold{Python},
-\dokuitem  Adaptable to various \dokubold{level of simulation realism} (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labelled artifacts- in other cases),
+\dokuitem  Don't reinvent the wheel: critical components reused from other open source projects (\dokubold{Blender} for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
+\dokuitem  \dokubold{Seamless workflow}: since the simulator rely on Blender for both modeling and the real time 3D engine, creating and modifying a simulated scene is straightforward.
+\dokuitem  Entirely scriptable in \dokubold{Python},
+\dokuitem  Adaptable to various \dokubold{level of simulation realism} (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labeled artifacts- in other cases),
 \dokuitem  Currently compatible with \dokubold{YARP} and LAAS OpenRobots robotics frameworks,
 \dokuitem  Fully open source, BSD-compatible.
 \end{itemize}
@@ -229,8 +231,8 @@ next versions.
 \label{a3bba0b321b28de69351875f85d854db}%% setting_up_a_yarp-based_simulation
 
 This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigation towards a user-given target (x,y). 
-The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? 
-(sole difference: the goal is given through yarp, sensor data are exported with yarp  maybe add a camera, since it is trivial to displa an image with yarp).
+The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quick start ? 
+(sole difference: the goal is given through YARP, sensor data are exported with YARP  maybe add a camera, since it is trivial to display an image with YARP).
 
 \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ Go to: YARP-based simulation tutorial}
 
@@ -287,7 +289,7 @@ For the YARP bindings
 Instructions to create YARP-Python bindings are \href{http://eris.liralab.it/wiki/YARP_and_Python}{ here}.
 
 Note that the easiest way to install YARP is probably to use \dokumonospace{robotpkg} (see \href{http://homepages.laas.fr/mallet/robotpkg}{ robotpkg homepage} for more informations). Follow the instructions on installing \dokumonospace{robotpkg}. Then add the environment variable \dokumonospace{ROBOTPKG{\textunderscore}BASE} to your shell.
-Then to install \dokumonospace{yarp}:
+Then to install \dokumonospace{YARP}:
 
 
 \small
@@ -296,7 +298,7 @@ $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
 $ make update
 \end{verbatimtab}
 \normalsize
-Afterwards, install the yarp python bindings bindings:
+Afterwards, install the YARP python bindings bindings:
 
 
 \small
@@ -307,9 +309,9 @@ $ make update
 \normalsize
 
 Compiling the YARP Python binding will create two files: \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so}, and install them in \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/}
-You'll need to set the environnement variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the yarp module.
+You'll need to set the environment variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the YARP module.
 
-If you are not using robotpkg to install yarp, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
+If you are not using robotpkg to install YARP, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
 
 
 \dokutitleleveltree{Pocolibs}
@@ -348,10 +350,10 @@ You can set up the different variables using the command line:
 
 
 \begin{itemize}
-\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be refered to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be referred to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
 \dokuitem  \dokumonospace{BUILD{\textunderscore}POCOLIBS{\textunderscore}SUPPORT} controls the build of pocolibs support in MORSE
 \dokuitem  \dokumonospace{BUILD{\textunderscore}YARP2{\textunderscore}SUPPORT} controls the build of YARP support in MORSE
-\dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimisation stuff for C/C++ extension (Release is a good choice).
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimization stuff for C/C++ extension (Release is a good choice).
 \end{itemize}
 
 \small
@@ -456,7 +458,7 @@ To test the external control clients:
 
 
 \begin{itemize}
-\dokuitem  Follow the client program's intructions to send movement commands to the robot and to read information back
+\dokuitem  Follow the client program's instructions to send movement commands to the robot and to read information back
 \dokuitem  To finish the simulation, press \key{Esc}
 \dokuitem  To close Blender, press \key{Ctrl + Q}, and then \key{Enter}
 \end{itemize}
@@ -472,7 +474,7 @@ from a terminal and send the error messages to morse{\textunderscore}dev@laas.fr
 \dokutitleleveltwo{Basic Blender commands}
 \label{7809ce8524191dac30521dd680b9a379}%% basic_blender_commands
 
-The setup and cofiguration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
+The setup and configuration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
 A good explanation on the use of Blender's interface can be found \href{http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface}{ here}.
 Here we present the most useful commands necessary to operate MORSE
 
@@ -487,9 +489,9 @@ Pressing \key{A} will toggle selection of all or none of the objects in the curr
 \dokutitleleveltree{Geometric transformations of an object}
 \label{001ad77ecf37a2b719f6d1a347faed00}%% geometric_transformations_of_an_object
 
-\dokutitlelevelfour{Keyborad input}
+\dokutitlelevelfour{Keyboard input}
 
-To enter with the keyboard accurate transformation value, press \key{N} to display the \dokubold{Transfor Properties} subwindow of the selected object. Then change the values of the \dokubold{Loc}, \dokubold{Rot} or \dokubold{Scale} fields.
+To enter with the keyboard accurate transformation value, press \key{N} to display the \dokubold{Transfor Properties} sub-window of the selected object. Then change the values of the \dokubold{Loc}, \dokubold{Rot} or \dokubold{Scale} fields.
 
 
 \dokutitlelevelfour{With the mouse}
@@ -543,9 +545,9 @@ The view of the scene can also be adjusted manually by holding down \includegrap
 \dokuitem  Quit Blender: \key{Ctrl + Q}
 \end{itemize}
 
-\dokutitleleveltree{Button pannels}
-\label{ec1467299d35fb7adfeb7b88dce3d414}%% button_pannels
-Selection of the type of pannel in the Buttons Window:
+\dokutitleleveltree{Button panels}
+\label{626500a59dae6683d1d105511ef0622a}%% button_panels
+Selection of the type of panel in the Buttons Window:
 
 
 \begin{itemize}
@@ -553,13 +555,13 @@ Selection of the type of pannel in the Buttons Window:
 \dokuitem  Material buttons: \key{F5}
 \dokuitem  Texture buttons: \key{F6}
 \dokuitem  Object buttons: \key{F7}
-\dokuitem  Editting buttons: \key{F9}
+\dokuitem  Editing buttons: \key{F9}
 \end{itemize}
 
 \dokutitleleveltwo{MORSE camera view and control}
 \label{1a5ca2519d76146bd4b2f974b54811d3}%% morse_camera_view_and_control
 A simulation in MORSE is executed using the Game Engine mode of Blender. When in this mode, the button panels of Blender are disabled and the controls change.
-It is recommended to switch the Blender 3D View window to fullscreen before starting a simulation. Press \key{Ctrl + {$\uparrow$}} when the mouse is over a window to toggle it to fullscreen and back.
+It is recommended to switch the Blender 3D View window to full screen before starting a simulation. Press \key{Ctrl + {$\uparrow$}} when the mouse is over a window to toggle it to full screen and back.
 
 During simulation, the view of the scene is controlled using the mouse and keyboard, in the same way as First Person Shooter game.The camera can be moved around using:
 
@@ -642,7 +644,7 @@ To start the simulation, press the \key{P} key.
 To stop, press the \key{Esc} key.
 
 \includegraphics[height=1em]{attention.png} Under certain error conditions ESC may not work, in that case, an emergency exit
-key is \key{F12}, wich will try to exit without doing executing the 
+key is \key{F12}, which will try to exit without doing executing the 
 cleanup functions. If this doesn't work, the command \key{Ctrl + \\} on the 
 terminal will kill Blender.
 
@@ -687,7 +689,7 @@ We'll add a motion controller to the robot, so that it can receive commands from
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Motion{\textunderscore}Controller}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  With the controller selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
@@ -707,7 +709,7 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Select the child object, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  Switch to front view by pressing \key{'1 NumPad'}
@@ -834,7 +836,7 @@ For the YARP bindings
 Instructions to create YARP-Python bindings are \href{http://eris.liralab.it/wiki/YARP_and_Python}{ here}.
 
 Note that the easiest way to install YARP is probably to use \dokumonospace{robotpkg} (see \href{http://homepages.laas.fr/mallet/robotpkg}{ robotpkg homepage} for more informations). Follow the instructions on installing \dokumonospace{robotpkg}. Then add the environment variable \dokumonospace{ROBOTPKG{\textunderscore}BASE} to your shell.
-Then to install \dokumonospace{yarp}:
+Then to install \dokumonospace{YARP}:
 
 
 \small
@@ -843,7 +845,7 @@ $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
 $ make update
 \end{verbatimtab}
 \normalsize
-Afterwards, install the yarp python bindings bindings:
+Afterwards, install the YARP python bindings bindings:
 
 
 \small
@@ -854,9 +856,9 @@ $ make update
 \normalsize
 
 Compiling the YARP Python binding will create two files: \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so}, and install them in \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/}
-You'll need to set the environnement variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the yarp module.
+You'll need to set the environment variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the YARP module.
 
-If you are not using robotpkg to install yarp, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
+If you are not using robotpkg to install YARP, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
 
 
 \dokutitleleveltree{Pocolibs}
@@ -895,10 +897,10 @@ You can set up the different variables using the command line:
 
 
 \begin{itemize}
-\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be refered to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be referred to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
 \dokuitem  \dokumonospace{BUILD{\textunderscore}POCOLIBS{\textunderscore}SUPPORT} controls the build of pocolibs support in MORSE
 \dokuitem  \dokumonospace{BUILD{\textunderscore}YARP2{\textunderscore}SUPPORT} controls the build of YARP support in MORSE
-\dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimisation stuff for C/C++ extension (Release is a good choice).
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimization stuff for C/C++ extension (Release is a good choice).
 \end{itemize}
 
 \small
@@ -1003,7 +1005,7 @@ To test the external control clients:
 
 
 \begin{itemize}
-\dokuitem  Follow the client program's intructions to send movement commands to the robot and to read information back
+\dokuitem  Follow the client program's instructions to send movement commands to the robot and to read information back
 \dokuitem  To finish the simulation, press \key{Esc}
 \dokuitem  To close Blender, press \key{Ctrl + Q}, and then \key{Enter}
 \end{itemize}
@@ -1034,7 +1036,7 @@ $ morse create [file_name]
 \begin{itemize}
 \dokuitem  Save the new scene \key{F2} and enter the name
 \dokuitem  Link in the robot
-\dokuitem  Link in any aditional robots/sensors/actuators
+\dokuitem  Link in any additional robots/sensors/actuators
 \dokuitem  Link in the middleware and modifier objects
 \dokuitem  Configure the components to use specific modifiers and middlewares
 \dokuitem  Prepare the middleware environments (in the case of YARP or Pocolibs)
@@ -1046,8 +1048,8 @@ $ morse create [file_name]
 \dokuitem  Quit Blender by pressing \key{Ctrl + Q} and \key{Enter}
 \end{itemize}
 
-\dokutitlelevelone{Building an equiped robot}
-\label{23e1989e63bbd01247feb36cca0a69e8}%% building_an_equiped_robot
+\dokutitlelevelone{Building an equipped robot}
+\label{5d884452eb559d01c5ab63d04d0ff863}%% building_an_equipped_robot
 \label{feb94730bf2c8bc6803a472bb56691ae}%%Start: equip_robot => /home/slemaign/openrobots/data/pages/equip_robot.txt
 
 This tutorial provides instructions on how to create a file for a robot prepared with a defined number of components, which can later be inserted into scenario files.
@@ -1175,7 +1177,7 @@ Middlewares provide a means for the simulated data to be shared with external pr
 
 To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ basic tutorial} and the \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ yarp tutorial}. Those pages also explain how to configure the components to use a given middleware.
 
-Binding a component to use a middleware is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}mw} lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware funtion that should be called by the component to share its data.
+Binding a component to use a middleware is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}mw} lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware function that should be called by the component to share its data.
 
 
 \dokutitleleveltwo{Expanding the middlewares}
@@ -1228,7 +1230,7 @@ The two which are specially used for the GPS information are:
 \end{itemize}
 
 \begin{itemize}
-\dokuitem  Noise modifier: Adds random gaussian noise to the data
+\dokuitem  Noise modifier: Adds random Gaussian noise to the data
 \end{itemize}
 
 \dokutitlelevelone{Gyroscope sensor}
@@ -1267,7 +1269,7 @@ To obtain more realistic readings, it is recommended to add modifiers.
 
 
 \begin{itemize}
-\dokuitem  Noise modifier: Adds random gaussian noise to the data
+\dokuitem  Noise modifier: Adds random Gaussian noise to the data
 \end{itemize}
 
 \dokutitleleveltwo{Related components}
@@ -1280,7 +1282,7 @@ Some other components of MORSE require a Gyroscope to be linked to the robot, in
 \label{2157f6689a9fa010e655f615edf5281d}%% video_camera_sensor
 \label{dd6d2dcc679d12b9430a9787bab45b33}%%Start: camera => /home/slemaign/openrobots/data/pages/camera.txt
 
-This sensor emulates a single video camera. It generates a series of RGBA images. Images are ecoded as binary char arrays, with 4 bytes per pixel.
+This sensor emulates a single video camera. It generates a series of RGBA images. Images are encoded as binary char arrays, with 4 bytes per pixel.
 
 The cameras make use of Blender's \dokubold{VideoTexture} module, which requires a graphic card capable of GLSL shading. Also, the 3D view window in Blender must be set to draw \dokubold{Textured} objects.
 
@@ -1307,16 +1309,16 @@ The Empty object corresponding to this sensor has the following parameters:
 
 
 \begin{itemize}
-\dokuitem  \dokubold{capturing}: (boolean) flag that determines whether the camera should generate an image. It can be toggled on or off by pressing the 'Spacebar'
+\dokuitem  \dokubold{capturing}: (Boolean) flag that determines whether the camera should generate an image. It can be toggled on or off by pressing the 'Spacebar'
 \dokuitem  \dokubold{cam{\textunderscore}width}: (double) generated image width in pixels
 \dokuitem  \dokubold{cam{\textunderscore}height}: (double) generated image height in pixels
-\dokuitem  \dokubold{cam{\textunderscore}focal}: (double) camera focal length as defined in Blender (note: in Blender this parameter unit is "milimeters". This is actually misleading, as there is no dimension associated to Blender units.)
+\dokuitem  \dokubold{cam{\textunderscore}focal}: (double) camera focal length as defined in Blender (note: in Blender this parameter unit is "millimeters". This is actually misleading, as there is no dimension associated to Blender units.)
 \end{itemize}
 
 \dokutitleleveltwo{Camera calibration matrix}
 \label{1ab5c786ae6eee706bb6b24a3298ccea}%% camera_calibration_matrix
 
-The camera configuration parameters implicitely define a geometric camera in blender units. Knowing that the \dokubold{cam{\textunderscore}focal} attribute is a value that represents the distance in Blender unit at which the largest image dimension is 32.0 Blender units, the camera intrinsic calibration matrix is defined as:
+The camera configuration parameters implicitly define a geometric camera in blender units. Knowing that the \dokubold{cam{\textunderscore}focal} attribute is a value that represents the distance in Blender unit at which the largest image dimension is 32.0 Blender units, the camera intrinsic calibration matrix is defined as:
 
 
 %% Table analyse:
@@ -1381,8 +1383,8 @@ This sensor emulates a laser range scanner, by generating a series of rays in pr
 \dokuitem  \dokubold{point{\textunderscore}list}: Array that stores the positions of the points found by the laser. The points are given with respect to the location of the sensor, and stored as lists of three elements. The number of points depends on the geometry of the arc parented to the sensor (see below).
 \end{itemize}
 
-\dokutitleleveltwo{Confgurable Parameters}
-\label{4ac95ef244cd3311c21d0b799b57578c}%% confgurable_parameters
+\dokutitleleveltwo{Configurable Parameters}
+\label{576be46e2988ecd45f7341398c2cb015}%% configurable_parameters
 
 The Empty object corresponding to this sensor has the following parameters:
 
@@ -1391,14 +1393,14 @@ The Empty object corresponding to this sensor has the following parameters:
 \dokuitem  \dokubold{Laser{\textunderscore}Range}: (double) The distance in meters from the center of the sensor to which it is capable of detecting other objects
 \end{itemize}
 
-  * \dokubold{Visible{\textunderscore}arc}: (boolean) A toggle that determines whether the scanned area is displayed during the exection of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
+  * \dokubold{Visible{\textunderscore}arc}: (Boolean) A toggle that determines whether the scanned area is displayed during the execution of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
 
 
 \dokutitleleveltree{Number and angle of rays}
 \label{0e26d09474e479fcb039d350438a39b6}%% number_and_angle_of_rays
 
 The current way to configure the number of rays used by the SICK is to define a new object in the scene, a circle or semicircle with as many vertices as laser rays.
-The easiest way to create the object in Blender is to \dokubold{Add{$\rightarrow$}Mesh{$\rightarrow$}Circle}. In the dialog that appears, give the numer of vertices as necessary. Make sure to select the \dokubold{Fill} option, so that there will be a central vertex and the circle will have the faces already defined.
+The easiest way to create the object in Blender is to \dokubold{Add{$\rightarrow$}Mesh{$\rightarrow$}Circle}. In the dialog that appears, give the number of vertices as necessary. Make sure to select the \dokubold{Fill} option, so that there will be a central vertex and the circle will have the faces already defined.
 
 The new object must have the following characteristics:
 
@@ -1578,7 +1580,7 @@ The base of the \dokubold{DALA} robot at LAAS.
 \dokutitleleveltwo{Adjustable parameters}
 \label{4997feebf90104aab2d79756367e9b42}%% adjustable_parameters
 
-Use the Logic pannel in Blender (shown with \key{F4}) to adjust the \dokubold{Mass} of the robot.
+Use the Logic panel in Blender (shown with \key{F4}) to adjust the \dokubold{Mass} of the robot.
 
 
 \dokutitlelevelone{Yamaha RMAX platform}
@@ -1599,7 +1601,7 @@ The base of the \dokubold{Ressac} robot at ONERA.
 \dokutitleleveltwo{Adjustable parameters}
 \label{4997feebf90104aab2d79756367e9b42}%% adjustable_parameters
 
-The rotation of the rotor is fixed and only for show. Its speed can be adjusted in the Logic pannel in Blender (shown with \key{F4}) when the rotor object is selected.
+The rotation of the rotor is fixed and only for show. Its speed can be adjusted in the Logic panel in Blender (shown with \key{F4}) when the rotor object is selected.
 
 
 \dokutitlelevelone{NeoBotix and PA-10 arm}
@@ -1690,7 +1692,7 @@ The indices of the variables affected are the following:
 \dokuitem  \dokubold{2}: Z coordinate of the component
 \end{itemize}
 
-For example, changing the X coordiante is done by altering the value of \dokumonospace{modified{\textunderscore}data[0]}.
+For example, changing the X coordinate is done by altering the value of \dokumonospace{modified{\textunderscore}data[0]}.
 
 
 \dokutitleleveltwo{Available methods}
@@ -1728,7 +1730,7 @@ The indices of the variables affected are the following:
 \dokuitem  \dokubold{2}: Z coordinate of the component
 \end{itemize}
 
-For example, changing the X coordiante is done by altering the value of \dokumonospace{modified{\textunderscore}data[0]}.
+For example, changing the X coordinate is done by altering the value of \dokumonospace{modified{\textunderscore}data[0]}.
 
 
 \dokutitleleveltwo{Available methods}
@@ -1806,7 +1808,7 @@ We'll add a motion controller to the robot, so that it can receive commands from
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Motion{\textunderscore}Controller}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  With the controller selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
@@ -1826,7 +1828,7 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Select the child object, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  Switch to front view by pressing \key{'1 NumPad'}
@@ -1911,9 +1913,9 @@ Finally exit the simulation, by pressing \key{Esc} on the Blender window, then c
 MORSE sensors and actuators are completely independent of any middleware,
 and do not include themselves any means of passing the data they use.
 To be able to use this data outside the simulator, it is necessary to bind
-a middleware to every component, specifying the expected behaviour.
+a middleware to every component, specifying the expected behavior.
 
-When a component is linked to a middleware, a function described in the middleware will be added to the list of methods executed by the component, to be called each time the component executes its main task. In this way, the middleware can read the data provided by the componente via a "hook", which is an established data structure.
+When a component is linked to a middleware, a function described in the middleware will be added to the list of methods executed by the component, to be called each time the component executes its main task. In this way, the middleware can read the data provided by the component via a "hook", which is an established data structure.
 
 MORSE components have a property called \dokumonospace{modified{\textunderscore}data}. It is a list that contains the data that can be exchanged with external programs. They also have a dictionary called \dokumonospace{local{\textunderscore}data} that has the names of the variables as well as their values, and is reserved for internal use in the component. Middlewares create the "hooks" to \dokumonospace{modified{\textunderscore}data} only.
 
@@ -1927,7 +1929,7 @@ This binding is currently done via a Python file called \dokumonospace{component
 which must be internal to the Blender scenario file. The configuration file should be edited from a \dokubold{Text Editor} window in Blender.
 It consists of two dictionaries indexed by the name of the components:
 
-* \dokumonospace{component{\textunderscore}mw}: Lists which middlewares are binded to the specific component. The value of the dictionary is a list. The first element of the list is the name of the Middleware, and must be written exactly as the name of the Empty object that represents the Middleware in the scene.
+* \dokumonospace{component{\textunderscore}mw}: Lists which middlewares are bound to the specific component. The value of the dictionary is a list. The first element of the list is the name of the Middleware, and must be written exactly as the name of the Empty object that represents the Middleware in the scene.
 In the case of Yarp and Text, the second item will be the name of the function to be added to the component's action list For Pocolibs, the second item is the type of poster, and the third is the name of the poster.
 
 * \dokumonospace{component{\textunderscore}modifier}: Lists the modifiers affecting each of the components. The value of the dictionary is a list, where each element is itself a list representing a modifier. Each modifier list has two elements: the name of the modifier and the name of the function to use.
@@ -1973,7 +1975,7 @@ Middlewares provide a means for the simulated data to be shared with external pr
 
 To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ basic tutorial} and the \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ yarp tutorial}. Those pages also explain how to configure the components to use a given middleware.
 
-Binding a component to use a middleware is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}mw} lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware funtion that should be called by the component to share its data.
+Binding a component to use a middleware is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}mw} lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware function that should be called by the component to share its data.
 
 
 \dokutitleleveltwo{Expanding the middlewares}
@@ -2104,7 +2106,7 @@ We'll add a motion controller to the robot, so that it can receive commands from
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Motion{\textunderscore}Controller}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  With the controller selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
@@ -2124,7 +2126,7 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
 \dokuitem  Press \includegraphics[height=1em]{RMB.png} over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
 \dokuitem  Select the child object, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  Switch to front view by pressing \key{'1 NumPad'}
@@ -2221,7 +2223,7 @@ $ yarpserver
 \label{a5eb0127854ee2548f6841c01cbaee73}%% configuring_the_scenario
 
 You must link a YARP middleware object into the MORSE scenario file
-Create the bidings of the components with yarp, by editing the file \dokumonospace{component{\textunderscore}config.py} inside the Blender file.
+Create the bindings of the components with yarp, by editing the file \dokumonospace{component{\textunderscore}config.py} inside the Blender file.
 
 
 \dokutitleleveltree{Link a Camera sensor}
@@ -2285,7 +2287,7 @@ component_mw = {
 
 When the simulation starts, it will print the names of the YARP ports that have been created for every corresponding component. These port names can be used to connect to the component from an external program or client.
 
-The simplest method to test the reading and writing of data is by using the termianl clients. For example, to read the GPS data of the robot through a port named \dokumonospace{/ors/robots/OBATRV/OBGPS/out}, you can type the following in a terminal:
+The simplest method to test the reading and writing of data is by using the terminal clients. For example, to read the GPS data of the robot through a port named \dokumonospace{/ors/robots/OBATRV/OBGPS/out}, you can type the following in a terminal:
 
 
 \small
@@ -2322,7 +2324,7 @@ $ yarp connect /ors/robots/OBATRV/OBCameraMain/out /img/read
 \label{1b3a80690707e93f12413f8f23afe5cb}%% the_python_script
 
 \begin{itemize}
-\dokuitem  Copy one of the existig Python files in \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/src/morse/middleware}
+\dokuitem  Copy one of the existing Python files in \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/src/morse/middleware}
 \end{itemize}
 
 \begin{itemize}
@@ -2368,10 +2370,8 @@ These tutorials provide more in-depth explanations of how to setup simulations w
 \dokuitem  \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ YARP-based simulation tutorial}
 \dokuitem  \hyperref[5c7d3aeca93d2be4626b023df992dc1d]{ Pocolibs (Genom) tutorial}
 \end{itemize}
-{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
 
-
-\dokutitlelevelone{Building an equiped robot}
+\dokutitlelevelone{Building an equipped robot}
 \label{23e1989e63bbd01247feb36cca0a69e8}%% building_an_equiped_robot
 \label{feb94730bf2c8bc6803a472bb56691ae}%%Start: equip_robot => /home/slemaign/openrobots/data/pages/equip_robot.txt
 
@@ -2397,12 +2397,12 @@ Next link in the base of the robot:
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/robots}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{ressac.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{ressac.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} and drag over the names of all the objects listed, to select them all
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} and drag over the names of all the objects listed, to select them all
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted objects in the scene, either by \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} clicking over the \dokumonospace{Ressac} object in the 3D View, or \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted objects in the scene, either by \includegraphics[height=1em]{RMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
 \dokuitem  Select the child objects, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the objects to local, by pressing \key{L} then hitting \key{Enter}
 \end{enumerate}
@@ -2436,7 +2436,7 @@ $ yarpserver
 \label{a5eb0127854ee2548f6841c01cbaee73}%% configuring_the_scenario
 
 You must link a YARP middleware object into the MORSE scenario file
-Create the bidings of the components with yarp, by editing the file \dokumonospace{component{\textunderscore}config.py} inside the Blender file.
+Create the bindings of the components with yarp, by editing the file \dokumonospace{component{\textunderscore}config.py} inside the Blender file.
 
 
 \dokutitleleveltree{Link a Camera sensor}
@@ -2500,7 +2500,7 @@ component_mw = {
 
 When the simulation starts, it will print the names of the YARP ports that have been created for every corresponding component. These port names can be used to connect to the component from an external program or client.
 
-The simplest method to test the reading and writing of data is by using the termianl clients. For example, to read the GPS data of the robot through a port named \dokumonospace{/ors/robots/OBATRV/OBGPS/out}, you can type the following in a terminal:
+The simplest method to test the reading and writing of data is by using the terminal clients. For example, to read the GPS data of the robot through a port named \dokumonospace{/ors/robots/OBATRV/OBGPS/out}, you can type the following in a terminal:
 
 
 \small
