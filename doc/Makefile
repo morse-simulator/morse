@@ -1,4 +1,4 @@
-VERSION=0.1
+VERSION=0.1.1
 GUIDE_TITLE=User Guide
 #GUIDE_TITLE=Developers Guide
 BG_TEXT=v.$(VERSION)
