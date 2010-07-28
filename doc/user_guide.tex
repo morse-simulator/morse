@@ -9,6 +9,7 @@
 \usepackage{tabularx}
 \usepackage{supertabular}
 \usepackage{pdflscape} %% Used for very big table
+\usepackage{pdfpages} %% To add a cover to the doc
 \usepackage{moreverb}
 \usepackage{xcolor}
 \usepackage{listings}
@@ -96,6 +97,13 @@ pdfproducer = {dokuwiki + TeXit + pdflatex}
 \begin{document}
 \sffamily
 \allsectionsfont{\sffamily}
+
+\IfFileExists{cover.pdf}{
+\includepdf[pages=-, fitpaper]{cover.pdf}
+\thispagestyle{empty}
+\cleardoublepage
+}
+
 \thispagestyle{empty}
 \maketitle
 \thispagestyle{empty}
@@ -105,6 +113,7 @@ pdfproducer = {dokuwiki + TeXit + pdflatex}
 \thispagestyle{plain}
 \cleardoublepage
 \newpage
+
 
 
 
@@ -152,7 +161,6 @@ img /home/slemaign/openrobots/data/media/morse/outdoor{\textunderscore}example.j
 \begin{enumerate}\dokuitem  \hyperref[ea09bb364ef1bffd889e76b7a59035fc]{ Install MORSE}
 \dokuitem  \hyperref[60efe788544a384827c39a9803dab85b]{ Check the MORSE command reference}
 \dokuitem  \hyperref[0575c8d592fb7b088226750aceec2b4e]{ Jump to the tutorial}
-\dokuitem  \hyperref[feb94730bf2c8bc6803a472bb56691ae]{ Prepare a robot with specific equipment}
 \end{enumerate}
 
 \dokutitleleveltwo{The MORSE Workflow}
@@ -329,7 +337,7 @@ You can set up the different variables using the command line:
 
 
 \begin{itemize}
-\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be refered to as \dokumonospace{{\textdollar}MORSE{\textunderscore}ROOT} in this document.
+\dokuitem  \dokumonospace{CMAKE{\textunderscore}INSTALL{\textunderscore}PREFIX} controls where will be installed MORSE. Note: The install prefix directory will be refered to as \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT} in this document.
 \dokuitem  \dokumonospace{BUILD{\textunderscore}POCOLIBS{\textunderscore}SUPPORT} controls the build of pocolibs support in MORSE
 \dokuitem  \dokumonospace{BUILD{\textunderscore}YARP2{\textunderscore}SUPPORT} controls the build of YARP support in MORSE
 \dokuitem  \dokumonospace{CMAKE{\textunderscore}BUILD{\textunderscore}TYPE} controls the optimisation stuff for C/C++ extension (Release is a good choice).
@@ -362,7 +370,7 @@ Two environment variables must be set to let the simulator know where to look fo
 \begin{verbatimtab}
 tcsh:
 setenv PYTHONPATH
-$MORSE_ROOT/lib/python2.6/site-packages:$MORSE_ROOT/lib/python2.6/site-packages/morse/blender
+$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
 \end{verbatimtab}
 \normalsize
 
@@ -370,7 +378,7 @@ $MORSE_ROOT/lib/python2.6/site-packages:$MORSE_ROOT/lib/python2.6/site-packages/
 \begin{verbatimtab}
 bash:
 export
-PYTHONPATH=$MORSE_ROOT/lib/python2.6/site-packages:$MORSE_ROOT/lib/python2.6/site-packages/morse/blender
+PYTHONPATH=$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
 \end{verbatimtab}
 \normalsize
 
@@ -417,7 +425,7 @@ $ morse check
 \end{verbatimtab}
 \normalsize
 
-Once launched, you can test the simulator by loading one of the example scenarii from \dokumonospace{{\textdollar}MORSE{\textunderscore}ROOT/share/examples/morse/scenarii} (.blend files)
+Once launched, you can test the simulator by loading one of the example scenarii from \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii} (.blend files)
 
 To start a simulation, go on Blender and press \key{P} to play the scenario.
 
@@ -429,11 +437,11 @@ To test the external control clients:
 
 
 \begin{itemize}
-\dokuitem  Open the Blender file: \dokumonospace{{\textdollar}MORSE{\textunderscore}ROOT/share/examples/morse/scenarii/example-1-solved.blend}
+\dokuitem  Open the Blender file: \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii/example-1-solved.blend}
 \dokuitem  Start the simulation \key{P}
 \dokuitem  On a separate terminal, run the Python program:
 \end{itemize}
-  {\textdollar} python {\textdollar}MORSE{\textunderscore}ROOT/share/examples/morse/clients/atrv/socket{\textunderscore}v{\textunderscore}omega{\textunderscore}client.py
+  {\textdollar} python {\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/clients/atrv/socket{\textunderscore}v{\textunderscore}omega{\textunderscore}client.py
 
 
 \begin{itemize}
@@ -455,9 +463,16 @@ from a terminal and send the error messages to morse{\textunderscore}dev@laas.fr
 \dokutitleleveltwo{Basic Blender commands}
 \label{7809ce8524191dac30521dd680b9a379}%% basic_blender_commands
 
+The setup and cofiguration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
+A good explanation on the use of Blender's interface can be found at: \href{http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface}{http://en.wikibooks.org/wiki/Blender{{\textbackslash}textunderscore}3D:{{\textbackslash}textunderscore}Noob{{\textbackslash}textunderscore}to{{\textbackslash}textunderscore}Pro/Learning{{\textbackslash}textunderscore}Graphic{{\textbackslash}textunderscore}Interface}.
+Here we present the most useful commands necessary to operate MORSE
+
+
 \dokutitleleveltree{Selection of an object}
 \label{d461f4bc8beb6b0a8442d6d4da3a0c6d}%% selection_of_an_object
-\key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the object
+\includegraphics[height=1em]{RMB.png} over the object
+
+Pressing \key{A} will toggle selection of all or none of the objects in the current scene.
 
 
 \dokutitleleveltree{Geometric transformations of an object}
@@ -465,7 +480,7 @@ from a terminal and send the error messages to morse{\textunderscore}dev@laas.fr
 
 \dokutitlelevelfour{Keyborad input}
 
-To enter with the keyboard accurate transformation value, press \key{N}.
+To enter with the keyboard accurate transformation value, press \key{N} to display the \dokubold{Transfor Properties} subwindow of the selected object. Then change the values of the \dokubold{Loc}, \dokubold{Rot} or \dokubold{Scale} fields.
 
 
 \dokutitlelevelfour{With the mouse}
@@ -496,6 +511,9 @@ Use the numeric keyboard
 \dokuitem  Main camera view: \key{'0 NumPad'}
 \dokuitem  Toggle perspective/orthogonal view: \key{'5 NumPad'}
 \end{itemize}
+
+The view of the scene can also be adjusted manually by holding down \includegraphics[height=1em]{MMB.png} and moving the mouse
+
 
 \dokutitleleveltree{Switch shading modes}
 \label{930ca388b865b6b10e3f5eb29f9bb084}%% switch_shading_modes
@@ -528,6 +546,24 @@ Selection of the type of pannel in the Buttons Window:
 \dokuitem  Object buttons: \key{F7}
 \dokuitem  Editting buttons: \key{F9}
 \end{itemize}
+
+\dokutitleleveltwo{MORSE camera view and control}
+\label{1a5ca2519d76146bd4b2f974b54811d3}%% morse_camera_view_and_control
+A simulation in MORSE is executed using the Game Engine mode of Blender. When in this mode, the button panels of Blender are disabled and the controls change.
+It is recommended to switch the Blender 3D View window to fullscreen before starting a simulation. Press \key{Ctrl + } when the mouse is over a window to toggle it to fullscreen and back.
+
+During simulation, the view of the scene is controlled using the mouse and keyboard, in the same way as First Person Shooter game.The camera can be moved around using:
+
+
+\begin{itemize}
+\dokuitem  \key{W}, \key{S} to move forward and backward
+\dokuitem  \key{A}, \key{D} to move left and right
+\dokuitem  \key{Q}, \key{E} to move up and down
+\end{itemize}
+The direction the camera points to is controlled with the mouse.
+
+It is possible to adjust the speed of the movement, by selecting the \dokumonospace{CameraFP} object in the scene, and adjusting the properties \dokubold{Sensitivity} for the mouse, and \dokubold{Speed} for the keyboard.
+
 
 \dokutitleleveltwo{Creation of scenario files}
 \label{477e85464263e092bdd386389bab76b2}%% creation_of_scenario_files
@@ -572,7 +608,7 @@ The MORSE simulator is started using an existing file with the name specified.
 \dokuitem  Open file
 \dokuitem  Link elements (robots, scenarios sensors) \key{Shift + F1}
 \dokuitem  Select the source Blender file, and then Objects
-\dokuitem  Select the objects to insert, using the \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />}
+\dokuitem  Select the objects to insert, using the \includegraphics[height=1em]{RMB.png}
 \dokuitem  Select the \dokubold{Link} and \dokubold{Relative Paths} toggle buttons
 \dokuitem  Click \dokubold{Load Library}
 \dokuitem  The objects will be inserted in the scene, at the origin, and with a cyan selection highlight
@@ -639,14 +675,14 @@ We'll add a motion controller to the robot, so that it can receive commands from
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/controllers}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{morse{\textunderscore}vw{\textunderscore}control.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{morse{\textunderscore}vw{\textunderscore}control.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the item \dokumonospace{Motion{\textunderscore}Controller}
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Motion{\textunderscore}Controller}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted object in the scene, either by \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} clicking over the object in the 3D View, or \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
-\dokuitem  With the controller selected, hold down \key{Shift} and then \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the robot object
+\dokuitem  With the controller selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
 \end{enumerate}
 
@@ -659,18 +695,18 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/sensors}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{morse{\textunderscore}gyroscope.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{morse{\textunderscore}gyroscope.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} over the items \dokumonospace{Gyroscope} and \dokumonospace{Gyro{\textunderscore}box}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} clicking over the object in the 3D View, or \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted \dokumonospace{Gyroscope} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
 \dokuitem  Select the child object, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  Switch to front view by pressing \key{'1 NumPad'}
 \dokuitem  Press \key{G}, then move the \dokumonospace{Gyroscope} object to the correct location with respect to the robot
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} to accept the movement
-\dokuitem  With the \dokumonospace{Gyroscope} object selected, hold down \key{Shift} and then \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the robot object
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} to accept the movement
+\dokuitem  With the \dokumonospace{Gyroscope} object selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
 \end{enumerate}
 
@@ -682,10 +718,10 @@ To use a middleware to exchange data from the simulator, it is necessary to link
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/middleware}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{socket{\textunderscore}empty.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{socket{\textunderscore}empty.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the item \dokumonospace{Socket{\textunderscore}Empty}
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Socket{\textunderscore}Empty}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
 \dokuitem  It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene
 \end{enumerate}
@@ -741,51 +777,6 @@ Finally exit the simulation, by pressing \key{Esc} on the Blender window, then c
 {\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
 
 
-\dokutitlelevelone{Building an equiped robot}
-\label{23e1989e63bbd01247feb36cca0a69e8}%% building_an_equiped_robot
-\label{feb94730bf2c8bc6803a472bb56691ae}%%Start: equip_robot => /home/slemaign/openrobots/data/pages/equip_robot.txt
-
-This tutorial provides instructions on how to create a file for a robot prepared with a defined number of components, which can later be inserted into scenario files.
-
-
-\dokutitleleveltwo{Setup of the robot file}
-\label{bc8d7eea217f972d09e6a6c0b666fd98}%% setup_of_the_robot_file
-
-Create a new MORSE file. Give it a name that represents the settings of the robot. As an example this document will use the Ressac helicopter:
-
-
-
-\small
-\begin{verbatimtab}
-$ morse create $ORS_ROOT/share/data/morse/components/robots/ressac_equiped.blend
-\end{verbatimtab}
-\normalsize
-
-Next link in the base of the robot:
-
-
-
-\begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
-\dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/robots}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{ressac.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
-\dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} and drag over the names of all the objects listed, to select them all
-\dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted objects in the scene, either by \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} clicking over the \dokumonospace{Ressac} object in the 3D View, or \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
-\dokuitem  Select the child objects, by pressing \key{Shift + G}, then hitting \key{Enter}
-\dokuitem  Convert the objects to local, by pressing \key{L} then hitting \key{Enter}
-\end{enumerate}
-
-The rest of the components (sensors and actuators) should be linked similarly. Refer to the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ Quick tutorial} for instructions. In the case of a robot file, no middlewares or modifiers should be added, since those would be specific to every particular scenario.
-
-Adjust the properties of the component if necessary. Then save the file again, by pressing \key{Ctrl + W}, followed by \key{Enter}.
-
-This robot file should be liked into scenarii files by following the same procedure, while selecting all the objects contained in the file.
-
-{\dokuquoting}{\dokuquoting} \hyperref[a80da1282f2c775bbc5f2c92c836968b]{ User documentation}
-
-
 \dokutitlelevelone{The MORSE user workflow}
 \label{2eb6dd59bcc0f89edd80bfe2fc4bec7f}%% the_morse_user_workflow
 \label{514bac84019bd5e09c0e2b525b09f429}%%Start: user_workflow => /home/slemaign/openrobots/data/pages/user_workflow.txt
@@ -795,20 +786,25 @@ The general steps to follow to do a simulation in MORSE are the following:
 
 
 \begin{itemize}
-\dokuitem  Create the robot configuration that matches the real robot
-\dokuitem  Create a scenario file, based on the default MORSE file
+\dokuitem  Create the \hyperref[feb94730bf2c8bc6803a472bb56691ae]{ robot configuration} that matches the real robot
+\dokuitem  Create a scenario file, based on the default MORSE file, using:
 \end{itemize}
-    {\textdollar} morse create [file{\textunderscore}name]
 
+\small
+\begin{verbatimtab}
+$ morse create [file_name]
+\end{verbatimtab}
+\normalsize
 
 \begin{itemize}
+\dokuitem  Save the new scene \key{F2} and enter the name
 \dokuitem  Link in the robot
 \dokuitem  Link in any aditional robots/sensors/actuators
 \dokuitem  Link in the middleware and modifier objects
 \dokuitem  Configure the components to use specific modifiers and middlewares
-\dokuitem  Save the new scene
 \dokuitem  Prepare the middleware environments (in the case of YARP or Pocolibs)
-\dokuitem  Start the simulation
+\dokuitem  Save the file before starting the simulation \key{Ctrl + W}
+\dokuitem  Start the simulation \key{P}
 \dokuitem  Look at the terminal window to check that everything started correctly
 \dokuitem  Start the client programs that will connect with the simulator
 \dokuitem  Finish the simulation by pressing \key{Esc}
@@ -836,6 +832,10 @@ Each component has its own data structure with the variables it requires to func
 The data generated inside Blender can be considered to be "perfect", because it is very accurate and is not affected by real phenomenons. To make the data generated more realistic, it is possible to use \hyperref[bf24b44a8cc99e648657b164c8aba758]{ Modifiers} that will alter the data collected by the sensors. The modifiers can add noise, apply corrections or delays, or change the data with respect to other criteria.
 
 To interact with the outside world, components rely on Middlewares connected to Blender. See also \hyperref[9a05db9c4b60b0527010fd997682f523]{ the list of supported middlewares} for a further explanation.
+
+The following diagram shows the data flow from the Simulation to the sensor, then the modifiers and finally the middleware to send the data to external programs:
+img /home/slemaign/openrobots/data/media/morse/component{\textunderscore}diagram.png
+The data flow is similar for actuators, except that the direction is inversed, with the data arriving first from the evaluated software via the middleware, then processed by the modifiers and finally applied in the simulation.
 
 
 \dokutitleleveltwo{Sensors}
@@ -891,6 +891,18 @@ Modifiers affect directly the data employed by sensors and actuators, and are sp
 
 To be able to use a modifier inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is identical to the one used for middlewares, as explained in the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ basic tutorial}, together with an explanation on how to configure the components to call middleware functions.
 
+Binding a component to use a modifier is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}modifier} lists the components and the modifiers they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. Each list will contain as many items as modifiers associated to the component, and each element is also a list. In these internal lists, the first element is the name of the modifier Empty object in the scene, and the second is the modifier method that should be called by the component to alter its data. Here is an example of the \dokumonospace{component{\textunderscore}modifier} dictionary:
+
+
+\lstset{language=python}
+\begin{lstlisting}
+component_modifier = {
+	"GPS": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
+	"Motion_Controller": [ ["NED", "ned_to_blender"], ["UTM", "utm_to_blender"] ],
+	"Thermometer": [ ["Json", "json_encode"] ],
+	}
+
+\end{lstlisting}
 
 \dokutitleleveltwo{Creating a new modifier}
 \label{2f5deef38336990fa7f864f2028d68a9}%% creating_a_new_modifier
@@ -920,7 +932,9 @@ Middlewares provide a means for the simulated data to be shared with external pr
 \dokutitleleveltwo{Linking a middleware in a scene}
 \label{5ded332fc3ba470e4d4d290c9bf26a19}%% linking_a_middleware_in_a_scene
 
-To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ basic tutorial}. Also there is an explanation on how to configure the components to call middleware functions.
+To be able to use a middleware inside of a scene, it is necessary to link the Empty object from the corresponding Blender file. This process is explained in the \hyperref[0575c8d592fb7b088226750aceec2b4e]{ basic tutorial} and the \hyperref[1dd029a60f7f3dd1deaf993ce4538edf]{ yarp tutorial}. Those pages also explain how to configure the components to use a given middleware.
+
+Binding a component to use a middleware is done in the file \dokumonospace{component{\textunderscore}config.py} that should be part of every MORSE scenario file. In that file, the dictionary \dokumonospace{component{\textunderscore}mw} lists the components and the middleware they will use to export/import their data. The unique names of the components are the keys of the dictionary, and the values are lists. The first item in the list is the name of the middleware Empty object in the scene. The following items depend on the type of middleware, but will generally be the name of the middleware funtion that should be called by the component to share its data.
 
 
 \dokutitleleveltwo{Expanding the middlewares}
@@ -934,6 +948,10 @@ New middlewares can be added to MORSE by following these \hyperref[6a8f80abb2f3d
 \dokutitlelevelone{Advanced tutorials}
 \label{1db3103f04a8f50e1168ef3c23748f71}%% advanced_tutorials
 \label{1db3103f04a8f50e1168ef3c23748f71}%%Start: advanced_tutorials => /home/slemaign/openrobots/data/pages/advanced_tutorials.txt
+
+These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
+
+
 
 \begin{itemize}
 \dokuitem  \hyperref[feb94730bf2c8bc6803a472bb56691ae]{ Preparing a robot with specific equipment}
@@ -973,18 +991,18 @@ Create the bidings of the components with yarp, by editing the file \dokumonospa
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/sensors}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{morse{\textunderscore}camera.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{morse{\textunderscore}camera.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the items \dokumonospace{CameraMain}, \dokumonospace{CameraUser}, \dokumonospace{CameraCube}, \dokumonospace{CameraLens}
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} over the items \dokumonospace{CameraMain}, \dokumonospace{CameraUser}, \dokumonospace{CameraCube}, \dokumonospace{CameraLens}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
-\dokuitem  Select the newly inserted \dokumonospace{CameraMain} object in the scene, either by \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} clicking over the object in the 3D View, or \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+\dokuitem  Select the newly inserted \dokumonospace{CameraMain} object in the scene, either by \includegraphics[height=1em]{RMB.png} clicking over the object in the 3D View, or \includegraphics[height=1em]{LMB.png} over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
 \dokuitem  Select the child object, by pressing \key{Shift + G}, then hitting \key{Enter}
 \dokuitem  Convert the object to local, by pressing \key{L} then hitting \key{Enter}
 \dokuitem  Switch to front view by pressing \key{'1 NumPad'}
 \dokuitem  Press \key{G}, then move the \dokumonospace{CameraMain} object to the correct location with respect to the robot
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} to accept the movement
-\dokuitem  With the \dokumonospace{CameraMain} object selected, hold down \key{Shift} and then \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the robot object
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} to accept the movement
+\dokuitem  With the \dokumonospace{CameraMain} object selected, hold down \key{Shift} and then \includegraphics[height=1em]{RMB.png} over the robot object
 \dokuitem  Press \key{Ctrl + P} and then hit \key{Enter} make the robot the parent of the controller
 \end{enumerate}
 
@@ -993,10 +1011,10 @@ Create the bidings of the components with yarp, by editing the file \dokumonospa
 
 \begin{enumerate}\dokuitem  With the mouse over the 3D view in Blender, press \key{Shift + F1} to open the Load Library browser
 \dokuitem  Navigate to the directory \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/data/morse/components/middleware}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the file \dokumonospace{yarp{\textunderscore}empty.blend}
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/LMB.png" class="middle" alt="Left mouse button" />} over the item \dokumonospace{Object}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the file \dokumonospace{yarp{\textunderscore}empty.blend}
+\dokuitem  Press \includegraphics[height=1em]{LMB.png} over the item \dokumonospace{Object}
 \dokuitem  Toggle the buttons \dokubold{Relative Paths} and \dokubold{Link} at the bottom of the window
-\dokuitem  Press \key{<img src="http://homepages.laas.fr/slemaign/openrobots//lib/plugins/keyboard/images/RMB.png" class="middle" alt="Right mouse button" />} over the item \dokumonospace{Yarp{\textunderscore}Empty}
+\dokuitem  Press \includegraphics[height=1em]{RMB.png} over the item \dokumonospace{Yarp{\textunderscore}Empty}
 \dokuitem  Press the button \dokubold{Load Library}. You'll return to the 3D View
 \dokuitem  It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene 
 \end{enumerate}
@@ -1012,12 +1030,17 @@ Binding the components in the scene with the middleware is done in a configurati
 
 \begin{enumerate}\dokuitem  On the \dokubold{Text Editor} window, select the file \dokumonospace{component{\textunderscore}config.py}
 \dokuitem  Add the following items to the \dokumonospace{component{\textunderscore}mw} dictionary:
-\begin{enumerate}\dokuitem  \dokumonospace{"CameraMain": ["Yarp", "post{\textunderscore}image{\textunderscore}RGBA"],}
-\dokuitem  \dokumonospace{"GPS": ["Yarp", "post{\textunderscore}message"],}
-\dokuitem  \dokumonospace{"Motion{\textunderscore}Controller": ["Yarp", "read{\textunderscore}message"],}
 \end{enumerate}
 
-\end{enumerate}
+\lstset{language=python}
+\begin{lstlisting}
+component_mw = {
+    "CameraMain": ["Yarp", "post_image_RGBA"],
+    "GPS": ["Yarp", "post_message"],
+    "Motion_Controller": ["Yarp", "read_message"],
+	}
+
+\end{lstlisting}
 
 \dokutitleleveltwo{Reading/writing data}
 \label{4531cd1c3fba04d65475a4caadd2beb1}%% writing_data

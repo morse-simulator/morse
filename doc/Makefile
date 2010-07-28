@@ -6,8 +6,7 @@ BG_TEXT=DRAFT-v.$(VERSION)
 
 GUIDE_TITLE_PROTECTED=$(shell echo $(GUIDE_TITLE) | sed 's/ /_/g' | tr A-Z a-z)
 
-CONTENT=$(GUIDE_TITLE_PROTECTED)_content.tex
-BLANK=blank.pdf
+CONTENT=$(GUIDE_TITLE_PROTECTED).tex
 COVER=cover.svg.in
 
 PDF=morse_$(GUIDE_TITLE_PROTECTED)-$(VERSION).pdf
@@ -19,22 +18,12 @@ COVERpdf=$(COVERsvg:.svg=.pdf)
 
 all: $(PDF)
 
-$(PDF): $(COVERpdf) $(BLANK) $(CONTENTpdf)
+$(PDF): $(CONTENT) $(COVERpdf)
 
-	@exec >$(PDF:.pdf=.tex);\
-	echo '\documentclass{report}';\
-	echo '\usepackage{pdfpages}';\
-	echo '\begin{document}';\
-	for a in $^; do echo '\includepdf[pages=-]{'$$a'}'; done;\
-	echo '\end{document}';
-	
+	sed 's/@BGTEXT@/$(BG_TEXT)/g' $(<) > $(PDF:.pdf=.tex)
+	sed -i 's/@DATE@/\\today/g' $(PDF:.pdf=.tex)
 	pdflatex $(PDF:.pdf=.tex)
-
-$(CONTENTpdf): $(CONTENT)
-	sed 's/@BGTEXT@/$(BG_TEXT)/g' $(<) > $(<)-intermediate
-	sed -i 's/@DATE@/\\today/g' $(<)-intermediate
-	pdflatex $(<)-intermediate
-	pdflatex $(<)-intermediate
+	pdflatex $(PDF:.pdf=.tex)
 
 $(COVERpdf): $(COVERsvg)  
 	inkscape --export-pdf $(@) $(<)
