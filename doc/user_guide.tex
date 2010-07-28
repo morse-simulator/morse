@@ -308,7 +308,7 @@ $ make update
 \end{verbatimtab}
 \normalsize
 
-Compiling the YARP Python binding will create two files: \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so}, and install them in \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/}
+Compiling the YARP Python binding will create two files: \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so}, and install them in\\ \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/}
 You'll need to set the environment variable \dokumonospace{PYTHONPATH} to \dokumonospace{{\textdollar}ROBOTPKG{\textunderscore}BASE/lib/python2.6/site-packages/} to let python find the YARP module.
 
 If you are not using robotpkg to install YARP, then make sure to copy the files \dokumonospace{yarp.py} and \dokumonospace{{\textunderscore}yarp.so} to your Python lib directory (\dokumonospace{/usr/lib/python2.6/site-packages/}) or at some place reachable from your \dokumonospace{PYTHONPATH} environment variable.
@@ -438,7 +438,7 @@ $ morse check
 \end{verbatimtab}
 \normalsize
 
-Once launched, you can test the simulator by loading one of the example scenarii from \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii} (.blend files)
+Once launched, you can test the simulator by loading one of the example scenarii from\\ \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/examples/morse/scenarii} (.blend files)
 
 To start a simulation, go on Blender and press \key{P} to play the scenario.
 
@@ -834,7 +834,7 @@ Open Blender and erase all objects in the file:
 \dokuitem  Press \key{X} and \key{Enter} to delete
 \end{enumerate}
 
-Save the file with a name that represents the settings of the robot. As an example this document will use the Ressac helicopter, so the name of the file should be something like: \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/data/morse/components/robots/ressac{\textunderscore}equiped.blend}
+Save the file with a name that represents the settings of the robot. As an example this document will use the Ressac helicopter, so the name of the file should be something like:\\ \dokumonospace{{\textdollar}ORS{\textunderscore}ROOT/share/data/morse/components/robots/ressac{\textunderscore}equiped.blend}
 
 
 \begin{enumerate}\dokuitem  Press \key{F2} to open the \dokumonospace{Save as} dialog
@@ -1815,7 +1815,7 @@ Data is shared as simple text strings.
 The YARP middleware provides a simple method to share data across components in different computers. It is based on the concept of \dokuitalic{ports}, which are registered in a \dokuitalic{name server} to differentiate between separate channels of communication.
 Data is shared in the format of bottles, which are nested data structures of various data types.
 
-\dokuunderline{Note}: Port names used in MORSE have the following format: \dokumonospace{/ors/robots/[robot{\textunderscore}name]/[component{\textunderscore}name]/[direction]}. The term [direction] is either \dokumonospace{in} or \dokumonospace{out}, depending on the type of component being actuator or sensor, respectively.
+\dokuunderline{Note}: Port names used in MORSE have the following format:\\ \dokumonospace{/ors/robots/[robot{\textunderscore}name]/[component{\textunderscore}name]/[direction]}. The term [direction] is either \dokumonospace{in} or \dokumonospace{out}, depending on the type of component being actuator or sensor, respectively.
 
 
 \dokutitleleveltwo{Files}
@@ -2108,7 +2108,7 @@ $ yarp connect /ors/robots/OBATRV/OBCameraMain/out /img/read
 \end{itemize}
 
 \begin{itemize}
-\dokuitem  Change the name of the \dokumonospace{Empty} object. This name will be used to identify the middleware in the file \dokumonospace{component{\textunderscore}config.py} that binds components with middlewares
+\dokuitem  Change the name of the \dokumonospace{Empty} object. This name will be used to identify the middleware in the file\\ \dokumonospace{component{\textunderscore}config.py} that binds components with middlewares
 \begin{itemize}
 \dokuitem  Press \key{N} over Blender's 3D View window. This will display the \dokubold{Transform Properties} of the object.
 \end{itemize}
