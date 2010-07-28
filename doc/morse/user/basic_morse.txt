@@ -6,7 +6,7 @@
 ===== Basic Blender commands =====
 
 ==== Selection of an object ====
-<key>rmb</key> over the object
+:RMB: over the object
 
 ==== Geometric transformations of an object ====
 
@@ -20,7 +20,7 @@ The shortcut keys are <key>g</key> for translation, <key>s</key> for scaling and
  
 Press the desired key, then move with the mouse.
 
-Press <key>lmb</key> to accept transformation, or <key>rmb</key> to cancel.
+Press :LMB: to accept transformation, or :RMB: to cancel.
 
 Tips:
   * Hold <key>C</key> key while transforming, to use discrete intervals. 
@@ -74,7 +74,7 @@ The MORSE simulator is started using an existing file with the name specified.
   * Open file
   * Link elements (robots, scenarios sensors) <key>S-F1</key>
   * Select the source Blender file, and then Objects
-  * Select the objects to insert, using the <key>rmb</key>
+  * Select the objects to insert, using the :RMB:
   * Select the **Link** and **Relative Paths** toggle buttons
   * Click **Load Library**
   * The objects will be inserted in the scene, at the origin, and with a cyan selection highlight

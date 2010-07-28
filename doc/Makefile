@@ -1,6 +1,6 @@
 VERSION=0.1
-#GUIDE_TITLE=User Guide
-GUIDE_TITLE=Developers Guide
+GUIDE_TITLE=User Guide
+#GUIDE_TITLE=Developers Guide
 BG_TEXT=DRAFT-v.$(VERSION)
 
 
@@ -23,7 +23,8 @@ $(PDF): $(CONTENTpdf) $(BLANK) $(COVERpdf)
 	pdftk $(COVERpdf) $(BLANK) $(CONTENTpdf) cat output $(@)
 
 $(CONTENTpdf): $(CONTENT)
-	sed 's/@BG_TEXT@/$(BG_TEXT)/g' $(<) > $(<)-intermediate
+	sed 's/@BGTEXT@/$(BG_TEXT)/g' $(<) > $(<)-intermediate
+	sed -i 's/@DATE@/\\today/g' $(<)-intermediate
 	pdflatex $(<)-intermediate
 	pdflatex $(<)-intermediate
 
