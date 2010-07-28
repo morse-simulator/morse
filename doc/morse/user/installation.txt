@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]]
-
 ====== MORSE installation ======
 
 ===== Requirements - What you need to install before =====
@@ -28,7 +26,7 @@ For the YARP bindings
   * YARP python binding
   * ACE ( 5.6.3 or +, required for YARP)
 
-Instructions to create YARP-Python bindings are here: http://eris.liralab.it/wiki/YARP_and_Python
+Instructions to create YARP-Python bindings are [[http://eris.liralab.it/wiki/YARP_and_Python | here]].
 
 Note that the easiest way to install YARP is probably to use ''robotpkg'' (see [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more informations). Follow the instructions on installing ''robotpkg''. Then add the environment variable ''ROBOTPKG_BASE'' to your shell.
 Then to install ''yarp'':

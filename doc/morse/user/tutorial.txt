@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]]
-
 ====== Tutorial example ======
 
 This tutorial assumes MORSE is properly installed. If not, follow the instructions [[installation | here]].

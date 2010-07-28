@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:advanced_tutorials:advanced_tutorials | Advanced tutorials]]
-
 ====== Building an equiped robot ======
 
 This tutorial provides instructions on how to create a file for a robot prepared with a defined number of components, which can later be inserted into scenario files.

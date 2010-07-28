@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== iRobot ATRV platform ======
 
 The base of the **DALA** robot at LAAS.

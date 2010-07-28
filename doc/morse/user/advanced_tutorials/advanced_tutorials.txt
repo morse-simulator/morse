@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]]
-
 ====== Advanced tutorials ======
 
 These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.

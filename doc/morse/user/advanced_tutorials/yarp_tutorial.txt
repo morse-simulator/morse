@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:advanced_tutorials:advanced_tutorials | Advanced tutorials]]
-
 ====== YARP-based simulation tutorial ======
 
 ===== Setup =====

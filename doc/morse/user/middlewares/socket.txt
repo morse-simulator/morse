@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:supported_middlewares | Middleware support ]]
-
 ====== Sockets ======
 A simple method to export data through the network. The MORSE sockets middleware will create a single UDP port for each robot, and the communication for all components of the robot using sockets will be made through the same port.
 Data is shared as simple text strings.

@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]]
-
 ====== The MORSE Component Library ======
 
 The modular concept of morse is based on individual components with specific functions that replicate the parts of a real robot. Components in MORSE can belong to three main types:

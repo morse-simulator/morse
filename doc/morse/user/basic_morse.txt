@@ -1,12 +1,10 @@
->> [[morse:user:summary | User documentation]]
-
 ====== Getting started: basic MORSE usage ======
 
 
 ===== Basic Blender commands =====
 
 The setup and cofiguration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
-A good explanation on the use of Blender's interface can be found at: [[http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface]].
+A good explanation on the use of Blender's interface can be found [[http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface | here]].
 Here we present the most useful commands necessary to operate MORSE
 
 ==== Selection of an object ====

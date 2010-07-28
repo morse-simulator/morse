@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== NeoBotix and PA-10 arm ======
 
 The base of the **JIDO** robot at LAAS.

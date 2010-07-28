@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== Keyboard actuator ======
 
 This actuator does not require a connection with external data. It simply responds to the keyboard arrows to generate movement instructions for the robot attached.

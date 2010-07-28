@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:modifier_introduction | Data modifiers ]]
-
 ====== JSON encoding ======
 This modifier transforms the ''modified_data'' array to contain a single item, which is a string with the data encoded using JSON.
 

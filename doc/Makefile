@@ -1,7 +1,7 @@
 VERSION=0.1
 GUIDE_TITLE=User Guide
 #GUIDE_TITLE=Developers Guide
-BG_TEXT=DRAFT-v.$(VERSION)
+BG_TEXT=v.$(VERSION)
 
 
 GUIDE_TITLE_PROTECTED=$(shell echo $(GUIDE_TITLE) | sed 's/ /_/g' | tr A-Z a-z)

@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== Straight line movement ======
 
 This actuator reads the coordinates of a destination point, and moves the robot in a straight line towards the given point, without turning.

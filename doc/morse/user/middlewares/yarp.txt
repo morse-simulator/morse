@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:supported_middlewares | Middleware support ]]
-
 ====== YARP ======
 The YARP middleware provides a simple method to share data across components in different computers. It is based on the concept of //ports//, which are registered in a //name server// to differentiate between separate channels of communication.
 Data is shared in the format of bottles, which are nested data structures of various data types.

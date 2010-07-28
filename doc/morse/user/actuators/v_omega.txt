@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== Linear and angular speed (V, W) actuator ======
 
 This actuator reads the values of linear and angular speed and applies them to the robot. The speeds provided are internally adjusted to the Blender time measure.

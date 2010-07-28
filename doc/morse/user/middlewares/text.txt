@@ -1,5 +1,3 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:supported_middlewares | Middleware support ]]
-
 ====== Text middleware ======
 This is the simplest method to export information from MORSE. The data gathered by components configured to use this "middleware" will be stored in simple text files. Currently this middleware is only used to output information, so it is only available for sensors.
 

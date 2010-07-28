@@ -1,12 +1,10 @@
->> [[morse:user:summary | User documentation]] >> [[morse:user:component_library | Component Library ]]
-
 ====== Waypoint target movement ======
 
 This actuator reads the coordinates of a destination point, and moves the robot towards the given point, with the robot restricted to moving only forward, backwards or turning over its Z axis.
 This controller is meant to be used mainly by non-holonomic robots.
 The speeds provided are internally adjusted to the Blender time measure.
 
-====== Files =====
+===== Files =====
   * Blender: ''$ORS_ROOT/data/morse/components/controllers/morse_destination_control.blend''
   * Python: ''$ORS_ROOT/src/morse/actuators/destination.py''
 
