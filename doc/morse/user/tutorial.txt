@@ -20,14 +20,14 @@ We'll add a motion controller to the robot, so that it can receive commands from
 
   - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
   - Navigate to the directory ''$ORS_ROOT/data/morse/components/controllers''
-  - Press <key>lmb</key> over the file ''morse_vw_control.blend''
-  - Press <key>lmb</key> over the item ''Object''
+  - Press :LMB: over the file ''morse_vw_control.blend''
+  - Press :LMB: over the item ''Object''
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press <key>rmb</key> over the item ''Motion_Controller''
+  - Press :RMB: over the item ''Motion_Controller''
   - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted object in the scene, either by <key>rmb</key> clicking over the object in the 3D View, or <key>lmb</key> over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+  - Select the newly inserted object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
   - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
-  - With the controller selected, hold down <key>S</key> and then <key>rmb</key> over the robot object
+  - With the controller selected, hold down <key>S</key> and then :RMB: over the robot object
   - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
 
 ==== Link a Gyroscope sensor ====
@@ -36,18 +36,18 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
 
   - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
   - Navigate to the directory ''$ORS_ROOT/data/morse/components/sensors''
-  - Press <key>lmb</key> over the file ''morse_gyroscope.blend''
-  - Press <key>lmb</key> over the item ''Object''
+  - Press :LMB: over the file ''morse_gyroscope.blend''
+  - Press :LMB: over the item ''Object''
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press <key>rmb</key> over the items ''Gyroscope'' and ''Gyro_box''
+  - Press :RMB: over the items ''Gyroscope'' and ''Gyro_box''
   - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted ''Gyroscope'' object in the scene, either by <key>rmb</key> clicking over the object in the 3D View, or <key>lmb</key> over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+  - Select the newly inserted ''Gyroscope'' object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
   - Select the child object, by pressing <key>S-g</key>, then hitting <key>enter</key>
   - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
   - Switch to front view by pressing <key>'1 NumPad'</key>
   - Press <key>g</key>, then move the ''Gyroscope'' object to the correct location with respect to the robot
-  - Press <key>lmb</key> to accept the movement
-  - With the ''Gyroscope'' object selected, hold down <key>S</key> and then <key>rmb</key> over the robot object
+  - Press :LMB: to accept the movement
+  - With the ''Gyroscope'' object selected, hold down <key>S</key> and then :RMB: over the robot object
   - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
 
 ==== Insert the middleware object ====
@@ -55,10 +55,10 @@ To use a middleware to exchange data from the simulator, it is necessary to link
 
   - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
   - Navigate to the directory ''$ORS_ROOT/data/morse/components/middleware''
-  - Press <key>lmb</key> over the file ''socket_empty.blend''
-  - Press <key>lmb</key> over the item ''Object''
+  - Press :LMB: over the file ''socket_empty.blend''
+  - Press :LMB: over the item ''Object''
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press <key>rmb</key> over the item ''Socket_Empty''
+  - Press :RMB: over the item ''Socket_Empty''
   - Press the button **Load Library**. You'll return to the 3D View
   - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene
 

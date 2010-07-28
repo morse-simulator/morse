@@ -19,12 +19,12 @@ Next link in the base of the robot from the component library:
 
   - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
   - Navigate to the directory ''$ORS_ROOT/data/morse/components/robots''
-  - Press <key>lmb</key> over the file ''ressac.blend''
-  - Press <key>lmb</key> over the item ''Object''
+  - Press :LMB: over the file ''ressac.blend''
+  - Press :LMB: over the item ''Object''
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press <key>rmb</key> and drag over the names of all the objects listed, to select them all
+  - Press :RMB: and drag over the names of all the objects listed, to select them all
   - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted objects in the scene, either by <key>rmb</key> clicking over the ''Ressac'' object in the 3D View, or <key>lmb</key> over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+  - Select the newly inserted objects in the scene, either by :RMB: clicking over the ''Ressac'' object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
   - Select the child objects, by pressing <key>S-g</key>, then hitting <key>enter</key>
   - Convert the objects to local, by pressing <key>l</key> then hitting <key>enter</key>
 
