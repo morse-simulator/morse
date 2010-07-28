@@ -1,5 +1,3 @@
->> [[morse:dev:summary | Developer's documentation]]
-
 ====== Creating a modifier ======
 
 Creating a modifier is more or less the same than creating a sensor. There are

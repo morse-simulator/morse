@@ -1,5 +1,3 @@
->> [[morse:dev:summary | Developer's documentation]]
-
 ====== The MORSE workflow for developers ======
 
 The internal functioning of MORSE is based on Blender's Game Engine events.

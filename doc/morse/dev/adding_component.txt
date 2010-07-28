@@ -1,5 +1,3 @@
->> [[morse:dev:summary | Developer's documentation]]
-
 ====== Adding a new component ======
 
 Each component is basically represented by two files, which must be created when adding a new sensor or actuator:
