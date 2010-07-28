@@ -5,8 +5,8 @@
 The base of the **JIDO** robot at LAAS.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/robots/jido.blend''
-Python: ''$ORS_ROOT/src/morse/robots/jido.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/robots/jido.blend''
+  * Python: ''$ORS_ROOT/src/morse/robots/jido.py''
 
 ===== Adjustable parameters =====
 

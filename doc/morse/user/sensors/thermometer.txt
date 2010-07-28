@@ -7,8 +7,8 @@ It defines a default temperature throughout the scenario, which is affected by l
 Temperature is given in degrees Celcius.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_thermometer.blend''
-Python: ''$ORS_ROOT/src/morse/sensors/thermometer.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_thermometer.blend''
+  * Python: ''$ORS_ROOT/src/morse/sensors/thermometer.py''
 
 === Local data =====
   * **temperature**: The temperature in Celcius

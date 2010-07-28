@@ -7,8 +7,8 @@ Data is shared as simple text strings.
 __Note__: The port numbers used in MORSE start at 70000.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/middleware/socket_empty.blend''
-Python: ''$ORS_ROOT/src/morse/modifiers/socket_mw.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/middleware/socket_empty.blend''
+  * Python: ''$ORS_ROOT/src/morse/modifiers/socket_mw.py''
 
 ===== Available methods =====
 

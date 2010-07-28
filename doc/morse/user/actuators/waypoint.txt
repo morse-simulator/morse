@@ -7,8 +7,8 @@ This controller is meant to be used mainly by non-holonomic robots.
 The speeds provided are internally adjusted to the Blender time measure.
 
 ====== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/controllers/morse_destination_control.blend''
-Python: ''$ORS_ROOT/src/morse/actuators/destination.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/controllers/morse_destination_control.blend''
+  * Python: ''$ORS_ROOT/src/morse/actuators/destination.py''
 
 ==== Local data =====
   * **x**: Destination X coordinate

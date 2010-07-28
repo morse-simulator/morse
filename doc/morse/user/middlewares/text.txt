@@ -12,8 +12,8 @@ File names used in MORSE have the following format: ''[robot_name]_[component_na
 Where ''globalVector'' is a list of 3 elements with the X, Y and Z coordinates of the sensor with respect to the global origin. ''localVector'' gives the coordinates with respect to the position of the robot.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/middleware/text_empty.blend''
-Python: ''$ORS_ROOT/src/morse/modifiers/text_mw.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/middleware/text_empty.blend''
+  * Python: ''$ORS_ROOT/src/morse/modifiers/text_mw.py''
 
 ===== Available methods =====
 

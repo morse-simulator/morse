@@ -7,8 +7,8 @@ Data is shared in the format of bottles, which are nested data structures of var
 __Note__: Port names used in MORSE have the following format: ''/ors/robots/[robot_name]/[component_name]/[direction]''. The term [direction] is either ''in'' or ''out'', depending on the type of component being actuator or sensor, respectively.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/middleware/yarp_empty.blend''
-Python: ''$ORS_ROOT/src/morse/modifiers/yarp_mw.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/middleware/yarp_empty.blend''
+  * Python: ''$ORS_ROOT/src/morse/modifiers/yarp_mw.py''
 
 ===== Available methods =====
 

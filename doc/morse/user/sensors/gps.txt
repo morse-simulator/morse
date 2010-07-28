@@ -5,8 +5,8 @@
 This sensor emulates a GPS, providing the exact coordinates in the Blender scene. The coordinates provided by the GPS are with respect to the origin of the Blender coordinate reference.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_GPS.blend''
-Python: ''$ORS_ROOT/src/morse/sensors/gps.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_GPS.blend''
+  * Python: ''$ORS_ROOT/src/morse/sensors/gps.py''
 
 === Local data =====
   * **X**: X coordinate of the sensor

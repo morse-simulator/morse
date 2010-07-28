@@ -7,8 +7,8 @@ This sensor emulates a single video camera. It generates a series of RGBA images
 The cameras make use of Blender's **VideoTexture** module, which requires a graphic card capable of GLSL shading. Also, the 3D view window in Blender must be set to draw **Textured** objects.
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_camera.blend''
-Python: ''$ORS_ROOT/src/morse/sensors/camera.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_camera.blend''
+  * Python: ''$ORS_ROOT/src/morse/sensors/camera.py''
 
 
 ===== Local data =====

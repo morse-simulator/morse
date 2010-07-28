@@ -7,8 +7,8 @@ This sensor emulates a laser range scanner, by generating a series of rays in pr
 __Note__: Objects in the scene with the **No collision** setting in their Game properties will not be detected by this sensor
 
 ===== Files =====
-Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_sick.blend''
-Python: ''$ORS_ROOT/src/morse/sensors/sick.py''
+  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_sick.blend''
+  * Python: ''$ORS_ROOT/src/morse/sensors/sick.py''
 
 ===== Local data =====
   * **point_list**: Array that stores the positions of the points found by the laser. The points are given with respect to the location of the sensor, and stored as lists of three elements. The number of points depends on the geometry of the arc parented to the sensor (see below).
