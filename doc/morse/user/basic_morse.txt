@@ -53,6 +53,20 @@ Selection of the type of pannel in the Buttons Window:
   * Object buttons: <key>F7</key>
   * Editting buttons: <key>F9</key>
 
+
+For more information on the use of Blender, consult: [[http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface]]
+
+
+===== MORSE camera view control =====
+During a simulation in MORSE, the view of the scene is controlled using the mouse and keyboard, in the same way as First Person Shooter game.The camera can be moved around using:
+  * <key>w</key>, <key>s</key> to move forward and backward
+  * <key>a</key>, <key>d</key> to move left and right
+  * <key>q</key>, <key>e</key> to move up and down
+The direction the camera points to is controlled with the mouse.
+
+It is possible to adjust the speed of the movement, by selecting the ''CameraFP'' object in the scene, and adjusting the properties **Sensitivity** for the mouse, and **Speed** for the keyboard.
+
+
 ===== Creation of scenario files =====
 
 Use the ''morse'' binary program, to open or create new simulation scenarios:
@@ -86,7 +100,6 @@ The MORSE simulator is started using an existing file with the name specified.
 
   * Select the Empty object of the component, then hold <key>S</key> and select the robot
   * Press <key>C-p</key>, then select **Make parent** or press <key>enter</key>
-
 
 ===== Start and stop a simulation =====
 
