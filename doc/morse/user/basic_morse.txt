@@ -3,7 +3,7 @@
 
 ===== Basic Blender commands =====
 
-The setup and cofiguration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
+The setup and configuration of a simulation scenario in MORSE is completely done using the Blender interface. It is very particular and different from almost any other computer program.
 A good explanation on the use of Blender's interface can be found [[http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/Learning_Graphic_Interface | here]].
 Here we present the most useful commands necessary to operate MORSE
 
@@ -14,9 +14,9 @@ Pressing <key>a</key> will toggle selection of all or none of the objects in the
 
 ==== Geometric transformations of an object ====
 
-=== Keyborad input ===
+=== Keyboard input ===
 
-To enter with the keyboard accurate transformation value, press <key>N</key> to display the **Transfor Properties** subwindow of the selected object. Then change the values of the **Loc**, **Rot** or **Scale** fields.
+To enter with the keyboard accurate transformation value, press <key>N</key> to display the **Transfor Properties** sub-window of the selected object. Then change the values of the **Loc**, **Rot** or **Scale** fields.
 
 === With the mouse ===
 The shortcut keys are <key>g</key> for translation, <key>s</key> for scaling and
@@ -52,19 +52,19 @@ The view of the scene can also be adjusted manually by holding down :MMB: and mo
   * Save file as... : <key>F2</key>
   * Quit Blender: <key>C-q</key>
 
-==== Button pannels ====
-Selection of the type of pannel in the Buttons Window:
+==== Button panels ====
+Selection of the type of panel in the Buttons Window:
   * Logic buttons: <key>F4</key>
   * Material buttons: <key>F5</key>
   * Texture buttons: <key>F6</key>
   * Object buttons: <key>F7</key>
-  * Editting buttons: <key>F9</key>
+  * Editing buttons: <key>F9</key>
 
 
 
 ===== MORSE camera view and control =====
 A simulation in MORSE is executed using the Game Engine mode of Blender. When in this mode, the button panels of Blender are disabled and the controls change.
-It is recommended to switch the Blender 3D View window to fullscreen before starting a simulation. Press <key>C-Up</key> when the mouse is over a window to toggle it to fullscreen and back.
+It is recommended to switch the Blender 3D View window to full screen before starting a simulation. Press <key>C-Up</key> when the mouse is over a window to toggle it to full screen and back.
 
 During simulation, the view of the scene is controlled using the mouse and keyboard, in the same way as First Person Shooter game.The camera can be moved around using:
   * <key>w</key>, <key>s</key> to move forward and backward
@@ -116,6 +116,6 @@ To start the simulation, press the <key>p</key> key.
 To stop, press the <key>esc</key> key.
 
 /!\ Under certain error conditions ESC may not work, in that case, an emergency exit
-key is <key>F12</key>, wich will try to exit without doing executing the 
+key is <key>F12</key>, which will try to exit without doing executing the 
 cleanup functions. If this doesn't work, the command <key>C-\</key> on the 
 terminal will kill Blender.

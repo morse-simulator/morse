@@ -23,7 +23,7 @@ We'll add a motion controller to the robot, so that it can receive commands from
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
   - Press :RMB: over the item ''Motion_Controller''
   - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+  - Select the newly inserted object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
   - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
   - With the controller selected, hold down <key>S</key> and then :RMB: over the robot object
   - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
@@ -39,7 +39,7 @@ Next we'll add a sensor to the robot that will report the angles of the robot or
   - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
   - Press :RMB: over the items ''Gyroscope'' and ''Gyro_box''
   - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted ''Gyroscope'' object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
+  - Select the newly inserted ''Gyroscope'' object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
   - Select the child object, by pressing <key>S-g</key>, then hitting <key>enter</key>
   - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
   - Switch to front view by pressing <key>'1 NumPad'</key>

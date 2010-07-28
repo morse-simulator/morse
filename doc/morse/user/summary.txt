@@ -26,10 +26,10 @@ This first section will help you to find your way into the MORSE documentation.
 
   * A versatile simulator for **generic mobile robots simulation** (single or multi robots),
   * Enabling **realistic** and **dynamic** environments (with other interacting agents -humans- or objects), 
-  * Don't reinvent the wheel: critical components reused from other opensource projects (**Blender** for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
-  * **Seamless workflow**: since the simulator rely on Blender for both modelling and the realtime 3D engine, creating and modifying a simulated scene is straigthforward.
-  * Entierely scriptable in **Python**,
-  * Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labelled artifacts- in other cases),
+  * Don't reinvent the wheel: critical components reused from other open source projects (**Blender** for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
+  * **Seamless workflow**: since the simulator rely on Blender for both modeling and the real time 3D engine, creating and modifying a simulated scene is straightforward.
+  * Entirely scriptable in **Python**,
+  * Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labeled artifacts- in other cases),
   * Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
   * Fully open source, BSD-compatible.
   
@@ -78,7 +78,7 @@ next versions.
 ==== Setting up a YARP-based simulation ====
 
 This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigation towards a user-given target (x,y). 
-The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quickstart ? 
-(sole difference: the goal is given through yarp, sensor data are exported with yarp -- maybe add a camera, since it is trivial to displa an image with yarp).
+The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quick start ? 
+(sole difference: the goal is given through YARP, sensor data are exported with YARP -- maybe add a camera, since it is trivial to display an image with YARP).
 
 [[morse:user:advanced_tutorials:yarp_tutorial | Go to: YARP-based simulation tutorial]]

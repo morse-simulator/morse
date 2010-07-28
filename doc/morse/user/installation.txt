@@ -29,17 +29,17 @@ For the YARP bindings
 Instructions to create YARP-Python bindings are [[http://eris.liralab.it/wiki/YARP_and_Python | here]].
 
 Note that the easiest way to install YARP is probably to use ''robotpkg'' (see [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more informations). Follow the instructions on installing ''robotpkg''. Then add the environment variable ''ROBOTPKG_BASE'' to your shell.
-Then to install ''yarp'':
+Then to install ''YARP'':
   $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
   $ make update
-Afterwards, install the yarp python bindings bindings:
+Afterwards, install the YARP python bindings bindings:
   $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
   $ make update
 
 Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so'', and install them in ''$ROBOTPKG_BASE/lib/python2.6/site-packages/''
-You'll need to set the environnement variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python2.6/site-packages/'' to let python find the yarp module.
+You'll need to set the environment variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python2.6/site-packages/'' to let python find the YARP module.
 
-If you are not using robotpkg to install yarp, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
+If you are not using robotpkg to install YARP, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
 
 
 ==== Pocolibs ====
@@ -61,10 +61,10 @@ From your MORSE root directory:
 By default, MORSE will install in ''/usr/local''. You can easily change that by launching ccmake instead of cmake.
 When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
 You can set up the different variables using the command line:
-  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be refered to as ''$ORS_ROOT'' in this document.
+  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be referred to as ''$ORS_ROOT'' in this document.
   * ''BUILD_POCOLIBS_SUPPORT'' controls the build of pocolibs support in MORSE
   * ''BUILD_YARP2_SUPPORT'' controls the build of YARP support in MORSE
-  * ''CMAKE_BUILD_TYPE'' controls the optimisation stuff for C/C++ extension (Release is a good choice).
+  * ''CMAKE_BUILD_TYPE'' controls the optimization stuff for C/C++ extension (Release is a good choice).
 
   $ make install
 
@@ -108,7 +108,7 @@ To test the external control clients:
   * Start the simulation <key>P</key>
   * On a separate terminal, run the Python program:
   $ python $ORS_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py
-  * Follow the client program's intructions to send movement commands to the robot and to read information back
+  * Follow the client program's instructions to send movement commands to the robot and to read information back
   * To finish the simulation, press <key>esc</key>
   * To close Blender, press <key>C-q</key>, and then <key>enter</key>
 

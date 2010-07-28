@@ -9,7 +9,7 @@ The general steps to follow to do a simulation in MORSE are the following:
 
   * Save the new scene <key>F2</key> and enter the name
   * Link in the robot
-  * Link in any aditional robots/sensors/actuators
+  * Link in any additional robots/sensors/actuators
   * Link in the middleware and modifier objects
   * Configure the components to use specific modifiers and middlewares
   * Prepare the middleware environments (in the case of YARP or Pocolibs)
