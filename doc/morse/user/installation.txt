@@ -63,7 +63,7 @@ From your MORSE root directory:
 By default, MORSE will install in ''/usr/local''. You can easily change that by launching ccmake instead of cmake.
 When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
 You can set up the different variables using the command line:
-  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be refered to as ''$ORS_ROOT'' in this document.
+  * ''CMAKE_INSTALL_PREFIX'' controls where will be installed MORSE. Note: The install prefix directory will be refered to as ''$MORSE_ROOT'' in this document.
   * ''BUILD_POCOLIBS_SUPPORT'' controls the build of pocolibs support in MORSE
   * ''BUILD_YARP2_SUPPORT'' controls the build of YARP support in MORSE
   * ''CMAKE_BUILD_TYPE'' controls the optimisation stuff for C/C++ extension (Release is a good choice).
@@ -78,10 +78,10 @@ Two environment variables must be set to let the simulator know where to look fo
   * ''$PYTHONPATH'' specifies the directories where MORSE scripts are located.  It will start with the MORSE installation prefix, followed by the path to the python scripts. It must also include the full path to the directory ''morse/blender'' within the installed files. Example:
 
   tcsh:
-  setenv PYTHONPATH $ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+  setenv PYTHONPATH $MORSE_ROOT/lib/python2.6/site-packages:$MORSE_ROOT/lib/python2.6/site-packages/morse/blender
 
   bash:
-  export PYTHONPATH=$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+  export PYTHONPATH=$MORSE_ROOT/lib/python2.6/site-packages:$MORSE_ROOT/lib/python2.6/site-packages/morse/blender
 
   * $ORS_BLENDER that allows you to specify a custom Blender executable (else, Blender is looked for in the path).
 
@@ -99,17 +99,17 @@ Several options are available, check them with:
 You can check your configuration is ok with:
   $ morse check
 
-Once launched, you can test the simulator by loading one of the example scenarii from ''$ORS_ROOT/share/examples/morse/scenarii'' (.blend files)
+Once launched, you can test the simulator by loading one of the example scenarii from ''$MORSE_ROOT/share/examples/morse/scenarii'' (.blend files)
 
 To start a simulation, go on Blender and press <key>P</key> to play the scenario.
 
 ===== Testing =====
 
 To test the external control clients:
-  * Open the Blender file: ''$ORS_ROOT/share/examples/morse/scenarii/example-1-solved.blend''
+  * Open the Blender file: ''$MORSE_ROOT/share/examples/morse/scenarii/example-1-solved.blend''
   * Start the simulation <key>P</key>
   * On a separate terminal, run the Python program:
-  $ python $ORS_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py
+  $ python $MORSE_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py
   * Follow the client program's intructions to send movement commands to the robot and to read information back
   * To finish the simulation, press <key>esc</key>
   * To close Blender, press <key>C-q</key>, and then <key>enter</key>
