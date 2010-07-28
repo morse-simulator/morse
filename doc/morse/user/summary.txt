@@ -41,8 +41,6 @@ This first section will help you to find your way into the MORSE documentation.
   - [[installation | Install MORSE]]
   - [[basic_morse | Check the MORSE command reference]]
   - [[tutorial | Jump to the tutorial]]
-  - [[equip_robot | Prepare a robot with specific equipment]]
-
 
 ===== The MORSE Workflow =====
 

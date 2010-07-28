@@ -4,16 +4,19 @@
 
 The general steps to follow to do a simulation in MORSE are the following:
 
-  * Create the robot configuration that matches the real robot
-  * Create a scenario file, based on the default MORSE file
-    $ morse create [file_name]
+  * Create the [[morse:user:advanced_tutorials:equip_robot | robot configuration]] that matches the real robot
+  * Create a scenario file, based on the default MORSE file, using:
+
+  $ morse create [file_name]
+
+  * Save the new scene <key>F2</key> and enter the name
   * Link in the robot
   * Link in any aditional robots/sensors/actuators
   * Link in the middleware and modifier objects
   * Configure the components to use specific modifiers and middlewares
-  * Save the new scene
   * Prepare the middleware environments (in the case of YARP or Pocolibs)
-  * Start the simulation
+  * Save the file before starting the simulation <key>C-w</key>
+  * Start the simulation <key>p</key>
   * Look at the terminal window to check that everything started correctly
   * Start the client programs that will connect with the simulator
   * Finish the simulation by pressing <key>esc</key>
