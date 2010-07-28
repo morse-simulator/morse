@@ -11,17 +11,17 @@ __Note__: Objects in the scene with the **No collision** setting in their Game p
 ===== Local data =====
   * **point_list**: Array that stores the positions of the points found by the laser. The points are given with respect to the location of the sensor, and stored as lists of three elements. The number of points depends on the geometry of the arc parented to the sensor (see below).
 
-===== Confgurable Parameters =====
+===== Configurable Parameters =====
 
 The Empty object corresponding to this sensor has the following parameters:
   * **Laser_Range**: (double) The distance in meters from the center of the sensor to which it is capable of detecting other objects
   
-  * **Visible_arc**: (boolean) A toggle that determines whether the scanned area is displayed during the exection of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
+  * **Visible_arc**: (Boolean) A toggle that determines whether the scanned area is displayed during the execution of the simulation or not. If the robot is also producing camera images, it is better to set this variable to False, otherwise the scanned area will also appear on the captured images.
 
 ==== Number and angle of rays ====
 
 The current way to configure the number of rays used by the SICK is to define a new object in the scene, a circle or semicircle with as many vertices as laser rays.
-The easiest way to create the object in Blender is to **Add->Mesh->Circle**. In the dialog that appears, give the numer of vertices as necessary. Make sure to select the **Fill** option, so that there will be a central vertex and the circle will have the faces already defined.
+The easiest way to create the object in Blender is to **Add->Mesh->Circle**. In the dialog that appears, give the number of vertices as necessary. Make sure to select the **Fill** option, so that there will be a central vertex and the circle will have the faces already defined.
 
 The new object must have the following characteristics:
 

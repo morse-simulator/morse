@@ -1,4 +1,4 @@
-====== Building an equiped robot ======
+====== Building an equipped robot ======
 
 This tutorial provides instructions on how to create a file for a robot prepared with a defined number of components, which can later be inserted into scenario files.
 

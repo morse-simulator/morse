@@ -8,4 +8,4 @@ The base of the **Ressac** robot at ONERA.
 
 ===== Adjustable parameters =====
 
-The rotation of the rotor is fixed and only for show. Its speed can be adjusted in the Logic pannel in Blender (shown with <key>F4</key>) when the rotor object is selected.
+The rotation of the rotor is fixed and only for show. Its speed can be adjusted in the Logic panel in Blender (shown with <key>F4</key>) when the rotor object is selected.

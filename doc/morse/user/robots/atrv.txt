@@ -8,4 +8,4 @@ The base of the **DALA** robot at LAAS.
 
 ===== Adjustable parameters =====
 
-Use the Logic pannel in Blender (shown with <key>F4</key>) to adjust the **Mass** of the robot.
+Use the Logic panel in Blender (shown with <key>F4</key>) to adjust the **Mass** of the robot.

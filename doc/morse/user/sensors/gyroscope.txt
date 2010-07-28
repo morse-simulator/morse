@@ -19,7 +19,7 @@ __Note__: Coordinates are given with respect to the origin of Blender's coordina
 This sensor always provides perfect data.
 To obtain more realistic readings, it is recommended to add modifiers.
 
-  * Noise modifier: Adds random gaussian noise to the data
+  * Noise modifier: Adds random Gaussian noise to the data
 
 ===== Related components =====
 

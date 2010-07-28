@@ -13,7 +13,7 @@ The indices of the variables affected are the following:
   * **1**: Y coordinate of the component
   * **2**: Z coordinate of the component
 
-For example, changing the X coordiante is done by altering the value of ''modified_data[0]''.
+For example, changing the X coordinate is done by altering the value of ''modified_data[0]''.
 
 ===== Available methods =====
 

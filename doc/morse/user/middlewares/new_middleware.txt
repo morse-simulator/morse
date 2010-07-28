@@ -2,7 +2,7 @@
 
 ===== The Python script =====
 
-  * Copy one of the existig Python files in ''$ORS_ROOT/src/morse/middleware''
+  * Copy one of the existing Python files in ''$ORS_ROOT/src/morse/middleware''
 
   * Change the name of the class, and write down its behaviour, implementing the ''register_component'' function
 

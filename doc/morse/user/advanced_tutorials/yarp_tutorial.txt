@@ -10,7 +10,7 @@ Before running a simulation using YARP, it is necessary to open a new shell term
 ===== Configuring the scenario =====
 
 You must link a YARP middleware object into the MORSE scenario file
-Create the bidings of the components with yarp, by editing the file ''component_config.py'' inside the Blender file.
+Create the bindings of the components with yarp, by editing the file ''component_config.py'' inside the Blender file.
 
 
 ==== Link a Camera sensor ====
@@ -62,7 +62,7 @@ component_mw = {
 
 When the simulation starts, it will print the names of the YARP ports that have been created for every corresponding component. These port names can be used to connect to the component from an external program or client.
 
-The simplest method to test the reading and writing of data is by using the termianl clients. For example, to read the GPS data of the robot through a port named ''/ors/robots/OBATRV/OBGPS/out'', you can type the following in a terminal:
+The simplest method to test the reading and writing of data is by using the terminal clients. For example, to read the GPS data of the robot through a port named ''/ors/robots/OBATRV/OBGPS/out'', you can type the following in a terminal:
   $ yarp read /data/in /ors/robots/OBATRV/OBGPS/out
 
 To enter speed commands through a port named ''/ors/robots/OBATRV/OBMotion_Controller/in'', use the command

@@ -2,15 +2,15 @@
 
 This sensor emulates a Thermometer, measuring the temperature with respect to the distance to hear sources.
 It defines a default temperature throughout the scenario, which is affected by local fire sources. The temperature rises exponentially when the distance between the sensor and the heat source decreases.
-Temperature is given in degrees Celcius.
+Temperature is given in degrees Celsius.
 
 ===== Files =====
   * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_thermometer.blend''
   * Python: ''$ORS_ROOT/src/morse/sensors/thermometer.py''
 
 === Local data =====
-  * **temperature**: The temperature in Celcius
+  * **temperature**: The temperature in Celsius
 
 ===== Applicable modifiers =====
 
-  * Noise modifier: Adds random gaussian noise to the data
+  * Noise modifier: Adds random Gaussian noise to the data

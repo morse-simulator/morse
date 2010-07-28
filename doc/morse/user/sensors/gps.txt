@@ -23,4 +23,4 @@ The two which are specially used for the GPS information are:
 
   * NED: Changes the coordinate reference to use North (X), East (Y), Down (Z)
 
-  * Noise modifier: Adds random gaussian noise to the data
+  * Noise modifier: Adds random Gaussian noise to the data
