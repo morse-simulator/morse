@@ -16,7 +16,9 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
-		self.blender_obj = obj
+		# Call the constructor of the parent class
+		super(self.__class__,self).__init__(obj, parent)
+
 		# Store the id's of created posters, indexed by component name
 		self._poster_dict = dict()
 		# Dictionary for external posters
@@ -178,16 +180,6 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def del_viam(self, component_instance):
 		poster_id = self._poster_dict[component_instance.blender_obj.name]
 		ors_viam_poster.finalize(poster_id)
-
-	def _check_function_exists(self, function_name):
-		""" Checks that the function named exists."""
-		try:
-			# Get the reference to the function
-			function = getattr(self, function_name)
-			return function
-		except AttributeError as detail:
-			print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-			return None
 
 
 

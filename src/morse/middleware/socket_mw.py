@@ -7,7 +7,9 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def __init__(self, obj, parent=None):
 		""" Initialize the socket connections """
-		self.blender_obj = obj
+		# Call the constructor of the parent class
+		super(self.__class__,self).__init__(obj, parent)
+
 		self._socket_dict = dict()
 		self._socket_ports = []
 		self._socket_clients = dict()

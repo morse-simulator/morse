@@ -257,6 +257,9 @@ def finish(contr):
 
 		# Force the deletion of the middleware objects
 		for obj, mw_instance in GameLogic.mwDict.items():
+			mw_instance.cleanup()
+			#import gc
+			#print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
 			del obj
 
 		quitActuator = contr.actuators['Quit_sim']

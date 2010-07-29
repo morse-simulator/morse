@@ -4,6 +4,9 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 	""" Produce text files as output for the components """
 
 	def __init__(self, obj, parent=None):
+		# Call the constructor of the parent class
+		super(self.__class__,self).__init__(obj, parent)
+
 		self._file_list = dict()
 
 	def __del__(self):
