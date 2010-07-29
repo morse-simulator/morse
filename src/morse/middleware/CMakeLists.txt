@@ -7,9 +7,13 @@ INSTALL(DIRECTORY sockets
 		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 
 IF(BUILD_YARP2_SUPPORT)
+	INSTALL(DIRECTORY yarp
+        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+        REGEX .*py. EXCLUDE
+        )
 	INSTALL(FILES yarp_mw.py
-			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-			)
+		DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+		)
 ENDIF(BUILD_YARP2_SUPPORT)
 
 IF(BUILD_POCOLIBS_SUPPORT)
