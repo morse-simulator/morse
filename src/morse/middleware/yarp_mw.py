@@ -8,7 +8,9 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 	def __init__(self, obj, parent=None):
 		""" Initialize the network and connect to the yarp server."""
-		self.blender_obj = obj
+		# Call the constructor of the parent class
+		super(self.__class__,self).__init__(obj, parent)
+
 		self._yarpPorts = dict()
 		self._component_ports = dict()
 
@@ -23,8 +25,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 
 	def __del__(self):
-		""" Destructor method.
-			Close all open ports. """
+		""" Close all open YARP ports. """
 		self.finalize()
 
 
@@ -41,32 +42,45 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# This will be tailored for each middleware according to its needs
 		function_name = mw_data[1]
 
-		try:
-			# Get the reference to the function
-			function = getattr(self, function_name)
-		except AttributeError as detail:
-			print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
-			return
+		function = self._check_function_exists(function_name)
+		# The function exists within this class,
+		#  so it can be directly assigned to the instance
+		if function != None:
 
-		# Choose what to do, depending on the function being used
-		# Data read functions
-		if function_name == "read_message":
-			port_name = port_name + '/in'
-			self.registerBufferedPortBottle([port_name])
-			component_instance.input_functions.append(function)
-		# Data write functions
-		elif function_name == "post_message":
-			port_name = port_name + '/out'
-			self.registerBufferedPortBottle([port_name])
-			component_instance.output_functions.append(function)
-		# Image write functions
-		elif function_name == "post_image_RGBA":
-			port_name = port_name + '/out'
-			self.registerBufferedPortImageRgba([port_name])
-			component_instance.output_functions.append(function)
+			# Data read functions
+			if function_name == "read_message":
+				port_name = port_name + '/in'
+				self.registerBufferedPortBottle([port_name])
+				component_instance.input_functions.append(function)
+			# Data write functions
+			elif function_name == "post_message":
+				port_name = port_name + '/out'
+				self.registerBufferedPortBottle([port_name])
+				component_instance.output_functions.append(function)
+			# Image write functions
+			elif function_name == "post_image_RGBA":
+				port_name = port_name + '/out'
+				self.registerBufferedPortImageRgba([port_name])
+				component_instance.output_functions.append(function)
 
-		# Store the name of the port
-		self._component_ports[component_name] = port_name
+			# Store the name of the port
+			self._component_ports[component_name] = port_name
+		else:
+			# If there is no such function in this module,
+			#  try importing from another one
+			try:
+				extra_module_name = mw_data[2]
+
+				# Insert the method in this class
+				function = self._add_method(extra_module_name, function_name, component_instance)
+
+				if function == None:
+					print ("SOMETHING WENT WRONG! Function '%s' not found, even after it was inserted" % function_name)
+					return
+
+			except IndexError:
+				print ("ERROR: Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
+				return
 
 
 	def read_message(self, component_instance):
@@ -183,8 +197,6 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 			# Write the image
 			yarp_port.write()
-
-
 
 
 	def registerBufferedPortBottle(self, portList):
