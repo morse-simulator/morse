@@ -168,7 +168,7 @@ def link_middlewares():
 				mw_instance.register_component(component_name, instance, mw_data)
 
 		if not found:
-			print ("There is no '%s' middleware object in the scene." % mw_name)
+			print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
 
 def add_modifiers():
