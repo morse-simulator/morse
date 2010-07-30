@@ -62,17 +62,28 @@ class MorseMiddlewareClass(object):
 		"""
 		module_name = re.sub('/', '.', source_file)
 		# Import the module containing the class
-		__import__(module_name)
+		try:
+			__import__(module_name)
+		except ImportError as detail:
+			print ("ERROR: %s. Check the 'component_config.py' file for typos" % (detail))
+			return
 		module = sys.modules[module_name]
 
-		# Get the reference to the new method
-		func = getattr(module, function_name)
+		try:
+			# Get the reference to the new method
+			func = getattr(module, function_name)
+		except AttributeError as detail:
+			print ("ERROR: %s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
+			return
 
 		# Insert the function and get a reference to it
 		setattr(self, func.__name__, types.MethodType(func, self, self.__class__))
 		bound_function = getattr(self, function_name)
-		# Call the init method of the new serialisation
-		module.init_extra_module(self, component_instance, bound_function)
+		try:
+			# Call the init method of the new serialisation
+			module.init_extra_module(self, component_instance, bound_function)
+		except AttributeError as detail:
+			print ("ERROR: Method 'init_extra_module' not found in file '%s'" % source_file)
 
 		# Store the name of the function, to cleanup later
 		self._extra_methods.append(function_name)

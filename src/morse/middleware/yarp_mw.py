@@ -74,10 +74,6 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 				# Insert the method in this class
 				function = self._add_method(extra_module_name, function_name, component_instance)
 
-				if function == None:
-					print ("SOMETHING WENT WRONG! Function '%s' not found, even after it was inserted" % function_name)
-					return
-
 			except IndexError:
 				print ("ERROR: Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
 				return
