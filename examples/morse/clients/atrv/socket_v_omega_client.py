@@ -5,8 +5,6 @@ from cPickle import *
 ServerIP = "localhost"
 
 Serverport = 70000
-Clientname = ''
-ClientPort = 90001
 sClient = socket(AF_INET,SOCK_DGRAM)
 host = (ServerIP,Serverport)	
 sClient.setblocking(0)
