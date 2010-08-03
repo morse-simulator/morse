@@ -16,6 +16,15 @@ To display textures correctly in the simulator, as well as to generate images us
 
   $ git clone http://trac.laas.fr/git/robots/morse.git
 
+You can get a tarball version at the following address :
+
+<code>
+http://softs.laas.fr/openrobots/distfiles/morse-0.1.tar.gz
+HA1 (morse-0.1.tar.gz) = 1e7951b7d5c73bd1723e84e4deb6bd9124636307
+RMD160 (morse-0.1.tar.gz) = 6e4f7058c5a84650ba18d6e4f1087b2efd7af782
+Size (morse-0.1.tar.gz) = 27644677 bytes
+</code>
+
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
