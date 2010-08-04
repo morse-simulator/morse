@@ -11,12 +11,29 @@ using namespace std;
 
 POSTER_ID id;
 
+void usage (char* program_name);
 void sigproc(int);
 
 int main(int argc, char* argv[])
 {
 	char cmd;
-	char* poster_name = "p3dSpeedRef";
+	char*	poster_name;
+
+	if (argc == 2)
+	{
+		poster_name = argv[1];
+	}
+	// If parameters are not given, use default values
+	else if (argc == 1)
+	{
+		poster_name = "OBATRV_OBMotion_Controller";
+		//poster_name = "p3dSpeedRef";
+	}
+	else
+	{
+		usage (argv[0]);
+		exit (1);
+	}
 
 	GENPOS_CART_SPEED  poster_struct;
 
@@ -79,4 +96,11 @@ void sigproc(int sig){
   cout << " * Exiting now!" << endl;
   cout << "*******************************" << endl;
   exit(0);
+}
+
+
+void usage (char* program_name)
+{
+    printf ("Usage: %s [genPos poster name]\n", program_name);
+    exit (1);
 }
