@@ -113,7 +113,7 @@ To start a simulation, go on Blender and press <key>P</key> to play the scenario
 ===== Testing =====
 
 To test the external control clients:
-  * Open the Blender file: ''$ORS_ROOT/share/examples/morse/scenarii/example-1-solved.blend''
+  * Open the Blender file: ''$ORS_ROOT/share/examples/morse/scenarii/tutorial-1-solved.blend''
   * Start the simulation <key>P</key>
   * On a separate terminal, run the Python program:
   $ python $ORS_ROOT/share/examples/morse/clients/atrv/socket_v_omega_client.py

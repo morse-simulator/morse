@@ -8,7 +8,7 @@ This tutorial assumes MORSE is properly installed. If not, follow the instructio
 
 Open the MORSE simulator with the test file provided with the installation, by using this command:
 
-  $ morse $ORS_ROOT/share/examples/morse/scenarii/example-1.blend
+  $ morse $ORS_ROOT/share/examples/morse/scenarii/tutorial-1.blend
 
 This will load a scene with a robot in a room with some furniture.
 
