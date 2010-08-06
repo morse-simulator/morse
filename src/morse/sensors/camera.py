@@ -4,6 +4,11 @@ import morse.helpers.sensor
 
 
 class CameraClass(morse.helpers.sensor.MorseSensorClass):
+	""" Base class for cameras in MORSE
+
+	This class implements the configuration of the VideoTexture module
+	required by the different cameras, such as video or semantic.
+	"""
 
 	def __init__(self, obj, parent=None):
 		""" Constructor method.
@@ -13,7 +18,7 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 		"""
 		print ("######## CAMERA '%s' INITIALIZING ########" % obj.name)
 		# Call the constructor of the parent class
-		super(self.__class__,self).__init__(obj, parent)
+		super(CameraClass,self).__init__(obj, parent)
 
 		# Set the background color of the scene
 		self.bg_color = [143,143,143,255]
@@ -33,20 +38,6 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 			self.image_focal = obj['cam_focal'] = 35
 
 		self.image_size = 4 * self.image_size_X * self.image_size_Y
-		# Prepare the exportable data of this sensor
-		self.local_data['image'] = ''
-
-		self.capturing = False
-
-		# Variable to indicate this is a camera
-		self.camera_tag = True
-
-		self.data_keys = ['image']
-
-		# Initialise the copy of the data
-		for variable in self.data_keys:
-			self.modified_data.append(self.local_data[variable])
-
 
 		# Prepare the camera object in Blender
 		self._setup_video_texture()
@@ -65,18 +56,6 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
 		# Call the VideoTexture method to refresh the image
 		GameLogic.cameras[self.name].refresh(True)
-
-		# Grab an image from the texture
-		if self.blender_obj['capturing']:
-			# NOTE: Blender returns the image as a binary string
-			#  encoded as RGBA
-			image_string = GameLogic.cameras[self.name].source.image
-
-			# Fill in the exportable data
-			self.local_data['image'] = image_string
-			self.capturing = True
-		else:
-			self.capturing = False
 
 
 	def _setup_video_texture(self):
