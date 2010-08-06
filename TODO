@@ -23,9 +23,6 @@ User-interface
 --------------
 
 - Graphic tree of logic components and their interaction (no meshes, ... )
-- Possibility to control the camera when the game engine runs (with keyboard,
-  mouse, or attach some view to some robots)
-- Use this controllable camera by default when starting a simulation
 - [for CHRIS project] Ability to fully control a robot or a human as "first
   person shooter" to interact with other robots
 
@@ -51,13 +48,12 @@ Middlewares
 
 * Requests: be sure that components can be remotely (ie by clients) configured
 
-* Add serialize methods to the data of each component. This will format the data according to the needs of each middleware/architecture.
 
    
 Linking issues
 --------------
-- when properties are added in linked components (eg, cameras), the new properties
-don't show up in the scene that import these components.
+- when properties are added in linked components (eg, cameras),
+the new properties don't show up in the scene that import these components.
 
 Coding style
 ------------
@@ -85,3 +81,12 @@ Other stuff
 * write, complete, update, add to repo the general documentation of the simulator
 - commit policy
 - Blender 2.5
+
+
+Components
+----------
+- Waypoint controller
+- Animated human
+  - Mocap poster
+- Viman poster
+- SICK poster
