@@ -82,3 +82,9 @@ def print_matrix_33 (matrix):
 	for row in matrix:
 		line = "[%.4f %.4f %.4f]" % (row[0], row[1], row[2])
 		print (line)
+
+def print_vector (vector):
+	""" print a vector with 4 decimals per value """
+	line = "[%.4f %.4f %.4f]" % (vector[0], vector[1], vector[2])
+	print (line)
+	
