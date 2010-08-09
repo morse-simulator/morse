@@ -1,48 +1,26 @@
 #include <posterLib.h>
+#include <vimanConst.h>
+#include <vimanStruct.h>
+
+typedef enum matrixRef {CameraRef, RobotRef, WorldRef} matrixRef;
 
 /*
- * XXX Swig has issues with varargs or C struct array, so for moment, we only
- * consider case where nb_images == 1 or 2, hence the crappy API
+ * Expect the name of the poster
  */
-
-struct simu_image_init {
-	const char* camera_name;
-	size_t width, height;
-	double focal;
-};
+POSTER_ID init_data (char*	poster_name, int* ok);
 
 /*
- * Expect a list of simu_image_init* after nb_images */
-POSTER_ID init_data(char*  poster_name, const char* bank_name, size_t nb_images,
-				double baseline,
-                const struct simu_image_init* init1,
-				const struct simu_image_init* init2, int* ok);
-
-struct pom_position {
-	double yaw, pitch, roll;
-	double x, y, z;
-};
-
-
-/*
- * image_data is a RGBA image
- * and will be exported into GREY images
+ * Expect a Structure of type VimanObjectArray
  */
-struct simu_image {
-	size_t width, height;
-	int pom_tag;
-	const struct pom_position* sensor;
-	unsigned long tacq_sec;
-	unsigned long tacq_usec;
-};
+int post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data);
 
 
-/*
- * Expect a list of simu_image* after nb_images
- */
-int post_viman_poster(	POSTER_ID id,
-						const struct pom_position* robot,
-						size_t nb_images,
-					);
+VimanObjectArray create_viman_struct(char** scene_object_list, int list_length);
+
+int write_matrix (VimanObjectArray viman_data, int index, matrixRef type,
+	double nx, double ny, double nz,
+	double ox, double oy, double oz,
+	double ax, double ay, double az,
+	double px, double py, double pz);
 
 int finalize ( POSTER_ID id );

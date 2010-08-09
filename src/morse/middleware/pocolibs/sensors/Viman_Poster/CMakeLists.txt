@@ -1,12 +1,12 @@
 INCLUDE(${SWIG_USE_FILE})
 
-pkg_check_modules(VIAM REQUIRED viam)
-pkg_check_modules(POM REQUIRED pom)
+#pkg_check_modules(VIMAN REQUIRED viman)
+#pkg_check_modules(POM REQUIRED pom)
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${POCOLIBS_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${VIAM_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${VIMAN_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${POM_INCLUDE_DIRS})
 
 LINK_DIRECTORIES(${POCOLIBS_LIBDIR})
@@ -15,14 +15,14 @@ SET(CMAKE_SWIG_FLAGS "")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
 
-SET(TARGET ors_viam_poster)
+SET(TARGET ors_viman_poster)
 
-SWIG_ADD_MODULE(${TARGET} python ors_viam_poster.i ors_viam_poster.c)
+SWIG_ADD_MODULE(${TARGET} python ors_viman_poster.i ors_viman_poster.c)
 SWIG_LINK_LIBRARIES(${TARGET} ${POCOLIBS_LIBRARIES})
 
 INSTALL (FILES __init__.py 
 			   ${CMAKE_CURRENT_BINARY_DIR}/_${TARGET}.so 
 			   ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.py
-		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/sensors/Camera_Poster/
+		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/sensors/Viman_Poster/
 		)
 

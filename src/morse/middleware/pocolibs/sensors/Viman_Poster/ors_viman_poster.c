@@ -6,13 +6,13 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-#include <vimanStruct.h>
-#include <vimanConst.h>
-
 #include "ors_viman_poster.h"
 
 static int real_post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data);
 static void* thread_main(void* v);
+
+POSTER_ID global_id;
+VimanObjectArray viman_data_copy;
 
 bool abort_thr = false;
 pthread_t thr;
@@ -20,22 +20,9 @@ pthread_mutex_t data_mutex;
 pthread_mutex_t cond_mutex;
 pthread_cond_t cond;
 
-struct internal_args {
-	POSTER_ID id;
-	struct pom_position robot;
-	size_t nb_images;
-	struct simu_image img1;
-    char* image_data1;
-	struct simu_image img2;
-	char* image_data2;
-};
-
-struct internal_args args;
-
 /*
- * Create a poster, and fill it with information which don't change during the
- * execution, including bank_name, camera_name, nb_images, size of images,
- * camera calibration...
+ * Create a poster, and fill it with information that don't change during the
+ * execution
  *
  * Return a POSTER_ID on success, NULL otherwise
  *
@@ -72,25 +59,65 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 	return (id);
 }
 
+/*
+ * Create a data structure to hold the semantic information of the scene
+ * Receive an array of strings with the names of the objects, and their number
+ * Returns the newly created structure
+ */
+VimanObjectArray create_viman_struct(char** scene_object_list, int list_length)
+{
+	printf ("THIS IS ME NOT KNOWING WHAT GOES ON!\n");
+
+	VimanObjectArray viman_data;
+
+	viman_data.nbObjects = list_length;
+
+	/*
+	for (int i=0; i<list_length; i++)
+	{
+		strcpy(viman_data.objects[i].name, scene_object_list[i]);
+	}
+	*/
+
+	return viman_data;
+}
+
+
+/*
+ * Copy the values of the variables sent into the data structure
+ *  at the specified index
+ */
+int write_matrix (VimanObjectArray viman_data, int index, matrixRef type,
+	double nx, double ny, double nz,
+	double ox, double oy, double oz,
+	double ax, double ay, double az,
+	double px, double py, double pz)
+{
+	viman_data.objects[index].thetaMatRob30.nx = nx;
+	viman_data.objects[index].thetaMatRob30.ny = ny;
+	viman_data.objects[index].thetaMatRob30.nz = nz;
+
+	viman_data.objects[index].thetaMatRob30.ox = ox;
+	viman_data.objects[index].thetaMatRob30.oy = oy;
+	viman_data.objects[index].thetaMatRob30.oz = oz;
+
+	viman_data.objects[index].thetaMatRob30.ax = ax;
+	viman_data.objects[index].thetaMatRob30.ay = ay;
+	viman_data.objects[index].thetaMatRob30.az = az;
+
+	viman_data.objects[index].thetaMatRob30.px = px;
+	viman_data.objects[index].thetaMatRob30.py = py;
+	viman_data.objects[index].thetaMatRob30.pz = pz;
+
+	return 0;
+}
 
 
 int post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data)
 {
 	if (pthread_mutex_trylock(&data_mutex) == 0)
 	{
-		memcpy (&args, viman_data, sizeof(VimanObjectArray));
-
-		///VVVVV	OLD STUFF  VVVVV///
-		/*
-		args.id = id;
-		memcpy(&args.robot, robot, sizeof(struct pom_position));
-		args.nb_images = nb_images;
-		memcpy(&args.img1, img1, sizeof(struct simu_image));
-		memcpy(&args.img2, img2, sizeof(struct simu_image));
-		memcpy(args.image_data1, image_data1, img1->height * img1->width * 4);
-		memcpy(args.image_data2, image_data2, img2->height * img2->width * 4);
-		*/
-		///^^^^^	OLD STUFF  ^^^^^///
+		memcpy (&viman_data_copy, &viman_data, sizeof(VimanObjectArray));
 
 		pthread_mutex_unlock(&data_mutex);
 		pthread_mutex_lock(&cond_mutex);
@@ -112,17 +139,19 @@ int post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data)
  */
 int real_post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data)
 {
-	// printf ("ID at 'post_viman_poster': %d (%d cameras)\n", id, nb_images);
-	ViamImageBank* bank =  posterAddr(id);
-	if (bank == NULL) {
-		fprintf(stderr, "calling %s but the poster has been destroyed\n", __func__);
-		return -1;
-	}
+	size_t offset = 0;
+
+	/*
+	ViamObjectArray* viman_array =  posterAddr(id);
+
 	posterTake(id, POSTER_WRITE);
 
-	posterWrite(id, offset, &viman_data, sizeof(VimanObjectArray))
+	// Fill in the data
 
 	posterGive(id);
+	*/
+
+	posterWrite(id, offset, &viman_data, sizeof(VimanObjectArray));
 
 	return 0;
 }
@@ -140,9 +169,7 @@ void* thread_main(void * unused)
 			break;
 
 		pthread_mutex_lock(&data_mutex);
-		real_post_viman_poster(args.id, &args.robot, args.nb_images,
-									   &args.img1, args.image_data1,
-									   &args.img2, args.image_data2);
+		real_post_viman_poster(global_id, viman_data_copy);
 		pthread_mutex_unlock(&data_mutex);
 	}
 	
@@ -165,8 +192,7 @@ int finalize (POSTER_ID id)
 	pthread_mutex_destroy(&cond_mutex);
 	pthread_mutex_destroy(&data_mutex);
 
-	free(args.image_data1);
-	free(args.image_data2);
+	//free(viman_data_copy);
 
 	return 0;
 }
