@@ -125,10 +125,18 @@ def create_instance(obj, parent=None):
 	module_name = re.sub('/', '.', source_file)
 	print ("Path to Component Class: %s" % module_name)
 	# Import the module containing the class
-	__import__(module_name)
+	try:
+		__import__(module_name)
+	except ImportError as detail:
+		print ("WARNING: Module not found: %s" % detail)
+		return None
 	module = sys.modules[module_name]
 	# Create an instance of the object class
-	klass = getattr(module, obj['Class'])
+	try:
+		klass = getattr(module, obj['Class'])
+	except AttributeError as detail:
+		print ("WARNING: Module attribute not found: %s" % detail)
+		return None
 	instance = klass(obj, parent)
 
 	return instance
