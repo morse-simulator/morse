@@ -10,18 +10,18 @@ typedef enum matrixRef {CameraRef, RobotRef, WorldRef} matrixRef;
 POSTER_ID init_data (char*	poster_name, int* ok);
 
 /*
- * Expect a Structure of type VimanObjectArray
+ * Expect a Structure of type VimanObjectPublicArray
  */
-int post_viman_poster(POSTER_ID id, VimanObjectArray viman_data);
+int post_viman_poster(POSTER_ID id, VimanObjectPublicArray viman_data);
 
-int real_post_viman_poster(POSTER_ID id, VimanObjectArray* viman_data);
+int real_post_viman_poster(POSTER_ID id, VimanObjectPublicArray* viman_data);
 
-VimanObjectArray generate_viman_struct();
+VimanObjectPublicArray generate_viman_struct();
 
-void set_name(VimanObjectArray* viman_data, int index, char* name);
-void set_visible(VimanObjectArray* viman_data, int index, int visible);
+void set_name(VimanObjectPublicArray* viman_data, int index, char* name);
+void set_visible(VimanObjectPublicArray* viman_data, int index, int visible);
 
-int write_matrix (VimanObjectArray* viman_data, int index, //matrixRef type,
+int write_matrix (VimanObjectPublicArray* viman_data, int index, //matrixRef type,
 	double nx, double ny, double nz,
 	double ox, double oy, double oz,
 	double ax, double ay, double az,

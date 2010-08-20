@@ -8,12 +8,12 @@
 
 #include "ors_viman_poster.h"
 
-//static int real_post_viman_poster(	POSTER_ID id, VimanObjectArray viman_data);
+//static int real_post_viman_poster(	POSTER_ID id, VimanObjectPublicArray viman_data);
 //static void* thread_main(void* v);
 
 POSTER_ID global_id;
-VimanObjectArray global_viman_data;
-VimanObjectArray viman_data_copy;
+VimanObjectPublicArray global_viman_data;
+VimanObjectPublicArray viman_data_copy;
 
 bool abort_thr = false;
 pthread_t thr;
@@ -34,7 +34,7 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 	size_t poster_size = 0;
 	POSTER_ID id;
 
-	poster_size = sizeof(VimanObjectArray);
+	poster_size = sizeof(VimanObjectPublicArray);
 
 	STATUS s = posterCreate (poster_name, poster_size, &id);
 	if (s == ERROR)
@@ -67,21 +67,21 @@ POSTER_ID init_data (char*	poster_name, int* ok)
  * Receive an array of strings with the names of the objects, and their number
  * Returns the newly created structure
  */
-VimanObjectArray generate_viman_struct()
+VimanObjectPublicArray generate_viman_struct()
 {
-	//VimanObjectArray viman_data;
+	//VimanObjectPublicArray viman_data;
 
 	return global_viman_data;
 }
 
-void set_name(VimanObjectArray* viman_data, int index, char* name)
+void set_name(VimanObjectPublicArray* viman_data, int index, char* name)
 {
 	strcpy(viman_data->objects[index].name, name);
 }
 
-void set_visible(VimanObjectArray* viman_data, int index, int visible)
+void set_visible(VimanObjectPublicArray* viman_data, int index, int visible)
 {
-	viman_data->objects[index].found_L = visible;
+	viman_data->objects[index].found_Stereo = visible;
 }
 
 
@@ -91,38 +91,38 @@ void set_visible(VimanObjectArray* viman_data, int index, int visible)
  * Copy the values of the variables sent into the data structure
  *  at the specified index
  */
-int write_matrix (VimanObjectArray* viman_data, int index, //matrixRef type,
+int write_matrix (VimanObjectPublicArray* viman_data, int index, //matrixRef type,
 	double nx, double ny, double nz,
 	double ox, double oy, double oz,
 	double ax, double ay, double az,
 	double px, double py, double pz)
 {
-	viman_data->objects[index].thetaMatRob30.nx = nx;
-	viman_data->objects[index].thetaMatRob30.ny = ny;
-	viman_data->objects[index].thetaMatRob30.nz = nz;
+	viman_data->objects[index].thetaMatOrigin.nx = nx;
+	viman_data->objects[index].thetaMatOrigin.ny = ny;
+	viman_data->objects[index].thetaMatOrigin.nz = nz;
 
-	viman_data->objects[index].thetaMatRob30.ox = ox;
-	viman_data->objects[index].thetaMatRob30.oy = oy;
-	viman_data->objects[index].thetaMatRob30.oz = oz;
+	viman_data->objects[index].thetaMatOrigin.ox = ox;
+	viman_data->objects[index].thetaMatOrigin.oy = oy;
+	viman_data->objects[index].thetaMatOrigin.oz = oz;
 
-	viman_data->objects[index].thetaMatRob30.ax = ax;
-	viman_data->objects[index].thetaMatRob30.ay = ay;
-	viman_data->objects[index].thetaMatRob30.az = az;
+	viman_data->objects[index].thetaMatOrigin.ax = ax;
+	viman_data->objects[index].thetaMatOrigin.ay = ay;
+	viman_data->objects[index].thetaMatOrigin.az = az;
 
-	viman_data->objects[index].thetaMatRob30.px = px;
-	viman_data->objects[index].thetaMatRob30.py = py;
-	viman_data->objects[index].thetaMatRob30.pz = pz;
+	viman_data->objects[index].thetaMatOrigin.px = px;
+	viman_data->objects[index].thetaMatOrigin.py = py;
+	viman_data->objects[index].thetaMatOrigin.pz = pz;
 
 	return 0;
 }
 
 
-int post_viman_poster(POSTER_ID id, VimanObjectArray viman_data)
+int post_viman_poster(POSTER_ID id, VimanObjectPublicArray viman_data)
 {
 	/*
 	if (pthread_mutex_trylock(&data_mutex) == 0)
 	{
-		memcpy (&viman_data_copy, &viman_data, sizeof(VimanObjectArray));
+		memcpy (&viman_data_copy, &viman_data, sizeof(VimanObjectPublicArray));
 
 		pthread_mutex_unlock(&data_mutex);
 		pthread_mutex_lock(&cond_mutex);
@@ -143,13 +143,13 @@ int post_viman_poster(POSTER_ID id, VimanObjectArray viman_data)
  * prototyp of the function is not really correct (image_data must be in struct
  * simu_image, and it must be an array of struct ...). Needs investigation.
  */
-int real_post_viman_poster(POSTER_ID id, VimanObjectArray* viman_data)
+int real_post_viman_poster(POSTER_ID id, VimanObjectPublicArray* viman_data)
 {
 	size_t offset = 0;
 
 	//printf("viman_data.number: %d\n", viman_data->nbObjects);
 	//printf("viman_data[7].name: %s\n", viman_data->objects[7].name);
-	//printf("viman_data[7].thetaMatRob30.nx: %lf\n", viman_data->objects[7].thetaMatRob30.nx);
+	//printf("viman_data[7].thetaMatOrigin.nx: %lf\n", viman_data->objects[7].thetaMatOrigin.nx);
 
 	/*
 	ViamObjectArray* viman_array =  posterAddr(id);
@@ -161,7 +161,7 @@ int real_post_viman_poster(POSTER_ID id, VimanObjectArray* viman_data)
 	posterGive(id);
 	*/
 
-	posterWrite(id, offset, viman_data, sizeof(VimanObjectArray));
+	posterWrite(id, offset, viman_data, sizeof(VimanObjectPublicArray));
 
 	return 0;
 }
