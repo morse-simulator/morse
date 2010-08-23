@@ -45,10 +45,7 @@ int main(int argc, char* argv[]) {
 
   string port_prefix = "/ors/robots/" + robot_name + "/";
 
-  string ugv_motor_port = "/ors/robots/OBATRV/OBMotion_Controller.001/in";
-  // string ugv_motor_port = port_prefix + "Motion_Controller/vxvyvz";
-  // string ugv_output_port_gps = port_prefix + "/gps";
-  // string ugv_output_port_gps = port_prefix + "GPS";
+  string ugv_motor_port = "/ors/robots/OBATRV/OBMotion_Controller/in";
 
   string local_port_prefix = "/ugv_client/" + robot_name;
 
@@ -63,16 +60,17 @@ int main(int argc, char* argv[]) {
   //setvbuf(stdin, NULL, _IONBF, 0);
 
   //Initialization of Yarp network
-  Network::init();
+  //Network::init();
+  Network yarp_object;
 
   cout << "\n * YARP network initialized." << endl;
 
   //Connect to OpenRobots simulator
-  toUGVPort.open((local_port_prefix + "/out/vxvyvz").c_str());
-  fromUGVGPSPort.open((local_port_prefix + "/in/gps").c_str());
+  toUGVPort.open((local_port_prefix + "/motion/out").c_str());
+  fromUGVGPSPort.open((local_port_prefix + "/gps/in").c_str());
 
-  connected = Network::connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
-  // connected &= Network::connect(ugv_output_port_gps.c_str() ,fromUGVGPSPort.getName().c_str());
+  //connected = Network::connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
+  connected = yarp_object.connect(toUGVPort.getName().c_str(), ugv_motor_port.c_str());
 
   if (!connected)
   {
@@ -82,7 +80,6 @@ int main(int argc, char* argv[]) {
 
 
   cout << " * Writing commands to " << ugv_motor_port << endl;
-  // cout << " * Listening status on " << ugv_output_port_gps << endl;
 
   cout << " * KEYS: W/S: move forward/backward ; A/D: turn left/right ; any other key to stop." << endl;
   cout << " * Starting now..." << endl;
@@ -184,7 +181,7 @@ void sigproc(int sig){
   cout << " * Exiting now!" << endl;
   toUGVPort.close();
   fromUGVGPSPort.close();
-  Network::fini();
+  //Network::fini();
   cout << "*******************************" << endl;
   exit(0);
 }
