@@ -88,5 +88,10 @@ Components
 - Waypoint controller
 - Animated human
   - Mocap poster
-- Viman poster
+- Viman poster visibility test
 - SICK poster
+
+Rosace Project
+--------------
+- Add timeline of events in the simulation
+- Add init script that places the robots and victims specified in a XML file
