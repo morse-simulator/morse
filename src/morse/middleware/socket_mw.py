@@ -1,5 +1,9 @@
 import socket
-import cPickle
+import GameLogic
+if GameLogic.pythonVersion < 3:
+	import cPickle as pickle
+else:
+	import pickle
 import morse.helpers.middleware
 
 class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
@@ -14,7 +18,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		self._socket_ports = []
 		self._socket_clients = dict()
 		self._host = ''
-		self._base_port = 70000
+		self._base_port = 60000
 		self._message_size = 1024
 
 	def register_component(self, component_name, component_instance, mw_data):
@@ -180,7 +184,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			return False
 
 		self._socket_clients[component_instance.robot_parent] = host
-		pickled_data = cPickle.loads(message_data)
+		pickled_data = pickle.loads(message_data)
 
 		# Extract the values from the socket data
 		i = 0
@@ -213,7 +217,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			# Create a string containing all the data
 			# The different elements will be separated by ';'
 			data_list.append(msg_data)
-			message = ";".join([`data` for data in data_list])
+			message = ";".join([repr(data) for data in data_list])
 			#message = ", ".join(data_list) + "."
 
 		#print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
