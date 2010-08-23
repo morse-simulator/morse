@@ -1,4 +1,3 @@
-
 ######################################################
 #
 #    MouseLook.py        Blender 2.49
@@ -87,15 +86,16 @@ def rotate(contr):
 	camera.applyRotation( [upDown, 0.0, 0.0], 1 )
 
 	# Center mouse in game window
-	Rasterizer.setMousePosition(width/2, height/2)
+	# Using the '//' operator (floor division) to produce an integer result
+	Rasterizer.setMousePosition(width//2, height//2)
 
 
-# define mouse movement function
 def mouse_move(camera, mouse, width, height):
 	""" Get the movement of the mouse as an X, Y coordinate. """
 	# distance moved from screen center
-	x = width/2 - mouse.position[0]
-	y = height/2 - mouse.position[1]
+	# Using the '//' operator (floor division) to produce an integer result
+	x = width//2 - mouse.position[0]
+	y = height//2 - mouse.position[1]
 	
 	# intialize mouse so it doesn't jerk first time
 	try:
@@ -106,6 +106,8 @@ def mouse_move(camera, mouse, width, height):
 		# bug in Add Property
 		# can't use True.  Have to use 1
 		camera['mouseInit'] = 1
+
+	#print ("Read displacement: %s, %s" % (x, y))
 	
 	# return mouse movement
 	return (x, y)
