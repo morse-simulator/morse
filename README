@@ -3,7 +3,7 @@
                         (c) LAAS-CNRS/ONERA 2009-2010
 ===============================================================================
 
-MORSE (multi-openrobots simulator engine) is a Blender-based robotic simulator.
+MORSE (Modular OpenRobots simulation Engine) is a Blender-based robotic simulator.
 It is a BSD-licensed project (cf LICENSE).
 
 It is meant to be versatile (simulation of field robotics, indoor robotics, 
