@@ -1,11 +1,15 @@
 import math
 import GameLogic
-from Mathutils import *
+if GameLogic.pythonVersion < 3:
+	import Mathutils as mathutils
+else:
+	import mathutils
+#from Mathutils import *
 
 class Transformation3d:
 	def __init__(self, ob):
-		self.matrix = Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1])
-		self.euler = Euler([0, 0, 0])
+		self.matrix = mathutils.Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1])
+		self.euler = mathutils.Euler([0, 0, 0])
 		if ob != None:
 			self.update(ob)
 
@@ -43,7 +47,7 @@ class Transformation3d:
 
 	def update(self, ob):
 		rot_matrix = ob.orientation
-		self.matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+		self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
 		# XXX It seems incorrect to transpose the matrix here, but in other
 		# context, we need to. It is very strange. Need more investigation
 		self.matrix.resize4x4()
@@ -53,7 +57,10 @@ class Transformation3d:
 			self.matrix[i][3] = pos[i]
 		self.matrix[3][3] = 1
 
-		self.euler = self.matrix.toEuler()
+		if GameLogic.pythonVersion < 3:
+			self.euler = self.matrix.toEuler()
+		else:
+			self.euler = self.matrix.to_euler()
 
 		
 

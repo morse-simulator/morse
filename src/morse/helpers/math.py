@@ -1,6 +1,10 @@
 import math
 import GameLogic
-from Mathutils import *
+if GameLogic.pythonVersion < 3:
+	import Mathutils as mathutils
+else:
+	import mathutils
+#from Mathutils import *
 
 # euler_angle(object) returns a tuple yaw, pitch, roll, in degree,
 # corresponding to the transformation between the origin frame and the object
@@ -9,7 +13,7 @@ from Mathutils import *
 # It uses the built-in blender function toEuler
 def euler_angle(ob):
 	rot_matrix = ob.orientation
-	matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+	matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
 
 	# XXX If we want to have the right handle, we definivly need to transpose
 	# the matrix here, but why ?
@@ -60,7 +64,7 @@ def get_rotation_matrix(object):
 		Used to transform another object to this one's coordinate system. """
 	# Obtain the rotation matrix of the object.
 	rot_matrix = object.worldOrientation
-	rotation_matrix = Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+	rotation_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
 	# According to the GE documentation, it has to be transposed first
 	rotation_matrix.transpose()
 

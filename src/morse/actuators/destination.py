@@ -1,5 +1,4 @@
 import GameLogic
-import Mathutils
 import morse.helpers.actuator
 
 class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):

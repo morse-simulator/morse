@@ -1,5 +1,8 @@
 import GameLogic
-import Mathutils
+if GameLogic.pythonVersion < 3:
+	import Mathutils as mathutils
+else:
+	import mathutils
 import morse.helpers.sensor
 import morse.helpers.math
 
@@ -16,9 +19,14 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
 
+		arc_prefix = 'Arc_'
+		if GameLogic.pythonVersion < 3:
+			arc_prefix = 'OB' + arc_prefix
+
 		# Look for a child arc to use for the scans
 		for child in obj.children:
-			if child.name[:6] == 'OBArc_':
+			if arc_prefix in child.name:
+			#if child.name[:6] == 'OBArc_':
 				self.ray_arc = child
 				print ("Sick: Using arc object: '{0}'".format(self.ray_arc))
 				break
@@ -49,8 +57,8 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 		# Obtain the rotation matrix of the sensor.
 		inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
 
-		# Create a vector for the Mathutils operations
-		vector_point = Mathutils.Vector()
+		# Create a vector for the mathutils operations
+		vector_point = mathutils.Vector()
 
 		# Get the mesh for the semicircle
 		for mesh in self.ray_arc.meshes:

@@ -1,5 +1,8 @@
 import GameLogic
-import Mathutils
+if GameLogic.pythonVersion < 3:
+	import Mathutils as mathutils
+else:
+	import mathutils
 import morse.helpers.actuator
 
 class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
@@ -21,8 +24,8 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		self.destination = self.blender_obj.position
 
 		# Direction of the global vectors
-		self.world_X_vector = Mathutils.Vector([1,0,0])
-		self.world_Y_vector = Mathutils.Vector([0,1,0])
+		self.world_X_vector = mathutils.Vector([1,0,0])
+		self.world_Y_vector = mathutils.Vector([0,1,0])
 
 		self.local_data['x'] = self.destination[0]
 		self.local_data['y'] = self.destination[1]
@@ -53,7 +56,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 		# Convert to the Blender Vector object
-		global_vector = Mathutils.Vector(global_vector)
+		global_vector = mathutils.Vector(global_vector)
 
 		#print ("My position: {0}".format(self.blender_obj.position))
 		print ("\nGOT DISTANCE: {0}".format(distance))
@@ -71,7 +74,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 			# Use the appropriate function to get the angle between two vectors
 			if GameLogic.pythonVersion < 3:
-				target_angle = Mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
+				target_angle = mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
 			else:
 				# In Blender 2.5, the angle function returns radians
 				target_angle = global_vector.angle(self.world_X_vector)
