@@ -3,20 +3,6 @@ import json
 import re
 import yarp
 
-try:
-   scriptRoot = os.path.join(os.environ['ORS_ROOT'],'scripts')
-except KeyError:
-   scriptRoot = '.'
-
-try:
-   libRoot = os.path.join(os.environ['ORS_ROOT'],'lib')
-except KeyError:
-   libRoot = '.'
-
-sys.path.append(scriptRoot)
-sys.path.append(libRoot)
-
-from middleware.independent.IndependentBlender import *
 
 # Global variables for the names of the input and output ports
 local_in_port_name = ""
@@ -46,8 +32,6 @@ local_out_port = 0
 local_GPS_port = 0
 local_Dest_port = 0
 
-
-orsConnector = MiddlewareConnector()
 
 
 
