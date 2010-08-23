@@ -4,7 +4,7 @@ from cPickle import *
 
 ServerIP = "140.93.0.93"
 
-Serverport = 70000
+Serverport = 60000
 Clientname = ''
 ClientPort = 10001
 sClient = socket(AF_INET,SOCK_DGRAM)
