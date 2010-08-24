@@ -221,7 +221,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 			#message = ", ".join(data_list) + "."
 
 		#print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
-		out_socket.sendto(message, host)
+		out_socket.sendto(message.encode(), host)
 
 
 	def post_image(self, component_instance):
