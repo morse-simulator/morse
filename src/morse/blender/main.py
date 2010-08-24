@@ -86,7 +86,7 @@ def create_dictionaries ():
 			# Create an object instance and store it
 			instance = create_instance (obj)
 			GameLogic.mwDict[obj] = instance
-		except KeyError:
+		except KeyError as detail:
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
 								# Does not work in Python 3
@@ -265,10 +265,11 @@ def finish(contr):
 
 		# Force the deletion of the middleware objects
 		for obj, mw_instance in GameLogic.mwDict.items():
-			mw_instance.cleanup()
-			#import gc
-			#print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
-			del obj
+			if mw_instance:
+				mw_instance.cleanup()
+				#import gc
+				#print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+				del obj
 
 		quitActuator = contr.actuators['Quit_sim']
 		contr.activate(quitActuator)
