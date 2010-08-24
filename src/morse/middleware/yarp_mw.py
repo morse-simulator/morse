@@ -20,7 +20,8 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		#  probably because this file has the same name.
 		# So this is the only way it seems to work
 		self._yarp_module = sys.modules['yarp']
-		self._yarp_module.Network.init()
+		#self._yarp_module.Network.init()
+		self.yarp_object = self._yarp_module.Network()
 		#yarp.Network.init()
 
 
@@ -266,7 +267,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 			port.close()
 
 		#self._network.fini()
-		self._yarp_module.Network.fini()
+		#self._yarp_module.Network.fini()
 		#yarp.Network.fini()
 		print ('Yarp Mid: ports have been closed.')
 
