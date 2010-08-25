@@ -36,6 +36,10 @@ behaviour of a component, you need to modify the method ''default_action''. The
 action of ''action'' depends if it is a sensor or an actuator (robot doesn't do
 anything by themself). 
 
+=== MORSE execution loop ===
+
+{{ :morse:simulation_main_loop_overview.png?600 }}
+
 == Behaviour of a sensor ==
 
 When Blender calls the method ''action'' for a sensor, the following things
