@@ -10,7 +10,8 @@ def robot_action(contr):
 
 	# Get the intance of this objects class
 	robot_object = GameLogic.robotDict[obj]
-	robot_object.action()
+	if robot_object:
+		robot_object.action()
 
 
 def sensor_action(contr):
@@ -20,7 +21,8 @@ def sensor_action(contr):
 	
 	# Get the intance of this objects class
 	sensor_object = GameLogic.componentDict[obj.name]
-	sensor_object.action()
+	if sensor_object:
+		sensor_object.action()
 
 
 def actuator_action(contr):
@@ -28,9 +30,10 @@ def actuator_action(contr):
 	obj = contr.owner
 	parent = obj.parent
 	
-	# Get the intance of this objects class
+	# Get the instance of this objects class
 	actuator_object = GameLogic.componentDict[obj.name]
-	actuator_object.action()
+	if actuator_object:
+		actuator_object.action()
 
 
 def mw_action(contr):
