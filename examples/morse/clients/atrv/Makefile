@@ -6,7 +6,7 @@
 CC = g++
 
 CFLAGS = -g -I$(ROBOTPKG_BASE)/include
-LDFLAGS = -L$(ROBOTPKG_BASE)/lib -lYARP_OS -Wl,-rpath,$(ROBOTPKG_BASE)/lib
+LDFLAGS = -L$(ROBOTPKG_BASE)/lib -lYARP_init -lYARP_OS -Wl,-rpath,$(ROBOTPKG_BASE)/lib
 POCOLIBSFLAGS = -lposterLib
 
 
