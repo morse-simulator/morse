@@ -8,6 +8,7 @@ File history:
 04/05/2010 - Arnaud + Severin + Nicolas + Gilberto: review of the list, with aims at a first release
 28/05/2010 - Arnaud + Severin: update after "CMake operation"
 14/06/2010 - Gilberto: Remove completed tasks
+26/08/2010 - Gilberto: Add pending tasks for sensors, documentation and the Rosace scenario
 ---
 
 Code organisation
@@ -95,3 +96,8 @@ Rosace Project
 --------------
 - Add timeline of events in the simulation
 - Add init script that places the robots and victims specified in a XML file
+
+Documentation
+-------------
+- Add a mention about the different install directory used for python scripts in Debian
+dist-packages instead of site-packages
