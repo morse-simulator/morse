@@ -62,20 +62,21 @@ class MorseNEDClass(object):
 
 
 
-
 	def blender_to_ned_angle(self, component_instance):
 		""" Convert the coordinates from Blender to UTM reference. """
-		component_instance.modified_data[0] = 90.0+component_instance.modified_data[0]
-		component_instance.modified_data[1] = 90.0-component_instance.modified_data[1]
-		component_instance.modified_data[2] = component_instance.modified_data[2]
+		yaw = 90-component_instance.modified_data[0]
+		component_instance.modified_data[0] = component_instance.modified_data[2]
+		component_instance.modified_data[1] =-component_instance.modified_data[1]
+		component_instance.modified_data[2] = yaw
 
 		return component_instance.modified_data
 
 
 	def ned_angle_to_blender(self, component_instance):
 		""" Convert the coordinates from UTM to Blender reference. """
-		component_instance.modified_data[0] = 90.0-component_instance.modified_data[0]
-		component_instance.modified_data[1] = 90.0+component_instance.modified_data[1]
-		component_instance.modified_data[2] = component_instance.modified_data[2]
+		yaw = 90.0-component_instance.modified_data[2]
+		component_instance.modified_data[0] = yaw
+		component_instance.modified_data[1] =-component_instance.modified_data[1]
+		component_instance.modified_data[2] = component_instance.modified_data[0]
 
 		return component_instance.modified_data
