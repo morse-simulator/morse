@@ -33,7 +33,13 @@ class MorseNEDClass(object):
 		# Data write functions
 		elif function_name == "blender_to_ned":
 			component_instance.output_modifiers.append(function)
-
+		
+		# Data read functions
+		if function_name == "ned_angle_to_blender":
+			component_instance.input_modifiers.append(function)
+		# Data write functions
+		elif function_name == "blender_to_ned_angle":
+			component_instance.output_modifiers.append(function)
 
 	def blender_to_ned(self, component_instance):
 		""" Convert the coordinates from Blender to UTM reference. """
@@ -51,5 +57,25 @@ class MorseNEDClass(object):
 		component_instance.modified_data[0] = component_instance.modified_data[1]
 		component_instance.modified_data[1] = tmp
 		component_instance.modified_data[2] = -component_instance.modified_data[2]
+
+		return component_instance.modified_data
+
+
+
+
+	def blender_to_ned_angle(self, component_instance):
+		""" Convert the coordinates from Blender to UTM reference. """
+		component_instance.modified_data[0] = 90.0+component_instance.modified_data[0]
+		component_instance.modified_data[1] = 90.0-component_instance.modified_data[1]
+		component_instance.modified_data[2] = component_instance.modified_data[2]
+
+		return component_instance.modified_data
+
+
+	def ned_angle_to_blender(self, component_instance):
+		""" Convert the coordinates from UTM to Blender reference. """
+		component_instance.modified_data[0] = 90.0-component_instance.modified_data[0]
+		component_instance.modified_data[1] = 90.0+component_instance.modified_data[1]
+		component_instance.modified_data[2] = component_instance.modified_data[2]
 
 		return component_instance.modified_data
