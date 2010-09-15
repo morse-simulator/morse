@@ -82,3 +82,17 @@ The robots becomes red when it intersects obstacles or bounces on them. Use the 
 (sole difference: the goal is given through YARP, sensor data are exported with YARP -- maybe add a camera, since it is trivial to display an image with YARP).
 
 [[morse:user:advanced_tutorials:yarp_tutorial | Go to: YARP-based simulation tutorial]]
+
+===== On the road-map =====
+
+The first release of MORSE contains only a subset of the final simulator specification.
+
+Amongst the planned features:
+  * Support for arms simulation, based on inverse kinematics. This has been separately developped by the Leuven's university and will be merge into MORSE over the next releases,
+  * Raw sockets interface + full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
+  * Developement of the user interface,
+  * Scalablity (both in term of simulation capacity and ease of deployment),
+  * Multi-node simulations (several Blender nodes can be started on several computer and automaticaly synchronise, which should allow simulations of tenth of robots in the same scene),
+  * Dedicated supervision node that would allow to: observe the simulation, display logs and metrics, start/stop robots, dynamically alter the scene (like moving an obstacle in front of a robot, etc.).
+
+
