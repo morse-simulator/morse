@@ -9,7 +9,40 @@ File history:
 28/05/2010 - Arnaud + Severin: update after "CMake operation"
 14/06/2010 - Gilberto: Remove completed tasks
 26/08/2010 - Gilberto: Add pending tasks for sensors, documentation and the Rosace scenario
+17/09/2010 - Severin: Bring up the list of features required for the next, human interaction oriented, release
 ---
+
+=========================================================
+ TARGETS FOR RELEASE 0.2 - The Human Interaction release
+=========================================================
+
+User-interface
+--------------
+- [ONGOING] Ability to fully control a robot or a human as "first
+  person shooter" to interact with other robots
+    - Ability to control a human with mouse + keyboard (turning head, moving around, sitting down)
+    - Ability to pick/release objects by clicking on them
+
+Middlewares
+-----------
+- Requests: be sure that components can be remotely (ie by clients) configured
+
+Components
+----------
+
+- [ONGOING] Arm control: support setting the position of the PA-10 arm by reading a set of 6 angles (commit 77700c258d2a)
+- Arm control: support setting the position of two KUKA LWR arms by reading
+a set of 14 angles (7 per arm)
+- Animated human export: MORSE should export the complete armature of the human
+- Motion capture poster: MORSE should be able to simulate a motion capture setup
+by allowing the designer to paste markers in the scene whose position will be exported
+- Viman-like sensor: MORSE should be able to export position, orientation, name 
+of marked objects.
+
+
+===============
+ LATER TARGETS
+===============
 
 Code organisation
 -----------------
@@ -17,39 +50,12 @@ Code organisation
 
 Architecture
 ------------
-* how components access other components? (eg: the cameras need the position of the robot)
-* unified time management ("what if we want to simulate at 2X?")
+- how components access other components? (eg: the cameras need the position of the robot)
+- unified time management ("what if we want to simulate at 2X?")
 
 User-interface
 --------------
-
 - Graphic tree of logic components and their interaction (no meshes, ... )
-- [for CHRIS project] Ability to fully control a robot or a human as "first
-  person shooter" to interact with other robots
-
-Middlewares
------------
-* Rethink the architecture ; three proposals:
-[DISCARDED] - Current solution: one abstract interface. Issues: only one middleware at
-     once ; coupling. In any case, current code must be rewritten (factories,
-	 etc)
-[ONGOING]   - Components have "hooks" to export their data. Middleware lives in parallel
-     threads and "visit" the components. In this case, middlewares still lives
-	 in the Python VM. Advantage: better decoupling ; middleware can dynamically
-	 choose what they want to watch.
-[DEFFERED]   - External decoupling: Python components export their data as shared memory
-     (or possibly sockets?), external modules (written in any language) read
-	 this memory and format it for each middleware. Advantage: complete decoupling.
-	 If a middleware crashes/slowdowns, no impact on the simulator, language
-	 independant (may be good for Genom3). Issues: "one more copy", could be harder
-	 to manage (one more protocol to manage: what happen if we update the simulator
-	 but not the middleware, etc), debugging, requests harder to implement.
-
--> Discuss what to do with the "YARP-JSON" bridge from IRIT
-
-* Requests: be sure that components can be remotely (ie by clients) configured
-
-
    
 Linking issues
 --------------
@@ -79,7 +85,6 @@ Frame transformations
 
 Other stuff 
 -----------
-* write, complete, update, add to repo the general documentation of the simulator
 - commit policy
 - Blender 2.5
 
@@ -87,9 +92,6 @@ Other stuff
 Components
 ----------
 - Waypoint controller
-- Animated human
-  - Mocap poster
-- Viman poster visibility test
 - SICK poster
 
 Rosace Project
