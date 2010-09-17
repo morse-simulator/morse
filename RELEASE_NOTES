@@ -1,0 +1,19 @@
+MORSE v 0.2
+-----------
+
+- Components have "hooks" to export their data. Middleware lives in parallel
+threads and "visit" the components. In this case, middlewares still lives
+in the Python VM. Advantage: better decoupling ; middleware can dynamically
+choose what they want to watch.
+
+- Add serialize methods to the data of each component. This will format the 
+data according to the needs of each middleware/architecture.
+
+- Possibility to control the camera when the game engine runs (with keyboard, 
+mouse, or attach some view to some robots)
+
+
+MORSE v 0.1 - 28/07/2010
+------------------------
+
+First version
