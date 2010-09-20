@@ -8,10 +8,9 @@ from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
 
 
 class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
-	""" Handle communication between Blender and YARP."""
+	""" Handle communication between Blender and Pocolibs."""
 
 	def __init__(self, obj, parent=None):
-		""" Initialize the network and connect to the yarp server."""
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
 
@@ -30,8 +29,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 			ors_poster.finalize(poster_id)
 
 
-	def register_component(self, component_name,
-			component_instance, mw_data):
+	def register_component(self, component_name, component_instance, mw_data):
 		""" Open the pocolibs poster to communicate a specified component.
 
 		The configuration of each type of poster is done in external modules.
@@ -49,7 +47,7 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 	def _compute_date(self):
 		""" Compute the current time
 
-		( we only requiere that the date
+		( we only require that the date
 		increases using a constant step so real time is ok)
 		"""
 		t = datetime.datetime.now()

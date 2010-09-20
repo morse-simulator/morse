@@ -1,7 +1,7 @@
 INCLUDE(${SWIG_USE_FILE})
 
-#pkg_check_modules(VIMAN REQUIRED viman)
-#pkg_check_modules(POM REQUIRED pom)
+pkg_check_modules(VIMAN REQUIRED viman)
+pkg_check_modules(POM REQUIRED pom)
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
