@@ -42,10 +42,6 @@ def rotateHead(contr):
 	# get OBCube from objList.  No default value
 	body = objList.get("OBArmature")
 	
-#	Selection directe du bone mais impossible
-#	head2 = objList.get("OBHead")
-#	print(head2)
-	
 	# Get sensor named Mouse
 	keyboard = contr.sensors['TurnHead']
 	keylist = keyboard.events
@@ -99,7 +95,7 @@ def rotateHead(contr):
 	# Center mouse in game window
 	Rasterizer.setMousePosition(width/2, height/2)
 	
-	
+
 	# define mouse movement function
 def mouse_move(human, mouse, width, height):
 
@@ -121,4 +117,3 @@ def mouse_move(human, mouse, width, height):
 		
 	# return mouse movement
 	return (x, y)
-
