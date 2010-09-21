@@ -71,6 +71,10 @@ next versions.
 
 [[supported_middlewares | Go to: Middleware support]]
 
+===== Tips and how-tos =====
+
+  * [[morse:user:tips:bounding_boxes | How to efficiently add complex bounding boxes to your objects]]
+
 ===== Advanced tutorials =====
 
 [[morse:user:advanced_tutorials:advanced_tutorials | List of all tutorials]]

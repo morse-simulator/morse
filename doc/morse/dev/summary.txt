@@ -25,8 +25,6 @@ You can as well fetch the latest version of the code with GIT:
 $ git clone http://trac.laas.fr/git/robots/morse.git
 </code>
 
-Easy installation instructions will be added after the official release of MORSE 0.1.
-
 ===== Overview =====
 An overview of code organization in MORSE
 
@@ -37,7 +35,7 @@ Principle of interaction with Blender and the game engine
 
 [[dev_workflow | Overview for MORSE workflow for developers]]
 
-===== Adding a new component =====
+===== Creating a new component (robot, sensor or actuator) =====
 Create a sensor. Explain the logic
 
 [[adding_component | Tutorial: Adding a new component]]
