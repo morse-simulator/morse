@@ -15,11 +15,12 @@ import Rasterizer
 import GameLogic
 import GameKeys
 import math
+from Mathutils import Matrix
 #import GameTypes
 
 MAX_HEAD_PAN = 60.0 #in deg
-MAX_HEAD_TILT = 60.0
-MAX_HEAD_YAW = 30.0
+MAX_HEAD_TILT = 40.0
+MAX_HEAD_YAW = 10.0
 
 def move(contr):
 	""" Read the keys for specific combinations
@@ -102,22 +103,36 @@ def rotate(contr):
 	leftRight = move[0] * sensitivity
 	upDown = move[1] * sensitivity
 
-	#TODO: Could be improved: we don't control the YAW -> the head may have a strange position!
-	m = head.orientation
-	roll = math.atan2(m[1][0], m[0][0]) * 180 / math.pi
-	pitch = -math.asin(m[2][0]) * 180 / math.pi
-	#yaw = math.atan2(m[2][1], m[2][2]) * 180 / math.pi
-	#print [roll, pitch, yaw]
+	orientation = head.orientation
+	parent_ori = head.parent.orientation
+	
+	ori_mat = Matrix(orientation[0], orientation[1], orientation[2])
+	parent_ori_mat = Matrix(parent_ori[0], parent_ori[1], parent_ori[2])
+	
+	head2parent = parent_ori_mat * ori_mat.invert()
+	
+	ori_eul_parent = ori_mat.toEuler()
+	ori_eul = ori_mat.toEuler()
+	
+
+	print str(ori_eul)
 
 	# set the values
-	if abs(roll + leftRight) < MAX_HEAD_PAN or abs(roll + leftRight) < abs(roll):
-		head.applyRotation( [0.0, 0.0, leftRight], True )
+	if abs(ori_eul.z + leftRight) < MAX_HEAD_PAN or abs(ori_eul.z + leftRight) > abs(ori_eul.z):
+		ori_eul.z -= leftRight
 	
-	if abs(pitch + upDown) < MAX_HEAD_TILT or abs(pitch + upDown) < abs(pitch):
-		head.applyRotation( [0.0, upDown, 0.0], True )
-
+	if abs(ori_eul.y + upDown) < MAX_HEAD_TILT or abs(ori_eul.y + upDown) > abs(ori_eul.y):
+		ori_eul.y -= upDown
+		
+	if ori_eul.x > MAX_HEAD_YAW:
+		ori_eul.x = MAX_HEAD_YAW
+	if ori_eul.x < -MAX_HEAD_YAW:
+		ori_eul.x = -MAX_HEAD_YAW
+	
+	ori_mat = ori_eul.toMatrix()
+	head.setOrientation(ori_mat)
 	# Center mouse in game window
-	Rasterizer.setMousePosition(width/2, height/2)
+	Rasterizer.setMousePosition(width//2, height//2)
 
 
 # define mouse movement function
