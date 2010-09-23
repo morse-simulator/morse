@@ -22,7 +22,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 		self._message_size = 1024
 
 	def register_component(self, component_name, component_instance, mw_data):
-		""" Open the port used to communicate the specified component.
+		""" Open the port used to communicate by the specified component.
 
 		The name of the port is postfixed with in/out, according to
 		the direction of the communication.
