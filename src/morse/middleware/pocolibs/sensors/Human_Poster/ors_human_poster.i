@@ -1,5 +1,7 @@
 %module ors_human_poster
 
+%apply int* OUTPUT {int* ok};
+
 %{
 /* Include the header in the wrapper code */
 #include <genBasic/genBasicStruct.h>

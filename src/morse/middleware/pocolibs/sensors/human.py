@@ -45,6 +45,4 @@ def write_human(self, component_instance):
 
 	scene = GameLogic.getCurrentScene()
 
-	ors_viman_poster.set_visible (self.human_data, )
-
-	posted = ors_viman_poster.post_human_poster(poster_id, self.human_data)
+	posted = ors_human_poster.post_human_poster(poster_id, self.human_data)

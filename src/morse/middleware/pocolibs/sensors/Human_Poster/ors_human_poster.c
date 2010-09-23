@@ -61,7 +61,7 @@ MHP_HUMAN_CONFIGURATION generate_human_struct()
 	return global_human_data;
 }
 
-int post_viman_poster(POSTER_ID id, MHP_HUMAN_CONFIGURATION* human_data)
+int post_human_poster(POSTER_ID id, MHP_HUMAN_CONFIGURATION* human_data)
 {
 	size_t offset = 0;
 	posterWrite(id, offset, human_data, sizeof(MHP_HUMAN_CONFIGURATION));
