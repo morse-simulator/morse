@@ -11,7 +11,8 @@ def init_extra_module(self, component_instance, function):
 	# Compose the name of the poster, based on the parent and module names
 	component_name = component_instance.blender_obj.name
 	parent_name = component_instance.robot_parent.blender_obj.name
-	poster_name = 'human_{0}_{1}'.format(parent_name, component_name)
+	poster_name = 'human_{0}_{1}_Poster'.format(parent_name, component_name)
+	
 	poster_id = init_human_poster(self, component_instance, poster_name)
 
 	if poster_id != None:
@@ -19,23 +20,20 @@ def init_extra_module(self, component_instance, function):
 		# Store the name of the port
 		self._poster_dict[component_name] = poster_id
 
-
 def init_human_poster(self, component_instance, poster_name):
 	""" Prepare the data for a human poster """
-
+	
 	self.human_data = ors_human_poster.generate_human_struct()
-
+	
 	# Init the data structures used by this poster
 	poster_id, ok = ors_human_poster.init_data(poster_name)
 	if ok == 0:
 		print ("ERROR creating poster. This module may not work")
 		return None
-
-	#else:
+	
 	print("HUMAN Poster '%s' created (ID: %d)" % (poster_name, poster_id))
 
 	return poster_id
-
 
 def write_human(self, component_instance):
 	""" Write the posture of a human to a poster """

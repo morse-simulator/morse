@@ -1,4 +1,5 @@
 %module ors_human_poster
+%include "typemaps.i"
 
 %apply int* OUTPUT {int* ok};
 
