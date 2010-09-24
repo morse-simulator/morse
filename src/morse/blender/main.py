@@ -1,6 +1,7 @@
 import sys
 import re
 import GameLogic
+import Rasterizer
 
 # Import this library to recover the Python version
 import platform
@@ -234,6 +235,9 @@ def init(contr):
 	print ('======= COMPONENT DICTIONARY INITIALIZED =======')
 
 	check_dictionaries()
+	
+	#Display the mouse in the simulator
+	Rasterizer.showMouse(1)
 
 
 def admin(contr):
