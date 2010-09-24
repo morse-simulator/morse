@@ -10,9 +10,9 @@ def init_extra_module(self, component_instance, function):
 	parent_name = component_instance.robot_parent.blender_obj.name
 	poster_name = 'pom_{0}_{1}_Poster'.format(parent_name, component_name)
 
-	poster_id = init_pom_poster(component_instance, poster_name)
+	poster_id = init_pom_poster(self, component_instance, poster_name)
 	if poster_id != None:
-		print ("Pocolibs created poster '%s' of type viam" % poster_id)
+		print ("Pocolibs created poster '%s' of type pom" % poster_id)
 		component_instance.output_functions.append(function)
 		# Store the name of the port
 		self._poster_dict[component_name] = poster_id
