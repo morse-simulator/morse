@@ -46,7 +46,8 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Open the file and write a header
 		file_name = '{0}_{1}.txt'.format(parent_name, component_name)
 		FILE = open(file_name, 'wb')
-		FILE.writelines(data)
+		for line in data:
+			FILE.write(line.encode())
 		self._file_list[component_name] = FILE
 		print ("File: '%s' opened for writing" % file_name)
 
@@ -58,9 +59,11 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
 		"""
 		parent_position = component_instance.robot_parent.blender_obj.position
 		FILE = self._file_list[component_instance.blender_obj.name]
-		FILE.write("==> Data at location: {0}\n".format(parent_position))
+		line = "==> Data at location: [%.6f %.6f %.6f]\n" % (parent_position[0], parent_position[1], parent_position[2])
+		FILE.write(line.encode())
 		i = 0
 		for variable in component_instance.data_keys:
 			data = component_instance.modified_data[i]
-			FILE.write("\t%s = %s\n" % (variable, repr(data)))
+			line = "\t%s = %s\n" % (variable, repr(data))
+			FILE.write(line.encode())
 			i = i + 1
