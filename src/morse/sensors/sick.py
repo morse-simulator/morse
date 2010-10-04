@@ -67,40 +67,48 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 					vertex = mesh.getVertex(mat, v_index)
 					vertex_pos = vertex.getXYZ()
 
-					#print ("\tORIGINAL POINT: [%.2f, %.2f, %.2f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2]))
+					#print ("\tORIGINAL POINT: [%.4f, %.4f, %.4f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2]))
+
+					# Convert the vertex to a vector
+					fill_vector (vector_point, vertex_pos)
 
 					# Skip the center vertex
 					# NOTE: Make sure the center vertex of the arc
 					#  has local coordinates 0.0, 0.0, 0.0
-					if vertex_pos == [0.0, 0.0, 0.0]:
+					if vector_point.length == 0:
+					#if vertex_pos == [0, 0, 0]:
+						#print ("\t\tskipping over center vertex")
 						continue
 
 					# Adjust the vector coordinates to the rotation
 					#  of the robot
-					fill_vector (vector_point, vertex_pos)
 					corrected_vertex = self.blender_obj.getAxisVect(vector_point)
 
-					ray = self.blender_obj.position
+					#print ("\tARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+
+					#ray = self.blender_obj.position
+					ray = [0, 0, 0]
 					# Displace according to the arc vertices
 					for i in range(3):
-						ray[i] = ray[i] + corrected_vertex[i]
+						ray[i] = self.blender_obj.position[i] + corrected_vertex[i]
 
 					#print ("\tv: [%.2f, %.2f, %.2f]\t\tr: [%.2f, %.2f, %.2f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2], ray[0], ray[1], ray[2]))
 
 					# Shoot a ray towards the target
 					target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['Laser_Range'])
+					#print ("Target, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
 					# If there was an intersection,
 					#  send the vertex to that point
 					if target:
-						#print ("\tGOT INTERSECTION WITH RAY: [%.2f, %.2f, %.2f]" % (ray[0], ray[1], ray[2]))
-						#print ("\tINTERSECTION AT: [%.2f, %.2f, %.2f] = %s" % (point[0], point[1], point[2], target))
+						#print ("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (ray[0], ray[1], ray[2]))
+						#print ("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
 
 						# Substract the sensor coordinates
 						#  from the intersection point
 						for i in range(3):
 							point[i] = point[i] - self.blender_obj.position[i]
-						#print ("\tARC POINT: [%.2f, %.2f, %.2f]" % (point[0], point[1], point[2]))
+						#print ("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
 
 						# Create a vector object
 						fill_vector (vector_point, point)
@@ -108,7 +116,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 						# Multiply the resulting point by the inverse
 						#  of the sensor rotation matrix
 						arc_point = vector_point * inverted_matrix
-						#print ("\tARC POINT: [%.2f, %.2f, %.2f]" % (arc_point[0], arc_point[1], arc_point[2]))
+						#print ("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (arc_point[0], arc_point[1], arc_point[2]))
 
 						# Do not move the point if the ray intersection
 						#  happened at the origin
@@ -128,6 +136,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 
 						# Move the vertex to the computed position
 						vertex.setXYZ(vector_point)
+						#print ("\t\tNO intersection. [%.4f, %.4f, %.4f]" % (vector_point[0], vector_point[1], vector_point[2]))
 
 						# Add a point at 0,0,0 to the output file,
 						#  to mark that this ray did not find anything
