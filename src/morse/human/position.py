@@ -19,15 +19,14 @@ sit_down_key = senList["sit_down"]
 sitdown = actList["sitdown"]
 standup  = actList["standup"]
 
-def applyPosition():
+
 # Sitdown
-	if sit_down_key.positive == True and human['statusStandUp'] == True:
-		controller.activate(sitdown)
-		human['statusStandUp'] = False
-		
-	# Standup
-	elif sit_down_key.positive == True and human['statusStandUp'] == False:
-		controller.activate(standup)
-		human['statusStandUp'] = True
-		
+if sit_down_key.positive == True and human['statusStandUp'] == True:
+	controller.activate(sitdown)
+	human['statusStandUp'] = False
+	
+# Standup
+elif sit_down_key.positive == True and human['statusStandUp'] == False:
+	controller.activate(standup)
+	human['statusStandUp'] = True
 	

@@ -4,6 +4,9 @@ import GameKeys
 import Blender
 import math
 
+import Mathutils as mathutils
+
+
 #import GameTypes
 
 # get the controller the script it attached to
@@ -16,6 +19,7 @@ actList = controller.actuators
 MAX_HEAD_PAN = 60.0 #in deg
 MAX_HEAD_TILT = 60.0
 MAX_HEAD_YAW = 30.0	
+MAX_BODY = 180
 
 
 #arm = Blender.Armature.Get("Armature")
@@ -33,6 +37,9 @@ def rotateHead(contr):
 	
 	# get the object this script is attached to
 	head = contr.owner
+	
+
+	
 	status = head['statusHead']
 	
 	# get the current scene
@@ -41,7 +48,11 @@ def rotateHead(contr):
 	objList = scene.objects
 	# get OBCube from objList.  No default value
 	body = objList.get("OBArmature")
+	# get the orientation of the body
+	chest = scene.objects['OBChest']
 	
+	
+
 	# Get sensor named Mouse
 	keyboard = contr.sensors['TurnHead']
 	keylist = keyboard.events
@@ -74,28 +85,43 @@ def rotateHead(contr):
 
 	#TODO: Could be improved: we don't control the YAW -> 		the head may have a strange position!
 	
-	m = head.orientation
-	roll = math.atan2(m[1][0], m[0][0]) * 180 / math.pi
-	pitch = -math.asin(m[2][0]) * 180 / math.pi
+	h = head.orientation
+	c = chest.orientation
+	
+	hRoll = math.atan2(h[1][0], h[0][0]) * 180 / math.pi
+	hPitch = -math.asin(h[2][0]) * 180 / math.pi
 	#yaw = math.atan2(m[2][1], m[2][2]) * 180 / math.pi
 	#print [roll, pitch, yaw]
+	
+	cRoll = math.atan2(c[1][0], c[0][0]) * 180 / math.pi
+	cPitch = -math.asin(c[2][0]) * 180 / math.pi
 
 	if status == True:
 		# set the values
+
+		rRoll = hRoll - cRoll
 		
-		if abs(roll + leftRight) > MAX_HEAD_PAN :# or abs(roll + leftRight) < abs(roll):
-			body.applyRotation( [0.0, 0.0, leftRight], True )
+		#elif (roll + leftRight) < (roll):
+		#	head.applyRotation( [0.0, 0.0, leftRight], True )
 			
-		elif abs(roll + leftRight) < MAX_HEAD_PAN or abs(roll + leftRight) < abs(roll):
-			head.applyRotation( [0.0, 0.0, leftRight], True )
-	
-		if abs(pitch + upDown) < MAX_HEAD_TILT or abs(pitch + upDown) < abs(pitch):
-			head.applyRotation( [0.0, upDown, 0.0], True )
+		print("%.4f <= %.4f <= %.4f | %.4f" % ((cRoll - MAX_HEAD_PAN), (hRoll), (cRoll + MAX_HEAD_PAN), leftRight))
+			
+		if  (-MAX_HEAD_PAN) <= (rRoll) <= (MAX_HEAD_PAN):		
+			head.applyRotation( [0.0, 0.0, leftRight], True)
+		elif (rRoll < -MAX_HEAD_PAN and leftRight > 0):
+			head.applyRotation( [0.0, 0.0, leftRight], True)
+		elif (rRoll > MAX_HEAD_PAN and leftRight < 0):
+			head.applyRotation( [0.0, 0.0, leftRight], True)
+		else:
+			body.applyRotation( [0.0, 0.0, leftRight], True)
+			#if  (cRoll - MAX_HEAD_PAN-1) <= (hRoll + leftRight) <= (cRoll + MAX_HEAD_PAN+1):
+				#head.applyRotation( [0.0, 0.0, -leftRight], True)
+		
 			
 	# Center mouse in game window
 	Rasterizer.setMousePosition(width/2, height/2)
 	
-
+	
 	# define mouse movement function
 def mouse_move(human, mouse, width, height):
 
