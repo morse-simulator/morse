@@ -82,15 +82,19 @@ def create_dictionaries ():
 
 	# Get the middlewares
 	for obj in scene.objects:
+		is_middleware = False
 		try:
 			obj['Middleware_Tag']
-			# Create an object instance and store it
-			instance = create_instance (obj)
-			GameLogic.mwDict[obj] = instance
+			is_middleware = True
 		except KeyError as detail:
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
 								# Does not work in Python 3
+		if is_middleware:
+			# Create an object instance and store it
+			instance = create_instance (obj)
+			GameLogic.mwDict[obj] = instance
+			print ("\tMiddleware '%s' found" % obj)
 
 
 
