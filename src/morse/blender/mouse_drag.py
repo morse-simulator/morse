@@ -1,21 +1,20 @@
 ######################################################
 #
-#    mouse_drag.py        Blender 2.49
+#	mouse_drag.py		Blender 2.49
 #
-#    A script to pick with the mouse and move in 3D 
-#    an object
+#	A script to pick with the mouse and move in 3D
+#	an object
 #
 # Based on previous work by Monster, Almost and Stralen
 # http://blenderartists.org/forum/showthread.php?p=1688086
 #
-#    Severin Lemaignan
-#    24 / 08 / 2010
+#	Severin Lemaignan
+#	24 / 08 / 2010
 #
 ######################################################
 
 import GameLogic
 import Rasterizer
-import Blender
 from Mathutils import Vector
 
 motionSpeed = 5
@@ -24,151 +23,176 @@ rotationSpeed = 5
 #that is between the camera and the hitposition
 lowestLevel = 0.5 #this is the fixed z  value
 
-grabme = Blender.Object.Get ('grabme') 
-print(grabme)
-#print(grabme['restrictedAxis'])
-
-#---- change the plan of moving
-def changePlane(cont):
-
-	senList = cont.sensors
-	actList = cont.actuators
 
 
-	# get the keyboard sensor
-	change_plane_key = senList["change_plane"]
-	
-	print("on est dans changePlane")
-#	print(cont.owner['restricetedAxis'])
+def init(contr):
+	#If necessary, initialize the property
+	if not "dragging" in contr.owner:
+		contr.owner["dragging"] = False
+	if not "restrictedAxis" in contr.owner:
+		#by default, restrict movemenent on (x,y)
+		contr.owner["restrictedAxis"] = 1
+	if not "draggedObject" in contr.owner:
+		contr.owner["draggedObject"] = None
+	if not "motionPlane" in contr.owner:
+		contr.owner["motionPlane"] = None
 
-	if change_plane_key.positive == True:
-		if cont.owner['restrictedAxis'] == 1:
-			cont.owner['restrictedAxis'] = 2
-			print(cont.owner['restrictedAxis'])
-			
-		elif cont.owner['restrictedAxis'] == 2:
-			cont.owner['restrictedAxis'] = 1
-			print(cont.owner['restrictedAxis'])
-	
-	print("on sort de changePlane")
+	showMouse(contr)
+
 
 #---- debugging function not really needed
 def moveToTargetPosition(cont):
-    '''
-    Moves the owner of the controller to the position stored 
-    in the property "targetPosition" of the owner of the first sensor.
-    '''
-    try:
-        cont.owner.worldPosition = cont.sensors[0].owner["targetPosition"]
-    except KeyError:
-        pass
+	'''
+	Moves the owner of the controller to the position stored
+	in the property "targetPosition" of the owner of the first sensor.
+	'''
+	try:
+		cont.owner.worldPosition = cont.sensors[0].owner["targetPosition"]
+	except KeyError:
+		pass
+
+
 #---- utility function
-def onePositive(cont):
-    for sensor in cont.sensors:
-        if sensor.positive:
-            return True
-    return False
+def onePositive(contr):
+	for sensor in contr.sensors:
+		if sensor.positive:
+			return True
+	return False
+
+
 #---- Just to make the cursor visible
-def showMouse(cont):
-    if not onePositive(cont):
-        return
-    Rasterizer.showMouse(1)
-    print "show Mouse"
-    
+def showMouse(contr):
+	if not onePositive(contr):
+		return
+	Rasterizer.showMouse(1)
+	print ("Showing Mouse")
+
+
 def hideMouse(cont):
-    if not onePositive(cont):
-        return
-    Rasterizer.showMouse(0)
-    print "hide Mouse"
+	if not onePositive(cont):
+		return
+	Rasterizer.showMouse(0)
+	print ("hide Mouse")
 
-#---- dragging functions        
-def storeDraggedObject(own, hitObject):
-    if hitObject != None and "draggable" in hitObject:
-        own["draggedObject"] = hitObject
-        return hitObject
-    else: 
-        formerObj = own["draggedObject"]
-        own["draggedObject"] = None
-        return formerObj
 
-def getTargetPosition(overAny, restriction, axis):
-    
-    raySource = Vector(overAny.raySource)
-    hitPosition = Vector(overAny.hitPosition)
-    rayVector = hitPosition-raySource
-    
-    if not "drag" in overAny.hitObject \
-    and hitPosition[axis] > restriction:
-        targetPosition = hitPosition
-    else:
-        planeContactPoint = ( restriction-raySource[axis])/rayVector[axis]
-        targetPosition = (rayVector*planeContactPoint) + raySource
-        
-    return targetPosition
+def getTargetPosition(overAny, basePosition, motionPlane):
+	""" Compute the new location for the selected object """
+	# Go back to basics. Simply place the object where the mouse is
+	if overAny.hitObject == motionPlane:
+		targetPosition = Vector(overAny.hitPosition)
+	else:
+		targetPosition = basePosition
+
+	return targetPosition
+
 
 def doDrag(cont):
-    overAny = cont.sensors["overAny"]
-    
-    draggedObject = cont.owner.get("draggedObject", None)
-    if draggedObject == None:
-        #Nothing to drag
-        return
+	overAny = cont.sensors["overAny"]
+
+	draggedObject = cont.owner.get("draggedObject", None)
+	if draggedObject == None:
+		#Nothing to drag
+		return
+
+	#print "Dragging", draggedObject, "on", overAny.hitObject
+
+	if overAny.positive:
+		restrictedAxis = cont.owner["restrictedAxis"]
+		basePosition = draggedObject.position
+		targetPosition = getTargetPosition(overAny, basePosition, cont.owner['motionPlane'])
+
+		#just for debugging see moveToTargetPosition
+		cont.owner["targetPosition"] = targetPosition
+	else:
+		return
+
+	draggedObject.position = targetPosition
 
 
-    #print "Dragging", draggedObject, "on", overAny.hitObject   
+#---- All in one
+def dragDrop(contr):
+	""" Drag of the selected object """
+	overAny = contr.sensors["overAny"]
+	activateDrag = contr.sensors["LMB"]
 
-    if overAny.positive:
-        restrictedAxis = cont.owner["restrictedAxis"]
-        restriction = draggedObject.worldPosition[restrictedAxis]
-        targetPosition = getTargetPosition(overAny, restriction, restrictedAxis)
+	scene = GameLogic.getCurrentScene()
+	XYPlane = scene.objects['OBXYPlane']
+	XZPlane = scene.objects['OBXZPlane']
+	YZPlane = scene.objects['OBYZPlane']
 
-        #just for debugging see moveToTargetPosition
-        cont.owner["targetPosition"] = targetPosition
-    else:
-        return
-    
-    draggedObject.position = targetPosition
-    #currentPosition = Vector(draggedObject.position)
-    #rayToWall = draggedObject.rayCast(targetPosition,draggedObject,0,'wall')
-    
-    #if rayToWall[0] == None:
-    #    targetPosition = targetPosition
-    #else:
-    #    targetPosition = rayToWall[1]
-        
-    #speed = motionSpeed
-    
-    #vec = (Vector(targetPosition) - currentPosition)*speed
-    
-    ## only move in motion mode
-    #if not activateRotation.positive:
-    #    draggedObject.setLinearVelocity(vec,0)
+	# LMB was pressed
+	if activateDrag.triggered and activateDrag.positive:
+		print ("Dragging on", overAny.hitObject)
+		contr.owner["dragging"] = True
 
-#---- All in one    
-def dragDrop(cont):
-    overAny = cont.sensors["overAny"]
-    activateDrag = cont.sensors["rmb"] 
-    
-    #If necessary, initialize the property
-    if not "dragging" in cont.owner:
-            cont.owner["dragging"] = False
-	
-    if not "restrictedAxis" in cont.owner:
-            cont.owner["restrictedAxis"] = 2 #by default, restrict movemenent on (x,y)
-    
-    if activateDrag.triggered and activateDrag.positive: #just activated        
-        cont.owner["dragging"] = not cont.owner["dragging"]
-        
-        #initialize dragging
-        if cont.owner["dragging"]:
-            print "Dragging on", overAny.hitObject
-            storeDraggedObject(cont.owner, overAny.hitObject)
-            
-        else:
-            print "End dragging"
-            storeDraggedObject(cont.owner, None)
-            return
-    
-    
-    if cont.owner["dragging"]: #activate
-        doDrag(cont)
+		# Select the plane to be used for motion
+		if contr.owner['restrictedAxis'] == 0:
+			contr.owner['motionPlane'] = XYPlane
+			print ("Using plane XY")
+		if contr.owner['restrictedAxis'] == 1:
+			contr.owner['motionPlane'] = XZPlane
+			print ("Using plane XZ")
+		if contr.owner['restrictedAxis'] == 2:
+			contr.owner['motionPlane'] = YZPlane
+			print ("Using plane YZ")
+
+		# Move the motion plane to the location of the target
+		contr.owner['motionPlane'].position = contr.owner['draggedObject'].position
+
+	# LMB was released
+	if activateDrag.triggered and not activateDrag.positive:
+		print ("End dragging")
+		contr.owner["dragging"] = False
+		#storeDraggedObject(cont.owner, None)
+		return
+
+	# Move the object around
+	if contr.owner["dragging"]:
+		doDrag(contr)
+
+
+def objectSelect(contr):
+	""" Mark an object as selected by the user """
+	scene = GameLogic.getCurrentScene()
+	sphere = scene.objects['OBSelectionSphere']
+
+	rightButton = contr.sensors["RMB"]
+	# RMB was pressed
+	if rightButton.triggered and rightButton.positive:
+		overAny = contr.sensors["overAny"]
+		selectedObject = overAny.hitObject
+
+		# Clear the previously selected object, if any
+		if contr.owner['draggedObject'] != None:
+			previousObject = contr.owner["draggedObject"]
+			# Restore Physics simulation
+			previousObject.restoreDynamics()
+			previousObject.setLinearVelocity([0, 0, 0])
+			previousObject.setAngularVelocity([0, 0, 0])
+			# Reset the sphere
+			sphere.removeParent()
+			sphere.position = [0, 0, 20]
+
+		# Hide the motion plane previously used
+		if contr.owner['motionPlane'] != None:
+			contr.owner['motionPlane'].position = [0, 0, -20]
+
+		# If the object is draggable
+		if "draggable" in selectedObject:
+			# Store the object selected
+			contr.owner["draggedObject"] = selectedObject
+			# Remove Physic simulation
+			selectedObject.suspendDynamics()
+			print ("SELECTED OBJECT: %s" % selectedObject)
+
+			# Move the sphere to the location of the target
+			sphere.position = selectedObject.position
+			# Parent the sphere to selected object
+			sphere.setParent (selectedObject)
+
+
+def togglePlane(contr):
+	""" Change the motion plane """
+	planeIndex = contr.owner['restrictedAxis']
+	planeIndex = (planeIndex + 1) % 3
+	contr.owner['restrictedAxis'] = planeIndex
