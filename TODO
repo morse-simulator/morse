@@ -87,6 +87,7 @@ Other stuff
 -----------
 - commit policy
 - Blender 2.5
+- Standardize the scale of objects in MORSE. The 'Grande Salle' scene looks way smaller than the robots
 
 
 Components
@@ -98,6 +99,7 @@ Rosace Project
 --------------
 - Add timeline of events in the simulation
 - Add init script that places the robots and victims specified in a XML file
+- Add yarp function for dealing with JSON data, both to read and send
 
 Documentation
 -------------
