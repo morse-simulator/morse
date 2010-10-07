@@ -17,8 +17,10 @@ Copyright LAAS-CNRS 2009
 
 import GameLogic
 
-import Blender
-#import bpy.types
+if GameLogic.pythonVersion < 3:
+	import Blender
+else:
+	import bpy
 # Import the ontology server proxy
 #import oro
 
@@ -65,8 +67,10 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
 			for obj in GameLogic.trackedObjects.keys():
 				# GetBoundBox(0) returns the bounding box in local space
 				#  instead of world space.
-				#GameLogic.trackedObjects[obj] = bpy.types.Object(obj).bound_box
-				GameLogic.trackedObjects[obj] = Blender.Object.Get(obj.name[2:]).getBoundBox(0)
+				if GameLogic.pythonVersion < 3:
+					GameLogic.trackedObjects[obj] = Blender.Object.Get(obj.name[2:]).getBoundBox(0)
+				else:
+					GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
 				print ('	- {0}'.format(obj.name))
 
 
