@@ -20,7 +20,7 @@ Alternatively, you can use the GitHub mirror (synchronized every hour) (it is pr
 
   $ git clone http://github.com/laas/morse.git -b 0.1_STABLE
 
-You can get a tarball version [[http://softs.laas.fr/openrobots/distfiles/morse-0.1.tar.gz|here]]. You can check the following information to make sure that the download went fine.
+You can get a tarball version [[http://softs.laas.fr/openrobots/distfiles/morse/morse-0.1.tar.gz|here]]. You can check the following information to make sure that the download went fine.
 
 <code>
 SHA1 (morse-0.1.tar.gz) = 1e7951b7d5c73bd1723e84e4deb6bd9124636307
@@ -34,11 +34,12 @@ you don't need anything else. Otherwise, you need to install the software for ot
 ==== YARP ====
 
 For the YARP bindings
-  * YARP version (2.2.5 or +)
+  * YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
   * YARP python binding
   * ACE ( 5.6.3 or +, required for YARP)
 
 Instructions to create YARP-Python bindings are [[http://eris.liralab.it/wiki/YARP_and_Python | here]].
+
 
 Note that the easiest way to install YARP is probably to use ''robotpkg'' (see [[http://homepages.laas.fr/mallet/robotpkg | robotpkg homepage]] for more informations). Follow the instructions on installing ''robotpkg''. Then add the environment variable ''ROBOTPKG_BASE'' to your shell.
 Then to install ''YARP'':
