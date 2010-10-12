@@ -5,7 +5,7 @@ from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
 
 object_config_file = "objectList_cfg"
 
-def init_extra_module(self, component_instance, function):
+def init_extra_module(self, component_instance, function, function_name):
 	""" Setup the middleware connection with this data
 
 	Prepare the middleware to handle the serialised data as necessary.
