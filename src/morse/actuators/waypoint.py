@@ -1,3 +1,4 @@
+import math
 import GameLogic
 if GameLogic.pythonVersion < 3:
 	import Mathutils as mathutils
@@ -20,8 +21,10 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		super(self.__class__,self).__init__(obj, parent)
 
 		self.tolerance = 0.5
-		self.angle_tolerance = 5
+		# Convert the tolerance to radians
+		self.angle_tolerance = 5 * math.pi / 180
 		self.destination = self.blender_obj.position
+		self.in_motion = False
 
 		# Direction of the global vectors
 		self.world_X_vector = mathutils.Vector([1,0,0])
@@ -30,7 +33,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		self.local_data['x'] = self.destination[0]
 		self.local_data['y'] = self.destination[1]
 		self.local_data['z'] = self.destination[2]
-		self.local_data['speed'] = 5.0
+		self.local_data['speed'] = 1.0
 
 		self.data_keys = ['x', 'y', 'z', 'speed']
 
@@ -50,18 +53,17 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 		self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
-		#print ("WAYPOINT GOT DESTINATION: {0}".format(self.destination))
 		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+		print ("\nWAYPOINT GOT DESTINATION: {0}".format(self.destination))
 
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 		# Convert to the Blender Vector object
 		global_vector = mathutils.Vector(global_vector)
 
-		#print ("My position: {0}".format(self.blender_obj.position))
-		print ("\nGOT DISTANCE: {0}".format(distance))
-		print ("Global vector: {0}".format(global_vector))
-		#print ("Local  vector: {0}".format(local_vector))
+		print ("GOT DISTANCE: %.4f" % (distance))
+		print ("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
+		#print ("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
 		# If the target has been reached, change the status
 		if distance-self.tolerance <= 0:
@@ -72,23 +74,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		else:
 			parent.move_status = "Transit"
 
-			# Use the appropriate function to get the angle between two vectors
-			if GameLogic.pythonVersion < 3:
-				target_angle = mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
-			else:
-				# In Blender 2.5, the angle function returns radians
-				target_angle = global_vector.angle(self.world_X_vector)
-				# Convert to degrees
-				target_angle = target_angle * 180 / math.pi
-
-			"""
-			# Correct the direction of the turn according to the angles
-			dot = global_vector.dot(self.world_Y_vector)
-			print ("DOT = {0}".format(dot))
-			if dot < 0:
-				target_angle = target_angle * -1
-			"""
-
+			### Get the angle of the robot ###
 			try:
 				robot_angle = parent.yaw
 			except KeyError as detail:
@@ -97,9 +83,28 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 				# Force the robot to move towards the target, without rotating
 				robot_angle = target_angle
 
-			# Get the direction difference between the robot and the target
-			angle_diff = robot_angle - target_angle
-			"""
+			if GameLogic.pythonVersion < 3:
+				# Convert to radians
+				robot_angle = robot_angle * -1 * math.pi / 180 
+
+
+			### Get the angle to the target ###
+			# Use the appropriate function to get the angle between two vectors
+			if GameLogic.pythonVersion < 3:
+				target_angle = mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
+				# Convert to radians
+				target_angle = target_angle * math.pi / 180 
+			else:
+				# In Blender 2.5, the angle function returns radians
+				target_angle = global_vector.angle(self.world_X_vector)
+
+			# Correct the direction of the turn according to the angles
+			dot = global_vector.dot(self.world_Y_vector)
+			#print ("DOT = {0}".format(dot))
+			if dot < 0:
+				target_angle = target_angle * -1
+
+			### Get the angle that the robot must turn ###
 			if target_angle < robot_angle:
 				angle_diff = robot_angle - target_angle
 				rotation_direction = -1
@@ -108,11 +113,12 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 				rotation_direction = 1
 
 			# Make a correction when the angles change signs
-			if angle_diff > 180:
-				angle_diff = 360 - angle_diff
+			if angle_diff > math.pi:
+				angle_diff = (2 * math.pi) - angle_diff
 				rotation_direction = rotation_direction * -1
-			"""
-			rotation_direction = -1
+
+			#angle_diff = target_angle - robot_angle
+			#rotation_direction = -1
 
 			print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
@@ -129,6 +135,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 				# If not, rotate the robot
 				else:
 					rz = ((speed / ticks) / 2) * rotation_direction
+					print ("RZ = %.4f" % rz)
 			# For the moment ignoring the division by zero
 			# It happens apparently when the simulation starts
 			except ZeroDivisionError:
