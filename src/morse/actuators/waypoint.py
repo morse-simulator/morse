@@ -41,6 +41,17 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		for variable in self.data_keys:
 			self.modified_data.append(self.local_data[variable])
 
+		try:
+			wp_name = self.blender_obj['Target']
+			if GameLogic.pythonVersion < 3:
+				wp_name = 'OB' + wp_name
+			scene = GameLogic.getCurrentScene()
+			self.wp_object = scene.objects[wp_name]
+			print ("Using object '%s' to indicate motion target" % wp_name)
+		except KeyError as detail:
+			self.wp_object = None
+
+
 		print ('######## CONTROL INITIALIZED ########')
 
 
@@ -54,15 +65,18 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
 		#print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
-		print ("\nWAYPOINT GOT DESTINATION: {0}".format(self.destination))
+		#print ("\nWAYPOINT GOT DESTINATION: {0}".format(self.destination))
+		# Place the target marker where the robot should go
+		if self.wp_object:
+			self.wp_object.position = self.destination
 
 		# Vectors returned are already normalised
 		distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 		# Convert to the Blender Vector object
 		global_vector = mathutils.Vector(global_vector)
 
-		print ("GOT DISTANCE: %.4f" % (distance))
-		print ("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
+		#print ("GOT DISTANCE: %.4f" % (distance))
+		#print ("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 		#print ("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
 		# If the target has been reached, change the status
@@ -117,10 +131,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 				angle_diff = (2 * math.pi) - angle_diff
 				rotation_direction = rotation_direction * -1
 
-			#angle_diff = target_angle - robot_angle
-			#rotation_direction = -1
-
-			print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
+			#print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
 			# Tick rate is the real measure of time in Blender.
 			# By default it is set to 60, regardles of the FPS
@@ -135,7 +146,6 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 				# If not, rotate the robot
 				else:
 					rz = ((speed / ticks) / 2) * rotation_direction
-					print ("RZ = %.4f" % rz)
 			# For the moment ignoring the division by zero
 			# It happens apparently when the simulation starts
 			except ZeroDivisionError:
