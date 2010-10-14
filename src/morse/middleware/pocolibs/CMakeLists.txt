@@ -8,6 +8,7 @@
 
 include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${POCOLIBS_INCLUDE_DIRS})
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
 link_directories(${POCOLIBS_LIBDIR})
 #macro that upcases the first letter of a given string all_lower
@@ -25,6 +26,7 @@ set(sensors_list "general;camera;gyro;sick;viman;human")
 set(controllers_list "control")
 
 set(MODULES_MAP_CAMERA "viam")
+set(MODULES_MAP_CAMERA_ADDITIONAL "pom")
 set(MODULES_MAP_GENERAL "")
 set(MODULES_MAP_GYRO "pom")
 set(MODULES_MAP_SICK "sick")
@@ -39,6 +41,7 @@ foreach(directory ${directories_list})
 		upcase_first(${item} Item)
 		set(MODULE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/${Item}_Poster")
 		set(module_to_find "MODULES_MAP_${ITEM}")
+		set(modules_additional_to_find "MODULES_MAP_${ITEM}_ADDITIONAL")
 		set(module_to_find ${${module_to_find}})
 		set(target_name "")
 		if("${module_to_find}" STREQUAL "")
@@ -51,6 +54,14 @@ foreach(directory ${directories_list})
 				set(MODULE_INCLUDE_DIRS "${MODULE_TO_FIND}_INCLUDE_DIRS")
 				pkg_check_modules(${MODULE_TO_FIND} REQUIRED ${module_to_find})
 				include_directories(${${MODULE_INCLUDE_DIRS}})
+
+				foreach(additional_module ${${modules_additional_to_find}})
+					string(TOUPPER "${additional_module}" ADDITIONAL_MODULE)
+					set(ADDITIONAL_MODULE_INCLUDE_DIRS "${ADDITIONAL_MODULE}_INCLUDE_DIRS")
+					pkg_check_modules(${ADDITIONAL_MODULE} REQUIRED ${additional_module})
+					include_directories(${${ADDITIONAL_MODULE_INCLUDE_DIRS}})
+				endforeach(additional_module ${${modules_additional_to_find}})
+
 				string(TOLOWER "${module_to_find}" module_to_find)
 				set(target_name "ors_${module_to_find}_poster")
 			endif (${BUILD_MODULE_TO_FIND_SUPPORT})
@@ -77,7 +88,7 @@ foreach(directory ${directories_list})
 				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 				)
 
-			add_library(${target_name} SHARED ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c)
+			add_library(${target_name} SHARED ${source} ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c)
 			set_target_properties(${target_name} PROPERTIES PREFIX "_")
 			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON_LIBRARIES})
 			install (FILES ${MODULE_SOURCE_DIR}/__init__.py 
