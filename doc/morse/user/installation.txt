@@ -18,7 +18,7 @@ To display textures correctly in the simulator, as well as to generate images us
 
 Alternatively, you can use the GitHub mirror (synchronized every hour) (it is probably a lot faster)
 
-  $ git clone http://github.com/laas/morse.git -b 0.1_STABLE
+  $ git clone http://github.com/laas/morse.git 0.1_STABLE
 
 You can get a tarball version [[http://softs.laas.fr/openrobots/distfiles/morse/morse-0.1.tar.gz|here]]. You can check the following information to make sure that the download went fine.
 
