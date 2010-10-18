@@ -89,7 +89,10 @@ def write_viam(self, component_instance):
 
 		imX = camera_instance.image_size_X
 		imY = camera_instance.image_size_Y
-		image_string = camera_instance.local_data['image']
+		try:
+			image_string = camera_instance.local_data['image']
+		except KeyError as detail:
+			print ("WARNING: Camera image not found to read by VIAM poster.\n\tThe 'Class' property in the Camera component could be wringly defined")
 
 		# Don't create a poster if the camera is disabled
 		if image_string == None or not camera_instance.capturing:
