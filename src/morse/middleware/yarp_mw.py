@@ -178,7 +178,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		img_Y = component_instance.image_size_Y
 
 		# Check that an image exists:
-		if img_string != None:
+		if img_string != None and img_string != '':
 			# Convert to an array object
 			data = array.array('B',img_string)
 			# Get the pointer to the data
