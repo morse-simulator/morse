@@ -1,4 +1,4 @@
-def init_extra_module(self, component_instance, function, function_name):
+def init_extra_module(self, component_instance, function, mw_data):
 	""" Setup the middleware connection with this data
 
 	Prepare the middleware to handle the serialised data as necessary.

@@ -1,6 +1,6 @@
 import json
 
-def init_extra_module(self, component_instance, function, function_name):
+def init_extra_module(self, component_instance, function, mw_data):
 	""" Setup the middleware connection with this data
 
 	Prepare the middleware to handle the serialised data as necessary.
@@ -8,6 +8,8 @@ def init_extra_module(self, component_instance, function, function_name):
 	# Compose the name of the port, based on the parent and module names
 	component_name = component_instance.blender_obj.name
 	parent_name = component_instance.robot_parent.blender_obj.name
+	# Get the function name being inserted form the mw_data array
+	function_name = mw_data[1]
 	if function_name == 'post_json_data':
 		port_name = 'robots/{0}/{1}/out'.format(parent_name, component_name)
 	elif function_name == 'read_json_data':

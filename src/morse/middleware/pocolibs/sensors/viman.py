@@ -5,17 +5,22 @@ from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
 
 object_config_file = "objectList_cfg"
 
-def init_extra_module(self, component_instance, function, function_name):
+def init_extra_module(self, component_instance, function, mw_data):
 	""" Setup the middleware connection with this data
 
 	Prepare the middleware to handle the serialised data as necessary.
 	"""
-	# Compose the name of the poster, based on the parent and module names
-	component_name = component_instance.blender_obj.name
-	parent_name = component_instance.robot_parent.blender_obj.name
-	poster_name = 'viman_{0}_{1}'.format(parent_name, component_name)
-	poster_id = init_viman_poster(self, component_instance, poster_name)
+	# Check if the name of the poster has been given in mw_data
+	try:
+		# It should be the 4th parameter
+		poster_name = mw_data[3]
+	except IndexError as detail:
+		# Compose the name of the poster, based on the parent and module names
+		component_name = component_instance.blender_obj.name
+		parent_name = component_instance.robot_parent.blender_obj.name
+		poster_name = 'viman_{0}_{1}'.format(parent_name, component_name)
 
+	poster_id = init_viman_poster(self, component_instance, poster_name)
 	if poster_id != None:
 		#print ("Pocolibs created poster '%s' of type viman" % poster_id)
 		component_instance.output_functions.append(function)

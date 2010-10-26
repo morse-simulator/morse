@@ -54,12 +54,18 @@ class MorseMiddlewareClass(object):
 			return None
 
 
-	def _add_method(self, source_file, function_name, component_instance):
+	def _add_method(self, mw_data, component_instance):
 		""" Include a new serialisation method in the middleware.
 
-		Parameters are the file where the function is stored
-		and the name of the function
+		Parameters are the array with parameters for the middleware
+		and the instance of the component
 		"""
+		# Get the variables from the data passed
+		# Second parameter is the name of the function to add to the component
+		function_name = mw_data[1]
+		# Third parameter is the file where the function can be found
+		source_file = mw_data[2]
+
 		module_name = re.sub('/', '.', source_file)
 		# Import the module containing the class
 		try:
@@ -83,7 +89,7 @@ class MorseMiddlewareClass(object):
 			# Call the init method of the new serialisation
 			# Sends the name of the function as a means to identify
 			#  what kind of port it should use (mainly for Yarp in/out)
-			module.init_extra_module(self, component_instance, bound_function, function_name)
+			module.init_extra_module(self, component_instance, bound_function, mw_data)
 		except AttributeError as detail:
 			print ("ERROR: Method 'init_extra_module' not found in file '%s'" % source_file)
 

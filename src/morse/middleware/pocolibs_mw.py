@@ -34,14 +34,8 @@ class MorsePocolibsClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		The configuration of each type of poster is done in external modules.
 		"""
-		# Extract the information for this middleware
-		# Second parameter is the name of the function to add to the component
-		function_name = mw_data[1]
-		# Third parameter is the file where the function can be found
-		extra_module_name = mw_data[2]
-
 		# Import the configuration of the poster from an extra module
-		function = self._add_method(extra_module_name, function_name, component_instance)
+		function = self._add_method(mw_data, component_instance)
 
 
 	def _compute_date(self):
