@@ -5,14 +5,14 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 	Prepare the middleware to handle the serialised data as necessary.
 	"""
+	component_name = component_instance.blender_obj.name
+	parent_name = component_instance.robot_parent.blender_obj.name
 	# Check if the name of the poster has been given in mw_data
 	try:
 		# It should be the 4th parameter
 		poster_name = mw_data[3]
 	except IndexError as detail:
 		# Compose the name of the poster, based on the parent and module names
-		component_name = component_instance.blender_obj.name
-		parent_name = component_instance.robot_parent.blender_obj.name
 		poster_name = 'pom_{0}_{1}_Poster'.format(parent_name, component_name)
 
 	poster_id = init_pom_poster(self, component_instance, poster_name)
@@ -21,7 +21,6 @@ def init_extra_module(self, component_instance, function, mw_data):
 		component_instance.output_functions.append(function)
 		# Store the name of the port
 		self._poster_dict[component_name] = poster_id
-
 
 
 def init_pom_poster(self, component_instance, poster_name):
