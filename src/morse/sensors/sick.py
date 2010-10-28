@@ -26,7 +26,6 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 		# Look for a child arc to use for the scans
 		for child in obj.children:
 			if arc_prefix in child.name:
-			#if child.name[:6] == 'OBArc_':
 				self.ray_arc = child
 				print ("Sick: Using arc object: '{0}'".format(self.ray_arc))
 				break
