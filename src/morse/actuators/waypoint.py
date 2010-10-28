@@ -20,9 +20,11 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		# Call the constructor of the parent class
 		super(self.__class__,self).__init__(obj, parent)
 
+		# Waypoint tolerance (in meters)
 		self.tolerance = 0.5
-		# Convert the tolerance to radians
-		self.angle_tolerance = 5 * math.pi / 180
+		# Convert the direction tolerance to radians
+		self.angle_tolerance = math.radians(10)
+
 		self.destination = self.blender_obj.position
 		self.in_motion = False
 
@@ -99,7 +101,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 			if GameLogic.pythonVersion < 3:
 				# Convert to radians
-				robot_angle = robot_angle * -1 * math.pi / 180 
+				robot_angle = math.radians(robot_angle * -1)
 
 
 			### Get the angle to the target ###
@@ -107,7 +109,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 			if GameLogic.pythonVersion < 3:
 				target_angle = mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
 				# Convert to radians
-				target_angle = target_angle * math.pi / 180 
+				target_angle = math.radians(target_angle)
 			else:
 				# In Blender 2.5, the angle function returns radians
 				target_angle = global_vector.angle(self.world_X_vector)
