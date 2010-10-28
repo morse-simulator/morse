@@ -241,7 +241,7 @@ def init(contr):
 	check_dictionaries()
 	
 	#Display the mouse in the simulator
-	Rasterizer.showMouse(1)
+	#Rasterizer.showMouse(1)
 
 
 def admin(contr):
