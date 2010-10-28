@@ -86,8 +86,11 @@ def main():
 
 		elif op == 'b':
 			data_in = read_data(client_socket)
-			pickled_data = cPickle.loads(data_in)
-			print_data(pickled_data)
+			try:
+				pickled_data = cPickle.loads(data_in)
+				print_data(pickled_data)
+			except EOFError as detail:
+				print ("\tNo data available for the moment")
 
 		elif op == 'q':
 			break
