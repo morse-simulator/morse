@@ -1,56 +1,101 @@
-#------------Setup--------------#
-from socket import *
-from cPickle import *
+import sys
+import socket
+import cPickle
 
-ServerIP = "localhost"
 
-Serverport = 60000
-sClient = socket(AF_INET,SOCK_DGRAM)
-host = (ServerIP,Serverport)	
-sClient.setblocking(0)
+server_ip = "localhost"
+server_port = 60000
+connected = False
 
-while True:
+def read_data(client_socket):
+	""" Read the input socket until no more data is available """
+	finished = False
+	data_in = ''
 
-#--------- ASK FOR OPTIONS ----------------#
+	if connected:
+		# Receiving
+		while not finished:
+			try:
+				data_in, SRIP = client_socket.recvfrom(1024)
+				#print ("READ: {0}".format(data_in))
+			except socket.error as detail:
+				finished = True
+				#print ("Socket error: %s" % detail)
+				continue
 
-	print ("Select an option:")
-	print ("a) Enter speed")
-	print ("b) Read coordinates")
-	print ("q) Quit client program")
-	op = raw_input("Enter option: ")
-	
-	if op == 'a':
+		return data_in
 
-#------------ASK FOR NEW COORDINATES--------------#	
-		v = raw_input("Enter V speed: ")
-		w = raw_input("Enter W speed: ")
-#locZ = raw_input("Enter Z coordinate: ")
 
-		v_w = [float(v), float(w)]
+def print_data(data):
+	""" Choose how to print, depending on the type """
+	for item in data:
+		# Recursively call this function if item is a list
+		if isinstance(item, list):
+			print_data(item)
+		if isinstance(item, basestring):
+			print ("\t%s" % item)
+		if isinstance(item, float):
+			print ("\t%.4f" % item)
 
-		print ("Sending the command: {0}".format(v_w))
 
-# Sending
-		Data = dumps((v_w))
-		sent = sClient.sendto(Data,host)
+def usage(program_name):
+	print ("Usage: {0} [server_port_number]\n", program_name)
 
-		print ("Just sent %d bytes to server" % sent)
 
-	elif op == 'b':
-# Receiving
-		try:
-			print ("Trying to read data:")
-			Data, SRIP = sClient.recvfrom(1024)
-			#UPData = loads(Data)
-			#PosServer = [UPData[0],UPData[1],UPData[2]]
-			print ("Data read: {0}".format(Data))
-		except:
-			pass
+def main():
+	global server_port
+	global connected
 
-	elif op == 'q':
-		break
+	# Read the arguments
+	argc = len(sys.argv)
+	if argc == 2:
+		server_port = int(sys.argv[1])
+	elif argc > 3:
+		usage(sys.argv[0])
+		sys.exit()
 
-	else:
-		print ("Unknown option. Try again.")
+	client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	host = (server_ip, server_port)	
+	client_socket.setblocking(0)
 
-#---------------THE-END----------------#
+
+	while True:
+
+	#--------- ASK FOR OPTIONS ----------------#
+
+		print ("Select an option:")
+		print ("a) Enter speed")
+		print ("b) Read coordinates")
+		print ("q) Quit client program")
+		op = raw_input("Enter option: ")
+		
+		if op == 'a':
+			# Ask for the new speeds
+			v = raw_input("Enter V speed: ")
+			w = raw_input("Enter W speed: ")
+
+			v_w = [float(v), float(w)]
+			print ("Sending the command: {0}".format(v_w))
+
+			# Send the data
+			data_out = cPickle.dumps((v_w))
+			sent = client_socket.sendto(data_out,host)
+
+			print ("Just sent %d bytes to server" % sent)
+			connected = True
+
+		elif op == 'b':
+			data_in = read_data(client_socket)
+			pickled_data = cPickle.loads(data_in)
+			print_data(pickled_data)
+
+		elif op == 'q':
+			break
+
+		else:
+			print ("Unknown option. Try again.")
+
+
+
+if __name__ == "__main__":
+    main()
