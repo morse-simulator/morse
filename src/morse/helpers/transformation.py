@@ -4,7 +4,6 @@ if GameLogic.pythonVersion < 3:
 	import Mathutils as mathutils
 else:
 	import mathutils
-#from Mathutils import *
 
 class Transformation3d:
 	def __init__(self, ob):
