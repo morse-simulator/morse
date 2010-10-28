@@ -4,6 +4,7 @@ import morse.modifiers.gaussian
 class MorseGPSNoiseClass(object):
 	def __init__(self, obj, parent=None):
 		self.blender_obj = obj
+		self.dev = obj['Dev']
 
 
 	def __del__(self):
@@ -33,6 +34,6 @@ class MorseGPSNoiseClass(object):
 
 	def noisify(self, component_instance):
 		for i in range(0, 2):
-			component_instance.modified_data[i] = morse.modifiers.gaussian.gaussian(0.1, component_instance.modified_data[i])
+			component_instance.modified_data[i] = morse.modifiers.gaussian.gaussian(self.dev, component_instance.modified_data[i])
 
 		return component_instance.modified_data
