@@ -76,9 +76,14 @@ the command line :
 To build and install MORSE with YARP support in /opt, you need something like:
 $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
+
+ You can check your configuration is ok with:
+ $ morse check
+
+
 III/ Running a simulation
 -------------------------
-
+ 
 [YARP specific] Before to start a simulation: Start the YARP's server
  with this command from a terminal "yarp server".
 
@@ -94,18 +99,14 @@ Two environment variable have noticable effects:
    python scripts. It must also include the full path to the directory
    'morse/blender' within the installed files. Example:
 
-	tcsh:
-	setenv PYTHONPATH ${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+    tcsh:
+    setenv PYTHONPATH ${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
 
-	bash:
-	export PYTHONPATH=${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
-
+    bash:
+    export PYTHONPATH=${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
 
  - $ORS_BLENDER that allows you to specify a custom Blender executable (else,
  Blender is looked for in the path).
- 
- You can check your configuration is ok with:
- $ morse check
 
 Once launched, you can test the simulator by loading one of the example scenarii
 from $ORS_ROOT/share/examples/morse/scenarii (.blend files)

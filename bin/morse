@@ -102,6 +102,22 @@ def check_setup():
         ". Alright.")
     
     ###########################################################################
+    #Check PYTHONPATH variable
+    blender_dir = 'morse/blender'
+
+    found = False
+    for dir in sys.path:
+        if blender_dir in dir:
+            found = True
+            break
+            
+    if not found:
+        logging.error(  "The PYTHONPATH environment variable does not have the " + \
+                        "morse libraries. Set it to the correct path.\n" + \
+                        "PYTHONPATH must contain the path to the installed " + \
+                        "directory 'morse/blender'. Check INSTALL for more details.")
+        raise MorseError("PYTHONPATH not set up.")
+    ###########################################################################
     #Detect MORSE prefix
     #-> Check for $ORS_ROOT, then script current prefix
     try:
