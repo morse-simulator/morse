@@ -1,6 +1,9 @@
 import sys
 import socket
-import cPickle
+if sys.version_info >= (3,0,0):
+	import pickle
+else:
+	import cPickle as pickle
 
 
 server_ip = "localhost"
@@ -32,7 +35,7 @@ def print_data(data):
 		# Recursively call this function if item is a list
 		if isinstance(item, list):
 			print_data(item)
-		if isinstance(item, basestring):
+		if isinstance(item, str):
 			print ("\t%s" % item)
 		if isinstance(item, float):
 			print ("\t%.4f" % item)
@@ -67,18 +70,25 @@ def main():
 		print ("a) Enter speed")
 		print ("b) Read coordinates")
 		print ("q) Quit client program")
-		op = raw_input("Enter option: ")
+		if sys.version_info >= (3,0,0):
+			op = input("Enter option: ")
+		else:
+			op = raw_input("Enter option: ")
 		
 		if op == 'a':
 			# Ask for the new speeds
-			v = raw_input("Enter V speed: ")
-			w = raw_input("Enter W speed: ")
+			if sys.version_info >= (3,0,0):
+				v = input("Enter V speed: ")
+				w = input("Enter W speed: ")
+			else:
+				v = raw_input("Enter V speed: ")
+				w = raw_input("Enter W speed: ")
 
 			v_w = [float(v), float(w)]
 			print ("Sending the command: {0}".format(v_w))
 
 			# Send the data
-			data_out = cPickle.dumps((v_w))
+			data_out = pickle.dumps((v_w))
 			sent = client_socket.sendto(data_out,host)
 
 			print ("Just sent %d bytes to server" % sent)
@@ -87,7 +97,7 @@ def main():
 		elif op == 'b':
 			data_in = read_data(client_socket)
 			try:
-				pickled_data = cPickle.loads(data_in)
+				pickled_data = pickle.loads(data_in)
 				print_data(pickled_data)
 			except EOFError as detail:
 				print ("\tNo data available for the moment")
