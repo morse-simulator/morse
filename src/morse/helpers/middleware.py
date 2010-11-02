@@ -83,7 +83,13 @@ class MorseMiddlewareClass(object):
 			return
 
 		# Insert the function and get a reference to it
-		setattr(self, func.__name__, types.MethodType(func, self, self.__class__))
+		if sys.version_info >= (3,0,0):
+			# NOTE (GEF 02/11/2010): I don't know why the arguments changed
+			#  in Python 3, and not sure this will work, but it seems to. :-)
+			setattr(self, func.__name__, types.MethodType(func, self.__class__))
+		else:
+			setattr(self, func.__name__, types.MethodType(func, self, self.__class__))
+
 		bound_function = getattr(self, function_name)
 		try:
 			# Call the init method of the new serialisation
