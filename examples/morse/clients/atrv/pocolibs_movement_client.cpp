@@ -26,8 +26,8 @@ int main(int argc, char* argv[])
 	// If parameters are not given, use default values
 	else if (argc == 1)
 	{
-		poster_name = "OBATRV_OBMotion_Controller";
-		//poster_name = "p3dSpeedRef";
+		//poster_name = "OBATRV_OBMotion_Controller";
+		poster_name = "p3dSpeedRef";
 	}
 	else
 	{
