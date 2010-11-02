@@ -7,12 +7,15 @@
 
 #include "ors_pom_poster.h"
 
+static char* ref_name;
+static POSTER_ID ref_id;
 
-POSTER_ID init_data (char*	poster_name, int* ok)
+POSTER_ID init_data (const char* poster_name, const char* reference_frame, 
+					 float confidence, int* ok)
 {
 	POSTER_ID id;
 
-	STATUS s = posterCreate (poster_name, sizeof(POM_POS), &id);
+	STATUS s = posterCreate (poster_name, sizeof(POM_ME_POS), &id);
 	if (s == ERROR)
 	{
 		char buf[1024];
@@ -23,6 +26,12 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 	}
 
 	printf ("INIT ID = %p (pointer)\n", id);
+	ref_name = strdup(reference_frame);
+
+	POM_ME_POS* pos = posterAddr(id);
+	memset(pos, 0, sizeof(POM_ME_POS));
+	pos->kind = POM_ME_ABSOLUTE;
+	pos->confidence = confidence;
 
     *ok = 1;
 
@@ -33,54 +42,46 @@ POSTER_ID init_data (char*	poster_name, int* ok)
  * Yaw, pitch, roll are in degree in input
  */
 int post_data( POSTER_ID id, double x, double y, double z, 
-						     double yaw, double pitch, double roll, 
-							 int date )
+						     double yaw, double pitch, double roll)
 {
 	// Variables to use for writing the poster
 	int offset = 0;
 
-	// Declare local versions of the structures used
-	POM_POS local_pom_pos;
-	POM_EULER local_pom_euler;
-	POM_EULER_V local_pom_euler_v;
+	// try to get the pom reference frame
+	// if we can't get it, just returns
+	if (ref_id == NULL) {
+		fprintf(stderr, "ref id is NULL : searching for %s\n", ref_name);
+		if (posterFind(ref_name, &ref_id) == ERROR) {
+			fprintf(stderr, "can't find %s : looping\n", ref_name);
+			ref_id = NULL;
+			return -1;
+			}
+	}
 
+	// Declare local versions of the structures used
+	POM_SENSOR_POS framePos;
+
+	posterRead(ref_id, 0, &framePos, sizeof(POM_SENSOR_POS));
+
+	POM_ME_POS* pos = posterAddr(id);
+	posterTake(id, POSTER_WRITE);
 	// Fill in the POM_POS_EULER
 	// yaw, pitch, roll are expected in radian
 
 #define DEG_TO_RAD(x) ((x)*M_PI/180.)
 
-	local_pom_euler.yaw = DEG_TO_RAD(yaw);
-	local_pom_euler.pitch = DEG_TO_RAD(pitch);
-	local_pom_euler.roll = DEG_TO_RAD(roll);
+	pos->main.euler.yaw = DEG_TO_RAD(yaw);
+	pos->main.euler.pitch = DEG_TO_RAD(pitch);
+	pos->main.euler.roll = DEG_TO_RAD(roll);
 
 #undef DEG_TO_RAD
 
-	local_pom_euler.x = x;
-	local_pom_euler.y = y;
-	local_pom_euler.z = z;
+	pos->main.euler.x = x;
+	pos->main.euler.y = y;
+	pos->main.euler.z = z;
 
-	// Fill in the POM_POS_EULER_V
-	local_pom_euler_v.euler = local_pom_euler;
-	//local_pom_euler_v.var = ?????;
-
-	// Fill in the POM_POS
-	local_pom_pos.date = date;
-	local_pom_pos.pomTickDate = local_pom_pos.date;
-	local_pom_pos.mainToOrigin = local_pom_euler_v;
-	local_pom_pos.mainToBase = local_pom_euler_v;
-	local_pom_pos.VLocal = local_pom_euler_v;
-
-	// printf ("ABOUT TO DO THE ACTUAL 'posterWrite'\n");
-	// printf ("ID = %p\n", id);
-	posterWrite (id, offset, &local_pom_pos, sizeof(POM_POS));
-
-	/*
-	printf ("FROM C POSTER MODULE:");
-	printf ("\tyaw = %.4f", yaw);
-	printf ("\tpitch = %.4f", pitch);
-	printf ("\troll = %.4f\n", roll);
-	*/
-
+	pos->date1 = framePos.date;
+	posterGive(id);
 	return 0;
 }
 
@@ -88,6 +89,7 @@ int post_data( POSTER_ID id, double x, double y, double z,
 int finalize (POSTER_ID id)
 {
 	posterDelete(id);
+	free(ref_name);
 
 	return 0;
 }

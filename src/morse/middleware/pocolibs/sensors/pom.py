@@ -25,7 +25,10 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 def init_pom_poster(self, component_instance, poster_name):
 	""" Prepare the data for a pom poster """
-	poster_id, ok = ors_pom_poster.init_data(poster_name)
+
+	reference_frame = component_instance.blender_obj['reference_frame']
+	confidence = component_instance.blender_obj['confidence']
+	poster_id, ok = ors_pom_poster.init_data(poster_name, reference_frame, confidence)
 	if ok == 0:
 		print ("ERROR creating poster. This module may not work")
 		return None
@@ -35,19 +38,14 @@ def init_pom_poster(self, component_instance, poster_name):
 
 
 def write_pom(self, component_instance):
-	""" Write the sensor position to a poaster
+	""" Write the sensor position to a poster
 
 	The argument must be the instance to a morse gyroscope class. """
-	# Compute the current time
-	pom_date, t = self._compute_date()
-
-	# Get the data from the gyroscope object
-	robot = component_instance.robot_parent
+	position3d = component_instance.position_3d
 
 	# Get the id of the poster already created
 	poster_id = self._poster_dict[component_instance.blender_obj.name]
 	ors_pom_poster.post_data(poster_id,
-			robot.position_3d.x, robot.position_3d.y,
-			robot.position_3d.z, robot.position_3d.yaw,
-			robot.position_3d.pitch, robot.position_3d.roll,
-			pom_date)
+			position3d.x, position3d.y,
+			position3d.z, position3d.yaw,
+			position3d.pitch, position3d.roll)
