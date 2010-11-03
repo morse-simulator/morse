@@ -1,74 +1,122 @@
-#------------Setup--------------#
-from socket import *
-from cPickle import *
-
-ServerIP = "localhost"
-
-Serverport = 60000
-sClient = socket(AF_INET,SOCK_DGRAM)
-host = (ServerIP,Serverport)	
-sClient.setblocking(0)
-
-px = 0
-py = 0
-pz = 0
-speed = 1
-
-while True:
-
-#--------- ASK FOR OPTIONS ----------------#
-
-	print ("Select an option:")
-	print ("a) Enter destination")
-	print ("b) Enter speed")
-	print ("c) Read coordinates")
-	print ("q) Quit client program")
-	op = raw_input("Enter option: ")
-	
-	if op == 'a':
-
-#------------ASK FOR NEW COORDINATES--------------#	
-		px = raw_input("Enter X coordinate: ")
-		py = raw_input("Enter Y coordinate: ")
-		pz = raw_input("Enter Z coordinate: ")
-
-		waypoint = [float(px), float(py), float(pz), float(speed)]
-
-		print ("Sending the command: {0}".format(waypoint))
-
-# Sending
-		Data = dumps((waypoint))
-		sent = sClient.sendto(Data,host)
-
-		print ("Just sent %d bytes to server" % sent)
-
-	elif op == 'b':
-		speed = raw_input("Enter speed: ")
-		waypoint = [float(px), float(py), float(pz), float(speed)]
-		print ("Sending the command: {0}".format(waypoint))
-
-# Sending
-		Data = dumps((waypoint))
-		sent = sClient.sendto(Data,host)
-
-		print ("Just sent %d bytes to server" % sent)
+import sys
+import socket
+import cPickle
 
 
-	elif op == 'c':
-# Receiving
-		try:
-			print ("Trying to read data:")
-			Data, SRIP = sClient.recvfrom(1024)
-			#UPData = loads(Data)
-			#PosServer = [UPData[0],UPData[1],UPData[2]]
-			print ("Data read: {0}".format(Data))
-		except:
-			pass
+server_ip = "localhost"
+server_port = 60000
+connected = False
 
-	elif op == 'q':
-		break
 
-	else:
-		print ("Unknown option. Try again.")
 
-#---------------THE-END----------------#
+def read_data(client_socket):
+	""" Read the input socket until no more data is available """
+	finished = False
+	data_in = ''
+
+	if connected:
+		# Receiving
+		while not finished:
+			try:
+				data_in, SRIP = client_socket.recvfrom(1024)
+				#print ("READ: {0}".format(data_in))
+			except socket.error as detail:
+				finished = True
+				#print ("Socket error: %s" % detail)
+				continue
+
+		return data_in
+
+
+def print_data(data):
+	""" Choose how to print, depending on the type """
+	for item in data:
+		# Recursively call this function if item is a list
+		if isinstance(item, list):
+			print_data(item)
+		if isinstance(item, basestring):
+			print ("\t%s" % item)
+		if isinstance(item, float):
+			print ("\t%.4f" % item)
+
+
+def usage(program_name):
+	print ("Usage: {0} [server_port_number]\n", program_name)
+
+
+def main():
+	global server_port
+	global connected
+
+	px = 0
+	py = 0
+	pz = 0
+	speed = 1
+
+	# Read the arguments
+	argc = len(sys.argv)
+	if argc == 2:
+		server_port = int(sys.argv[1])
+	elif argc > 3:
+		usage(sys.argv[0])
+		sys.exit()
+
+	socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	host = (server_ip, server_port)	
+	socket_client.setblocking(0)
+
+
+	while True:
+		#--------- ASK FOR OPTIONS ----------------#
+		print ("Select an option:")
+		print ("a) Enter destination")
+		print ("b) Enter speed")
+		print ("c) Read coordinates")
+		print ("q) Quit client program")
+		op = raw_input("Enter option: ")
+		
+		if op == 'a':
+			px = raw_input("Enter X coordinate: ")
+			py = raw_input("Enter Y coordinate: ")
+			pz = raw_input("Enter Z coordinate: ")
+			waypoint = [float(px), float(py), float(pz), float(speed)]
+			print ("Sending the command: {0}".format(waypoint))
+
+			# Send data
+			Data = cPickle.dumps((waypoint))
+			sent = socket_client.sendto(Data,host)
+
+			print ("Just sent %d bytes to server" % sent)
+			# Set the flag that a connection has been established
+			connected = True
+
+		elif op == 'b':
+			speed = raw_input("Enter speed: ")
+			waypoint = [float(px), float(py), float(pz), float(speed)]
+			print ("Sending the command: {0}".format(waypoint))
+
+			# Send data
+			Data = cPickle.dumps((waypoint))
+			sent = socket_client.sendto(Data,host)
+
+			print ("Just sent %d bytes to server" % sent)
+
+		elif op == 'c':
+			# Read data
+			data_in = read_data(socket_client)
+			try:
+				pickled_data = cPickle.loads(data_in)
+				print_data(pickled_data)
+			except EOFError as detail:
+				print ("\tNo data available for the moment")
+
+		elif op == 'q':
+			break
+
+		else:
+			print ("Unknown option. Try again.")
+
+
+
+if __name__ == "__main__":
+    main()
