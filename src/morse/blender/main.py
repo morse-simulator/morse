@@ -93,8 +93,9 @@ def create_dictionaries ():
 		if is_middleware:
 			# Create an object instance and store it
 			instance = create_instance (obj)
-			GameLogic.mwDict[obj] = instance
-			print ("\tMiddleware '%s' found" % obj)
+			if instance != None:
+				GameLogic.mwDict[obj] = instance
+				print ("\tMiddleware '%s' found" % obj)
 
 
 
