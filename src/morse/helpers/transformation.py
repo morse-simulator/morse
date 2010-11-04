@@ -41,7 +41,10 @@ class Transformation3d:
 		o2m = self.matrix.copy()
 		o2m.invert()
 		res.matrix = o2m * t3d.matrix
-		res.euler = res.matrix.toEuler()
+		if GameLogic.pythonVersion < 3:
+			res.euler = res.matrix.toEuler()
+		else:
+			res.euler = res.matrix.to_euler()
 		return res
 
 	def update(self, ob):
