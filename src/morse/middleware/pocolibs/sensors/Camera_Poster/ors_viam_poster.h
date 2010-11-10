@@ -1,4 +1,5 @@
 #include <posterLib.h>
+#include <Python.h>
 
 /*
  * XXX Swig has issues with varargs or C struct array, so for moment, we only
@@ -44,9 +45,9 @@ int post_viam_poster(	POSTER_ID id,
 						const struct pom_position* robot,
 						size_t nb_images,
 						const struct simu_image* img1,
-                        char *img_data1,
+                        PyObject* img_data1,
 						const struct simu_image* img2,
-						char *img_data2
+						PyObject* img_data2
 					);
 
 int finalize ( POSTER_ID id );

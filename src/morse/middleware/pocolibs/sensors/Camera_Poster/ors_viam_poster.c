@@ -299,28 +299,46 @@ int post_viam_poster(	POSTER_ID id,
 						const struct pom_position* robot,
 						size_t nb_images,
 						const struct simu_image* img1,
-                        char* image_data1,
+                        PyObject* image_data1,
 						const struct simu_image* img2,
-						char* image_data2
+						PyObject* image_data2
 					)
 {
 	if (pthread_mutex_trylock(&data_mutex) == 0)
 	{
+		Py_buffer img_buffer1, img_buffer2;
+		int reply1, reply2;
+		// get readonly access to Python buffers
+		reply1 = PyObject_GetBuffer(image_data1, &img_buffer1, PyBUF_SIMPLE);
+		reply2 = PyObject_GetBuffer(image_data2, &img_buffer2, PyBUF_SIMPLE);
+
+		// exit if the buffers could not be read
+		if ((reply1 != 0) || (reply2 != 0))
+		{
+			fprintf(stderr, "Couldn not read Python buffers: %d, %d\n", reply1, reply2);
+			return 1;
+		}
+
 		args.id = id;
 		memcpy(&args.robot, robot, sizeof(struct pom_position));
 		args.nb_images = nb_images;
 		memcpy(&args.img1, img1, sizeof(struct simu_image));
 		memcpy(&args.img2, img2, sizeof(struct simu_image));
-		memcpy(args.image_data1, image_data1, img1->height * img1->width * 4);
-		memcpy(args.image_data2, image_data2, img2->height * img2->width * 4);
+		memcpy(args.image_data1, img_buffer1.buf, img1->height * img1->width * 4);
+		memcpy(args.image_data2, img_buffer2.buf, img2->height * img2->width * 4);
 		pthread_mutex_unlock(&data_mutex);
+
+		// release the Python buffers
+		PyBuffer_Release(&img_buffer1);
+		PyBuffer_Release(&img_buffer2);
 
 		pthread_mutex_lock(&cond_mutex);
 		pthread_cond_signal(&cond);
 		pthread_mutex_unlock(&cond_mutex);
 	} else {
 		// if we can't get the lock, drop it
-		fprintf(stderr, "Drop the information, we are too slow !!!\n");
+		fprintf(stderr, ".");
+		//fprintf(stderr, "Drop the information, we are too slow !!!\n");
 	}
 
 	return 0;
