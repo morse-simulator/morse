@@ -46,10 +46,14 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
 		if self.blender_obj['capturing']:
 			# NOTE: Blender returns the image as a binary string
 			#  encoded as RGBA
-			image_string = GameLogic.cameras[self.name].source.image
+			if GameLogic.pythonVersion > 3:
+				image_data = GameLogic.cameras[self.name].source
+			else:
+				image_data = GameLogic.cameras[self.name].source.image
+
 
 			# Fill in the exportable data
-			self.local_data['image'] = image_string
+			self.local_data['image'] = image_data
 			self.capturing = True
 		else:
 			self.capturing = False
