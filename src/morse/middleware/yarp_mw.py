@@ -42,6 +42,9 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		# Extract the information for this middleware
 		# This will be tailored for each middleware according to its needs
 		function_name = mw_data[1]
+		remote = None
+		if len(mw_data) > 2:
+			remote = mw_data[2]
 
 		function = self._check_function_exists(function_name)
 		# The function exists within this class,
@@ -53,16 +56,22 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 				port_name = port_name + '/in'
 				self.registerBufferedPortBottle([port_name])
 				component_instance.input_functions.append(function)
+				if remote != None:
+					self.connectPorts(remote, "/ors/"+port_name)
 			# Data write functions
 			elif function_name == "post_message":
 				port_name = port_name + '/out'
 				self.registerBufferedPortBottle([port_name])
 				component_instance.output_functions.append(function)
+				if remote != None:
+					self.connectPorts("/ors/"+port_name, remote)
 			# Image write functions
 			elif function_name == "post_image_RGBA":
 				port_name = port_name + '/out'
 				self.registerBufferedPortImageRgba([port_name])
 				component_instance.output_functions.append(function)
+				if remote != None:
+					self.connectPorts("/ors/"+port_name, remote)
 
 			# Store the name of the port
 			self._component_ports[component_name] = port_name
@@ -281,3 +290,8 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 		print ("Yarp Mid: List of ports:")
 		for name, port in self._yarpPorts.items():
 			print (" - Port name '{0}' = '{1}'".format(name, port))
+			
+	def connectPorts(self, source, target):
+		""" Connect a yarp source to a specific yarp target.
+			Can be used to publish or subscribe to a yarp topic. """
+		self.yarp_object.connect(source, target)
