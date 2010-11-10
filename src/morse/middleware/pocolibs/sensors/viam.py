@@ -65,7 +65,11 @@ def init_viam_poster(component_instance, poster_name):
 def write_viam(self, component_instance):
 	""" Write an image and all its data to a poster """
 	# Get the id of the poster already created
-	poster_id = self._poster_dict[component_instance.blender_obj.name]
+	try:
+		poster_id = self._poster_dict[component_instance.blender_obj.name]
+	except AttributeError as detail:
+		print ("Something BAD happened at viam poster: %s" % detail)
+		sys.exit()
 	parent = component_instance.robot_parent
 
 	mainToOrigin = parent.position_3d
@@ -95,12 +99,12 @@ def write_viam(self, component_instance):
 		imX = camera_instance.image_size_X
 		imY = camera_instance.image_size_Y
 		try:
-			image_string = camera_instance.local_data['image']
+			image_data = camera_instance.local_data['image']
 		except KeyError as detail:
-			print ("WARNING: Camera image not found to read by VIAM poster.\n\tThe 'Class' property in the Camera component could be wringly defined")
+			print ("WARNING: Camera image not found to read by VIAM poster.\n\tThe 'Class' property in the Camera component could be wrongly defined")
 
 		# Don't create a poster if the camera is disabled
-		if image_string == None or not camera_instance.capturing:
+		if image_data == None or not camera_instance.capturing:
 			#print ("Camera '%s' not capturing. Exiting viam poster" % camera_instance.blender_obj.name)
 			return
 
@@ -121,7 +125,7 @@ def write_viam(self, component_instance):
 		camera_data.sensor.roll = mainToSensor.roll
 
 		ors_cameras.append(camera_data)
-		ors_images.append(image_string)
+		ors_images.append(image_data)
 
 	# Write to the poster with the data for both images
 	posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
