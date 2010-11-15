@@ -2,6 +2,7 @@ import sys
 import yarp
 import array
 import morse.helpers.middleware
+import GameLogic
 
 class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 	""" Handle communication between Blender and YARP."""
@@ -181,18 +182,33 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		# Get the image data from the camera instance
 		img_string = component_instance.modified_data[0]
+		#img_string = component_instance.local_data['image']
 		img_X = component_instance.image_size_X
 		img_Y = component_instance.image_size_Y
 
 		# Check that an image exists:
 		if img_string != None and img_string != '':
 			# Convert to an array object
-			data = array.array('B',img_string)
-			# Get the pointer to the data
-			img_pointer = data.buffer_info()
+			if GameLogic.pythonVersion > 3:
+				try:
+					local_data = array.array('B',img_string.image)
+					data = local_data.buffer_info()[0]
+					img.setExternal(data,img_X,img_Y)
+				except TypeError as detail:
+					print ("No image yet: %s" % detail)
+				#data = local_data
+				#data = img_string.image
 
-			# Using Python pointer (converted or not)
-			img.setExternal(img_pointer[0],img_X,img_Y)
+				#print ("DATA TYPE BEING PASSED: {0} ({0})".format(data, type(data)))
+
+				# Using Python pointer (converted or not)
+			else:
+				data = array.array('B',img_string)
+				# Get the pointer to the data
+				img_pointer = data.buffer_info()
+
+				# Using Python pointer (converted or not)
+				img.setExternal(img_pointer[0],img_X,img_Y)
 
 			# Copy to image with "regular" YARP pixel order
 			# Otherwise the image is upside-down
