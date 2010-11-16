@@ -8,8 +8,8 @@ option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
-find_package(Python26Interp REQUIRED)
-find_package(PythonLibs REQUIRED)
+find_package(Python31Interp REQUIRED)
+find_package(Python31Libs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
 				${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(0,0,\"\"))"
@@ -21,9 +21,9 @@ EXECUTE_PROCESS(COMMAND
 SET(PYTHON_INSTDIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL}) 
 MESSAGE(STATUS "will install python files in ${PYTHON_INSTDIR}")
 
-if (NOT PYTHONINTERP_FOUND)
-	MESSAGE(FATAL_ERROR "Can't find python 2.6 on your system")
-endif(NOT PYTHONINTERP_FOUND)
+if (NOT PYTHON3INTERP_FOUND)
+	MESSAGE(FATAL_ERROR "Can't find python 3.1 on your system")
+endif(NOT PYTHON3INTERP_FOUND)
 if (BUILD_YARP2_SUPPORT)
 	find_package(YARP2 REQUIRED)
 
@@ -57,5 +57,4 @@ INSTALL(PROGRAMS bin/morse
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/config/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")
-
 
