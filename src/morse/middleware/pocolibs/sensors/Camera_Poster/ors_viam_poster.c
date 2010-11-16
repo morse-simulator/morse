@@ -174,11 +174,10 @@ create_pom_sensor_pos( int blender_date,
 							const struct pom_position* sensor)
 {
 	// Fill in the Sensor to Main
-#define DEG_TO_RAD(x) ((x)*M_PI/180.)
 	POM_EULER* local_stm_euler = & (pos->sensorToMain.euler);
-	local_stm_euler->yaw = DEG_TO_RAD(sensor->yaw);
-	local_stm_euler->pitch = DEG_TO_RAD(sensor->pitch);
-	local_stm_euler->roll = DEG_TO_RAD(sensor->roll);
+	local_stm_euler->yaw = sensor->yaw;
+	local_stm_euler->pitch = sensor->pitch;
+	local_stm_euler->roll = sensor->roll;
 
 	local_stm_euler->x = sensor->x;
 	local_stm_euler->y = sensor->y;
@@ -187,10 +186,9 @@ create_pom_sensor_pos( int blender_date,
 
 	// Fill in the Main to Origin
 	POM_EULER* local_mto_euler = &(pos->mainToOrigin.euler);
-	local_mto_euler->yaw = DEG_TO_RAD(robot->yaw);
-	local_mto_euler->pitch = DEG_TO_RAD(robot->pitch);
-	local_mto_euler->roll = DEG_TO_RAD(robot->roll);
-#undef DEG_TO_RAD
+	local_mto_euler->yaw = robot->yaw;
+	local_mto_euler->pitch = robot->pitch;
+	local_mto_euler->roll = robot->roll;
 
 	local_mto_euler->x = robot->x;
 	local_mto_euler->y = robot->y;

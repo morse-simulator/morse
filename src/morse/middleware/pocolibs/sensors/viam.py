@@ -78,9 +78,9 @@ def write_viam(self, component_instance):
 	pom_robot_position.x = mainToOrigin.x
 	pom_robot_position.y = mainToOrigin.y
 	pom_robot_position.z = mainToOrigin.z
-	pom_robot_position.yaw = parent.yaw
-	pom_robot_position.pitch = parent.pitch
-	pom_robot_position.roll = parent.roll
+	pom_robot_position.yaw = mainToOrigin.yaw
+	pom_robot_position.pitch = mainToOrigin.pitch
+	pom_robot_position.roll = mainToOrigin.roll
 
 	# Compute the current time
 	pom_date, t = self._compute_date()
@@ -120,7 +120,7 @@ def write_viam(self, component_instance):
 		camera_data.sensor.y = mainToSensor.y
 		camera_data.sensor.z = mainToSensor.z
 		# XXX +PI rotation is needed but I don't have any idea why !!
-		camera_data.sensor.yaw = mainToSensor.yaw + 180.0
+		camera_data.sensor.yaw = mainToSensor.yaw + math.pi
 		camera_data.sensor.pitch = mainToSensor.pitch
 		camera_data.sensor.roll = mainToSensor.roll
 
