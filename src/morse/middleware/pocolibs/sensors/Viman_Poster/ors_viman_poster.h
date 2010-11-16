@@ -12,7 +12,6 @@ POSTER_ID init_data (char*	poster_name, int* ok);
 /*
  * Expect a Structure of type VimanObjectPublicArray
  */
-int post_viman_poster(POSTER_ID id, VimanObjectPublicArray viman_data);
 
 int real_post_viman_poster(POSTER_ID id, VimanObjectPublicArray* viman_data);
 
