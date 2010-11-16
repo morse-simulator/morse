@@ -1,6 +1,10 @@
 import sys
 import socket
-import cPickle
+if sys.version_info >= (3,0,0):
+	import pickle
+else:
+	import cPickle as pickle
+
 
 
 server_ip = "localhost"
@@ -73,12 +77,20 @@ def main():
 		print ("b) Enter speed")
 		print ("c) Read coordinates")
 		print ("q) Quit client program")
-		op = raw_input("Enter option: ")
+		if sys.version_info >= (3,0,0):
+			op = input("Enter option: ")
+		else:
+			op = raw_input("Enter option: ")
 		
 		if op == 'a':
-			px = raw_input("Enter X coordinate: ")
-			py = raw_input("Enter Y coordinate: ")
-			pz = raw_input("Enter Z coordinate: ")
+			if sys.version_info >= (3,0,0):
+				px = input("Enter X coordinate: ")
+				py = input("Enter Y coordinate: ")
+				pz = input("Enter Z coordinate: ")
+			else:
+				px = raw_input("Enter X coordinate: ")
+				py = raw_input("Enter Y coordinate: ")
+				pz = raw_input("Enter Z coordinate: ")
 			waypoint = [float(px), float(py), float(pz), float(speed)]
 			print ("Sending the command: {0}".format(waypoint))
 
@@ -91,7 +103,10 @@ def main():
 			connected = True
 
 		elif op == 'b':
-			speed = raw_input("Enter speed: ")
+			if sys.version_info >= (3,0,0):
+				speed = input("Enter speed: ")
+			else:
+				speed = raw_input("Enter speed: ")
 			waypoint = [float(px), float(py), float(pz), float(speed)]
 			print ("Sending the command: {0}".format(waypoint))
 
