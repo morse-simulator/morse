@@ -119,8 +119,10 @@ def write_viam(self, component_instance):
 		camera_data.sensor.x = mainToSensor.x
 		camera_data.sensor.y = mainToSensor.y
 		camera_data.sensor.z = mainToSensor.z
-		# XXX +PI rotation is needed but I don't have any idea why !!
-		camera_data.sensor.yaw = mainToSensor.yaw + math.pi
+		if GameLogic.pythonVersion < 3:
+			camera_data.sensor.yaw = mainToSensor.yaw + 180 # XXX
+		else:
+			camera_data.sensor.yaw = mainToSensor.yaw 
 		camera_data.sensor.pitch = mainToSensor.pitch
 		camera_data.sensor.roll = mainToSensor.roll
 

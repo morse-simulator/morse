@@ -30,20 +30,27 @@ class Transformation3d:
 
 	@property
 	def pitch(self):
-		return self.euler.x
+		if GameLogic.pythonVersion < 3:
+			return self.euler.x
+		else:
+			return self.euler.y
 
 	@property
 	def roll(self):
-		return self.euler.y
+		if GameLogic.pythonVersion < 3:
+			return self.euler.y
+		else:
+			return self.euler.x
 
 	def transformation3dWith(self, t3d):
 		res = Transformation3d(None)
-		o2m = self.matrix.copy()
-		o2m.invert()
-		res.matrix = o2m * t3d.matrix
 		if GameLogic.pythonVersion < 3:
+			o2m = self.matrix.copy()
+			o2m.invert()
+			res.matrix = o2m * t3d.matrix
 			res.euler = res.matrix.toEuler()
 		else:
+			res.matrix = self.matrix * t3d.matrix
 			res.euler = res.matrix.to_euler()
 		return res
 
