@@ -10,8 +10,8 @@ To display textures correctly in the simulator, as well as to generate images us
 
 ==== Required software ====
 
-  * Python (2.6 or +)
-  * Blender 2.49 build with Python 2.6 ((For the moment the simulator works only with this version. Blender 2.5 is being worked on.))
+  * Python (3.1 or +)
+  * Blender 2.54+ build with Python 3.1 ((For the moment the simulator works only with this version. Blender 2.5 is being worked on.))
   * git to get the code of the simulator:
 
   $ git clone http://trac.laas.fr/git/robots/morse.git -b 0.1_STABLE
@@ -49,10 +49,10 @@ Afterwards, install the YARP python bindings bindings:
   $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
   $ make update
 
-Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so'', and install them in ''$ROBOTPKG_BASE/lib/python2.6/site-packages/''
-You'll need to set the environment variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python2.6/site-packages/'' to let python find the YARP module.
+Compiling the YARP Python binding will create two files: ''yarp.py'' and ''_yarp.so'', and install them in ''$ROBOTPKG_BASE/lib/python3.1/site-packages/''
+You'll need to set the environment variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/lib/python3.1/site-packages/'' to let python find the YARP module.
 
-If you are not using robotpkg to install YARP, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python2.6/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
+If you are not using robotpkg to install YARP, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python3.1/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
 
 
 ==== Pocolibs ====
@@ -89,10 +89,10 @@ Two environment variables must be set to let the simulator know where to look fo
   * ''$PYTHONPATH'' specifies the directories where MORSE scripts are located.  It will start with the MORSE installation prefix, followed by the path to the python scripts. It must also include the full path to the directory ''morse/blender'' within the installed files. Example:
 
   tcsh:
-  setenv PYTHONPATH $ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+  setenv PYTHONPATH $ORS_ROOT/lib/python3.1/site-packages:$ORS_ROOT/lib/python3.1/site-packages/morse/blender
 
   bash:
-  export PYTHONPATH=$ORS_ROOT/lib/python2.6/site-packages:$ORS_ROOT/lib/python2.6/site-packages/morse/blender
+  export PYTHONPATH=$ORS_ROOT/lib/python3.1/site-packages:$ORS_ROOT/lib/python3.1/site-packages/morse/blender
 
   * $ORS_BLENDER that allows you to specify a custom Blender executable (else, Blender is looked for in the path).
 

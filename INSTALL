@@ -9,12 +9,13 @@ I/ Requirements - What you need to install before
 I.1 Common requirements
 -----------------------
 
- - Python (2.6 or +)
- - Blender 2.49 build with Python 2.6 [1]
+ - Python (3.1)
+ - Blender 2.54+ build with Python 3.1 
  - git to get the code of the simulator:
 	 $ git clone http://trac.laas.fr/git/robots/morse.git
 
-Note: The directory where you create the git clone will be refered to as $ORS_ROOT in this document.
+Note: The directory where you create the git clone will be refered to as
+$ORS_ROOT in this document.
 
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else.
@@ -23,7 +24,7 @@ I.2 YARP
 --------
 
 For the YARP bindings
- - YARP version (2.2.5 or +)
+ - YARP version (2.2.5 or +) (version 2.3.0 is now to not work with MORSE)
  - YARP python binding
  - ACE ( 5.6.3 or +, required for YARP)
 
@@ -32,14 +33,15 @@ http://eris.liralab.it/wiki/YARP_and_Python
 
 Note that the easiest way to install YARP is probably to use robotpkg (see  
 http://homepages.laas.fr/mallet/robotpkg for more instructions). You can 
-install yarp and its dependancies using make install into devel/libpyyarp.
+install yarp and its dependancies using make install into devel/libpyyarp 
+(set the option python3 for libpyyarp)
 
 Compiling the YARP Python binding will create two files: yarp.py and _yarp.so
-Copy them to the your Python lib directory (/usr/lib/python2.6/site-packages/)
+Copy them to the your Python lib directory (/usr/lib/python3.1/site-packages/)
 or at some place reachable from your PYTHONPATH environment variable.
 
 [NOTE FOR ROBOTPKG] You'll need to set the environnement variable PYTHONPATH to
-${ROBOTPKG_BASE}/lib/python2.6/site-packages/ to let python finds the yarp
+${ROBOTPKG_BASE}/lib/python3.1/site-packages/ to let python finds the yarp
 module.
 
 I.2 Pocolibs
@@ -100,10 +102,10 @@ Two environment variable have noticable effects:
    'morse/blender' within the installed files. Example:
 
     tcsh:
-    setenv PYTHONPATH ${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+    setenv PYTHONPATH ${morse_install_prefix}/lib/python3.1/site-packages:${morse_install_prefix}/lib/python3.1/site-packages/morse/blender
 
     bash:
-    export PYTHONPATH=${morse_install_prefix}/lib/python2.6/site-packages:${morse_install_prefix}/lib/python2.6/site-packages/morse/blender
+    export PYTHONPATH=${morse_install_prefix}/lib/python3.1/site-packages:${morse_install_prefix}/lib/python3.1/site-packages/morse/blender
 
  - $ORS_BLENDER that allows you to specify a custom Blender executable (else,
  Blender is looked for in the path).
@@ -128,5 +130,3 @@ there.
 Tips: If you have any problem to start to play a simulation: start blender
 from a terminal and send us the error messages.
 
-[1] For the moment the simulator work only with this version. 
-Blender 2.5 is being worked on.
