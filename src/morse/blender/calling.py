@@ -6,6 +6,10 @@ import GameLogic
 
 def robot_action(contr):
 	""" Call the 'action' method of the correct robot. """
+	# Do nothing if morse has not been properly initialised
+	if not GameLogic.morse_initialised:
+		return
+	
 	obj = contr.owner
 
 	# Get the intance of this objects class
@@ -16,6 +20,10 @@ def robot_action(contr):
 
 def sensor_action(contr):
 	""" Call the 'action' method of the correct sensor. """
+	# Do nothing if morse has not been properly initialised
+	if not GameLogic.morse_initialised:
+		return
+
 	obj = contr.owner
 	parent = obj.parent
 	
@@ -27,9 +35,13 @@ def sensor_action(contr):
 
 def actuator_action(contr):
 	""" Call the 'action' method of the correct actuator. """
+	# Do nothing if morse has not been properly initialised
+	if not GameLogic.morse_initialised:
+		return
+	
 	obj = contr.owner
 	parent = obj.parent
-	
+
 	# Get the instance of this objects class
 	actuator_object = GameLogic.componentDict[obj.name]
 	if actuator_object:

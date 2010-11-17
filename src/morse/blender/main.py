@@ -41,7 +41,10 @@ def create_dictionaries ():
 			obj['Robot_Tag']
 			# Create an object instance and store it
 			instance = create_instance (obj)
-			GameLogic.robotDict[obj] = instance
+			if instance != None:
+				GameLogic.robotDict[obj] = instance
+			else:
+				return False
 		except KeyError:
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
@@ -60,7 +63,10 @@ def create_dictionaries ():
 				# Create an instance of the component class
 				#  and add it to the component list of GameLogic
 				instance = create_instance (child, robot_instance)
-				GameLogic.componentDict[child.name] = instance
+				if instance != None:
+					GameLogic.componentDict[child.name] = instance
+				else:
+					return False
 
 			except KeyError:
 				pass
@@ -73,7 +79,10 @@ def create_dictionaries ():
 			obj['Modifier_Tag']
 			# Create an object instance and store it
 			instance = create_instance (obj)
-			GameLogic.modifierDict[obj] = instance
+			if instance != None:
+				GameLogic.modifierDict[obj] = instance
+			else:
+				return False
 		except KeyError:
 			pass
 			#sys.exc_clear()	# Clears the last exception thrown
@@ -96,8 +105,11 @@ def create_dictionaries ():
 			if instance != None:
 				GameLogic.mwDict[obj] = instance
 				print ("\tMiddleware '%s' found" % obj)
+			else:
+				return False
 
-
+	# Will return true always (for the moment)
+	return True
 
 
 def check_dictionaries():
@@ -134,14 +146,14 @@ def create_instance(obj, parent=None):
 	try:
 		__import__(module_name)
 	except ImportError as detail:
-		print ("WARNING: Module not found: %s" % detail)
+		print ("ERROR: Module not found: %s" % detail)
 		return None
 	module = sys.modules[module_name]
 	# Create an instance of the object class
 	try:
 		klass = getattr(module, obj['Class'])
 	except AttributeError as detail:
-		print ("WARNING: Module attribute not found: %s" % detail)
+		print ("ERROR: Module attribute not found: %s" % detail)
 		return None
 	instance = klass(obj, parent)
 
@@ -184,6 +196,9 @@ def link_middlewares():
 		if not found:
 			print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
+	# Will return true always (for the moment)
+	return True
+
 
 def add_modifiers():
 	""" Read the configuration script (inside the .blend file)
@@ -222,6 +237,8 @@ def add_modifiers():
 			if not found:
 				print ("There is no '%s' modifier object in the scene." % modifier_name)
 
+	# Will return true always (for the moment)
+	return True
 
 def init(contr):
 	""" Open the communication ports for administration."""
@@ -232,15 +249,24 @@ def init(contr):
 	print ("Python Version: {0}".format(python_version))
 	# Chop the version to only 3 chars: #.#  and convert to a number
 	GameLogic.pythonVersion = float(python_version[:3])
+	GameLogic.morse_initialised = False
+	init_ok = True
 
-	print ('======== COMPONENT DICTIONARY INITIALIZATION =======')
-	create_dictionaries()
-	add_modifiers()
-	link_middlewares()
-	print ('======= COMPONENT DICTIONARY INITIALIZED =======')
+	print ('======== COMPONENT DICTIONARY INITIALISATION =======')
+	init_ok = create_dictionaries()
+	init_ok = init_ok and add_modifiers()
+	init_ok = init_ok and link_middlewares()
 
-	check_dictionaries()
-	
+	if init_ok:
+		print ('======= COMPONENT DICTIONARY INITIALISED =======')
+		check_dictionaries()
+		GameLogic.morse_initialised = True
+	else:
+		print ('======= INITIALISATION FAILED!!! =======')
+		print ("Exiting the simulation!")
+		contr = GameLogic.getCurrentController()
+		close_all(contr)
+
 	#Display the mouse in the simulator
 	#Rasterizer.showMouse(1)
 
@@ -253,6 +279,31 @@ def admin(contr):
 	return
 
 
+def close_all(contr):
+	print ('######### TERMINATING INSTANCES... ########')
+	# Force the deletion of the sensor objects
+	for obj, component_instance in GameLogic.componentDict.items():
+		del obj
+
+	# Force the deletion of the robot objects
+	for obj, robot_instance in GameLogic.robotDict.items():
+		del obj
+
+	# Force the deletion of the middleware objects
+	for obj, mw_instance in GameLogic.mwDict.items():
+		if mw_instance:
+			mw_instance.cleanup()
+			#import gc
+			#print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+			del obj
+
+	quitActuator = contr.actuators['Quit_sim']
+	contr.activate(quitActuator)
+
+	print ('######### EXITING SIMULATION ########')
+
+
+
 def finish(contr):
 	"""Close the open ports."""
 	sensor = contr.sensors['ESC_KEY']
@@ -260,31 +311,7 @@ def finish(contr):
 	#execute only when the ESC key is released (if we don't test that,
 	#the code get executed two time, when pressed, and when released)
 	if not sensor.positive and sensor.triggered:
-		print ('######### CLOSING PORTS... ########')
-
-		#GameLogic.orsConnector.finalize()
-
-		# Force the deletion of the sensor objects
-		for obj, component_instance in GameLogic.componentDict.items():
-			del obj
-
-		# Force the deletion of the robot objects
-		for obj, robot_instance in GameLogic.robotDict.items():
-			del obj
-
-		# Force the deletion of the middleware objects
-		for obj, mw_instance in GameLogic.mwDict.items():
-			if mw_instance:
-				mw_instance.cleanup()
-				#import gc
-				#print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
-				del obj
-
-		quitActuator = contr.actuators['Quit_sim']
-		contr.activate(quitActuator)
-
-		print ('######### EXITING SIMULATION ########')
-
+		close_all(contr)
 
 
 def restart(contr):
@@ -292,7 +319,7 @@ def restart(contr):
 	sensor = contr.sensors['F11_KEY']
 
 	#execute only when the F11 key is released (if we don't test that,
-	#the code get executed two time, when pressed, and when released)
+	#the code get executed two times, when pressed, and when released)
 	if not sensor.positive and sensor.triggered:
 		print ('######### CLOSING PORTS... ########')
 
