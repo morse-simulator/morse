@@ -15,7 +15,11 @@
 
 import GameLogic
 import Rasterizer
-from Mathutils import Vector
+import sys
+if sys.version_info<(3,0,0):
+	from Mathutils import Vector
+else:
+	from mathutils import Vector
 
 motionSpeed = 5
 rotationSpeed = 5
@@ -116,9 +120,14 @@ def dragDrop(contr):
 	activateDrag = contr.sensors["LMB"]
 
 	scene = GameLogic.getCurrentScene()
-	XYPlane = scene.objects['OBXYPlane']
-	XZPlane = scene.objects['OBXZPlane']
-	YZPlane = scene.objects['OBYZPlane']
+	if sys.version_info<(3,0,0):
+		XYPlane = scene.objects['OBXYPlane']
+		XZPlane = scene.objects['OBXZPlane']
+		YZPlane = scene.objects['OBYZPlane']
+	else:
+		XYPlane = scene.objects['XYPlane']
+		XZPlane = scene.objects['XZPlane']
+		YZPlane = scene.objects['YZPlane']
 
 	# LMB was pressed
 	if activateDrag.triggered and activateDrag.positive:
@@ -154,7 +163,10 @@ def dragDrop(contr):
 def objectSelect(contr):
 	""" Mark an object as selected by the user """
 	scene = GameLogic.getCurrentScene()
-	sphere = scene.objects['OBSelectionSphere']
+	if sys.version_info<(3,0,0):
+		sphere = scene.objects['OBSelectionSphere']
+	else:
+		sphere = scene.objects['SelectionSphere']
 
 	rightButton = contr.sensors["RMB"]
 	# RMB was pressed
