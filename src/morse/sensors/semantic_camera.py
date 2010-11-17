@@ -1,20 +1,3 @@
-"""
-This module implement a "semantic camera" sensor for the OpenRobots Simulator.
-
-This special camera returns the list of objects as seen by the robot's cameras,
-with unique id, possibly (if set in the objects' properties) the type of object
-and the colour of the object.
-
-Other such high-level information (the semantic description of the scene) can be
-added.
-
-Version: 1.0
-Date: 16 Nov. 2009
-Author: Severin Lemaignan <severin.lemaignan@laas.fr>
-
-Copyright LAAS-CNRS 2009
-"""
-
 import GameLogic
 
 if GameLogic.pythonVersion < 3:
@@ -28,10 +11,22 @@ import morse.sensors.camera
 import morse.helpers.colors
 
 class SemanticCameraClass(morse.sensors.camera.CameraClass):
-	""" Cognitive camera
-	
-	This camera is able to recognise objects marked with a
-	'Description' property of type string.
+	"""
+	This module implement a "semantic camera" sensor for the OpenRobots Simulator.
+
+	This special camera returns the list of objects as seen by the robot's cameras,
+	with unique id, possibly (if set in the objects' properties) the type of object
+	and the colour of the object.
+	This camera is able to recognise objects marked with a 'Description' property of type string.
+
+	Other such high-level information (the semantic description of the scene) can be
+	added.
+
+	Version: 1.0
+	Date: 16 Nov. 2009
+	Author: Severin Lemaignan <severin.lemaignan@laas.fr>
+
+	Copyright LAAS-CNRS 2009
 	"""
 
 	def __init__(self, obj, parent=None):
