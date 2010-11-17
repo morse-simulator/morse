@@ -74,7 +74,8 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 			# Give the movement instructions directly to the parent
 			# The second parameter specifies a "local" movement
-			segment.applyRotation([rx, ry, rz], True)
+			#segment.applyRotation([rx, ry, rz], True)
+			segment.localOrientation = [rx, ry, rz]
 
 			# Reset the rotations for the next segment
 			ry = rz = 0

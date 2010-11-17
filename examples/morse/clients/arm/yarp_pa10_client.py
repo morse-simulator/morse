@@ -53,6 +53,7 @@ def command_robot():
 					]
 	"""
 
+	print ("SEQUENCE READ: {0}".format(arm_movement))
 	while waiting:
 		#raw_coords = raw_input("Input new coordinates: ")
 		#print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
@@ -65,6 +66,7 @@ def command_robot():
 
 		elif command == "step" or command == "s":
 			movement = arm_movement[i]
+			print ("SENDING MOVEMENT: {0}".format(movement))
 			i = i + 1
 			send_movement(movement)
 
