@@ -67,33 +67,35 @@ def rotate(contr):
 	# Get sensor named Mouse
 	mouse = contr.sensors['Mouse']
 
-	# get width and height of game window
-	width = Rasterizer.getWindowWidth()
-	height = Rasterizer.getWindowHeight()
+	if mouse.positive:
+		# get width and height of game window
+		width = Rasterizer.getWindowWidth()
+		height = Rasterizer.getWindowHeight()
 
-	# get mouse movement from function
-	move = mouse_move(camera, mouse, width, height)
+		# get mouse movement from function
+		move = mouse_move(camera, mouse, width, height)
 
-	# set mouse sensitivity
-	sensitivity = camera['Sensitivity']
+		# set mouse sensitivity
+		sensitivity = camera['Sensitivity']
 
-	# Amount, direction and sensitivity
-	leftRight = move[0] * sensitivity
-	upDown = move[1] * sensitivity
+		# Amount, direction and sensitivity
+		leftRight = move[0] * sensitivity
+		upDown = move[1] * sensitivity
 
-	# set the values
-	camera.applyRotation( [0.0, 0.0, leftRight], 0 )
-	camera.applyRotation( [upDown, 0.0, 0.0], 1 )
+		# set the values
+		camera.applyRotation( [0.0, 0.0, leftRight], 0 )
+		camera.applyRotation( [upDown, 0.0, 0.0], 1 )
 
-	# Center mouse in game window
-	# Using the '//' operator (floor division) to produce an integer result
-	Rasterizer.setMousePosition(width//2, height//2)
+		# Center mouse in game window
+		# Using the '//' operator (floor division) to produce an integer result
+		Rasterizer.setMousePosition(width//2, height//2)
 
 
 def mouse_move(camera, mouse, width, height):
 	""" Get the movement of the mouse as an X, Y coordinate. """
 	# distance moved from screen center
 	# Using the '//' operator (floor division) to produce an integer result
+	print ("POSITION: ", mouse.position)
 	x = width//2 - mouse.position[0]
 	y = height//2 - mouse.position[1]
 	
@@ -107,7 +109,7 @@ def mouse_move(camera, mouse, width, height):
 		# can't use True.  Have to use 1
 		camera['mouseInit'] = 1
 
-	#print ("Read displacement: %s, %s" % (x, y))
+	print ("Read displacement: %s, %s" % (x, y))
 	
 	# return mouse movement
 	return (x, y)
