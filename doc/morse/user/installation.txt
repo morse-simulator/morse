@@ -54,6 +54,7 @@ You'll need to set the environment variable ''PYTHONPATH'' to ''$ROBOTPKG_BASE/l
 
 If you are not using robotpkg to install YARP, then make sure to copy the files ''yarp.py'' and ''_yarp.so'' to your Python lib directory (''/usr/lib/python3.1/site-packages/'') or at some place reachable from your ''PYTHONPATH'' environment variable.
 
+NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ''site-packages'' for ''dist-packages''.
 
 ==== Pocolibs ====
 
