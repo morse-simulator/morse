@@ -12,7 +12,7 @@ find_package(Python31Interp REQUIRED)
 find_package(Python31Libs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
-				${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(0,0,\"\"))"
+				${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(0,0,\"\"))"
 					OUTPUT_VARIABLE PYTHON_INSTALL
 					ERROR_VARIABLE PYTHON_STDERR
 					RESULT_VARIABLE PYTHON_ERR
@@ -28,11 +28,11 @@ if (BUILD_YARP2_SUPPORT)
 	find_package(YARP2 REQUIRED)
 
 	EXECUTE_PROCESS(COMMAND 
-					${PYTHON_EXECUTABLE} -c "import yarp;"
+					${PYTHON3_EXECUTABLE} -c "import yarp;"
 					RESULT_VARIABLE YARP_PY_ERR
 				   )
 	if (YARP_PY_ERR)
-		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but can't find yarp python binding")
+		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find yarp python binding")
 	endif (YARP_PY_ERR)
 endif(BUILD_YARP2_SUPPORT)
 

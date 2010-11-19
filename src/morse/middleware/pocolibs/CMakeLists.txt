@@ -6,7 +6,7 @@
 ## It generates _ors_<module_name>_poster.so, ors_<module_name>_poster.py, and
 ## we wait for <module_name>.py in the (sensor|actuator) directory)
 
-include_directories(${PYTHON_INCLUDE_PATH})
+include_directories(${PYTHON3_INCLUDE_DIR})
 include_directories(${POCOLIBS_INCLUDE_DIRS})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
