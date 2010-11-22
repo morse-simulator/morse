@@ -10,12 +10,14 @@ def robot_action(contr):
 	if not GameLogic.morse_initialised:
 		return
 	
-	obj = contr.owner
+	# Execute only when the sensor is really activated
+	if contr.sensors[0].positive:
+		obj = contr.owner
 
-	# Get the intance of this objects class
-	robot_object = GameLogic.robotDict[obj]
-	if robot_object:
-		robot_object.action()
+		# Get the intance of this objects class
+		robot_object = GameLogic.robotDict[obj]
+		if robot_object:
+			robot_object.action()
 
 
 def sensor_action(contr):
@@ -24,13 +26,14 @@ def sensor_action(contr):
 	if not GameLogic.morse_initialised:
 		return
 
-	obj = contr.owner
-	parent = obj.parent
-	
-	# Get the intance of this objects class
-	sensor_object = GameLogic.componentDict[obj.name]
-	if sensor_object:
-		sensor_object.action()
+	# Execute only when the sensor is really activated
+	if contr.sensors[0].positive:
+		obj = contr.owner
+		
+		# Get the intance of this objects class
+		sensor_object = GameLogic.componentDict[obj.name]
+		if sensor_object:
+			sensor_object.action()
 
 
 def actuator_action(contr):
@@ -39,13 +42,14 @@ def actuator_action(contr):
 	if not GameLogic.morse_initialised:
 		return
 	
-	obj = contr.owner
-	parent = obj.parent
+	# Execute only when the sensor is really activated
+	if contr.sensors[0].positive:
+		obj = contr.owner
 
-	# Get the instance of this objects class
-	actuator_object = GameLogic.componentDict[obj.name]
-	if actuator_object:
-		actuator_object.action()
+		# Get the instance of this objects class
+		actuator_object = GameLogic.componentDict[obj.name]
+		if actuator_object:
+			actuator_object.action()
 
 
 def mw_action(contr):
@@ -53,8 +57,7 @@ def mw_action(contr):
 	# TODO: Right now there is nothing the mw should do, so just exit
 	return
 
-	obj = contr.owner
-	parent = obj.parent
+	#obj = contr.owner
 	
 	# Get the intance of this objects class
 	#mw_object = GameLogic.componentDict[obj.name]
