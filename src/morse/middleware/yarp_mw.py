@@ -188,25 +188,19 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
 		# Check that an image exists:
 		if img_string != None and img_string != '':
-			# Convert to an array object
 			if GameLogic.pythonVersion > 3:
 				try:
-					local_data = array.array('B',img_string.image)
-					data = local_data.buffer_info()[0]
+					data = img_string
+					# Pass the data as is, from the VideoTexture module
+					# NOTE: This requires the patch to yarp-python bindings
 					img.setExternal(data,img_X,img_Y)
 				except TypeError as detail:
 					print ("No image yet: %s" % detail)
-				#data = local_data
-				#data = img_string.image
-
-				#print ("DATA TYPE BEING PASSED: {0} ({0})".format(data, type(data)))
-
-				# Using Python pointer (converted or not)
 			else:
+				# Convert to an array object
 				data = array.array('B',img_string)
 				# Get the pointer to the data
 				img_pointer = data.buffer_info()
-
 				# Using Python pointer (converted or not)
 				img.setExternal(img_pointer[0],img_X,img_Y)
 
