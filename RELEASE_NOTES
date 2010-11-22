@@ -1,19 +1,51 @@
-MORSE v 0.2
------------
+MORSE v 0.2a1
+=============
+
+General changes
+---------------
+
+- Switch to Blender 2.5: MORSE now officialy supports Blender 2.5x (x>=4) and 
+the support for Blender 2.49 has been dropped.
+
+- This means that MORSE is now fully Python 3 compatible. New code must be from
+now valid Python 3 code.
+
+New features
+------------
+
+- Much work went on the support of humans in the simulator. A fully rigged human
+model is now available. It can be controlled in a "first person shooter"-like
+mode, enabling immersive simulation of human-robot interaction.
+
+- Support for the PA-10 and Kuka arms. They can be controlled either by specifying
+a target that the arm tries to reach (using Blender ITASC IK solver) or by
+sending a set of joint angles.
+
+- new simple waypoint controller: this 'high-level' controller allows to give 
+only a list of waypoint to the robot. The simulator takes care of the navigation 
+(currently, simple straight lines, without any sort of obstacle avoidance)
+
+- "Semantic camera" sensor: MORSE can export position, orientation and name 
+of specifically marked objects that are in a camera field of view.
+
+- we now have a fully simulated SICK laser sensor.
+
+- Possibility to control the camera when the game engine runs (with keyboard, 
+mouse, or attach some view to some robots)
+
+Architectural changes
+---------------------
 
 - Components have "hooks" to export their data. Middleware lives in parallel
 threads and "visit" the components. In this case, middlewares still lives
 in the Python VM. Advantage: better decoupling ; middleware can dynamically
 choose what they want to watch.
 
-- Add serialize methods to the data of each component. This will format the 
+- Add 'serialize' methods to the data of each component. This formats the 
 data according to the needs of each middleware/architecture.
-
-- Possibility to control the camera when the game engine runs (with keyboard, 
-mouse, or attach some view to some robots)
 
 
 MORSE v 0.1 - 28/07/2010
-------------------------
+========================
 
 First version
