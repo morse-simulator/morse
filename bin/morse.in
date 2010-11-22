@@ -40,10 +40,7 @@ def retrieve_blender_from_path():
         blenders_in_path = subprocess.Popen(
                                 ['which', '-a', 'blender'], 
                                 stdout=subprocess.PIPE).communicate()[0]
-        # Convert the bytes into a string
-        if sys.version_info>(3,0,0):
-            blenders_in_path = str(blenders_in_path)
-        res = blenders_in_path.split('\n')[:-1]
+        res = str(blenders_in_path).split('\n')[:-1]
     except OSError:
         return []
     
@@ -69,6 +66,39 @@ def check_blender_version(blender_path):
     else:
         return False
 
+def check_blender_python_version(blender_path):
+    """ Creates a small Python script to execute within Blender and get the 
+    current Python version bundled with Blender
+    
+    TODO: this method doesn't works because I couldn't find a way to exit 
+    Blender in Python...
+    For now, we don't check Python version in Blender.
+    """
+    
+    with open("python_checker.py", "w") as f:
+        f.write("import sys\n")
+        f.write("print('>>>' + '.'.join((str(x) for x in sys.version_info[:3])) + '<<<')\n")
+    
+    try:
+        version_str = subprocess.Popen(
+                                [blender_path, '-P python_checker.py'], 
+                                stdout=subprocess.PIPE).communicate()[0]
+        version = version_str.split()[1] + '.' + version_str.split()[3][:-1]
+    except OSError:
+        os.remove("python_checker.py")
+        return None
+    
+    logging.info("Checking version of Python within Blender " + blender_path + \
+                    "... Found v." + version)
+    
+    if  version.split('.') >= MIN_PYTHON_VERSION.split('.') and \
+        version.split('.') < STRICT_MAX_PYTHON_VERSION.split('.') :
+            os.remove("python_checker.py")
+            return version
+    else:
+        os.remove("python_checker.py")
+        return False
+        
 def check_default_scene(prefix):
     
     global default_scene_abspath
@@ -252,11 +282,11 @@ def create_copy_default_scene(filename = None):
 def prelaunch():
     version()
     try:
-        print("Checking up your environment...\n")
         logging.basicConfig(level=logging.WARNING, format="%(message)s")
+        logging.info("Checking up your environment...\n")
         check_setup()
     except MorseError as e:
-        print("\nYour environment is not correctly setup to run MORSE!\n" +\
+        logging.error("\nYour environment is not correctly setup to run MORSE!\n" +\
         "Please run 'morse check' for more details.")
         sys.exit()
 
@@ -265,19 +295,19 @@ def launch_simulator(scene=None):
     
     global morse_prefix, blender_exec, default_scene_abspath
     
-    print("*** Launching MORSE ***\n")
-    print ("PREFIX= " + morse_prefix)
+    logging.info("*** Launching MORSE ***\n")
+    logging.info("PREFIX= " + morse_prefix)
     
     if not scene:
         scene = create_copy_default_scene()
-        print ("Creating new scene " + scene)
+        logging.info("Creating new scene " + scene)
         
     elif not os.path.exists(scene):
-        print(scene + " does not exist!\nIf you want to create a new scene " + \
+        logging.error(scene + " does not exist!\nIf you want to create a new scene " + \
         "called " + scene + ",\nplease use 'morse create " + scene + "'.")
         sys.exit(1)
         
-    print ("Executing: " + blender_exec + " " + scene + "\n\n")
+    logging.info("Executing: " + blender_exec + " " + scene + "\n\n")
     
     
     #Flush all outputs before launching Blender process
@@ -289,13 +319,13 @@ def launch_simulator(scene=None):
 
 def launch_simulation(scene):
     """
-    Runs a specified simulation from a blend file without openening Blender.
+    Runs a specified simulation from a blend file without opening Blender.
     """
-    print("Not yet implemented")
+    logging.error("Not yet implemented")
     sys.exit(1)
 
 def version():
-    print("morse " + VERSION + "\nCopyright LAAS-CNRS/ONERA 2010")
+    print("morse " + VERSION + "\nCopyright LAAS-CNRS 2010")
 
 def help(cmd=None):
     
@@ -343,20 +373,20 @@ if __name__ == '__main__':
             sys.exit()
         elif sys.argv[1] in ["check"]:
             try:
-                print("Checking up your environment...\n")
                 logging.basicConfig(level=logging.DEBUG, format="-> %(message)s\n")
+                logging.info("Checking up your environment...\n")
                 check_setup()
             except MorseError as e:
-                print("\nYour environment is not correctly setup to run MORSE!")
+                logging.error("\nYour environment is not correctly setup to run MORSE!")
                 sys.exit()
-            print("Your environment is correctly setup to run MORSE.")
+            logging.info("Your environment is correctly setup to run MORSE.")
             
         elif sys.argv[1] in ["create"]:
             if len(sys.argv) == 3:
                 prelaunch()
                 launch_simulator(create_copy_default_scene(sys.argv[2]))                
             else:
-                print("'create' option expect exactly one option (a filename)")
+                logging.error("'create' option expect exactly one option (a filename)")
                 sys.exit()
         elif sys.argv[1] in ["run"]:
             launch_simulation()
@@ -368,7 +398,7 @@ if __name__ == '__main__':
                 launch_simulator(sys.argv[1])
             
             else:
-                print("Unknown option: " + sys.argv[1])
+                logging.error("Unknown option: " + sys.argv[1])
     
     else:
         prelaunch()
