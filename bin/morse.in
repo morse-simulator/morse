@@ -37,7 +37,12 @@ class MorseError(Exception):
 
 def retrieve_blender_from_path():
     try:
-        blenders_in_path = subprocess.Popen(['which', '-a', 'blender'], stdout=subprocess.PIPE).communicate()[0]
+        blenders_in_path = subprocess.Popen(
+                                ['which', '-a', 'blender'], 
+                                stdout=subprocess.PIPE).communicate()[0]
+        # Convert the bytes into a string
+        if sys.version_info>(3,0,0):
+            blenders_in_path = str(blenders_in_path)
         res = blenders_in_path.split('\n')[:-1]
     except OSError:
         return []
@@ -46,7 +51,12 @@ def retrieve_blender_from_path():
     
 def check_blender_version(blender_path):
     try:
-        version_str = subprocess.Popen([blender_path, '--version'], stdout=subprocess.PIPE).communicate()[0]
+        version_str = subprocess.Popen(
+                                [blender_path, '--version'], 
+                                stdout=subprocess.PIPE).communicate()[0]
+        # Convert the bytes into a string
+        if sys.version_info>(3,0,0):
+            version_str = str(version_str)
         version = version_str.split()[1] + '.' + version_str.split()[3][:-1]
     except OSError:
         return None
