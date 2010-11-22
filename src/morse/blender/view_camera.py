@@ -95,7 +95,6 @@ def mouse_move(camera, mouse, width, height):
 	""" Get the movement of the mouse as an X, Y coordinate. """
 	# distance moved from screen center
 	# Using the '//' operator (floor division) to produce an integer result
-	print ("POSITION: ", mouse.position)
 	x = width//2 - mouse.position[0]
 	y = height//2 - mouse.position[1]
 	
@@ -109,7 +108,7 @@ def mouse_move(camera, mouse, width, height):
 		# can't use True.  Have to use 1
 		camera['mouseInit'] = 1
 
-	print ("Read displacement: %s, %s" % (x, y))
+	#print ("Read displacement: %s, %s" % (x, y))
 	
 	# return mouse movement
 	return (x, y)
