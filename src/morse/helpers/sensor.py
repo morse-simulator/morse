@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import morse.helpers.object
 
 class MorseSensorClass(morse.helpers.object.MorseObjectClass):
@@ -27,7 +27,16 @@ class MorseSensorClass(morse.helpers.object.MorseObjectClass):
     #    """ Destructor method. """
     #    # Call the destructor of the parent class
     #    super(self.__class__,self).__del__(obj)
-
+    
+    def sensor_to_robot_position_3d(self):
+        """
+        Compute the transformation between the sensor and the
+        associated robot 
+        
+        """
+        main_to_origin = self.robot_parent.position_3d
+        main_to_sensor = main_to_origin.transformation3dWith(self.position_3d)
+        return main_to_sensor
 
     def action(self):
         """ Call the action functions that have been added to the list. """
