@@ -12,10 +12,14 @@ I.1 Common requirements
  - Python (3.1)
  - Blender 2.54+ build with Python 3.1 
  - git to get the code of the simulator:
-	 $ git clone http://trac.laas.fr/git/robots/morse.git
+
+You can get the code either from GitHub:
+$ git clone https://github.com/laas/morse.git
+or from the LAAS-CNRS main repo:
+$ git clone http://trac.laas.fr/git/robots/morse.git
 
 Note: The directory where you create the git clone will be refered to as
-$ORS_ROOT in this document.
+$MORSE_ROOT in this document.
 
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else.
@@ -76,14 +80,14 @@ the command line :
   - BUILD_POCOLIBS_SUPPORT controls the build of pocolibs support in MORSE
   - BUILD_YARP2_SUPPORT controls the build of YARP support in MORSE
   - CMAKE_BUILD_TYPE controls the optimisation stuff for C/C++ extension
-	(Release is a good choice).
+    (Release is a good choice).
 
 To build and install MORSE with YARP support in /opt, you need something like:
 $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
 
- You can check your configuration is ok with:
- $ morse check
+You can check your configuration is ok with:
+$ morse check
 
 
 III/ Running a simulation
@@ -110,22 +114,22 @@ Two environment variable have noticable effects:
     bash:
     export PYTHONPATH=${morse_install_prefix}/lib/python3.1/site-packages:${morse_install_prefix}/lib/python3.1/site-packages/morse/blender
 
- - $ORS_BLENDER that allows you to specify a custom Blender executable (else,
+ - $MORSE_BLENDER that allows you to specify a custom Blender executable (else,
  Blender is looked for in the path).
 
-Once launched, you can test the simulator by loading one of the example scenarii
-from $ORS_ROOT/share/examples/morse/scenarii (.blend files)
-
 To start a simulation, go on blender and press "P" to play the scenario.
+
+Once launched, you can test the simulator by loading one of the example scenarii
+from $MORSE_ROOT/share/examples/morse/scenarii (.blend files)
 
 IV/ Testing
 -----------
 
 To test the external control clients, open the Blender file:
-$ORS_ROOT/share/examples/morse/scenarii/indoors_1/indoor_scene-2.0.blend
+$MORSE_ROOT/share/examples/morse/scenarii/indoors_1/indoor_scene-2.0.blend
 Start the simulation ('P')
 Run the C program:
-$ORS_ROOT/share/examples/morse/clients/atrv/atrv_destination-1.0
+$MORSE_ROOT/share/examples/morse/clients/atrv/atrv_destination-1.0
 Enter the coordinates where you want the robot to go. The robot will try to get
 there.
 

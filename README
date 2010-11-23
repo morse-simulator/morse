@@ -21,9 +21,11 @@ Please read INSTALL.
 II/ Documentation
 -----------------
 
-Documentation is currently sparse. Most of it is hosted on the Morse website
-http://www.laas.fr/morse
+The MORSE documentation is available from the doc/ directory.
+It is available as well online, either in HTML or PDF format from the MORSE
+website:
 
+http://morse.openrobots.org
 
 III/ How to contribute
 ----------------------
