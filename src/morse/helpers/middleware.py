@@ -7,99 +7,99 @@ import types
 from abc import ABCMeta, abstractmethod
 
 class MorseMiddlewareClass(object):
-	""" Basic Class for all middlewares
+    """ Basic Class for all middlewares
 
-	Provides common attributes. """
+    Provides common attributes. """
 
-	# Make this an abstract class
-	__metaclass__ = ABCMeta
+    # Make this an abstract class
+    __metaclass__ = ABCMeta
 
-	def __init__ (self, obj, parent=None):
-		""" Constructor method. """
-		self.blender_obj = obj
-		self._extra_methods = []
+    def __init__ (self, obj, parent=None):
+        """ Constructor method. """
+        self.blender_obj = obj
+        self._extra_methods = []
 
-	def __del__(self):
-		""" Destructor method. """
-		print ("%s: Middleware finishing" % self.blender_obj.name)
-
-
-	@abstractmethod
-	def register_component():
-		""" Abstract model for the component binding method
-
-		Implemented by all subclasses of MorseMiddlewareClass.
-		"""
-		pass
+    def __del__(self):
+        """ Destructor method. """
+        print ("%s: Middleware finishing" % self.blender_obj.name)
 
 
-	def cleanup(self):
-		""" Remove the modules linked dynamically """
-		for module in self._extra_methods:
-			delattr(self, module)
+    @abstractmethod
+    def register_component():
+        """ Abstract model for the component binding method
+
+        Implemented by all subclasses of MorseMiddlewareClass.
+        """
+        pass
 
 
-	def _check_function_exists(self, function_name):
-		""" Checks if a class contains a specified function
-		
-		Returns a reference to the function, that can be used
-		by other components
-		"""
-		try:
-			# Get the reference to the function
-			function = getattr(self, function_name)
-			return function
-		except AttributeError as detail:
-			print ("ERROR while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
-			return None
+    def cleanup(self):
+        """ Remove the modules linked dynamically """
+        for module in self._extra_methods:
+            delattr(self, module)
 
 
-	def _add_method(self, mw_data, component_instance):
-		""" Include a new serialisation method in the middleware.
+    def _check_function_exists(self, function_name):
+        """ Checks if a class contains a specified function
+        
+        Returns a reference to the function, that can be used
+        by other components
+        """
+        try:
+            # Get the reference to the function
+            function = getattr(self, function_name)
+            return function
+        except AttributeError as detail:
+            print ("ERROR while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
+            return None
 
-		Parameters are the array with parameters for the middleware
-		and the instance of the component
-		"""
-		# Get the variables from the data passed
-		# Second parameter is the name of the function to add to the component
-		function_name = mw_data[1]
-		# Third parameter is the file where the function can be found
-		source_file = mw_data[2]
 
-		module_name = re.sub('/', '.', source_file)
-		# Import the module containing the class
-		try:
-			__import__(module_name)
-		except ImportError as detail:
-			print ("ERROR: %s. Check the 'component_config.py' file for typos" % (detail))
-			return
-		module = sys.modules[module_name]
+    def _add_method(self, mw_data, component_instance):
+        """ Include a new serialisation method in the middleware.
 
-		try:
-			# Get the reference to the new method
-			func = getattr(module, function_name)
-		except AttributeError as detail:
-			print ("ERROR: %s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
-			return
+        Parameters are the array with parameters for the middleware
+        and the instance of the component
+        """
+        # Get the variables from the data passed
+        # Second parameter is the name of the function to add to the component
+        function_name = mw_data[1]
+        # Third parameter is the file where the function can be found
+        source_file = mw_data[2]
 
-		# Insert the function and get a reference to it
-		if sys.version_info >= (3,0,0):
-			# NOTE (GEF 02/11/2010): I don't know why the arguments changed
-			#  in Python 3, and not sure this will work, but it seems to. :-)
-			setattr(self, func.__name__, types.MethodType(func, self))
-		else:
-			setattr(self, func.__name__, types.MethodType(func, self, self.__class__))
+        module_name = re.sub('/', '.', source_file)
+        # Import the module containing the class
+        try:
+            __import__(module_name)
+        except ImportError as detail:
+            print ("ERROR: %s. Check the 'component_config.py' file for typos" % (detail))
+            return
+        module = sys.modules[module_name]
 
-		bound_function = getattr(self, function_name)
-		try:
-			# Call the init method of the new serialisation
-			# Sends the name of the function as a means to identify
-			#  what kind of port it should use (mainly for Yarp in/out)
-			module.init_extra_module(self, component_instance, bound_function, mw_data)
-		except AttributeError as detail:
-			print ("ERROR: Method 'init_extra_module' not found in file '%s'" % source_file)
+        try:
+            # Get the reference to the new method
+            func = getattr(module, function_name)
+        except AttributeError as detail:
+            print ("ERROR: %s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
+            return
 
-		# Store the name of the function, to cleanup later
-		self._extra_methods.append(function_name)
+        # Insert the function and get a reference to it
+        if sys.version_info >= (3,0,0):
+            # NOTE (GEF 02/11/2010): I don't know why the arguments changed
+            #  in Python 3, and not sure this will work, but it seems to. :-)
+            setattr(self, func.__name__, types.MethodType(func, self))
+        else:
+            setattr(self, func.__name__, types.MethodType(func, self, self.__class__))
 
-		return bound_function
+        bound_function = getattr(self, function_name)
+        try:
+            # Call the init method of the new serialisation
+            # Sends the name of the function as a means to identify
+            #  what kind of port it should use (mainly for Yarp in/out)
+            module.init_extra_module(self, component_instance, bound_function, mw_data)
+        except AttributeError as detail:
+            print ("ERROR: Method 'init_extra_module' not found in file '%s'" % source_file)
+
+        # Store the name of the function, to cleanup later
+        self._extra_methods.append(function_name)
+
+        return bound_function
