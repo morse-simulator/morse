@@ -31,6 +31,9 @@ For the YARP bindings
 Instructions to create YARP-Python bindings are here:
 http://eris.liralab.it/wiki/YARP_and_Python
 
+To use camera with yarp < 2.3.2, you need to apply the patch stored in
+patches/yarp.i.diff. 
+
 Note that the easiest way to install YARP is probably to use robotpkg (see  
 http://homepages.laas.fr/mallet/robotpkg for more instructions). You can 
 install yarp and its dependancies using make install into devel/libpyyarp 
