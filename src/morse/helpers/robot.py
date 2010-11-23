@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import morse.helpers.object
 
 class MorseRobotClass(morse.helpers.object.MorseObjectClass):
@@ -22,4 +22,7 @@ class MorseRobotClass(morse.helpers.object.MorseObjectClass):
 
     def action(self):
         """ Call the regular action function of the component. """
+        # Update the component's position in the world
+        self.position_3d.update(self.blender_obj)
+
         self.default_action()
