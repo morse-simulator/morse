@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(PACKAGE_NAME morse)
+set(PACKAGE_VERSION 0.1)
 
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
@@ -50,7 +51,11 @@ INSTALL (DIRECTORY doc data examples
 		 REGEX .*clients.* EXCLUDE
 		)
 
-INSTALL(PROGRAMS bin/morse
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/bin/morse.in
+	${CMAKE_CURRENT_BINARY_DIR}/bin/morse
+	)
+INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/bin/morse
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 	    )
 

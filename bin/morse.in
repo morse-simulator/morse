@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! @PYTHON_EXECUTABLE@
 import sys
 import os
 import logging
@@ -7,7 +7,7 @@ import shutil
 import glob
 import re
 
-VERSION = "0.2a0"
+VERSION = "@PACKAGE_VERSION@"
 
 #Python version must be egal or bigger than...
 MIN_PYTHON_VERSION = "2.6.0"
