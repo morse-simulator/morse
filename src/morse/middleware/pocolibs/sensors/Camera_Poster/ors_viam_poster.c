@@ -13,7 +13,8 @@
 #include "ors_viam_poster.h"
 
 static void create_camera_calibration(viam_cameracalibration_t*, 
-									  const struct simu_image_init* init);
+				      const struct simu_image_init* init,
+				      double alpha_u);
 static void create_bank_calibration(viam_bankcalibration_t*, size_t nb_images, 
 		double baseline, double pixel_size);
 static int fill_image(ViamImageHeader* image, const struct pom_position* pos, 
@@ -32,8 +33,6 @@ static int real_post_viam_poster(	POSTER_ID id,
 					);
 
 static void* thread_main(void* v);
-
-#define MAGIC_CALIBRATION_STUFF		200
 
 bool abort_thr = false;
 pthread_t thr;
@@ -56,12 +55,12 @@ struct internal_args args;
 static void 
 fill_static_data(size_t i, size_t nb_images, ViamImageHeader* header, 
 				 const struct simu_image_init* init,
-				 size_t* offset)
+				 size_t* offset, double alpha_u)
 {
 	strncpy ( header->name.id, init->camera_name, VIAM_ID_MAX);
 	header->name.id[VIAM_ID_MAX - 1]= '\0';
 
-	create_camera_calibration(& header->calibration, init);
+	create_camera_calibration(& header->calibration, init, alpha_u);
 
 	header->nChannels = 1;
 	header->depth = 8;
@@ -132,17 +131,20 @@ POSTER_ID init_data (char*	poster_name, const char* bank_name, size_t nb_images,
 	strncpy ( bank->name.id, bank_name, VIAM_ID_MAX);
 	bank->name.id[VIAM_ID_MAX - 1]= '\0';
 
-	create_bank_calibration(&bank->calibration, nb_images, baseline, MAGIC_CALIBRATION_STUFF);
+	double alpha_u = init1->width * init1->focal / BLENDER_HORIZONTAL_APERTURE;
+	create_bank_calibration(&bank->calibration, nb_images, baseline, alpha_u);
 	bank->nImages = nb_images;
 
 	size_t offset = 0;
 	switch (nb_images) {
 		case 1:
-			fill_static_data(0, nb_images, &bank->image[0], init1, &offset);
+			fill_static_data(0, nb_images, &bank->image[0], init1, &offset, alpha_u);
 			break;
 		case 2:
-			fill_static_data(0, nb_images, &bank->image[0], init1, &offset);
-			fill_static_data(1, nb_images, &bank->image[1], init2, &offset);
+			fill_static_data(0, nb_images, &bank->image[0], init1, &offset, alpha_u);
+			// Recalculating alpha_u for second camera (should not change on common stereobenches
+			alpha_u = init2->width * init2->focal / BLENDER_HORIZONTAL_APERTURE;
+			fill_static_data(1, nb_images, &bank->image[1], init2, &offset, alpha_u);
 			break;
 		default:
 			assert(false);
@@ -209,7 +211,7 @@ create_pom_sensor_pos( int blender_date,
  */
 void
 create_camera_calibration(viam_cameracalibration_t* local_calibration,
-	   	const struct simu_image_init* init)
+	   	const struct simu_image_init* init, double alpha_u)
 {
 	double identity[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
 
@@ -217,15 +219,15 @@ create_camera_calibration(viam_cameracalibration_t* local_calibration,
 	memcpy(local_calibration->rectification, identity, sizeof(identity));
 	memcpy(local_calibration->rotation, identity, sizeof(identity));
 
-	local_calibration->intrinsic[2] = init->width / 2;
-	local_calibration->intrinsic[5] = init->height / 2;
-	local_calibration->intrinsic[0] = MAGIC_CALIBRATION_STUFF;
-	local_calibration->intrinsic[4] = MAGIC_CALIBRATION_STUFF;
+	local_calibration->intrinsic[2] = init->width / 2.0;
+	local_calibration->intrinsic[5] = init->height / 2.0;
+	local_calibration->intrinsic[0] = alpha_u;
+	local_calibration->intrinsic[4] = alpha_u;
 
 	memcpy(local_calibration->intrirect, local_calibration->intrinsic, sizeof(identity));
 
 	for (size_t i = 0; i < 5; i++)
-		local_calibration->distortion[i] = 0;
+		local_calibration->distortion[i] = 0.0;
 
 
 	local_calibration->width = init->width;

@@ -1,6 +1,8 @@
 #include <posterLib.h>
 #include <Python.h>
 
+#define BLENDER_HORIZONTAL_APERTURE 32.0
+
 /*
  * XXX Swig has issues with varargs or C struct array, so for moment, we only
  * consider case where nb_images == 1 or 2, hence the crappy API
