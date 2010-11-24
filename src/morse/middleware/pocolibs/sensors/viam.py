@@ -1,3 +1,4 @@
+import sys
 import math
 import GameLogic
 from morse.middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
@@ -13,7 +14,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     try:
         # It should be the 4th parameter
         poster_name = mw_data[3]
-    except IndexError as detail:
+    except IndexError:
         # Compose the name of the poster, based on the parent and module names
         poster_name = 'viam_{0}_{1}_Poster'.format(parent_name, component_name)
 
@@ -50,7 +51,9 @@ def init_viam_poster(component_instance, poster_name):
                               math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
 
         # Create the actual poster
-        poster_id, ok = ors_viam_poster.init_data(poster_name, "stereo_bank", component_instance.num_cameras, baseline, cameras[0], cameras[1])
+        poster_id, ok = ors_viam_poster.init_data(poster_name, "stereo_bank", \
+                                            component_instance.num_cameras, \
+                                            baseline, cameras[0], cameras[1])
         if ok == 0:
             print ("ERROR creating poster. This module may not work")
             return None
@@ -72,15 +75,15 @@ def write_viam(self, component_instance):
         sys.exit()
     parent = component_instance.robot_parent
 
-    mainToOrigin = parent.position_3d
+    main_to_origin = parent.position_3d
 
     pom_robot_position =  ors_viam_poster.pom_position()
-    pom_robot_position.x = mainToOrigin.x
-    pom_robot_position.y = mainToOrigin.y
-    pom_robot_position.z = mainToOrigin.z
-    pom_robot_position.yaw = mainToOrigin.yaw
-    pom_robot_position.pitch = mainToOrigin.pitch
-    pom_robot_position.roll = mainToOrigin.roll
+    pom_robot_position.x = main_to_origin.x
+    pom_robot_position.y = main_to_origin.y
+    pom_robot_position.z = main_to_origin.z
+    pom_robot_position.yaw = main_to_origin.yaw
+    pom_robot_position.pitch = main_to_origin.pitch
+    pom_robot_position.roll = main_to_origin.roll
 
     # Compute the current time
     pom_date, t = self._compute_date()
@@ -93,19 +96,21 @@ def write_viam(self, component_instance):
     for camera_name in component_instance.camera_list:
         camera_instance = GameLogic.componentDict[camera_name]
 
-        sensorToOrigin = camera_instance.position_3d
-        mainToSensor = mainToOrigin.transformation3dWith(sensorToOrigin)
+        main_to_sensor = camera_instance.sensor_to_robot_position_3d()
 
         imX = camera_instance.image_size_X
         imY = camera_instance.image_size_Y
         try:
             image_data = camera_instance.local_data['image']
         except KeyError as detail:
-            print ("WARNING: Camera image not found to read by VIAM poster.\n\tThe 'Class' property in the Camera component could be wrongly defined")
+            print ("WARNING: Camera image not found to read by VIAM poster.\n \
+                    \tThe 'Class' property in the Camera component could be \
+                    wrongly defined")
 
         # Don't create a poster if the camera is disabled
         if image_data == None or not camera_instance.capturing:
-            #print ("Camera '%s' not capturing. Exiting viam poster" % camera_instance.blender_obj.name)
+            #print ("Camera '%s' not capturing. Exiting viam poster" % 
+            #       camera_instance.blender_obj.name)
             return
 
         # Fill in the structure with the image information
@@ -116,18 +121,21 @@ def write_viam(self, component_instance):
         camera_data.tacq_sec = t.second
         camera_data.tacq_usec = t.microsecond
         camera_data.sensor = ors_viam_poster.pom_position()
-        camera_data.sensor.x = mainToSensor.x
-        camera_data.sensor.y = mainToSensor.y
-        camera_data.sensor.z = mainToSensor.z
+        camera_data.sensor.x = main_to_sensor.x
+        camera_data.sensor.y = main_to_sensor.y
+        camera_data.sensor.z = main_to_sensor.z
         if GameLogic.pythonVersion < 3:
-            camera_data.sensor.yaw = mainToSensor.yaw + 180 # XXX
+            camera_data.sensor.yaw = main_to_sensor.yaw + 180 # XXX
         else:
-            camera_data.sensor.yaw = mainToSensor.yaw 
-        camera_data.sensor.pitch = mainToSensor.pitch
-        camera_data.sensor.roll = mainToSensor.roll
+            camera_data.sensor.yaw = main_to_sensor.yaw 
+        camera_data.sensor.pitch = main_to_sensor.pitch
+        camera_data.sensor.roll = main_to_sensor.roll
 
         ors_cameras.append(camera_data)
         ors_images.append(image_data)
 
     # Write to the poster with the data for both images
-    posted = ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, component_instance.num_cameras, ors_cameras[0], ors_images[0], ors_cameras[1], ors_images[1])
+    ors_viam_poster.post_viam_poster(poster_id, pom_robot_position, \
+                                     component_instance.num_cameras, \
+                                     ors_cameras[0], ors_images[0], \
+                                     ors_cameras[1], ors_images[1])
