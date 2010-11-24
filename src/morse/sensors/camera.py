@@ -91,8 +91,12 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
         GameLogic.cameras[self.name] = VideoTexture.Texture(screen, mat_id)
         GameLogic.cameras[self.name].source = VideoTexture.ImageRender(scene,camera)
 
+        # Set the focal length of the camera using the Game Logic Property
+        camera.lens = self.image_focal
+
         # Set the background to be used for the render
         GameLogic.cameras[self.name].source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
         GameLogic.cameras[self.name].source.capsize = [self.image_size_X, self.image_size_Y]
         print ("Camera {0}: Exporting an image of capsize: {1} pixels".format(self.name, GameLogic.cameras[self.name].source.capsize))
+        print ("\tFocal length of the camera is: %s" % camera.lens)
