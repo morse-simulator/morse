@@ -8,57 +8,56 @@ This tutorial assumes MORSE is properly installed. If not, follow the instructio
 
 Open the MORSE simulator with the test file provided with the installation, by using this command:
 
-  $ morse $ORS_ROOT/share/examples/morse/scenarii/tutorial-1.blend
+  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1.blend
 
 This will load a scene with a robot in a room with some furniture.
+
+The file:
+  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend
+contains the final scene, as obtain at the end of the tutorial.
 
 ==== Link an actuator ====
 
 We'll add a motion controller to the robot, so that it can receive commands from an external program. The robot will then move according to the instructions received. In this case we'll add a controller that uses linear and angular speed (V, W).
 
-  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
-  - Navigate to the directory ''$ORS_ROOT/data/morse/components/controllers''
-  - Press :LMB: over the file ''morse_vw_control.blend''
-  - Press :LMB: over the item ''Object''
-  - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press :RMB: over the item ''Motion_Controller''
-  - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
-  - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
-  - With the controller selected, hold down <key>S</key> and then :RMB: over the robot object
-  - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
+  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser,
+  - Navigate to the directory ''$MORSE_ROOT/data/morse/components/controllers'',
+  - Press :LMB: over the file ''morse_vw_control.blend'',
+  - Press :LMB: over the item ''Object'',
+  - Toggle the **Link** button (and check that the **Relative Paths** one is on as well) on the left side of the window,
+  - Press :RMB: over the item ''Motion_Controller'',
+  - Press the button **Link/Append from Library**. You'll return to the 3D View.
+  - The newly inserted object should be already selected (else select it, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window). The object will be highlighted in cyan color, and can not be moved around.
+  - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>. It turns to orange outline.
+  - With the controller selected, hold down <key>S</key> and then :RMB: over the robot object,
+  - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller. In the scene outliner, if you press the little ''+'' symbol in front of ''ATRV'', you should now see the ''Motion_Controller''.
 
 ==== Link a Gyroscope sensor ====
 
-Next we'll add a sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
+Next we will add a sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
 
-  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
-  - Navigate to the directory ''$ORS_ROOT/data/morse/components/sensors''
-  - Press :LMB: over the file ''morse_gyroscope.blend''
-  - Press :LMB: over the item ''Object''
-  - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press :RMB: over the items ''Gyroscope'' and ''Gyro_box''
-  - Press the button **Load Library**. You'll return to the 3D View
-  - Select the newly inserted ''Gyroscope'' object in the scene, either by :RMB: clicking over the object in the 3D View, or :LMB: over the object's name in the Outliner window. The object will be highlighted in cyan color, and can not be moved around.
-  - Select the child object, by pressing <key>S-g</key>, then hitting <key>enter</key>
-  - Convert the object to local, by pressing <key>l</key> then hitting <key>enter</key>
-  - Switch to front view by pressing <key>'1 NumPad'</key>
-  - Press <key>g</key>, then move the ''Gyroscope'' object to the correct location with respect to the robot
-  - Press :LMB: to accept the movement
-  - With the ''Gyroscope'' object selected, hold down <key>S</key> and then :RMB: over the robot object
-  - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller
+  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser,
+  - Navigate to the directory ''$MORSE_ROOT/data/morse/components/sensors'',
+  - Press :LMB: over the file ''morse_gyroscope.blend'',
+  - Press :LMB: over the item ''Object'',
+  - Toggle again the **Link** button on the left side,
+  - Press select all items (''Gyroscope'' and ''Gyro_box''), by holding <key>S</key> down, and load them.
+  - Convert the two object to local, by pressing <key>l</key> then hitting <key>enter</key>,
+  - Switch to front view by pressing <key>'1 NumPad'</key> (or use the ''View'' menu at the bottom of the 3D view),
+  - Press <key>g</key>, then move the ''Gyroscope'' object on the top of the robot (you can constraint the translation on the Z axis by simply pressing <key>z</key>),
+  - Press :LMB: to accept the movement,
+  - With the ''Gyroscope'' object selected, hold down <key>S</key> and then :RMB: over the robot object,
+  - Press <key>C-p</key> and then hit <key>enter</key> make the robot the parent of the controller.
 
 ==== Insert the middleware object ====
 To use a middleware to exchange data from the simulator, it is necessary to link in an object that will represent the middleware.
 
-  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser
-  - Navigate to the directory ''$ORS_ROOT/data/morse/components/middleware''
-  - Press :LMB: over the file ''socket_empty.blend''
-  - Press :LMB: over the item ''Object''
-  - Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
-  - Press :RMB: over the item ''Socket_Empty''
-  - Press the button **Load Library**. You'll return to the 3D View
-  - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene
+  - With the mouse over the 3D view in Blender, press <key>S-F1</key> to open the Load Library browser,
+  - Navigate to the directory ''$MORSE_ROOT/data/morse/components/middleware'',
+  - Press :LMB: over the file ''socket_empty.blend'',
+  - Press :LMB: over the item ''Object'',
+  - Toggle **Link** at the bottom of the window and import ''Socket_Empty'',
+  - It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene.
 
 __Note__: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
 
@@ -81,11 +80,11 @@ Press <key>p</key> to start the Game Engine
 ==== Connect with the client ====
 Use the example client program to test the bindings in the simulation
 
-  - On a separate terminal, navigate to the directory ''$ORS_ROOT/share/examples/morse/clients/atrv/''
+  - On a separate terminal, navigate to the directory ''$MORSE_ROOT/share/examples/morse/clients/atrv/''
   - Execute the command
     $ python socket_v_omega_client.py
   - Press <key>a</key> to give speed commands to the robot
-  - Type a the linear and angular speeds, followed by <key>enter</key> after each
+  - Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1 rad/s), followed by <key>enter</key> after each
   - The robot should start moving in MORSE
   - Press <key>b</key> to print the readings of the gyroscope exported by MORSE
   - Press <key>q</key> to exit the client
