@@ -1,4 +1,3 @@
-import math
 import GameLogic
 if GameLogic.pythonVersion < 3:
     import Mathutils as mathutils
@@ -6,30 +5,68 @@ else:
     import mathutils
 
 class Transformation3d:
-    def __init__(self, ob):
-        self.matrix = mathutils.Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1])
+    """
+    Transformation3d represents a generic 3D transformation. It is used
+    by each component of the simulator to know their position in the
+    world. Blender does not propose such an interface, only some
+    rotation matrix and translation vector.
+
+    Internaly, we store an internal 4x4 matrix, and use it to compute
+    transformation.  the euler representation is then calculed on base
+    of matrix (euler ZYX convention)
+
+    Note : Blender store its matrix in column major mode ...
+    """
+
+    def __init__(self, obj):
+        """
+        Construct a transformation3d. Generate the identify
+        transformation if no object is associated to it. Otherwise,
+        returns the transformation3D between this object and the world
+        reference
+
+        """
+        self.matrix = mathutils.Matrix([1, 0, 0, 0], \
+                                       [0, 1, 0, 0], \
+                                       [0, 0, 1, 0], \
+                                       [0, 0, 0, 1])
         self.euler = mathutils.Euler([0, 0, 0])
-        if ob != None:
-            self.update(ob)
+        if obj != None:
+            self.update(obj)
 
     @property
     def x(self):
-        return self.matrix[0][3]
+        """
+        Return the translation  against the x axle
+        """
+        return self.matrix[3][0]
 
     @property
     def y(self):
-        return self.matrix[1][3]
+        """
+        Return the translation  against the y axle
+        """
+        return self.matrix[3][1]
 
     @property
     def z(self):
-        return self.matrix[2][3]
+        """
+        Return the translation  against the z axle
+        """
+        return self.matrix[3][2]
 
     @property
     def yaw(self):
+        """
+        Returns Euler Z axis, in radian
+        """
         return self.euler.z
 
     @property
     def pitch(self):
+        """
+        Returns Euler Y axis, in radian
+        """
         if GameLogic.pythonVersion < 3:
             return self.euler.x
         else:
@@ -37,12 +74,22 @@ class Transformation3d:
 
     @property
     def roll(self):
+        """
+        Returns Euler X axis, in radian
+        """
         if GameLogic.pythonVersion < 3:
             return self.euler.y
         else:
             return self.euler.x
 
-    def transformation3dWith(self, t3d):
+    def transformation3d_with(self, t3d):
+        """
+        Compute the transformation between itself and another
+        transformation t3d. In other words, A.transformation3d_with(B)
+        returns inv(A) * B.
+
+        self is not modified by the call of this function
+        """
         res = Transformation3d(None)
         if GameLogic.pythonVersion < 3:
             o2m = self.matrix.copy()
@@ -50,20 +97,24 @@ class Transformation3d:
             res.matrix = o2m * t3d.matrix
             res.euler = res.matrix.toEuler()
         else:
-            res.matrix = self.matrix * t3d.matrix
+            res.matrix = self.matrix.copy().invert() * t3d.matrix
             res.euler = res.matrix.to_euler()
         return res
 
-    def update(self, ob):
-        rot_matrix = ob.orientation
-        self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
-        # XXX It seems incorrect to transpose the matrix here, but in other
-        # context, we need to. It is very strange. Need more investigation
+    def update(self, obj):
+        """
+        Update the transformation3D to reflect the tranformation
+        between ob (a blender object) and the blender world origin
+
+        """
+        rot_matrix = obj.orientation
+        self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
+                                                      rot_matrix[2])
         self.matrix.resize4x4()
 
-        pos = ob.position
-        for i in range(0,3):
-            self.matrix[i][3] = pos[i]
+        pos = obj.position
+        for i in range(0, 3):
+            self.matrix[3][i] = pos[i]
         self.matrix[3][3] = 1
 
         if GameLogic.pythonVersion < 3:
@@ -71,10 +122,14 @@ class Transformation3d:
         else:
             self.euler = self.matrix.to_euler()
 
-        
-
     def __str__(self):
-        res = "x : " + str(self.x) + " y : " + str(self.y) + " z : " + str(self.z)
-        res += " yaw : " + str(self.yaw) + " pitch : " + str(self.pitch) 
+        """
+        String representation of a transformation3D
+        """
+        res = "x : " + str(self.x)
+        res += " y : " + str(self.y)
+        res += " z : " + str(self.z)
+        res += " yaw : " + str(self.yaw)
+        res += " pitch : " + str(self.pitch)
         res += " roll : " + str(self.roll)
         return res

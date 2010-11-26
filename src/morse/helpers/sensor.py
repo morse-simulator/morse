@@ -31,11 +31,10 @@ class MorseSensorClass(morse.helpers.object.MorseObjectClass):
     def sensor_to_robot_position_3d(self):
         """
         Compute the transformation between the sensor and the
-        associated robot 
-        
+        associated robot
         """
         main_to_origin = self.robot_parent.position_3d
-        main_to_sensor = main_to_origin.transformation3dWith(self.position_3d)
+        main_to_sensor = main_to_origin.transformation3d_with(self.position_3d)
         return main_to_sensor
 
     def action(self):
