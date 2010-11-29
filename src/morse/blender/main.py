@@ -8,7 +8,11 @@ import platform
 
 # The file component_config.py is at the moment included
 #  in the .blend file of the scene
-import component_config
+try:
+    import component_config
+except ImportError as detail:
+    print ("WARNING: ", detail, ". No middlewares will be configured")
+
 
 
 
