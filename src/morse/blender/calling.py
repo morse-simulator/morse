@@ -7,7 +7,10 @@ import GameLogic
 def robot_action(contr):
     """ Call the 'action' method of the correct robot. """
     # Do nothing if morse has not been properly initialised
-    if not GameLogic.morse_initialised:
+    try:
+        if not GameLogic.morse_initialised:
+            return
+    except AttributeError as detail:
         return
     
     # Execute only when the sensor is really activated
@@ -23,7 +26,10 @@ def robot_action(contr):
 def sensor_action(contr):
     """ Call the 'action' method of the correct sensor. """
     # Do nothing if morse has not been properly initialised
-    if not GameLogic.morse_initialised:
+    try:
+        if not GameLogic.morse_initialised:
+            return
+    except AttributeError as detail:
         return
 
     # Execute only when the sensor is really activated
@@ -39,7 +45,10 @@ def sensor_action(contr):
 def actuator_action(contr):
     """ Call the 'action' method of the correct actuator. """
     # Do nothing if morse has not been properly initialised
-    if not GameLogic.morse_initialised:
+    try:
+        if not GameLogic.morse_initialised:
+            return
+    except AttributeError as detail:
         return
     
     # Execute only when the sensor is really activated
