@@ -6,12 +6,9 @@ else:
 	import cPickle as pickle
 
 
-
 server_ip = "localhost"
 server_port = 60000
 connected = False
-
-
 
 def read_data(client_socket):
 	""" Read the input socket until no more data is available """
@@ -38,7 +35,7 @@ def print_data(data):
 		# Recursively call this function if item is a list
 		if isinstance(item, list):
 			print_data(item)
-		if isinstance(item, basestring):
+		if isinstance(item, str):
 			print ("\t%s" % item)
 		if isinstance(item, float):
 			print ("\t%.4f" % item)
@@ -95,7 +92,7 @@ def main():
 			print ("Sending the command: {0}".format(waypoint))
 
 			# Send data
-			Data = cPickle.dumps((waypoint))
+			Data = pickle.dumps((waypoint))
 			sent = socket_client.sendto(Data,host)
 
 			print ("Just sent %d bytes to server" % sent)
@@ -111,7 +108,7 @@ def main():
 			print ("Sending the command: {0}".format(waypoint))
 
 			# Send data
-			Data = cPickle.dumps((waypoint))
+			Data = pickle.dumps((waypoint))
 			sent = socket_client.sendto(Data,host)
 
 			print ("Just sent %d bytes to server" % sent)
@@ -120,7 +117,7 @@ def main():
 			# Read data
 			data_in = read_data(socket_client)
 			try:
-				pickled_data = cPickle.loads(data_in)
+				pickled_data = pickle.loads(data_in)
 				print_data(pickled_data)
 			except EOFError as detail:
 				print ("\tNo data available for the moment")
