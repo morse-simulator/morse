@@ -52,6 +52,8 @@ int main(int argc, char* argv[])
 		return (1);
 	}
 
+    cout << "Poster '" << poster_name << "' created." << endl;
+
 	cout << " * KEYS: i/k: move forward/backward ; j/l: turn left/right ; any other key to stop." << endl;
 	cout << " * Starting now..." << endl;
 
