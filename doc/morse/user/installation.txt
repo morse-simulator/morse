@@ -134,7 +134,9 @@ To test the external control clients:
   * Start the simulation <key>P</key>
   * On a separate terminal, go to the root directory the MORSE source code
   * Run the Python program:
+
   $ python examples/morse/clients/atrv/socket_v_omega_client.py
+
   * Follow the client program's instructions to send movement commands to the robot and to read information back
   * To finish the simulation, press <key>esc</key>
   * To close Blender, press <key>C-q</key>, and then <key>enter</key>
