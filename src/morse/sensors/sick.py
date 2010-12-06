@@ -94,7 +94,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                     #print ("\tv: [%.2f, %.2f, %.2f]\t\tr: [%.2f, %.2f, %.2f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2], ray[0], ray[1], ray[2]))
 
                     # Shoot a ray towards the target
-                    target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['Laser_Range'])
+                    target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['laser_range'])
                     #print ("Target, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
                     # If there was an intersection,
@@ -131,7 +131,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                         fill_vector (vector_point, vertex_pos)
                         # Give it the correct size
                         vector_point.normalize()
-                        vector_point = vector_point * self.blender_obj['Laser_Range']
+                        vector_point = vector_point * self.blender_obj['laser_range']
 
                         # Move the vertex to the computed position
                         vertex.setXYZ(vector_point)
