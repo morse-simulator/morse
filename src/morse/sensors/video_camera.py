@@ -26,12 +26,12 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         # Prepare the intrinsic matrix for this camera.
         # Note that the matrix is stored in column major
         intrinsic = mathutils.Matrix().identity()
-        alpha_u = self.image_size_X  * \
+        alpha_u = self.image_width  * \
                   self.image_focal / BLENDER_HORIZONTAL_APERTURE
         intrinsic[0][0] = alpha_u
         intrinsic[1][1] = alpha_u
-        intrinsic[2][0] =  self.image_size_X / 2.0
-        intrinsic[2][1] =  self.image_size_Y / 2.0
+        intrinsic[2][0] =  self.image_width / 2.0
+        intrinsic[2][1] =  self.image_height / 2.0
         self.local_data['intrinsic_matrix'] = intrinsic
 
         self.capturing = False

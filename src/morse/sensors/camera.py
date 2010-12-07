@@ -18,26 +18,28 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
         """
         print ("######## CAMERA '%s' INITIALIZING ########" % obj.name)
         # Call the constructor of the parent class
-        super(CameraClass,self).__init__(obj, parent)
+        super(CameraClass, self).__init__(obj, parent)
 
         # Set the background color of the scene
-        self.bg_color = [143,143,143,255]
+        self.bg_color = [143, 143, 143, 255]
     
         # Set the values of image size from the variables
         #  in the Blender Logic Properties
         try:
-            self.image_size_X = obj['cam_width']
-            self.image_size_Y = obj['cam_height']
+            self.image_width = obj['cam_width']
+            self.image_height = obj['cam_height']
             self.image_focal = obj['cam_focal']
         except KeyError:
             # Provide default values for the image properties
             # The performance is much better with power of two sizes:
             #  4, 16, 32, ... 256, 512
-            self.image_size_X = obj['cam_width'] = 256
-            self.image_size_Y = obj['cam_height'] = 256
+            self.image_width = obj['cam_width'] = 256
+            self.image_height = obj['cam_height'] = 256
             self.image_focal = obj['cam_focal'] = 35
 
-        self.image_size = 4 * self.image_size_X * self.image_size_Y
+        self.image_size = 4 * self.image_width * self.image_height
+
+        self.name = self.blender_obj.name
 
         # Prepare the camera object in Blender
         self._setup_video_texture()
@@ -51,7 +53,8 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
         # Exit if the cameras could not be prepared
         if not hasattr(GameLogic, 'cameras'):
-            print ("WARNING: GameLogic does not have the 'cameras' variable, something must have failed when configuring the cameras")
+            print ("WARNING: GameLogic does not have the 'cameras' variable, \
+                    something must have failed when configuring the cameras")
             return
 
         # Call the VideoTexture method to refresh the image
@@ -70,7 +73,6 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
             screen_name = 'CameraCube'
             camera_name = 'CameraRobot'
         material_name = 'MAScreenMat'
-        self.name = self.blender_obj.name
         name_len = len(self.name)
         if name_len > 4 and self.name.endswith('.00', name_len-4, name_len-1):
             extension = self.name[name_len-4:]
@@ -89,7 +91,8 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
 
         mat_id = VideoTexture.materialID(screen, material_name)
         GameLogic.cameras[self.name] = VideoTexture.Texture(screen, mat_id)
-        GameLogic.cameras[self.name].source = VideoTexture.ImageRender(scene,camera)
+        GameLogic.cameras[self.name].source = \
+                                    VideoTexture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
@@ -97,6 +100,8 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
         # Set the background to be used for the render
         GameLogic.cameras[self.name].source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
-        GameLogic.cameras[self.name].source.capsize = [self.image_size_X, self.image_size_Y]
-        print ("Camera {0}: Exporting an image of capsize: {1} pixels".format(self.name, GameLogic.cameras[self.name].source.capsize))
+        GameLogic.cameras[self.name].source.capsize = \
+                [self.image_width, self.image_height]
+        print ("Camera {0}: Exporting an image of capsize: {1} pixels". \
+                format(self.name, GameLogic.cameras[self.name].source.capsize))
         print ("\tFocal length of the camera is: %s" % camera.lens)

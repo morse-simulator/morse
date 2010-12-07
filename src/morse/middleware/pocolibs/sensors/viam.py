@@ -37,8 +37,8 @@ def init_viam_poster(component_instance, poster_name):
         # Create an image structure for each camera
         image_init = ors_viam_poster.simu_image_init()
         image_init.camera_name = camera_name
-        image_init.width = camera_instance.image_size_X
-        image_init.height = camera_instance.image_size_Y
+        image_init.width = camera_instance.image_width
+        image_init.height = camera_instance.image_height
         image_init.focal = camera_instance.image_focal
         pos_cam.append(camera_instance.blender_obj.position)
         cameras.append(image_init)
@@ -98,8 +98,8 @@ def write_viam(self, component_instance):
 
         main_to_sensor = camera_instance.sensor_to_robot_position_3d()
 
-        imX = camera_instance.image_size_X
-        imY = camera_instance.image_size_Y
+        imX = camera_instance.image_width
+        imY = camera_instance.image_height
         try:
             image_data = camera_instance.local_data['image']
         except KeyError as detail:

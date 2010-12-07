@@ -183,8 +183,8 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
         # Get the image data from the camera instance
         img_string = component_instance.modified_data[0]
         #img_string = component_instance.local_data['image']
-        img_X = component_instance.image_size_X
-        img_Y = component_instance.image_size_Y
+        img_X = component_instance.image_width
+        img_Y = component_instance.image_height
 
         # Check that an image exists:
         if img_string != None and img_string != '':
