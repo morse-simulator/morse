@@ -11,6 +11,7 @@ The cameras make use of Blender's **VideoTexture** module, which requires a grap
 
 ===== Local data =====
   * **image**: The data captured by the camera, stored as a binary string of size ''(**cam_width** X **cam_height** * 4)'' bytes. The image is stored as RGBA.
+  * **intrinsic_matrix**: The intrinsic calibration matrix, stored as a 3x3 colum major Matrix
 
 ===== Configurable parameters =====
 
