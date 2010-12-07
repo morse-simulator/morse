@@ -50,7 +50,7 @@ class MorseObjectClass(object):
 
 
     @abstractmethod
-    def default_action():
+    def default_action(self):
         """ Base action performed by any object.
 
         This method should be implemented by all subclasses that
