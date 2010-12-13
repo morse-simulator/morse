@@ -125,6 +125,9 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                             # Send the vertex to the new location
                             vertex.setXYZ(arc_point)
 
+                        # Convert the arc point from a vector to a list
+                        arc_point = [arc_point[0], arc_point[1], arc_point[2]]
+
                     # Otherwise return the vertex to its original position
                     else:
                         # Create a vector object
