@@ -81,6 +81,34 @@ def invert_rotation_matrix(object):
     return inverted_matrix
 
 
+def normalise_angle(angle):
+    """ Force the given angle to be between PI and -PI
+    
+    This function expects an angle given in radians """
+    if angle > 0.0 and angle > math.pi:
+        angle = angle % math.pi
+    elif angle < 0.0 and angle < -math.pi:
+        angle = angle % -math.pi
+
+    return angle
+
+def rotation_direction (current_angle, target_angle, tolerance, speed):
+    """ Test the direction in which a rotation should be made
+
+    Using the current angle of a component and the next desired angle.
+    Angles are expected in radians """
+    # Check which direction to rotate
+    if current_angle < (target_angle - tolerance):
+        rotation = speed
+    elif current_angle > (target_angle + tolerance):
+        rotation = -speed
+    # If the angle is within the tolerance, don't rotate
+    else:
+        rotation = 0
+
+    return rotation
+
+
 def print_matrix_33 (matrix):
     """ print_matrix_33 prints a 3x3 @matrix on stdout """
     for row in matrix:
@@ -91,4 +119,3 @@ def print_vector (vector):
     """ print a vector with 4 decimals per value """
     line = "[%.4f %.4f %.4f]" % (vector[0], vector[1], vector[2])
     print (line)
-    
