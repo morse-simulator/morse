@@ -1,5 +1,8 @@
 import GameLogic
+import math
+import mathutils
 import morse.helpers.actuator
+import morse.helpers.math as morse_math
 
 class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
@@ -9,9 +12,12 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## VW CONTROL INITIALIZATION ########')
+        print ('######## PA-10 CONTROL INITIALIZATION ########')
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
+
+        self.speed = self.blender_obj['Speed']
+        self.tolerance = math.radians(5)
 
         self.local_data['seg0'] = 0.0
         self.local_data['seg1'] = 0.0
@@ -36,46 +42,50 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             self._segments.append(segment)
             segment = segment.children[0]
 
-        print ('######## CONTROL INITIALIZED ########')
+        print ('######## PA-10 CONTROL INITIALIZED ########')
 
 
 
     def default_action(self):
-        """ Apply (v, w) to the parent robot. """
+        """ Apply rotation to the arm segments """
 
         # Reset movement variables
-        vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
         # Tick rate is the real measure of time in Blender.
         # By default it is set to 60, regardles of the FPS
         # If logic tick rate is 60, then: 1 second = 60 ticks
         ticks = GameLogic.getLogicTicRate()
+        # Scale the speeds to the time used by Blender
+        try:
+            rotation = self.speed / ticks
+        # For the moment ignoring the division by zero
+        # It happens apparently when the simulation starts
+        except ZeroDivisionError:
+            pass
 
         for i in range(6):
-            # Scale the speeds to the time used by Blender
-
             key = ('seg%d' % i)
-            try:
-                rotation = self.local_data[key] / ticks
-            # For the moment ignoring the division by zero
-            # It happens apparently when the simulation starts
-            except ZeroDivisionError:
-                pass
-
-            # Use the corresponding direction for each rotation
-            if self._dofs[i] == 'y':
-                ry = rotation
-            elif self._dofs[i] == 'z':
-                rz = rotation
+            target_angle = morse_math.normalise_angle(self.local_data[key])
 
             # Get the next segment
             segment = self._segments[i]
 
+            # Extract the angles
+            rot_matrix = segment.localOrientation
+            segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            segment_euler = segment_matrix.to_euler()
+
+            # Use the corresponding direction for each rotation
+            if self._dofs[i] == 'y':
+                ry = morse_math.rotation_direction(segment_euler[1], target_angle, self.tolerance, rotation)
+            elif self._dofs[i] == 'z':
+                rz = morse_math.rotation_direction(segment_euler[2], target_angle, self.tolerance, rotation)
+                print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self.tolerance, rotation, rz))
+
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement
-            #segment.applyRotation([rx, ry, rz], True)
-            segment.localOrientation = [rx, ry, rz]
+            segment.applyRotation([rx, ry, rz], True)
 
             # Reset the rotations for the next segment
             ry = rz = 0
