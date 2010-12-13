@@ -16,6 +16,7 @@ CAMERAS = atrv_dest_cams-1.0
 CONTROL = atrv_status-1.0
 GRID = grid_move-1.0
 POCO_CLIENT = pocolibs_movement_client
+PLATINE_CLIENT = pocolibs_platine_client
 
 all: $(MOTION) $(DESTINATION) $(CAMERAS) $(CONTROL) $(GRID)
 
@@ -38,6 +39,12 @@ $(GRID): $(GRID).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
 
 $(POCO_CLIENT): $(POCO_CLIENT).cpp
+	@echo "COMPILING ($@ C)"
+#$(CC) -c $@.c $(CFLAGS)
+#ld -o $@ $@.o $(LDFLAGS)
+	$(CC) -g -o $@ $^ $(CFLAGS) $(LDFLAGS) $(POCOLIBSFLAGS)
+
+$(PLATINE_CLIENT): $(PLATINE_CLIENT).cpp
 	@echo "COMPILING ($@ C)"
 #$(CC) -c $@.c $(CFLAGS)
 #ld -o $@ $@.o $(LDFLAGS)
