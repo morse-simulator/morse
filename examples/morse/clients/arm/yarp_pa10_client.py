@@ -55,7 +55,7 @@ def command_robot():
 
 	print ("SEQUENCE READ: {0}".format(arm_movement))
 	while waiting:
-		#raw_coords = raw_input("Input new coordinates: ")
+		#raw_coords = input("Input new coordinates: ")
 		#print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
 
 		command = raw_input("Enter command: [ (s)tep / e(x)it ] ")
