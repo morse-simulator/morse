@@ -23,7 +23,7 @@ endmacro(upcase_first)
 
 set(directories_list "sensors;controllers")
 set(sensors_list "general;camera;gyro;sick;viman;human")
-set(controllers_list "control")
+set(controllers_list "control;platine")
 
 set(MODULES_MAP_CAMERA "viam")
 set(MODULES_MAP_CAMERA_ADDITIONAL "pom")
@@ -33,6 +33,7 @@ set(MODULES_MAP_SICK "sick")
 set(MODULES_MAP_VIMAN "viman")
 set(MODULES_MAP_HUMAN "mhp")
 set(MODULES_MAP_CONTROL "genPos")
+set(MODULES_MAP_PLATINE "platine")
 
 foreach(directory ${directories_list})
 	set(items_list "${directory}_list")
