@@ -25,6 +25,9 @@ class MorseActuatorClass(morse.helpers.object.MorseObjectClass):
 
     def action(self):
         """ Call the action functions that have been added to the list. """
+        # Update the component's position in the world
+        self.position_3d.update(self.blender_obj)
+
         received = False
         status = False
 
