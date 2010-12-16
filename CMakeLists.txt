@@ -46,8 +46,8 @@ endif(BUILD_POCOLIBS_SUPPORT)
 ADD_SUBDIRECTORY(src)
 INSTALL (DIRECTORY doc data examples
 	     DESTINATION ${CMAKE_INSTALL_PREFIX}/share
-         REGEX .*blend. EXCLUDE
-         REGEX .*py. EXCLUDE
+         REGEX .*blend.$ EXCLUDE
+         REGEX .*py.$ EXCLUDE
 		 REGEX .*clients.* EXCLUDE
 		)
 
