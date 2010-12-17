@@ -35,17 +35,19 @@ def move(contr):
     for key in keylist:
         # key[0] == GameKeys.keycode, key[1] = status
         if key[1] == GameLogic.KX_INPUT_ACTIVE:
-            if key[0] == GameKeys.WKEY:
+            # Also add the key corresponding key for an AZERTY keyboard
+            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
                 move_speed[2] = -speed
             elif key[0] == GameKeys.SKEY:
                 move_speed[2] = speed
-            elif key[0] == GameKeys.AKEY:
+            # Also add the key corresponding key for an AZERTY keyboard
+            elif key[0] == GameKeys.AKEY or key[0] == GameKeys.QKEY:
                 move_speed[0] = -speed
             elif key[0] == GameKeys.DKEY:
                 move_speed[0] = speed
-            elif key[0] == GameKeys.QKEY:
+            elif key[0] == GameKeys.RKEY:
                 move_speed[1] = speed
-            elif key[0] == GameKeys.EKEY:
+            elif key[0] == GameKeys.FKEY:
                 move_speed[1] = -speed
 
             # The second parameter of 'applyMovement' determines
