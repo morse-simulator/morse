@@ -1,13 +1,14 @@
 import GameLogic
 import math
+import mathutils
 import morse.helpers.actuator
 import morse.helpers.math as morse_math
 
 class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
-    """ Motion controller for the Kuka LWR arm
+    """ Arm control for the Kuka arm using angles
 
     This component will read an array of 7 floats, and apply them as
-    rotation for the parts of the Kuka arm.
+    rotation for the parts of the Kuka LWR arm.
     """
 
     def __init__(self, obj, parent=None):
@@ -16,7 +17,8 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         self.speed = self.blender_obj['Speed']
-        self.tolerance = math.radians(5)
+        # Define a tolerance for the angles as inputs
+        self.tolerance = math.radians(0.5)
 
         self.local_data['seg0'] = 0.0
         self.local_data['seg1'] = 0.0
@@ -36,12 +38,23 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Considering the rotation of the arm as installed in Jido
         self._dofs = ['z', 'y', 'z', 'y', 'z', 'y', 'z']
 
+        self._segments = []
+        segment = self.blender_obj.children[0]
+        # Gather all the children of the object
+        while True:
+            self._segments.append(segment)
+            try:
+                segment = segment.children[0]
+            # Exit when there are no more children
+            except IndexError as detail:
+                break
+
         print ('######## KUKA CONTROL INITIALIZED ########')
 
 
 
     def default_action(self):
-        """ Apply rotation angles to the segments of the arm """
+        """ Apply rotation to the arm segments """
 
         # Reset movement variables
         rx, ry, rz = 0.0, 0.0, 0.0
@@ -58,32 +71,28 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         except ZeroDivisionError:
             pass
 
-        armature = self.blender_obj
-        print ("The armature is: '%s' (%s)" % (armature, type(armature)))
-
-        i = 0
-        for channel in armature.channels:
-            segment_angle = channel.joint_rotation
-            #print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, segment_angle[0], segment_angle[1], segment_angle[2]))
-
+        for i in range(len(self._segments)):
             key = ('seg%d' % i)
-            # Get the normalised angle for this segment
             target_angle = morse_math.normalise_angle(self.local_data[key])
-            print ("%.4f " % target_angle, end='')
+
+            # Get the next segment
+            segment = self._segments[i]
+
+            # Extract the angles
+            rot_matrix = segment.localOrientation
+            segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
-                ry = morse_math.rotation_direction(segment_angle[1], target_angle, self.tolerance, rotation)
+                ry = morse_math.rotation_direction(segment_euler[1], target_angle, self.tolerance, rotation)
             elif self._dofs[i] == 'z':
-                rz = morse_math.rotation_direction(segment_angle[2], target_angle, self.tolerance, rotation)
-
-            print ("[%.4f, %.4f, %.4f] " % (rx, ry, rz))
+                rz = morse_math.rotation_direction(segment_euler[2], target_angle, self.tolerance, rotation)
+                #print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self.tolerance, rotation, rz))
 
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement
-            #segment.applyRotation([rx, ry, rz], True)
-            channel.joint_rotation = [rx, ry, rz]
+            segment.applyRotation([rx, ry, rz], True)
 
             # Reset the rotations for the next segment
             ry = rz = 0
-            i = i + 1
