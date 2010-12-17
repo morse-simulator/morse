@@ -42,15 +42,6 @@ POM_EULER read_platine_data( POSTER_ID id )
     local_euler_v = local_se.seConfig;
     local_euler = local_euler_v.euler;
 
-	// Read the variables we need for the speed
-	// pan = local_euler.yaw;
-	// tilt = local_euler.pitch;
-
-	// printf ("Reading from poster ID = %p (pointer)   %d(integer)\n", id, id);
-	// printf ("DATA READ FROM POSTER:");
-	// printf ("\tpan = %.4f", pan);
-	// printf ("\ttilt = %.4f\n", tilt);
-
 	return (local_euler);
 }
 
