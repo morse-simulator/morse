@@ -7,9 +7,9 @@ This sensor emulates a GPS, providing the exact coordinates in the Blender scene
   * Python: ''$ORS_ROOT/src/morse/sensors/gps.py''
 
 === Local data =====
-  * **X**: X coordinate of the sensor
-  * **Y**: Y coordinate of the sensor
-  * **Z**: Z coordinate of the sensor
+  * **X**: (float) X coordinate of the sensor
+  * **Y**: (float) Y coordinate of the sensor
+  * **Z**: (float) Z coordinate of the sensor
 
 __Note__: Coordinates are given with respect to the origin of Blender's coordinate axis.
 

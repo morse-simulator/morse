@@ -9,7 +9,7 @@ Temperature is given in degrees Celsius.
   * Python: ''$ORS_ROOT/src/morse/sensors/thermometer.py''
 
 === Local data =====
-  * **temperature**: The temperature in Celsius
+  * **temperature**: (float) The temperature in Celsius
 
 ===== Applicable modifiers =====
 

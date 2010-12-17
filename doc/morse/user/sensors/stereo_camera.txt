@@ -4,7 +4,7 @@ This is not an independent sensor, but the combination of two [[camera | cameras
 There is no associated Python file for this component, only the Blender file.
 
 ===== Files =====
-  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_pty.blend''
+  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_stereo_cameras.blend''
 
 ===== Applicable modifiers =====
 

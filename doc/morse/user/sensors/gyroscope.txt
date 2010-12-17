@@ -8,9 +8,9 @@ The angles are given in degrees.
   * Python: ''$ORS_ROOT/src/morse/sensors/gyroscope.py''
 
 === Local data =====
-  * **yaw**: rotation angle with respect to the Z axis
-  * **pitch**: rotation angle with respect to the X axis
-  * **roll**: rotation angle with respect to the Y axis
+  * **yaw**: (float) rotation angle with respect to the Z axis
+  * **pitch**: (float) rotation angle with respect to the X axis
+  * **roll**: (float) rotation angle with respect to the Y axis
 
 __Note__: Coordinates are given with respect to the origin of Blender's coordinate axis.
 
