@@ -79,5 +79,5 @@ class ROSClass(morse.helpers.middleware.MorseMiddlewareClass):
     def receive_data(self, component_instance):
         """ subscribe to rostopic and receive data"""
         
-        # TODO: somehow subscribe to ros topic and read messages from there
-        # basically: write code from listener tutiorial here...
+        # TODO: Receive data still has to be done. This should not be too difficult
+        # basically: write code from ROS WriteSimpleSubscriber tutorial here...
