@@ -35,7 +35,7 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
             #  4, 16, 32, ... 256, 512
             self.image_width = obj['cam_width'] = 256
             self.image_height = obj['cam_height'] = 256
-            self.image_focal = obj['cam_focal'] = 35
+            self.image_focal = obj['cam_focal'] = 25
 
         self.image_size = 4 * self.image_width * self.image_height
 
