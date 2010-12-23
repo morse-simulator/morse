@@ -1,6 +1,13 @@
 import sys
+# These dependencies are usually set by the ROS manifest-file in ROS-packages
+# We should think about a way of how to set those dependencies depending on the local ROS installation 
 sys.path += ["/usr/wiss/kargm/ros/ros/core/roslib/src"]
-import roslib; roslib.load_manifest('morse')
+sys.path += ["/usr/wiss/kargm/ros/ros/core/rospy/src"]
+sys.path += ["/usr/wiss/kargm/ros/ros/core/roscpp/src"]
+sys.path += ["/usr/wiss/kargm/ros/ros/std_msgs/src"]
+import roslib
+import roscpp
+import std_msgs
 import rospy
 import array
 import morse.helpers.middleware
