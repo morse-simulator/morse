@@ -1,13 +1,13 @@
 
 ######################################################
 #
-#    human_control.py        Blender 2.49
+#    human_control.py        Blender 2.55
 #
 #    Modified version of
 #      view_camera.py by Gilberto Echeverria
 #
-#    Severin Lemaignan
-#    19 / 08 / 2010
+#    Gilberto Echeverria
+#    26 / 12 / 2010
 #
 ######################################################
 
@@ -15,24 +15,20 @@ import Rasterizer
 import GameLogic
 import GameKeys
 import math
+import sys
 if sys.version_info<(3,0,0):
     import Mathutils as mathutils
 else:
     import mathutils
 
-# Defined in degrees, but used in radians
-MAX_HEAD_PAN = math.radian(60.0)
-MAX_HEAD_TILT = math.radian(40.0)
-MAX_HEAD_YAW = math.radian(10.0)
-
 def move(contr):
     """ Read the keys for specific combinations
         that will make the camera move in 3D space. """
     # get the object this script is attached to
-    hum = contr.owner
+    human = contr.owner
 
     # set the movement speed
-    speed = hum['Speed']
+    speed = human['Speed']
 
     # Get sensor named Mouse
     keyboard = contr.sensors['All_Keys']
@@ -45,6 +41,28 @@ def move(contr):
     for key in keylist:
         # key[0] == GameKeys.keycode, key[1] = status
         if key[1] == GameLogic.KX_INPUT_ACTIVE:
+            # Also add the key corresponding key for an AZERTY keyboard
+            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+                move_speed[0] = speed
+            elif key[0] == GameKeys.SKEY:
+                move_speed[0] = -speed
+            # Also add the key corresponding key for an AZERTY keyboard
+            elif key[0] == GameKeys.AKEY or key[0] == GameKeys.QKEY:
+                rotation_speed[2] = speed
+            elif key[0] == GameKeys.DKEY:
+                rotation_speed[2] = -speed
+            elif key[0] == GameKeys.RKEY:
+                move_speed[1] = speed
+            elif key[0] == GameKeys.FKEY:
+                move_speed[1] = -speed
+
+            # The second parameter of 'applyMovement' determines
+            #  a movement with respect to the object's local
+            #  coordinate system
+            human.applyMovement( move_speed, True )
+            human.applyRotation( rotation_speed, True )
+
+            """
             if key[0] == GameKeys.UPARROWKEY:
                 move_speed[0] = speed
             elif key[0] == GameKeys.DOWNARROWKEY:
@@ -57,99 +75,234 @@ def move(contr):
                 move_speed[2] = speed
             elif key[0] == GameKeys.EKEY:
                 move_speed[2] = -speed
+            """
 
-            # The second parameter of 'applyMovement' determines
-            #  a movement with respect to the object's local
-            #  coordinate system
-            hum.applyMovement( move_speed, True )
+        elif key[1] == GameLogic.KX_INPUT_JUST_ACTIVATED:
+            # Other actions activated with the keyboard
+            # Reset camera to center
+            if key[0] == GameKeys.NKEY and keyboard.positive:
+                reset_view(contr)
+            # Switch between look and manipulate
+            elif key[0] == GameKeys.XKEY:
+                toggle_manipulate(contr)
 
-            hum.applyRotation( rotation_speed, True )
+
+def human_actions(contr):
+    """ Toggle the animation actions of the armature """
+    # Get sensor named Mouse
+    armature = contr.owner
+    keyboard = contr.sensors['All_Keys']
+
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == GameKeys.keycode, key[1] = status
+        if key[1] == GameLogic.KX_INPUT_JUST_ACTIVATED:
+            # Keys for moving forward or turning
+            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+                armature['movingForward'] = True
+            elif key[0] == GameKeys.SKEY:
+                armature['movingBackward'] = True
+
+            # TEST: Read the rotation of the bones in the armature
+            elif key[0] == GameKeys.BKEY:
+                read_pose(contr)
+            elif key[0] == GameKeys.VKEY:
+                reset_pose(contr)
+        elif key[1] == GameLogic.KX_INPUT_JUST_RELEASED:
+            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+                armature['movingForward'] = False
+            elif key[0] == GameKeys.SKEY:
+                armature['movingBackward'] = False
 
 
-def rotate(contr):
-    """ Read the movements of the mouse and apply them
-        as a rotation to the human head and camera. """
+def head_control(contr):
+    """ Move the target of the head and camera
+
+    Use the movement of the mouse to determine the rotation
+    for the human head and camera. """
     # get the object this script is attached to
-    hum = contr.owner
+    human = contr.owner
+    scene = GameLogic.getCurrentScene()
+    target = scene.objects['Target_Empty']
 
-    # set the movement speed
-    speed = hum['Speed']
-
-    head = hum.children['OBHead']
+    # If the manipulation mode is active, do nothing
+    if human['Manipulate']:
+        return
 
     # Get sensor named Mouse
     mouse = contr.sensors['Mouse']
 
-    """
-    activateHeadMovement = contr.sensors['rmb']
+    if mouse.positive:
+        # get width and height of game window
+        width = Rasterizer.getWindowWidth()
+        height = Rasterizer.getWindowHeight()
 
-    #If the mouse left button is pushed (to pick an object), don't move the head
-    if activateHeadMovement.positive:
+        # get mouse movement from function
+        move = mouse_move(human, mouse, width, height)
+
+        # set mouse sensitivity
+        sensitivity = human['Sensitivity']
+
+        # Amount, direction and sensitivity
+        left_right = move[0] * sensitivity
+        up_down = move[1] * sensitivity
+
+        target.applyMovement([0.0, left_right, 0.0], True)
+        target.applyMovement([0.0, 0.0, up_down], True)
+
+        # Reset mouse position to the centre of the screen
+        # Using the '//' operator (floor division) to produce an integer result
+        Rasterizer.setMousePosition(width//2, height//2)
+
+
+def hand_control(contr):
+    """ Move the hand following the mouse
+
+    Use the movement of the mouse to determine the rotation
+    for the IK arm (right arm) """
+    # get the object this script is attached to
+    human = contr.owner
+    scene = GameLogic.getCurrentScene()
+    target = scene.objects['IK_Target_Empty.R']
+
+    # If the manipulation mode is inactive, do nothing
+    if not human['Manipulate']:
         return
+ 
+    # Get sensor named Mouse
+    mouse = contr.sensors['Mouse']
+
+    if mouse.positive:
+        # get width and height of game window
+        width = Rasterizer.getWindowWidth()
+        height = Rasterizer.getWindowHeight()
+
+        # get mouse movement from function
+        move = mouse_move(human, mouse, width, height)
+
+        # set mouse sensitivity
+        sensitivity = human['Sensitivity']
+
+        # Amount, direction and sensitivity
+        left_right = move[0] * sensitivity
+        up_down = move[1] * sensitivity
+
+        target.applyMovement([0.0, left_right, 0.0], True)
+        target.applyMovement([0.0, 0.0, up_down], True)
+
+        # Reset mouse position to the centre of the screen
+        # Using the '//' operator (floor division) to produce an integer result
+        Rasterizer.setMousePosition(width//2, height//2)
+
+    # Get sensors for mouse wheel
+    wheel_up = contr.sensors['Wheel_Up']
+    wheel_down = contr.sensors['Wheel_Down']
+
+    if wheel_up.positive:
+        front = 50.0 * sensitivity
+        target.applyMovement([front, 0.0, 0.0], True)
+
+    if wheel_down.positive:
+        back = -50.0 * sensitivity
+        target.applyMovement([back, 0.0, 0.0], True)
+
+
+def read_pose(contr):
+    armature = contr.owner
+    print ("The armature is: '%s' (%s)" % (armature, type(armature)))
+
+    for channel in armature.channels:
+        if 'X_' not in channel.name:
+            rotation = channel.joint_rotation
+            print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+
+
+def reset_pose(contr):
+    armature = contr.owner
+    for channel in armature.channels:     
+        channel.rotation_mode = 6
+        
+        channel.joint_rotation = [0.0, 0.0, 0.0]
+
+        rotation = channel.joint_rotation
+        print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+
+    armature.update()
+
+def reset_view(contr):
+    """ Make the human model look forward """
+    human = contr.owner
+    scene = GameLogic.getCurrentScene()
+    target = scene.objects['Target_Empty']
+    # Reset the Empty object to its original position
+    target.localPosition = [1.3, 0.0, 1.7]
+
+
+def toggle_manipulate(contr):
+    """ Switch mouse control between look and manipulate """
+    human = contr.owner
+    scene = GameLogic.getCurrentScene()
+    hand_target = scene.objects['IK_Target_Empty.R']
+    head_target = scene.objects['Target_Empty']
+
+    if human['Manipulate']:
+        #Rasterizer.showMouse(False)
+        human['Manipulate'] = False
+        # Place the hand beside the body
+        hand_target.localPosition = [0.0, -0.3, 0.5]
+        head_target.setParent(human)
+        head_target.localPosition = [1.3, 0.0, 1.7]
+    else:
+        #Rasterizer.showMouse(True)
+        human['Manipulate'] = True
+        head_target.setParent(hand_target)
+        # Place the hand in a nice position
+        hand_target.localPosition = [0.5, 0.0, 1.0]
+        # Place the head in the same place
+        head_target.localPosition = [0.0, 0.0, 0.0]
+
+
+def toggle_sit(contr):
+    """ Change the stance of the human model
+
+    Make the human sit down or stand up, using a preset animation.
     """
+    human = contr.owner
 
-    # get width and height of game window
-    width = Rasterizer.getWindowWidth()
-    height = Rasterizer.getWindowHeight()
+    # get the keyboard sensor
+    sit_down_key = contr.sensors["sit_down"]
 
-    # get mouse movement from function
-    move = mouse_move(hum, mouse, width, height)
+    # get the actuators
+    sitdown = contr.actuators["sitdown"]
+    standup = contr.actuators["standup"]
 
-    # set mouse sensitivity
-    sensitivity = hum['Sensitivity']
+    # Sitdown
+    if sit_down_key.positive and human['statusStandUp']:
+        contr.activate(sitdown)
+        human['statusStandUp'] = False
 
-    # Amount, direction and sensitivity
-    leftRight = move[0] * sensitivity
-    upDown = move[1] * sensitivity
-
-    orientation = head.orientation
-    parent_ori = head.parent.orientation
-
-    ori_mat = mathutils.Matrix(orientation[0], orientation[1], orientation[2])
-    parent_ori_mat = mathutils.Matrix(parent_ori[0], parent_ori[1], parent_ori[2])
-
-    head2parent = parent_ori_mat * ori_mat.invert()
-
-    ori_eul_parent = ori_mat.toEuler()
-    ori_eul = ori_mat.toEuler()
+    # Standup
+    elif sit_down_key.positive and not human['statusStandUp']:
+        contr.activate(standup)
+        human['statusStandUp'] = True
 
 
-    print str(ori_eul)
-
-    # set the values
-    if abs(ori_eul.z + leftRight) < MAX_HEAD_PAN or abs(ori_eul.z + leftRight) > abs(ori_eul.z):
-        ori_eul.z -= leftRight
-
-    if abs(ori_eul.y + upDown) < MAX_HEAD_TILT or abs(ori_eul.y + upDown) > abs(ori_eul.y):
-        ori_eul.y -= upDown
-
-    if ori_eul.x > MAX_HEAD_YAW:
-        ori_eul.x = MAX_HEAD_YAW
-    if ori_eul.x < -MAX_HEAD_YAW:
-        ori_eul.x = -MAX_HEAD_YAW
-
-    ori_mat = ori_eul.toMatrix()
-    head.setOrientation(ori_mat)
-    # Center mouse in game window
-    Rasterizer.setMousePosition(width//2, height//2)
-
-
-# define mouse movement function
-def mouse_move(hum, mouse, width, height):
+def mouse_move(human, mouse, width, height):
     """ Get the movement of the mouse as an X, Y coordinate. """
     # distance moved from screen center
-    x = width/2 - mouse.position[0]
-    y = height/2 - mouse.position[1]
+    # Using the '//' operator (floor division) to produce an integer result
+    x = width//2 - mouse.position[0]
+    y = height//2 - mouse.position[1]
 
     # intialize mouse so it doesn't jerk first time
     try:
-        hum['mouseInit']
+        human['mouseInit']
     except KeyError:
         x = 0
         y = 0
         # bug in Add Property
         # can't use True.  Have to use 1
-        hum['mouseInit'] = 1
+        human['mouseInit'] = 1
 
     # return mouse movement
     return (x, y)
