@@ -337,7 +337,7 @@ int post_viam_poster(	POSTER_ID id,
 		pthread_mutex_unlock(&cond_mutex);
 	} else {
 		// if we can't get the lock, drop it
-		fprintf(stderr, ".");
+		//fprintf(stderr, ".");
 		//fprintf(stderr, "Drop the information, we are too slow !!!\n");
 	}
 
