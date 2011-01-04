@@ -54,17 +54,12 @@ class MorseUTMClass(object):
 
     def blender_to_utm(self, component_instance):
         """ Convert the coordinates from Blender to UTM reference. """
-        component_instance.modified_data[0] += self._global_x
-        component_instance.modified_data[1] += self._global_y
-        component_instance.modified_data[2] += self._global_z
-
-        return component_instance.modified_data
-
+        component_instance.local_data['x'] += self._global_x
+        component_instance.local_data['y'] += self._global_y
+        component_instance.local_data['z'] += self._global_z
 
     def utm_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
-        component_instance.modified_data[0] -= self._global_x
-        component_instance.modified_data[1] -= self._global_y
-        component_instance.modified_data[2] -= self._global_z
-
-        return component_instance.modified_data
+        component_instance.local_data['x'] -= self._global_x
+        component_instance.local_data['y'] -= self._global_y
+        component_instance.local_data['z'] -= self._global_z

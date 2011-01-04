@@ -39,12 +39,6 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         # Variable to indicate this is a camera
         self.camera_tag = True
 
-        self.data_keys = ['image', 'intrinsic_matrix']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
         print ('######## VIDEO CAMERA INITIALIZED ########')
 
 

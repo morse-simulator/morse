@@ -33,8 +33,8 @@ def read_platine(self, component_instance):
     #print ("Tuple type ({0}) returned".format(type(platine_data)))
     #print ("Tuple data: (%.4f, %.4f)" % (platine_data.pan, platine_data.tilt))
 
-    component_instance.modified_data[0] = platine_data.yaw
-    component_instance.modified_data[1] = platine_data.pitch
+    component_instance.local_data['pan'] = platine_data.yaw
+    component_instance.local_data['tilt'] = platine_data.pitch
 
     # Return true to indicate that a command has been received
     return True

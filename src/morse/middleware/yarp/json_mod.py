@@ -24,30 +24,20 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 
 def post_json_data(self, component_instance):
-    """ Serialise the modified_data using JSON
+    """ Serialise the local_data using JSON
 
     The argument is a copy of the component instance.
-    This method will create a new dictionary with the contents
-    of modified_data, and then encode it as JSON.
+    This method will encode the 'local_data' dictionary as JSON.
     """
     port_name = self._component_ports[component_instance.blender_obj.name]
 
-    new_data = {}
-    i = 0;
-    for var in component_instance.data_keys:
-        new_data[var] = component_instance.modified_data[i]
-        i = i + 1
-    
-    json_string = json.dumps(new_data)
+    json_string = json.dumps(component_instance.local_data)
 
     try:
         yarp_port = self.getPort(port_name)
 
         bottle = yarp_port.prepare()
         bottle.clear()
-
-        # Go through the list of points
-        # The list is the first item in ''modified_data''
         bottle.addString(json_string)
 
         yarp_port.write()
@@ -60,7 +50,7 @@ def read_json_data(self, component_instance):
 
     The argument is a copy of the component instance.
     This method will read a JSON string from the middleware,
-    decode it and put the contents in the modified_data array.
+    decode it and put the contents in the local_data array.
     """
     port_name = self._component_ports[component_instance.blender_obj.name]
 
@@ -70,8 +60,12 @@ def read_json_data(self, component_instance):
     except KeyError as detail:
         print ("ERROR: Specified port does not exist: ", detail)
 
+    # Deserialise the data directly into the 'local_data' of the component
+    component_instance.local_data = json.loads(message_data)
+    """
     new_data = json.loads(message_data)
     i = 0;
     for var in component_instance.data_keys:
         component_instance.modified_data[i] = new_data[var]
         i = i + 1
+    """

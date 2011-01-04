@@ -33,7 +33,11 @@ class MorseGPSNoiseClass(object):
 
 
     def noisify(self, component_instance):
+        for variable, data in component_instance.local_data.items():
+            component_instance.local_data[variable] = morse.modifiers.gaussian.gaussian(self.dev, component_instance.local_data[variable])
+        """
         for i in range(0, 2):
             component_instance.modified_data[i] = morse.modifiers.gaussian.gaussian(self.dev, component_instance.modified_data[i])
 
         return component_instance.modified_data
+        """

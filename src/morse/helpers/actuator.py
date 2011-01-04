@@ -19,9 +19,6 @@ class MorseActuatorClass(morse.helpers.object.MorseObjectClass):
         self.input_functions = []
         self.input_modifiers = []
 
-        # Define dictionary for modified data
-        self.modified_data = []
-
 
     def action(self):
         """ Call the action functions that have been added to the list. """
@@ -39,13 +36,7 @@ class MorseActuatorClass(morse.helpers.object.MorseObjectClass):
         if received:
             # Data modification functions
             for function in self.input_modifiers:
-                self.modified_data = function(self)
-
-            #self.local_data = self.modified_data
-            i = 0
-            for variable in self.data_keys:
-                self.local_data[variable] = self.modified_data[i]
-                i = i + 1
+                function(self)
 
         # Call the regular action function of the component
         self.default_action()

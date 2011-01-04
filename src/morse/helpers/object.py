@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import morse.helpers.transformation
+from collections import OrderedDict
 
 class MorseObjectClass(object):
     """ Basic Class for all 3D objects (components) used in the simulation.
@@ -24,9 +25,13 @@ class MorseObjectClass(object):
         self.position_3d = morse.helpers.transformation.Transformation3d(obj)
 
         # Dictionary to store the data used by each component
+        self.local_data = OrderedDict()
+        """
+        # Dictionary to store the data used by each component
         self.local_data = {}
         # List that will hold the ordey of the dictionary keys
         self.data_keys = []
+        """
 
         # Define lists of dynamically added functions
         self.del_functions = []

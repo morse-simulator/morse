@@ -19,12 +19,6 @@ class GyroscopeClass(morse.helpers.sensor.MorseSensorClass):
         self.local_data['pitch'] = 0.0
         self.local_data['roll'] = 0.0
 
-        self.data_keys = ['yaw', 'pitch', 'roll']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
         print ('######## GYROSCOPE INITIALIZED ########')
 
 

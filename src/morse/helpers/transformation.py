@@ -112,7 +112,7 @@ class Transformation3d:
                                                       rot_matrix[2])
         self.matrix.resize4x4()
 
-        pos = obj.position
+        pos = obj.worldPosition
         for i in range(0, 3):
             self.matrix[3][i] = pos[i]
         self.matrix[3][3] = 1

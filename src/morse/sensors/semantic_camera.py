@@ -72,11 +72,6 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # Prepare the exportable data of this sensor
         # In this case, it is the list of currently visible objects by each independent robot.
         self.local_data['visible_objects'] = []
-        self.data_keys = ['visible_objects']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
 
         # Variable to indicate this is a camera
         self.semantic_tag = True

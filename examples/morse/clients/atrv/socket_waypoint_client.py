@@ -1,5 +1,6 @@
 import sys
 import socket
+import collections
 if sys.version_info >= (3,0,0):
     import pickle
 else:
@@ -35,10 +36,15 @@ def print_data(data):
         # Recursively call this function if item is a list
         if isinstance(item, list):
             print_data(item)
-        if isinstance(item, str):
+        elif isinstance(item, str):
             print ("\t%s" % item)
-        if isinstance(item, float):
+        elif isinstance(item, float):
             print ("\t%.4f" % item)
+        elif isinstance(item, collections.OrderedDict):
+            print ("\t%s" % item)
+        else:
+            print ("Read data of type: %s" % type(item))
+
 
 
 def usage(program_name):

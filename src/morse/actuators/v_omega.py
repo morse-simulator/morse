@@ -17,13 +17,6 @@ class VWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['v'] = 0.0
         self.local_data['w'] = 0.0
 
-        self.data_keys = ['v', 'w']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
-
         print ('######## CONTROL INITIALIZED ########')
 
 

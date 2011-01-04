@@ -19,18 +19,13 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         #self.local_data['yaw'] = 0.0
         #self.data_keys = ['roll', 'pitch', 'yaw']
 
-        self.speed = self.blender_obj['Speed']
+        self._speed = self.blender_obj['Speed']
         # Define the tolerance to the desired angle
-        self.tolerance = math.radians(5)
+        self._tolerance = math.radians(0.5)
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        self.data_keys = ['pan', 'tilt']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
+        
         print ('######## PLATINE INITIALIZED ########')
 
 
@@ -47,7 +42,7 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         ticks = GameLogic.getLogicTicRate()
 
         try:
-            normal_speed = self.speed / ticks
+            normal_speed = self._speed / ticks
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -61,8 +56,8 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         target_tilt = morse_math.normalise_angle(self.local_data['tilt'])
 
         # Determine the direction of the rotation, if any
-        ry = morse_math.rotation_direction(current_tilt, target_tilt, self.tolerance, normal_speed)
-        rz = morse_math.rotation_direction(current_pan, target_pan, self.tolerance, normal_speed)
+        ry = morse_math.rotation_direction(current_tilt, target_tilt, self._tolerance, normal_speed)
+        rz = morse_math.rotation_direction(current_pan, target_pan, self._tolerance, normal_speed)
 
         # Give the rotation instructions directly to the parent
         # The second parameter specifies a "local" movement

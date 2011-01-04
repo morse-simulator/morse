@@ -14,20 +14,14 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.tolerance = 0.5
-        self.speed = 5.0
+        self._tolerance = 0.5
+        self._speed = 5.0
         self.destination = self.blender_obj.position
 
         #self.local_data['speed'] = 0.0
         self.local_data['x'] = self.destination[0]
         self.local_data['y'] = self.destination[1]
         self.local_data['z'] = self.destination[2]
-
-        self.data_keys = ['x', 'y', 'z']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
 
         print ('######## CONTROL INITIALIZED ########')
 
@@ -49,7 +43,7 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         #print ("Global vector: {0}".format(global_vector))
         #print ("Local  vector: {0}".format(local_vector))
 
-        if distance > self.tolerance:
+        if distance > self._tolerance:
             # Set the robot status
             parent.move_status = "Transit"
 
@@ -60,9 +54,9 @@ class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     
             # Scale the speeds to the time used by Blender
             try:
-                vx = global_vector[0] * self.speed / ticks
-                vy = global_vector[1] * self.speed / ticks
-                vz = global_vector[2] * self.speed / ticks
+                vx = global_vector[0] * self._speed / ticks
+                vy = global_vector[1] * self._speed / ticks
+                vz = global_vector[2] * self._speed / ticks
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:

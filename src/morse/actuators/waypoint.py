@@ -37,12 +37,6 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['z'] = self.destination[2]
         self.local_data['speed'] = 1.0
 
-        self.data_keys = ['x', 'y', 'z', 'speed']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
         try:
             wp_name = self.blender_obj['Target']
             if GameLogic.pythonVersion < 3:
@@ -147,7 +141,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
                     rz = 0
                 # If not, rotate the robot
                 else:
-                    rz = ((speed / ticks) / 2) * rotation_direction
+                    rz = ((speed / ticks) / 2.0) * rotation_direction
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:

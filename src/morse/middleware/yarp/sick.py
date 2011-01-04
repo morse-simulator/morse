@@ -30,8 +30,8 @@ def post_sick_data(self, component_instance):
         bottle = yarp_port.prepare()
         bottle.clear()
         # Go through the list of points
-        # The list is the first item in ''modified_data''
-        for point in component_instance.modified_data[0]:
+        point_list = component_instance.local_data['point_list']
+        for point in point_list:
             bottle2 = bottle.addList()
             for i in range(3):
                 bottle2.addDouble(point[i])

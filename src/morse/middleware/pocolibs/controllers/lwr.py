@@ -31,13 +31,13 @@ def read_lwr_config(self, component_instance):
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
     gbm_conf = ors_lwr_poster.read_lwr_data(poster_id)
 
-    component_instance.modified_data[0] = gbm_conf.q1
-    component_instance.modified_data[1] = gbm_conf.q2
-    component_instance.modified_data[2] = gbm_conf.q3
-    component_instance.modified_data[3] = gbm_conf.q4
-    component_instance.modified_data[4] = gbm_conf.q5
-    component_instance.modified_data[5] = gbm_conf.q6
-    component_instance.modified_data[6] = gbm_conf.q7
+    component_instance.local_data['seg0'] = gbm_conf.q1
+    component_instance.local_data['seg1'] = gbm_conf.q2
+    component_instance.local_data['seg2'] = gbm_conf.q3
+    component_instance.local_data['seg3'] = gbm_conf.q4
+    component_instance.local_data['seg4'] = gbm_conf.q5
+    component_instance.local_data['seg5'] = gbm_conf.q6
+    component_instance.local_data['seg6'] = gbm_conf.q7
 
     # Return true to indicate that a command has been received
     return True

@@ -44,40 +44,32 @@ class MorseNEDClass(object):
 
     def blender_to_ned(self, component_instance):
         """ Convert the coordinates from Blender to UTM reference. """
-        tmp = component_instance.modified_data[0]
-        component_instance.modified_data[0] = component_instance.modified_data[1]
-        component_instance.modified_data[1] = tmp
-        component_instance.modified_data[2] = -component_instance.modified_data[2]
-
-        return component_instance.modified_data
+        tmp = component_instance.local_data['x']
+        component_instance.local_data['x'] = component_instance.local_data['y']
+        component_instance.local_data['y'] = tmp
+        component_instance.local_data['z'] = -component_instance.local_data['z']
 
 
     def ned_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
-        tmp = component_instance.modified_data[0]
-        component_instance.modified_data[0] = component_instance.modified_data[1]
-        component_instance.modified_data[1] = tmp
-        component_instance.modified_data[2] = -component_instance.modified_data[2]
-
-        return component_instance.modified_data
+        tmp = component_instance.local_data['x']
+        component_instance.local_data['x'] = component_instance.local_data['y']
+        component_instance.local_data['y'] = tmp
+        component_instance.local_data['z'] = -component_instance.local_data['z']
 
 
 
     def blender_to_ned_angle(self, component_instance):
         """ Convert the coordinates from Blender to UTM reference. """
-        yaw = math.pi/2 - component_instance.modified_data[0]
-        component_instance.modified_data[0] = component_instance.modified_data[2]
-        component_instance.modified_data[1] = -component_instance.modified_data[1]
-        component_instance.modified_data[2] = yaw
-
-        return component_instance.modified_data
+        roll = math.pi/2 - component_instance.local_data['yaw']
+        component_instance.local_data['yaw'] = component_instance.local_data['roll']
+        component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
+        component_instance.local_data['roll'] = roll
 
 
     def ned_angle_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
-        yaw = math.pi/2 - component_instance.modified_data[2]
-        component_instance.modified_data[1] = -component_instance.modified_data[1]
-        component_instance.modified_data[2] = component_instance.modified_data[0]
-        component_instance.modified_data[0] = yaw
-
-        return component_instance.modified_data
+        yaw = math.pi/2 - component_instance.local_data['roll']
+        component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
+        component_instance.local_data['roll'] = component_instance.local_data['yaw']
+        component_instance.local_data['yaw'] = yaw

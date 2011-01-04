@@ -61,9 +61,6 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
         FILE = self._file_list[component_instance.blender_obj.name]
         line = "==> Data at location: [%.6f %.6f %.6f]\n" % (parent_position[0], parent_position[1], parent_position[2])
         FILE.write(line.encode())
-        i = 0
-        for variable in component_instance.data_keys:
-            data = component_instance.modified_data[i]
+        for variable, data in component_instance.local_data.items():
             line = "\t%s = %s\n" % (variable, repr(data))
             FILE.write(line.encode())
-            i = i + 1

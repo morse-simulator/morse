@@ -22,6 +22,9 @@ def post_dictionary_data(self, component_instance):
     The argument is a copy of the component instance.
     This method will serialise the dictionary as a series of
     nested bottles.
+    NOTE: For the moment this method is used only by the semantic camera,
+    and because of that we use the variable name 'visible_objects' of
+    local_data as defined in that sensor.
     """
     port_name = self._component_ports[component_instance.blender_obj.name]
 
@@ -31,8 +34,9 @@ def post_dictionary_data(self, component_instance):
         bottle = yarp_port.prepare()
         bottle.clear()
         # Go through the list of points
-        # The list is the first item in ''modified_data''
-        for key, value in component_instance.modified_data[0].items():
+        # The list is the first item in ''local_data''
+        visible_objects = component_instance.local_data['visible_objects']
+        for key, value in visible_objects.items():
             bottle2 = bottle.addList()
             bottle2.addString(key)
             bottle2.addDouble(value)

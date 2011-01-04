@@ -16,8 +16,8 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.speed = self.blender_obj['Speed']
-        self.tolerance = math.radians(5)
+        self._speed = self.blender_obj['Speed']
+        self._tolerance = math.radians(5)
 
         self.local_data['seg0'] = 0.0
         self.local_data['seg1'] = 0.0
@@ -25,12 +25,6 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['seg3'] = 0.0
         self.local_data['seg4'] = 0.0
         self.local_data['seg5'] = 0.0
-
-        self.data_keys = ['seg0', 'seg1', 'seg2', 'seg3', 'seg4', 'seg5']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
 
         # The axis along which the different segments rotate
         # Considering the rotation of the arm as installed in Jido
@@ -58,7 +52,7 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         ticks = GameLogic.getLogicTicRate()
         # Scale the speeds to the time used by Blender
         try:
-            rotation = self.speed / ticks
+            rotation = self._speed / ticks
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -78,10 +72,10 @@ class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
-                ry = morse_math.rotation_direction(segment_euler[1], target_angle, self.tolerance, rotation)
+                ry = morse_math.rotation_direction(segment_euler[1], target_angle, self._tolerance, rotation)
             elif self._dofs[i] == 'z':
-                rz = morse_math.rotation_direction(segment_euler[2], target_angle, self.tolerance, rotation)
-                print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self.tolerance, rotation, rz))
+                rz = morse_math.rotation_direction(segment_euler[2], target_angle, self._tolerance, rotation)
+                #print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self._tolerance, rotation, rz))
 
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement

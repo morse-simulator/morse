@@ -49,3 +49,4 @@ def write_pom(self, component_instance):
             position3d.x, position3d.y,
             position3d.z, position3d.yaw,
             position3d.pitch, position3d.roll)
+    #print ("POM position: %.4f, %.4f, %.4f" % (position3d.x, position3d.y, position3d.z))

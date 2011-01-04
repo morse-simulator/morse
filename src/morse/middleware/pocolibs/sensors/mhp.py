@@ -1,5 +1,4 @@
 import math
-import re
 import GameLogic
 from morse.middleware.pocolibs.sensors.Human_Poster import ors_human_poster
 

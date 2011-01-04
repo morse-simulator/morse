@@ -166,9 +166,9 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
 
         # Extract the values from the socket data
         i = 0
-        for data in component_instance.modified_data:
+        for variable, data in component_instance.local_data.items():
             msg_data = pickled_data[i]
-            component_instance.modified_data[i] = msg_data
+            component_instance.local_data[variable] = msg_data
             i = i + 1
 
         return True
@@ -186,7 +186,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
         except KeyError as detail:
             return
 
-        message = pickle.dumps((component_instance.blender_obj.name, component_instance.modified_data))
+        message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
         #print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
         out_socket.sendto(message, client_addr)
@@ -222,9 +222,9 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
             # Extract the values from the socket data
             pickled_data = pickle.loads(message_data)
             i = 0
-            for data in component_instance.modified_data:
+            for variable, data in component_instance.local_data.items():
                 msg_data = pickled_data[i]
-                component_instance.modified_data[i] = msg_data
+                component_instance.local_data[variable] = msg_data
                 i = i + 1
 
             return True
@@ -242,7 +242,7 @@ class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
         except KeyError as detail:
             return
 
-        message = pickle.dumps((component_instance.blender_obj.name, component_instance.modified_data))
+        message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
         #print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
         out_socket.send(message)

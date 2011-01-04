@@ -62,12 +62,13 @@ class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
                             'dof_44': 0.0,
                             'dof_45': 0.0}
         
+        """
         self.data_keys = self.local_data.keys()
 
         # Initialise the copy of the data
         for variable in self.data_keys:
             self.modified_data.append(self.local_data[variable])
-
+        """
 
         print ('######## HUMAN POSTURE EXPORTER INITIALIZED ########')
 

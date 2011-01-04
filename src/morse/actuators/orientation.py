@@ -16,12 +16,6 @@ class OrientationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 		self.local_data['ry'] = 0.0
 		self.local_data['rz'] = 0.0
 
-		self.data_keys = ['rx', 'ry', 'rz']
-		
-		# Initialise the copy of the data
-		for variable in self.data_keys:
-			self.modified_data.append(self.local_data[variable])
-
 		print ('######## CONTROL INITIALIZED ########')
 
 	def default_action(self):

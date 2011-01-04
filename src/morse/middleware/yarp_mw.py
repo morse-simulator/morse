@@ -92,7 +92,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
         """ Read incoming data from a simple port.
 
         The argument is a copy of the component instance.
-        Data is writen directly into the 'modified_data' dictionary
+        Data is writen directly into the 'local_data' dictionary
         of the component instance.
         """
         port_name = self._component_ports[component_instance.blender_obj.name]
@@ -104,22 +104,16 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
             if message_data != None:
                 # Data elements are of type defined in data_types
                 i = 0
-                #for variable, data in component_instance.modified_data.items():
-                #for variable in component_instance.data_keys:
-                    #data = component_instance.modified_data[variable]
-                for data in component_instance.modified_data:
+                for variable, data in component_instance.local_data.items():
                     if isinstance(data, int):
                         msg_data = message_data.get(i).asInt()
-                        component_instance.modified_data[i] = msg_data
-                        #component_instance.modified_data[variable] = msg_data
+                        component_instance.local_data[variable] = msg_data
                     elif isinstance(data, float):
                         msg_data = message_data.get(i).asDouble()
-                        component_instance.modified_data[i] = msg_data
-                        #component_instance.modified_data[variable] = msg_data
+                        component_instance.local_data[variable] = msg_data
                     elif isinstance(data, basestring):
                         msg_data = message_data.get(i).toString()
-                        component_instance.modified_data[i] = msg_data
-                        #component_instance.modified_data[variable] = msg_data
+                        component_instance.local_data[variable] = msg_data
                     else:
                         print ("Yarp ERROR: Unknown data type at 'read_message'")
                     i = i + 1
@@ -146,10 +140,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
             bottle = yarp_port.prepare()
             bottle.clear()
             # Sort the data accodring to its type
-            #for variable, data in component_instance.modified_data.items():
-            #for variable in component_instance.data_keys:
-                #data = component_instance.modified_data[variable]
-            for data in component_instance.modified_data:
+            for variable, data in component_instance.local_data.items():
                 if isinstance(data, int):
                     bottle.addInt(data)
                 elif isinstance(data, float):
@@ -181,8 +172,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
         img.setQuantum(1)
 
         # Get the image data from the camera instance
-        img_string = component_instance.modified_data[0]
-        #img_string = component_instance.local_data['image']
+        img_string = component_instance.local_data['image']
         img_X = component_instance.image_width
         img_Y = component_instance.image_height
 

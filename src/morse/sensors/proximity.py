@@ -16,17 +16,11 @@ class ProximitySensorClass(morse.helpers.sensor.MorseSensorClass):
 
         self.local_data['near_robots'] = {}
         try:
-            self.range = self.blender_obj['Range']
+            self._range = self.blender_obj['Range']
         except KeyError:
             # Set a default range of 100m
-            self.range = 100
+            self._range = 100
             
-        self.data_keys = ['near_robots']
-
-        # Initialise the copy of the data
-        for variable in self.data_keys:
-            self.modified_data.append(self.local_data[variable])
-
         print ('######## PROXIMITY INITIALIZED ########')
 
 
@@ -42,7 +36,7 @@ class ProximitySensorClass(morse.helpers.sensor.MorseSensorClass):
             # Skip distance to self
             if parent != robot:
                 distance = self._measure_distance_to_robot (parent, robot)
-                if distance <= self.range:
+                if distance <= self._range:
                     self.local_data['near_robots'][robot.name] = distance
 
 
