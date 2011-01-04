@@ -91,11 +91,18 @@ Architecture
 ------------
 - unified time management ("what if we want to simulate at 2X?")
 
+Simulated component
+-------------------
+- Simulation of wireless communication between robots: delay, lost of connection, noise...
+
 Linking issues
 --------------
 - when properties are added in linked components (eg, cameras),
 the new properties don't show up in the scene that import these components.
 
+- A lot of room for improvement regarding the general process of linking a robot
+component into a scene. Issue with making stuff 'local', lacking a good GUI, when
+opening a .blend file, it's not clear what should be imported...
 
 Other stuff 
 -----------
