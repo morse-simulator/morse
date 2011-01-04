@@ -25,9 +25,13 @@ as part of the `ROSACE <http://www.fondation-stae.net/fr/actions/projets-cours.h
 Main features
 -------------
 
-- A versatile simulator for **generic mobile robots simulation** (single or multi robots),
-- Enabling **realistic** and **dynamic** environments (with other interacting agents -humans- or objects), 
-- Don't reinvent the wheel: critical components reused from other opensource projects (**Blender** for 3D rendering + physical simulation + UI, dedicated robotic middlewares for communications + robot hardware support),
+- A versatile simulator for **generic mobile robots simulation** (single or 
+  multi robots),
+- Enabling **realistic** and **dynamic** environments (with other interacting 
+  agents -humans- or objects), 
+- Don't reinvent the wheel: critical components reused from other opensource 
+  projects (**Blender** for 3D rendering + physical simulation + UI, dedicated 
+  robotic middlewares for communications + robot hardware support),
 - **Seamless workflow**: since the simulator rely on Blender for both modelling and the realtime 3D engine, creating and modifying a simulated scene is straigthforward.
 - Entierely scriptable in **Python**,
 - Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labelled artifacts- in other cases),
