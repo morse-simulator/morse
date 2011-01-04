@@ -211,7 +211,7 @@ def check_setup():
         elif version == False:
             blender_exec = ""
             logger.warning("The $MORSE_BLENDER environment variable points to an " + \
-            "incorrect version of Blender! You should fix that! Trying to look " + \
+            "incorrect version of\nBlender! You should fix that! Trying to look " + \
             "for Blender in alternative places...")
         elif version == None:
             blender_exec = ""
@@ -244,11 +244,11 @@ def check_setup():
                 
             else:
                 logger.error("Could not find a correct Blender executable, neither in the " + \
-                "path or in MORSE prefix. Blender >= " + MIN_BLENDER_VERSION + \
+                "path or in MORSE\nprefix. Blender >= " + MIN_BLENDER_VERSION + \
                 " and < " + STRICT_MAX_BLENDER_VERSION + \
                 " is required to run MORSE.\n" + \
                 "You can alternatively set the $MORSE_BLENDER environment variable " + \
-                "to point to a specific Blender executable")
+                "to point to\na specific Blender executable")
                 raise MorseError("Could not find Blender executable")
     
     ###########################################################################
@@ -302,8 +302,9 @@ def prelaunch():
         logger.info("Checking up your environment...\n")
         check_setup()
     except MorseError as e:
-        logger.error("Your environment is not correctly setup to run MORSE!\n" +\
-        "Please run 'morse check' for more details.")
+        logger.error("Your environment is not yet correctly setup to run MORSE!\n" +\
+        "Please fix it with above informations.\n" +\
+        "You can also run 'morse check' for more details.")
         sys.exit()
 
 def launch_simulator(scene=None):
