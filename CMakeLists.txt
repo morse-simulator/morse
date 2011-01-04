@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(PACKAGE_NAME morse)
-set(PACKAGE_VERSION 0.2a1)
+set(PACKAGE_VERSION 0.2b1)
 
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)

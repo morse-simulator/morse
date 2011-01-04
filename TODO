@@ -11,6 +11,7 @@ File history:
 26/08/2010 - Gilberto: Add pending tasks for sensors, documentation and the Rosace scenario
 17/09/2010 - Severin: Bring up the list of features required for the next, human interaction oriented, release
 22/11/2010 - Severin: update of the TODO list before 0.2a1 tag, created a preliminary list of target for 0.3
+04/01/2011 - Severin: update of the TODO list before 0.2a1 tag, created a preliminary list of target for 0.3
 ---
 
 =========================================================
@@ -19,10 +20,8 @@ File history:
 
 User-interface
 --------------
-- Ability to fully control a robot or a human as "first
-  person shooter" to interact with other robots
-    - Ability to control a human with mouse + keyboard (turning head, moving around, sitting down)
-    - Ability to pick/release objects by clicking on them
+- Control a human as "first person shooter": Ability to pick/release objects by
+ clicking on them
 
 Middlewares
 -----------
