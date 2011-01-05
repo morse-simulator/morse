@@ -41,7 +41,7 @@ def write_pom(self, component_instance):
     """ Write the sensor position to a poster
 
     The argument must be the instance to a morse gyroscope class. """
-    position3d = component_instance.position_3d
+    position3d = component_instance.robot_parent.position_3d
 
     # Get the id of the poster already created
     poster_id = self._poster_dict[component_instance.blender_obj.name]
