@@ -35,7 +35,7 @@ Size (morse-0.2b1.tar.gz) = 36787788 bytes
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
-==== YARP ====
+==== YARP (optional) ====
 
 For the YARP bindings
   * YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
@@ -61,7 +61,7 @@ If you are not using robotpkg to install YARP, then make sure to copy the files 
 
 NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ''site-packages'' for ''dist-packages''.
 
-==== Pocolibs ====
+==== Pocolibs (optional) ====
 
 To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
 
