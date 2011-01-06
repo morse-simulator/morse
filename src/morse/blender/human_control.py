@@ -106,8 +106,8 @@ def human_actions(contr):
             # TEST: Read the rotation of the bones in the armature
             elif key[0] == GameKeys.BKEY:
                 read_pose(contr)
-            elif key[0] == GameKeys.VKEY:
-                reset_pose(contr)
+            #elif key[0] == GameKeys.VKEY:
+                #reset_pose(contr)
         elif key[1] == GameLogic.KX_INPUT_JUST_RELEASED:
             if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
                 armature['movingForward'] = False
@@ -219,6 +219,7 @@ def read_pose(contr):
 
 def reset_pose(contr):
     armature = contr.owner
+    print ("Trying to reset the posture:")
     for channel in armature.channels:     
         channel.rotation_mode = 6
         
