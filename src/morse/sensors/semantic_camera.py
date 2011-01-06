@@ -56,9 +56,6 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Description')!=0 ])
             
             # Store the bounding box of the marked objects
-            ################## WARNING ################## 
-            # NOTE: This uses the Blender library, which has been removed
-            #  in Blender 2.5. Thus this will likely break with the new version.
             for obj in GameLogic.trackedObjects.keys():
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
@@ -70,7 +67,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
 
 
         # Prepare the exportable data of this sensor
-        # In this case, it is the list of currently visible objects by each independent robot.
+        # In this case, it is the list of currently visible objects
+        #  by each independent robot.
         self.local_data['visible_objects'] = []
 
         # Variable to indicate this is a camera
@@ -125,7 +123,15 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # Translate the bounding box to the current object position
         #  and check if it is in the frustrum
         if self.blender_cam.boxInsideFrustum([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]) != self.blender_cam.OUTSIDE:
-            # object is inside
-            return True
+            # Check that there are no other objects between the camera
+            #  and the selected object
+            # NOTE: This is a very simple test. Hiding only the 'center'
+            #  of an object will make it invisible, even if the rest is still
+            #  seen from the camera
+            closest_obj = self.blender_obj.rayCastTo(obj)
+            if obj == closest_obj:
+                return True
+            else:
+
 
         return False
