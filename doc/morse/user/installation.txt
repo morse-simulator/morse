@@ -20,16 +20,16 @@ Alternatively, you can use the GitHub mirror (synchronized every hour) (it is pr
 
   $ git clone http://github.com/laas/morse.git
 
-Once you have a copy of the repository, you can get to the last stable version (0.2a1) by using
+Once you have a copy of the repository, you can get to the last stable version (0.2b1) by using
 
-  $ git checkout 0.2a1
+  $ git checkout 0.2b1
 
-You can get a tarball version [[http://softs.laas.fr/openrobots/distfiles/morse/morse-0.1.tar.gz|here]] (This is an older version). You can check the following information to make sure that the download went fine.
+You can get a tarball version [[http://softs.laas.fr/openrobots/distfiles/morse/morse-0.2b1.tar.gz|here]]. You can check the following information to make sure that the download went fine.
 
 <code>
-SHA1 (morse-0.1.tar.gz) = 1e7951b7d5c73bd1723e84e4deb6bd9124636307
-RMD160 (morse-0.1.tar.gz) = 6e4f7058c5a84650ba18d6e4f1087b2efd7af782
-Size (morse-0.1.tar.gz) = 27644677 bytes
+SHA1 (morse-0.2b1.tar.gz) = 440dee1cf4d270722eabc76f55746a03c399fc90
+RMD160 (morse-0.2b1.tar.gz) = ee78dac1ad88d339f4de473da1b6291db5dc5761
+Size (morse-0.2b1.tar.gz) = 36787788 bytes
 </code>
 
 If you plan to use the simulator with raw sockets of text files as "middleware",
@@ -85,25 +85,16 @@ You can set up the different variables using the command line:
   * ''BUILD_YARP2_SUPPORT'' controls the build of YARP support in MORSE
   * ''CMAKE_BUILD_TYPE'' controls the optimization stuff for C/C++ extension (Release is a good choice).
 
-  $ make install
+  $ sudo make install
 
-To build and install MORSE with YARP support in ''/opt'', you need something like:
+For instance, to build and install MORSE with YARP support in ''/opt'', you need something like:
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
-Two environment variables must be set to let the simulator know where to look for the installed components:
+The optional ''$MORSE_BLENDER'' environment variable can be set to let the simulator know where to look for Blender if it is not accessible from the path.
 
-  * ''$PYTHONPATH'' specifies the directories where MORSE scripts are located.  It will start with the MORSE installation prefix, followed by the path to the python scripts. Example:
-
-  tcsh:
-  setenv PYTHONPATH $MORSE_ROOT/lib/python3.1/site-packages
-
-  bash:
-  export PYTHONPATH=$MORSE_ROOT/lib/python3.1/site-packages
-
-  * ''$MORSE_BLENDER'' specifies a custom Blender executable (else, the ''blender'' command is looked for in the path).
-
-NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ''site-packages'' for ''dist-packages''.
-
+You can check your configuration is ok with:
+  $ morse check
+  
 ===== Running a simulation =====
 
 [YARP specific] Before starting a simulation: Start the YARP's server using this command in a separate terminal:
@@ -114,9 +105,6 @@ Launch MORSE by calling the morse executable:
 
 Several options are available, check them with:
   $ morse help
-
-You can check your configuration is ok with:
-  $ morse check
 
 Once launched, you can test the simulator by loading one of the example scenarii from ''$MORSE_ROOT/share/examples/morse/scenarii'' (.blend files).
 
@@ -130,7 +118,7 @@ Note that certain scenario files are configured to use various middlewares, and 
 
 To test the external control clients:
   * On a text terminal, run the ''morse'' command
-  * Open the Blender file: ''$MORSE_ROOT/share/examples/morse/scenarii/tutorial-1-solved.blend''
+  * Open the Blender file: ''$MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend''
   * Start the simulation <key>P</key>
   * On a separate terminal, go to the root directory the MORSE source code
   * Run the Python program:
