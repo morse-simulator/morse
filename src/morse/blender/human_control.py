@@ -14,6 +14,7 @@
 import Rasterizer
 import GameLogic
 import GameKeys
+import bge
 import math
 import sys
 if sys.version_info<(3,0,0):
@@ -286,6 +287,53 @@ def toggle_sit(contr):
     elif sit_down_key.positive and not human['statusStandUp']:
         contr.activate(standup)
         human['statusStandUp'] = True
+
+
+
+def grabbing(contr):
+    """ Mark an object as selected by the user """
+    scene = GameLogic.getCurrentScene()
+    hand_target = scene.objects['IK_Target_Empty.R']
+    #sphere = scene.objects['SelectionSphere']
+
+    over_any = contr.sensors["OverAny"]
+    selected_object = over_any.hitObject
+
+    # Check that a button was pressed
+    if over_any.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+        # Check that no other object is being carried
+        if contr.owner['DraggedObject'] == None or contr.owner['DraggedObject'] == '':
+            print ("STEP 2")
+            print ("OVER: ", selected_object)
+            # If the object is draggable
+            if selected_object != None and "Description" in selected_object:
+                print ("STEP 3")
+                distance = hand_target.getDistanceTo(selected_object)
+                print ("Distance: ", distance)
+                # If the object close to the hand
+                if distance < 0.15: 
+                    print ("STEP 4")
+                    # Clear the previously selected object, if any
+                    contr.owner['DraggedObject'] = selected_object
+                    # Remove Physic simulation
+                    selected_object.suspendDynamics()
+                    print ("SELECTED OBJECT: %s" % selected_object)
+                    # Parent the selected object to the hand target
+                    selected_object.setParent (hand_target)
+
+    if over_any.getButtonStatus(bge.events.RIGHTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+        # Clear the previously selected object, if any
+        if contr.owner['DraggedObject'] != None:
+            previous_object = contr.owner["DraggedObject"]
+            # Restore Physics simulation
+            previous_object.restoreDynamics()
+            previous_object.setLinearVelocity([0, 0, 0])
+            previous_object.setAngularVelocity([0, 0, 0])
+            # Remove the parent
+            previous_object.removeParent()
+            # Clear the object from dragged status
+            contr.owner['DraggedObject'] = None
+
 
 
 def mouse_move(human, mouse, width, height):
