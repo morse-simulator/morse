@@ -22,45 +22,46 @@ class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.local_data = {    'x': 0.0,
-                            'y': 0.0,
-                            'z':0.0,
-                            'yaw': 0.0,
-                            'pitch': 0.0,
-                            'roll': 0.0,
-                            'dof_13': 0.0,
-                            'dof_14': 0.0,
-                            'dof_15': 0.0,
-                            'dof_16': 0.0,
-                            'dof_17': 0.0,
-                            'dof_18': 0.0,
-                            'dof_19': 0.0,
-                            'dof_20': 0.0,
-                            'dof_21': 0.0,
-                            'dof_22': 0.0,
-                            'dof_23': 0.0,
-                            'dof_24': 0.0,
-                            'dof_25': 0.0,
-                            'dof_26': 0.0,
-                            'dof_27': 0.0,
-                            'dof_28': 0.0,
-                            'dof_29': 0.0,
-                            'dof_30': 0.0,
-                            'dof_31': 0.0,
-                            'dof_32': 0.0,
-                            'dof_33': 0.0,
-                            'dof_34': 0.0,
-                            'dof_35': 0.0,
-                            'dof_36': 0.0,
-                            'dof_37': 0.0,
-                            'dof_38': 0.0,
-                            'dof_39': 0.0,
-                            'dof_40': 0.0,
-                            'dof_41': 0.0,
-                            'dof_42': 0.0,
-                            'dof_43': 0.0,
-                            'dof_44': 0.0,
-                            'dof_45': 0.0}
+        self.local_data['x'] = 0.0
+        self.local_data['y'] = 0.0
+        self.local_data['z'] = 0.0
+        self.local_data['yaw'] = 0.0
+        self.local_data['pitch'] = 0.0
+        self.local_data['roll'] = 0.0
+        self.local_data['dof_12'] = 0.0
+        self.local_data['dof_13'] = 0.0
+        self.local_data['dof_14'] = 0.0
+        self.local_data['dof_15'] = 0.0
+        self.local_data['dof_16'] = 0.0
+        self.local_data['dof_17'] = 0.0
+        self.local_data['dof_18'] = 0.0
+        self.local_data['dof_19'] = 0.0
+        self.local_data['dof_20'] = 0.0
+        self.local_data['dof_21'] = 0.0
+        self.local_data['dof_22'] = 0.0
+        self.local_data['dof_23'] = 0.0
+        self.local_data['dof_24'] = 0.0
+        self.local_data['dof_25'] = 0.0
+        self.local_data['dof_26'] = 0.0
+        self.local_data['dof_27'] = 0.0
+        self.local_data['dof_28'] = 0.0
+        self.local_data['dof_29'] = 0.0
+        self.local_data['dof_30'] = 0.0
+        self.local_data['dof_31'] = 0.0
+        self.local_data['dof_32'] = 0.0
+        self.local_data['dof_33'] = 0.0
+        self.local_data['dof_34'] = 0.0
+        self.local_data['dof_35'] = 0.0
+        self.local_data['dof_36'] = 0.0
+        self.local_data['dof_37'] = 0.0
+        self.local_data['dof_38'] = 0.0
+        self.local_data['dof_39'] = 0.0
+        self.local_data['dof_40'] = 0.0
+        self.local_data['dof_41'] = 0.0
+        self.local_data['dof_42'] = 0.0
+        self.local_data['dof_43'] = 0.0
+        self.local_data['dof_44'] = 0.0
+        self.local_data['dof_45'] = 0.0
         
         """
         self.data_keys = self.local_data.keys()
@@ -73,10 +74,68 @@ class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
         print ('######## HUMAN POSTURE EXPORTER INITIALIZED ########')
 
 
-    def default_action(self):
-        """ Extract the human posture
+    def _read_pose(self, armature):
 
-        """
+        for channel in armature.channels:
+            if 'X_' not in channel.name:
+                #rotation = channel.joint_rotation
+                #print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+                if channel.name == 'Chest':
+                   self.local_data['dof_12'] = channel.joint_rotation[0]
+                   self.local_data['dof_13'] = channel.joint_rotation[1]
+                   self.local_data['dof_14'] = channel.joint_rotation[2]
+                if channel.name == 'Head':
+                   self.local_data['dof_15'] = channel.joint_rotation[0]
+                   self.local_data['dof_16'] = channel.joint_rotation[1]
+                   self.local_data['dof_17'] = channel.joint_rotation[2]
+
+                if channel.name == 'UpArm.R':
+                   self.local_data['dof_18'] = channel.joint_rotation[0]
+                   self.local_data['dof_19'] = channel.joint_rotation[1]
+                   self.local_data['dof_20'] = channel.joint_rotation[2]
+                if channel.name == 'ForeArm.R':
+                   self.local_data['dof_21'] = channel.joint_rotation[2]
+                if channel.name == 'Hand.R':
+                   self.local_data['dof_22'] = channel.joint_rotation[0]
+                   self.local_data['dof_23'] = channel.joint_rotation[1]
+                   self.local_data['dof_24'] = channel.joint_rotation[2]
+
+                if channel.name == 'UpArm.L':
+                   self.local_data['dof_25'] = channel.joint_rotation[0]
+                   self.local_data['dof_26'] = channel.joint_rotation[1]
+                   self.local_data['dof_27'] = channel.joint_rotation[2]
+                if channel.name == 'ForeArm.L':
+                   self.local_data['dof_28'] = channel.joint_rotation[2]
+                if channel.name == 'Hand.L':
+                   self.local_data['dof_29'] = channel.joint_rotation[0]
+                   self.local_data['dof_30'] = channel.joint_rotation[1]
+                   self.local_data['dof_31'] = channel.joint_rotation[2]
+
+                if channel.name == 'UpLeg.R':
+                   self.local_data['dof_32'] = channel.joint_rotation[0]
+                   self.local_data['dof_33'] = channel.joint_rotation[1]
+                   self.local_data['dof_34'] = channel.joint_rotation[2]
+                if channel.name == 'ForeArm.R':
+                   self.local_data['dof_35'] = channel.joint_rotation[0]
+                if channel.name == 'Hand.R':
+                   self.local_data['dof_36'] = channel.joint_rotation[0]
+                   self.local_data['dof_37'] = channel.joint_rotation[1]
+                   self.local_data['dof_38'] = channel.joint_rotation[2]
+
+                if channel.name == 'UpLeg.L':
+                   self.local_data['dof_39'] = channel.joint_rotation[0]
+                   self.local_data['dof_40'] = channel.joint_rotation[1]
+                   self.local_data['dof_41'] = channel.joint_rotation[2]
+                if channel.name == 'ForeArm.L':
+                   self.local_data['dof_42'] = channel.joint_rotation[0]
+                if channel.name == 'Hand.L':
+                   self.local_data['dof_43'] = channel.joint_rotation[0]
+                   self.local_data['dof_44'] = channel.joint_rotation[1]
+                   self.local_data['dof_45'] = channel.joint_rotation[2]
+
+
+    def default_action(self):
+        """ Extract the human posture """
         self.local_data['x'] = float(self.position_3d.x)
         self.local_data['y'] = float(self.position_3d.y)
         self.local_data['z'] = float(self.position_3d.z)
@@ -84,3 +143,6 @@ class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
         self.local_data['pitch'] = float(self.position_3d.pitch)
         self.local_data['roll'] = float(self.position_3d.roll)
 
+        self._read_pose(self.blender_obj)
+
+        #print ("LOCAL_DATA: ", self.local_data)
