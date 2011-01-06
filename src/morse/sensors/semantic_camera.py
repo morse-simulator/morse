@@ -131,7 +131,6 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             closest_obj = self.blender_obj.rayCastTo(obj)
             if obj == closest_obj:
                 return True
-            else:
 
 
         return False
