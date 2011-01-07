@@ -251,7 +251,7 @@ def toggle_manipulate(contr):
         #Rasterizer.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
-        hand_target.localPosition = [0.0, -0.3, 0.5]
+        hand_target.localPosition = [0.0, -0.3, 0.8]
         head_target.setParent(human)
         head_target.localPosition = [1.3, 0.0, 1.7]
     else:
@@ -259,7 +259,7 @@ def toggle_manipulate(contr):
         human['Manipulate'] = True
         head_target.setParent(hand_target)
         # Place the hand in a nice position
-        hand_target.localPosition = [0.5, 0.0, 1.0]
+        hand_target.localPosition = [0.6, 0.0, 1.4]
         # Place the head in the same place
         head_target.localPosition = [0.0, 0.0, 0.0]
 
@@ -289,41 +289,46 @@ def toggle_sit(contr):
         human['statusStandUp'] = True
 
 
+def near_object(contr):
+    """ Store the object that is near the hand """
+    scene = GameLogic.getCurrentScene()
+    hand_empty = scene.objects['Hand_Grab.R']
+    near_sensor = hand_empty.sensors['Near']
+
+    near_object = near_sensor.hitObject
+    hand_empty['Near_Object'] = near_object
+
+    #if near_object != None:
+        #hand_empty.parent.localOrientation = [math.pi/2, 0.0, 0.0]
+        #print ("Near object is now: ", near_object)
+
 
 def grabbing(contr):
     """ Mark an object as selected by the user """
     scene = GameLogic.getCurrentScene()
-    hand_target = scene.objects['IK_Target_Empty.R']
+    human = contr.owner
+    hand_empty = scene.objects['Hand_Grab.R']
     #sphere = scene.objects['SelectionSphere']
-
-    over_any = contr.sensors["OverAny"]
-    selected_object = over_any.hitObject
+    lmb = human.sensors['LMB']
+    selected_object = hand_empty['Near_Object']
 
     # Check that a button was pressed
-    if over_any.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+    if lmb.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
         # Check that no other object is being carried
         if contr.owner['DraggedObject'] == None or contr.owner['DraggedObject'] == '':
-            print ("STEP 2")
-            print ("OVER: ", selected_object)
             # If the object is draggable
-            if selected_object != None and "Description" in selected_object:
-                print ("STEP 3")
-                distance = hand_target.getDistanceTo(selected_object)
-                print ("Distance: ", distance)
-                # If the object close to the hand
-                if distance < 0.15: 
-                    print ("STEP 4")
-                    # Clear the previously selected object, if any
-                    contr.owner['DraggedObject'] = selected_object
-                    # Remove Physic simulation
-                    selected_object.suspendDynamics()
-                    print ("SELECTED OBJECT: %s" % selected_object)
-                    # Parent the selected object to the hand target
-                    selected_object.setParent (hand_target)
+            if selected_object != None and selected_object != '':
+                # Clear the previously selected object, if any
+                contr.owner['DraggedObject'] = selected_object
+                # Remove Physic simulation
+                selected_object.suspendDynamics()
+                # Parent the selected object to the hand target
+                selected_object.setParent (hand_empty)
 
-    if over_any.getButtonStatus(bge.events.RIGHTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+    if lmb.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_RELEASED:
+    #if lmb.getButtonStatus(bge.events.RIGHTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
         # Clear the previously selected object, if any
-        if contr.owner['DraggedObject'] != None:
+        if contr.owner['DraggedObject'] != None and contr.owner['DraggedObject'] != '':
             previous_object = contr.owner["DraggedObject"]
             # Restore Physics simulation
             previous_object.restoreDynamics()
