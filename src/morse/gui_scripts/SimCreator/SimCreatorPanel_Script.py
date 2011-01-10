@@ -15,9 +15,16 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 #  Written by Peter Roelants at the KULeuven Department of Mechanical Engineering
-#  under supervision of Prof. Herman Bruyninckx
+#  under supervision of Prof. Herman Bruyninckx and Koen Buys
 #
 # ##### END GPL LICENSE BLOCK #####
+
+# #####
+#
+# Adapted from 1-1-2011 to also start working in the 2.56 Blender release
+#
+# #####
+
 import re, os.path, sys, bpy   
     
 #########################################################################################
@@ -36,7 +43,6 @@ class SimCreatorData(object):
         @param library:
             reference to a SimLibrary object.
         '''
-        print("INFO: in SimCreatorData initialisation")
         # Variables
         self.library = library # library object that is connected to the simCreator directory
         self.environment = None # environment of the current simulation
@@ -163,19 +169,21 @@ class SimCreatorLibrary(object):
         @param directory:
             directory of the simCreator files.
         '''
-        print("INFO: in SimCreatorLibrary initialisation")
         #Variables
-        self.directory = directory # directory path
-        self.environmentsList = [] # list with all the available scene files
-        self.robotList = [] # list with all the available robot files
-        self.sensorList = [] # list with all the available sensor files
-        self.toolList = [] # list with all the available tool files
+        self.directory = directory      # directory path
+        self.environmentsList = []      # list with all the available scene files
+        self.robotList = []             # list with all the available robot files
+        self.sensorList = []            # list with all the available sensor files
+        self.toolList = []              # list with all the available tool files
+        self.controllerList = []        # list with all the available controller files
+        self.middlewareList = []        # list with all the available middleware files
+        self.modifiersList = []         # list with all the available modifiers files
         # check if the library has a valid directory path for a SimCreator Library
         if self.hasValidDir():
             self.setEnvironmentList()
             self.setRobotList()
             self.setSensorList()
-            self.setToolList()
+            #self.setToolList()
 
     def hasValidDir(self):
         '''Function to check if the directory of this simCreator library is a valid simCreator directory.'''
@@ -187,33 +195,57 @@ class SimCreatorLibrary(object):
             return False
         # check if path is a simCreatorLibrary
         dir = os.listdir(self.directory)
-        if 'Environments' not in dir:
+        # @todo: add meaningfull error message here:
+        if 'environments' not in dir:
+            
             return False
-        if 'Robots' not in dir:
+        if 'robots' not in dir:
             return False
-        if 'Sensors' not in dir:
+        if 'sensors' not in dir:
             return False
-        if 'Tools' not in dir:
+        if 'controllers' not in dir:
+            return False
+        if 'modifiers' not in dir:
+            return False
+        if 'middleware' not in dir:
+            return False
+        if 'human' not in dir:
             return False
         return True
     
     def getEnvironmentsDir(self):
         '''Function that returns the directory containing the environments'''
-        return os.path.join(self.directory, 'Environments')
+        return os.path.join(self.directory, 'environments')
     
     def getRobotsDir(self):
         '''Function that returns the directory containing the robots.'''
-        return os.path.join(self.directory, 'Robots')
+        return os.path.join(self.directory, 'robots')
     
     def getSensorsDir(self):
         '''Function that returns the directory containing the sensors.'''
-        return os.path.join(self.directory, 'Sensors')
+        return os.path.join(self.directory, 'sensors')
     
+    def getControllersDir(self):
+        '''Function that returns the directory containing the tools.'''
+        return os.path.join(self.directory, 'controllers')
+             
     def getToolsDir(self):
         '''Function that returns the directory containing the tools.'''
-        return os.path.join(self.directory, 'Tools')
-    
-    def getEnvironmentPath(self, environment):
+        return os.path.join(self.directory, 'tools')
+
+    def getModifiersDir(self):
+        '''Function that returns the directory containing the tools.'''
+        return os.path.join(self.directory, 'modifiers')
+        
+    def getHumanDir(self):
+        '''Function that returns the directory containing the tools.'''
+        return os.path.join(self.directory, 'human')    
+        
+    def getMiddlewareDir(self):
+        '''Function that returns the directory containing the tools.'''
+        return os.path.join(self.directory, 'middleware') 
+               
+    def getEnvironmentsPath(self, environment):
         '''
         Function that returns the path of the given environment.
         @param environment:
@@ -231,7 +263,7 @@ class SimCreatorLibrary(object):
         fileName = robot + '.blend'
         return os.path.join(self.getRobotsDir(), robot, fileName)
     
-    def getSensorPath(self, sensor):
+    def getSensorsPath(self, sensor):
         '''
         Function that returns the path of the given sensor.
         @param sensor:
@@ -248,6 +280,33 @@ class SimCreatorLibrary(object):
         '''
         fileName = tool + '.blend'
         return os.path.join(self.getToolsDir(), tool, fileName)
+        
+    def getModifierPath(self, modifier):
+        '''
+        Function that returns the path of the given tool.
+        @param modifier:
+            the modifier name of which the path will be returned.
+        '''
+        fileName = modifier + '.blend'
+        return os.path.join(self.getModifiersDir(), modifier, fileName)
+    
+    def getHumanPath(self, human):
+        '''
+        Function that returns the path of the given tool.
+        @param human:
+            the human name of which the path will be returned.
+        '''
+        fileName = human + '.blend'
+        return os.path.join(self.getHumanDir(), human, fileName)
+    
+    def getMiddlewarePath(self, middleware):
+        '''
+        Function that returns the path of the given tool.
+        @param middleware:
+            the middleware name of which the path will be returned.
+        '''
+        fileName = middleware + '.blend'
+        return os.path.join(self.getMiddlewareDir(), middleware, fileName)
     
     def setEnvironmentList(self):
         '''Function that searches the Environments directory and appends the environments to self.environmentsList.'''
@@ -625,8 +684,8 @@ class ROBOTICS_OT_SetDirectoryButton(bpy.types.Operator):
         
     def invoke(self, context, event):
         '''Processes a click on ROBOTICS_OT_SetDirectoryButton, opens a filebrowser window'''
-        wm = context.manager
-        wm.add_fileselect(self)
+        wm = context.window_manager
+        wm.fileselect_add(self)
         return {'RUNNING_MODAL'}  
   
 '''# Available Anchor Points Selection ###############################################'''
@@ -1219,9 +1278,9 @@ class ROBOTICS_OT_CreateEnvironmentShowButton(bpy.types.Operator):
     # Variables
     creatingEnvironment = False # is user creating a new scene
     
-    def poll(self, context):
-        '''Poll function that decides if the button is greyed out or not.'''
-        return not ROBOTICS_OT_CreateEnvironmentShowButton.creatingEnvironment
+    #def poll(self, context):
+    #    '''Poll function that decides if the button is greyed out or not.'''
+    #    return not ROBOTICS_OT_CreateEnvironmentShowButton.creatingEnvironment
     
     def invoke(self, context, event):
         ''' Opens the create environment panel.'''
@@ -1334,9 +1393,9 @@ class ROBOTICS_OT_AddRobotSelectionButton(bpy.types.Operator):
     # Variables
     addingRobot = False # is user adding a new robot
     
-    def poll(self, context):
-        '''Poll function that decides if the button is greyed out or not.'''
-        return not ROBOTICS_OT_AddRobotSelectionButton.addingRobot
+    #def poll(self, context):
+    #    '''Poll function that decides if the button is greyed out or not.'''
+    #    return not ROBOTICS_OT_AddRobotSelectionButton.addingRobot
     
     def invoke(self, context, event):
         '''Opens the addRobotSelection box.'''
@@ -1447,9 +1506,9 @@ class ROBOTICS_OT_AddSensorSelectionButton(bpy.types.Operator):
     # Variables
     addingSensor = False # is user adding a new sensor
     
-    def poll(self, context):
-        '''Poll function that decides if the button is greyed out or not.'''
-        return not ROBOTICS_OT_AddSensorSelectionButton.addingSensor
+    #def poll(self, context):
+    #    '''Poll function that decides if the button is greyed out or not.'''
+    #    return not ROBOTICS_OT_AddSensorSelectionButton.addingSensor
     
     def invoke(self, context, event):
         '''Function that opens the sensor selection box'''
@@ -1485,7 +1544,7 @@ class ROBOTICS_OT_AddNewSensorButton(bpy.types.Operator):
         '''Add a new sensor to the simulation.'''
         sensorName = simData.library.sensorList[int(bpy.context.scene.sensors)]
         # Get the directory of the toolGroup
-        directory = simData.library.getSensorPath(sensorName) + '\\Group\\'
+        directory = simData.library.getSensorsPath(sensorName) + '\\Group\\'
         # Add the selected sensor to the scene
         bpy.ops.wm.link_append(directory=directory, link=False, filename=sensorName)
         # Unlink and delete duplicate group object
@@ -1559,9 +1618,9 @@ class ROBOTICS_OT_AddToolSelectionButton(bpy.types.Operator):
     # Variables
     addingTool = False # is user adding a new tool
     
-    def poll(self, context):
-        '''Poll function that decides if the button is greyed out or not.'''
-        return not ROBOTICS_OT_AddToolSelectionButton.addingTool
+    #def poll(self, context):
+    #    '''Poll function that decides if the button is greyed out or not.'''
+    #    return not ROBOTICS_OT_AddToolSelectionButton.addingTool
     
     def invoke(self, context, event):
         '''Function that opens the tool selection box'''
@@ -1654,9 +1713,9 @@ class ROBOTICS_OT_RemoveSimActorObjectSelectionButton(bpy.types.Operator):
     # Variables
     removingObject = False # is user adding an simActorObject
     
-    def poll(self, context):
-        '''Poll function that decides if the button is greyed out or not.'''
-        return not ROBOTICS_OT_RemoveSimActorObjectSelectionButton.removingObject
+    #def poll(self, context):
+    #    '''Poll function that decides if the button is greyed out or not.'''
+    #   return not ROBOTICS_OT_RemoveSimActorObjectSelectionButton.removingObject
     
     def invoke(self, context, event):
         '''Function that opens the object removing box'''
@@ -1711,20 +1770,17 @@ def getClasses():
                ROBOTICS_OT_AddSensorSelectionButton,
                ROBOTICS_OT_AddSensorCancelButton,
                ROBOTICS_OT_AddNewSensorButton,
-               ROBOTICS_OT_AddToolSelectionButton,
-               ROBOTICS_OT_AddToolCancelButton,
-               ROBOTICS_OT_AddNewToolButton,
+               #ROBOTICS_OT_AddToolSelectionButton,
+               #ROBOTICS_OT_AddToolCancelButton,
+               #ROBOTICS_OT_AddNewToolButton,
                ROBOTICS_OT_RemoveSimActorObjectSelectionButton,
                ROBOTICS_OT_RemoveSimActorObjectCancelButton,
                ROBOTICS_OT_RemoveSimActorObjectButton]
     return CLASSES
         
 def register():
-    print("INFO: in register()")
     '''Register the defined classes.'''
     for definedClass in getClasses():
-        #string = 'registering this class:' + definedClass
-        #print(string)
         bpy.types.register(definedClass)
 
 def unregister():
@@ -1737,5 +1793,5 @@ print("INFO: Before main test")
 if __name__ == "__main__":
     print("INFO: in main")
     # Register defined classes in Blender
-    register()
+    # register() # OPM: COMMENTED BY KOEN BUYS
 print("INFO: after main test")
