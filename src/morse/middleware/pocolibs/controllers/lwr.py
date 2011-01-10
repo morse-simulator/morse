@@ -31,6 +31,8 @@ def read_lwr_config(self, component_instance):
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
     gbm_conf = ors_lwr_poster.read_lwr_data(poster_id)
 
+    print ("DATA READ by LWR: ", component_instance.local_data)
+
     component_instance.local_data['seg0'] = gbm_conf.q1
     component_instance.local_data['seg1'] = gbm_conf.q2
     component_instance.local_data['seg2'] = gbm_conf.q3

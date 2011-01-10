@@ -33,9 +33,10 @@ Gb_q7 read_lwr_data( POSTER_ID id )
 	LWR_ARM_INST local_lwr;
     Gb_q7 local_q7;
 	int offset = 0;
+    int bytes;
 
-	posterRead (id, offset, &local_lwr, sizeof(LWR_ARM_INST));
-	//printf ("SWIG: Reading from poster ID = %p (pointer)   %d(integer)\n", id, id);
+	bytes = posterRead (id, offset, &local_lwr, sizeof(LWR_ARM_INST));
+	printf ("SWIG: Reading %d bytes from poster ID = %p (pointer)   %d(integer)\n", bytes, id, id);
 
 	// Read the variables we need for the segment angles
     local_q7 = local_lwr.currConf;
