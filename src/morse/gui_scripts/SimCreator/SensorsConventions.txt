@@ -1,0 +1,11 @@
+Sensors
+* Each sensor has to be in the 'Sensors' folder.
+* Each sensor has to be in a folder that has the same name as the sensor.
+* The .blend file containing the sensor has to have [name].blend as filename, where [name] is the
+  name of the sensor
+* All the objects that make up the sensor have to be added to a group that has the same name as the sensor.
+* A sensor must have an empty that is called 'AnchorC', this is the place where the sensor will be connected
+  to an anchorPoint, all objects that make up the sensor have to be parented to this AnchorC.
+* Anchor points on a sensor must be an empty called 'AnchorP_{unique name}', where {unique name} is a name
+  that has to be different from the other AnchorPoints.
+* sensor scale has to be 1 blender unit = 1 meter.

@@ -1,0 +1,11 @@
+Robots
+* Each robot has to be in the 'Robots' folder.
+* Each robot has to be in a folder that has the same name as the robot.
+* The .blend file containing the robot has to have [name].blend as filename, where [name] is the
+  name of the robot
+* All the objects that make up the robot have to be added to a group that has the same name as the robot.
+* A robot must have an empty that is called 'AnchorC', this is the place where the robot will be connected
+  to an anchorPoint, all objects that make up the robot have to be parented to this AnchorC.
+* Anchor points on a robot must be an empty called 'AnchorP_{unique name}', where {unique name} is a name
+  that has to be different from the other AnchorPoints.
+* Robot scale has to be 1 blender unit = 1 meter.

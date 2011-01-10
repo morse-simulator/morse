@@ -1,0 +1,4 @@
+The script is written for Blender 2.5, it was last tested on Build 2.53.0 r'30594'
+Note that Blender is still in beta at this moment and that changes in the API that break this script can happen.
+
+Note that the provided library is *not* to scale, and that it is just for testing purposes.
