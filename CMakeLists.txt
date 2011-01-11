@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 set(PACKAGE_NAME morse)
 set(PACKAGE_VERSION 0.2)
 
-option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
+option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
+option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
