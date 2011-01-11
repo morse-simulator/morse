@@ -439,14 +439,23 @@ class SimObject(object):
         self.availableAnchorPointList = []
         # iterate over all the anchors of this object
         for anchorPoint in self.anchorPointList:
+            parent = simData.getParentObject(anchorPoint)
+            for object in bpy.context.scene.objects
+                if re.search(anchorPoint, object.name):
+                  logger.debug("SimObject.updateAvailableAnchorsPointsList(): object found: " + object.name)
+                  #object['isConnected'] = False
+                  #self.anchorPointList.append(object) 
             try:
+                pass
                 # check if anchorPoint already is connected
-                if not anchorPoint['isConnected']:
-                    self.availableAnchorPointList.append(anchorPoint)
+                # if not anchorPoint['isConnected']:
+                #    self.availableAnchorPointList.append(anchorPoint)
             # anchorPoint hasn't got the 'isConnected' property
             except:
                 logger.debug("SimObject.updateAvailableAnchorsPointsList(): in execption catch")
-                anchorPoint['isConnected'] = False
+                anchorPoint.connected = bpy.props.BoolProperty(name='connected', description='see if anchor is already in use', default=False)
+                logger.debug("SimObject.updateAvailableAnchorsPointsList(): tried to add the BoolProperty")
+                # anchorPoint['isConnected'] = False
                 self.availableAnchorPointList.append(anchorPoint)
         
 #########################################################################################
