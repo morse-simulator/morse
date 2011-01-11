@@ -71,6 +71,12 @@ To install:
   $ cd $ROBOTPKG_BASE/robotpkg/devel/pocolibs
   $ make update
 
+==== ROS ====
+
+Due to the current lack of official support for Python3, ROS support is still partial. The setup is even quite of an adventure :-)
+
+Detailled informations to install a Python3 compatible ROS are [[ros_installation | here]].
+
 ===== Installation =====
 
 From your MORSE root directory:
