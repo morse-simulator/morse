@@ -1,27 +1,39 @@
-#####################################################################################
-#
-# This script uses a blender file containing :
-#  - Two cameras named : targetcam, obscam
-#  - A lamp parent of the obscam. This lamp is a spot named obsspot to be
-#    oriented to the observationnal area that the targetcam follow.
-#  - An empty placed in the observationnal area that constrains the targetcam.
-#  - An empty mesh to be used to create the heightmaps
-#
-#
-# The next steps will be proceed :
-#   1- Create an heightmap from the infile creating a plane with 1 vertice by pixel
-#   2- Place the observed empty in the middle of the observed zone.
-#   3- Place the lamp in the observation zone and render each placement.
-#
-#####################################################################################
+# -*- coding: utf-8 -*-
+'''
+ This script uses a blender file containing :
+  - Two cameras named : targetcam, obscam
+  - A lamp parent of the obscam. This lamp is a spot named obsspot to be
+    oriented to the observationnal area that the targetcam follow.
+  - An empty placed in the observationnal area that constrains the targetcam.
+  - An empty mesh to be used to create the heightmaps
+
+
+ The next steps will be proceed :
+   1- Create an heightmap from the infile creating a plane with 1 vertice by pixel
+   2- Place the observed empty in the middle of the observed zone.
+   3- Place the lamp in the observation zone and render each placement.
+
+'''
+
+bl_addon_info = {
+    'name': 'Digital Terrain Map Loader',
+    'author': 'Redouane Boumghar (LAAS - Magellium)',
+    'version': '2011/01/11',
+    'blender': (2, 5, 6),
+    'location': 'View3D > Properties',
+    'description': 'Plugin to load geographical data',
+    'warning': '', # used for warning icon and text in addons panel
+    'wiki_url': '',
+    'tracker_url': '',
+    'category': 'Robotics'}
 
 ##### IMPORTS
 #import osgeo # Gdal python bindings
 #import shapelib
 import os
-import Blender
+import bpy
 ##### SUB-IMPORTS
-from Blender import Mesh, NMesh
+from bpy import *
 
 class DtmObject:
     """A DTM Class able to read ASCII DTM IGN Files"""
@@ -30,7 +42,7 @@ class DtmObject:
     # How many meters per Blender Unit (1 Blender Unit = 1 meters)
     u2m = 1.0
 
-    # Other parameters
+    # DEBUG parameters
     verbose = 2
 
     # Numbers
@@ -46,8 +58,8 @@ class DtmObject:
     CellSize   = 0
 
     # Blender objects 
-    DTMO  = [] # mesh
-    DTMOO = [] # scene object
+    dtm_mesh  = [] # mesh
+    dtm_object = [] # scene object
 
     #------------------------------------------#
     def TextureMapTif(self, filename, coords):
@@ -57,7 +69,7 @@ class DtmObject:
         # X offset is self.UTMXOrigin - Xmin_in_coords
         dalXOffset = self.UTMXOrigin - coords[0]
         dalYOffset = coords[3] - (self.UTMYOrigin + dalMetricYSize) 
-        print 'CROP INFO: ', dalMetricXSize/coords[6], ' x ', dalMetricYSize/coords[6], ' from point ', dalXOffset/coords[6], dalYOffset/coords[6]
+        print ('CROP INFO: ', dalMetricXSize/coords[6], ' x ', dalMetricYSize/coords[6], ' from point ', dalXOffset/coords[6], dalYOffset/coords[6])
         # HACK Considered as already CROPED
         #dataset = gdal.Open( filename, GA_ReadOnly )
         dtmtex = Texture.New('foo') 
@@ -74,23 +86,23 @@ class DtmObject:
         dtmmat.setName('dtmMat')
         dtmmat.setTexture(0, dtmtex)
         dtmmat.emit = 0.5
-        self.DTMO.materials = [dtmmat] #.append(dtmmat)
-        #self.DTMO.link(dtmmat)
-        self.DTMO.update()
-        scene = Blender.Scene.GetCurrent()
-        self.DTMOO = scene.objects.new(self.DTMO, 'morseDTMObject')
-        #self.DTMOO.link(self.DTMO)
-        #self.DTMOO.colbits = (1<<0) + (1<<5)
-        Blender.Window.Redraw()
+        self.dtm_mesh.materials = [dtmmat] #.append(dtmmat)
+        #self.dtm_mesh.link(dtmmat)
+        self.dtm_mesh.update()
+        #scene = bpy.Scene.GetCurrent()
+        #self.dtm_object = scene.objects.new(self.dtm_mesh, 'morseDTMObject')
+        #self.dtm_object.link(self.dtm_mesh)
+        #self.dtm_object.colbits = (1<<0) + (1<<5)
+        bpy.Window.Redraw()
         
     #------------------------------------------#
     def UVMapTif(self, filename, coords):
-        print 'UV MAPPING   '+filename
+        print ('UV MAPPING   '+filename)
         # Adding a spare material (this sets specularity and other properties)
         newmat = Material.New('newmat')
-        self.DTMO.materials.append(newmat)
+        self.dtm_mesh.materials.append(newmat)
         ## Example for UV textured faces selection:
-        faces = self.DTMO.faces
+        faces = self.dtm_mesh.faces
 #
 #        selected_faces = []
 #        SEL = Mesh.FaceFlags['SELECT']
@@ -147,19 +159,19 @@ class DtmObject:
                     # [8] -> Number of Columns
                     L = fub.readline() # reading the first parameter
                     i = 0
-                    print ishortname
+                    print (ishortname)
                     while L:
                         geoData[i] = float( ((L.split(':'))[1]) )
                         L = fub.readline()
                         i = i + 1
-                    print geoData
+                    print (geoData)
                 else: 
-                    print '(WW) No georeference for this image :'+filename
+                    print ('(WW) No georeference for this image :'+filename)
                 # Calculating borders of the footprint: fullGeoData
                 if fullGeoData[0] < 0.0 and geoData[0] >= 0.0:
                     fullGeoData = geoData[:]
                 else:
-                    print 'Updating full'
+                    print ('Updating full')
                     # X minimum
                     if geoData[0] < fullGeoData[0]:
                         fullGeoData[0] = geoData[0]
@@ -179,7 +191,7 @@ class DtmObject:
         if fullGeoData[6] > 0.0:
             fullGeoData[7] = (fullGeoData[1]-fullGeoData[0])/fullGeoData[6]
             fullGeoData[8] = (fullGeoData[3]-fullGeoData[2])/fullGeoData[6]
-        print fullGeoData
+        print (fullGeoData)
         self.TextureMapTif(os.path.join(dirname, 'mosaic.tif'), fullGeoData)
 
 
@@ -215,13 +227,13 @@ class DtmObject:
 
         ooo = None
         try:
-            ooo = Blender.Object.Get('Scene_Script_Holder')
+            ooo = bpy.Object.Get('Scene_Script_Holder')
         except:
             ooo = None
 
         if ooo == None:
             # Warn that no georeferencing is possible
-            print '[geoDTMLoader] This scene can not be georeferenced: Scene_Script_Holder does not exist'
+            print ('[geoDTMLoader] This scene can not be georeferenced: Scene_Script_Holder does not exist')
         else:
             # Check existence of properties UTMXOffset and UTMYOffset
             # Used to get real world georeferenced coordinates
@@ -254,14 +266,14 @@ class DtmObject:
     #------------------------------------------#
     def __init__(self, infile):
         self.meanZ = 0
-        self.DTMO  = Blender.Mesh.New('morseDTMmesh')  # DTM Mesh Object
+        self.dtm_mesh  = bpy.data.meshes.new('morseDTMmesh')  # DTM Mesh Object
         #--- Get the DTM data
         fub = self.readDTMHeader(infile)
         #---
         # Positioning 3D points on the Digital Terrain Map
         #---
         if self.verbose > 1:
-            print 'Loading 3D DTM points... '
+            print ('Loading 3D DTM points... ')
         #--- Registering low left corner as the global map origin = Blender (0,0,z)
         ysize = self.NRows*self.CellSize
         xsize = self.NCols*self.CellSize
@@ -271,15 +283,19 @@ class DtmObject:
         y = (ysize - self.CellSize/2.0)/self.u2m;
         x = (self.CellSize/2.0)/self.u2m;
         z = 0
+        kv = 0 # vertex index
         for j in range(self.NRows):
             fubline = fub.readline()
+            # Adding NCols points at each line/row: this is a way of optimizing
+            self.dtm_mesh.vertices.add(self.NCols)
+            # Reading the line and updating each point coordinates
             for i in fubline.split():
                 z = float(i)
                 self.meanZ = self.meanZ + z
                 if z == self.NODATA:
                     z = 0
-                # Directly Appending vertice to DTM Object self.DTMO
-                self.DTMO.verts.extend(x,y,z/self.z2m)
+                # Directly Appending vertice to DTM Object self.dtm_mesh
+                self.dtm_mesh.vertices[kv].co=[x, y, z/self.z2m]
                 # Going on next cell
                 x = x + self.CellSize/self.u2m
             # Starting a new line
@@ -288,39 +304,47 @@ class DtmObject:
             y = y - self.CellSize/self.u2m
         fub.close()
         # Updating variables
-        self.DTMO.update()
+        self.dtm_mesh.update()
         self.meanZ = self.meanZ / (float(self.NRows)*float(self.NCols))
 
         #---
         # Filling Faces
         #---
         if self.verbose > 1:
-            print 'Filling faces ... '
+            print ('Filling faces ... ')
         #---
         v   = 0
-        n   = 0
-        fff = []
+        #n   = 0
+        #fff = []
         vmax = self.NCols*self.NRows - self.NCols
         #---
+        # Add all facing all at once (certainly not the best solution)
+        self.dtm_mesh.faces.add(vmax)
+        # Updating each face's list of vertices
         while v < vmax:
+            self.dtm_mesh.faces[v].vertices = [v, v+1, v+self.NCols+1, v+self.NCols]
+            '''
             if (n < (self.NCols-1)): 
                 # This if avoids making faces between last vertices and first
                 # vertices, that would wrap the mesh.
-                ff = NMesh.Face([self.DTMO.verts[v], self.DTMO.verts[v+1], self.DTMO.verts[v+self.NCols+1], self.DTMO.verts[v+self.NCols]])
+                #ff = bpy.data.meshes.face([self.dtm_mesh.vertices[v], self.dtm_mesh.vertices[v+1], self.dtm_mesh.vertices[v+self.NCols+1], self.dtm_mesh.vertices[v+self.NCols]])
                 fff.append(ff)
             else:
-                # Extending faces by line is faster than doing it one by one.
-                self.DTMO.faces.extend(fff)
+                # Extending faces by line (or by bunch) is faster than doing it one by one.
+                self.dtm_mesh.faces.extend(fff)
                 fff[:] = []
                 n = -1
+            '''
             v = v + 1
-            n = n + 1
+            #n = n + 1
         #---
         # Final update 
-        self.DTMO.update()
+        self.dtm_mesh.update()
+        self.dtm_object = bpy.data.objects.new("morseDTMObject", self.dtm_mesh) 
+        bpy.data.scenes[0].objects.link(self.dtm_object)
         #---
         if self.verbose > 1:
-            print ' done.'
+            print (' done.')
 
     #------------------------------------------#
     def distance2D(self, A, B):
@@ -332,7 +356,7 @@ class DtmObject:
     def findZOfClosestPoint(self, findcoors):
         smallestDist = -1
         smallestZ    = 0
-        for v in self.DTMO.verts:
+        for v in self.dtm_mesh.vertices:
             if smallestDist == -1: # smallestDist init.
                 smallestDist = self.distance2D(findcoors, v.co)
                 smallestZ    = v.co[2]
