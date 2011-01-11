@@ -435,28 +435,26 @@ class SimObject(object):
         
     def updateAvailableAnchorsPointsList(self):
         '''Function used to update the availableAnchorPointList.'''
-        logger.debug("SimObject.updateAvailableAnchorsPointsList(): called")
         self.availableAnchorPointList = []
         # iterate over all the anchors of this object
         for anchorPoint in self.anchorPointList:
-            parent = simData.getParentObject(anchorPoint)
-            for object in bpy.context.scene.objects
-                if re.search(anchorPoint, object.name):
-                  logger.debug("SimObject.updateAvailableAnchorsPointsList(): object found: " + object.name)
-                  #object['isConnected'] = False
-                  #self.anchorPointList.append(object) 
+            # Show the anchorpoint for a moment
+            logger.debug("SimObject.updateAvailableAnchorsPointsList(): anchorpoint name: " + anchorPoint.name)
+            logger.debug("SimObject.updateAvailableAnchorsPointsList(): anchorpoint type: " + anchorPoint.type)
+            anchorPoint.hide = False
             try:
-                pass
                 # check if anchorPoint already is connected
-                # if not anchorPoint['isConnected']:
-                #    self.availableAnchorPointList.append(anchorPoint)
+                logger.debug("SimObject.updateAvailableAnchorsPointsList(): trying")
+                if not bpy.data.objects[anchorPoint.name]['isConnected']:
+                    logger.debug("SimObject.updateAvailableAnchorsPointsList(): anchor is not connected")
+                    self.availableAnchorPointList.append(anchorPoint)
             # anchorPoint hasn't got the 'isConnected' property
             except:
-                logger.debug("SimObject.updateAvailableAnchorsPointsList(): in execption catch")
-                anchorPoint.connected = bpy.props.BoolProperty(name='connected', description='see if anchor is already in use', default=False)
-                logger.debug("SimObject.updateAvailableAnchorsPointsList(): tried to add the BoolProperty")
-                # anchorPoint['isConnected'] = False
+                logger.debug("SimObject.updateAvailableAnchorsPointsList(): fetched exeption")
+                bpy.data.objects[anchorPoint.name]['isConnected'] = False
                 self.availableAnchorPointList.append(anchorPoint)
+            # Hide the anchor point again
+            bpy.data.objects[anchorPoint.name].hide=True
         
 #########################################################################################
 ##  SimActorObject                                                                     ##
