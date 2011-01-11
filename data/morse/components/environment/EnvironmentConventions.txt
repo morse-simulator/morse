@@ -1,0 +1,11 @@
+Environment
+* Each environment has to be in the 'Environments' folder.
+* Each environment has to be in a folder that has the same name as the environment.
+* The .blend file containing the environment has to have [name].blend as filename, where [name] is the
+  name of the environment
+* The scene containing the environment inside the .blend file has the have the environment name as its name.
+* There is 1 empty which is the parent of all the objects in the scene, this allows for easy rescaling and 
+  translation.
+* If you want to define a place in the scene where a robot can be added, add an empty to this location and name
+  it AnchorP_{Unique name} in which '{Unique name}' is a self defined unique name for the AnchorPoint.
+* Environment scale has to be 1 blender unit = 1 meter
