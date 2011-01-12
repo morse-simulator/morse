@@ -1,7 +1,0 @@
-====== Advanced tutorials ======
-
-These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
-
-  * [[equip_robot | Preparing a robot with specific equipment]]
-  * [[yarp_tutorial | YARP-based simulation tutorial]]
-  * [[pocolibs_tutorial | Pocolibs (Genom) tutorial]]

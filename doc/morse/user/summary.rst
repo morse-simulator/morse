@@ -75,12 +75,12 @@ next versions.
 Tips and how-tos 
 ----------------
 
-- :doc:`How to efficiently add complex bounding boxes to your objects <user/tips/bounding_boxes>`
+- :doc:`tips/bounding_boxes`
 
 Advanced tutorials 
 ------------------
 
-:doc:`List of all tutorials <user/advanced_tutorials/advanced_tutorials>`
+:doc:`List of all tutorials <advanced_tutorials/advanced_tutorials>`
 
 Setting up a YARP-based simulation 
 ++++++++++++++++++++++++++++++++++
@@ -89,7 +89,7 @@ This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigat
 The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quick start ? 
 (sole difference: the goal is given through YARP, sensor data are exported with YARP -- maybe add a camera, since it is trivial to display an image with YARP).
 
-:doc:`Go to: YARP-based simulation tutorial <user/advanced_tutorials/yarp_tutorial>`
+:doc:`Go to: YARP-based simulation tutorial <advanced_tutorials/yarp_tutorial>`
 
 On the road-map
 ---------------
