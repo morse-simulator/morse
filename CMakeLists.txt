@@ -44,7 +44,7 @@ endif(BUILD_POCOLIBS_SUPPORT)
 
 
 ADD_SUBDIRECTORY(src)
-INSTALL (DIRECTORY doc data examples
+INSTALL (DIRECTORY data examples
 	     DESTINATION ${CMAKE_INSTALL_PREFIX}/share
          REGEX .*blend.$ EXCLUDE
          REGEX .*py.$ EXCLUDE
@@ -66,13 +66,35 @@ CONFIGURE_FILE(
 	${CMAKE_CURRENT_BINARY_DIR}/doc/conf.py
 	)
 
-ADD_CUSTOM_TARGET(
-	doc_html
-	COMMAND sphinx-build -b html 
-						 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
-						 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-						 ${CMAKE_CURRENT_BINARY_DIR}/doc/html 
-)
+
+FIND_PROGRAM(SPHINX_BUILD NAMES sphinx-build)
+IF (NOT SPHINX_BUILD)
+	MESSAGE(STATUS "Can't find sphinx-build : will not build the documentation")
+ELSE()
+	SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
+	ADD_CUSTOM_COMMAND(
+		OUTPUT ${SPHINX_OUTPUT}
+		COMMAND ${SPHINX_BUILD} -b html
+							    -c ${CMAKE_CURRENT_BINARY_DIR}/doc
+								   ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+								   ${SPHINX_OUTPUT}
+	)
+
+	ADD_CUSTOM_TARGET(doc ALL DEPENDS ${SPHINX_OUTPUT})
+
+	INSTALL(DIRECTORY ${SPHINX_OUTPUT}
+		    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/morse
+			)
+
+	ADD_CUSTOM_TARGET(
+		force_doc
+		COMMAND sphinx-build -b html 
+							 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
+							 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+							 ${SPHINX_OUTPUT}
+	)
+ENDIF()
+
 
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/config/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
