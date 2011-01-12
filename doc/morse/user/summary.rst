@@ -8,7 +8,7 @@ submitted to the ICRA 2011 conference.
 
 This first section will help you to find your way into the MORSE documentation.
 
-.. _article: http://homepages.laas.fr/gechever/Documents/morse-21062010.pdf
+.. _article: http://homepages.laas.fr/gechever/Documents/paper-icra.pdf
 
 What is MORSE? 
 --------------
