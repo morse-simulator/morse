@@ -1,0 +1,24 @@
+Documentation README 
+====================
+
+- MORSE documentation is made available as a set of text files using the 
+reStructuredText syntax [1].
+
+- The current state of the documentation may be consulted online on the 
+official MORSE webpage [2].
+
+- Internal link must have this form:
+
+:doc:`dir/file`
+
+- Media can be embedded in the documentation. Images must be stored in the 
+media/ directory and can be linked this way:
+
+.. image:: ../media/image.jpg
+  :width: 123
+  :align: center
+
+(cf reStructuredText image syntax for details regarding layout)
+
+[1] http://docutils.sourceforge.net/rst.html
+[2] http://morse.openrobots.org
