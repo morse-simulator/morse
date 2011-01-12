@@ -1,33 +1,37 @@
 MORSE, the OpenRobot Simulator
 ==============================
+.. image:: ../media/openrobots-simulator.png
+   :align: center
 
-+------------------------------------------------------------------------------+
-|              .. image:: ../media/openrobots-simulator.png                    |
-+--------------------------------------+---------------------------------------+
-| .. image:: ../media/stae_logo.png    | .. image:: ../media/blender_logo.png  | 
-|    :width: 200                       |    :width: 200                        |
-+--------------------------------------+---------------------------------------+
-| .. image:: ../media/laas.png         | .. image:: ../media/onera.png         |
-|    :width: 200                       |    :width: 200                        |
-+--------------------------------------+---------------------------------------+
-
-Contents:
+..
+  +--------------------------------------+---------------------------------------+
+  | .. image:: ../media/stae_logo.png    | .. image:: ../media/blender_logo.png  | 
+  |    :width: 200                       |    :width: 200                        |
+  +--------------------------------------+---------------------------------------+
+  | .. image:: ../media/laas.png         | .. image:: ../media/onera.png         |
+  |    :width: 200                       |    :width: 200                        |
+  +--------------------------------------+---------------------------------------+
+ 
+MORSE Documentation
+-------------------
 
 .. toctree::
    :maxdepth: 2
    
-   user/summary.rst
-   dev/summary.rst
-   
+   User documentation <user/summary.rst>
+   Developer documentation <dev/summary.rst>
+  
 Introducing MORSE
 -----------------
 
 This software is partially financed by the `RTRA STAE <http://www.fondation-stae.net>`_,
-as part of the `ROSACE <http://www.fondation-stae.net/fr/actions/projets-cours.html>`_ project, and by the DGA founded  `PEA ACTION <http://action.onera.fr>`_.
+as part of the `ROSACE <http://www.fondation-stae.net/fr/actions/projets-cours.html>`_ project, and by the DGA funded  `PEA ACTION <http://action.onera.fr>`_.
 
 .. image:: ../media/simu_render_indoors.jpg
    :width: 300
+   :align: center
 .. Introducing MORSE
+
 
 Main features
 -------------
@@ -70,12 +74,6 @@ Communication middleware
 ++++++++++++++++++++++++
 - YARP
 - pocolibs (shared memory)
-
-Documentation
--------------
-
-- :doc:`User's documentation <user/summary>`
-- :doc:`Developers's documentation <dev/summary>`
 
 Media
 -----

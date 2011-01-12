@@ -1,9 +1,8 @@
 Introducing the Modular OpenRobots Simulation Engine 
 ====================================================
 
-+------------------------------------------------------------------------------+
-|              .. image:: ../../media/openrobots-simulator.png                    |
-+--------------------------------------+---------------------------------------+
+.. image:: ../../media/openrobots-simulator.png 
+    :align: center
 
 Welcome to the official documentation for the MORSE project.
 
@@ -19,6 +18,7 @@ What is MORSE?
 
 .. image:: ../../media/simu_render_indoors.jpg
    :width: 300
+   :align: center
 .. Introducing MORSE
 
 - A versatile simulator for **generic mobile robots simulation** (single or multi robots),
@@ -32,6 +32,7 @@ What is MORSE?
   
 .. image:: ../../media/outdoor_example.jpg
    :width: 300
+   :align: center
 .. Introducing MORSE
 
 
@@ -50,7 +51,7 @@ Discover the MORSE workflow: how to build a complete simulation scenario, from
 the creation of a custom robot with predefined sensors and actuators to the 
 complete scene, including other robots or humans.
 
-[[user_workflow | Go to: the typical MORSE workflow]]
+:doc:`Go to: the typical MORSE workflow <user_workflow>`
 
 Components library & Supported middlewares 
 ------------------------------------------
@@ -59,30 +60,30 @@ Components library & Supported middlewares
 
 The following page lists all the currently existing components and their properties:
 
-[[component_library | Go to: the MORSE component library]]
+:doc:`Go to: the MORSE component library <component_library>`
 
 - The output (or input) of the simulator can be altered (for instance to add noise) by so called modifiers.
 
-[[modifier_introduction | Go to: Data modifiers]]
+:doc:`Go to: Data modifiers <modifier_introduction>`
 
 - MORSE relies on //middlewares// to integrate in your robotic architecture.
 
-We currently support only **[[http://eris.liralab.it/yarp/ | YARP]]**, 
-**[[https://softs.laas.fr/openrobots/wiki/pocolibs|pocolibs]]** and a simple 
+We currently support only `YARP <http://eris.liralab.it/yarp/>`_, 
+`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and a simple 
 text-based socket protocol. More middlewares are expected to be added in the 
 next versions.
 
-[[supported_middlewares | Go to: Middleware support]]
+:doc:`Go to: Middleware support <supported_middlewares>`
 
 Tips and how-tos 
 ----------------
 
-- [[morse:user:tips:bounding_boxes | How to efficiently add complex bounding boxes to your objects]]
+- :doc:`How to efficiently add complex bounding boxes to your objects <user/tips/bounding_boxes>`
 
 Advanced tutorials 
 ------------------
 
-[[morse:user:advanced_tutorials:advanced_tutorials | List of all tutorials]]
+:doc:`List of all tutorials <user/advanced_tutorials/advanced_tutorials>`
 
 Setting up a YARP-based simulation 
 ++++++++++++++++++++++++++++++++++
@@ -91,7 +92,7 @@ This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigat
 The robots becomes red when it intersects obstacles or bounces on them. Use the same example as the quick start ? 
 (sole difference: the goal is given through YARP, sensor data are exported with YARP -- maybe add a camera, since it is trivial to display an image with YARP).
 
-[[morse:user:advanced_tutorials:yarp_tutorial | Go to: YARP-based simulation tutorial]]
+:doc:`Go to: YARP-based simulation tutorial <user/advanced_tutorials/yarp_tutorial>`
 
 On the road-map
 ---------------
@@ -99,6 +100,7 @@ On the road-map
 The first release of MORSE contains only a subset of the final simulator specification.
 
 Amongst the planned features:
+
 - Support for arms simulation, based on inverse kinematics. This has been separately developped by the Leuven's university and will be merge into MORSE over the next releases,
 - Raw sockets interface + full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
 - Developement of the user interface,
