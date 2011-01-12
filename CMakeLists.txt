@@ -59,6 +59,21 @@ INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/bin/morse
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 	    )
 
+
+### Doc target ###
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/doc/conf.py.in
+	${CMAKE_CURRENT_BINARY_DIR}/doc/conf.py
+	)
+
+ADD_CUSTOM_TARGET(
+	doc_html
+	COMMAND sphinx-build -b html 
+						 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
+						 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+						 ${CMAKE_CURRENT_BINARY_DIR}/doc/html 
+)
+
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/config/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")
