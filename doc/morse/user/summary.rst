@@ -1,9 +1,6 @@
 Introducing the Modular OpenRobots Simulation Engine 
 ====================================================
 
-.. image:: ../../media/openrobots-simulator.png 
-    :align: center
-
 Welcome to the official documentation for the MORSE project.
 
 For an global description of the project, consult this article_
@@ -66,7 +63,7 @@ The following page lists all the currently existing components and their propert
 
 :doc:`Go to: Data modifiers <modifier_introduction>`
 
-- MORSE relies on //middlewares// to integrate in your robotic architecture.
+- MORSE relies on *middlewares* to integrate in your robotic architecture.
 
 We currently support only `YARP <http://eris.liralab.it/yarp/>`_, 
 `pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and a simple 

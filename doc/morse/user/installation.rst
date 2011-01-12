@@ -8,6 +8,7 @@ Hardware
 ++++++++
 
 To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL:
+
 - ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
 - NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
 
@@ -38,9 +39,10 @@ If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
 YARP 
-####
+~~~~
 
 For the YARP bindings
+
 - YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
 - YARP python binding
 - ACE ( 5.6.3 or +, required for YARP)
@@ -68,7 +70,7 @@ If you are not using robotpkg to install YARP, then make sure to copy the files 
 NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ``site-packages`` for ``dist-packages``.
 
 Pocolibs
-++++++++
+~~~~~~~~
 
 To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
 
@@ -80,7 +82,7 @@ To install::
   $ make update
 
 ROS
-+++
+~~~
 
 Due to the current lack of official support for Python3, ROS support is still partial. The setup is even quite of an adventure :-)
 
@@ -97,6 +99,7 @@ From your MORSE root directory::
 By default, MORSE will install in ``/usr/local``. You can easily change that by launching ccmake instead of cmake.
 When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
 You can set up the different variables using the command line:
+
 - ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. Note: The install prefix directory will be referred to as ``$MORSE_ROOT`` in this document.
 - ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE
 - ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE
@@ -141,6 +144,7 @@ Testing
 -------
 
 To test the external control clients:
+
 - On a text terminal, run the ``morse`` command
 - Open the Blender file: ``$MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend``
 - Start the simulation :kbd:`P`

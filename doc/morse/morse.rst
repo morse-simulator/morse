@@ -1,7 +1,5 @@
 MORSE, the OpenRobot Simulator
 ==============================
-.. image:: ../media/openrobots-simulator.png
-   :align: center
 
 ..
   +--------------------------------------+---------------------------------------+
