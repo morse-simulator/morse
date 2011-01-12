@@ -1,0 +1,154 @@
+MORSE installation 
+==================
+
+Requirements - What you need to install before 
+----------------------------------------------
+
+Hardware
+++++++++
+
+To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL:
+- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
+- NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+
+Required software
++++++++++++++++++
+
+- Python (3.1 or +)
+- Blender 2.54+ build with Python 3.1
+- git to get the code of the simulator::
+
+    $ git clone http://trac.laas.fr/git/robots/morse.git
+  
+  Alternatively, you can use the GitHub mirror (synchronized every hour) (it is probably a lot faster) ::
+  
+    $ git clone http://github.com/laas/morse.git
+  
+  Once you have a copy of the repository, you can get to the last stable version (0.2b1) by using ::
+  
+    $ git checkout 0.2b1
+  
+  You can get a tarball version `here <http://softs.laas.fr/openrobots/distfiles/morse/morse-0.2b1.tar.gz>`_. You can check the following information to make sure that the download went fine. ::
+  
+    SHA1 (morse-0.2b1.tar.gz) = 440dee1cf4d270722eabc76f55746a03c399fc90
+    RMD160 (morse-0.2b1.tar.gz) = ee78dac1ad88d339f4de473da1b6291db5dc5761
+    Size (morse-0.2b1.tar.gz) = 36787788 bytes
+
+If you plan to use the simulator with raw sockets of text files as "middleware",
+you don't need anything else. Otherwise, you need to install the software for other middlewares.
+
+YARP 
+####
+
+For the YARP bindings
+- YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
+- YARP python binding
+- ACE ( 5.6.3 or +, required for YARP)
+
+Instructions to create YARP-Python bindings are `here <http://eris.liralab.it/wiki/YARP_and_Python>`_.
+To use properly camera with yarp < 2.3.2, you need to apply the patch from patches/yarp.i.diff.
+
+
+Note that the easiest way to install YARP is probably to use ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations). Follow the instructions on installing ``robotpkg``. Then add the environment variable ``ROBOTPKG_BASE`` to your shell.
+Then to install ``YARP``::
+
+  $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
+  $ make update
+
+Afterwards, install the YARP python bindings bindings::
+
+  $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
+  $ make update
+
+Compiling the YARP Python binding will create two files: ``yarp.py`` and ``_yarp.so``, and install them in ``$ROBOTPKG_BASE/lib/python3.1/site-packages/``
+You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/lib/python3.1/site-packages/`` to let python find the YARP module.
+
+If you are not using robotpkg to install YARP, then make sure to copy the files ``yarp.py`` and ``_yarp.so`` to your Python lib directory (``/usr/lib/python3.1/site-packages/``) or at some place reachable from your ``PYTHONPATH`` environment variable.
+
+NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ``site-packages`` for ``dist-packages``.
+
+Pocolibs
+++++++++
+
+To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
+
+The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations).
+
+To install::
+
+  $ cd $ROBOTPKG_BASE/robotpkg/devel/pocolibs
+  $ make update
+
+ROS
++++
+
+Due to the current lack of official support for Python3, ROS support is still partial. The setup is even quite of an adventure :-)
+
+Detailled informations to install a Python3 compatible ROS are :doc:`here <ros_installation>`.
+
+Installation 
+------------
+
+From your MORSE root directory::
+
+  $ mkdir build && cd build
+  $ cmake ..
+
+By default, MORSE will install in ``/usr/local``. You can easily change that by launching ccmake instead of cmake.
+When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
+You can set up the different variables using the command line:
+- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. Note: The install prefix directory will be referred to as ``$MORSE_ROOT`` in this document.
+- ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE
+- ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE
+- ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension (Release is a good choice). ::
+
+  $ sudo make install
+
+For instance, to build and install MORSE with YARP support in ``/opt``, you need something like::
+
+  $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
+
+The optional ``$MORSE_BLENDER`` environment variable can be set to let the simulator know where to look for Blender if it is not accessible from the path.
+
+You can check your configuration is ok with::
+
+  $ morse check
+  
+Running a simulation 
+--------------------
+
+[YARP specific] Before starting a simulation: Start the YARP's server using this command in a separate terminal::
+
+  $ yarp server
+
+Launch MORSE by calling the morse executable::
+
+  $ morse
+
+Several options are available, check them with::
+
+  $ morse help
+
+Once launched, you can test the simulator by loading one of the example scenarii from ``$MORSE_ROOT/share/examples/morse/scenarii`` (.blend files).
+
+To start a simulation, go on Blender and press :kbd:`P` to play the scenario.
+
+Tips: If you have any problem to start to play a simulation: start ``blender``
+from a terminal and send the error messages to <morse_dev@laas.fr>.
+Note that certain scenario files are configured to use various middlewares, and will need the middleware manager to be started beforehand.
+
+Testing
+-------
+
+To test the external control clients:
+- On a text terminal, run the ``morse`` command
+- Open the Blender file: ``$MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend``
+- Start the simulation :kbd:`P`
+- On a separate terminal, go to the root directory the MORSE source code
+- Run the Python program::
+
+  $ python examples/morse/clients/atrv/socket_v_omega_client.py
+
+- Follow the client program's instructions to send movement commands to the robot and to read information back
+- To finish the simulation, press :kbd:`esc`
+- To close Blender, press :kbd:`C-q`, and then :kbd:`enter`

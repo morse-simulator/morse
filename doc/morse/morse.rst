@@ -11,7 +11,14 @@ MORSE, the OpenRobot Simulator
 |    :width: 200                       |    :width: 200                        |
 +--------------------------------------+---------------------------------------+
 
+Contents:
 
+.. toctree::
+   :maxdepth: 2
+   
+   user/summary.rst
+   dev/summary.rst
+   
 Introducing MORSE
 -----------------
 
@@ -67,11 +74,8 @@ Communication middleware
 Documentation
 -------------
 
-- `User's documentation`_
-- `Developers's documentation`_
-
-.. _User's documentation: user/summary.html
-.. _Developers's documentation: user/summary.html
+- :doc:`User's documentation <user/summary>`
+- :doc:`Developers's documentation <dev/summary>`
 
 Media
 -----
