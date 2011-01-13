@@ -32,7 +32,7 @@ The blender part
     - Add the three following properties:
 
       - a boolean property named ``Component_Tag`` ((other possible tags are
-        ``Robot_Tag``, :doc:`Modifier_Tag<dev/adding_modifier>` and
+        ``Robot_Tag``, :doc:`Modifier_Tag<adding_modifier>` and
         ``Middleware_Tag``)) (the value of the property doesn't matter)
       - ``Class`` of type string, which contains the name of the associated
         python class ``<Sensor>Class`` (e.g. ``GyroscopeClass``)
