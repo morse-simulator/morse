@@ -21,19 +21,19 @@ Required software
 
     $ git clone http://trac.laas.fr/git/robots/morse.git
   
-  Alternatively, you can use the GitHub mirror (synchronized every hour) (it is probably a lot faster) ::
+  Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
   
     $ git clone http://github.com/laas/morse.git
   
-  Once you have a copy of the repository, you can get to the last stable version (0.2b1) by using ::
+  Once you have a copy of the repository, you can get to the last stable version (0.2b2) by using ::
   
-    $ git checkout 0.2b1
+    $ git checkout 0.2b2
   
-  You can get a `tarball version here <http://softs.laas.fr/openrobots/distfiles/morse/morse-0.2b1.tar.gz>`_. You can check the following information to make sure that the download went fine. ::
+  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.2b2>`_. You can check the following information to make sure that the download went fine. ::
   
-    SHA1 (morse-0.2b1.tar.gz) = 440dee1cf4d270722eabc76f55746a03c399fc90
-    RMD160 (morse-0.2b1.tar.gz) = ee78dac1ad88d339f4de473da1b6291db5dc5761
-    Size (morse-0.2b1.tar.gz) = 36787788 bytes
+    SHA1 (morse-0.2b2.tar.gz) = 4ccdc81949282eda88121af04cf96b27696167f7
+    RMD160 (morse-0.2b2.tar.gz) = f3867347a2c4beac43f895e3c51a509b4cdb5b7a
+    Size (morse-0.2b2.tar.gz) = 36737879 bytes
 
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
