@@ -14,7 +14,7 @@ You can as well fetch the latest version of the code with GIT: ::
     $ git clone http://trac.laas.fr/git/robots/morse.git
 
 Overview 
-________
+--------
 An overview of code organization in MORSE
 
 :doc:`Overview for MORSE organization <dev_overview>`
@@ -32,7 +32,7 @@ Create a sensor. Explain the logic
 :doc:`Tutorial: Adding a new component <adding_component>`
 
 With an example of a modifier
-_____________________________
+-----------------------------
 
 EZ if in python, a bit more complex if we call an external library (cf impact on the dependencies) 
 

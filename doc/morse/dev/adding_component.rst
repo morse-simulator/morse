@@ -51,7 +51,7 @@ respectively.The information in these variables will be used to dynamically
 load the module and class during initialisation of the simulation.
 
 Getting data or exporting data
-______________________________
+------------------------------
 
 A component is not really useful if it doesn't get any input (for an actuator)
 or if you can't use the output of a sensor. You can use different middleware to
@@ -90,10 +90,10 @@ it is the right place to initialize stuff (opening Yarp ports, sockets, files
 ...)
 
 Middleware specific information
-_______________________________
+-------------------------------
 
 YARP
-++++
+____
 
 In MorseYarpClass, the different port_name are stored in a dictionary
 ``_component_ports``, indexed by the name of the component
@@ -112,14 +112,14 @@ Example: ::
 
 
 Pocolibs
-++++++++
+________
 
 In MorsePocolibsClass, the different poster_id are stored in a dictionary
 ``_poster_dict``, indexed by the name of the component
 (``component.blender_obj.name``)
 
 Text
-++++
+___
 
 In TextOutClass, the different files are stored in a dictionary
 ``_file_list``, indexed by the name of the component

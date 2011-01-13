@@ -46,14 +46,15 @@ action of ``action`` depends if it is a sensor or an actuator (robot doesn't do
 anything by themself). 
 
 MORSE execution loop
-____________________
+--------------------
+
 
 .. image:: ../../media/simulation_main_loop_overview.png
    :width: 600
    :align: center
 
 Behaviour of a sensor
-+++++++++++++++++++++
+_____________________
 
 When Blender calls the method ``action`` for a sensor, the following things
 happen :
@@ -64,7 +65,7 @@ happen :
   - apply in order each function of ``output_functions`` (output the content of the sensor to different clients)
 
 Behaviour of an actuator
-++++++++++++++++++++++++
+________________________
 
 When Blender calls the method ``action`` for an actuator, the following things
 happen :
