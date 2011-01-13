@@ -1,0 +1,57 @@
+SICK laser range scanner
+========================
+
+This sensor emulates a laser range scanner, by generating a series of rays in
+predefined directions, and then computing whether they find any object within a
+certain distance of the sensor's origin.
+
+.. note:: Objects in the scene with the **No collision** setting in their Game
+  properties will not be detected by this sensor
+
+Files
+-----
+
+- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_sick.blend``
+- Python: ``$ORS_ROOT/src/morse/sensors/sick.py``
+
+Local data
+----------
+
+- **point_list**: (float array) Array that stores the positions of the points
+  found by the laser. The points are given with respect to the location of the
+  sensor, and stored as lists of three elements. The number of points depends
+  on the geometry of the arc parented to the sensor (see below).
+
+Configurable Parameters
+-----------------------
+
+The Empty object corresponding to this sensor has the following parameters:
+
+- **Laser_Range**: (Float) The distance in meters from the center of the sensor
+  to which it is capable of detecting other objects
+- **Visible_arc**: (Boolean) A toggle that determines whether the scanned area
+  is displayed during the execution of the simulation or not. If the robot is
+  also producing camera images, it is better to set this variable to False,
+  otherwise the scanned area will also appear on the captured images.
+
+Number and angle of rays
+++++++++++++++++++++++++
+
+The current way to configure the number of rays used by the SICK is to define a
+new object in the scene, a circle or semicircle with as many vertices as laser
+rays.  The easiest way to create the object in Blender is to
+**Add->Mesh->Circle**. In the dialog that appears, give the number of vertices
+as necessary. Make sure to select the **Fill** option, so that there will be a
+central vertex and the circle will have the faces already defined.
+
+The new object must have the following characteristics:
+
+- Name: Its name must begin with 'Arc\_', for the SICK Module to recognize it.
+  The currently used method is to name the arcs according to the number of rays
+  they have, for example: Arc_180, Arc_16, Arc_360 - Vertices: It is necessary
+  that the vertex at the center of the circle is at local coordinates 0, 0, 0.
+  This is the default case, so it should not be modified.
+- Normals: For the circle to be visible in the GE, the normals of the faces
+  must be facing up. Otherwise the object will not be displayed 
+- Physics: Make  sure that on the **Logic Panel** this object is set to **No collision**,
+  otherwise it will push objects around

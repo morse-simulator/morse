@@ -3,7 +3,7 @@ The MORSE user workflow
 
 The general steps to follow to do a simulation in MORSE are the following:
 
-#. Create the :doc:`robot configuration <user/advanced_tutorials/equip_robot>` that matches the real robot
+#. Create the :doc:`robot configuration <advanced_tutorials/equip_robot>` that matches the real robot
 #. Create a scenario file, based on the default MORSE file, using::
   
     $ morse create [file_name]

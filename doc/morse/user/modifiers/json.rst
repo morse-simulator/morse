@@ -1,0 +1,21 @@
+JSON encoding
+=============
+
+This modifier transforms the ``modified_data`` array to contain a single item, which is a string with the data encoded using JSON.
+
+Files
+-----
+
+- Blender: ``$ORS_ROOT/data/morse/components/modifiers/json_empty.blend``
+- Python: ``$ORS_ROOT/src/morse/modifiers/json_mod.py``
+
+Modified data
+-------------
+
+This modifier replaces the whole ``modified_data`` array, switching however many items it has for a single one of type string.
+
+Available methods
+-----------------
+
+- ``json_encode``: Change the data into a string
+- ``json_decode``: Expand the string into an array

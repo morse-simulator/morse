@@ -82,10 +82,10 @@ Binding the components in the scene with the middleware is done in a configurati
 #. On the **Text Editor** window, select the file ``component_config.py``
 #. Add the following items to the ``component_mw`` dictionary::
   
-  component_mw = {
-      "Gyroscope": ["Socket", "post_message"],
-      "Motion_Controller": ["Socket", "read_message"]
-  }
+    component_mw = {
+        "Gyroscope": ["Socket", "post_message"],
+        "Motion_Controller": ["Socket", "read_message"]
+    }
 
 This specifies that the output of the gyroscope sensor is to be serialized to a socket with the ``MorseSocketClass.post_message`` method and 
 the motion controller reads its input from a socket with ``MorseSocketClass.read_message``.

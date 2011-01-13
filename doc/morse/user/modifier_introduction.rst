@@ -9,10 +9,10 @@ corresponding function to the component's action list.
 List of existing modifiers 
 --------------------------
 
-- :doc:`UTM conversion <user/modifiers/utm>`
-- :doc:`NED conversion <user/modifiers/ned>`
-- :doc:`JSON encoding/decoding <user/modifiers/json>`
-- :doc:`GPS noise <user/modifiers/gps_noise>`
+- :doc:`UTM conversion <modifiers/utm>`
+- :doc:`NED conversion <modifiers/ned>`
+- :doc:`JSON encoding/decoding <modifiers/json>`
+- :doc:`GPS noise <modifiers/gps_noise>`
 
 Linking a modifier in a scene 
 -----------------------------

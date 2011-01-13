@@ -29,7 +29,7 @@ Required software
   
     $ git checkout 0.2b1
   
-  You can get a tarball version `here <http://softs.laas.fr/openrobots/distfiles/morse/morse-0.2b1.tar.gz>`_. You can check the following information to make sure that the download went fine. ::
+  You can get a `tarball version here <http://softs.laas.fr/openrobots/distfiles/morse/morse-0.2b1.tar.gz>`_. You can check the following information to make sure that the download went fine. ::
   
     SHA1 (morse-0.2b1.tar.gz) = 440dee1cf4d270722eabc76f55746a03c399fc90
     RMD160 (morse-0.2b1.tar.gz) = ee78dac1ad88d339f4de473da1b6291db5dc5761

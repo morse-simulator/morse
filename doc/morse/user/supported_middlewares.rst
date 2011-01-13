@@ -9,10 +9,10 @@ communicating with any type of architecture.
 Current list of compatible middlewares 
 --------------------------------------
 
-- :doc:`Text file output <morse:user:middlewares:text>`
-- :doc:`Sockets <morse:user:middlewares:socket>`
-- :doc:`YARP <morse:user:middlewares:yarp>`
-- :doc:`Pocolibs <morse:user:middlewares:pocolibs>`
+- :doc:`Text file output <middlewares/text>`
+- :doc:`Sockets <middlewares/socket>`
+- :doc:`YARP <middlewares/yarp>`
+- :doc:`Pocolibs <middlewares/pocolibs>`
 
 Support for ROS is planned for MORSE 0.3.
 
@@ -22,7 +22,7 @@ Linking a middleware in a scene
 To be able to use a middleware inside of a scene, it is necessary to link the
 Empty object from the corresponding Blender file. This process is explained in
 the :doc:`basic tutorial <tutorial>` and the :doc:`yarp tutorial
-<morse:user:advanced_tutorials:yarp_tutorial>`. Those pages also explain how to
+<advanced_tutorials/yarp_tutorial>`. Those pages also explain how to
 configure the components to use a given middleware.
 
 Binding a component to use a middleware is done in the file
@@ -39,4 +39,4 @@ Expanding the middlewares
 -------------------------
 
 New middlewares can be added to MORSE by following these 
-:doc:`instructions <morse:user:middlewares:new_middleware>`.
+:doc:`instructions <middlewares/new_middleware>`.

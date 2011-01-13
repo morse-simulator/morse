@@ -1,0 +1,31 @@
+Gyroscope sensor
+================
+
+This sensor emulates a Gyroscope, providing the yaw, pitch and roll angles of the sensor object with respect to the Blender world reference axes.
+The angles are given in degrees.
+
+Files
+-----
+- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_gyroscope.blend``
+- Python: ``$ORS_ROOT/src/morse/sensors/gyroscope.py``
+
+Local data
+~~~~~~~~~~
+- **yaw**: (float) rotation angle with respect to the Z axis
+- **pitch**: (float) rotation angle with respect to the X axis
+- **roll**: (float) rotation angle with respect to the Y axis
+
+.. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
+
+Applicable modifiers
+--------------------
+
+This sensor always provides perfect data.
+To obtain more realistic readings, it is recommended to add modifiers.
+
+- Noise modifier: Adds random Gaussian noise to the data
+
+Related components
+------------------
+
+Some other components of MORSE require a Gyroscope to be linked to the robot, in order to function properly. The ``Motion controller`` actuator modules make use of the angles to instruct the robot to turn. If no Gyroscope is installed in the robot, the controllers will not work properly.

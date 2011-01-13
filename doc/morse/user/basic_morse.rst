@@ -91,6 +91,7 @@ During simulation, the view of the scene is controlled using the mouse and keybo
 - :kbd:`w`, :kbd:`s` to move forward and backward
 - :kbd:`a`, :kbd:`d` to move left and right
 - :kbd:`q`, :kbd:`e` to move up and down
+
 The direction the camera points to is controlled with the mouse.
 
 It is possible to adjust the speed of the movement, by selecting the ''CameraFP'' object in the scene, and adjusting the properties **Sensitivity** for the mouse, and **Speed** for the keyboard.

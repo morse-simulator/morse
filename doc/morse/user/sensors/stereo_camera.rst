@@ -1,15 +1,19 @@
-====== Stereo Camera unit ======
+Stereo Camera unit
+==================
 
 This is not an independent sensor, but the combination of two [[camera | cameras]] and the [[pantilt | pan-tilt unit]]. The cameras are already in position and parented to the pan-tilt.
 There is no associated Python file for this component, only the Blender file.
 
-===== Files =====
-  * Blender: ''$ORS_ROOT/data/morse/components/sensors/morse_stereo_cameras.blend''
+Files
+-----
+- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_stereo_cameras.blend``
 
-===== Applicable modifiers =====
+Applicable modifiers
+--------------------
 
 The modifiers to the images should be done by configuring the individual cameras attached to this component.
 
-===== Related components =====
+Related components
+------------------
 
 A stereo bench is composed of two regular [[camera | cameras]] parented to a [[pantilt | pan-tilt unit]].

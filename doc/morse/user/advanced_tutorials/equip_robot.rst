@@ -38,8 +38,14 @@ Next link in the base of the robot from the component library:
 #. Select the child objects, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
 #. Convert the objects to local, by pressing :kbd:`l` then hitting :kbd:`enter`
 
-The rest of the components (sensors and actuators) should be linked similarly. Refer to the :doc:`Quick tutorial <../user/tutorial>` for instructions. In the case of a robot file, no middlewares or modifiers should be added, since those would be specific to every particular scenario.
+The rest of the components (sensors and actuators) should be linked similarly.
+Refer to the :doc:`Quick tutorial <../tutorial>` for instructions. In the
+case of a robot file, no middlewares or modifiers should be added, since those
+would be specific to every particular scenario.
 
-Adjust the properties of the component if necessary. Then save the file again, by pressing :kbd:`Ctrl-w`, followed by :kbd:`enter`.
+Adjust the properties of the component if necessary. Then save the file again,
+by pressing :kbd:`Ctrl-w`, followed by :kbd:`enter`.
 
-This robot file should be liked into scenarii files by following the same procedure, while selecting all the objects contained in the file.
+This robot file should be liked into scenarii files by following the same
+procedure, while selecting all the objects contained in the file.
+

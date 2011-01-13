@@ -1,0 +1,30 @@
+GPS sensor
+==========
+
+This sensor emulates a GPS, providing the exact coordinates in the Blender scene. The coordinates provided by the GPS are with respect to the origin of the Blender coordinate reference.
+
+Files
+-----
+- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_GPS.blend``
+- Python: ``$ORS_ROOT/src/morse/sensors/gps.py``
+
+Local data
+~~~~~~~~~~
+- **X**: (float) X coordinate of the sensor
+- **Y**: (float) Y coordinate of the sensor
+- **Z**: (float) Z coordinate of the sensor
+
+.. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
+
+Applicable modifiers
+--------------------
+
+This sensor always provides perfect data, with respect to an arbitrary point.
+To obtain more realistic readings, it is recommended to add modifiers.
+The two which are specially used for the GPS information are:
+
+- UTM modifier: Will add an offset to the Blender coordinates according to the parameters set on the scene.
+
+- NED: Changes the coordinate reference to use North (X), East (Y), Down (Z)
+
+- Noise modifier: Adds random Gaussian noise to the data
