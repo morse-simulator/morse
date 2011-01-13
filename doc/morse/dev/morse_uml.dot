@@ -14,11 +14,11 @@ digraph G {
 	edge [
 		fontname = "Bitstream Vera Sans"
 		fontsize = 8
-		color="white"
+		color="black"
 	]
 
 	MorseObject [
-		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ local_data : dict\l+ data_keys : array\l+ del_function : array\l| +default_action()\l+ action()\l }"
+		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ local_data : dict\l+ del_function : array\l| +default_action()\l+ action()\l }"
 	]
 
 	MorseRobot [
@@ -26,11 +26,11 @@ digraph G {
 	]
 
 	MorseSensor [
-		label = "{MorseSensor | + output_functions : array\l+ output_modifiers : array\l+ modified_data : array\l |}"
+		label = "{MorseSensor | + output_functions : array\l+ output_modifiers : array\l |}"
 	]
 
 	MorseActuator [
-		label = "{MorseActuator | + input_functions : array\l+ input_modifiers : array\l+ modified_data : array\l |}"
+		label = "{MorseActuator | + input_functions : array\l+ input_modifiers : array\l |}"
 	]
 
 	Gyroscope [
@@ -51,6 +51,4 @@ digraph G {
 	Gyroscope -> MorseSensor
 	Camera -> MorseSensor
 	DestinationActuator -> MorseActuator
-
-
 }
