@@ -1,3 +1,31 @@
+MORSE 0.2b2 - Second beta version towards morse-0.2
+==================================================
+
+- improved human support: 
+   - new human model
+   - mouse-based interactive displacement and grasping of objects
+   - export of the human posture (joint state)   
+- wrong scale of some assets fixed
+- 'visibility check' for the semantic camera
+- documentation converted to reStructuredText. HTML version automatically updated
+  every hour to http://www.openrobots.org/morse/doc
+
+MORSE 0.2b1 - First beta version towards morse-0.2
+==================================================
+
+- added head and hand control to human
+- fixed several issues with camera calibration in Blender
+- Added Jido robot model with Kuka arm
+- Access to armature joint angle now possible
+- redid human rig and animation
+- On-going switch to reStructured text for the documentation
+- Support for Ubuntu 10.04 (hi Lorenz!)
+- Added several posters for Genom middleware
+- Fixed the accelerometer sensor
+- fixed several issues with transformation coordinates
+
++ other minor fix, documentation updates, etc.
+
 MORSE v 0.2a1
 =============
 
