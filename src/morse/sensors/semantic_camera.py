@@ -17,7 +17,10 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
     This special camera returns the list of objects as seen by the robot's cameras,
     with unique id, possibly (if set in the objects' properties) the type of object
     and the colour of the object.
-    This camera is able to recognise objects marked with a 'Description' property of type string.
+    This camera is able to recognise objects marked with a 'Object' property
+    An additional 'Description' property can be set that defines the object 
+    category (like 'book', 'box', 'glass'...). If this property is not set, the 
+    default value 'object' is used instead.
 
     Other such high-level information (the semantic description of the scene) can be
     added.
@@ -53,12 +56,17 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         if not hasattr(GameLogic, 'trackedObjects'):
             print ('\t--- Initialization of trackedObjects variable ---')
             scene = GameLogic.getCurrentScene()
-            GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Description')!=0 ])
+            GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
             
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
+                try:
+                    obj['Description']
+                except:
+                    obj['Description'] = 'object'
+
                 if GameLogic.pythonVersion < 3:
                     GameLogic.trackedObjects[obj] = Blender.Object.Get(obj.name[2:]).getBoundBox(0)
                 else:
