@@ -1,9 +1,11 @@
 Thermometer sensor
 ==================
 
-This sensor emulates a Thermometer, measuring the temperature with respect to the distance to hear sources.
-It defines a default temperature throughout the scenario, which is affected by local fire sources. The temperature rises exponentially when the distance between the sensor and the heat source decreases.
-Temperature is given in degrees Celsius.
+This sensor emulates a Thermometer, measuring the temperature with respect to
+the distance to hear sources.  It defines a default temperature throughout the
+scenario, which is affected by local fire sources. The temperature rises
+exponentially when the distance between the sensor and the heat source
+decreases.  Temperature is given in degrees Celsius.
 
 Files
 -----
