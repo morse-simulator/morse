@@ -1,0 +1,33 @@
+Mitsubishi PA-10 arm actuator
+=============================
+
+This actuator reads a list of angles for the segments of the
+Mitsubishi PA-10 arm and applies them as local rotations.
+Angles are expected in radians.
+
+Files 
+-----
+
+-  Blender: No associated blender file, but must work with the model in
+    ``$MORSE_ROOT/data/morse/components/robots/PA10.blend``
+-  Python: ``$MORSE_ROOT/src/morse/actuators/pa-10.py``
+
+Local data 
+----------
+
+-  **seg0**: (float) rotation for the first segment. Around Z axis.
+-  **seg1**: (float) rotation for the second segment. Around Y axis.
+-  **seg2**: (float) rotation for the third segment. Around Y axis.
+-  **seg3**: (float) rotation for the fourth segment. Around Z axis.
+-  **seg4**: (float) rotation for the fifth segment. Around Y axis.
+-  **seg5**: (float) rotation for the sixth segment. Around Z axis.
+
+Configurable parameters
+---------------------
+
+-  **speed**: (float) rotation speed for the movements of the segments
+
+Applicable modifiers 
+--------------------
+
+No available modifiers
