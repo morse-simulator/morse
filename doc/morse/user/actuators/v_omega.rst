@@ -1,19 +1,24 @@
 Linear and angular speed (V, W) actuator 
 ========================================
 
-This actuator reads the values of linear and angular speed and applies them to the robot. The speeds provided are internally adjusted to the Blender time measure.
+This actuator reads the values of linear and angular speed and applies
+them to the robot as direct tranlation.
+The speeds provided are internally adjusted to the Blender time measure,
+following the formula: ``blender_speed = given_speed * tics``, where
+**tics** is the number of times the code gets executed per second.
+The default vaule in Blender is ``tics = 60``.
 
 Files 
 -----
 
--  Blender: ``$ORS_ROOT/data/morse/components/controllers/morse_vw_control.blend``
--  Python: ``$ORS_ROOT/src/morse/actuators/v_omega.py``
+-  Blender: ``$MORSE_ROOT/data/morse/components/controllers/morse_vw_control.blend``
+-  Python: ``$MORSE_ROOT/src/morse/actuators/v_omega.py``
 
 Local data 
 ----------
 
--  **v**: linear velocity
--  **w**: angular velocity
+-  **v**: (float) linear velocity
+-  **w**: (float) angular velocity
 
 Applicable modifiers 
 --------------------
