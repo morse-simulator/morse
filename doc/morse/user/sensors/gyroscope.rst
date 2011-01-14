@@ -16,8 +16,8 @@ Local data
 ----------
 
 - **yaw**: (float) rotation angle with respect to the Z axis
-- **pitch**: (float) rotation angle with respect to the X axis
-- **roll**: (float) rotation angle with respect to the Y axis
+- **pitch**: (float) rotation angle with respect to the Y axis
+- **roll**: (float) rotation angle with respect to the X axis
 
 .. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
 
@@ -28,6 +28,7 @@ This sensor always provides perfect data.
 To obtain more realistic readings, it is recommended to add modifiers.
 
 - **Noise modifier**: Adds random Gaussian noise to the data
+- :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North (X), East (Y), Down (Z)
 
 Related components
 ------------------

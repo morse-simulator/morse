@@ -8,8 +8,8 @@ The cameras make use of Blender's **VideoTexture** module, which requires a grap
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_camera.blend``
-- Python: ``$ORS_ROOT/src/morse/sensors/camera.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_camera.blend``
+- Python: ``$MORSE_ROOT/src/morse/sensors/video_camera.py``
 
 
 Local data

@@ -6,8 +6,8 @@ This sensor emulates an Accelerometer/Podometer, measuring the distance that a r
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_accelerometer.blend``
-- Python: ``$ORS_ROOT/src/morse/sensors/accelerometer.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_accelerometer.blend``
+- Python: ``$MORSE_ROOT/src/morse/sensors/accelerometer.py``
 
 Local data
 ++++++++++

@@ -7,12 +7,12 @@ also provide the connection interface to use the information of the cameras
 attached to it. In the case of two cameras, it will provide the stereo
 information generated from the two camera images.
 
-.. note:: The movement of the pan-tilt unit is not yet implemented, but will be a future development.
+.. note:: The movement of the pan-tilt unit is implemented with the actuator :doc:`pantilt <../actuators/pantilt>`
 
 Files
 -----
-- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_ptu.blend``
-- Python: ``$ORS_ROOT/src/morse/sensors/ptu.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_ptu.blend``
+- Python: ``$MORSE_ROOT/src/morse/sensors/ptu.py``
 
 Applicable modifiers
 --------------------

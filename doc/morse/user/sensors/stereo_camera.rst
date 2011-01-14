@@ -8,7 +8,7 @@ this component, only the Blender file.
 
 Files
 -----
-- Blender: ``$ORS_ROOT/data/morse/components/sensors/morse_stereo_cameras.blend``
+- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_stereo_cameras.blend``
 
 Applicable modifiers
 --------------------
