@@ -15,29 +15,45 @@ Files
 Local data
 ----------
 
-- **image**: The data captured by the camera, stored as a Python Buffer class object. The data is of size ``(**cam_width** X **cam_height** * 4)`` bytes. The image is stored as RGBA.
+- **image**: The data captured by the camera, stored as a Python Buffer class
+  object. The data is of size ``(cam_width X cam_height * 4)`` bytes. The image
+  is stored as RGBA.
 - **intrinsic_matrix**: The intrinsic calibration matrix, stored as a 3x3 colum major Matrix
 
 Configurable parameters
 -----------------------
 
 The Empty object corresponding to this sensor has the following parameters:
-- **capturing**: (Boolean) flag that determines whether the camera should generate an image. It can be toggled on or off by pressing the 'Spacebar'
+
+- **capturing**: (Boolean) flag that determines whether the camera should
+  generate an image. It can be toggled on or off by pressing the :kbd:`Space`
 - **cam_width**: (double) generated image width in pixels
 - **cam_height**: (double) generated image height in pixels
-- **cam_focal**: (double) camera focal length as defined in Blender (note: in Blender this parameter unit is "millimeters". This is actually misleading, as there is no dimension associated to Blender units.)
+- **cam_focal**: (double) camera focal length as defined in Blender (note: in
+  Blender this parameter unit is "millimeters". This is actually misleading, as
+  there is no dimension associated to Blender units.)
 
 Camera calibration matrix
 -------------------------
 
-The camera configuration parameters implicitly define a geometric camera in blender units. Knowing that the **cam_focal** attribute is a value that represents the distance in Blender unit at which the largest image dimension is 32.0 Blender units, the camera intrinsic calibration matrix is defined as::
+The camera configuration parameters implicitly define a geometric camera in
+blender units. Knowing that the **cam_focal** attribute is a value that
+represents the distance in Blender unit at which the largest image dimension is
+32.0 Blender units, the camera intrinsic calibration matrix is defined as
 
-|  | **alpha_u** | 0 | **u_0** | 0 |
-|  | 0 | **alpha_v** | ** v_0** | 0 |
-|  | 0 | 0 | 1 | 0 |
+  +--------------+-------------+---------+-------+
+  | **alpha_u**  |      0      | **u_0** | 0     |
+  +--------------+-------------+---------+-------+
+  |       0      | **alpha_v** | **v_0** | 0     |
+  +--------------+-------------+---------+-------+
+  |       0      |      0      |    1    |   0   |
+  +--------------+-------------+---------+-------+
 
 where:
-- **alpha_u** == ** alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose here that **cam_width** > **cam_height**. If not, then use **cam_height** in the formula)
+
+- **alpha_u** == **alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose
+  here that **cam_width** > **cam_height**. If not, then use **cam_height** in
+  the formula)
 - **u_0** = **cam_height** / 2
 - **v_0** = **cam_width** / 2
 
@@ -49,4 +65,5 @@ No camera modifiers available at the moment
 Related components
 ------------------
 
-A stereo bench is composed of two regular cameras (as described in this page) parented to a [[pantilt | pan-tilt unit]].
+A stereo bench is composed of two regular cameras (as described in this page)
+parented to a :doc:`pan-tilt unit <pantilt>`.
