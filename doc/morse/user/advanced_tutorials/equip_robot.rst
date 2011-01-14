@@ -30,17 +30,14 @@ Next link in the base of the robot from the component library:
 #. Press :kbd:`Left Mouse Click` over the file ``ressac.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
-#. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added 
-human is selected, but can not move around.
+#. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added
+   human is selected, but can not move around.
 #. Convert the objects to local: without de-selecting the object, press :kbd:`l` then hit :kbd:`enter`
 #. If you deselected the inserted objects in the scene, select it again either by 
    :kbd:`Right Mouse Click` clicking over the object in the 3D View, or 
    :kbd:`Left Mouse Click` over the object's name in the Outliner window. The object 
    will be highlighted in cyan colour.
 #. Select as well the child objects, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
-
-See the documentation of the :doc:`human component <../others/human>`_ to learn how to move and control the
-human and press :kbd:`P` to start the simulation and test.
 
 The rest of the components (sensors and actuators) should be linked similarly.
 Refer to the :doc:`Quick tutorial <../tutorial>` for instructions. In the

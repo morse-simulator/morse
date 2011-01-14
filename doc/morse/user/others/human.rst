@@ -7,11 +7,11 @@ down, pick and place objets...), and export to your robotic systems various data
 only the position and joint state, but other higher level states like gesture, grasped
 objects,... are planned).
 
-Files
------
-
 .. image:: ../../../media/hri_import_human.jpg
    :align: center
+
+Files
+-----
 
 - Blender: ``$MORSE_ROOT/data/morse/components/human/default_human.blend``
 - Python: 
@@ -41,7 +41,7 @@ Motion mode
     deleting the ``CameraFP`` object.
     
 - The direction of the head is controlled with the movement of the mouse, via
-and IK target (the yellow ball).
+  and IK target (the yellow ball).
 
 .. warning:: The head may be shaky when moving the mouse: this is due to numerical
     instability in the IK solver, and only appear in specific Blender build. We

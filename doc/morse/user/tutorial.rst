@@ -32,7 +32,6 @@ In this case we'll add a controller that uses linear and angular speed (V, W).
 #. Navigate to the directory ``$MORSE_ROOT/data/morse/components/controllers``,
 #. Press :kbd:`Left Mouse Click` over the file ``morse_vw_control.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Check that the **Link** and **Relative Paths** checkboxes are selected,
 #. Press :kbd:`Right Mouse Click` over the item ``Motion_Controller``,
 #. Press the button **Link/Append from Library**. You'll return to the 3D View.
 #. The newly inserted object should be already selected
@@ -44,6 +43,8 @@ The object will be highlighted in cyan color, and can not be moved around.
 #. Press :kbd:`Ctrl-p` and then hit :kbd:`Enter` to make the robot the parent of the controller.
 In the scene outliner, if you press the little ``+`` symbol in front of ``ATRV``, you should now see the ``Motion_Controller``.
 
+.. _link-gyroscope-sensor:
+
 Link a Gyroscope sensor
 +++++++++++++++++++++++
 
@@ -53,12 +54,11 @@ Next we will add a sensor to the robot that will report the angles of the robot 
 #. Navigate to the directory ``$MORSE_ROOT/data/morse/components/sensors``,
 #. Press :kbd:`Left Mouse Click` over the file ``morse_gyroscope.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Check that the **Link** and **Relative Paths** checkboxes are selected,
 #. Press select all items (``Gyroscope`` and ``Gyro_box``), by holding :kbd:`Shift` down and `Right Mouse Click` on them,
 #. Press the button **Link/Append from Library**. You'll return to the 3D View.
 #. Convert the two object to local, by pressing :kbd:`l` then hitting :kbd:`Enter`,
 #. Switch to front view by pressing :kbd:`1` (or use the ``View`` menu at the bottom of the 3D view),
-#. Press :kbd:`g`, then move the ``Gyroscope`` object on the top of the robot (you can constraint the translation on the Z axis by simply pressing :kbd:`z`),
+#. Press :kbd:`g`, then move the ``Gyroscope`` object on the top of the robot (you can constraint the translation on the Z axis by simply pressing :kbd:`Z`),
 #. Press :kbd:`Left Mouse Click` to accept the movement,
 #. With the ``Gyroscope`` object selected, hold down :kbd:`Shift` and then :kbd:`Right Mouse Click` over the robot object,
 #. Press :kbd:`Ctrl-p` and then hit :kbd:`enter` make the robot the parent of the controller.
