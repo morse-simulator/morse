@@ -16,7 +16,7 @@ Files
 -  Python: ``$ORS_ROOT/src/morse/actuators/destination.py``
 
 Local data
-++++++++++
+----------
 
 -  **x**: Destination X coordinate
 -  **Y**: Destination Y coordinate
