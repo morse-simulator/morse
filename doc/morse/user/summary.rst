@@ -50,25 +50,36 @@ complete scene, including other robots or humans.
 
 :doc:`Go to: the typical MORSE workflow <user_workflow>`
 
-Components library & Supported middlewares 
-------------------------------------------
+Components library
+------------------
 
-- MORSE offers a set of predefined sensors and controllers that cover basic simulation needs in robotics. To know how to add new components, please refer to the developer documentation.
+- MORSE offers a set of predefined sensors and controllers that cover basic
+  simulation needs in robotics, as well as complete robots. To know how to
+  add new components, please refer to the 
+  :doc:`developer documentation <../dev/summary>`.
 
-The following page lists all the currently existing components and their properties:
+  The following page lists all the currently existing components and their
+  properties: :doc:`MORSE component library <component_library>`
 
-:doc:`Go to: the MORSE component library <component_library>`
+- The output (or input) of the simulator can be altered (for instance to add
+  noise) by so called modifiers.
+  
+  :doc:`Go to: Data modifiers <modifier_introduction>`
 
-- The output (or input) of the simulator can be altered (for instance to add noise) by so called modifiers.
+- Others special components are available:
 
-:doc:`Go to: Data modifiers <modifier_introduction>`
+  - a fully controlable :doc:`human model <others/human>`.
 
-- MORSE relies on *middlewares* to integrate in your robotic architecture.
+Supported middlewares
+---------------------
+
+MORSE relies on *middlewares* to integrate in your robotic architecture.
 
 We currently support only `YARP <http://eris.liralab.it/yarp/>`_, 
 `pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and a simple 
 text-based socket protocol. More middlewares are expected to be added in the 
-next versions.
+next versions (partial `ROS <http://www.ros.org>` support is available in 
+the development trunk).
 
 :doc:`Go to: Middleware support <supported_middlewares>`
 
