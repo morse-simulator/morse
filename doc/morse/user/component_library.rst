@@ -43,10 +43,14 @@ then processed by the modifiers and finally applied in the simulation.
 Sensors
 -------
 
+- :doc:`Accelerometer <sensors/accelerometer>`
 - :doc:`GPS <sensors/gps>`
 - :doc:`Gyroscope <sensors/gyroscope>`
-- :doc:`Video camera <sensors/camera>`
+- :doc:`Pan-Tilt <sensors/pantilt>`
 - :doc:`SICK laser <sensors/sick>`
+- :doc:`Stereo camera <sensors/stereo_camera>`
+- :doc:`Thermometer <sensors/thermometer>`
+- :doc:`Video camera <sensors/camera>`
 
 Actuators/Controllers
 ---------------------
