@@ -1,6 +1,6 @@
 ===============================================================================
                              OpenRobots Simulator
-                          (c) LAAS/ONERA 2009-2010
+                          (c) LAAS/ONERA 2009-2010 LAAS 2011
 ===============================================================================
 
 I/ Requirements - What you need to install before
@@ -109,10 +109,10 @@ Two environment variable have noticable effects:
    'morse/blender' within the installed files. Example:
 
     tcsh:
-    setenv PYTHONPATH ${morse_install_prefix}/lib/python3.1/site-packages:${morse_install_prefix}/lib/python3.1/site-packages/morse/blender
+    setenv PYTHONPATH ${morse_install_prefix}/lib/python3.1/site-packages:
 
     bash:
-    export PYTHONPATH=${morse_install_prefix}/lib/python3.1/site-packages:${morse_install_prefix}/lib/python3.1/site-packages/morse/blender
+    export PYTHONPATH=${morse_install_prefix}/lib/python3.1/site-packages:
 
  - $MORSE_BLENDER that allows you to specify a custom Blender executable (else,
  Blender is looked for in the path).
