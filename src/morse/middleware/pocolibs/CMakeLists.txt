@@ -22,7 +22,7 @@ macro(upcase_first all_lower first_upper)
 endmacro(upcase_first)
 
 set(directories_list "sensors;controllers")
-set(sensors_list "general;camera;gyro;sick;viman;human")
+set(sensors_list "general;camera;gyro;sick;viman;human_posture")
 set(controllers_list "control;platine;lwr")
 
 ## Set here the dependencies of your modules
@@ -33,7 +33,7 @@ set(MODULES_MAP_GENERAL "")
 set(MODULES_MAP_GYRO "pom")
 set(MODULES_MAP_SICK "sick")
 set(MODULES_MAP_VIMAN "viman")
-set(MODULES_MAP_HUMAN "spark")
+set(MODULES_MAP_HUMAN_POSTURE "spark")
 set(MODULES_MAP_CONTROL "genPos")
 set(MODULES_MAP_PLATINE "platine")
 set(MODULES_MAP_LWR "lwr")
@@ -106,7 +106,7 @@ foreach(directory ${directories_list})
 				DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/${directory}/${Item}_Poster/
 				)
 		if(NOT "${module_to_find}" STREQUAL "")
-		install(FILES ${directory}/${module_to_find}.py
+		install(FILES ${directory}/${item}.py
 				DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/${directory}
 				)
 		endif(NOT "${module_to_find}" STREQUAL "")
