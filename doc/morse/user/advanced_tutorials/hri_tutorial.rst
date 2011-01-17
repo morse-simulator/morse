@@ -11,8 +11,11 @@ Pre-requisites
 
 - You must have completed the :doc:`first tutorial <../tutorial>`.
 - In this tutorial, we use ROS as middleware. We assume you have a functionnal 
-ROS installation (you should only need the core ROS tools). If you need to
-install ROS, please refer to `ROS installation instruction <http://www.ros.org/wiki/ROS/installation>`_.
+  ROS installation (you should only need the core ROS tools). If you need to
+  install ROS, please refer to `ROS installation instruction <http://www.ros.org/wiki/ROS/installation>`_.
+
+.. warning:: MORSE 0.2 does not offer support for ROS. ROS is supported in the development trunk. Please
+    ignore the part concerning ROS if you don't feel confident enough to install the latest MORSE version.
 
 Setup the scene
 ---------------
@@ -27,7 +30,7 @@ We first want to add a human:
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
 #. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added 
-human is selected.
+   human is selected.
 #. Convert the objects to local: without de-selecting the object, press :kbd:`l` then hit :kbd:`enter`
 
 .. image:: ../../../media/hri_import_human.jpg
@@ -75,6 +78,61 @@ pick it, and release the button to place the object.
 Check the :doc:`human component <../others/human>` documentation for more details on what can be done
 with the human component.
 
+.. note:: The box has currently no physical properties. If you set it to be a ``Rigid Body`` with the default
+    collision bounds, the box will fall down when you release it.
+
 Exporting the human position
 ----------------------------
+
+As a first step, we would like to export the position of the human in the world. To do so, we need the
+:doc:`GPS sensor <../sensors/gps>`. You can find it in ``$MORSE_ROOT/data/morse/components/sensors/morse_GPS.blend``.
+
+If you're not sure how to add the GPS to the human, please see the :ref:`Link a gyroscope <link-gyroscope-sensor>`
+section in the MORSE Quick tutorial.
+
+Import only the ``GPS`` object (we don't need the ``GPS_box``), place it on the ground, between the human legs,
+and parent it the the human (with :kbd:`Ctrl-P`). Rename it as well to ``HumanPosition`` (you can change the name by
+pressing :kbd:`N` in the 3D view and scrolling down to the item name field).
+
+Import as well the socket middleware in ``$MORSE_ROOT/data/morse/components/middleware/socket_empty.blend``.
+
+Open the Blender text editor, and modify ``component_config.py``:
+
+.. code-block:: python
+
+   component_mw = {
+      "HumanPosition": ["Socket", "post_message"]
+   }
+
+   component_modifier = {}
+
+This instruct MORSE to stream the human position on a raw socket.
+
+We can now display it with this simple Python (for Python 3.x) code::
+
+  import sys, socket, pickle
+
+  host= "localhost"
+  port = 60000
+
+  def read_data(simu):
+    done = False
+    data_in = ''
+
+    while not done:
+      try:
+        data_in, SRIP = simu.recvfrom(1024)
+      except socket.error:
+        done = True
+
+    return data_in
+  
+  simu = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  simu.setblocking(0)
+  simu.sendto('hello', (host, port))
+  
+  while True:
+    data = pickle.load(read_data(simu))
+    print(str(data))
+
 

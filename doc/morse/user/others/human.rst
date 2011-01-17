@@ -64,3 +64,12 @@ item, then release to let go of the object.
 .. note:: Only objects with a specific game property called ``Object`` can be
     carried by the human.
 
+Sensors and actuators
+---------------------
+
+Currently (``morse-0.2``), the human component has only one sensor that export
+the joint state of the human: the :doc:`human posture sensor <../sensors/human_posture>`.
+This sensor is already embedded in the ``default_human.blend`` file. You don't need
+a separate sensor file.
+
+No actuators are currently available.

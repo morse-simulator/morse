@@ -66,3 +66,8 @@ Bare robotic bases
 - :doc:`iRobot ATRV <robots/atrv>`
 - :doc:`Yamaha RMax <robots/ressac>`
 - :doc:`NeoBotix platform with PA-10 robotic arm <robots/jido>`
+
+Other components
+----------------
+
+- :doc:`human model <others/human>` and its :doc:`posture sensor <sensors/human_posture>`

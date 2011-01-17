@@ -1,5 +1,5 @@
 Semantic camera sensor
-===================
+======================
 
 This sensor emulates a hight level camera that outputs the names of the objects
 that are located within the field of view of the camera.
