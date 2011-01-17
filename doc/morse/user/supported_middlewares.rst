@@ -5,6 +5,8 @@ Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal
 functioning is not tied no any one particular middleware, but it is capable of
 communicating with any type of architecture.
+The binding of middlewares with the components in the scene is done using
+the concept of :doc:`hooks <hooks>`.
 
 Current list of compatible middlewares 
 --------------------------------------

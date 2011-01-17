@@ -19,5 +19,5 @@ Files
 Available methods
 -----------------
 
-- ``read_message``: Gets information from a port, and stores it in the ``modified_data`` array of the associated component. This method expects a list of variables.
-- ``post_message``: Formats the contents of ``modified_data`` into a string separated by ';', and sends it through the port associated with a component. This method is only able to handle data of types: integer, float and string.
+- ``read_message``: Gets information from a port, and stores it in the ``local_data`` dictionary of the associated component. This method expects a list of variables.
+- ``post_message``: Formats the contents of ``local_data`` into a string separated by ';', and sends it through the port associated with a component. This method is only able to handle data of types: integer, float and string.

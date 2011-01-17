@@ -45,6 +45,9 @@ Creating a new modifier
 The concept of a modifier is relatively simple. Their only function is to
 change the data stored in variables in the corresponding component, by using
 the concept of :doc:`hooks <hooks>`. Creating a new modifier consists mainly of writing
-the Python script that will alter the data. The modifier should only work on
-the ``modified_data`` array of a MORSE component, and it is important to ensure
-the fields of the array are maintained with the same order and data type.
+the Python script that will alter the data. The modifier will change directly the
+information stored in the ``local_data`` dictionary of each component. Be aware that
+once the data has been changed, there is no way to get the original information back.
+If there is a need to have both the clean and the modified data for a particular sensor,
+the recommended method is to add two sensors of the same type, and only bind one of them
+with the modifier.

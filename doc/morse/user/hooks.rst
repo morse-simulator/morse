@@ -5,27 +5,27 @@ Description of hooks
 --------------------
 
 MORSE sensors and actuators are completely independent of any middleware,
-and do not include themselves any means of passing the data they use.
+and do not include themselves any means of sharing the data they use.
 To be able to use this data outside the simulator, it is necessary to bind
-a middleware to every component, specifying the expected behavior.
+a middleware to each component, specifying the expected behavior.
 
 When a component is linked to a middleware, a function described in the 
 middleware will be added to the list of methods executed by the component, 
 to be called each time the component executes its main task. In this way, 
 the middleware can read the data provided by the component via a *hook*, 
-which is an established data structure.
+which is a common data structure to all the components.
 
-MORSE components have a property called ``modified_data``. It is a list 
-that contains the data that can be exchanged with external programs. They 
-also have a dictionary called ``local_data`` that has the names of the 
-variables as well as their values, and is reserved for internal use in the 
-component. Middlewares create the "hooks" to ``modified_data`` only.
+MORSE components have a dictionary called ``local_data`` that has the names
+of the variables as keys, and stores the values of each variable. The values
+stored in this dictionary can be of any type allowed in Python: String, Integer,
+Float, Lists or Dictionaries.
 
-Data modifiers can also be applied to the ``modified_data`` array, to produce 
-data that is more realistic. In the case of sensors, the modifiers are 
-applied before the data is sent through the middleware. The opposite happens 
-with actuators, which read data through middlewares and then change it using 
-modifiers, before using it inside of Blender.
+Data modifiers can also be applied to the ``local_data`` dictionary, to alter 
+the data to fit the requirements of the simulation scenario.
+In the case of sensors, the modifiers are applied before the data is sent
+through the middleware. The opposite happens with actuators, which first read
+data through middlewares and then change it using modifiers, before using it
+inside of Blender.
 
 Configuration 
 -------------
@@ -36,13 +36,23 @@ should be edited from a **Text Editor** window in Blender.
 It consists of two dictionaries indexed by the name of the components:
 
 - ``component_mw``: Lists which middlewares are bound to the specific 
-  component. The value of the dictionary is a list. The first element of the 
-  list is the name of the Middleware, and must be written exactly as the 
-  name of the Empty object that represents the Middleware in the scene.
+  component. The value of the dictionary is a list. The list must consist of
+  at least 2 strings, with the information detailed below:
+  
+  - The first element is the name of the Middleware, and must be written exactly
+  as the name of the Empty object that represents the Middleware in the scene.
 
-  In the case of Yarp and Text, the second item will be the name of the 
-  function to be added to the component's action list For Pocolibs, the second 
-  item is the type of poster, and the third is the name of the poster.
+  - The second item is the name of the function to be added to the component's
+  action list. To determine which function to use, refer to the documentation
+  of the middleware.
+
+  - The third item is optional. It is the path and filename (without file extension)
+  of where the function listed in the second item is defined. This is necessary
+  for non generic functions that can be added as extensions to the middleware.
+
+  - The fourth item is optional. It is the name of the port that the middleware
+  should use. In the case of sensors, it is the name of the poster that will be
+  created. For actuators, it is the name that they will look for to connect.
 
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 
@@ -53,13 +63,14 @@ Example::
 
   component_mw = {
    	Gyroscope": ["Yarp", "post_message"],
+   	GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
     "Motion_Controller": ["Yarp", "read_message"],
-    "Motion_Controller.001": ["Pocolibs", "genPos", "p3dSpeedRef"],
+    "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
     "CameraMain": ["Yarp", "post_image_RGBA"]
   }
   
   component_modifier = {
-    "GPS.001": [ ["NED", "blender_to_ned"], ["Json", "json_encode"] ],
+    "GPS.001": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
     "Motion_Controller": [ ["NED", "ned_to_blender"] ]
   }
 

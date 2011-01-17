@@ -27,6 +27,6 @@ Available methods
 -----------------
 
 - ``write_data``: It will print to the file the current position of the robot,
-  at the time of the sensor reading, followed by the list of variables in
-  ``data_keys`` and the values in ``modified_data``.
+  at the time of the sensor reading, followed by the contents (variables and
+  data) in the ``local_data`` dictionary of the associated component.
 

@@ -17,14 +17,16 @@ Files
 Modified data
 -------------
 
-Modifiers work over an array called ``modified_data`` of the components.
-The indices of the variables affected are the following:
+Modifiers work over a dictionary called ``local_data`` of the components.
+The names of the variables affected are the following:
 
-- **0**: X coordinate of the component
-- **1**: Y coordinate of the component
-- **2**: Z coordinate of the component
+- **x**: X coordinate of the component
+- **y**: Y coordinate of the component
+- **z**: Z coordinate of the component
 
-For example, changing the X coordinate is done by altering the value of ``modified_data[0]``.
+- **yaw**: rotation around the local Z axis
+- **pitch**: rotation around the local Y axis
+- **roll**: rotation around the local X axis
 
 Available methods
 -----------------
@@ -32,3 +34,5 @@ Available methods
 - ``blender_to_ned``: Used for the :doc:`GPS sensor <../sensors/gps>`
 - ``ned_to_blender``: Used for the :doc:`straight motion <../actuators/destination>` 
   and :doc:`waypoint motion <../actuators/waypoint>` actuators
+- ``blender_to_ned_angle``: Used for the :doc:`Gyroscope sensor <../sensors/gyroscope>`
+- ``ned_angle_to_blender``: Used for the :doc:`Orientation actuator <../actuators/orientation>`

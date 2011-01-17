@@ -17,14 +17,12 @@ Files
 Modified data
 -------------
 
-Modifiers work over an array called ``modified_data`` of the components.
-The indices of the variables affected are the following:
+Modifiers work over a dictionary called ``local_data`` of the components.
+The names of the variables affected are the following:
 
-- **0**: X coordinate of the component
-- **1**: Y coordinate of the component
-- **2**: Z coordinate of the component
-
-For example, changing the X coordinate is done by altering the value of ``modified_data[0]``.
+- **x**: X coordinate of the component
+- **y**: Y coordinate of the component
+- **z**: Z coordinate of the component
 
 Available methods
 -----------------
