@@ -19,7 +19,7 @@ Local data
 -  **tilt**: (float) rotation around the Y axis
 
 Configurable parameters
----------------------
+-----------------------
 
 -  **speed**: (float) rotation speed for the movements of the platine
 

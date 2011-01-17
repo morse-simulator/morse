@@ -24,7 +24,7 @@ Local data
 -  **seg6**: (float) rotation for the seventh segment. Around Z axis.
 
 Configurable parameters
----------------------
+-----------------------
 
 -  **speed**: (float) rotation speed for the movements of the segments
 
