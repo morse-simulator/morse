@@ -10,9 +10,9 @@ def init_extra_module(self, component_instance, function, mw_data):
     parent_name = component_instance.robot_parent.blender_obj.name
     # Get the function name being inserted form the mw_data array
     function_name = mw_data[1]
-    if function_name == 'post_json_data':
+    if function_name == 'post_json_message':
         port_name = 'robots/{0}/{1}/out'.format(parent_name, component_name)
-    elif function_name == 'read_json_data':
+    elif function_name == 'read_json_message':
         port_name = 'robots/{0}/{1}/in'.format(parent_name, component_name)
 
     # Create the YARP port
@@ -23,7 +23,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     self._component_ports[component_name] = port_name
 
 
-def post_json_data(self, component_instance):
+def post_json_message(self, component_instance):
     """ Serialise the local_data using JSON
 
     The argument is a copy of the component instance.
@@ -45,7 +45,7 @@ def post_json_data(self, component_instance):
         print ("ERROR: Specified port does not exist: ", detail)
 
 
-def read_json_data(self, component_instance):
+def read_json_message(self, component_instance):
     """ Recover the data from a JSON string
 
     The argument is a copy of the component instance.

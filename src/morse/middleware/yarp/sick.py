@@ -16,7 +16,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     self._component_ports[component_name] = port_name
 
 
-def post_sick_data(self, component_instance):
+def post_sick_message(self, component_instance):
     """ Send the data of the SICK sensor using YARP
 
     The argument is a copy of the component instance.
