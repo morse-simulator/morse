@@ -32,10 +32,19 @@ def init_extra_module(self, component_instance, function, mw_data):
 def init_viman_poster(self, component_instance, poster_name):
     """ Prepare the data for a viman poster """
 
-    self.scene_object_list = _read_object_list()
+    self.scene_object_list = []
 
-    if self.scene_object_list == None:
-        print ("ERROR: VIMAN poster not configured properly. Disabling poster")
+    #If provided, read the list of ARToolkit tags to fill the list of objects
+    #to export.
+    self.scene_object_list += _read_object_list()
+
+    #Complete the list with the objects already tracked by the semantic cam.
+    if hasattr(GameLogic, 'trackedObjects'):
+        self.scene_object_list += [obj.name for obj in GameLogic.trackedObjects.keys()]
+
+    if not self.scene_object_list:
+        print ("ERROR: No VIMAN object to track. Make sure some objects have " +\
+               "the game property 'Object' defined. Disabling poster for now.")
         return None
 
     self.viman_data = ors_viman_poster.generate_viman_struct()
@@ -44,6 +53,7 @@ def init_viman_poster(self, component_instance, poster_name):
     self.viman_data.nbObjects = len(self.scene_object_list)
     i = 0
     for object in self.scene_object_list:
+        print("Adding " + object + " to the objects tracked by VIMAN")
         ors_viman_poster.set_name(self.viman_data, i, str(object))
         #self.viman_data.objects[i].name = object
         i = i + 1
@@ -142,7 +152,8 @@ def _read_object_list():
                 print ("\t- %s" % match.group(1))
         fp.close()
     except IOError as detail:
-        print (detail)
-        return None
+        #print (detail)
+        print("ARToolkit tag library not found. Skipping it.")
+        return []
 
     return scene_object_list

@@ -49,29 +49,32 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 self.blender_cam = obj
                 print ("Camera object: {0}".format(self.blender_cam))
                 break
+        if not self.blender_cam:
+            print("ERROR: no camera object associated to the semantic camera. " +\
+                  "The semantic camera requires a standard Blender camera in its children.")
 
         # TrackedObject is a dictionary containing the list of tracked objects 
         # (->meshes with a class property set up) as keys
         #  and the bounding boxes of these objects as value.
         if not hasattr(GameLogic, 'trackedObjects'):
-            print ('\t--- Initialization of trackedObjects variable ---')
+            print ('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
             GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
-            
+
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
-                # GetBoundBox(0) returns the bounding box in local space
-                #  instead of world space.
                 try:
                     obj['Description']
                 except:
                     obj['Description'] = 'object'
 
+                # GetBoundBox(0) returns the bounding box in local space
+                #  instead of world space.
                 if GameLogic.pythonVersion < 3:
                     GameLogic.trackedObjects[obj] = Blender.Object.Get(obj.name[2:]).getBoundBox(0)
                 else:
                     GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                print ('    - {0}'.format(obj.name))
+                print ('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
 
 
         # Prepare the exportable data of this sensor

@@ -94,10 +94,10 @@ class MorseMiddlewareClass(object):
         try:
             # Call the init method of the new serialisation
             # Sends the name of the function as a means to identify
-            #  what kind of port it should use (mainly for Yarp in/out)
+            #  what kind of port it should use.
             module.init_extra_module(self, component_instance, bound_function, mw_data)
         except AttributeError as detail:
-            print ("ERROR: Method 'init_extra_module' not found in file '%s'" % source_file)
+            print ("ERROR %s in module '%s'" % (detail, source_file))
 
         # Store the name of the function, to cleanup later
         self._extra_methods.append(function_name)
