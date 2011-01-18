@@ -183,6 +183,7 @@ def link_middlewares():
 
         print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
         found = False
+        missing_component = False
         # Look for the listed mw in the dictionary of active mw's
         for mw_obj, mw_instance in GameLogic.mwDict.items():
             if mw_name in mw_obj.name:
@@ -192,11 +193,22 @@ def link_middlewares():
                     instance = GameLogic.componentDict[component_name]
                 except KeyError as detail:
                     print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+                    missing_component = True
                     continue
 
                 # Make the middleware object take note of the component
                 mw_instance.register_component(component_name, instance, mw_data)
-
+        
+        if missing_component:
+            print("""
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ERROR: your configuration file is not valid. Please
+            check the name of your components and restart the
+            simulation.
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            """)
+            GameLogic.endGame()
+        
         if not found:
             print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
