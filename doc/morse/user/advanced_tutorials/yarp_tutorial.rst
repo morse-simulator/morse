@@ -1,6 +1,9 @@
 YARP-based simulation tutorial
 ==============================
 
+This tutorial shows a simple scenario with Yarp: Simple dummy autonomous navigation towards a user-given target (x,y). 
+The robots becomes red when it intersects obstacles or bounces on them.
+
 Setup
 -----
 
@@ -27,8 +30,11 @@ Link a Camera sensor
 #. Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
 #. Press :kbd:`Right Mouse Click` over the items ``CameraMain``, ``CameraUser``, ``CameraCube``, ``CameraLens``
 #. Press the button **Load Library**. You'll return to the 3D View
-#. Select the newly inserted ``CameraMain`` object in the scene, either by :kbd:`Right Mouse Click` clicking over the object in the 3D View, or :kbd:`Left Mouse Click` over the object's name in the Outliner window. The object will be highlighted in cyan colour, and can not be moved around.
-#. Select the child object, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
+#. Select the newly inserted ``CameraMain`` object in the scene, either by
+   :kbd:`Right Mouse Click` clicking over the object in the 3D View, or :kbd:`Left
+   Mouse Click` over the object's name in the Outliner window. The object will be
+   highlighted in cyan colour, and can not be moved around.  #. Select the child
+   object, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
 #. Convert the object to local, by pressing :kbd:`l` then hitting :kbd:`enter`
 #. Switch to front view by pressing :kbd:`1`
 #. Press :kbd:`g`, then move the ``CameraMain`` object to the correct location with respect to the robot

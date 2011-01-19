@@ -15,6 +15,10 @@ To display textures correctly in the simulator, as well as to generate images us
 Required software
 +++++++++++++++++
 
+.. note::
+  If you want the automated ``robotpkg``-based installation (recommanded), you can skip this section: 
+  ``robotpkg`` will check and install for you all required dependencies.
+
 - Python (3.1 or +)
 - Blender 2.54+ build with Python 3.1
 - git to get the code of the simulator::
@@ -27,9 +31,11 @@ Required software
   
   Once you have a copy of the repository, you can get to the last stable version (0.2b2) by using ::
   
-    $ git checkout 0.2b2
+    $ git checkout 0.2
   
-  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.2b2>`_. You can check the following information to make sure that the download went fine. ::
+  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.2>`_. 
+  
+..  You can check the following information to make sure that the download went fine. ::
   
     SHA1 (morse-0.2b2.tar.gz) = 4ccdc81949282eda88121af04cf96b27696167f7
     RMD160 (morse-0.2b2.tar.gz) = f3867347a2c4beac43f895e3c51a509b4cdb5b7a
@@ -90,6 +96,19 @@ Detailled informations to install a Python3 compatible ROS are :doc:`here <ros_i
 
 Installation 
 ------------
+
+With ``robotpkg``
++++++++++++++++++
+
+``robotpkg`` is a package manager for robotic software based on NetBSD ports. It supports Linux, * BSD and Darwin (MacOS X).
+
+#. Install and bootstrap ``robotpkg`` using these instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should take less than 5 min)
+#. Go to ``$ROBOTPKG/simulation/morse``
+#. Type ``make update``
+#. Go have a coffee :-) ``robotpkg`` will download and compile for you all the required dependencies, including Blender.
+
+By hand
++++++++
 
 From your MORSE root directory::
 

@@ -121,7 +121,7 @@ We can now display it with this simple Python (for Python 3.x) code::
 
     while not done:
       try:
-        data_in, SRIP = simu.recvfrom(1024)
+        data_in = simu.recv(1024)
       except socket.error:
         done = True
 
@@ -129,10 +129,12 @@ We can now display it with this simple Python (for Python 3.x) code::
   
   simu = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
   simu.setblocking(0)
-  simu.sendto('hello', (host, port))
+  simu.connect((host, port))
   
   while True:
-    data = pickle.load(read_data(simu))
-    print(str(data))
+    raw = read_data(simu)
+    if raw:
+      data = pickle.loads(read_data(simu))
+      print(str(data))
 
 

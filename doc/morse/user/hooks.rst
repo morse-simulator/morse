@@ -39,20 +39,20 @@ It consists of two dictionaries indexed by the name of the components:
   component. The value of the dictionary is a list. The list must consist of
   at least 2 strings, with the information detailed below:
   
-    - The first element is the name of the Middleware, and must be written
-      exactly as the name of the Empty object that represents the Middleware in
-      the scene.
-    - The second item is the name of the function to be added to the
-      component's action list. To determine which function to use, refer to the
-      documentation of the middleware.
-    - The third item is optional. It is the path and filename (without file
-      extension) of where the function listed in the second item is defined.
-      This is necessary for non generic functions that can be added as
-      extensions to the middleware.
-    - The fourth item is optional. It is the name of the port that the
-      middleware should use. In the case of sensors, it is the name of the
-      poster that will be created. For actuators, it is the name that they will
-      look for to connect.
+  - The first element is the name of the Middleware, and must be written exactly
+    as the name of the Empty object that represents the Middleware in the scene.
+
+  - The second item is the name of the function to be added to the component's
+    action list. To determine which function to use, refer to the documentation
+    of the middleware.
+
+  - The third item is optional. It is the path and filename (without file extension)
+    of where the function listed in the second item is defined. This is necessary
+    for non generic functions that can be added as extensions to the middleware.
+
+  - The fourth item is optional. It is the name of the port that the middleware
+    should use. In the case of sensors, it is the name of the poster that will be
+    created. For actuators, it is the name that they will look for to connect.
 
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 

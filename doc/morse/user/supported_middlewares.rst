@@ -1,5 +1,5 @@
-Middleware Support 
-==================
+Middleware Support in MORSE
+===========================
 
 Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal

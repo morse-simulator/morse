@@ -1,7 +1,12 @@
-Tutorial example 
-================
+Create your first simulation
+============================
 
-This tutorial assumes MORSE is properly installed. If not, follow the instructions :doc:`here <installation>`.
+This tutorial goes through the steps required to build "from scratch" a new
+simulation. Note that once created, you can save your simulation scenario
+as a regular Blender file to replay it directly any time later.
+
+This tutorial assumes MORSE is properly installed. If not, follow the
+instructions :doc:`here <installation>`.
 
 Create the simulation scene
 -----------------------------

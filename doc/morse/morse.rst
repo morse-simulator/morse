@@ -1,123 +1,153 @@
-MORSE, the OpenRobot Simulator
-==============================
 
-..
-  +--------------------------------------+---------------------------------------+
-  | .. image:: ../media/stae_logo.png    | .. image:: ../media/blender_logo.png  | 
-  |    :width: 200                       |    :width: 200                        |
-  +--------------------------------------+---------------------------------------+
-  | .. image:: ../media/laas.png         | .. image:: ../media/onera.png         |
-  |    :width: 200                       |    :width: 200                        |
-  +--------------------------------------+---------------------------------------+
- 
-MORSE Documentation
--------------------
+Introducing the Modular OpenRobots Simulation Engine 
+====================================================
+
+Welcome to the official documentation for the MORSE project.
 
 .. toctree::
    :maxdepth: 2
-   
-   User documentation <user/summary.rst>
-   Developer documentation <dev/summary.rst>
-  
-Introducing MORSE
------------------
 
-This software is partially financed by the `RTRA STAE <http://www.fondation-stae.net>`_,
-as part of the `ROSACE <http://www.fondation-stae.net/fr/actions/projets-cours.html>`_ project, and by the DGA funded  `PEA ACTION <http://action.onera.fr>`_.
+   installation
+
+What is MORSE? 
+--------------
 
 .. image:: ../media/simu_render_indoors.jpg
    :width: 300
    :align: center
 .. Introducing MORSE
 
-
-Main features
--------------
-
-- A versatile simulator for **generic mobile robots simulation** (single or 
-  multi robots),
-- Enabling **realistic** and **dynamic** environments (with other interacting 
-  agents -humans- or objects), 
-- Don't reinvent the wheel: critical components reused from other opensource 
-  projects (**Blender** for 3D rendering + physical simulation + UI, dedicated 
-  robotic middlewares for communications + robot hardware support),
-- **Seamless workflow**: since the simulator rely on Blender for both modelling and the realtime 3D engine, creating and modifying a simulated scene is straigthforward.
-- Entierely scriptable in **Python**,
-- Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labelled artifacts- in other cases),
+- A versatile simulator for **generic mobile robots simulation** (single or multi robots),
+- Enabling **realistic** and **dynamic** environments (with other interacting agents -humans- or objects), 
+- Don't reinvent the wheel: critical components reused from other open source projects (**Blender** for 3D rendering + UI, **Bullet** for physics simulation, dedicated robotic middlewares for communications + robot hardware support),
+- **Seamless workflow**: since the simulator rely on Blender for both modeling and the real time 3D engine, creating and modifying a simulated scene is straightforward.
+- Entirely scriptable in **Python**,
+- Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labeled artifacts- in other cases),
 - Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
 - Fully open source, BSD-compatible.
+  
+.. image:: ../media/outdoor_example.jpg
+   :width: 300
+   :align: center
+.. Introducing MORSE
 
-Available sensors and actuators
--------------------------------
+Getting started in 3 steps
+--------------------------
 
-MORSE has been designed to be modular and explicit interfaces ease the addition of new features (sensors, actuators, communication middleware, etc.).
+#. :doc:`Install MORSE <user/installation>`
+#. :doc:`Check the MORSE command reference <user/basic_morse>` 
+#. :doc:`Jump to the tutorial <user/tutorial>`
 
-The first release of MORSE features the following set of sensors and actuators.
+Installation
+------------
 
-Sensors
-+++++++
-- Mono-camera, stereo-camera, 3D camera (depth of field), semantic camera (visible labelled objects)
-- 2D laser range finder
-- GPS
-- Gyroscope
-- Thermometer
+:doc:`Installation instruction <user/installation>`
 
-Controllers
-+++++++++++
-- (v, ω) servoing
-- waypoints
-- manual (keyboard/mouse)
+The MORSE Workflow 
+------------------
 
-Communication middleware
-++++++++++++++++++++++++
-- YARP
-- pocolibs (shared memory)
+:doc:`Discover the MORSE workflow <user/user_workflow>`: how to build a complete simulation scenario, from 
+the creation of a custom robot with predefined sensors and actuators to the 
+complete scene, including other robots or humans.
+
+Components library
+------------------
+
+.. image:: ../media/morse_robot.jpg
+   :width: 300
+   :align: center
+.. The MORSE robots
+
+MORSE offers an extended set of predefined sensors and controllers that cover 
+reasonably well common simulation needs in robotics. It offers also some 
+complete robots.
+
+The following page lists all the currently existing components and their
+properties: :doc:`MORSE component library <user/component_library>`
+
+MORSE has also a mechanism to alter input or output data (like adding noise to
+a GPS position) by so called *modifiers*: :doc:`Data modifiers <user/modifier_introduction>`
+
+To learn how to add new components (sensors, robots...), please refer to the 
+:doc:`developer documentation <dev/summary>`.
+
+Supported middlewares
+---------------------
+
+MORSE relies on *middlewares* to integrate in your robotic architecture.
+
+We currently support only `YARP <http://eris.liralab.it/yarp/>`_, 
+`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and a simple 
+text-based socket protocol. More middlewares are expected to be added in the 
+next versions (partial `ROS <http://www.ros.org>`_ support is available in 
+the development trunk).
+
+Detailled information: :doc:`user/supported_middlewares`
+
+Tutorials 
+---------
+
+Beginners
++++++++++
+
+- :doc:`Create your first MORSE simulation <user/tutorial>`
+
+Intermediate
+++++++++++++
+
+These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
+
+- :doc:`Preparing a robot with specific equipment <user/advanced_tutorials/equip_robot>`
+- :doc:`YARP-based simulation tutorial <user/advanced_tutorials/yarp_tutorial>`
+- :doc:`Pocolibs (Genom) tutorial <user/advanced_tutorials/pocolibs_tutorial>`
+- :doc:`Human-robot interaction tutorial <user/advanced_tutorials/hri_tutorial>` (partial)
+
+Tips and how-tos 
+----------------
+
+- :doc:`user/tips/bounding_boxes`
 
 Media
 -----
 
-Outdoors scenes
-+++++++++++++++
+Publications
+++++++++++++
+
+- `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011
+
+Screenshots
++++++++++++
 
 +------------------------------------------+------------------------------------------+
-| .. figure:: ../media/outdoor_example.jpg | .. figure:: ../media/outdoor_example.jpg |
+| .. figure:: ../media/outdoor_example.jpg |  .. figure:: ../media/indoors_sick.jpg   | 
 |                                          |                                          |
-|    An ATRV in an outdoor scenario        |    In this sequence, robots are          |
-|                                          |    controlled by waypoints, one of the   |
-|                                          |    controllers type offered by MORSE.    |
-|                                          |    The video shows as well the output of |
-|                                          |    three cameras on YARP channels.       |
+|    An ATRV in an outdoor scenario.       |     Real-time simulation of a SICK       |
+|                                          |     laser range finder in an indoors     |
+|                                          |     environment.                         |
++------------------------------------------+------------------------------------------+
+| .. figure:: ../media/hri.jpg             |  .. figure:: ../media/morse_interface.jpg| 
+|    :width: 422                           |     :width: 422                          |
+|                                          |                                          |
+|    Simulation of human-robot             |     The MORSE interface (crude Blender   |
+|    interaction: the robot tracks the     |     :-) )                                |
+|    posture of the human.                 |                                          |
 +------------------------------------------+------------------------------------------+
 
-.. <object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=9825826&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1&amp;group_id=" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=9825826&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1&amp;group_id=" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object>
 
-
-Indoors scenes
-++++++++++++++
-
-+---------------------------------------+--------------------------------------+
-| .. figure:: ../media/indoors_sick.jpg | .. figure:: ../media/indoors_sick.jpg|
-|                                       |                                      |
-|    Real-time simulation of a SICK     |    This video demonstrates real-time |
-|    laser range finder in an indoors   |    physics simulation, laser range   |
-|    environment.                       |    finder simulation and redirection |
-|                                       |    of the robot cameras (on the wall)|
-+---------------------------------------+--------------------------------------+
-
-.. <object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=9825888&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1&amp;group_id=" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=9825888&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1&amp;group_id=" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object>
-
-More videos are available `online on Vimeo <http://vimeo.com/groups/blenderandrobotics>`_.
+Videos are also available on the `Blender for Robotics Vimeo group <http://vimeo.com/groups/blenderandrobotics>`_.
 
 On the road-map
 ---------------
 
 The first release of MORSE contains only a subset of the final simulator specification.
 
-Amongst the planned features:
+Amongst the planned features for MORSE 0.3:
 
-- Support for arms simulation, based on inverse kinematics. This has been separately developped by the Leuven's university and will be merge into MORSE over the next releases,
-- Raw sockets interface + full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
+- full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
+- support for point cloud sensors (stereo-vision, Velodyne, Kinect,...)
+- complete support of the Willow Garage's PR-2 robot, along with all the sensors
 - Developement of the user interface,
 - Scalablity (both in term of simulation capacity and ease of deployment),
 - Multi-node simulations (several Blender nodes can be started on several computer and automaticaly synchronise, which should allow simulations of tenth of robots in the same scene),
 - Dedicated supervision node that would allow to: observe the simulation, display logs and metrics, start/stop robots, dynamically alter the scene (like moving an obstacle in front of a robot, etc.).
+
