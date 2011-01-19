@@ -30,7 +30,7 @@ The following diagram shows the data flow from the Simulation to the sensor,
 then the modifiers and finally the middleware to send the data to external
 programs:
 
-.. image: ../media/component_diagram.png
+.. image:: ../../media/component_diagram.png
     :align: center
     :width: 500
 .. Component data flow
@@ -46,7 +46,10 @@ Sensors
 - :doc:`Accelerometer <sensors/accelerometer>`
 - :doc:`GPS <sensors/gps>`
 - :doc:`Gyroscope <sensors/gyroscope>`
+- :doc:`Human Posture <sensors/human_posture>`
 - :doc:`Pan-Tilt <sensors/pantilt>`
+- :doc:`Proximity <sensors/proximity>`
+- :doc:`Semantic Camera <sensors/semantic_camera>`
 - :doc:`SICK laser <sensors/sick>`
 - :doc:`Stereo camera <sensors/stereo_camera>`
 - :doc:`Thermometer <sensors/thermometer>`
@@ -59,6 +62,9 @@ Actuators/Controllers
 - :doc:`Linear and angular speed (V, W) <actuators/v_omega>`
 - :doc:`Straight line movement <actuators/destination>`
 - :doc:`Waypoint destination <actuators/waypoint>`
+- :doc:`Kuka arm control <actuators/kuka>`
+- :doc:`PA-10 arm control <actuators/pa-10>`
+- :doc:`Platine control <actuators/platine>`
 
 Bare robotic bases
 ------------------
