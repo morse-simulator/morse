@@ -11,28 +11,9 @@ File history:
 26/08/2010 - Gilberto: Add pending tasks for sensors, documentation and the Rosace scenario
 17/09/2010 - Severin: Bring up the list of features required for the next, human interaction oriented, release
 22/11/2010 - Severin: update of the TODO list before 0.2a1 tag, created a preliminary list of target for 0.3
-04/01/2011 - Severin: update of the TODO list before 0.2a1 tag, created a preliminary list of target for 0.3
+04/01/2011 - Severin: update of the TODO list before 0.2b1 tag
+19/01/2011 - Severin: updated before morse-0.2 release
 ---
-
-=========================================================
- TARGETS FOR RELEASE 0.2 - The Human Interaction release
-=========================================================
-
-User-interface
---------------
-- Control a human as "first person shooter": Ability to pick/release objects by
- clicking on them
-
-Middlewares
------------
-- Requests: be sure that components can be remotely (ie by clients) configured
-
-Components
-----------
-- Arm control: support setting the position of arms by reading a set 
-of angles
-- Animated human export: MORSE should export the complete armature of the human
-
 
 =========================
  TARGETS FOR RELEASE 0.3
@@ -40,6 +21,7 @@ of angles
 
 Middlewares
 -----------
+- Requests: be sure that components can be remotely (ie by clients) configured
 - Full ROS support
 
 Architecture

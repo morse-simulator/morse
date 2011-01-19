@@ -1,79 +1,72 @@
-MORSE 0.2b2 - Second beta version towards morse-0.2
-==================================================
-
-- improved human support: 
-   - new human model
-   - mouse-based interactive displacement and grasping of objects
-   - export of the human posture (joint state)   
-- wrong scale of some assets fixed
-- 'visibility check' for the semantic camera
-- documentation converted to reStructuredText. HTML version automatically updated
-  every hour to http://www.openrobots.org/morse/doc
-
-MORSE 0.2b1 - First beta version towards morse-0.2
-==================================================
-
-- added head and hand control to human
-- fixed several issues with camera calibration in Blender
-- Added Jido robot model with Kuka arm
-- Access to armature joint angle now possible
-- redid human rig and animation
-- On-going switch to reStructured text for the documentation
-- Support for Ubuntu 10.04 (hi Lorenz!)
-- Added several posters for Genom middleware
-- Fixed the accelerometer sensor
-- fixed several issues with transformation coordinates
-
-+ other minor fix, documentation updates, etc.
-
-MORSE v 0.2a1
-=============
+MORSE 0.2 - The HRI release
+===========================
 
 General changes
 ---------------
 
 - Switch to Blender 2.5: MORSE now officialy supports Blender 2.5x (x>=4) and 
-the support for Blender 2.49 has been dropped.
+  the support for Blender 2.49 has been dropped.
 
 - This means that MORSE is now fully Python 3 compatible. New code must be from
-now valid Python 3 code.
+  now valid Python 3 code.
 
-New features
-------------
+- MORSE homepage is now http://morse.openrobots.org/
 
-- Much work went on the support of humans in the simulator. A fully rigged human
-model is now available. It can be controlled in a "first person shooter"-like
-mode, enabling immersive simulation of human-robot interaction.
+- Documentation has been converted to reStructuredText. HTML version automatically updated
+  every hour to http://morse.openrobots.org/doc/
 
-- Support for the PA-10 and Kuka arms. They can be controlled either by specifying
-a target that the arm tries to reach (using Blender ITASC IK solver) or by
-sending a set of joint angles.
-
-- new simple waypoint controller: this 'high-level' controller allows to give 
-only a list of waypoint to the robot. The simulator takes care of the navigation 
-(currently, simple straight lines, without any sort of obstacle avoidance)
-
-- "Semantic camera" sensor: MORSE can export position, orientation and name 
-of specifically marked objects that are in a camera field of view.
-
-- we now have a fully simulated SICK laser sensor.
-
-- Possibility to control the camera when the game engine runs (with keyboard, 
-mouse, or attach some view to some robots)
+- A MORSE bugtracker is now available: https://softs.laas.fr/bugzilla/buglist.cgi?product=morse
 
 Architectural changes
 ---------------------
 
 - Components have "hooks" to export their data. Middleware lives in parallel
-threads and "visit" the components. In this case, middlewares still lives
-in the Python VM. Advantage: better decoupling ; middleware can dynamically
-choose what they want to watch.
+  threads and "visit" the components. In this case, middlewares still lives
+  in the Python VM. Advantage: better decoupling ; middleware can dynamically
+  choose what they want to watch.
 
 - Add 'serialize' methods to the data of each component. This formats the 
 data according to the needs of each middleware/architecture.
 
 
-MORSE v 0.1 - 28/07/2010
-========================
+Support for human-robot interaction
+-----------------------------------
+
+- MORSE now offers a human model. It can be controlled in a "first person shooter"-like
+  mode, enabling immersive simulation of human-robot interaction:
+   - mouse-based interactive displacement and grasping of objects (using IK to ensure 
+     consistent, fully body motion)
+   - 40-DOF human posture (joint state) is exported by a new sensor called 'human_posture'
+
+New sensors/actuators
+---------------------
+
+- Support for the PA-10 and Kuka arms. They can be controlled either by specifying
+  a target that the arm tries to reach (using Blender ITASC IK solver) or by
+  sending a set of joint angles.
+
+- new simple waypoint controller: this 'high-level' controller allows to give 
+  only a list of waypoint to the robot. The simulator takes care of the navigation 
+  (currently, simple straight lines, without any sort of obstacle avoidance)
+
+- "Semantic camera" sensor: MORSE can export position, orientation and name 
+  of specifically marked objects that are visible by a camera.
+
+- we now have a fully simulated SICK laser sensor.
+
+Other features
+--------------
+
+- Possibility to control the camera when the game engine runs (with keyboard, 
+  mouse, or attach some view to some robots)
+- Support for Ubuntu 10.04 (hi Lorenz!)
+- Added LAAS Jido robot model with Kuka arm
+- fixed several issues with camera calibration in Blender
+- Added several posters for Genom middleware
+- Fixed the accelerometer sensor
+- fixed several issues with transformation coordinates
+
+MORSE v 0.1 - The outdoor robotics release - 28/07/2010
+=======================================================
 
 First version
