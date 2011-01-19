@@ -171,8 +171,8 @@ def link_middlewares():
         component_list = component_config.component_mw
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
-        print ("No modifiers found in configuration file")
-        return
+        print ("ERROR: The 'component_mw' dictionary can not be found in your configuration file.")
+        return False
 
     for component_name, mw_data in component_list.items():
         mw_name = mw_data[0]
@@ -207,8 +207,8 @@ def link_middlewares():
             simulation.
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             """)
-            GameLogic.endGame()
-        
+            return False
+
         if not found:
             print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
@@ -224,7 +224,7 @@ def add_modifiers():
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
         print ("No modifiers found in configuration file")
-        return
+        return False
 
     for component_name, mod_list in component_list.items():
         # Prefix the name of the component with 'OB'
