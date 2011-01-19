@@ -44,21 +44,24 @@ list, in the ``component_config.py`` script, as described in the :doc:`hooks <..
 documentation.
 
 - Json modifier: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/json_mod.py``.
-It has two available methods:
+  It has two available methods:
+
     - ``post_json_message``: Change the ``local_data`` into a single string and send it
     - ``read_json_message``: Read a string and expand the contents into the ``local_data``
-    dictionary
+      dictionary
 
 - SICK sensor: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/sick.py``.
-It has one available methods:
-    - ``post_sick_message``: Store the list of points in ``local_data`` as a collection of
-    nested bottles and writes them to a port
+  It has one available methods:
+
+    - ``post_sick_message``: Store the list of points in ``local_data`` as a
+      collection of nested bottles and writes them to a port
 
 - Semantic camera: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/dictionary.py``.
-It has one available methods:
-    - ``post_dictionary_data``: Store the dictionary in the ``visible_objects`` item of
-    ``local_data`` as a collection of nested pairs of bottles storing the name and value
-    of the dictionary
+  It has one available methods:
+
+    - ``post_dictionary_data``: Store the dictionary in the ``visible_objects``
+      item of ``local_data`` as a collection of nested pairs of bottles storing
+      the name and value of the dictionary
 
 
 Known problems

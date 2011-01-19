@@ -40,27 +40,33 @@ list, in the ``component_config.py`` script, as described in the :doc:`hooks <..
 documentation.
 
 - POM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/pom.py``.
-It has one available output method:
+  It has one available output method:
+
     - ``write_pom``: Sends data of type **POM_ME_POS**, defined in ``pom/pomStruct.h``
 
 - VIAM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/viam.py``.
-It has one available output method:
+  It has one available output method:
+
     - ``write_viam``: Sends data of type **simu_image**, defined in ???. VIAM data stored in ``viam/viamStruct.h``
 
 - VIMAN poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/viman.py``.
-It has one available output method:
+  It has one available output method:
+
     - ``write_viman``: Sends data of type **VimanObjectPublicArray**, defined in ``viman/vimanStruct.h``
 
 - GENPOS poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/genpos.py``.
-It has one available input method:
+  It has one available input method:
+
     - ``read_genpos``: Reads data of type **GENPOS_CART_SPEED**, defined in ``genPos/genPosStruct.h``
 
 - LWR poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/lwr.py``.
-It has one available input method:
+  It has one available input method:
+
     - ``read_lwr_config``: Reads data of type **LWR_ARM_INST**, defined in ``lwr/lwrStruct.h``
 
 - PLATINE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/platine.py``.
-It has one available input method:
+  It has one available input method:
+
     - ``read_platine``: Reads data of type **POM_SE_POSTER**, defined in ``pom/pomStruct.h``
 
 Known problems
