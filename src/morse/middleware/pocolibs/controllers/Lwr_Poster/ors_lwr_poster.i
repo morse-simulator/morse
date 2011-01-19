@@ -16,8 +16,8 @@
 %}
 
 /* Parse the header file to generate wrappers */
-%include "genBasic/genBasicStruct.h"
-%include "genManip/genManipStruct.h"
-%include "gbM/gbStruct.h"
-%include "lwr/lwrStruct.h"
+%include "genBasicStruct.h"
+%include "genManipStruct.h"
+%include "gbStruct.h"
+%include "lwrStruct.h"
 %include "ors_lwr_poster.h"
