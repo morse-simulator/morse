@@ -4,11 +4,6 @@ Introducing the Modular OpenRobots Simulation Engine
 
 Welcome to the official documentation for the MORSE project.
 
-.. toctree::
-   :maxdepth: 2
-
-   installation
-
 What is MORSE? 
 --------------
 

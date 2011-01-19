@@ -71,7 +71,7 @@ Bare robotic bases
 
 - :doc:`iRobot ATRV <robots/atrv>`
 - :doc:`Yamaha RMax <robots/ressac>`
-- :doc:`NeoBotix platform with PA-10 robotic arm <robots/jido>`
+- :doc:`NeoBotix platform with Kuka ligthweight robotic arm <robots/jido>`
 
 Other components
 ----------------
