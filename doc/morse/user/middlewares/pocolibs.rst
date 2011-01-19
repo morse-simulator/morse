@@ -36,7 +36,7 @@ Available extensions
 
 These files contain additional methods that can be used with the Pocolibs middleware.
 To use them, it is necessary to list the file as the third element of the middleware
-list, in the ``component_config.py`` script, as described in the :doc:`hooks <hooks>`
+list, in the ``component_config.py`` script, as described in the :doc:`hooks <../hooks>`
 documentation.
 
 - POM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/pom.py``.

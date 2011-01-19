@@ -12,7 +12,7 @@ For Blender to find the Python scripts refered to in the Actuators, the Python
 files must be directly in a directory listed in ``PYTHONPATH``. The standard
 location for these files in MORSE is the directory:
 ``ORS_ROOT/src/morse/blender``, which should be included in ``PYTHONPATH`` as
-described in the :doc:`MORSE installation documentation <../user/installation >`.
+described in the :doc:`MORSE installation documentation <../user/installation>`.
 
 Each object in Blender can have its own set of Logic Bricks. In every MORSE
 simulatino scene, there must be one ``Scene_Script_Holder`` object, which holds

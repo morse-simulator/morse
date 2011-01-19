@@ -40,7 +40,7 @@ Available extensions
 
 These files contain additional methods that can be used with the YARP middleware.
 To use them, it is necessary to list the file as the third element of the middleware
-list, in the ``component_config.py`` script, as described in the :doc:`hooks <hooks>`
+list, in the ``component_config.py`` script, as described in the :doc:`hooks <../hooks>`
 documentation.
 
 - Json modifier: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/json_mod.py``.
