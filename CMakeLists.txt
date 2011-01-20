@@ -72,6 +72,7 @@ IF (NOT SPHINX_BUILD)
 	MESSAGE(STATUS "Can't find sphinx-build : will not build the documentation")
 ELSE()
 	SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
+	SET (SPHINX_LATEX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/tex)
 	ADD_CUSTOM_COMMAND(
 		OUTPUT ${SPHINX_OUTPUT}
 		COMMAND ${SPHINX_BUILD} -b html
@@ -92,6 +93,14 @@ ELSE()
 							 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
 							 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
 							 ${SPHINX_OUTPUT}
+	)
+
+	ADD_CUSTOM_TARGET(
+		latex_doc
+		COMMAND sphinx-build -b latex
+							 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
+							 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+							 ${SPHINX_LATEX_OUTPUT}
 	)
 ENDIF()
 
