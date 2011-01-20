@@ -21,7 +21,7 @@ import os
 ###########################################
 #####################  Loading procedures #
 ###########################################
-pathprefix=os.getenv('ORS_ROOT')
+pathprefix=os.getenv('MORSE_ROOT')
 file1 = pathprefix+'/scripts/geolandloader/geoDTMLoader.py';
 file2 = pathprefix+'/scripts/geolandloader/geoShapefileLoader.py';
 print 'Loading file: '+file1;

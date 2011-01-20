@@ -13,8 +13,8 @@ Data is shared as simple text strings.
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/middleware/socket_empty.blend``
-- Python: ``$ORS_ROOT/src/morse/modifiers/socket_mw.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/middleware/socket_empty.blend``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/socket_mw.py``
 
 Available methods
 -----------------

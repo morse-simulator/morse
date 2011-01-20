@@ -16,8 +16,8 @@ linear and angular velocities (V, W) of the robot.
 Files
 -----
 
--  Blender: ``$ORS_ROOT/data/morse/components/controllers/morse_manual_control.blend``
--  Python: ``$ORS_ROOT/src/morse/actuators/keyboard.py``
+-  Blender: ``$MORSE_ROOT/data/morse/components/controllers/morse_manual_control.blend``
+-  Python: ``$MORSE_ROOT/src/morse/actuators/keyboard.py``
 
 Applicable modifiers
 --------------------

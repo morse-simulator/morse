@@ -6,8 +6,8 @@ This robot is build on a NeoBotix base with a Kuka lightweight arm
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/robots/jido.blend``
-- Python: ``$ORS_ROOT/src/morse/robots/jido.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/robots/jido.blend``
+- Python: ``$MORSE_ROOT/src/morse/robots/jido.py``
 
 Adjustable parameters
 ---------------------

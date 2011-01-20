@@ -20,8 +20,8 @@ coordinates with respect to the position of the robot.
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/middleware/text_empty.blend``
-- Python: ``$ORS_ROOT/src/morse/modifiers/text_mw.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/middleware/text_empty.blend``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/text_mw.py``
 
 Available methods
 -----------------

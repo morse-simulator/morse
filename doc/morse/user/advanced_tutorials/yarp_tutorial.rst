@@ -24,7 +24,7 @@ Link a Camera sensor
 ++++++++++++++++++++
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser
-#. Navigate to the directory ``$ORS_ROOT/data/morse/components/sensors``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/sensors``
 #. Press :kbd:`Left Mouse Click` over the file ``morse_camera.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
@@ -46,7 +46,7 @@ Insert the middleware object
 ++++++++++++++++++++++++++++
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser
-#. Navigate to the directory ``$ORS_ROOT/data/morse/components/middleware``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/middleware``
 #. Press :kbd:`Left Mouse Click` over the file ``yarp_empty.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Toggle the buttons **Relative Paths** and **Link** at the bottom of the window

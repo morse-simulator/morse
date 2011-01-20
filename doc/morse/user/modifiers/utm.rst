@@ -11,8 +11,8 @@ properties of the ``Scene_Script_Holder`` object of the scene: ``UTMXOffset``,
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/modifiers/utm_empty.blend``
-- Python: ``$ORS_ROOT/src/morse/modifiers/utm_mod.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/modifiers/utm_empty.blend``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/utm_mod.py``
 
 Modified data
 -------------

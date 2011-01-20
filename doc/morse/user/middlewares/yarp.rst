@@ -17,8 +17,8 @@ various data types.
 Files
 -----
 
-- Blender: ``$ORS_ROOT/data/morse/components/middleware/yarp_empty.blend``
-- Python: ``$ORS_ROOT/src/morse/modifiers/yarp_mw.py``
+- Blender: ``$MORSE_ROOT/data/morse/components/middleware/yarp_empty.blend``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/yarp_mw.py``
 
 Available methods
 -----------------
@@ -43,20 +43,20 @@ To use them, it is necessary to list the file as the third element of the middle
 list, in the ``component_config.py`` script, as described in the :doc:`hooks <../hooks>`
 documentation.
 
-- Json modifier: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/json_mod.py``.
+- Json modifier: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/yarp/json_mod.py``.
   It has two available methods:
 
     - ``post_json_message``: Change the ``local_data`` into a single string and send it
     - ``read_json_message``: Read a string and expand the contents into the ``local_data``
       dictionary
 
-- SICK sensor: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/sick.py``.
+- SICK sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/yarp/sick.py``.
   It has one available methods:
 
     - ``post_sick_message``: Store the list of points in ``local_data`` as a
       collection of nested bottles and writes them to a port
 
-- Semantic camera: Stored in the file: ``$ORS_ROOT/src/morse/middleware/yarp/dictionary.py``.
+- Semantic camera: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/yarp/dictionary.py``.
   It has one available methods:
 
     - ``post_dictionary_data``: Store the dictionary in the ``visible_objects``
