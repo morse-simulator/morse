@@ -119,7 +119,7 @@ In MorsePocolibsClass, the different poster_id are stored in a dictionary
 (``component.blender_obj.name``)
 
 Text
-___
+____
 
 In TextOutClass, the different files are stored in a dictionary
 ``_file_list``, indexed by the name of the component
