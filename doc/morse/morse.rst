@@ -30,10 +30,21 @@ What is MORSE?
 - Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
 - Fully open source, BSD-compatible.
   
-.. image:: ../media/outdoor_example.jpg
+.. image:: ../media/morse_interface.jpg
    :width: 300
    :align: center
-.. Introducing MORSE
+.. MORSE interface
+
+MORSE is partially funded by the `Fondation RTRA <htpp://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework.
+
+.. image:: ../media/stae_logo.png
+   :align: center                
+   :width: 200
+
+.. image:: ../media/rosace.png
+   :align: center
+   :width: 200
+                   
 
 Installation
 ------------
