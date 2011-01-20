@@ -1,4 +1,3 @@
-
 Introducing the Modular OpenRobots Simulation Engine 
 ====================================================
 
@@ -8,7 +7,6 @@ Quick start
 -----------
 
 .. toctree::
-    :numbered:
     :maxdepth: 1
 
     user/installation
@@ -41,6 +39,7 @@ Installation
 ------------
 
 .. toctree::
+    :maxdepth: 2
     
     user/installation
 
