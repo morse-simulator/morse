@@ -2,6 +2,16 @@
 Introducing the Modular OpenRobots Simulation Engine 
 ====================================================
 
+.. toctree::
+    :glob:
+    :hidden:
+
+    user/*
+    user/tips/*
+    user/advanced_tutorials/*
+    dev/*
+
+
 Welcome to the official documentation for the MORSE project.
 
 Quick start

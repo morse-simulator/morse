@@ -1,6 +1,15 @@
 The MORSE Component Library
 ===========================
 
+.. toctree::
+    :hidden:
+    :glob:
+    
+    sensors/*
+    actuators/*
+    robots/*
+    others/*
+
 The modular concept of morse is based on individual components with specific
 functions that replicate the parts of a real robot. Components in MORSE can
 belong to three main types:
