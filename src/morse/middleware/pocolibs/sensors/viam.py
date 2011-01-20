@@ -1,7 +1,7 @@
 import sys
 import math
 import GameLogic
-from morse.middleware.pocolibs.sensors.Camera_Poster import ors_viam_poster
+from morse.middleware.pocolibs.sensors.Viam_Poster import ors_viam_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data

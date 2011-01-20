@@ -1,4 +1,4 @@
-from morse.middleware.pocolibs.sensors.Gyro_Poster import ors_pom_poster
+from morse.middleware.pocolibs.sensors.Pom_Poster import ors_pom_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
