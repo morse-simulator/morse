@@ -43,4 +43,4 @@ Expanding the middlewares
 -------------------------
 
 New middlewares can be added to MORSE by following these 
-:doc:`instructions <middlewares/new_middleware>`.
+:doc:`instructions <../dev/new_middleware>`.

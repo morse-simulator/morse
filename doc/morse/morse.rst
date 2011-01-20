@@ -142,6 +142,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/dev_workflow
     dev/adding_component
     dev/adding_modifier
+    dev/new_middleware
 
 Tips and how-tos 
 ----------------

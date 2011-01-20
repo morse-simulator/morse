@@ -31,9 +31,15 @@ Create a sensor. Explain the logic
 
 :doc:`Tutorial: Adding a new component <adding_component>`
 
-With an example of a modifier
------------------------------
+Creating a modifier
+-------------------
 
 EZ if in python, a bit more complex if we call an external library (cf impact on the dependencies) 
 
 :doc:`Tutorial: Creating a modifier <adding_modifier>`
+
+Adding the support of a new middleware
+--------------------------------------
+Introduce how to add the support for a new middleware
+
+:doc:`Tutorial: Adding the support for a new middleware <new_middleware>`
