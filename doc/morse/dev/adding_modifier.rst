@@ -22,7 +22,7 @@ Modifier functions must have the prototype: ::
 
   def modifier_name(self, component_instance)
 
-In your modifier function, you must only access to the array `local_data``
+In your modifier function, you must only access to the array ``local_data``
 of the component.
 
 `GPS_noise.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/gps_noise.py>`_ 
