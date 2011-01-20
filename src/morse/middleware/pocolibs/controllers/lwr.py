@@ -22,7 +22,7 @@ def init_extra_module(self, component_instance, function, mw_data):
         self._poster_in_dict[component_name] = poster_id
         component_instance.input_functions.append(function)
     else:
-        print ("Poster 'lwr' not created. Component will not work")
+        print ("Poster 'lwr' not found. Component will not work")
 
 
 def read_lwr_config(self, component_instance):

@@ -22,7 +22,7 @@ def init_extra_module(self, component_instance, function, mw_data):
         self._poster_in_dict[component_name] = poster_id
         component_instance.input_functions.append(function)
     else:
-        print ("Poster 'genPos' not created. Component will not work")
+        print ("Poster 'genPos' not found. Component will not work")
 
 
 def read_genpos(self, component_instance):
