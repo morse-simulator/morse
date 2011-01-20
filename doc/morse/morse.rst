@@ -13,6 +13,10 @@ Quick start
     user/basic_morse
     user/tutorial
 
+For any questions about the use of MORSE or if you have any issues with the
+simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@laas.fr>`_ 
+mailing-list. 
+
 What is MORSE? 
 --------------
 
@@ -21,12 +25,22 @@ What is MORSE?
    :align: center
 .. Introducing MORSE
 
-- A versatile simulator for **generic mobile robots simulation** (single or multi robots),
-- Enabling **realistic** and **dynamic** environments (with other interacting agents -humans- or objects), 
-- Don't reinvent the wheel: critical components reused from other open source projects (**Blender** for 3D rendering + UI, **Bullet** for physics simulation, dedicated robotic middlewares for communications + robot hardware support),
-- **Seamless workflow**: since the simulator rely on Blender for both modeling and the real time 3D engine, creating and modifying a simulated scene is straightforward.
+- A versatile simulator for **generic mobile robots simulation** (single or
+  multi robots),
+- Enabling **realistic** and **dynamic** environments (with other interacting
+  agents -humans- or objects), 
+- Don't reinvent the wheel: critical components reused from other open source
+  projects (**Blender** for 3D rendering + UI, **Bullet** for physics
+  simulation, dedicated robotic middlewares for communications + robot hardware
+  support),
+- **Seamless workflow**: since the simulator rely on Blender for both modeling
+  and the real time 3D engine, creating and modifying a simulated scene is
+  straightforward.
 - Entirely scriptable in **Python**,
-- Adaptable to various **level of simulation realism** (for instance, we may want to simulate exteroceptive sensors like cameras in certain cases and access directly to a higher level representation of the world -like labeled artifacts- in other cases),
+- Adaptable to various **level of simulation realism** (for instance, we may
+  want to simulate exteroceptive sensors like cameras in certain cases and
+  access directly to a higher level representation of the world -like labeled
+  artifacts- in other cases),
 - Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
 - Fully open source, BSD-compatible.
   
@@ -62,7 +76,6 @@ robot with predefined sensors and actuators to the complete scene, including
 other robots or humans.
 
 .. toctree::
-    :hidden:
 
     user/user_workflow
 
