@@ -33,8 +33,8 @@ set(MODULES_MAP_POM "pom")
 set(MODULES_MAP_SICK "sick")
 set(MODULES_MAP_VIMAN "viman")
 set(MODULES_MAP_HUMAN_POSTURE "spark")
-set(MODULES_MAP_GENPOS "genpos")
-set(MODULES_MAP_PLATINE "")
+set(MODULES_MAP_GENPOS "genPos")
+set(MODULES_MAP_PLATINE "pom")
 set(MODULES_MAP_LWR "lwr;gbM;genBasic;genManip")
 
 foreach(directory ${directories_list})
@@ -74,9 +74,14 @@ foreach(directory ${directories_list})
 			file(GLOB source ${directory}/${Item}_Poster/*.c)
 			
 			set(ALL_INCLUDES)
-			foreach (inc ${${MODULE_INCLUDE_DIRS}})
-				set(ALL_INCLUDES ${ALL_INCLUDES} -I${inc})
-			endforeach (inc ${${MODULE_INCLUDE_DIRS}})
+			foreach(dependency ${module_to_find})
+		        string(TOUPPER "${dependency}" DEPENDENCY)
+				set(MODULE_INCLUDE_DIRS "${DEPENDENCY}_INCLUDE_DIRS")
+				foreach (inc ${${MODULE_INCLUDE_DIRS}})
+					set(ALL_INCLUDES ${ALL_INCLUDES} -I${inc})
+				endforeach (inc ${${MODULE_INCLUDE_DIRS}})
+			endforeach(dependency ${module_to_find})
+
 
 			add_custom_command(
 				OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c 
