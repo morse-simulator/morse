@@ -1,12 +1,6 @@
 Modifiers 
 =========
 
-.. toctree::
-    :glob:
-    :hidden:
-
-    modifiers/*
-
 Modifiers affect directly the data employed by sensors and actuators, and are
 specific to the data used by the components. Just like middlewares, they must
 implement a method called ``register_component`` that should add the
@@ -15,10 +9,11 @@ corresponding function to the component's action list.
 List of existing modifiers 
 --------------------------
 
-- :doc:`UTM conversion <modifiers/utm>`
-- :doc:`NED conversion <modifiers/ned>`
-- :doc:`JSON encoding/decoding <modifiers/json>`
-- :doc:`GPS noise <modifiers/gps_noise>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    modifiers/*
 
 Linking a modifier in a scene 
 -----------------------------

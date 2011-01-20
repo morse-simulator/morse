@@ -1,11 +1,6 @@
 Middleware Support in MORSE
 ===========================
 
-.. toctree::
-    :glob:
-    :hidden:
-
-    middlewares/*
 
 Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal
@@ -17,10 +12,11 @@ the concept of :doc:`hooks <hooks>`.
 Current list of compatible middlewares 
 --------------------------------------
 
-- :doc:`Text file output <middlewares/text>`
-- :doc:`Sockets <middlewares/socket>`
-- :doc:`YARP <middlewares/yarp>`
-- :doc:`Pocolibs <middlewares/pocolibs>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    middlewares/*
 
 Support for ROS is planned for MORSE 0.3.
 

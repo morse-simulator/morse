@@ -2,24 +2,18 @@
 Introducing the Modular OpenRobots Simulation Engine 
 ====================================================
 
-.. toctree::
-    :glob:
-    :hidden:
-
-    user/*
-    user/tips/*
-    user/advanced_tutorials/*
-    dev/*
-
-
 Welcome to the official documentation for the MORSE project.
 
 Quick start
 -----------
 
-#. :doc:`Install MORSE <user/installation>`
-#. :doc:`Check the MORSE command reference <user/basic_morse>` 
-#. :doc:`Jump to the tutorial <user/tutorial>`
+.. toctree::
+    :numbered:
+    :maxdepth: 1
+
+    user/installation
+    user/basic_morse
+    user/tutorial
 
 What is MORSE? 
 --------------
@@ -46,14 +40,21 @@ What is MORSE?
 Installation
 ------------
 
-See the :doc:`installation instruction <user/installation>` page.
+.. toctree::
+    
+    user/installation
 
 The MORSE Workflow 
 ------------------
 
-:doc:`Discover the MORSE workflow <user/user_workflow>`: how to build a complete simulation scenario, from 
-the creation of a custom robot with predefined sensors and actuators to the 
-complete scene, including other robots or humans.
+How to build a complete simulation scenario, from the creation of a custom
+robot with predefined sensors and actuators to the complete scene, including
+other robots or humans.
+
+.. toctree::
+    :hidden:
+
+    user/user_workflow
 
 Components library
 ------------------
@@ -68,10 +69,20 @@ reasonably well common simulation needs in robotics. It offers also some
 complete robots.
 
 The following page lists all the currently existing components and their
-properties: :doc:`MORSE component library <user/component_library>`
+properties: 
+
+.. toctree::
+    :maxdepth: 3
+
+    user/component_library
 
 MORSE has also a mechanism to alter input or output data (like adding noise to
-a GPS position) by so called *modifiers*: :doc:`Data modifiers <user/modifier_introduction>`
+a GPS position) by so called *modifiers*: 
+
+.. toctree::
+    :maxdepth: 3
+
+    user/modifier_introduction
 
 To learn how to add new components (sensors, robots...), please refer to the 
 :doc:`developer documentation <dev/summary>`.
@@ -87,7 +98,13 @@ text-based socket protocol. More middlewares are expected to be added in the
 next versions (partial `ROS <http://www.ros.org>`_ support is available in 
 the development trunk).
 
-Detailled information: :doc:`user/supported_middlewares`
+Detailled information: 
+
+.. toctree::
+    :maxdepth: 3
+
+    user/hooks
+    user/supported_middlewares
 
 Tutorials 
 ---------
@@ -95,17 +112,21 @@ Tutorials
 Beginners
 +++++++++
 
-- :doc:`Create your first MORSE simulation <user/tutorial>`
+.. toctree::
+    :maxdepth: 1
+    
+    user/tutorial
 
 Intermediate
 ++++++++++++
 
 These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
 
-- :doc:`Preparing a robot with specific equipment <user/advanced_tutorials/equip_robot>`
-- :doc:`YARP-based simulation tutorial <user/advanced_tutorials/yarp_tutorial>`
-- :doc:`Pocolibs (Genom) tutorial <user/advanced_tutorials/pocolibs_tutorial>`
-- :doc:`Human-robot interaction tutorial <user/advanced_tutorials/hri_tutorial>` (partial)
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    user/advanced_tutorials/*
 
 Contributing to MORSE
 ---------------------
@@ -114,10 +135,22 @@ As an open-source project driven by the research community, your contributions a
 
 Check the :doc:`Developers documentation <dev/summary>`.
 
+.. toctree::
+    :maxdepth: 1
+
+    dev/dev_overview
+    dev/dev_workflow
+    dev/adding_component
+    dev/adding_modifier
+
 Tips and how-tos 
 ----------------
 
-- :doc:`user/tips/bounding_boxes`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    user/tips/*
 
 Media
 -----

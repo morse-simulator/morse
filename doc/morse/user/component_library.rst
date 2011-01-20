@@ -1,21 +1,12 @@
 The MORSE Component Library
 ===========================
 
-.. toctree::
-    :hidden:
-    :glob:
-    
-    sensors/*
-    actuators/*
-    robots/*
-    others/*
-
 The modular concept of morse is based on individual components with specific
 functions that replicate the parts of a real robot. Components in MORSE can
 belong to three main types:
 
 - `Bare robotic bases`_
-- Sensors_
+- `Sensors`_
 - `Actuators/Controllers`_
 
 In general, Sensors generate data from the simulated world, to be used by
@@ -52,37 +43,37 @@ then processed by the modifiers and finally applied in the simulation.
 Sensors
 -------
 
-- :doc:`Accelerometer <sensors/accelerometer>`
-- :doc:`GPS <sensors/gps>`
-- :doc:`Gyroscope <sensors/gyroscope>`
-- :doc:`Human Posture <sensors/human_posture>`
-- :doc:`Pan-Tilt <sensors/pantilt>`
-- :doc:`Proximity <sensors/proximity>`
-- :doc:`Semantic Camera <sensors/semantic_camera>`
-- :doc:`SICK laser <sensors/sick>`
-- :doc:`Stereo camera <sensors/stereo_camera>`
-- :doc:`Thermometer <sensors/thermometer>`
-- :doc:`Video camera <sensors/camera>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    sensors/*
+
 
 Actuators/Controllers
 ---------------------
 
-- :doc:`Keyboard arrows <actuators/keyboard>`
-- :doc:`Linear and angular speed (V, W) <actuators/v_omega>`
-- :doc:`Straight line movement <actuators/destination>`
-- :doc:`Waypoint destination <actuators/waypoint>`
-- :doc:`Kuka arm control <actuators/kuka>`
-- :doc:`PA-10 arm control <actuators/pa-10>`
-- :doc:`Platine control <actuators/platine>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    actuators/*
 
 Bare robotic bases
 ------------------
 
-- :doc:`iRobot ATRV <robots/atrv>`
-- :doc:`Yamaha RMax <robots/ressac>`
-- :doc:`NeoBotix platform with Kuka ligthweight robotic arm <robots/jido>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    robots/*
+
 
 Other components
 ----------------
 
-- :doc:`human model <others/human>` and its :doc:`posture sensor <sensors/human_posture>`
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    others/*
