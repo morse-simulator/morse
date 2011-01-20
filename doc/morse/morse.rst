@@ -4,6 +4,13 @@ Introducing the Modular OpenRobots Simulation Engine
 
 Welcome to the official documentation for the MORSE project.
 
+Quick start
+-----------
+
+#. :doc:`Install MORSE <user/installation>`
+#. :doc:`Check the MORSE command reference <user/basic_morse>` 
+#. :doc:`Jump to the tutorial <user/tutorial>`
+
 What is MORSE? 
 --------------
 
@@ -26,17 +33,10 @@ What is MORSE?
    :align: center
 .. Introducing MORSE
 
-Getting started in 3 steps
---------------------------
-
-#. :doc:`Install MORSE <user/installation>`
-#. :doc:`Check the MORSE command reference <user/basic_morse>` 
-#. :doc:`Jump to the tutorial <user/tutorial>`
-
 Installation
 ------------
 
-:doc:`Installation instruction <user/installation>`
+See the :doc:`installation instruction <user/installation>` page.
 
 The MORSE Workflow 
 ------------------
@@ -97,6 +97,13 @@ These tutorials provide more in-depth explanations of how to setup simulations w
 - :doc:`Pocolibs (Genom) tutorial <user/advanced_tutorials/pocolibs_tutorial>`
 - :doc:`Human-robot interaction tutorial <user/advanced_tutorials/hri_tutorial>` (partial)
 
+Contributing to MORSE
+---------------------
+
+As an open-source project driven by the research community, your contributions are very welcome!
+
+Check the :doc:`Developers documentation <dev/summary>`.
+
 Tips and how-tos 
 ----------------
 
@@ -136,7 +143,7 @@ On the road-map
 
 The first release of MORSE contains only a subset of the final simulator specification.
 
-Amongst the planned features for MORSE 0.3:
+Amongst the planned features for future MORSE releases:
 
 - full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
 - support for point cloud sensors (stereo-vision, Velodyne, Kinect,...)
