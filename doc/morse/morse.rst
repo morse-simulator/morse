@@ -15,7 +15,8 @@ Quick start
 
 For any questions about the use of MORSE or if you have any issues with the
 simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@laas.fr>`_ 
-mailing-list. 
+mailing-list. You can suscribe to the mailing-list
+`here <https://sympa.laas.fr/sympa/subscribe/morse-users>`_.
 
 What is MORSE? 
 --------------
