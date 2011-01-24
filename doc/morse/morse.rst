@@ -18,6 +18,8 @@ simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@l
 mailing-list. You can suscribe to the mailing-list
 `here <https://sympa.laas.fr/sympa/subscribe/morse-users>`_.
 
+You can report bugs to `our bug-tracker <https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse>`_.
+
 What is MORSE? 
 --------------
 
