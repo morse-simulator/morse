@@ -50,7 +50,7 @@ What is MORSE?
    :align: center
 .. MORSE interface
 
-MORSE is partially funded by the `Fondation RTRA <htpp://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework.
+MORSE is partially funded by the `Fondation RTRA <http://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework.
 
 .. image:: ../media/stae_logo.png
    :align: center                
