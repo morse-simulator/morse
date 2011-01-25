@@ -65,7 +65,10 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         except ZeroDivisionError:
             pass
 
-        for i in range(len(self._segments)):
+        # Use the length of _dofs, since it won't change.
+        # The length of _segments will change if more objects are attached
+        #  at the end of the arm, as in the case of a hand
+        for i in range(len(self._dofs)):
             key = ('seg%d' % i)
             target_angle = morse_math.normalise_angle(self.local_data[key])
 
