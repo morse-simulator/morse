@@ -186,6 +186,9 @@ Publications
 ++++++++++++
 
 - `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011
+- Presentation of MORSE at the Blender Conference 2010:
+`slides <http://homepages.laas.fr/gechever/BlenderConference/BC_morse.pdf>`_ and
+`video <http://www.youtube.com/watch?v=BGDfbi28s14#t=20m20s>`_
 
 Screenshots
 +++++++++++
