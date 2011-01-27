@@ -1,9 +1,23 @@
+######################################################
+#
+#    waypoint.py        Blender 2.5x
+#
+#    A script to control the movement of a robot given
+#    a destination point in space.
+#    The movement includes a basic obstacle avoidance
+#    system, based on the demo by Sebastian Korczak
+#               admin@myinventions.pl
+#
+#
+#    Gilberto Echeverria
+#    27 / 01 / 2011
+#
+######################################################
+
+
 import math
 import GameLogic
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
+import mathutils
 import morse.helpers.actuator
 
 class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
@@ -37,16 +51,23 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['z'] = self.destination[2]
         self.local_data['speed'] = 1.0
 
+        # Identify an object as the target of the motion
         try:
             wp_name = self.blender_obj['Target']
-            if GameLogic.pythonVersion < 3:
-                wp_name = 'OB' + wp_name
             scene = GameLogic.getCurrentScene()
             self.wp_object = scene.objects[wp_name]
             print ("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:
             self.wp_object = None
 
+        # Identify the collision detectors for the sides
+        for child in self.blender_obj.children:
+            if "Radar.R" in child.name:
+                self._radar_r = child
+                print ("Radar R is ", self._radar_r)
+            if "Radar.L" in child.name:
+                self._radar_l = child
+                print ("Radar L is ", self._radar_l)
 
         print ('######## CONTROL INITIALIZED ########')
 
@@ -61,10 +82,13 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
         #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
-        #print ("\nWAYPOINT GOT DESTINATION: {0}".format(self.destination))
         # Place the target marker where the robot should go
         if self.wp_object:
             self.wp_object.position = self.destination
+
+        # Set the z coordiante of the destination equal to that of the robot
+        #  to avoid problems with the terrain.
+        self.destination[2] = self.blender_obj.worldPosition[2]
 
         # Vectors returned are already normalised
         distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
@@ -85,28 +109,10 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             parent.move_status = "Transit"
 
             ### Get the angle of the robot ###
-            try:
-                robot_angle = parent.yaw
-            except KeyError as detail:
-                print ("Gyroscope angle not found. Does the robot have a Gyroscope?")
-                print (detail)
-                # Force the robot to move towards the target, without rotating
-                robot_angle = target_angle
-
-            if GameLogic.pythonVersion < 3:
-                # Convert to radians
-                robot_angle = math.radians(robot_angle * -1)
-
+            robot_angle = parent.position_3d.yaw
 
             ### Get the angle to the target ###
-            # Use the appropriate function to get the angle between two vectors
-            if GameLogic.pythonVersion < 3:
-                target_angle = mathutils.AngleBetweenVecs(global_vector, self.world_X_vector)
-                # Convert to radians
-                target_angle = math.radians(target_angle)
-            else:
-                # In Blender 2.5, the angle function returns radians
-                target_angle = global_vector.angle(self.world_X_vector)
+            target_angle = global_vector.angle(self.world_X_vector)
 
             # Correct the direction of the turn according to the angles
             dot = global_vector.dot(self.world_Y_vector)
@@ -134,20 +140,26 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             # If logic tick rate is 60, then: 1 second = 60 ticks
             ticks = GameLogic.getLogicTicRate()
             try:
-                # Move forward
+                # Compute the speeds
                 vx = speed / ticks
-                # Test if the orientation of the robot is within tolerance
-                if -self.angle_tolerance < angle_diff < self.angle_tolerance:
-                    rz = 0
-                # If not, rotate the robot
-                else:
-                    rz = ((speed / ticks) / 2.0) * rotation_direction
+                rotation_speed = (speed / ticks) / 2.0
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
                 pass
 
-        
+            # Collision avoidance using the Blender radar sensor
+            if self._radar_r['Rcollision']:
+                rz = rotation_speed
+            elif self._radar_l['Lcollision']:
+                rz = - rotation_speed
+            # Test if the orientation of the robot is within tolerance
+            elif -self.angle_tolerance < angle_diff < self.angle_tolerance:
+                rz = 0
+            # If not, rotate the robot in the corresponding direction
+            else:
+                rz = rotation_speed * rotation_direction
+
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
         parent.blender_obj.applyMovement([vx, 0, 0], True)
