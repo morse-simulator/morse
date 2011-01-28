@@ -60,13 +60,18 @@ To use properly camera with yarp < 2.3.2, you need to apply the patch from patch
 Note that the easiest way to install YARP is probably to use ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations). Follow the instructions on installing ``robotpkg``. Then add the environment variable ``ROBOTPKG_BASE`` to your shell.
 Then to install ``YARP``::
 
-  $ cd $ROBOTPKG_BASE/robotpkg/architecture/yarp
+  $ cd $ROBOTPKG_BASE/robotpkg/middleware/yarp
   $ make update
 
-Afterwards, install the YARP python bindings bindings::
+Afterwards, add the following settings in ``${ROBOTPKG_BASE}/etc/robotpkg.conf``::
 
-  $ cd $ROBOTPKG_BASE/robotpkg/devel/libpyyarp
+  $ echo "PKG_OPTIONS.libpyyarp+= python3" >> ${ROBOTPKG_BASE}/etc/robotpkg.conf
+
+and then install the YARP python bindings bindings::
+
+  $ cd $ROBOTPKG_BASE/robotpkg/middleware/libpyyarp
   $ make update
+
 
 Compiling the YARP Python binding will create two files: ``yarp.py`` and ``_yarp.so``, and install them in ``$ROBOTPKG_BASE/lib/python3.1/site-packages/``
 You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/lib/python3.1/site-packages/`` to let python find the YARP module.
@@ -102,8 +107,15 @@ With ``robotpkg``
 
 ``robotpkg`` is a package manager for robotic software based on NetBSD ports. It supports Linux, * BSD and Darwin (MacOS X).
 
-#. Install and bootstrap ``robotpkg`` using these instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should take less than 5 min)
-#. Go to ``$ROBOTPKG/simulation/morse``
+#. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
+instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
+take less than 5 min)
+#. Go to ``$ROBOTPKG/wip/morse``
+#. Show the current supported options using::
+
+  $ make show-options
+
+#. Configure the package settings PKG_OPTIONS.morse in ``${ROBOTPKG_BASE}/etc/robotpkg.conf``
 #. Type ``make update``
 #. Go have a coffee :-) ``robotpkg`` will download and compile for you all the required dependencies, including Blender.
 
