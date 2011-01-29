@@ -58,16 +58,16 @@ To use properly camera with yarp < 2.3.2, you need to apply the patch from patch
 
 
 Note that the easiest way to install YARP is probably to use ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations). Follow the instructions on installing ``robotpkg``. Then add the environment variable ``ROBOTPKG_BASE`` to your shell.
-Then to install ``YARP``::
+Then to install ``YARP`` ::
 
   $ cd $ROBOTPKG_BASE/robotpkg/middleware/yarp
   $ make update
 
-Afterwards, add the following settings in ``${ROBOTPKG_BASE}/etc/robotpkg.conf``::
+Afterwards, add the following settings in ``${ROBOTPKG_BASE}/etc/robotpkg.conf`` ::
 
   $ echo "PKG_OPTIONS.libpyyarp+= python3" >> ${ROBOTPKG_BASE}/etc/robotpkg.conf
 
-and then install the YARP python bindings bindings::
+and then install the YARP python bindings bindings ::
 
   $ cd $ROBOTPKG_BASE/robotpkg/middleware/libpyyarp
   $ make update
@@ -89,7 +89,7 @@ The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage <ht
 
 To install::
 
-  $ cd $ROBOTPKG_BASE/robotpkg/devel/pocolibs
+  $ cd $ROBOTPKG_BASE/robotpkg/middleware/pocolibs
   $ make update
 
 ROS
@@ -108,13 +108,9 @@ With ``robotpkg``
 ``robotpkg`` is a package manager for robotic software based on NetBSD ports. It supports Linux, * BSD and Darwin (MacOS X).
 
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
-instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
-take less than 5 min)
+   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
+   take less than 5 min)
 #. Go to ``$ROBOTPKG/wip/morse``
-#. Show the current supported options using::
-
-  $ make show-options
-
 #. Configure the package settings PKG_OPTIONS.morse in ``${ROBOTPKG_BASE}/etc/robotpkg.conf``
 #. Type ``make update``
 #. Go have a coffee :-) ``robotpkg`` will download and compile for you all the required dependencies, including Blender.
