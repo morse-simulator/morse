@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -12,13 +13,17 @@ def init_extra_module(self, component_instance, function, mw_data):
     function_name = mw_data[1]
     if function_name == 'post_json_message':
         port_name = 'robots/{0}/{1}/out'.format(parent_name, component_name)
+        # Create the YARP port
+        self.registerBufferedPortBottle([port_name])
+        # Add the new method to the component
+        component_instance.output_functions.append(function)
     elif function_name == 'read_json_message':
         port_name = 'robots/{0}/{1}/in'.format(parent_name, component_name)
+        # Create the YARP port
+        self.registerBufferedPortBottle([port_name])
+        # Add the new method to the component
+        component_instance.input_functions.append(function)
 
-    # Create the YARP port
-    self.registerBufferedPortBottle([port_name])
-    # Add the new method to the component
-    component_instance.output_functions.append(function)
     # Store the name of the port
     self._component_ports[component_name] = port_name
 
@@ -35,14 +40,15 @@ def post_json_message(self, component_instance):
 
     try:
         yarp_port = self.getPort(port_name)
-
-        bottle = yarp_port.prepare()
-        bottle.clear()
-        bottle.addString(json_string)
-
-        yarp_port.write()
     except KeyError as detail:
         print ("ERROR: Specified port does not exist: ", detail)
+        return
+
+    bottle = yarp_port.prepare()
+    bottle.clear()
+    bottle.addString(json_string)
+
+    yarp_port.write()
 
 
 def read_json_message(self, component_instance):
@@ -56,16 +62,26 @@ def read_json_message(self, component_instance):
 
     try:
         yarp_port = self.getPort(port_name)
-        message_data = yarp_port.read(False)
     except KeyError as detail:
         print ("ERROR: Specified port does not exist: ", detail)
+        return
 
-    # Deserialise the data directly into the 'local_data' of the component
-    component_instance.local_data = json.loads(message_data)
-    """
-    new_data = json.loads(message_data)
-    i = 0;
-    for var in component_instance.data_keys:
-        component_instance.modified_data[i] = new_data[var]
-        i = i + 1
-    """
+    message_bottle = yarp_port.read(False)
+    if message_bottle != None:
+        message_data = message_bottle.get(0).toString()
+
+        # Deserialise the data directly into a temporary ordered dictionary
+        json_dict = json.loads(message_data, object_pairs_hook=OrderedDict)
+        i = 0
+        # Fill the component's 'local_data' dictionary,
+        #  while also casting to the correct data types
+        for variable, data in component_instance.local_data.items():
+            if isinstance(data, int):
+                component_instance.local_data[variable] = int(json_dict[variable])
+            elif isinstance(data, float):
+                component_instance.local_data[variable] = float(json_dict[variable])
+            elif isinstance(data, str):
+                component_instance.local_data[variable] = json_dict[variable]
+            else:
+                print ("Yarp ERROR: Unknown data type at 'read_json_data'")
+            i = i + 1
