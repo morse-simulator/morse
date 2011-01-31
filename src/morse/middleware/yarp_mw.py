@@ -1,4 +1,5 @@
 import sys
+import re
 import yarp
 import array
 import morse.helpers.middleware
@@ -51,31 +52,48 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
         # The function exists within this class,
         #  so it can be directly assigned to the instance
         if function != None:
-
             # Data read functions
             if function_name == "read_message":
                 port_name = port_name + '/in'
                 self.registerBufferedPortBottle([port_name])
                 component_instance.input_functions.append(function)
-                if remote != None:
-                    self.connectPorts(remote, "/ors/"+port_name)
+                #if remote != None:
+                    #self.connectPorts(remote, "/ors/"+port_name)
+                # Store the name of the port
+                self._component_ports[component_name] = port_name
             # Data write functions
             elif function_name == "post_message":
                 port_name = port_name + '/out'
                 self.registerBufferedPortBottle([port_name])
                 component_instance.output_functions.append(function)
-                if remote != None:
-                    self.connectPorts("/ors/"+port_name, remote)
+                #if remote != None:
+                    #self.connectPorts("/ors/"+port_name, remote)
+                # Store the name of the port
+                self._component_ports[component_name] = port_name
             # Image write functions
             elif function_name == "post_image_RGBA":
                 port_name = port_name + '/out'
                 self.registerBufferedPortImageRgba([port_name])
                 component_instance.output_functions.append(function)
-                if remote != None:
-                    self.connectPorts("/ors/"+port_name, remote)
+                #if remote != None:
+                    #self.connectPorts("/ors/"+port_name, remote)
+                # Store the name of the port
+                self._component_ports[component_name] = port_name
+            # If it is an external function that has already been added
+            else:
+                # Get the reference to the external module
+                # (should be already included)
+                source_file = mw_data[2]
+                module_name = re.sub('/', '.', source_file)
+                module = sys.modules[module_name]
+                try:
+                    # Call the init method of the new serialisation
+                    # Sends the name of the function as a means to identify
+                    #  what kind of port it should use.
+                    module.init_extra_module(self, component_instance, function, mw_data)
+                except AttributeError as detail:
+                    print ("ERROR %s in module '%s'" % (detail, source_file))
 
-            # Store the name of the port
-            self._component_ports[component_name] = port_name
         else:
             # If there is no such function in this module,
             #  try importing from another one
@@ -83,7 +101,7 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
                 # Insert the method in this class
                 function = self._add_method(mw_data, component_instance)
 
-            except IndexError:
+            except IndexError as detail:
                 print ("ERROR: Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
                 return
 
@@ -94,37 +112,41 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
         The argument is a copy of the component instance.
         Data is writen directly into the 'local_data' dictionary
         of the component instance.
+        Return 'True' is information could be read from the port, and
+        'False' is there was any problem with the communication.
         """
         port_name = self._component_ports[component_instance.blender_obj.name]
 
         try:
             yarp_port = self.getPort(port_name)
-            message_data = yarp_port.read(False)
-
-            if message_data != None:
-                # Data elements are of type defined in data_types
-                i = 0
-                for variable, data in component_instance.local_data.items():
-                    if isinstance(data, int):
-                        msg_data = message_data.get(i).asInt()
-                        component_instance.local_data[variable] = msg_data
-                    elif isinstance(data, float):
-                        msg_data = message_data.get(i).asDouble()
-                        component_instance.local_data[variable] = msg_data
-                    elif isinstance(data, basestring):
-                        msg_data = message_data.get(i).toString()
-                        component_instance.local_data[variable] = msg_data
-                    else:
-                        print ("Yarp ERROR: Unknown data type at 'read_message'")
-                    i = i + 1
-
-                return True
-
-            else:
-                return False
-
         except KeyError as detail:
             print ("ERROR: Specified port does not exist: ", detail)
+            return False
+
+        message_data = yarp_port.read(False)
+
+        if message_data != None:
+            # Data elements are of type defined in data_types
+            i = 0
+            for variable, data in component_instance.local_data.items():
+                if isinstance(data, int):
+                    msg_data = message_data.get(i).asInt()
+                    component_instance.local_data[variable] = msg_data
+                elif isinstance(data, float):
+                    msg_data = message_data.get(i).asDouble()
+                    component_instance.local_data[variable] = msg_data
+                elif isinstance(data, str):
+                    msg_data = message_data.get(i).toString()
+                    component_instance.local_data[variable] = msg_data
+                else:
+                    print ("Yarp ERROR: Unknown data type at 'read_message'")
+                    print ("DATA: ", data, " | TYPE: ", type(data))
+                i = i + 1
+            return True
+
+        else:
+            return False
+
 
 
     def post_message(self, component_instance):
@@ -136,24 +158,26 @@ class MorseYarpClass(morse.helpers.middleware.MorseMiddlewareClass):
 
         try:
             yarp_port = self.getPort(port_name)
-
-            bottle = yarp_port.prepare()
-            bottle.clear()
-            # Sort the data accodring to its type
-            for variable, data in component_instance.local_data.items():
-                if isinstance(data, int):
-                    bottle.addInt(data)
-                elif isinstance(data, float):
-                    bottle.addDouble(data)
-                elif isinstance(data, basestring):
-                    bottle.addString(data)
-                else:
-                    print ("Yarp ERROR: Unknown data type at 'post_message'")
-
-            #yarp_port.writeStrict()
-            yarp_port.write()
         except KeyError as detail:
             print ("ERROR: Specified port does not exist: ", detail)
+            return
+
+        bottle = yarp_port.prepare()
+        bottle.clear()
+        # Sort the data accodring to its type
+        for variable, data in component_instance.local_data.items():
+            if isinstance(data, int):
+                bottle.addInt(data)
+            elif isinstance(data, float):
+                bottle.addDouble(data)
+            elif isinstance(data, str):
+                bottle.addString(data)
+            else:
+                print ("Yarp ERROR: Unknown data type at 'post_message'")
+                print ("DATA: ", data, " | TYPE: ", type(data))
+
+        #yarp_port.writeStrict()
+        yarp_port.write()
 
 
     def post_image_RGBA(self, component_instance):
