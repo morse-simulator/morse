@@ -54,9 +54,10 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Identify an object as the target of the motion
         try:
             wp_name = self.blender_obj['Target']
-            scene = GameLogic.getCurrentScene()
-            self.wp_object = scene.objects[wp_name]
-            print ("Using object '%s' to indicate motion target" % wp_name)
+            if wp_name != '':
+                scene = GameLogic.getCurrentScene()
+                self.wp_object = scene.objects[wp_name]
+                print ("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:
             self.wp_object = None
 
