@@ -176,11 +176,6 @@ def link_middlewares():
 
     for component_name, mw_data in component_list.items():
         mw_name = mw_data[0]
-        # Prefix the name of the component with 'OB'
-        # Will only be necessary until the change to Blender 2.5
-        if GameLogic.pythonVersion < 3:
-            component_name = 'OB' + component_name
-
         print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
         found = False
         missing_component = False
@@ -227,11 +222,6 @@ def add_modifiers():
         return False
 
     for component_name, mod_list in component_list.items():
-        # Prefix the name of the component with 'OB'
-        # Will only be necessary until the change to Blender 2.5
-        if GameLogic.pythonVersion < 3:
-            component_name = 'OB' + component_name
-
         for mod_data in mod_list:
             modifier_name = mod_data[0]
             print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
