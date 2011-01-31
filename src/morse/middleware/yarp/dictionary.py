@@ -30,17 +30,18 @@ def post_dictionary_data(self, component_instance):
 
     try:
         yarp_port = self.getPort(port_name)
-
-        bottle = yarp_port.prepare()
-        bottle.clear()
-        # Go through the list of points
-        # The list is the first item in ''local_data''
-        visible_objects = component_instance.local_data['visible_objects']
-        for key, value in visible_objects.items():
-            bottle2 = bottle.addList()
-            bottle2.addString(key)
-            bottle2.addDouble(value)
-
-        yarp_port.write()
     except KeyError as detail:
         print ("ERROR: Specified port does not exist: ", detail)
+        return
+
+    bottle = yarp_port.prepare()
+    bottle.clear()
+    # Go through the list of points
+    # The list is the first item in ''local_data''
+    visible_objects = component_instance.local_data['visible_objects']
+    for key, value in visible_objects.items():
+        bottle2 = bottle.addList()
+        bottle2.addString(key)
+        bottle2.addDouble(value)
+
+    yarp_port.write()

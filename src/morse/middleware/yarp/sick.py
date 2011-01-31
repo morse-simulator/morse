@@ -26,16 +26,17 @@ def post_sick_message(self, component_instance):
 
     try:
         yarp_port = self.getPort(port_name)
-
-        bottle = yarp_port.prepare()
-        bottle.clear()
-        # Go through the list of points
-        point_list = component_instance.local_data['point_list']
-        for point in point_list:
-            bottle2 = bottle.addList()
-            for i in range(3):
-                bottle2.addDouble(point[i])
-
-        yarp_port.write()
     except KeyError as detail:
         print ("ERROR: Specified port does not exist: ", detail)
+        return
+
+    bottle = yarp_port.prepare()
+    bottle.clear()
+    # Go through the list of points
+    point_list = component_instance.local_data['point_list']
+    for point in point_list:
+        bottle2 = bottle.addList()
+        for i in range(3):
+            bottle2.addDouble(point[i])
+
+    yarp_port.write()

@@ -50,7 +50,7 @@ class MorseMiddlewareClass(object):
             function = getattr(self, function_name)
             return function
         except AttributeError as detail:
-            print ("ERROR while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
+            #print ("ERROR while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
             return None
 
 
