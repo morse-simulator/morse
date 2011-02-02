@@ -1,41 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "ors_lwr_poster.h"
-
-
-POSTER_ID locate_poster (char*	poster_name, int* ok)
-{
-	POSTER_ID id;
-
-	STATUS s = posterFind (poster_name, &id);
-	if (s == ERROR)
-	{
-		char buf[1024];
-		h2getErrMsg(errnoGet(), buf, sizeof(buf));
-		printf ("Unable to locate the %s poster : %s\n", poster_name, buf);
-		*ok = 0;
-		return (NULL);
-	}
-	else
-		printf ("INIT ID = %p (pointer)\n", id);
-		*ok = 1;
-
-	return (id);
-}
-
 
 // Return the data structure to Python.
 // It will understand, since the definition of the structure is
 //  in the files included in SWIG
-Gb_q7 read_lwr_data( POSTER_ID id )
+Gb_q7 read_lwr_data( PosterHandler* handler, int *ok)
 {
-	//LWR_ARM_INST local_lwr;
-    Gb_q7 local_q7;
-	int offset = 0;
-    int bytes;
 
-	bytes = posterRead (id, offset, &local_q7, sizeof(Gb_q7));
+	Gb_q7 local_q7;
+	read_poster(handler, ok, &local_q7, sizeof(Gb_q7));
 
     /*
 	printf ("SWIG: Reading %d bytes from poster ID = %p (pointer)   %d(integer)\n", bytes, id, id);
@@ -52,9 +24,3 @@ Gb_q7 read_lwr_data( POSTER_ID id )
 }
 
 
-int finalize (POSTER_ID id)
-{
-	posterDelete(id);
-
-	return 0;
-}

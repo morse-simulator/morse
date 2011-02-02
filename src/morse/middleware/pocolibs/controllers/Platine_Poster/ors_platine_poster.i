@@ -17,4 +17,5 @@
 
 /* Parse the header file to generate wrappers */
 %include "pom/pomStruct.h"
+%include "../PosterHandler.h"
 %include "ors_platine_poster.h"

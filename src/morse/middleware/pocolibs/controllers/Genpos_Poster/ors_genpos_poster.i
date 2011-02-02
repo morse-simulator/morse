@@ -16,5 +16,6 @@
 %}
 
 /* Parse the header file to generate wrappers */
+%include "../PosterHandler.h"
 %include "ors_genpos_poster.h"
 %include "genPos/genPosStruct.h"

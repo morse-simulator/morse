@@ -1,6 +1,4 @@
-#include <posterLib.h>
+#include "../PosterHandler.h"
 #include <genPos/genPosStruct.h>
 
-POSTER_ID locate_poster (char* poster_name, int* ok);
-GENPOS_CART_SPEED read_genPos_data( POSTER_ID id );
-int finalize ( POSTER_ID id );
+GENPOS_CART_SPEED read_genPos_data(PosterHandler* handle, int *ok); 

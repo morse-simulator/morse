@@ -15,26 +15,21 @@ def init_extra_module(self, component_instance, function, mw_data):
         # Compose the name of the poster, based on the parent and module names
         poster_name = '{0}_{1}'.format(parent_name, component_name)
 
-    poster_id, ok = ors_genpos_poster.locate_poster(poster_name)
-    # Use the value of 'ok' to determine if the poster was found
-    if ok != 0:
-        print ("Located 'genPos' poster. ID=%d" % poster_id)
-        self._poster_in_dict[component_name] = poster_id
-        component_instance.input_functions.append(function)
-    else:
-        print ("Poster 'genPos' not found. Component will not work")
-
+    poster_id = ors_genpos_poster.createPosterHandler(poster_name)
+    self._poster_in_dict[component_name] = poster_id
+    component_instance.input_functions.append(function)
 
 def read_genpos(self, component_instance):
     """ Read v,w from a genPos poster """
     # Read from the poster specified
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
-    genpos_speed = ors_genpos_poster.read_genPos_data(poster_id)
+    genpos_speed, ok = ors_genpos_poster.read_genPos_data(poster_id)
     #print ("Tuple type ({0}) returned".format(type(genpos_speed)))
     #print ("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
 
-    component_instance.local_data['v'] = genpos_speed.v
-    component_instance.local_data['w'] = genpos_speed.w
-
-    # Return true to indicate that a command has been received
-    return True
+    if ok != 0:
+        component_instance.local_data['v'] = genpos_speed.v
+        component_instance.local_data['w'] = genpos_speed.w
+        return True
+    else:
+        return False
