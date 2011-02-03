@@ -124,10 +124,12 @@ as *posters*, *topics*, *ports*, ... depending on the middleware, and
 simulator are transmitted through data streams while services enable
 remote and on-line configuration of the simulator.
 
-We currently support a generic socket-based interface, `YARP <http://eris.liralab.it/yarp/>`_ and
-`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares are expected to be added in the 
-coming versions (partial `ROS <http://www.ros.org>`_ support is available in 
-the development trunk).
+We currently support a generic socket-based interface, `YARP <http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_ and
+`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares may be added in coming versions. Drop us a mail
+if you have specific needs.
+
+.. note::
+  Some components/services may not be supported by a specific middleware.
 
 Detailled information: 
 

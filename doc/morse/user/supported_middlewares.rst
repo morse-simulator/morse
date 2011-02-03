@@ -1,7 +1,6 @@
 Middleware Support in MORSE
 ===========================
 
-
 Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal
 functioning is not tied no any one particular middleware, but it is capable of
@@ -17,8 +16,6 @@ Current list of compatible middlewares
     :maxdepth: 1
 
     middlewares/*
-
-Support for ROS is planned for MORSE 0.3.
 
 Linking a middleware in a scene 
 -------------------------------
