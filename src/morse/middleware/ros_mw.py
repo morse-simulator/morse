@@ -127,7 +127,7 @@ class ROSClass(morse.helpers.middleware.MorseMiddlewareClass):
             # publish the message on the correct topic    
             if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
                 topic.publish(laserscan)
-                
+    # NOTE: Posting Odometry messages is still experimental                    
     def post_odometry(self, component_instance):
         """ Publish the data on the rostopic
 		"""
