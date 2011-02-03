@@ -11,13 +11,14 @@ class SocketRequestManager(RequestManager):
     raw ASCII sockets.
 
     The syntax of requests is:
-    >>> component_name service [params in JSON format]
+    >>> id component_name service [params with Python syntax]
+
+    'id' is an identifier set by the client to conveniently identify
+    the request. It must be less that 80 chars in [a-zA-Z0-9].
 
     The server answers:
-    >>> OK|FAIL component_name service result_in_JSON|error_msg
+    >>> id OK|FAIL result_in_python|error_msg
 
-    In case of failure while the request is being parsed, the
-    server returns 'undefined' as component name and service name.
     """
 
     def __str__(self):
@@ -29,6 +30,14 @@ class SocketRequestManager(RequestManager):
         # by socket.makefile()
         self._client_sockets = {}
         
+        # For asynchronous request, this holds the mapping between a
+        # request_id and the socket which requested it.
+        self._pending_sockets = {}
+
+        # Stores for each socket client the pending results to write
+        # back.
+        self._results_to_output = {}
+
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
@@ -43,19 +52,6 @@ class SocketRequestManager(RequestManager):
             return False
 
         print("Socket service manager now listening on port " + str(SERVER_PORT) + ".")
-
-
-        # This map holds the results (either success or failures)
-        # to output to a client.
-        # It maps a socket to a tuple of 4 items:
-        # (success_status, component_name, service_name, result)
-        # If success_status is False (failure), result contains the
-        # error message (if available)
-        self._results_to_output = {}
-
-        # For long term request, this holds the mapping between a
-        # service and the socket which requested it.
-        self._pending_sockets = {}
 
         return True
 
@@ -73,22 +69,22 @@ class SocketRequestManager(RequestManager):
 
         return True
 
-    def _on_service_completion(self, component, service, result):
+    def _on_service_completion(self, request_id, results):
 
         s = None
 
         try:
-            s = self._pending_sockets[component + "#" + service]
+            s, id = self._pending_sockets[request_id]
         except KeyError:
             print(str(self) + ": ERROR: I can not find the socket which requested " + request)
             return
 
         if s in self._results_to_output:
-            self._results_to_output[s].append((True, component, service, results))
+            self._results_to_output[s].append((id, True, results))
         else:
-            self._results_to_output[s] = [(True, component, service, results)]
+            self._results_to_output[s] = [(id, True, results)]
 
-    def _post_registration(self, component, service, rpc, is_done):
+    def _post_registration(self, component, service, rpc, is_async):
         return True
 
     def _main(self):
@@ -101,18 +97,7 @@ class SocketRequestManager(RequestManager):
            pass
         except socket.error:
            pass
-        
-        if self._results_to_output:
-            for o in outputready:
-                if o in self._results_to_output:
-                    for r in self._results_to_output[o]:
-                        response = "%s %s %s %s" % ('OK' if r[0] else 'FAIL', r[1], r[2], str(r[3]))
-                        print("Sending back " + response + " to " + str(o))
-                        self._client_sockets[o].write(response)
-                        self._client_sockets[o].write("\n")
-                        self._client_sockets[o].flush()
-                    del self._results_to_output[o]
-        
+
         for i in inputready:
             if i == self._server:
                 sock, addr = self._server.accept()
@@ -121,40 +106,60 @@ class SocketRequestManager(RequestManager):
 
             else:
                 req = self._client_sockets[i].readline().strip()
-                print("Got '" + req + "' from " + str(i))
 
                 component = service = "undefined"
 
                 try:
+                    try:
+                        id, req = req.split(" ", 1)
+                    except ValueError: # Request contains < 2 tokens.
+                        id = req
+                        raise MorseRPCInvokationError("Malformed request! ")
+
+                    id = id.strip()
+                
+                    print("Got '" + req + "' (id = " + id + ") from " + str(i))
 
                     component, service, params = self.parse_request(req)
 
                     # _on_incoming_request returns either 
-                    #(True, result) if it's a 'short term'
+                    #(True, result) if it's a synchronous
                     # request that has been immediately executed, or
-                    # (False, None) if it's a long term request whose
-                    # termination will be notified via _is_completed.
-                    short_term, results = self._on_incoming_request(component, service, params)
+                    # (False, request_id) if it's an asynchronous request whose
+                    # termination will be notified via
+                    # _on_service_completion.
+                    is_sync, value = self._on_incoming_request(component, service, params)
 
-                    if short_term:
+                    if is_sync:
                         if i in self._results_to_output:
-                            self._results_to_output[i].append((True, component, service, results))
+                            self._results_to_output[i].append((id, True, value))
                         else:
-                            self._results_to_output[i] = [(True, component, service, results)]
+                            self._results_to_output[i] = [(id, True, value)]
                     else:
-                        # Stores the mapping service/socket to notify
+                        # Stores the mapping request/socket to notify
                         # the right socket when the service completes.
-                        # (cf :py:meth:_is_completed)
-                        self._pending_sockets[component + "#" + service] = i
+                        # (cf :py:meth:_on_service_completion)
+                        # Here, 'value' is the internal request id while
+                        # 'id' is the id used by the socket client.
+                        self._pending_sockets[value] = (i, id)
 
 
                 except MorseRPCInvokationError as e:
                         if i in self._results_to_output:
-                            self._results_to_output[i].append((False, component, service, e.value))
+                            self._results_to_output[i].append((id, False, e.value))
                         else:
-                            self._results_to_output[i] = [(False, component, service, e.value)]
-
-
+                            self._results_to_output[i] = [(id, False, e.value)]
+        
+        if self._results_to_output:
+            for o in outputready:
+                if o in self._results_to_output:
+                    for r in self._results_to_output[o]:
+                        response = "%s %s %s" % (r[0], 'OK' if r[1] else 'FAIL', str(r[2]))
+                        print("Sending back " + response + " to " + str(o))
+                        self._client_sockets[o].write(response)
+                        self._client_sockets[o].write("\n")
+                        self._client_sockets[o].flush()
+                    del self._results_to_output[o]
 
 
     def parse_request(self, req):
@@ -164,7 +169,7 @@ class SocketRequestManager(RequestManager):
 
         tokens = req.split(" ", 2)
         if len(tokens) < 2 or len(tokens) > 3:
-            raise MorseRPCInvokationError("Invalid request: at least 2 values and at most 3 tokens are expected (component, service, [params]i)")
+            raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component, service, [params])")
 
         if len(tokens) == 2:
             component, service = tokens
@@ -175,7 +180,7 @@ class SocketRequestManager(RequestManager):
 
             try:
                 p =  eval(params, {"__builtins__": None},{})
-            except SyntaxError as se:
-                raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters.")
+            except (NameError, SyntaxError) as e:
+                raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 
         return (component, service, p)

@@ -1,5 +1,7 @@
 import os
 import sys
+import uuid
+from functools import partial
 
 from abc import ABCMeta, abstractmethod
 
@@ -32,8 +34,8 @@ class RequestManager(object):
  
     To implement a concrete RequestManager (for a new middleware, for instance)
     , the following methods must be overloaded:
-        - py:meth:_initialization: perform here middleware specific initialization
-        - py:meth:_finalization: perform here middleware specific finalization
+        - :py:meth:_initialization: perform here middleware specific initialization
+        - :py:meth:_finalization: perform here middleware specific finalization
         - :py:meth:_post_registration: put here all middleware specific code
         that must be executed when a new service is registered.
         - :py:meth:_on_service_completion: this method is called when a 'long term'
@@ -59,13 +61,17 @@ class RequestManager(object):
 
         # This map holds the list of all registered services
         # It associates the service name to a tuple
-        # (rpc_callable_method, is_done_callable | None)
+        # (rpc_callback, is_async)
         self._services = {}
 
-        # This map contains the list of pending requests.
-        # It is updated on each call to 
-        # :py:meth:update_pending_calls()
-        self._pending_calls = {}
+        # This hold the mapping request id <-> result for asynchronous
+        # requests.
+        # Keys are request ids, values are either 'None' for pending
+        # requests or a tuple (True|False, result|error_msg) for
+        # completed service calls.
+        # It is updated on each call to :py:meth:_update_pending_calls()
+        self._completed_requests = {}
+
 
         if not self._initialization():
             raise MorseServiceError("Couldn't create the service manager! Initialization failure")
@@ -103,61 +109,81 @@ class RequestManager(object):
         return "Generic request manager"
 
     @abstractmethod
-    def _post_registration(self, component_name, service_name, callable_method, callable_is_done):
+    def _post_registration(self, component_name, service_name, callback, is_async):
         """ This method is meant to be overloaded by middlewares that have
         specific initializations to do when a new service is exposed.
 
-        :param component_name: name of the component that declare this service
-        :param service_name: Public name of the service
-        :param callable callable_method: Method to invoke on incoming request
-        :param callable_is_done: If defined, means that the service can last.
-               In this case, callable_is_done returns True when the service has ter
-               minated. See :py:meth:register_service for details.
-        :type callable_is_done: callable or None
+        :param string component_name: name of the component that declare this service
+        :param string service_name: Public name of the service
+        :param callable callback: Method to invoke on incoming request
+        :param boolean is_async: If true, means that the service is asynchronous.
         :return True if the registration succeeded.
         :rtype boolean
         """
         pass
 
 
-    def register_service(self, component_name, callable_method, callable_is_done = None, service_name = None):
-        """ Allows a component to register a RPC method that is made
+    def register_async_service(self, component_name, callback, service_name = None):
+        """ Allows a component to register an asynchronous RPC method.
+
+        A asynchronous method can last for several cycles without blocking the simulator.
+        The callback method must take as first parameter a callable that must be used
+        to set the results of the service upon completion.
+
+        For example, consider the following sample of asynchronous service:
+
+            def complex_computation(result_setter, param1, param2):
+                do_computation_step() #should stay short, but can last several simulation steps
+
+                if computation_done:
+                    result_setter(computation_results)
+
+            request_manager.register_async_service("computer", complex_computation)
+
+        As soon as the 'result_setter' is called with the results of the service,
+        the clients of this service are notified via their middlewares.
+
+        See :py:meth:register_service for detailed documentation of parameters.
+        """
+        self.register_service(component_name, callback, service_name, True)
+
+
+    def register_service(self, component_name, callback, service_name = None, async = False):
+        """ Allows a component to register a synchronous RPC method that is made
         publicly available to the outside world.
 
         :param string component_name: name of the component that declare this service
-        :param callable_method: the method name to invoke on incoming
+        :param callable callback: the method name to invoke on incoming
                request.
                If service_name is not defined, it will also be used as
                the public name of the service.
-               If callable_is_done is not defined, the method is expected to
-               return immediately. In this case, its return value is send
-               back to the original caller.
-        :param callable_is_done: a method that returns a tuple (True,
-               return_value) if the callback method has terminated,
-               (False, None) else. This allows services to last for
+               If async is false (synchronous service), the method is expected to
+               return immediately. In this case, its return value is immediately
+               send back to the original caller.
+        :param boolean async: if true, the service is asynchronous: it can last for
                several cycles without blocking the communication interface.
+               See :py:meth:register_async_service for details.
         :param service_name: if defined, service_name is used as public
                name for this RPC method.
         """
         
-        if callable(callable_method):
-            service_name = service_name if service_name else callable_method.__name__
+        if callable(callback):
+            service_name = service_name if service_name else callback.__name__
 
             name = component_name + "#" + service_name
-            #Check that, if callable_is_done is provided, it is actually callable
-            if callable_is_done and not callable(callable_is_done):
-                print(str(self) + ": ERROR while registering a new service: the provided 'is_done' callable is not callable!")
-                return
 
-            self._services[name] = (callable_method, callable_is_done)
+            self._services[name] = (callback, async)
 
-            if self._post_registration(component_name, name, callable_method, callable_is_done):
-                print(str(self) + ": New service " + name + " for " + component_name + " successfully registered")
+            if self._post_registration(component_name, name, callback, async):
+                print(str(self) + ": New " + \
+                    ("asynchronous" if async else "synchronous") + " service " + \
+                    name + " for " + component_name + " successfully registered")
             else:
-                print(str(self) + ": ERROR while registering a new service: could not complete the post-registration step.")
+                print(str(self) + ": ERROR while registering a new service: " + \
+                        "could not complete the post-registration step.")
 
         else:
-            print (str(self) + ": ERROR while registering a new service: " + str(callable_method) + \
+            print (str(self) + ": ERROR while registering a new service: " + callback.__name__ + \
                     " is not a callable object.")
 
     def _on_incoming_request(self, component, service, params):
@@ -171,42 +197,51 @@ class RequestManager(object):
         :py:class:MorseRPCInvokationError is raised.
 
         If everything goes well, the method return a tuple: (True, return_value) or
-        (False, None). The first item tells if the method returns
+        (False, request_id). The first item tells if the service is a synchronous
+        (short-term) service (value is True) or an asynchronous service (False).
+
+        For asynchronous services, the returned request id should allow to track
+        the completion of the service. Upon completion, :py:meth:_on_completion
+        is invoked.
 
         """
 
         print("Incoming request " + service + " for " + component + "!")
+
+        request_id = uuid.uuid4() #Unique ID for our request
+        
         try:
-            method, is_done = self._services[component + "#" + service]
+            method, is_async = self._services[component + "#" + service]
         except KeyError:
             raise MorseRPCInvokationError("The request " + service + " has not been registered in " + str(self))
 
-        if is_done: #A callable has been defined to test when the service ends: its a 'long duration' service
-            self._pending_calls[service] = is_done
-
+        if is_async:
+            # Creates a result setter functor
+            self._completed_requests[request_id] = None
+            result_setter = partial(self._completed_requests.__setitem__, request_id)
             #Invoke the method with unpacked parameters
             try:
-                ok = method(*params) if params else method()
+                ok = method(result_setter, *params) if params else method(result_setter)
             except TypeError as e:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong number of parameters for service " + service + ". " + str(e))
+                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
             if ok:
-                print("Long-term request -> successfully dispatched to the component.")
-                return (False, None)
+                print("Asynchronous request -> successfully started.")
+                return (False, request_id)
             else:
                 raise MorseRPCInvokationError(str(self) + ": ERROR: RPC call " + service + " could not get dispatched.")
 
-        else: #Short call.
+        else: #Synchronous service.
             try:
                 #Invoke the method
-                print("Short-term request -> invoking it now.")
+                print("Sychronous service -> invoking it now.")
                 try:
-                    values = method(*params) if params else method()
+                    values = method(*params) if params else method() #Invoke the method with unpacked parameters
                 except TypeError as e:
-                    raise MorseRPCInvokationError(str(self) + ": ERROR: wrong number of parameters for service " + service + ". " + str(e))
+                    raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
                 print("Done. Result: " + str(values))
-                return (True, values) #Invoke the method with unpacked parameters
+                return (True, values)
             except:
                 raise MorseRPCInvokationError(str(self) + ": ERROR: An exception occured during the execution of the service " + service + "!")
 
@@ -216,25 +251,24 @@ class RequestManager(object):
         On completion, it calls the :py:meth:_is_completed method.
         """
 
-        if self._pending_calls:
-            for request, is_done in self._pending_calls.items():
-                done, value = is_done()
-
-            if done:
-                print(str(self) + ": " + request + " is now completed.")
-                del self._pending_calls[request]
-                self._on_service_completion(component, request, value)
+        if self._completed_requests:
+            for request, result in self._completed_requests.items():
+                if result:
+                    print(str(self) + ": Request " + str(request) + " is now completed.")
+                    del self._completed_requests[request]
+                    self._on_service_completion(request, result)
 
     @abstractmethod
-    def _on_service_completion(self, component, request, result):
-        """ This method is called when a 'long term' request completes.
+    def _on_service_completion(self, request_id, result):
+        """ This method is called when a asynchronous request completes.
 
         Subclasses are expected to overload this method with code to notify
         the original request emitter.
 
-        TODO: For now, this method does not allow to know if the service call
-        has been successful or not. This should be returned by the 'is_done' 
-        callable. To be defined!
+        :param uuid request_id: the request id, as return by :py:meth:_on_incoming_request
+                    when processing an asynchronous request
+        :param tuple result: a tuple (True|False, result|error_msg) depending
+                    on the execution result.
         """
         pass
 
