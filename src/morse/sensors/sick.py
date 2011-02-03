@@ -3,6 +3,8 @@ if GameLogic.pythonVersion < 3:
     import Mathutils as mathutils
 else:
     import mathutils
+    
+import math
 import morse.helpers.sensor
 import morse.helpers.math
 
@@ -46,6 +48,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
         """
         # Reset the list of points
         self.local_data['point_list'] = []
+        self.local_data['ranges_list'] = []
 
         # Obtain the rotation matrix of the sensor.
         inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
@@ -139,6 +142,11 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                         arc_point = [0.0, 0.0, 0.0]
 
                     self.local_data['point_list'].append(arc_point)
+                    
+                    #calculate ranges of the laserscanner based on Blender_object pose and points
+                    xx = arc_point[0] - self.blender_obj.position[0]
+                    yy = arc_point[1] - self.blender_obj.position[1]
+                    self.local_data['ranges_list'].append((math.sqrt(pow(xx,2)+pow(yy,2))))
 
 
 def valid_range(point_vector, radius):
