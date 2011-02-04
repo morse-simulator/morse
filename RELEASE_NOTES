@@ -1,3 +1,26 @@
+MORSE 0.3
+=========
+
+Middlewares
+-----------
+
+- Initial support for the ROS (http://www.ros.org) middleware.
+- ROS: Odometry and laser scanner sensors are exported using standard
+  messages.
+
+Architectural changes
+---------------------
+
+- MORSE now support *services* to configure components
+and the general behaviour of the simulation at runtime.
+
+- services are available for the socket-based text interface
+
+New sensors/actuators
+---------------------
+
+- clever waypoint controller that avoid obstacles
+
 MORSE 0.2 - The HRI release
 ===========================
 

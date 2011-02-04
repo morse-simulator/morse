@@ -116,13 +116,20 @@ To learn how to add new components (sensors, robots...), please refer to the
 Supported middlewares
 ---------------------
 
-MORSE relies on *middlewares* to integrate in your robotic architecture.
+MORSE relies on **middlewares** to integrate in your robotic architecture.
 
-We currently support only `YARP <http://eris.liralab.it/yarp/>`_, 
-`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and a simple 
-text-based socket protocol. More middlewares are expected to be added in the 
-next versions (partial `ROS <http://www.ros.org>`_ support is available in 
-the development trunk).
+It uses both the concepts of **data streams** (in input or output), referred
+as *posters*, *topics*, *ports*, ... depending on the middleware, and
+**services** (or *requests*, *RPC*...) : data produced or consumed by the
+simulator are transmitted through data streams while services enable
+remote and on-line configuration of the simulator.
+
+We currently support a generic socket-based interface, `YARP <http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_ and
+`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares may be added in coming versions. Drop us a mail
+if you have specific needs.
+
+.. note::
+  Some components/services may not be supported by a specific middleware.
 
 Detailled information: 
 
@@ -168,6 +175,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/dev_workflow
     dev/adding_component
     dev/adding_modifier
+    dev/services
     dev/new_middleware
 
 Tips and how-tos 
@@ -187,8 +195,8 @@ Publications
 
 - `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011
 - Presentation of MORSE at the Blender Conference 2010:
-`slides <http://homepages.laas.fr/gechever/BlenderConference/BC_morse.pdf>`_ and
-`video <http://www.youtube.com/watch?v=BGDfbi28s14#t=20m20s>`_
+  `slides <http://homepages.laas.fr/gechever/BlenderConference/BC_morse.pdf>`_ and
+  `video <http://www.youtube.com/watch?v=BGDfbi28s14#t=20m20s>`_
 
 Screenshots
 +++++++++++

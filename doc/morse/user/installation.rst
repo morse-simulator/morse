@@ -92,13 +92,6 @@ To install::
   $ cd $ROBOTPKG_BASE/robotpkg/middleware/pocolibs
   $ make update
 
-ROS
-~~~
-
-Due to the current lack of official support for Python3, ROS support is still partial. The setup is even quite of an adventure :-)
-
-Detailled informations to install a Python3 compatible ROS are :doc:`here <ros_installation>`.
-
 Installation 
 ------------
 

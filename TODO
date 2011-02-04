@@ -13,6 +13,7 @@ File history:
 22/11/2010 - Severin: update of the TODO list before 0.2a1 tag, created a preliminary list of target for 0.3
 04/01/2011 - Severin: update of the TODO list before 0.2b1 tag
 19/01/2011 - Severin: updated before morse-0.2 release
+03/02/2011 - Severin: updated for morse-0.3 and morse-0.4 targets
 ---
 
 =========================
@@ -21,12 +22,25 @@ File history:
 
 Middlewares
 -----------
-- Requests: be sure that components can be remotely (ie by clients) configured
-- Full ROS support
+
+- Requests: ensure some working control of the simulation
+  based on the socket interface (restart, pause,...)
+- ROS support for the robot's joint state and camera
+
+=========================
+ TARGETS FOR RELEASE 0.4
+=========================
+
+Middlewares
+-----------
+
+- add support for services through the YARP, ROS and Pocolibs middleware
 
 Architecture
 ------------
-- how components access other components? (eg: the cameras need the position of the robot)
+
+- make clear how components access other components? (eg: the cameras need the
+  position of the robot)
 
 Components
 ----------
@@ -34,7 +48,6 @@ Components
 - Motion capture poster: MORSE should be able to simulate a motion capture setup
 by allowing the designer to paste markers in the scene whose position will be exported
 - "Point Cloud" sensor
-- clever waypoint controller that avoid obstacles
 
 Coding style
 ------------

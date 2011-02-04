@@ -6,16 +6,17 @@ Blender 2.5x relies on Python3.x which is currently (Jan 2011) not supported by 
 The following steps explains how to get a working Python3 ROS setup, suitable for use with MORSE.
 
 #. Install ROS unstable (check http://www.ros.org/wiki/unstable if needed)
-#. Install Python3.x (these instructions where tested with Python3.1)
+#. Install Python3.x (these instructions where tested with Python3.1) manually or using
+   your system package manager
 #. Install PyYAML with Python3 support (PyYAML >= 3.09, you can get it from http://pyyaml.org/)
 
   - Install it with ``python3.1 setup.py install`` to be sure to have the Python3 libraries
 
 #. Replace the ``ros`` and ``ros_comm`` stacks with the versions found here:
 
-  - http://code.in.tum.de/indefero/index.php/p/rospy3-stacks-ros/
-  - http://code.in.tum.de/indefero/index.php/p/rospy3-stacks-ros-comm/
-    
+  - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros.git``
+  - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros-comm.git``
+
 Check everything run fine by:
 
 #. making sure your default Python executable is Python 3.x (``python --version``)
