@@ -16,6 +16,10 @@ The following steps explains how to get a working Python3 ROS setup, suitable fo
 
   - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros.git``
   - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros-comm.git``
+  
+#. Add your the path to your ``roslib-stack`` to your Pythonpath (this is needed for MORSE to load ROS manifest-files)
+
+  - `` export PYTHONPATH=${YOUR_ROS_INSTALLATION_PATH}/ros/core/roslib/src:${PYTHONPATH}``
 
 Check everything run fine by:
 
