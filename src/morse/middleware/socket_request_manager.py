@@ -89,7 +89,7 @@ class SocketRequestManager(RequestManager):
 
     def _main(self):
         
-        sockets = self._client_sockets.keys() + [self._server]
+        sockets = list(self._client_sockets.keys()) + [self._server]
 
         try:
             inputready, outputready, exceptready = select.select(sockets, sockets, [])
@@ -101,7 +101,7 @@ class SocketRequestManager(RequestManager):
         for i in inputready:
             if i == self._server:
                 sock, addr = self._server.accept()
-                self._client_sockets[sock] = sock.makefile() #convert the socket into a file interface to ease reading
+                self._client_sockets[sock] = sock.makefile("rw") #convert the socket into a file interface to ease reading
                 print("Accepted new service connection from " + str(addr))
 
             else:

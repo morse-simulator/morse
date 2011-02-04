@@ -167,7 +167,7 @@ class RequestManager(object):
                name for this RPC method.
         """
         
-        if callable(callback):
+        if hasattr(callback, '__call__'):
             service_name = service_name if service_name else callback.__name__
 
             name = component_name + "#" + service_name
@@ -252,7 +252,7 @@ class RequestManager(object):
         """
 
         if self._completed_requests:
-            for request, result in self._completed_requests.items():
+            for request, result in list(self._completed_requests.items()):
                 if result:
                     print(str(self) + ": Request " + str(request) + " is now completed.")
                     del self._completed_requests[request]
@@ -267,8 +267,7 @@ class RequestManager(object):
 
         :param uuid request_id: the request id, as return by :py:meth:_on_incoming_request
                     when processing an asynchronous request
-        :param tuple result: a tuple (True|False, result|error_msg) depending
-                    on the execution result.
+        :param result: the service execution result.
         """
         pass
 
