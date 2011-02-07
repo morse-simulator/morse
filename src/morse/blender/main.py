@@ -13,7 +13,8 @@ try:
 except ImportError as detail:
     print ("WARNING: ", detail, ". No middlewares will be configured")
 
-
+# The service management
+from morse.core.services import MorseServices
 
 
 # Create a list of the robots in the scene
@@ -181,6 +182,7 @@ def link_middlewares():
         missing_component = False
         # Look for the listed mw in the dictionary of active mw's
         for mw_obj, mw_instance in GameLogic.mwDict.items():
+            print(mw_name, mw_obj.name)
             if mw_name in mw_obj.name:
                 found = True
                 # Get the instance of the object
@@ -247,7 +249,10 @@ def add_modifiers():
     return True
 
 def init(contr):
-    """ Open the communication ports for administration."""
+    """ General initialization of MORSE
+
+    Here, all components, modifiers and middleware are initialized.
+    """
     print ('\n######## SCENE INITIALIZATION ########')
     # Get the version of Python used, according to the pythonpath
     # This is used to determine also the version of Blender
@@ -273,17 +278,39 @@ def init(contr):
         contr = GameLogic.getCurrentController()
         close_all(contr)
 
+    init_services()
+
     #Display the mouse in the simulator
     #Rasterizer.showMouse(1)
 
 
-def admin(contr):
+def init_services():
     """ Method to listen to events during the simulation
 
     Does nothing for the moment.
     """
-    return
+    
+    GameLogic.morse_services = MorseServices()
+    GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
 
+    # The simulation 'supervision' always uses at least sockets for requests.
+    GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+
+    # Services can be imported *only* after GameLogic.morse_services has been 
+    # created. Else @service won't know where to register the RPC
+    # callbacks.
+    import morse.core.supervision_services
+
+    print("======= SERVICE MANAGERS INITIALIZED ========")
+
+def simulation_main(contr):
+    """ This method is called at every simulation step.
+
+    We do here all homeworks to manage the simulation at whole.
+    """
+    if hasattr(GameLogic, "morse_services"):
+        # let the service managers process their inputs/outputs
+        GameLogic.morse_services.process()
 
 def close_all(contr):
     print ('######### TERMINATING INSTANCES... ########')
