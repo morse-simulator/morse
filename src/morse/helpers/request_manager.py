@@ -2,21 +2,9 @@ import os
 import sys
 import uuid
 from functools import partial
-
 from abc import ABCMeta, abstractmethod
 
-class MorseServiceError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class MorseRPCInvokationError(MorseServiceError):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
- 
+from morse.core.exceptions import MorseServiceError, MorseRPCInvokationError
 
 class RequestManager(object):
     """ Basic Class for all request dispatchers, ie, classes that
@@ -183,7 +171,7 @@ class RequestManager(object):
                         "could not complete the post-registration step.")
 
         else:
-            print (str(self) + ": ERROR while registering a new service: " + callback.__name__ + \
+            print (str(self) + ": ERROR while registering a new service: " + str(callback) + \
                     " is not a callable object.")
 
     def _on_incoming_request(self, component, service, params):
@@ -232,18 +220,15 @@ class RequestManager(object):
                 raise MorseRPCInvokationError(str(self) + ": ERROR: RPC call " + service + " could not get dispatched.")
 
         else: #Synchronous service.
+            #Invoke the method
+            print("Sychronous service -> invoking it now.")
             try:
-                #Invoke the method
-                print("Sychronous service -> invoking it now.")
-                try:
-                    values = method(*params) if params else method() #Invoke the method with unpacked parameters
-                except TypeError as e:
-                    raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
+                values = method(*params) if params else method() #Invoke the method with unpacked parameters
+            except TypeError as e:
+                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
-                print("Done. Result: " + str(values))
-                return (True, values)
-            except:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: An exception occured during the execution of the service " + service + "!")
+            print("Done. Result: " + str(values))
+            return (True, values)
 
     def _update_pending_calls(self):
         """This method is called at each simulation steps and check if pending requests are

@@ -48,7 +48,7 @@ class SocketRequestManager(RequestManager):
             self._server = None
 
         if not self._server:
-            print("Couldn't bind the socket server! Aborting.")
+            print("Couldn't bind the socket server! Port busy?")
             return False
 
         print("Socket service manager now listening on port " + str(SERVER_PORT) + ".")
@@ -92,7 +92,7 @@ class SocketRequestManager(RequestManager):
         sockets = list(self._client_sockets.keys()) + [self._server]
 
         try:
-            inputready, outputready, exceptready = select.select(sockets, sockets, [])
+            inputready, outputready, exceptready = select.select(sockets, sockets, [], 0) #timeout = 0 : Never block, just poll
         except select.error:
            pass
         except socket.error:
@@ -101,6 +101,7 @@ class SocketRequestManager(RequestManager):
         for i in inputready:
             if i == self._server:
                 sock, addr = self._server.accept()
+
                 self._client_sockets[sock] = sock.makefile("rw") #convert the socket into a file interface to ease reading
                 print("Accepted new service connection from " + str(addr))
 
@@ -155,10 +156,16 @@ class SocketRequestManager(RequestManager):
                 if o in self._results_to_output:
                     for r in self._results_to_output[o]:
                         response = "%s %s %s" % (r[0], 'OK' if r[1] else 'FAIL', str(r[2]))
-                        print("Sending back " + response + " to " + str(o))
-                        self._client_sockets[o].write(response)
-                        self._client_sockets[o].write("\n")
-                        self._client_sockets[o].flush()
+                        try:
+                            self._client_sockets[o].write(response)
+                            self._client_sockets[o].write("\n")
+                            self._client_sockets[o].flush()
+                            print("Sent back " + response + " to " + str(o))
+                        except socket.error:
+                            print("It seems that a socket client left. Closing the socket.")
+                            self._client_sockets[o].close()
+                            del self._client_sockets[o]
+                            
                     del self._results_to_output[o]
 
 
