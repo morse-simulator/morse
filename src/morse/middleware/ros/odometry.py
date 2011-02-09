@@ -1,7 +1,13 @@
-import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('rosgraph_msgs')  
+import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('rosgraph_msgs')
 import rospy
 import std_msgs
 from nav_msgs.msg import Odometry
+#import GameLogic
+#if GameLogic.pythonVersion < 3:
+#    import Mathutils as mathutils
+#else:
+#    import mathutils
+import mathutils
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -27,9 +33,13 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.position.x = component_instance.position_3d.x
     odometry.pose.pose.position.y = component_instance.position_3d.y
     odometry.pose.pose.position.z = component_instance.position_3d.z
-    odometry.pose.pose.orientation.x = component_instance.position_3d.roll
-    odometry.pose.pose.orientation.x = component_instance.position_3d.pitch
-    odometry.pose.pose.orientation.x = component_instance.position_3d.yaw
+    euler = mathutils.Euler((component_instance.position_3d.yaw, component_instance.position_3d.pitch, component_instance.position_3d.roll))
+    quaternion = euler.to_quat()
+    odometry.pose.pose.orientation.w = quaternion.w
+    odometry.pose.pose.orientation.x = quaternion.x
+    odometry.pose.pose.orientation.y = quaternion.y
+    odometry.pose.pose.orientation.z = quaternion.z
+    
         
     for topic in self._topics: 
         message = odometry
