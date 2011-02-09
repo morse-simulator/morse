@@ -28,42 +28,28 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
         # Look for a child arc to use for the scans
         for child in obj.children:
             if arc_prefix in child.name:
-                self.ray_arc = child
-                print ("Sick: Using arc object: '{0}'".format(self.ray_arc))
+                self._ray_arc = child
+                print ("Sick: Using arc object: '{0}'".format(self._ray_arc))
                 break
 
         # Set its visibility, according to the settings
-        self.ray_arc.setVisible(self.blender_obj['Visible_arc'])
+        self._ray_arc.setVisible(self.blender_obj['Visible_arc'])
+        self._ray_list = []
 
         # Create an empty list to store the intersection points
         self.local_data['point_list'] = []
+        self.local_data['range_list'] = []
 
-        print ('######## SICK INITIALIZED ########')
-
-
-    def default_action(self):
-        """ Do ray tracing from the SICK object using a semicircle
-
-        Generates a list of lists, with the points located.
-        """
-        # Reset the list of points
-        self.local_data['point_list'] = []
-        self.local_data['ranges_list'] = []
-
-        # Obtain the rotation matrix of the sensor.
-        inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
-
-        # Create a vector for the mathutils operations
-        vector_point = mathutils.Vector()
-
-        # Get the mesh for the semicircle
-        for mesh in self.ray_arc.meshes:
+        # Initialize the ray vectors and the point list
+        for mesh in self._ray_arc.meshes:
             for mat in range(mesh.numMaterials):
+                index = 0
                 for v_index in range(mesh.getVertexArrayLength(mat)):
                     vertex = mesh.getVertex(mat, v_index)
                     vertex_pos = vertex.getXYZ()
 
-                    #print ("\tORIGINAL POINT: [%.4f, %.4f, %.4f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2]))
+                    # Create a vector for the mathutils operations
+                    vector_point = mathutils.Vector()
 
                     # Convert the vertex to a vector
                     fill_vector (vector_point, vertex_pos)
@@ -72,27 +58,70 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                     # NOTE: Make sure the center vertex of the arc
                     #  has local coordinates 0.0, 0.0, 0.0
                     if vector_point.length == 0:
-                    #if vertex_pos == [0, 0, 0]:
-                        #print ("\t\tskipping over center vertex")
+                        #print ("Center vertex has index: %d" % index)
                         continue
 
+                    # Insert empty points into the data list
+                    self.local_data['point_list'].append([0.0, 0.0, 0.0])
+                    # Insert zeros into the range list
+                    self.local_data['range_list'].append(0.0)
+                    # Insert the coordinates of the ray
+                    self._ray_list.append(vector_point)
+                    #print ("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
+
+
+                    index = index + 1
+
+        print ('######## SICK INITIALIZED ########')
+
+
+    def default_action(self):
+        """ Do ray tracing from the SICK object using a semicircle
+
+        Generates a list of lists, with the points located.
+        Also deforms the geometry of the arc associated to the SICK,
+        as a way to display the results obtained.
+        """
+        # Obtain the rotation matrix of the sensor.
+        inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
+
+        # Create a vector for the mathutils operations
+        vector_point = mathutils.Vector()
+
+        #print ("=== NEW SCAN ===")
+        #print ("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+        # Get the mesh for the semicircle
+        for mesh in self._ray_arc.meshes:
+            for mat in range(mesh.numMaterials):
+                index = 0
+                for v_index in range(mesh.getVertexArrayLength(mat)):
+                    vertex = mesh.getVertex(mat, v_index)
+                    vertex_pos = vertex.getXYZ()
+
+                    # Convert the vertex to a vector
+                    fill_vector (vector_point, vertex_pos)
+
+                    # Skip the center vertex
+                    # NOTE: Make sure the center vertex of the arc
+                    #  has local coordinates 0.0, 0.0, 0.0
+                    if vector_point.length == 0:
+                        continue
+
+                    base_ray = self._ray_list[index]
                     # Adjust the vector coordinates to the rotation
                     #  of the robot
-                    corrected_vertex = self.blender_obj.getAxisVect(vector_point)
+                    corrected_ray = self.blender_obj.getAxisVect(base_ray)
 
-                    #print ("\tARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
-
-                    #ray = self.blender_obj.position
                     ray = [0, 0, 0]
                     # Displace according to the arc vertices
                     for i in range(3):
-                        ray[i] = self.blender_obj.position[i] + corrected_vertex[i]
+                        ray[i] = self.blender_obj.position[i] + corrected_ray[i]
 
-                    #print ("\tv: [%.2f, %.2f, %.2f]\t\tr: [%.2f, %.2f, %.2f]" % (vertex_pos[0], vertex_pos[1], vertex_pos[2], ray[0], ray[1], ray[2]))
+                    #print ("\t%d: base_ray: [%.2f, %.2f, %.2f]\tray: [%.2f, %.2f, %.2f]" % (index, base_ray[0], base_ray[1], base_ray[2], ray[0], ray[1], ray[2]))
 
                     # Shoot a ray towards the target
                     target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['laser_range'])
-                    #print ("Target, point, normal: {0}, {1}, {2}".format(target, point, normal))
+                    #print ("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
                     # If there was an intersection,
                     #  send the vertex to that point
@@ -128,7 +157,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                     # Otherwise return the vertex to its original position
                     else:
                         # Create a vector object
-                        fill_vector (vector_point, vertex_pos)
+                        fill_vector (vector_point, base_ray)
                         # Give it the correct size
                         vector_point.normalize()
                         vector_point = vector_point * self.blender_obj['laser_range']
@@ -141,12 +170,13 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
                         #  to mark that this ray did not find anything
                         arc_point = [0.0, 0.0, 0.0]
 
-                    self.local_data['point_list'].append(arc_point)
                     
                     #calculate ranges of the laserscanner based on Blender_object pose and points
                     xx = arc_point[0] - self.blender_obj.position[0]
                     yy = arc_point[1] - self.blender_obj.position[1]
-                    self.local_data['ranges_list'].append((math.sqrt(pow(xx,2)+pow(yy,2))))
+                    self.local_data['range_list'][index] = math.sqrt(pow(xx,2)+pow(yy,2))
+                    self.local_data['point_list'][index] = arc_point
+                    index = index + 1
 
 
 def valid_range(point_vector, radius):
