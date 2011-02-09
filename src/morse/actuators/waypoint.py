@@ -50,16 +50,17 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['y'] = self.destination[1]
         self.local_data['z'] = self.destination[2]
         self.local_data['speed'] = 1.0
+        self._wp_object = None
 
         # Identify an object as the target of the motion
         try:
             wp_name = self.blender_obj['Target']
             if wp_name != '':
                 scene = GameLogic.getCurrentScene()
-                self.wp_object = scene.objects[wp_name]
+                self._wp_object = scene.objects[wp_name]
                 print ("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:
-            self.wp_object = None
+            self._wp_object = None
 
         # Identify the collision detectors for the sides
         for child in self.blender_obj.children:
@@ -84,8 +85,8 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
         # Place the target marker where the robot should go
-        if self.wp_object:
-            self.wp_object.position = self.destination
+        if self._wp_object:
+            self._wp_object.position = self.destination
 
         # Set the z coordiante of the destination equal to that of the robot
         #  to avoid problems with the terrain.
