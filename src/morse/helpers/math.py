@@ -66,7 +66,7 @@ def get_rotation_matrix(object):
     rot_matrix = object.worldOrientation
     rotation_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
     # According to the GE documentation, it has to be transposed first
-    rotation_matrix.transpose()
+    #rotation_matrix.transpose()
 
     return rotation_matrix
 
