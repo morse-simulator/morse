@@ -30,6 +30,8 @@ class MorseMiddlewareClass(object):
 
         Implemented by all subclasses of MorseMiddlewareClass.
         """
+        
+        
         pass
 
 
@@ -100,6 +102,10 @@ class MorseMiddlewareClass(object):
             print ("ERROR %s in module '%s'" % (detail, source_file))
 
         # Store the name of the function, to cleanup later
-        self._extra_methods.append(function_name)
+        # If function with the same name already included, pass. Otherwise middleware will fail to cleanup
+        if function_name in self._extra_methods:
+            print("Extra method already known")	
+        else:
+            self._extra_methods.append(function_name)
 
         return bound_function
