@@ -1,3 +1,4 @@
+import GameLogic
 import morse.helpers.middleware
 
 class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
@@ -59,7 +60,7 @@ class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
         """
         parent_position = component_instance.robot_parent.blender_obj.position
         FILE = self._file_list[component_instance.blender_obj.name]
-        line = "==> Data at location: [%.6f %.6f %.6f]\n" % (parent_position[0], parent_position[1], parent_position[2])
+        line = "==> Data at location: [%.6f %.6f %.6f] | time %s\n" % (parent_position[0], parent_position[1], parent_position[2], GameLogic.current_time)
         FILE.write(line.encode())
         for variable, data in component_instance.local_data.items():
             line = "\t%s = %s\n" % (variable, repr(data))
