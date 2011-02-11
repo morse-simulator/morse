@@ -1,5 +1,6 @@
 import sys
 import re
+import time
 import GameLogic
 import Rasterizer
 
@@ -261,6 +262,8 @@ def init(contr):
     # Chop the version to only 3 chars: #.#  and convert to a number
     GameLogic.pythonVersion = float(python_version[:3])
     GameLogic.morse_initialised = False
+    GameLogic.base_clock = time.clock()
+    GameLogic.current_time = 0.0
     init_ok = True
 
     print ('======== COMPONENT DICTIONARY INITIALISATION =======')
@@ -308,9 +311,14 @@ def simulation_main(contr):
 
     We do here all homeworks to manage the simulation at whole.
     """
+    # Update the time variable
+    GameLogic.current_time = time.clock() - GameLogic.base_clock
+
     if hasattr(GameLogic, "morse_services"):
         # let the service managers process their inputs/outputs
         GameLogic.morse_services.process()
+
+
 
 def close_all(contr):
     print ('######### TERMINATING INSTANCES... ########')
