@@ -16,10 +16,13 @@ and the general behaviour of the simulation at runtime.
 
 - services are available for the socket-based text interface
 
+- Addition of a variable to keep track of the time elapsed in seconds
+since the simulation started.
+
 New sensors/actuators
 ---------------------
 
-- clever waypoint controller that avoid obstacles
+- clever waypoint controller that avoids obstacles
 
 MORSE 0.2 - The HRI release
 ===========================
