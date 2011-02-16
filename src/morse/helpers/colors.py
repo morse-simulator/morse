@@ -1,8 +1,5 @@
 import GameLogic
-if GameLogic.pythonVersion < 3:
-    from Blender import Material
-else:
-    import bpy
+import bpy
 
 #Little helper fonction to calculate the hue of a color
 def RGBtoHue(rgbList):
@@ -31,13 +28,19 @@ def RGBtoHue(rgbList):
 #this method retrieve the first material of the first mesh of an object
 #and return the hue of this material.
 def retrieveHue(obj):
-    mesh = obj.meshes[0] # There can be more than one mesh...
+    """ Convert the color of an object to hue
+
+    Retrieve the first material of the first mesh of an object
+    and return the hue of this material.
+    """
+    try:
+        mesh = obj.meshes[0] # There can be more than one mesh...
+    except IndexError as detail:
+        # Nothing will happen if the object has no materials
+        return None
+
     if mesh != None:
-        if GameLogic.pythonVersion < 3:
-            bMat = Material.Get(mesh.getMaterialName(0)[2:])
-        else:
-            # Still pending for Blender 2.5
-            bMat = bpy.data.materials[mesh.getMaterialName(0)]
-        return RGBtoHue(bMat.getRGBCol())
+        bMat = bpy.data.materials[mesh.getMaterialName(0)[2:]]
+        return (RGBtoHue(bMat.diffuse_color))
     
     return None
