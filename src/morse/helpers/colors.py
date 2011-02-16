@@ -1,8 +1,8 @@
 import GameLogic
 import bpy
 
-#Little helper fonction to calculate the hue of a color
 def RGBtoHue(rgbList):
+    """ Convert an RGB color to Hue """
     R = rgbList[0]
     G = rgbList[1]
     B = rgbList[2]
@@ -25,8 +25,7 @@ def RGBtoHue(rgbList):
         H += 360
     return int(H)
 
-#this method retrieve the first material of the first mesh of an object
-#and return the hue of this material.
+
 def retrieveHue(obj):
     """ Convert the color of an object to hue
 

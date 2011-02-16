@@ -88,7 +88,7 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
         # Create a vector for the mathutils operations
         vector_point = mathutils.Vector()
 
-        #print ("=== NEW SCAN ===")
+        #print ("=== NEW SCAN at time %s ===" % GameLogic.current_time)
         #print ("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
         # Get the mesh for the semicircle
         for mesh in self._ray_arc.meshes:
