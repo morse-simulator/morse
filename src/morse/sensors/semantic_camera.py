@@ -93,6 +93,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
 
         Iterate over all the tracked objects,
         and check if they are visible for the robot.
+        Visible objects must have a boundin box and be active
+        for physical simulation (have the 'Actor' checkbox selected)
         """
         # Call the action of the parent class
         super(self.__class__,self).default_action()
