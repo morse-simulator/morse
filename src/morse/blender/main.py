@@ -177,27 +177,11 @@ def link_middlewares():
         return False
 
     for component_name, mw_data in component_list.items():
-        mw_name = mw_data[0]
-        print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
-        found = False
-        missing_component = False
-        # Look for the listed mw in the dictionary of active mw's
-        for mw_obj, mw_instance in GameLogic.mwDict.items():
-            print(mw_name, mw_obj.name)
-            if mw_name in mw_obj.name:
-                found = True
-                # Get the instance of the object
-                try:
-                    instance = GameLogic.componentDict[component_name]
-                except KeyError as detail:
-                    print ("Component listed in component_config.py not found in scene: {0}".format(detail))
-                    missing_component = True
-                    continue
-
-                # Make the middleware object take note of the component
-                mw_instance.register_component(component_name, instance, mw_data)
-        
-        if missing_component:
+        # Get the instance of the object
+        try:
+            instance = GameLogic.componentDict[component_name]
+        except KeyError as detail:
+            print ("Component listed in component_config.py not found in scene: {0}".format(detail))
             print("""
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             ERROR: your configuration file is not valid. Please
@@ -207,6 +191,19 @@ def link_middlewares():
             """)
             return False
 
+        mw_name = mw_data[0]
+        print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
+        found = False
+        missing_component = False
+        # Look for the listed mw in the dictionary of active mw's
+        for mw_obj, mw_instance in GameLogic.mwDict.items():
+            #print("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
+            if mw_name in mw_obj.name:
+                found = True
+                # Make the middleware object take note of the component
+                mw_instance.register_component(component_name, instance, mw_data)
+                break
+                
         if not found:
             print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
