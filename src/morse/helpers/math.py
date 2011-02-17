@@ -84,13 +84,26 @@ def invert_rotation_matrix(object):
 def normalise_angle(angle):
     """ Force the given angle to be between PI and -PI
     
-    This function expects an angle given in radians """
-    if angle > 0.0 and angle > math.pi:
-        angle = angle % math.pi
-    elif angle < 0.0 and angle < -math.pi:
-        angle = angle % -math.pi
+    This function expects an angle given in radians
+    It will reduce the input angle to be less than PI,
+    and give it the correct sign.
+    """
+    factor = 1
+    # Store the sign of the angle
+    if angle < 0.0:
+        factor = -1
+    # Use positive values to do the conversion
+    angle = math.fabs(angle)
+    small_angle = angle % math.pi
+    division = angle // math.pi
+    # Check if the sign should be inversed
+    if division % 2 == 1:
+        small_angle = math.pi - small_angle
+        factor = factor * -1
+    angle = factor * small_angle
 
     return angle
+
 
 def rotation_direction (current_angle, target_angle, tolerance, speed):
     """ Test the direction in which a rotation should be made
