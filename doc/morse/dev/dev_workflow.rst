@@ -47,3 +47,13 @@ settings, it is equal to 60, so that during one real second there will be 60
 While the simulation is running, the Logic Bricks of each component will make
 regular calls to their ``default_action`` method. At this point the component
 will perform its task and update its internal data.
+
+Time management
+---------------
+
+The simulator will measure the amount of real time that has passed since the
+Game Engine was started. Time is measured in seconds, and stored as a floating
+point value with two decimals. It is obtained using the Python method:
+``time.clock()``, which relies on the C function of the same name.
+Simulation time is accessible from any Python script that imports the
+``GameLogic`` module, by reading the variable: ``GameLogic.current_time``.
