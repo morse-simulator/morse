@@ -14,10 +14,23 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        #self.local_data['roll'] = 0.0
-        #self.local_data['pitch'] = 0.0
-        #self.local_data['yaw'] = 0.0
-        #self.data_keys = ['roll', 'pitch', 'yaw']
+        # Get the references to the childen object and
+        #  store a transformation3d structure for their position
+        for child in self.blender_obj.childrenRecursive:
+            if 'PanBase' in child.name:
+                self._pan_base = child
+                self._pan_position_3d = morse.helpers.transformation.Transformation3d(child)
+            elif 'TiltBase' in child.name:
+                self._tilt_base = child
+                self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
+
+        # Check the bases were found, or exit with a message
+        try:
+            print ("Using pan base: '%s'" % self._pan_base.name)
+            print ("Using tilt base: '%s'" % self._tilt_base.name)
+        except AttributeError as detail:
+            print ("ERROR: Platine is missing the pan and tilt bases. Module will not work!")
+            return
 
         self._speed = self.blender_obj['Speed']
         # Define the tolerance to the desired angle
@@ -32,9 +45,16 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
     def default_action(self):
         """ Apply rotation to the platine unit """
-
         # Reset movement variables
         rx, ry, rz = 0.0, 0.0, 0.0
+
+        # Update the postition of the base platforms
+        try:
+            self._pan_position_3d.update(self._pan_base)
+            self._tilt_position_3d.update(self._tilt_base)
+        except AttributeError as detail:
+            print ("ERROR: Platine is missing the pan and tilt bases. Platine does not work!")
+            return
 
         # Tick rate is the real measure of time in Blender.
         # By default it is set to 60, regardles of the FPS
@@ -48,17 +68,31 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         except ZeroDivisionError:
             pass
 
-        current_pan = self.position_3d.yaw
-        current_tilt = self.position_3d.pitch
+        current_pan = self._pan_position_3d.yaw
+        current_tilt = self._tilt_position_3d.pitch
+        #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         # Get the angles in a range of -PI, PI
         target_pan = morse_math.normalise_angle(self.local_data['pan'])
         target_tilt = morse_math.normalise_angle(self.local_data['tilt'])
+        #print ("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
+
+        # Get the current rotation of the parent robot
+        parent_pan = self.robot_parent.position_3d.euler.z
+        parent_tilt = self.robot_parent.position_3d.euler.y
+        #print ("Parent: pan=%.4f, tilt=%.4f" % (parent_pan, parent_tilt))
+
+        # Compute the rotation relative to the parent robot
+        relative_pan = current_pan - parent_pan
+        correct_pan = morse_math.normalise_angle(relative_pan)
+        relative_tilt = current_tilt - parent_tilt
+        correct_tilt = morse_math.normalise_angle(relative_tilt)
 
         # Determine the direction of the rotation, if any
-        ry = morse_math.rotation_direction(current_tilt, target_tilt, self._tolerance, normal_speed)
-        rz = morse_math.rotation_direction(current_pan, target_pan, self._tolerance, normal_speed)
+        ry = morse_math.rotation_direction(correct_tilt, target_tilt, self._tolerance, normal_speed)
+        rz = morse_math.rotation_direction(correct_pan, target_pan, self._tolerance, normal_speed)
 
         # Give the rotation instructions directly to the parent
         # The second parameter specifies a "local" movement
-        self.blender_obj.applyRotation([rx, ry, rz], True)
+        self._pan_base.applyRotation([0.0, 0.0, rz], True)
+        self._tilt_base.applyRotation([0.0, ry, 0.0], True)
