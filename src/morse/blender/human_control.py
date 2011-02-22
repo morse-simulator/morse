@@ -290,7 +290,10 @@ def toggle_sit(contr):
 
 
 def near_object(contr):
-    """ Store the object that is near the hand """
+    """ Store the object that is near the hand
+    
+    This script is called from the logic bricks of Hand_Grab.R
+    """
     scene = GameLogic.getCurrentScene()
     hand_empty = scene.objects['Hand_Grab.R']
     near_sensor = hand_empty.sensors['Near']
@@ -300,7 +303,7 @@ def near_object(contr):
 
     #if near_object != None:
         #hand_empty.parent.localOrientation = [math.pi/2, 0.0, 0.0]
-        #print ("Near object is now: ", near_object)
+        #print (near_object.name + " can be grasped!")
 
 
 def grabbing(contr):

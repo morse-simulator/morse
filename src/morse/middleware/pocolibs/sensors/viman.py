@@ -2,6 +2,7 @@ import math
 import re
 import GameLogic
 from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
+from morse.helpers.transformation import Transformation3d
 
 object_config_file = "objectList_cfg"
 
@@ -79,16 +80,16 @@ def write_viman(self, component_instance):
 
     i = 0
     for object_id in self.scene_object_list:
-        # Adjust the name of the components, while using Blender 2.49
-        if GameLogic.pythonVersion < 3:
-            object_id = 'OB' + object_id
 
         try:
             object = scene.objects[object_id]
 
             if object in component_instance.local_data['visible_objects']:
+
+                position_3d = Transformation3d(object)
+                #print("VIMAN " + object.name + " is visible at " + str(position_3d))
                 ors_viman_poster.set_visible (self.viman_data, i, 1)
-                _fill_world_matrix(self.viman_data, object.worldOrientation, object.position, i)
+                _fill_world_matrix(self.viman_data, position_3d, i)
             else:
                 ors_viman_poster.set_visible (self.viman_data, i, 0)
 
@@ -109,27 +110,28 @@ def write_viman(self, component_instance):
         i = i + 1
 
 
-def _fill_world_matrix(viman_data, object_orientation_matrix, object_position, index):
+def _fill_world_matrix(viman_data, t3d, index):
     """ Fill the world matix part of the structure
 
     This function receives the Blender rotation matrix and position of an object
     It calls a module function to fill out data structure of type VimanThetaMat
     """
 
-    nx = object_orientation_matrix[0][0]
-    ox = object_orientation_matrix[0][1]
-    ax = object_orientation_matrix[0][2]
-    px = object_position[0]
+    #print(t3d)
+    nx = t3d.matrix[0][0]
+    ox = t3d.matrix[1][0]
+    ax = t3d.matrix[2][0]
+    px = t3d.x
 
-    ny = object_orientation_matrix[1][0]
-    oy = object_orientation_matrix[1][1]
-    ay = object_orientation_matrix[1][2]
-    py = object_position[1]
+    ny = t3d.matrix[0][1]
+    oy = t3d.matrix[1][1]
+    ay = t3d.matrix[2][1]
+    py = t3d.y
 
-    nz = object_orientation_matrix[2][0]
-    oz = object_orientation_matrix[2][1]
-    az = object_orientation_matrix[2][2]
-    pz = object_position[2]
+    nz = t3d.matrix[0][2]
+    oz = t3d.matrix[1][2]
+    az = t3d.matrix[2][2]
+    pz = t3d.z
 
     result = ors_viman_poster.write_matrix (viman_data, index,
         nx, ny, nz, ox, oy, oz, ax, ay, az, px, py, pz)

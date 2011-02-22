@@ -33,7 +33,7 @@ def init_pom_poster(self, component_instance, poster_name):
         print ("ERROR creating poster. This module may not work")
         return None
 
-    print ("pom poster ID: {0}".format(poster_id))
+    print("POM Poster '%s' created (ID: %d)" % (poster_name, poster_id))
     return poster_id
 
 
