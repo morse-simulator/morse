@@ -1,3 +1,22 @@
+MORSE 0.2.1
+===========
+
+Major bugs fixed
+----------------
+
+- Correct the length of the kinematic chain for arms
+- Correct function to limit angles to (pi, -pi)
+- Correct the rotation of platine relative to robot
+- Update to fix the directions of the rays (SICK sensor)
+- No longer do the transpose of the rotation matrix (-> Blender 2.5)
+- Link gaussian module with the right libpython
+- Make sure to use python2 interpreter when calling sphinx-build
+
+Others
+------
+
+- Documentation update in several places
+
 MORSE 0.2 - The HRI release
 ===========================
 
