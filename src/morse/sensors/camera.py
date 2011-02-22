@@ -65,13 +65,8 @@ class CameraClass(morse.helpers.sensor.MorseSensorClass):
         """ Prepare this camera to use the VideoTexture module """
         # Get the references to this cameras materials
         #  necesary if there are more than one camera added to the scene
-        if GameLogic.pythonVersion < 3:
-            #screen_name = 'OBScreen'
-            screen_name = 'OBCameraCube'
-            camera_name = 'OBCameraRobot'
-        else:
-            screen_name = 'CameraCube'
-            camera_name = 'CameraRobot'
+        screen_name = 'CameraCube' #TODO: beuuh! Hardcoded values !!
+        camera_name = 'CameraRobot'
         material_name = 'MAScreenMat'
         name_len = len(self.name)
         if name_len > 4 and self.name.endswith('.00', name_len-4, name_len-1):

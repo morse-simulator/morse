@@ -12,18 +12,18 @@ import morse.helpers.colors
 
 class SemanticCameraClass(morse.sensors.camera.CameraClass):
     """
-    This module implement a "semantic camera" sensor for the OpenRobots Simulator.
+    This module implements a "semantic camera" sensor for MORSE
 
-    This special camera returns the list of objects as seen by the robot's cameras,
-    with unique id, possibly (if set in the objects' properties) the type of object
-    and the colour of the object.
+    This special camera returns the list of objects as seen by the robot's
+    cameras, with unique id, possibly (if set in the objects' properties)
+    the type of object and the colour of the object.
     This camera is able to recognise objects marked with a 'Object' property
     An additional 'Description' property can be set that defines the object 
     category (like 'book', 'box', 'glass'...). If this property is not set, the 
     default value 'object' is used instead.
 
-    Other such high-level information (the semantic description of the scene) can be
-    added.
+    Other such high-level information (the semantic description of the scene)
+    can be added.
 
     Version: 1.0
     Date: 16 Nov. 2009
@@ -66,7 +66,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 try:
                     obj['Description']
                 except:
-                    obj['Description'] = 'object'
+                    obj['Description'] = 'Object'
 
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
@@ -105,19 +105,20 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             visible = self._check_visible(obj)
 
             # Object is visible and not yet in the visible_objects list...
-            if visible and visibles.count(obj) == 0:
+            if visible and obj not in visibles:
                 self.local_data['visible_objects'].append(obj)
                 # Scale the object to show it is visible
-                obj.localScale = [1.2, 1.2, 1.2]
-                #print ("Semantic: {0}, ({1}, {2}) just appeared".format(obj.name, obj['Description'], morse.helpers.colors.retrieveHue(obj)))
+                #obj.localScale = [1.2, 1.2, 1.2]
+                print ("Semantic: {0}, ({1}) just appeared".format(obj.name, obj['Description']))
 
             # Object is not visible and was in the visible_objects list...
-            if not visible and visibles.count(obj) != 0:
+            if not visible and obj in visibles:
                 self.local_data['visible_objects'].remove(obj)
                 # Return the object to normal size
                 #  when it is no longer visible
-                obj.localScale = [1.0, 1.0, 1.0]
+                #obj.localScale = [1.0, 1.0, 1.0]
                 #print ("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['Description']))
+        #print(str(self.local_data['visible_objects']))
 
 
     def _check_visible(self, obj):
@@ -141,8 +142,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # NOTE: This is a very simple test. Hiding only the 'center'
             #  of an object will make it invisible, even if the rest is still
             #  seen from the camera
-            closest_obj = self.blender_obj.rayCastTo(obj)
-            if obj == closest_obj:
+            #closest_obj = self.blender_obj.rayCastTo(obj)
+            #if obj == closest_obj:
                 return True
 
 
