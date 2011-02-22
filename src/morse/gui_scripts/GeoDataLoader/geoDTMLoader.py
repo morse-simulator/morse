@@ -217,14 +217,19 @@ class DtmObject:
         # NODATA value
         fubline = fub.readline()
         self.NODATA = float((fubline.split())[1])
+        #---
+        # self.UTMXOrigin and self.UTMYOrigin hold values in Lambert 93
+        # They must be transformed into UTM : TODO
+        #---
+
 
         #---
         # Feed the Scene_Script_Holder object with the georeferenced information
         # blender (0,0,z) correspond to real utm (UTMXOrigin, UTMYOrigin, z)
         # This information is saved in properties of the Scene_Script_Holder object.
         #---
-        # Checking if the Scene_Script_Holder exists else no info saving. 
 
+        # Checking if the Scene_Script_Holder exists else no info saving.
         ooo = None
         try:
             ooo = bpy.Object.Get('Scene_Script_Holder')
@@ -269,6 +274,9 @@ class DtmObject:
         self.dtm_mesh  = bpy.data.meshes.new('morseDTMmesh')  # DTM Mesh Object
         #--- Get the DTM data
         fub = self.readDTMHeader(infile)
+        self.drawDTM
+
+    def drawDTM(self, fub):
         #---
         # Positioning 3D points on the Digital Terrain Map
         #---
