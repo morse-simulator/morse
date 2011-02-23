@@ -23,7 +23,6 @@ def init_extra_module(self, component_instance, function, mw_data):
     # Generate one publisher and one topic for each component that is a sensor and uses post_message 
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Odometry))    
 
-#Note: posting 2D Laserscans is still experimental and maybe the ranges are not correctly calculated!
 def post_odometry(self, component_instance):
     """ Publish the data on the rostopic
 	"""
@@ -33,12 +32,14 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.position.x = component_instance.position_3d.x
     odometry.pose.pose.position.y = component_instance.position_3d.y
     odometry.pose.pose.position.z = component_instance.position_3d.z
-    euler = mathutils.Euler((component_instance.position_3d.yaw, component_instance.position_3d.pitch, component_instance.position_3d.roll))
+    euler = mathutils.Euler((component_instance.position_3d.roll, component_instance.position_3d.pitch, component_instance.position_3d.yaw))
     quaternion = euler.to_quat()
     odometry.pose.pose.orientation.w = quaternion.w
     odometry.pose.pose.orientation.x = quaternion.x
     odometry.pose.pose.orientation.y = quaternion.y
     odometry.pose.pose.orientation.z = quaternion.z
+    
+    odometry.header.frame_id = "/odom"
     
         
     for topic in self._topics: 
