@@ -33,6 +33,12 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             return
 
         self._speed = self.blender_obj['Speed']
+        
+        try:
+            self._is_manual_mode = self.blender_obj['Manual']
+        except KeyError:
+            self._is_manual_mode = False 
+
         # Define the tolerance to the desired angle
         self._tolerance = math.radians(0.5)
 
@@ -47,6 +53,9 @@ class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         """ Apply rotation to the platine unit """
         # Reset movement variables
         rx, ry, rz = 0.0, 0.0, 0.0
+
+        if self._is_manual_mode:
+            return
 
         # Update the postition of the base platforms
         try:
