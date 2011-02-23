@@ -172,9 +172,15 @@ class SICKClass(morse.helpers.sensor.MorseSensorClass):
 
                     
                     #calculate ranges of the laserscanner based on Blender_object pose and points
-                    xx = arc_point[0] - self.blender_obj.position[0]
-                    yy = arc_point[1] - self.blender_obj.position[1]
-                    self.local_data['range_list'][index] = math.sqrt(pow(xx,2)+pow(yy,2))
+                    distance = math.sqrt(pow(arc_point[0],2)+pow(arc_point[1],2))
+                    
+                    # Distance is 0 when maxrange, set to maxrange in range-array
+                    if distance < self.blender_obj['laser_range']:
+                        self.local_data['range_list'][index] = distance
+                    #else:
+                    if distance == 0:
+                        self.local_data['range_list'][index] = self.blender_obj['laser_range']
+                        				
                     self.local_data['point_list'][index] = arc_point
                     index = index + 1
 

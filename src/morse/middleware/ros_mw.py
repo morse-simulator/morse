@@ -72,7 +72,7 @@ class ROSClass(morse.helpers.middleware.MorseMiddlewareClass):
        
             else:
                 #Add external module 
-                _add_method(self, mw_data, component_instance)
+                self._add_method(mw_data, component_instance)
 
         else:
             # If there is no such function in this module,
