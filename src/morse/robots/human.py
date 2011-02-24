@@ -23,11 +23,11 @@ class HumanClass(morse.helpers.robot.MorseRobotClass):
         Done for wiimote remote control.
         """
         
-        human = self
+        human = self.blender_obj
         
         #TODO : speed and rotation limit.
-        human.applyMovement( speed, True )
-        human.applyRotation( rotation, True )
+        human.applyMovement( [speed,0,0], True )
+        human.applyRotation( [0,0,rotation], True )
         
         
     def default_action(self):
