@@ -17,6 +17,17 @@ class HumanClass(morse.helpers.robot.MorseRobotClass):
 
         print ('######## ROBOT INITIALIZED ########')
 
+	def move(self, speed, rotation) :
+		""" move the human. a request to use by a socket.
+		    Done for wiimote remote control"""
+		    
+		    human = self
+		    
+		    #TODO : speed and rotation limit.
+			human.applyMovement( speed, True )
+            human.applyRotation( rotation, True )
+            
+            
     def default_action(self):
         """ Main function of this component. """
         pass
