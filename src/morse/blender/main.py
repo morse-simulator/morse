@@ -17,6 +17,7 @@ except ImportError as detail:
 # The service management
 from morse.core.services import MorseServices
 
+from morse.core.exceptions import MorseServiceError
 
 # Create a list of the robots in the scene
 def create_dictionaries ():
@@ -294,10 +295,16 @@ def init_services():
     """
     
     GameLogic.morse_services = MorseServices()
-    GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
 
-    # The simulation 'supervision' always uses at least sockets for requests.
-    GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+    try:
+        GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
+
+        # The simulation 'supervision' always uses at least sockets for requests.
+        GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+
+    except MorseServiceError as e:
+        #...no request manager :-(
+        print("WARNING: " + str(e))
 
     # Services can be imported *only* after GameLogic.morse_services has been 
     # created. Else @service won't know where to register the RPC
