@@ -251,6 +251,10 @@ def init(contr):
 
     Here, all components, modifiers and middleware are initialized.
     """
+
+    print ('\n######## SERVICES INITIALIZATION ########')
+    init_services()
+
     print ('\n######## SCENE INITIALIZATION ########')
     # Get the version of Python used, according to the pythonpath
     # This is used to determine also the version of Blender
@@ -278,7 +282,6 @@ def init(contr):
         contr = GameLogic.getCurrentController()
         close_all(contr)
 
-    init_services()
 
     #Display the mouse in the simulator
     #Rasterizer.showMouse(1)

@@ -107,18 +107,21 @@ class MorseServices:
             instance.process()
 
 
-def _service_registration(fn, component_name = None, service_name = None, request_managers = None):
+def do_service_registration(fn, component_name = None, service_name = None, request_managers = None):
 
     if not component_name:
-        component_name = "generic"
+        print("ERROR! A service has been registered without component: " + str(fn))
+        return
 
     if not request_managers:
         request_managers = GameLogic.morse_services.get_request_managers(component_name)
 
     for manager in request_managers:
-        manager.register_service(component_name, fn, service_name)
+        name = service_name if service_name else fn.__name__
+        print("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
+        manager.register_service(component_name, fn, name)
 
-def service(component = None, name = None):
+def service(fn = None, component = None, name = None):
     """ The '@service' decorator.
 
     This decorator can be used to automagically register a service in
@@ -127,18 +130,41 @@ def service(component = None, name = None):
     right middleware (depending on what is specified in the simulation
     configuration file).
 
-    :param string component: you must normally set this parameter to the
-            name of the component which export the service. It is used as
-            namespace for the service.
+    This decorator works both with free function and for methods in
+    classes inheriting from MorseObjectClass. In the former case, you
+    must specify a component (your service will belong to this
+    namespace), in the later case, it is automatically set to the name
+    of the corresponding MORSE component.
+
+    :param callable fn: [automatically set by Python to point to the
+    decorated function] 
+    
+    :param string component: you MUST set this parameter to define the
+    name of the component which export the service ONLY for free
+    functions. Cf explanation above.
+
     :param string name: by default, the name of the service is the name
-            of the method. You can override it by setting the 'name' argument.
+    of the method. You can override it by setting the 'name' argument.
 
     """
-    # If the @service decorator has no explicit parameter, then Python
-    # pass directly the function -> a callable. We can register it.
-    if hasattr(component, "__call__"):
-        return _service_registration(component, None, None)
-
-    # ...else, the decorator is first evaluated (must return a functor)
-    return partial(_service_registration, component_name = component, service_name = name)
+    if hasattr(fn, "__call__"):
+        # If the @service decorator has no explicit parameter, then Python
+        # pass directly the function -> a callable. We can register it.
+        if not component:
+            # If component is not defined, we assume it is a class method.
+            # In this case, the service registration is defered to the
+            # class instanciation (cf object.py), and we simply mark
+            # this method as a service.
+            print("Method service "+ fn.__name__)
+            fn._morse_service = True
+            fn._morse_service_name = name
+            return fn
+        else:
+            print("Free service "+ fn.__name__)
+            # We assume it's a free function, and we register it.
+            do_service_registration(fn, component, name, None)
+            return fn
+    else:
+         # ...else, we build a new decorator
+        return partial(service, component = component, name = name)
 
