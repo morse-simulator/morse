@@ -329,9 +329,14 @@ def launch_simulator(scene=None):
     
     #Flush all outputs before launching Blender process
     sys.stdout.flush()
-    
+   
+    # Redefine the PYTHONPATH to include both the user-set path plus the 
+    # default system paths (like '/usr/lib/python*')
+    env = os.environ
+    env["PYTHONPATH"] = ":".join(sys.path)
+
     #Replace the current process by Blender
-    os.execl(blender_exec, blender_exec, scene)
+    os.execle(blender_exec, blender_exec, scene, env)
 
 
 def launch_simulation(scene):
