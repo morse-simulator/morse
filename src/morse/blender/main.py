@@ -266,6 +266,8 @@ def init(contr):
     GameLogic.morse_initialised = False
     GameLogic.base_clock = time.clock()
     GameLogic.current_time = 0.0
+    # Variable to keep trac of the camera being used
+    GameLogic.current_camera_index = 0
     init_ok = True
 
     print ('======== COMPONENT DICTIONARY INITIALISATION =======')
@@ -283,6 +285,10 @@ def init(contr):
         contr = GameLogic.getCurrentController()
         close_all(contr)
 
+
+    # Set the default value of the logic tic rate to 60
+    #GameLogic.setLogicTicRate(60.0)
+    #GameLogic.setPhysicsTicRate(60.0)
 
     #Display the mouse in the simulator
     #Rasterizer.showMouse(1)
@@ -316,6 +322,7 @@ def init_services():
 
     print("======= SERVICE MANAGERS INITIALIZED ========")
 
+
 def simulation_main(contr):
     """ This method is called at every simulation step.
 
@@ -328,6 +335,21 @@ def simulation_main(contr):
         # let the service managers process their inputs/outputs
         GameLogic.morse_services.process()
 
+
+def switch_camera(contr):
+    """ Cycle through the cameras in the scene during the game.
+    """
+    sensor = contr.sensors['F9_KEY']
+    # Activate only once for each key press
+    if sensor.positive and sensor.triggered:
+        scene = GameLogic.getCurrentScene()
+        index = GameLogic.current_camera_index
+        next_camera = scene.cameras[index]
+        scene.active_camera = next_camera
+        print ("Showing view from camera: '%s'" % next_camera.name)
+        # Update the index for the next call
+        index = (index + 1) % len(scene.cameras)
+        GameLogic.current_camera_index = index
 
 
 def close_all(contr):
