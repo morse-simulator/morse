@@ -25,10 +25,109 @@ class HumanClass(morse.helpers.robot.MorseRobotClass):
         
         human = self.blender_obj
         
-        #TODO : speed and rotation limit.
-        human.applyMovement( [speed,0,0], True )
-        human.applyRotation( [0,0,rotation], True )
+        if not human['Manipulate']:
+            human.applyMovement( [speed,0,0], True )
+            human.applyRotation( [0,0,rotation], True )
+        else :
+            scene = GameLogic.getCurrentScene()
+            target = scene.objects['IK_Target_Empty.R']
+
+            target.applyMovement([0.0, rotation, 0.0], True)
+            target.applyMovement([0.0, 0.0, -speed], True)
         
+        
+    @service
+    def move_head(self, pan, tilt):
+        """ move the human head. a request to use by a socket.
+        Done for wiimote remote control.
+        """
+        
+        human = self.blender_obj
+        scene = GameLogic.getCurrentScene()
+        target = scene.objects['Target_Empty']
+        
+        if human['Manipulate']:
+            return
+
+        target.applyMovement([0.0, pan, 0.0], True)
+        target.applyMovement([0.0, 0.0, tilt], True)
+        
+    @service
+    def grasp_(self, seq):
+        """ grasp object. a request to use by a socket.
+        Done for wiimote remote control.
+        """
+        human = self.blender_obj
+        if human['Manipulate']:
+            scene = GameLogic.getCurrentScene()
+            hand_empty = scene.objects['Hand_Grab.R']
+
+            selected_object = hand_empty['Near_Object']
+            if seq == "t":
+                # Check that no other object is being carried
+                if (human['DraggedObject'] == None or 
+                human['DraggedObject'] == '') :
+                    # If the object is draggable
+                    if selected_object != None and selected_object != '':
+                        # Clear the previously selected object, if any
+                        human['DraggedObject'] = selected_object
+                        # Remove Physic simulation
+                        selected_object.suspendDynamics()
+                        # Parent the selected object to the hand target
+                        selected_object.setParent (hand_empty)
+                        
+        if seq == "f":
+
+            if (human['DraggedObject'] != None and 
+            human['DraggedObject'] != '') :
+                previous_object = human["DraggedObject"]
+                # Restore Physics simulation
+                previous_object.restoreDynamics()
+                previous_object.setLinearVelocity([0, 0, 0])
+                previous_object.setAngularVelocity([0, 0, 0])
+                # Remove the parent
+                previous_object.removeParent()
+                # Clear the object from dragged status
+                human['DraggedObject'] = None
+        
+    @service
+    def move_hand(self, diff, tilt):
+        """ move the human hand (wheel). a request to use by a socket.
+        Done for wiimote remote control.
+        """
+        
+        human = self.blender_obj
+        if human['Manipulate']:
+            scene = GameLogic.getCurrentScene()
+            target = scene.objects['IK_Target_Empty.R']
+            target.applyMovement([diff, 0.0, 0.0], True)  
+        
+    @service
+    def toggle_manipulation(self):
+        """ change from and to manipulation mode. a request to use by a socket.
+        Done for wiimote remote control.
+        """
+        
+        human = self.blender_obj
+        scene = GameLogic.getCurrentScene()
+        hand_target = scene.objects['IK_Target_Empty.R']
+        head_target = scene.objects['Target_Empty']
+
+        if human['Manipulate']:
+            #Rasterizer.showMouse(False)
+            human['Manipulate'] = False
+            # Place the hand beside the body
+            hand_target.localPosition = [0.0, -0.3, 0.8]
+            head_target.setParent(human)
+            head_target.localPosition = [1.3, 0.0, 1.7]
+        else:
+            #Rasterizer.showMouse(True)
+            human['Manipulate'] = True
+            head_target.setParent(hand_target)
+            # Place the hand in a nice position
+            hand_target.localPosition = [0.6, 0.0, 1.4]
+            # Place the head in the same place
+            head_target.localPosition = [0.0, 0.0, 0.0]
         
     def default_action(self):
         """ Main function of this component. """

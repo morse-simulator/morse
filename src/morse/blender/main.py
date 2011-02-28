@@ -301,6 +301,9 @@ def init_services():
 
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+        
+        # TODO: automatically generate the next line.
+        GameLogic.morse_services.register_request_manager_mapping("Human", "SocketRequestManager")
 
     except MorseServiceError as e:
         #...no request manager :-(
