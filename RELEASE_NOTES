@@ -1,5 +1,5 @@
-MORSE 0.3
-=========
+MORSE 0.2.99
+============
 
 Middlewares
 -----------
@@ -13,9 +13,7 @@ Architectural changes
 
 - MORSE now support *services* to configure components
 and the general behaviour of the simulation at runtime.
-
 - services are available for the socket-based text interface
-
 - Addition of a variable to keep track of the time elapsed in seconds
 since the simulation started.
 
@@ -23,6 +21,13 @@ New sensors/actuators
 ---------------------
 
 - clever waypoint controller that avoids obstacles
+
+Simulation supervision
+----------------------
+
+- Add an option to switch between camera during the simulation
+- Add support for the Wiimote to control the human in HRI simulations
+  (external tool using socket-based requests)
 
 MORSE 0.2 - The HRI release
 ===========================
