@@ -51,6 +51,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['z'] = self.destination[2]
         self.local_data['speed'] = 1.0
         self._wp_object = None
+        self._collisions = False
 
         # Identify an object as the target of the motion
         try:
@@ -66,10 +67,15 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         for child in self.blender_obj.children:
             if "Radar.R" in child.name:
                 self._radar_r = child
-                print ("Radar R is ", self._radar_r)
             if "Radar.L" in child.name:
                 self._radar_l = child
-                print ("Radar L is ", self._radar_l)
+
+        try:
+            print ("Radar R is ", self._radar_r)
+            print ("Radar L is ", self._radar_l)
+            self._collisions = True
+        except AttributeError as detail:
+            print ("WARNING: No radars found attached to the waypoint actuator.\n\tThere will be no obstacle avoidance")
 
         print ('######## CONTROL INITIALIZED ########')
 
@@ -151,9 +157,9 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
                 pass
 
             # Collision avoidance using the Blender radar sensor
-            if self._radar_r['Rcollision']:
+            if self._collisions and self._radar_r['Rcollision']:
                 rz = rotation_speed
-            elif self._radar_l['Lcollision']:
+            elif self._collisions and self._radar_l['Lcollision']:
                 rz = - rotation_speed
             # Test if the orientation of the robot is within tolerance
             elif -self.angle_tolerance < angle_diff < self.angle_tolerance:
