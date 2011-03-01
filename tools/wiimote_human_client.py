@@ -1,12 +1,14 @@
 #! /usr/bin/env python
 
-###############################################################################
-# You can take control of the human in morse using a wiiMote through this code.
-# to do that, we use cwiid lybrary to handle the wiiMot communication and sock-
-# -ets and request mecanisms to comminicate with morse.
-# That being said, the manipulation of the wiiMote isn't really intuitive neit-
-# -her precise, and so, the control is a bit hard.
-###############################################################################
+""" Human control with wiimote
+
+You can take control of the human in morse using a wiiMote through this code. 
+To do that, we use cwiid library to handle the wiiMot communication and 
+sockets and request mecanisms to comminicate with morse.
+That being said, the manipulation of the wiiMote isn't really intuitive 
+neither precise, and so, the control is a bit hard.
+
+"""
 
 import time
 import socket
