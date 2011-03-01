@@ -33,7 +33,7 @@ bl_addon_info = {
 import os
 import bpy
 ##### SUB-IMPORTS
-from bpy import *
+#from bpy import *
 
 class DtmObject:
     """A DTM Class able to read ASCII DTM IGN Files"""
@@ -274,7 +274,7 @@ class DtmObject:
         self.dtm_mesh  = bpy.data.meshes.new('morseDTMmesh')  # DTM Mesh Object
         #--- Get the DTM data
         fub = self.readDTMHeader(infile)
-        self.drawDTM
+        self.drawDTM(fub)
 
     def drawDTM(self, fub):
         #---
@@ -287,7 +287,7 @@ class DtmObject:
         xsize = self.NCols*self.CellSize
         # The Y start is ysize as the data starts with the up left corner even
         # if the DTM is registrered via its low left corner
-        # And DTM data represents the altitue of the middle of the cells.
+        # And DTM data represents the altitude of the middle of the cells.
         y = (ysize - self.CellSize/2.0)/self.u2m;
         x = (self.CellSize/2.0)/self.u2m;
         z = 0
@@ -302,49 +302,38 @@ class DtmObject:
                 self.meanZ = self.meanZ + z
                 if z == self.NODATA:
                     z = 0
-                # Directly Appending vertice to DTM Object self.dtm_mesh
+                # Directly updating vertices' coordinates
                 self.dtm_mesh.vertices[kv].co=[x, y, z/self.z2m]
                 # Going on next cell
                 x = x + self.CellSize/self.u2m
+                kv = kv + 1
             # Starting a new line
-            x = (self.CellSize/2.0)/self.u2m;
+            x = (self.CellSize/2.0)/self.u2m
             # y's are inverted since the DTM start is on the top left corner.
             y = y - self.CellSize/self.u2m
+
+        # Closing the data file as we do not need it anymore
         fub.close()
-        # Updating variables
+
+        # Updating the mesh
         self.dtm_mesh.update()
+        # Updating Few statistics 
         self.meanZ = self.meanZ / (float(self.NRows)*float(self.NCols))
 
         #---
         # Filling Faces
         #---
-        if self.verbose > 1:
-            print ('Filling faces ... ')
-        #---
         v   = 0
-        #n   = 0
-        #fff = []
-        vmax = self.NCols*self.NRows - self.NCols
-        #---
+        n   = 0
+        vmax = (self.NCols-1)*(self.NRows-1) 
         # Add all facing all at once (certainly not the best solution)
         self.dtm_mesh.faces.add(vmax)
         # Updating each face's list of vertices
-        while v < vmax:
-            self.dtm_mesh.faces[v].vertices = [v, v+1, v+self.NCols+1, v+self.NCols]
-            '''
-            if (n < (self.NCols-1)): 
-                # This if avoids making faces between last vertices and first
-                # vertices, that would wrap the mesh.
-                #ff = bpy.data.meshes.face([self.dtm_mesh.vertices[v], self.dtm_mesh.vertices[v+1], self.dtm_mesh.vertices[v+self.NCols+1], self.dtm_mesh.vertices[v+self.NCols]])
-                fff.append(ff)
-            else:
-                # Extending faces by line (or by bunch) is faster than doing it one by one.
-                self.dtm_mesh.faces.extend(fff)
-                fff[:] = []
-                n = -1
-            '''
-            v = v + 1
-            #n = n + 1
+        for i in range(self.NCols-1):
+            for j in range(self.NRows-1):
+                v = i + j*self.NCols
+                self.dtm_mesh.faces[n].vertices_raw = [v, v+1, v+self.NCols+1, v+self.NCols]
+                n = n+1
         #---
         # Final update 
         self.dtm_mesh.update()
@@ -352,7 +341,7 @@ class DtmObject:
         bpy.data.scenes[0].objects.link(self.dtm_object)
         #---
         if self.verbose > 1:
-            print (' done.')
+            print ('DTM ok.')
 
     #------------------------------------------#
     def distance2D(self, A, B):
