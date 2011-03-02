@@ -74,6 +74,7 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.position.x = component_instance.position_3d.x - component_instance.initialpose[0]
     odometry.pose.pose.position.y = component_instance.position_3d.y - component_instance.initialpose[1]
     odometry.pose.pose.position.z = component_instance.position_3d.z - component_instance.initialpose[2]
+    
     yaw = component_instance.position_3d.yaw - component_instance.initialyaw
     pitch = component_instance.position_3d.pitch - component_instance.initialpitch
     roll = component_instance.position_3d.roll - component_instance.initialroll
@@ -147,7 +148,8 @@ def post_odometry(self, component_instance):
     odometry.twist.twist.angular.z =  component_instance.local_data['angle_velocities'][2]
     
     odometry.header.stamp = rospy.Time.now()
-    odometry.header.frame_id = "/odom"
+    odometry.header.frame_id = "/base_laser_link"
+    #odometry.child_frame_id = "/base_link"
         
     for topic in self._topics: 
         message = odometry
