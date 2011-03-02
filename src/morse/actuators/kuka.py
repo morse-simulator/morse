@@ -30,7 +30,7 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # The axis along which the different segments rotate
         # Considering the rotation of the arm as installed in Jido
-        self._dofs = ['z', 'y', 'z', 'y', 'z', 'y', 'z']
+        self._dofs = ['z', '-y', 'z', 'y', 'z', '-y', 'z']
 
         self._segments = []
         segment = self.blender_obj.children[0]
@@ -83,6 +83,8 @@ class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
                 ry = morse_math.rotation_direction(segment_euler[1], target_angle, self._tolerance, rotation)
+            elif self._dofs[i] == '-y':
+                ry = morse_math.rotation_direction(segment_euler[1], -target_angle, self._tolerance, rotation)
             elif self._dofs[i] == 'z':
                 rz = morse_math.rotation_direction(segment_euler[2], target_angle, self._tolerance, rotation)
                 #print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self._tolerance, rotation, rz))
