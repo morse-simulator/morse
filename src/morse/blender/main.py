@@ -24,6 +24,10 @@ def create_dictionaries ():
     """Creation of a list of all the robots and components in the scene.
        Uses the properties of the objects to determine what they are."""
 
+    # Create a dictionary with the middlewares used
+    if not hasattr(GameLogic, 'blender_objects'):
+        GameLogic.blender_objects = {}
+
     # Create a dictioary of the components in the scene
     if not hasattr(GameLogic, 'componentDict'):
         GameLogic.componentDict = {}
@@ -41,6 +45,14 @@ def create_dictionaries ():
         GameLogic.mwDict = {}
 
     scene = GameLogic.getCurrentScene()
+
+    # Store the position and orientation of all objects
+    for obj in scene.objects:
+        if obj.parent == None:
+            import mathutils
+            pos = mathutils.Vector(obj.worldPosition)
+            ori = mathutils.Matrix(obj.worldOrientation)
+            GameLogic.blender_objects[obj] = [pos, ori]
 
     # Get the robots
     for obj in scene.objects:
@@ -362,6 +374,7 @@ def close_all(contr):
     for obj, robot_instance in GameLogic.robotDict.items():
         del obj
 
+    print ('######### CLOSING PORTS... ########')
     # Force the deletion of the middleware objects
     for obj, mw_instance in GameLogic.mwDict.items():
         if mw_instance:
@@ -369,12 +382,6 @@ def close_all(contr):
             #import gc
             #print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
             del obj
-
-    quitActuator = contr.actuators['Quit_sim']
-    contr.activate(quitActuator)
-
-    print ('######### EXITING SIMULATION ########')
-
 
 
 def finish(contr):
@@ -386,32 +393,44 @@ def finish(contr):
     if not sensor.positive and sensor.triggered:
         close_all(contr)
 
+        quitActuator = contr.actuators['Quit_sim']
+        contr.activate(quitActuator)
+
+        print ('######### EXITING SIMULATION ########')
+
 
 def restart(contr):
     """Close the open ports."""
     sensor = contr.sensors['F11_KEY']
 
-    #execute only when the F11 key is released (if we don't test that,
-    #the code get executed two times, when pressed, and when released)
+    # Execute only when the F11 key is released (if we don't test that,
+    #  the code get executed two times, when pressed, and when released)
     if not sensor.positive and sensor.triggered:
-        print ('######### CLOSING PORTS... ########')
+
+        print ("### Replacing everything ###")
+        reset_objects(contr)
+        return
 
         # TODO: Reimplement the restart function,
         #  by killing the objects created, and then
         #  calling the init function again.
+        close_all(contr)
 
-        # ALL THE FOLLOWING DOES NOT WORK
-
-        for obj, component_instance in GameLogic.componentDict.items():
-            del obj
-
-        for obj, robot_instance in GameLogic.robotDict.items():
-            del obj
-
-        # Force the deletion of the middleware objects
-        for obj, mw_instance in GameLogic.mwDict.items():
-            del obj
+        restartActuator = contr.actuators['Restart_sim']
+        contr.activate(restartActuator)
 
         init(contr)
 
         print ('######### RESTARTING SIMULATION ########')
+
+
+def reset_objects(contr):
+    """ Place all objects in the initial position
+
+    Restore the position and rotation of objects and robots
+    to their original state, during the simulation.
+    """
+    for b_obj, state in GameLogic.blender_objects.items():
+        print ("%s goes to %s" % (b_obj, state[0]))
+        b_obj.worldPosition = state[0]
+        b_obj.worldOrientation = state[1]
