@@ -15,7 +15,9 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 def callback_wp(data, component_instance):
         """ this function is called as soon as Twist messages are published on the specific topic """
-        component_instance.local_data["v"] = data.linear.x
+        component_instance.local_data["x"] = data.linear.x
+        component_instance.local_data["y"] = data.linear.y
+
         yaw = data.angular.z
         component_instance.local_data["w"] = yaw 
         #print("Executing v-omega-movement: linear: < %s, %s>"%(data.linear.x, yaw))
