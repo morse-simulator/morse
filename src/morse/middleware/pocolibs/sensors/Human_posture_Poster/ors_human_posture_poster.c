@@ -36,13 +36,13 @@ POSTER_ID init_data (char*	poster_name, int* ok)
 	return (id);
 }
 
-int post_human_poster(POSTER_ID id, double dof[45])
+int post_human_poster(POSTER_ID id, double dof[46])
 {
 	SPARK_CONFIGURATION human_data;
 	
 	size_t offset = 0;
 	
-	human_data.dofNb = 45;
+	human_data.dofNb = 46;
 	memcpy(human_data.dof, dof, human_data.dofNb * sizeof(double));
 	human_data.changed = 1;
 	

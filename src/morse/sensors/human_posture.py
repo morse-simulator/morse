@@ -100,43 +100,43 @@ class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
                    self.local_data['dof_20'] = channel.joint_rotation[2]
                 if channel.name == 'ForeArm.R':
                    self.local_data['dof_21'] = channel.joint_rotation[2]
-                #~ if channel.name == 'Hand.R':
-                   #~ self.local_data['dof_22'] = channel.joint_rotation[0]
-                   #~ self.local_data['dof_23'] = channel.joint_rotation[1]
-                   #~ self.local_data['dof_24'] = channel.joint_rotation[2]
-                #~ 
+                if channel.name == 'Hand.R':
+                   self.local_data['dof_22'] = channel.joint_rotation[0]
+                   self.local_data['dof_23'] = channel.joint_rotation[1]
+                   self.local_data['dof_24'] = channel.joint_rotation[2]
+                 
                 if channel.name == 'UpArm.L':
                    self.local_data['dof_25'] = - channel.joint_rotation[1]
                    self.local_data['dof_26'] = - channel.joint_rotation[0]
                    self.local_data['dof_27'] = channel.joint_rotation[2]
                 if channel.name == 'ForeArm.L':
                    self.local_data['dof_28'] = channel.joint_rotation[2]
-                #~ if channel.name == 'Hand.L':
-                   #~ self.local_data['dof_29'] = channel.joint_rotation[0]
-                   #~ self.local_data['dof_30'] = channel.joint_rotation[1]
-                   #~ self.local_data['dof_31'] = channel.joint_rotation[2]
-                #~ 
+                if channel.name == 'Hand.L':
+                   self.local_data['dof_29'] = channel.joint_rotation[0]
+                   self.local_data['dof_30'] = channel.joint_rotation[1]
+                   self.local_data['dof_31'] = channel.joint_rotation[2]
+                 
                 if channel.name == 'UpLeg.R' :
                    self.local_data['dof_32'] = channel.joint_rotation[1]
                    self.local_data['dof_33'] = channel.joint_rotation[0]
                    self.local_data['dof_34'] = - channel.joint_rotation[2]
                 if channel.name == 'LoLeg.R':
                    self.local_data['dof_35'] = channel.joint_rotation[0]
-                #~ if channel.name == 'Foot.R':
-                   #~ self.local_data['dof_36'] = channel.joint_rotation[0]
-                   #~ self.local_data['dof_37'] = channel.joint_rotation[1]
-                   #~ self.local_data['dof_38'] = channel.joint_rotation[2]
-                #~ 
+                if channel.name == 'Foot.R':
+                   self.local_data['dof_36'] = channel.joint_rotation[0]
+                   self.local_data['dof_37'] = channel.joint_rotation[1]
+                   self.local_data['dof_38'] = channel.joint_rotation[2]
+                 
                 if channel.name == 'UpLeg.L':
                    self.local_data['dof_39'] = channel.joint_rotation[1]
                    self.local_data['dof_40'] = channel.joint_rotation[0]
                    self.local_data['dof_41'] = - channel.joint_rotation[2]
                 if channel.name == 'LoLeg.L':
                    self.local_data['dof_42'] = channel.joint_rotation[0]
-                #~ if channel.name == 'Foot.L':
-                   #~ self.local_data['dof_43'] = channel.joint_rotation[0]
-                   #~ self.local_data['dof_44'] = channel.joint_rotation[1]
-                   #~ self.local_data['dof_45'] = channel.joint_rotation[2]
+                if channel.name == 'Foot.L':
+                   self.local_data['dof_43'] = channel.joint_rotation[0]
+                   self.local_data['dof_44'] = channel.joint_rotation[1]
+                   self.local_data['dof_45'] = channel.joint_rotation[2]
 
 
     def default_action(self):
