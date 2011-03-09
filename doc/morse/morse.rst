@@ -44,7 +44,8 @@ What is MORSE?
   want to simulate exteroceptive sensors like cameras in certain cases and
   access directly to a higher level representation of the world -like labeled
   artifacts- in other cases),
-- Currently compatible with **YARP** and LAAS OpenRobots robotics frameworks,
+- Currently compatible with **ROS**, **YARP** and the LAAS OpenRobots robotics frameworks,
+- easy to integrate to other environments via a simple socket interface,
 - Fully open source, BSD-compatible.
   
 .. image:: ../media/morse_interface.jpg
