@@ -5,43 +5,26 @@ Blender 2.5x relies on Python3.x which is currently (Jan 2011) not supported by 
 
 The following steps explains how to get a working Python3 ROS setup, suitable for use with MORSE.
 
-#. Install ROS unstable (check http://www.ros.org/wiki/unstable if needed)
-#. Install Python3.x (these instructions where tested with Python3.1) manually or using
-   your system package manager
+#. Install ROS Diamondback (check http://www.ros.org/wiki/ROS/Installation if needed)
+#. Install Python3.x (these instructions were tested with Python3.1) manually or using
+   your system package manager and make sure, your Pythonpath variable is pointing to the Python3-libraries
 #. Install PyYAML with Python3 support (PyYAML >= 3.09, you can get it from http://pyyaml.org/)
 
   - Install it with ``python3.1 setup.py install`` to be sure to have the Python3 libraries
 
-#. Create an overlay of your ROS installation using rosinstall: 
+#. Create a Python3-compatible overlay of your ROS installation using rosinstall with our Python3-rosinstall-file: 
    
-   ``rosinstall <path-to-your-overlay> <your-ROS-installation-path>``
+   - ``rosinstall <path-to-your-overlay> http://ias.cs.tum.edu/~kargm/ros_py3.rosinstall``
 
-   Download the Python3-compatible ros and ros_comm-stacks here:   
+   The ROS-stacks ros, ros_comm and common_msgs are overlayed by Python3-compatible versions and need to be rebuild:
 
-  - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros.git``
-  - ``git clone http://code.in.tum.de/git/rospy3-stacks-ros-comm.git``
+   - ``rosmake ros && rosmake ros_comm && rosmake common_msgs``
 
-    Rename the ``rospy-stacks-ros`` folder to ``ros``
-    Rename the ``rospy-stack-ros_comm`` folder to ``ros_comm``
+   Note: Rebuilding the common_msgs stack allows you to use all messages in this stack for communicating between MORSE and ROS. If you want to use any other messages, make sure the source-files are Python2 AND Python3 compatible!
 
-    Install the Python3-compatible stacks to your Overlay using rosinstall: 
+#. Add the path to your ``roslib-stack`` to your Pythonpath (this is needed for MORSE to load ROS manifest-files)
 
-  - ``rosinstall <path-to-your-overlay> <path-to-your-overlay>/ros``
-  - ``rosinstall <path-to-your-overlay> <path-to-your-overlay>/ros_comm`` 
+  - ``export PYTHONPATH=${YOUR_ROS_OVERLAY_INSTALLATION_PATH}/ros/core/roslib/src:${PYTHONPATH}``
 
-    Change your ROS_ROOT in the setup.sh in your ROS overlay to the folder of the overlayed ros-stack. So the first line of your setup.sh should look like this:
 
-   ``export ROS_ROOT=<path-to-your-ROS-overlay>/ros``  
-
-#. Add your the path to your ``roslib-stack`` to your Pythonpath (this is needed for MORSE to load ROS manifest-files)
-
-  - ``export PYTHONPATH=${YOUR_ROS_INSTALLATION_PATH}/ros/core/roslib/src:${PYTHONPATH}``
-
-Check everything run fine by:
-
-#. running ``rosmake --pre-clean ros`` and ``rosmake --pre-clean ros_comm``   
-
-You will also have to remake the messages you want to use to be Python3-compatible by using rosmake --pre-clean. For example for std_msgs, rosgraph_msgs and sensor_msgs type the following:
-
-``rosmake --pre-clean std_msgs rosgraph_msgs sensor_msgs``  
 
