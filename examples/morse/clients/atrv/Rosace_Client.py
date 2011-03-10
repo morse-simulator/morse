@@ -52,11 +52,10 @@ def read_waypoints():
         # Get the individual elements, splitting by whitespace
         data_list = line.split()
         print (data_list)
-        #coordinate = {'x': data_list[0], 'y': data_list[1], 'z': data_list[2]}
-        #waypoint = {'radius': data_list[3], 'point': coordinate}
+        coordinate = OrderedDict( [ ('x', data_list[0]), ('y', data_list[1]), ('z', data_list[2]) ] )
+        waypoint = OrderedDict( [ ('point', coordinate), ('radius', data_list[3]) ] )
 
-        waypoint = OrderedDict( [ ('x', data_list[0]), ('y', data_list[1]), ('z', data_list[2]), ('speed', data_list[3]) ] )
-        #waypoint = OrderedDict({'x': data_list[0], 'y': data_list[1], 'z': data_list[2], 'speed': data_list[3]})
+        #waypoint = OrderedDict( [ ('x', data_list[0]), ('y', data_list[1]), ('z', data_list[2]), ('speed', data_list[3]) ] )
 
         wp_list.append (waypoint)
 
