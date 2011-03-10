@@ -17,7 +17,8 @@ def init_extra_module(self, component_instance, function, mw_data):
         self.registerBufferedPortBottle([port_name])
         # Add the new method to the component
         component_instance.output_functions.append(function)
-    elif function_name == 'read_json_message':
+    elif function_name == 'read_json_message' or \
+        function_name == 'read_json_waypoint':
         port_name = 'robots/{0}/{1}/in'.format(parent_name, component_name)
         # Create the YARP port
         self.registerBufferedPortBottle([port_name])
@@ -85,3 +86,34 @@ def read_json_message(self, component_instance):
             else:
                 print ("Yarp ERROR: Unknown data type at 'read_json_data'")
             i = i + 1
+
+
+def read_json_waypoint(self, component_instance):
+    """ Read a destination waypoint in the format used for ROSACE
+
+    The structure read by JSON is expected to have two properties:
+    point: structure with 'x', 'y', 'z'
+    radius: the tolerance around those points
+    """
+    port_name = self._component_ports[component_instance.blender_obj.name]
+
+    try:
+        yarp_port = self.getPort(port_name)
+    except KeyError as detail:
+        print ("ERROR: Specified port does not exist: ", detail)
+        return
+
+    message_bottle = yarp_port.read(False)
+    if message_bottle != None:
+        message_data = message_bottle.get(0).toString()
+
+        # Deserialise the data directly into a temporary ordered dictionary
+        json_dict = json.loads(message_data, object_pairs_hook=OrderedDict)
+
+        point = json_dict['point']
+        tolerance = json_dict['radius']
+        component_instance.local_data['x'] = float(point['x'])
+        component_instance.local_data['y'] = float(point['y'])
+        component_instance.local_data['z'] = float(point['z'])
+        component_instance.local_data['tolerance'] = float(tolerance)
+        component_instance.local_data['speed'] = 1.0
