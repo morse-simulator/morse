@@ -24,6 +24,7 @@ The following steps explains how to get a working Python3 ROS setup, suitable fo
    Note: Rebuilding the common_msgs stack allows you to use all messages in this stack for communicating between MORSE and ROS. If you want to use any other messages, make sure the source-files are Python2 AND Python3 compatible!
 
 #. Add the path to your ``roslib-stack`` to your Pythonpath (this is needed for MORSE to load ROS manifest-files)
+   
    ``export PYTHONPATH=${YOUR_ROS_OVERLAY_INSTALLATION_PATH}/ros/core/roslib/src:${PYTHONPATH}``
 
 
