@@ -34,24 +34,24 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        # Waypoint tolerance (in meters)
-        self.tolerance = 0.5
-        # Convert the direction tolerance to radians
-        self.angle_tolerance = math.radians(10)
-
-        self.destination = self.blender_obj.position
-        self.in_motion = False
 
         # Direction of the global vectors
         self.world_X_vector = mathutils.Vector([1,0,0])
         self.world_Y_vector = mathutils.Vector([0,1,0])
 
-        self.local_data['x'] = self.destination[0]
-        self.local_data['y'] = self.destination[1]
-        self.local_data['z'] = self.destination[2]
-        self.local_data['speed'] = 1.0
+        self._destination = self.blender_obj.position
         self._wp_object = None
         self._collisions = False
+
+        # Convert the direction tolerance to radians
+        self._angle_tolerance = math.radians(10)
+
+        self.local_data['x'] = self._destination[0]
+        self.local_data['y'] = self._destination[1]
+        self.local_data['z'] = self._destination[2]
+        # Waypoint tolerance (in meters)
+        self.local_data['tolerance'] = 0.5
+        self.local_data['speed'] = 1.0
 
         # Identify an object as the target of the motion
         try:
@@ -87,19 +87,19 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         vx = 0
         rz = 0
 
-        self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
+        self._destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
         #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
         # Place the target marker where the robot should go
         if self._wp_object:
-            self._wp_object.position = self.destination
+            self._wp_object.position = self._destination
 
         # Set the z coordiante of the destination equal to that of the robot
         #  to avoid problems with the terrain.
-        self.destination[2] = self.blender_obj.worldPosition[2]
+        self._destination[2] = self.blender_obj.worldPosition[2]
 
         # Vectors returned are already normalised
-        distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
+        distance, global_vector, local_vector = self.blender_obj.getVectTo(self._destination)
         # Convert to the Blender Vector object
         global_vector = mathutils.Vector(global_vector)
 
@@ -108,7 +108,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         #print ("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
         # If the target has been reached, change the status
-        if distance-self.tolerance <= 0:
+        if distance-self.local_data['tolerance'] <= 0:
             parent.move_status = "Stop"
             #print ("TARGET REACHED")
             #print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
@@ -162,7 +162,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             elif self._collisions and self._radar_l['Lcollision']:
                 rz = - rotation_speed
             # Test if the orientation of the robot is within tolerance
-            elif -self.angle_tolerance < angle_diff < self.angle_tolerance:
+            elif -self._angle_tolerance < angle_diff < self._angle_tolerance:
                 rz = 0
             # If not, rotate the robot in the corresponding direction
             else:
