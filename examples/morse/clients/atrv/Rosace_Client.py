@@ -11,6 +11,7 @@ local_in_port_name = ""
 local_out_port_name = ""
 
 local_GPS_port_name = ""
+local_Status_port_name = ""
 local_Dest_port_name = ""
 local_Heal_port_name = ""
 
@@ -23,6 +24,7 @@ ors_in_port_name = ""
 ors_out_port_name = ""
 
 ors_GPS_port_name = ""
+ors_Status_port_name = ""
 ors_Dest_port_name = ""
 ors_Heal_port_name = ""
 
@@ -34,6 +36,7 @@ local_in_port = 0
 local_out_port = 0
 
 local_GPS_port = 0
+local_Status_port = 0
 local_Dest_port = 0
 local_Heal_port = 0
 
@@ -81,7 +84,7 @@ def command_robot():
         #raw_coords = raw_input("Input new coordinates: ")
         #print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
 
-        command = input("Enter command: [ (g)ps / (n)eighbours / (w)aypoint / (h)eal / e(x)it ] ")
+        command = input("Enter command: [ (g)ps / (n)eighbours / s(t)atus / (w)aypoint / (h)eal / e(x)it ] ")
         #command = input("Enter command: [ (m)ove / (s)top / s(t)atus / (w)aypoint / (n)eighbours / (h)eal / e(x)it ] ")
         
         if command == "move" or command == "m":
@@ -90,10 +93,6 @@ def command_robot():
 
         elif command == "stop" or command == "s":
             command = {"command":"stop"}
-            send_command(command)
-
-        elif command == "status" or command == "t":
-            command = {"command":"status"}
             send_command(command)
 
         elif command == "waypoint" or command == "w":
@@ -153,6 +152,16 @@ def command_robot():
                 for key, value in data.items():
                     print ("\t{0}:\t{1}".format(key, value))
 
+        elif command == "status" or command == "t":
+            # Read the response
+            yarp_data = local_Status_port.read(False)
+            if yarp_data != None:
+                # Read a string from the bottle
+                json_data = yarp_data.toString()
+                data = decode_message(json_data)
+                print ("Current robot status:")
+                for key, value in data.items():
+                    print ("\t{0}:\t{1}".format(key, value))
 
         elif command == "exit" or command == "x":
             print ("Exiting the function")
@@ -187,12 +196,14 @@ def port_setup(robot_name):
     global local_in_port
     global local_out_port
     global local_GPS_port
+    global local_Status_port
     global local_Dest_port
     global local_Heal_port
 
     global local_in_port_name
     global local_out_port_name
     global local_GPS_port_name
+    global local_Status_port_name
     global local_Dest_port_name
     global local_Heal_port_name
 
@@ -202,6 +213,7 @@ def port_setup(robot_name):
     global ors_in_port_name
     global ors_out_port_name
     global ors_GPS_port_name
+    global ors_Status_port_name
     global ors_Dest_port_name
     global ors_Heal_port_name
     global ors_Proximity_in_port_name
@@ -217,6 +229,7 @@ def port_setup(robot_name):
     ors_Dest_port_name = port_prefix + "Motion_Controller/in"
     ors_Heal_port_name = port_prefix + "Healer_Beam/in"
     ors_GPS_port_name = port_prefix + "GPS/out"
+    ors_Status_port_name = port_prefix + "Status_Sensor/out"
 
     ors_Proximity_out_port_name = port_prefix + "Proximity_Sensor/out"
     #ors_Proximity_in_port_name = port_prefix + "Proximity_Sensor/in"
@@ -225,6 +238,7 @@ def port_setup(robot_name):
     #local_out_port_name = local_port_prefix + "out/"
 
     local_GPS_port_name = local_port_prefix + "GPS/in/"
+    local_Status_port_name = local_port_prefix + "Status_Sensor/in/"
     local_Dest_port_name = local_port_prefix + "Motion_Controller/out/"
     local_Heal_port_name = local_port_prefix + "Healer_Beam/out/"
 
@@ -243,6 +257,9 @@ def port_setup(robot_name):
     local_GPS_port = yarp.BufferedPortBottle()
     local_GPS_port.open(local_GPS_port_name)
 
+    local_Status_port = yarp.BufferedPortBottle()
+    local_Status_port.open(local_Status_port_name)
+
     local_Dest_port = yarp.BufferedPortBottle()
     local_Dest_port.open(local_Dest_port_name)
 
@@ -259,6 +276,7 @@ def port_setup(robot_name):
     #yarp.Network.connect (ors_out_port_name, local_in_port_name)
 
     yarp.Network.connect (ors_GPS_port_name, local_GPS_port_name)
+    yarp.Network.connect (ors_Status_port_name, local_Status_port_name)
     yarp.Network.connect (local_Dest_port_name, ors_Dest_port_name)
     yarp.Network.connect (local_Heal_port_name, ors_Heal_port_name)
 
@@ -294,6 +312,7 @@ def main():
     print (" * Writing heal command to " + ors_Heal_port_name)
     print (" * Writing destination to " + ors_Dest_port_name)
     print (" * Listening to GPS on " + ors_GPS_port_name)
+    print (" * Listening to robot status on " + ors_Status_port_name)
 
     print (" * Writing commands to " + ors_Proximity_in_port_name)
     print (" * Listening status on " + ors_Proximity_out_port_name)
