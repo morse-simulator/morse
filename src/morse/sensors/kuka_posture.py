@@ -85,8 +85,6 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
             except IndexError as detail:
                 break               
                         
-        print("Angles are: %s"%self._angles)
-
         # Convert the angles to radians
         # And also change the signs,
         #  since they are different on each version of Blender
