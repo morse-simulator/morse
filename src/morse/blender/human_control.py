@@ -87,6 +87,27 @@ def move(contr):
             elif key[0] == GameKeys.XKEY:
                 toggle_manipulate(contr)
 
+def read_status(contr):
+    """ Check if the human is moving and set the flags
+    
+    This will trigger the walking animation even when the human
+    is controlled via a motion actuator
+    """
+    human = contr.owner
+    scene = GameLogic.getCurrentScene()
+    armature = scene.objects['HumanArmature']
+    tolerance = 0.001
+
+    speed = human.getLinearVelocity()
+    #print ("Man going at speed [%.4f, %.4f, %.4f]" % (speed[0], speed[1], speed[2]))
+    if speed[0] > tolerance:
+       armature['movingForward'] = True 
+    elif speed[0] < -tolerance:
+       armature['movingBackward'] = True 
+    else:
+       armature['movingForward'] = False 
+       armature['movingBackward'] = False 
+
 
 def human_actions(contr):
     """ Toggle the animation actions of the armature """
