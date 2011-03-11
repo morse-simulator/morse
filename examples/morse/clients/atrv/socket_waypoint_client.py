@@ -58,6 +58,7 @@ def main():
     px = 0
     py = 0
     pz = 0
+    tolerance = 0.5
     speed = 1
 
     # Read the arguments
@@ -94,7 +95,7 @@ def main():
                 px = raw_input("Enter X coordinate: ")
                 py = raw_input("Enter Y coordinate: ")
                 pz = raw_input("Enter Z coordinate: ")
-            waypoint = [float(px), float(py), float(pz), float(speed)]
+            waypoint = [float(px), float(py), float(pz), float(tolerance), float(speed)]
             print ("Sending the command: {0}".format(waypoint))
 
             # Send data
@@ -110,7 +111,7 @@ def main():
                 speed = input("Enter speed: ")
             else:
                 speed = raw_input("Enter speed: ")
-            waypoint = [float(px), float(py), float(pz), float(speed)]
+            waypoint = [float(px), float(py), float(pz), float(tolerance), float(speed)]
             print ("Sending the command: {0}".format(waypoint))
 
             # Send data
