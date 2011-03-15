@@ -11,7 +11,7 @@ class XYWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## VW CONTROL INITIALIZATION ########')
+        print ('######## XYW CONTROL INITIALIZATION ########')
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -19,7 +19,7 @@ class XYWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['y'] = 0.0
         self.local_data['w'] = 0.0
 
-        print ('######## CONTROL INITIALIZED ########')
+        print ('######## XYW CONTROL INITIALIZED ########')
 
 
 
