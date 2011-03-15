@@ -68,9 +68,3 @@ documentation.
   It has one available input method:
 
     - ``read_platine``: Reads data of type **POM_SE_POSTER**, defined in ``pom/pomStruct.h``
-
-Known problems
---------------
-
-Input posters (those that will be read by MORSE) must be created before launching the simulation.
-Otherwise, they will not be found and the component that is bound to them will not function.
