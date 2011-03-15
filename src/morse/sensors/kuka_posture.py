@@ -5,7 +5,7 @@ import mathutils
 import morse.helpers.math as morse_math
 
 class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
-    """ Gyroscope sensor """
+    """ KUKA posture sensor """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -13,7 +13,7 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## GYROSCOPE '%s' INITIALIZING ########" % obj.name)
+        print ("######## KUKA POSTURE EXPORTER '%s' INITIALIZING ########" % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -37,7 +37,7 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
         self._dofs = ['z', '-y', 'z', 'y', 'z', '-y', 'z']
        
     def default_action(self):
-        """ Get the yaw, pitch and roll of the blender object. """
+        """ Get the x, y, z, yaw, pitch and roll of the blender object. """
         x = self.position_3d.x
         y = self.position_3d.y
         z = self.position_3d.z
@@ -45,7 +45,7 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
         pitch = self.position_3d.pitch
         roll = self.position_3d.roll
 
-        # Gather information about all segments
+        # Gather information about all segments of the kuka-arm
         self._segments = []
 
         kuka_obj = 0
@@ -62,7 +62,7 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
         segment = kuka_obj.children[0]
         self._angles = []
         
-        # Gather all the children of the object
+        # Gather all the children of the object which are the segments of the kuka-arm
         for i in range(len(self._dofs)):
             self._segments.append(segment)
                    
@@ -70,15 +70,15 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
             rot_matrix = segment.localOrientation
             segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
             segment_euler = segment_matrix.to_euler()
-            
+
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
                 self._angles.append(segment_euler[1])
+            elif self._dofs[i] == '-y':
+                self._angles.append(-segment_euler[1])
             elif self._dofs[i] == 'z':
                 self._angles.append(segment_euler[2])
-            elif self._dofs[i] == '-y':
-                self._angles.append(segment_euler[2])
-
+           
             try:
                 segment = segment.children[0]
             # Exit when there are no more children
@@ -95,9 +95,9 @@ class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
 
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
-        self.local_data['yaw'] = float(x)
-        self.local_data['pitch'] = float(y)
-        self.local_data['roll'] = float(z)    
+        self.local_data['x'] = float(x)
+        self.local_data['y'] = float(y)
+        self.local_data['z'] = float(z)    
         self.local_data['yaw'] = float(yaw)
         self.local_data['pitch'] = float(pitch)
         self.local_data['roll'] = float(roll)
