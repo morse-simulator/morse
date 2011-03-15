@@ -1,7 +1,7 @@
 Linear and angular speed (V, W) actuator 
 ========================================
 
-This actuator reads the values of linear x,y and angular speed and applies
+This actuator reads the values of forwarts movement x, sidewarts movement y and angular speed w and applies
 them to the robot as direct tranlation. This controller is supposed to be used with robots that allow for sidewarts movements.
 
 The speeds provided are internally adjusted to the Blender time measure,
@@ -18,8 +18,8 @@ Files
 Local data 
 ----------
 
--  **x**: (float) linear velocity in x direction
--  **y**: (float) linear velocity in y direction
+-  **x**: (float) linear velocity in x direction (forward movement)
+-  **y**: (float) linear velocity in y direction (sidewarts movement)
 -  **w**: (float) angular velocity
 
 Applicable modifiers 
