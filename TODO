@@ -15,6 +15,7 @@ File history:
 19/01/2011 - Severin: updated before morse-0.2 release
 03/02/2011 - Severin: updated for morse-0.3 and morse-0.4 targets
 03/02/2011 - Severin: added some items from LAAS users feedback
+15/03/2011 - Simon: more on targets for 0.4 release
 ---
 
 =========================
@@ -48,12 +49,43 @@ Architecture
 - make clear how components access other components? (eg: the cameras need the
   position of the robot)
 
+Simulation supervision
+----------------------
+
+- Introduce a mean to externally control time, by pacing the game engine time
+  (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
+  blender-robotics)
+
+- Multi-engine distributed simulation: define the procotol that allows to
+  dispatch various robots on several machines running blender, while maintaining
+  the world state consistent within these machines.
+
+- Introduce means to define scenarios with controlled dynamic events (through
+  requests?) 
+
+GUI
+---
+
+- Define a user interface to specify a scenario
+
+- Split the .blend file into scene / robot files
+
 Components
 ----------
 
 - Motion capture poster: MORSE should be able to simulate a motion capture setup
-by allowing the designer to paste markers in the scene whose position will be exported
-- "Point Cloud" sensor
+by allowing the designer to paste markers in the scene whose position will be
+exported
+
+- "Point Cloud" sensors: generate 3D depth images to simulate either
+stereovision at an abstract level or various Lidars. Make it generic: export
+depth data (openGL z-buffer?), define mofifiers that sample the data according
+to a given sensor geometry.
+
+
+================
+ OTHERS and MISC
+================
 
 Coding style
 ------------
@@ -79,10 +111,6 @@ Frame transformations
 Code organisation
 -----------------
 - One repo for scenarii (morse-scenarii.git)
-
-========
- OTHERS
-========
 
 User-interface
 --------------
