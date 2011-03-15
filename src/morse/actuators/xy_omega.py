@@ -5,7 +5,7 @@ import morse.helpers.actuator
 class XYWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
 
-    This class will read linear and angular speeds (V, W)
+    This class will read two linear and one angular speeds (Vx, Vy, W)
     as input from an external middleware, and then apply them
     to the parent robot.
     """
@@ -24,7 +24,7 @@ class XYWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 
     def default_action(self):
-        """ Apply (v, w) to the parent robot. """
+        """ Apply (x, y, w) to the parent robot. """
 
         # Reset movement variables
         vx, vy, vz = 0.0, 0.0, 0.0
