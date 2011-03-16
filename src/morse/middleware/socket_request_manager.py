@@ -2,6 +2,7 @@ import socket
 import select
 
 from morse.helpers.request_manager import RequestManager, MorseRPCInvokationError
+from morse.core import status
 
 SERVER_HOST = '' #all available interfaces
 SERVER_PORT = 60001
@@ -80,9 +81,9 @@ class SocketRequestManager(RequestManager):
             return
 
         if s in self._results_to_output:
-            self._results_to_output[s].append((id, True, results))
+            self._results_to_output[s].append((id, results))
         else:
-            self._results_to_output[s] = [(id, True, results)]
+            self._results_to_output[s] = [(id, results)]
 
     def _post_registration(self, component, service, rpc, is_async):
         return True
@@ -133,9 +134,9 @@ class SocketRequestManager(RequestManager):
 
                     if is_sync:
                         if i in self._results_to_output:
-                            self._results_to_output[i].append((id, True, value))
+                            self._results_to_output[i].append((id, value))
                         else:
-                            self._results_to_output[i] = [(id, True, value)]
+                            self._results_to_output[i] = [(id, value)]
                     else:
                         # Stores the mapping request/socket to notify
                         # the right socket when the service completes.
@@ -147,15 +148,15 @@ class SocketRequestManager(RequestManager):
 
                 except MorseRPCInvokationError as e:
                         if i in self._results_to_output:
-                            self._results_to_output[i].append((id, False, e.value))
+                            self._results_to_output[i].append((id, (status.FAILED, e.value)))
                         else:
-                            self._results_to_output[i] = [(id, False, e.value)]
+                            self._results_to_output[i] = [(id, (status.FAILED, e.value))]
         
         if self._results_to_output:
             for o in outputready:
                 if o in self._results_to_output:
                     for r in self._results_to_output[o]:
-                        response = "%s %s %s" % (r[0], 'OK' if r[1] else 'FAIL', str(r[2]))
+                        response = "%s %s %s" % (r[0], r[1][0], str(r[1][1]) if r[1][1] else "")
                         try:
                             self._client_sockets[o].write(response)
                             self._client_sockets[o].write("\n")

@@ -107,7 +107,7 @@ class MorseServices:
             instance.process()
 
 
-def do_service_registration(fn, component_name = None, service_name = None, request_managers = None):
+def do_service_registration(fn, component_name = None, service_name = None, async = False, request_managers = None):
 
     if not component_name:
         print("ERROR! A service has been registered without component: " + str(fn))
@@ -119,9 +119,23 @@ def do_service_registration(fn, component_name = None, service_name = None, requ
     for manager in request_managers:
         name = service_name if service_name else fn.__name__
         print("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
-        manager.register_service(component_name, fn, name)
+        manager.register_service(component_name, fn, name, async)
 
-def service(fn = None, component = None, name = None):
+def async_service(fn = None, component = None, name = None):
+    """  The '@async_service' decorator.
+
+    Refer to the @service decorator for most of the doc.
+
+    Asynchronous service specifics:
+      - The function that is decorated is expected to simply start the
+      service, and immediately return.
+      - If the service can not be started, the function must throw a
+      MorseRPCInvokationError with a error message explaining why the 
+      initialization failed.
+    """
+    return service(fn, component, name, async = True)
+
+def service(fn = None, component = None, name = None, async = False):
     """ The '@service' decorator.
 
     This decorator can be used to automagically register a service in
@@ -156,15 +170,30 @@ def service(fn = None, component = None, name = None):
             # class instanciation (cf object.py), and we simply mark
             # this method as a service.
             print("Method service "+ fn.__name__)
-            fn._morse_service = True
-            fn._morse_service_name = name
-            return fn
+            dfn = fn
+            if async:
+                def decorated_fn(self, callback, *param):
+                    self._set_service_callback(callback)
+                    fn(self, *param)
+                dfn = decorated_fn
+                dfn.__name__ = fn.__name__
+
+            dfn._morse_service = True
+            dfn._morse_service_name = name
+            dfn._morse_service_is_async = async
+
+            return dfn
+
         else:
+            if async:
+                print("WARNING: asynchronous service must be declared within a MorseObject class.")
+                return
+
             print("Free service "+ fn.__name__)
             # We assume it's a free function, and we register it.
-            do_service_registration(fn, component, name, None)
+            do_service_registration(fn, component, name, async)
             return fn
     else:
          # ...else, we build a new decorator
-        return partial(service, component = component, name = name)
+        return partial(service, component = component, name = name, async = async)
 

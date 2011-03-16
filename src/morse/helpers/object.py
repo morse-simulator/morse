@@ -3,6 +3,8 @@ import morse.helpers.transformation
 import morse.core.services
 from collections import OrderedDict
 
+from morse.core.exceptions import MorseRPCInvokationError
+
 class MorseObjectClass(object):
     """ Basic Class for all 3D objects (components) used in the simulation.
         Provides common attributes. """
@@ -15,6 +17,18 @@ class MorseObjectClass(object):
         # Fill in the data sent as parameters
         self.blender_obj = obj
         self.robot_parent = parent
+
+        # When a task is considered 'completed' (the semantic of
+        # 'completed' is left to each component), the default_action
+        # method is expected to call this callback (if not None) with
+        # the task status (from core.status.*) + optional return value
+        # as a tuple.
+        # For instance: 
+        # self.on_completion((status.FAILED, "Couldn't reach the target"))
+        # self.on_completion((status.SUCCESS, {'x':1.0, 'y':0.54}))
+        # self.on_completion((status.SUCCESS))
+        self.on_completion = None
+
 
         # Define the position of sensors with respect
         #  to their robot parent
@@ -42,7 +56,7 @@ class MorseObjectClass(object):
         # '@service' decorator.
         for fn in [getattr(self, fn) for fn in dir(self) if hasattr(getattr(self, fn), "_morse_service")]:
             name = fn._morse_service_name if fn._morse_service_name else fn.__name__
-            morse.core.services.do_service_registration(fn, self.blender_obj.name, name)
+            morse.core.services.do_service_registration(fn, self.blender_obj.name, name, fn._morse_service_is_async)
 
 
     def __del__(self):
@@ -70,6 +84,19 @@ class MorseObjectClass(object):
         will be instanced (GPS, v_Omega, ATRV, etc.).
         """
         pass
+
+
+    def _completed(self, status, result = None):
+        if self.on_completion:
+             self.on_completion((status, result))
+             self.on_completion = None
+
+    def _set_service_callback(self, cb):
+        if self.on_completion:
+            raise MorseRPCInvokationError("A request is already ongoing")
+
+        self.on_completion = cb
+ 
 
 
     def print_data(self):

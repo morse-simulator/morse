@@ -209,15 +209,14 @@ class RequestManager(object):
             result_setter = partial(self._completed_requests.__setitem__, request_id)
             #Invoke the method with unpacked parameters
             try:
-                ok = method(result_setter, *params) if params else method(result_setter)
+                # This method may throw MorseRPCInvokationError if the
+                # service initialization fails.
+                method(result_setter, *params) if params else method(result_setter)
             except TypeError as e:
                 raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
-            if ok:
-                print("Asynchronous request -> successfully started.")
-                return (False, request_id)
-            else:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: RPC call " + service + " could not get dispatched.")
+            print("Asynchronous request -> successfully started.")
+            return (False, request_id)
 
         else: #Synchronous service.
             #Invoke the method
