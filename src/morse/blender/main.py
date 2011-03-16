@@ -322,17 +322,18 @@ def init_services():
         
         # TODO: automatically generate the next line.
         GameLogic.morse_services.register_request_manager_mapping("Human", "SocketRequestManager")
+        GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "SocketRequestManager")
 
+        # Services can be imported *only* after GameLogic.morse_services has been 
+        # created. Else @service won't know where to register the RPC
+        # callbacks.
+        import morse.core.supervision_services
+
+        print("======= SERVICE MANAGERS INITIALIZED ========")
     except MorseServiceError as e:
         #...no request manager :-(
         print("WARNING: " + str(e))
-
-    # Services can be imported *only* after GameLogic.morse_services has been 
-    # created. Else @service won't know where to register the RPC
-    # callbacks.
-    import morse.core.supervision_services
-
-    print("======= SERVICE MANAGERS INITIALIZED ========")
+        print("======= SERVICE MANAGERS INITIALIZATION FAILED ========")
 
 
 def simulation_main(contr):
