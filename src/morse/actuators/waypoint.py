@@ -19,6 +19,8 @@ import math
 import GameLogic
 import mathutils
 import morse.helpers.actuator
+from morse.core.services import async_service
+from morse.core import status
 
 class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
     """ Waypoint motion controller
@@ -33,7 +35,6 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         print ('######## CONTROL INITIALIZATION ########')
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
-
 
         # Direction of the global vectors
         self.world_X_vector = mathutils.Vector([1,0,0])
@@ -80,6 +81,15 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         print ('######## CONTROL INITIALIZED ########')
 
 
+
+    @async_service
+    def goto(self, x, y):
+        #self._set_service_callback()
+
+        self.local_data['x'] = x
+        self.local_data['y'] = y
+        self.local_data['z'] = 0
+
     def default_action(self):
         """ Move the object towards the destination. """
         parent = self.robot_parent
@@ -109,7 +119,12 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # If the target has been reached, change the status
         if distance-self.local_data['tolerance'] <= 0:
+
             parent.move_status = "Stop"
+
+            #Do we have a runing request? if yes, notify the completion
+            self._completed(status.SUCCESS)
+
             #print ("TARGET REACHED")
             #print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
