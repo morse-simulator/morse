@@ -375,7 +375,10 @@ def close_all(contr):
     for obj, robot_instance in GameLogic.robotDict.items():
         del obj
 
-    print ('######### CLOSING PORTS... ########')
+    print ('######### CLOSING REQUEST MANAGERS... ########')
+    del GameLogic.morse_services
+
+    print ('######### CLOSING MIDDLEWARES... ########')
     # Force the deletion of the middleware objects
     for obj, mw_instance in GameLogic.mwDict.items():
         if mw_instance:
