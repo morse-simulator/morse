@@ -53,7 +53,7 @@ What is MORSE?
    :align: center
 .. MORSE interface
 
-MORSE is partially funded by the `Fundation RTRA <http://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework, and by DGA through the 'ACTION project <http://action.onera.fr>'
+MORSE is partially funded by the `Foundation RTRA <http://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework, and by DGA through the `ACTION project <http://action.onera.fr>`_
 
 .. image:: ../media/stae_logo.png
    :align: center                
