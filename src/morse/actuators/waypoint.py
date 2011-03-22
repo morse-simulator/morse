@@ -47,12 +47,23 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Convert the direction tolerance to radians
         self._angle_tolerance = math.radians(10)
 
+        # Choose the type of function to move the object
+        self._type = 'Velocity'
+        #self._type = 'Position'
+
         self.local_data['x'] = self._destination[0]
         self.local_data['y'] = self._destination[1]
         self.local_data['z'] = self._destination[2]
         # Waypoint tolerance (in meters)
         self.local_data['tolerance'] = 0.5
-        self.local_data['speed'] = 1.0
+        # Read the speed from the Blender object properties
+        try:
+            self.local_data['speed'] = self.blender_obj['Speed']
+            print ("Using specified speed of %d" % self.local_data['speed'])
+        # Otherwise use a default value
+        except KeyError as detail:
+            self.local_data['speed'] = 1.0
+            print ("Using default speed of %d" % self.local_data['speed'])
 
         # Identify an object as the target of the motion
         try:
@@ -83,12 +94,14 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
 
     @async_service
-    def goto(self, x, y):
+    def goto(self, x, y, z, tolerance=0.5, speed=1.0):
         #self._set_service_callback()
-
         self.local_data['x'] = x
         self.local_data['y'] = y
-        self.local_data['z'] = 0
+        self.local_data['z'] = z
+        self.local_data['tolerance'] = tolerance
+        self.local_data['speed'] = speed
+
 
     def default_action(self):
         """ Move the object towards the destination. """
@@ -123,7 +136,7 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             parent.move_status = "Stop"
 
             #Do we have a runing request? if yes, notify the completion
-            self._completed(status.SUCCESS)
+            self._completed(status.SUCCESS, parent.move_status)
 
             #print ("TARGET REACHED")
             #print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
@@ -164,8 +177,12 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
             ticks = GameLogic.getLogicTicRate()
             try:
                 # Compute the speeds
-                vx = speed / ticks
-                rotation_speed = (speed / ticks) / 2.0
+                if self._type == 'Position':
+                    vx = speed / ticks
+                    rotation_speed = (speed / ticks) / 2.0
+                elif self._type == 'Velocity':
+                    vx = speed
+                    rotation_speed = 1.0 #speed / 2.0
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
@@ -185,5 +202,9 @@ class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
-        parent.blender_obj.applyMovement([vx, 0, 0], True)
-        parent.blender_obj.applyRotation([0, 0, rz], True)
+        if self._type == 'Position':
+            parent.blender_obj.applyMovement([vx, 0, 0], True)
+            parent.blender_obj.applyRotation([0, 0, rz], True)
+        elif self._type == 'Velocity':
+            parent.blender_obj.setLinearVelocity([vx, 0, 0], True)
+            parent.blender_obj.setAngularVelocity([0, 0, rz], True)
