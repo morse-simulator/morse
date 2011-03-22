@@ -51,13 +51,6 @@ class MorseObjectClass(object):
         # Define lists of dynamically added functions
         self.del_functions = []
         
-        # Register the component services, if any.
-        # Methods to register are marked '_morse_service' by the
-        # '@service' decorator.
-        for fn in [getattr(self, fn) for fn in dir(self) if hasattr(getattr(self, fn), "_morse_service")]:
-            name = fn._morse_service_name if fn._morse_service_name else fn.__name__
-            morse.core.services.do_service_registration(fn, self.blender_obj.name, name, fn._morse_service_is_async)
-
 
     def __del__(self):
         """ Destructor method. """
@@ -86,6 +79,16 @@ class MorseObjectClass(object):
         pass
 
 
+    def register_service(self):
+        """
+        Register the component services, if any.
+        Methods to register are marked '_morse_service' by the '@service' decorator.
+        """
+        for fn in [getattr(self, fn) for fn in dir(self) if hasattr(getattr(self, fn), "_morse_service")]:
+            name = fn._morse_service_name if fn._morse_service_name else fn.__name__
+            morse.core.services.do_service_registration(fn, self.blender_obj.name, name, fn._morse_service_is_async)
+
+
     def _completed(self, status, result = None):
         if self.on_completion:
              self.on_completion((status, result))
@@ -93,14 +96,14 @@ class MorseObjectClass(object):
 
     def _set_service_callback(self, cb):
         if self.on_completion:
+            self.on_completion = cb
             raise MorseRPCInvokationError("A request is already ongoing")
 
         self.on_completion = cb
  
 
-
     def print_data(self):
-        """ Print the current position of the blender object. """
+        """ Print the current data for the component instance. """
         for variable, data in self.local_data.items():
             res = variable + str(data) + " "
         print ("%s" % res)

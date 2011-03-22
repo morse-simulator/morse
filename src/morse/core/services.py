@@ -84,12 +84,11 @@ class MorseServices:
 
 
     def __del__(self):
-
-        # Removes all registered request managers, calling their
-        # destructors.
+        """ Removes all registered request managers, calling their destructors. """
+        print ("Deleting all request managers in 'core/services.py'")
         self._request_managers.clear()
-
         self._service_mappings.clear()
+
 
     def get_request_managers(self, component):
         if not component in self._service_mappings:

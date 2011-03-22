@@ -44,6 +44,10 @@ def create_dictionaries ():
     if not hasattr(GameLogic, 'mwDict'):
         GameLogic.mwDict = {}
 
+    # Create a dictionary with the middlewares used
+    if not hasattr(GameLogic, 'serviceDict'):
+        GameLogic.serviceDict = {}
+
     scene = GameLogic.getCurrentScene()
 
     # Store the position and orientation of all objects
@@ -92,7 +96,7 @@ def create_dictionaries ():
                 #sys.exc_clear()    # Clears the last exception thrown
                                     # Does not work in Python 3
 
-    # Get the middlewares
+    # Get the modifiers
     for obj in scene.objects:
         try:
             obj['Modifier_Tag']
@@ -152,6 +156,9 @@ def check_dictionaries():
     for obj, mw_variables in GameLogic.mwDict.items():
         print ("\tMIDDLEWARE: '{0}'".format(obj))
 
+    print ("\nGameLogic has the following services:")
+    for obj, service_variables in GameLogic.serviceDict.items():
+        print ("\tSERVICE: '{0}'".format(obj))
 
 
 def create_instance(obj, parent=None):
@@ -224,6 +231,58 @@ def link_middlewares():
     return True
 
 
+def link_services():
+    """ Read the configuration script (inside the .blend file)
+        and assign the correct service handlers and options to each component. """
+    try:
+        component_list = component_config.component_service
+    except AttributeError as detail:
+        # Exit gracefully if there are no modifiers specified
+        print ("ERROR: The 'component_service' dictionary can not be found in your configuration file.")
+        return False
+
+    for component_name, service_data in component_list.items():
+        # Get the instance of the object
+        try:
+            instance = GameLogic.componentDict[component_name]
+        except KeyError as detail:
+            print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+            print("""
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ERROR: your configuration file is not valid. Please
+            check the name of your components and restart the
+            simulation.
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            """)
+            return False
+
+        service_name = service_data[0]
+        GameLogic.morse_services.register_request_manager_mapping(component_name, service_name)
+        instance.register_service()
+        print ("Component: '%s' using service '%s'" % (component_name, service_name))
+        """
+        found = False
+        missing_component = False
+        # Look for the listed service in the dictionary of active service's
+        for mw_obj, mw_instance in GameLogic.mwDict.items():
+            #print("Looking for '%s' in '%s'" % (mw_name, service_obj.name))
+            if service_name in mw_obj.name:
+                found = True
+                # Make the service object take note of the component
+                # TODO: Check that this works properly
+                GameLogic.morse_services.register_request_manager_mapping(component_name, service_data[0])
+                #service_instance.register_component(component_name, instance, service_data)
+                break
+                
+        if not found:
+            print ("WARNING: There is no '%s' service object in the scene." % service_name)
+        """
+
+    # Will return true always (for the moment)
+    return True
+
+
+
 def add_modifiers():
     """ Read the configuration script (inside the .blend file)
         and assign the correct data modifiers to each component. """
@@ -286,6 +345,7 @@ def init(contr):
     init_ok = create_dictionaries()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
+    link_services()
 
     if init_ok:
         print ('======= COMPONENT DICTIONARY INITIALISED =======')
@@ -316,13 +376,15 @@ def init_services():
 
     try:
         GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
+        GameLogic.morse_services.add_request_manager("morse.middleware.yarp_request_manager.YarpRequestManager")
 
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
         
         # TODO: automatically generate the next line.
-        GameLogic.morse_services.register_request_manager_mapping("Human", "SocketRequestManager")
-        GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "SocketRequestManager")
+        #GameLogic.morse_services.register_request_manager_mapping("Human", "SocketRequestManager")
+        #GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "SocketRequestManager")
+        #GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "YarpRequestManager")
 
         # Services can be imported *only* after GameLogic.morse_services has been 
         # created. Else @service won't know where to register the RPC
@@ -342,7 +404,22 @@ def simulation_main(contr):
     We do here all homeworks to manage the simulation at whole.
     """
     # Update the time variable
-    GameLogic.current_time = time.clock() - GameLogic.base_clock
+    try:
+        GameLogic.current_time = time.clock() - GameLogic.base_clock
+    except AttributeError as detail:
+        # If the 'base_clock' variable is not defined, there probably was
+        #  a problem while doing the init, so we'll abort the simulation.
+        print("""
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ERROR: the initialisation of the simulation
+        was not correctly done.
+        Check the terminal for error messages, and report
+        them on the morse-dev@laas.fr mailing list.
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        """)
+        quitActuator = contr.actuators['Quit_sim']
+        contr.activate(quitActuator)
+        sys.exit(-1)
 
     if hasattr(GameLogic, "morse_services"):
         # let the service managers process their inputs/outputs
@@ -415,6 +492,7 @@ def restart(contr):
         reset_objects(contr)
         return
 
+        """
         # TODO: Reimplement the restart function,
         #  by killing the objects created, and then
         #  calling the init function again.
@@ -426,6 +504,7 @@ def restart(contr):
         init(contr)
 
         print ('######### RESTARTING SIMULATION ########')
+        """
 
 
 def reset_objects(contr):
@@ -435,6 +514,15 @@ def reset_objects(contr):
     to their original state, during the simulation.
     """
     for b_obj, state in GameLogic.blender_objects.items():
+        # Stop physics simulation
+        b_obj.suspendDynamics()
+        b_obj.setLinearVelocity([0.0, 0.0, 0.0], True)
+        b_obj.setAngularVelocity([0.0, 0.0, 0.0], True)
+        b_obj.applyForce([0.0, 0.0, 0.0], True)
+        b_obj.applyTorque([0.0, 0.0, 0.0], True)
+
         print ("%s goes to %s" % (b_obj, state[0]))
         b_obj.worldPosition = state[0]
         b_obj.worldOrientation = state[1]
+        # Reset physics simulation
+        b_obj.restoreDynamics()
