@@ -11,7 +11,13 @@ class KeyboardActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.speed = 0.05
+
+        # Choose the type of function to move the object
+        self._type = 'Velocity'
+        self.speed = 2.0
+        #self._type = 'Position'
+        #self.speed = 0.05
+
         print ('######## CONTROL INITIALIZED ########')
 
 
@@ -46,5 +52,9 @@ class KeyboardActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
-        parent.applyMovement([vx, vy, vz], True)
-        parent.applyRotation([rx, ry, rz], True)
+        if self._type == 'Position':
+            parent.applyMovement([vx, vy, vz], True)
+            parent.applyRotation([rx, ry, rz], True)
+        elif self._type == 'Velocity':
+            parent.setLinearVelocity([vx, vy, vz], True)
+            parent.setAngularVelocity([rx, ry, rz], True)

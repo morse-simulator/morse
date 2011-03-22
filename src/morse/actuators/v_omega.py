@@ -17,6 +17,10 @@ class VWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
         self.local_data['v'] = 0.0
         self.local_data['w'] = 0.0
 
+        # Choose the type of function to move the object
+        self._type = 'Velocity'
+        #self._type = 'Position'
+
         print ('######## CONTROL INITIALIZED ########')
 
 
@@ -35,8 +39,12 @@ class VWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # Scale the speeds to the time used by Blender
         try:
-            vx = self.local_data['v'] / ticks
-            rz = self.local_data['w'] / ticks
+            if self._type == 'Position':
+                vx = self.local_data['v'] / ticks
+                rz = self.local_data['w'] / ticks
+            elif self._type == 'Velocity':
+                vx = self.local_data['v']
+                rz = self.local_data['w']
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -47,5 +55,9 @@ class VWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
-        parent.applyMovement([vx, vy, vz], True)
-        parent.applyRotation([rx, ry, rz], True)
+        if self._type == 'Position':
+            parent.applyMovement([vx, vy, vz], True)
+            parent.applyRotation([rx, ry, rz], True)
+        elif self._type == 'Velocity':
+            parent.setLinearVelocity([vx, vy, vz], True)
+            parent.setAngularVelocity([rx, ry, rz], True)
