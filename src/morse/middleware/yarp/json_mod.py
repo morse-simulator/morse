@@ -116,4 +116,4 @@ def read_json_waypoint(self, component_instance):
         component_instance.local_data['y'] = float(point['y'])
         component_instance.local_data['z'] = float(point['z'])
         component_instance.local_data['tolerance'] = float(tolerance)
-        component_instance.local_data['speed'] = 1.0
+        component_instance.local_data['speed'] = 3.0
