@@ -1,5 +1,5 @@
 
-INSTALL(FILES __init__.py socket_mw.py text_mw.py socket_request_manager.py
+INSTALL(FILES __init__.py socket_mw.py text_mw.py socket_request_manager.py yarp_request_manager.py
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 
