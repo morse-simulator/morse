@@ -148,8 +148,7 @@ def post_odometry(self, component_instance):
     odometry.twist.twist.angular.z =  component_instance.local_data['angle_velocities'][2]
     
     odometry.header.stamp = rospy.Time.now()
-    odometry.header.frame_id = "/base_laser_link"
-    #odometry.child_frame_id = "/base_link"
+    odometry.header.frame_id = "/odom"
         
     for topic in self._topics: 
         message = odometry
