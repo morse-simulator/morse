@@ -8,7 +8,7 @@ port.
 
 Data is shared as simple text strings.
 
-.. note:: The port numbers used in MORSE start at 70000.
+.. note:: The port numbers used in MORSE start at 60000.
 
 Files
 -----
@@ -19,5 +19,10 @@ Files
 Available methods
 -----------------
 
-- ``read_message``: Gets information from a port, and stores it in the ``local_data`` dictionary of the associated component. This method expects a list of variables.
-- ``post_message``: Formats the contents of ``local_data`` into a string separated by ';', and sends it through the port associated with a component. This method is only able to handle data of types: integer, float and string.
+- ``read_message``: Reads data as a pickled_ Python dictionary into the
+  ``local_data`` associated to the component. The dictionary keys must
+  be identical to the component ``local_data`` keys.
+- ``post_message``: Dumps a pickled_ version of the tuple ``(component_name, local_data)`` on the socket.
+  It can be read on the other end with ``pickle.loads``.
+
+.. _pickled: http://docs.python.org/library/pickle.html

@@ -5,6 +5,7 @@ Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal
 functioning is not tied no any one particular middleware, but it is capable of
 communicating with any type of architecture.
+
 The binding of middlewares with the components in the scene is done using
 the concept of :doc:`hooks <hooks>`.
 
@@ -16,6 +17,9 @@ Current list of compatible middlewares
     :maxdepth: 1
 
     middlewares/*
+
+Refer to the table below for details regarding which features are actually
+supported for each middleware.
 
 Features compatibility matrix
 -----------------------------
@@ -53,8 +57,8 @@ following items depend on the type of middleware, but will generally be the
 name of the middleware function that should be called by the component to share
 its data.
 
-Expanding the middlewares 
--------------------------
+Adding support for new middlewares 
+-----------------------------------
 
 New middlewares can be added to MORSE by following these 
 :doc:`instructions <../dev/new_middleware>`.
