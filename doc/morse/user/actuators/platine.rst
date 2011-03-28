@@ -1,9 +1,8 @@
-Platine control actuator
-========================
+Pan-Tilt unit control actuator
+==============================
 
 This actuator reads the rotation values for pan and tilt, and applies
-them to the platine component that must be set as children of this
-actuator.
+them to the pan-tilt unit that must be set as children of this actuator.
 Angles are expected in radians.
 
 Files 

@@ -65,5 +65,5 @@ No camera modifiers available at the moment
 Related components
 ------------------
 
-A stereo bench is composed of two regular cameras (as described in this page)
+A :doc:`stereo bench <stereo_camera>` is composed of two regular cameras
 parented to a :doc:`pan-tilt unit <pantilt>`.
