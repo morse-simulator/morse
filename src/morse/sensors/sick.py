@@ -5,10 +5,10 @@ else:
     import mathutils
     
 import math
-import morse.helpers.sensor
+import morse.core.sensor
 import morse.helpers.math
 
-class SICKClass(morse.helpers.sensor.MorseSensorClass):
+class SICKClass(morse.core.sensor.MorseSensorClass):
     """ SICK laser range sensor """
 
     def __init__(self, obj, parent=None):

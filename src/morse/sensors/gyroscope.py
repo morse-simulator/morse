@@ -1,8 +1,8 @@
 import GameLogic
 import math
-import morse.helpers.sensor
+import morse.core.sensor
 
-class GyroscopeClass(morse.helpers.sensor.MorseSensorClass):
+class GyroscopeClass(morse.core.sensor.MorseSensorClass):
     """ Gyroscope sensor """
 
     def __init__(self, obj, parent=None):

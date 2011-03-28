@@ -1,10 +1,10 @@
 import GameLogic
 import mathutils
 import math
-import morse.helpers.sensor
+import morse.core.sensor
 import morse.helpers.math
 
-class VelodyneClass(morse.helpers.sensor.MorseSensorClass):
+class VelodyneClass(morse.core.sensor.MorseSensorClass):
     """ Velodyne laser range sensor """
 
     def __init__(self, obj, parent=None):

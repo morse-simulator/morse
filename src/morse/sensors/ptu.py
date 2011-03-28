@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.sensor
+import morse.core.sensor
 
-class PanTiltUnitClass(morse.helpers.sensor.MorseSensorClass):
+class PanTiltUnitClass(morse.core.sensor.MorseSensorClass):
     """ Base for stereo pairs
 
     It is used to link two camear objects, and export the images

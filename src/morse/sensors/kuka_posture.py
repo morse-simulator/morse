@@ -1,10 +1,10 @@
 import GameLogic
 import math
-import morse.helpers.sensor
+import morse.core.sensor
 import mathutils
 import morse.helpers.math as morse_math
 
-class KukaPostureClass(morse.helpers.sensor.MorseSensorClass):
+class KukaPostureClass(morse.core.sensor.MorseSensorClass):
     """ KUKA posture sensor """
 
     def __init__(self, obj, parent=None):

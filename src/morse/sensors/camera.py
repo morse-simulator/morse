@@ -1,9 +1,9 @@
 import GameLogic
 import VideoTexture
-import morse.helpers.sensor
+import morse.core.sensor
 
 
-class CameraClass(morse.helpers.sensor.MorseSensorClass):
+class CameraClass(morse.core.sensor.MorseSensorClass):
     """ Base class for cameras in MORSE
 
     This class implements the configuration of the VideoTexture module

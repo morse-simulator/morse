@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.sensor
+import morse.core.sensor
 
-class MotionSensorClass(morse.helpers.sensor.MorseSensorClass):
+class MotionSensorClass(morse.core.sensor.MorseSensorClass):
     """ Class definition for the gyroscope sensor.
         Sub class of Morse_Object. """
 

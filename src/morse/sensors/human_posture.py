@@ -1,8 +1,8 @@
 import math
 import GameLogic
-import morse.helpers.sensor
+import morse.core.sensor
 
-class HumanPostureClass(morse.helpers.sensor.MorseSensorClass):
+class HumanPostureClass(morse.core.sensor.MorseSensorClass):
     """ Class definition for the human posture exporter.
         This sensor exports the posture of a human model moving in the simulator.
         

@@ -1,8 +1,8 @@
 import math
 import GameLogic
-import morse.helpers.sensor
+import morse.core.sensor
 
-class ThermometerClass(morse.helpers.sensor.MorseSensorClass):
+class ThermometerClass(morse.core.sensor.MorseSensorClass):
     """ Class definition for the gyroscope sensor.
         Sub class of Morse_Object. """
 
