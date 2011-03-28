@@ -1,9 +1,9 @@
 import GameLogic
 import math
-import morse.helpers.actuator
+import morse.core.actuator
 import morse.helpers.math as morse_math
 
-class KukaIKActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class KukaIKActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller for the Kuka LWR arm
 
     This component will read an array of 7 floats, and apply them as

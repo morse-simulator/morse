@@ -15,9 +15,9 @@
 import math
 import GameLogic
 import mathutils
-import morse.helpers.actuator
+import morse.core.actuator
 
-class HealerActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class HealerActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Healer beam class
 
     This controller will receive an instruction to heal a nearby victim

@@ -18,11 +18,11 @@
 import math
 import GameLogic
 import mathutils
-import morse.helpers.actuator
+import morse.core.actuator
 from morse.core.services import async_service
 from morse.core import status
 
-class WaypointActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Waypoint motion controller
 
     This controller will receive a destination point and

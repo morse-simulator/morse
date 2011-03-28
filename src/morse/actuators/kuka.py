@@ -1,10 +1,10 @@
 import GameLogic
 import math
 import mathutils
-import morse.helpers.actuator
+import morse.core.actuator
 import morse.helpers.math as morse_math
 
-class KukaActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class KukaActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Arm control for the Kuka arm using angles
 
     This component will read an array of 7 floats, and apply them as

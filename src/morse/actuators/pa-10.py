@@ -1,10 +1,10 @@
 import GameLogic
 import math
 import mathutils
-import morse.helpers.actuator
+import morse.core.actuator
 import morse.helpers.math as morse_math
 
-class PA10ActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
 
     This component will read an array of 6 floats, and apply them as

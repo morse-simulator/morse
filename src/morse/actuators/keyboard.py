@@ -1,8 +1,8 @@
 import GameLogic
 import GameKeys
-import morse.helpers.actuator
+import morse.core.actuator
 
-class KeyboardActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Class definition for a motion controller that changes speed
         and rotation of the robot using the keyboard arrows. """
 

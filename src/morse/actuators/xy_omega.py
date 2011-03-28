@@ -1,8 +1,8 @@
 import GameLogic
 import math
-import morse.helpers.actuator
+import morse.core.actuator
 
-class XYWActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class XYWActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
 
     This class will read two linear and one angular speeds (Vx, Vy, W)

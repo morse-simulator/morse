@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.actuator
+import morse.core.actuator
 
-class OrientationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class OrientationActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller changing the robot orientation
 
     This class will read angles as input from an external middleware,

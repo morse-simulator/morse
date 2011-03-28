@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.actuator
+import morse.core.actuator
 
-class DestinationActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Destination motion controller
 
     This controller will receive a destination point and

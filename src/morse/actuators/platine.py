@@ -1,9 +1,9 @@
 import GameLogic
 import math
-import morse.helpers.actuator
+import morse.core.actuator
 import morse.helpers.math as morse_math
 
-class PlatineActuatorClass(morse.helpers.actuator.MorseActuatorClass):
+class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Controller for pant tilt unit (platine)
 
     Reads 3 angles and applies them to the object and its children
