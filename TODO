@@ -16,6 +16,7 @@ File history:
 03/02/2011 - Severin: updated for morse-0.3 and morse-0.4 targets
 03/02/2011 - Severin: added some items from LAAS users feedback
 15/03/2011 - Simon: more on targets for 0.4 release
+28/03/2011 - Severin: targets for 0.3 are almost cleared
 ---
 
 =========================
@@ -26,13 +27,7 @@ Middlewares
 -----------
 
 - Requests: ensure some working control of the simulation
-  based on the socket interface (restart, pause,...)
-- ROS support for the robot's joint state and camera
-
-Simulation supervision
-----------------------
-
-- Add an option the replace all objects at their initial position without relaunching the simulation
+  based on the socket interface (restart,...)
 
 =========================
  TARGETS FOR RELEASE 0.4
@@ -41,7 +36,8 @@ Simulation supervision
 Middlewares
 -----------
 
-- add support for services through the YARP, ROS and Pocolibs middleware
+- add support for services through ROS and Pocolibs middleware
+- ROS support for the robot's cameras
 
 Architecture
 ------------
@@ -54,7 +50,7 @@ Simulation supervision
 
 - Introduce a mean to externally control time, by pacing the game engine time
   (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
-  blender-robotics)
+  blender-robotics). Add support to pause the simulation.
 
 - Multi-engine distributed simulation: define the procotol that allows to
   dispatch various robots on several machines running blender, while maintaining

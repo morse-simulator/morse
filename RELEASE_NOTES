@@ -1,21 +1,23 @@
 MORSE 0.2.99
 ============
 
-Middlewares
------------
-
-- Initial support for the ROS (http://www.ros.org) middleware.
-- ROS: Odometry and laser scanner sensors are exported using standard
-  messages.
-
 Architectural changes
 ---------------------
 
 - MORSE now support *services* to configure components
-and the general behaviour of the simulation at runtime.
-- services are available for the socket-based text interface
+  and the general behaviour of the simulation at runtime. Services
+  can be either synchronous or asynchronous.
 - Addition of a variable to keep track of the time elapsed in seconds
-since the simulation started.
+  since the simulation started.
+
+Middlewares
+-----------
+
+- Initial support for the ROS (http://www.ros.org) middleware.
+- ROS: Odometry, joint state and laser scanner sensors are exported using standard
+  messages.
+- Sockets: services (RPC) are available
+- YARP: services (RPC) are available
 
 New sensors/actuators
 ---------------------
@@ -28,6 +30,8 @@ Simulation supervision
 - Add an option to switch between camera during the simulation
 - Add support for the Wiimote to control the human in HRI simulations
   (external tool using socket-based requests)
+- Add an option the replace all objects at their initial position without
+  relaunching the simulation
 
 MORSE 0.2 - The HRI release
 ===========================
