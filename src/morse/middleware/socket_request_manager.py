@@ -85,7 +85,7 @@ class SocketRequestManager(RequestManager):
         else:
             self._results_to_output[s] = [(id, results)]
 
-    def _post_registration(self, component, service, rpc, is_async):
+    def _post_registration(self, component, service, is_async):
         return True
 
     def _main(self):

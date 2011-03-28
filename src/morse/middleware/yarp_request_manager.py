@@ -67,7 +67,7 @@ class YarpRequestManager(RequestManager):
             self._results_to_output[port] = [(id, results)]
 
 
-    def _post_registration(self, component, service, rpc, is_async):
+    def _post_registration(self, component, service, is_async):
         """ Register a connection of a service with YARP """
         # Get the Network attribute of yarp,
         #  then call its init method
