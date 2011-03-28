@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
-import morse.helpers.object
+import morse.core.object
 
-class MorseActuatorClass(morse.helpers.object.MorseObjectClass):
+class MorseActuatorClass(morse.core.object.MorseObjectClass):
     """ Basic Class for all actuator ovjects.
 
     Provides common attributes. """

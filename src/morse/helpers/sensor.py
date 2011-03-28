@@ -1,7 +1,7 @@
 from abc import ABCMeta
-import morse.helpers.object
+import morse.core.object
 
-class MorseSensorClass(morse.helpers.object.MorseObjectClass):
+class MorseSensorClass(morse.core.object.MorseObjectClass):
     """ Basic Class for all sensors
 
     Inherits from the base object class.
