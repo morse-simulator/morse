@@ -2,7 +2,7 @@ import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy');
 import roscpp
 import rospy
 import array
-import morse.helpers.middleware
+import morse.core.middleware
 import GameLogic
 import std_msgs
 if GameLogic.pythonVersion < 3:
@@ -12,7 +12,7 @@ else:
 
 from std_msgs.msg import String
 
-class ROSClass(morse.helpers.middleware.MorseMiddlewareClass):
+class ROSClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and ROS."""
       
     def __init__(self, obj, parent=None):

@@ -4,9 +4,9 @@ if GameLogic.pythonVersion < 3:
     import cPickle as pickle
 else:
     import pickle
-import morse.helpers.middleware
+import morse.core.middleware
 
-class MorseSocketClass(morse.helpers.middleware.MorseMiddlewareClass):
+class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
     """ External communication using sockets. """
 
     def __init__(self, obj, parent=None):

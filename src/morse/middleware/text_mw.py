@@ -1,7 +1,7 @@
 import GameLogic
-import morse.helpers.middleware
+import morse.core.middleware
 
-class TextOutClass(morse.helpers.middleware.MorseMiddlewareClass):
+class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
     """ Produce text files as output for the components """
 
     def __init__(self, obj, parent=None):
