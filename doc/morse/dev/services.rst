@@ -12,6 +12,173 @@ block the simulation until they complete. They must remain fast to execute.
 Asynchronous services may span computations on several simulation steps (but
 each individual cycle must remain fast).
 
+Adding new services
+-------------------
+
+Exposing methods as services
+++++++++++++++++++++++++++++
+
+Most of the time, adding a new service is as easy as adding ``@service``
+in front of a function declared within a component.
+
+Let have a look to ``human.py``, the component that allows us to control
+a human character in the simulation.
+
+.. code-block:: python
+
+    import morse.core.robot
+    from morse.core.services import service
+
+    class HumanClass(morse.core.robot.MorseRobotClass):
+
+        def __init__(self, obj, parent=None):
+            [...]
+ 
+        @service
+        def move(self, speed, rotation):
+            
+            human = self.blender_obj
+            
+            human.applyMovement( [speed,0,0], True )
+            human.applyRotation( [0,0,rotation], True )
+
+        [...]
+
+By adding the ``@service`` decorator to the ``move`` method, we expose
+``move`` as a MORSE service.
+
+During the simulation initialization, MORSE registers these services for
+each instances of the component, maps them to one (or several)
+middlewares (as specified by the user in ``component_config.py``), and
+starts listening for incoming request.
+
+Each middleware has its own naming scheme for services, but one can
+expect the services to be available as ``component_name.service_name``.
+
+The example below show a simple Python client that would use the
+``HumanClass.move`` service as declared above:
+
+.. code-block:: python
+
+  import socket
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  s.connect(("localhost", 60001))
+  s.send("id1 myHuman move (1.0, 1.6)\n")
+
+In this example, we assume that ``myHuman`` is the name of the Blender
+object that instanciates a ``HumanClass``.
+
+.. note::
+  The value of the id (here ``id1``) has no importance at all: it is
+  defined and used only by the client to track requests and responses.
+
+Free functions
+++++++++++++++
+
+Synchronous services can also be declared outside classes (on
+free-functions).
+
+In this case, the decorator takes one parameter, the (pseudo) component.
+
+For instance, ``morse.core.supervision_services.py`` declares such
+services. The following example shows the ``list_robots`` service that
+returns the list of robot declared in the simulation:
+
+.. code-block:: python
+
+    import GameLogic
+    from morse.core.services import service
+
+    @service(component = "simulation")
+    def list_robots():
+        return [obj.name for obj in GameLogic.robotDict.keys()]
+
+The pseudo-component ``simulation`` is used as *namespace* for the
+service: this one is accessible as ``simulation.list_robots``.
+
+Asynchronous services
++++++++++++++++++++++
+
+RPC calls may be used to start the execution of a task that may take a
+long time to complete.
+
+In such cases, **asynchronous services** can be used to initialize and start
+the task. MORSE automatically notifies the client when the task is
+completed.
+
+Declaring new asynchronous services is slightly more complex: we need
+first an *initialization method* and secondary, a way to tell when the
+task is achieved.
+
+Declaring an initialization method is very similar to synchronous
+services. For instance, the *waypoint* actuator defines a asynchronous
+``goto`` service:
+
+.. code-block:: python
+
+    import morse.core.actuator
+    from morse.core.services import async_service
+
+    class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+
+        def __init__(self, obj, parent=None):
+            [...]
+
+        @async_service
+        def goto(self, x, y):
+            self.local_data['x'] = x
+            self.local_data['y'] = y
+            self.local_data['z'] = 0 
+
+        [...]
+
+The ``@service`` decorator is simply replaced by ``@async_service``. By
+doing so, MORSE automatically register a callback that is used to
+monitor the status of the task and notify the client upon completion.
+
+In this example we simply set a new target position in the actuator
+``local_data`` dictionary, but any kind of initialization can be started
+here. It must only remain short (since the simulator blocks until the
+initialization method returns).
+
+The execution of the task itself takes place at each simulation step in
+the component ``default_action`` method. Each execution step should
+remain short since the simulator blocks on the ``default_action`` as
+well.
+
+When the task is achieved, the component must notify it by calling
+``self._completed(status, result)``.
+
+``status`` is one of the status defined in ``morse.core.status.py``
+(mainly ``SUCCESS`` and ``FAILED``), ``result`` is any valid Python
+object.
+
+.. note::
+  As you may have noticed, at a given time, only one asynchronous
+  request can be handle by a component.  If a second asynchronous
+  request is received, it returns immediately
+  with the status 'FAILED'.
+
+.. note::
+  Asynchronous service can normally only exist inside components (i.e.,
+  they must be declared within a class inheriting from
+  ``morse.core.object.MorseObjectClass``).
+  The section `Manually registering services`_ explains how to overcome
+  this constraint.
+
+Hands on the internals
+----------------------
+
+What exactly happen when a function is decorated with ``@service``?
+
+TODO
+
+Manually registering services
+-----------------------------
+
+While usually not necessary, you may have sometimes to manually register
+services (i.e. without using decorators).
+
 This first code snippet shows how to register a synchronous service that uses
 sockets as communication interface:
 
@@ -109,11 +276,7 @@ If you test the code with Telnet::
   [after 5 seconds]
   req2 OK done!
 
-  .. note::
+.. note::
     When passing a single parameter, you still need to pass a valid Python iterable,
     with only one element.  Hence the ``(5,)``.
  
-Registration of services in a component
----------------------------------------
-
-TODO

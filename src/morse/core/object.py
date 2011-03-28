@@ -96,7 +96,6 @@ class MorseObjectClass(object):
 
     def _set_service_callback(self, cb):
         if self.on_completion:
-            self.on_completion = cb
             raise MorseRPCInvokationError("A request is already ongoing")
 
         self.on_completion = cb
