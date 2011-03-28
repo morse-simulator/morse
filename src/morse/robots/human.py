@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.robot
+import morse.core.robot
 from morse.core.services import service
 
-class HumanClass(morse.helpers.robot.MorseRobotClass):
+class HumanClass(morse.core.robot.MorseRobotClass):
     """ Class definition for the human as a robot entity
         Sub class of Morse_Object. """
 

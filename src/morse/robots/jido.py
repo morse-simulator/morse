@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.robot
+import morse.core.robot
 
 
-class JidoClass(morse.helpers.robot.MorseRobotClass):
+class JidoClass(morse.core.robot.MorseRobotClass):
     """ Class definition for the Jido robot.
 
         Sub class of Morse_Object. """

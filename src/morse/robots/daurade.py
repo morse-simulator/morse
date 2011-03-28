@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.robot
+import morse.core.robot
 
 
-class DauradeClass(morse.helpers.robot.MorseRobotClass):
+class DauradeClass(morse.core.robot.MorseRobotClass):
     """ Class definition for the Submarine (Daurade).
         Sub class of Morse_Object. """
 

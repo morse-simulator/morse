@@ -1,8 +1,8 @@
 import GameLogic
-import morse.helpers.robot
+import morse.core.robot
 
 
-class RessacClass(morse.helpers.robot.MorseRobotClass):
+class RessacClass(morse.core.robot.MorseRobotClass):
     """ Class definition for the Ressac.
         Sub class of Morse_Object. """
 
