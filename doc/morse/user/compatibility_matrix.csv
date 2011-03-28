@@ -1,0 +1,24 @@
+**Feature**,                  Text file based, Raw sockets, YARP,           ROS,             Pocolibs
+Communications , 
+``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔ (posters)
+``RPC (requests)``,			  ✘,               ✔,           ✔,              ✘,               ✘    
+Sensors,
+``Accelerometer``,            ✔,               ✔,           ✔,              ✘,               ✘
+``Odometry``,                 ✔,               ✔,           ✔,              ✔ ``Odometry``,  ✔ ``Pom``
+``Video camera``,             ✘,               ✘,           ✔ ``YarpImage``,✘,               ✔ ``Viam``
+``Semantic camera``,          ✔,               ✔,           ✔,              ✘,               ✔ ``Viman``
+``GPS``,                      ✔,               ✔,           ✔,              ✘,               ✘
+``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✘
+``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK``
+``Generic joint state``,      ✔,               ✔,           ✔,              ✔ ``TF``,        ✘
+``Pan-Tilt unit``,            ✔,               ✔,           ✔,              ✘,               ✘
+``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,               ✘
+``Laser range finder``,       ✔,               ✔,           ✘,             "✔ ``LaserScan``, ``PointCloud``",   ✔ ``SICK``          
+``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘
+Actuators,
+``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘
+"``(v, ω) motion control``",    ✘,               ✔,           ✔,             "✔ ``Twist`` - supports as well (Vx, Vy, ω)",    "✔ ``Rflex``, ``JLoco``"
+``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✔ ``?``
+``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✘,               ✔ ``LWR``
+``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✔ ``?``
+``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✘,               ✔ ``Platine`` (not tested)

@@ -17,6 +17,23 @@ Current list of compatible middlewares
 
     middlewares/*
 
+Features compatibility matrix
+-----------------------------
+
+The table below summarizes the level of support of MORSE features for each middleware.
+
+When a component is supported (✔), we specify the middleware-specific format we
+use (like ``Viam`` or ``YarpImage``). 
+
+If no format is specified, MORSE uses its default serialization mechanism,
+i.e., a straight serialization of the JSON representation of the component
+data. Please refer to each middleware to know more about it.
+
+.. csv-table:: 
+    :header-rows: 1
+    :stub-columns: 1
+    :file: compatibility_matrix.csv
+
 Linking a middleware in a scene 
 -------------------------------
 
