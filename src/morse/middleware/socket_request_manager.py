@@ -1,7 +1,7 @@
 import socket
 import select
 
-from morse.helpers.request_manager import RequestManager, MorseRPCInvokationError
+from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
 
 SERVER_HOST = '' #all available interfaces

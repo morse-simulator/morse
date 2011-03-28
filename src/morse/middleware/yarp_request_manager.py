@@ -1,7 +1,7 @@
 import sys
 import yarp
 
-from morse.helpers.request_manager import RequestManager, MorseRPCInvokationError
+from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
 
 
