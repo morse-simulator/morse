@@ -97,13 +97,12 @@ class RequestManager(object):
         return "Generic request manager"
 
     @abstractmethod
-    def _post_registration(self, component_name, service_name, callback, is_async):
+    def _post_registration(self, component_name, service_name, is_async):
         """ This method is meant to be overloaded by middlewares that have
         specific initializations to do when a new service is exposed.
 
         :param string component_name: name of the component that declare this service
         :param string service_name: Public name of the service
-        :param callable callback: Method to invoke on incoming request
         :param boolean is_async: If true, means that the service is asynchronous.
         :return True if the registration succeeded.
         :rtype boolean
@@ -162,7 +161,7 @@ class RequestManager(object):
 
             self._services[name] = (callback, async)
 
-            if self._post_registration(component_name, name, callback, async):
+            if self._post_registration(component_name, name, async):
                 print(str(self) + ": New " + \
                     ("asynchronous" if async else "synchronous") + " service " + \
                     name + " for " + component_name + " successfully registered")
@@ -189,7 +188,7 @@ class RequestManager(object):
         (short-term) service (value is True) or an asynchronous service (False).
 
         For asynchronous services, the returned request id should allow to track
-        the completion of the service. Upon completion, :py:meth:_on_completion
+        the completion of the service. Upon completion, :py:meth:_on_service_completion
         is invoked.
 
         """
