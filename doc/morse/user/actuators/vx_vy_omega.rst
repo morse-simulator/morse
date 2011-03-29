@@ -1,5 +1,5 @@
 Linear and angular speed (Vx, Vy, W) actuator 
-========================================
+=============================================
 
 This actuator reads the values of forwards movement x, sidewards movement y and
 angular speed w and applies them to the robot as direct translation. This
