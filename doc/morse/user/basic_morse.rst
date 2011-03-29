@@ -85,7 +85,7 @@ Simulation camera control
 
 The default MORSE scene, as well as most of the provides scenario files, contain an object called **CameraFP**.
 It allows the user to control the view of the scene during the simulation, using the mouse and keyboard,
-   in the same way as First Person Shooter game. The camera can be moved around using:
+in the same way as First Person Shooter game. The camera can be moved around using:
     
 - :kbd:`w`/:kbd:`z`, :kbd:`s` to move forward and backward
 - :kbd:`a`/:kbd:`q`, :kbd:`d` to move left and right
@@ -115,7 +115,7 @@ The following are key bindings already defined in any simulation scene
   There is bug in the code, which will make any forces acting on an object be still active when
   the position is reset. This can cause object so start rotating or moving without an apparent reason.
 
-- :kbd:`F12` key: emergency exit from the simulation, without clean up. Useful when the :key:`Esc` key
+- :kbd:`F12` key: emergency exit from the simulation, without clean up. Useful when the :kbd:`Esc` key
     does not make the simulation finish (generally happens when the simulation could not properly initialise)
 
 .. note::  
