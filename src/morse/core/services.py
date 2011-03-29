@@ -121,21 +121,21 @@ def do_service_registration(fn, component_name = None, service_name = None, asyn
         manager.register_service(component_name, fn, name, async)
 
 def async_service(fn = None, component = None, name = None):
-    """  The '@async_service' decorator.
+    """  The @async_service decorator.
 
     Refer to the @service decorator for most of the doc.
 
     Asynchronous service specifics:
-      - The function that is decorated is expected to simply start the
+    - The function that is decorated is expected to simply start the
       service, and immediately return.
-      - If the service can not be started, the function must throw a
-      MorseRPCInvokationError with a error message explaining why the 
-      initialization failed.
-    """
+    - If the service can not be started, the function must throw a
+      :py:class:`MorseRPCInvokationError` with a error message
+      explaining why the initialization failed.  
+      """
     return service(fn, component, name, async = True)
 
 def service(fn = None, component = None, name = None, async = False):
-    """ The '@service' decorator.
+    """ The @service decorator.
 
     This decorator can be used to automagically register a service in
     MORSE. Simply decorate the method you want to export as a RPC service
@@ -144,26 +144,23 @@ def service(fn = None, component = None, name = None, async = False):
     configuration file).
 
     This decorator works both with free function and for methods in
-    classes inheriting from MorseObjectClass. In the former case, you
-    must specify a component (your service will belong to this
+    classes inheriting from :py:class:`MorseObjectClass`. In the former
+    case, you must specify a component (your service will belong to this
     namespace), in the later case, it is automatically set to the name
     of the corresponding MORSE component.
 
     :param callable fn: [automatically set by Python to point to the
-    decorated function] 
-    
+      decorated function] 
     :param string component: you MUST set this parameter to define the
-    name of the component which export the service ONLY for free
-    functions. Cf explanation above.
-
+      name of the component which export the service ONLY for free
+      functions. Cf explanation above.
     :param string name: by default, the name of the service is the name
-    of the method. You can override it by setting the 'name' argument.
-
+      of the method. You can override it by setting the 'name' argument.
     :param boolean async: if set to True (default value when using 
-    @async_service), a new 'callback' parameter is added to the method.
-    This callback is used to notify the service initiator that the service
-    completed. The callback does not need to be build manually: 
-    :py:meth:RequestManager._on_incoming_request takes care of it.
+      @async_service), a new 'callback' parameter is added to the method.
+      This callback is used to notify the service initiator that the service
+      completed. The callback does not need to be build manually: 
+      :py:meth:`RequestManager._on_incoming_request` takes care of it.
     """
     if hasattr(fn, "__call__"):
         # If the @service decorator has no explicit parameter, then Python

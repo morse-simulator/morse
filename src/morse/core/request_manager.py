@@ -7,14 +7,14 @@ from abc import ABCMeta, abstractmethod
 from morse.core.exceptions import MorseServiceError, MorseRPCInvokationError
 
 class RequestManager(object):
-    """ Basic Class for all request dispatchers, ie, classes that
-    implement a 'request service'.
+    """ Basic Class for all request dispatchers, i.e., classes that
+    implement a *request service*.
 
     A request service offers typically 2 things:
-        - the ability for a component (a robot, a sensor or the
+      - the ability for a component (a robot, a sensor or the
         simulator as a whole) to expose a RPC method (typically for
         remote configuration or debug),
-        - an interface with a specific middleware to serialize the 
+      - an interface with a specific middleware to serialize the 
         RPC call and communicate with the outside world.
 
     Components can register such a service with the 'register_service'
@@ -22,20 +22,20 @@ class RequestManager(object):
  
     To implement a concrete RequestManager (for a new middleware, for instance)
     , the following methods must be overloaded:
-        - :py:meth:_initialization: perform here middleware specific initialization
-        - :py:meth:_finalization: perform here middleware specific finalization
-        - :py:meth:_post_registration: put here all middleware specific code
-        that must be executed when a new service is registered.
-        - :py:meth:_on_service_completion: this method is called when a 'long term'
-        request completes. You should implement here a way to notify
-        your clients.
-        - :py:meth:_main: this method is called at each step of the
+        - :py:meth:`_initialization`: perform here middleware specific initialization
+        - :py:meth:`_finalization`: perform here middleware specific finalization
+        - :py:meth:`_post_registration`: put here all middleware specific code
+          that must be executed when a new service is registered.
+        - :py:meth:`_on_service_completion`: this method is called when a 'long term'
+          request completes. You should implement here a way to notify
+          your clients.
+        - :py:meth:`_main`: this method is called at each step of the
           simulation. You should read there incoming requests and write back
           results.
           When a new request arrives, you must pass it to :py:meth:_on_incoming_request
           that dispatch or invoke properly the request.
 
-    Subclasses are also expected to overload the special :py:meth:__str__
+    Subclasses are also expected to overload the special :py:meth:`__str__`
     method to provide middleware specific names.
 
    """
@@ -57,7 +57,7 @@ class RequestManager(object):
         # Keys are request ids, values are either 'None' for pending
         # requests or a tuple (True|False, result|error_msg) for
         # completed service calls.
-        # It is updated on each call to :py:meth:_update_pending_calls()
+        # It is updated on each call to :py:meth:`_update_pending_calls`
         self._completed_requests = {}
 
 
@@ -86,7 +86,7 @@ class RequestManager(object):
         """ Destructor method. """
         if not self._finalization():
             print("WARNING: finalization of the service manager did not complete successfully!")
-        
+
         print ("%s: service manager closed." % self)
 
 
@@ -117,7 +117,7 @@ class RequestManager(object):
         The callback method must take as first parameter a callable that must be used
         to set the results of the service upon completion.
 
-        For example, consider the following sample of asynchronous service:
+        For example, consider the following sample of asynchronous service::
 
             def complex_computation(result_setter, param1, param2):
                 do_computation_step() #should stay short, but can last several simulation steps
@@ -130,7 +130,7 @@ class RequestManager(object):
         As soon as the 'result_setter' is called with the results of the service,
         the clients of this service are notified via their middlewares.
 
-        See :py:meth:register_service for detailed documentation of parameters.
+        See :py:meth:`register_service` for detailed documentation of parameters.
         """
         self.register_service(component_name, callback, service_name, True)
 
@@ -149,7 +149,7 @@ class RequestManager(object):
                send back to the original caller.
         :param boolean async: if true, the service is asynchronous: it can last for
                several cycles without blocking the communication interface.
-               See :py:meth:register_async_service for details.
+               See :py:meth:`register_async_service` for details.
         :param service_name: if defined, service_name is used as public
                name for this RPC method.
         """
@@ -181,14 +181,14 @@ class RequestManager(object):
         immediately).
 
         If something goes wrong while trying to call the method, a
-        :py:class:MorseRPCInvokationError is raised.
+        :py:class:`MorseRPCInvokationError` is raised.
 
         If everything goes well, the method return a tuple: (True, return_value) or
         (False, request_id). The first item tells if the service is a synchronous
         (short-term) service (value is True) or an asynchronous service (False).
 
         For asynchronous services, the returned request id should allow to track
-        the completion of the service. Upon completion, :py:meth:_on_service_completion
+        the completion of the service. Upon completion, :py:meth:`_on_service_completion`
         is invoked.
 
         """
@@ -232,7 +232,7 @@ class RequestManager(object):
     def _update_pending_calls(self):
         """This method is called at each simulation steps and check if pending requests are
         completed or not.
-        On completion, it calls the :py:meth:_is_completed method.
+        On completion, it calls the :py:meth:`_on_service_completion` method.
         """
 
         if self._completed_requests:
@@ -249,7 +249,7 @@ class RequestManager(object):
         Subclasses are expected to overload this method with code to notify
         the original request emitter.
 
-        :param uuid request_id: the request id, as return by :py:meth:_on_incoming_request
+        :param uuid request_id: the request id, as return by :py:meth:`_on_incoming_request`
                     when processing an asynchronous request
         :param result: the service execution result.
         """
@@ -259,7 +259,7 @@ class RequestManager(object):
     def _main(self):
         """ This is the main method of the RequestManagerClass: it reads
         external incoming requests, dispatch them through the
-        :py:meth:_on_incoming_request method, and write back answers.
+        :py:meth:`_on_incoming_request` method, and write back answers.
         
         Subclasses are expected to overload this method.
         """

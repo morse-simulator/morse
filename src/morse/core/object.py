@@ -18,17 +18,19 @@ class MorseObjectClass(object):
         self.blender_obj = obj
         self.robot_parent = parent
 
-        # When a task is considered 'completed' (the semantic of
-        # 'completed' is left to each component), the default_action
-        # method is expected to call this callback (if not None) with
-        # the task status (from core.status.*) + optional return value
-        # as a tuple.
-        # For instance: 
-        # self.on_completion((status.FAILED, "Couldn't reach the target"))
-        # self.on_completion((status.SUCCESS, {'x':1.0, 'y':0.54}))
-        # self.on_completion((status.SUCCESS))
         self.on_completion = None
+        """ When a task is considered 'completed' (the semantic of
+        'completed' is left to each component), the default_action
+        method is expected to call this callback (if not None) with
+        the task status (from ``core.status.*``) + optional return value
+        as a tuple.
 
+        For instance::
+          self.on_completion((status.FAILED, "Couldn't reach the target"))
+          self.on_completion((status.SUCCESS, {'x':1.0, 'y':0.54}))
+          self.on_completion((status.SUCCESS))
+        """
+ 
 
         # Define the position of sensors with respect
         #  to their robot parent
@@ -39,14 +41,8 @@ class MorseObjectClass(object):
         # Create an instance of the 3d transformation class
         self.position_3d = morse.helpers.transformation.Transformation3d(obj)
 
-        # Dictionary to store the data used by each component
+        #: Dictionary to store the data used by each component
         self.local_data = OrderedDict()
-        """
-        # Dictionary to store the data used by each component
-        self.local_data = {}
-        # List that will hold the ordey of the dictionary keys
-        self.data_keys = []
-        """
 
         # Define lists of dynamically added functions
         self.del_functions = []
