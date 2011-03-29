@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 set(PACKAGE_NAME morse)
 set(PACKAGE_VERSION 0.2.99)
 
+option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
+option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" ON)
+
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
@@ -38,13 +41,15 @@ if (BUILD_YARP2_SUPPORT)
 	endif (YARP_PY_ERR)
 endif(BUILD_YARP2_SUPPORT)
 
-if (BUILD_POCOLIBS_SUPPORT)
+IF (BUILD_POCOLIBS_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
 	find_package(SWIG REQUIRED)
 endif(BUILD_POCOLIBS_SUPPORT)
 
 
 ADD_SUBDIRECTORY(src)
+
+IF(BUILD_CORE_SUPPORT)
 INSTALL (DIRECTORY data examples
 	     DESTINATION ${CMAKE_INSTALL_PREFIX}/share
          REGEX .*blend.$ EXCLUDE
@@ -59,14 +64,15 @@ CONFIGURE_FILE(
 INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/bin/morse
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 	    )
+ENDIF()
 
 
+IF (BUILD_DOC_SUPPORT)
 ### Doc target ###
 CONFIGURE_FILE(
 	${CMAKE_CURRENT_SOURCE_DIR}/doc/conf.py.in
 	${CMAKE_CURRENT_BINARY_DIR}/doc/conf.py
 	)
-
 
 FIND_PROGRAM(SPHINX_BUILD NAMES sphinx-build)
 IF (NOT SPHINX_BUILD)
@@ -109,6 +115,7 @@ ELSE()
 								 ${SPHINX_LATEX_OUTPUT}
 		)
 	ENDIF()
+ENDIF()
 ENDIF()
 
 
