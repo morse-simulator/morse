@@ -166,12 +166,96 @@ object.
   The section `Manually registering services`_ explains how to overcome
   this constraint.
 
-Hands on the internals
-----------------------
+The internals
+-------------
 
-What exactly happen when a function is decorated with ``@service``?
+Registering synchronous services
+++++++++++++++++++++++++++++++++
 
-TODO
+What exactly happen when a method is decorated with ``@service``?
+
+The ``@service`` decorator simply marks the method as a service by
+setting the attribute ``_morse_service`` to ``True`` on the function.
+
+Before actually registering the service, a mapping between the component
+and one or several middlewares that will manage incoming requests must
+be defined (for instance, we may want the ``goto`` service of the
+``WaypointActuatorClass`` to be managed by the YARP middleware for the
+component ``MainRobot``).
+
+These mapping are defined in the ``component_config.py`` script (that is
+simulation-dependent).
+
+At start up, ``morse.blender.main.py``...
+
+1. reads the configuration, 
+2. instanciates classes associated to each component, 
+3. registers the mappings (with ``MorseService.register_request_manager_mapping``),
+4. call ``register_services`` on each component instance.
+
+``MorseObjectClass.register_services`` iterates over every methods
+marked as MORSE service within the class, and call
+:py:func:`morse.core.services.do_service_registration`.
+
+This method finds the middleware(s) in charge of managing services for
+this component, and call :py:meth:`ResquestManager.register_service`.
+
+It is up to each middleware to manage registration of new services. They
+may have for instance to expose the new service into a shared directory (*yellow
+pages*), etc.
+
+Upon incoming request...
+++++++++++++++++++++++++
+
+When a new request comes in, the middleware-specific part receives it,
+deserializes it and hands it over to
+:py:meth:`RequestManager._on_incoming_request`. This method dispatches
+the request to the correct component, and execute it (for synchronous
+services) or start the execution and return an internal request ID (for asynchronous services).
+
+This internal request ID can be used by the middleware to track the status of a request.
+
+On completion, the :py:meth:`RequestManager._on_completion` callback is
+invoked, and the final result can be sent back to the client.
+
+Asynchronous services
++++++++++++++++++++++
+
+Registration of asynchronous services is mostly identical to synchronous
+services. The ``@async_service`` decorator simply call the ``@service``
+decorator with the ``async`` parameter set to ``True``, which leads to
+wrap the original method in a new method that takes one more parameter
+(a callback) and calls :py:meth:`MorseobjectClass._set_service_callback`.
+
+Simplified version of the ``@service`` decorator:
+
+.. code-block:: python
+
+    def service(fn, async=False):
+      dfn = fn
+      if async:
+         def decorated_fn(self, callback, *param):
+            self._set_service_callback(callback)
+            fn(self, *param)
+         dfn = decorated_fn
+         dfn.__name__ = fn.__name__
+
+      dfn._morse_service = True
+      dfn._morse_service_is_async = async
+
+      return dfn
+
+However, asynchronous services behaviour differs when a request comes
+in:
+
+* :py:meth:`RequestManager._on_incoming_request` creates a new callback
+  function for this service,
+* It invokes the original method with this callback,
+* When :py:meth:`MorseObjectClass._completed` is invoked (i.e., when
+  the service is completed), the callback is executed.
+* This causes in turn the :py:meth:`RequestManager._on_completion`
+  method to be invoked, to notify middleware-specific request managers
+  that the task is complete.
 
 Manually registering services
 -----------------------------
@@ -195,8 +279,9 @@ sockets as communication interface:
    while True:
        # This calls the middleware specific part, in charge of reading
        # incoming request and writing back pending results.
-       # This is normaly called by MORSE in its main loop.
        req_manager.process()
+       # In a real case, you don't want to block on such a loop, and MORSE
+       # takes care itself to call req_manager.process()
 
 If you run this sample code, you can test it with a simple Telnet session::
 
@@ -221,6 +306,7 @@ This second code snippet shows an example of asynchronous service:
 .. code-block:: python
 
    import time
+   from morse.core import status
    from morse.middleware.socket_request_manager import SocketRequestManager
    
    result_cb = None
@@ -247,7 +333,7 @@ This second code snippet shows an example of asynchronous service:
        if a == 0:
            # At the end of the computation, we set the result.
            # the result can be any valid Python object
-           result_cb("done!")
+           result_cb((status.SUCCESS, "done!"))
            run_computation = False
 
        time.sleep(1)
