@@ -203,11 +203,12 @@ class RequestManager(object):
             raise MorseRPCInvokationError("The request " + service + " has not been registered in " + str(self))
 
         if is_async:
-            # Creates a result setter functor
+            # Creates a result setter functor: this functor is used as
+            # callback for the asynchronous service.
             self._completed_requests[request_id] = None
             result_setter = partial(self._completed_requests.__setitem__, request_id)
-            #Invoke the method with unpacked parameters
             try:
+                # Invoke the method with unpacked parameters
                 # This method may throw MorseRPCInvokationError if the
                 # service initialization fails.
                 method(result_setter, *params) if params else method(result_setter)

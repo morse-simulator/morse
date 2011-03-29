@@ -256,10 +256,10 @@ def link_services():
             """)
             return False
 
-        service_name = service_data[0]
-        GameLogic.morse_services.register_request_manager_mapping(component_name, service_name)
-        instance.register_service()
-        print ("Component: '%s' using service '%s'" % (component_name, service_name))
+        request_manager_name = request_manager_data[0]
+        GameLogic.morse_services.register_request_manager_mapping(component_name, request_manager_name)
+        instance.register_services()
+        print ("Component: '%s' using middleware '%s' for services" % (component_name, request_manager_name))
         """
         found = False
         missing_component = False

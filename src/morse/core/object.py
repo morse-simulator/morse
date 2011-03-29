@@ -79,7 +79,7 @@ class MorseObjectClass(object):
         pass
 
 
-    def register_service(self):
+    def register_services(self):
         """
         Register the component services, if any.
         Methods to register are marked '_morse_service' by the '@service' decorator.
