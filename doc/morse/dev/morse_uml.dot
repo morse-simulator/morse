@@ -18,7 +18,7 @@ digraph G {
 	]
 
 	MorseObject [
-		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ local_data : dict\l+ del_function : array\l| +default_action()\l+ action()\l }"
+		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ relative_position: Vector\l+ local_data : OrderedDict\l+ del_function : array\l|+ default_action()\l+ action()\l+ register_service()\l }"
 	]
 
 	MorseRobot [
