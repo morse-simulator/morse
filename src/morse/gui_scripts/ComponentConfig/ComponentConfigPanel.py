@@ -57,46 +57,51 @@ logger.addHandler(ch)
 #logger.critical("critical message")
 
 
-bpy.types.Scene.use_middlewares = bpy.props.BoolProperty(name='use_middlewares', description='Expose MORSE data using middlewares', default=False)
-bpy.types.Scene.bound_components = []
-
-
 
 #class ConfiguredComponent(bpy.types.AnyType):
-##class ConfiguredComponent(bpy.types.PropertyGroup):
-#    """ Custom class to hold the information of a component """
-#    name = bpy.props.StringProperty(name="name", default="")
-#    index = bpy.props.IntProperty(name="index", default=0)
-#    show_expanded = bpy.props.BoolProperty(name='show_expanded', description='View component bindings', default=True)
+class ConfiguredComponent(bpy.types.IDPropertyGroup):
+    """ Custom class to hold the information of a component """
+    name = bpy.props.StringProperty(name="name", default="")
+    index = bpy.props.IntProperty(name="index", default=0)
+    show_expanded = bpy.props.BoolProperty(name='show_expanded', description='View component bindings', default=True)
+    pass
+
+    #def __init__(self, index, name):
+        #self.name = name
+        #self.index = index
+
+    #def __str__(self):
+        #return ("This is me: %d | %s | %s" % (self.index, self.name, self.show_expanded))
+
+    #def __repr__(self):
+        #return ("This is my representation: %d | %s | %s" % (self.index, self.name, self.show_expanded))
+
+#bpy.utils.register_class(ConfiguredComponent)
+#bpy.types.register(ConfiguredComponent)
+
+#class ConfiguredComponent(object):
+#    name = ""
+#    index = 0
+#    object = None
+#    mw_list = []
+#    show_expanded = False
 #
-#    #def __init__(self, index, name):
-#    #    self.name = name
-#    #    self.index = index
+#    def __init__(self, index, name):
+#        self.name = name
+#        self.index = index
 #
 #    def __str__(self):
 #        return ("This is me: %d | %s | %s" % (self.index, self.name, self.show_expanded))
 #
 #    def __repr__(self):
 #        return ("This is my representation: %d | %s | %s" % (self.index, self.name, self.show_expanded))
-#
-##bpy.utils.register_class(ConfiguredComponent)
 
-class ConfiguredComponent(object):
-    name = ""
-    index = 0
-    object = None
-    mw_list = []
-    show_expanded = False
 
-    def __init__(self, index, name):
-        self.name = name
-        self.index = index
+# Define some global variables
+bpy.types.Scene.use_middlewares = bpy.props.BoolProperty(name='use_middlewares', description='Expose MORSE data using middlewares', default=False)
+#bpy.types.Scene.bound_components = []
+bpy.types.Scene.bound_components = bpy.props.CollectionProperty(type=ConfiguredComponent)
 
-    def __str__(self):
-        return ("This is me: %d | %s | %s" % (self.index, self.name, self.show_expanded))
-
-    def __repr__(self):
-        return ("This is my representation: %d | %s | %s" % (self.index, self.name, self.show_expanded))
 
 
 def updateSceneComponents():
@@ -155,11 +160,11 @@ class ROBOTICS_PT_bind_middlewares(bpy.types.Panel):
         updateSceneComponents()
 
         for index, component in enumerate(scene.bound_components):
-            print ("WHAT?? {0}".format(component))
+            print ("WHAT?? {0}".format(component.show_expanded))
             layout.active = scene.use_middlewares
             box = layout.box()
             row = box.row(align=True)
-            #row.prop(component, "show_expanded", text="", emboss=False)
+            row.prop(component, "show_expanded", text="", emboss=False)
 
             #lbl = row.label('Component:')
             # draw dropdown box on panel
@@ -259,8 +264,17 @@ class ROBOTICS_OT_mw_add(bpy.types.Operator):
         logger.debug ("Adding new middleware")
         # Read the objects in the scene and create a drop down list
         updateSceneComponents()
-        coco = ConfiguredComponent(self.index, 'probando')
-        bpy.types.Scene.bound_components.append( coco )
+        # Create a new instance and fill it
+        coco = ConfiguredComponent
+        coco.index = self.index
+        coco.name = 'probando'
+
+        scene = context.Scene
+        bound_components = scene.bound_components
+        bound_components.add()
+
+        #bpy.types.Scene.bound_components.add()
+        #bpy.types.Scene.bound_components.append( coco )
         self.index = self.index + 1
         #bpy.ops.view3d.view_orbit(type='ORBITUP')
         return {'FINISHED'}
