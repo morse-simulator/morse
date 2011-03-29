@@ -14,7 +14,7 @@ Local data
 
 - **distance**: (float) The distance travelled since the last tick
 - **velocity**: (float) Computed as distance over time = distance * ticks
-- **accleration**: (float) Computed as velocity difference over time = velocity * ticks
+- **acceleration**: (float) Computed as velocity difference over time = velocity * ticks
 
 Applicable modifiers
 --------------------
