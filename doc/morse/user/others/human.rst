@@ -3,9 +3,11 @@ The human component in MORSE
 
 MORSE allows the simulation of humans: you can add a human model in your scene, you can
 control it from the keyboard and mouse during the simulation (move it around, sit it 
-down, pick and place objets...), and export to your robotic systems various data (currently
+down, pick and place objects...), and export to your robotic systems various data (currently
 only the position and joint state, but other higher level states like gesture, grasped
-objects,... are planned).
+objects, etc. are planned).
+The human is handled inside MORSE as a robot, which means it can have sensors and actuators
+attached to it.
 
 .. image:: ../../../media/hri_import_human.jpg
    :align: center
@@ -17,9 +19,7 @@ Files
 - Python: 
 
   - ``$MORSE_ROOT/src/morse/robots/human.py``
-  - ``$MORSE_ROOT/src/morse/blender/human_head.py``
   - ``$MORSE_ROOT/src/morse/blender/human_control.py``
-  - ``$MORSE_ROOT/src/morse/blender/human_stance.py``
 
 Human control
 -------------
@@ -67,9 +67,10 @@ item, then release to let go of the object.
 Sensors and actuators
 ---------------------
 
-Currently (``morse-0.2``), the human component has only one sensor that export
-the joint state of the human: the :doc:`human posture sensor <../sensors/human_posture>`.
+Currently (``morse-0.2``), the human component has one sensor already integrated, which
+exports the joint state of the human: the :doc:`human posture sensor <../sensors/human_posture>`.
 This sensor is already embedded in the ``default_human.blend`` file. You don't need
-a separate sensor file.
+to link it from a separate sensor file.
 
-No actuators are currently available.
+The human model can be controlled using the keyboard, or have a motion controller attached to it,
+so that the movement commands can come from an external software.

@@ -1,7 +1,7 @@
 The MORSE Component Library
 ===========================
 
-The modular concept of morse is based on individual components with specific
+The modular concept of MORSE is based on individual components with specific
 functions that replicate the parts of a real robot. Components in MORSE can
 belong to three main types:
 
@@ -35,7 +35,7 @@ programs:
     :width: 500
 .. Component data flow
 
-The data flow is similar for actuators, except that the direction is inversed,
+The data flow is similar for actuators, except that the direction is inverted,
 with the data arriving first from the evaluated software via the middleware,
 then processed by the modifiers and finally applied in the simulation.
 

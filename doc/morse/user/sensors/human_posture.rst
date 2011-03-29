@@ -92,7 +92,7 @@ Related components
 
 This sensor will only be useful for the armature of the human in the
 ``default_human.blend`` file. The human in this file is also considered as a
-robot, with the sensor integrated into the armature. Check to general 
+robot, with the sensor integrated into the armature. Check the general 
 documentation of the :doc:`human component <../others/human>`.
 
 It is possible to reuse this sensor in other human models, as long as they

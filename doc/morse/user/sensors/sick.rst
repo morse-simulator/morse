@@ -17,10 +17,14 @@ Files
 Local data
 ----------
 
-- **point_list**: (float array) Array that stores the positions of the points
+- **point_list**: (list array) Array that stores the positions of the points
   found by the laser. The points are given with respect to the location of the
   sensor, and stored as lists of three elements. The number of points depends
   on the geometry of the arc parented to the sensor (see below).
+- **point_list**: (float array) Array that stores the distance to the first
+  obstacle detected by each ray. The order indexing of this array is the same
+  as for **point_list**, so that the element in the same index of both lists
+  will correspond to the measures for the same ray.
 
 Configurable Parameters
 -----------------------
@@ -54,7 +58,8 @@ select the script, place the mouse cursor inside the Text Window and press
 an adequate name. At this point it is only necessary to assign a material to
 the arc.
 
-The new arc object will have the following characteristics:
+The new arc object will have the following characteristics (all of them are
+correctly configured by the ``create_arc.py`` script):
 
 - Name: Its name must begin with 'Arc\_', for the SICK Module to recognize it.
   The currently used method is to name the arcs according to the number of

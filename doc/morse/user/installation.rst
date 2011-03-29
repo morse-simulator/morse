@@ -144,7 +144,7 @@ Running a simulation
 
   $ yarp server
 
-Launch MORSE by calling the morse executable::
+Launch MORSE by calling the executable::
 
   $ morse
 
