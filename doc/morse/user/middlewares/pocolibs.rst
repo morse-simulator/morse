@@ -42,17 +42,22 @@ documentation.
 - POM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/pom.py``.
   It has one available output method:
 
-    - ``write_pom``: Sends data of type **POM_ME_POS**, defined in ``pom/pomStruct.h``
+    - ``write_pom``: Sends data of type **POM_SENSOR_POS**, defined in ``pom/pomStruct.h``
 
 - VIAM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/viam.py``.
   It has one available output method:
 
-    - ``write_viam``: Sends data of type **simu_image**, defined in ???. VIAM data stored in ``viam/viamStruct.h``
+    - ``write_viam``: Sends data of type **viamImageBank**, defined in ``viam/viamStruct.h``
 
 - VIMAN poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/viman.py``.
   It has one available output method:
 
     - ``write_viman``: Sends data of type **VimanObjectPublicArray**, defined in ``viman/vimanStruct.h``
+
+- VELODYNE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/velodyne.py``.
+  It has one available ouput method:
+
+    - ``write_velodyne``: Sends data of type **velodyne3DImage**, defined in ``velodyne/velodyneClient.h``.
 
 - GENPOS poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/genpos.py``.
   It has one available input method:
