@@ -18,13 +18,15 @@ The source code of Morse is organised in the following way :
 
   - morse/actuators : it contains implementation for various robot controllers
   - morse/blender : it contains some scripts needed at the initialization of the game engine
-  - morse/helpers : it contains various helpers (math transformation) and base classes
+  - morse/core : it contains core class for the morse project (services, base objets, sensors, ...) 
+  - morse/helpers : it contains various helpers (math transformation)
   - morse/middleware : it contains the code for linking with different middlewares 
 
-    - yarp
     - pocolibs 
+    - ros
     - socket
     - text (for logging)
+    - yarp
 
   - morse/modifiers : it contains implementation for various modifier to basic components
   - morse/robots : it contains instantiation of different robot classes
