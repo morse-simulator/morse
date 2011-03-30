@@ -241,7 +241,7 @@ def link_services():
         print ("ERROR: The 'component_service' dictionary can not be found in your configuration file.")
         return False
 
-    for component_name, service_data in component_list.items():
+    for component_name, request_manager_data in component_list.items():
         # Get the instance of the object
         try:
             instance = GameLogic.componentDict[component_name]
