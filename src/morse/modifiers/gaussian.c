@@ -42,14 +42,23 @@ gaussian_gaussian(PyObject* self, PyObject* args)
 
 /* Static method tables fro gaussian module */
 static PyMethodDef GaussianMethods [] = {
-	{"gaussian",  gaussian_gaussian, 2, "Compute a Gaussian value" },
+	{"gaussian",  gaussian_gaussian, METH_VARARGS, "Compute a Gaussian value" },
 	{NULL, NULL, 0, NULL}        /* Sentinel */
+};
+
+static struct PyModuleDef gaussianmodule = {
+  PyModuleDef_HEAD_INIT,
+  "gaussian",   /* name of module */
+  NULL, /* module documentation, may be NULL */
+  -1,       /* size of per-interpreter state of the module,
+	       or -1 if the module keeps state in global variables. */
+   GaussianMethods
 };
 
 /* Init the module */
 PyMODINIT_FUNC
-initgaussian(void)
+PyInit_gaussian(void)
 {
 	srand(time(NULL));
-	(void) Py_InitModule("gaussian", GaussianMethods);
+	return PyModule_Create(&gaussianmodule);
 }
