@@ -136,7 +136,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             parent.move_status = "Stop"
 
             #Do we have a runing request? if yes, notify the completion
-            self._completed(status.SUCCESS, parent.move_status)
+            self.completed(status.SUCCESS, parent.move_status)
 
             #print ("TARGET REACHED")
             #print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))

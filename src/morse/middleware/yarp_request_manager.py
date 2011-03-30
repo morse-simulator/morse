@@ -22,7 +22,7 @@ class YarpRequestManager(RequestManager):
     def __str__(self):
         return "Yarp service manager"
 
-    def _initialization(self):
+    def initialization(self):
 
         # Create dictionaries for the input and output ports
         self._yarp_request_ports = dict()
@@ -44,7 +44,7 @@ class YarpRequestManager(RequestManager):
         return True
 
 
-    def _finalization(self):
+    def finalization(self):
         print("Closing yarp request ports...")
         for port in self._yarp_request_ports.values():
             port.close()
@@ -52,7 +52,7 @@ class YarpRequestManager(RequestManager):
         return True
 
 
-    def _on_service_completion(self, request_id, results):
+    def on_service_completion(self, request_id, results):
         port = None
 
         try:
@@ -67,7 +67,7 @@ class YarpRequestManager(RequestManager):
             self._results_to_output[port] = [(id, results)]
 
 
-    def _post_registration(self, component, service, is_async):
+    def post_registration(self, component, service, is_async):
         """ Register a connection of a service with YARP """
         # Get the Network attribute of yarp,
         #  then call its init method
@@ -99,7 +99,7 @@ class YarpRequestManager(RequestManager):
         return True
 
 
-    def _main(self):
+    def main(self):
         """ Read commands from the ports, and prepare the response""" 
         # Read data from available ports
         for port_name, port in self._yarp_request_ports.items():
@@ -112,20 +112,20 @@ class YarpRequestManager(RequestManager):
 
                 try:
                     try:
-                        id, component, service, params = self.parse_request(bottle_in)
+                        id, component, service, params = self._parse_request(bottle_in)
                     except ValueError: # Request contains < 2 tokens.
                         id = req
                         raise MorseRPCInvokationError("Malformed request! ")
 
                     print("Got '%s | %s | %s' (id = %s) from %s" % (component, service, params, id, port_name))
 
-                    # _on_incoming_request returns either 
+                    # on_incoming_request returns either 
                     #(True, result) if it's a synchronous
                     # request that has been immediately executed, or
                     # (False, request_id) if it's an asynchronous request whose
                     # termination will be notified via
-                    # _on_service_completion.
-                    is_sync, value = self._on_incoming_request(component, service, params)
+                    # on_service_completion.
+                    is_sync, value = self.on_incoming_request(component, service, params)
 
                     if is_sync:
                         if port in self._results_to_output:
@@ -135,7 +135,7 @@ class YarpRequestManager(RequestManager):
                     else:
                         # Stores the mapping request/socket to notify
                         # the right port when the service completes.
-                        # (cf :py:meth:_on_service_completion)
+                        # (cf :py:meth:on_service_completion)
                         # Here, 'value' is the internal request id while
                         # 'id' is the id used by the socket client.
                         self._pending_ports[value] = (port, id)
@@ -163,9 +163,9 @@ class YarpRequestManager(RequestManager):
                     del self._results_to_output[o]
 
 
-    def parse_request(self, bottle):
+    def _parse_request(self, bottle):
         """
-        Parse the incoming request.
+        Parse the incoming bottle.
         """
         try:
             id = bottle.get(0).asInt()

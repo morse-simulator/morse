@@ -142,14 +142,15 @@ here. It must only remain short (since the simulator blocks until the
 initialization method returns).
 
 The execution of the task itself takes place at each simulation step in
-the component ``default_action`` method. Each execution step should
-remain short since the simulator blocks on the ``default_action`` as
-well.
+the component
+:py:meth:`morse.core.object.MorseObjectClass.default_action` method.
+Each execution step should remain short since the simulator blocks on
+the ``default_action`` as well.
 
 When the task is achieved, the component must notify it by calling
-``self._completed(status, result)``.
+``self.completed(status, result)``.
 
-``status`` is one of the status defined in ``morse.core.status.py``
+``status`` is one of the status defined in :py:mod:`morse.core.status`
 (mainly ``SUCCESS`` and ``FAILED``), ``result`` is any valid Python
 object.
 
@@ -162,7 +163,7 @@ object.
 .. note::
   Asynchronous service can normally only exist inside components (i.e.,
   they must be declared within a class inheriting from
-  ``morse.core.object.MorseObjectClass``).
+  :py:class:`morse.core.object.MorseObjectClass`).
   The section `Manually registering services`_ explains how to overcome
   this constraint.
 
@@ -180,43 +181,50 @@ setting the attribute ``_morse_service`` to ``True`` on the function.
 Before actually registering the service, a mapping between the component
 and one or several middlewares that will manage incoming requests must
 be defined (for instance, we may want the ``goto`` service of the
-``WaypointActuatorClass`` to be managed by the YARP middleware for the
-component ``MainRobot``).
+:py:class:`morse.actuators.waypoint.WaypointActuatorClass` to be managed
+by the YARP middleware for the component ``MainRobot``).
 
 These mapping are defined in the ``component_config.py`` script (that is
 simulation-dependent).
 
-At start up, ``morse.blender.main.py``...
+At start up, :py:func:`morse.blender.main.init`...
 
 1. reads the configuration, 
 2. instanciates classes associated to each component, 
-3. registers the mappings (with ``MorseService.register_request_manager_mapping``),
-4. call ``register_services`` on each component instance.
+3. registers the mappings (with 
+   :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`),
+4. call :py:meth:`morse.core.object.MorseObjectClass.register_services`
+   on each component instance.
 
-``MorseObjectClass.register_services`` iterates over every methods
-marked as MORSE service within the class, and call
+:py:meth:`morse.core.MorseObjectClass.register_services` iterates over
+every methods marked as MORSE service within the class, and call
 :py:func:`morse.core.services.do_service_registration`.
 
 This method finds the middleware(s) in charge of managing services for
-this component, and call :py:meth:`ResquestManager.register_service`.
+this component, and call
+:py:meth:`morse.core.request_manager.RequestManager.register_service`.
 
 It is up to each middleware to manage registration of new services. They
-may have for instance to expose the new service into a shared directory (*yellow
-pages*), etc.
+may have for instance to expose the new service into a shared directory
+(*yellow pages*), etc.
 
 Upon incoming request...
 ++++++++++++++++++++++++
 
 When a new request comes in, the middleware-specific part receives it,
 deserializes it and hands it over to
-:py:meth:`RequestManager._on_incoming_request`. This method dispatches
-the request to the correct component, and execute it (for synchronous
-services) or start the execution and return an internal request ID (for asynchronous services).
+:py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`.
+This method dispatches the request to the correct component, and execute
+it (for synchronous services) or start the execution and return an
+internal request ID (for asynchronous services).
 
-This internal request ID can be used by the middleware to track the status of a request.
+This internal request ID can be used by the middleware to track the
+status of a request.
 
-On completion, the :py:meth:`RequestManager._on_completion` callback is
-invoked, and the final result can be sent back to the client.
+On completion, the
+:py:meth:`morse.core.request_manager.RequestManager.on_service_completion`
+callback is invoked, and the final result can be sent back to the
+client.
 
 Asynchronous services
 +++++++++++++++++++++
@@ -225,7 +233,8 @@ Registration of asynchronous services is mostly identical to synchronous
 services. The ``@async_service`` decorator simply call the ``@service``
 decorator with the ``async`` parameter set to ``True``, which leads to
 wrap the original method in a new method that takes one more parameter
-(a callback) and calls :py:meth:`MorseobjectClass._set_service_callback`.
+(a callback) and calls
+:py:meth:`morse.core.object.MorseObjectClass.set_service_callback`.
 
 Simplified version of the ``@service`` decorator:
 
@@ -248,14 +257,16 @@ Simplified version of the ``@service`` decorator:
 However, asynchronous services behaviour differs when a request comes
 in:
 
-* :py:meth:`RequestManager._on_incoming_request` creates a new callback
-  function for this service,
+* :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
+  creates a new callback function for this service,
 * It invokes the original method with this callback,
-* When :py:meth:`MorseObjectClass._completed` is invoked (i.e., when
-  the service is completed), the callback is executed.
-* This causes in turn the :py:meth:`RequestManager._on_completion`
-  method to be invoked, to notify middleware-specific request managers
-  that the task is complete.
+* When :py:meth:`morse.core.object.MorseObjectClass.completed`
+  is invoked (i.e., when the service is completed), the callback 
+  is executed.
+* This causes in turn the 
+  :py:meth:`morse.core.request_manager.RequestManager.on_service_completion`
+  method to be invoked, to notify middleware-specific request 
+  managers that the task is complete.
 
 Manually registering services
 -----------------------------

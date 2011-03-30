@@ -26,11 +26,11 @@ class MorseObjectClass(object):
         as a tuple.
 
         For instance::
+
           self.on_completion((status.FAILED, "Couldn't reach the target"))
           self.on_completion((status.SUCCESS, {'x':1.0, 'y':0.54}))
           self.on_completion((status.SUCCESS))
         """
- 
 
         # Define the position of sensors with respect
         #  to their robot parent
@@ -85,12 +85,27 @@ class MorseObjectClass(object):
             morse.core.services.do_service_registration(fn, self.blender_obj.name, name, fn._morse_service_is_async)
 
 
-    def _completed(self, status, result = None):
+    def completed(self, status, result = None):
+        """ This method must be invoked by the component when a service completes.
+
+        Calling this method triggers the notification of task completion to the client.
+
+        :param morse.core.status status: status (success, failure...) of the task
+
+        :param result: results of the service, if any (may be any valid Python object)
+
+        """
         if self.on_completion:
              self.on_completion((status, result))
              self.on_completion = None
 
-    def _set_service_callback(self, cb):
+    def set_service_callback(self, cb):
+        """ Sets the callback function that is to be invoked when the current
+        request completes.
+
+        This is automatically set by the @async_service decorator and should
+        not usually be directly called.
+        """
         if self.on_completion:
             raise MorseRPCInvokationError("A request is already ongoing")
 

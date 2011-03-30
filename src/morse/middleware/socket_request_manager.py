@@ -25,7 +25,7 @@ class SocketRequestManager(RequestManager):
     def __str__(self):
         return "Socket service manager"
 
-    def _initialization(self):
+    def initialization(self):
 
         #Hold for each client socket a mapping to the socket file interface (as returned
         # by socket.makefile()
@@ -56,7 +56,7 @@ class SocketRequestManager(RequestManager):
 
         return True
 
-    def _finalization(self):
+    def finalization(self):
 
         if self._client_sockets:
             print("Closing client sockets...")
@@ -70,7 +70,7 @@ class SocketRequestManager(RequestManager):
 
         return True
 
-    def _on_service_completion(self, request_id, results):
+    def on_service_completion(self, request_id, results):
 
         s = None
 
@@ -85,10 +85,10 @@ class SocketRequestManager(RequestManager):
         else:
             self._results_to_output[s] = [(id, results)]
 
-    def _post_registration(self, component, service, is_async):
+    def post_registration(self, component, service, is_async):
         return True
 
-    def _main(self):
+    def main(self):
         
         sockets = list(self._client_sockets.keys()) + [self._server]
 
@@ -122,15 +122,15 @@ class SocketRequestManager(RequestManager):
                 
                     print("Got '" + req + "' (id = " + id + ") from " + str(i))
 
-                    component, service, params = self.parse_request(req)
+                    component, service, params = self._parse_request(req)
 
-                    # _on_incoming_request returns either 
+                    # on_incoming_request returns either 
                     #(True, result) if it's a synchronous
                     # request that has been immediately executed, or
                     # (False, request_id) if it's an asynchronous request whose
                     # termination will be notified via
-                    # _on_service_completion.
-                    is_sync, value = self._on_incoming_request(component, service, params)
+                    # on_service_completion.
+                    is_sync, value = self.on_incoming_request(component, service, params)
 
                     if is_sync:
                         if i in self._results_to_output:
@@ -140,7 +140,7 @@ class SocketRequestManager(RequestManager):
                     else:
                         # Stores the mapping request/socket to notify
                         # the right socket when the service completes.
-                        # (cf :py:meth:_on_service_completion)
+                        # (cf :py:meth:on_service_completion)
                         # Here, 'value' is the internal request id while
                         # 'id' is the id used by the socket client.
                         self._pending_sockets[value] = (i, id)
@@ -170,7 +170,7 @@ class SocketRequestManager(RequestManager):
                     del self._results_to_output[o]
 
 
-    def parse_request(self, req):
+    def _parse_request(self, req):
         """
         Parse the incoming request.
         """
