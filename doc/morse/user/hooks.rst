@@ -67,8 +67,9 @@ It consists of three dictionaries indexed by the name of the components:
 
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 
-  representing a modifier. Each modifier list has two elements: the name of 
-  the modifier and the name of the function to use.
+  representing a modifier. Thus a single component can have multiple modifiers changing
+  its data in sequence, following the order given here.
+  Each modifier list has two elements: the name of the modifier and the name of the function to use.
 
 Example:
 
