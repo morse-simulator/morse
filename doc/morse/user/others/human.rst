@@ -74,3 +74,12 @@ to link it from a separate sensor file.
 
 The human model can be controlled using the keyboard, or have a motion controller attached to it,
 so that the movement commands can come from an external software.
+
+Services
+--------
+
+- **move**: (Synchronous service)
+- **move_head**: (Synchronous service)
+- **grasp_**: (Synchronous service)
+- **move_hand**: (Synchronous service)
+- **toggle_manipulation**: (Synchronous service)
