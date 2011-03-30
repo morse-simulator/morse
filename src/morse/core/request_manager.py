@@ -61,7 +61,7 @@ class RequestManager(object):
         self._completed_requests = {}
 
 
-        if not self._initialization():
+        if not self.initialization():
             raise MorseServiceError("Couldn't create the service manager! Initialization failure")
 
     @abstractmethod
@@ -84,7 +84,7 @@ class RequestManager(object):
 
     def __del__(self):
         """ Destructor method. """
-        if not self._finalization():
+        if not self.finalization():
             print("WARNING: finalization of the service manager did not complete successfully!")
 
         print ("%s: service manager closed." % self)
@@ -161,7 +161,7 @@ class RequestManager(object):
 
             self._services[name] = (callback, async)
 
-            if self._post_registration(component_name, name, async):
+            if self.post_registration(component_name, name, async):
                 print(str(self) + ": New " + \
                     ("asynchronous" if async else "synchronous") + " service " + \
                     name + " for " + component_name + " successfully registered")
@@ -240,7 +240,7 @@ class RequestManager(object):
                 if result:
                     print(str(self) + ": Request " + str(request) + " is now completed.")
                     del self._completed_requests[request]
-                    self._on_service_completion(request, result)
+                    self.on_service_completion(request, result)
 
     @abstractmethod
     def on_service_completion(self, request_id, result):
@@ -272,4 +272,4 @@ class RequestManager(object):
         the main processing method.
         """
         self._update_pending_calls()
-        self._main()
+        self.main()
