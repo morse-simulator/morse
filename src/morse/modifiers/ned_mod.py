@@ -61,15 +61,20 @@ class MorseNEDClass(object):
 
     def blender_to_ned_angle(self, component_instance):
         """ Convert the coordinates from Blender to UTM reference. """
-        roll = math.pi/2 - component_instance.local_data['yaw']
-        component_instance.local_data['yaw'] = component_instance.local_data['roll']
-        component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
-        component_instance.local_data['roll'] = roll
-
+        try:
+            roll = math.pi/2 - component_instance.local_data['yaw']
+            component_instance.local_data['yaw'] = component_instance.local_data['roll']
+            component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
+            component_instance.local_data['roll'] = roll
+        except KeyError as detail:
+            print ("WARNING: Unable to use 'blender_to_ned_angle component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
 
     def ned_angle_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
-        yaw = math.pi/2 - component_instance.local_data['roll']
-        component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
-        component_instance.local_data['roll'] = component_instance.local_data['yaw']
-        component_instance.local_data['yaw'] = yaw
+        try:
+            yaw = math.pi/2 - component_instance.local_data['roll']
+            component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
+            component_instance.local_data['roll'] = component_instance.local_data['yaw']
+            component_instance.local_data['yaw'] = yaw
+        except KeyError as detail:
+            print ("WARNING: Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
