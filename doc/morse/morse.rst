@@ -130,7 +130,7 @@ We currently support a generic socket-based interface, `YARP <http://eris.lirala
 if you have specific needs.
 
 .. note::
-  Some components/services may not be supported by a specific middleware.
+  Some components/services may not be supported by a specific middleware. Please check the :ref:`compatibility-matrix`.
 
 Detailled information: 
 

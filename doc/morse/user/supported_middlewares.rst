@@ -21,6 +21,8 @@ Current list of compatible middlewares
 Refer to the table below for details regarding which features are actually
 supported for each middleware.
 
+.. _compatibility-matrix:
+
 Features compatibility matrix
 -----------------------------
 
