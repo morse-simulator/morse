@@ -5,9 +5,9 @@ Description of hooks
 --------------------
 
 MORSE sensors and actuators are completely independent of any middleware,
-and do not include themselves any means of sharing the data they use.
+and do not include themselves any means of sharing their internal data.
 To be able to use this data outside the simulator, it is necessary to bind
-a middleware to each component, specifying the expected behavior.
+a middleware to each component, specifying the expected behaviour.
 
 When a component is linked to a middleware, a function described in the 
 middleware will be added to the list of methods executed by the component, 
@@ -27,13 +27,18 @@ through the middleware. The opposite happens with actuators, which first read
 data through middlewares and then change it using modifiers, before using it
 inside of Blender.
 
+Component services are also configured in a way similar to middlewares and
+modifiers, since they also make use of the ``local_data`` dictionary. However,
+the internal workings of services are different, and are explained in the
+developer documentation (:doc:`services <../dev/services>`).
+
 Configuration 
 -------------
 
 This binding is currently done via a Python file called ``component_config.py``
 which must be internal to the Blender scenario file. The configuration file 
 should be edited from a **Text Editor** window in Blender.
-It consists of two dictionaries indexed by the name of the components:
+It consists of three dictionaries indexed by the name of the components:
 
 - ``component_mw``: Lists which middlewares are bound to the specific 
   component. The value of the dictionary is a list. The list must consist of
@@ -65,23 +70,28 @@ It consists of two dictionaries indexed by the name of the components:
   representing a modifier. Each modifier list has two elements: the name of 
   the modifier and the name of the function to use.
 
-Example::
+Example:
 
-  component_mw = {
-   	Gyroscope": ["Yarp", "post_message"],
-   	GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
-    "Motion_Controller": ["Yarp", "read_message"],
-    "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
-    "CameraMain": ["Yarp", "post_image_RGBA"]
-  }
+.. code-block:: python
 
-  component_service = {
-    "Motion_Controller": ["YarpRequestManager"],
-  }
-  
-  component_modifier = {
-    "GPS.001": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
-    "Motion_Controller": [ ["NED", "ned_to_blender"] ]
-  }
+   # Middleware binding for regular data exchange
+    component_mw = {
+      Gyroscope": ["Yarp", "post_message"],
+      GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
+      "Motion_Controller": ["Yarp", "read_message"],
+      "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
+      "CameraMain": ["Yarp", "post_image_RGBA"]
+    }
+
+    # Component service binding with a middleware
+    component_service = {
+      "Motion_Controller": ["YarpRequestManager"],
+    }
+    
+    # Modifier configuration
+    component_modifier = {
+      "GPS.001": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
+      "Motion_Controller": [ ["NED", "ned_to_blender"] ]
+    }
 
 
