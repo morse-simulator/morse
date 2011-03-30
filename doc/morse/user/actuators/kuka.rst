@@ -9,9 +9,9 @@ Files
 -----
 
 -  Blender: Unlike other actuators, this one does not require linking
-    an empty object and making it child of the robot. However, it will
-    only work if the robot has the arm in the file:
-    ``$MORSE_ROOT/data/morse/components/robots/kuka_arm.blend``
+   an empty object and making it child of the robot. However, it will
+   only work if the robot has the arm in the file:
+   ``$MORSE_ROOT/data/morse/components/robots/kuka_arm.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/kuka.py``
 
 Local data 
