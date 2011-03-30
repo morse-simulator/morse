@@ -51,6 +51,14 @@ Configurable parameters
 -  **Target**: (string) name of a blender object in the scene. When specified, this object will
     be placed at the coordinates given to the actuator, to indicate the expected destination of the robot
 
+Services
+--------
+
+- **goto**: (Asynchronous service) This method can be used to give a one time instruction to the actuator.
+    When the robot reaches the destination, it will send a reply, indicating that the new status of the robot
+    is "Stop". The function can be called with 3 to 5 parameters, corresponding to the variables in ``local_data``.
+    The coordinates are mandatory, while the values for **tolerance** and **speed** can be omitted.
+
 
 Applicable modifiers
 --------------------
