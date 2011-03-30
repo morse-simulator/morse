@@ -26,10 +26,17 @@ class Transformation3d:
         reference
 
         """
-        self.matrix = mathutils.Matrix([1, 0, 0, 0], \
-                                       [0, 1, 0, 0], \
-                                       [0, 0, 1, 0], \
-                                       [0, 0, 0, 1])
+        if GameLogic.pythonVersion <= 3.1:
+            self.matrix = mathutils.Matrix([1, 0, 0, 0], \
+                                           [0, 1, 0, 0], \
+                                           [0, 0, 1, 0], \
+                                           [0, 0, 0, 1])
+        else:
+            self.matrix = mathutils.Matrix(([1, 0, 0, 0], \
+                                            [0, 1, 0, 0], \
+                                            [0, 0, 1, 0], \
+                                            [0, 0, 0, 1]))
+
         self.euler = mathutils.Euler([0, 0, 0])
         if obj != None:
             self.update(obj)
@@ -91,13 +98,12 @@ class Transformation3d:
         self is not modified by the call of this function
         """
         res = Transformation3d(None)
+        o2m = self.matrix.copy()
+        o2m.invert()
+        res.matrix = o2m * t3d.matrix
         if GameLogic.pythonVersion < 3:
-            o2m = self.matrix.copy()
-            o2m.invert()
-            res.matrix = o2m * t3d.matrix
             res.euler = res.matrix.toEuler()
         else:
-            res.matrix = self.matrix.copy().invert() * t3d.matrix
             res.euler = res.matrix.to_euler()
         return res
 
@@ -108,9 +114,14 @@ class Transformation3d:
 
         """
         rot_matrix = obj.orientation
-        self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
-                                                      rot_matrix[2])
-        self.matrix.resize4x4()
+        if GameLogic.pythonVersion <= 3.1:
+            self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
+                                                          rot_matrix[2])
+            self.matrix.resize4x4()
+        else:
+            self.matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], \
+                                                          rot_matrix[2]))
+            self.matrix.resize_4x4()
 
         pos = obj.worldPosition
         for i in range(0, 3):
