@@ -34,53 +34,53 @@ Local data
 - **pitch**: (float) rotation angle with respect to the Y axis
 - **roll**: (float) rotation angle with respect to the X axis
 
-- **dof_12**: (float) rotations around the X axis for the torso
-- **dof_13**: (float) rotations around the Y axis for the torso
-- **dof_14**: (float) rotations around the Z axis for the torso
+- **dof_12**: (float) rotation around the X axis for the torso
+- **dof_13**: (float) rotation around the Y axis for the torso
+- **dof_14**: (float) rotation around the Z axis for the torso
 
-- **dof_15**: (float) rotations around the X axis for the head
-- **dof_16**: (float) rotations around the Y axis for the head
-- **dof_17**: (float) rotations around the Z axis for the head
+- **dof_15**: (float) rotation around the X axis for the head
+- **dof_16**: (float) rotation around the Y axis for the head
+- **dof_17**: (float) rotation around the Z axis for the head
 
-- **dof_18**: (float) rotations around the X axis for the right shoulder
-- **dof_19**: (float) rotations around the Y axis for the right shoulder
-- **dof_20**: (float) rotations around the Z axis for the right shoulder
+- **dof_18**: (float) rotation around the X axis for the right shoulder
+- **dof_19**: (float) rotation around the Y axis for the right shoulder
+- **dof_20**: (float) rotation around the Z axis for the right shoulder
 
-- **dof_21**: (float) rotations around the Z axis for the right elbow
+- **dof_21**: (float) rotation around the Z axis for the right elbow
 
-- **dof_22**: (float) rotations around the X axis for the right hand
-- **dof_23**: (float) rotations around the Y axis for the right hand
-- **dof_24**: (float) rotations around the Z axis for the right hand
+- **dof_22**: (float) rotation around the X axis for the right hand
+- **dof_23**: (float) rotation around the Y axis for the right hand
+- **dof_24**: (float) rotation around the Z axis for the right hand
 
-- **dof_25**: (float) rotations around the X axis for the left shoulder
-- **dof_26**: (float) rotations around the Y axis for the left shoulder
-- **dof_27**: (float) rotations around the Z axis for the left shoulder
+- **dof_25**: (float) rotation around the X axis for the left shoulder
+- **dof_26**: (float) rotation around the Y axis for the left shoulder
+- **dof_27**: (float) rotation around the Z axis for the left shoulder
 
-- **dof_28**: (float) rotations around the Z axis for the left elbow
+- **dof_28**: (float) rotation around the Z axis for the left elbow
 
-- **dof_29**: (float) rotations around the X axis for the left hand
-- **dof_30**: (float) rotations around the Y axis for the left hand
-- **dof_31**: (float) rotations around the Z axis for the left hand
+- **dof_29**: (float) rotation around the X axis for the left hand
+- **dof_30**: (float) rotation around the Y axis for the left hand
+- **dof_31**: (float) rotation around the Z axis for the left hand
 
-- **dof_32**: (float) rotations around the X axis for the right hip
-- **dof_33**: (float) rotations around the Y axis for the right hip
-- **dof_34**: (float) rotations around the Z axis for the right hip
+- **dof_32**: (float) rotation around the X axis for the right hip
+- **dof_33**: (float) rotation around the Y axis for the right hip
+- **dof_34**: (float) rotation around the Z axis for the right hip
 
-- **dof_35**: (float) rotations around the Z axis for the right knee
+- **dof_35**: (float) rotation around the Z axis for the right knee
 
-- **dof_36**: (float) rotations around the X axis for the right foot
-- **dof_37**: (float) rotations around the Y axis for the right foot
-- **dof_38**: (float) rotations around the Z axis for the right foot
+- **dof_36**: (float) rotation around the X axis for the right foot
+- **dof_37**: (float) rotation around the Y axis for the right foot
+- **dof_38**: (float) rotation around the Z axis for the right foot
 
-- **dof_39**: (float) rotations around the X axis for the left hip
-- **dof_40**: (float) rotations around the Y axis for the left hip
-- **dof_41**: (float) rotations around the Z axis for the left hip
+- **dof_39**: (float) rotation around the X axis for the left hip
+- **dof_40**: (float) rotation around the Y axis for the left hip
+- **dof_41**: (float) rotation around the Z axis for the left hip
 
-- **dof_42**: (float) rotations around the Z axis for the left knee
+- **dof_42**: (float) rotation around the Z axis for the left knee
 
-- **dof_43**: (float) rotations around the X axis for the left foot
-- **dof_44**: (float) rotations around the Y axis for the left foot
-- **dof_45**: (float) rotations around the Z axis for the left foot
+- **dof_43**: (float) rotation around the X axis for the left foot
+- **dof_44**: (float) rotation around the Y axis for the left foot
+- **dof_45**: (float) rotation around the Z axis for the left foot
 
 Applicable modifiers
 --------------------

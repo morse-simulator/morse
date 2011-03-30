@@ -28,7 +28,7 @@ The source code of Morse is organised in the following way :
     - text (for logging)
     - yarp
 
-  - morse/modifiers : it contains implementation for various modifier to basic components
+  - morse/modifiers : it contains implementation for various modifiers to basic components
   - morse/robots : it contains instantiation of different robot classes
   - morse/sensors : it contains implementation for various robot sensors
   
@@ -78,4 +78,4 @@ happen :
 
 Another interesting point is the ``local_data`` dictionary : it contains a
 representation of the external state of the sensor (or the actuator) (for
-example, it will contains the position for a GPS)
+example, it will contain the position for a GPS)

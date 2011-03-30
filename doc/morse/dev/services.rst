@@ -111,7 +111,7 @@ first an *initialization method* and secondary, a way to tell when the
 task is achieved.
 
 Declaring an initialization method is very similar to synchronous
-services. For instance, the *waypoint* actuator defines a asynchronous
+services. For instance, the *waypoint* actuator defines an asynchronous
 ``goto`` service:
 
 .. code-block:: python

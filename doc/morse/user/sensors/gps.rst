@@ -1,7 +1,9 @@
 GPS sensor
 ==========
 
-This sensor emulates a GPS, providing the exact coordinates in the Blender scene. The coordinates provided by the GPS are with respect to the origin of the Blender coordinate reference.
+This sensor emulates a GPS, providing the exact coordinates in the Blender
+scene. The coordinates provided by the GPS are with respect to the origin of
+the Blender coordinate reference.
 
 Files
 -----
@@ -23,7 +25,9 @@ This sensor always provides perfect data, with respect to an arbitrary point.
 To obtain more realistic readings, it is recommended to add modifiers.
 The two which are specially used for the GPS information are:
 
-- :doc:`UTM modifier <../modifiers/utm>`: Will add an offset to the Blender coordinates according to the parameters set on the scene.
-- :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North (X), East (Y), Down (Z)
+- :doc:`UTM modifier <../modifiers/utm>`: Will add an offset to the Blender
+  coordinates according to the parameters set on the scene.
+- :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North
+  (X), East (Y), Down (Z)
 
 The Noise modifier can be used as well to adds random Gaussian noise to the data.
