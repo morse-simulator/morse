@@ -21,7 +21,7 @@ Exposing methods as services
 Most of the time, adding a new service is as easy as adding ``@service``
 in front of a function declared within a component.
 
-Let have a look to ``human.py``, the component that allows us to control
+Lets have a look at ``human.py``, the component that allows us to control
 a human character in the simulation.
 
 .. code-block:: python
@@ -49,13 +49,13 @@ By adding the ``@service`` decorator to the ``move`` method, we expose
 
 During the simulation initialization, MORSE registers these services for
 each instances of the component, maps them to one (or several)
-middlewares (as specified by the user in ``component_config.py``), and
+middlewares (as specified by the user in :doc:`component_config.py <../user/hooks>`), and
 starts listening for incoming request.
 
 Each middleware has its own naming scheme for services, but one can
 expect the services to be available as ``component_name.service_name``.
 
-The example below show a simple Python client that would use the
+The example below shows a simple Python client that would use the
 ``HumanClass.move`` service as declared above:
 
 .. code-block:: python
@@ -107,7 +107,7 @@ the task. MORSE automatically notifies the client when the task is
 completed.
 
 Declaring new asynchronous services is slightly more complex: we need
-first an *initialization method* and secondary, a way to tell when the
+first an *initialization method* and secondly, a way to tell when the
 task is achieved.
 
 Declaring an initialization method is very similar to synchronous
@@ -133,7 +133,7 @@ services. For instance, the *waypoint* actuator defines an asynchronous
         [...]
 
 The ``@service`` decorator is simply replaced by ``@async_service``. By
-doing so, MORSE automatically register a callback that is used to
+doing so, MORSE automatically registers a callback that is used to
 monitor the status of the task and notify the client upon completion.
 
 In this example we simply set a new target position in the actuator
@@ -156,12 +156,12 @@ object.
 
 .. note::
   As you may have noticed, at a given time, only one asynchronous
-  request can be handle by a component.  If a second asynchronous
+  request can be handled by a component.  If a second asynchronous
   request is received, it returns immediately
   with the status 'FAILED'.
 
 .. note::
-  Asynchronous service can normally only exist inside components (i.e.,
+  Asynchronous services can normally only exist inside components (i.e.,
   they must be declared within a class inheriting from
   :py:class:`morse.core.object.MorseObjectClass`).
   The section `Manually registering services`_ explains how to overcome
@@ -173,7 +173,7 @@ The internals
 Registering synchronous services
 ++++++++++++++++++++++++++++++++
 
-What exactly happen when a method is decorated with ``@service``?
+What exactly happens when a method is decorated with ``@service``?
 
 The ``@service`` decorator simply marks the method as a service by
 setting the attribute ``_morse_service`` to ``True`` on the function.
@@ -184,16 +184,16 @@ be defined (for instance, we may want the ``goto`` service of the
 :py:class:`morse.actuators.waypoint.WaypointActuatorClass` to be managed
 by the YARP middleware for the component ``MainRobot``).
 
-These mapping are defined in the ``component_config.py`` script (that is
-simulation-dependent).
+These mapping are defined in the :doc:`component_config.py <../user/hooks>`
+script (that is simulation-dependent).
 
 At start up, :py:func:`morse.blender.main.init`...
 
-1. reads the configuration, 
-2. instanciates classes associated to each component, 
-3. registers the mappings (with 
+1. Reads the configuration, 
+2. Instantiates classes associated to each component, 
+3. Registers the mappings (with 
    :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`),
-4. call :py:meth:`morse.core.object.MorseObjectClass.register_services`
+4. Calls :py:meth:`morse.core.object.MorseObjectClass.register_services`
    on each component instance.
 
 :py:meth:`morse.core.MorseObjectClass.register_services` iterates over
@@ -201,11 +201,11 @@ every methods marked as MORSE service within the class, and call
 :py:func:`morse.core.services.do_service_registration`.
 
 This method finds the middleware(s) in charge of managing services for
-this component, and call
+this component, and calls
 :py:meth:`morse.core.request_manager.RequestManager.register_service`.
 
 It is up to each middleware to manage registration of new services. They
-may have for instance to expose the new service into a shared directory
+may have to, for instance, expose the new service into a shared directory
 (*yellow pages*), etc.
 
 Upon incoming request...
@@ -214,8 +214,8 @@ Upon incoming request...
 When a new request comes in, the middleware-specific part receives it,
 deserializes it and hands it over to
 :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`.
-This method dispatches the request to the correct component, and execute
-it (for synchronous services) or start the execution and return an
+This method dispatches the request to the correct component, and executes
+it (for synchronous services) or starts the execution and returns an
 internal request ID (for asynchronous services).
 
 This internal request ID can be used by the middleware to track the
@@ -230,7 +230,7 @@ Asynchronous services
 +++++++++++++++++++++
 
 Registration of asynchronous services is mostly identical to synchronous
-services. The ``@async_service`` decorator simply call the ``@service``
+services. The ``@async_service`` decorator simply calls the ``@service``
 decorator with the ``async`` parameter set to ``True``, which leads to
 wrap the original method in a new method that takes one more parameter
 (a callback) and calls
@@ -303,7 +303,7 @@ If you run this sample code, you can test it with a simple Telnet session::
 
 .. note::
    The socket-based protocol is fairly simple: you provide a request id, the
-   name of the component that offer the service, the name of the service and
+   name of the component that offers the service, the name of the service and
    (if necessary) parameters. Parameters must be contained in a valid Python
    iterable (a tuple, like in the example, or an array).
 

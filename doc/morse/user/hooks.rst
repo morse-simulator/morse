@@ -54,6 +54,12 @@ It consists of two dictionaries indexed by the name of the components:
     should use. In the case of sensors, it is the name of the poster that will be
     created. For actuators, it is the name that they will look for to connect.
 
+- ``component_service``: Lists the middlewares that will take care of handling
+  a service provided by a component. The value of the dictionary is a list, containing
+  only one element. This element is the name of the class specified in the middleware
+  *request_manager*. For example, in the case of YARP. The class name is ``YarpRequestManager``
+  as defined in the file ``yarp_request_manager.py``.
+
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 
   representing a modifier. Each modifier list has two elements: the name of 
@@ -67,6 +73,10 @@ Example::
     "Motion_Controller": ["Yarp", "read_message"],
     "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
     "CameraMain": ["Yarp", "post_image_RGBA"]
+  }
+
+  component_service = {
+    "Motion_Controller": ["YarpRequestManager"],
   }
   
   component_modifier = {
