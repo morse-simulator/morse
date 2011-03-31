@@ -380,11 +380,6 @@ def init_services():
 
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
-        
-        # TODO: automatically generate the next line.
-        #GameLogic.morse_services.register_request_manager_mapping("Human", "SocketRequestManager")
-        #GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "SocketRequestManager")
-        #GameLogic.morse_services.register_request_manager_mapping("Motion_Controller", "YarpRequestManager")
 
         # Services can be imported *only* after GameLogic.morse_services has been 
         # created. Else @service won't know where to register the RPC
@@ -492,21 +487,6 @@ def restart(contr):
         reset_objects(contr)
         return
 
-        """
-        # TODO: Reimplement the restart function,
-        #  by killing the objects created, and then
-        #  calling the init function again.
-        close_all(contr)
-
-        restartActuator = contr.actuators['Restart_sim']
-        contr.activate(restartActuator)
-
-        init(contr)
-
-        print ('######### RESTARTING SIMULATION ########')
-        """
-
-
 def reset_objects(contr):
     """ Place all objects in the initial position
 
@@ -521,7 +501,7 @@ def reset_objects(contr):
         b_obj.applyForce([0.0, 0.0, 0.0], True)
         b_obj.applyTorque([0.0, 0.0, 0.0], True)
 
-        print ("%s goes to %s" % (b_obj, state[0]))
+        #print ("%s goes to %s" % (b_obj, state[0]))
         b_obj.worldPosition = state[0]
         b_obj.worldOrientation = state[1]
         # Reset physics simulation
