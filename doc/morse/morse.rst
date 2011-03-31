@@ -114,20 +114,27 @@ a GPS position) by so called *modifiers*:
 To learn how to add new components (sensors, robots...), please refer to the 
 :doc:`developer documentation <dev/summary>`.
 
+Interacting with MORSE
+----------------------
+
+Applications have two main ways to interact with the simulator:
+
+1. Using **RPC**-oriented calls, or
+2. Using **stream**-oriented interfaces.
+
+RPC calls are typically used to remotely configure the simulator or start
+background tasks, while most of data transmissions usually rely on stream-based
+interface. Both can be used in MORSE.
+
 Supported middlewares
----------------------
++++++++++++++++++++++
 
-MORSE relies on **middlewares** to integrate in your robotic architecture.
+MORSE relies on **middlewares** to tightly integrate in your robotic architecture.
 
-It uses both the concepts of **data streams** (in input or output), referred
-as *posters*, *topics*, *ports*, ... depending on the middleware, and
-**services** (or *requests*, *RPC*...) : data produced or consumed by the
-simulator are transmitted through data streams while services enable
-remote and on-line configuration of the simulator.
-
-We currently support a generic socket-based interface, `YARP <http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_ and
-`pocolibs <https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares may be added in coming versions. Drop us a mail
-if you have specific needs.
+We currently support a generic socket-based interface, `YARP
+<http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_ and `pocolibs
+<https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares may be
+added in coming versions. Drop us a mail if you have specific needs.
 
 .. note::
   Some components/services may not be supported by a specific middleware. Please check the :ref:`compatibility-matrix`.
@@ -139,6 +146,14 @@ Detailled information:
 
     user/hooks
     user/supported_middlewares
+
+Simulation supervision
+++++++++++++++++++++++
+
+Besides components-specific services and datastream (documented on component's
+own documentation page), MORSE provides a set of *supervision services* that
+may be used to remotely control the global behaviour of the simulator:
+:doc:`Supervision services <user/supervision_services>`.
 
 Tutorials 
 ---------
