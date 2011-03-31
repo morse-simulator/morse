@@ -1,7 +1,8 @@
 import GameLogic
 from morse.core.services import service
+from morse.core import status
 
 @service(component = "simulation")
 def list_robots():
-    return [obj.name for obj in GameLogic.robotDict.keys()]
+    return (status.SUCCESS, [obj.name for obj in GameLogic.robotDict.keys()])
 
