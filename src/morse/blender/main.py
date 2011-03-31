@@ -237,8 +237,8 @@ def link_services():
     try:
         component_list = component_config.component_service
     except AttributeError as detail:
-        # Exit gracefully if there are no modifiers specified
-        print ("ERROR: The 'component_service' dictionary can not be found in your configuration file.")
+        # Exit gracefully if there are no services specified
+        print ("WARNING: The 'component_service' dictionary can not be found in your configuration file.")
         return False
 
     for component_name, request_manager_data in component_list.items():
@@ -246,15 +246,18 @@ def link_services():
         try:
             instance = GameLogic.componentDict[component_name]
         except KeyError as detail:
-            print ("Component listed in component_config.py not found in scene: {0}".format(detail))
-            print("""
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ERROR: your configuration file is not valid. Please
-            check the name of your components and restart the
-            simulation.
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            """)
-            return False
+            try:
+                instance = GameLogic.robotDict[component_name]
+            except KeyError as detail:
+                print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+                print("""
+                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                ERROR: your configuration file is not valid. Please
+                check the name of your components and restart the
+                simulation.
+                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                """)
+                return False
 
         request_manager_name = request_manager_data[0]
         GameLogic.morse_services.register_request_manager_mapping(component_name, request_manager_name)
