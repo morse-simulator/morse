@@ -21,8 +21,10 @@ and the robot can get blocked by obstacles between it and the target.
 
 .. note:: For objects to be detectable by the radars, they must have the following settings
     in the **Physics Properties** panel:
+
     - **Actor** must be checked
     - **Collision Bounds** must be checked
+
     This will work even for Static objects
 
 
