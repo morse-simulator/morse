@@ -75,7 +75,7 @@ Example:
 
 .. code-block:: python
 
-   # Middleware binding for regular data exchange
+    # Middleware binding for regular data exchange
     component_mw = {
       Gyroscope": ["Yarp", "post_message"],
       GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
