@@ -97,6 +97,10 @@ ELSE()
 	
 		INSTALL(DIRECTORY ${SPHINX_OUTPUT}
 			    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/morse
+				REGEX .doctrees.* EXCLUDE
+				REGEX _sources.* EXCLUDE
+				REGEX .*.inv EXCLUDE
+				REGEX .buildinfo EXCLUDE
 				)
 	
 		ADD_CUSTOM_TARGET(
