@@ -55,9 +55,14 @@ documentation.
     - ``write_viman``: Sends data of type **VimanObjectPublicArray**, defined in ``viman/vimanStruct.h``
 
 - VELODYNE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/velodyne.py``.
-  It has one available ouput method:
+  It has one available output method:
 
     - ``write_velodyne``: Sends data of type **velodyne3DImage**, defined in ``velodyne/velodyneClient.h``.
+
+- SPARK poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/human_posture.py``
+  It has one available output method:
+
+	- ``export_posture``: Sends data of type **SPARK_CONFIGURATION**, defined in ``spark/sparkStruct.h``
 
 - GENPOS poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/genpos.py``.
   It has one available input method:
