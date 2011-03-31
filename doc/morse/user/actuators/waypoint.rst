@@ -38,8 +38,8 @@ Local data
 ----------
 
 -  **x**: (float) Destination X coordinate
--  **Y**: (float) Destination Y coordinate
--  **Z**: (float) Destination Z coordinate
+-  **y**: (float) Destination Y coordinate
+-  **z**: (float) Destination Z coordinate
 -  **tolerance**: (float) Radius around the target destination where the robot is considered
     to have reached the goal
 -  **speed**: (float) Movement speed. Rotation speed is used as **speed**/2
@@ -60,7 +60,19 @@ Services
     When the robot reaches the destination, it will send a reply, indicating that the new status of the robot
     is "Stop". The function can be called with 3 to 5 parameters, corresponding to the variables in ``local_data``.
     The coordinates are mandatory, while the values for **tolerance** and **speed** can be omitted.
+    +------------+------------+-----------------+
+    | Parameters | x         | float            |
+    |            +-----------+------------------+
+    |            | y         | float            |
+    |            +-----------+------------------+
+    |            | z         | float            |
+    |            +-----------+------------------+
+    |            | tolerance | float (optional) |
+    |            +-----------+------------------+
+    |            | speed     | float (optional) |
+    +------------+-----------+------------------+
 
+    Parameters: (x, y, z[, tolerance[, speed]])
 
 Applicable modifiers
 --------------------
