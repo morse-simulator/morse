@@ -37,7 +37,6 @@ example of the ``component_modifier`` dictionary::
   component_modifier = {
     "GPS": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
     "Motion_Controller": [ ["NED", "ned_to_blender"], ["UTM", "utm_to_blender"] ],
-    "Thermometer": [ ["Json", "json_encode"] ]
   }
 
 Creating a new modifier 
