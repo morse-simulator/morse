@@ -5,7 +5,7 @@ from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
 
 SERVER_HOST = '' #all available interfaces
-SERVER_PORT = 70000
+SERVER_PORT = 4000
 
 class SocketRequestManager(RequestManager):
     """Implements services to control the MORSE simulator over

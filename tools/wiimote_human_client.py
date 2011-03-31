@@ -21,7 +21,7 @@ from math import fabs
 id_ = 0
 
 HOST = '127.0.0.1'
-PORT = 70000 
+PORT = 4000 
 s = None
 
 toggled = False
