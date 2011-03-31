@@ -17,6 +17,10 @@ Files
 Local data 
 ----------
 
+.. image:: ../../../media/kuka_joints.png 
+  :align: center
+  :width: 300
+
 -  **seg0**: (float) rotation for the first segment. Around Z axis.
 -  **seg1**: (float) rotation for the second segment. Around Y axis.
 -  **seg2**: (float) rotation for the third segment. Around Z axis.

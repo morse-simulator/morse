@@ -15,7 +15,10 @@
    id="svg3751"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="human_model.svg">
+   sodipodi:docname="human_joints.svg"
+   inkscape:export-filename="/home/slemaign/softs-local/morse/doc/media/human_joints.png"
+   inkscape:export-xdpi="149.94"
+   inkscape:export-ydpi="149.94">
   <defs
      id="defs3753">
     <inkscape:perspective
@@ -362,16 +365,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="416.87983"
-     inkscape:cy="711.25578"
+     inkscape:zoom="1.4"
+     inkscape:cx="333.17252"
+     inkscape:cy="514.97618"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1112"
-     inkscape:window-height="1007"
-     inkscape:window-x="786"
-     inkscape:window-y="49"
+     inkscape:window-height="967"
+     inkscape:window-x="1280"
+     inkscape:window-y="25"
      inkscape:window-maximized="0"
      inkscape:snap-grids="false"
      inkscape:snap-to-guides="false" />
@@ -383,7 +386,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -868,67 +871,67 @@
          sodipodi:role="line"
          y="733.81537"
          x="468.37213 479.17212 489.57614 499.60214 509.61014"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Knees</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Knees</tspan>
       <tspan
          id="tspan4054"
          sodipodi:role="line"
          y="868.16565"
          x="468.37213 479.47812 489.88214 499.17014 504.55212 514.57812"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Ankles</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Ankles</tspan>
       <tspan
          id="tspan4056"
          sodipodi:role="line"
          y="578.2561"
          x="470.16898 482.51697 487.68298 498.26697"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Hips</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Hips</tspan>
       <tspan
          id="tspan4058"
          sodipodi:role="line"
          y="469.15967"
          x="459.05728 467.06729 477.48929 483.98727 492.17728"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Torso</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Torso</tspan>
       <tspan
          id="tspan4060"
          sodipodi:role="line"
          y="293.39307"
          x="449.96591 459.77591 470.17993 480.58392 490.93393 496.29791 506.84592 516.87195"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Shoulder</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Shoulder</tspan>
       <tspan
          id="tspan4062"
          sodipodi:role="line"
          y="300.46417"
          x="556.02295 565.68896 571.07098 581.65497 591.77094"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Elbow</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Elbow</tspan>
       <tspan
          id="tspan4064"
          sodipodi:role="line"
          y="297.43372"
          x="644.91638 661.22443 667.93842 673.12238 681.31238"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Wrist</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Wrist</tspan>
       <tspan
          id="tspan4066"
          sodipodi:role="line"
          y="205.50981"
          x="347.93152 360.27954 370.28754 379.59354"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Head</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Head</tspan>
       <tspan
          id="tspan4068"
          sodipodi:role="line"
          x="89.188896 100.15092 106.66692 115.97292 125.15291 130.31892 138.50893 142.7749 149.20091 159.6049 166.08492 175.3909 181.87091 187.03691 197.4409"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          y="552.95551">X-axis rotation</tspan>
       <tspan
          id="tspan4070"
          sodipodi:role="line"
          y="514.06464"
          x="89.242912 99.934898 106.43293 115.75693 124.93692 130.10289 138.29289 142.54091 148.98492 159.38892 165.85092 175.17491 181.63692 186.80292 197.20691"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Y-axis rotation</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Y-axis rotation</tspan>
       <tspan
          id="tspan4072"
          sodipodi:role="line"
          y="475.1738"
          x="89.134918 99.322906 105.83891 115.1449 124.32493 129.49091 137.68091 141.94691 148.37291 158.7769 165.25691 174.56291 181.04291 186.20891 196.6129"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Z-axis rotation</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Z-axis rotation</tspan>
     </text>
     <text
        id="text4074"
@@ -940,7 +943,7 @@
          sodipodi:role="line"
          y="123.75159"
          x="265.53189 287.03879 305.03433 331.8082 348.01672 366.1377 373.5679 400.3418 418.4314 436.80316 454.23438"
-         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Human model</tspan>
+         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Human model</tspan>
     </text>
     <text
        id="text4078"
@@ -952,7 +955,7 @@
          sodipodi:role="line"
          y="153.90598"
          x="305.21445 313.94846 326.66446 332.97845 345.69446 353.59244 363.60245 368.81644 381.53244 392.92847 411.69446"
-         style="font-size:22px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Joints name</tspan>
+         style="font-size:22px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Joints name</tspan>
     </text>
     <g
        transform="matrix(1.25,0,0,1.25,-0.91357029,67.881775)"
@@ -988,12 +991,12 @@
          id="tspan4166"
          y="904.12561"
          x="205.008"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">7</tspan>
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">7</tspan>
       <tspan
          id="tspan4168"
          y="937.38025"
          x="253.03131"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
        x="152.98514"
@@ -1003,7 +1006,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3117" />
     </text>
     <text
@@ -1014,7 +1017,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3131" />
     </text>
     <text
@@ -1025,12 +1028,12 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3142" />
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3179" />
     </text>
     <text
@@ -1041,7 +1044,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3167" />
     </text>
     <text
@@ -1052,7 +1055,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3219" />
     </text>
     <text
@@ -1063,7 +1066,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3243" />
     </text>
     <text
@@ -1074,13 +1077,13 @@
       <tspan
          y="953.03766"
          x="51.505878"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3267">6</tspan>
       <tspan
          id="tspan4170"
          y="875.25592"
          x="-66.681969"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
        x="152.98514"
@@ -1090,7 +1093,7 @@
       <tspan
          y="822.72797"
          x="82.82061"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3291" />
     </text>
     <text
@@ -1102,13 +1105,13 @@
          sodipodi:role="line"
          y="855.55798"
          x="120.70133 129.09312"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318">11</tspan>
       <tspan
          sodipodi:role="line"
          y="856.56805 856.56805 856.56805 856.56805 856.56805 856.56805 856.56805"
          x="170.19879 170.19879 170.19879 170.19879 170.19879 170.19879 170.19879 178.59059"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334" />
     </text>
     <text
@@ -1119,12 +1122,12 @@
       <tspan
          y="905.05542"
          x="66.153091"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3112">9</tspan>
       <tspan
          y="905.05542"
          x="66.153091"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3108" />
     </text>
     <text
@@ -1136,7 +1139,7 @@
          id="tspan4180"
          y="876.23187"
          x="166.7726"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
        x="212.22946"
@@ -1146,22 +1149,22 @@
       <tspan
          y="922.69891"
          x="212.22946"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3072">Y</tspan>
       <tspan
          id="tspan4182"
          y="961.08472"
          x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
       <tspan
          y="961.08472"
          x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3036" />
       <tspan
          y="961.08472"
          x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3076" />
     </text>
     <text
@@ -1172,12 +1175,12 @@
       <tspan
          y="914.61768"
          x="212.73454"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0;text-anchor:start;text-align:start"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0;text-anchor:start;text-align:start"
          id="tspan3032" />
       <tspan
          y="914.61768"
          x="212.73454"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0;text-anchor:start;text-align:start"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0;text-anchor:start;text-align:start"
          id="tspan3044" />
     </text>
     <text
@@ -1188,13 +1191,13 @@
       <tspan
          y="955.52887"
          x="34.442619"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3040">X</tspan>
       <tspan
          id="tspan4184"
          y="852.99835"
          x="-83.745239"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
        x="166.7726"
@@ -1204,7 +1207,7 @@
       <tspan
          y="812.08716"
          x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3080" />
     </text>
     <text
@@ -1215,7 +1218,7 @@
       <tspan
          y="812.08716"
          x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3088" />
     </text>
     <text
@@ -1226,49 +1229,49 @@
       <tspan
          y="812.08716"
          x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3096">Z</tspan>
       <tspan
          id="tspan4186"
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Global pose :</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Global pose :</tspan>
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3102" />
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3104" />
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3106" />
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3064" />
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3066" />
       <tspan
          sodipodi:role="line"
          y="782.42261"
          x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3068" />
     </text>
     <flowRoot
@@ -1330,53 +1333,53 @@
          sodipodi:role="line"
          y="937.05615"
          x="194.0663"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-1" />
       <tspan
          sodipodi:role="line"
          y="938.49109"
          x="114.30534 122.69714"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3440-2" />
       <tspan
          sodipodi:role="line"
          y="938.49109"
          x="114.30534 122.69714"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3434-0" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3402-7"
          x="194.0663"
          y="989.33069" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3436-3"
          x="194.0663"
          y="1006.7556" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3448-1"
          x="194.0663"
          y="1024.1804" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3450-1"
          x="194.0663"
          y="1041.6053" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3452-9"
          x="194.0663"
          y="1059.0302" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3454-0"
          x="194.0663"
          y="1076.455" />
@@ -1384,11 +1387,11 @@
          y="1093.8799"
          x="194.0663"
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3456-5" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          y="939.50116"
          x="163.8028 172.1946"
          id="tspan3458-6">10</tspan>
@@ -1396,7 +1399,7 @@
          sodipodi:role="line"
          y="939.50116 939.50116 939.50116"
          x="163.8028 163.8028 163.8028 172.1946"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-7" />
     </text>
     <text
@@ -1407,65 +1410,65 @@
       <tspan
          y="826.86914"
          x="82.485519"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3426-6">8</tspan>
       <tspan
          sodipodi:role="line"
          y="844.29401"
          x="82.485519"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-4" />
       <tspan
          sodipodi:role="line"
          y="872.83112"
          x="72.889076 81.280876"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3440-7" />
       <tspan
          sodipodi:role="line"
          y="872.83112"
          x="72.889076 81.280876"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3434-4" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3402-8"
          x="82.485519"
          y="896.56848" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3436-5"
          x="82.485519"
          y="913.99341" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3448-8"
          x="82.485519"
          y="931.41821" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3450-2"
          x="82.485519"
          y="948.84302" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3452-6"
          x="82.485519"
          y="966.26794" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3454-06"
          x="82.485519"
          y="983.69275" />
       <tspan
          sodipodi:role="line"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          y="1001.1176"
          x="82.485519"
          id="tspan3458-4" />
@@ -1473,7 +1476,7 @@
          sodipodi:role="line"
          y="873.84125 873.84125 873.84125"
          x="122.38654 122.38654 122.38654 130.77835"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-6" />
     </text>
     <text
@@ -1485,13 +1488,13 @@
          sodipodi:role="line"
          y="490.82803"
          x="436.17825"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9">13</tspan>
       <tspan
          sodipodi:role="line"
          y="493.27304 493.27304 493.27304 493.27304 493.27304 493.27304 493.27304"
          x="405.91473 405.91473 405.91473 405.91473 405.91473 405.91473 405.91473 414.30652"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2" />
     </text>
     <text
@@ -1503,13 +1506,13 @@
          sodipodi:role="line"
          y="483.16476"
          x="388.42865"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-6">14</tspan>
       <tspan
          sodipodi:role="line"
          y="485.60977 485.60977 485.60977 485.60977 485.60977 485.60977 485.60977"
          x="358.16513 358.16513 358.16513 358.16513 358.16513 358.16513 358.16513 366.55692"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-6" />
     </text>
     <text
@@ -1521,13 +1524,13 @@
          sodipodi:role="line"
          y="410.93887"
          x="357.61902"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-5">12</tspan>
       <tspan
          sodipodi:role="line"
          y="413.38388 413.38388 413.38388 413.38388 413.38388 413.38388 413.38388"
          x="327.3555 327.3555 327.3555 327.3555 327.3555 327.3555 327.3555 335.74728"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-8" />
     </text>
     <text
@@ -1539,13 +1542,13 @@
          sodipodi:role="line"
          y="362.45154"
          x="377.31699"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-0">15</tspan>
       <tspan
          sodipodi:role="line"
          y="364.89655 364.89655 364.89655 364.89655 364.89655 364.89655 364.89655"
          x="347.05347 347.05347 347.05347 347.05347 347.05347 347.05347 347.05347 355.44525"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-60" />
     </text>
     <text
@@ -1557,13 +1560,13 @@
          sodipodi:role="line"
          y="301.33731"
          x="394.99466"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-7">16</tspan>
       <tspan
          sodipodi:role="line"
          y="303.78232 303.78232 303.78232 303.78232 303.78232 303.78232 303.78232"
          x="364.73114 364.73114 364.73114 364.73114 364.73114 364.73114 364.73114 373.12292"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-82" />
     </text>
     <text
@@ -1575,13 +1578,13 @@
          sodipodi:role="line"
          y="231.63678"
          x="360.14438"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-58">17</tspan>
       <tspan
          sodipodi:role="line"
          y="234.08179 234.08179 234.08179 234.08179 234.08179 234.08179 234.08179"
          x="329.88086 329.88086 329.88086 329.88086 329.88086 329.88086 329.88086 338.27264"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-5" />
     </text>
     <text
@@ -1593,13 +1596,13 @@
          sodipodi:role="line"
          y="344.2688"
          x="299.03018"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-3">19</tspan>
       <tspan
          sodipodi:role="line"
          y="346.71381 346.71381 346.71381 346.71381 346.71381 346.71381 346.71381"
          x="268.76666 268.76666 268.76666 268.76666 268.76666 268.76666 268.76666 277.15845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-823" />
     </text>
     <text
@@ -1611,13 +1614,13 @@
          sodipodi:role="line"
          y="318.00482"
          x="289.93878"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-9">20</tspan>
       <tspan
          sodipodi:role="line"
          y="320.44983 320.44983 320.44983 320.44983 320.44983 320.44983 320.44983"
          x="259.67526 259.67526 259.67526 259.67526 259.67526 259.67526 259.67526 268.06705"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-88" />
     </text>
     <text
@@ -1629,13 +1632,13 @@
          sodipodi:role="line"
          y="366.49216"
          x="202.05551"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-06">18</tspan>
       <tspan
          sodipodi:role="line"
          y="368.93716 368.93716 368.93716 368.93716 368.93716 368.93716 368.93716"
          x="171.79199 171.79199 171.79199 171.79199 171.79199 171.79199 171.79199 180.18378"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-9" />
     </text>
     <text
@@ -1647,13 +1650,13 @@
          sodipodi:role="line"
          y="328.61145"
          x="187.40831"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-77">21</tspan>
       <tspan
          sodipodi:role="line"
          y="331.05646 331.05646 331.05646 331.05646 331.05646 331.05646 331.05646"
          x="157.14479 157.14479 157.14479 157.14479 157.14479 157.14479 157.14479 165.53658"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-97" />
     </text>
     <text
@@ -1665,13 +1668,13 @@
          sodipodi:role="line"
          y="360.93631"
          x="118.71793"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-1">23</tspan>
       <tspan
          sodipodi:role="line"
          y="363.38132 363.38132 363.38132 363.38132 363.38132 363.38132 363.38132"
          x="88.454407 88.454407 88.454407 88.454407 88.454407 88.454407 88.454407 96.846191"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-58" />
     </text>
     <text
@@ -1683,13 +1686,13 @@
          sodipodi:role="line"
          y="306.89316"
          x="65.684929"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-56">24</tspan>
       <tspan
          sodipodi:role="line"
          y="309.33817 309.33817 309.33817 309.33817 309.33817 309.33817 309.33817"
          x="35.421406 35.421406 35.421406 35.421406 35.421406 35.421406 35.421406 43.81319"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-84" />
     </text>
     <text
@@ -1701,13 +1704,13 @@
          sodipodi:role="line"
          y="366.49216"
          x="21.743286"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-75">22</tspan>
       <tspan
          sodipodi:role="line"
          y="368.93716 368.93716 368.93716 368.93716 368.93716 368.93716 368.93716"
          x="-8.5202322 -8.5202322 -8.5202322 -8.5202322 -8.5202322 -8.5202322 -8.5202322 -0.12844749"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-2" />
     </text>
     <text
@@ -1719,13 +1722,13 @@
          sodipodi:role="line"
          y="375.58353"
          x="425.29922"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-57">26</tspan>
       <tspan
          sodipodi:role="line"
          y="378.02853 378.02853 378.02853 378.02853 378.02853 378.02853 378.02853"
          x="395.03571 395.03571 395.03571 395.03571 395.03571 395.03571 395.03571 403.42749"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-3" />
     </text>
     <text
@@ -1737,13 +1740,13 @@
          sodipodi:role="line"
          y="306.89316"
          x="457.62411"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-34">27</tspan>
       <tspan
          sodipodi:role="line"
          y="309.33817 309.33817 309.33817 309.33817 309.33817 309.33817 309.33817"
          x="427.3606 427.3606 427.3606 427.3606 427.3606 427.3606 427.3606 435.75238"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-94" />
     </text>
     <text
@@ -1755,13 +1758,13 @@
          sodipodi:role="line"
          y="325.58096"
          x="483.383"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-4">25</tspan>
       <tspan
          sodipodi:role="line"
          y="328.02597 328.02597 328.02597 328.02597 328.02597 328.02597 328.02597"
          x="453.11948 453.11948 453.11948 453.11948 453.11948 453.11948 453.11948 461.51126"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-1" />
     </text>
     <text
@@ -1773,13 +1776,13 @@
          sodipodi:role="line"
          y="334.16727"
          x="580.86273"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-2">28</tspan>
       <tspan
          sodipodi:role="line"
          y="336.61227 336.61227 336.61227 336.61227 336.61227 336.61227 336.61227"
          x="550.59924 550.59924 550.59924 550.59924 550.59924 550.59924 550.59924 558.99103"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-0" />
     </text>
     <text
@@ -1791,13 +1794,13 @@
          sodipodi:role="line"
          y="378.10889"
          x="622.78406"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-35">30</tspan>
       <tspan
          sodipodi:role="line"
          y="380.55389 380.55389 380.55389 380.55389 380.55389 380.55389 380.55389"
          x="592.52051 592.52051 592.52051 592.52051 592.52051 592.52051 592.52051 600.91229"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-61" />
     </text>
     <text
@@ -1809,13 +1812,13 @@
          sodipodi:role="line"
          y="369.01752"
          x="693.49475"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-76">29</tspan>
       <tspan
          sodipodi:role="line"
          y="371.46252 371.46252 371.46252 371.46252 371.46252 371.46252 371.46252"
          x="663.2312 663.2312 663.2312 663.2312 663.2312 663.2312 663.2312 671.62299"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-01" />
     </text>
     <text
@@ -1827,13 +1830,13 @@
          sodipodi:role="line"
          y="321.54034"
          x="670.7663"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-97">31</tspan>
       <tspan
          sodipodi:role="line"
          y="323.98535 323.98535 323.98535 323.98535 323.98535 323.98535 323.98535"
          x="640.50281 640.50281 640.50281 640.50281 640.50281 640.50281 640.50281 648.89459"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-13" />
     </text>
     <text
@@ -1845,13 +1848,13 @@
          sodipodi:role="line"
          y="596.30182"
          x="469.24088"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-45">40</tspan>
       <tspan
          sodipodi:role="line"
          y="598.74683 598.74683 598.74683 598.74683 598.74683 598.74683 598.74683"
          x="438.97736 438.97736 438.97736 438.97736 438.97736 438.97736 438.97736 447.36914"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-91" />
     </text>
     <text
@@ -1863,13 +1866,13 @@
          sodipodi:role="line"
          y="621.0506"
          x="399.54034"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-40">39</tspan>
       <tspan
          sodipodi:role="line"
          y="623.49561 623.49561 623.49561 623.49561 623.49561 623.49561 623.49561"
          x="369.27682 369.27682 369.27682 369.27682 369.27682 369.27682 369.27682 377.66861"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-945" />
     </text>
     <text
@@ -1881,13 +1884,13 @@
          sodipodi:role="line"
          y="545.79425"
          x="412.67233"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-99">41</tspan>
       <tspan
          sodipodi:role="line"
          y="548.23926 548.23926 548.23926 548.23926 548.23926 548.23926 548.23926"
          x="382.40881 382.40881 382.40881 382.40881 382.40881 382.40881 382.40881 390.8006"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-52" />
     </text>
     <text
@@ -1899,13 +1902,13 @@
          sodipodi:role="line"
          y="544.78406"
          x="328.82965"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-91">34</tspan>
       <tspan
          sodipodi:role="line"
          y="547.22906 547.22906 547.22906 547.22906 547.22906 547.22906 547.22906"
          x="298.56613 298.56613 298.56613 298.56613 298.56613 298.56613 298.56613 306.95792"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-34" />
     </text>
     <text
@@ -1917,13 +1920,13 @@
          sodipodi:role="line"
          y="621.55566"
          x="316.70782"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-38">32</tspan>
       <tspan
          sodipodi:role="line"
          y="624.00067 624.00067 624.00067 624.00067 624.00067 624.00067 624.00067"
          x="286.44431 286.44431 286.44431 286.44431 286.44431 286.44431 286.44431 294.83609"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-95" />
     </text>
     <text
@@ -1935,13 +1938,13 @@
          sodipodi:role="line"
          y="590.74603"
          x="264.1799"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-03">33</tspan>
       <tspan
          sodipodi:role="line"
          y="593.19104 593.19104 593.19104 593.19104 593.19104 593.19104 593.19104"
          x="233.91638 233.91638 233.91638 233.91638 233.91638 233.91638 233.91638 242.30817"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-36" />
     </text>
     <text
@@ -1953,13 +1956,13 @@
          sodipodi:role="line"
          y="709.94403"
          x="284.88803"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-51">35</tspan>
       <tspan
          sodipodi:role="line"
          y="712.38904 712.38904 712.38904 712.38904 712.38904 712.38904 712.38904"
          x="254.6245 254.6245 254.6245 254.6245 254.6245 254.6245 254.6245 263.0163"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-10" />
     </text>
     <text
@@ -1971,13 +1974,13 @@
          sodipodi:role="line"
          y="708.42877"
          x="446.51242"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-454">42</tspan>
       <tspan
          sodipodi:role="line"
          y="710.87378 710.87378 710.87378 710.87378 710.87378 710.87378 710.87378"
          x="416.2489 416.2489 416.2489 416.2489 416.2489 416.2489 416.2489 424.64069"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-24" />
     </text>
     <text
@@ -1989,13 +1992,13 @@
          sodipodi:role="line"
          y="859.9516"
          x="441.96674"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-8">44</tspan>
       <tspan
          sodipodi:role="line"
          y="862.39661 862.39661 862.39661 862.39661 862.39661 862.39661 862.39661"
          x="411.70322 411.70322 411.70322 411.70322 411.70322 411.70322 411.70322 420.095"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-16" />
     </text>
     <text
@@ -2007,13 +2010,13 @@
          sodipodi:role="line"
          y="856.41614"
          x="263.16974"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-46">37</tspan>
       <tspan
          sodipodi:role="line"
          y="858.86115 858.86115 858.86115 858.86115 858.86115 858.86115 858.86115"
          x="232.90622 232.90622 232.90622 232.90622 232.90622 232.90622 232.90622 241.298"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-15" />
     </text>
     <text
@@ -2025,13 +2028,13 @@
          sodipodi:role="line"
          y="849.34509"
          x="346.50732"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-29">38</tspan>
       <tspan
          sodipodi:role="line"
          y="851.7901 851.7901 851.7901 851.7901 851.7901 851.7901 851.7901"
          x="316.2438 316.2438 316.2438 316.2438 316.2438 316.2438 316.2438 324.63559"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-28" />
     </text>
     <text
@@ -2043,13 +2046,13 @@
          sodipodi:role="line"
          y="850.86029"
          x="370.24591"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-86">45</tspan>
       <tspan
          sodipodi:role="line"
          y="853.3053 853.3053 853.3053 853.3053 853.3053 853.3053 853.3053"
          x="339.98239 339.98239 339.98239 339.98239 339.98239 339.98239 339.98239 348.37418"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-37" />
     </text>
     <text
@@ -2061,13 +2064,13 @@
          sodipodi:role="line"
          y="898.84253"
          x="293.4743"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-72">36</tspan>
       <tspan
          sodipodi:role="line"
          y="901.28754 901.28754 901.28754 901.28754 901.28754 901.28754 901.28754"
          x="263.21078 263.21078 263.21078 263.21078 263.21078 263.21078 263.21078 271.60257"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-53" />
     </text>
     <text
@@ -2079,13 +2082,13 @@
          sodipodi:role="line"
          y="903.38818"
          x="426.30939"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3318-9-36">43</tspan>
       <tspan
          sodipodi:role="line"
          y="905.83319 905.83319 905.83319 905.83319 905.83319 905.83319 905.83319"
          x="396.04587 396.04587 396.04587 396.04587 396.04587 396.04587 396.04587 404.43765"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3334-2-4" />
     </text>
     <g

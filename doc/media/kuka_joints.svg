@@ -10,12 +10,15 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="362.06482"
+   height="831.72839"
    id="svg3751"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="kuka_arm.svg">
+   sodipodi:docname="kuka_joints.svg"
+   inkscape:export-filename="/home/slemaign/softs-local/morse/doc/media/kuka_joints.png"
+   inkscape:export-xdpi="149.94"
+   inkscape:export-ydpi="149.94">
   <defs
      id="defs3753">
     <inkscape:perspective
@@ -32,7 +35,7 @@
        y="0"
        x="0"
        patternUnits="userSpaceOnUse"
-       patternTransform="matrix(0.622746,0,0,0.622746,1146.7028,-57.586174)">
+       patternTransform="matrix(0.622746,0,0,0.622746,1174.5593,-199.99348)">
       <defs
          id="defs3791">
         <mask
@@ -404,16 +407,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994951"
-     inkscape:cx="636.87009"
-     inkscape:cy="481.90701"
+     inkscape:zoom="0.49497476"
+     inkscape:cx="894.63461"
+     inkscape:cy="608.17036"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1125"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1280"
+     inkscape:window-height="997"
+     inkscape:window-x="1280"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-grids="false"
      inkscape:snap-to-guides="false" />
@@ -425,21 +428,19 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <image
-       y="202.29076"
-       x="402.71429"
-       id="image3372"
-       height="763"
-       width="146"
-       xlink:href="file:///home/magharbi/Desktop/Screenshot.png" />
+     id="layer1"
+     transform="translate(-34.820619,-178.00913)">
+    <path
+       style="fill:#000000"
+       d="m 254.63223,999.98747 c 3.73628,-15.57391 5.53109,-33.73763 6.29933,-63.75 0.65803,-25.70656 0.90126,-28.47115 2.96955,-33.75209 3.2308,-8.24914 8.8703,-14.81773 19.39795,-22.59372 13.81745,-10.2059 21.64157,-20.06629 24.28748,-30.60843 l 0.72088,-2.87219 -21.54378,0.66957 c -20.69839,0.6433 -21.77354,0.58236 -27.39937,-1.55314 -6.89969,-2.61903 -14.83846,-9.97411 -18.12394,-16.7914 -2.38242,-4.94345 -4.18105,-15.30313 -4.21185,-24.25919 -0.0277,-8.04631 3.31996,-22.43028 7.96866,-34.23941 5.3269,-13.532 11.51323,-38.48657 13.01494,-52.5 1.71994,-16.04991 0.8341,-76.23667 -1.29521,-88 -2.52026,-13.9232 -6.60062,-28.84119 -10.90396,-39.86543 -7.39789,-18.95184 -9.2101,-29.24907 -7.78971,-44.26226 1.63404,-17.27139 6.55895,-25.40352 18.93698,-31.26915 l 6.54849,-3.10316 22.25569,-0.30322 22.2557,-0.30322 -0.63312,-2.69678 c -1.04366,-4.44547 -6.44679,-13.99304 -10.56932,-18.67649 -2.12583,-2.41506 -8.05696,-7.39125 -13.18029,-11.05818 -10.07799,-7.21315 -15.83621,-13.78276 -19.68789,-22.46211 -2.41123,-5.43344 -2.44077,-5.86308 -2.44077,-35.5 l 0,-30 3.62863,-7.5 c 4.92288,-10.17509 11.31476,-16.28213 24.49495,-23.4034 11.73471,-6.34028 26.76144,-15.79252 27.81419,-17.49592 0.95548,-1.54599 -2.8343,-1.3773 -9.43777,0.42011 -14.21783,3.86998 -36.36,-3.6456 -48.27773,-16.38662 -5.54684,-5.93002 -8.11841,-10.81917 -10.33777,-19.65447 -3.06951,-12.2198 0.71176,-26.62718 9.65494,-36.78717 4.59154,-5.21626 9.72188,-8.69253 12.82859,-8.69253 1.38884,0 2.13197,-0.62941 2.13197,-1.80572 0,-0.99315 1.125,-3.33057 2.5,-5.19428 1.375,-1.86371 2.5,-4.20113 2.5,-5.19428 0,-1.68224 1.40187,-1.80572 20.5,-1.80572 15.7185,0 20.50649,0.29156 20.52782,1.25 0.0153,0.6875 1.3653,3.01766 3,5.17814 1.6347,2.16048 2.97218,4.41798 2.97218,5.01667 0,0.65644 2.28243,1.09556 5.75,1.10624 4.88351,0.0151 6.59207,0.56014 11.33791,3.61722 10.68452,6.88255 16.91466,17.97974 16.9094,30.11924 -0.003,7.0354 -3.44166,21.36598 -10.86947,45.29906 -8.7561,28.21296 -11.13539,46.14794 -11.11821,83.80865 0.0169,37.13111 4.62096,64.26823 15.35548,90.50842 5.74369,14.04029 6.94364,20.94369 6.42874,36.98506 -0.2948,9.18437 -0.93692,15.44659 -1.70858,16.6628 -1.21158,1.90957 -1.22245,1.90854 -0.54396,-0.0515 0.38078,-1.1 0.92464,-8.59826 1.20859,-16.66281 0.56329,-15.99879 -0.6194,-22.84022 -6.38479,-36.93355 -9.19287,-22.47167 -15.32858,-53.70016 -15.35548,-78.15364 l -0.01,-8.75 -37.62072,0 -37.62072,0 0.44333,12.25 c 0.36155,9.98992 0.87857,13.26473 2.80236,17.75 3.559,8.29775 8.98448,14.50449 18.95785,21.68773 15.74615,11.34105 22.59701,21.10906 25.42331,36.24876 1.75373,9.39418 1.44921,12.40082 -0.36895,3.64282 -0.92257,-4.44402 -1.5508,-5.57931 -3.08736,-5.57931 -1.8717,0 -1.9291,1.13326 -1.9291,38.08786 l 0,38.08786 15.75,-0.34966 c 18.6369,-0.41375 22.19319,-1.58426 30.44823,-10.02173 4.40062,-4.49786 4.71202,-4.68437 2.04821,-1.22671 -1.72779,2.24268 -4.92129,5.31105 -7.09667,6.81859 -7.02843,4.87071 -11.53085,5.60379 -34.41711,5.60379 l -20.94948,0 0.6821,2.71769 c 2.55153,10.16611 11.26642,20.74478 25.53472,30.99561 10.0498,7.22011 15.28372,13.83046 18.54676,23.42418 2.2288,6.55295 2.36694,8.40074 2.47826,33.15114 0.13227,29.40813 -0.26749,31.93077 -6.58946,41.5818 -5.16429,7.88374 -6.47316,9.20023 -19.48377,19.59721 -11.88217,9.49522 -16.44133,14.99982 -19.42301,23.45079 -0.84083,2.38317 -1.52878,4.69653 -1.52878,5.14081 0,0.44428 10.4625,0.95021 23.25,1.12428 23.03381,0.31355 23.29749,0.34155 28.3576,3.01118 2.80918,1.48207 7.08418,4.90052 9.5,7.59654 6.44047,7.18748 8.03362,12.30483 8.63228,27.72769 0.58255,15.00788 -1.04151,23.48172 -7.61153,39.71465 -4.42662,10.9371 -8.44564,24.94558 -10.54826,36.76643 -5.86677,32.98268 -4.28272,88.0548 3.3908,117.88683 l 1.82968,7.1132 -47.25805,0 -47.25804,0 2.33908,-9.75003 z m 90.02558,6.00003 c -4.62654,-21.17446 -5.18144,-25.29664 -7.20185,-53.50003 l -0.62683,-8.75 -37.26295,0 -37.26294,0 -0.65735,10.75 c -1.09968,17.9839 -2.63112,30.2267 -5.19355,41.51874 -1.34402,5.92279 -2.44367,11.21029 -2.44367,11.74999 0,0.6274 16.45594,0.9813 45.625,0.9813 l 45.625,0 -0.60086,-2.75 z m -7.64572,-81.50003 c 0.0109,-26.34602 5.20311,-54.47276 14.12493,-76.51643 6.57002,-16.23293 8.19408,-24.70677 7.61153,-39.71465 -0.58611,-15.09953 -2.17854,-20.43576 -8.11653,-27.1985 -2.13216,-2.4283 -6.18216,-5.6252 -9,-7.10423 -4.8415,-2.54121 -6.01731,-2.70838 -21.37335,-3.03871 l -16.25,-0.34956 0,37.58604 0,37.58604 2.42804,0 c 2.21403,0 2.48521,-0.50683 3.07652,-5.75 0.81566,-7.23239 1.31905,-8.75869 1.40171,-4.25 0.0955,5.21036 -2.55525,15.40586 -5.66215,21.77799 -3.61426,7.4127 -11.55208,15.86427 -21.94999,23.37063 -15.83395,11.43069 -20.3969,20.00457 -21.07556,39.60138 l -0.42422,12.25 37.60282,0 37.60283,0 0.003,-8.25 z m -53.75342,-78.406 9.75,-0.64565 0,-37.34917 c 0,-32.01553 -0.20774,-37.34918 -1.45469,-37.34918 -0.90712,0 -1.68164,1.41156 -2.05761,3.75 -0.96494,6.0016 -1.56039,8.51267 -1.92502,8.118 -0.71487,-0.77377 2.27632,-17.54692 3.76423,-21.10799 3.10962,-7.44236 8.02739,-12.98847 19.98809,-22.54195 19.72497,-15.7551 25.81281,-26.98466 24.9205,-45.96806 l -0.38779,-8.25 -37.92386,0 -37.92385,0 0,12.81358 c 0,23.19056 -5.20724,50.16814 -14.03001,72.68642 -4.63879,11.83954 -7.97776,26.21963 -7.95018,34.23941 0.0308,8.96887 1.83087,19.32008 4.21856,24.25919 3.13282,6.48045 10.27277,13.17554 16.76163,15.71729 6.01735,2.35705 9.60496,2.59791 24.25,1.62811 z m 52.75,-182.66885 c 0,-18.60352 -5.71545,-29.87771 -20.42771,-40.29529 -10.36571,-7.33984 -19.87853,-17.2204 -23.06555,-23.95719 -2.75481,-5.8232 -5.57628,-17.73724 -5.3848,-22.73805 0.0742,-1.93869 0.46245,-0.83723 0.9923,2.81538 1.09704,7.56272 1.46692,8.5 3.35437,8.5 1.34837,0 1.53139,-4.55011 1.53139,-38.07205 l 0,-38.07204 -14.75,0.32204 c -13.70835,0.29931 -15.17372,0.51995 -20.75,3.12431 -12.222,5.70821 -16.85877,13.3762 -18.48547,30.57005 -1.42039,15.01319 0.39182,25.31042 7.78971,44.26226 8.18543,20.96933 12.04284,40.75512 12.88977,66.11543 l 0.59278,17.75 37.8566,0 37.85661,0 0,-10.32485 z m 1,-255.52993 c 0,-11.3676 1.95346,-31.80252 4.10682,-42.96097 1.11564,-5.78111 4.2751,-17.75006 7.02102,-26.59768 7.42781,-23.93308 10.86642,-38.26366 10.86947,-45.29906 0.003,-7.38758 -2.93065,-16.05961 -7.33178,-21.67164 -4.11443,-5.24645 -12.58241,-10.50567 -18.14245,-11.26776 l -4.52308,-0.61996 0.0318,35.38593 c 0.0273,30.40266 0.22727,35.128 1.4198,33.55447 0.7634,-1.00729 1.92479,-4.06908 2.58089,-6.80397 0.65609,-2.7349 1.40881,-4.75661 1.67271,-4.49271 0.26391,0.2639 -0.22761,2.87569 -1.09226,5.80398 -1.30656,4.42489 -2.96898,6.71643 -9.84251,13.56728 -7.04891,7.02564 -15.75242,14.25687 -17.15957,14.25687 -0.22355,0 -3.26629,1.73741 -6.76165,3.86092 -3.49536,2.1235 -9.25174,5.32308 -12.79195,7.11018 -9.30743,4.69837 -17.04154,12.4863 -21.15137,21.29856 -3.14484,6.74314 -3.39698,8.05578 -3.7418,19.48034 l -0.36974,12.25 37.60282,0 37.60283,0 0,-6.85478 z M 301.82109,297.47296 c 0.39799,-2.06658 -2.48881,-3.4591 -4.01242,-1.93549 -1.52361,1.52361 -0.13109,4.41041 1.93549,4.01242 0.95785,-0.18446 1.89247,-1.11908 2.07693,-2.07693 z M 292.7285,259.0012 c -2.6291,-0.20668 -6.6791,-0.20419 -9,0.006 -2.32091,0.20976 -0.16983,0.37886 4.78017,0.37582 4.95,-0.003 6.84892,-0.17465 4.21983,-0.38132 z m 62.28017,311.79529 c 0,-0.51754 0.44485,-1.21592 0.98855,-1.55194 0.56686,-0.35034 0.7345,0.0511 0.39301,0.94098 -0.66479,1.73242 -1.38156,2.04939 -1.38156,0.61096 z"
+       id="path4222" />
     <g
        id="g3779"
        transform="matrix(1.25,0,0,-1.25,33.372144,1103.7389)">
@@ -464,7 +465,7 @@
          d="m 53.438,389.578 c 0.41,-0.266 2.007,-0.531 2.007,-0.531 l -0.593,3.336 m -0.016,-2.406 c -1.953,3.16 -4.551,1.718 -5.801,-3.219 -1.25,-4.938 -0.68,-11.504 1.274,-14.664 1.144,-1.852 2.574,-2.188 3.836,-0.899" />
     </g>
     <g
-       transform="matrix(-1.25,0,0,-1.25,937.65872,1420.8552)"
+       transform="matrix(-1.25,0,0,-1.25,767.9531,1465.3019)"
        id="g3850">
       <path
          id="path3852"
@@ -472,7 +473,7 @@
          d="m 362.688,536.297 c 0.414,-0.27 2.031,-0.539 2.031,-0.539 l -0.602,3.367 m -0.019,-2.43 c -1.973,3.188 -4.598,1.735 -5.86,-3.246 -1.265,-4.98 -0.687,-11.601 1.285,-14.793 1.161,-1.871 2.606,-2.207 3.879,-0.906" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,11.943572,103.59606)"
+       transform="matrix(1.25,0,0,1.25,-157.76205,148.04277)"
        id="g3882">
       <path
          id="path3884"
@@ -480,7 +481,7 @@
          d="m 367.492,190.719 0,66.523" />
     </g>
     <g
-       transform="matrix(1.25,0,0,0.80391465,297.65786,20.159926)"
+       transform="matrix(1.25,0,0,0.80391465,127.95224,64.606637)"
        id="g3894">
       <path
          id="path3896"
@@ -488,7 +489,7 @@
          d="m 138.07,194.758 0,66.523" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,13.372144,150.73892)"
+       transform="matrix(1.25,0,0,1.25,-156.33348,195.18563)"
        id="g3906">
       <path
          id="path3908"
@@ -504,7 +505,7 @@
          d="m 62.82,317.863 c -0.297,-0.465 -0.59,-2.261 -0.59,-2.261 l 3.684,0.668 m -2.66,0.019 c 3.492,2.199 1.898,5.125 -3.551,6.531 -5.453,1.407 -12.703,0.766 -16.195,-1.433 -2.047,-1.289 -2.418,-2.903 -0.992,-4.321" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,297.65786,-60.689653)"
+       transform="matrix(1.25,0,0,1.25,127.95224,-16.242942)"
        id="g3922">
       <path
          id="path3924"
@@ -512,7 +513,7 @@
          d="m 146.859,200.52 c -0.293,-0.461 -0.589,-2.262 -0.589,-2.262 l 3.687,0.668 m -2.66,0.019 c 3.488,2.2 1.898,5.125 -3.555,6.532 -5.453,1.41 -12.703,0.765 -16.191,-1.434 -2.051,-1.289 -2.418,-2.898 -0.996,-4.32" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,191.94357,415.02463)"
+       transform="matrix(1.25,0,0,1.25,22.237945,459.47134)"
        id="g3926">
       <path
          id="path3928"
@@ -520,7 +521,7 @@
          d="m 229.145,194.52 c -0.293,-0.461 -0.59,-2.262 -0.59,-2.262 l 3.687,0.668 m -2.66,0.019 c 3.488,2.2 1.898,5.125 -3.555,6.532 -5.453,1.41 -12.703,0.765 -16.191,-1.434 -2.047,-1.289 -2.418,-2.898 -0.996,-4.32" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,381.94357,667.88177)"
+       transform="matrix(1.25,0,0,1.25,212.23795,712.32848)"
        id="g3930">
       <path
          id="path3932"
@@ -528,7 +529,7 @@
          d="m 78.289,196.48 c -0.297,-0.464 -0.59,-2.261 -0.59,-2.261 l 3.684,0.668 m -2.66,0.019 c 3.492,2.199 1.902,5.125 -3.551,6.532 -5.453,1.406 -12.703,0.765 -16.195,-1.434 -2.047,-1.289 -2.418,-2.902 -0.993,-4.32" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,90.514994,266.4532)"
+       transform="matrix(1.25,0,0,1.25,-79.190631,310.89991)"
        id="g3942">
       <path
          id="path3944"
@@ -536,7 +537,7 @@
          d="m 264.602,190.883 80.121,0" />
     </g>
     <g
-       transform="matrix(1.3096209,0,0,1.25,182.94866,-407.8325)"
+       transform="matrix(1.3096209,0,0,1.25,13.243035,-363.38579)"
        id="g3962">
       <path
          id="path3964"
@@ -544,7 +545,7 @@
          d="m 229.336,528.031 62.824,0" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,139.08643,397.88177)"
+       transform="matrix(1.25,0,0,1.25,-30.619195,442.32848)"
        id="g3978">
       <path
          id="path3980"
@@ -552,7 +553,7 @@
          d="m 264.016,378.652 0,50.567" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,130.515,-153.5468)"
+       transform="matrix(1.25,0,0,1.25,-39.190625,-109.10009)"
        id="g3982">
       <path
          id="path3984"
@@ -560,7 +561,7 @@
          d="m 267.246,611.797 0,50.562" />
     </g>
     <g
-       transform="matrix(1.25,0,0,1.25,206.22929,479.31034)"
+       transform="matrix(1.25,0,0,1.25,36.523665,523.75705)"
        id="g3998">
       <path
          id="path4000"
@@ -583,110 +584,119 @@
       <tspan
          id="tspan4052"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="733.81537" />
       <tspan
          id="tspan4054"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="756.31537" />
       <tspan
          id="tspan4056"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="778.81537" />
       <tspan
          id="tspan4058"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="801.31537" />
       <tspan
          id="tspan4060"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="823.81537" />
       <tspan
          id="tspan4062"
          sodipodi:role="line"
          y="846.31537"
          x="468.37213"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
       <tspan
          id="tspan4064"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="868.81537" />
       <tspan
          id="tspan4066"
          sodipodi:role="line"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         x="468.37213"
+         y="891.31537" />
       <tspan
          id="tspan4068"
          sodipodi:role="line"
          x="89.188896 100.15092 106.66692 115.97292 125.15291 130.31892 138.50893 142.7749 149.20091 159.6049 166.08492 175.3909 181.87091 187.03691 197.4409"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          y="552.95551">X-axis rotation</tspan>
       <tspan
          id="tspan4070"
          sodipodi:role="line"
          y="514.06464"
          x="89.242912 99.934898 106.43293 115.75693 124.93692 130.10289 138.29289 142.54091 148.98492 159.38892 165.85092 175.17491 181.63692 186.80292 197.20691"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Y-axis rotation</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Y-axis rotation</tspan>
       <tspan
          id="tspan4072"
          sodipodi:role="line"
          y="475.1738"
          x="89.134918 99.322906 105.83891 115.1449 124.32493 129.49091 137.68091 141.94691 148.37291 158.7769 165.25691 174.56291 181.04291 186.20891 196.6129"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Z-axis rotation</tspan>
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Z-axis rotation</tspan>
     </text>
     <text
        id="text4074"
-       x="249.81761"
-       y="122.32301"
+       x="61.929241"
+       y="201.11491"
        style="font-size:15px">
       <tspan
          sodipodi:role="line"
-         x="249.81761"
-         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         x="61.929241"
+         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3222"
-         y="122.32301">Kuka arm model</tspan>
+         y="201.11491">Kuka arm model</tspan>
       <tspan
          sodipodi:role="line"
-         x="249.81761"
-         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
-         y="161.51193"
+         x="61.929241"
+         style="font-size:31.35113525px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
+         y="240.30383"
          id="tspan3226" />
     </text>
     <text
        id="text4078"
-       x="305.21445"
-       y="153.90598"
+       x="117.32608"
+       y="232.69788"
        style="font-size:15px">
       <tspan
          id="tspan4080"
          sodipodi:role="line"
-         y="153.90598"
-         x="305.21445 313.94846 326.66446 332.97845 345.69446 353.59244 363.60245 368.81644 381.53244 392.92847 411.69446"
-         style="font-size:22px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Joints name</tspan>
+         y="232.69788"
+         x="117.32608 126.06009 138.77609 145.09009 157.80609 165.70407 175.71408 180.92807 193.64407 205.0401 223.80609"
+         style="font-size:22px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Joints name</tspan>
     </text>
     <g
-       transform="matrix(1.25,0,0,1.25,-0.91357029,67.881775)"
+       transform="matrix(0.70065414,0,0,0.70065414,42.954169,397.58856)"
        id="g4152">
       <path
          id="path4154"
-         style="fill:none;stroke:#ce5c00;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         style="fill:none;stroke:#ce5c00;stroke-width:4.28171349;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 78.48,609.219 1.821,-5.657 3.23,6.868 m 74.567,59.359 6.062,2.828 -5.859,2.223 m -113.053898,15.11665 -3.727403,4.30067 5.950403,-1.45073 M 80.922,672.035 43.399248,693.00602 M 80.52,605.785 l 0,66.426 80.003,0"
          sodipodi:nodetypes="cccccccccccccc" />
     </g>
     <text
        id="text4164"
-       x="492.15085"
-       y="194.12561"
+       x="322.44522"
+       y="238.57233"
        style="font-size:15px">
       <tspan
          id="tspan4166"
-         y="194.12561"
-         x="492.15085"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">7</tspan>
-      <tspan
-         id="tspan4168"
-         y="227.38025"
-         x="540.17419"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         y="238.57233"
+         x="322.44522"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Aller;-inkscape-font-specification:Aller">6</tspan>
     </text>
     <text
        x="152.98514"
@@ -696,7 +706,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3117" />
     </text>
     <text
@@ -707,7 +717,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3131" />
     </text>
     <text
@@ -718,12 +728,12 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3142" />
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3179" />
     </text>
     <text
@@ -734,7 +744,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3167" />
     </text>
     <text
@@ -745,7 +755,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3219" />
     </text>
     <text
@@ -756,7 +766,7 @@
       <tspan
          y="900.5097"
          x="201.00845"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3243" />
     </text>
     <text
@@ -767,7 +777,7 @@
       <tspan
          y="822.72797"
          x="82.82061"
-         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:13.93987656px;font-variant:normal;writing-mode:lr-tb;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3291" />
     </text>
     <text
@@ -779,65 +789,65 @@
          id="tspan4180"
          y="876.23187"
          x="166.7726"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
-       x="212.22946"
-       y="922.69891"
+       x="164.49976"
+       y="875.4743"
        style="font-size:15px"
        id="text3070">
       <tspan
-         y="922.69891"
-         x="212.22946"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="875.4743"
+         x="164.49976"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3072">Y</tspan>
       <tspan
          id="tspan4182"
-         y="961.08472"
-         x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         y="913.86011"
+         x="210.4617"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
       <tspan
-         y="961.08472"
-         x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="913.86011"
+         x="210.4617"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3036" />
       <tspan
-         y="961.08472"
-         x="258.19141"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="913.86011"
+         x="210.4617"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3076" />
     </text>
     <text
        x="166.7726"
        y="876.23187"
-       style="font-size:15px;text-anchor:start;text-align:start"
+       style="font-size:15px;text-align:start;text-anchor:start"
        id="text3030">
       <tspan
          y="914.61768"
          x="212.73454"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0;text-anchor:start;text-align:start"
+         style="font-size:18px;font-variant:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3032" />
       <tspan
          y="914.61768"
          x="212.73454"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0;text-anchor:start;text-align:start"
+         style="font-size:18px;font-variant:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3044" />
     </text>
     <text
-       x="-11.519325"
-       y="917.14307"
+       x="9.1888018"
+       y="857.54407"
        style="font-size:15px"
        id="text3038">
       <tspan
-         y="955.52887"
-         x="34.442619"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="895.92987"
+         x="55.150745"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3040">X</tspan>
       <tspan
          id="tspan4184"
-         y="852.99835"
-         x="-83.745239"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0" />
+         y="793.39935"
+         x="-63.037113"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0" />
     </text>
     <text
        x="166.7726"
@@ -847,7 +857,7 @@
       <tspan
          y="812.08716"
          x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3080" />
     </text>
     <text
@@ -858,66 +868,48 @@
       <tspan
          y="812.08716"
          x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3088" />
     </text>
     <text
-       x="166.7726"
-       y="876.23187"
+       x="167.27768"
+       y="875.72681"
        style="font-size:15px"
        id="text3094">
       <tspan
-         y="812.08716"
-         x="94.546684"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="811.58209"
+         x="95.051758"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3096">Z</tspan>
       <tspan
          id="tspan4186"
          sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0">Global pose :</tspan>
+         y="781.91754"
+         x="70.501076 82.777061 88.159065 98.563072 109.14707 118.45306 123.83506 128.08308 138.66708 149.08908 157.27908 167.28708 171.55307"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0">Global pose :</tspan>
       <tspan
          sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
-         id="tspan3102" />
-      <tspan
-         sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
-         id="tspan3104" />
-      <tspan
-         sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
-         id="tspan3106" />
-      <tspan
-         sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754 781.91754"
+         x="70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 70.501076 82.777061 88.159065 98.563072 109.14707 118.45306 123.83506 128.08308 138.66708 149.08908 157.27908 167.28708 171.55307"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3064" />
       <tspan
          sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="781.91754"
+         x="70.501076 82.777061 88.159065 98.563072 109.14707 118.45306 123.83506 128.08308 138.66708 149.08908 157.27908 167.28708 171.55307"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3066" />
       <tspan
          sodipodi:role="line"
-         y="782.42261"
-         x="69.996002 82.271988 87.653992 98.057999 108.642 117.94799 123.32999 127.578 138.162 148.584 156.774 166.782 171.04799"
-         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:CairoFont-0;-inkscape-font-specification:CairoFont-0-0"
+         y="781.91754"
+         x="70.501076 82.777061 88.159065 98.563072 109.14707 118.45306 123.83506 128.08308 138.66708 149.08908 157.27908 167.28708 171.55307"
+         style="font-size:18px;font-variant:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Aller;-inkscape-font-specification:Aller-0"
          id="tspan3068" />
     </text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot4790"
-       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Aller;font-style:normal;font-weight:normal;font-size:18;-inkscape-font-specification:Aller;font-stretch:normal;font-variant:normal"><flowRegion
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Aller;-inkscape-font-specification:Aller"><flowRegion
          id="flowRegion4792"><rect
            id="rect4794"
            width="911.15759"
@@ -926,7 +918,7 @@
            y="-22.440125" /></flowRegion><flowPara
          id="flowPara4796" /></flowRoot>    <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Aller"
        x="82.327431"
        y="848.81647"
        id="text3153"><tspan
@@ -935,56 +927,82 @@
          x="82.327431"
          y="848.81647" /><tspan
          sodipodi:role="line"
-         id="tspan3157" /></text>
+         id="tspan3157"
+         x="82.327431"
+         y="898.81647" /></text>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Aller"
        x="140.91628"
        y="866.49414"
        id="text3183"><tspan
          sodipodi:role="line"
-         id="tspan3187" /></text>
+         id="tspan3187"
+         x="140.91628"
+         y="866.49414" /></text>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Aller"
        x="123.23861"
        y="865.98901"
        id="text3207"><tspan
          sodipodi:role="line"
-         id="tspan3211" /></text>
+         id="tspan3211"
+         x="123.23861"
+         y="865.98901" /></text>
     <text
        id="text4164-4"
-       x="533.22235"
-       y="281.1373"
-       style="font-size:15px">6</text>
+       x="363.51672"
+       y="325.58401"
+       style="font-size:15px">
+      <tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller"
+         id="tspan4210">5</tspan>
+    </text>
     <text
        id="text4164-6"
-       x="479.95749"
-       y="417.51166"
-       style="font-size:15px">5</text>
+       x="310.25186"
+       y="461.95837"
+       style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller">4</text>
     <text
        id="text4164-2"
-       x="480.21002"
-       y="533.17413"
-       style="font-size:15px">4</text>
+       x="310.50439"
+       y="577.62085"
+       style="font-size:15px">
+      <tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller"
+         id="tspan4214">3</tspan>
+    </text>
     <text
        id="text4164-7"
-       x="477.68463"
-       y="676.11072"
-       style="font-size:15px">3</text>
+       x="307.979"
+       y="720.55743"
+       style="font-size:15px">
+      <tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller"
+         id="tspan4216">2</tspan>
+    </text>
     <text
        id="text4164-3"
-       x="489.80646"
-       y="786.46985"
-       style="font-size:15px">2</text>
+       x="320.10083"
+       y="830.91656"
+       style="font-size:15px">
+      <tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller"
+         id="tspan4218">1</tspan>
+    </text>
     <text
        id="text4164-64"
-       x="480.96762"
-       y="929.659"
-       style="font-size:15px">1</text>
+       x="311.26199"
+       y="974.10571"
+       style="font-size:15px">
+      <tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller"
+         id="tspan4220">0</tspan>
+    </text>
     <g
        id="g4991"
-       transform="matrix(1.25,0,0,1.25,381.94357,667.88177)">
+       transform="matrix(1.25,0,0,1.25,212.23795,712.32848)">
       <path
          d="m 78.289,196.48 c -0.297,-0.464 -0.59,-2.261 -0.59,-2.261 l 3.684,0.668 m -2.66,0.019 c 3.492,2.199 1.902,5.125 -3.551,6.532 -5.453,1.406 -12.703,0.765 -16.195,-1.434 -2.047,-1.289 -2.418,-2.902 -0.993,-4.32"
          style="fill:none;stroke:#204a87;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -992,7 +1010,7 @@
     </g>
     <g
        id="g4995"
-       transform="matrix(-1.25,0,0,-1.25,937.65872,1420.8552)">
+       transform="matrix(-1.25,0,0,-1.25,767.9531,1465.3019)">
       <path
          d="m 362.688,536.297 c 0.414,-0.27 2.031,-0.539 2.031,-0.539 l -0.602,3.367 m -0.019,-2.43 c -1.973,3.188 -4.598,1.735 -5.86,-3.246 -1.265,-4.98 -0.687,-11.601 1.285,-14.793 1.161,-1.871 2.606,-2.207 3.879,-0.906"
          style="fill:none;stroke:#a40000;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1000,7 +1018,7 @@
     </g>
     <g
        id="g4999"
-       transform="matrix(1.25,0,0,1.25,191.94357,415.02463)">
+       transform="matrix(1.25,0,0,1.25,22.237945,459.47134)">
       <path
          d="m 229.145,194.52 c -0.293,-0.461 -0.59,-2.262 -0.59,-2.262 l 3.687,0.668 m -2.66,0.019 c 3.488,2.2 1.898,5.125 -3.555,6.532 -5.453,1.41 -12.703,0.765 -16.191,-1.434 -2.047,-1.289 -2.418,-2.898 -0.996,-4.32"
          style="fill:none;stroke:#204a87;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1008,7 +1026,7 @@
     </g>
     <g
        id="g4995-0"
-       transform="matrix(1.25,0,0,1.25,33.423896,-155.19865)">
+       transform="matrix(1.25,0,0,1.25,-136.28173,-110.75194)">
       <path
          d="m 362.688,536.297 c 0.414,-0.27 2.031,-0.539 2.031,-0.539 l -0.602,3.367 m -0.019,-2.43 c -1.973,3.188 -4.598,1.735 -5.86,-3.246 -1.265,-4.98 -0.687,-11.601 1.285,-14.793 1.161,-1.871 2.606,-2.207 3.879,-0.906"
          style="fill:none;stroke:#a40000;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1016,7 +1034,7 @@
     </g>
     <g
        id="g4995-8"
-       transform="matrix(-1.25,0,0,-1.25,989.84031,911.36936)">
+       transform="matrix(-1.25,0,0,-1.25,820.13469,955.81607)">
       <path
          d="m 362.688,536.297 c 0.414,-0.27 2.031,-0.539 2.031,-0.539 l -0.602,3.367 m -0.019,-2.43 c -1.973,3.188 -4.598,1.735 -5.86,-3.246 -1.265,-4.98 -0.687,-11.601 1.285,-14.793 1.161,-1.871 2.606,-2.207 3.879,-0.906"
          style="fill:none;stroke:#a40000;stroke-width:2.4000001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
