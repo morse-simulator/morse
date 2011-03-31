@@ -1,7 +1,14 @@
-Introducing the Modular OpenRobots Simulation Engine 
+Modular OpenRobots Simulation Engine - Documentation 
 ====================================================
 
 Welcome to the official documentation for the MORSE project.
+
+For any questions about the use of MORSE or if you have any issues with the
+simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@laas.fr>`_ 
+mailing-list. You can suscribe to the mailing-list
+`here <https://sympa.laas.fr/sympa/subscribe/morse-users>`_.
+
+You can report bugs to `our bug-tracker <https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse>`_.
 
 Quick start
 -----------
@@ -12,13 +19,6 @@ Quick start
     user/installation
     user/basic_morse
     user/tutorial
-
-For any questions about the use of MORSE or if you have any issues with the
-simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@laas.fr>`_ 
-mailing-list. You can suscribe to the mailing-list
-`here <https://sympa.laas.fr/sympa/subscribe/morse-users>`_.
-
-You can report bugs to `our bug-tracker <https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse>`_.
 
 What is MORSE? 
 --------------
@@ -44,8 +44,10 @@ What is MORSE?
   want to simulate exteroceptive sensors like cameras in certain cases and
   access directly to a higher level representation of the world -like labeled
   artifacts- in other cases),
-- Currently compatible with **ROS**, **YARP** and the LAAS OpenRobots robotics frameworks,
-- easy to integrate to other environments via a simple socket interface,
+- Currently compatible with **ROS**, **YARP** and the LAAS OpenRobots robotics
+  frameworks, 
+- easy to debug and integrate to other environments via a simple socket
+  interface,
 - Fully open source, BSD-compatible.
   
 .. image:: ../media/morse_interface.jpg
@@ -53,7 +55,10 @@ What is MORSE?
    :align: center
 .. MORSE interface
 
-MORSE is partially funded by the `Foundation RTRA <http://www.fondation-stae.net>`_ within the `ROSACE project <http://homepages.laas.fr/khalil/ROSACE>`_ framework, and by DGA through the `ACTION project <http://action.onera.fr>`_
+MORSE is partially funded by the `Foundation RTRA
+<http://www.fondation-stae.net>`_ within the `ROSACE project
+<http://homepages.laas.fr/khalil/ROSACE>`_ framework, and by DGA through the
+`ACTION project <http://action.onera.fr>`_
 
 .. image:: ../media/stae_logo.png
    :align: center                
@@ -92,11 +97,11 @@ Components library
 .. The MORSE robots
 
 MORSE offers an extended set of predefined sensors and controllers that cover 
-reasonably well common simulation needs in robotics. It offers also some 
-complete robots.
+reasonably well common simulation needs in robotics. It proposes also some 
+fully equipped robots.
 
-The following page lists all the currently existing components and their
-properties: 
+The following page lists all the currently existing components, their
+properties and their interfaces:
 
 .. toctree::
     :maxdepth: 3
@@ -104,7 +109,7 @@ properties:
     user/component_library
 
 MORSE has also a mechanism to alter input or output data (like adding noise to
-a GPS position) by so called *modifiers*: 
+a GPS position) by so-called *modifiers*: 
 
 .. toctree::
     :maxdepth: 3

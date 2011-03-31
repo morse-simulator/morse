@@ -160,7 +160,8 @@ def service(fn = None, component = None, name = None, async = False):
       @async_service), a new 'callback' parameter is added to the method.
       This callback is used to notify the service initiator that the service
       completed. The callback does not need to be build manually: 
-      :py:meth:`RequestManager.on_incoming_request` takes care of it.
+      :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
+      takes care of it.
     """
     if hasattr(fn, "__call__"):
         # If the @service decorator has no explicit parameter, then Python

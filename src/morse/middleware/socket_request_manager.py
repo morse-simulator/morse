@@ -12,13 +12,17 @@ class SocketRequestManager(RequestManager):
     raw ASCII sockets.
 
     The syntax of requests is:
+
     >>> id component_name service [params with Python syntax]
 
-    'id' is an identifier set by the client to conveniently identify
+    ``id`` is an identifier set by the client to conveniently identify
     the request. It must be less that 80 chars in [a-zA-Z0-9].
 
     The server answers:
-    >>> id OK|FAIL result_in_python|error_msg
+
+    >>> id status result_in_python|error_msg
+
+    ``status`` is one of the constants defined in :py:mod:`morse.core.status`.
 
     """
 
