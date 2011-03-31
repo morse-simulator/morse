@@ -247,7 +247,10 @@ def link_services():
             instance = GameLogic.componentDict[component_name]
         except KeyError as detail:
             try:
-                instance = GameLogic.robotDict[component_name]
+                scene = GameLogic.getCurrentScene()
+                robot_obj = scene.objects[component_name]
+                instance = GameLogic.robotDict[robot_obj]
+
             except KeyError as detail:
                 print ("Component listed in component_config.py not found in scene: {0}".format(detail))
                 print("""
