@@ -6,7 +6,7 @@ Files hierarchy
 
 The source code of Morse is organised in the following way :
 
-- bin : it contains the main entry point of the morse simulation
+- bin : it contains the main entry point of the MORSE simulation
 - config : it contains stuff for CMake 
 - data : it contains the blender model of sensors / actuators
 - doc : the documentation (in DokuWiki format)
@@ -18,7 +18,7 @@ The source code of Morse is organised in the following way :
 
   - morse/actuators : it contains implementation for various robot controllers
   - morse/blender : it contains some scripts needed at the initialization of the game engine
-  - morse/core : it contains core class for the morse project (services, base objets, sensors, ...) 
+  - morse/core : it contains core classes for the MORSE project (services, base objects, sensors, ...) 
   - morse/helpers : it contains various helpers (math transformation)
   - morse/middleware : it contains the code for linking with different middlewares 
 
@@ -76,6 +76,18 @@ happen :
   - apply in order each function of ``input_modifiers`` (if needed)
   - call ``default_action``
 
-Another interesting point is the ``local_data`` dictionary : it contains a
-representation of the external state of the sensor (or the actuator) (for
-example, it will contain the position for a GPS)
+
+Component internal data
+_______________________
+
+The base :py:meth:`morse.core.object.MorseObjectClass` defines an ordered dictionary
+called ``local_data``. This is the place where all sensors and actuators store
+the variables with the information that can eventually be share through the middleware
+connections.
+(for example, it will contain the position for a GPS sensor, or the destination coordinates
+ given to a motion actuator)
+The order in which this variables are defined inside of a component is important, since it
+will also be the default order in which the data is exported via the middlewares.
+
+Additionally, component classes can define any other variables internally, but only the
+information in them will not be visible outside of MORSE.
