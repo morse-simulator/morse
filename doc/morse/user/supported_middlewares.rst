@@ -57,7 +57,8 @@ components are the keys of the dictionary, and the values are lists. The first
 item in the list is the name of the middleware Empty object in the scene. The
 following items depend on the type of middleware, but will generally be the
 name of the middleware function that should be called by the component to share
-its data.
+its data. More information about the format of this file can be found in the
+`hooks <hooks>` documentation.
 
 Adding support for new middlewares 
 -----------------------------------
