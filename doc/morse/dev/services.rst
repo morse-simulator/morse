@@ -62,7 +62,7 @@ The example below shows a simple Python client that would use the
 
   import socket
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  s.connect(("localhost", 60001))
+  s.connect(("localhost", 70000))
   s.send("id1 myHuman move (1.0, 1.6)\n")
 
 In this example, we assume that ``myHuman`` is the name of the Blender
@@ -296,7 +296,7 @@ sockets as communication interface:
 
 If you run this sample code, you can test it with a simple Telnet session::
 
-  > telnet localhost 60001
+  > telnet localhost 70000
   Connected to localhost.
   > req1 test_component add (1,2)
   req1 OK 3
@@ -367,7 +367,7 @@ This second code snippet shows an example of asynchronous service:
 
 If you test the code with Telnet::
 
-  > telnet localhost 60001
+  > telnet localhost 70000
   Connected to localhost.
   > req2 test_component compute (5,)
   [after 5 seconds]
