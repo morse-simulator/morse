@@ -40,19 +40,23 @@ General
 - add an overlay in the simulation with the keyboard shortcuts
 - move away all project/scenario specific files from MORSE core (create
   dedicated repositories for those)
-- Allow scenarii described in Python instead of Blender files
+- allow scenarii described in Python instead of Blender files
+
 
 Middlewares
 -----------
 
 - add support for services through ROS and Pocolibs middleware
 - ROS support for the robot's cameras
+- Split the pom_poster from Viam and Velodyne
 
 Architecture
 ------------
 
 - make clear how components access other components? (eg: the cameras need the
   position of the robot)
+- correct the bounding boxes and physics properties of robots
+- define a method to select the control of robots using position or velocity
 
 Simulation supervision
 ----------------------
