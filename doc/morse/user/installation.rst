@@ -12,6 +12,18 @@ To display textures correctly in the simulator, as well as to generate images us
 - ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
 - NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
 
+Supported operating systems
++++++++++++++++++++++++++++
+
+Only Linux (x86, x86_64) is currently officially supported. MORSE is mainly
+developed on Fedora and Ubuntu, but we don't expect problem on other
+distributions.
+
+Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
+
+MORSE does not currently support Microsoft Windows, although it may work
+(testers/maintainers for Windows are welcome!).
+
 Required software
 +++++++++++++++++
 
