@@ -3,7 +3,7 @@ import math
 import morse.core.sensor
 
 class AccelerometerClass(morse.core.sensor.MorseSensorClass):
-    """ Gyroscope sensor """
+    """ Accelerometer sensor """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
