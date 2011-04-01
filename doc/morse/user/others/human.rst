@@ -79,7 +79,18 @@ Services
 --------
 
 - **move**: (Synchronous service)
+    Move the body, or the hand in case of manipulation mode. in case of moving the body, the two argument expected are speed
+    and rotation. in case of moving the hand this two argument should be x and z displacement.
+
 - **move_head**: (Synchronous service)
+    Move the head. two argument expected : pan and tilt
+    
 - **grasp_**: (Synchronous service)
+    Grasp and ungrap an object if in manipulating mode. take one argument : must be "t" to grasp and "f" to ungrasp
+    
 - **move_hand**: (Synchronous service)
+    Move the hand in the third direction ( y, see above). 
+    
 - **toggle_manipulation**: (Synchronous service)
+    Switch from and to manipulation mode
+    
