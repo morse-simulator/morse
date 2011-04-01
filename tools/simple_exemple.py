@@ -37,7 +37,7 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
     print "Socket connected"
-    print "Please press q to quit and use WASD to move"
+    print "Please press q to quit and use 8456 to move"
     esc = 0
     
     while not esc :
