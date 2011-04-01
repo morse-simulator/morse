@@ -30,12 +30,3 @@ To obtain more realistic readings, it is recommended to add modifiers.
 - **Noise modifier**: Adds random Gaussian noise to the data
 - :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North
   (X), East (Y), Down (Z)
-
-Related components
-------------------
-
-Some other components of MORSE require a Gyroscope to be linked to the robot,
-in order to function properly. The ``Motion controller`` actuator modules make
-use of the angles to instruct the robot to turn. If no Gyroscope is installed
-in the robot, the controllers will not work properly.
-
