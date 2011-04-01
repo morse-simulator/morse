@@ -60,19 +60,20 @@ Services
     When the robot reaches the destination, it will send a reply, indicating that the new status of the robot
     is "Stop". The function can be called with 3 to 5 parameters, corresponding to the variables in ``local_data``.
     The coordinates are mandatory, while the values for **tolerance** and **speed** can be omitted.
-    +------------+------------+-----------------+
-    | Parameters | x         | float            |
-    |            +-----------+------------------+
-    |            | y         | float            |
-    |            +-----------+------------------+
-    |            | z         | float            |
-    |            +-----------+------------------+
-    |            | tolerance | float (optional) |
-    |            +-----------+------------------+
-    |            | speed     | float (optional) |
-    +------------+-----------+------------------+
 
-    Parameters: (x, y, z[, tolerance[, speed]])
+    +------------+---------------+------------------+
+    | Parameters | ``x``         | float            |
+    |            +---------------+------------------+
+    |            | ``y``         | float            |
+    |            +---------------+------------------+
+    |            | ``z``         | float            |
+    |            +---------------+------------------+
+    |            | ``tolerance`` | float (optional) |
+    |            +---------------+------------------+
+    |            | ``speed``     | float (optional) |
+    +------------+---------------+------------------+
+
+    Parameters: ``(x, y, z[, tolerance[, speed]])``
 
 Applicable modifiers
 --------------------
