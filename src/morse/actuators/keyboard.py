@@ -13,10 +13,10 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
 
 
         # Choose the type of function to move the object
-        self._type = 'Velocity'
-        self.speed = 2.0
-        #self._type = 'Position'
-        #self.speed = 0.05
+        #self._type = 'Velocity'
+        #self.speed = 2.0
+        self._type = 'Position'
+        self.speed = 0.05
 
         print ('######## CONTROL INITIALIZED ########')
 

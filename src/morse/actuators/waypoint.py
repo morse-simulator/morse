@@ -48,8 +48,8 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._angle_tolerance = math.radians(10)
 
         # Choose the type of function to move the object
-        self._type = 'Velocity'
-        #self._type = 'Position'
+        #self._type = 'Velocity'
+        self._type = 'Position'
 
         self.local_data['x'] = self._destination[0]
         self.local_data['y'] = self._destination[1]

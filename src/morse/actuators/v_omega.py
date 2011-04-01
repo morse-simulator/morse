@@ -18,8 +18,8 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['w'] = 0.0
 
         # Choose the type of function to move the object
-        self._type = 'Velocity'
-        #self._type = 'Position'
+        #self._type = 'Velocity'
+        self._type = 'Position'
 
         print ('######## CONTROL INITIALIZED ########')
 
