@@ -82,12 +82,12 @@ _______________________
 
 The base :py:meth:`morse.core.object.MorseObjectClass` defines an ordered dictionary
 called ``local_data``. This is the place where all sensors and actuators store
-the variables with the information that can eventually be share through the middleware
-connections.
-(for example, it will contain the position for a GPS sensor, or the destination coordinates
- given to a motion actuator)
-The order in which this variables are defined inside of a component is important, since it
-will also be the default order in which the data is exported via the middlewares.
+the variables with the information that can eventually be share through the
+middleware connections.  (for example, it will contain the position for a GPS
+sensor, or the destination coordinates given to a motion actuator) The order
+in which this variables are defined inside of a component is important, since
+it will also be the default order in which the data is exported via the
+middlewares (in automatic serialization).
 
 Additionally, component classes can define any other variables internally, but only the
 information in them will not be visible outside of MORSE.
