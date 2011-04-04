@@ -27,6 +27,6 @@ Applicable modifiers
 This sensor always provides perfect data.
 To obtain more realistic readings, it is recommended to add modifiers.
 
-- **Noise modifier**: Adds random Gaussian noise to the data
 - :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North
   (X), East (Y), Down (Z)
+- :doc:`Noise modifier <../modifiers/gauss_noise>`: Adds random Gaussian noise to the data

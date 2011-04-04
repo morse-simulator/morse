@@ -29,5 +29,4 @@ The two which are specially used for the GPS information are:
   coordinates according to the parameters set on the scene.
 - :doc:`NED <../modifiers/ned>`: Changes the coordinate reference to use North
   (X), East (Y), Down (Z)
-
-The Noise modifier can be used as well to adds random Gaussian noise to the data.
+- :doc:`Noise modifier <../modifiers/gauss_noise>`: Adds random Gaussian noise to the data
