@@ -4,7 +4,7 @@ Gyroscope sensor
 This sensor emulates a Gyroscope, providing the yaw, pitch and roll angles of
 the sensor object with respect to the Blender world reference axes.
 
-The angles are given in degrees.
+The angles are given in radians.
 
 Files
 -----

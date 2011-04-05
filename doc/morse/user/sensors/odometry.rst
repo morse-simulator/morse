@@ -5,7 +5,7 @@ This sensor produces relative displacement with respect to the position
 and rotation in the previous Blender tick.
 The position and orientation data is taken from the sensor's ``position_3d`` structure
 
-The angles for yaw, pitch and roll are given in degrees.
+The angles for yaw, pitch and roll are given in radians.
 
 Files
 -----
