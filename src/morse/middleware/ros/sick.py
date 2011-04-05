@@ -22,7 +22,6 @@ def init_extra_module(self, component_instance, function, mw_data):
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, PointCloud)) 
 
-#Note: posting 2D Laserscans is still experimental!
 def post_2DLaserScan(self, component_instance):
         """ Publish the data on the rostopic
 		"""
@@ -46,8 +45,7 @@ def post_2DLaserScan(self, component_instance):
             if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
                 topic.publish(laserscan)
           
-#Note: posting 2D Laserscans is still experimental!
-#WARNING: Posting 2D pointclouds does NOT work at the moment!!!
+#Note: posting 2D Pointclouds is still experimental!
 def post_2DPointCloud(self, component_instance):
         """ Publish the data on the rostopic
 		"""
