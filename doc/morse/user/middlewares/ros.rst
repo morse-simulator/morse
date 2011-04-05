@@ -70,3 +70,7 @@ documentation.
     - ``post_twist``: Reads sensor-information from the pose sensor publishes them as a ``geometry_msgs/Twist`` message.
       NOTE: The angular part of the twist messages is build as follows: (x,y,z) = (roll, pitch, yaw)
 
+- Kuka posture senor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/kuka_posture.py``.
+  It has two available methods:
+
+    - ``post_jointState``: Reads sensor-information from the kuka_posture sensor and publishes them as a ``sensor_msgs/JointState`` message.
