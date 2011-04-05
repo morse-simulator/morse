@@ -36,15 +36,15 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         and orientation of the robot
         """
         # Compute the difference in positions with the previous loop
-        self.local_data['dx'] = self.position_3d.x - self.previous_position[0]
-        self.local_data['dy'] = self.position_3d.y - self.previous_position[1]
-        self.local_data['dz'] = self.position_3d.z - self.previous_position[2]
+        self.local_data['dx'] = self.robot_parent.position_3d.x - self.previous_position[0]
+        self.local_data['dy'] = self.robot_parent.position_3d.y - self.previous_position[1]
+        self.local_data['dz'] = self.robot_parent.position_3d.z - self.previous_position[2]
 
         # Compute the difference in orientation with the previous loop
-        self.local_data['dyaw'] = self.position_3d.yaw - self.previous_orientation[0]
-        self.local_data['dpitch'] = self.position_3d.pitch - self.previous_orientation[1]
-        self.local_data['droll'] = self.position_3d.roll - self.previous_orientation[2]
+        self.local_data['dyaw'] = self.robot_parent.position_3d.yaw - self.previous_orientation[0]
+        self.local_data['dpitch'] = self.robot_parent.position_3d.pitch - self.previous_orientation[1]
+        self.local_data['droll'] = self.robot_parent.position_3d.roll - self.previous_orientation[2]
 
         # Store the 'new' previous data
-        self.previous_position = [self.position_3d.x, self.position_3d.y, self.position_3d.z]
-        self.previous_orientation = [self.position_3d.yaw, self.position_3d.pitch, self.position_3d.roll]
+        self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
+        self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
