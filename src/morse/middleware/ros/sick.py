@@ -45,7 +45,7 @@ def post_2DLaserScan(self, component_instance):
             if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
                 topic.publish(laserscan)
           
-#Note: posting 2D Pointclouds is still experimental!
+#WARNING: posting 2D-Pointclouds does NOT work at the moment due to Python3 encoding errors
 def post_2DPointCloud(self, component_instance):
         """ Publish the data on the rostopic
 		"""
