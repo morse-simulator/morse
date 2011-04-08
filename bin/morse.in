@@ -429,7 +429,7 @@ if __name__ == '__main__':
             if sys.argv[1].endswith(".blend"):
                 prelaunch()
                 launch_simulator(sys.argv[1])
-            elif sys.argv[1].endswith(".py"):
+            elif sys.argv[1].endswith(".py") | sys.argv[1].endswith(".morse"):
                 prelaunch()
                 launch_simulator(script=sys.argv[1])
             
