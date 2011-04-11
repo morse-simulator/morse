@@ -1,9 +1,9 @@
-MORSE 0.2.99
-============
+MORSE 0.3 - "Itizpossible" release
+==================================
 
 General changes
 ---------------
-- Added support for Blender 2.57 (with Python 3.2)
+- Added preliminary support for Blender 2.57 (with Python 3.2)
 - Removed support for Blender 2.49
 
 Architectural changes
@@ -37,6 +37,8 @@ Simulation supervision
   relaunching the simulation (F11)
 - Add support for the Wiimote to control the human in HRI simulations
   (external tool using socket-based requests)
+- Requests: ensure some working control of the simulation
+  based on the socket interface (only restart for now)
 
 MORSE 0.2 - The HRI release
 ===========================
