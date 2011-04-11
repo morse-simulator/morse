@@ -20,4 +20,4 @@ def reset_objects():
     """
     contr = GameLogic.getCurrentController()
     main_reset(contr)
-    return (status.SUCCESS, "Objects restored to initial position")
+    return (status.SUCCESS, "'Objects restored to initial position'")

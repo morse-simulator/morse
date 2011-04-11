@@ -139,7 +139,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
     def finalize(self):
         """ Closes the ports and release the network."""
-        for ors_socket in self._socket_dict.itervalues():
+        for ors_socket in self._socket_dict.values():
             ors_socket.close()
         print ('Socket Mid: sockets have been closed.')
     
