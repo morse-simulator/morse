@@ -158,7 +158,11 @@ Simulation supervision
 Besides components-specific services and datastream (documented on component's
 own documentation page), MORSE provides a set of *supervision services* that
 may be used to remotely control the global behaviour of the simulator:
-:doc:`Supervision services <user/supervision_services>`.
+
+.. toctree::
+	:maxdepth: 1
+
+	user/supervision_services
 
 Tutorials 
 ---------
