@@ -143,7 +143,10 @@ It supports Linux, * BSD and Darwin (MacOS X).
    required dependencies, including Blender.
 #. The previous package only install middleware support for text and socket.
    If you want support for additional middlewares, repeat the operation in
-   ``$ROBOTPKG/simulation/morse-yarp}``, ``$ROBOTPKG/wip/morse-pocolibs``
+   ``$ROBOTPKG/simulation/morse-yarp``, ``$ROBOTPKG/wip/morse-pocolibs``.
+
+.. Note::
+	If you upgrade an old morse installation, jump directly to step 2.
 
 By hand
 +++++++
