@@ -110,15 +110,19 @@ Installation
 With ``robotpkg``
 +++++++++++++++++
 
-``robotpkg`` is a package manager for robotic software based on NetBSD ports. It supports Linux, * BSD and Darwin (MacOS X).
+``robotpkg`` is a package manager for robotic software based on NetBSD ports.
+It supports Linux, * BSD and Darwin (MacOS X).
 
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
    instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
    take less than 5 min)
 #. Go to ``$ROBOTPKG/wip/morse``
-#. Configure the package settings PKG_OPTIONS.morse in ``${ROBOTPKG_BASE}/etc/robotpkg.conf``
 #. Type ``make update``
-#. Go have a coffee :-) ``robotpkg`` will download and compile for you all the required dependencies, including Blender.
+#. Go have a coffee :-) ``robotpkg`` will download and compile for you all the
+   required dependencies, including Blender.
+#. The previous package only install middleware support for text and socket.
+   If you want support for additional middlewares, repeat the operation in
+   ``$ROBOTPKG/wip/morse-{yarp, pocolibs}``
 
 By hand
 +++++++
