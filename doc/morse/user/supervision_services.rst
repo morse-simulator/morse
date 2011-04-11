@@ -18,7 +18,10 @@ list of robots would look like that::
 Available services
 ------------------
 
-- ``list_robots`` (no parameter): returns the list of the robots currently available in the simulation
+- ``list_robots`` (no parameter): returns the list of the robots currently
+  available in the simulation
+- ``reset_objects``(no parameter): reset the position of all objects in the
+  simulation (in other word, restart the simulation)
 
 .. note::
   Simulation services are stored in :py:mod:`morse.core.supervision_services`.
