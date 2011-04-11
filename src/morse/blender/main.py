@@ -167,7 +167,7 @@ def create_instance(obj, parent=None):
     # Read the path and class of the object from the Logic Properties
     source_file = obj['Path']
     module_name = re.sub('/', '.', source_file)
-    print ("Path to Component Class: %s" % module_name)
+    #print ("Path to Component Class: %s" % module_name)
     # Import the module containing the class
     try:
         __import__(module_name)
@@ -377,7 +377,6 @@ def init_services():
 
     Does nothing for the moment.
     """
-    
     GameLogic.morse_services = MorseServices()
 
     try:
@@ -387,8 +386,8 @@ def init_services():
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
 
-        # Services can be imported *only* after GameLogic.morse_services has been 
-        # created. Else @service won't know where to register the RPC
+        # Services can be imported *only* after GameLogic.morse_services
+        # has been created. Else @service won't know where to register the RPC
         # callbacks.
         import morse.core.supervision_services
 
