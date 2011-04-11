@@ -6,7 +6,7 @@ Installation
 
 Because ROS is not currently Python 3 compatible, you need to patch ROS.
 
-Please follow the instructions here: :doc:`ROS installation <ros/ros_installation>`.
+Please follow the instructions in the :doc:`installation procedure  <../installation>`.
 
 Files
 -----
