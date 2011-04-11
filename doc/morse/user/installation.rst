@@ -41,18 +41,13 @@ Required software
   
     $ git clone http://github.com/laas/morse.git
   
-  Once you have a copy of the repository, you can get to the last stable version (0.2b2) by using ::
+  Once you have a copy of the repository, you can get to the last stable
+  version (0.3) by using ::
   
-    $ git checkout 0.2
+    $ git checkout 0.3
   
-  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.2>`_. 
+  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
   
-..  You can check the following information to make sure that the download went fine. ::
-  
-    SHA1 (morse-0.2b2.tar.gz) = 4ccdc81949282eda88121af04cf96b27696167f7
-    RMD160 (morse-0.2b2.tar.gz) = f3867347a2c4beac43f895e3c51a509b4cdb5b7a
-    Size (morse-0.2b2.tar.gz) = 36737879 bytes
-
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
@@ -142,13 +137,13 @@ It supports Linux, * BSD and Darwin (MacOS X).
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
    instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
    take less than 5 min)
-#. Go to ``$ROBOTPKG/wip/morse``
+#. Go to ``$ROBOTPKG/simulation/morse``
 #. Type ``make update``
 #. Go have a coffee :-) ``robotpkg`` will download and compile for you all the
    required dependencies, including Blender.
 #. The previous package only install middleware support for text and socket.
    If you want support for additional middlewares, repeat the operation in
-   ``$ROBOTPKG/wip/morse-{yarp, pocolibs}``
+   ``$ROBOTPKG/simulation/morse-yarp}``, ``$ROBOTPKG/wip/morse-pocolibs``
 
 By hand
 +++++++

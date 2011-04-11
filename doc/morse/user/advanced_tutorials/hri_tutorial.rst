@@ -14,8 +14,7 @@ Pre-requisites
   ROS installation (you should only need the core ROS tools). If you need to
   install ROS, please refer to `ROS installation instruction <http://www.ros.org/wiki/ROS/installation>`_.
 
-.. warning:: MORSE 0.2 does not offer support for ROS. ROS is supported in the development trunk. Please
-    ignore the part concerning ROS if you don't feel confident enough to install the latest MORSE version.
+.. warning:: You need at least MORSE 0.3 to have ROS  support.
 
 Setup the scene
 ---------------
