@@ -46,6 +46,7 @@ class SocketRequestManager(RequestManager):
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
+            self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self._server.bind((SERVER_HOST, SERVER_PORT))
             self._server.listen(1)
         except socket.error as msg:
@@ -61,7 +62,7 @@ class SocketRequestManager(RequestManager):
         return True
 
     def finalization(self):
-
+        """ Terminate the ports used to accept requests """
         if self._client_sockets:
             print("Closing client sockets...")
             for s, f in self._client_sockets.items():
@@ -69,10 +70,14 @@ class SocketRequestManager(RequestManager):
                 s.close()
 
         if self._server:
+            print("Shutting down connections to server...")
+            self._server.shutdown(socket.SHUT_RDWR)
             print("Closing socket server...")
             self._server.close()
+            del self._server
 
         return True
+
 
     def on_service_completion(self, request_id, results):
 
