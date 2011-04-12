@@ -28,7 +28,7 @@ def post_2DLaserScan(self, component_instance):
         laserHeader = std_msgs.msg.Header()
         laserHeader.stamp = rospy.Time.now()
         laserHeader.frame_id = '/base_laser_link'
-        num_readings = component_instance.blender_obj['scan_window'] * component_instance.blender_obj['resolution']
+        num_readings = component_instance.blender_obj['scan_window'] / component_instance.blender_obj['resolution']
         max_angle = component_instance.blender_obj['scan_window'] * ( math.pi / 360 )
         min_angle = max_angle * (-1)
         angle_incr = ((component_instance.blender_obj['scan_window'] / num_readings) * (math.pi / 180)) 
