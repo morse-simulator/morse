@@ -160,7 +160,7 @@ class ROBOTICS_PT_bind_middlewares(bpy.types.Panel):
         updateSceneComponents()
 
         for index, component in enumerate(scene.bound_components):
-            print ("WHAT?? {0}".format(component.show_expanded))
+            print ("COMPONENT {0} Showing? {1}".format(component, component.show_expanded))
             layout.active = scene.use_middlewares
             box = layout.box()
             row = box.row(align=True)
@@ -265,13 +265,13 @@ class ROBOTICS_OT_mw_add(bpy.types.Operator):
         # Read the objects in the scene and create a drop down list
         updateSceneComponents()
         # Create a new instance and fill it
-        coco = ConfiguredComponent
+
+        #scene = context.scene.bound_components.add()
+        coco = context.scene.bound_components.add()
         coco.index = self.index
         coco.name = 'probando'
-
-        scene = context.Scene
-        bound_components = scene.bound_components
-        bound_components.add()
+        #bound_components = scene.bound_components
+        #bound_components.add()
 
         #bpy.types.Scene.bound_components.add()
         #bpy.types.Scene.bound_components.append( coco )
