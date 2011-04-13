@@ -105,7 +105,33 @@ class Configuration(object):
   def link(self, component, mwmethodcfg):
     self.middleware[component.name] = mwmethodcfg
 
+"""
+# following is 2.57 (bpy.data.libraries.load)
+filepath = '/usr/local/share/data/morse/components/robots/atrv.blend'
+with bpy.data.libraries.load(filepath) as (src, dest):
+  dest.objects = src.objects
 
+for obj in dest.objects:
+  bpy.context.scene.objects.link(bpy.data.objects[obj])
+
+bpy.ops.object.constraints_clear() # not sure about that, but update the parent
+
+# it allow us to avoid the components-dictionnary
+# to do so, we have to give specific name to the main-object
+# ie: for atrv.blend, ATRV -> morseMainATRV
+# ...still no way to get back the 'imported' name...
+# http://www.blender.org/documentation/250PythonDoc/bpy.types.BlendDataLibraries.html#bpy.types.BlendDataLibraries.load
+def poc(category, name):
+  objmain = None
+  filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
+  with bpy.data.libraries.load(filepath) as (src, dest):
+    dest.objects = src.objects
+  for obj in dest.objects:
+    bpy.context.scene.objects.link(bpy.data.objects[obj])
+    if obj.startswith('morseMain'):
+      objmain = obj
+  return objmain
+"""
 class Component(object):
   """ Append a morse-component to the scene
   http://www.blender.org/documentation/250PythonDoc/bpy.ops.wm.html#bpy.ops.wm.link_append
@@ -115,8 +141,16 @@ class Component(object):
     objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
     objname = MORSE_COMPONENTS_DICT[category][name][0] # name of the main object
     objpath = os.path.join(MORSE_COMPONENTS, category, name + '.blend/Object/')
+    # if there is already an object 'X' in the scene, Blender changes its name 
+    # in 'X.001', but link_append returns just {'FINISHED'} or {'CANCELLED'},
+    # so here we redo what Blender does... (I know, not pretty)
+    tmp = objname
+    suffix = 1 # ugly, but fix the bug
+    while objname in bpy.data.objects.keys():
+      objname='%s.%03d' % (tmp, suffix)
+      suffix = suffix + 1
     bpy.ops.wm.link_append(directory=objpath, link=False, files=objlist)
-    # FIXME bug if there is already an object in the scene with the same name
+    # is there a way to get back the object, or its imported name, once we did?
     self._blendname = name # for middleware dictionary
     self._blendobj = bpy.data.objects[objname]
   def append(self, obj):
