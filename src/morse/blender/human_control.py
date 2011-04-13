@@ -98,15 +98,18 @@ def read_status(contr):
     armature = scene.objects['HumanArmature']
     tolerance = 0.001
 
-    speed = human.getLinearVelocity()
-    #print ("Man going at speed [%.4f, %.4f, %.4f]" % (speed[0], speed[1], speed[2]))
-    if speed[0] > tolerance:
-       armature['movingForward'] = True 
-    elif speed[0] < -tolerance:
-       armature['movingBackward'] = True 
-    else:
-       armature['movingForward'] = False 
-       armature['movingBackward'] = False 
+    # TODO: Do not change the movement properties until the controllers
+    #  are properly implemented to use velocity commands
+    if False:
+        speed = human.getLinearVelocity()
+        #print ("Man going at speed [%.4f, %.4f, %.4f]" % (speed[0], speed[1], speed[2]))
+        if speed[0] > tolerance:
+           armature['movingForward'] = True 
+        elif speed[0] < -tolerance:
+           armature['movingBackward'] = True 
+        else:
+           armature['movingForward'] = False 
+           armature['movingBackward'] = False 
 
 
 def human_actions(contr):
