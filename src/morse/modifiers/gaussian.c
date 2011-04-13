@@ -8,14 +8,14 @@
  * Generate random number between [ -1 ; 1 ]
  * More or less uniform distribution
  */
-static inline double
+static double
 generate_random()
 {
 	return 2.0 * ((double) rand()/RAND_MAX) - 1.0;
 }
 
 /* Use Polar form of the Box Muller transform */
-static inline double
+static double
 gaussian(double dev, double mean)
 {
 	double x1, x2, w, y1, y2;
