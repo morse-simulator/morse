@@ -222,6 +222,9 @@ Publications
 - Presentation of MORSE at the Blender Conference 2010:
   `slides <http://homepages.laas.fr/gechever/BlenderConference/BC_morse.pdf>`_ and
   `video <http://www.youtube.com/watch?v=BGDfbi28s14#t=20m20s>`_
+- Presentation at the `European Robotics Forum 2011 <http://www.eurobotics-project.eu/cms/index.php?idcat=40>`_:
+  `general overview of MORSE <http://homepages.laas.fr/gechever/Documents/ERF-MORSE-presentation.pdf>`_ and
+  `MORSE-ROS implementation <http://homepages.laas.fr/gechever/Documents/morse_ros.pdf>`_
 
 Screenshots
 +++++++++++
