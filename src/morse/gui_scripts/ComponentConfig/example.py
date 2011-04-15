@@ -1,4 +1,4 @@
-vbl_info = {
+bl_info = {
     'name': 'Rickylbneder',
     'author': 'Rickylbneder',
     'version': (0, 4),
@@ -13,12 +13,12 @@ vbl_info = {
     'category': 'Animation'}
  
 import bpy
-class MyItem(bpy.types.IDPropertyGroup):
+class MyItem(bpy.types.PropertyGroup):
     mystring= bpy.props.StringProperty(name="Some title")
     mybool= bpy.props.BoolProperty(name="Some boolean",default= False)
     pass
 
-#bpy.utils.register_class(MyItem)
+bpy.utils.register_class(MyItem)
  
 #bpy.types.Object.myCollection= bpy.props.CollectionProperty(type= "MyItem")
 bpy.types.Object.myCollection_index= bpy.props.IntProperty(
@@ -78,7 +78,7 @@ class OBJECT_PT_ObjectSelecting(bpy.types.Panel):
             layout.separator()
             ### search prop to search in myCollection:
             layout.prop_search(obj, "mychosenObject",    obj, "myCollection")
-#bpy.utils.register_class(OBJECT_PT_ObjectSelecting)
-#bpy.utils.register_class(OBJECT_OT_add_remove_Collection_Items)
+bpy.utils.register_class(OBJECT_PT_ObjectSelecting)
+bpy.utils.register_class(OBJECT_OT_add_remove_Collection_Items)
 #bpy.utils.register_class(MyItem)
 #bpy.utils.register_class(OBJECT_OT_add_remove_Collection_Items)
