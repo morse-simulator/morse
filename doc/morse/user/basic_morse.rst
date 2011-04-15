@@ -6,8 +6,8 @@ Basic Blender commands
 
 The setup and configuration of a simulation scenario in MORSE is completely done using the Blender interface.
 It is very particular and different from almost any other computer program available.
-A good explanation on the use of Blender's interface can be found `here <http://www.blendercookie.com/getting-started-with-blender/>`_.
-Here we present the most useful commands necessary to operate MORSE
+Follow this link for good tutorial on `the use of Blender's interface <http://www.blendercookie.com/getting-started-with-blender/>`_.
+Here we present the most useful commands necessary to operate MORSE.
 
 Selection of an object 
 ++++++++++++++++++++++
@@ -94,7 +94,7 @@ in the same way as First Person Shooter game. The camera can be moved around usi
 The direction the camera points to is controlled with the mouse.
 
 It is possible to adjust the speed of the camera movement, by selecting the **CameraFP** object in the scene,
-and adjusting the properties **Sensitivity** for the mouse, and **Speed** for the keyboard.
+and adjusting the game properties of the camera object: **Sensitivity** for the mouse, and **Speed** for the keyboard.
 
 
 Standard keyboard functions
@@ -112,8 +112,8 @@ The following are key bindings already defined in any simulation scene
 - :kbd:`F11` key: reset all objects to their original position at the start of the simulation
 
 .. warning::  
-  There is bug in the code, which will make any forces acting on an object be still active when
-  the position is reset. This can cause object so start rotating or moving without an apparent reason.
+  There is a bug in the code, which will make any forces acting on an object be still active when
+  the position is reset. This can cause an object to start rotating or moving without an apparent reason.
 
 - :kbd:`F12` key: emergency exit from the simulation, without clean up. Useful when the :kbd:`Esc` key
     does not make the simulation finish (generally happens when the simulation could not properly initialise)
@@ -160,3 +160,11 @@ Parenting components to a robot
 - Select the Empty object of the component, then hold :kbd:`Shift` and select the robot
 - Press :kbd:`Ctrl-p`, then select **Make parent** or press :kbd:`Enter`
 
+Using middlewares
++++++++++++++++++
+
+To use one of the available middleware bindings import/export data from the simulated actuators/sensors:
+
+#. Link a middleware object, as explained above
+#. Edit the ``component_config.py`` script to indicate what middleware will be attached to each component,
+as explained in the :doc:`hooks <hooks>` section
