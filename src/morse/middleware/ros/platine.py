@@ -18,8 +18,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 def callback_wp(data, component_instance):
         """ this function is called as soon as Vector3-messages are published on the specific topic """
-        component_instance.local_data["pan"] = data.y
-        component_instance.local_data["tilt"] = data.z
+        component_instance.local_data["pan"] = data.z
+        component_instance.local_data["tilt"] = data.y
         
 def read_Vector3(self, component_instance):
         """ dummy function for Platine controller """

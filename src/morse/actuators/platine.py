@@ -76,8 +76,9 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
             pass
-
-        current_pan = self._pan_position_3d.yaw
+        
+        # NOTE: I added 3.1416 here because of the incorrect starting position of the PTU-unit. This should be removed as soon as the PTU is corrected
+        current_pan = self._pan_position_3d.yaw + 3.1416
         current_tilt = self._tilt_position_3d.pitch
         #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
@@ -87,7 +88,7 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
         #print ("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
 
         # Get the current rotation of the parent robot
-        parent_pan = self.robot_parent.position_3d.euler.z
+        parent_pan = self.robot_parent.position_3d.euler.z 
         parent_tilt = self.robot_parent.position_3d.euler.y
         #print ("Parent: pan=%.4f, tilt=%.4f" % (parent_pan, parent_tilt))
 
