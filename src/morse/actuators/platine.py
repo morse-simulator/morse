@@ -77,8 +77,7 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
         except ZeroDivisionError:
             pass
         
-        # NOTE: I added 3.1416 here because of the incorrect starting position of the PTU-unit. This should be removed as soon as the PTU is corrected
-        current_pan = self._pan_position_3d.yaw + 3.1416
+        current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
         #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
