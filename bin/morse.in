@@ -84,17 +84,18 @@ def check_blender_python_version(blender_path):
     TODO: this method doesn't works because I couldn't find a way to exit 
     Blender in Python...
     For now, we don't check Python version in Blender.
+    >>> blender -b or --background
     """
     
     with open("python_checker.py", "w") as f:
         f.write("import sys\n")
-        f.write("print('>>>' + '.'.join((str(x) for x in sys.version_info[:3])) + '<<<')\n")
+        f.write("print('.'.join((str(x) for x in sys.version_info[:2])))\n")
     
     try:
         version_str = subprocess.Popen(
-                                [blender_path, '-P python_checker.py'], 
-                                stdout=subprocess.PIPE).communicate()[0]
-        version = version_str.split()[1] + '.' + version_str.split()[3][:-1]
+                  [blender_path, '-b', '-P', 'python_checker.py'], 
+                  stdout=subprocess.PIPE).communicate()[0].split()[0]
+        version = version_str.decode()
     except OSError:
         os.remove("python_checker.py")
         return None

@@ -14,13 +14,13 @@ middleware-dictionary-convention:
 """
 MORSE_MIDDLEWARE_DICT = {
   'ros_empty': {
-    'morse_gyroscope': ['ROS', 'post_message'],
     'morse_vw_control': ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'],
+    'morse_camera': ['ROS', 'post_image', 'morse/middleware/ros/camera'],
+    'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
+    'morse_odometry': ['ROS', 'post_twist', 'morse/middleware/ros/odometry_sensor'],
     'morse_GPS': ['ROS', 'post_message'],
-    'morse_camera': ['ROS', 'post_message'],
-    'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/navstack_post_base_scan'],
-    'morse_proximity': ['ROS', 'post_message'],
-    'morse_odometry': ['ROS', 'post_message']
+    'morse_gyroscope': ['ROS', 'post_message'],
+    'morse_proximity': ['ROS', 'post_message']
   },
   'socket_empty': {
     'morse_gyroscope': ['Socket', 'post_message'],
