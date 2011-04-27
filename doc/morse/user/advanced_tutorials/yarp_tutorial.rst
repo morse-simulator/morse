@@ -80,18 +80,18 @@ connect to the component from an external program or client.
 
 The simplest method to test the reading and writing of data is by using the
 terminal clients. For example, to read the GPS data of the robot through a port
-named ``/ors/robots/OBATRV/OBGPS/out``, you can type the following in a
+named ``/ors/robots/ATRV/GPS/out``, you can type the following in a
 terminal::
 
-  $ yarp read /data/in /ors/robots/OBATRV/OBGPS/out
+  $ yarp read /data/in /ors/robots/ATRV/GPS/out
 
-To enter speed commands through a port named ``/ors/robots/OBATRV/OBMotion_Controller/in``, use the command::
+To enter speed commands through a port named ``/ors/robots/ATRV/Motion_Controller/in``, use the command::
 
-  $ yarp write /data/out /ors/robots/OBATRV/OBMotion_Controller/in
+  $ yarp write /data/out /ors/robots/ATRV/Motion_Controller/in
 
 Then type the three destination coordinates, separated by spaces, and press :kbd:`enter`
 
-To view the images of the camera though a port ``/ors/robots/OBATRV/OBCameraMain/out``::
+To view the images of the camera though a port ``/ors/robots/ATRV/CameraMain/out``::
 
   $ yarpview /img/read &
-  $ yarp connect /ors/robots/OBATRV/OBCameraMain/out /img/read
+  $ yarp connect /ors/robots/ATRV/CameraMain/out /img/read
