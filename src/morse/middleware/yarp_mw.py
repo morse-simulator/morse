@@ -202,21 +202,13 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
 
         # Check that an image exists:
         if img_string != None and img_string != '':
-            if GameLogic.pythonVersion > 3:
-                try:
-                    data = img_string
-                    # Pass the data as is, from the VideoTexture module
-                    # NOTE: This requires the patch to yarp-python bindings
-                    img.setExternal(data,img_X,img_Y)
-                except TypeError as detail:
-                    print ("No image yet: %s" % detail)
-            else:
-                # Convert to an array object
-                data = array.array('B',img_string)
-                # Get the pointer to the data
-                img_pointer = data.buffer_info()
-                # Using Python pointer (converted or not)
-                img.setExternal(img_pointer[0],img_X,img_Y)
+            try:
+                data = img_string
+                # Pass the data as is, from the VideoTexture module
+                # NOTE: This requires the patch to yarp-python bindings
+                img.setExternal(data,img_X,img_Y)
+            except TypeError as detail:
+                print ("No image yet: %s" % detail)
 
             # Copy to image with "regular" YARP pixel order
             # Otherwise the image is upside-down

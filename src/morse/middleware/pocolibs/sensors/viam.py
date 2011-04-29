@@ -124,10 +124,7 @@ def write_viam(self, component_instance):
         camera_data.sensor.x = main_to_sensor.x
         camera_data.sensor.y = main_to_sensor.y
         camera_data.sensor.z = main_to_sensor.z
-        if GameLogic.pythonVersion < 3:
-            camera_data.sensor.yaw = main_to_sensor.yaw + 180 # XXX
-        else:
-            camera_data.sensor.yaw = main_to_sensor.yaw 
+        camera_data.sensor.yaw = main_to_sensor.yaw 
         camera_data.sensor.pitch = main_to_sensor.pitch
         camera_data.sensor.roll = main_to_sensor.roll
 

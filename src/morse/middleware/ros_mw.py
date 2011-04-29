@@ -3,12 +3,8 @@ import roscpp
 import rospy
 import array
 import morse.core.middleware
-import GameLogic
 import std_msgs
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
+import mathutils
 
 from std_msgs.msg import String
 

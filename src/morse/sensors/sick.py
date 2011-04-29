@@ -1,9 +1,4 @@
-import GameLogic
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
-    
+import mathutils
 import math
 import morse.core.sensor
 import morse.helpers.math
@@ -22,8 +17,6 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         arc_prefix = 'Arc_'
-        if GameLogic.pythonVersion < 3:
-            arc_prefix = 'OB' + arc_prefix
 
         # Look for a child arc to use for the scans
         for child in obj.children:

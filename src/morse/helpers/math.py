@@ -1,9 +1,5 @@
 import math
-import GameLogic
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
+import mathutils
 #from Mathutils import *
 
 # euler_angle(object) returns a tuple yaw, pitch, roll, in degree,
@@ -18,11 +14,7 @@ def euler_angle(ob):
     # XXX If we want to have the right handle, we definivly need to transpose
     # the matrix here, but why ?
     matrix.transpose()
-    # Use the correct function, depending on the version of Blender
-    if GameLogic.pythonVersion >= 3:
-        euler = matrix.to_euler()
-    else:
-        euler = matrix.toEuler()
+    euler = matrix.to_euler()
 
     return [euler.z, euler.x, euler.y]
 
@@ -51,10 +43,9 @@ def euler_angle_old(ob):
     #
     # Change the signs of the angles
     #  if the Blender version is 2.5
-    if GameLogic.pythonVersion >= 3:
-        yaw = yaw * -1
-        pitch = pitch * -1
-        roll = roll * -1
+    yaw = yaw * -1
+    pitch = pitch * -1
+    roll = roll * -1
 
     return [yaw, pitch, roll]
 

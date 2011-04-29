@@ -1,4 +1,3 @@
-import GameLogic
 import math
 import morse.core.sensor
 import mathutils
@@ -85,14 +84,6 @@ class KukaPostureClass(morse.core.sensor.MorseSensorClass):
             except IndexError as detail:
                 break               
                         
-        # Convert the angles to radians
-        # And also change the signs,
-        #  since they are different on each version of Blender
-        if GameLogic.pythonVersion < 3:
-            yaw = -math.radians(yaw)
-            pitch = -math.radians(pitch)
-            roll = -math.radians(roll)
-
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
         self.local_data['x'] = float(x)

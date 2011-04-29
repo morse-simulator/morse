@@ -1,4 +1,3 @@
-import GameLogic
 import math
 import morse.core.sensor
 
@@ -27,14 +26,6 @@ class GyroscopeClass(morse.core.sensor.MorseSensorClass):
         yaw = self.position_3d.yaw
         pitch = self.position_3d.pitch
         roll = self.position_3d.roll
-
-        # Convert the angles to radians
-        # And also change the signs,
-        #  since they are different on each version of Blender
-        if GameLogic.pythonVersion < 3:
-            yaw = -math.radians(yaw)
-            pitch = -math.radians(pitch)
-            roll = -math.radians(roll)
 
         # Store the values in the robot's object
         self.robot_parent.yaw = yaw

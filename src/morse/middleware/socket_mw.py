@@ -1,9 +1,5 @@
 import socket
-import GameLogic
-if GameLogic.pythonVersion < 3:
-    import cPickle as pickle
-else:
-    import pickle
+import pickle
 import morse.core.middleware
 
 class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):

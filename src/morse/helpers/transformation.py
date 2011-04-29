@@ -1,8 +1,5 @@
 import GameLogic
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
+import mathutils
 
 class Transformation3d:
     """
@@ -74,20 +71,14 @@ class Transformation3d:
         """
         Returns Euler Y axis, in radian
         """
-        if GameLogic.pythonVersion < 3:
-            return self.euler.x
-        else:
-            return self.euler.y
+        return self.euler.y
 
     @property
     def roll(self):
         """
         Returns Euler X axis, in radian
         """
-        if GameLogic.pythonVersion < 3:
-            return self.euler.y
-        else:
-            return self.euler.x
+        return self.euler.x
 
     def transformation3d_with(self, t3d):
         """
@@ -101,10 +92,7 @@ class Transformation3d:
         o2m = self.matrix.copy()
         o2m.invert()
         res.matrix = o2m * t3d.matrix
-        if GameLogic.pythonVersion < 3:
-            res.euler = res.matrix.toEuler()
-        else:
-            res.euler = res.matrix.to_euler()
+        res.euler = res.matrix.to_euler()
         return res
 
     def update(self, obj):
@@ -128,10 +116,7 @@ class Transformation3d:
             self.matrix[3][i] = pos[i]
         self.matrix[3][3] = 1
 
-        if GameLogic.pythonVersion < 3:
-            self.euler = self.matrix.toEuler()
-        else:
-            self.euler = self.matrix.to_euler()
+        self.euler = self.matrix.to_euler()
 
     def __str__(self):
         """

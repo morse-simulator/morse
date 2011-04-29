@@ -15,10 +15,7 @@ class MorseUTMClass(object):
         # Get the global coordinates if defined in the scene
         scene = GameLogic.getCurrentScene()
         script_empty_name = 'Scene_Script_Holder'
-        # Prefix the name of the component with 'OB'
-        # Will only be necessary until the change to Blender 2.5
-        if GameLogic.pythonVersion < 3:
-            script_empty_name = 'OB' + script_empty_name
+
         script_empty = scene.objects[script_empty_name]
         self._global_x = float(script_empty['UTMXOffset'])
         self._global_y = float(script_empty['UTMYOffset'])
