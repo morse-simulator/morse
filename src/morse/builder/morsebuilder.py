@@ -1,6 +1,5 @@
 import os
 import bpy
-import json
 from morse.builder.data import *
 
 class Configuration(object):
@@ -97,31 +96,47 @@ class Component(object):
   def location(self, x=0.0, y=0.0, z=0.0):
     self._blendobj.location = (x,y,z)
   def translate(self, x=0.0, y=0.0, z=0.0):
+    """ cf. Object.location
+    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location
+    Location of the object, float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+    """
     old = self._blendobj.location
     self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
+  def rotate(self, x=0.0, y=0.0, z=0.0):
+    """ cf. Object.rotation_euler (x*math.pi/180)
+    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler
+    Rotation in Eulers, float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+    """
+    old = self._blendobj.rotation_euler
+    self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
+  def properties(self, **kwargs):
+    """ modify the game properties of the Blender object
+    """
+    prop = self._blendobj.game.properties
+    for k in kwargs.keys():
+      prop[k].value = kwargs[k]
+
+# self._blendobj.scale
+# self._blendobj.parent
+# self._blendobj.children
 
 class Robot(Component):
   def __init__(self, name):
-    # Call the constructor of the parent class
-    super(self.__class__,self).__init__('robots', name)
+    Component.__init__(self, 'robots', name)
 
 class Sensor(Component):
   def __init__(self, name):
-    # Call the constructor of the parent class
-    super(self.__class__,self).__init__('sensors', name)
+    Component.__init__(self, 'sensors', name)
 
 class Controller(Component):
   def __init__(self, name):
-    # Call the constructor of the parent class
-    super(self.__class__,self).__init__('controllers', name)
+    Component.__init__(self, 'controllers', name)
 
 class Middleware(Component):
   def __init__(self, name):
-    # Call the constructor of the parent class
-    super(self.__class__,self).__init__('middleware', name)
+    Component.__init__(self, 'middleware', name)
   def configure(self, component):
     mw_config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
     Component._config.link(component, mw_config)
     Component._config.write()
-
 
