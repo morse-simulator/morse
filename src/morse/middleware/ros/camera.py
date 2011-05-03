@@ -1,12 +1,6 @@
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('sensor_msgs')
 import rospy
-import std_msgs
-import math
-import array
 from sensor_msgs.msg import Image
-from sensor_msgs.msg import CameraInfo
-import png
-import struct
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -33,36 +27,30 @@ def post_image(self, component_instance):
     if image_local == None or image_local == '' or not component_instance.capturing:
         return # press [Space] key to enable capturing
 
+    image_local.flip = True # GameLogic.video.source.flip (VideoTexture.ImageRender)
     parent_name = component_instance.robot_parent.blender_obj.name
-    # NOTE: Blender returns the image as a binary string encoded as RGBA
-    image_data = bytes(image_local.image) # VideoTexture.ImageRender
-    # http://docs.python.org/c-api/buffer.html
-    image_header = std_msgs.msg._Header.Header()
-    image_header.stamp = rospy.Time.now()
+
+    image = Image()
+    image.header.stamp = rospy.Time.now()
     # http://www.ros.org/wiki/geometry/CoordinateFrameConventions#Multi_Robot_Support
-    image_header.frame_id = '/' + parent_name + '/base_image'
-    image_height = component_instance.image_height
-    image_width = component_instance.image_width
-    image_step = image_width * 4
-
-    #print(str(type(image_data))+str(image_data[0])+str(type(image_data[0])))
-    image_data2 = [i for i in image_data] # convert from bytes to list of int
-    #print(str(type(image_data2))+str(image_data2[0])+str(type(image_data2[0])))
-
-    image = Image(header = image_header, height = image_height, 
-        width = image_width, encoding = 'rgba8', #is_bigendian = 0, 
-        step = image_step, data = image_data2)
+    image.header.frame_id = ('/' + parent_name + '/base_image')
+    image.height = component_instance.image_height
+    image.width = component_instance.image_width
+    image.encoding = 'rgba8'
+    image.step = image.width * 4
+    # NOTE: Blender returns the image as a binary string encoded as RGBA
+    # sensor_msgs.msg.Image.image need to be len() friendly
+    # TODO patch ros-py3/common_msgs/sensor_msgs/src/sensor_msgs/msg/_Image.py
+    # to be C-PyBuffer "aware" ? http://docs.python.org/c-api/buffer.html
+    image.data = bytes(image_local.image) #numpy.reshape(image_local.image, (-1, image.step))
+    # RGBA8 -> RGB8 ? (remove alpha channel, save h*w bytes, CPUvore ?)
+    # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture
+    # http://www.blender.org/documentation/blender_python_api_2_57_release/bge.types.html#bge.types.KX_Camera.useViewport
 
     for topic in self._topics:
         # publish the message on the correct topic
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(image)
-            # debug
-            #print(str(image_height) + 'x' + str(image_width) + ':' + str(len(image_data)) + image_header.frame_id + str(image_header.stamp.to_sec()))
-            f=open('/tmp/morse_camera'+str(image_header.stamp.to_sec())+'.tmp','wb')
-            f.write(image_data)
-            f.close()
 
-# https://github.com/pierriko/proteus/blob/master/rgba2png.py
 # TODO sensor_msgs/CameraInfo [ http://www.ros.org/wiki/rviz/DisplayTypes/Camera ]
 

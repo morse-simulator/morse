@@ -18,6 +18,7 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_camera': ['ROS', 'post_image', 'morse/middleware/ros/camera'],
     'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
     'morse_odometry': ['ROS', 'post_twist', 'morse/middleware/ros/odometry_sensor'],
+    'morse_pose': ['ROS', 'post_poseStamped', 'morse/middleware/ros/pose'],
     'morse_GPS': ['ROS', 'post_message'],
     'morse_gyroscope': ['ROS', 'post_message'],
     'morse_proximity': ['ROS', 'post_message']
