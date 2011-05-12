@@ -70,6 +70,7 @@ class ConfiguredComponent(bpy.types.PropertyGroup):
     name = bpy.props.StringProperty(name="name", default="")
     index = bpy.props.IntProperty(name="index", default=0)
     show_expanded = bpy.props.BoolProperty(name='show_expanded', description='View component bindings', default=True)
+    #component_list = bpy.props.EnumProperty(name='component_list', description='Choose a component', items=[], options='ENUM_FLAG')
     component_list = bpy.props.EnumProperty(name='component_list', description='Choose a component', items=[])
     pass
 
@@ -114,7 +115,8 @@ def updateSceneComponents(co_co):
 
     # create an EnumProperty which can be used by the dropdown box
     #  to display the different scenes
-    co_co.component_list = test_scene_component_list
+    co_co.component_list = component_enum
+    #co_co.component_list = test_scene_component_list
     bpy.types.Scene.morse_components = component_enum
     #bpy.types.Scene.morse_components = bpy.props.CollectionProperty(type=bpy.props.StringProperty, items=scene_component_list)
 
@@ -161,7 +163,7 @@ class ROBOTICS_PT_bind_middlewares(bpy.types.Panel):
             #lbl = row.label('Component:')
             # draw dropdown box on panel
             row.prop(data=co_co, property='component_list', text='MORSE component')
-            #row.prop_search(data=co_co, property="name", search_data=context.scene, search_property="morse_components", icon='OBJECT_DATA')
+            row.prop_search(data=co_co, property="name", search_data=context.scene, search_property="morse_components", icon='OBJECT_DATA')
             #row.label(text=component.name)
             row.operator("robotics.mw_remove", text="", emboss=False, icon='X').index = index
 
@@ -256,6 +258,22 @@ class ROBOTICS_OT_write_config_file(bpy.types.Operator):
     def execute(self, context):
         print ("THIS IS WHERE THE CONFIG FILE MUST BE CREATED")
         logger.debug ("Writing config file")
+
+        # creates a new text file, named "SceneList"
+        # writes Groups and contained Objects to it.
+        
+        bpy.ops.text.new()
+        newtext = bpy.data.texts[-1] #  -1 is last added text file
+        newtext.name = "component_config.py"
+
+        """
+        newtext.write("="*20 + "\n") # makes a divider
+
+        for item in bpy.data.groups:
+            newtext.write(item.name + "\n")
+            for object in item.objects:
+                newtext.write("--" + object.name + "\n")
+        """
         return {'FINISHED'}
 
 bpy.utils.register_class(ROBOTICS_PT_bind_middlewares)
