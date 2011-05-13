@@ -55,6 +55,7 @@ def poc(category, name):
 class Component(object):
   """ Append a morse-component to the scene
   http://www.blender.org/documentation/250PythonDoc/bpy.ops.wm.html#bpy.ops.wm.link_append
+  bpy.ops.wm.collada_import(filepath="/home/pierrick/Desktop/atrv.dae", filter_blender=False, filter_image=False, filter_movie=False, filter_python=False, filter_font=False, filter_sound=False, filter_text=False, filter_btx=False, filter_collada=True, filter_folder=True, filemode=8)
   """
   _config = Configuration()
   def __init__(self, category, name):
@@ -78,10 +79,11 @@ class Component(object):
     eg: robot.append(sensor), will set the robot parent of the sensor.
     cf: bpy.ops.object.parent_set()
     """
+    #    obj._blendobj.parent = self._blendobj
     opsobj = bpy.ops.object
     opsobj.select_all(action = 'DESELECT')
     opsobj.select_name(name = obj.name)
-    bpy.ops.object.make_local()
+    opsobj.make_local()
     opsobj.select_name(name = self.name)
     opsobj.parent_set()
   @property
