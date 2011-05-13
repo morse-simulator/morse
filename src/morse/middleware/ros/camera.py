@@ -16,6 +16,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Image))
+    self._seq = 0
 
     print('######## ROS IMAGE PUBLISHER INITIALIZED ########')
 
@@ -32,6 +33,7 @@ def post_image(self, component_instance):
 
     image = Image()
     image.header.stamp = rospy.Time.now()
+    image.header.seq = self._seq
     # http://www.ros.org/wiki/geometry/CoordinateFrameConventions#Multi_Robot_Support
     image.header.frame_id = ('/' + parent_name + '/base_image')
     image.height = component_instance.image_height
@@ -51,6 +53,8 @@ def post_image(self, component_instance):
         # publish the message on the correct topic
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(image)
+
+    self._seq = self._seq + 1
 
 # TODO sensor_msgs/CameraInfo [ http://www.ros.org/wiki/rviz/DisplayTypes/Camera ]
 
