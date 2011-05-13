@@ -34,11 +34,11 @@ with bpy.data.libraries.load(filepath) as (src, dest):
 for obj in dest.objects:
   bpy.context.scene.objects.link(bpy.data.objects[obj])
 
-bpy.ops.object.constraints_clear() # not sure about that, but update the parent
+bpy.ops.object.constraints_clear() # not sure about that, but update the parent-child relation
 
 # it allow us to avoid the components-dictionnary
 # to do so, we have to give specific name to the main-object
-# ie: for atrv.blend, ATRV -> morseMainATRV
+# ie: for atrv.blend, ATRV -> morseMainATRV (or to use Group?)
 # ...still no way to get back the 'imported' name...
 # http://www.blender.org/documentation/250PythonDoc/bpy.types.BlendDataLibraries.html#bpy.types.BlendDataLibraries.load
 def poc(category, name):
@@ -50,11 +50,16 @@ def poc(category, name):
     bpy.context.scene.objects.link(bpy.data.objects[obj])
     if obj.startswith('morseMain'):
       objmain = obj
+  # we lost the parent-child relationship...
   return objmain
 """
 class Component(object):
   """ Append a morse-component to the scene
   http://www.blender.org/documentation/250PythonDoc/bpy.ops.wm.html#bpy.ops.wm.link_append
+  bpy.ops.wm.link_append(directory="/usr/local/share/data/morse/components/robots/atrv.blend/Object", link=False, 
+    files=[{'name': 'ATRV'}, {'name': 'Wheel.4'}, {'name': 'Wheel.3'}, {'name': 'Wheel.2'}, {'name': 'Wheel.1'}])
+  bpy.ops.wm.collada_import(filepath="/usr/local/share/data/morse/components/robots/atrv.dae")
+  cf. http://www.blender.org/forum/viewtopic.php?t=20112
   """
   _config = Configuration()
   def __init__(self, category, name):
@@ -70,7 +75,7 @@ class Component(object):
       objname='%s.%03d' % (tmp, suffix)
       suffix = suffix + 1
     bpy.ops.wm.link_append(directory=objpath, link=False, files=objlist)
-    # is there a way to get back the object, or its imported name, once we did?
+    # TODO is there a way to get back the object, or its imported name, once we did?
     self._blendname = name # for middleware dictionary
     self._blendobj = bpy.data.objects[objname]
   def append(self, obj):
@@ -78,10 +83,11 @@ class Component(object):
     eg: robot.append(sensor), will set the robot parent of the sensor.
     cf: bpy.ops.object.parent_set()
     """
+    #    obj._blendobj.parent = self._blendobj
     opsobj = bpy.ops.object
     opsobj.select_all(action = 'DESELECT')
     opsobj.select_name(name = obj.name)
-    bpy.ops.object.make_local()
+    opsobj.make_local()
     opsobj.select_name(name = self.name)
     opsobj.parent_set()
   @property
