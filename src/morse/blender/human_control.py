@@ -21,6 +21,7 @@ if sys.version_info<(3,0,0):
     import Mathutils as mathutils
 else:
     import mathutils
+import morse.helpers.place_object
 
 def move(contr):
     """ Read the keys for specific combinations
@@ -150,6 +151,9 @@ def head_control(contr):
     scene = GameLogic.getCurrentScene()
     target = scene.objects['Target_Empty']
 
+    # set mouse sensitivity
+    sensitivity = human['Sensitivity']
+
     # If the manipulation mode is active, do nothing
     if human['Manipulate']:
         return
@@ -164,9 +168,6 @@ def head_control(contr):
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
-
-        # set mouse sensitivity
-        sensitivity = human['Sensitivity']
 
         # Amount, direction and sensitivity
         left_right = move[0] * sensitivity
@@ -190,6 +191,9 @@ def hand_control(contr):
     scene = GameLogic.getCurrentScene()
     target = scene.objects['IK_Target_Empty.R']
 
+    # set mouse sensitivity
+    sensitivity = human['Sensitivity']
+
     # If the manipulation mode is inactive, do nothing
     if not human['Manipulate']:
         return
@@ -204,9 +208,6 @@ def hand_control(contr):
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
-
-        # set mouse sensitivity
-        sensitivity = human['Sensitivity']
 
         # Amount, direction and sensitivity
         left_right = move[0] * sensitivity
@@ -348,21 +349,26 @@ def grabbing(contr):
                 # Clear the previously selected object, if any
                 contr.owner['DraggedObject'] = selected_object
                 # Remove Physic simulation
-                selected_object.suspendDynamics()
+                #selected_object.suspendDynamics()
                 # Parent the selected object to the hand target
                 selected_object.setParent (hand_empty)
 
+    # Drop the object when the left mouse button is released
     if lmb.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_RELEASED:
     #if lmb.getButtonStatus(bge.events.RIGHTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
         # Clear the previously selected object, if any
         if contr.owner['DraggedObject'] != None and contr.owner['DraggedObject'] != '':
             previous_object = contr.owner["DraggedObject"]
-            # Restore Physics simulation
-            previous_object.restoreDynamics()
-            previous_object.setLinearVelocity([0, 0, 0])
-            previous_object.setAngularVelocity([0, 0, 0])
             # Remove the parent
             previous_object.removeParent()
+            # Place the object on the nearest surface
+            #morse.helpers.place_object.do_place(previous_object)
+            # Reset rotation of object
+            previous_object.worldOrientation = [0.0, 0.0, 0.0]
+            # Restore Physics simulation
+            #previous_object.restoreDynamics()
+            #previous_object.setLinearVelocity([0, 0, 0])
+            #previous_object.setAngularVelocity([0, 0, 0])
             # Clear the object from dragged status
             contr.owner['DraggedObject'] = None
 
