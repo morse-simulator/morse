@@ -54,15 +54,20 @@ def init_viam_poster(component_instance, poster_name):
         poster_id, ok = ors_viam_poster.init_data(poster_name, "stereo_bank", \
                                             component_instance.num_cameras, \
                                             baseline, cameras[0], cameras[1])
-        if ok == 0:
+        if ok == 1:
+            print ("viam poster ID: {0}".format(poster_id))
+            return poster_id
+
+        else:
+        #elif ok == 0:
             print ("ERROR creating poster. This module may not work")
             return None
     # What to do if there is no second camera???
-    elif component_instance.num_cameras == 1:
-        pass
+    #elif component_instance.num_cameras == 1:
+    else:
+        print ("The PTU sensor does not have two cameras attached. It is being disabled!")
+        return None
 
-    print ("viam poster ID: {0}".format(poster_id))
-    return poster_id
 
 
 def write_viam(self, component_instance):
