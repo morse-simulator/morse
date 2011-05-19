@@ -276,9 +276,9 @@ def toggle_manipulate(contr):
         #Rasterizer.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
-        hand_target.localPosition = [0.0, -0.3, 0.8]
+        hand_target.localPosition = [0.3, -0.3, 0.9]
         head_target.setParent(human)
-        head_target.localPosition = [1.3, 0.0, 1.7]
+        head_target.localPosition = [0.5, 0.0, 1.6]
     else:
         #Rasterizer.showMouse(True)
         human['Manipulate'] = True
