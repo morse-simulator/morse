@@ -28,7 +28,8 @@ The human is meant to be used in *immersive* mode (so-called *first-person
 shooter* view): once imported, you must define the human camera as the default 
 camera.
 
-Do so by selecting the camera on the human's head, and press :kbd:`Ctrl-Numpad 0`
+Do so by selecting the **Human_Camera** object, near the head of the human,
+and pressing :kbd:`Ctrl-Numpad 0`
 (or menu ``View > Cameras > Set Active Object As Camera``).
 
 Motion mode
@@ -61,7 +62,7 @@ scroll wheel.
 In manipulation mode, press and hold the :kbd:`Left Mouse Button` to take an 
 item, then release to let go of the object.
 
-.. note:: Only objects with a specific game property called ``Object`` can be
+.. note:: Only objects with a specific game property called ``Graspable`` can be
     carried by the human.
 
 Sensors and actuators
@@ -79,17 +80,17 @@ Services
 --------
 
 - **move**: (Synchronous service)
-    Move the body, or the hand in case of manipulation mode. in case of moving the body, the two argument expected are speed
-    and rotation. in case of moving the hand this two argument should be x and z displacement.
+    Move the body, or the hand in case of manipulation mode. In case of moving the body, the two arguments expected are speed
+    and rotation. In case of moving the hand these two arguments should be X and Z displacement.
 
 - **move_head**: (Synchronous service)
-    Move the head. two argument expected : pan and tilt
+    Move the head. Two arguments expected: pan and tilt
     
 - **grasp_**: (Synchronous service)
-    Grasp and ungrap an object if in manipulating mode. take one argument : must be "t" to grasp and "f" to ungrasp
+    Grasp and release an object if in manipulating mode. Takes one argument: must be "t" to grasp and "f" to ungrasp
     
 - **move_hand**: (Synchronous service)
-    Move the hand in the third direction ( y, see above). 
+    Move the hand in the third direction ( Y, see above). 
     
 - **toggle_manipulation**: (Synchronous service)
     Switch from and to manipulation mode
