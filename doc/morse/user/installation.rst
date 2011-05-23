@@ -28,7 +28,7 @@ Required software
 +++++++++++++++++
 
 .. note::
-  If you use the automated ``robotpkg``-based installation (recommanded), you can skip this section: 
+  If you use the automated ``robotpkg``-based installation (recommended), you can skip this section: 
   ``robotpkg`` will check and install for you all required dependencies.
 
 - Python (3.1 or +)
