@@ -16,7 +16,7 @@ Supported operating systems
 +++++++++++++++++++++++++++
 
 Only Linux (x86, x86_64) is currently officially supported. MORSE is mainly
-developed on Fedora and Ubuntu, but we don't expect problem on other
+developed on Fedora and Ubuntu, but we don't expect problems on other
 distributions.
 
 Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
@@ -28,26 +28,13 @@ Required software
 +++++++++++++++++
 
 .. note::
-  If you want the automated ``robotpkg``-based installation (recommanded), you can skip this section: 
+  If you use the automated ``robotpkg``-based installation (recommanded), you can skip this section: 
   ``robotpkg`` will check and install for you all required dependencies.
 
 - Python (3.1 or +)
 - Blender 2.54+ build with Python 3.1
-- git to get the code of the simulator::
-
-    $ git clone http://trac.laas.fr/git/robots/morse.git
-  
-  Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
-  
-    $ git clone http://github.com/laas/morse.git
-  
-  Once you have a copy of the repository, you can get to the last stable
-  version (0.3) by using ::
-  
-    $ git checkout 0.3
-  
-  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
-  
+- MORSE source code
+ 
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
@@ -61,7 +48,7 @@ For the YARP bindings
 - ACE ( 5.6.3 or +, required for YARP)
 
 Instructions to create YARP-Python bindings are `here <http://eris.liralab.it/wiki/YARP_and_Python>`_.
-To use properly camera with yarp < 2.3.2, you need to apply the patch from patches/yarp.i.diff.
+To properly use simulated cameras with yarp < 2.3.2, you need to apply the patch from ``patches/yarp.i.diff``.
 
 
 Note that the easiest way to install YARP is probably to use ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations). Follow the instructions on installing ``robotpkg``. Then add the environment variable ``ROBOTPKG_BASE`` to your shell.
@@ -85,7 +72,8 @@ You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/l
 
 If you are not using robotpkg to install YARP, then make sure to copy the files ``yarp.py`` and ``_yarp.so`` to your Python lib directory (``/usr/lib/python3.1/site-packages/``) or at some place reachable from your ``PYTHONPATH`` environment variable.
 
-NOTE: The name of the installation directory may be different depending on your distribution. If you use Ubuntu or similar distributions, replace the directory name of ``site-packages`` for ``dist-packages``.
+.. warning::
+    The name of the installation directory may be different depending on your Linux distribution. If you use Ubuntu or similar distributions, replace the directory name of ``python3.1/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
 
 ROS 
 ~~~
@@ -125,8 +113,12 @@ To install::
   $ cd $ROBOTPKG_BASE/robotpkg/middleware/pocolibs
   $ make update
 
+
 Installation 
 ------------
+
+.. note::
+    The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
 
 With ``robotpkg``
 +++++++++++++++++
@@ -134,39 +126,56 @@ With ``robotpkg``
 ``robotpkg`` is a package manager for robotic software based on NetBSD ports.
 It supports Linux, * BSD and Darwin (MacOS X).
 
+.. Note::
+	If you are upgrading an previous morse installation, skip directly to step 2.
+
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
-   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ (should
-   take less than 5 min)
+   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_,
+   `robotpkg-wip installation <http://homepages.laas.fr/mallet/robotpkg-wip>`_
+   (should take less than 5 min)
 #. Go to ``$ROBOTPKG/simulation/morse``
 #. Type ``make update``
 #. Go have a coffee :-) ``robotpkg`` will download and compile for you all the
    required dependencies, including Blender.
-#. The previous package only install middleware support for text and socket.
+#. The previous package only installs middleware support for text and socket.
    If you want support for additional middlewares, repeat the operation in
    ``$ROBOTPKG/simulation/morse-yarp``, ``$ROBOTPKG/wip/morse-pocolibs``.
-
-.. Note::
-	If you upgrade an old morse installation, jump directly to step 2.
 
 By hand
 +++++++
 
-From your MORSE root directory::
+Download the source code. It is stored in a ``git`` repository::
+
+    $ git clone http://trac.laas.fr/git/robots/morse.git
+  
+  Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
+  
+    $ git clone http://github.com/laas/morse.git
+  
+  Once you have a copy of the repository, you can get to the last stable
+  version (0.3) by using ::
+  
+    $ git checkout 0.3
+  
+  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
+
+ 
+Go to the directory where you have previously downloaded the MORSE source. Then type these commands::
 
   $ mkdir build && cd build
   $ cmake ..
 
-By default, MORSE will install in ``/usr/local``. You can easily change that by launching ccmake instead of cmake.
-When using ccmake, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
-You can set up the different variables using the command line:
+By default, MORSE will install in ``/usr/local``. You can easily change that by launching ``ccmake`` instead of ``cmake``.
+When using ``ccmake``, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
 
-- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. Note: The install prefix directory will be referred to as ``$MORSE_ROOT`` in this document.
+- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install prefix directory is referred to as ``$MORSE_ROOT``.
 - ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE
 - ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE
 - ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension (Release is a good choice). ::
 
   $ sudo make install
 
+You can set up the different variables using the command line.
 For instance, to build and install MORSE with YARP support in ``/opt``, you need something like::
 
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
@@ -176,7 +185,15 @@ The optional ``$MORSE_BLENDER`` environment variable can be set to let the simul
 You can check your configuration is ok with::
 
   $ morse check
-  
+
+.. note::
+    When updating MORSE to a more recent version, you'll simply have to do::
+
+    $ git checkout [version]
+    $ cd build
+    $ make install
+
+
 Running a simulation 
 --------------------
 
@@ -208,7 +225,7 @@ To test the external control clients:
 - On a text terminal, run the ``morse`` command
 - Open the Blender file: ``$MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend``
 - Start the simulation :kbd:`P`
-- On a separate terminal, go to the root directory the MORSE source code
+- On a separate terminal, go to the root directory of the MORSE source code
 - Run the Python program::
 
   $ python examples/morse/clients/atrv/socket_v_omega_client.py
