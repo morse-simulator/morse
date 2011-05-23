@@ -2,6 +2,8 @@ import os
 import bpy
 import json
 
+# XXX Hard-coded PATH, must be fixed
+
 MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
 
 """

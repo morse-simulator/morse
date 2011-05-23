@@ -2,6 +2,8 @@
 MORSE_COMPONENTS: 
 path to the Morse components
 """
+
+# XXX Hardcoded PATH, must be fixed
 MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
 
 """
