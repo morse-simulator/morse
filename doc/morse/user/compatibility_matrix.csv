@@ -4,8 +4,8 @@ Communications ,
 ``RPC (requests)``,			  ✘,               ✔,           ✔,              ✘,               ✘    
 Sensors,
 ``Accelerometer``,            ✔,               ✔,           ✔,              ✘,               ✘
-``Odometry``,                 ✔,               ✔,           ✔,              ✔ ``Odometry``,  ✘ 
-``Video camera``,             ✘,               ✘,           ✔``YarpImage``,✘,               ✔ ``viamImageBank``
+``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ 
+``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``
 ``Semantic camera``,          ✔,               ✔,           ✔,              ✘,               ✔ ``VimanObjectPublicArray``
 ``GPS``,                      ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``

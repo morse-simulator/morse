@@ -74,3 +74,9 @@ documentation.
   It has two available methods:
 
     - ``post_jointState``: Reads sensor-information from the kuka_posture sensor and publishes them as a ``sensor_msgs/JointState`` message.
+
+- camera sensor: Stored in the file  ``$MORSE_ROOT/src/morse/middleware/ros/camera.py``.
+  It has one available method:
+
+	- ``post_image``: Reads image information from the camera sensor and
+	  publishes them as ``sensor_msgs/Image``
