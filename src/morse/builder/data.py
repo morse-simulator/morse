@@ -30,13 +30,13 @@ MORSE_MIDDLEWARE_DICT = {
 }
 
 """
-MORSE_COMPONENTS_DICT: 
 components-dictionary-convention:
 {
   'component-directory': {
     '.blend-file': ['main-object-name', 'child1-name', ...]
   }
 }
+cf. morse.builder.generator.ComponentsData , to generate this dictionary
 """
 MORSE_COMPONENTS_DICT = {
  "modifiers": {

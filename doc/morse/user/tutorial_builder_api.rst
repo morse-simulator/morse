@@ -1,7 +1,7 @@
 Create your first simulation using the builder API
 ==================================================
 
-This is an extension of the current :doc:`tutorial <tutorial>` using the Morse-builder tool.
+This is an extension of the current :doc:`tutorial <tutorial>` using the Morse-builder tool to build your simulation (instead of the Blender graphical user-interface) and ROS as our middleware (instead of raw Socket). But the result will be the same!
 
 cf. https://github.com/pierriko/morse/blob/master/examples/morse/scenarii/ros_example.py
 
@@ -12,8 +12,8 @@ In order to use the API, you should import::
 
     from morse.builder.morsebuilder import *
 
-Append the robot
-++++++++++++++++
+Add a robot to the scene
+++++++++++++++++++++++++
 ::
 
     atrv = Robot('atrv')

@@ -2,8 +2,6 @@ import os
 import bpy
 import json
 
-MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
-
 """
 components-dictionary-convention:
 {
@@ -12,10 +10,9 @@ components-dictionary-convention:
   }
 }
 """
-
 class ComponentsData(object):
   """ Build the components-dictionary (*/*.blend/Object/*)
-  http://www.blender.org/documentation/250PythonDoc/bpy.types.BlendDataLibraries.html#bpy.types.BlendDataLibraries.load
+  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html#bpy.types.BlendDataLibraries.load
   """
   def __init__(self, path):
     self.path = path
@@ -31,24 +28,35 @@ class ComponentsData(object):
           if os.path.isfile(pathb) & blend.endswith('.blend'):
             self._data[category][blend[:-6]] = self.objects(pathb)
   def objects(self, blend):
-    """ The problem is now that we don't respect the dictionary-convention, 
-    which is: ['main-object-name', 'child1-name', ...] 
-    (in order to select the main object in Component class) 
-
-    bpy.data.libraries.load(path) is 2.57 OK , but 2.56 NOK!
+    """ bpy.data.libraries.load(path) is 2.57 OK (but 2.56 NOK!)
     """
     objects = []
     with bpy.data.libraries.load(blend) as (src, dest):
       objects = src.objects
     return objects
   def dump(self, dest):
-    fdict = open(dest, 'w')
-    json.dump(self.data, fdict, indent=1)
-    fdict.close()
+    with open(dest, 'w') as fdict:
+      json.dump(self.data, fdict, indent=1)
   @property
   def data(self):
     return self._data
 
-#components = ComponentsData(MORSE_COMPONENTS)
-#components.dump('/tmp/morse-components.py')
+def test():
+  import tempfile
+  import morse.builder.data
+  components = ComponentsData(morse.builder.data.MORSE_COMPONENTS)
+  fd, path = tempfile.mkstemp(prefix="morse-components-", suffix=".py")
+  try:
+    components.dump(path)
+  finally:
+    os.close(fd)
+  print("path: %s"%path)
+
+"""
+# write the data in a temp file
+import sys
+sys.path.append("/usr/local/lib/python3.1/dist-packages")
+import morse.builder.generator
+morse.builder.generator.test()
+"""
 
