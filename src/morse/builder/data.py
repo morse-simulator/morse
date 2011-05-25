@@ -16,7 +16,9 @@ MORSE_MIDDLEWARE_DICT = {
   'ros_empty': {
     'morse_vw_control': ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'],
     'morse_camera': ['ROS', 'post_image', 'morse/middleware/ros/camera'],
-    'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
+    'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'], # TMP
+    'morse_sick_180': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
+    'morse_sick_270': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
     'morse_odometry': ['ROS', 'post_twist', 'morse/middleware/ros/odometry_sensor'],
     'morse_pose': ['ROS', 'post_odometry_transform', 'morse/middleware/ros/pose'],
     'morse_GPS': ['ROS', 'post_message'],
@@ -570,11 +572,19 @@ MORSE_COMPONENTS_DICT = {
    "CameraCube", 
    "Camera_Support"
   ], 
+  "morse_sick_180": [
+   "Sick", 
+   "Sick_Model", 
+   "Arc_180"
+  ], 
+  "morse_sick_270": [
+   "Sick", 
+   "Sick_Model", 
+   "Arc_270"
+  ], 
   "morse_sick": [
    "Sick", 
    "Sick_Model", 
-   #"Sick_Model_Heavy", 
-   #"Arc_270", 
    "Arc_180"
   ], 
   "morse_proximity": [
