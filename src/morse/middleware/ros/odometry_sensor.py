@@ -1,7 +1,7 @@
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('geometry_msgs')
 import rospy
 import std_msgs
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
 import GameLogic
 import math
@@ -21,7 +21,7 @@ def init_extra_module(self, component_instance, function, mw_data):
  
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     if mw_data[1] == "post_pose":  
-        self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Pose))
+        self._topics.append(rospy.Publisher(parent_name + "/" + component_name, PoseStamped))
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Twist)) 
     
@@ -31,18 +31,21 @@ def post_pose(self, component_instance):
     """ Publish the data of the Odometry-sensor as a ROS-Pose message
     """
     parent_name = component_instance.robot_parent.blender_obj.name
-    pose = Pose()
+    pose = PoseStamped()
         
-    pose.position.x = component_instance.local_data['dx']
-    pose.position.y = component_instance.local_data['dy']
-    pose.position.z = component_instance.local_data['dz']
+    pose.pose.position.x = component_instance.local_data['dx']
+    pose.pose.position.y = component_instance.local_data['dy']
+    pose.pose.position.z = component_instance.local_data['dz']
     euler = mathutils.Euler((component_instance.local_data['droll'], component_instance.local_data['dpitch'], component_instance.local_data['dyaw']))
     quaternion = euler.to_quat()
-    pose.orientation.w = quaternion.w
-    pose.orientation.x = quaternion.x
-    pose.orientation.y = quaternion.y
-    pose.orientation.z = quaternion.z
-          
+    pose.pose.orientation.w = quaternion.w
+    pose.pose.orientation.x = quaternion.x
+    pose.pose.orientation.y = quaternion.y
+    pose.pose.orientation.z = quaternion.z
+    
+    pose.header.time = rospy.Time.now()
+    pose.header.frame_id = "/odom"
+
     for topic in self._topics: 
         # publish the message on the correct topic    
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name): 
