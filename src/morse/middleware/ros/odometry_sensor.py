@@ -25,6 +25,10 @@ def init_extra_module(self, component_instance, function, mw_data):
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Twist)) 
     
+    # Tick rate is the real measure of time in Blender.
+    # By default it is set to 60, regardles of the FPS
+    # If logic tick rate is 60, then: 1 second = 60 ticks
+    component_instance.ticks = GameLogic.getLogicTicRate()
     print('######## ROS POSE PUBLISHER INITIALIZED ########')
 
 def post_pose(self, component_instance):
@@ -33,10 +37,13 @@ def post_pose(self, component_instance):
     parent_name = component_instance.robot_parent.blender_obj.name
     pose = PoseStamped()
         
-    pose.pose.position.x = component_instance.local_data['dx']
-    pose.pose.position.y = component_instance.local_data['dy']
-    pose.pose.position.z = component_instance.local_data['dz']
-    euler = mathutils.Euler((component_instance.local_data['droll'], component_instance.local_data['dpitch'], component_instance.local_data['dyaw']))
+    pose.pose.position.x = component_instance.local_data['dx'] * component_instance.ticks
+    pose.pose.position.y = component_instance.local_data['dy'] * component_instance.ticks
+    pose.pose.position.z = component_instance.local_data['dz'] * component_instance.ticks
+    droll = component_instance.local_data['droll'] * component_instance.ticks
+    dpitch = component_instance.local_data['dpitch'] * component_instance.ticks
+    dyaw = component_instance.local_data['dyaw'] * component_instance.ticks
+    euler = mathutils.Euler((droll, dpitch, dyaw))
     quaternion = euler.to_quat()
     pose.pose.orientation.w = quaternion.w
     pose.pose.orientation.x = quaternion.x
@@ -57,12 +64,12 @@ def post_twist(self, component_instance):
     parent_name = component_instance.robot_parent.blender_obj.name
     twist = Twist()
         
-    twist.linear.x = component_instance.local_data['dx']
-    twist.linear.y = component_instance.local_data['dy']
-    twist.linear.z = component_instance.local_data['dz']
-    twist.angular.x = component_instance.local_data['droll']
-    twist.angular.y = component_instance.local_data['dpitch']
-    twist.angular.z = component_instance.local_data['dyaw']
+    twist.linear.x = component_instance.local_data['dx'] * component_instance.ticks
+    twist.linear.y = component_instance.local_data['dy'] * component_instance.ticks
+    twist.linear.z = component_instance.local_data['dz'] * component_instance.ticks
+    twist.angular.x = component_instance.local_data['droll'] * component_instance.ticks
+    twist.angular.y = component_instance.local_data['dpitch'] * component_instance.ticks
+    twist.angular.z = component_instance.local_data['dyaw'] * component_instance.ticks
           
     for topic in self._topics: 
         # publish the message on the correct topic    
