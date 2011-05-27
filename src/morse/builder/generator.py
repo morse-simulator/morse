@@ -31,12 +31,13 @@ class ComponentsData(object):
     """ bpy.data.libraries.load(path) is 2.57 OK (but 2.56 NOK!)
     """
     objects = []
-    with bpy.data.libraries.load(blend) as (src, dest):
+    with bpy.data.libraries.load(blend) as (src, _):
       objects = src.objects
     return objects
   def dump(self, dest):
     with open(dest, 'w') as fdict:
       json.dump(self.data, fdict, indent=1)
+    # TODO pprint.pprint
   @property
   def data(self):
     return self._data
