@@ -43,7 +43,7 @@ def post_pose(self, component_instance):
     pose.pose.orientation.y = quaternion.y
     pose.pose.orientation.z = quaternion.z
     
-    pose.header.time = rospy.Time.now()
+    pose.header.stamp = rospy.Time.now()
     pose.header.frame_id = "/odom"
 
     for topic in self._topics: 
