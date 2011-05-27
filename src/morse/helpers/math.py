@@ -123,3 +123,9 @@ def print_vector (vector):
     """ print a vector with 4 decimals per value """
     line = "[%.4f %.4f %.4f]" % (vector[0], vector[1], vector[2])
     print (line)
+
+
+def fill_vector(vector, point):
+    """ Copy the contents of a list into an existing vector structure. """
+    for i in range(3):
+        vector[i] = point[i]
