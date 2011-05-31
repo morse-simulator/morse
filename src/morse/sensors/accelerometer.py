@@ -19,15 +19,24 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.ppx = 0.0
         self.ppy = 0.0
         self.ppz = 0.0
+        # Variables to store the previous angle position
+        self.pproll = 0.0
+        self.pppitch = 0.0
+        self.ppyaw = 0.0
         # Variables to store the previous velocity
         self.pvx = 0.0
         self.pvy = 0.0
         self.pvz = 0.0
+        # Variables to store the previous angle velocity ( in rad)
+        self.pvroll = 0.0
+        self.pvpitch = 0.0
+        self.pvyaw = 0.0
+
         # Make a new reference to the sensor position
         self.p = self.blender_obj.position
-        self.v = [0.0, 0.0, 0.0]            # Velocity
-        self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
-        self.a = [0.0, 0.0, 0.0]            # Acceleration
+        self.v = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]            # Velocity
+        self.pv = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]           # Previous Velocity
+        self.a = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]            # Acceleration
 
         # Tick rate is the real measure of time in Blender.
         # By default it is set to 60, regardles of the FPS
@@ -35,8 +44,8 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.ticks = GameLogic.getLogicTicRate()
 
         self.local_data['distance'] = 0.0
-        self.local_data['velocity'] = [0.0, 0.0, 0.0]
-        self.local_data['acceleration'] = [0.0, 0.0, 0.0]
+        self.local_data['velocity'] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.local_data['acceleration'] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         print ('######## ACCELEROMETER INITIALIZED ########')
 
@@ -60,26 +69,43 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.local_data['distance'] = math.sqrt(dx**2 + dy**2 + dz**2)
         #print ("DISTANCE: %.4f" % self.local_data['distance'])
 
-        # Store the position in this instant
+        # Compute the difference in angles with the previous loop
+        droll = self.position_3d.roll - self.pproll
+        dpitch = self.position_3d.pitch - self.pppitch
+        dyaw = self.position_3d.yaw - self.ppyaw
+        
+         # Store the position in this instant
         self.ppx = self.p[0]
         self.ppy = self.p[1]
         self.ppz = self.p[2]
+        self.pproll = self.position_3d.roll
+        self.pppitch = self.position_3d.pitch
+        self.ppyaw = self.position_3d.yaw
 
         # Scale the speeds to the time used by Blender
         self.v[0] = dx * self.ticks
         self.v[1] = dy * self.ticks
         self.v[2] = dz * self.ticks
-        #print ("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2]))
+        self.v[3] = droll * self.ticks
+        self.v[4] = dpitch * self.ticks
+        self.v[5] = dyaw * self.ticks
+        #print ("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5]))
 
         self.a[0] = (self.v[0] - self.pvx) * self.ticks
         self.a[1] = (self.v[1] - self.pvy) * self.ticks
         self.a[2] = (self.v[2] - self.pvz) * self.ticks
-        #print ("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2]))
+        self.a[3] = (self.v[3] -self.pvroll) * self.ticks
+        self.a[4] = (self.v[4] -self.pvpitch) * self.ticks
+        self.a[5] = (self.v[5] -self.pvyaw) * self.ticks
+        #print ("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5]))
 
         # Update the data for the velocity
         self.pvx = self.v[0]
         self.pvy = self.v[1]
         self.pvz = self.v[2]
+        self.pvroll = self.v[3]
+        self.pvpitch = self.v[4]
+        self.pvyaw = self.v[5]
 
         # Store the important data
         self.local_data['velocity'] = self.v
