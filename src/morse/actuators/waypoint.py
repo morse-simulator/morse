@@ -19,6 +19,7 @@ import math
 import GameLogic
 import mathutils
 import morse.core.actuator
+from morse.core.services import service
 from morse.core.services import async_service
 from morse.core import status
 
@@ -95,12 +96,32 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @async_service
     def goto(self, x, y, z, tolerance=0.5, speed=1.0):
+        """ Provide new coordinates for the waypoint destination """
         #self._set_service_callback()
         self.local_data['x'] = x
         self.local_data['y'] = y
         self.local_data['z'] = z
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
+
+
+    @service
+    #@async_service
+    def stop(self):
+        """ Interrup the movement of the robot """
+        #self._set_service_callback()
+        self.local_data['x'] = self.blender_obj.worldPosition[0]
+        self.local_data['y'] = self.blender_obj.worldPosition[1]
+        self.local_data['z'] = self.blender_obj.worldPosition[2]
+        self.local_data['tolerance'] = 0.5
+
+        return (status.SUCCESS, self.robot_parent.move_status)
+
+
+    @service
+    def get_status(self):
+        """ Return the current status (Transit or Stop) """
+        return (status.SUCCESS, self.robot_parent.move_status)
 
 
     def default_action(self):
