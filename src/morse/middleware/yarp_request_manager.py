@@ -75,26 +75,28 @@ class YarpRequestManager(RequestManager):
         self.yarp_object = self._yarp_module.Network()
 
         # Create the names of the ports
-        port_name = '/{0}/{1}'.format(component, service)
+        port_name = '/{0}'.format(component)
+        #port_name = '/{0}/{1}'.format(component, service)
         request_port_name = '/ors/services{0}/request'.format(port_name)
         reply_port_name = '/ors/services{0}/reply'.format(port_name)
 
-        # Create the ports to accept and reply to requests
-        request_port = self._yarp_module.BufferedPortBottle()
-        reply_port = self._yarp_module.BufferedPortBottle()
-        request_port.open(request_port_name)
-        reply_port.open(reply_port_name)
-        self._yarp_request_ports[port_name] = request_port
-        self._yarp_reply_ports[port_name] = reply_port
+        if not port_name in self._yarp_request_ports.keys():
+            # Create the ports to accept and reply to requests
+            request_port = self._yarp_module.BufferedPortBottle()
+            reply_port = self._yarp_module.BufferedPortBottle()
+            request_port.open(request_port_name)
+            reply_port.open(reply_port_name)
+            self._yarp_request_ports[port_name] = request_port
+            self._yarp_reply_ports[port_name] = reply_port
         
-        # Create bottles to use in the responses
-        bottle_in = self._yarp_module.Bottle()
-        self._in_bottles[port_name] = bottle_in
-        bottle_reply = self._yarp_module.Bottle()
-        self._reply_bottles[port_name] = bottle_reply
+            # Create bottles to use in the responses
+            bottle_in = self._yarp_module.Bottle()
+            self._in_bottles[port_name] = bottle_in
+            bottle_reply = self._yarp_module.Bottle()
+            self._reply_bottles[port_name] = bottle_reply
 
-        print("Yarp service manager now listening on port " + request_port_name + ".")
-        print("Yarp service manager will reply on port " + reply_port_name + ".")
+            print("Yarp service manager now listening on port " + request_port_name + ".")
+            print("Yarp service manager will reply on port " + reply_port_name + ".")
 
         return True
 
