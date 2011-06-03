@@ -45,7 +45,7 @@ class BlenderComponent(AbstractComponent):
   """
   def __init__(self, object_type='EMPTY', object_name=None, 
       object_location=(0.0, 0.0, 0.0), object_rotation=(0.0, 0.0, 0.0)):
-    Component.__init__(self)
+    AbstractComponent.__init__(self)
     bpy.ops.object.select_all(action = 'DESELECT')
     bpy.ops.object.add(type = object_type, location=object_location, 
         rotation=object_rotation)
@@ -63,7 +63,7 @@ class ATRV(AbstractComponent):
     bpy.ops.wm.collada_import(filepath="/usr/local/share/data/morse/components/robots/atrv.dae")
     tmp=bpy.context.selected_objects[0]
     # collada_import only select the last imported object
-    # which can be a wheel
+    # which can be a wheel (equivalent to bpy.data.objects[-1])
     while tmp.parent != None:
       tmp = tmp.parent
     self._blendobj = tmp
@@ -90,6 +90,34 @@ class ATRV(AbstractComponent):
     self._blendobj.game.collision_bounds_type = 'CONVEX_HULL'
     self._blendobj.game.collision_margin = .05
 
+class ROSMW(AbstractComponent):
+  """ Add MotionControler 100% Python
+
+  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Controller.html#bpy.types.Controller.link
+  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.sensor_add
+  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.controller_add
+  """
+  def __init__(self):
+    AbstractComponent.__init__(self)
+    bpy.ops.object.select_all(action = 'DESELECT')
+    bpy.ops.object.add() # default is empty
+    self._blendobj = bpy.context.selected_objects[0]
+    self._blendobj.name = 'ROS_Empty'
+    self._blendname = 'ros_empty' # for mw config
+    self.properties(Middleware_Tag = True, Class = "ROSClass", 
+        Path = "morse/middleware/ros_mw")
+    bpy.ops.object.select_all(action = 'DESELECT')
+    bpy.ops.object.select_name(name = self._blendobj.name)
+    bpy.ops.logic.sensor_add()
+    sensor = self._blendobj.game.sensors.keys()[-1]
+    self._blendobj.game.sensors[sensor].use_pulse_true_level = True
+    bpy.ops.logic.controller_add(type='PYTHON')
+    controller = self._blendobj.game.controllers.keys()[-1]
+    self._blendobj.game.controllers[controller].mode = 'MODULE'
+    self._blendobj.game.controllers[controller].module = 'calling.mw_action'
+    self._blendobj.game.controllers[controller].link( sensor = 
+        self._blendobj.game.sensors[sensor] )
+
 def print_prop(obj):
   for p in obj.game.properties.keys():
     print("%s = %s, "%(p,obj.game.properties[p].value))
@@ -97,6 +125,13 @@ def print_prop(obj):
 def delete_all():
   bpy.ops.object.select_all(action='SELECT')
   bpy.ops.object.delete()
+
+def new_text(name="tmp.py", text="#hello"):
+  bpy.ops.text.new()
+  txt=bpy.data.texts[-1]
+  txt.name=name
+  txt.write(text)
+
 
 def import_scene(filepath = "/usr/local/share/data/morse/morse_default.blend"):
   delete_all()
