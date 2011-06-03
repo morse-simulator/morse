@@ -7,10 +7,10 @@ Morse Builder API
 
 To test this module you can c/p the following code in Blender Python console::
 
-  import sys
-  sys.path.append("/usr/local/lib/python3.1/dist-packages")
-  from morse.builder.morsebuilder import *
-  atrv=Robot("atrv")
+import sys
+sys.path.append("/usr/local/lib/python3.1/dist-packages")
+from morse.builder.morsebuilder import *
+atrv=Robot("atrv")
 
 The string passed to the differents Components Classes must be an existing 
 .blend file-name, ie. for ``Robot("atrv")`` the file ``atrv.blend`` must exists 
@@ -97,7 +97,7 @@ class AbstractComponent(object):
     old = self._blendobj.rotation_euler
     self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
   def properties(self, **kwargs):
-    """ add/modify the game properties of the Blender object
+    """ Add/modify the game properties of the Blender object
 
     http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game
     http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties
