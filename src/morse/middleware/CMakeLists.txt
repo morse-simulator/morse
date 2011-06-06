@@ -11,7 +11,7 @@ endif()
 IF(BUILD_YARP2_SUPPORT)
 	INSTALL(DIRECTORY yarp
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py. EXCLUDE
+        REGEX .*py.$ EXCLUDE
         )
 	INSTALL(FILES yarp_mw.py yarp_request_manager.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware
@@ -27,7 +27,7 @@ ENDIF(BUILD_POCOLIBS_SUPPORT)
 IF(BUILD_ROS_SUPPORT)
   INSTALL(DIRECTORY ros
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py. EXCLUDE
+        REGEX .*py.$ EXCLUDE
         )
   INSTALL(FILES ros_mw.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
