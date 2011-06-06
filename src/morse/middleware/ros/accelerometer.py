@@ -34,10 +34,7 @@ def post_twist(self, component_instance):
     twist.linear.x = component_instance.local_data['velocity'][0]
     twist.linear.y = component_instance.local_data['velocity'][1]
     twist.linear.z = component_instance.local_data['velocity'][2]
-    twist.angular.x =component_instance.local_data['velocity'][3]
-    twist.angular.y =  component_instance.local_data['velocity'][4]
-    twist.angular.z = component_instance.local_data['velocity'][5]
-
+    
     for topic in self._topics: 
         # publish the message on the correct topic    
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name): 
