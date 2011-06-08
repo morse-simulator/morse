@@ -7,11 +7,11 @@ Sensors,
 ``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ 
 ``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``
 ``Semantic camera``,          ✔,               ✔,           ✔,              ✘,               ✔ ``VimanObjectPublicArray``
-``GPS``,                      ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``
+``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,               ✔ ``POM_SENSOR_POS``
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``
 ``Generic joint state``,      ✔,               ✔,           ✔,              ✔ ``TF``,        ✘
-``Pan-Tilt unit``,            ✔,               ✔,           ✔,              ✔,               ✘
+``Pan-Tilt unit``,            ✔,               ✔,           ✔,              ✔ ``JointState``,               ✘
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,               ✘
 ``Laser range finder``,       ✔,               ✔,           "✔``List (x, y, z)``",             "✔ ``LaserScan``, ``PointCloud``",   ✘ 
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``          
@@ -20,6 +20,6 @@ Actuators,
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘
 "``(v, ω) motion control``",    ✘,               ✔,           ✔,             "✔ ``Twist`` - supports as well (Vx, Vy, ω)",    "✔ ``GENPOS_CART_SPEED``"
 ``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘
-``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✘,               ✔ ``LWR_ARM_INST``
-``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✔,               ✘
-``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔,               ✔ ``POM_SE_POSTER`` (not tested)
+``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,              ✔ ``LWR_ARM_INST``
+``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✘
+``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` (not tested)
