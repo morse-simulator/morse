@@ -53,8 +53,25 @@ documentation.
 
     - ``read_waypoint``: Reads a ``geometry_msgs/Pose2D`` message from the specific ROS-topic and stores values for ``x``, ``y`` and ``z`` in ``local_data``. This is designed to be used with the waypoint actuator
 
+- Platine controller: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/platine.py``.
+  Available methods:
+
+    - ``read_Vector3``: Reads a ``geometry_msgs/Vector3`` message from the specific ROS-topic and sets the local data for "pan" and "tilt" according to the rotation axis (pan: y-axis, tilt: z-axis)
+
+- GPS sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/gps.py``.
+  Available methods:
+
+    - ``post_poseStamped``: Reads sensor-information from the simulated GPS sensor and publishes them as a ``geometry_msgs/PoseStamped`` message.
+    - ``post_odometry``: Reads sensor-information from the simulated GPS sensor and publishes them as a ``nav_msgs/Odometry`` message.
+
+- Kuka-Arm controller: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/kuka_jointState.py``.
+  Available methods:
+
+    - ``read_jointState``: Reads a ``sensor_msgs/JointState`` message from the specific ROS-topic and and applies the KuKa-arm-movement according to them. NOTE: The JointState-messages must have a data array of length 7.
+
 - SICK laserscanner: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/sick.py``.
   Available methods:
+
     - ``post_2DLaserScan``: Reads sensor-information from the simulated SICK-laserscanner and publishes them as a ``sensor_msgs/PointCloud`` message.
 
 - Pose sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/pose.py``.
@@ -66,14 +83,14 @@ documentation.
 - Odometry sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/odometry_sensor.py``.
   It has two available methods:
 
-    - ``post_pose``: Reads sensor-information from the pose sensor publishes them as a ``geometry_msgs/Pose`` message.
+    - ``post_pose``: Reads sensor-information from the pose sensor publishes them as a ``geometry_msgs/PoseStamped`` message.
     - ``post_twist``: Reads sensor-information from the pose sensor publishes them as a ``geometry_msgs/Twist`` message.
       NOTE: The angular part of the twist messages is build as follows: (x,y,z) = (roll, pitch, yaw)
 
-- Kuka posture senor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/kuka_posture.py``.
-  It has two available methods:
+- IMU sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/imu.py``. 
+  It has one available method:
 
-    - ``post_jointState``: Reads sensor-information from the kuka_posture sensor and publishes them as a ``sensor_msgs/JointState`` message.
+    - ``post_velocity_twist``: Reads velocity-information from the IMU sensor and publishes them as a ``geometry_msgs/Twist`` message.
 
 - camera sensor: Stored in the file  ``$MORSE_ROOT/src/morse/middleware/ros/camera.py``.
   It has one available method:
