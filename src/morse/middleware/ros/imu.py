@@ -19,7 +19,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     component_instance.output_functions.append(function)
 
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    if mw_data[1] == "post_twist":  
+    if mw_data[1] == "post_velocity_twist":  
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Twist))
 
     print('######## IMU-SENSOR INITIALIZED ########')
