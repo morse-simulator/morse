@@ -24,7 +24,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     print('######## IMU-SENSOR INITIALIZED ########')
 
-def post_twist(self, component_instance):
+def post_velocity_twist(self, component_instance):
     """ Publish the data of the Odometry-sensor as a ROS-Pose message
     """
     parent_name = component_instance.robot_parent.blender_obj.name
