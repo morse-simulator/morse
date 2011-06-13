@@ -1,7 +1,10 @@
 Inertial measurement unit (IMU)
-====================
+===============================
 
-This sensor emulates an Inertial measurement unit, measuring the distance that a robot has moved and the angles the robot has turned in 3D. Also the velcity and acceleration for each of these values is available. The arrays are in the following format: [x, y, z, roll, pitch, yaw]
+This sensor emulates an Inertial measurement unit, measuring the distance that
+a robot has moved and the angles the robot has turned in 3D. Also the velocity
+and acceleration for each of these values is available. The arrays are in the
+following format: [x, y, z, roll, pitch, yaw]
 
 Files
 -----
