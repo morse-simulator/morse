@@ -14,10 +14,21 @@ try:
 except ImportError as detail:
     print ("WARNING: ", detail, ". No middlewares will be configured")
 
+# The file scene_config.py is at the moment included
+#  in the .blend file of the scene
+# Used to setup the multinode information
+try:
+    import scene_config
+except ImportError as detail:
+    print ("WARNING: ", detail, ". No scene configuration file found.")
+
+# Multi-node simulation
+import morse.core.multinode
+
 # The service management
 from morse.core.services import MorseServices
-
 from morse.core.exceptions import MorseServiceError
+
 
 # Create a list of the robots in the scene
 def create_dictionaries ():
@@ -35,6 +46,11 @@ def create_dictionaries ():
     # Create a dictionary of the robots in the scene
     if not hasattr(GameLogic, 'robotDict'):
         GameLogic.robotDict = {}
+
+    # Create a dictionary of the external robots in the scene
+    # Used for the multi-node simulation
+    if not hasattr(GameLogic, 'externalRobotDict'):
+        GameLogic.externalRobotDict = {}
 
     # Create a dictionary with the modifiers
     if not hasattr(GameLogic, 'modifierDict'):
@@ -68,10 +84,23 @@ def create_dictionaries ():
                 GameLogic.robotDict[obj] = instance
             else:
                 return False
-        except KeyError:
+        except KeyError as detail:
             pass
             #sys.exc_clear()    # Clears the last exception thrown
                                 # Does not work in Python 3
+
+    """
+    # Get the external robots (used in multi node simulation)
+    for obj in scene.objects:
+        try:
+            obj['External_Robot_Tag']
+            # Make a list of the robots that are marked as external
+            er_data = [obj, obj.worldPosition, obj.worldOrientation]
+            GameLogic.externalRobotDict[obj] = er_data
+        except KeyError as detail:
+            pass
+    """
+
 
     # Get the robot and its instance
     for obj, robot_instance in GameLogic.robotDict.items():
@@ -143,6 +172,10 @@ def check_dictionaries():
         print ("\tROBOT: '{0}'".format(obj))
         for component in robot_instance.components:
             print ("\t\t- Component: '{0}'".format(component))
+
+    print ("GameLogic has the following external robots:")
+    for obj, robot_position in GameLogic.externalRobotDict.items():
+        print ("\tROBOT: '{0}'".format(obj))
 
     print ("\nGameLogic has the following components:")
     for obj, component_variables in GameLogic.componentDict.items():
@@ -288,7 +321,6 @@ def link_services():
     return True
 
 
-
 def add_modifiers():
     """ Read the configuration script (inside the .blend file)
         and assign the correct data modifiers to each component. """
@@ -324,11 +356,26 @@ def add_modifiers():
     # Will return true always (for the moment)
     return True
 
+
 def init(contr):
     """ General initialization of MORSE
 
     Here, all components, modifiers and middleware are initialized.
     """
+    # Configuration for the multi-node simulation
+    try:
+        node_name = scene_config.node_config["node_name"]
+        server_address = scene_config.node_config["server_address"]
+        server_port = scene_config.node_config["server_port"]
+    #except NameError as detail:
+        #print ("No definition file for 'multi-node' instance found. Using only single node")
+    #except AttributeError as detail:
+    except (NameError, AttributeError) as detail:
+        print ("WARNING: No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+        node_name = "temp_name"
+        server_address = "localhost"
+        server_port = 65000
+    GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
 
     print ('\n######## SERVICES INITIALIZATION ########')
     init_services()
@@ -425,6 +472,10 @@ def simulation_main(contr):
         # let the service managers process their inputs/outputs
         GameLogic.morse_services.process()
 
+    # Register the locations of all the robots handled by this node
+    #if hasattr(GameLogic, "multi_node"):
+    GameLogic.node_instance.synchronise_world(GameLogic)
+
 
 def switch_camera(contr):
     """ Cycle through the cameras in the scene during the game.
@@ -464,6 +515,9 @@ def close_all(contr):
             #print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
             del obj
 
+    print ('######### CLOSING MULTINODE... ########')
+    GameLogic.node_instance.finish_node()
+
 
 def finish(contr):
     """Close the open ports."""
@@ -491,6 +545,7 @@ def restart(contr):
         print ("### Replacing everything ###")
         reset_objects(contr)
         return
+
 
 def reset_objects(contr):
     """ Place all objects in the initial position

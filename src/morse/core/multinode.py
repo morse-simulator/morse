@@ -13,6 +13,7 @@ class SimulationNodeClass (object):
     node_socket = None
     host = "localhost"
     port = 65000
+    connected = False
 
     out_data = {}
 
@@ -20,7 +21,7 @@ class SimulationNodeClass (object):
         self.node_name = name
         self.host = server_address
         self.port = server_port
-        self._init_socket()
+        self.connected = self._init_socket()
 
 
     def __del__(self):
@@ -29,18 +30,33 @@ class SimulationNodeClass (object):
     def _init_socket(self):
         """ Create the socket that will be used to commmunicate to the server
         """
-        print ("Connecting to port %s:%d" % (self.host, self.port))
+        #print ("Connecting to port %s:%d" % (self.host, self.port))
         try:
             self.node_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.node_socket.connect((self.host, self.port))
+            print ("Connection established to node manager (%s, %s)" % (self.host, self.port))
             return True
         except socket.error as detail:
-            print ("Unable to connect to server: ", detail)
+            print ("WARNING: Multi-node simulation not available!!")
+            print ("\tUnable to connect to server: (%s, %s)" % (self.host, self.port))
+            print ("\t%s" % detail)
             return False
 
 
     def _exchange_data(self, out_data):
         """ Send and receive pickled data through a socket """
+        # Use the existing socket connection
+        if self.connected:
+            message = pickle.dumps([self.node_name, out_data])
+            sock = self.node_socket
+            sock.send(message)
+            response = sock.recv(1024)
+            in_data = pickle.loads(response)
+            #print("Received: %s" % in_data)
+            return (in_data)
+
+        """
+        # Creating a new connection each time the synchronisation is done
         if self._init_socket():
             message = pickle.dumps([self.node_name, out_data])
             sock = self.node_socket
@@ -53,6 +69,7 @@ class SimulationNodeClass (object):
             return (in_data)
         else:
             return None
+        """
 
 
     def synchronise_world(self, GameLogic):
@@ -76,11 +93,14 @@ class SimulationNodeClass (object):
 
             # Update the positions of the external robots
             for obj_name, robot_data in in_data.items():
-                obj = scene.objects[obj_name]
-                if obj not in GameLogic.robotDict:
-                    #print ("Data received: ", robot_data)
-                    obj.worldPosition = robot_data[0]
-                    obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()
+                try:
+                    obj = scene.objects[obj_name]
+                    if obj not in GameLogic.robotDict:
+                        #print ("Data received: ", robot_data)
+                        obj.worldPosition = robot_data[0]
+                        obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()
+                except KeyError as detail:
+                    print ("Robot %s not found in this simulation scenario, but present in another node. Ignoring it!" % detail)
 
 
     def finish_node(self):
