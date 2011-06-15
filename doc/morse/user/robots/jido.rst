@@ -17,3 +17,6 @@ set to use Inverse Kinematics to follow an Empty object called
 **Target_Empty**. The IK solver is only available during execution of
 the simulation in Blender version 2.5 or higher.
 
+Use the **Properties >> Physics** panel in Blender to adjust the **Mass** of the robot.
+
+The friction coefficient of the robot can be adjusted in the **Properties >> Material** panel.
