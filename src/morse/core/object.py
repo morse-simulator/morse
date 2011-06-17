@@ -107,7 +107,9 @@ class MorseObjectClass(object):
         not usually be directly called.
         """
         if self.on_completion:
-            raise MorseRPCInvokationError("A request is already ongoing")
+            import morse.core.status
+            self.on_completion((morse.core.status.PREEMPTED, "New request received"))
+            #raise MorseRPCInvokationError("A request is already ongoing")
 
         self.on_completion = cb
  

@@ -91,7 +91,6 @@ class AbstractComponent(object):
     self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
   def rotate(self, x=0.0, y=0.0, z=0.0):
     """ cf. Object.rotation_euler (x*math.pi/180)
-
     http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler
     Rotation in Eulers, float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
     """

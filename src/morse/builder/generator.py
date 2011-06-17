@@ -2,6 +2,10 @@ import os
 import bpy
 import json
 
+# XXX Hard-coded PATH, must be fixed
+
+MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
+
 """
 components-dictionary-convention:
 {
@@ -60,4 +64,3 @@ sys.path.append("/usr/local/lib/python3.1/dist-packages")
 import morse.builder.generator
 morse.builder.generator.test()
 """
-

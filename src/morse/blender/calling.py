@@ -18,9 +18,14 @@ def robot_action(contr):
         obj = contr.owner
 
         # Get the intance of this objects class
-        robot_object = GameLogic.robotDict[obj]
-        if robot_object:
-            robot_object.action()
+        try:
+            robot_object = GameLogic.robotDict[obj]
+            if robot_object:
+                robot_object.action()
+        # Do nothing if the component was not initialised.
+        # Should be the case for external robots and components
+        except KeyError as detail:
+            pass
 
 
 def sensor_action(contr):
@@ -37,9 +42,14 @@ def sensor_action(contr):
         obj = contr.owner
         
         # Get the intance of this objects class
-        sensor_object = GameLogic.componentDict[obj.name]
-        if sensor_object:
-            sensor_object.action()
+        try:
+            sensor_object = GameLogic.componentDict[obj.name]
+            if sensor_object:
+                sensor_object.action()
+        # Do nothing if the component was not initialised.
+        # Should be the case for external robots and components
+        except KeyError as detail:
+            pass
 
 
 def actuator_action(contr):
@@ -56,9 +66,14 @@ def actuator_action(contr):
         obj = contr.owner
 
         # Get the instance of this objects class
-        actuator_object = GameLogic.componentDict[obj.name]
-        if actuator_object:
-            actuator_object.action()
+        try:
+            actuator_object = GameLogic.componentDict[obj.name]
+            if actuator_object:
+                actuator_object.action()
+        # Do nothing if the component was not initialised.
+        # Should be the case for external robots and components
+        except KeyError as detail:
+            pass
 
 
 def mw_action(contr):

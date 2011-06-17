@@ -45,7 +45,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                     vector_point = mathutils.Vector()
 
                     # Convert the vertex to a vector
-                    fill_vector (vector_point, vertex_pos)
+                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
 
                     # Skip the center vertex
                     # NOTE: Make sure the center vertex of the arc
@@ -92,7 +92,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                     vertex_pos = vertex.getXYZ()
 
                     # Convert the vertex to a vector
-                    fill_vector (vector_point, vertex_pos)
+                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
 
                     # Skip the center vertex
                     # NOTE: Make sure the center vertex of the arc
@@ -129,7 +129,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                         #print ("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
 
                         # Create a vector object
-                        fill_vector (vector_point, point)
+                        morse.helpers.math.fill_vector (vector_point, point)
 
                         # Multiply the resulting point by the inverse
                         #  of the sensor rotation matrix
@@ -150,7 +150,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                     # Otherwise return the vertex to its original position
                     else:
                         # Create a vector object
-                        fill_vector (vector_point, base_ray)
+                        morse.helpers.math.fill_vector (vector_point, base_ray)
                         # Give it the correct size
                         vector_point.normalize()
                         vector_point = vector_point * self.blender_obj['laser_range']
@@ -190,9 +190,3 @@ def valid_range(point_vector, radius):
         return False
     else:
         return True
-
-
-def fill_vector(vector, point):
-    """ Copy the contents of a list into an existing vector structure. """
-    for i in range(3):
-        vector[i] = point[i]

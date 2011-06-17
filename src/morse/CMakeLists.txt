@@ -6,7 +6,7 @@ INSTALL(FILES __init__.py #init_middleware.py
 
 INSTALL(DIRECTORY core actuators geolandloader helpers blender sensors robots builder
         DESTINATION ${PYTHON_INSTDIR}/morse
-        REGEX .*py. EXCLUDE
+        REGEX .*py.$ EXCLUDE
         )
 
 ADD_SUBDIRECTORY(modifiers)

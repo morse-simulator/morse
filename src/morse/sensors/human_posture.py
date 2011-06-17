@@ -86,9 +86,9 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
                 #rotation = channel.joint_rotation
                 #print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
                 if channel.name == 'Chest':
-                   self.local_data['dof_12'] = channel.joint_rotation[1] #y
-                   self.local_data['dof_13'] = channel.joint_rotation[2] #x
-                   self.local_data['dof_14'] = channel.joint_rotation[0] #z
+                   self.local_data['dof_12'] = channel.joint_rotation[2] #y
+                   self.local_data['dof_13'] = channel.joint_rotation[0] #x
+                   self.local_data['dof_14'] = channel.joint_rotation[1] #z
                 if channel.name == 'Head':
                    self.local_data['dof_15'] = - channel.joint_rotation[0] #z axis
                    self.local_data['dof_16'] = channel.joint_rotation[2] #x axis
