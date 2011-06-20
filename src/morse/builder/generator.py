@@ -1,10 +1,7 @@
 import os
 import bpy
 import json
-
-# XXX Hard-coded PATH, must be fixed
-
-MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
+from morse.builder.data import MORSE_COMPONENTS
 
 """
 components-dictionary-convention:
@@ -46,7 +43,7 @@ class ComponentsData(object):
   def data(self):
     return self._data
 
-def test():
+def generate():
   import tempfile
   import morse.builder.data
   components = ComponentsData(morse.builder.data.MORSE_COMPONENTS)

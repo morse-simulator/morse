@@ -1,30 +1,28 @@
 digraph G {
-	fontname = "Bitstream Vera Sans"
-	fontsize = 8
-	bgcolor="transparent"
-					    
-	node [
-		fontname = "Bitstream Vera Sans"
-		fontsize = 8
-		shape = "record"
-		fillcolor="white"
-		style="filled"
-	]
+  fontname = "DejaVu Sans Mono"
+  fontsize = 8
+  bgcolor = "transparent"
 
-	edge [
-		fontname = "Bitstream Vera Sans"
-		fontsize = 8
-		color="black"
-	]
+  node [
+    fontname = "DejaVu Sans Mono"
+    fontsize = 8
+    shape = "record"
+    fillcolor = "white"
+    style = "filled"
+  ]
+
+  edge [
+    fontname = "DejaVu Sans Mono"
+    fontsize = 8
+    color = "black"
+    arrowhead = empty
+  ]
 
   Configuration [
-    label="{Configuration|middleware : dict\lmodifier : dict\lservice : dict\l|write()\llink()\l}"
-  ]
-  AbstractComponent [
-    label="{AbstractComponent|\l|scale()\lname()\lproperty_new()\lrotation_euler()\lrotate()\llocation()\lposition()\ltranslate()\lproperties()\lappend()\l}"
+    label = "{Configuration|+ middleware : dict\l+ modifier : dict\l+ service : dict\l|+ write()\l+ link(Component [, config])\l}"
   ]
   Component [
-    label = "{Component|\l|}"
+    label="{Component|+ name : string\l+ location : Vector\l+ scale : Vector\l+ rotation_euler : Vector\l|+ translate(float x, float y, float z)\l+ rotate(float x, float y, float z)\l+ properties(dict)\l+ append(Component)\l}"
   ]
   Robot [
     label = "{Robot|\l|}"
@@ -36,14 +34,17 @@ digraph G {
     label = "{Controller|\l|}"
   ]
   Middleware [
-    label = "{Middleware | }"
-    label="{Middleware|\l|configure()\l}"
+    label = "{Middleware|\l|+ configure(Component [, config])\l}"
   ]
 
-  Component -> AbstractComponent
   Robot -> Component
   Sensor -> Component
   Controller -> Component
   Middleware -> Component
-  Configuration
+  Component -> Configuration [arrowhead=open, arrowtail=diamond, 
+    label=" _config ", headlabel=" 1 ", taillabel=" 1 ", labelfontcolor="turquoise"]
+  Component -> Component [arrowhead=open, arrowtail=ediamond, 
+    label=" children ", headlabel=" 1 ", taillabel=" * ", labelfontcolor="turquoise"]
+  // http://www.graphviz.org/doc/info/attrs.html#k:arrowType
 }
+
