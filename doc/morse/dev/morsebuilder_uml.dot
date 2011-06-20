@@ -1,0 +1,49 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	bgcolor="transparent"
+					    
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+		fillcolor="white"
+		style="filled"
+	]
+
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		color="black"
+	]
+
+  Configuration [
+    label="{Configuration|middleware : dict\lmodifier : dict\lservice : dict\l|write()\llink()\l}"
+  ]
+  AbstractComponent [
+    label="{AbstractComponent|\l|scale()\lname()\lproperty_new()\lrotation_euler()\lrotate()\llocation()\lposition()\ltranslate()\lproperties()\lappend()\l}"
+  ]
+  Component [
+    label = "{Component|\l|}"
+  ]
+  Robot [
+    label = "{Robot|\l|}"
+  ]
+  Sensor [
+    label = "{Sensor|\l|}"
+  ]
+  Controller [
+    label = "{Controller|\l|}"
+  ]
+  Middleware [
+    label = "{Middleware | }"
+    label="{Middleware|\l|configure()\l}"
+  ]
+
+  Component -> AbstractComponent
+  Robot -> Component
+  Sensor -> Component
+  Controller -> Component
+  Middleware -> Component
+  Configuration
+}
