@@ -22,6 +22,9 @@ class Configuration(object):
     self.middleware = {}
     self.modifier = {}
     self.service = {}
+    if not 'component_config.py' in bpy.data.texts.keys():
+      bpy.ops.text.new()
+      bpy.data.texts[-1].name = 'component_config.py'
   def write(self):
     cfg = bpy.data.texts['component_config.py']
     cfg.clear()
@@ -78,39 +81,42 @@ class AbstractComponent(object):
   @rotation_euler.setter
   def rotation_euler(self, xyz):
     self._blendobj.rotation_euler = xyz
-  def position(self, x=0.0, y=0.0, z=0.0):
-    self._blendobj.location = (x,y,z)
   def translate(self, x=0.0, y=0.0, z=0.0):
-    """ cf. Object.location
+    """ Location of the object, float array of 3 items in [-inf, inf], 
+    default (0.0, 0.0, 0.0)
 
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location
-    Location of the object, float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+    cf. `bpy.types.Object.location 
+    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
     """
     old = self._blendobj.location
     self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
   def rotate(self, x=0.0, y=0.0, z=0.0):
-    """ cf. Object.rotation_euler (x*math.pi/180)
+    """ Rotation in Eulers, float array of 3 items in [-inf, inf], 
+    default (0.0, 0.0, 0.0)
 
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler
-    Rotation in Eulers, float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+    cf. `bpy.types.Object.rotation_euler 
+    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
     """
     old = self._blendobj.rotation_euler
     self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
   def properties(self, **kwargs):
     """ Add/modify the game properties of the Blender object
 
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty
+    `bpy.types.Object.game 
+    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game>`_
+    `bpy.types.GameObjectSettings.properties 
+    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
+    `bpy.types.GameProperty 
+    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
     """
     prop = self._blendobj.game.properties
     for k in kwargs.keys():
       if k in prop.keys():
         prop[k].value = kwargs[k]
       else:
-        self.property_new(k, kwargs[k])
+        self._property_new(k, kwargs[k])
 
-  def property_new(self, n, v, t=None):
+  def _property_new(self, n, v, t=None):
     """ Add a new game property for the Blender object
 
     n: property name (string)
@@ -138,7 +144,11 @@ class timer(float):
 class Component(AbstractComponent):
   """ Append a morse-component to the scene
 
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.wm.html#bpy.ops.wm.link_append
+  cf. `bpy.ops.wm.link_append 
+  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
+   and 
+  `bpy.data.libraries.load 
+  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html>`_ 
   """
   def __init__(self, category, name):
     AbstractComponent.__init__(self)
@@ -171,8 +181,9 @@ class Controller(Component):
 class Middleware(Component):
   def __init__(self, name):
     Component.__init__(self, 'middleware', name)
-  def configure(self, component):
-    mw_config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
-    Component._config.link(component, mw_config)
+  def configure(self, component, config=None):
+    if not config:
+      config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
+    Component._config.link(component, config)
     Component._config.write()
 

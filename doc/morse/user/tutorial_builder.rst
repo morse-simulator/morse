@@ -3,24 +3,26 @@ Create your first simulation using the builder API
 
 This is an extension of the current :doc:`tutorial <tutorial>` using the Morse-builder tool to build your simulation (instead of the Blender graphical user-interface) and ROS as our middleware (instead of raw Socket). But the result will be the same!
 
-cf. https://github.com/pierriko/morse/blob/master/examples/morse/scenarii/ros_example.py
+cf. examples/morse/scenarii/ros_example.py
 
 Create the script
 -----------------
 
-In order to use the API, you should import::
+In order to use the API, you should import
+
+.. code-block:: python
 
     from morse.builder.morsebuilder import *
 
 Add a robot to the scene
 ++++++++++++++++++++++++
-::
+.. code-block:: python
 
     atrv = Robot('atrv')
 
 Append an actuator
 ++++++++++++++++++
-::
+.. code-block:: python
 
     motion = Controller('morse_vw_control')
     motion.translate(z=0.3)
@@ -28,7 +30,7 @@ Append an actuator
 
 Append a Gyroscope sensor
 +++++++++++++++++++++++++
-::
+.. code-block:: python
 
     gyroscope = Sensor('morse_gyroscope')
     gyroscope.translate(z=0.83)
@@ -39,13 +41,13 @@ Adding a middleware
 
 Insert the middleware object
 ++++++++++++++++++++++++++++
-::
+.. code-block:: python
 
     ros = Middleware('ros_empty')
 
 Configuring the middlewares
 +++++++++++++++++++++++++++
-::
+.. code-block:: python
 
     ros.configure(gyroscope)
     ros.configure(motion)
@@ -77,3 +79,10 @@ Use the example client program to test the bindings in the simulation
 #. Press :kbd:`q` to exit the client
 
 Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
+
+Go further
+----------
+
+If you want to learn more about the MORSE-builder API, see the dev/builder doc.
+
+
