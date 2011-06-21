@@ -4,9 +4,6 @@ import time
 import GameLogic
 import Rasterizer
 
-# Import this library to recover the Python version
-import platform
-
 # The file component_config.py is at the moment included
 #  in the .blend file of the scene
 try:
@@ -381,12 +378,11 @@ def init(contr):
     init_services()
 
     print ('\n######## SCENE INITIALIZATION ########')
-    # Get the version of Python used, according to the pythonpath
+    # Get the version of Python used
     # This is used to determine also the version of Blender
-    python_version = platform.python_version()
-    print ("Python Version: {0}".format(python_version))
-    # Chop the version to only 3 chars: #.#  and convert to a number
-    GameLogic.pythonVersion = float(python_version[:3])
+    GameLogic.pythonVersion = sys.version_info
+    print ("Python Version: {0}".format(GameLogic.pythonVersion))
+
     GameLogic.morse_initialised = False
     GameLogic.base_clock = time.clock()
     GameLogic.current_time = 0.0

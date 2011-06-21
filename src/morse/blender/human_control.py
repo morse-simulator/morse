@@ -16,12 +16,7 @@ import GameLogic
 import GameKeys
 import bge
 import math
-import sys
-if sys.version_info<(3,0,0):
-    import Mathutils as mathutils
-else:
-    import mathutils
-#import morse.helpers.place_object
+import mathutils
 
 def move(contr):
     """ Read the keys for specific combinations
