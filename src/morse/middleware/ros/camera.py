@@ -28,10 +28,6 @@ def post_image(self, component_instance):
     if image_local == None or image_local == '' or not component_instance.capturing:
         return # press [Space] key to enable capturing
 
-    # XXX Must not modify  image_local here, check that we can do it
-    # safely at the camera level (need to fix other middleware).
-
-    image_local.flip = True # GameLogic.video.source.flip (VideoTexture.ImageRender)
     parent_name = component_instance.robot_parent.blender_obj.name
 
     image = Image()

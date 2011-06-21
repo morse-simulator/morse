@@ -101,3 +101,10 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         print ("Camera {0}: Exporting an image of capsize: {1} pixels". \
                 format(self.name, GameLogic.cameras[self.name].source.capsize))
         print ("\tFocal length of the camera is: %s" % camera.lens)
+
+        # Reverse the image (boolean game-property)
+        # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
+        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
+        GameLogic.cameras[self.name].source.flip = self.blender_obj['flip']
+
+
