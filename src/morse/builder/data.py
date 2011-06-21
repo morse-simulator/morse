@@ -1,3 +1,5 @@
+from morse.builder.components import MORSE_COMPONENTS_DICT
+
 """
 MORSE_COMPONENTS: 
 path to the Morse components
@@ -33,6 +35,7 @@ MORSE_MIDDLEWARE_DICT = {
   }
 }
 
+<<<<<<< HEAD
 """
 components-dictionary-convention:
 {
@@ -639,3 +642,5 @@ MORSE_COMPONENTS_DICT = {
  }
 }
 
+=======
+>>>>>>> ef84480... simplify components dictonnary generation

@@ -1,5 +1,6 @@
 import os
 import bpy
+import json
 from morse.builder.data import *
 
 """
@@ -28,11 +29,11 @@ class Configuration(object):
   def write(self):
     cfg = bpy.data.texts['component_config.py']
     cfg.clear()
-    cfg.write('component_mw = ' + str(self.middleware) )
+    cfg.write('component_mw = ' + json.dumps(self.middleware, indent=1) )
     cfg.write('\n')
-    cfg.write('component_modifier = ' + str(self.modifier) )
+    cfg.write('component_modifier = ' + json.dumps(self.modifier, indent=1) )
     cfg.write('\n')
-    cfg.write('component_service = ' + str(self.service) )
+    cfg.write('component_service = ' + json.dumps(self.service, indent=1) )
     cfg.write('\n')
   def link(self, component, mwmethodcfg):
     self.middleware[component.name] = mwmethodcfg
