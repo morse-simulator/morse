@@ -1,147 +1,614 @@
-import bpy
-from morse.builder.morsebuilder import *
-
-###############################################################################
-# following is experimental:
-#
-class MotionControler(AbstractComponent):
-  """ Add MotionControler 100% Python
-
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Controller.html#bpy.types.Controller.link
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.sensor_add
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.controller_add
-  """
-  def __init__(self):
-    AbstractComponent.__init__(self)
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.object.add() # default is empty
-    self._blendobj = bpy.context.selected_objects[0]
-    self._blendobj.name = "Motion_Controller"
-    self._blendname = "morse_vw_control" # for mw config
-    self.properties(Component_Tag = True, Class = "VWActuatorClass", 
-        Path = "morse/actuators/v_omega")
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.object.select_name(name = self._blendobj.name)
-    bpy.ops.logic.sensor_add()
-    sensor = self._blendobj.game.sensors.keys()[-1]
-    self._blendobj.game.sensors[sensor].use_pulse_true_level = True
-    bpy.ops.logic.controller_add(type='PYTHON')
-    controller = self._blendobj.game.controllers.keys()[-1]
-    self._blendobj.game.controllers[controller].mode = 'MODULE'
-    self._blendobj.game.controllers[controller].module = 'calling.actuator_action'
-    self._blendobj.game.controllers[controller].link( sensor = 
-        self._blendobj.game.sensors[sensor] )
-
-class BlenderComponent(AbstractComponent):
-  """ Add a Blender object to the scene
-
-  object_name (string, (optional))
-  object_type (enum in ['MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'ARMATURE', 'LATTICE', 'EMPTY', 'CAMERA', 'LAMP'], (optional))
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.object.html#bpy.ops.object.add
-  TODO
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.object.html#bpy.ops.object.lamp_add
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.mesh.html#bpy.ops.mesh.primitive_plane_add
-  ...
-  """
-  def __init__(self, object_type='EMPTY', object_name=None, 
-      object_location=(0.0, 0.0, 0.0), object_rotation=(0.0, 0.0, 0.0)):
-    AbstractComponent.__init__(self)
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.object.add(type = object_type, location=object_location, 
-        rotation=object_rotation)
-    self._blendobj = bpy.context.selected_objects[0]
-    if object_name != None:
-      self._blendobj.name = object_name
-
-class ATRV(AbstractComponent):
-  """ Add ATRV robot from Collada and add Game Engine properties, sensor and
-  controler using Blender Python API (bpy)
-  """
-  def __init__(self):
-    AbstractComponent.__init__(self)
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.wm.collada_import(filepath="/usr/local/share/data/morse/components/robots/atrv.dae")
-    tmp=bpy.context.selected_objects[0]
-    # collada_import only select the last imported object
-    # which can be a wheel (equivalent to bpy.data.objects[-1])
-    while tmp.parent != None:
-      tmp = tmp.parent
-    self._blendobj = tmp
-    self._blendobj.name = "ATRV"
-    self.properties(Robot_Tag = True, Class = "ATRVClass", 
-        Path = "morse/robots/atrv")
-    bpy.ops.logic.sensor_add()
-    sensor = self._blendobj.game.sensors.keys()[-1]
-    self._blendobj.game.sensors[sensor].use_pulse_true_level = True
-    bpy.ops.logic.controller_add(type='PYTHON')
-    controller = self._blendobj.game.controllers.keys()[-1]
-    self._blendobj.game.controllers[controller].mode = 'MODULE'
-    self._blendobj.game.controllers[controller].module = 'calling.robot_action'
-    self._blendobj.game.controllers[controller].link( sensor = 
-        self._blendobj.game.sensors[sensor] )
-    # Physic properties
-    self._blendobj.game.physics_type = 'RIGID_BODY'
-    self._blendobj.game.use_sleep = True
-    self._blendobj.game.mass = 20.0
-    self._blendobj.game.radius = .5
-    self._blendobj.game.damping = .025
-    self._blendobj.game.rotation_damping = .180
-    self._blendobj.game.use_collision_bounds = True
-    self._blendobj.game.collision_bounds_type = 'CONVEX_HULL'
-    self._blendobj.game.collision_margin = .05
-
-class ROSMW(AbstractComponent):
-  """ Add MotionControler 100% Python
-
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Controller.html#bpy.types.Controller.link
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.sensor_add
-  http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.logic.html#bpy.ops.logic.controller_add
-  """
-  def __init__(self):
-    AbstractComponent.__init__(self)
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.object.add() # default is empty
-    self._blendobj = bpy.context.selected_objects[0]
-    self._blendobj.name = 'ROS_Empty'
-    self._blendname = 'ros_empty' # for mw config
-    self.properties(Middleware_Tag = True, Class = "ROSClass", 
-        Path = "morse/middleware/ros_mw")
-    bpy.ops.object.select_all(action = 'DESELECT')
-    bpy.ops.object.select_name(name = self._blendobj.name)
-    bpy.ops.logic.sensor_add()
-    sensor = self._blendobj.game.sensors.keys()[-1]
-    self._blendobj.game.sensors[sensor].use_pulse_true_level = True
-    bpy.ops.logic.controller_add(type='PYTHON')
-    controller = self._blendobj.game.controllers.keys()[-1]
-    self._blendobj.game.controllers[controller].mode = 'MODULE'
-    self._blendobj.game.controllers[controller].module = 'calling.mw_action'
-    self._blendobj.game.controllers[controller].link( sensor = 
-        self._blendobj.game.sensors[sensor] )
-
-def print_prop(obj):
-  for p in obj.game.properties.keys():
-    print("%s = %s, "%(p,obj.game.properties[p].value))
-
-def delete_all():
-  bpy.ops.object.select_all(action='SELECT')
-  bpy.ops.object.delete()
-
-def new_text(name="tmp.py", text="#hello"):
-  bpy.ops.text.new()
-  txt=bpy.data.texts[-1]
-  txt.name=name
-  txt.write(text)
-
-
-def import_scene(filepath = "/usr/local/share/data/morse/morse_default.blend"):
-  delete_all()
-  if bpy.app.version[1] > 56:
-    with bpy.data.libraries.load(filepath) as (src, _):
-      objlist = [{'name':obj} for obj in src.objects]
-  else: # Blender 2.56 does not support bpy.data.libraries.load
-    objlist = [{'name': 'whiteboard'}, {'name': 'Shelf_3'}, {'name': 'Shelf_2'}, {'name': 'Shelf_1'}, {'name': 'Scene_Script_Holder'}, {'name': 'Rolling_Chair'}, {'name': 'red_heat.001'}, {'name': 'red_heat'}, {'name': 'Plane.001'}, {'name': 'Plane'}, {'name': 'Lamp.003'}, {'name': 'Lamp.002'}, {'name': 'Lamp.001'}, {'name': 'Lamp'}, {'name': 'Ground'}, {'name': 'Desk_3'}, {'name': 'Desk_2'}, {'name': 'Desk_1'}, {'name': 'Compass'}, {'name': 'CameraFP'}]
-  bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
-        files=objlist)
-  # TODO import as well: mesh / textures / etc...
-
+"""
+components-dictionary-convention:
+{
+  'component-directory': {
+    '.blend-file': ['main-object-name', 'child1-name', ...]
+  }
+}
+cf. morse.builder.generator.ComponentsData , to generate this dictionary
+"""
+MORSE_COMPONENTS_DICT = {
+ "modifiers": {
+  "ned_empty": [
+   "NED_Empty"
+  ], 
+  "gps_noise_empty": [
+   "gps_noise_empty"
+  ], 
+  "utm_empty": [
+   "UTM_Empty"
+  ]
+ }, 
+ "middleware": {
+  "socket_empty": [
+   "Socket_Empty"
+  ], 
+  "ros_empty": [
+   "ROS_Empty"
+  ], 
+  "yarp_empty": [
+   "Yarp_Empty"
+  ], 
+  "pocolibs_empty": [
+   "Pocolibs_Empty"
+  ], 
+  "text_empty": [
+   "Text_Empty"
+  ]
+ }, 
+ "robots": {
+  "kuka_arm": [
+   "kuka_base", 
+   "kuka_7", 
+   "kuka_6", 
+   "kuka_5", 
+   "kuka_4", 
+   "kuka_3", 
+   "kuka_2", 
+   "kuka_1"
+  ], 
+  "jido-kuka": [
+   "Jido", 
+   "Wheels", 
+   "TopCam", 
+   "Target_Empty", 
+   "Target_Ball", 
+   "Sicks", 
+   "MotorWheels", 
+   "kuka_base", 
+   "kuka_7", 
+   "kuka_6", 
+   "kuka_5", 
+   "kuka_4", 
+   "kuka_3", 
+   "kuka_2", 
+   "kuka_1", 
+   "FrontScreen", 
+   "Computer", 
+   "Base"
+  ], 
+  "ressac-action": [
+   "rotor", 
+   "Ressac", 
+   "Motion_Controller", 
+   "Gyroscope", 
+   "Gyro_box", 
+   "GPS_box", 
+   "GPS", 
+   "CameraRobot", 
+   "CameraMain", 
+   "CameraLens", 
+   "CameraCube", 
+   "airframe"
+  ], 
+  "submarine": [
+   "Sphere", 
+   "Lamp", 
+   "Circle.001", 
+   "Circle", 
+   "Camera"
+  ], 
+  "jido": [
+   "Jido", 
+   "Wheels", 
+   "TopCam", 
+   "Sicks", 
+   "MotorWheels", 
+   "FrontScreen", 
+   "Computer", 
+   "Base"
+  ], 
+  "daurade": [
+   "Daurade"
+  ], 
+  "kuka_arm-rig": [
+   "kuka_base", 
+   "Target_Empty", 
+   "Target_Ball", 
+   "Lamp", 
+   "kuka_armature", 
+   "kuka_7", 
+   "kuka_6", 
+   "kuka_5", 
+   "kuka_4", 
+   "kuka_3", 
+   "kuka_2", 
+   "kuka_1", 
+   "Empty.003", 
+   "Empty.002", 
+   "Empty.001", 
+   "Empty", 
+   "Camera"
+  ], 
+  "atrv": [
+   "ATRV", 
+   "Wheel.4", 
+   "Wheel.3", 
+   "Wheel.2", 
+   "Wheel.1"
+  ], 
+  "ressac": [
+   "Ressac", 
+   "rotor", 
+   "airframe"
+  ], 
+  "jido-armature": [
+   "Jido", 
+   "Wheels", 
+   "TopCam", 
+   "Target_Empty", 
+   "Target_Ball", 
+   "Sicks", 
+   "MotorWheels", 
+   "kuka_base", 
+   "kuka_armature", 
+   "kuka_7", 
+   "kuka_6", 
+   "kuka_5", 
+   "kuka_4", 
+   "kuka_3", 
+   "kuka_2", 
+   "kuka_1", 
+   "GSocle", 
+   "GPA10-6", 
+   "GPA10-5", 
+   "GPA10-4", 
+   "GPA10-3", 
+   "gpa10-2", 
+   "GPA10-1", 
+   "FrontScreen", 
+   "Computer", 
+   "Base"
+  ], 
+  "PA10": [
+   "Socle", 
+   "pince2Sright", 
+   "pince2sleft", 
+   "pince2", 
+   "pince1S", 
+   "pince1", 
+   "PA10-6", 
+   "PA10-5", 
+   "PA10-4", 
+   "PA10-3", 
+   "PA10-2", 
+   "PA10-1", 
+   "GSocle", 
+   "Gripper", 
+   "GPA10-6", 
+   "GPA10-5", 
+   "GPA10-4", 
+   "GPA10-3", 
+   "gpa10-2", 
+   "GPA10-1", 
+   "Empty.003", 
+   "Empty.002", 
+   "Empty.001", 
+   "Empty"
+  ], 
+  "dala-action": [
+   "ATRV"
+   "Wheel.4", 
+   "Wheel.3", 
+   "Wheel.2", 
+   "Wheel.1", 
+   "PTU", 
+   "Motion_Controller", 
+   "Gyroscope", 
+   "Gyro_box", 
+   "GPS_box", 
+   "GPS", 
+   "CameraRobot.001", 
+   "CameraRobot", 
+   "CameraMain.001", 
+   "CameraMain", 
+   "CameraLens.001", 
+   "CameraLens", 
+   "CameraCube.001", 
+   "CameraCube", 
+   "Camera_Support", 
+  ], 
+  "sa_hand-8-semi_ok": [
+   "palmRight", 
+   "thumbBaseRight", 
+   "padProx.003", 
+   "padProx.002", 
+   "padProx.001", 
+   "padProx", 
+   "padPalmRight", 
+   "padDist.003", 
+   "padDist.002", 
+   "padDist.001", 
+   "padDist", 
+   "fingerPhaProx.003", 
+   "fingerPhaProx.002", 
+   "fingerPhaProx.001", 
+   "fingerPhaProx", 
+   "fingerPhaMid.003", 
+   "fingerPhaMid.002", 
+   "fingerPhaMid.001", 
+   "fingerPhaMid", 
+   "fingerPhaDist.003", 
+   "fingerPhaDist.002", 
+   "fingerPhaDist.001", 
+   "fingerPhaDist", 
+   "fingerBase.003", 
+   "fingerBase.002", 
+   "fingerBase.001", 
+   "fingerBase"
+  ], 
+  "kuka_arm-1": [
+   "kuka_base", 
+   "kuka_7", 
+   "kuka_6", 
+   "kuka_5", 
+   "kuka_4", 
+   "kuka_3", 
+   "kuka_2", 
+   "kuka_1"
+  ], 
+  "PA10-Armature": [
+   "Socle", 
+   "Target_Empty", 
+   "pince2Sright", 
+   "pince2sleft", 
+   "pince2", 
+   "pince1S", 
+   "pince1", 
+   "PA10-6", 
+   "PA10-5", 
+   "PA10-4", 
+   "PA10-3", 
+   "PA10-2", 
+   "PA10-1", 
+   "GSocle", 
+   "Gripper", 
+   "GPA10-6", 
+   "GPA10-5", 
+   "GPA10-4", 
+   "GPA10-3", 
+   "gpa10-2", 
+   "GPA10-1", 
+   "Empty.003", 
+   "Empty.002", 
+   "Empty.001", 
+   "Empty", 
+   "Armature"
+  ], 
+  "PA10-Game-2.5": [
+   "Socle", 
+   "Target_Empty", 
+   "pince2Sright", 
+   "pince2sleft", 
+   "pince2", 
+   "pince1S", 
+   "pince1", 
+   "PA10-6", 
+   "PA10-5", 
+   "PA10-4", 
+   "PA10-3", 
+   "PA10-2", 
+   "PA10-1", 
+   "Mesh", 
+   "Lamp", 
+   "GSocle", 
+   "Gripper", 
+   "GPA10-6", 
+   "GPA10-5", 
+   "GPA10-4", 
+   "GPA10-3", 
+   "gpa10-2", 
+   "GPA10-1", 
+   "Empty.003", 
+   "Empty.002", 
+   "Empty.001", 
+   "Empty", 
+   "Armature"
+  ], 
+  "dala-rosace": [
+   "ATRV", 
+   "Wheel.4", 
+   "Wheel.3", 
+   "Wheel.2", 
+   "Wheel.1", 
+   "Thermometer", 
+   "Thermo_box", 
+   "Proximity_Sensor", 
+   "Proximity_Antena", 
+   "Motion_Controller", 
+   "Gyroscope", 
+   "Gyro_box", 
+   "GPS_box", 
+   "GPS"
+  ]
+ }, 
+ "scenes": {}, 
+ "controllers": {
+  "morse_xyw_control": [
+   "Motion_Controller"
+  ], 
+  "morse_destination_control": [
+   "Motion_Controller"
+  ], 
+  "morse_platine_control": [
+   "Platine", 
+   "TiltBase", 
+   "PanBase"
+  ], 
+  "morse_healer_beam": [
+   "Healer_Beam", 
+   "Healer_Mesh"
+  ], 
+  "morse_vw_control": [
+   "Motion_Controller"
+  ], 
+  "morse_waypoint_control": [
+   "Motion_Controller", 
+   "Radar.R", 
+   "Radar.L"
+  ], 
+  "morse_manual_control": [
+   "Motion_Controller"
+  ], 
+  "morse_orientation_control": [
+   "Motion_Controller"
+  ]
+ }, 
+ "human": {
+  "default_human": [
+   "UpLegBB.R", 
+   "UpLegBB.L", 
+   "UpLeg.R", 
+   "UpLeg.L", 
+   "UpArmBB.R", 
+   "UpArmBB.L", 
+   "UpArm.R", 
+   "UpArm.L", 
+   "Target_Empty", 
+   "pelvisBB", 
+   "Pelvis", 
+   "LoLegBB.L.001", 
+   "LoLegBB.L", 
+   "LoLeg.R", 
+   "LoLeg.L", 
+   "LoArmBB.R", 
+   "LoArmBB.L", 
+   "LoArm.R", 
+   "LoArm.L", 
+   "IK_Target_Empty.R", 
+   "IK_Target_Empty.L", 
+   "HumanArmature", 
+   "Human_Camera", 
+   "Human", 
+   "HeadBB", 
+   "Head", 
+   "HandBB.R", 
+   "HandBB.L", 
+   "Hand_Grab.R", 
+   "Hand_Grab.L", 
+   "Hand.R", 
+   "Hand.L", 
+   "FootBB.R", 
+   "FootBB.L", 
+   "Foot.R", 
+   "Foot.L", 
+   "ChestBB", 
+   "Chest"
+  ], 
+  "achile-2.5": [
+   "UpLegBB.R", 
+   "UpLegBB.L", 
+   "UpLeg.R", 
+   "UpLeg.L", 
+   "UpArmBB.R", 
+   "UpArmBB.L", 
+   "UpArm.R", 
+   "UpArm.L", 
+   "Target_Empty", 
+   "Target_Ball.R", 
+   "Target_Ball.L", 
+   "Target_Ball", 
+   "Plane", 
+   "pelvisBB", 
+   "Pelvis", 
+   "LoLegBB.L.001", 
+   "LoLegBB.L", 
+   "LoLeg.R", 
+   "LoLeg.L", 
+   "LoArmBB.R", 
+   "LoArmBB.L", 
+   "LoArm.R", 
+   "LoArm.L", 
+   "Lamp.003", 
+   "Lamp.002", 
+   "Lamp.001", 
+   "IK_Target_Empty.R", 
+   "IK_Target_Empty.L", 
+   "Human_Camera", 
+   "Human", 
+   "HeadBB", 
+   "Head", 
+   "HandBB.R", 
+   "HandBB.L", 
+   "Hand.R", 
+   "Hand.L", 
+   "FootBB.R", 
+   "FootBB.L", 
+   "Foot.R", 
+   "Foot.L", 
+   "ChestBB", 
+   "Chest", 
+   "Achille_Armature"
+  ], 
+  "achile-robot": [
+   "UpLegBB.R", 
+   "UpLegBB.L", 
+   "UpLeg.R", 
+   "UpLeg.L", 
+   "UpArmBB.R", 
+   "UpArmBB.L", 
+   "UpArm.R", 
+   "UpArm.L", 
+   "Target_Empty", 
+   "Target_Ball.R", 
+   "Target_Ball.L", 
+   "Target_Ball", 
+   "pelvisBB", 
+   "Pelvis", 
+   "LoLegBB.L.001", 
+   "LoLegBB.L", 
+   "LoLeg.R", 
+   "LoLeg.L", 
+   "LoArmBB.R", 
+   "LoArmBB.L", 
+   "LoArm.R", 
+   "LoArm.L", 
+   "IK_Target_Empty.R", 
+   "IK_Target_Empty.L", 
+   "Human_Camera", 
+   "Human", 
+   "HeadBB", 
+   "Head", 
+   "HandBB.R", 
+   "HandBB.L", 
+   "Hand_Grab.R", 
+   "Hand_Grab.L", 
+   "Hand.R", 
+   "Hand.L", 
+   "FootBB.R", 
+   "FootBB.L", 
+   "Foot.R", 
+   "Foot.L", 
+   "ChestBB", 
+   "Chest", 
+   "Achille_Armature"
+  ], 
+  "achile3": [
+   "UpLegBB.R", 
+   "UpLegBB.L", 
+   "UpLeg.R", 
+   "UpLeg.L", 
+   "UpArmBB.R", 
+   "UpArmBB.L", 
+   "UpArm.R", 
+   "UpArm.L", 
+   "Target_R", 
+   "Target_L", 
+   "Plane", 
+   "pelvisBB", 
+   "pelvis", 
+   "LoLegBB.L.001", 
+   "LoLegBB.L", 
+   "LoLeg.R", 
+   "LoLeg.L", 
+   "LoArmBB.R", 
+   "LoArmBB.L", 
+   "LoArm.R", 
+   "LoArm.L", 
+   "Lamp.002", 
+   "Lamp.001", 
+   "Lamp", 
+   "Human", 
+   "HeadBB", 
+   "Head", 
+   "HandBB.R", 
+   "HandBB.L", 
+   "Hand.R", 
+   "Hand.L", 
+   "FootBB.R", 
+   "FootBB.L", 
+   "Foot.R", 
+   "Foot.L", 
+   "ChestBB", 
+   "Chest", 
+   "CameraHum", 
+   "Camera.001", 
+   "Armature"
+  ]
+ }, 
+ "sensors": {
+  "morse_infrared": [
+   "InfraRedCube", 
+   "InfraRed", 
+   "Arc_20"
+  ], 
+  "morse_battery": [
+   "Battery"
+  ], 
+  "morse_stereo_cameras": [
+   "PTU", 
+   "CameraRobot.001", 
+   "CameraRobot", 
+   "CameraMain.001", 
+   "CameraMain", 
+   "CameraLens.001", 
+   "CameraLens", 
+   "CameraCube.001", 
+   "CameraCube", 
+   "Camera_Support"
+  ], 
+  "morse_sick_180": [
+   "Sick", 
+   "Sick_Model", 
+   "Arc_180"
+  ], 
+  "morse_sick_270": [
+   "Sick", 
+   "Sick_Model", 
+   "Arc_270"
+  ], 
+  "morse_sick": [
+   "Sick", 
+   "Sick_Model",
+   "Arc_180"
+  ], 
+  "morse_proximity": [
+   "Proximity", 
+   "Proximity_Antena"
+  ], 
+  "morse_odometry": [
+   "Odometry",
+   "Odometry_mesh"
+  ], 
+  "morse_GPS": [
+   "GPS",
+   "GPS_box" 
+  ], 
+  "morse_camera": [
+   "CameraMain", 
+   "CameraRobot", 
+   "CameraLens", 
+   "CameraCube"
+  ], 
+  "morse_ptu": [
+   "PTU", 
+   "Camera_Support"
+  ], 
+  "morse_accelerometer": [
+   "Accelerometer", 
+   "AccelBox"
+  ], 
+  "morse_kuka_posture": [
+   "kuka_posture", 
+   "GPS_box"
+  ], 
+  "morse_gyroscope": [
+   "Gyroscope", 
+   "Gyro_box"
+  ], 
+  "morse_pose": [
+   "Pose_sensor", 
+   "Pose_mesh"
+  ], 
+  "morse_velodyne": [
+   "Velodyne", 
+   "VelodyneMesh", 
+   "Arc_31"
+  ], 
+  "morse_thermometer": [
+   "Thermometer", 
+   "Thermo_box"
+  ]
+ }
+}
 
