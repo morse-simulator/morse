@@ -1,6 +1,7 @@
 import sys
 import re
 import time
+import bpy
 import GameLogic
 import Rasterizer
 
@@ -381,7 +382,9 @@ def init(contr):
     # Get the version of Python used
     # This is used to determine also the version of Blender
     GameLogic.pythonVersion = sys.version_info
-    print ("Python Version: {0}".format(GameLogic.pythonVersion))
+    GameLogic.blenderVersion = bpy.app.version
+    print ("Python Version: %s.%s.%s" % GameLogic.pythonVersion[:3])
+    print ("Blender Version: {0}".format(GameLogic.blenderVersion))
 
     GameLogic.morse_initialised = False
     GameLogic.base_clock = time.clock()
