@@ -2,6 +2,7 @@
 import sys
 import os
 import logging
+import optparse
 ## Configuring default logging
 logger = logging.getLogger('morse')
 
@@ -274,7 +275,7 @@ def create_copy_default_scene(filename = None):
     Creates a copy of the default scene in the current path, ensuring an 
     unique name.
     """
-    
+
     global default_scene_abspath
     
     if not filename:
@@ -293,11 +294,10 @@ def create_copy_default_scene(filename = None):
         new_scene = os.path.normpath(filename)
 
     shutil.copy(default_scene_abspath, new_scene)
-    
+
     return new_scene
 
 def prelaunch():
-    version()
     try:
         logger.setLevel(logging.WARNING)
         logger.info("Checking up your environment...\n")
@@ -308,136 +308,96 @@ def prelaunch():
         "You can also run 'morse check' for more details.")
         sys.exit()
 
-def launch_simulator(scene=None, script=None):
+def launch_simulator(scene=None, script=None, player=False):
     """Starts Blender on an empty new scene or with a given scene."""
-    
+
     global morse_prefix, blender_exec, default_scene_abspath
-    
+
     logger.info("*** Launching MORSE ***\n")
     logger.info("PREFIX= " + morse_prefix)
-    
+
     if not scene:
         scene = create_copy_default_scene()
         logger.info("Creating new scene " + scene)
-        
+
     elif not os.path.exists(scene):
         logger.error(scene + " does not exist!\nIf you want to create a new scene " + \
         "called " + scene + ",\nplease use 'morse create " + scene + "'.")
         sys.exit(1)
-        
+
     logger.info("Executing: " + blender_exec + " " + scene + "\n\n")
-    
-    
+
+    if player:
+        blender_exec += "player"
+        logger.error("player mode not supported yet")
+        sys.exit(1)
+
     #Flush all outputs before launching Blender process
     sys.stdout.flush()
-   
+
     # Redefine the PYTHONPATH to include both the user-set path plus the 
     # default system paths (like '/usr/lib/python*')
     env = os.environ
     env["PYTHONPATH"] = ":".join(sys.path)
 
     #Replace the current process by Blender
-    if script != None:
-        print("executing Blender script: " + script)
-        os.execle(blender_exec, blender_exec, scene, "-P", script, env)
-    else:
+    if not script:
         os.execle(blender_exec, blender_exec, scene, env)
-
-def launch_simulation(scene):
-    """
-    Runs a specified simulation from a blend file without opening Blender.
-    """
-    logger.error("Not yet implemented")
-    sys.exit(1)
-
-def version():
-    print("morse " + VERSION + "\nCopyright LAAS-CNRS 2011")
-
-def help(cmd=None):
-    
-    if not cmd:
-        print ("""morse [command] [options]
-
-Known commands:
-  [None]            launchs the simulator interface with a default scene.
-  create filename   creates a new empty scene and launchs the simulator interface.
-  run filename      runs a simulation without loading the simulator interface.
-  exec filename     runs the given Python script with a default scene.
-  check             checks the environment is correctly setup to run morse.
-  help              displays this message and exits.
-  version           displays the version number and exits.
-
-'morse' followed by a Blender file name opens the simulator with this scene.
-
-Use help [command] to get more help on a specific command.""")
-        return
-
-    if cmd == "run":
-        print ("""morse run file_name
-
-Runs a simulation without loading the simulator interface. Equivalent
-to the sequence [open a Blend file in the simulator, switch to 
-fullscreen, press P].
-
-file_name must be a Blender file containing a simulation already
-set up.
-""")
     else:
-        print("No help for \"" + cmd + "\".")
-        help()
+        logger.info("executing Blender script: " + script)
+        os.execle(blender_exec, blender_exec, scene, "-P", script, env)
+
+##
+# TODO optparse deprecated in 3.2, but argparse is not in 3.1
+# http://docs.python.org/py3k/library/argparse.html
+# http://docs.python.org/py3k/library/optparse.html
+##
+def cmd_check(*args, **kwargs):
+    try:
+        logger.info("Checking up your environment...\n")
+        check_setup()
+        sys.exit()
+    except MorseError as e:
+        logger.error("\nYour environment is not correctly setup to run MORSE!")
+        sys.exit()
+        logger.info("Your environment is correctly setup to run MORSE.")
+
+def main():
+    parser = optparse.OptionParser(usage="%prog [options] [scene.blend] [script.py]", 
+        version="%prog " + VERSION, 
+        description="MORSE" + VERSION + ", the OpenRobot Simulator - http://morse.openrobots.org ", 
+        epilog="Copyright LAAS-CNRS 2011")
+    parser.add_option("-s", "--scene", dest="scene", metavar="FILE.blend", 
+                      help="launchs the simulator with the given scene")
+    parser.add_option("-c", "--create", dest="newscene", metavar="FILE.blend", 
+                      help="creates a new empty scene and launchs the simulator interface")
+    parser.add_option("-r", "--run", action="store_true", dest="player", default=False,
+                      help="runs a simulation without loading the simulator interface")
+    parser.add_option("-e", "--exec", dest="script", metavar="FILE.py", 
+                      help="executes the given Python script within the scene")
+    parser.add_option("-C", "--check", action="callback", callback=cmd_check, 
+                      help="checks the environment is correctly setup to run morse")
+
+    (options, args) = parser.parse_args()
+
+    if options.newscene != None:
+        options.scene = create_copy_default_scene(options.newscene)
+    elif not options.scene:
+        for arg in args:
+            if arg.endswith(".blend"):
+                options.scene = arg
+                break
+
+    if not options.script:
+        for arg in args:
+            if arg.endswith(".py"):
+                options.script = arg
+                break
+
+    prelaunch()
+    launch_simulator(scene=options.scene, script=options.script, player=options.player)
+
 
 if __name__ == '__main__':
+    main()
 
-    
-    if len(sys.argv) > 1:
-        if sys.argv[1] in ["help", "--help", "-h"]:
-            if len(sys.argv) > 2:
-                help(sys.argv[2])
-            else:
-                help()
-            sys.exit()
-        elif sys.argv[1] in ["version", "--version", "-v"]:
-            version()
-            sys.exit()
-        elif sys.argv[1] in ["check"]:
-            try:
-                logger.info("Checking up your environment...\n")
-                check_setup()
-            except MorseError as e:
-                logger.error("\nYour environment is not correctly setup to run MORSE!")
-                sys.exit()
-            logger.info("Your environment is correctly setup to run MORSE.")
-            
-        elif sys.argv[1] in ["create"]:
-            if len(sys.argv) == 3:
-                prelaunch()
-                launch_simulator(create_copy_default_scene(sys.argv[2]))                
-            else:
-                logger.error("'create' option expect exactly one option (a filename)")
-                sys.exit()
-        elif sys.argv[1] in ["run"]:
-            launch_simulation()
-        elif sys.argv[1] in ["exec"]:
-            if len(sys.argv) == 3:
-                prelaunch()
-                launch_simulator(script=sys.argv[2])
-            else:
-                logger.error("'exec' option expect exactly one option (a filename)")
-                sys.exit()
-        
-        else:
-            #The first argument is the scene name?
-            if sys.argv[1].endswith(".blend"):
-                prelaunch()
-                launch_simulator(sys.argv[1])
-            elif sys.argv[1].endswith(".py") | sys.argv[1].endswith(".morse"):
-                prelaunch()
-                launch_simulator(script=sys.argv[1])
-            
-            else:
-                logger.error("Unknown option: " + sys.argv[1])
-    
-    else:
-        
-        prelaunch()
-        launch_simulator()
