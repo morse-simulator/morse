@@ -23,7 +23,8 @@ class Transformation3d:
         reference
 
         """
-        if GameLogic.pythonVersion <= (3,1,0):
+        if GameLogic.blenderVersion <= (2,56,0):
+        #if GameLogic.pythonVersion <= (3,1,0):
             self.matrix = mathutils.Matrix([1, 0, 0, 0], \
                                            [0, 1, 0, 0], \
                                            [0, 0, 1, 0], \
@@ -102,7 +103,8 @@ class Transformation3d:
 
         """
         rot_matrix = obj.orientation
-        if GameLogic.pythonVersion <= (3,1,0):
+        if GameLogic.blenderVersion <= (2,56,0):
+        #if GameLogic.pythonVersion <= (3,1,0):
             self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
                                                           rot_matrix[2])
             self.matrix.resize4x4()
