@@ -11,6 +11,7 @@ try:
     import component_config
 except ImportError as detail:
     print ("WARNING: ", detail, ". No middlewares will be configured")
+    print (sys.path)
 
 # The file scene_config.py is at the moment included
 #  in the .blend file of the scene
@@ -86,18 +87,6 @@ def create_dictionaries ():
             pass
             #sys.exc_clear()    # Clears the last exception thrown
                                 # Does not work in Python 3
-
-    """
-    # Get the external robots (used in multi node simulation)
-    for obj in scene.objects:
-        try:
-            obj['External_Robot_Tag']
-            # Make a list of the robots that are marked as external
-            er_data = [obj, obj.worldPosition, obj.worldOrientation]
-            GameLogic.externalRobotDict[obj] = er_data
-        except KeyError as detail:
-            pass
-    """
 
 
     # Get the robot and its instance
@@ -227,7 +216,8 @@ def link_middlewares():
         print ("ERROR: The 'component_mw' dictionary can not be found in your configuration file.")
         return False
 
-    for component_name, mw_data in component_list.items():
+    #for component_name, mw_data in component_list.items():
+    for component_name, mw_list in component_list.items():
         # Get the instance of the object
         try:
             instance = GameLogic.componentDict[component_name]
@@ -242,21 +232,30 @@ def link_middlewares():
             """)
             return False
 
-        mw_name = mw_data[0]
-        print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
-        found = False
-        missing_component = False
-        # Look for the listed mw in the dictionary of active mw's
-        for mw_obj, mw_instance in GameLogic.mwDict.items():
-            #print("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
-            if mw_name in mw_obj.name:
-                found = True
-                # Make the middleware object take note of the component
-                mw_instance.register_component(component_name, instance, mw_data)
-                break
-                
-        if not found:
-            print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
+        # If the list contains only strings, insert the list inside another one.
+        # This is done for backwards compatibility with the previous
+        #  syntax that allowed only one middleware per component
+        if isinstance (mw_list[0], str):
+            mw_list = [mw_list]
+
+        # Register all mw's in the list
+        for mw_data in mw_list:
+
+            mw_name = mw_data[0]
+            print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
+            found = False
+            missing_component = False
+            # Look for the listed mw in the dictionary of active mw's
+            for mw_obj, mw_instance in GameLogic.mwDict.items():
+                #print("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
+                if mw_name in mw_obj.name:
+                    found = True
+                    # Make the middleware object take note of the component
+                    mw_instance.register_component(component_name, instance, mw_data)
+                    break
+
+            if not found:
+                print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
     # Will return true always (for the moment)
     return True
