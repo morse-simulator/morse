@@ -1,12 +1,12 @@
+import os
 from morse.builder.components import MORSE_COMPONENTS_DICT
 
 """
 MORSE_COMPONENTS: 
 path to the Morse components
 """
-
-# XXX Hardcoded PATH, must be fixed
-MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
+MORSE_COMPONENTS = os.path.join(os.environ['MORSE_ROOT'], 
+    "share/data/morse/components")
 
 """
 middleware-dictionary-convention:
