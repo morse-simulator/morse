@@ -18,7 +18,7 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         self.local_data['charge'] = 100.0
-        self._time = 0.0
+        self._time = time.clock()
 
         print ('######## BATTERY INITIALIZED ########')
 
