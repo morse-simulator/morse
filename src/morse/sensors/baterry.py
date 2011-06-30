@@ -1,4 +1,5 @@
 import GameLogic
+import time
 import morse.core.sensor
 
 class BatteryClass(morse.core.sensor.MorseSensorClass):
@@ -17,17 +18,17 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         self.local_data['charge'] = 100.0
-        self.local_data['time'] = 0.0
+        self._time = 0.0
 
         print ('######## BATTERY INITIALIZED ########')
 
     def default_action(self):
         """ Main function of this component. """
+        newtime = time.clock()
         c = self.local_data['charge']
-        dt = GameLogic.current_time - self.local_data['time']
+        dt = newtime - self._time
         v = c - (dt * self.blender_obj['DischargingRate'])
-        self.local_data['time'] = GameLogic.current_time
-        # TODO time.time() ?
+        self._time = newtime
 
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
