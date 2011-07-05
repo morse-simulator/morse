@@ -8,46 +8,58 @@ General TODO list for MORSE
 General
 -------
 
-- use the Python logging interface
-- add an overlay in the simulation with the keyboard shortcuts
-- move away all project/scenario specific files from MORSE core (create
-  dedicated repositories for those)
-- allow scenarii described in Python instead of Blender files
+- Switch to Blender 2.58/Python 3.2
+- Update robotpkg packages
 
+- use the Python logging interface -> Severin
+- add an overlay in the simulation with the keyboard shortcuts -> Gilberto
+- move away all project/scenario specific files from MORSE core (create
+  dedicated repositories for those) -> superseeded by next target
 
 Middlewares
 -----------
 
-- add support for services through ROS and Pocolibs middleware
-- ROS support for the robot's cameras
-- Split the pom_poster from Viam and Velodyne
+- add support for services through  Pocolibs middleware -> Severin
+
+Components
+----------
+- Properly implement the "human" as a robot: Change the script in object oriented form -> Gilberto
+- allow scenarii + equipped robots  described in Python instead of Blender files -> everyone
+- Then, fix the project tree layout -> Arnaud
+
+
+=================
+   TARGET 0.5
+Deadline: 15 Sept.
+==================
+
+- Multinode support (socket-based, possibly HLA): define the procotol that allows to
+  dispatch various robots on several machines running blender, while maintaining
+  the world state consistent within these machines.
+- Introduce a mean to externally control time, by pacing the game engine time
+  (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
+  blender-robotics). Add support to pause the simulation.
+- Export simulator time
+- Fixed the physical properties of robot to enable velocity control (cf commit 8503c9)
+- define a method to select the control of robots using position or velocity
+
+
+Middleware
+----------
+
+- add support for services through ROS middleware
 
 Architecture
 ------------
 
 - make clear how components access other components? (eg: the cameras need the
-  position of the robot)
-- correct the bounding boxes and physics properties of robots
-- define a method to select the control of robots using position or velocity
+  position of the robot) -> need refinements: what is the general use case?
 
 Simulation supervision
 ----------------------
-
-- Introduce a mean to externally control time, by pacing the game engine time
-  (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
-  blender-robotics). Add support to pause the simulation.
-- Multi-engine distributed simulation: define the procotol that allows to
-  dispatch various robots on several machines running blender, while maintaining
-  the world state consistent within these machines.
 - Introduce means to define scenarios with controlled dynamic events (through
-  requests and/or a simple scripting API) 
-
-GUI
----
-
-- Add a GUI for a the scenario configuration
-- Define a user interface to specify a scenario
-- Split the .blend file into scene / robot files
+  requests and/or a simple scripting API). Requires a notion of timeline (in
+  the API? in the simulator?)
 
 Components
 ----------
@@ -61,11 +73,15 @@ stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
 
-- Properly implement the "human" as a robot: Change the script in object oriented form
-
 ================
  OTHERS and MISC
 ================
+
+GUI
+---
+
+- Add a GUI for a the scenario configuration -> to be refined to use the Python API for scene creation
+- Define a user interface to specify a scenario -> to be refined to use the Python API for scene creation
 
 Coding style
 ------------
