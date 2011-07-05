@@ -77,12 +77,14 @@ class Client(threading.Thread):
         self.client = client
         self.address = address
         self.size = 1024
+        self.start_time = time.time()
 
     def run(self):
         global counter
         global client_counter
         global client_list
         global robot_list
+
 
         running = 1
         while running:
@@ -109,10 +111,12 @@ class Client(threading.Thread):
 
                 response = pickle.dumps(robot_list)
 
-                print ("New robot list: ", robot_list)
-                print ("Client %d, connected from %s, has been served" % (counter, self.address))
+                #print ("New robot list: ", robot_list)
+                #print ("Client %d, connected from %s, has been served" % (counter, self.address))
 
-                #time.sleep(0.1)
+                reception_time = time.time() - self.start_time
+                print ("Received data at time: %.6f" % reception_time)
+                time.sleep(0.5)
                 self.client.send(response)
 
                 """
