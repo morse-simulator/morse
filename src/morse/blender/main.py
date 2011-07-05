@@ -11,7 +11,6 @@ try:
     import component_config
 except ImportError as detail:
     print ("WARNING: ", detail, ". No middlewares will be configured")
-    print (sys.path)
 
 # The file scene_config.py is at the moment included
 #  in the .blend file of the scene
