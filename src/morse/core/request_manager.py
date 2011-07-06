@@ -48,7 +48,7 @@ class RequestManager(object):
         """
 
         # This map holds the list of all registered services
-        # It associates the service name to a tuple
+        # It associates a tuple (component,service) to a tuple
         # (rpc_callback, is_async)
         self._services = {}
 
@@ -159,7 +159,7 @@ class RequestManager(object):
 
             name = component_name + "#" + service_name
 
-            self._services[name] = (callback, async)
+            self._services[(component_name, service_name)] = (callback, async)
 
             if self.post_registration(component_name, name, async):
                 print(str(self) + ": New " + \
@@ -172,7 +172,20 @@ class RequestManager(object):
         else:
             print (str(self) + ": ERROR while registering a new service: " + str(callback) + \
                     " is not a callable object.")
-
+    
+    def services():
+        """ Returns the list of all components and services registered with this
+        request manager.
+        
+        :return: a dictionary of {components:[services...]} listing all services
+                 registered with this request manager.
+        """
+        services = {}
+        for component, service in self._services.keys():
+            services.setdefault(component, []).append(service)
+        
+        return services
+        
     def on_incoming_request(self, component, service, params):
         """ This method handles incoming requests: it figures out who
         registered the service, checks if the service returns immediately
@@ -198,7 +211,7 @@ class RequestManager(object):
         request_id = uuid.uuid4() #Unique ID for our request
         
         try:
-            method, is_async = self._services[component + "#" + service]
+            method, is_async = self._services[(component, service)]
         except KeyError:
             raise MorseRPCInvokationError("The request " + service + " has not been registered in " + str(self))
 
