@@ -326,6 +326,10 @@ MORSE_COMPONENTS_DICT = {
  "controllers": {
   "morse_xyw_control": [
    "Motion_Controller"
+  ],
+  "morse_light": [
+   "LightSpot", 
+   "LightAct"
   ], 
   "morse_destination_control": [
    "Motion_Controller"
