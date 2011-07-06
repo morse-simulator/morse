@@ -42,9 +42,9 @@ digraph G {
   Controller -> Component
   Middleware -> Component
   Component -> Configuration [arrowhead=open, arrowtail=diamond, 
-    label=" _config ", headlabel=" 1 ", taillabel=" 1 ", labelfontcolor="turquoise"]
+    taillabel=" * ", label=" _config ", headlabel=" 1 ", labelfontcolor="turquoise"]
   Component -> Component [arrowhead=open, arrowtail=ediamond, 
-    label=" children ", headlabel=" 1 ", taillabel=" * ", labelfontcolor="turquoise"]
+    taillabel=" 1 ", label=" children ", headlabel=" * ", labelfontcolor="turquoise"]
   // http://www.graphviz.org/doc/info/attrs.html#k:arrowType
 }
 
