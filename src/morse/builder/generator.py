@@ -57,8 +57,13 @@ def generate():
 
 """
 # write the data in a temp file
+import os
 import sys
 sys.path.append("/usr/local/lib/python3.1/dist-packages")
+if not 'MORSE_ROOT' in os.environ:
+    os.environ['MORSE_ROOT'] = '/usr/local'
+
 import morse.builder.generator
 morse.builder.generator.generate()
 """
+
