@@ -57,7 +57,7 @@ class AbstractComponent(object):
     opsobj.select_all(action = 'DESELECT')
     opsobj.select_name(name = obj.name)
     opsobj.make_local()
-    opsobj.select_name(name = self.name)
+    opsobj.select_name(name = self.name, extend=True)
     opsobj.parent_set()
   @property
   def name(self):
