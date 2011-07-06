@@ -23,7 +23,7 @@ class Configuration(object):
     self.middleware = {}
     self.modifier = {}
     self.service = {}
-    if not 'component_config.py' in bpy.data.texts.keys():
+    if not 'component_config.py' in bpy.data.texts:
       bpy.ops.text.new()
       bpy.data.texts[-1].name = 'component_config.py'
   def write(self):
@@ -44,7 +44,7 @@ class AbstractComponent(object):
   _config = Configuration()
   def __init__(self):
     self._blendobj = None
-    self._blendname = None # for mw config
+    self._blendname = None # for middleware configuration
   def append(self, obj):
     """ Add a child to the current object,
 
@@ -54,10 +54,14 @@ class AbstractComponent(object):
     self._blendobj.children += obj._blendobj
     """
     opsobj = bpy.ops.object
+    # make sure that nothing is selected
     opsobj.select_all(action = 'DESELECT')
+    # select the futur child
     opsobj.select_name(name = obj.name)
     opsobj.make_local()
+    # select the parent
     opsobj.select_name(name = self.name, extend=True)
+    # establish the relationship
     opsobj.parent_set()
   @property
   def name(self):
@@ -91,7 +95,7 @@ class AbstractComponent(object):
     <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
     """
     old = self._blendobj.location
-    self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
+    self._blendobj.location = (old.x + x, old.y + y, old.z + z)
   def rotate(self, x=0.0, y=0.0, z=0.0):
     """ Rotation in Eulers, float array of 3 items in [-inf, inf], 
     default (0.0, 0.0, 0.0)
@@ -100,7 +104,7 @@ class AbstractComponent(object):
     <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
     """
     old = self._blendobj.rotation_euler
-    self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
+    self._blendobj.rotation_euler = (old.x + x, old.y + y, old.z + z)
   def properties(self, **kwargs):
     """ Add/modify the game properties of the Blender object
 
@@ -112,8 +116,8 @@ class AbstractComponent(object):
     <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
     """
     prop = self._blendobj.game.properties
-    for k in kwargs.keys():
-      if k in prop.keys():
+    for k in kwargs:
+      if k in prop:
         prop[k].value = kwargs[k]
       else:
         self._property_new(k, kwargs[k])
@@ -133,7 +137,7 @@ class AbstractComponent(object):
     # select the last property in the list
     x = o.game.properties.keys()[-1]
     o.game.properties[x].name = n
-    if t == None:
+    if not t:
       t = v.__class__.__name__.upper()
     if t == 'STR':
       t = 'STRING'
