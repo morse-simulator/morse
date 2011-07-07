@@ -309,36 +309,24 @@ def link_services():
                 print ("Component listed in component_config.py not found in scene: {0}".format(detail))
                 print("""
                 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                ERROR: your configuration file is not valid. Please
-                check the name of your components and restart the
-                simulation.
+                ERROR: the component_services section of your
+                configuration file is not valid. Please check the 
+                name of your components and restart the simulation.
                 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 """)
                 return False
 
-        request_manager_name = request_manager_data[0]
-        GameLogic.morse_services.register_request_manager_mapping(component_name, request_manager_name)
-        instance.register_services()
-        print ("Component: '%s' using middleware '%s' for services" % (component_name, request_manager_name))
-        """
-        found = False
-        missing_component = False
-        # Look for the listed service in the dictionary of active service's
-        for mw_obj, mw_instance in GameLogic.mwDict.items():
-            #print("Looking for '%s' in '%s'" % (mw_name, service_obj.name))
-            if service_name in mw_obj.name:
-                found = True
-                # Make the service object take note of the component
-                # TODO: Check that this works properly
-                GameLogic.morse_services.register_request_manager_mapping(component_name, service_data[0])
-                #service_instance.register_component(component_name, instance, service_data)
-                break
-                
-        if not found:
-            print ("WARNING: There is no '%s' service object in the scene." % service_name)
-        """
-
-    # Will return true always (for the moment)
+        for request_manager in request_manager_data:
+            modulename, classname = request_manager.rsplit('.', 1)
+            
+            # Load required request managers
+            if not GameLogic.morse_services.add_request_manager(request_manager):
+                return False
+            
+            GameLogic.morse_services.register_request_manager_mapping(component_name, classname)
+            instance.register_services()
+            print ("Component: '%s' using middleware '%s' for services" % (component_name, classname))
+    
     return True
 
 

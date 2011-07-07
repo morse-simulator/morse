@@ -60,10 +60,10 @@ It consists of three dictionaries indexed by the name of the components:
     created. For actuators, it is the name that they will look for to connect.
 
 - ``component_service``: Lists the middlewares that will take care of handling
-  a service provided by a component. The value of the dictionary is a list, containing
-  only one element. This element is the name of the class specified in the middleware
-  *request_manager*. For example, in the case of YARP. The class name is ``YarpRequestManager``
-  as defined in the file ``yarp_request_manager.py``.
+  a service provided by a component. The value of the dictionary is a list of
+  *full qualified name* of Python classes inheriting from
+  :py:class:`morse.core.request_manager.RequestManager` (like
+  :py:class:`morse.middleware.socket_request_manager.SocketRequestManager`).
 
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 

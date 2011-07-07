@@ -35,14 +35,15 @@ class MorseServices:
         :param string impl: the name (and path) of the Python class that
                 implements the RequestManager interface (eg: 'SocketRequestManager',
                 'YarpRequestManager',...).
+        :return: True if the request manager has been successfully loaded.
         """
         # Import the module containing the class
         modulename, classname = impl.rsplit('.', 1)
         try:
             __import__(modulename)
         except ImportError as detail:
-            print ("ERROR: Request Manager %s not found." % detail)
-            return
+            print ("ERROR: Request Manager " + classname + " not found in " + modulename)
+            return False
         module = sys.modules[modulename]
 
         if not module.__name__ in self._request_managers:
@@ -56,6 +57,8 @@ class MorseServices:
 
             self._request_managers[classname] = instance
             print("Successfully initialized the %s request manager." % classname)
+        
+        return True
 
 
     def register_request_manager_mapping(self,component, request_manager):
@@ -85,7 +88,7 @@ class MorseServices:
 
     def __del__(self):
         """ Removes all registered request managers, calling their destructors. """
-        print ("Deleting all request managers in 'core/services.py'")
+        print ("Deleting all request managers...")
         self._request_managers.clear()
         self._service_mappings.clear()
 
