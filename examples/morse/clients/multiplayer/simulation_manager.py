@@ -2,7 +2,8 @@
 #  http://ilab.cs.byu.edu/python/threadingmodule.html
 
 """
-An echo server that uses threads to handle multiple clients at a time.
+Simulation Manager that coordinates multiple MORSE nodes.
+Uses threads to handle multiple clients at a time.
 Entering any line of input at the terminal will exit the server.
 """
 
@@ -27,6 +28,9 @@ class Server:
         self.size = 1024
         self.server = None
         self.threads = []
+
+        print ("Server listening on port %d" % self.port)
+
 
     def open_socket(self):
         try:
@@ -137,5 +141,7 @@ class Client(threading.Thread):
 
 
 if __name__ == "__main__":
+    print ("Simulation Manager started...")
+    print ("Enter any input in this terminal to terminate the server")
     s = Server()
     s.run()

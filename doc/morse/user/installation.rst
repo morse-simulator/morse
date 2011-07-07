@@ -130,7 +130,7 @@ It supports Linux, * BSD and Darwin (MacOS X).
 	If you are upgrading an previous morse installation, skip directly to step 2.
 
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
-   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_,
+   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ and 
    `robotpkg-wip installation <http://homepages.laas.fr/mallet/robotpkg-wip>`_
    (should take less than 5 min)
 #. Go to ``$ROBOTPKG/simulation/morse``
@@ -146,18 +146,18 @@ By hand
 
 Download the source code. It is stored in a ``git`` repository::
 
-    $ git clone http://trac.laas.fr/git/robots/morse.git
+  $ git clone http://trac.laas.fr/git/robots/morse.git
   
-  Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
+Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
   
-    $ git clone http://github.com/laas/morse.git
+  $ git clone http://github.com/laas/morse.git
   
-  Once you have a copy of the repository, you can get to the last stable
-  version (0.3) by using ::
+Once you have a copy of the repository, you can get to the last stable
+version (0.3) by using ::
   
-    $ git checkout 0.3
+  $ git checkout 0.3
   
-  You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
+You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
 
  
 Go to the directory where you have previously downloaded the MORSE source. Then type these commands::

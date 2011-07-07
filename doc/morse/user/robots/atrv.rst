@@ -12,4 +12,6 @@ Files
 Adjustable parameters
 ---------------------
 
-Use the Logic panel in Blender (shown with :kbd:`F4`) to adjust the **Mass** of the robot.
+Use the **Properties >> Physics** panel in Blender to adjust the **Mass** of the robot.
+
+The friction coefficient of the robot can be adjusted in the **Properties >> Material** panel.

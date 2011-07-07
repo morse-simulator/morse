@@ -3,21 +3,22 @@ Waypoint target movement
 
 This actuator reads the coordinates of a destination point, and moves the robot
 towards the given point, with the robot restricted to moving only forward,
-backwards or turning over its Z axis.
-
+backwards or turning around its Z axis.
 This controller is meant to be used mainly by non-holonomic robots.  
 
-The speeds provided are internally adjusted to the Blender time measure,
+While a robot is moving towards a given waypoint, a property of the **MorseRobotClass** will be changed in indicate the status of the robot. The ``movement_status`` property will change value from **Stop** to **Transit**.
+
+The movement speed of the robot is internally adjusted to the Blender time measure,
 following the formula: ``blender_speed = given_speed * tics``, where
 **tics** is the number of times the code gets executed per second.
 The default value in Blender is ``tics = 60``.
 
 This actuator also implements a simple obstacle avoidance mechanism. The blend file contains
-the **Motion_Controller** empty, as well as two additional Empty's: **Radar.L** and **Radar.R**.
+the **Motion_Controller** empty, as well as two additional Empty objects: **Radar.L** and **Radar.R**.
 These detect nearby objects to the left or right of the robot, and will instruct the robot to
 turn in the opposite direction of the obstacle.
 If the radar objects are not present, the controller will not have any obstacle avoidance,
-and the robot can get blocked by obstacles between it and the target.
+and the robot can get blocked by any object between it and the target.
 
 .. note:: For objects to be detectable by the radars, they must have the following settings
     in the **Physics Properties** panel:
@@ -74,6 +75,11 @@ Services
     +------------+---------------+------------------+
 
     Parameters: ``(x, y, z[, tolerance[, speed]])``
+
+
+- **stop**: (Synchronous service) This method will instruct the robot to go to its current position, and reply immediately. If a **goto** request is ongoing, it will finish at the next tick, and it will itself also reply indicating it has finished.
+
+- **get_status**: (Synchronous service) Ask the actuator to send a message indicating the current movement status of the parent robot. There are two possible states: **Transit** and **Stop**.
 
 Applicable modifiers
 --------------------
