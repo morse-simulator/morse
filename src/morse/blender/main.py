@@ -123,8 +123,6 @@ def create_dictionaries ():
 
             except KeyError:
                 pass
-                #sys.exc_clear()    # Clears the last exception thrown
-                                    # Does not work in Python 3
     
     # Check we have no 'free' component (they all must belong to a robot)
     for obj in scene.objects:
@@ -239,8 +237,8 @@ def link_middlewares():
         component_list = component_config.component_mw
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
-        print ("ERROR: The 'component_mw' dictionary can not be found in your configuration file.")
-        return False
+        print ("[INFO] No middleware section found in configuration file.")
+        return True
 
     #for component_name, mw_data in component_list.items():
     for component_name, mw_list in component_list.items():
@@ -294,8 +292,8 @@ def link_services():
         component_list = component_config.component_service
     except AttributeError as detail:
         # Exit gracefully if there are no services specified
-        print ("WARNING: The 'component_service' dictionary can not be found in your configuration file.")
-        return False
+        print ("[INFO] No service section found in configuration file.")
+        return True
 
     for component_name, request_manager_data in component_list.items():
         # Get the instance of the object
@@ -351,8 +349,8 @@ def add_modifiers():
         component_list = component_config.component_modifier
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
-        print ("No modifiers found in configuration file")
-        return False
+        print ("[INFO] No modifiers section found in configuration file")
+        return True
 
     for component_name, mod_list in component_list.items():
         for mod_data in mod_list:
@@ -375,8 +373,7 @@ def add_modifiers():
 
             if not found:
                 print ("There is no '%s' modifier object in the scene." % modifier_name)
-
-    # Will return true always (for the moment)
+    
     return True
 
 
@@ -418,42 +415,44 @@ def init(contr):
     GameLogic.current_camera_index = 0
     init_ok = True
 
-    print ('======== COMPONENT DICTIONARY INITIALISATION =======')
-    init_ok = create_dictionaries()
+
+    print ('\n######## SUPERVISION SERVICES INITIALIZATION ########')
+    init_ok = init_supervision_services()
+    
+    print ('########  COMPONENT DICTIONARY INITIALISATION ######## ')
+    init_ok = init_ok and create_dictionaries()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
     init_ok = init_ok and link_services()
 
     if init_ok:
-        print ('======= COMPONENT DICTIONARY INITIALISED =======')
+        print ('########  COMPONENT DICTIONARY INITIALIZED ######## ')
         check_dictionaries()
         GameLogic.morse_initialised = True
     else:
-        print ('======= INITIALISATION FAILED!!! =======')
+        print ('########  INITIALISATION FAILED!!! ######## ')
         print ("Exiting the simulation!")
         contr = GameLogic.getCurrentController()
         close_all(contr)
+        quit(contr)
 
 
     # Set the default value of the logic tic rate to 60
     #GameLogic.setLogicTicRate(60.0)
     #GameLogic.setPhysicsTicRate(60.0)
 
-    #Display the mouse in the simulator
-    #Rasterizer.showMouse(1)
 
-
-def init_services():
-    """ Method to listen to events during the simulation
-
-    Does nothing for the moment.
+def init_supervision_services():
+    """ This method first loads the socket service manager, map the virtual
+    'supervision' component to it, and register all supervision services
+    declared in morse.core.supervision_services;
     """
     GameLogic.morse_services = MorseServices()
 
     try:
-        GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
-        GameLogic.morse_services.add_request_manager("morse.middleware.yarp_request_manager.YarpRequestManager")
-
+        if not GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
+            return False
+        
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
 
@@ -462,11 +461,14 @@ def init_services():
         # callbacks.
         import morse.core.supervision_services
 
-        print("======= SERVICE MANAGERS INITIALIZED ========")
+        print("########  SUPERVISION SERVICES INITIALIZED ######## ")
     except MorseServiceError as e:
         #...no request manager :-(
         print("WARNING: " + str(e))
-        print("======= SERVICE MANAGERS INITIALIZATION FAILED ========")
+        print("########  SUPERVISION SERVICES INITIALIZATION FAILED ######## ")
+        return False
+    
+    return True
 
 
 def simulation_main(contr):
