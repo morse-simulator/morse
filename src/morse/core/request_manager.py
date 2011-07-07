@@ -173,7 +173,7 @@ class RequestManager(object):
             print (str(self) + ": ERROR while registering a new service: " + str(callback) + \
                     " is not a callable object.")
     
-    def services():
+    def services(self):
         """ Returns the list of all components and services registered with this
         request manager.
         
@@ -233,11 +233,11 @@ class RequestManager(object):
 
         else: #Synchronous service.
             #Invoke the method
-            print("Sychronous service -> invoking it now.")
+            print("Synchronous service -> invoking it now.")
             try:
                 values = method(*params) if params else method() #Invoke the method with unpacked parameters
             except TypeError as e:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
+                raise MorseWrongArgsError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
             print("Done. Result: " + str(values))
             return (True, values)

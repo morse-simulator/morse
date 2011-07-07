@@ -20,7 +20,7 @@ ENDIF(BUILD_YARP2_SUPPORT)
 
 IF(BUILD_POCOLIBS_SUPPORT)
 	ADD_SUBDIRECTORY(pocolibs)
-	INSTALL(FILES pocolibs_mw.py
+	INSTALL(FILES pocolibs_mw.py pocolibs_request_manager.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 ENDIF(BUILD_POCOLIBS_SUPPORT)
 

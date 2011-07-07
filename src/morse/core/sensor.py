@@ -19,11 +19,6 @@ class MorseSensorClass(morse.core.object.MorseObjectClass):
         # Define lists of dynamically added functions
         self.output_functions = []
         self.output_modifiers = []
-
-    #def __del__(self):
-    #    """ Destructor method. """
-    #    # Call the destructor of the parent class
-    #    super(self.__class__,self).__del__(obj)
     
     def sensor_to_robot_position_3d(self):
         """
