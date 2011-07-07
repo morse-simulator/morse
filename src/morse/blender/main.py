@@ -84,10 +84,18 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
-
-
+    
+    if not GameLogic.robotDict: # No robot!
+        print("""
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ERROR: no robot in your simulation!
+            
+            Do not forget that components _must_ belong to a
+            robot (you can not have free objects)
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            """)
+        return False
+    
     # Get the robot and its instance
     for obj, robot_instance in GameLogic.robotDict.items():
         # Create an empty list for the components of this robot
@@ -110,7 +118,23 @@ def create_dictionaries ():
                 pass
                 #sys.exc_clear()    # Clears the last exception thrown
                                     # Does not work in Python 3
-
+    
+    # Check we have no 'free' component (they all must belong to a robot)
+    for obj in scene.objects:
+        try:
+            obj['Component_Tag']
+            if obj.name not in GameLogic.componentDict.keys():
+                print("""
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    ERROR: the component """ + obj.name + """ do not
+                    belong to any robot: you need to fix that by 
+                    parenting it to a robot.                    
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """)
+                return False
+        except KeyError as detail:
+            pass
+            
     # Get the modifiers
     for obj in scene.objects:
         try:
@@ -395,7 +419,7 @@ def init(contr):
     init_ok = create_dictionaries()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
-    link_services()
+    init_ok = init_ok and link_services()
 
     if init_ok:
         print ('======= COMPONENT DICTIONARY INITIALISED =======')
