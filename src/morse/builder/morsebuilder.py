@@ -46,12 +46,12 @@ class AbstractComponent(object):
     self._blendobj = None
     self._blendname = None # for middleware configuration
   def append(self, obj):
-    """ Add a child to the current object,
+    """ Add a child (obj) to the current component,
 
+    obj.name must exists (can be either a blender object or a Morse Component)
     eg: robot.append(sensor), will set the robot parent of the sensor.
-    cf: bpy.ops.object.parent_set()
-    obj._blendobj.parent = self._blendobj
-    self._blendobj.children += obj._blendobj
+    `bpy.ops.object.parent_set() 
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.ops.object.html#bpy.ops.object.parent_set>`_ 
     """
     opsobj = bpy.ops.object
     # make sure that nothing is selected
@@ -92,7 +92,7 @@ class AbstractComponent(object):
     default (0.0, 0.0, 0.0)
 
     cf. `bpy.types.Object.location 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
     """
     old = self._blendobj.location
     self._blendobj.location = (old.x + x, old.y + y, old.z + z)
@@ -101,7 +101,7 @@ class AbstractComponent(object):
     default (0.0, 0.0, 0.0)
 
     cf. `bpy.types.Object.rotation_euler 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
     """
     old = self._blendobj.rotation_euler
     self._blendobj.rotation_euler = (old.x + x, old.y + y, old.z + z)
@@ -109,11 +109,11 @@ class AbstractComponent(object):
     """ Add/modify the game properties of the Blender object
 
     `bpy.types.Object.game 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.game>`_
     `bpy.types.GameObjectSettings.properties 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
     `bpy.types.GameProperty 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
     """
     prop = self._blendobj.game.properties
     for k in kwargs:
@@ -151,10 +151,10 @@ class Component(AbstractComponent):
   """ Append a morse-component to the scene
 
   cf. `bpy.ops.wm.link_append 
-  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
+  <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
    and 
   `bpy.data.libraries.load 
-  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html>`_ 
+  <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.BlendDataLibraries.html>`_ 
   """
   def __init__(self, category, name):
     AbstractComponent.__init__(self)
@@ -188,6 +188,10 @@ class Middleware(Component):
   def __init__(self, name):
     Component.__init__(self, 'middleware', name)
   def configure(self, component, config=None):
+    """ Component bindings with middlewares (hooks)
+
+    http://www.openrobots.org/morse/doc/latest/user/hooks.html#configuration
+    """
     if not config:
       config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
     Component._config.link(component, config)
