@@ -9,22 +9,29 @@ import Rasterizer
 #  in the .blend file of the scene
 try:
     import component_config
+    
+    # The service management
+    from morse.core.services import MorseServices
+
 except ImportError as detail:
     print ("WARNING: ", detail, ". No middlewares will be configured")
 
+
+MULTINODE_SUPPORT = False
 # The file scene_config.py is at the moment included
 #  in the .blend file of the scene
 # Used to setup the multinode information
 try:
     import scene_config
+    
+    # Multi-node simulation
+    import morse.core.multinode
+    MULTINODE_SUPPORT = True
+    
 except ImportError as detail:
-    print ("WARNING: ", detail, ". No scene configuration file found.")
+    print ("INFO: No multi-node scene configuration file found." + \
+           " Multi-node support disabled.")
 
-# Multi-node simulation
-import morse.core.multinode
-
-# The service management
-from morse.core.services import MorseServices
 from morse.core.exceptions import MorseServiceError
 
 
@@ -147,9 +154,6 @@ def create_dictionaries ():
                 return False
         except KeyError:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
-
 
     # Get the middlewares
     for obj in scene.objects:
@@ -159,8 +163,7 @@ def create_dictionaries ():
             is_middleware = True
         except KeyError as detail:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
+    
         if is_middleware:
             # Create an object instance and store it
             instance = create_instance (obj)
@@ -382,23 +385,23 @@ def init(contr):
 
     Here, all components, modifiers and middleware are initialized.
     """
-    # Configuration for the multi-node simulation
-    try:
-        node_name = scene_config.node_config["node_name"]
-        server_address = scene_config.node_config["server_address"]
-        server_port = scene_config.node_config["server_port"]
-    #except NameError as detail:
-        #print ("No definition file for 'multi-node' instance found. Using only single node")
-    #except AttributeError as detail:
-    except (NameError, AttributeError) as detail:
-        print ("WARNING: No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
-        node_name = "temp_name"
-        server_address = "localhost"
-        server_port = 65000
-    GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
+    
+    if MULTINODE_SUPPORT:
+        # Configuration for the multi-node simulation
+        try:
+            node_name = scene_config.node_config["node_name"]
+            server_address = scene_config.node_config["server_address"]
+            server_port = scene_config.node_config["server_port"]
+        #except NameError as detail:
+            #print ("No definition file for 'multi-node' instance found. Using only single node")
+        #except AttributeError as detail:
+        except (NameError, AttributeError) as detail:
+            print ("WARNING: No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+            node_name = "temp_name"
+            server_address = "localhost"
+            server_port = 65000
+        GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
 
-    print ('\n######## SERVICES INITIALIZATION ########')
-    init_services()
 
     print ('\n######## SCENE INITIALIZATION ########')
     # Get the version of Python used
@@ -485,17 +488,15 @@ def simulation_main(contr):
         them on the morse-dev@laas.fr mailing list.
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         """)
-        quitActuator = contr.actuators['Quit_sim']
-        contr.activate(quitActuator)
-        sys.exit(-1)
+        quit(contr)
 
     if hasattr(GameLogic, "morse_services"):
         # let the service managers process their inputs/outputs
         GameLogic.morse_services.process()
-
-    # Register the locations of all the robots handled by this node
-    #if hasattr(GameLogic, "multi_node"):
-    GameLogic.node_instance.synchronise_world(GameLogic)
+    
+    if MULTINODE_SUPPORT:
+        # Register the locations of all the robots handled by this node
+        GameLogic.node_instance.synchronise_world(GameLogic)
 
 
 def switch_camera(contr):
@@ -515,29 +516,33 @@ def switch_camera(contr):
 
 
 def close_all(contr):
-    print ('######### TERMINATING INSTANCES... ########')
+    print ('######### FINALIZING COMPONENTS... ########')
     # Force the deletion of the sensor objects
-    for obj, component_instance in GameLogic.componentDict.items():
-        del obj
+    if hasattr(GameLogic, 'componentDict'):
+        for obj, component_instance in GameLogic.componentDict.items():
+            del obj
 
     # Force the deletion of the robot objects
-    for obj, robot_instance in GameLogic.robotDict.items():
-        del obj
+    if hasattr(GameLogic, 'robotDict'):
+        for obj, robot_instance in GameLogic.robotDict.items():
+            del obj
 
     print ('######### CLOSING REQUEST MANAGERS... ########')
     del GameLogic.morse_services
 
     print ('######### CLOSING MIDDLEWARES... ########')
     # Force the deletion of the middleware objects
-    for obj, mw_instance in GameLogic.mwDict.items():
-        if mw_instance:
-            mw_instance.cleanup()
-            #import gc
-            #print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
-            del obj
+    if hasattr(GameLogic, 'mwDict'):
+        for obj, mw_instance in GameLogic.mwDict.items():
+            if mw_instance:
+                mw_instance.cleanup()
+                #import gc
+                #print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+                del obj
 
-    print ('######### CLOSING MULTINODE... ########')
-    GameLogic.node_instance.finish_node()
+    if MULTINODE_SUPPORT:
+        print ('######### CLOSING MULTINODE... ########')
+        GameLogic.node_instance.finish_node()
 
 
 def finish(contr):
@@ -548,12 +553,7 @@ def finish(contr):
     #the code get executed two time, when pressed, and when released)
     if not sensor.positive and sensor.triggered:
         close_all(contr)
-
-        quitActuator = contr.actuators['Quit_sim']
-        contr.activate(quitActuator)
-
-        print ('######### EXITING SIMULATION ########')
-
+        quit(contr)
 
 def restart(contr):
     """Close the open ports."""
@@ -567,6 +567,11 @@ def restart(contr):
         reset_objects(contr)
         return
 
+def quit(contr):
+    print ('######### EXITING SIMULATION ########')
+        
+    quitActuator = contr.actuators['Quit_sim']
+    contr.activate(quitActuator)
 
 def reset_objects(contr):
     """ Place all objects in the initial position
