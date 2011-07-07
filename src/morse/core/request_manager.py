@@ -4,7 +4,7 @@ import uuid
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
-from morse.core.exceptions import MorseServiceError, MorseRPCInvokationError
+from morse.core.exceptions import *
 
 class RequestManager(object):
     """ Basic Class for all request dispatchers, i.e., classes that
@@ -213,7 +213,7 @@ class RequestManager(object):
         try:
             method, is_async = self._services[(component, service)]
         except KeyError:
-            raise MorseRPCInvokationError("The request " + service + " has not been registered in " + str(self))
+            raise MorseMethodNotFoundError("The request " + service + " has not been registered in " + str(self))
 
         if is_async:
             # Creates a result setter functor: this functor is used as
@@ -226,7 +226,7 @@ class RequestManager(object):
                 # service initialization fails.
                 method(result_setter, *params) if params else method(result_setter)
             except TypeError as e:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
+                raise MorseWrongArgsError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
 
             print("Asynchronous request -> successfully started.")
             return (False, request_id)
