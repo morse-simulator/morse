@@ -124,8 +124,8 @@ class ROSMW(AbstractComponent):
   def configure(self, component, config=None):
     if not config:
       config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
-    Component._config.link(component, config)
-    Component._config.write()
+    AbstractComponent._config.link(component, config)
+    AbstractComponent._config.write()
 
 def print_prop(obj):
   for p in obj.game.properties.keys():
