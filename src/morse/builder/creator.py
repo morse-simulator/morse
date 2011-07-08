@@ -4,6 +4,13 @@ from morse.builder.data import MORSE_MIDDLEWARE_DICT
 
 class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
   def __init__(self, name, callingModule, blendname=None):
+    """ ComponentCreator constructor
+
+    name: (string) name of the Empty Blender object
+    callingModule: (string) in ['calling.actuator_action', 'calling.sensor_action', 'calling.mw_action']
+    blendname: (string) used for the middleware configuration (default: None)
+      see morse.builder.data.MORSE_MIDDLEWARE_DICT
+    """
     morse.builder.morsebuilder.AbstractComponent.__init__(self)
     bpy.ops.object.select_all(action = 'DESELECT')
     bpy.ops.object.add() # default is Empty object
