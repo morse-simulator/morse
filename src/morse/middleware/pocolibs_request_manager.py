@@ -19,10 +19,14 @@ class PocolibsRequestManager(RequestManager):
 
     def initialization(self):
         
-        self._clients = {}
+        #  socket -> identifier (int)
+        self._clients = {} 
+
+        # socket cmd -> socket answer (may be the same)
+        self._answer_clients = {}  
         
         # Clients that have pending (ie asynchronous) requests
-        self._pending_requests = {}
+        self._pending_requests = {} 
         self._next_client_id = 0
         self._next_rqst_id = 0
         
@@ -87,7 +91,7 @@ class PocolibsRequestManager(RequestManager):
                 " TERM " + \
                 ("OK" if state == status.SUCCESS else "") + \
                 (" " + " ".join([str(i) for i in value]) if value else "")
-        self._results_to_output.setdefault(s, []).append(res)
+        self._results_to_output.setdefault(self._answer_clients[s], []).append(res)
         
 
     def post_registration(self, component, service, is_async):
@@ -115,6 +119,7 @@ class PocolibsRequestManager(RequestManager):
                     conn.send(("HELLO " + str(self._next_client_id) + "\r\n").encode('ascii'))
                     print('Pocolibs request manager: new connection from ', addr)
                     self._clients[conn] = self._next_client_id
+                    self._answer_clients[conn] = conn
                     self._inputs.append(conn)
                     self._outputs.append(conn)
                     self._next_client_id += 1
@@ -163,11 +168,11 @@ class PocolibsRequestManager(RequestManager):
                             " TERM " + \
                             ("OK" if state == status.SUCCESS else "") + \
                             (" " + " ".join([str(i) for i in value]) if value else "")
-                        self._results_to_output.setdefault(i, []).append(res)
+                        self._results_to_output.setdefault(self._answer_clients[i], []).append(res)
                     else:
                         activity_id = 0 #TODO: For now, we do not support more than one instance of the same request
                         res = str(rqst_id) + " " + fqn + " ACK " + str(activity_id)
-                        self._results_to_output.setdefault(i, []).append(res)
+                        self._results_to_output.setdefault(self._answer_clients[i], []).append(res)
                         
                         # Stores the mapping request/socket to notify
                         # the right client when the service completes.
@@ -213,9 +218,17 @@ class PocolibsRequestManager(RequestManager):
         
         if cmd  == "REPLYTO":
             if client_id != int(req[1]):
-                print("[ERROR] pypocoserv does not currently support answering on different sockets (REPLYTO != socket id)!")
-                return (False, "pypocoserv does not currently support answering on different sockets")
-            
+                s_client = None
+                s_reply = None
+                for s, id in self._clients.items():
+                    if id == client_id:
+                        s_client = s
+                    elif id == int(req[1]):
+                        s_reply = s
+
+                if (s_client and s_reply):
+                    self._answer_clients[s_client] = s_reply
+
             return (True, str(client_id))
         
         if cmd == "RQST":
@@ -245,7 +258,7 @@ class PocolibsRequestManager(RequestManager):
                 
             except MorseMethodNotFoundError:
                 # Request not found for module
-                return (False, "1 invalid command name \\\"" + poco_rqst.fqn + "Send\\\"")
+                return (False, "1 invalid command name \\\"" + rqst + "Send\\\"")
             except MorseWrongArgsError:
                 # Wrong # of args
                 return (False, "1 wrong # args")
