@@ -80,20 +80,20 @@ def test():
   ros = MiddlewareCreator("ROS_Empty", 
       "morse/middleware/ros_mw", "ROSClass", "ros_empty")
   # add a GPS sensor
-  gps = SensorCreator("GPS", "GPSClass", 
-      "morse/sensors/gps", "morse_GPS")
+  gps = SensorCreator("GPS", 
+      "morse/sensors/gps", "GPSClass", "morse_GPS")
   # add an Odometry sensor
-  odometry = SensorCreator("Odometry", "OdometryClass", 
-      "morse/sensors/odometry", "morse_odometry")
+  odometry = SensorCreator("Odometry", 
+      "morse/sensors/odometry", "OdometryClass", "morse_odometry")
   # add a Pose sensor
-  pose = SensorCreator("Pose_sensor", "PoseClass", 
-      "morse/sensors/pose", "morse_pose")
+  pose = SensorCreator("Pose_sensor", 
+      "morse/sensors/pose", "PoseClass", "morse_pose")
   mesh = Cylinder("PoseCylinder")
   mesh.scale = (.1,.1,.2)
   pose.append(mesh)
   # add a Proximity sensor
-  proximity = SensorCreator("Proximity", "ProximitySensorClass", 
-      "morse/sensors/proximity", "morse_proximity")
+  proximity = SensorCreator("Proximity", 
+      "morse/sensors/proximity", "ProximitySensorClass", "morse_proximity")
   proximity.properties(Range = 30.0)
 
 
