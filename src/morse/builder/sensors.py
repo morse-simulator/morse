@@ -57,7 +57,16 @@ class Camera(morse.builder.creator.SensorCreator):
     self._blendobj.game.controllers[controller].link( 
         sensor = self._blendobj.game.sensors[sensor], 
         actuator = self._blendobj.game.actuators[actuator])
-    # TODO add some mesh
+    # cf. morse.sensors.camera.VideoCameraClass._setup_video_texture
+    mesh = morse.builder.creator.Cube("CameraCube")
+    mesh.scale = (.1,.1,.05)
+    self.append(mesh)
+    # XXX add "MAScreenMat" to "CameraCube" (!) or "ScreenMat" (?)
+    bpy.ops.object.select_all(action = 'DESELECT')
+    bpy.ops.object.select_name(name = "CameraCube")
+    bpy.ops.material.new()
+    # (?) bpy.ops.object.material_slot_add()
+    # (?) bpy.data.materials[-1].name = "MAScreenMat"
 
 class Battery(morse.builder.creator.SensorCreator):
   def __init__(self, name="Battery"):
