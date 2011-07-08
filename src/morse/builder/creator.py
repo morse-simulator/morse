@@ -29,6 +29,8 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
     self._blendobj.game.controllers[controller].module = callingModule
     self._blendobj.game.controllers[controller].link( sensor = 
         self._blendobj.game.sensors[sensor] )
+    # no collision by default for components
+    self._blendobj.game.physics_type = 'NO_COLLISION'
 
 class SensorCreator(ComponentCreator):
   def __init__(self, name, classPath, className, blendname=None):
@@ -64,6 +66,8 @@ class Cube(morse.builder.morsebuilder.AbstractComponent):
     bpy.ops.mesh.primitive_cube_add()
     self._blendobj = bpy.context.selected_objects[0]
     self._blendobj.name = name
+    # no collision by default for components
+    self._blendobj.game.physics_type = 'NO_COLLISION'
 
 class Cylinder(morse.builder.morsebuilder.AbstractComponent):
   def __init__(self, name):
@@ -72,6 +76,8 @@ class Cylinder(morse.builder.morsebuilder.AbstractComponent):
     bpy.ops.mesh.primitive_cylinder_add()
     self._blendobj = bpy.context.selected_objects[0]
     self._blendobj.name = name
+    # no collision by default for components
+    self._blendobj.game.physics_type = 'NO_COLLISION'
 
 class Spot(morse.builder.morsebuilder.AbstractComponent):
   def __init__(self, name):
@@ -84,6 +90,8 @@ class Spot(morse.builder.morsebuilder.AbstractComponent):
     spot = bpy.data.lamps[-1]
     spot.spot_size = math.pi/2
     spot.distance = 10
+    # no collision by default for components
+    self._blendobj.game.physics_type = 'NO_COLLISION'
 
 class Camera(morse.builder.morsebuilder.AbstractComponent):
   def __init__(self, name):
@@ -94,6 +102,8 @@ class Camera(morse.builder.morsebuilder.AbstractComponent):
     self._blendobj.name = name
     # looking in +x
     self.rotate(x=math.pi/2, z=-math.pi/2)
+    # no collision by default for components
+    self._blendobj.game.physics_type = 'NO_COLLISION'
 
 def test():
   # add a MotionControler object
