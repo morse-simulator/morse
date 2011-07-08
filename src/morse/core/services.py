@@ -91,8 +91,7 @@ class MorseServices:
         print ("Deleting all request managers...")
         self._request_managers.clear()
         self._service_mappings.clear()
-
-
+        
     def get_request_managers(self, component):
         if not component in self._service_mappings:
            print("ERROR: no service manager is available for the " + component + " component! This error " +  \

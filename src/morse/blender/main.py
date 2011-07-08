@@ -229,7 +229,22 @@ def create_instance(obj, parent=None):
 
     return instance
 
+def get_components_of_type(classname):
+    
+    components = []
+    for component in GameLogic.componentDict.values():
+        print(component.name() + " -> " + component.__class__.__name__)
+        if component.__class__.__name__ == classname:
+            components.append(component)
+    
+    return components
 
+def get_middleware_of_type(classname):
+    for mw_instance in GameLogic.mwDict.value():
+        if mw_instance.__class__.__name__ == classname:
+            return mw_instance
+    return None
+    
 def link_middlewares():
     """ Read the configuration script (inside the .blend file)
         and assign the correct middleware and options to each component. """
@@ -329,6 +344,45 @@ def link_services():
     
     return True
 
+def load_overlays():
+    """ Read and initialize overlays from the configuration script.
+    """
+    try:
+        overlays_list = component_config.overlays
+    except AttributeError as detail:
+        # Exit gracefully if there are no services specified
+        print ("[INFO] No overlay section found in configuration file.")
+        return True
+
+    for request_manager_name, overlays in overlays_list.items():
+        
+        for overlaid_name, overlay_name in overlays.items():
+            modulename, classname = overlay_name.rsplit('.', 1)
+            
+            try:
+                __import__(modulename)
+            except ImportError as detail:
+                print ("ERROR: Module for overlay %s not found: %s" % (classname, detail))
+                continue
+            module = sys.modules[modulename]
+            # Create an instance of the object class
+            try:
+                klass = getattr(module, classname)
+            except AttributeError as detail:
+                print ("ERROR: Overlay not found: %s" % detail)
+                continue
+            
+            for overlaid_object in get_components_of_type(overlaid_name):
+                # BUG TODO: If more than one object is overlaid with the same overlay 
+                # (eg, 2 instances of the same component class), and if the overlay
+                # redefines the name, a name collision will occur.
+                instance = klass(overlaid_object)
+                GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+                instance.register_services()
+                print ("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
+    
+    return True
+
 
 def add_modifiers():
     """ Read the configuration script (inside the .blend file)
@@ -412,6 +466,7 @@ def init(contr):
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
     init_ok = init_ok and link_services()
+    init_ok = init_ok and load_overlays()
 
     if init_ok:
         print ('########  COMPONENT DICTIONARY INITIALIZED ######## ')

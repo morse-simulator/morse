@@ -5,10 +5,10 @@ Welcome to the official documentation for the MORSE project.
 
 For any questions about the use of MORSE or if you have any issues with the
 simulator, you can drop a mail to the `morse-users@laas.fr <mailto:morse-users@laas.fr>`_ 
-mailing-list. You can suscribe to the mailing-list
+mailing-list. You can subscribe to the mailing-list
 `here <https://sympa.laas.fr/sympa/subscribe/morse-users>`_.
 
-You can report bugs to `our bug-tracker <https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse>`_.
+Bug reports are always welcome on `our bug-tracker <https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse>`_.
 
 Quick start
 -----------
@@ -88,8 +88,8 @@ other robots or humans.
 
     user/user_workflow
 
-Components library
-------------------
+Simulated components
+--------------------
 
 .. image:: ../media/morse_robot.jpg
    :width: 300
@@ -100,23 +100,25 @@ MORSE offers an extended set of predefined sensors and controllers that cover
 reasonably well common simulation needs in robotics. It proposes also some 
 fully equipped robots.
 
-The following page lists all the currently existing components, their
-properties and their interfaces:
+Check the :ref:`compatibility-matrix` to see which components are supported for
+each middleware.
+
+The :doc:`component library <user/component_library>` provides the exhaustive list of currently 
+available components, their properties and their interfaces.
+
+MORSE features a mechanism called :doc:`component overlays <user/overlays>` to 
+easily create pseudo-sensors or actuators that fit your specific architecture.
+
+MORSE also provides ways to alter input or output data (like adding noise to
+a GPS position) by so-called :doc:`modifiers <user/modifier_introduction>`. 
 
 .. toctree::
-    :maxdepth: 3
-
+    :hidden:
+    
     user/component_library
-
-MORSE has also a mechanism to alter input or output data (like adding noise to
-a GPS position) by so-called *modifiers*: 
-
-.. toctree::
-    :maxdepth: 3
-
     user/modifier_introduction
 
-To learn how to add new components (sensors, robots...), please refer to the 
+To learn how to create new components (sensors, robots...), please refer to the 
 :doc:`developer documentation <dev/summary>`.
 
 Interacting with MORSE
@@ -219,6 +221,7 @@ Publications
 ++++++++++++
 
 - `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011::
+
     @InProceedings{morseICRA2011,
         author = {G. Echeverria and N. Lassabe and A. Degroote and S. Lemaignan}
         title = {Modular OpenRobots Simulation Engine: MORSE}
