@@ -5,14 +5,10 @@ from morse.builder.components import MORSE_COMPONENTS_DICT
 MORSE_COMPONENTS: 
 path to the Morse components
 """
-root = "/usr/local" # default install
+_root = "/usr/local" # default install
 if 'MORSE_ROOT' in os.environ:
-  root = os.environ['MORSE_ROOT']
-elif b'MORSE_ROOT' in os.environ: # python3.2 , Blender 2.57+
-  root = os.environ[b'MORSE_ROOT'] # root = "b'/usr/local'" <class 'str'>
-  root = eval(root) # XXX root = b'/usr/local' <class 'bytes'>
-  root = root.decode() # root = '/usr/local' <class 'str'>
-MORSE_COMPONENTS = os.path.join(root, 
+  _root = os.environ['MORSE_ROOT']
+MORSE_COMPONENTS = os.path.join(_root, 
     "share/data/morse/components")
 
 """
