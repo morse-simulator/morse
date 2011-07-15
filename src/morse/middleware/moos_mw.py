@@ -1,10 +1,10 @@
-import MOOS.MOOSCommClient
+import pymoos.MOOSCommClient
 import morse.core.middleware
 import GameLogic
-if GameLogic.pythonVersion < 3:
-    import Mathutils as mathutils
-else:
-    import mathutils
+#if GameLogic.pythonVersion < 3:
+#    import Mathutils as mathutils
+#else:
+import mathutils
 
 class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and MOOS."""
@@ -13,7 +13,7 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
         """ Initialize the MOOS app"""
         super(self.__class__,self).__init__(obj, parent)
         print ("################# Initializing MOOS middleware ###################")
-        self.m = MOOS.MOOSCommClient.MOOSApp()
+        self.m = pymoos.MOOSCommClient.MOOSApp()
         #self.m.SetOnConnectCallBack( self.m.DoRegistrations )
         #self.m.SetOnMailCallBack( self.m.MailCallback )
         
@@ -103,7 +103,7 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
     def read_message(self, component_instance):
         """ read a command message from the database and send to the simulator???"""
         #print("Read message called.")
-        current_time = MOOS.MOOSCommClient.MOOSTime();    
+        current_time = pymoos.MOOSCommClient.MOOSTime();    
         # get latest mail from the MOOS comm client
         messages = self.m.FetchRecentMail()
         
