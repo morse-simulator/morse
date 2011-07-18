@@ -9,12 +9,12 @@ import mathutils
 # It uses the built-in blender function toEuler
 def euler_angle(ob):
     rot_matrix = ob.orientation
-    matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+    #matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
 
     # XXX If we want to have the right handle, we definivly need to transpose
     # the matrix here, but why ?
-    matrix.transpose()
-    euler = matrix.to_euler()
+    rot_matrix.transpose()
+    euler = rot_matrix.to_euler()
 
     return [euler.z, euler.x, euler.y]
 
@@ -53,13 +53,8 @@ def euler_angle_old(ob):
 def get_rotation_matrix(object):
     """ Return a the rotation matrix of an object.
         Used to transform another object to this one's coordinate system. """
-    # Obtain the rotation matrix of the object.
-    rot_matrix = object.worldOrientation
-    rotation_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
-    # According to the GE documentation, it has to be transposed first
-    #rotation_matrix.transpose()
 
-    return rotation_matrix
+    return object.worldOrientation
 
 
 def invert_rotation_matrix(object):
