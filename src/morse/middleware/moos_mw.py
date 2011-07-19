@@ -96,7 +96,10 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
 
         #iterate through all objects of the component_instance and post the data
         for variable, data in component_instance.local_data.items():
-            self.m.Notify(parent_name+"_"+component_instance.blender_obj.name+"_"+variable,data,GameLogic.current_time)
+            #print(parent_name+"_"+component_instance.blender_obj.name+"_"+variable)
+            #print(str(data))
+            #print(type(data))
+            self.m.Notify(parent_name+"_"+component_instance.blender_obj.name+"_"+variable,str(data),GameLogic.current_time)
 
                             
     # NOTE: This is a dummy function that is executed for every actuator. Since ROS uses the concept of callbacks, it does nothing ...    
