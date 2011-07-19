@@ -106,7 +106,7 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
     def read_message(self, component_instance):
         """ read a command message from the database and send to the simulator???"""
         #print("Read message called.")
-        current_time = pymoos.MOOSCommClient.MOOSTime();    
+        current_time = pymoos.MOOSCommClient.MOOSTime()
         # get latest mail from the MOOS comm client
         messages = self.m.FetchRecentMail()
         
