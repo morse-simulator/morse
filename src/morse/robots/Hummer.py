@@ -71,7 +71,8 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         scene = GameLogic.getCurrentScene()
         wheel1=scene.objects["wheel1"]
         
-     
+        print(dir(wheel1))
+        
         #creates the first wheel using all of the variables 
         #created above:
         self.vehicle.addWheel(wheel1,wheelAttachPosLocal,wheelAttachDirLocal,wheelAxleLocal,suspensionRestLength,wheelRadius,hasSteering)

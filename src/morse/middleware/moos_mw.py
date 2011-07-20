@@ -116,3 +116,9 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
                 component_instance.local_data['v'] =message.GetDouble() # command linear velocity [m/s]
             elif  (message.GetKey()=="cYawRate") and (message.IsDouble()):
                 component_instance.local_data['w']=message.GetDouble() # command angular velocity [m/s]
+            elif  (message.GetKey()=="cSteer") and (message.IsDouble()):
+                component_instance.local_data['steer']=message.GetDouble() # command steer angle [deg]
+            elif  (message.GetKey()=="cThrottle") and (message.IsDouble()):
+                component_instance.local_data['force']=message.GetDouble() # command engine force
+            elif  (message.GetKey()=="cBrake") and (message.IsDouble()):
+                component_instance.local_data['brake']=message.GetDouble() # command angular velocity [m/s]

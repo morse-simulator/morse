@@ -48,8 +48,6 @@ class SteerForceActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         #Brakes:
         #Applies the braking force to each wheel listed:
-        #chassis = owner of the controller, in my example, it's the object
-        #labeled 'car'
         #['brakes'] = the game property value for the car labeled 'brakes'
         #Default value is 0:
         #Pressing the space bar assigns it a value of 3 for braking
