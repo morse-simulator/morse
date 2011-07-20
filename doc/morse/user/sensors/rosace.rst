@@ -11,6 +11,7 @@ This sensor works only with the `human victim <../others/victim>` object.
 
 Additionally, the sensor provides a number of services related to the
 capabilities of the robot to help the nearest victim:
+
     - Report on the condition of a victim
     - Report the capabilities of the robot
     - Heal a victim (if compatible capabilities and requirements)
