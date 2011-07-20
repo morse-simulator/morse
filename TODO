@@ -12,7 +12,6 @@ General
 - Update robotpkg packages
 
 - use the Python logging interface -> Severin
-- add an overlay in the simulation with the keyboard shortcuts -> Gilberto
 - move away all project/scenario specific files from MORSE core (create
   dedicated repositories for those) -> superseeded by next target
 
@@ -72,6 +71,8 @@ exported
 stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
+
+- Create a Generic Vehicule Robot, as a base for Hummer robot
 
 ================
  OTHERS and MISC
