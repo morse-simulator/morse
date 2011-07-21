@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 
@@ -46,10 +47,10 @@ class PocolibsRequestManager(RequestManager):
             self._server = None
             
         if not self._server:
-            print('Could not bind the Pocolibs server. Port busy?')
+            logger.info('Could not bind the Pocolibs server. Port busy?')
             return False
 
-        print("Pocolibs request manager now listening on port " + str(PocolibsRequestManager.PORT) + ".")
+        logger.info("Pocolibs request manager now listening on port " + str(PocolibsRequestManager.PORT) + ".")
         
         # Prepare 'select'
         self._inputs = [self._server]
@@ -62,12 +63,12 @@ class PocolibsRequestManager(RequestManager):
     def finalization(self):
         """ Terminate the ports used to accept requests """
         if self._clients:
-            print("Closing client sockets...")
+            logger.info("Closing client sockets...")
             for s in self._clients.keys():
                 s.shutdown(socket.SHUT_RDWR)
         
         if self._server:
-            print("Closing Pocolibs server...")
+            logger.info("Closing Pocolibs server...")
             self._server.shutdown(socket.SHUT_RDWR)
             del self._server
 
@@ -83,7 +84,7 @@ class PocolibsRequestManager(RequestManager):
         try:
             s, rqst_id, fqn = self._pending_requests[intern_rqst_id]
         except KeyError:
-            print(str(self) + ": ERROR: I can not find the socket which requested " + \
+            logger.info(str(self) + ": ERROR: I can not find the socket which requested " + \
                   intern_rqst_id + ". Skipping it.")
             return
 
@@ -117,14 +118,14 @@ class PocolibsRequestManager(RequestManager):
                 
                 if data == "HELLO":
                     conn.send(("HELLO " + str(self._next_client_id) + "\r\n").encode('ascii'))
-                    print('Pocolibs request manager: new connection from ', addr)
+                    logger.info('Pocolibs request manager: new connection from ', addr)
                     self._clients[conn] = self._next_client_id
                     self._answer_clients[conn] = conn
                     self._inputs.append(conn)
                     self._outputs.append(conn)
                     self._next_client_id += 1
                 else:
-                    print("Incorrect connection attempt - was expecting 'HELLO\\n', got '" + data + "'.")
+                    logger.info("Incorrect connection attempt - was expecting 'HELLO\\n', got '" + data + "'.")
                     conn.close()
 
             else:
@@ -132,18 +133,18 @@ class PocolibsRequestManager(RequestManager):
                 try:
                     data = i.recv(1024).decode('ascii')
                 except socket.error:
-                    print("[WARNING] Client " + str(self._clients[i]) + " disconnected")
+                    logger.warning("Client " + str(self._clients[i]) + " disconnected")
                     del self._clients[i]
                     self._inputs.remove(i)
                     self._outputs.remove(i)
 
                 if not data:
                         return
-                print("[DEBUG] [Client " + str(self._clients[i]) + "]: " + data)
+                logger.debug("[Client " + str(self._clients[i]) + "]: " + data)
                 
                         
                 if data.startswith("BYE"):
-                    print("Client " + str(self._clients[i]) + " is leaving. Bye bye")
+                    logger.info("Client " + str(self._clients[i]) + " is leaving. Bye bye")
                     del self._clients[i]
                     self._inputs.remove(i)
                     self._outputs.remove(i)
@@ -189,9 +190,9 @@ class PocolibsRequestManager(RequestManager):
                     for r in self._results_to_output[o]:
                         try:
                             o.send((r + "\r\n").encode('ascii'))
-                            print("[DEBUG] Sending [" + r + "] to " + str(self._clients[o]))
+                            logger.debug("Sending [" + r + "] to " + str(self._clients[o]))
                         except socket.error:
-                            print("It seems that a socket client left. Closing the socket.")
+                            logger.info("It seems that a socket client left. Closing the socket.")
                             del self._clients[o]
                             self._inputs.remove(o)
                             self._outputs.remove(o)
@@ -234,7 +235,7 @@ class PocolibsRequestManager(RequestManager):
         if cmd == "RQST":
             component, rqst = req[1].strip("::").split("::")
             params = req[2:]
-            print("[INFO] Incoming pocolibs request " + rqst + 
+            logger.info("Incoming pocolibs request " + rqst + 
                     " for component " + component + 
                     " with params " + str(params))
             
@@ -279,6 +280,6 @@ class PocolibsRequestManager(RequestManager):
             # Not needed in simulation
             return (True, "")
         
-        print("[ERROR] command " + cmd + " not implemented!")
+        logger.error("command " + cmd + " not implemented!")
         return (False, "0 command " + cmd + " not implemented!")
 

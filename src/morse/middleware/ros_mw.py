@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy');
 import roscpp
 import rospy
@@ -13,21 +14,21 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
       
     def __init__(self, obj, parent=None):
         """ Initialize the network and generate a ROS node."""
-        print ("################# Initializing ROS middleware ###################")
+        logger.info("Middleware initialization")
         super(self.__class__,self).__init__(obj, parent)
         self._topics = []
-        print ("################# ROS middleware initialized ####################")
+        logger.info("Middleware initialized")
         
         
     def __del__(self):
         """ Close all open ROS connections. """
-        print("Shutting down ROSNode...")
+        logger.info("Shutting down ROSNode...")
 
     
     def finalize(self):
         """ Kill the morse rosnode."""
         rospy.signal_shutdown("ROSPy Shutdown")
-        print ('ROS Mid: Morse Rosnode has been killed.')
+        logger.info('ROS Mid: Morse Rosnode has been killed.')
         
     def register_component(self, component_name, component_instance, mw_data):
         """ Generate a new topic to publish the data
@@ -36,15 +37,15 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
         Only useful for sensors.
         """
         
-        print("========== Registering component =================")
+        logger.info("========== Registering component =================")
         parent_name = component_instance.robot_parent.blender_obj.name
 
         # Extract the information for this middleware
         # This will be tailored for each middleware according to its needs
         # This is specified in the component_config.py in Blender: [mw_data[0], mw_data[1]]
         function_name = mw_data[1]
-        print (" ######################## %s"%parent_name)
-        print (" ######################## %s"%component_name )
+        logger.info(" ######################## %s"%parent_name)
+        logger.info(" ######################## %s"%component_name )
         
         # Init MORSE-node in ROS
         rospy.init_node('morse')
@@ -77,10 +78,10 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
                 # Insert the method in this class
                 function = self._add_method(mw_data, component_instance)
             except IndexError as detail:
-                print ("ERROR: Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
+                logger.error("Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
                 return
                 
-        print("Component registered")
+        logger.info("Component registered")
 
     # Post string messages
     def post_message(self, component_instance):
@@ -100,7 +101,7 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
     # Callback function for reading String messages
     def callback(self, data, component_instance):
         """ this function is called as soon as messages are published on the specific topic """
-        print("Received String-message %s on topic %s"%(data.data.decode("utf-8"), str("/" + component_instance.robot_parent.blender_obj.name + "/" + component_instance.blender_obj.name)))
+        logger.info("Received String-message %s on topic %s"%(data.data.decode("utf-8"), str("/" + component_instance.robot_parent.blender_obj.name + "/" + component_instance.blender_obj.name)))
 			
     # NOTE: This is a dummy function that is executed for every actuator. Since ROS uses the concept of callbacks, it does nothing ...    
     def read_message(self, component_instance):
