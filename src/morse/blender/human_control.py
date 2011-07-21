@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 
 ######################################################
 #
@@ -98,7 +99,7 @@ def read_status(contr):
     #  are properly implemented to use velocity commands
     if False:
         speed = human.getLinearVelocity()
-        #print ("Man going at speed [%.4f, %.4f, %.4f]" % (speed[0], speed[1], speed[2]))
+        logger.debug("Man going at speed [%.4f, %.4f, %.4f]" % (speed[0], speed[1], speed[2]))
         if speed[0] > tolerance:
            armature['movingForward'] = True 
         elif speed[0] < -tolerance:
@@ -230,24 +231,24 @@ def hand_control(contr):
 
 def read_pose(contr):
     armature = contr.owner
-    print ("The armature is: '%s' (%s)" % (armature, type(armature)))
+    logger.info("The armature is: '%s' (%s)" % (armature, type(armature)))
 
     for channel in armature.channels:
         if 'X_' not in channel.name:
             rotation = channel.joint_rotation
-            print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+            logger.info("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
 
 
 def reset_pose(contr):
     armature = contr.owner
-    print ("Trying to reset the posture:")
+    logger.info("Trying to reset the posture:")
     for channel in armature.channels:     
         channel.rotation_mode = 6
         
         channel.joint_rotation = [0.0, 0.0, 0.0]
 
         rotation = channel.joint_rotation
-        print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+        logger.info("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
 
     armature.update()
 
@@ -323,7 +324,7 @@ def near_object(contr):
 
     #if near_object != None:
         #hand_empty.parent.localOrientation = [math.pi/2, 0.0, 0.0]
-        #print (near_object.name + " can be grasped!")
+        logger.debug(near_object.name + " can be grasped!")
 
 
 def grabbing(contr):
