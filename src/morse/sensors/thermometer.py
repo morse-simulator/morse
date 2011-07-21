@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import GameLogic
 import morse.core.sensor
@@ -10,7 +11,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
-        print ("######## THERMOMETER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -25,7 +26,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
         script_empty = scene.objects[script_empty_name]
         self._global_temp = float(script_empty['Temperature'])
 
-        print ('######## THERMOMETER INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -49,7 +50,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
                     min_distance = distance
                     fires = True
             except KeyError as detail:
-                # print "Exception: ", detail
+                logger.debug("Exception: " + str(detail))
                 pass
 
         temperature = self._global_temp

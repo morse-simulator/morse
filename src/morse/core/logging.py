@@ -20,7 +20,7 @@ class MorseFormatter(logging.Formatter):
         module = ".".join(record.name.split(".")[-2:])
         message = logging.Formatter.format(self, record)
 
-        if module not in ["morse", "morse.main"]:
+        if module not in ["morse", "morse.main", "blender.main"]:
             message = "[" + module + "] " + message
 
         if level == 'SECTION':

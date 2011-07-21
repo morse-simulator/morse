@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import mathutils
 import math
@@ -13,7 +14,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## Velodyne '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -23,7 +24,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
         for child in obj.children:
             if arc_prefix in child.name:
                 self._ray_arc = child
-                print ("Velodyne: Using arc object: '{0}'".format(self._ray_arc))
+                logger.info("Velodyne: Using arc object: '{0}'".format(self._ray_arc))
                 break
 
         # Set its visibility, according to the settings
@@ -52,7 +53,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     # NOTE: Make sure the center vertex of the arc
                     #  has local coordinates 0.0, 0.0, 0.0
                     if vector_point.length == 0:
-                        #print ("Center vertex has index: %d" % index)
+                        logger.debug("Center vertex has index: %d" % index)
                         continue
 
                     # Insert empty points into the data list
@@ -61,13 +62,13 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     self.local_data['range_list'].append(0.0)
                     # Insert the coordinates of the ray
                     self._ray_list.append(vector_point)
-                    #print ("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
+                    logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
 
                     index = index + 1
 
-                print ("Velodyne has %d rays" % len(self._ray_list))
+                logger.info("Velodyne has %d rays" % len(self._ray_list))
 
-        print ('######## Velodyne INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -84,8 +85,8 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
         # Create a vector for the mathutils operations
         vector_point = mathutils.Vector()
 
-        #print ("=== NEW SCAN at time %s ===" % GameLogic.current_time)
-        #print ("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+        logger.debug("=== NEW SCAN at time %s ===" % GameLogic.current_time)
+        logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
         # Get the mesh for the semicircle
         for mesh in self._ray_arc.meshes:
             for mat in range(mesh.numMaterials):
@@ -113,23 +114,23 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     for i in range(3):
                         ray[i] = self.blender_obj.position[i] + corrected_ray[i]
 
-                    #print ("\t%d: base_ray: [%.2f, %.2f, %.2f]\tray: [%.2f, %.2f, %.2f]" % (index, base_ray[0], base_ray[1], base_ray[2], ray[0], ray[1], ray[2]))
+                    logger.debug("\t%d: base_ray: [%.2f, %.2f, %.2f]\tray: [%.2f, %.2f, %.2f]" % (index, base_ray[0], base_ray[1], base_ray[2], ray[0], ray[1], ray[2]))
 
                     # Shoot a ray towards the target
                     target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['laser_range'])
-                    #print ("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
+                    logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
                     # If there was an intersection,
                     #  send the vertex to that point
                     if target:
-                        #print ("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (ray[0], ray[1], ray[2]))
-                        #print ("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
+                        logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (ray[0], ray[1], ray[2]))
+                        logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
 
                         # Substract the sensor coordinates
                         #  from the intersection point
                         for i in range(3):
                             point[i] = point[i] - self.blender_obj.position[i]
-                        #print ("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
+                        logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
 
                         # Create a vector object
                         morse.helpers.math.fill_vector (vector_point, point)
@@ -137,7 +138,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                         # Multiply the resulting point by the inverse
                         #  of the sensor rotation matrix
                         arc_point = vector_point * robot_inverted_matrix
-                        #print ("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (arc_point[0], arc_point[1], arc_point[2]))
+                        logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (arc_point[0], arc_point[1], arc_point[2]))
 
                         # Do not move the point if the ray intersection
                         #  happened at the origin
@@ -161,7 +162,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
 
                         # Move the vertex to the computed position
                         vertex.setXYZ(vector_point)
-                        #print ("\t\tNO intersection. [%.4f, %.4f, %.4f]" % (vector_point[0], vector_point[1], vector_point[2]))
+                        logger.debug("\t\tNO intersection. [%.4f, %.4f, %.4f]" % (vector_point[0], vector_point[1], vector_point[2]))
 
                         # Add a point at 0,0,0 to the output file,
                         #  to mark that this ray did not find anything

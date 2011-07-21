@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.sensor
@@ -11,7 +12,7 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## ODOMETER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -26,7 +27,7 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         self.local_data['dpitch'] = 0.0
         self.local_data['droll'] = 0.0
 
-        print ('######## ODOMETER INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -48,3 +49,4 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         # Store the 'new' previous data
         self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
         self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
+
