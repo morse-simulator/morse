@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core.logging import SECTION, ENDSECTION
 import sys
 import re
 import time
@@ -442,7 +443,7 @@ def init(contr):
         GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
 
 
-    logger.info('\n######## SCENE INITIALIZATION ########')
+    logger.log(SECTION, 'PRE-INITIALIZATION')
     # Get the version of Python used
     # This is used to determine also the version of Blender
     GameLogic.pythonVersion = sys.version_info
@@ -458,10 +459,10 @@ def init(contr):
     init_ok = True
 
 
-    logger.info('\n######## SUPERVISION SERVICES INITIALIZATION ########')
+    logger.log(SECTION, 'SUPERVISION SERVICES INITIALIZATION')
     init_ok = init_supervision_services()
     
-    logger.info('########  COMPONENT DICTIONARY INITIALISATION ######## ')
+    logger.log(SECTION, 'SCENE INITIALIZATION')
     init_ok = init_ok and create_dictionaries()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
@@ -469,12 +470,12 @@ def init(contr):
     init_ok = init_ok and load_overlays()
 
     if init_ok:
-        logger.info('########  COMPONENT DICTIONARY INITIALIZED ######## ')
+        logger.log(ENDSECTION, 'SCENE INITIALIZED')
         check_dictionaries()
         GameLogic.morse_initialised = True
     else:
-        logger.critical('########  INITIALISATION FAILED!!! ######## ')
-        logger.info("Exiting the simulation!")
+        logger.critical('INITIALIZATION FAILED!')
+        logger.info("Exiting now.")
         contr = GameLogic.getCurrentController()
         close_all(contr)
         quit(contr)
@@ -486,6 +487,7 @@ def init(contr):
 
 def init_logging():
     from morse.core.ansistrm import ColorizingStreamHandler
+    from morse.core.logging import MorseFormatter
     # create logger
     logger = logging.getLogger('morse')
     logger.setLevel(logging.DEBUG)
@@ -495,7 +497,8 @@ def init_logging():
     ch.setLevel(logging.DEBUG)
 
     # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = MorseFormatter('%(message)s')
+    #formatter = logging.Formatter('%(message)s')
 
     # add formatter to ch
     ch.setFormatter(formatter)
@@ -522,11 +525,11 @@ def init_supervision_services():
         # callbacks.
         import morse.core.supervision_services
 
-        logger.info("########  SUPERVISION SERVICES INITIALIZED ######## ")
+        logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     except MorseServiceError as e:
         #...no request manager :-(
         logger.critical(str(e))
-        logger.critical("########  SUPERVISION SERVICES INITIALIZATION FAILED ######## ")
+        logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
         return False
     
     return True
@@ -579,7 +582,7 @@ def switch_camera(contr):
 
 
 def close_all(contr):
-    logger.info('######### FINALIZING COMPONENTS... ########')
+    logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
     if hasattr(GameLogic, 'componentDict'):
         for obj, component_instance in GameLogic.componentDict.items():
@@ -590,10 +593,10 @@ def close_all(contr):
         for obj, robot_instance in GameLogic.robotDict.items():
             del obj
 
-    logger.info('######### CLOSING REQUEST MANAGERS... ########')
+    logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
     del GameLogic.morse_services
 
-    logger.info('######### CLOSING MIDDLEWARES... ########')
+    logger.log(ENDSECTION, 'CLOSING MIDDLEWARES...')
     # Force the deletion of the middleware objects
     if hasattr(GameLogic, 'mwDict'):
         for obj, mw_instance in GameLogic.mwDict.items():
@@ -604,7 +607,7 @@ def close_all(contr):
                 del obj
 
     if MULTINODE_SUPPORT:
-        logger.info('######### CLOSING MULTINODE... ########')
+        logger.log(ENDSECTION, 'CLOSING MULTINODE...')
         GameLogic.node_instance.finish_node()
 
 
@@ -626,12 +629,12 @@ def restart(contr):
     #  the code get executed two times, when pressed, and when released)
     if not sensor.positive and sensor.triggered:
 
-        logger.warning("### Replacing everything at initial position ###")
+        logger.warning("Replacing everything at initial position")
         reset_objects(contr)
         return
 
 def quit(contr):
-    logger.info('######### EXITING SIMULATION ########')
+    logger.log(ENDSECTION, 'EXITING SIMULATION')
 
     quitActuator = contr.actuators['Quit_sim']
     contr.activate(quitActuator)
