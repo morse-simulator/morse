@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.actuator
@@ -11,7 +12,7 @@ class KukaIKActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## KUKA CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -30,7 +31,7 @@ class KukaIKActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Considering the rotation of the arm as installed in Jido
         self._dofs = ['z', 'y', 'z', 'y', 'z', 'y', 'z']
 
-        print ('######## KUKA CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -53,17 +54,17 @@ class KukaIKActuatorClass(morse.core.actuator.MorseActuatorClass):
             pass
 
         armature = self.blender_obj
-        print ("The armature is: '%s' (%s)" % (armature, type(armature)))
+        logger.info("The armature is: '%s' (%s)" % (armature, type(armature)))
 
         i = 0
         for channel in armature.channels:
             segment_angle = channel.joint_rotation
-            #print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, segment_angle[0], segment_angle[1], segment_angle[2]))
+            logger.debug("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, segment_angle[0], segment_angle[1], segment_angle[2]))
 
             key = ('seg%d' % i)
             # Get the normalised angle for this segment
             target_angle = morse_math.normalise_angle(self.local_data[key])
-            print ("%.4f " % target_angle, end='')
+            logger.info("%.4f " % target_angle, end='')
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
@@ -71,7 +72,7 @@ class KukaIKActuatorClass(morse.core.actuator.MorseActuatorClass):
             elif self._dofs[i] == 'z':
                 rz = morse_math.rotation_direction(segment_angle[2], target_angle, self._tolerance, rotation)
 
-            print ("[%.4f, %.4f, %.4f] " % (rx, ry, rz))
+            logger.info("[%.4f, %.4f, %.4f] " % (rx, ry, rz))
 
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement

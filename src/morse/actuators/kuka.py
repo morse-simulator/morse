@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import mathutils
@@ -12,7 +13,7 @@ class KukaActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## KUKA CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -43,7 +44,7 @@ class KukaActuatorClass(morse.core.actuator.MorseActuatorClass):
             except IndexError as detail:
                 break
 
-        print ('######## KUKA CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -87,7 +88,7 @@ class KukaActuatorClass(morse.core.actuator.MorseActuatorClass):
                 ry = morse_math.rotation_direction(segment_euler[1], -target_angle, self._tolerance, rotation)
             elif self._dofs[i] == 'z':
                 rz = morse_math.rotation_direction(segment_euler[2], target_angle, self._tolerance, rotation)
-                #print ("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self._tolerance, rotation, rz))
+                logger.debug("PARAMETERS: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self._tolerance, rotation, rz))
 
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.actuator
@@ -10,7 +11,7 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## PLATINE INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -26,10 +27,10 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         # Check the bases were found, or exit with a message
         try:
-            print ("Using pan base: '%s'" % self._pan_base.name)
-            print ("Using tilt base: '%s'" % self._tilt_base.name)
+            logger.info("Using pan base: '%s'" % self._pan_base.name)
+            logger.info("Using tilt base: '%s'" % self._tilt_base.name)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Module will not work!")
+            logger.error("Platine is missing the pan and tilt bases. Module will not work!")
             return
 
         self._speed = self.blender_obj['Speed']
@@ -45,7 +46,7 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
         
-        print ('######## PLATINE INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -62,7 +63,7 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
             self._pan_position_3d.update(self._pan_base)
             self._tilt_position_3d.update(self._tilt_base)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Platine does not work!")
+            logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
             return
 
         # Tick rate is the real measure of time in Blender.
@@ -79,17 +80,17 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
-        #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
+        logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         # Get the angles in a range of -PI, PI
         target_pan = morse_math.normalise_angle(self.local_data['pan'])
         target_tilt = morse_math.normalise_angle(self.local_data['tilt'])
-        #print ("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
+        logger.debug("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
 
         # Get the current rotation of the parent robot
         parent_pan = self.robot_parent.position_3d.euler.z
         parent_tilt = self.robot_parent.position_3d.euler.y
-        #print ("Parent: pan=%.4f, tilt=%.4f" % (parent_pan, parent_tilt))
+        logger.debug("Parent: pan=%.4f, tilt=%.4f" % (parent_pan, parent_tilt))
 
         # Compute the rotation relative to the parent robot
         relative_pan = current_pan - parent_pan
