@@ -30,6 +30,6 @@ class MorseFormatter(logging.Formatter):
             message = "[" + message + "]"
 
         if level in ['DEBUG', 'INFO', 'WARNING']:
-            message = "[" + str("%.3f" % (record.created - starttime)) + "] " + message
+            message = "[{0: 9.3f}] ".format(record.created - starttime) + message
 
         return message

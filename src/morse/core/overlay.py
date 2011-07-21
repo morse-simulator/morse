@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 from morse.core.abstractobject import MorseAbstractObject
 
@@ -26,7 +27,7 @@ class MorseOverlay(MorseAbstractObject):
         self.overlaid_object = overlaid_object
         
         if not self.overlaid_object:
-            print("[INTERNAL ERROR] An overlay can not be initialized before " + \
+            logger.critical("[INTERNAL ERROR] An overlay can not be initialized before " + \
             "the component it overlays!")
     
     def name(self):

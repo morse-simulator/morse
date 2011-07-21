@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 
 try:
@@ -7,7 +8,7 @@ except ImportError:
     #TODO: the only reason why we need this GameLogic import is for the @service 
     # decorator that need somehow to know where to register the
     # service...
-    print("services are only available within Blender")
+    logger.info("services are only available within Blender")
     sys.exit(-1)
 
 from functools import partial
@@ -42,7 +43,7 @@ class MorseServices:
         try:
             __import__(modulename)
         except ImportError as detail:
-            print ("ERROR: Request Manager " + classname + " not found in " + modulename)
+            logger.error("Request Manager " + classname + " not found in " + modulename)
             return False
         module = sys.modules[modulename]
 
@@ -51,12 +52,12 @@ class MorseServices:
             try:
                 klass = getattr(module, classname)
             except AttributeError as detail:
-                print ("ERROR: Request manager  attribute not found: %s" % detail)
+                logger.error("Request manager  attribute not found: %s" % detail)
                 return 
             instance = klass()
 
             self._request_managers[classname] = instance
-            print("Successfully initialized the %s request manager." % classname)
+            logger.info("Successfully initialized the %s request manager." % classname)
         
         return True
 
@@ -88,13 +89,13 @@ class MorseServices:
 
     def __del__(self):
         """ Removes all registered request managers, calling their destructors. """
-        print ("Deleting all request managers...")
+        logger.info("Deleting all request managers...")
         self._request_managers.clear()
         self._service_mappings.clear()
         
     def get_request_managers(self, component):
         if not component in self._service_mappings:
-           print("ERROR: no service manager is available for the " + component + " component! This error " +  \
+           logger.error("no service manager is available for the " + component + " component! This error " +  \
                 "can have several causes. Maybe you forgot to add the middleware 'empty', or " + \
                 "you are using a middleware that does not currently support requests. ")
            raise MorseServiceError("No request manager has been mapped to the component %s" % component)
@@ -111,7 +112,7 @@ class MorseServices:
 def do_service_registration(fn, component_name = None, service_name = None, async = False, request_managers = None):
 
     if not component_name:
-        print("ERROR! A service has been registered without component: " + str(fn))
+        logger.error("A service has been registered without component: " + str(fn))
         return
 
     if not request_managers:
@@ -119,7 +120,7 @@ def do_service_registration(fn, component_name = None, service_name = None, asyn
 
     for manager in request_managers:
         name = service_name if service_name else fn.__name__
-        print("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
+        logger.info("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
         manager.register_service(component_name, fn, name, async)
 
 def async_service(fn = None, component = None, name = None):
@@ -173,7 +174,7 @@ def service(fn = None, component = None, name = None, async = False):
             # In this case, the service registration is defered to the
             # class instanciation (cf object.py), and we simply mark
             # this method as a service.
-            print("Method service "+ fn.__name__)
+            logger.info("Method service "+ fn.__name__)
             dfn = fn
             if async:
                 def decorated_fn(self, callback, *param):
@@ -190,10 +191,10 @@ def service(fn = None, component = None, name = None, async = False):
 
         else:
             if async:
-                print("WARNING: asynchronous service must be declared within a MorseObject class.")
+                logger.warning("asynchronous service must be declared within a MorseObject class.")
                 return
 
-            print("Free service "+ fn.__name__)
+            logger.info("Free service "+ fn.__name__)
             # We assume it's a free function, and we register it.
             do_service_registration(fn, component, name, async)
             return fn

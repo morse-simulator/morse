@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 from morse.core.abstractobject import MorseAbstractObject
 
@@ -31,7 +32,7 @@ class MorseObjectClass(MorseAbstractObject):
 
     def __del__(self):
         """ Destructor method. """
-        print ("%s: I'm dying!!" % self.name())
+        logger.info("%s: I'm dying!!" % self.name())
     
     def name(self):
         return self.blender_obj.name
