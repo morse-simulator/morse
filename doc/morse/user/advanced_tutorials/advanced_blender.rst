@@ -15,13 +15,16 @@ Before launching a simulation:
 	panels.
 
   .. image:: ../../../media/configure_display-1.1.png
-     :width: 300
+     :width: 500
      :align: center
 
   - On a **Properties** window, select the **Render** panel. To make sure all
 	the screen space in a **3D View** window is used, select the **Extend**
-	option for Framing is using **GLSL**. This can be selected in the
-	**Properties** >> **Render** >> **Shading**.
+	option for Framing.
+
+  - To properly display the textures of objects, and to be able to get images
+    from simulated cameras, Blender needs to be set to render using **GLSL**.
+    This can be selected in the **Properties** >> **Render** >> **Shading**.
 
   .. image:: ../../../media/configure_display-2.2.png
      :width: 300
@@ -35,10 +38,10 @@ Physics
 
 Configuring physics properties for objects in a scene can be done in the **Properties** >> **Physics** panel.
 Here it is possible to change the simulation for the selected object. The most useful settings are:
-- **No Collision**: All objects can occupy the same space as this one, and will not trigger any kind of event when in contact.
-- **Static**: The object will not move even when in contact with other objects, but is considered as an obstacle.
-- **Dynamic**: The object is subject to forces and collisions, but will not turn realistically.
-- **Rigid Body**: The object will behave accordingly to its shape.
+ - **No Collision**: All objects can occupy the same space as this one, and will not trigger any kind of event when in contact.
+ - **Static**: The object will not move even when in contact with other objects, but is considered as an obstacle.
+ - **Dynamic**: The object is subject to forces and collisions, but will not turn realistically.
+ - **Rigid Body**: The object will behave accordingly to its shape.
 
 Another property that can be toggled is the **Actor** flag.
 Only objects with this flag and a **Collision Bound** will be considered by some of the sensors
