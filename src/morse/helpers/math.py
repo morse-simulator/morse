@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import mathutils
 #from Mathutils import *
@@ -112,12 +113,12 @@ def print_matrix_33 (matrix):
     """ print_matrix_33 prints a 3x3 @matrix on stdout """
     for row in matrix:
         line = "[%.4f %.4f %.4f]" % (row[0], row[1], row[2])
-        print (line)
+        logger.info(line)
 
 def print_vector (vector):
     """ print a vector with 4 decimals per value """
     line = "[%.4f %.4f %.4f]" % (vector[0], vector[1], vector[2])
-    print (line)
+    logger.info(line)
 
 
 def fill_vector(vector, point):
