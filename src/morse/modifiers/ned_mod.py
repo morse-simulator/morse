@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 
@@ -24,7 +25,7 @@ class MorseNEDClass(object):
             # Get the reference to the function
             function = getattr(self, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
             return
 
         # Choose what to do, depending on the function being used
@@ -67,7 +68,7 @@ class MorseNEDClass(object):
             component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
             component_instance.local_data['roll'] = roll
         except KeyError as detail:
-            print ("WARNING: Unable to use 'blender_to_ned_angle component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'blender_to_ned_angle component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
 
     def ned_angle_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
@@ -77,4 +78,4 @@ class MorseNEDClass(object):
             component_instance.local_data['roll'] = component_instance.local_data['yaw']
             component_instance.local_data['yaw'] = yaw
         except KeyError as detail:
-            print ("WARNING: Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
