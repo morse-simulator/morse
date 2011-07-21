@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import yarp
 
@@ -45,7 +46,7 @@ class YarpRequestManager(RequestManager):
 
 
     def finalization(self):
-        print("Closing yarp request ports...")
+        logger.info("Closing yarp request ports...")
         for port in self._yarp_request_ports.values():
             port.close()
 
@@ -58,7 +59,7 @@ class YarpRequestManager(RequestManager):
         try:
             port, id = self._pending_ports[request_id]
         except KeyError:
-            print(str(self) + ": ERROR: I can not find the port which requested " + request_id)
+            logger.info(str(self) + ": ERROR: I can not find the port which requested " + request_id)
             return
 
         if port in self._results_to_output:
@@ -93,8 +94,8 @@ class YarpRequestManager(RequestManager):
             bottle_reply = self._yarp_module.Bottle()
             self._reply_bottles[component_name] = bottle_reply
 
-            print("Yarp service manager now listening on port " + request_port_name + ".")
-            print("Yarp service manager will reply on port " + reply_port_name + ".")
+            logger.info("Yarp service manager now listening on port " + request_port_name + ".")
+            logger.info("Yarp service manager will reply on port " + reply_port_name + ".")
 
         return True
 
@@ -108,7 +109,7 @@ class YarpRequestManager(RequestManager):
             bottle_reply = self._reply_bottles[component_name] 
             bottle_in = port.read(False)
             if bottle_in != None:
-                #print("Received command from port '%s'" % (component_name))
+                logger.debug("Received command from port '%s'" % (component_name))
 
                 try:
                     try:
@@ -117,7 +118,7 @@ class YarpRequestManager(RequestManager):
                         id = req
                         raise MorseRPCInvokationError("Malformed request! ")
 
-                    print("Got '%s | %s | %s' (id = %s) from %s" % (component_name, service, params, id, component_name))
+                    logger.info("Got '%s | %s | %s' (id = %s) from %s" % (component_name, service, params, id, component_name))
 
                     # on_incoming_request returns either 
                     #(True, result) if it's a synchronous
@@ -158,7 +159,7 @@ class YarpRequestManager(RequestManager):
                         bottle_reply.clear()
                         bottle_reply.addString(response)
                         reply_port.write()
-                        #print("Sent back '" + response + "'. Component: " + component_name + ". Port: " + str(port))
+                        logger.debug("Sent back '" + response + "'. Component: " + component_name + ". Port: " + str(port))
                             
                     del self._results_to_output[port]
 
