@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import VideoTexture
 import morse.core.sensor
@@ -16,7 +17,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
         super(CameraClass, self).__init__(obj, parent)
 
@@ -33,7 +34,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             # Provide default values for the image properties
             # The performance is much better with power of two sizes:
             #  4, 16, 32, ... 256, 512
-            print ("WARNING: Missing camera parameters. Using defaults")
+            logger.warning("Missing camera parameters. Using defaults")
             self.image_width = obj['cam_width'] = 256
             self.image_height = obj['cam_height'] = 256
             self.image_focal = obj['cam_focal'] = 25
@@ -45,7 +46,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Prepare the camera object in Blender
         self._setup_video_texture()
 
-        print ('######## CAMERA INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -54,7 +55,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
         # Exit if the cameras could not be prepared
         if not hasattr(GameLogic, 'cameras'):
-            print ("WARNING: GameLogic does not have the 'cameras' variable, \
+            logger.warning("GameLogic does not have the 'cameras' variable, \
                     something must have failed when configuring the cameras")
             return
 
@@ -98,6 +99,6 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Define an image size. It must be powers of two. Default 512 * 512
         GameLogic.cameras[self.name].source.capsize = \
                 [self.image_width, self.image_height]
-        print ("Camera {0}: Exporting an image of capsize: {1} pixels". \
+        logger.info("Camera {0}: Exporting an image of capsize: {1} pixels". \
                 format(self.name, GameLogic.cameras[self.name].source.capsize))
-        print ("\tFocal length of the camera is: %s" % camera.lens)
+        logger.info("\tFocal length of the camera is: %s" % camera.lens)

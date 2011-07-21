@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.sensor
 
@@ -12,7 +13,7 @@ class PanTiltUnitClass(morse.core.sensor.MorseSensorClass):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
-        print ("######## STEREO '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -35,9 +36,9 @@ class PanTiltUnitClass(morse.core.sensor.MorseSensorClass):
             self.camera_list.append(camera_name)
             self.num_cameras += 1
 
-        print ("PTU has %d cameras" % self.num_cameras)
+        logger.info("PTU has %d cameras" % self.num_cameras)
 
-        print ('######## STEREO INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):

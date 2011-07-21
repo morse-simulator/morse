@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.sensor
@@ -13,7 +14,7 @@ class PTUPostureClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## PAN TILT POSTURE EXPORTER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
         
@@ -33,14 +34,14 @@ class PTUPostureClass(morse.core.sensor.MorseSensorClass):
                 self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
         # Check the bases were found, or exit with a message
         try:
-            print ("Using PTU: '%s'" % self._ptu_obj.name)
-            print ("Using pan base: '%s'" % self._pan_base.name)
-            print ("Using tilt base: '%s'" % self._tilt_base.name)
+            logger.info("Using PTU: '%s'" % self._ptu_obj.name)
+            logger.info("Using pan base: '%s'" % self._pan_base.name)
+            logger.info("Using tilt base: '%s'" % self._tilt_base.name)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Module will not work!")
+            logger.error("Platine is missing the pan and tilt bases. Module will not work!")
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        print ('######## PAN TILT POSTURE EXPORTER INITIALIZED ########')
+        logger.info('Component initialized')
 
     def default_action(self):
         """ Apply rotation to the platine unit """
@@ -52,12 +53,12 @@ class PTUPostureClass(morse.core.sensor.MorseSensorClass):
             self._pan_position_3d.update(self._pan_base)
             self._tilt_position_3d.update(self._tilt_base)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Platine does not work!")
+            logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
             return
 
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
-        #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
+        logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
         
         # Store the data acquired by this sensor that could be sent via a middleware.
         self.local_data['pan'] = float(current_pan)

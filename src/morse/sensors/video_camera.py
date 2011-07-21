@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import mathutils
 import morse.sensors.camera
@@ -16,7 +17,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## VIDEO CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
@@ -40,7 +41,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         # Variable to indicate this is a camera
         self.camera_tag = True
 
-        print ('######## VIDEO CAMERA INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 

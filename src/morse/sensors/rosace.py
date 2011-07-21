@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #
 #    rosace.py        Blender 2.5x
@@ -35,7 +36,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
 
     def __init__(self, obj, parent=None):
 
-        print ('######## ROSACE SENSOR INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -49,7 +50,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         # List of victims visible from this sensor
         self.local_data['victim_dict'] = {}
 
-        print ('######## ROSACE SENSOR INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -75,7 +76,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         When the victim is fully healed, set its status as not Injured
         """
         victim = self._nearest_victim
-        #print ("Healing victim %s at distance %d" % (victim.name, self._nearest_distance))
+        logger.debug("Healing victim %s at distance %d" % (victim.name, self._nearest_distance))
         # Check that the victim is whithing the valid range and that
         #  the robot is equiped to help the victim
         if self._nearest_distance < self.blender_obj['Heal_range']:

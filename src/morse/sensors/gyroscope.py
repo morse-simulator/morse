@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 
@@ -10,7 +11,7 @@ class GyroscopeClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## GYROSCOPE '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -18,7 +19,7 @@ class GyroscopeClass(morse.core.sensor.MorseSensorClass):
         self.local_data['pitch'] = 0.0
         self.local_data['roll'] = 0.0
 
-        print ('######## GYROSCOPE INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
