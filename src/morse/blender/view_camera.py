@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #
 #    MouseLook.py        Blender 2.49
@@ -110,7 +111,7 @@ def mouse_move(camera, mouse, width, height):
         # can't use True.  Have to use 1
         camera['mouseInit'] = 1
 
-    #print ("Read displacement: %s, %s" % (x, y))
+    logger.debug("Read displacement: %s, %s" % (x, y))
     
     # return mouse movement
     return (x, y)

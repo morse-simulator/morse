@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 
 """ Generic Python Module to be called by all MORSE components.

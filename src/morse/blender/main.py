@@ -449,7 +449,7 @@ def init(contr):
     GameLogic.pythonVersion = sys.version_info
     GameLogic.blenderVersion = bpy.app.version
     logger.info ("Python Version: %s.%s.%s" % GameLogic.pythonVersion[:3])
-    logger.info ("Blender Version: {0}".format(GameLogic.blenderVersion))
+    logger.info ("Blender Version: %s.%s.%s" % GameLogic.blenderVersion)
 
     GameLogic.morse_initialised = False
     GameLogic.base_clock = time.clock()
@@ -490,7 +490,7 @@ def init_logging():
     from morse.core.logging import MorseFormatter
     # create logger
     logger = logging.getLogger('morse')
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     # create console handler and set level to debug
     ch = ColorizingStreamHandler()
@@ -498,7 +498,6 @@ def init_logging():
 
     # create formatter
     formatter = MorseFormatter('%(message)s')
-    #formatter = logging.Formatter('%(message)s')
 
     # add formatter to ch
     ch.setFormatter(formatter)

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #
 #    mouse_drag.py        Blender 2.49
@@ -65,14 +66,14 @@ def showMouse(contr):
     if not onePositive(contr):
         return
     Rasterizer.showMouse(1)
-    print ("Showing Mouse")
+    logger.info("Showing Mouse")
 
 
 def hideMouse(cont):
     if not onePositive(cont):
         return
     Rasterizer.showMouse(0)
-    print ("hide Mouse")
+    logger.info("hide Mouse")
 
 
 def getTargetPosition(overAny, basePosition, motionPlane):
@@ -94,7 +95,7 @@ def doDrag(cont):
         #Nothing to drag
         return
 
-    #print "Dragging", draggedObject, "on", overAny.hitObject
+    logger.debug"Dragging", draggedObject, "on", overAny.hitObject
 
     if overAny.positive:
         restrictedAxis = cont.owner["restrictedAxis"]
@@ -122,26 +123,26 @@ def dragDrop(contr):
 
     # LMB was pressed
     if activateDrag.triggered and activateDrag.positive:
-        print ("Dragging on", overAny.hitObject)
+        logger.info("Dragging on", overAny.hitObject)
         contr.owner["dragging"] = True
 
         # Select the plane to be used for motion
         if contr.owner['restrictedAxis'] == 0:
             contr.owner['motionPlane'] = XYPlane
-            print ("Using plane XY")
+            logger.info("Using plane XY")
         if contr.owner['restrictedAxis'] == 1:
             contr.owner['motionPlane'] = XZPlane
-            print ("Using plane XZ")
+            logger.info("Using plane XZ")
         if contr.owner['restrictedAxis'] == 2:
             contr.owner['motionPlane'] = YZPlane
-            print ("Using plane YZ")
+            logger.info("Using plane YZ")
 
         # Move the motion plane to the location of the target
         contr.owner['motionPlane'].position = contr.owner['draggedObject'].position
 
     # LMB was released
     if activateDrag.triggered and not activateDrag.positive:
-        print ("End dragging")
+        logger.info("End dragging")
         contr.owner["dragging"] = False
         #storeDraggedObject(cont.owner, None)
         return
@@ -183,7 +184,7 @@ def objectSelect(contr):
             contr.owner["draggedObject"] = selectedObject
             # Remove Physic simulation
             selectedObject.suspendDynamics()
-            print ("SELECTED OBJECT: %s" % selectedObject)
+            logger.info("SELECTED OBJECT: %s" % selectedObject)
 
             # Move the sphere to the location of the target
             sphere.position = selectedObject.position
