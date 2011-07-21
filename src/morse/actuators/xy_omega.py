@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.actuator
@@ -11,7 +12,7 @@ class XYWActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## XYW CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -19,7 +20,7 @@ class XYWActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['y'] = 0.0
         self.local_data['w'] = 0.0
 
-        print ('######## XYW CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 

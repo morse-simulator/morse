@@ -12,6 +12,7 @@
 ######################################################
 
 
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import GameLogic
 import mathutils
@@ -25,7 +26,7 @@ class HealerActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     def __init__(self, obj, parent=None):
 
-        print ('######## HEALER INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -33,7 +34,7 @@ class HealerActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Receiving a value of 1 will activate the healing
         self.local_data['heal'] = 0
 
-        print ('######## HEALER INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):

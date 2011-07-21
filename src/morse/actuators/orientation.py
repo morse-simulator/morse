@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.actuator
 
@@ -9,7 +10,7 @@ class OrientationActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## ORIENTATION CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -17,7 +18,7 @@ class OrientationActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['ry'] = 0.0
         self.local_data['rz'] = 0.0
 
-        print ('######## CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
     def default_action(self):
         """ Change the parent robot orientation. """
