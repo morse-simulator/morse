@@ -1,9 +1,11 @@
 #
+# Based on https://gist.github.com/758430
 # Copyright (C) 2010, 2011 Vinay Sajip. All rights reserved.
-# Taken from: https://gist.github.com/758430
 #
 import logging
 import os
+import morse
+
 
 class ColorizingStreamHandler(logging.StreamHandler):
     # color names to indices
@@ -19,22 +21,15 @@ class ColorizingStreamHandler(logging.StreamHandler):
     }
 
     #levels to (background, foreground, bold/intense)
-    if os.name == 'nt':
-        level_map = {
-            logging.DEBUG: (None, 'blue', True),
-            logging.INFO: (None, 'white', False),
-            logging.WARNING: (None, 'yellow', True),
-            logging.ERROR: (None, 'red', True),
-            logging.CRITICAL: ('red', 'white', True),
-        }
-    else:
-        level_map = {
-            logging.DEBUG: (None, 'blue', False),
-            logging.INFO: (None, 'black', False),
-            logging.WARNING: (None, 'yellow', False),
-            logging.ERROR: (None, 'red', False),
-            logging.CRITICAL: ('red', 'white', True),
-        }
+    level_map = {
+        logging.DEBUG: (None, 'blue', False),
+        logging.INFO: (None, 'white', False),
+        logging.WARNING: (None, 'yellow', False),
+        logging.ERROR: (None, 'red', False),
+        logging.CRITICAL: ('red', 'white', True),
+        morse.core.logging.SECTION: (None, 'green', True),
+        morse.core.logging.ENDSECTION: (None, 'green', False),
+    }
     csi = '\x1b['
     reset = '\x1b[0m'
 
@@ -126,10 +121,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
     def format(self, record):
         message = logging.StreamHandler.format(self, record)
         if self.is_tty:
-            # Don't colorize any traceback
-            parts = message.split('\n', 1)
-            parts[0] = self.colorize(parts[0], record)
-            message = '\n'.join(parts)
+            message = self.colorize(message, record)
         return message
 
 def main():
