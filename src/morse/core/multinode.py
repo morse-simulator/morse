@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import pickle
 import mathutils
@@ -30,16 +31,16 @@ class SimulationNodeClass (object):
     def _init_socket(self):
         """ Create the socket that will be used to commmunicate to the server
         """
-        #print ("Connecting to port %s:%d" % (self.host, self.port))
+        logger.debug("Connecting to port %s:%d" % (self.host, self.port))
         try:
             self.node_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.node_socket.connect((self.host, self.port))
-            print ("Connection established to node manager (%s, %s)" % (self.host, self.port))
+            logger.info("Connection established to node manager (%s, %s)" % (self.host, self.port))
             return True
         except socket.error as detail:
-            print ("WARNING: Multi-node simulation not available!!")
-            print ("\tUnable to connect to server: (%s, %s)" % (self.host, self.port))
-            print ("\t%s" % detail)
+            logger.warning("Multi-node simulation not available!!")
+            logger.info("\tUnable to connect to server: (%s, %s)" % (self.host, self.port))
+            logger.info("\t%s" % detail)
             return False
 
 
@@ -52,7 +53,7 @@ class SimulationNodeClass (object):
             sock.send(message)
             response = sock.recv(1024)
             in_data = pickle.loads(response)
-            #print("Received: %s" % in_data)
+            logger.debug("Received: %s" % in_data)
             return (in_data)
 
         """
@@ -63,7 +64,7 @@ class SimulationNodeClass (object):
             sock.send(message)
             response = sock.recv(1024)
             in_data = pickle.loads(response)
-            #print("Received: %s" % in_data)
+            logger.debug("Received: %s" % in_data)
             self.finish_node()
 
             return (in_data)
@@ -97,11 +98,11 @@ class SimulationNodeClass (object):
                     try:
                         obj = scene.objects[obj_name]
                         if obj not in GameLogic.robotDict:
-                            #print ("Data received: ", robot_data)
+                            logger.debug("Data received: ", robot_data)
                             obj.worldPosition = robot_data[0]
                             obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()
                     except KeyError as detail:
-                        print ("Robot %s not found in this simulation scenario, but present in another node. Ignoring it!" % detail)
+                        logger.info("Robot %s not found in this simulation scenario, but present in another node. Ignoring it!" % detail)
 
 
     def finish_node(self):

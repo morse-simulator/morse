@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
 

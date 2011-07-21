@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 
 class MorseServiceError(Exception):
     def __init__(self, value):

@@ -4,7 +4,7 @@
 #
 import logging
 import os
-import morse
+from morse.core.logging import SECTION, ENDSECTION
 
 
 class ColorizingStreamHandler(logging.StreamHandler):
@@ -27,8 +27,8 @@ class ColorizingStreamHandler(logging.StreamHandler):
         logging.WARNING: (None, 'yellow', False),
         logging.ERROR: (None, 'red', False),
         logging.CRITICAL: ('red', 'white', True),
-        morse.core.logging.SECTION: (None, 'green', True),
-        morse.core.logging.ENDSECTION: (None, 'green', False),
+        SECTION: (None, 'green', True),
+        ENDSECTION: (None, 'green', False),
     }
     csi = '\x1b['
     reset = '\x1b[0m'

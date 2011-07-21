@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 import morse.core.services
 from collections import OrderedDict
@@ -93,4 +94,4 @@ class MorseAbstractObject(object):
         """ Print the current data for the component instance. """
         for variable, data in self.local_data.items():
             res = variable + str(data) + " "
-        print ("%s" % res)
+        logger.info("%s" % res)
