@@ -601,7 +601,7 @@ def close_all(contr):
         for obj, mw_instance in GameLogic.mwDict.items():
             if mw_instance:
                 mw_instance.cleanup()
-                #import gc
+                import gc # Garbage Collector
                 logger.debug("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
                 del obj
 
