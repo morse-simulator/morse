@@ -3,6 +3,7 @@ import mathutils
 import math
 import morse.core.sensor
 import morse.helpers.math
+import GameLogic
 
 class SICKClass(morse.core.sensor.MorseSensorClass):
     """ SICK laser range sensor """
@@ -62,7 +63,6 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                     # Insert the coordinates of the ray
                     self._ray_list.append(vector_point)
                     logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
-
 
                     index = index + 1
 
