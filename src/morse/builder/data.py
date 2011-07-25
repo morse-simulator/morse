@@ -6,7 +6,8 @@ path to the Morse components
 """
 
 # XXX Hardcoded PATH, must be fixed
-MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
+#MORSE_COMPONENTS = '/usr/local/share/data/morse/components'
+MORSE_COMPONENTS = '/home/gechever/LAAS/morse/data/morse/components'
 
 """
 middleware-dictionary-convention:
@@ -29,8 +30,21 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_gyroscope': ['ROS', 'post_message'],
     'morse_proximity': ['ROS', 'post_message']
   },
+
   'socket_empty': {
     'morse_gyroscope': ['Socket', 'post_message'],
     'morse_vw_control': ['Socket', 'read_message']
+  },
+
+  'yarp_empty': {
+    'morse_camera': ['Yarp', 'post_image_RGBA'],
+    'morse_sick': ['Yarp', 'post_sick_message', 'morse/middleware/yarp/sick'],
+    'morse_proximity': ['Yarp', 'post_dictionary_data', 'morse/middleware/yarp/dictionary'],
+    'morse_gyroscope': ['Yarp', 'post_message'],
+    'morse_odometry': ['Yarp', 'post_message'],
+    'morse_pose': ['Yarp', 'post_message'],
+    'morse_GPS': ['Yarp', 'post_message'],
+
+    'morse_vw_control': ['Yarp', 'read_message']
   }
 }
