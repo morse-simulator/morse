@@ -144,7 +144,7 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
         self.local_data['x'] = float(self.position_3d.x)
         self.local_data['y'] = float(self.position_3d.y)
         self.local_data['z'] = float(self.position_3d.z)
-        self.local_data['yaw'] = float(self.position_3d.yaw) - 1.57 #pi/2
+        self.local_data['yaw'] = float(self.position_3d.yaw) - (math.pi/2) # 1.57 #pi/2
         self.local_data['pitch'] = float(self.position_3d.pitch)
         self.local_data['roll'] = float(self.position_3d.roll)
 
