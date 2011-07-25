@@ -40,21 +40,30 @@ class MorseServices:
         """
         # Import the module containing the class
         modulename, classname = impl.rsplit('.', 1)
-        try:
-            __import__(modulename)
-        except ImportError as detail:
-            logger.error("Request Manager " + classname + " not found in " + modulename)
-            return False
-        module = sys.modules[modulename]
 
-        if not module.__name__ in self._request_managers:
+        if not classname in self._request_managers: # Check if the request manager do not already exist
+
+            try:
+                __import__(modulename)
+            except ImportError as detail:
+                logger.error(modulename + " does not exist! Check for typos in the configuration file!")
+                return False
+            module = sys.modules[modulename]
+
             # Create an instance of the object class
             try:
                 klass = getattr(module, classname)
             except AttributeError as detail:
-                logger.error("Request manager  attribute not found: %s" % detail)
-                return 
-            instance = klass()
+                logger.error("Request Manager " + classname + " not found in " + modulename + ". Check for typos in the configuration file!")
+                return False
+
+            try:
+                instance = klass()
+            except MorseServiceError:
+                # Exception during the initialization of the request
+                # manager?
+                # The cause of the exception is likely already logged.
+                return False
 
             self._request_managers[classname] = instance
             logger.info("Successfully initialized the %s request manager." % classname)
