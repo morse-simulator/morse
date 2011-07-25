@@ -119,7 +119,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                    
             # Extract the angles
             rot_matrix = segment.localOrientation
-            segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
             segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation

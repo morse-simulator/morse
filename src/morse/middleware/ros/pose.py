@@ -54,7 +54,7 @@ def post_odometry_transform(self, component_instance):
     yaw = component_instance.local_data['yaw']
 
     euler = mathutils.Euler((roll, pitch, yaw))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
 
     #odom_trans = TransformStamped()
     #odom_trans.header.stamp = current_time
@@ -112,7 +112,7 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.position.y = component_instance.local_data['y']
     odometry.pose.pose.position.z = component_instance.local_data['z']
     euler = mathutils.Euler((component_instance.local_data['roll'], component_instance.local_data['pitch'], component_instance.local_data['yaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     odometry.pose.pose.orientation.w = quaternion.w
     odometry.pose.pose.orientation.x = quaternion.x
     odometry.pose.pose.orientation.y = quaternion.y
@@ -138,7 +138,7 @@ def post_poseStamped(self, component_instance):
     poseStamped.pose.position.y = component_instance.local_data['y']
     poseStamped.pose.position.z = component_instance.local_data['z']
     euler = mathutils.Euler((component_instance.local_data['roll'], component_instance.local_data['pitch'], component_instance.local_data['yaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     poseStamped.pose.orientation.w = quaternion.w
     poseStamped.pose.orientation.x = quaternion.x
     poseStamped.pose.orientation.y = quaternion.y
