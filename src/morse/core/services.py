@@ -174,7 +174,7 @@ def service(fn = None, component = None, name = None, async = False):
             # In this case, the service registration is defered to the
             # class instanciation (cf object.py), and we simply mark
             # this method as a service.
-            logger.info("Method service "+ fn.__name__)
+            logger.debug("In @service: Decorating method "+ fn.__name__)
             dfn = fn
             if async:
                 def decorated_fn(self, callback, *param):
@@ -194,7 +194,7 @@ def service(fn = None, component = None, name = None, async = False):
                 logger.warning("asynchronous service must be declared within a MorseObject class.")
                 return
 
-            logger.info("Free service "+ fn.__name__)
+            logger.debug("In @service: Decorating free function "+ fn.__name__)
             # We assume it's a free function, and we register it.
             do_service_registration(fn, component, name, async)
             return fn

@@ -55,7 +55,7 @@ class SocketRequestManager(RequestManager):
             self._server = None
 
         if not self._server:
-            logger.info("Couldn't bind the socket server! Port busy?")
+            logger.error("Couldn't bind the socket server! Port busy?")
             return False
 
         logger.info("Socket service manager now listening on port " + str(SERVER_PORT) + ".")

@@ -190,19 +190,19 @@ def check_dictionaries():
     for obj, robot_position in GameLogic.externalRobotDict.items():
         logger.info ("\tROBOT: '{0}'".format(obj))
 
-    logger.info ("\nGameLogic has the following components:")
+    logger.info ("GameLogic has the following components:")
     for obj, component_variables in GameLogic.componentDict.items():
         logger.info ("\tCOMPONENT: '{0}'".format(obj))
 
-    logger.info ("\nGameLogic has the following modifiers:")
+    logger.info ("GameLogic has the following modifiers:")
     for obj, modifier_variables in GameLogic.modifierDict.items():
         logger.info ("\tMODIFIER: '{0}'".format(obj))
 
-    logger.info ("\nGameLogic has the following middlewares:")
+    logger.info ("GameLogic has the following middlewares:")
     for obj, mw_variables in GameLogic.mwDict.items():
         logger.info ("\tMIDDLEWARE: '{0}'".format(obj))
 
-    logger.info ("\nGameLogic has the following services:")
+    logger.info ("GameLogic has the following services:")
     for obj, service_variables in GameLogic.serviceDict.items():
         logger.info ("\tSERVICE: '{0}'".format(obj))
 
@@ -334,7 +334,13 @@ def link_services():
                 return False
 
         for request_manager in request_manager_data:
-            modulename, classname = request_manager.rsplit('.', 1)
+            try:
+                modulename, classname = request_manager.rsplit('.', 1)
+            except ValueError:
+                logger.error("You must specify the fully qualified name " + \
+                             "of the request manager (eg: " + \
+                             "morse.middleware.socket_request_manager.SocketRequestManager)")
+                return False
             
             # Load required request managers
             if not GameLogic.morse_services.add_request_manager(request_manager):
