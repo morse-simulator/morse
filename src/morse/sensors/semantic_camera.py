@@ -137,9 +137,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # NOTE: This is a very simple test. Hiding only the 'center'
             #  of an object will make it invisible, even if the rest is still
             #  seen from the camera
-            #closest_obj = self.blender_obj.rayCastTo(obj)
-            #if obj == closest_obj:
+            closest_obj = self.blender_obj.rayCastTo(obj)
+            if obj == closest_obj:
                 return True
-
 
         return False
