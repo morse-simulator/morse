@@ -37,7 +37,7 @@ def post_pose(self, component_instance):
     pose.pose.position.y = component_instance.local_data['dy']
     pose.pose.position.z = component_instance.local_data['dz']
     euler = mathutils.Euler((component_instance.local_data['droll'], component_instance.local_data['dpitch'], component_instance.local_data['dyaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     pose.pose.orientation.w = quaternion.w
     pose.pose.orientation.x = quaternion.x
     pose.pose.orientation.y = quaternion.y
