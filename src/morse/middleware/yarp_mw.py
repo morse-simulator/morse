@@ -175,7 +175,10 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 bottle.addString(data)
             else:
                 logger.error("Unknown data type at 'post_message'")
-                logger.info("DATA: ", data, " | TYPE: ", type(data))
+                # Trying to store 'type(data)' causes an error in the logger.
+                # Because the type is not directly printable.
+                # This is caused when sending a dictionary type
+                #logger.info("DATA: ", data, " | TYPE: ", type(data))
 
         #yarp_port.writeStrict()
         yarp_port.write()
