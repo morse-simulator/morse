@@ -6,6 +6,7 @@ from functools import partial
 from abc import ABCMeta, abstractmethod
 
 from morse.core.exceptions import *
+from morse.core import status
 
 class RequestManager(object):
     """ Basic Class for all request dispatchers, i.e., classes that
@@ -239,6 +240,19 @@ class RequestManager(object):
                 values = method(*params) if params else method() #Invoke the method with unpacked parameters
             except TypeError as e:
                 raise MorseWrongArgsError(str(self) + ": wrong parameters for service " + service + ". " + str(e))
+
+            # Check return values are valid
+            if not values:
+                # Special case: if the service returns None, assume it
+                # is a success.
+                values = (status.SUCCESS, None)
+            elif not isinstance(values, str):
+                try:
+                    length = len(values)
+                except TypeError:
+                    raise MorseServiceError("Service " + service + " do not return valid result! A tuple (status, result) was expected.")
+                if length != 2:
+                    raise MorseServiceError("Service " + service + " do not return valid result! A tuple (status, result) was expected.")
 
             logger.info("Done. Result: " + str(values))
             return (True, values)
