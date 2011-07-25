@@ -52,12 +52,15 @@ class AbstractComponent(object):
     obj._blendobj.parent = self._blendobj
     self._blendobj.children += obj._blendobj
     """
-    opsobj = bpy.ops.object
-    opsobj.select_all(action = 'DESELECT')
-    opsobj.select_name(name = obj.name)
-    opsobj.make_local()
-    opsobj.select_name(name = self.name)
-    opsobj.parent_set()
+    obj._blendobj.parent = self._blendobj
+
+    #opsobj = bpy.ops.object
+    #opsobj.select_all(action = 'DESELECT')
+    #opsobj.select_name(name = obj.name)
+    #opsobj.make_local()
+    #opsobj.select_name(name = self.name)
+    #opsobj.parent_set()
+
   @property
   def name(self):
     return self._blendobj.name
@@ -154,11 +157,13 @@ class Component(AbstractComponent):
   def __init__(self, category, name):
     AbstractComponent.__init__(self)
     filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
+
     if bpy.app.version[1] > 56:
       with bpy.data.libraries.load(filepath) as (src, _):
         objlist = [{'name':obj} for obj in src.objects]
     else: # Blender 2.56 does not support bpy.data.libraries.load
       objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
+
     bpy.ops.object.select_all(action='DESELECT')
     bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
         autoselect=True, files=objlist)
