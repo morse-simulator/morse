@@ -84,8 +84,7 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
 
         for channel in armature.channels:
             if 'X_' not in channel.name:
-                #rotation = channel.joint_rotation
-                logger.debug("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+                logger.debug("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, channel.joint_rotation[0], channel.joint_rotation[1], channel.joint_rotation[2]))
                 if channel.name == 'Chest':
                    self.local_data['dof_12'] = channel.joint_rotation[2] #y
                    self.local_data['dof_13'] = channel.joint_rotation[0] #x

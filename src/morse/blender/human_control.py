@@ -324,7 +324,7 @@ def near_object(contr):
 
     #if near_object != None:
         #hand_empty.parent.localOrientation = [math.pi/2, 0.0, 0.0]
-        logger.debug(near_object.name + " can be grasped!")
+        #logger.debug(near_object.name + " can be grasped!")
 
 
 def grabbing(contr):
