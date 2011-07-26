@@ -90,7 +90,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         self.v[3] = droll * self.ticks
         self.v[4] = dpitch * self.ticks
         self.v[5] = dyaw * self.ticks
-        logger.debug("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5]))
+        logger.debug("SPEED: (%.4f, %.4f, %.4f, %4f, %4f, %4f)" % (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5]))
 
         self.a[0] = (self.v[0] - self.pvx) * self.ticks
         self.a[1] = (self.v[1] - self.pvy) * self.ticks
@@ -98,7 +98,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         self.a[3] = (self.v[3] -self.pvroll) * self.ticks
         self.a[4] = (self.v[4] -self.pvpitch) * self.ticks
         self.a[5] = (self.v[5] -self.pvyaw) * self.ticks
-        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5]))
+        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f, %4f, %4f, %4f)" % (self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5]))
 
         # Update the data for the velocity
         self.pvx = self.v[0]
