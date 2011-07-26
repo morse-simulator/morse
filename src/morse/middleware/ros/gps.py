@@ -25,7 +25,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, PoseStamped)) 
     
-    print ('######## ROS POSE PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS POSE PUBLISHER INITIALIZED ########')
     
 def post_odometry(self, component_instance):
     """ Publish the data of the Pose-sensor as a ROS-Odometry message.

@@ -18,7 +18,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Image))
     self._seq = 0
 
-    print('######## ROS IMAGE PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS IMAGE PUBLISHER INITIALIZED ########')
 
 def post_image(self, component_instance):
     """ Publish the data of the Camera as a ROS-Image message.

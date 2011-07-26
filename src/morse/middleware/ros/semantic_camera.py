@@ -22,7 +22,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, String))
     
-    print ('######## ROS SEMANTIC CAMERA PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS SEMANTIC CAMERA PUBLISHER INITIALIZED ########')
     
 def post_string(self, component_instance):
     """ Publish the data of the semantic camera as a string-message with newlines (for better visualization in console).
