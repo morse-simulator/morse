@@ -116,13 +116,13 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['z'] = self.blender_obj.worldPosition[2]
         self.local_data['tolerance'] = 0.5
 
-        return (status.SUCCESS, self.robot_parent.move_status)
+        return self.robot_parent.move_status
 
 
     @service
     def get_status(self):
         """ Return the current status (Transit or Stop) """
-        return (status.SUCCESS, self.robot_parent.move_status)
+        return self.robot_parent.move_status
 
 
     def default_action(self):

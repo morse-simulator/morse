@@ -72,6 +72,44 @@ object that instanciates a ``HumanClass``.
   The value of the id (here ``id1``) has no importance at all: it is
   defined and used only by the client to track requests and responses.
 
+Returning values
+++++++++++++++++
+
+A service can return any valid Python object (``None``, a string, a
+dictionary, a complex object...). The serialization is left to the
+middleware.
+
+If the service call fails, you are expected to raise a
+:class:`morse.core.exceptions.MorseRPCInvokationError` exception
+(or any custom exception inheriting from it) with a useful error message:
+
+.. code-block:: python
+
+    import morse.core.robot
+    from morse.core.exceptions import MorseRPCInvokationError
+    from morse.core.services import service
+
+    class HumanClass(morse.core.robot.MorseRobotClass):
+
+        def __init__(self, obj, parent=None):
+            [...]
+ 
+        @service
+        def move(self, speed, rotation):
+            
+            if speed < 0:
+                raise MorseRPCInvokationError("Our human can not walk backward!")
+
+            human = self.blender_obj
+            
+            human.applyMovement( [speed,0,0], True )
+            human.applyRotation( [0,0,rotation], True )
+
+        [...]
+
+*MORSE* will answer the request with a
+:data:`morse.core.status.FAILED` status.
+
 Free functions
 ++++++++++++++
 

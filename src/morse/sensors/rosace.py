@@ -19,6 +19,7 @@ import math
 import GameLogic
 import mathutils
 import morse.core.sensor
+from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.services import service
 from morse.core.services import async_service
 from morse.core import status
@@ -60,15 +61,15 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
 
     @service
     def get_robot_abilities(self):
-        return (status.SUCCESS, self.blender_obj['Abilities'])
+        return self.blender_obj['Abilities']
 
     @service
     def get_victim_requirements(self):
         if self._nearest_victim:
-            return (status.SUCCESS, self._nearest_victim['Requirements'])
+            return self._nearest_victim['Requirements']
         else:
             message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
-            return (status.FAILED, message)
+            raise MorseRPCInvokationError(message)
 
     def _heal_victim(self):
         """ Change the 'Severity' property of a nearby victim
