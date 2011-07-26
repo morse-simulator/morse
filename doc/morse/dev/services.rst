@@ -157,15 +157,49 @@ object.
 .. note::
   As you may have noticed, at a given time, only one asynchronous
   request can be handled by a component.  If a second asynchronous
-  request is received, it returns immediately
-  with the status 'FAILED'.
+  request is received, the behaviour may vary, as explained below.
 
 .. note::
   Asynchronous services can normally only exist inside components (i.e.,
   they must be declared within a class inheriting from
-  :py:class:`morse.core.object.MorseObjectClass`).
+  :py:class:`morse.core.abstractobject.MorseAbstractObject`).
   The section `Manually registering services`_ explains how to overcome
   this constraint.
+
+Interruption policy for asynchronous services
++++++++++++++++++++++++++++++++++++++++++++++
+
+As of ``morse-0.4``, only one asynchronous service may run at a given time.
+
+You can define the behaviour of the simulator when a second request is received
+either at the middleware level (*global policy*) or at the individual service
+level (*local policy*).
+
+To set a local policy, simply decorate your services with the
+``@interruptible`` and ``@noninterruptible`` decorators
+(:meth:`morse.core.services.interruptible` and
+:meth:`morse.core.services.noninterruptible`).
+
+An *interruptible* service is preempted (ends with status
+:data:`morse.core.status.PREEMPTED`) when a new asynchronous service is
+started. A *non-interruptible* service triggers a failure when someone attempts
+to start a new service.
+
+
+To set a global policy, you need to catch a
+:class:`morse.core.exceptions.MorseServiceAlreadyRunningException` exception
+when invoking the :meth:`morse.core.request_manager.on_incoming_request`
+method.
+
+This exception has a special member ``service`` that points to the original
+service function:
+
+.. code-block:: python
+
+    try:
+        is_synchronous, value = self.on_incoming_request(component, service, params)
+    except MorseServiceAlreadyRunningError as e:
+        logger.warning(e.service.__name__ + " is already running!")
 
 The internals
 -------------
