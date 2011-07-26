@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('rosgraph_msgs'); roslib.load_manifest('geometry_msgs')#; roslib.load_manifest('tf')
 import rospy
 import std_msgs
