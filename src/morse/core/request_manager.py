@@ -164,9 +164,9 @@ class RequestManager(object):
             self._services[(component_name, service_name)] = (callback, async)
 
             if self.post_registration(component_name, name, async):
-                logger.info(str(self) + ": New " + \
-                    ("asynchronous" if async else "synchronous") + " service " + \
-                    name + " for " + component_name + " successfully registered")
+                logger.info(str(self) + ": " + \
+                    ("Asynchronous" if async else "Synchronous") + " service " + \
+                    name + " successfully registered")
             else:
                 logger.error(str(self) + ": Error while registering a new service: " + \
                         "could not complete the post-registration step.")
@@ -230,7 +230,7 @@ class RequestManager(object):
             except TypeError as e:
                 raise MorseWrongArgsError(str(self) + ": wrong parameters for service " + service + ". " + str(e))
 
-            logger.info("Asynchronous request -> successfully started.")
+            logger.debug("Asynchronous request " + str(request_id) + " successfully started.")
             return (False, request_id)
 
         else: #Synchronous service.
@@ -266,7 +266,7 @@ class RequestManager(object):
         if self._completed_requests:
             for request, result in list(self._completed_requests.items()):
                 if result:
-                    logger.info(str(self) + ": Request " + str(request) + " is now completed.")
+                    logger.debug(str(self) + ": Request " + str(request) + " is now completed.")
                     del self._completed_requests[request]
                     self.on_service_completion(request, result)
 

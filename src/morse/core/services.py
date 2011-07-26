@@ -129,7 +129,7 @@ def do_service_registration(fn, component_name = None, service_name = None, asyn
 
     for manager in request_managers:
         name = service_name if service_name else fn.__name__
-        logger.info("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
+        logger.debug("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
         manager.register_service(component_name, fn, name, async)
 
 def async_service(fn = None, component = None, name = None):

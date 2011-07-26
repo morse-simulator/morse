@@ -20,8 +20,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
 
     @service
     def move(self, speed, rotation):
-        """ move the human. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Move the human.
         """
         
         human = self.blender_obj
@@ -39,8 +38,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         
     @service
     def move_head(self, pan, tilt):
-        """ move the human head. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Move the human head.
         """
         
         human = self.blender_obj
@@ -55,8 +53,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         
     @service
     def grasp_(self, seq):
-        """ grasp object. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Grasp object.
         """
         human = self.blender_obj
         if human['Manipulate']:
