@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 
 import bpy
@@ -35,7 +36,7 @@ class ObjectTrackerClass(morse.sensors.camera.CameraClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## SEMANTIC CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info("######## SEMANTIC CAMERA '%s' INITIALIZING ########" % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -43,7 +44,7 @@ class ObjectTrackerClass(morse.sensors.camera.CameraClass):
         main_obj = self.blender_obj
   
         if not hasattr(GameLogic, 'trackedObjects'):
-            print ('Initialization of tracked objects:')
+            logger.info('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
             GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
 
@@ -57,7 +58,7 @@ class ObjectTrackerClass(morse.sensors.camera.CameraClass):
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                print ('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
+                logger.info('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
 
 
         # Prepare the exportable data of this sensor
@@ -67,7 +68,7 @@ class ObjectTrackerClass(morse.sensors.camera.CameraClass):
         # Variable to indicate this is a camera
         self.semantic_tag = True
 
-        print ('######## OBJECT TRACKER INITIALIZED ########')
+        logger.info('######## OBJECT TRACKER INITIALIZED ########')
 
     def default_action(self):
         """ Do the actual semantic 'grab'.
