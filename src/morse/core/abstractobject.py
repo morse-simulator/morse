@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 import morse.core.services
 from collections import OrderedDict
 
-from morse.core.exceptions import MorseRPCInvokationError
+from morse.core.exceptions import MorseRPCInvokationError, MorseServiceAlreadyRunningError
 
 class MorseAbstractObject(object):
     """ An abstract object. All components in MORSE (either physical components
@@ -76,10 +76,24 @@ class MorseAbstractObject(object):
         This is automatically set by the @async_service decorator and should
         not usually be directly called.
         """
-        if self.on_completion:
-            import morse.core.status
-            self.on_completion((morse.core.status.PREEMPTED, "New request received"))
-            #raise MorseRPCInvokationError("A request is already ongoing")
+
+        if self.on_completion: # A callback is already registered -> a service is running
+            old_cb = self.on_completion
+            try:
+                interruptible = old_cb.service._morse_service_interruptible
+            except AttributeError:
+                # No policy (interruptible/noninterruptible) set for
+                # the service currently running. We throw an exception 
+                # to be caught by the middleware. Up to it to define 
+                # the default policy.
+                raise MorseServiceAlreadyRunningError(old_cb.service, "A service (" + \
+                        old_cb.service.__name__ + ") is already running. I do not know what to do.")
+
+            if interruptible:
+                import morse.core.status
+                self.on_completion((morse.core.status.PREEMPTED, "Interrupted by incoming request"))
+            else:
+                raise MorseRPCInvokationError("A non-interruptible service (" + old_cb.service.__name__ + ") is already running")
 
         self.on_completion = cb
     

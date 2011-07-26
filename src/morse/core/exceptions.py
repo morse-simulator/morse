@@ -1,5 +1,3 @@
-import logging; logger = logging.getLogger("morse." + __name__)
-
 class MorseServiceError(Exception):
     def __init__(self, value):
         self.value = value
@@ -9,6 +7,13 @@ class MorseServiceError(Exception):
 class MorseRPCInvokationError(MorseServiceError):
     def __init__(self, value):
         self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class MorseServiceAlreadyRunningError(MorseRPCInvokationError):
+    def __init__(self, running_service, value):
+        self.value = value
+        self.running_service = running_service
     def __str__(self):
         return repr(self.value)
 

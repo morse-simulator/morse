@@ -187,6 +187,10 @@ def service(fn = None, component = None, name = None, async = False):
             dfn = fn
             if async:
                 def decorated_fn(self, callback, *param):
+                    logger.debug(decorated_fn.__name__ + " interruptible? " + str(decorated_fn._morse_service_interruptible))
+                    # Stores in the callback the original calling
+                    # service.
+                    callback.service = decorated_fn
                     self.set_service_callback(callback)
                     fn(self, *param)
                 dfn = decorated_fn
@@ -210,4 +214,39 @@ def service(fn = None, component = None, name = None, async = False):
     else:
          # ...else, we build a new decorator
         return partial(service, component = component, name = name, async = async)
+
+def interruptible(fn):
+    """ The @interruptible decorator.
+
+    Use this decorator to set an (asynchronous) service to be 
+    interruptible.
+
+    If MORSE receives a request for a new service while an
+    interruptible service is running, the running service is
+    preempted (the requester receives a :data:`morse.core.status.PREEMPTED` 
+    status), and the new one is started.
+
+    See also :meth:`noninterruptible` decorator.
+    """
+    logger.debug("In @interruptible: Decorating method "+ fn.__name__)
+    fn._morse_service_interruptible = True
+
+    return fn
+
+def noninterruptible(fn):
+    """ The @noninterruptible decorator.
+
+    Use this decorator to set an (asynchronous) service to be non
+    interruptible.
+
+    If MORSE receives a request for a new service while a non
+    interruptible service is running, a failure message is returned
+    to the requester.
+
+    See also :meth:`interruptible` decorator.
+    """
+    logger.debug("In @noninterruptible: Decorating method "+ fn.__name__)
+    fn._morse_service_interruptible = False
+
+    return fn
 
