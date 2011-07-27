@@ -85,8 +85,8 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
                 self._radar_l = child
 
         try:
-            logger.info("Radar Right is '%s'" % self._radar_r.name)
-            logger.info("Radar Left  is '%s'" % self._radar_l.name)
+            logger.info("Radar R is %s", self._radar_r)
+            logger.info("Radar L is %s", self._radar_l)
             self._collisions = True
         except AttributeError as detail:
             logger.warning("No radars found attached to the waypoint actuator.\n\tThere will be no obstacle avoidance")
@@ -161,7 +161,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             self.completed(status.SUCCESS, parent.move_status)
 
             logger.debug("TARGET REACHED")
-            logger.debug("Robot {0} move status: '{1}'".format(parent, parent.move_status))
+            #logger.debug("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
         else:
             parent.move_status = "Transit"
