@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
 import socket
 import select
 
@@ -260,9 +261,12 @@ class PocolibsRequestManager(RequestManager):
             except MorseMethodNotFoundError:
                 # Request not found for module
                 return (False, "1 invalid command name \\\"" + rqst + "Send\\\"")
-            except MorseWrongArgsError:
+            except MorseRPCNbArgsError:
                 # Wrong # of args
                 return (False, "1 wrong # args")
+            except MorseRPCTypeError:
+                # Wrong # of args
+                return (False, "1 wrong type in args")
 
             return (True, str(rqst_id))
             

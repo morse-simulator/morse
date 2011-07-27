@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
 import os
 import sys
 import uuid
@@ -227,8 +228,18 @@ class RequestManager(object):
                 # This method may throw MorseRPCInvokationError if the
                 # service initialization fails.
                 method(result_setter, *params) if params else method(result_setter)
+            except AttributeError as e:
+                raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
             except TypeError as e:
-                raise MorseWrongArgsError(str(self) + ": wrong parameters for service " + service + ". " + str(e))
+                # Check if the type error comes from a wrong # of args.
+                # We perform this check only after an exception is
+                # thrown to avoid loading the inspect module by default.
+                # TODO: Does it make sense?
+                import inspect
+                if len(params) != (len(inspect.getargspec(method)[0]) - 2): # -2 because of self and callback
+                    raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
+                else:
+                    raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
             logger.debug("Asynchronous request " + str(request_id) + " successfully started.")
             return (False, request_id)
@@ -238,8 +249,18 @@ class RequestManager(object):
             logger.info("Synchronous service -> invoking it now.")
             try:
                 values = method(*params) if params else method() #Invoke the method with unpacked parameters
+            except AttributeError as e:
+                raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
             except TypeError as e:
-                raise MorseWrongArgsError(str(self) + ": wrong parameters for service " + service + ". " + str(e))
+                # Check if the type error comes from a wrong # of args.
+                # We perform this check only after an exception is
+                # thrown to avoid loading the inspect module by default.
+                # TODO: Does it make sense?
+                import inspect
+                if len(params) != (len(inspect.getargspec(method)[0]) - 1): # -1 because of 'self'
+                    raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
+                else:
+                    raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
             # If we are here, no exception has been raised by the
             # service, which mean the service call is successful. Good.
