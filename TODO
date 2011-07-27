@@ -15,11 +15,6 @@ General
 - move away all project/scenario specific files from MORSE core (create
   dedicated repositories for those) -> superseeded by next target
 
-Middlewares
------------
-
-- add support for services through  Pocolibs middleware -> Severin
-
 Components
 ----------
 - Properly implement the "human" as a robot: Change the script in object oriented form -> Gilberto

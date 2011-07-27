@@ -11,7 +11,7 @@ Architectural changes
 Middlewares
 -----------
 - Added support for multiple middleware bindings per component
-
+- add support for services through  Pocolibs middleware
 - ROS support for the robot's cameras
 
 
