@@ -118,7 +118,7 @@ class PocolibsRequestManager(RequestManager):
                 
                 if data == "HELLO":
                     conn.send(("HELLO " + str(self._next_client_id) + "\r\n").encode('ascii'))
-                    logger.info('Pocolibs request manager: new connection from ', addr)
+                    logger.info('Pocolibs request manager: new connection from %s', str(addr) )
                     self._clients[conn] = self._next_client_id
                     self._answer_clients[conn] = conn
                     self._inputs.append(conn)
