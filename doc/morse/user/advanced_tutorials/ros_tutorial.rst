@@ -13,27 +13,15 @@ You should also be familiar with the basic usage of ROS and how to use TF and th
 
 To create the TF-tree, you have to write a TF-broadcaster that build a TF-tree from informations about the robot`s pose, velocity and the robot model (in ROS usually given as URDF-file). The TF-tree also need information about the current configuration of the joints of the robot in case they are not fixed joints. You also need to set the parameters of the ROS navigation (local planner, move_base, etc). Detailed information about the ROS navigation-stack can be found here: http://www.ros.org/wiki/navigation.
 
-You can download a ROS-stack including an example implementation for using ROS navigation with the simulated Jido robot in MORSE in the following way:
+You can download a ROS-stack including an example implementation for using ROS navigation with the simulated Jido robot in MORSE using rosinstall:
 
-First create a folder for your MORSE-ROS stack and make sure, it is in your ROS_PACKAGE_PATH:
+``rosinstall . ~/ros-py3/  http://ias.cs.tum.edu/~kargm/morse_ros_tutorials.rosinstall``
 
-``mkdir morse_ros``
+Assuming your Python3-compatible ROS overlay is located in ``~/ros-py3/``
 
-``cd morse_ros``
 
-Now init a git repository and checkout the morse_ros stack for the navigation tutorial:
+Alternatively you can git clone the morse_ros stack from ``http://code.in.tum.de/git/morse-ros.git`` and checkout the branch ``tutorials``. If you chose this option, don´t forget that the stack must be placed somewhere in your ROS_PACKAGE_PATH and don`t forget to rosmake it!
 
-``git init``
-
-``git remote add -t tutorials -f origin git://github.com/kargm/morse_ros.git``
-
-``git checkout tutorials``
-
-If you now type ``roscd morse_ros``, you should get to your morse_ros-stack. If you don´t, the morse-ros stack is NOT in your ROS_PACKAGE_PATH.
-
-Finally rosmake the stack: 
-
-``rosmake morse_ros``
 
 Configuring the scenario
 ------------------------
