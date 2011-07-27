@@ -110,3 +110,6 @@ class MorseOverlay(MorseAbstractObject):
         Override this method in your overlay to expose an alternative name.
         """
         return self.overlaid_object.name()
+
+    def interrupt(self):
+        self.overlaid_object.interrupt()
