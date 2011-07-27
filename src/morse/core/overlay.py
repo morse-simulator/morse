@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 logger.setLevel(logging.DEBUG)
 from abc import ABCMeta, abstractmethod
+from functools import partial
 from morse.core.abstractobject import MorseAbstractObject
-
 from morse.core.exceptions import MorseRPCInvokationError
 
 class MorseOverlay(MorseAbstractObject):
@@ -32,7 +32,7 @@ class MorseOverlay(MorseAbstractObject):
             "the component it overlays!")
 
     def _chain_callback(self, fn, result):
-        logger.debug("Calling " + self.__name__ + " chain callback")
+        logger.debug("Calling " + self.name() + " chain callback")
 
         if fn:
             result = fn(result)
@@ -66,10 +66,10 @@ class MorseOverlay(MorseAbstractObject):
                 @async_service
                 def mydummy_service(self, arg1):
                     # [...do smthg useful]
-                    self.overlaid_object.dummy_service(self.chain_callback, arg1)
+                    self.overlaid_object.dummy_service(self.chain_callback(), arg1)
                     # We call the overlaid asynchronous service
                     # 'dummy_service' by passing a special callback
-                    # 'self.chain_callback'
+                    # returned by 'self.chain_callback()'
 
         ``chain_callback`` takes a functor as an optional parameter.
         This functor is called after the (overlaid) service completion, but
