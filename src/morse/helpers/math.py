@@ -22,8 +22,8 @@ def get_rotation_matrix(object):
     """ Return a the rotation matrix of an object.
     Used to transform another object to this one's coordinate system. """
 
-    return object.worldOrientation
-
+    import copy
+    return copy.copy(object.worldOrientation)
 
 def invert_rotation_matrix(object):
     """ Return the inverse of the rotation matrix of an object.
