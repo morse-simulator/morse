@@ -75,10 +75,24 @@ class PocolibsRequestManager(RequestManager):
 
         return True
 
+    def _encode_answer(self, rqst_id, fqn, result):
+        state, value = result
+        component, rqst = fqn.strip("::").split("::")
+
+        res = str(rqst_id) + " " + fqn + " TERM "
+        if (state == status.SUCCESS):
+            res += "OK" + " " \
+            + ("  ".join([str(i) for i in value]) if value else "")
+        elif(state == status.PREEMPTED):
+            res += "S_" + component + "_stdGenoM_ACTIVITY_INTERRUPTED"
+        else:
+            if (value):
+                res +=  "S_" + component + str(value[0])
+            else:
+                res +=  "S_" + component + "_UNKNOWN_ERROR"
+        return res
 
     def on_service_completion(self, intern_rqst_id, result):
-        
-        state, value = result
         
         s = None
         
@@ -89,10 +103,7 @@ class PocolibsRequestManager(RequestManager):
                   intern_rqst_id + ". Skipping it.")
             return
 
-        res = str(rqst_id) + " " + fqn + \
-                " TERM " + \
-                ("OK" if state == status.SUCCESS else "") + \
-                (" " + " ".join([str(i) for i in value]) if value else "")
+        res = self._encode_answer(rqst_id, fqn, result)
         self._results_to_output.setdefault(self._answer_clients[s], []).append(res)
         
 
@@ -165,11 +176,7 @@ class PocolibsRequestManager(RequestManager):
                     rqst_id, fqn, is_sync, result = self._landing_request
                     
                     if is_sync:
-                        state, value = result
-                        res = str(rqst_id) + " " + fqn + \
-                            " TERM " + \
-                            ("OK" if state == status.SUCCESS else "") + \
-                            (" " + " ".join([str(i) for i in value]) if value else "")
+                        res = self._encode_answer(rqst_id, fqn, result)
                         self._results_to_output.setdefault(self._answer_clients[i], []).append(res)
                     else:
                         activity_id = 0 #TODO: For now, we do not support more than one instance of the same request
