@@ -78,7 +78,7 @@ class MorseAbstractObject(object):
         interrupt, for exemple resseting the speed command to 0.0
         """
         import morse.core.status
-        self.completed((morse.core.status.PREEMPTED, "Interrupted by incoming request"))
+        self.completed(morse.core.status.PREEMPTED, ["Interrupted by incoming request"])
 
     def set_service_callback(self, cb):
         """ Sets the callback function that is to be invoked when the current
