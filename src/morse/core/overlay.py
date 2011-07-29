@@ -112,4 +112,7 @@ class MorseOverlay(MorseAbstractObject):
         return self.overlaid_object.name()
 
     def interrupt(self):
-        self.overlaid_object.interrupt()
+        if self.overlaid_object.on_completion:
+            self.overlaid_object.interrupt()
+        else:
+            super(MorseOverlay, self).interrupt()
