@@ -87,7 +87,7 @@ class PocolibsRequestManager(RequestManager):
             res += "S_" + component + "_stdGenoM_ACTIVITY_INTERRUPTED"
         else:
             if (value):
-                res +=  "S_" + component + str(value[0])
+                res +=  "S_" + component + "_" + str(value[0])
             else:
                 res +=  "S_" + component + "_UNKNOWN_ERROR"
         return res
@@ -238,7 +238,7 @@ class PocolibsRequestManager(RequestManager):
                 if (s_client and s_reply):
                     self._answer_clients[s_client] = s_reply
 
-            return (True, str(client_id))
+            return (True, str(req[1]))
         
         if cmd == "RQST":
             component, rqst = req[1].strip("::").split("::")
