@@ -58,6 +58,12 @@ where:
 - **u_0** = **cam_height** / 2
 - **v_0** = **cam_width** / 2
 
+Services
+--------
+
+- **capture**: (asynchronous service) the method expects an integer **n** in
+  input and answer back when the simulated camera has token **n** shots.
+
 Applicable modifiers
 --------------------
 
