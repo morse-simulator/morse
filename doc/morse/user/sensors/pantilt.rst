@@ -20,6 +20,13 @@ Applicable modifiers
 The modifiers to the images should be done by configuring the individual
 cameras attached to this component.
 
+Services
+--------
+
+- **capture**: (asynchronous service) The service takes an integer an argument
+  and dispatch the call to all its individual cameras. The service ends when
+  each camera has terminated its work.
+
 Related components
 ------------------
 
