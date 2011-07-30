@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import re
 import GameLogic
@@ -24,7 +25,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_viman_poster(self, component_instance, poster_name)
     if poster_id != None:
-        #print ("Pocolibs created poster '%s' of type viman" % poster_id)
+        logger.info("Pocolibs created poster '%s' of type viman" % poster_id)
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
@@ -44,7 +45,7 @@ def init_viman_poster(self, component_instance, poster_name):
         self.scene_object_list += [obj.name for obj in GameLogic.trackedObjects.keys()]
 
     if not self.scene_object_list:
-        print ("ERROR: No VIMAN object to track. Make sure some objects have " +\
+        logger.error("No VIMAN object to track. Make sure some objects have " +\
                "the game property 'Object' defined. Disabling poster for now.")
         return None
 
@@ -54,18 +55,17 @@ def init_viman_poster(self, component_instance, poster_name):
     self.viman_data.nbObjects = len(self.scene_object_list)
     i = 0
     for object in self.scene_object_list:
-        print("Adding " + object + " to the objects tracked by VIMAN")
+        logger.info("Adding " + object + " to the objects tracked by VIMAN")
         ors_viman_poster.set_name(self.viman_data, i, str(object))
         #self.viman_data.objects[i].name = object
         i = i + 1
 
     poster_id, ok = ors_viman_poster.init_data(poster_name)
     if ok == 0:
-        print ("ERROR creating poster. This module may not work")
+        logger.error("Creating poster. This module may not work")
         return None
 
-    #else:
-    print("VIMAN Poster '%s' created (ID: %d)" % (poster_name, poster_id))
+    logger.info("VIMAN Poster '%s' created (ID: %d)" % (poster_name, poster_id))
 
     return poster_id
 
@@ -87,7 +87,7 @@ def write_viman(self, component_instance):
             if object in component_instance.local_data['visible_objects']:
 
                 position_3d = Transformation3d(object)
-                #print("VIMAN " + object.name + " is visible at " + str(position_3d))
+                logger.debug("VIMAN " + object.name + " is visible at " + str(position_3d))
                 ors_viman_poster.set_visible (self.viman_data, i, 1)
                 _fill_world_matrix(self.viman_data, position_3d, i)
             else:
@@ -103,7 +103,7 @@ def write_viman(self, component_instance):
             # Write to the poster with the data for all objects
             posted = ors_viman_poster.real_post_viman_poster(poster_id, self.viman_data)
         except KeyError as detail:
-            #print ("WARNING: Object %s not found in the scene" % detail)
+            logger.debug("WARNING: Object %s not found in the scene" % detail)
             pass
             posted = False
 
@@ -117,7 +117,7 @@ def _fill_world_matrix(viman_data, t3d, index):
     It calls a module function to fill out data structure of type VimanThetaMat
     """
 
-    #print(t3d)
+    logger.debug(t3d)
     nx = t3d.matrix[0][0]
     ox = t3d.matrix[1][0]
     ax = t3d.matrix[2][0]
@@ -143,7 +143,7 @@ def _read_object_list():
     Read the list of component names"""
 
     scene_object_list = []
-    print ("Reading '%s' config file for VIMAN poster" % object_config_file)
+    logger.info("Reading '%s' config file for VIMAN poster" % object_config_file)
 
     try:
         fp = open(object_config_file, "r")
@@ -151,11 +151,11 @@ def _read_object_list():
             match = re.search('object (\w+)', line)
             if match != None:
                 scene_object_list.append(match.group(1))
-                print ("\t- %s" % match.group(1))
+                logger.debug("\t- %s" % match.group(1))
         fp.close()
     except IOError as detail:
-        #print (detail)
-        print("ARToolkit tag library not found. Skipping it.")
+        logger.debug(detail)
+        logger.info("ARToolkit tag library not found. Skipping it.")
         return []
 
     return scene_object_list

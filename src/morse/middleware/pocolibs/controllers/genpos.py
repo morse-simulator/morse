@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs.controllers.Genpos_Poster import ors_genpos_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
@@ -21,8 +22,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 def read_genpos_(poster_id, component_instance):
     genpos_speed, ok = ors_genpos_poster.read_genPos_data(poster_id)
-    #print ("Tuple type ({0}) returned".format(type(genpos_speed)))
-    #print ("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
+    logger.debug("Tuple type ({0}) returned".format(type(genpos_speed)))
+    logger.debug("Tuple data: (%.4f, %.4f)" % (genpos_speed.v, genpos_speed.w))
 
     if ok != 0:
         component_instance.local_data['v'] = genpos_speed.v
