@@ -1,4 +1,7 @@
 <<<<<<< HEAD:src/morse/robots/pr2.py
+<<<<<<< HEAD:src/morse/robots/pr2.py
+=======
+>>>>>>> 02e33e5... Added licence info:src/morse/robots/pr2.py
 # @Authors: Peter Roelants peter.roelants@gmail.com
 # @Owner: KU Leuven - Dep. Mechanical Eng. - Robotics
 # @File: pr2.py
@@ -29,8 +32,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 # OF SUCH DAMAGE.
 
+<<<<<<< HEAD:src/morse/robots/pr2.py
 =======
 >>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
+=======
+>>>>>>> 02e33e5... Added licence info:src/morse/robots/pr2.py
 import GameLogic
 import morse.core.robot
 from morse.core.services import service
