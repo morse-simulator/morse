@@ -1,3 +1,4 @@
+<<<<<<< HEAD:examples/morse/scenarii/pr2_samples/pr2_services_tests.py
 # @Authors: Peter Roelants peter.roelants@gmail.com
 # @Owner: KU Leuven - Dep. Mechanical Eng. - Robotics
 # @File: pr2_services_tests.py
@@ -27,6 +28,8 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 # OF SUCH DAMAGE.
+=======
+>>>>>>> 4773744... added pr2 services sample:examples/morse/scenarii/pr2_samples/pr2_services_tests.py
 """
 Script to test the different MORSE PR2 Services.
 
