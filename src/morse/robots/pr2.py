@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/morse/robots/pr2.py
 # @Authors: Peter Roelants peter.roelants@gmail.com
 # @Owner: KU Leuven - Dep. Mechanical Eng. - Robotics
 # @File: pr2.py
@@ -28,6 +29,8 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 # OF SUCH DAMAGE.
 
+=======
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 import GameLogic
 import morse.core.robot
 from morse.core.services import service
@@ -120,8 +123,13 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def get_dofs(self, armature_name):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service that returns a dictionary with keys the channels of the given armature 'armature_name' 
 		and as values the corresponding dof axis as 'x', 'y' or 'z'.
+=======
+		MORSE Service that returns a dictionary with keys the channels of the given armature and
+		as values the corresponding dof axis as 'x', 'y' or 'z'
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		"""
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
 		dofs = {}
@@ -134,7 +142,11 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def get_dof(self, armature_name, channel_name):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service that returns the dof axis of the given channel 'channel_name' on the given armature 'armature_name'.
+=======
+		MORSE Service that returns the dof axis of the given channel on the given armature.
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		"""
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
 		channel = armature.channels[str(channel_name)]
@@ -145,7 +157,11 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def get_rotations(self, armature_name):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service that returns a dict with keys the channel names of the given armature 'armature_name',
+=======
+		MORSE Service that returns a dict with keys the channel names of the given armature,
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		and values the rotation xyz values.
 		"""
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
@@ -159,7 +175,11 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def get_rotation(self, armature_name, channel_name):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service that returns the rotation angles corresponding to the given channel 'channel_name' on the given armature 'armature_name'.
+=======
+		MORSE Service that returns the rotation angles corresponding to the given channel on the given armature.
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		"""
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
 		channel = armature.channels[str(channel_name)]
@@ -171,11 +191,19 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def set_dof_rotations(self, armature_name, angles):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service to set the rotion angles of the corresponding dof axes of the channels in 'armature_name'.
 		angles must be a dict with as keys all the channel names of the given armature. And as values
 		the angle of the channel dof axis that you want to set.
 		"""
 		angles = eval(angles, {})
+=======
+		MORSE Service to set the rotion angles of the corresponding dof axes of the channels in armature_name.
+		angles must be a dict with as keys all the channel names of the given armature. And as values
+		the angle of the channel dof axis that you want to set.
+		"""
+		angles = eval(angles)
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
 		# set the rotation of each channel
 		for channel in armature.channels:
@@ -194,7 +222,11 @@ class PR2Class(morse.core.robot.MorseRobotClass):
 	@service
 	def set_dof_rotation(self, armature_name, channel_name, angle):
 		"""
+<<<<<<< HEAD:src/morse/robots/pr2.py
 		MORSE Service to set the rotation angle of the corresponding dof axis of the 'channel_name' in 'armature_name'.
+=======
+		MORSE Service to set the rotation angle of the corresponding dof axis of the channel_name in armature_name.
+>>>>>>> 2f8c763... add pr2 model from lab computer:src/morse/robots/pr2.py
 		"""
 		armature = self.blender_obj.childrenRecursive[str(armature_name)]
 		channel = armature.channels[str(channel_name)]
