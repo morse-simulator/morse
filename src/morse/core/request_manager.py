@@ -3,6 +3,7 @@ logger.setLevel(logging.DEBUG)
 import os
 import sys
 import uuid
+import GameLogic
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
@@ -276,9 +277,25 @@ class RequestManager(object):
             logger.info("Done. Result: " + str(values))
             return (True, values)
 
-    def abort_request(request_id, self):
+    def abort_request(self, request_id):
+        """ This method will interrupt a running asynchronous service,
+        uniquely described by its request_id
+        """
         component_name, service_name = self._pending_requests[request_id]
-        GameLogic.componentDict[component_name].interrupt()
+
+        for component in GameLogic.componentDict.values():
+            if component.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(component))
+                component.interrupt()
+                return
+
+        # if not found, search in the overlay dictionnary
+        for overlay in GameLogic.overlayDict.values():
+            if overlay.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(overlay))
+                overlay.interrupt()
+                return
+
 
     def _update_pending_calls(self):
         """This method is called at each simulation steps and check if pending requests are
