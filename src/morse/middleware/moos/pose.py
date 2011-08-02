@@ -1,7 +1,7 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
 import GameLogic
-import mathutils
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -16,7 +16,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     component_instance.output_functions.append(function)
 
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    print('######## POSE-SENSOR INITIALIZED ########')
+    logger.info('######## POSE-SENSOR INITIALIZED ########')
 
 def post_pose(self, component_instance):
     """ Publish the data of the Odometry-sensor as a ROS-Pose message

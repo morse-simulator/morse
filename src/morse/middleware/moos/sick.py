@@ -1,7 +1,7 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
 import GameLogic
-import mathutils
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -22,7 +22,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     self.m.Notify('sScanRange',component_instance.blender_obj['laser_range'],curTime)
 
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    print('######## SICK LIDAR-SENSOR INITIALIZED ########')
+    logger.info('######## SICK LIDAR-SENSOR INITIALIZED ########')
 
 def post_2DLaserScan(self, component_instance):
     """ Publish the data on the rostopic
