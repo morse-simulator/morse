@@ -64,7 +64,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
 
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA
-            image_data = GameLogic.cameras[self.name].source
+            image_data = GameLogic.cameras[self.name()].source
 
             # Fill in the exportable data
             self.local_data['image'] = image_data
