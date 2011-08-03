@@ -85,8 +85,7 @@ class PocolibsRequestManager(RequestManager):
 
         res = str(rqst_id) + " " + fqn + " TERM "
         if (state == status.SUCCESS):
-            res += "OK" + " " \
-            + ("  ".join([str(i) for i in value]) if value else "")
+            res += "OK" + (" " + "  ".join([str(i) for i in value]) if value else "")
         elif(state == status.PREEMPTED):
             res += "S_" + component + "_stdGenoM_ACTIVITY_INTERRUPTED"
         else:
