@@ -300,7 +300,7 @@ class PocolibsRequestManager(RequestManager):
                 component = req[2].split("::")[0]
                 return(True, " ".join(["::" + component + "::" + method + "Send" for method in self.services()[component]]))
                 
-        if cmd in ["LM", "cs::init", "exec", "modules::connect", "ACK"]:
+        if cmd in ["LM", "cs::init", "exec", "modules::connect", "ACK", "UNLM", "KILL"]:
             # Not needed in simulation
             return (True, "")
         
