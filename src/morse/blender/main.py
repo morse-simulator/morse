@@ -1,32 +1,39 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core.logging import SECTION, ENDSECTION
 import sys
 import re
 import time
+import bpy
 import GameLogic
 import Rasterizer
-
-# Import this library to recover the Python version
-import platform
 
 # The file component_config.py is at the moment included
 #  in the .blend file of the scene
 try:
     import component_config
-except ImportError as detail:
-    print ("WARNING: ", detail, ". No middlewares will be configured")
+    
+    # The service management
+    from morse.core.services import MorseServices
 
+except ImportError as detail:
+    logger.warning(detail + ". No middlewares will be configured")
+
+
+MULTINODE_SUPPORT = False
 # The file scene_config.py is at the moment included
 #  in the .blend file of the scene
 # Used to setup the multinode information
 try:
     import scene_config
+    
+    # Multi-node simulation
+    import morse.core.multinode
+    MULTINODE_SUPPORT = True
+    
 except ImportError as detail:
-    print ("WARNING: ", detail, ". No scene configuration file found.")
+    logger.info("No multi-node scene configuration file found." + \
+           " Multi-node support disabled.")
 
-# Multi-node simulation
-import morse.core.multinode
-
-# The service management
-from morse.core.services import MorseServices
 from morse.core.exceptions import MorseServiceError
 
 
@@ -60,9 +67,13 @@ def create_dictionaries ():
     if not hasattr(GameLogic, 'mwDict'):
         GameLogic.mwDict = {}
 
-    # Create a dictionary with the middlewares used
+    # Create a dictionary with the service used
     if not hasattr(GameLogic, 'serviceDict'):
         GameLogic.serviceDict = {}
+
+    # Create a dictionnary with the overlaid used
+    if not hasattr(GameLogic, 'overlayDict'):
+        GameLogic.overlayDict = {}
 
     scene = GameLogic.getCurrentScene()
 
@@ -86,22 +97,18 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
-
-    """
-    # Get the external robots (used in multi node simulation)
-    for obj in scene.objects:
-        try:
-            obj['External_Robot_Tag']
-            # Make a list of the robots that are marked as external
-            er_data = [obj, obj.worldPosition, obj.worldOrientation]
-            GameLogic.externalRobotDict[obj] = er_data
-        except KeyError as detail:
-            pass
-    """
-
-
+    
+    if not GameLogic.robotDict: # No robot!
+        logger.error("""
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ERROR: no robot in your simulation!
+            
+            Do not forget that components _must_ belong to a
+            robot (you can not have free objects)
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            """)
+        return False
+    
     # Get the robot and its instance
     for obj, robot_instance in GameLogic.robotDict.items():
         # Create an empty list for the components of this robot
@@ -122,9 +129,23 @@ def create_dictionaries ():
 
             except KeyError:
                 pass
-                #sys.exc_clear()    # Clears the last exception thrown
-                                    # Does not work in Python 3
-
+    
+    # Check we have no 'free' component (they all must belong to a robot)
+    for obj in scene.objects:
+        try:
+            obj['Component_Tag']
+            if obj.name not in GameLogic.componentDict.keys():
+                logger.error("""
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    ERROR: the component """ + obj.name + """ do not
+                    belong to any robot: you need to fix that by 
+                    parenting it to a robot.                    
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """)
+                return False
+        except KeyError as detail:
+            pass
+            
     # Get the modifiers
     for obj in scene.objects:
         try:
@@ -137,9 +158,6 @@ def create_dictionaries ():
                 return False
         except KeyError:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
-
 
     # Get the middlewares
     for obj in scene.objects:
@@ -149,14 +167,13 @@ def create_dictionaries ():
             is_middleware = True
         except KeyError as detail:
             pass
-            #sys.exc_clear()    # Clears the last exception thrown
-                                # Does not work in Python 3
+    
         if is_middleware:
             # Create an object instance and store it
             instance = create_instance (obj)
             if instance != None:
                 GameLogic.mwDict[obj] = instance
-                print ("\tMiddleware '%s' found" % obj)
+                logger.info("\tMiddleware '%s' found" % obj)
             else:
                 return False
 
@@ -166,32 +183,32 @@ def create_dictionaries ():
 
 def check_dictionaries():
     """ Print the contents of the robot and component dictionaries."""
-    print ("------------------------------------")
-    print ("GameLogic has the following robots:")
+    logger.info("------------------------------------")
+    logger.info("GameLogic has the following robots:")
     for obj, robot_instance in GameLogic.robotDict.items():
-        print ("\tROBOT: '{0}'".format(obj))
+        logger.info("\tROBOT: '{0}'".format(obj))
         for component in robot_instance.components:
-            print ("\t\t- Component: '{0}'".format(component))
+            logger.info ("\t\t- Component: '{0}'".format(component))
 
-    print ("GameLogic has the following external robots:")
+    logger.info ("GameLogic has the following external robots:")
     for obj, robot_position in GameLogic.externalRobotDict.items():
-        print ("\tROBOT: '{0}'".format(obj))
+        logger.info ("\tROBOT: '{0}'".format(obj))
 
-    print ("\nGameLogic has the following components:")
+    logger.info ("GameLogic has the following components:")
     for obj, component_variables in GameLogic.componentDict.items():
-        print ("\tCOMPONENT: '{0}'".format(obj))
+        logger.info ("\tCOMPONENT: '{0}'".format(obj))
 
-    print ("\nGameLogic has the following modifiers:")
+    logger.info ("GameLogic has the following modifiers:")
     for obj, modifier_variables in GameLogic.modifierDict.items():
-        print ("\tMODIFIER: '{0}'".format(obj))
+        logger.info ("\tMODIFIER: '{0}'".format(obj))
 
-    print ("\nGameLogic has the following middlewares:")
+    logger.info ("GameLogic has the following middlewares:")
     for obj, mw_variables in GameLogic.mwDict.items():
-        print ("\tMIDDLEWARE: '{0}'".format(obj))
+        logger.info ("\tMIDDLEWARE: '{0}'".format(obj))
 
-    print ("\nGameLogic has the following services:")
+    logger.info ("GameLogic has the following services:")
     for obj, service_variables in GameLogic.serviceDict.items():
-        print ("\tSERVICE: '{0}'".format(obj))
+        logger.info ("\tSERVICE: '{0}'".format(obj))
 
 
 def create_instance(obj, parent=None):
@@ -200,25 +217,40 @@ def create_instance(obj, parent=None):
     # Read the path and class of the object from the Logic Properties
     source_file = obj['Path']
     module_name = re.sub('/', '.', source_file)
-    #print ("Path to Component Class: %s" % module_name)
+    logger.debug("Path to Component Class: %s" % module_name)
     # Import the module containing the class
     try:
         __import__(module_name)
     except ImportError as detail:
-        print ("ERROR: Module not found: %s" % detail)
+        logger.error ("Module not found: %s" % detail)
         return None
     module = sys.modules[module_name]
     # Create an instance of the object class
     try:
         klass = getattr(module, obj['Class'])
     except AttributeError as detail:
-        print ("ERROR: Module attribute not found: %s" % detail)
+        logger.error ("Module attribute not found: %s" % detail)
         return None
     instance = klass(obj, parent)
 
     return instance
 
+def get_components_of_type(classname):
+    
+    components = []
+    for component in GameLogic.componentDict.values():
+        logger.info(component.name() + " -> " + component.__class__.__name__)
+        if component.__class__.__name__ == classname:
+            components.append(component)
+    
+    return components
 
+def get_middleware_of_type(classname):
+    for mw_instance in GameLogic.mwDict.value():
+        if mw_instance.__class__.__name__ == classname:
+            return mw_instance
+    return None
+    
 def link_middlewares():
     """ Read the configuration script (inside the .blend file)
         and assign the correct middleware and options to each component. """
@@ -226,16 +258,17 @@ def link_middlewares():
         component_list = component_config.component_mw
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
-        print ("ERROR: The 'component_mw' dictionary can not be found in your configuration file.")
-        return False
+        logger.info ("No middleware section found in configuration file.")
+        return True
 
-    for component_name, mw_data in component_list.items():
+    #for component_name, mw_data in component_list.items():
+    for component_name, mw_list in component_list.items():
         # Get the instance of the object
         try:
             instance = GameLogic.componentDict[component_name]
         except KeyError as detail:
-            print ("Component listed in component_config.py not found in scene: {0}".format(detail))
-            print("""
+            logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
+            logger.error("""
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             ERROR: your configuration file is not valid. Please
             check the name of your components and restart the
@@ -244,21 +277,30 @@ def link_middlewares():
             """)
             return False
 
-        mw_name = mw_data[0]
-        print ("Component: '%s' using middleware '%s'" % (component_name, mw_name))
-        found = False
-        missing_component = False
-        # Look for the listed mw in the dictionary of active mw's
-        for mw_obj, mw_instance in GameLogic.mwDict.items():
-            #print("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
-            if mw_name in mw_obj.name:
-                found = True
-                # Make the middleware object take note of the component
-                mw_instance.register_component(component_name, instance, mw_data)
-                break
-                
-        if not found:
-            print ("WARNING: There is no '%s' middleware object in the scene." % mw_name)
+        # If the list contains only strings, insert the list inside another one.
+        # This is done for backwards compatibility with the previous
+        #  syntax that allowed only one middleware per component
+        if isinstance (mw_list[0], str):
+            mw_list = [mw_list]
+
+        # Register all mw's in the list
+        for mw_data in mw_list:
+
+            mw_name = mw_data[0]
+            logger.info("Component: '%s' using middleware '%s'" % (component_name, mw_name))
+            found = False
+            missing_component = False
+            # Look for the listed mw in the dictionary of active mw's
+            for mw_obj, mw_instance in GameLogic.mwDict.items():
+                #logger.info("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
+                if mw_name in mw_obj.name:
+                    found = True
+                    # Make the middleware object take note of the component
+                    mw_instance.register_component(component_name, instance, mw_data)
+                    break
+
+            if not found:
+                logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
 
     # Will return true always (for the moment)
     return True
@@ -271,8 +313,8 @@ def link_services():
         component_list = component_config.component_service
     except AttributeError as detail:
         # Exit gracefully if there are no services specified
-        print ("WARNING: The 'component_service' dictionary can not be found in your configuration file.")
-        return False
+        logger.info("No service section found in configuration file.")
+        return True
 
     for component_name, request_manager_data in component_list.items():
         # Get the instance of the object
@@ -285,39 +327,73 @@ def link_services():
                 instance = GameLogic.robotDict[robot_obj]
 
             except KeyError as detail:
-                print ("Component listed in component_config.py not found in scene: {0}".format(detail))
-                print("""
+                logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
+                logger.error("""
                 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                ERROR: your configuration file is not valid. Please
-                check the name of your components and restart the
-                simulation.
+                ERROR: the component_services section of your
+                configuration file is not valid. Please check the 
+                name of your components and restart the simulation.
                 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 """)
                 return False
 
-        request_manager_name = request_manager_data[0]
-        GameLogic.morse_services.register_request_manager_mapping(component_name, request_manager_name)
-        instance.register_services()
-        print ("Component: '%s' using middleware '%s' for services" % (component_name, request_manager_name))
-        """
-        found = False
-        missing_component = False
-        # Look for the listed service in the dictionary of active service's
-        for mw_obj, mw_instance in GameLogic.mwDict.items():
-            #print("Looking for '%s' in '%s'" % (mw_name, service_obj.name))
-            if service_name in mw_obj.name:
-                found = True
-                # Make the service object take note of the component
-                # TODO: Check that this works properly
-                GameLogic.morse_services.register_request_manager_mapping(component_name, service_data[0])
-                #service_instance.register_component(component_name, instance, service_data)
-                break
-                
-        if not found:
-            print ("WARNING: There is no '%s' service object in the scene." % service_name)
-        """
+        for request_manager in request_manager_data:
+            try:
+                modulename, classname = request_manager.rsplit('.', 1)
+            except ValueError:
+                logger.error("You must specify the fully qualified name " + \
+                             "of the request manager (eg: " + \
+                             "morse.middleware.socket_request_manager.SocketRequestManager)")
+                return False
+            
+            # Load required request managers
+            if not GameLogic.morse_services.add_request_manager(request_manager):
+                return False
+            
+            GameLogic.morse_services.register_request_manager_mapping(component_name, classname)
+            instance.register_services()
+            logger.info("Component: '%s' using middleware '%s' for services" % (component_name, classname))
+    
+    return True
 
-    # Will return true always (for the moment)
+def load_overlays():
+    """ Read and initialize overlays from the configuration script.
+    """
+    try:
+        overlays_list = component_config.overlays
+    except AttributeError as detail:
+        # Exit gracefully if there are no services specified
+        logger.info("No overlay section found in configuration file.")
+        return True
+
+    for request_manager_name, overlays in overlays_list.items():
+        
+        for overlaid_name, overlay_name in overlays.items():
+            modulename, classname = overlay_name.rsplit('.', 1)
+            
+            try:
+                __import__(modulename)
+            except ImportError as detail:
+                logger.error("Module for overlay %s not found: %s" % (classname, detail))
+                continue
+            module = sys.modules[modulename]
+            # Create an instance of the object class
+            try:
+                klass = getattr(module, classname)
+            except AttributeError as detail:
+                logger.error("Overlay not found: %s" % detail)
+                continue
+            
+            for overlaid_object in get_components_of_type(overlaid_name):
+                # BUG TODO: If more than one object is overlaid with the same overlay 
+                # (eg, 2 instances of the same component class), and if the overlay
+                # redefines the name, a name collision will occur.
+                instance = klass(overlaid_object)
+                GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+                instance.register_services()
+                GameLogic.overlayDict[overlay_name] = instance
+                logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
+    
     return True
 
 
@@ -328,13 +404,13 @@ def add_modifiers():
         component_list = component_config.component_modifier
     except AttributeError as detail:
         # Exit gracefully if there are no modifiers specified
-        print ("No modifiers found in configuration file")
-        return False
+        logger.info("No modifiers section found in configuration file")
+        return True
 
     for component_name, mod_list in component_list.items():
         for mod_data in mod_list:
             modifier_name = mod_data[0]
-            print ("Component: '%s' operated by '%s'" % (component_name, modifier_name))
+            logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
             found = False
             # Look for the listed modifier in the dictionary of active modifier's
             for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
@@ -344,16 +420,15 @@ def add_modifiers():
                     try:
                         instance = GameLogic.componentDict[component_name]
                     except KeyError as detail:
-                        print ("Component listed in component_config.py not found in scene: {0}".format(detail))
+                        logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
                         continue
 
                     # Make the modifier object take note of the component
                     modifier_instance.register_component(component_name, instance, mod_data)
 
             if not found:
-                print ("There is no '%s' modifier object in the scene." % modifier_name)
-
-    # Will return true always (for the moment)
+                logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+    
     return True
 
 
@@ -362,31 +437,31 @@ def init(contr):
 
     Here, all components, modifiers and middleware are initialized.
     """
-    # Configuration for the multi-node simulation
-    try:
-        node_name = scene_config.node_config["node_name"]
-        server_address = scene_config.node_config["server_address"]
-        server_port = scene_config.node_config["server_port"]
-    #except NameError as detail:
-        #print ("No definition file for 'multi-node' instance found. Using only single node")
-    #except AttributeError as detail:
-    except (NameError, AttributeError) as detail:
-        print ("WARNING: No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
-        node_name = "temp_name"
-        server_address = "localhost"
-        server_port = 65000
-    GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
 
-    print ('\n######## SERVICES INITIALIZATION ########')
-    init_services()
+    init_logging()
 
-    print ('\n######## SCENE INITIALIZATION ########')
-    # Get the version of Python used, according to the pythonpath
+    if MULTINODE_SUPPORT:
+        # Configuration for the multi-node simulation
+        try:
+            node_name = scene_config.node_config["node_name"]
+            server_address = scene_config.node_config["server_address"]
+            server_port = scene_config.node_config["server_port"]
+        except (NameError, AttributeError) as detail:
+            logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+            node_name = "temp_name"
+            server_address = "localhost"
+            server_port = 65000
+        GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
+
+
+    logger.log(SECTION, 'PRE-INITIALIZATION')
+    # Get the version of Python used
     # This is used to determine also the version of Blender
-    python_version = platform.python_version()
-    print ("Python Version: {0}".format(python_version))
-    # Chop the version to only 3 chars: #.#  and convert to a number
-    GameLogic.pythonVersion = float(python_version[:3])
+    GameLogic.pythonVersion = sys.version_info
+    GameLogic.blenderVersion = bpy.app.version
+    logger.info ("Python Version: %s.%s.%s" % GameLogic.pythonVersion[:3])
+    logger.info ("Blender Version: %s.%s.%s" % GameLogic.blenderVersion)
+
     GameLogic.morse_initialised = False
     GameLogic.base_clock = time.clock()
     GameLogic.current_time = 0.0
@@ -394,42 +469,64 @@ def init(contr):
     GameLogic.current_camera_index = 0
     init_ok = True
 
-    print ('======== COMPONENT DICTIONARY INITIALISATION =======')
-    init_ok = create_dictionaries()
+
+    logger.log(SECTION, 'SUPERVISION SERVICES INITIALIZATION')
+    init_ok = init_supervision_services()
+    
+    logger.log(SECTION, 'SCENE INITIALIZATION')
+    init_ok = init_ok and create_dictionaries()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
-    link_services()
+    init_ok = init_ok and link_services()
+    init_ok = init_ok and load_overlays()
 
     if init_ok:
-        print ('======= COMPONENT DICTIONARY INITIALISED =======')
+        logger.log(ENDSECTION, 'SCENE INITIALIZED')
         check_dictionaries()
         GameLogic.morse_initialised = True
     else:
-        print ('======= INITIALISATION FAILED!!! =======')
-        print ("Exiting the simulation!")
+        logger.critical('INITIALIZATION FAILED!')
+        logger.info("Exiting now.")
         contr = GameLogic.getCurrentController()
         close_all(contr)
+        quit(contr)
 
 
     # Set the default value of the logic tic rate to 60
     #GameLogic.setLogicTicRate(60.0)
     #GameLogic.setPhysicsTicRate(60.0)
 
-    #Display the mouse in the simulator
-    #Rasterizer.showMouse(1)
+def init_logging():
+    from morse.core.ansistrm import ColorizingStreamHandler
+    from morse.core.logging import MorseFormatter
+    # create logger
+    logger = logging.getLogger('morse')
+    logger.setLevel(logging.INFO)
 
+    # create console handler and set level to debug
+    ch = ColorizingStreamHandler()
+    ch.setLevel(logging.DEBUG)
 
-def init_services():
-    """ Method to listen to events during the simulation
+    # create formatter
+    formatter = MorseFormatter('%(message)s')
 
-    Does nothing for the moment.
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+def init_supervision_services():
+    """ This method first loads the socket service manager, map the virtual
+    'supervision' component to it, and register all supervision services
+    declared in morse.core.supervision_services;
     """
     GameLogic.morse_services = MorseServices()
 
     try:
-        GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager")
-        GameLogic.morse_services.add_request_manager("morse.middleware.yarp_request_manager.YarpRequestManager")
-
+        if not GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
+            return False
+        
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
 
@@ -438,11 +535,14 @@ def init_services():
         # callbacks.
         import morse.core.supervision_services
 
-        print("======= SERVICE MANAGERS INITIALIZED ========")
+        logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     except MorseServiceError as e:
         #...no request manager :-(
-        print("WARNING: " + str(e))
-        print("======= SERVICE MANAGERS INITIALIZATION FAILED ========")
+        logger.critical(str(e))
+        logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
+        return False
+    
+    return True
 
 
 def simulation_main(contr):
@@ -456,7 +556,7 @@ def simulation_main(contr):
     except AttributeError as detail:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.
-        print("""
+        logger.critical("""
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ERROR: the initialisation of the simulation
         was not correctly done.
@@ -464,17 +564,15 @@ def simulation_main(contr):
         them on the morse-dev@laas.fr mailing list.
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         """)
-        quitActuator = contr.actuators['Quit_sim']
-        contr.activate(quitActuator)
-        sys.exit(-1)
+        quit(contr)
 
     if hasattr(GameLogic, "morse_services"):
         # let the service managers process their inputs/outputs
         GameLogic.morse_services.process()
-
-    # Register the locations of all the robots handled by this node
-    #if hasattr(GameLogic, "multi_node"):
-    GameLogic.node_instance.synchronise_world(GameLogic)
+    
+    if MULTINODE_SUPPORT:
+        # Register the locations of all the robots handled by this node
+        GameLogic.node_instance.synchronise_world(GameLogic)
 
 
 def switch_camera(contr):
@@ -487,36 +585,40 @@ def switch_camera(contr):
         index = GameLogic.current_camera_index
         next_camera = scene.cameras[index]
         scene.active_camera = next_camera
-        print ("Showing view from camera: '%s'" % next_camera.name)
+        logger.info("Showing view from camera: '%s'" % next_camera.name)
         # Update the index for the next call
         index = (index + 1) % len(scene.cameras)
         GameLogic.current_camera_index = index
 
 
 def close_all(contr):
-    print ('######### TERMINATING INSTANCES... ########')
+    logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
-    for obj, component_instance in GameLogic.componentDict.items():
-        del obj
-
-    # Force the deletion of the robot objects
-    for obj, robot_instance in GameLogic.robotDict.items():
-        del obj
-
-    print ('######### CLOSING REQUEST MANAGERS... ########')
-    del GameLogic.morse_services
-
-    print ('######### CLOSING MIDDLEWARES... ########')
-    # Force the deletion of the middleware objects
-    for obj, mw_instance in GameLogic.mwDict.items():
-        if mw_instance:
-            mw_instance.cleanup()
-            #import gc
-            #print ("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+    if hasattr(GameLogic, 'componentDict'):
+        for obj, component_instance in GameLogic.componentDict.items():
             del obj
 
-    print ('######### CLOSING MULTINODE... ########')
-    GameLogic.node_instance.finish_node()
+    # Force the deletion of the robot objects
+    if hasattr(GameLogic, 'robotDict'):
+        for obj, robot_instance in GameLogic.robotDict.items():
+            del obj
+
+    logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
+    del GameLogic.morse_services
+
+    logger.log(ENDSECTION, 'CLOSING MIDDLEWARES...')
+    # Force the deletion of the middleware objects
+    if hasattr(GameLogic, 'mwDict'):
+        for obj, mw_instance in GameLogic.mwDict.items():
+            if mw_instance:
+                mw_instance.cleanup()
+                import gc # Garbage Collector
+                logger.debug("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+                del obj
+
+    if MULTINODE_SUPPORT:
+        logger.log(ENDSECTION, 'CLOSING MULTINODE...')
+        GameLogic.node_instance.finish_node()
 
 
 def finish(contr):
@@ -527,12 +629,7 @@ def finish(contr):
     #the code get executed two time, when pressed, and when released)
     if not sensor.positive and sensor.triggered:
         close_all(contr)
-
-        quitActuator = contr.actuators['Quit_sim']
-        contr.activate(quitActuator)
-
-        print ('######### EXITING SIMULATION ########')
-
+        quit(contr)
 
 def restart(contr):
     """Close the open ports."""
@@ -542,10 +639,15 @@ def restart(contr):
     #  the code get executed two times, when pressed, and when released)
     if not sensor.positive and sensor.triggered:
 
-        print ("### Replacing everything ###")
+        logger.warning("Replacing everything at initial position")
         reset_objects(contr)
         return
 
+def quit(contr):
+    logger.log(ENDSECTION, 'EXITING SIMULATION')
+
+    quitActuator = contr.actuators['Quit_sim']
+    contr.activate(quitActuator)
 
 def reset_objects(contr):
     """ Place all objects in the initial position
@@ -561,7 +663,7 @@ def reset_objects(contr):
         b_obj.applyForce([0.0, 0.0, 0.0], True)
         b_obj.applyTorque([0.0, 0.0, 0.0], True)
 
-        #print ("%s goes to %s" % (b_obj, state[0]))
+        logger.debug("%s goes to %s" % (b_obj, state[0]))
         b_obj.worldPosition = state[0]
         b_obj.worldOrientation = state[1]
         # Reset physics simulation

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.middleware
 
@@ -31,7 +32,7 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
             # Get the reference to the function
             function = getattr(self, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
             return
 
         # Data write functions
@@ -50,7 +51,7 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         for line in data:
             FILE.write(line.encode())
         self._file_list[component_name] = FILE
-        print ("File: '%s' opened for writing" % file_name)
+        logger.info("File: '%s' opened for writing" % file_name)
 
 
     def write_data(self, component_instance):

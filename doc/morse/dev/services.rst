@@ -72,6 +72,44 @@ object that instanciates a ``HumanClass``.
   The value of the id (here ``id1``) has no importance at all: it is
   defined and used only by the client to track requests and responses.
 
+Returning values
+++++++++++++++++
+
+A service can return any valid Python object (``None``, a string, a
+dictionary, a complex object...). The serialization is left to the
+middleware.
+
+If the service call fails, you are expected to raise a
+:class:`morse.core.exceptions.MorseRPCInvokationError` exception
+(or any custom exception inheriting from it) with a useful error message:
+
+.. code-block:: python
+
+    import morse.core.robot
+    from morse.core.exceptions import MorseRPCInvokationError
+    from morse.core.services import service
+
+    class HumanClass(morse.core.robot.MorseRobotClass):
+
+        def __init__(self, obj, parent=None):
+            [...]
+ 
+        @service
+        def move(self, speed, rotation):
+            
+            if speed < 0:
+                raise MorseRPCInvokationError("Our human can not walk backward!")
+
+            human = self.blender_obj
+            
+            human.applyMovement( [speed,0,0], True )
+            human.applyRotation( [0,0,rotation], True )
+
+        [...]
+
+*MORSE* will answer the request with a
+:data:`morse.core.status.FAILED` status.
+
 Free functions
 ++++++++++++++
 
@@ -157,15 +195,49 @@ object.
 .. note::
   As you may have noticed, at a given time, only one asynchronous
   request can be handled by a component.  If a second asynchronous
-  request is received, it returns immediately
-  with the status 'FAILED'.
+  request is received, the behaviour may vary, as explained below.
 
 .. note::
   Asynchronous services can normally only exist inside components (i.e.,
   they must be declared within a class inheriting from
-  :py:class:`morse.core.object.MorseObjectClass`).
+  :py:class:`morse.core.abstractobject.MorseAbstractObject`).
   The section `Manually registering services`_ explains how to overcome
   this constraint.
+
+Interruption policy for asynchronous services
++++++++++++++++++++++++++++++++++++++++++++++
+
+As of ``morse-0.4``, only one asynchronous service may run at a given time.
+
+You can define the behaviour of the simulator when a second request is received
+either at the middleware level (*global policy*) or at the individual service
+level (*local policy*).
+
+To set a local policy, simply decorate your services with the
+``@interruptible`` and ``@noninterruptible`` decorators
+(:meth:`morse.core.services.interruptible` and
+:meth:`morse.core.services.noninterruptible`).
+
+An *interruptible* service is preempted (ends with status
+:data:`morse.core.status.PREEMPTED`) when a new asynchronous service is
+started. A *non-interruptible* service triggers a failure when someone attempts
+to start a new service.
+
+
+To set a global policy, you need to catch a
+:class:`morse.core.exceptions.MorseServiceAlreadyRunningException` exception
+when invoking the :meth:`morse.core.request_manager.on_incoming_request`
+method.
+
+This exception has a special member ``service`` that points to the original
+service function:
+
+.. code-block:: python
+
+    try:
+        is_synchronous, value = self.on_incoming_request(component, service, params)
+    except MorseServiceAlreadyRunningError as e:
+        logger.warning(e.service.__name__ + " is already running!")
 
 The internals
 -------------

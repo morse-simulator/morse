@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('geometry_msgs')
 import rospy
 import std_msgs
@@ -25,7 +26,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Twist)) 
     
-    print('######## ROS POSE PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS POSE PUBLISHER INITIALIZED ########')
 
 def post_pose(self, component_instance):
     """ Publish the data of the Odometry-sensor as a ROS-Pose message
@@ -37,7 +38,7 @@ def post_pose(self, component_instance):
     pose.pose.position.y = component_instance.local_data['dy']
     pose.pose.position.z = component_instance.local_data['dz']
     euler = mathutils.Euler((component_instance.local_data['droll'], component_instance.local_data['dpitch'], component_instance.local_data['dyaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     pose.pose.orientation.w = quaternion.w
     pose.pose.orientation.x = quaternion.x
     pose.pose.orientation.y = quaternion.y

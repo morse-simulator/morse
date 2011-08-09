@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
 
@@ -14,8 +15,7 @@ class MorseRobotClass(morse.core.object.MorseObjectClass):
         """ Constructor method. """
         # Call the constructor of the parent class
         super(MorseRobotClass, self).__init__(obj, parent)
-        #super(self.__class__, self).__init__(obj, parent)
-
+        
         # Add the variable move_status to the object
         self.move_status = "Stop"
 

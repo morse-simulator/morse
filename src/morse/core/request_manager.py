@@ -1,10 +1,14 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
 import os
 import sys
 import uuid
+import GameLogic
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
-from morse.core.exceptions import MorseServiceError, MorseRPCInvokationError
+from morse.core.exceptions import *
+from morse.core import status
 
 class RequestManager(object):
     """ Basic Class for all request dispatchers, i.e., classes that
@@ -48,7 +52,7 @@ class RequestManager(object):
         """
 
         # This map holds the list of all registered services
-        # It associates the service name to a tuple
+        # It associates a tuple (component,service) to a tuple
         # (rpc_callback, is_async)
         self._services = {}
 
@@ -59,6 +63,9 @@ class RequestManager(object):
         # completed service calls.
         # It is updated on each call to :py:meth:`_update_pending_calls`
         self._completed_requests = {}
+
+        # Holds a mapping request_id -> (component, service)
+        self._pending_requests = {}
 
 
         if not self.initialization():
@@ -85,9 +92,9 @@ class RequestManager(object):
     def __del__(self):
         """ Destructor method. """
         if not self.finalization():
-            print("WARNING: finalization of the service manager did not complete successfully!")
+            logger.warning("finalization of the service manager did not complete successfully!")
 
-        print ("%s: service manager closed." % self)
+        logger.info("%s: service manager closed." % self)
 
 
     def __str__(self):
@@ -159,20 +166,33 @@ class RequestManager(object):
 
             name = component_name + "#" + service_name
 
-            self._services[name] = (callback, async)
+            self._services[(component_name, service_name)] = (callback, async)
 
             if self.post_registration(component_name, name, async):
-                print(str(self) + ": New " + \
-                    ("asynchronous" if async else "synchronous") + " service " + \
-                    name + " for " + component_name + " successfully registered")
+                logger.info(str(self) + ": " + \
+                    ("Asynchronous" if async else "Synchronous") + " service " + \
+                    name + " successfully registered")
             else:
-                print(str(self) + ": ERROR while registering a new service: " + \
+                logger.error(str(self) + ": Error while registering a new service: " + \
                         "could not complete the post-registration step.")
 
         else:
-            print (str(self) + ": ERROR while registering a new service: " + str(callback) + \
+            logger.error(str(self) + ": Error while registering a new service: " + str(callback) + \
                     " is not a callable object.")
-
+    
+    def services(self):
+        """ Returns the list of all components and services registered with this
+        request manager.
+        
+        :return: a dictionary of {components:[services...]} listing all services
+                 registered with this request manager.
+        """
+        services = {}
+        for component, service in self._services.keys():
+            services.setdefault(component, []).append(service)
+        
+        return services
+        
     def on_incoming_request(self, component, service, params):
         """ This method handles incoming requests: it figures out who
         registered the service, checks if the service returns immediately
@@ -193,41 +213,89 @@ class RequestManager(object):
 
         """
 
-        print("Incoming request " + service + " for " + component + "!")
+        logger.info("Incoming request " + service + " for " + component + "!")
 
         request_id = uuid.uuid4() #Unique ID for our request
         
         try:
-            method, is_async = self._services[component + "#" + service]
+            method, is_async = self._services[(component, service)]
         except KeyError:
-            raise MorseRPCInvokationError("The request " + service + " has not been registered in " + str(self))
+            raise MorseMethodNotFoundError("The request " + service + " has not been registered in " + str(self))
 
         if is_async:
             # Creates a result setter functor: this functor is used as
             # callback for the asynchronous service.
             self._completed_requests[request_id] = None
             result_setter = partial(self._completed_requests.__setitem__, request_id)
+
+            # Store the component and service associated to this service
+            # (for instance, for later interruption)
+            self._pending_requests[request_id] = (component, service)
+
             try:
                 # Invoke the method with unpacked parameters
                 # This method may throw MorseRPCInvokationError if the
                 # service initialization fails.
                 method(result_setter, *params) if params else method(result_setter)
+            except AttributeError as e:
+                raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
             except TypeError as e:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
+                # Check if the type error comes from a wrong # of args.
+                # We perform this check only after an exception is
+                # thrown to avoid loading the inspect module by default.
+                # TODO: Does it make sense?
+                import inspect
+                if len(params) != (len(inspect.getargspec(method)[0]) - 2): # -2 because of self and callback
+                    raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
+                else:
+                    raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
-            print("Asynchronous request -> successfully started.")
+            logger.debug("Asynchronous request " + str(request_id) + " successfully started.")
             return (False, request_id)
 
         else: #Synchronous service.
             #Invoke the method
-            print("Sychronous service -> invoking it now.")
+            logger.info("Synchronous service -> invoking it now.")
             try:
                 values = method(*params) if params else method() #Invoke the method with unpacked parameters
+            except AttributeError as e:
+                raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
             except TypeError as e:
-                raise MorseRPCInvokationError(str(self) + ": ERROR: wrong parameters for service " + service + ". " + str(e))
+                # Check if the type error comes from a wrong # of args.
+                # We perform this check only after an exception is
+                # thrown to avoid loading the inspect module by default.
+                # TODO: Does it make sense?
+                import inspect
+                if len(params) != (len(inspect.getargspec(method)[0]) - 1): # -1 because of 'self'
+                    raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
+                else:
+                    raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
-            print("Done. Result: " + str(values))
+            # If we are here, no exception has been raised by the
+            # service, which mean the service call is successful. Good.
+            values = (status.SUCCESS, values)
+            logger.info("Done. Result: " + str(values))
             return (True, values)
+
+    def abort_request(self, request_id):
+        """ This method will interrupt a running asynchronous service,
+        uniquely described by its request_id
+        """
+        component_name, service_name = self._pending_requests[request_id]
+
+        for component in GameLogic.componentDict.values():
+            if component.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(component))
+                component.interrupt()
+                return
+
+        # if not found, search in the overlay dictionnary
+        for overlay in GameLogic.overlayDict.values():
+            if overlay.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(overlay))
+                overlay.interrupt()
+                return
+
 
     def _update_pending_calls(self):
         """This method is called at each simulation steps and check if pending requests are
@@ -238,7 +306,8 @@ class RequestManager(object):
         if self._completed_requests:
             for request, result in list(self._completed_requests.items()):
                 if result:
-                    print(str(self) + ": Request " + str(request) + " is now completed.")
+                    logger.debug(str(self) + ": Request " + str(request) + " is now completed.")
+                    del self._pending_requests[request]
                     del self._completed_requests[request]
                     self.on_service_completion(request, result)
 

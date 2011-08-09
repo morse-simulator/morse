@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import pickle
 import morse.core.middleware
@@ -35,7 +36,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             # Get the reference to the function
             function = getattr(self, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
             return
 
         #self.open_TCP_server(parent_name)
@@ -71,7 +72,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             try:
                 new_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             except socket.error as detail:
-                print ("Socket ERROR: Unable to create socket: '{0}'".format(detail))
+                logger.error("Unable to create socket: '{0}'".format(detail))
                 return
 
             # Get the port number to use from the list
@@ -91,7 +92,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             self._socket_ports.append(socket_port)
             #self._socket_clients[robot_name] = host
 
-            print ("Socket MW: Adding UDP socket to robot {0} on port {1}".format(robot_name, socket_port))
+            logger.info("Socket MW: Adding UDP socket to robot {0} on port {1}".format(robot_name, socket_port))
 
         else:
             pass
@@ -105,7 +106,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             try:
                 new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             except socket.error as detail:
-                print ("Socket ERROR: Unable to create socket: '{0}'".format(detail))
+                logger.error("Unable to create socket: '{0}'".format(detail))
                 return
 
             # Get the port number to use from the list
@@ -125,7 +126,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             self._socket_ports.append(socket_port)
             #self._socket_clients[robot_name] = host
 
-            print ("Socket MW: Adding TCP socket to robot {0} on port {1}".format(robot_name, socket_port))
+            logger.info("Socket MW: Adding TCP socket to robot {0} on port {1}".format(robot_name, socket_port))
 
         else:
             pass
@@ -137,7 +138,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
         """ Closes the ports and release the network."""
         for ors_socket in self._socket_dict.values():
             ors_socket.close()
-        print ('Socket Mid: sockets have been closed.')
+        logger.info('Socket Mid: sockets have been closed.')
     
 
     def read_message(self, component_instance):
@@ -152,12 +153,12 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
         try:
             message_data, client_addr = in_socket.recvfrom(self._message_size)
         except socket.error as detail:
-            #print ("Socket ERROR: %s" % detail)
+            #logger.error("%s" % detail)
             return False
 
         # Store the socket returned so it can be used for writing
         self._socket_clients[component_instance.robot_parent] = client_addr
-        print ("Connection received from client '{0}'".format(client_addr))
+        logger.info("Connection received from client '{0}'".format(client_addr))
         pickled_data = pickle.loads(message_data)
 
         # Extract the values from the socket data
@@ -184,7 +185,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
-        #print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
+        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
         out_socket.sendto(message, client_addr)
 
 
@@ -200,11 +201,11 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         # Check for connections
         if not self._connected:
-            print ("Waiting for a connection")
+            logger.info("Waiting for a connection")
             client_socket, address = in_socket.accept()
             if client_socket:
                 self._socket_clients[component_instance.robot_parent] = client_socket
-                print ("Client '{0}' connected to port {1}".format(address, in_socket))
+                logger.info("Client '{0}' connected to port {1}".format(address, in_socket))
                 self._connected = True
 
         # If the connection is already established
@@ -212,7 +213,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             try:
                 message_data = in_socket.recv(self._message_size)
             except socket.error as detail:
-                #print ("Socket ERROR: %s" % detail)
+                #logger.error("%s" % detail)
                 return False
 
             # Extract the values from the socket data
@@ -240,7 +241,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
-        #print ("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
+        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
         out_socket.send(message)
 
 
@@ -250,16 +251,16 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             out_socket = self._socket_dict[component_instance.blender_obj.name]
             
             (conn, addr) = out_socket.accept()
-            print ('Socket Mid: Connected by', addr)
+            logger.info('Socket Mid: Connected by', addr)
             out_socket.send(message)
 
         except KeyError as detail:
-            print ("Socket ERROR: Specified port does not exist: ", detail)
+            logger.error("Specified port does not exist: ", detail)
     ### ^^^ NOT USED ^^^ ###
 
 
     def print_open_sockets(self):
         """ Display a list of all currently opened sockets."""
-        print ("Socket Mid: Currently opened sockets:")
+        logger.info("Socket Mid: Currently opened sockets:")
         for name, socket in self._socket_dict.iteritems():
-            print (" - Port name '{0}' = '{1}'".format(name, socket))
+            logger.info(" - Port name '{0}' = '{1}'".format(name, socket))

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('geometry_msgs')
 import rospy
 import std_msgs
@@ -22,7 +23,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     if mw_data[1] == "post_twist":  
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Twist))
 
-    print('######## ACCELEROMETER-SENSOR INITIALIZED ########')
+    logger.info('######## ACCELEROMETER-SENSOR INITIALIZED ########')
 
 def post_twist(self, component_instance):
     """ Publish the data of the Odometry-sensor as a ROS-Pose message

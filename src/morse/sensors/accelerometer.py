@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.sensor
@@ -11,7 +12,7 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## ACCELEROMETER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -38,7 +39,7 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.local_data['velocity'] = [0.0, 0.0, 0.0]
         self.local_data['acceleration'] = [0.0, 0.0, 0.0]
 
-        print ('######## ACCELEROMETER INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -58,7 +59,7 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         dy = self.p[1] - self.ppy
         dz = self.p[2] - self.ppz
         self.local_data['distance'] = math.sqrt(dx**2 + dy**2 + dz**2)
-        #print ("DISTANCE: %.4f" % self.local_data['distance'])
+        logger.debug("DISTANCE: %.4f" % self.local_data['distance'])
 
         # Store the position in this instant
         self.ppx = self.p[0]
@@ -69,12 +70,12 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.v[0] = dx * self.ticks
         self.v[1] = dy * self.ticks
         self.v[2] = dz * self.ticks
-        #print ("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2]))
+        logger.debug("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2]))
 
         self.a[0] = (self.v[0] - self.pvx) * self.ticks
         self.a[1] = (self.v[1] - self.pvy) * self.ticks
         self.a[2] = (self.v[2] - self.pvz) * self.ticks
-        #print ("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2]))
+        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2]))
 
         # Update the data for the velocity
         self.pvx = self.v[0]

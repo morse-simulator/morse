@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 from morse.core.services import service
 from morse.core import status
@@ -9,7 +10,7 @@ def list_robots():
 
     Uses the list generated during the initialisation of the scenario
     """
-    return (status.SUCCESS, [obj.name for obj in GameLogic.robotDict.keys()])
+    return [obj.name for obj in GameLogic.robotDict.keys()]
 
 @service(component = "simulation")
 def reset_objects():
@@ -20,4 +21,4 @@ def reset_objects():
     """
     contr = GameLogic.getCurrentController()
     main_reset(contr)
-    return (status.SUCCESS, "'Objects restored to initial position'")
+    return "Objects restored to initial position"

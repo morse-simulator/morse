@@ -5,11 +5,8 @@ from morse.builder.components import MORSE_COMPONENTS_DICT
 MORSE_COMPONENTS: 
 path to the Morse components
 """
-_root = "/usr/local" # default install
-if 'MORSE_ROOT' in os.environ:
-  _root = os.environ['MORSE_ROOT']
-MORSE_COMPONENTS = os.path.join(_root, 
-    "share/data/morse/components")
+
+MORSE_COMPONENTS = os.path.join(os.environ["MORSE_ROOT"], "share", "data", "morse", "components")
 
 """
 middleware-dictionary-convention:
@@ -34,9 +31,22 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_battery': ["ROS", "post_float32", "morse/middleware/ros/battery"],
     'morse_infrared': ["ROS", "post_range", "morse/middleware/ros/infrared"]
   },
+
   'socket_empty': {
     'morse_gyroscope': ['Socket', 'post_message'],
     'morse_vw_control': ['Socket', 'read_message']
+  },
+
+  'yarp_empty': {
+    'morse_camera': ['Yarp', 'post_image_RGBA'],
+    'morse_sick': ['Yarp', 'post_sick_message', 'morse/middleware/yarp/sick'],
+    'morse_proximity': ['Yarp', 'post_dictionary_data', 'morse/middleware/yarp/dictionary'],
+    'morse_gyroscope': ['Yarp', 'post_message'],
+    'morse_odometry': ['Yarp', 'post_message'],
+    'morse_pose': ['Yarp', 'post_message'],
+    'morse_GPS': ['Yarp', 'post_message'],
+
+    'morse_vw_control': ['Yarp', 'read_message']
   }
 }
 

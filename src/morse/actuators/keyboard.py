@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import GameKeys
 import morse.core.actuator
@@ -7,7 +8,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         and rotation of the robot using the keyboard arrows. """
 
     def __init__(self, obj, parent=None):
-        print ('######## CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -18,7 +19,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._type = 'Position'
         self.speed = 0.05
 
-        print ('######## CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -34,7 +35,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         rx, ry, rz = 0.0, 0.0, 0.0
 
         for key, status in pressed_keys:
-            #print ("GOT: {0}, STATUS {1}".format(key, status))
+            logger.debug("GOT: {0}, STATUS {1}".format(key, status))
             if key == GameKeys.UPARROWKEY:
                 vx = self.speed
 

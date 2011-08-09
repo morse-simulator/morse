@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 # Modules necessary to dynamically add methods to Middleware subclasses
 import os
 import sys
@@ -21,7 +22,7 @@ class MorseMiddlewareClass(object):
 
     def __del__(self):
         """ Destructor method. """
-        print ("%s: Middleware finishing" % self.blender_obj.name)
+        logger.info("%s: Middleware finishing" % self.blender_obj.name)
 
 
     @abstractmethod
@@ -52,7 +53,7 @@ class MorseMiddlewareClass(object):
             function = getattr(self, function_name)
             return function
         except AttributeError as detail:
-            #print ("ERROR while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
+            #logger.error("while checking middleware functions: %s\nCheck the 'component_config.py' file for typos or contact the component developer." % detail)
             return None
 
 
@@ -73,7 +74,7 @@ class MorseMiddlewareClass(object):
         try:
             __import__(module_name)
         except ImportError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % (detail))
+            logger.error("%s. Check the 'component_config.py' file for typos" % (detail))
             return
         module = sys.modules[module_name]
 
@@ -81,7 +82,7 @@ class MorseMiddlewareClass(object):
             # Get the reference to the new method
             func = getattr(module, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
+            logger.error("%s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
             return
 
         # Insert the function and get a reference to it
@@ -99,12 +100,12 @@ class MorseMiddlewareClass(object):
             #  what kind of port it should use.
             module.init_extra_module(self, component_instance, bound_function, mw_data)
         except AttributeError as detail:
-            print ("ERROR %s in module '%s'" % (detail, source_file))
+            logger.error("%s in module '%s'" % (detail, source_file))
 
         # Store the name of the function, to cleanup later
         # If function with the same name already included, pass. Otherwise middleware will fail to cleanup
         if function_name in self._extra_methods:
-            print("Extra method already known")	
+            logger.info("Extra method already known")	
         else:
             self._extra_methods.append(function_name)
 

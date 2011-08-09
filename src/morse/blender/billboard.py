@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 def reset_rotation (contr):
     """ Cancell the global rotation of the object
 

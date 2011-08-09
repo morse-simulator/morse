@@ -1,3 +1,5 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
@@ -21,25 +23,26 @@ def post_dictionary_data(self, component_instance):
 
     The argument is a copy of the component instance.
     This method will serialise the dictionary as a series of
-    nested bottles.
-    NOTE: For the moment this method is used only by the semantic camera,
-    and because of that we use the variable name 'visible_objects' of
-    local_data as defined in that sensor.
+    nested bottles. It assumes the dictionary consists of a string key
+    and a single float as value.
     """
     port_name = self._component_ports[component_instance.blender_obj.name]
 
     try:
         yarp_port = self.getPort(port_name)
     except KeyError as detail:
-        print ("ERROR: Specified port does not exist: ", detail)
+        logger.error("Specified port does not exist: ", detail)
         return
 
     bottle = yarp_port.prepare()
     bottle.clear()
-    # Go through the list of points
-    # The list is the first item in ''local_data''
-    visible_objects = component_instance.local_data['visible_objects']
-    for key, value in visible_objects.items():
+
+    # Get the dictionary from ''local_data''
+    # This function assumes that the dictionary we want to export is
+    #  the first element inserted into local_data
+    data_dictionary = next(iter( component_instance.local_data.values() ))
+
+    for key, value in data_dictionary.items():
         bottle2 = bottle.addList()
         bottle2.addString(key)
         bottle2.addDouble(value)

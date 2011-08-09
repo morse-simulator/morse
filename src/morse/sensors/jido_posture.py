@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 import mathutils
@@ -12,7 +13,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## Jido POSTURE EXPORTER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -36,7 +37,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
         # joints of PTU-unit
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        print ('######## Jido POSTURE EXPORTER INITIALIZED ########')
+        logger.info('Component initialized')
         
         ##################### PTU joints ##################
 
@@ -56,11 +57,11 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                 self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
         # Check the bases were found, or exit with a message
         try:
-            print ("Using PTU: '%s'" % self._ptu_obj.name)
-            print ("Using pan base: '%s'" % self._pan_base.name)
-            print ("Using tilt base: '%s'" % self._tilt_base.name)
+            logger.info("Using PTU: '%s'" % self._ptu_obj.name)
+            logger.info("Using pan base: '%s'" % self._pan_base.name)
+            logger.info("Using tilt base: '%s'" % self._tilt_base.name)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Module will not work!")
+            logger.error("Platine is missing the pan and tilt bases. Module will not work!")
 
         ###################### KUKA joints ##################
 
@@ -74,9 +75,9 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                 self.kuka_obj = child
 
         try:
-            print ("Using KUKA arm: '%s'" % self.kuka_obj.name)
+            logger.info("Using KUKA arm: '%s'" % self.kuka_obj.name)
         except AttributeError as detail:
-            print ("ERROR: Kuka arm is missing. Module will not work!")
+            logger.error("Kuka arm is missing. Module will not work!")
        
         # The axis along which the different segments of the kuka armrotate
         # Considering the rotation of the arm as installed in Jido
@@ -101,12 +102,12 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
             self._pan_position_3d.update(self._pan_base)
             self._tilt_position_3d.update(self._tilt_base)
         except AttributeError as detail:
-            print ("ERROR: Platine is missing the pan and tilt bases. Platine does not work!")
+            logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
             return
 
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
-        #print ("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
+        logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         ############################# KUKA joints ##############################
 
@@ -119,7 +120,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                    
             # Extract the angles
             rot_matrix = segment.localOrientation
-            segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
             segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation
@@ -129,21 +130,21 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                 self._angles.append(-segment_euler[1])
             elif self._dofs[i] == 'z':
                 self._angles.append(segment_euler[2])
-           
+
             try:
                 segment = segment.children[0]
             # Exit when there are no more children
             except IndexError as detail:
-                break               
-        ############################# Hand data over to middleware ##############################                
+                break
+        ############################# Hand data over to middleware ##############################
 
         self.local_data['x'] = float(x)
         self.local_data['y'] = float(y)
-        self.local_data['z'] = float(z)    
+        self.local_data['z'] = float(z)
         self.local_data['yaw'] = float(yaw)
         self.local_data['pitch'] = float(pitch)
         self.local_data['roll'] = float(roll)
-        
+
         # KUKA arm
         self.local_data['seg0'] = self._angles[0]
         self.local_data['seg1'] = self._angles[1]

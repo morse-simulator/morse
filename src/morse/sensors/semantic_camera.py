@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 
 import bpy
@@ -35,7 +36,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## SEMANTIC CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -44,17 +45,17 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         for obj in main_obj.children:
             if hasattr(obj, 'lens'):
                 self.blender_cam = obj
-                print ("Camera object: {0}".format(self.blender_cam))
+                logger.info("Camera object: {0}".format(self.blender_cam))
                 break
         if not self.blender_cam:
-            print("ERROR: no camera object associated to the semantic camera. " +\
+            logger.error("no camera object associated to the semantic camera. " +\
                   "The semantic camera requires a standard Blender camera in its children.")
 
         # TrackedObject is a dictionary containing the list of tracked objects 
         # (->meshes with a class property set up) as keys
         #  and the bounding boxes of these objects as value.
         if not hasattr(GameLogic, 'trackedObjects'):
-            print ('Initialization of tracked objects:')
+            logger.info('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
             GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
 
@@ -68,7 +69,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                print ('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
+                logger.info('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
 
 
         # Prepare the exportable data of this sensor
@@ -79,7 +80,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # Variable to indicate this is a camera
         self.semantic_tag = True
 
-        print ('######## SEMANTIC CAMERA INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -103,7 +104,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 self.local_data['visible_objects'].append(obj)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
-                print ("Semantic: {0}, ({1}) just appeared".format(obj.name, obj['Description']))
+                logger.info("Semantic: {0}, ({1}) just appeared".format(obj.name, obj['Description']))
 
             # Object is not visible and was in the visible_objects list...
             if not visible and obj in visibles:
@@ -111,8 +112,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                #print ("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['Description']))
-        #print(str(self.local_data['visible_objects']))
+                logger.debug("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['Description']))
+        logger.debug(str(self.local_data['visible_objects']))
 
 
     def _check_visible(self, obj):
@@ -122,11 +123,11 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         bb = GameLogic.trackedObjects[obj]
         pos = obj.position
 
-        #print ("\n--- NEW TEST ---")
-        #print ("OBJECT '{0}' AT {1}".format(obj, pos))
-        #print ("CAMERA '{0}' AT {1}".format(self.blender_cam, self.blender_cam.position))
-        #print ("BBOX: >{0}<".format([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]))
-        #print ("BBOX: {0}".format(bb))
+        logger.debug("\n--- NEW TEST ---")
+        logger.debug("OBJECT '{0}' AT {1}".format(obj, pos))
+        logger.debug("CAMERA '{0}' AT {1}".format(self.blender_cam, self.blender_cam.position))
+        logger.debug("BBOX: >{0}<".format([[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]))
+        logger.debug("BBOX: {0}".format(bb))
 
         # Translate the bounding box to the current object position
         #  and check if it is in the frustrum
@@ -136,9 +137,8 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # NOTE: This is a very simple test. Hiding only the 'center'
             #  of an object will make it invisible, even if the rest is still
             #  seen from the camera
-            #closest_obj = self.blender_obj.rayCastTo(obj)
-            #if obj == closest_obj:
+            closest_obj = self.blender_obj.rayCastTo(obj)
+            if obj == closest_obj:
                 return True
-
 
         return False

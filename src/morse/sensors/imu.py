@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.sensor
@@ -11,7 +12,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## IMU '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -47,7 +48,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         self.local_data['velocity'] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.local_data['acceleration'] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-        print ('######## IMU INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -67,7 +68,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         dy = self.p[1] - self.ppy
         dz = self.p[2] - self.ppz
         self.local_data['distance'] = math.sqrt(dx**2 + dy**2 + dz**2)
-        #print ("DISTANCE: %.4f" % self.local_data['distance'])
+        logger.debug("DISTANCE: %.4f" % self.local_data['distance'])
 
         # Compute the difference in angles with the previous loop
         droll = self.position_3d.roll - self.pproll
@@ -89,7 +90,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         self.v[3] = droll * self.ticks
         self.v[4] = dpitch * self.ticks
         self.v[5] = dyaw * self.ticks
-        #print ("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5]))
+        logger.debug("SPEED: (%.4f, %.4f, %.4f, %4f, %4f, %4f)" % (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5]))
 
         self.a[0] = (self.v[0] - self.pvx) * self.ticks
         self.a[1] = (self.v[1] - self.pvy) * self.ticks
@@ -97,7 +98,7 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         self.a[3] = (self.v[3] -self.pvroll) * self.ticks
         self.a[4] = (self.v[4] -self.pvpitch) * self.ticks
         self.a[5] = (self.v[5] -self.pvyaw) * self.ticks
-        #print ("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5]))
+        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f, %4f, %4f, %4f)" % (self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5]))
 
         # Update the data for the velocity
         self.pvx = self.v[0]
@@ -110,3 +111,4 @@ class IMUClass(morse.core.sensor.MorseSensorClass):
         # Store the important data
         self.local_data['velocity'] = self.v
         self.local_data['acceleration'] = self.a
+

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import math
 import GameLogic
@@ -20,7 +21,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_viam_poster(component_instance, poster_name)
     if poster_id != None:
-        print ("Pocolibs created poster '%s' of type viam" % poster_id)
+        logger.info("Pocolibs created poster '%s' of type viam" % poster_id)
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
@@ -55,17 +56,17 @@ def init_viam_poster(component_instance, poster_name):
                                             component_instance.num_cameras, \
                                             baseline, cameras[0], cameras[1])
         if ok == 1:
-            print ("viam poster ID: {0}".format(poster_id))
+            logger.info("viam poster ID: {0}".format(poster_id))
             return poster_id
 
         else:
         #elif ok == 0:
-            print ("ERROR creating poster. This module may not work")
+            logger.error("Creating poster. This module may not work")
             return None
     # What to do if there is no second camera???
     #elif component_instance.num_cameras == 1:
     else:
-        print ("The PTU sensor does not have two cameras attached. It is being disabled!")
+        logger.info("The PTU sensor does not have two cameras attached. It is being disabled!")
         return None
 
 
@@ -76,7 +77,7 @@ def write_viam(self, component_instance):
     try:
         poster_id = self._poster_dict[component_instance.blender_obj.name]
     except AttributeError as detail:
-        print ("Something BAD happened at viam poster: %s" % detail)
+        logger.error("Something BAD happened at viam poster: %s" % detail)
         sys.exit()
     parent = component_instance.robot_parent
 
@@ -108,14 +109,14 @@ def write_viam(self, component_instance):
         try:
             image_data = camera_instance.local_data['image']
         except KeyError as detail:
-            print ("WARNING: Camera image not found to read by VIAM poster.\n \
+            logger.warning("Camera image not found to read by VIAM poster.\n \
                     \tThe 'Class' property in the Camera component could be \
                     wrongly defined")
 
         # Don't create a poster if the camera is disabled
         if image_data == None or not camera_instance.capturing:
-            #print ("Camera '%s' not capturing. Exiting viam poster" % 
-            #       camera_instance.blender_obj.name)
+            logger.debug("Camera '%s' not capturing. Exiting viam poster" % \
+                    camera_instance.blender_obj.name)
             return
 
         # Fill in the structure with the image information

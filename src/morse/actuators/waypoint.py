@@ -15,6 +15,7 @@
 ######################################################
 
 
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import GameLogic
 import mathutils
@@ -33,7 +34,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     def __init__(self, obj, parent=None):
 
-        print ('######## CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -60,11 +61,11 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Read the speed from the Blender object properties
         try:
             self.local_data['speed'] = self.blender_obj['Speed']
-            print ("Using specified speed of %d" % self.local_data['speed'])
+            logger.info("Using specified speed of %d" % self.local_data['speed'])
         # Otherwise use a default value
         except KeyError as detail:
             self.local_data['speed'] = 1.0
-            print ("Using default speed of %d" % self.local_data['speed'])
+            logger.info("Using default speed of %d" % self.local_data['speed'])
 
         # Identify an object as the target of the motion
         try:
@@ -72,7 +73,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             if wp_name != '':
                 scene = GameLogic.getCurrentScene()
                 self._wp_object = scene.objects[wp_name]
-                print ("Using object '%s' to indicate motion target" % wp_name)
+                logger.info("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:
             self._wp_object = None
 
@@ -84,13 +85,13 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
                 self._radar_l = child
 
         try:
-            print ("Radar R is ", self._radar_r)
-            print ("Radar L is ", self._radar_l)
+            logger.info("Radar R is ", self._radar_r)
+            logger.info("Radar L is ", self._radar_l)
             self._collisions = True
         except AttributeError as detail:
-            print ("WARNING: No radars found attached to the waypoint actuator.\n\tThere will be no obstacle avoidance")
+            logger.warning("No radars found attached to the waypoint actuator.\n\tThere will be no obstacle avoidance")
 
-        print ('######## CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -115,13 +116,13 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['z'] = self.blender_obj.worldPosition[2]
         self.local_data['tolerance'] = 0.5
 
-        return (status.SUCCESS, self.robot_parent.move_status)
+        return self.robot_parent.move_status
 
 
     @service
     def get_status(self):
         """ Return the current status (Transit or Stop) """
-        return (status.SUCCESS, self.robot_parent.move_status)
+        return self.robot_parent.move_status
 
 
     def default_action(self):
@@ -133,7 +134,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         self._destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
-        #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+        logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
         # Place the target marker where the robot should go
         if self._wp_object:
             self._wp_object.position = self._destination
@@ -147,9 +148,9 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Convert to the Blender Vector object
         global_vector = mathutils.Vector(global_vector)
 
-        #print ("GOT DISTANCE: %.4f" % (distance))
-        #print ("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
-        #print ("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
+        logger.debug("GOT DISTANCE: %.4f" % (distance))
+        logger.debug("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
+        logger.debug("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
         # If the target has been reached, change the status
         if distance-self.local_data['tolerance'] <= 0:
@@ -159,8 +160,8 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             #Do we have a runing request? if yes, notify the completion
             self.completed(status.SUCCESS, parent.move_status)
 
-            #print ("TARGET REACHED")
-            #print ("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
+            logger.debug("TARGET REACHED")
+            logger.debug("Robot {0} move status: '{1}'".format(parent, robot_state_dict['moveStatus']))
 
         else:
             parent.move_status = "Transit"
@@ -173,7 +174,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             # Correct the direction of the turn according to the angles
             dot = global_vector.dot(self.world_Y_vector)
-            #print ("DOT = {0}".format(dot))
+            logger.debug("DOT = {0}".format(dot))
             if dot < 0:
                 target_angle = target_angle * -1
 
@@ -190,7 +191,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
                 angle_diff = (2 * math.pi) - angle_diff
                 rotation_direction = rotation_direction * -1
 
-            #print ("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
+            logger.debug("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
             # Tick rate is the real measure of time in Blender.
             # By default it is set to 60, regardles of the FPS

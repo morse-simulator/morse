@@ -13,6 +13,34 @@ You can as well fetch the latest version of the code with GIT: ::
 
     $ git clone http://trac.laas.fr/git/robots/morse.git
 
+Coding guidelines
+-----------------
+
+Coding conventions in *MORSE* follows Python's :pep:`008`.
+
+In particular, we use the standard Python logging framework. So please,
+no ``print()``!
+
+To use logging in your module:
+
+.. code-block:: python
+
+    import logging; logger = logging.getLogger("morse." + __name__)
+
+    #...
+    #...
+    # logger.info("...")
+    # logger.debug("...")
+    # ...etc
+
+*MORSE* is set to use by default the ``INFO`` logging level.
+You can easily set the logging level to ``DEBUG`` in a specific module
+by adding to it:
+
+.. code-block:: python
+
+    logger.setLevel(logging.DEBUG)
+
 Overview 
 --------
 An overview of code organization in MORSE

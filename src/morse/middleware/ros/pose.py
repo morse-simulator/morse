@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('rosgraph_msgs'); roslib.load_manifest('geometry_msgs')#; roslib.load_manifest('tf')
 import rospy
 import std_msgs
@@ -35,7 +36,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, PoseStamped)) 
 
-    print ('######## ROS POSE PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS POSE PUBLISHER INITIALIZED ########')
 
 def post_odometry_transform(self, component_instance):
     """ Publish the data of the Pose-sensor as a ROS-Odometry message.
@@ -54,7 +55,7 @@ def post_odometry_transform(self, component_instance):
     yaw = component_instance.local_data['yaw']
 
     euler = mathutils.Euler((roll, pitch, yaw))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
 
     #odom_trans = TransformStamped()
     #odom_trans.header.stamp = current_time
@@ -112,7 +113,7 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.position.y = component_instance.local_data['y']
     odometry.pose.pose.position.z = component_instance.local_data['z']
     euler = mathutils.Euler((component_instance.local_data['roll'], component_instance.local_data['pitch'], component_instance.local_data['yaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     odometry.pose.pose.orientation.w = quaternion.w
     odometry.pose.pose.orientation.x = quaternion.x
     odometry.pose.pose.orientation.y = quaternion.y
@@ -138,7 +139,7 @@ def post_poseStamped(self, component_instance):
     poseStamped.pose.position.y = component_instance.local_data['y']
     poseStamped.pose.position.z = component_instance.local_data['z']
     euler = mathutils.Euler((component_instance.local_data['roll'], component_instance.local_data['pitch'], component_instance.local_data['yaw']))
-    quaternion = euler.to_quat()
+    quaternion = euler.to_quaternion()
     poseStamped.pose.orientation.w = quaternion.w
     poseStamped.pose.orientation.x = quaternion.x
     poseStamped.pose.orientation.y = quaternion.y

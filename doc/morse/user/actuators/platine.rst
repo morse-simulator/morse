@@ -39,7 +39,15 @@ Configurable parameters
 -----------------------
 
 -  **Speed**: (float) rotation speed for the movements of the pan-tilt unit
--  **Manual**: (boolean) select whether to use control from an external program or direct control using the **Logic Bricks**
+-  **Manual**: (boolean) select whether to use control from an external
+  program or direct control using the **Logic Bricks**
+
+Services
+--------
+
+- **set_pan_tilt**: (asynchronous service) This method take in parameters the
+  wished pan and tilt (in radians) and finish when the actuator is effectively
+  at this position.
 
 Applicable modifiers 
 --------------------

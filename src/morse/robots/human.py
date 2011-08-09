@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.robot
 from morse.core.services import service
@@ -12,15 +13,14 @@ class HumanClass(morse.core.robot.MorseRobotClass):
             Optionally it gets the name of the object's parent,
             but that information is not currently used for a robot. """
         # Call the constructor of the parent class
-        print ("######## ROBOT '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         super(self.__class__,self).__init__(obj, parent)
 
-        print ('######## ROBOT INITIALIZED ########')
+        logger.info('Component initialized')
 
     @service
     def move(self, speed, rotation):
-        """ move the human. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Move the human.
         """
         
         human = self.blender_obj
@@ -38,8 +38,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         
     @service
     def move_head(self, pan, tilt):
-        """ move the human head. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Move the human head.
         """
         
         human = self.blender_obj
@@ -54,8 +53,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         
     @service
     def grasp_(self, seq):
-        """ grasp object. a request to use by a socket.
-        Done for wiimote remote control.
+        """ Grasp object.
         """
         human = self.blender_obj
         if human['Manipulate']:

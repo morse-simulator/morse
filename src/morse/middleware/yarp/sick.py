@@ -1,3 +1,5 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
@@ -27,7 +29,7 @@ def post_sick_message(self, component_instance):
     try:
         yarp_port = self.getPort(port_name)
     except KeyError as detail:
-        print ("ERROR: Specified port does not exist: ", detail)
+        logger.error("Specified port does not exist: ", detail)
         return
 
     bottle = yarp_port.prepare()

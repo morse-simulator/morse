@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import VideoTexture
 import morse.core.sensor
@@ -16,7 +17,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
         super(CameraClass, self).__init__(obj, parent)
 
@@ -33,19 +34,17 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             # Provide default values for the image properties
             # The performance is much better with power of two sizes:
             #  4, 16, 32, ... 256, 512
-            print ("WARNING: Missing camera parameters. Using defaults")
+            logger.warning("Missing camera parameters. Using defaults")
             self.image_width = obj['cam_width'] = 256
             self.image_height = obj['cam_height'] = 256
             self.image_focal = obj['cam_focal'] = 25
 
         self.image_size = 4 * self.image_width * self.image_height
 
-        self.name = self.blender_obj.name
-
         # Prepare the camera object in Blender
         self._setup_video_texture()
 
-        print ('######## CAMERA INITIALIZED ########')
+        logger.info('Component initialized')
 
 
 
@@ -54,12 +53,12 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
         # Exit if the cameras could not be prepared
         if not hasattr(GameLogic, 'cameras'):
-            print ("WARNING: GameLogic does not have the 'cameras' variable, \
+            logger.warning("GameLogic does not have the 'cameras' variable, \
                     something must have failed when configuring the cameras")
             return
 
         # Call the VideoTexture method to refresh the image
-        GameLogic.cameras[self.name].refresh(True)
+        GameLogic.cameras[self.name()].refresh(True)
 
 
     def _setup_video_texture(self):
@@ -69,9 +68,9 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         screen_name = 'CameraCube' #TODO: beuuh! Hardcoded values !!
         camera_name = 'CameraRobot'
         material_name = 'MAScreenMat'
-        name_len = len(self.name)
-        if name_len > 4 and self.name.endswith('.00', name_len-4, name_len-1):
-            extension = self.name[name_len-4:]
+        name_len = len(self.name())
+        if name_len > 4 and self.name().endswith('.00', name_len-4, name_len-1):
+            extension = self.name()[name_len-4:]
             screen_name = screen_name + extension
             camera_name = camera_name + extension
             #material_name = material_name + extension
@@ -86,26 +85,26 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             GameLogic.cameras = {}
 
         mat_id = VideoTexture.materialID(screen, material_name)
-        GameLogic.cameras[self.name] = VideoTexture.Texture(screen, mat_id)
-        GameLogic.cameras[self.name].source = \
+        GameLogic.cameras[self.name()] = VideoTexture.Texture(screen, mat_id)
+        GameLogic.cameras[self.name()].source = \
                                     VideoTexture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
 
         # Set the background to be used for the render
-        GameLogic.cameras[self.name].source.background = self.bg_color
+        GameLogic.cameras[self.name()].source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
-        GameLogic.cameras[self.name].source.capsize = \
+        GameLogic.cameras[self.name()].source.capsize = \
                 [self.image_width, self.image_height]
-        print ("Camera {0}: Exporting an image of capsize: {1} pixels". \
-                format(self.name, GameLogic.cameras[self.name].source.capsize))
-        print ("\tFocal length of the camera is: %s" % camera.lens)
+
+        logger.info("Camera {0}: Exporting an image of capsize: {1} pixels". \
+                format(self.name(), GameLogic.cameras[self.name()].source.capsize))
+        logger.info("\tFocal length of the camera is: %s" % camera.lens)
 
         # Reverse the image (boolean game-property)
         # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         if 'flip' in self.blender_obj: # backward compatibility
-            GameLogic.cameras[self.name].source.flip = self.blender_obj['flip']
-
+            GameLogic.cameras[self.name()].source.flip = self.blender_obj['flip']
 

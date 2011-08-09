@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 import std_msgs
@@ -22,7 +23,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, String))
     
-    print ('######## ROS SEMANTIC CAMERA PUBLISHER INITIALIZED ########')
+    logger.info('######## ROS SEMANTIC CAMERA PUBLISHER INITIALIZED ########')
     
 def post_string(self, component_instance):
     """ Publish the data of the semantic camera as a string-message with newlines (for better visualization in console).
@@ -36,7 +37,7 @@ def post_string(self, component_instance):
         #iterate through all objects of the component_instance and create one string
         for obj in component_instance.local_data['visible_objects']:
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quat()) + " ]\n"    
+            message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quaternion()) + " ]\n"    
             string.data = message
         # publish the message on the correct topic    
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
@@ -54,7 +55,7 @@ def post_lisp_code(self, component_instance):
         #iterate through all objects of the component_instance and create one string in lisp-list format
         for obj in component_instance.local_data['visible_objects']:
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quat()[0]) + " " + str(obj.worldOrientation.to_quat()[1]) + " " + str(obj.worldOrientation.to_quat()[2]) + " " + str(obj.worldOrientation.to_quat()[3]) + ")"
+            message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + ")"
         
         string.data = message + ")"
         # publish the message on the correct topic    

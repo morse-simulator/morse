@@ -1,3 +1,20 @@
+MORSE 0.4 - "Multinode" release
+===============================
+
+General changes
+---------------
+
+Architectural changes
+---------------------
+- Added infrastructure for multi-node functionality
+
+Middlewares
+-----------
+- Added support for multiple middleware bindings per component
+- add support for services through  Pocolibs middleware
+- ROS support for the robot's cameras
+
+
 MORSE 0.3 - "Itizpossible" release
 ==================================
 

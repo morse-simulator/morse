@@ -1,3 +1,5 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core.services import service
 import GameLogic
 import morse.core.actuator
 
@@ -10,7 +12,7 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
 
     def __init__(self, obj, parent=None):
-        print ('######## VW CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -21,9 +23,18 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
         #self._type = 'Velocity'
         self._type = 'Position'
 
-        print ('######## CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
+    @service
+    def set_speed(self, v, w):
+        self.local_data['v'] = v
+        self.local_data['w'] = w
+
+    @service
+    def stop(self):
+        self.local_data['v'] = 0.0
+        self.local_data['w'] = 0.0
 
     def default_action(self):
         """ Apply (v, w) to the parent robot. """

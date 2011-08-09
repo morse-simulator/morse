@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 
 class MorseUTMClass(object):
@@ -37,7 +38,7 @@ class MorseUTMClass(object):
             # Get the reference to the function
             function = getattr(self, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
             return
 
         # Choose what to do, depending on the function being used
@@ -56,7 +57,7 @@ class MorseUTMClass(object):
             component_instance.local_data['y'] += self._global_y
             component_instance.local_data['z'] += self._global_z
         except KeyError as detail:
-            print ("WARNING: Unable to use 'blender_to_utm' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'blender_to_utm' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
 
     def utm_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
@@ -65,4 +66,4 @@ class MorseUTMClass(object):
             component_instance.local_data['y'] -= self._global_y
             component_instance.local_data['z'] -= self._global_z
         except KeyError as detail:
-            print ("WARNING: Unable to use 'utm_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'utm_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import datetime
 import GameLogic
@@ -24,7 +25,7 @@ class MorsePocolibsClass(morse.core.middleware.MorseMiddlewareClass):
     def __del__(self):
         """ Close all open posters. """
         for component_name, poster_id in self._poster_dict.items():
-            print ("Killing poster %d for component %s" % (poster_id, component_name))
+            logger.info("Killing poster %d for component %s" % (poster_id, component_name))
             # Call the method to close a poster
             ors_poster.finalize(poster_id)
 

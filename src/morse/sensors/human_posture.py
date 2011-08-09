@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import GameLogic
 import morse.core.sensor
@@ -18,7 +19,7 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
-        print("######## HUMAN POSTURE EXPORTER FOR '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -77,14 +78,13 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
             self.modified_data.append(self.local_data[variable])
         """
 
-        print ('######## HUMAN POSTURE EXPORTER INITIALIZED ########')
+        logger.info('Component initialized')
 
     def _read_pose(self, armature):
 
         for channel in armature.channels:
             if 'X_' not in channel.name:
-                #rotation = channel.joint_rotation
-                #print ("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, rotation[0], rotation[1], rotation[2]))
+                logger.debug("\tChannel '%s': (%.4f, %.4f, %.4f)" % (channel, channel.joint_rotation[0], channel.joint_rotation[1], channel.joint_rotation[2]))
                 if channel.name == 'Chest':
                    self.local_data['dof_12'] = channel.joint_rotation[2] #y
                    self.local_data['dof_13'] = channel.joint_rotation[0] #x
@@ -144,10 +144,10 @@ class HumanPostureClass(morse.core.sensor.MorseSensorClass):
         self.local_data['x'] = float(self.position_3d.x)
         self.local_data['y'] = float(self.position_3d.y)
         self.local_data['z'] = float(self.position_3d.z)
-        self.local_data['yaw'] = float(self.position_3d.yaw) - 1.57 #pi/2
+        self.local_data['yaw'] = float(self.position_3d.yaw) - (math.pi/2) # 1.57 #pi/2
         self.local_data['pitch'] = float(self.position_3d.pitch)
         self.local_data['roll'] = float(self.position_3d.roll)
 
         self._read_pose(self.blender_obj)
 
-        #print ("LOCAL_DATA: ", self.local_data)
+        logger.debug("LOCAL_DATA: ", self.local_data)

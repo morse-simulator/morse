@@ -1,3 +1,6 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core.services import async_service
+from morse.core import status
 import GameLogic
 import mathutils
 import morse.sensors.camera
@@ -16,7 +19,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## VIDEO CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
@@ -36,27 +39,40 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         self.local_data['intrinsic_matrix'] = intrinsic
 
         self.capturing = False
+        self._n = -1
 
         # Variable to indicate this is a camera
         self.camera_tag = True
 
-        print ('######## VIDEO CAMERA INITIALIZED ########')
+        logger.info('Component initialized')
 
+    def interrupt(self):
+        self._n = 0
+        super(VideoCameraClass, self).interrupt()
 
+    @async_service
+    def capture(self, n):
+        self._n = n
 
     def default_action(self):
         """ Update the texture image. """
-        # Call the action of the parent class
-        super(self.__class__, self).default_action()
-
         # Grab an image from the texture
-        if self.blender_obj['capturing']:
+        if self.blender_obj['capturing'] and (self._n != 0) :
+
+            # Call the action of the parent class
+            super(self.__class__, self).default_action()
+
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA
-            image_data = GameLogic.cameras[self.name].source
+            image_data = GameLogic.cameras[self.name()].source
 
             # Fill in the exportable data
             self.local_data['image'] = image_data
             self.capturing = True
+
+            if (self._n > 0):
+                self._n -= 1
+                if (self._n == 0):
+                    self.completed(status.SUCCESS)
         else:
             self.capturing = False

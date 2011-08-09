@@ -9,6 +9,7 @@ option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
+option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
@@ -38,6 +39,20 @@ if (BUILD_YARP2_SUPPORT)
 		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find yarp python binding")
 	endif (YARP_PY_ERR)
 endif(BUILD_YARP2_SUPPORT)
+
+
+# check to make sure pymoos is installed
+if (BUILD_MOOS_SUPPORT)
+	EXECUTE_PROCESS(COMMAND 
+					${PYTHON3_EXECUTABLE} -c "import pymoos.MOOSCommClient;"
+					RESULT_VARIABLE MOOS_PY_ERR
+				   )
+	if (MOOS_PY_ERR)
+		#message(${MOOS_PY_ERR})
+		#MESSAGE(FATAL_ERROR "BUILD_MOOS_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find MOOS python binding")
+	endif (MOOS_PY_ERR)
+endif(BUILD_MOOS_SUPPORT)
+
 
 IF (BUILD_POCOLIBS_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)

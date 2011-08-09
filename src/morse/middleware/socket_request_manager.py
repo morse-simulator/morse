@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 
@@ -54,25 +55,25 @@ class SocketRequestManager(RequestManager):
             self._server = None
 
         if not self._server:
-            print("Couldn't bind the socket server! Port busy?")
+            logger.error("Couldn't bind the socket server! Port busy?")
             return False
 
-        print("Socket service manager now listening on port " + str(SERVER_PORT) + ".")
+        logger.info("Socket service manager now listening on port " + str(SERVER_PORT) + ".")
 
         return True
 
     def finalization(self):
         """ Terminate the ports used to accept requests """
         if self._client_sockets:
-            print("Closing client sockets...")
+            logger.info("Closing client sockets...")
             for s, f in self._client_sockets.items():
                 f.close()
                 s.close()
 
         if self._server:
-            print("Shutting down connections to server...")
+            logger.info("Shutting down connections to server...")
             self._server.shutdown(socket.SHUT_RDWR)
-            print("Closing socket server...")
+            logger.info("Closing socket server...")
             self._server.close()
             del self._server
 
@@ -86,7 +87,7 @@ class SocketRequestManager(RequestManager):
         try:
             s, id = self._pending_sockets[request_id]
         except KeyError:
-            print(str(self) + ": ERROR: I can not find the socket which requested " + request_id)
+            logger.info(str(self) + ": ERROR: I can not find the socket which requested " + request_id)
             return
 
         if s in self._results_to_output:
@@ -113,7 +114,7 @@ class SocketRequestManager(RequestManager):
                 sock, addr = self._server.accept()
 
                 self._client_sockets[sock] = sock.makefile("rw") #convert the socket into a file interface to ease reading
-                print("Accepted new service connection from " + str(addr))
+                logger.info("Accepted new service connection from " + str(addr))
 
             else:
                 req = self._client_sockets[i].readline().strip()
@@ -129,7 +130,7 @@ class SocketRequestManager(RequestManager):
 
                     id = id.strip()
                 
-                    print("Got '" + req + "' (id = " + id + ") from " + str(i))
+                    logger.info("Got '" + req + "' (id = " + id + ") from " + str(i))
 
                     component, service, params = self._parse_request(req)
 
@@ -170,9 +171,9 @@ class SocketRequestManager(RequestManager):
                             self._client_sockets[o].write(response)
                             self._client_sockets[o].write("\n")
                             self._client_sockets[o].flush()
-                            print("Sent back " + response + " to " + str(o))
+                            logger.info("Sent back " + response + " to " + str(o))
                         except socket.error:
-                            print("It seems that a socket client left. Closing the socket.")
+                            logger.warning("It seems that a socket client left. Closing the socket.")
                             self._client_sockets[o].close()
                             del self._client_sockets[o]
                             

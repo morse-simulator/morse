@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 from morse.middleware.pocolibs.sensors.Velodyne_Poster import ors_velodyne_poster
 
@@ -18,7 +19,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_velodyne_poster(self, component_instance, poster_name)
     if poster_id != None:
-        print ("Pocolibs created poster '%s' of type velodyne" % poster_id)
+        logger.info("Pocolibs created poster '%s' of type velodyne" % poster_id)
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
@@ -38,13 +39,13 @@ def init_velodyne_poster(self, component_instance, poster_name):
     # Measure the amount of coordinates that will be stored in a single array
     array_size = VELODYNE_NB_LINES * VELODYNE_NB_COLUMNS * 3
     #array_size = len(component_instance.local_data['point_list']) * 3
-    print ("AT 'init_velodyne_poster' ARRAY SIZE IS %d" % array_size)
+    logger.infor("AT 'init_velodyne_poster' ARRAY SIZE IS %d" % array_size)
     poster_id, ok = ors_velodyne_poster.init_data(poster_name)
     if ok == 0:
-        print ("ERROR creating poster. The Velodyne Pocolib export module may not work")
+        logger.error("Creating poster. The Velodyne Pocolib export module may not work")
         return None
 
-    print("Velodyne Poster '%s' created (ID: %d)" % (poster_name, poster_id))
+    logger.info("Velodyne Poster '%s' created (ID: %d)" % (poster_name, poster_id))
 
     # Create the array using the type mapped in ors_velodyne_poster.i
     self._coordinate_array = ors_velodyne_poster.doubleArray(array_size)
@@ -67,7 +68,7 @@ def write_velodyne(self, component_instance):
     """
     # Fill in the structure with the image information
     for point in component_instance.local_data['point_list']:
-        #print ("Storing point: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
+        logger.debug("Storing point: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
         for i in range(3):
             self._coordinate_array[self._array_index] = point[i]
         self._array_index = self._array_index + 1
@@ -84,7 +85,7 @@ def write_velodyne(self, component_instance):
         try:
             poster_id = self._poster_dict[component_instance.blender_obj.name]
         except AttributeError as detail:
-            print ("C ERROR: Something BAD happened at velodyne poster: %s" % detail)
+            logger.error("Something BAD happened at velodyne poster: %s" % detail)
             sys.exit()
 
         # Compute the current time
@@ -110,7 +111,7 @@ def write_velodyne(self, component_instance):
         pom_sensor_position.pitch = main_to_sensor.pitch
         pom_sensor_position.roll = main_to_sensor.roll
 
-        print ("Writing a poster with %d packets and %d points" % (self._packets, self._array_index))
+        logger.info("Writing a poster with %d packets and %d points" % (self._packets, self._array_index))
         # Write to the poster with the data for both images
         ors_velodyne_poster.post_velodyne_poster(poster_id, pom_date, \
                 pom_robot_position, pom_sensor_position, self._packets, \

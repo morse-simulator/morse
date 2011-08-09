@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import re
 import yarp
@@ -92,7 +93,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                     #  what kind of port it should use.
                     module.init_extra_module(self, component_instance, function, mw_data)
                 except AttributeError as detail:
-                    print ("ERROR %s in module '%s'" % (detail, source_file))
+                    logger.error("%s in module '%s'" % (detail, source_file))
 
         else:
             # If there is no such function in this module,
@@ -102,7 +103,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 function = self._add_method(mw_data, component_instance)
 
             except IndexError as detail:
-                print ("ERROR: Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
+                logger.error("Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
                 return
 
 
@@ -120,7 +121,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         try:
             yarp_port = self.getPort(port_name)
         except KeyError as detail:
-            print ("ERROR: Specified port does not exist: ", detail)
+            logger.error("Specified port does not exist: ", detail)
             return False
 
         message_data = yarp_port.read(False)
@@ -139,8 +140,8 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                     msg_data = message_data.get(i).toString()
                     component_instance.local_data[variable] = msg_data
                 else:
-                    print ("Yarp ERROR: Unknown data type at 'read_message'")
-                    print ("DATA: ", data, " | TYPE: ", type(data))
+                    logger.error("Unknown data type at 'read_message'")
+                    logger.info("DATA: ", data, " | TYPE: ", type(data))
                 i = i + 1
             return True
 
@@ -159,7 +160,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         try:
             yarp_port = self.getPort(port_name)
         except KeyError as detail:
-            print ("ERROR: Specified port does not exist: ", detail)
+            logger.error("Specified port does not exist: ", detail)
             return
 
         bottle = yarp_port.prepare()
@@ -173,8 +174,11 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
             elif isinstance(data, str):
                 bottle.addString(data)
             else:
-                print ("Yarp ERROR: Unknown data type at 'post_message'")
-                print ("DATA: ", data, " | TYPE: ", type(data))
+                logger.error("Unknown data type at 'post_message'")
+                # Trying to store 'type(data)' causes an error in the logger.
+                # Because the type is not directly printable.
+                # This is caused when sending a dictionary type
+                #logger.info("DATA: ", data, " | TYPE: ", type(data))
 
         #yarp_port.writeStrict()
         yarp_port.write()
@@ -187,7 +191,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         try:
             yarp_port = self.getPort(port_name)
         except KeyError as detail:
-            print ("ERROR: Specified port does not exist: ", detail)
+            logger.error("Specified port does not exist: ", detail)
             return
 
         # Wrap the data in a YARP image
@@ -208,7 +212,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 # NOTE: This requires the patch to yarp-python bindings
                 img.setExternal(data,img_X,img_Y)
             except TypeError as detail:
-                print ("No image yet: %s" % detail)
+                logger.info("No image yet: %s" % detail)
 
             # Copy to image with "regular" YARP pixel order
             # Otherwise the image is upside-down
@@ -224,7 +228,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for portName in portList:
             portName = '/ors/'+portName
             if portName not in self._yarpPorts:
-                #print ('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
+                logger.debug('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
                 port = self._yarp_module.BufferedPortBottle()
                 port.open(portName)
                 self._yarpPorts[portName] = port
@@ -238,7 +242,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for portName in portList:
             portName = '/ors/'+portName
             if portName not in self._yarpPorts:
-                #print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageMono()
                 port.open(portName)
                 self._yarpPorts[portName] = port
@@ -251,7 +255,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for portName in portList:
             portName = '/ors/'+portName
             if portName not in self._yarpPorts:
-                #print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageRgb()
                 port.open(portName)
                 self._yarpPorts[portName] = port
@@ -264,7 +268,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for portName in portList:
             portName = '/ors/'+portName
             if portName not in self._yarpPorts:
-                #print ('Yarp Mid: Adding ' + portName + ' buffered image port.')
+                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageRgba()
                 port.open(portName)
                 self._yarpPorts[portName] = port
@@ -277,7 +281,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for portName in portList:
             portName = '/ors/'+portName
             if portName not in self._yarpPorts:
-                #print ('Yarp Mid: Adding ' + portName + ' port.')
+                logger.debug('Yarp Mid: Adding ' + portName + ' port.')
                 port = self._yarp_module.Port()
                 port.open(portName)
                 self._yarpPorts[portName] = port
@@ -292,7 +296,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         #self._network.fini()
         #self._yarp_module.Network.fini()
         #yarp.Network.fini()
-        print ('Yarp Mid: ports have been closed.')
+        logger.info('Yarp Mid: ports have been closed.')
 
 
     def getPort(self, portName):
@@ -303,9 +307,9 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
 
     def printOpenPorts(self):
         """ Return a list of all currently opened ports."""
-        print ("Yarp Mid: List of ports:")
+        logger.info("Yarp Mid: List of ports:")
         for name, port in self._yarpPorts.items():
-            print (" - Port name '{0}' = '{1}'".format(name, port))
+            logger.info(" - Port name '{0}' = '{1}'".format(name, port))
             
     def connectPorts(self, source, target):
         """ Connect a yarp source to a specific yarp target.

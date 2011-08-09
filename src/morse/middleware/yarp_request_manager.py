@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import yarp
 
@@ -45,7 +46,7 @@ class YarpRequestManager(RequestManager):
 
 
     def finalization(self):
-        print("Closing yarp request ports...")
+        logger.info("Closing yarp request ports...")
         for port in self._yarp_request_ports.values():
             port.close()
 
@@ -58,7 +59,7 @@ class YarpRequestManager(RequestManager):
         try:
             port, id = self._pending_ports[request_id]
         except KeyError:
-            print(str(self) + ": ERROR: I can not find the port which requested " + request_id)
+            logger.info(str(self) + ": ERROR: I can not find the port which requested " + request_id)
             return
 
         if port in self._results_to_output:
@@ -67,7 +68,7 @@ class YarpRequestManager(RequestManager):
             self._results_to_output[port] = [(id, results)]
 
 
-    def post_registration(self, component, service, is_async):
+    def post_registration(self, component_name, service, is_async):
         """ Register a connection of a service with YARP """
         # Get the Network attribute of yarp,
         #  then call its init method
@@ -75,28 +76,26 @@ class YarpRequestManager(RequestManager):
         self.yarp_object = self._yarp_module.Network()
 
         # Create the names of the ports
-        port_name = '/{0}'.format(component)
-        #port_name = '/{0}/{1}'.format(component, service)
-        request_port_name = '/ors/services{0}/request'.format(port_name)
-        reply_port_name = '/ors/services{0}/reply'.format(port_name)
+        request_port_name = '/ors/services/{0}/request'.format(component_name)
+        reply_port_name = '/ors/services/{0}/reply'.format(component_name)
 
-        if not port_name in self._yarp_request_ports.keys():
+        if not component_name in self._yarp_request_ports.keys():
             # Create the ports to accept and reply to requests
             request_port = self._yarp_module.BufferedPortBottle()
             reply_port = self._yarp_module.BufferedPortBottle()
             request_port.open(request_port_name)
             reply_port.open(reply_port_name)
-            self._yarp_request_ports[port_name] = request_port
-            self._yarp_reply_ports[port_name] = reply_port
+            self._yarp_request_ports[component_name] = request_port
+            self._yarp_reply_ports[component_name] = reply_port
         
             # Create bottles to use in the responses
             bottle_in = self._yarp_module.Bottle()
-            self._in_bottles[port_name] = bottle_in
+            self._in_bottles[component_name] = bottle_in
             bottle_reply = self._yarp_module.Bottle()
-            self._reply_bottles[port_name] = bottle_reply
+            self._reply_bottles[component_name] = bottle_reply
 
-            print("Yarp service manager now listening on port " + request_port_name + ".")
-            print("Yarp service manager will reply on port " + reply_port_name + ".")
+            logger.info("Yarp service manager now listening on port " + request_port_name + ".")
+            logger.info("Yarp service manager will reply on port " + reply_port_name + ".")
 
         return True
 
@@ -104,22 +103,22 @@ class YarpRequestManager(RequestManager):
     def main(self):
         """ Read commands from the ports, and prepare the response""" 
         # Read data from available ports
-        for port_name, port in self._yarp_request_ports.items():
+        for component_name, port in self._yarp_request_ports.items():
             # Get the bottles to read and write
-            bottle_in = self._in_bottles[port_name] 
-            bottle_reply = self._reply_bottles[port_name] 
+            bottle_in = self._in_bottles[component_name] 
+            bottle_reply = self._reply_bottles[component_name] 
             bottle_in = port.read(False)
             if bottle_in != None:
-                print("Received command from port '%s'" % (port_name))
+                logger.debug("Received command from port '%s'" % (component_name))
 
                 try:
                     try:
-                        id, component, service, params = self._parse_request(bottle_in)
+                        id, component_name, service, params = self._parse_request(bottle_in)
                     except ValueError: # Request contains < 2 tokens.
                         id = req
                         raise MorseRPCInvokationError("Malformed request! ")
 
-                    print("Got '%s | %s | %s' (id = %s) from %s" % (component, service, params, id, port_name))
+                    logger.info("Got '%s | %s | %s' (id = %s) from %s" % (component_name, service, params, id, component_name))
 
                     # on_incoming_request returns either 
                     #(True, result) if it's a synchronous
@@ -127,7 +126,7 @@ class YarpRequestManager(RequestManager):
                     # (False, request_id) if it's an asynchronous request whose
                     # termination will be notified via
                     # on_service_completion.
-                    is_sync, value = self.on_incoming_request(component, service, params)
+                    is_sync, value = self.on_incoming_request(component_name, service, params)
 
                     if is_sync:
                         if port in self._results_to_output:
@@ -150,19 +149,19 @@ class YarpRequestManager(RequestManager):
                             self._results_to_output[port] = [(id, (status.FAILED, e.value))]
         
         if self._results_to_output:
-            for o in self._yarp_request_ports.values():
-                if o in self._results_to_output:
-                    for r in self._results_to_output[o]:
+            for component_name, port in self._yarp_request_ports.items():
+                if port in self._results_to_output:
+                    for r in self._results_to_output[port]:
                         response = "%s %s %s" % (r[0], r[1][0], str(r[1][1]) if r[1][1] else "")
                         # Send the reply through the same yarp port
-                        reply_port = self._yarp_reply_ports[port_name]
+                        reply_port = self._yarp_reply_ports[component_name]
                         bottle_reply = reply_port.prepare()
                         bottle_reply.clear()
                         bottle_reply.addString(response)
                         reply_port.write()
-                        print("Sent back " + response + " to " + str(o))
+                        logger.debug("Sent back '" + response + "'. Component: " + component_name + ". Port: " + str(port))
                             
-                    del self._results_to_output[o]
+                    del self._results_to_output[port]
 
 
     def _parse_request(self, bottle):
@@ -171,10 +170,10 @@ class YarpRequestManager(RequestManager):
         """
         try:
             id = bottle.get(0).asInt()
-            component = bottle.get(1).toString()
+            component_name = bottle.get(1).toString()
             service = bottle.get(2).toString()
         except IndexError as e:
-            raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component, service, [params])")
+            raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component_name, service, [params])")
 
         try:
             params = bottle.get(3).toString()
@@ -182,4 +181,4 @@ class YarpRequestManager(RequestManager):
         except (NameError, SyntaxError) as e:
             raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 
-        return (id, component, service, p)
+        return (id, component_name, service, p)

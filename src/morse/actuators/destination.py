@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.actuator
 
@@ -10,7 +11,7 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     def __init__(self, obj, parent=None):
 
-        print ('######## CONTROL INITIALIZATION ########')
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -23,7 +24,7 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['y'] = self.destination[1]
         self.local_data['z'] = self.destination[2]
 
-        print ('######## CONTROL INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
@@ -32,16 +33,16 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
-        #print ("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
-        #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+        logger.debug("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
+        logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
         # Vectors returned are already normalised
         distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
 
-        #print ("My position: {0}".format(self.blender_obj.position))
-        #print ("GOT DISTANCE: {0}".format(distance))
-        #print ("Global vector: {0}".format(global_vector))
-        #print ("Local  vector: {0}".format(local_vector))
+        logger.debug("My position: {0}".format(self.blender_obj.position))
+        logger.debug("GOT DISTANCE: {0}".format(distance))
+        logger.debug("Global vector: {0}".format(global_vector))
+        logger.debug("Local  vector: {0}".format(local_vector))
 
         if distance > self._tolerance:
             # Set the robot status
@@ -69,8 +70,8 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
             #rx, ry, rz = 0.0, 0.0, 0.0
 
             parent.move_status = "Stop"
-            #print ("TARGET REACHED")
-            #print ("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+            logger.debug("TARGET REACHED")
+            logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement

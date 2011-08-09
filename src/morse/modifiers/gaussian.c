@@ -1,8 +1,8 @@
+#include <Python.h>
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <Python.h>
 
 /*
  * Generate random number between [ -1 ; 1 ]

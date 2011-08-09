@@ -38,7 +38,9 @@ Configuration
 This binding is currently done via a Python file called ``component_config.py``
 which must be internal to the Blender scenario file. The configuration file 
 should be edited from a **Text Editor** window in Blender.
-It consists of three dictionaries indexed by the name of the components:
+
+It consists of three dictionaries indexed by the name of the components (they are
+all optional):
 
 - ``component_mw``: Lists which middlewares are bound to the specific 
   component. The value of the dictionary is a list. The list must consist of
@@ -60,10 +62,10 @@ It consists of three dictionaries indexed by the name of the components:
     created. For actuators, it is the name that they will look for to connect.
 
 - ``component_service``: Lists the middlewares that will take care of handling
-  a service provided by a component. The value of the dictionary is a list, containing
-  only one element. This element is the name of the class specified in the middleware
-  *request_manager*. For example, in the case of YARP. The class name is ``YarpRequestManager``
-  as defined in the file ``yarp_request_manager.py``.
+  a service provided by a component. The value of the dictionary is a list of
+  *full qualified name* of Python classes inheriting from
+  :py:class:`morse.core.request_manager.RequestManager` (like
+  :py:class:`morse.middleware.socket_request_manager.SocketRequestManager`).
 
 - ``component_modifier``: Lists the modifiers affecting each of the components. 
   The value of the dictionary is a list, where each element is itself a list 
@@ -77,8 +79,8 @@ Example:
 
     # Middleware binding for regular data exchange
     component_mw = {
-      Gyroscope": ["Yarp", "post_message"],
-      GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
+      "Gyroscope": ["Yarp", "post_message"],
+      "GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
       "Motion_Controller": ["Yarp", "read_message"],
       "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
       "CameraMain": ["Yarp", "post_image_RGBA"]
@@ -96,3 +98,5 @@ Example:
     }
 
 
+A fourth ``overlays`` dictionary may be added to specify overlays. See
+:doc:`Component overlays <../user/overlays>` for details.

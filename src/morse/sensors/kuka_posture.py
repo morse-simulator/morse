@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 import mathutils
@@ -12,7 +13,7 @@ class KukaPostureClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## KUKA POSTURE EXPORTER '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
@@ -29,7 +30,7 @@ class KukaPostureClass(morse.core.sensor.MorseSensorClass):
         self.local_data['seg4'] = 0.0
         self.local_data['seg5'] = 0.0
         self.local_data['seg6'] = 0.0
-        print ('######## KUKA POSTURE EXPORTER INITIALIZED ########')
+        logger.info('Component initialized')
 
         # The axis along which the different segments rotate
         # Considering the rotation of the arm as installed in Jido
@@ -54,9 +55,9 @@ class KukaPostureClass(morse.core.sensor.MorseSensorClass):
                 kuka_obj = child
 
         #if kuka_obj != 0:
-            #print("Found kuka_arm")
+            logger.debug("Found kuka_arm")
         #else:
-            #print("WARNING: Kuka arm not found!")
+            logger.debug("WARNING: Kuka arm not found!")
 
         segment = kuka_obj.children[0]
         self._angles = []

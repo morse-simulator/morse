@@ -3,9 +3,10 @@ import sys
 import os
 import logging
 ## Configuring default logging
+from morse.core.ansistrm import ColorizingStreamHandler
 logger = logging.getLogger('morse')
 
-log_handler = logging.StreamHandler()
+log_handler = ColorizingStreamHandler()
 formatter = logging.Formatter("* %(message)s\n")
 log_handler.setFormatter(formatter)
 
@@ -338,7 +339,7 @@ def launch_simulator(scene=None, script=None):
 
     #Replace the current process by Blender
     if script != None:
-        print("executing Blender script: " + script)
+        logger.info("Executing Blender script: " + script)
         os.execle(blender_exec, blender_exec, scene, "-P", script, env)
     else:
         os.execle(blender_exec, blender_exec, scene, env)
@@ -404,7 +405,7 @@ if __name__ == '__main__':
                 logger.info("Checking up your environment...\n")
                 check_setup()
             except MorseError as e:
-                logger.error("\nYour environment is not correctly setup to run MORSE!")
+                logger.error("Your environment is not correctly setup to run MORSE!")
                 sys.exit()
             logger.info("Your environment is correctly setup to run MORSE.")
             

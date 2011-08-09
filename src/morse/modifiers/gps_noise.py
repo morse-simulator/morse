@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.modifiers.gaussian
 
@@ -22,13 +23,13 @@ class MorseGPSNoiseClass(object):
             # Get the reference to the function
             function = getattr(self, function_name)
         except AttributeError as detail:
-            print ("ERROR: %s. Check the 'component_config.py' file for typos" % detail)
+            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
             return
 
         if function_name == "noisify":
             component_instance.output_modifiers.append(function)
         else:
-            print ("Unknown function name for GPS Noise modifier. Check component_config.py file.")
+            logger.warning("Unknown function name for GPS Noise modifier. Check component_config.py file.")
 
 
 

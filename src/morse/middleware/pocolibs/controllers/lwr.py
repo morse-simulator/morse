@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs.controllers.Lwr_Poster import ors_lwr_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
@@ -26,7 +27,7 @@ def read_lwr_config(self, component_instance):
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
     gbm_conf, ok = ors_lwr_poster.read_lwr_data(poster_id)
 
-    #print ("DATA READ by LWR: ", component_instance.local_data)
+    logger.debug("DATA READ by LWR: ", component_instance.local_data)
 
     if ok != 0:
         component_instance.local_data['seg0'] = gbm_conf.q1

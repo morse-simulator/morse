@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs.sensors.Pom_Poster import ors_pom_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
@@ -17,7 +18,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_pom_poster(self, component_instance, poster_name)
     if poster_id != None:
-        print ("Pocolibs created poster '%s' of type pom" % poster_id)
+        logger.info ("Pocolibs created poster '%s' of type pom" % poster_id)
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
@@ -30,10 +31,10 @@ def init_pom_poster(self, component_instance, poster_name):
     confidence = component_instance.blender_obj['confidence']
     poster_id, ok = ors_pom_poster.init_data(poster_name, reference_frame, confidence)
     if ok == 0:
-        print ("ERROR creating poster. This module may not work")
+        logger.error("Ceating poster. This module may not work")
         return None
 
-    print("POM Poster '%s' created (ID: %d)" % (poster_name, poster_id))
+    logger.info("POM Poster '%s' created (ID: %d)" % (poster_name, poster_id))
     return poster_id
 
 
@@ -49,4 +50,4 @@ def write_pom(self, component_instance):
             position3d.x, position3d.y,
             position3d.z, position3d.yaw,
             position3d.pitch, position3d.roll)
-    #print ("POM position: %.4f, %.4f, %.4f" % (position3d.x, position3d.y, position3d.z))
+    logger.debug("POM position: %.4f, %.4f, %.4f" % (position3d.x, position3d.y, position3d.z))
