@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
+import sys
 import mathutils
 import morse.core.actuator
 import morse.helpers.math as morse_math
@@ -78,7 +79,13 @@ class KukaActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             # Extract the angles
             rot_matrix = segment.localOrientation
-            segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
+            
+            # temporarily support old Blender2.56-code using Python3.1 instead of Python3.2
+            if sys.version_info.minor == 1:
+                segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            else:
+                segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2])) 
+
             segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation
