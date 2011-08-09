@@ -7,6 +7,7 @@ from geometry_msgs.msg import Twist
 import GameLogic
 import math
 import mathutils
+import sys
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -38,7 +39,13 @@ def post_pose(self, component_instance):
     pose.pose.position.y = component_instance.local_data['dy']
     pose.pose.position.z = component_instance.local_data['dz']
     euler = mathutils.Euler((component_instance.local_data['droll'], component_instance.local_data['dpitch'], component_instance.local_data['dyaw']))
-    quaternion = euler.to_quaternion()
+    
+    # temporarily support deprecated Python3.1/Blender2.56
+    if sys.version_info.minor == 1:
+        quaternion = euler.to_quat()
+    else:
+        quaternion = euler.to_quaternion()
+
     pose.pose.orientation.w = quaternion.w
     pose.pose.orientation.x = quaternion.x
     pose.pose.orientation.y = quaternion.y

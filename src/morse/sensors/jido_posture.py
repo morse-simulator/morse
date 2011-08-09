@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 import mathutils
+import sys
 import morse.helpers.math as morse_math
 
 class JidoPostureClass(morse.core.sensor.MorseSensorClass):
@@ -120,7 +121,11 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                    
             # Extract the angles
             rot_matrix = segment.localOrientation
-            segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
+            if sys.version_info.minor == 1:
+                segment_matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], rot_matrix[2])
+            else:
+                segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
+           
             segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation
