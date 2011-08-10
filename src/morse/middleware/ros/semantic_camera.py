@@ -4,6 +4,7 @@ import rospy
 import std_msgs
 import GameLogic
 import math
+import sys
 import mathutils
 
 from std_msgs.msg import String
@@ -37,7 +38,13 @@ def post_string(self, component_instance):
         #iterate through all objects of the component_instance and create one string
         for obj in component_instance.local_data['visible_objects']:
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quaternion()) + " ]\n"    
+
+            # temporarily support deprecated Python3.1/Blender2.56
+            if sys.version_info.minor == 1:
+                message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quaternion()) + " ]\n"
+            else: 
+               message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quat()) + " ]\n"  
+
             string.data = message
         # publish the message on the correct topic    
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
@@ -55,7 +62,11 @@ def post_lisp_code(self, component_instance):
         #iterate through all objects of the component_instance and create one string in lisp-list format
         for obj in component_instance.local_data['visible_objects']:
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + ")"
+            # temporarily support deprecated Python3.1/Blender2.56
+            if sys.version_info.minor == 1:
+                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quat()[0]) + " " + str(obj.worldOrientation.to_quat()[1]) + " " + str(obj.worldOrientation.to_quat()[2]) + " " + str(obj.worldOrientation.to_quat()[3]) + ")"
+            else:
+                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + ")"
         
         string.data = message + ")"
         # publish the message on the correct topic    
