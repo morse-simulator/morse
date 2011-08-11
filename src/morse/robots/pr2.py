@@ -30,6 +30,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
 import GameLogic
+import ast
 import morse.core.robot
 from morse.core.services import service
 from morse.core.services import async_service
@@ -185,10 +186,9 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         the given armature. The values of the dictionary are
         the angle of the channel dof axis that you want to set.
         """
-        # Use an empty dictionary as the second parameter to 'eval'
-        #  to restrict the environment where it executes,
-        #  and avoid security problems.
-        angles = eval(angles, {})
+        # Use 'ast.literal_eval' to transform a string into a dictionary.
+        # This is safer than using 'eval'
+        angles = ast.literal_eval(angles)
         armature = self.blender_obj.childrenRecursive[str(armature_name)]
         # set the rotation of each channel
         for channel in armature.channels:
