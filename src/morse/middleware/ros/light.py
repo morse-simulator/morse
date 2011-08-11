@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 from std_msgs.msg import Bool
@@ -16,6 +17,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     # Generate one subscriber and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Subscriber(parent_name + "/" + component_name, Bool, callback_wp, component_instance))
+
+    logger.info('ROS subscriber initialized')
 
 def callback_wp(data, component_instance):
         """ this function is called as soon as Twist messages are published on the specific topic """

@@ -1,6 +1,7 @@
-import GameLogic
-import time
+import logging; logger = logging.getLogger("morse." + __name__)
+import bge
 import morse.core.sensor
+import time
 
 class BatteryClass(morse.core.sensor.MorseSensorClass):
     """ Class definition for the battery sensor.
@@ -13,14 +14,14 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
-        print ("######## BATTERY '%s' INITIALIZING ########" % obj.name)
+        logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
         self.local_data['charge'] = 100.0
         self._time = time.clock()
 
-        print ('######## BATTERY INITIALIZED ########')
+        logger.info('Component initialized')
 
     def default_action(self):
         """ Main function of this component. """

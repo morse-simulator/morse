@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('sensor_msgs')
 import rospy
 from sensor_msgs.msg import Range
@@ -16,6 +17,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Range))
+
+    logger.info('ROS publisher initialized')
 
 def post_range(self, component_instance):
     """ Publish the data on the rostopic

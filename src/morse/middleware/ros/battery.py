@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 from std_msgs.msg import Float32
@@ -17,7 +18,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Float32))
 
-    print ('######## ROS BATTERY PUBLISHER INITIALIZED ########')
+    logger.info('ROS publisher initialized')
 
 def post_float32(self, component_instance):
     """ Publish the data of the Pose-sensor as a ROS-Odometry message.

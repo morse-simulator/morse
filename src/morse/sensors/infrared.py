@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.core.sensor
 import morse.helpers.math
@@ -19,13 +20,13 @@ class InfraRedClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        print ("######## InfraRed '%s' INITIALIZING ########" % obj.name)
+        logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
         self.local_data['range'] = -1
 
-        print ('######## IR INITIALIZED ########')
+        logger.info('Component initialized')
 
 
     def default_action(self):
