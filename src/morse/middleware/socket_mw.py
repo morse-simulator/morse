@@ -83,6 +83,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             else:
                 socket_port = self._socket_ports[-1] + 1
 
+            new_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             new_socket.bind((self._host, socket_port))
             new_socket.setblocking(0)
 
@@ -117,6 +118,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             else:
                 socket_port = self._socket_ports[-1] + 1
 
+            new_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             new_socket.bind((self._host, socket_port))
             new_socket.listen(2)
 
@@ -185,7 +187,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
-        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
+        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, client_addr))
         out_socket.sendto(message, client_addr)
 
 
@@ -241,7 +243,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         message = pickle.dumps((component_instance.blender_obj.name, component_instance.local_data))
 
-        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, host))
+        logger.debug("Socket Mid: Send: '{0}' to host '{1}'".format(message, client_addr))
         out_socket.send(message)
 
 
