@@ -150,6 +150,8 @@ Installation
 .. note::
     The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
 
+It is recommended to store this environment variable, as it is necessary to use the :doc:`scene builder script <../dev/builder>` to generate equipped robots.
+
 With ``robotpkg``
 +++++++++++++++++
 
@@ -184,7 +186,7 @@ It supports Linux, * BSD and Darwin (MacOS X).
 By hand
 +++++++
 
-Download the source code. It is stored in a ``git`` repository::
+Download the latest version of the source code. It is stored in a ``git`` repository::
 
   $ git clone http://trac.laas.fr/git/robots/morse.git
   
