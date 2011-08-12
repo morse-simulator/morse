@@ -52,36 +52,36 @@ The friction coefficient of the robot can be adjusted in the **Properties >> Mat
 Services
 --------
 
-- **get_armatures**(): 
+- **get_armatures** (): 
 	(*Synchronous service*)
     MORSE Service that returns a list of all the armatures on the PR2 robot.
 
-- **get_channels**(armature_name):
+- **get_channels** (armature_name):
 	(*Synchronous service*)
 	MORSE Service that returns a list of the channels (bones) in the given armature 'armature_name'
 	
-- **get_dofs**(armature_name):
+- **get_dofs** (armature_name):
 	(*Synchronous service*)
 	MORSE Service that returns a dictionary with keys the channels of the given armature 'armature_name' and as values the corresponding dof axis as 'x', 'y' or 'z'.
 	
-- **get_dof**(armature_name, channel_name):
+- **get_dof** (armature_name, channel_name):
 	(*Synchronous service*)
 	MORSE Service that returns the dof axis of the given channel 'channel_name' on the given armature 'armature_name'.
 	
-- **get_rotations**(armature_name):
+- **get_rotations** (armature_name):
 	(*Synchronous service*)
 	MORSE Service that returns a dict with keys the channel names of the given armature 'armature_name', and values the rotation xyz values.
 	
-- **get_rotation**(armature_name, channel_name):
+- **get_rotation** (armature_name, channel_name):
 	(*Synchronous service*)
 	MORSE Service that returns the rotation angles corresponding to the given channel 'channel_name' on the given armature 'armature_name'.
 	
-- **set_dof_rotations**(armature_name, angles):
+- **set_dof_rotations** (armature_name, angles):
 	(*Synchronous service*)
 	MORSE Service to set the rotion angles of the corresponding dof axes of the channels in 'armature_name'.
 	angles must be a dict with as keys all the channel names of the given armature. And as values the angle of the channel dof axis that you want to set.
 	
-- **set_dof_rotation**(armature_name, channel_name, angle):
+- **set_dof_rotation** (armature_name, channel_name, angle):
 	(*Synchronous service*)
 	MORSE Service to set the rotation angle of the corresponding dof axis of the 'channel_name' in 'armature_name'.
 	
