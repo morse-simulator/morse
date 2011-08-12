@@ -4,6 +4,10 @@ Advanced Blender commands
 This section provides further instructions on how to use Blender to setup
 simulation scenarios.
 
+.. note:: The Blender interface is divided in various panels (windows).
+    The mouse and keyboard shortcuts used change depending on the panel over
+    which the mouse pointer is located.
+
 Viewing the scene
 -----------------
 
@@ -71,3 +75,21 @@ Logic Bricks can be found
 `here <http://www.tutorialsforblender3d.com/GameDoc/index_LogicBricks.html>`_.
 
 In this panel it is also possible to add **Game Properties** to objects, which are variables that can be accessed by Python scripts during the execution of the simulation. Properties can be used to store information about objects. In many cases, MORSE uses these variables to identify different types of objects.
+
+
+Selecting a robot and all its components
+----------------------------------------
+
+This operation is tricky, and is much easier if the Blender interface has at least a **3D View** and an **Outliner** panel.
+Follow these steps:
+
+ - Select the robot from the **Outliner** list, using the :kbd:`Left Mouse Button`
+ - Move the mouse over to the **3D View** panel
+ - Press :kbd:`Shift-G`, then press :kbd:`enter`. This should choose the first option: 'Children'
+ - Move the mouse back to the **Outliner** panel
+ - Hold the :kbd:`Shift` key, while selecting the robot again with the :kbd:`Left Mouse Button`
+
+The two main operations that require selecting the robot and all of its components are:
+
+ - **Delete the robot**: Press :kbd:`X` and then :kbd:`enter`.
+ - **Duplicate the robot**: Press :kbd:`Shift-D` and then move the new copy with the mouse. Select the desired position of the copy by pressing the :kbd:`Left Mouse Button`
