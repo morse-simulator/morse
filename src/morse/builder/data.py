@@ -27,23 +27,37 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_pose': ['ROS', 'post_odometry_transform', 'morse/middleware/ros/pose'],
     'morse_GPS': ['ROS', 'post_message'],
     'morse_gyroscope': ['ROS', 'post_message'],
-    'morse_proximity': ['ROS', 'post_message']
+    'morse_proximity': ['ROS', 'post_message'],
   },
 
   'socket_empty': {
+    'morse_accelerometer': ['Socket', 'post_message'],
     'morse_gyroscope': ['Socket', 'post_message'],
-    'morse_vw_control': ['Socket', 'read_message']
+    'morse_GPS': ['Socket', 'post_message'],
+    'morse_odometry': ['Socket', 'post_message'],
+    'morse_pose': ['Socket', 'post_message'],
+    'morse_thermometer': ['Socket', 'post_message'],
+
+    'morse_destination_control': ['Socket', 'read_message'],
+    'morse_orientation_control': ['Socket', 'read_message'],
+    'morse_vw_control': ['Socket', 'read_message'],
+    'morse_waypoint_control': ['Socket', 'read_message'],
   },
 
   'yarp_empty': {
     'morse_camera': ['Yarp', 'post_image_RGBA'],
     'morse_sick': ['Yarp', 'post_sick_message', 'morse/middleware/yarp/sick'],
     'morse_proximity': ['Yarp', 'post_dictionary_data', 'morse/middleware/yarp/dictionary'],
+    'morse_accelerometer': ['Yarp', 'post_message'],
     'morse_gyroscope': ['Yarp', 'post_message'],
     'morse_odometry': ['Yarp', 'post_message'],
     'morse_pose': ['Yarp', 'post_message'],
     'morse_GPS': ['Yarp', 'post_message'],
+    'morse_thermometer': ['Yarp', 'post_message'],
 
-    'morse_vw_control': ['Yarp', 'read_message']
+    'morse_destination_control': ['Yarp', 'read_message'],
+    'morse_orientation_control': ['Yarp', 'read_message'],
+    'morse_vw_control': ['Yarp', 'read_message'],
+    'morse_waypoint_control': ['Yarp', 'read_message'],
   }
 }
