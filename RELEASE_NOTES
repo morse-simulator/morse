@@ -1,5 +1,5 @@
-MORSE 0.4 - "Multinode" release
-===============================
+MORSE 0.4 - "Nearing Multinode" release
+=======================================
 
 General changes
 ---------------
@@ -7,11 +7,13 @@ General changes
 Architectural changes
 ---------------------
 - Added infrastructure for multi-node functionality
+- Use the Builder API to create robots from their description in Python script.
+- Use the Python logging interface
 
 Middlewares
 -----------
 - Added support for multiple middleware bindings per component
-- add support for services through  Pocolibs middleware
+- Added support for services through  Pocolibs middleware
 - ROS support for the robot's cameras
 
 

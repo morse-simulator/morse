@@ -5,22 +5,8 @@ General TODO list for MORSE
  TARGETS FOR RELEASE 0.4
 =========================
 
-General
--------
-
 - Switch to Blender 2.58/Python 3.2
 - Update robotpkg packages
-
-- use the Python logging interface -> Severin
-- move away all project/scenario specific files from MORSE core (create
-  dedicated repositories for those) -> superseeded by next target
-
-Components
-----------
-- Properly implement the "human" as a robot: Change the script in object oriented form -> Gilberto
-- allow scenarii + equipped robots  described in Python instead of Blender files -> everyone
-- Then, fix the project tree layout -> Arnaud
-
 
 =================
    TARGET 0.5
@@ -37,6 +23,8 @@ Deadline: 15 Sept.
 - Fixed the physical properties of robot to enable velocity control (cf commit 8503c9)
 - define a method to select the control of robots using position or velocity
 
+
+- Then, fix the project tree layout -> Arnaud
 
 Middleware
 ----------
@@ -68,6 +56,8 @@ depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
 
 - Create a Generic Vehicule Robot, as a base for Hummer robot
+
+- Properly implement the "human" as a robot: Change the script in object oriented form -> Gilberto
 
 ================
  OTHERS and MISC
