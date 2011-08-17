@@ -137,7 +137,10 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
 
                         # Multiply the resulting point by the inverse
                         #  of the sensor rotation matrix
-                        arc_point = vector_point * robot_inverted_matrix
+                        if GameLogic.blenderVersion < (2,59,0):
+                            arc_point = vector_point * robot_inverted_matrix
+                        else:
+                            arc_point = robot_inverted_matrix * vector_point
                         logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (arc_point[0], arc_point[1], arc_point[2]))
 
                         # Do not move the point if the ray intersection
