@@ -63,6 +63,10 @@ to a given sensor geometry.
  OTHERS and MISC
 ================
 
+Installation
+------------
+- Add rules in CMakeLists to avoid copying backup files of python scripts (eg.: ".sick.py.swp")
+
 GUI
 ---
 
