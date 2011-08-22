@@ -1,0 +1,30 @@
+From 32d41ad4489b0bab62c12bc02b865e67622122fc Mon Sep 17 00:00:00 2001
+From: Peter Roelants <peter.roelants@gmail.com>
+Date: Mon, 22 Aug 2011 10:52:26 +0200
+Subject: [PATCH] fixed uncatched error in socket_request_manager.py
+
+---
+ src/morse/middleware/socket_request_manager.py |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/morse/middleware/socket_request_manager.py b/src/morse/middleware/socket_request_manager.py
+index ad01009..1a366f8 100644
+--- a/src/morse/middleware/socket_request_manager.py
++++ b/src/morse/middleware/socket_request_manager.py
+@@ -173,8 +173,11 @@ class SocketRequestManager(RequestManager):
+                             self._client_sockets[o].flush()
+                             logger.info("Sent back " + response + " to " + str(o))
+                         except socket.error:
+-                            logger.warning("It seems that a socket client left. Closing the socket.")
+-                            self._client_sockets[o].close()
++                            logger.warning("It seems that a socket client left. Closing the socket.")                          
++                            try: # close the socket if it gives an error (this can spawn an other error!)
++                                self._client_sockets[o].close()
++                            except socket.error as error_info:
++                                logger.warning("Socket error catched while closing: " + str(error_info))
+                             del self._client_sockets[o]
+                             
+                     del self._results_to_output[o]
+-- 
+1.7.5.4
+

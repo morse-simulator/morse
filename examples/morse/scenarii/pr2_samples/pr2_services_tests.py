@@ -35,6 +35,7 @@ The MORSE Simulation with a PR2 model 'pr2' must be running for this to work.
 
 import sys
 import socket
+from ast import literal_eval
 
 
 HOST = 'localhost'
@@ -122,8 +123,6 @@ def test_get_armatures(id_, component):
     service = 'get_armatures' # MORSE Service to call
     armature_list = gen_send_recv_parse(id_, component, service)
 
-    #print("String: " + response)
-    armature_list = armature_list[1]
     print("List: " + str(armature_list))
     return armature_list
 
