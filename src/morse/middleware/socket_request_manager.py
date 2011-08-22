@@ -173,8 +173,11 @@ class SocketRequestManager(RequestManager):
                             self._client_sockets[o].flush()
                             logger.info("Sent back " + response + " to " + str(o))
                         except socket.error:
-                            logger.warning("It seems that a socket client left. Closing the socket.")
-                            self._client_sockets[o].close()
+                            logger.warning("It seems that a socket client left. Closing the socket.")                          
+                            try: # close the socket if it gives an error (this can spawn an other error!)
+                                self._client_sockets[o].close()
+                            except socket.error as error_info:
+                                logger.warning("Socket error catched while closing: " + str(error_info))
                             del self._client_sockets[o]
                             
                     del self._results_to_output[o]
