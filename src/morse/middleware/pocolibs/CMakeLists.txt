@@ -3,7 +3,7 @@
 ## list (actuator_list or sensor_list) and add the right entry in
 ## MODULES_MAP_{entry}
 ##
-## It generates _ors_<module_name>_poster.<suffix>, ors_<module_name>_poster.py, and
+## It generates _ors_<module_name>_poster.so, ors_<module_name>_poster.py, and
 ## we wait for <module_name>.py in the (sensor|actuator) directory)
 
 include_directories(${PYTHON3_INCLUDE_DIR})
@@ -97,9 +97,10 @@ foreach(directory ${directories_list})
 
 			add_library(${target_name} SHARED ${source} ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c)
 			set_target_properties(${target_name} PROPERTIES PREFIX "_")
+			set_target_properties(${target_name} PROPERTIES SUFFIX ".so")
 			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON3_LIBRARIES})
 			install (FILES ${MODULE_SOURCE_DIR}/__init__.py 
-				${CMAKE_CURRENT_BINARY_DIR}/_${target_name}${CMAKE_SHARED_LIBRARY_SUFFIX}
+				${CMAKE_CURRENT_BINARY_DIR}/_${target_name}.so 
 				${CMAKE_CURRENT_BINARY_DIR}/${target_name}.py
 				DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/${directory}/${Item}_Poster/
 				)
@@ -115,11 +116,6 @@ foreach(directory ${directories_list})
 			 )
 			
 endforeach(directory)
-install (FILES controllers/platine_overlay.py controllers/rflex_overlay.py
-		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/controllers)
-install (FILES sensors/viam_overlay.py 
-		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs/sensors)
-
 install (FILES __init__.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs
 		)
