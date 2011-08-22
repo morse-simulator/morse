@@ -30,7 +30,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
 import GameLogic
-import ast
 import morse.core.robot
 from morse.core.services import service
 from morse.core.services import async_service
@@ -104,8 +103,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
             # Check if obj is an armature
             if type(obj).__name__ == 'BL_ArmatureObject':
                 armatures.append(obj.name)
-        # Return status of service and list of armatures
-        return(status.SUCCESS, armatures)
+
+        return armatures
 
 
     @service
@@ -119,7 +118,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         # add the name of each channel to the list
         for channel in armature.channels:
             channels.append(channel.name)
-        return(status.SUCCESS, channels)
+
+        return channels
 
     
     @service
@@ -134,7 +134,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         # find the dof of each channel
         for channel in armature.channels:
             dofs[channel.name] = find_dof_string(channel)
-        return(status.SUCCESS, dofs)
+
+        return dofs
 
 
     @service
@@ -146,7 +147,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         armature = self.blender_obj.childrenRecursive[str(armature_name)]
         channel = armature.channels[str(channel_name)]
         dof = find_dof_string(channel)
-        return(status.SUCCESS, dof)
+
+        return dof
 
 
     @service
@@ -161,7 +163,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         # get the rotation of each channel
         for channel in armature.channels:
             rotations[channel.name] = channel.joint_rotation.to_tuple()
-        return(status.SUCCESS, rotations)
+
+        return rotations
 
 
     @service
@@ -174,7 +177,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         channel = armature.channels[str(channel_name)]
         # get the rotation in xyz
         rotation = channel.joint_rotation.to_tuple()
-        return(status.SUCCESS, rotation)
+
+        return rotation
 
 
     @service
@@ -186,9 +190,10 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         the given armature. The values of the dictionary are
         the angle of the channel dof axis that you want to set.
         """
-        # Use 'ast.literal_eval' to transform a string into a dictionary.
-        # This is safer than using 'eval'
-        angles = ast.literal_eval(angles)
+        # Use an empty dictionary as the second parameter to 'eval'
+        #  to restrict the environment where it executes,
+        #  and avoid security problems.
+        angles = eval(angles, {})
         armature = self.blender_obj.childrenRecursive[str(armature_name)]
         # set the rotation of each channel
         for channel in armature.channels:
@@ -200,8 +205,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
             logger.info("requested rotation: %s" % str(angles[channel.name]))
             channel.joint_rotation = rotation
             armature.update()
-        
-        return(status.SUCCESS, None)
+
+        return None
 
 
     @service
@@ -220,7 +225,8 @@ class PR2Class(morse.core.robot.MorseRobotClass):
         channel.joint_rotation = rotation
         armature.update()
         logger.debug("channel rotation after: %s" % str(channel.joint_rotation))
-        return(status.SUCCESS, None)
+
+        return None
 
 
     def default_action(self):
