@@ -3,6 +3,7 @@ logger.setLevel(logging.DEBUG)
 import os
 import sys
 import uuid
+import GameLogic
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
@@ -62,6 +63,9 @@ class RequestManager(object):
         # completed service calls.
         # It is updated on each call to :py:meth:`_update_pending_calls`
         self._completed_requests = {}
+
+        # Holds a mapping request_id -> (component, service)
+        self._pending_requests = {}
 
 
         if not self.initialization():
@@ -223,6 +227,11 @@ class RequestManager(object):
             # callback for the asynchronous service.
             self._completed_requests[request_id] = None
             result_setter = partial(self._completed_requests.__setitem__, request_id)
+
+            # Store the component and service associated to this service
+            # (for instance, for later interruption)
+            self._pending_requests[request_id] = (component, service)
+
             try:
                 # Invoke the method with unpacked parameters
                 # This method may throw MorseRPCInvokationError if the
@@ -268,6 +277,26 @@ class RequestManager(object):
             logger.info("Done. Result: " + str(values))
             return (True, values)
 
+    def abort_request(self, request_id):
+        """ This method will interrupt a running asynchronous service,
+        uniquely described by its request_id
+        """
+        component_name, service_name = self._pending_requests[request_id]
+
+        for component in GameLogic.componentDict.values():
+            if component.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(component))
+                component.interrupt()
+                return
+
+        # if not found, search in the overlay dictionnary
+        for overlay in GameLogic.overlayDict.values():
+            if overlay.name() == component_name:
+                logger.info("calling  interrupt on %s" % str(overlay))
+                overlay.interrupt()
+                return
+
+
     def _update_pending_calls(self):
         """This method is called at each simulation steps and check if pending requests are
         completed or not.
@@ -278,6 +307,7 @@ class RequestManager(object):
             for request, result in list(self._completed_requests.items()):
                 if result:
                     logger.debug(str(self) + ": Request " + str(request) + " is now completed.")
+                    del self._pending_requests[request]
                     del self._completed_requests[request]
                     self.on_service_completion(request, result)
 

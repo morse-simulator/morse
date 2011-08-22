@@ -2,6 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 import morse.core.actuator
+from morse.core import status
+from morse.core.services import async_service
 import morse.helpers.math as morse_math
 
 class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
@@ -48,7 +50,20 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
         
         logger.info('Component initialized')
 
+    @async_service
+    def set_pan_tilt(self, pan, tilt):
+        """ """
+        self.local_data['pan'] = pan
+        self.local_data['tilt'] = tilt
 
+    def get_pan_tilt(self):
+       self._pan_position_3d.update(self._pan_base)
+       self._tilt_position_3d.update(self._tilt_base)
+
+       current_pan = self._pan_position_3d.yaw
+       current_tilt = self._tilt_position_3d.pitch
+
+       return current_pan, current_tilt
 
     def default_action(self):
         """ Apply rotation to the platine unit """
@@ -80,6 +95,11 @@ class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
+
+        if (abs(current_pan -  self.local_data['pan']) < self._tolerance and \
+            abs(current_tilt - self.local_data['tilt']) < self._tolerance ):
+            self.completed((status.SUCCESS))
+
         logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         # Get the angles in a range of -PI, PI

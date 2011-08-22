@@ -1,6 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+from morse.core.services import async_service
 import morse.core.sensor
+import GameLogic
+from functools import partial
 
 class PanTiltUnitClass(morse.core.sensor.MorseSensorClass):
     """ Base for stereo pairs
@@ -40,6 +42,23 @@ class PanTiltUnitClass(morse.core.sensor.MorseSensorClass):
 
         logger.info('Component initialized')
 
+    def capture_completion(self, answer):
+        self._expected_answer-= 1
+        if self._expected_answer == 0:
+            status, res = answer
+            self.completed(status, res)
+
+    def interrupt(self):
+        for camera in self.camera_list:
+            camera_instance = GameLogic.componentDict[camera]
+            camera_instance.interrupt()
+
+    @async_service
+    def capture(self, n):
+        self._expected_answer = self.num_cameras
+        for camera in self.camera_list:
+            camera_instance = GameLogic.componentDict[camera]
+            camera_instance.capture(partial(self.capture_completion), n)
 
     def default_action(self):
         """ Main function of this component. """

@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 from morse.middleware.pocolibs.sensors.Human_posture_Poster import ors_human_posture_poster
 
@@ -19,7 +20,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_human_poster(self, component_instance, poster_name)
     if poster_id != None:
-        print ("Pocolibs created poster '%s' of type human posture" % poster_id)
+        logger.info("Pocolibs created poster '%s' of type human posture" % poster_id)
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
@@ -30,11 +31,11 @@ def init_human_poster(self, component_instance, poster_name):
 
     poster_id, ok = ors_human_posture_poster.init_data(poster_name)
     if ok == 0:
-        print ("ERROR creating poster. The Human Posture Pocolib export module may not work")
+        logger.error("Creating poster. The Human Posture Pocolib export module may not work")
         return None
 
     #else:
-    print("Human Posture Poster '%s' created (ID: %d)" % (poster_name, poster_id))
+    logger.info("Human Posture Poster '%s' created (ID: %d)" % (poster_name, poster_id))
 
     return poster_id
 
@@ -58,7 +59,7 @@ def export_posture(self, component_instance):
     
     raw_dofs = list(component_instance.local_data.values())
     
-    #print("Exporting posture: ", str(raw_dofs))
+    logger.debug("Exporting posture: ", str(raw_dofs))
 
     for i in range(nb_dofs):
         dofs[i] = raw_dofs[i]

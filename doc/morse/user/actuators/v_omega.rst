@@ -20,6 +20,13 @@ Local data
 -  **v**: (float) linear velocity
 -  **w**: (float) angular velocity
 
+Services
+--------
+
+- **set_speed**: (synchronous service) Modifies v and w according to its
+  parameter
+- **stop**: (synchronous service) Stop the robot (modifies v and w to 0.0)
+
 Applicable modifiers 
 --------------------
 

@@ -1,9 +1,23 @@
 Creating a modifier
 ===================
 
+The concept of a modifier is relatively simple. Their only function is to
+change the data stored in variables in the corresponding component, by using
+the concept of :doc:`hooks <hooks>`. 
+
 Creating a modifier is more or less the same than creating a sensor. There are
 still two parts, the blender part and the python logic. For the blender part,
 it is the same thing than for a sensor / actuator.
+
+The Python script is responsible for altering the data by changing directly the
+information stored in the ``local_data`` dictionary of each component.
+
+.. note:: 
+
+    Be aware that once the data has been changed, there is no way to get the
+    original information back.  If there is a need to have both the clean and
+    the modified data for a particular sensor, the recommended method is to add
+    two sensors of the same type, and only bind one of them with the modifier.
 
 Python part 
 -----------
@@ -25,6 +39,12 @@ Modifier functions must have the prototype: ::
 In your modifier function, you must only access to the array ``local_data``
 of the component.
 
-`GPS_noise.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/gps_noise.py>`_ 
+Examples
+--------
+
+`NED_modifier.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/ned_mod.py>`_ 
 shows a simple example for a modifier.
+
+`GPS_noise.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/gps_noise.py>`_ 
+calls a C routine to add Gaussian noise to a GPS output.
 
