@@ -91,47 +91,41 @@ FIND_PROGRAM(SPHINX_BUILD NAMES sphinx-build)
 IF (NOT SPHINX_BUILD)
 	MESSAGE(STATUS "Can't find sphinx-build : will not build the documentation")
 ELSE()
-	FIND_PACKAGE(PythonInterp)
-	IF (NOT PYTHONINTERP_FOUND) 
-		MESSAGE(STATUS "Can't find python2 executable : sphinx-build will not run")
-		MESSAGE(STATUS "Will not build the documentation")
-	ELSE()
-		SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
-		SET (SPHINX_LATEX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/tex)
-		ADD_CUSTOM_COMMAND(
-			OUTPUT ${SPHINX_OUTPUT}
-			COMMAND ${PYTHON_EXECUTABLE} ${SPHINX_BUILD} -b html
-								    -c ${CMAKE_CURRENT_BINARY_DIR}/doc
-									   ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-									   ${SPHINX_OUTPUT}
-		)
-	
-		ADD_CUSTOM_TARGET(doc ALL DEPENDS ${SPHINX_OUTPUT})
-	
-		INSTALL(DIRECTORY ${SPHINX_OUTPUT}
-			    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/morse
-				REGEX .doctrees.* EXCLUDE
-				REGEX _sources.* EXCLUDE
-				REGEX .*.inv EXCLUDE
-				REGEX .buildinfo EXCLUDE
-				)
-	
-		ADD_CUSTOM_TARGET(
-			force_doc
-			COMMAND ${PYTHON_EXECUTABLE} ${SPHINX_BUILD} -b html 
-								 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
-								 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-								 ${SPHINX_OUTPUT}
-		)
-	
-		ADD_CUSTOM_TARGET(
-			latex_doc
-			COMMAND ${PYTHON_EXECUTABLE} ${SPHINX_BUILD} -b latex
-								 -c ${CMAKE_CURRENT_BINARY_DIR}/doc/
-								 ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-								 ${SPHINX_LATEX_OUTPUT}
-		)
-	ENDIF()
+	SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
+	SET (SPHINX_LATEX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/tex)
+	ADD_CUSTOM_COMMAND(
+		OUTPUT ${SPHINX_OUTPUT}
+		COMMAND ${SPHINX_BUILD} -b html
+								-c ${CMAKE_CURRENT_BINARY_DIR}/doc
+								   ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+								   ${SPHINX_OUTPUT}
+	)
+
+	ADD_CUSTOM_TARGET(doc ALL DEPENDS ${SPHINX_OUTPUT})
+
+	INSTALL(DIRECTORY ${SPHINX_OUTPUT}
+			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/morse
+			REGEX .doctrees.* EXCLUDE
+			REGEX _sources.* EXCLUDE
+			REGEX .*.inv EXCLUDE
+			REGEX .buildinfo EXCLUDE
+			)
+
+	ADD_CUSTOM_TARGET(
+		force_doc
+		COMMAND ${SPHINX_BUILD} -b html 
+								-c ${CMAKE_CURRENT_BINARY_DIR}/doc/
+								${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+								${SPHINX_OUTPUT}
+	)
+
+	ADD_CUSTOM_TARGET(
+		latex_doc
+		COMMAND ${SPHINX_BUILD} -b latex
+								-c ${CMAKE_CURRENT_BINARY_DIR}/doc/
+								${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
+								${SPHINX_LATEX_OUTPUT}
+	)
 ENDIF()
 ENDIF()
 
