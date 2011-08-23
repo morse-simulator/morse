@@ -177,7 +177,8 @@ class YarpRequestManager(RequestManager):
 
         try:
             params = bottle.get(3).toString()
-            p =  eval(params, {"__builtins__": None},{})
+            import ast
+            p =  ast.literal_eval(params)
         except (NameError, SyntaxError) as e:
             raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 

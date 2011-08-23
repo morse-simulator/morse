@@ -35,6 +35,7 @@ The MORSE Simulation with a PR2 model 'pr2' must be running for this to work.
 
 import sys
 import socket
+import ast
 
 
 HOST = 'localhost'
@@ -90,10 +91,9 @@ def parse_response(msg, id_):
     msg = msg.replace("SUCCESS ", '') # Remove SUCCESS status
     msg = msg.replace("SUCCESS", '') # Sometimes SUCCESS has a space after it, sometimes not.
     try:
-        # Use an empty dictionary as the second parameter to 'eval'
-        #  to restrict the environment where it executes,
-        #  and avoid security problems.
-        msg = eval(msg, {}) # Parse string into list/dict/..
+        # Use 'ast.literal_eval' to transform a string into a dictionary.
+        # This is safer than using 'eval'
+        msg = ast.literal_eval(msg) # Parse string into list/dict/..
     except NameError as detail:
         print("response: %s, will not be parsed. Error: %s" % (msg, detail))
     except SyntaxError as detail:

@@ -27,6 +27,9 @@ through the middleware. The opposite happens with actuators, which first read
 data through middlewares and then change it using modifiers, before using it
 inside of Blender.
 
+A component can be connected to more than one middleware, and MORSE will keep a communication channel for each middleware and export the data through all of them when required.
+Components can also use more than one modifier. These will change the data in the same order as they are listed in the configuration (see below).
+
 Component services are also configured in a way similar to middlewares and
 modifiers, since they also make use of the ``local_data`` dictionary. However,
 the internal workings of services are different, and are explained in the
@@ -39,12 +42,13 @@ This binding is currently done via a Python file called ``component_config.py``
 which must be internal to the Blender scenario file. The configuration file 
 should be edited from a **Text Editor** window in Blender.
 
-It consists of three dictionaries indexed by the name of the components (they are
-all optional):
+It consists of three dictionaries indexed by the name of the components
+(they are all optional):
 
 - ``component_mw``: Lists which middlewares are bound to the specific 
-  component. The value of the dictionary is a list. The list must consist of
-  at least 2 strings, with the information detailed below:
+  component. The value of the dictionary is either a list of strings (for only one middleware) or a list of lists (describing the binding to several middlewares).
+  In both cases, each list describing a middleware consists of at least 2,
+  strings, with the information detailed below:
   
   - The first element is the name of the Middleware, and must be written exactly
     as the name of the Empty object that represents the Middleware in the scene.
@@ -63,7 +67,7 @@ all optional):
 
 - ``component_service``: Lists the middlewares that will take care of handling
   a service provided by a component. The value of the dictionary is a list of
-  *full qualified name* of Python classes inheriting from
+  *fully qualified name* of Python classes inheriting from
   :py:class:`morse.core.request_manager.RequestManager` (like
   :py:class:`morse.middleware.socket_request_manager.SocketRequestManager`).
 
@@ -80,6 +84,7 @@ Example:
     # Middleware binding for regular data exchange
     component_mw = {
       "Gyroscope": ["Yarp", "post_message"],
+      "GPS": [ ["Yarp", "post_message"], ["Socket", "post_message"] ],
       "GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
       "Motion_Controller": ["Yarp", "read_message"],
       "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],

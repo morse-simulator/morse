@@ -7,7 +7,7 @@ Requirements - What you need to install before
 Hardware
 ++++++++
 
-To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cars as compatible with GLSL:
+To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cards as compatible with GLSL:
 
 - ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
 - NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
@@ -31,9 +31,13 @@ Required software
   If you use the automated ``robotpkg``-based installation (recommended), you can skip this section: 
   ``robotpkg`` will check and install for you all required dependencies.
 
-- Python (3.1 or +)
-- Blender 2.54+ build with Python 3.1
+- Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
+- Blender 2.59 build with Python 3.2
 - MORSE source code
+
+.. note::
+  If you install Python by hand, it is important to specify the ``--with-wide-unicode`` flag, since Blender
+  expects this behaviour. Otherwise, there will be an incompatibility of types when using additional middlewares.
  
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
@@ -46,6 +50,7 @@ For the YARP bindings
 - YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
 - YARP python binding
 - ACE ( 5.6.3 or +, required for YARP)
+- SWIG (2.0.4, required to compile the Python bindings)
 
 Instructions to create YARP-Python bindings are `here <http://eris.liralab.it/wiki/YARP_and_Python>`_.
 To properly use simulated cameras with yarp < 2.3.2, you need to apply the patch from ``patches/yarp.i.diff``.
@@ -67,13 +72,13 @@ and then install the YARP python bindings bindings ::
   $ make update
 
 
-Compiling the YARP Python binding will create two files: ``yarp.py`` and ``_yarp.so``, and install them in ``$ROBOTPKG_BASE/lib/python3.1/site-packages/``
-You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/lib/python3.1/site-packages/`` to let python find the YARP module.
+Compiling the YARP Python binding will create two files: ``yarp.py`` and ``_yarp.so``, and install them in ``$ROBOTPKG_BASE/lib/python3.2/site-packages/``
+You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/lib/python3.2/site-packages/`` to let python find the YARP module.
 
-If you are not using robotpkg to install YARP, then make sure to copy the files ``yarp.py`` and ``_yarp.so`` to your Python lib directory (``/usr/lib/python3.1/site-packages/``) or at some place reachable from your ``PYTHONPATH`` environment variable.
+If you are not using robotpkg to install YARP, then make sure to copy the files ``yarp.py`` and ``_yarp.so`` to your Python lib directory (``/usr/lib/python3.2/site-packages/``) or at some place reachable from your ``PYTHONPATH`` environment variable.
 
 .. warning::
-    The name of the installation directory may be different depending on your Linux distribution. If you use Ubuntu or similar distributions, replace the directory name of ``python3.1/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
+    The name of the installation directory may be different depending on your Linux distribution. If you use Ubuntu or similar distributions, replace the directory name of ``python3.2/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
 
 ROS 
 ~~~
@@ -144,11 +149,14 @@ Finally pymoos can be installed by::
     
 When running ``cmake`` for pymoos make sure to select the MOOS support option.
 
+
 Installation 
 ------------
 
 .. note::
     The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
+
+It is recommended to store this environment variable, as it is necessary to use the :doc:`scene builder script <../dev/builder>` to generate equipped robots.
 
 With ``robotpkg``
 +++++++++++++++++
@@ -184,7 +192,7 @@ It supports Linux, * BSD and Darwin (MacOS X).
 By hand
 +++++++
 
-Download the source code. It is stored in a ``git`` repository::
+Download the latest version of the source code. It is stored in a ``git`` repository::
 
   $ git clone http://trac.laas.fr/git/robots/morse.git
   

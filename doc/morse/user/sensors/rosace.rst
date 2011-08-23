@@ -1,5 +1,5 @@
-Rosace sensor
-=============
+Victim sensor (Rosace sensor)
+=============================
 
 This is a multi functional component specific for the ROSACE scenario,
 where the robot must be able to aid human victims.
@@ -7,14 +7,14 @@ The sensor is capable of detecting any victim located within a cone in front of
 the robot, with a range delimited in the properties of the Blender object.
 The output of the sensor is a list of the robots and their positions in the
 simulated world.
-This sensor works only with the `human victim <../others/victim>` object.
+This sensor works only with the :doc:`human victim <../others/victim>` object.
 
 Additionally, the sensor provides a number of services related to the
 capabilities of the robot to help the nearest victim:
 
     - Report on the condition of a victim
     - Report the capabilities of the robot
-    - Heal a victim (if compatible capabilities and requirements)
+    - Heal a victim (if the robot has compatible capabilities with the requirements of the victim)
 
 
 In the test scenarios, human victims are shown in *red*. When a robot approaches,
@@ -40,15 +40,12 @@ Local data
 Configurable parameters
 -----------------------
 
--  **Heal_range**: (float) maximum distance from which it is possible to heal a victim. Even if
-    the victim can be detected by the sensor, it can't be healed unless its distance from the robot
-    is less than this value.
+-  **Heal_range**: (float) maximum distance from which it is possible to heal a victim. Even if the victim can be detected by the sensor, it can't be healed unless its distance from the robot is less than this value.
 -  **Abilities**: (string) encoded string with a list of numbers, separated by comas, that represent
     the equipment capabilities of the robot. This information should be used by the operator of the robot
     to determine if it is capable of helping a victim or not.
 
-The following parameters can be adjusted within the **Logic Bricks** of the ``Rosace_Sensor`` object in
-Blender, in the properties of the ``Radar`` sensor.
+The following parameters can be adjusted within the **Logic Bricks** of the ``Rosace_Sensor`` object in Blender, in the properties of the ``Radar`` sensor.
 
 - **Angle**: (float) aperture angle of the radar capable of detecting the victims.
 - **Distance**: (float) detection distance of the radar. Victims further away from the robot than this

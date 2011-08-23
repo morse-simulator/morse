@@ -62,23 +62,32 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
 
     def _setup_video_texture(self):
-        """ Prepare this camera to use the VideoTexture module """
-        # Get the references to this cameras materials
-        #  necesary if there are more than one camera added to the scene
-        screen_name = 'CameraCube' #TODO: beuuh! Hardcoded values !!
-        camera_name = 'CameraRobot'
-        material_name = 'MAScreenMat'
-        name_len = len(self.name())
-        if name_len > 4 and self.name().endswith('.00', name_len-4, name_len-1):
-            extension = self.name()[name_len-4:]
-            screen_name = screen_name + extension
-            camera_name = camera_name + extension
-            #material_name = material_name + extension
+        """ Prepare this camera to use the VideoTexture module.
+        Extract the references to the Blender camera and material where
+        the images will be rendered.
+        """
+        for child in self.blender_obj.children:
+            # The camera object that will produce the image in Blender
+            if 'CameraRobot' in child.name:
+                camera = child
+            # The object that contains the material where the image is rendered
+            if 'CameraCube' in child.name:
+                screen = child
+                # Considering it consists of a single mesh
+                mesh = child.meshes[0]  
+                # Get the material name
+                for material in mesh.materials:
+                    material_index = material.getMaterialIndex()
+                    mesh_material_name = mesh.getMaterialName(material_index)
+                    if 'MAScreenMat' in mesh_material_name:
+                        material_name = mesh_material_name
 
-        # Get the reference to the camera and screen
+        logger.debug("\tCAMERA: %s" % camera.name)
+        logger.debug("\tSCREEN: %s" % screen.name)
+        logger.debug("\tMATERIAL: %s" % material_name)
+
+        # Get the reference to the scene
         scene = GameLogic.getCurrentScene()
-        screen = scene.objects[screen_name]
-        camera = scene.objects[camera_name]
 
         # Link the objects using VideoTexture
         if not hasattr(GameLogic, 'cameras'):
@@ -97,8 +106,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Define an image size. It must be powers of two. Default 512 * 512
         GameLogic.cameras[self.name()].source.capsize = \
                 [self.image_width, self.image_height]
-
-        logger.info("Camera {0}: Exporting an image of capsize: {1} pixels". \
+        logger.info("Camera '{0}': Exporting an image of capsize: {1} pixels". \
                 format(self.name(), GameLogic.cameras[self.name()].source.capsize))
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
 
