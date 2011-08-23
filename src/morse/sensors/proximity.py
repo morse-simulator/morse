@@ -3,7 +3,7 @@ import GameLogic
 import morse.core.sensor
 
 class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
-    """ Distance sensor to detect nearby robots """
+    """ Distance sensor to detect nearby objects. """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -16,12 +16,19 @@ class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         self.local_data['near_robots'] = {}
+        
         try:
             self._range = self.blender_obj['Range']
         except KeyError:
             # Set a default range of 100m
             self._range = 100
-            
+        
+        try:
+            self._tag = self.blender_obj['Track']
+        except KeyError:
+            # Set default tracked objects to 'Robots'
+            self._tag = "Robot_Tag"
+        
         logger.info('Component initialized')
 
 
@@ -33,14 +40,17 @@ class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
         parent = self.robot_parent.blender_obj
 
         # Get the fire sources
-        for robot in GameLogic.robotDict.keys():
-            # Skip distance to self
-            if parent != robot:
-                distance = self._measure_distance_to_robot (parent, robot)
-                if distance <= self._range:
-                    self.local_data['near_robots'][robot.name] = distance
-
-
+        #for robot in GameLogic.robotDict.keys():
+        for robot in GameLogic.getCurrentScene().objects:
+            try:
+                robot[self._tag]
+                # Skip distance to self
+                if parent != robot:
+                    distance = self._measure_distance_to_robot (parent, robot)
+                    if distance <= self._range:
+                        self.local_data['near_robots'][robot.name] = distance
+            except KeyError:
+                pass
 
     def _measure_distance_to_robot(self, own_robot, target_robot):
         """ Compute the distance between two robots
