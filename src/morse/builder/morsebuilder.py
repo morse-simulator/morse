@@ -170,6 +170,12 @@ class Component(AbstractComponent):
     # here we use the fact that after appending, Blender select the objects 
     # and the root (parent) object first ( [0] )
     self._blendobj = bpy.context.selected_objects[0]
+    # move the object into layer2 to be consistent with default scene:
+    # core Morse objects in layer1, others in layer2
+    bpy.ops.object.move_to_layer(layers=(False, True, False, False, False,\
+                                         False, False, False, False, False,\
+                                         False, False, False, False, False,\
+                                         False, False, False, False, False))
 
 class Robot(Component):
   def __init__(self, name):
