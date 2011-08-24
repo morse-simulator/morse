@@ -26,6 +26,17 @@ class Configuration(object):
     if not 'component_config.py' in bpy.data.texts:
       bpy.ops.text.new()
       bpy.data.texts[-1].name = 'component_config.py'
+      # make the current scene Morse-able
+      if not 'Scene_Script_Holder' in bpy.data.objects:
+        filepath = os.path.join(os.environ["MORSE_ROOT"], "share", "data", 
+            "morse", "morse_default.blend")
+        objlist = [{'name': 'CameraFP'}, {'name': 'HUD_plane'}, 
+            {'name': 'Title_text'}, {'name': 'Keys_text'}, {'name': 'Compass'}, 
+            {'name': 'Scene_Script_Holder'}]
+        bpy.ops.wm.link_append(directory=filepath + '/Text/', link=False, 
+            files=[{'name': 'setup_path.py'}])
+        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
+            files=objlist)
   def write(self):
     cfg = bpy.data.texts['component_config.py']
     cfg.clear()
