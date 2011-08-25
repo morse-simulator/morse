@@ -171,12 +171,8 @@ class Component(AbstractComponent):
     AbstractComponent.__init__(self)
     filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
-    if bpy.app.version > (2,56,0):
-    #if bpy.app.version[1] > 56:
-      with bpy.data.libraries.load(filepath) as (src, _):
+    with bpy.data.libraries.load(filepath) as (src, _):
         objlist = [{'name':obj} for obj in src.objects]
-    else: # Blender 2.56 does not support bpy.data.libraries.load
-      objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
 
     #print ("NAME: %s | CATEGORY: %s | objlist %s" % (name, category, objlist))
 
