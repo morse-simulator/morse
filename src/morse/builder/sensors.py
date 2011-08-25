@@ -77,16 +77,18 @@ class Battery(morse.builder.creator.SensorCreator):
 class Infrared(morse.builder.creator.SensorCreator):
   def __init__(self, name="Infrared"):
     morse.builder.creator.SensorCreator.__init__(self, name, 
-      "morse/sensors/infrared", "InfraRedClass", "morse_infrared")
+      "morse/sensors/infrared", "InfraredClass", "morse_infrared")
     self.properties(ir_range = 1.5)
-    mesh = morse.builder.creator.Cube("InfraRedCube")
+    mesh = morse.builder.creator.Cube("InfraredCube")
     mesh.scale = (.1,.1,.05)
     self.append(mesh)
+    bpy.ops.logic.sensor_remove(sensor="Always")
     bpy.ops.logic.sensor_add(type = 'RADAR') # add Radar sensor
     sensor = self._blendobj.game.sensors.keys()[-1]
     self._blendobj.game.sensors[sensor].use_pulse_true_level = True
     self._blendobj.game.sensors[sensor].angle = 5
     self._blendobj.game.sensors[sensor].distance = 20
+    self._blendobj.game.sensors[sensor].axis = 'XAXIS' # default
     controller = self._blendobj.game.controllers.keys()[-1]
     self._blendobj.game.controllers[controller].link( sensor = 
         self._blendobj.game.sensors[sensor] )
