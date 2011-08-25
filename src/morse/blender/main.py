@@ -67,9 +67,13 @@ def create_dictionaries ():
     if not hasattr(GameLogic, 'mwDict'):
         GameLogic.mwDict = {}
 
-    # Create a dictionary with the middlewares used
+    # Create a dictionary with the service used
     if not hasattr(GameLogic, 'serviceDict'):
         GameLogic.serviceDict = {}
+
+    # Create a dictionnary with the overlaid used
+    if not hasattr(GameLogic, 'overlayDict'):
+        GameLogic.overlayDict = {}
 
     scene = GameLogic.getCurrentScene()
 
@@ -387,6 +391,7 @@ def load_overlays():
                 instance = klass(overlaid_object)
                 GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
                 instance.register_services()
+                GameLogic.overlayDict[overlay_name] = instance
                 logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
     
     return True

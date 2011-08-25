@@ -22,8 +22,8 @@ def get_rotation_matrix(object):
     """ Return a the rotation matrix of an object.
     Used to transform another object to this one's coordinate system. """
 
-    return object.worldOrientation
-
+    import copy
+    return copy.copy(object.worldOrientation)
 
 def invert_rotation_matrix(object):
     """ Return the inverse of the rotation matrix of an object.
@@ -49,22 +49,11 @@ def normalise_angle(angle):
     This function expects an angle given in radians
     It will reduce the input angle to be less than PI,
     and give it the correct sign.
-    """
-    factor = 1
-    # Store the sign of the angle
-    if angle < 0.0:
-        factor = -1
-    # Use positive values to do the conversion
-    angle = math.fabs(angle)
-    small_angle = angle % math.pi
-    division = angle // math.pi
-    # Check if the sign should be inversed
-    if division % 2 == 1:
-        small_angle = math.pi - small_angle
-        factor = factor * -1
-    angle = factor * small_angle
 
-    return angle
+    Using new method proposed by David Hodo:
+    hododav@tigermail.auburn.edu
+    """
+    return ((angle+math.pi)%(2*math.pi))-math.pi
 
 
 def rotation_direction (current_angle, target_angle, tolerance, speed):

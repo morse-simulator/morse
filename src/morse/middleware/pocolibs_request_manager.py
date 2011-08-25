@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
 import socket
 import select
 
@@ -27,7 +28,11 @@ class PocolibsRequestManager(RequestManager):
         self._answer_clients = {}  
         
         # Clients that have pending (ie asynchronous) requests
-        self._pending_requests = {} 
+        # map intern_rqst_id -> (client, rqst_id, request_name)
+        self._intern_pending_requests = {} 
+        # Map pocolibs rqst_id -> intern_rqst_id 
+        self._internal_mapping = {}
+
         self._next_client_id = 0
         self._next_rqst_id = 0
         
@@ -74,24 +79,36 @@ class PocolibsRequestManager(RequestManager):
 
         return True
 
+    def _encode_answer(self, rqst_id, fqn, result):
+        state, value = result
+        component, rqst = fqn.strip("::").split("::")
+
+        res = str(rqst_id) + " " + fqn + " TERM "
+        if (state == status.SUCCESS):
+            res += "OK" + (" " + "  ".join([str(i) for i in value]) if value else "")
+        elif(state == status.PREEMPTED):
+            res += "S_" + component + "_stdGenoM_ACTIVITY_INTERRUPTED"
+        else:
+            if (value):
+                res +=  "S_" + component + "_" + str(value[0])
+            else:
+                res +=  "S_" + component + "_UNKNOWN_ERROR"
+        return res
 
     def on_service_completion(self, intern_rqst_id, result):
-        
-        state, value = result
         
         s = None
         
         try:
-            s, rqst_id, fqn = self._pending_requests[intern_rqst_id]
+            s, rqst_id, fqn = self._intern_pending_requests[intern_rqst_id]
         except KeyError:
             logger.info(str(self) + ": ERROR: I can not find the socket which requested " + \
                   intern_rqst_id + ". Skipping it.")
             return
 
-        res = str(rqst_id) + " " + fqn + \
-                " TERM " + \
-                ("OK" if state == status.SUCCESS else "") + \
-                (" " + " ".join([str(i) for i in value]) if value else "")
+        del self._intern_pending_requests[intern_rqst_id]
+        del self._internal_mapping[rqst_id]
+        res = self._encode_answer(rqst_id, fqn, result)
         self._results_to_output.setdefault(self._answer_clients[s], []).append(res)
         
 
@@ -118,7 +135,7 @@ class PocolibsRequestManager(RequestManager):
                 
                 if data == "HELLO":
                     conn.send(("HELLO " + str(self._next_client_id) + "\r\n").encode('ascii'))
-                    logger.info('Pocolibs request manager: new connection from ', addr)
+                    logger.info('Pocolibs request manager: new connection from %s', str(addr) )
                     self._clients[conn] = self._next_client_id
                     self._answer_clients[conn] = conn
                     self._inputs.append(conn)
@@ -146,6 +163,7 @@ class PocolibsRequestManager(RequestManager):
                 if data.startswith("BYE"):
                     logger.info("Client " + str(self._clients[i]) + " is leaving. Bye bye")
                     del self._clients[i]
+                    del self._answer_clients[i]
                     self._inputs.remove(i)
                     self._outputs.remove(i)
                     continue
@@ -164,11 +182,7 @@ class PocolibsRequestManager(RequestManager):
                     rqst_id, fqn, is_sync, result = self._landing_request
                     
                     if is_sync:
-                        state, value = result
-                        res = str(rqst_id) + " " + fqn + \
-                            " TERM " + \
-                            ("OK" if state == status.SUCCESS else "") + \
-                            (" " + " ".join([str(i) for i in value]) if value else "")
+                        res = self._encode_answer(rqst_id, fqn, result)
                         self._results_to_output.setdefault(self._answer_clients[i], []).append(res)
                     else:
                         activity_id = 0 #TODO: For now, we do not support more than one instance of the same request
@@ -180,7 +194,8 @@ class PocolibsRequestManager(RequestManager):
                         # (cf :py:meth:on_service_completion)
                         # Here, 'result' is the internal request id while
                         # 'rqst_id' is the id used by the socket client.
-                        self._pending_requests[result] = (i, rqst_id, fqn)
+                        self._intern_pending_requests[result] = (i, rqst_id, fqn)
+                        self._internal_mapping[rqst_id] = result
                         
                     self._landing_request = None
         
@@ -230,7 +245,7 @@ class PocolibsRequestManager(RequestManager):
                 if (s_client and s_reply):
                     self._answer_clients[s_client] = s_reply
 
-            return (True, str(client_id))
+            return (True, str(req[1]))
         
         if cmd == "RQST":
             component, rqst = req[1].strip("::").split("::")
@@ -260,11 +275,20 @@ class PocolibsRequestManager(RequestManager):
             except MorseMethodNotFoundError:
                 # Request not found for module
                 return (False, "1 invalid command name \\\"" + rqst + "Send\\\"")
-            except MorseWrongArgsError:
+            except MorseRPCNbArgsError:
                 # Wrong # of args
                 return (False, "1 wrong # args")
+            except MorseRPCTypeError:
+                # Wrong # of args
+                return (False, "1 wrong type in args")
 
             return (True, str(rqst_id))
+
+        if cmd == "ABORT":
+            rqst_id = int(req[1])
+            logger.debug("ABORT request %s " % str(rqst_id))
+            self.abort_request(self._internal_mapping[rqst_id])
+            return (True, "")
             
         if cmd == "cs::lsmbox": # want to list available modules
             return (True, " ".join(self.services().keys()))
@@ -276,7 +300,7 @@ class PocolibsRequestManager(RequestManager):
                 component = req[2].split("::")[0]
                 return(True, " ".join(["::" + component + "::" + method + "Send" for method in self.services()[component]]))
                 
-        if cmd in ["LM", "cs::init", "exec", "modules::connect", "ACK"]:
+        if cmd in ["LM", "cs::init", "exec", "modules::connect", "ACK", "UNLM", "KILL"]:
             # Not needed in simulation
             return (True, "")
         

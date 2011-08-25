@@ -83,6 +83,4 @@ Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then 
 Go further
 ----------
 
-If you want to learn more about the MORSE-builder API, see the dev/builder doc.
-
-
+If you want to learn more about the MORSE-builder API, see the :doc:`<dev/builder doc>`.

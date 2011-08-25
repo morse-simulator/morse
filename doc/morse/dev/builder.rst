@@ -25,13 +25,22 @@ possible. To do so, we encapsulate the potential complexities of Blender,
 Python or Morse.
 
 To test the API step by step, you can open morse, and in the Blender UI, open 
-a Python Console, whithin which you can import this API 
+a Python Console, within which you can import this API 
 ``from morse.builder.morsebuilder import *``
+
+Configuring the environment variables
++++++++++++++++++++++++++++++++++++++
+
+It is necessary to indicate the builder where to look for the installed MORSE components in the computer. This is done by specifying the environment variable ``$MORSE_ROOT``, which should point to the prefix directory used during MORSE installation.
+
+
+Building a full robot
+---------------------
 
 Append a robot
 ++++++++++++++
 
-We can append components by their filename (without the .blend enstension)
+We can append components by their filename (without the .blend extension)
 
 * to do so, in Blender 2.57+ we just need to have blender-file containing only 
   1 root-object, and as many sub-object as we want, knowing that they'll all be 
@@ -48,25 +57,24 @@ To append a robot on the scene, we just need to write:
 
     atrv = Robot('atrv')
 
-In order to make this work, we should have a blender-file name atrv.blend in 
-the robots folder of ``MORSE_COMPONENTS`` (which is still hard-coded in 
-``morse.builder.data`` as ``'/usr/local/share/data/morse/components'``).
+In order for this work, there must be a blender-file name atrv.blend in 
+the folder ``$MORSE_ROOT/share/data/morse/components/robots/``.
 
 Append a component
 ++++++++++++++++++
 
-This taks is verry similar to the previous one, except that we can make a 
-parent relationship with the robot. ie.:
+This task is very similar to the previous one, except that we can make a 
+parent relationship with the robot. *ie.*:
 
 .. code-block:: python
 
     motion = Controller('morse_vw_control')
     atrv.append(motion)
 
-Once again, this imply that ``morse_vw_control.blend`` exists in 
-``MORSE_COMPONENTS/controllers/``.
+Once again, this implies that ``morse_vw_control.blend`` exists in 
+``$MORSE_ROOT/share/data/morse/components/controllers/``.
 
-cf. code/morse.builder.html#morse.builder.morsebuilder.Component
+cf. :doc:`<code/morse.builder.html#morse.builder.morsebuilder.Component>`
 
 Move a component
 ++++++++++++++++
@@ -100,9 +108,19 @@ You can modify the game-properties of any components within Python
 Middleware configuration
 ++++++++++++++++++++++++
 
+The builder script also permits creating the required ``component_config.py``
+for the scene according to the robot and components being inserted. This is done automatically so that the user does not need to modify said script by hand.
+
+A middleware controller can be inserted in the same way as other components:
+
+.. code-block:: python
+
+    ros = Middleware('ros_empty')
+
 In order to set a component-middleware-method, we have two options, the first 
-one is simple for the user, but requier some pre-configuration (dictionnary) 
-and eventualy restriction (middleware-component = 1 method). 
+one is simple for the user, but requires some pre-configuration (a dictionary
+defined in the file ``src/morse/bulder/data.py``) 
+and poses a restriction of a single middleware per component (middleware-component = 1 method). 
 
 .. code-block:: python
 
@@ -111,12 +129,13 @@ and eventualy restriction (middleware-component = 1 method).
 cf. ``morse.builder.data.MORSE_MIDDLEWARE_DICT``
 
 The second one is a bit less simple for the end-user.
+It consists of including the description of the middleware binding just as it would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
     ros.configure(motion, ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
-cf. `user/hooks.html` and `user/tutorial.html#configuring-the-middlewares`
+cf. :doc:`user/hooks <../user/hooks.html>` and :doc:`user/tutorial.html#configuring-the-middlewares <../user/tutorial.html#configuring-the-middlewares>`
 
 Example
 -------
@@ -172,26 +191,24 @@ Example
     ros.configure(cam)
 
 
-Generate the components dictionnary
+Generate the components dictionary
 -----------------------------------
 
-This part is requierd for Blender 2.56 developper (if you add new components, 
+This part is required for Blender 2.56 developer (if you add new components, 
 or want to tweak them)
 To do so, you will need Blender 2.57 (I know it doesn't smell usual) since the 
 `bpy.data.libraries.load 
 <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html>`_ 
-method is verry convinient to read the content of a blender file.
+method is very convenient to read the content of a blender file.
 
 cf. ``morse.builder.data.MORSE_COMPONENTS_DICT``
 
 cf. ``morse.builder.generator.generate()``
 
-cf. code/morse.builder.html#module-morse.builder.generator
+cf. :doc:`<code/morse.builder.html#module-morse.builder.generator>`
 
 TODOs
 -----
 
 With this small set of class / proof of concept, we can imagine some tools 
 integrated in the Blender GUI to let user append components easily.
-
-

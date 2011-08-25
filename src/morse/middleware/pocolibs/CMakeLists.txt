@@ -57,7 +57,7 @@ foreach(directory ${directories_list})
                 foreach(dependency ${module_to_find})
 		            string(TOUPPER "${dependency}" DEPENDENCY)
 				    set(MODULE_INCLUDE_DIRS "${DEPENDENCY}_INCLUDE_DIRS")
-					MESSAGE("Adding dependency ${dependency}")
+                    #MESSAGE("Adding dependency ${dependency}")
 				    pkg_check_modules(${DEPENDENCY} REQUIRED ${dependency})
 				    include_directories(${${MODULE_INCLUDE_DIRS}})
                 endforeach(dependency)
@@ -97,7 +97,8 @@ foreach(directory ${directories_list})
 
 			add_library(${target_name} SHARED ${source} ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c)
 			set_target_properties(${target_name} PROPERTIES PREFIX "_")
-			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON_LIBRARIES})
+			set_target_properties(${target_name} PROPERTIES SUFFIX ".so")
+			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON3_LIBRARIES})
 			install (FILES ${MODULE_SOURCE_DIR}/__init__.py 
 				${CMAKE_CURRENT_BINARY_DIR}/_${target_name}.so 
 				${CMAKE_CURRENT_BINARY_DIR}/${target_name}.py

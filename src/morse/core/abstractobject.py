@@ -69,6 +69,17 @@ class MorseAbstractObject(object):
              self.on_completion((status, result))
              self.on_completion = None
 
+    def interrupt(self):
+        """ This method is automatically invoked by the component when a
+        service is interrupted, basically to notify to the client that
+        the task has been interrupted.
+
+        It can be override in each component to provide a true
+        interrupt, for exemple resseting the speed command to 0.0
+        """
+        import morse.core.status
+        self.completed(morse.core.status.PREEMPTED, ["Interrupted by incoming request"])
+
     def set_service_callback(self, cb):
         """ Sets the callback function that is to be invoked when the current
         request completes.
@@ -90,8 +101,7 @@ class MorseAbstractObject(object):
                         old_cb.service.__name__ + ") is already running. I do not know what to do.")
 
             if interruptible:
-                import morse.core.status
-                self.on_completion((morse.core.status.PREEMPTED, "Interrupted by incoming request"))
+                self.interrupt()
             else:
                 raise MorseRPCInvokationError("A non-interruptible service (" + old_cb.service.__name__ + ") is already running")
 

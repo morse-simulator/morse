@@ -19,11 +19,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     self._poster_in_dict[component_name] = poster_id
     component_instance.input_functions.append(function)
 
-
-def read_platine(self, component_instance):
-    """ Read pan,tilt from a platine poster """
-    # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+def read_platine_(poster_id, component_instance):
     platine_data, ok = ors_platine_poster.read_platine_data(poster_id)
 
     if ok != 0:
@@ -34,3 +30,27 @@ def read_platine(self, component_instance):
         return True
     else:
         return False
+
+def read_platine(self, component_instance):
+    """ Read pan,tilt from a platine poster """
+    # Read from the poster specified
+    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    read_platine_(poster_id, component_instance)
+
+class PosterNotFound(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class PlatinePoster:
+    def __init__(self, poster_name):
+        self.poster_id = ors_platine_poster.createPosterHandler(poster_name)
+        if not self.poster_id.found:
+            raise PosterNotFound(poster_name)
+
+    def read(self,  component_instance):
+        read_platine_(self.poster_id, component_instance)
+
+    def __del__(self):
+        pass

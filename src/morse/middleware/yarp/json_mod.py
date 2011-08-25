@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import json
 from collections import OrderedDict
 
@@ -42,7 +43,7 @@ def post_json_message(self, component_instance):
     try:
         yarp_port = self.getPort(port_name)
     except KeyError as detail:
-        print ("ERROR: Specified port does not exist: ", detail)
+        logger.error("Specified port does not exist: ", detail)
         return
 
     bottle = yarp_port.prepare()
@@ -64,7 +65,7 @@ def read_json_message(self, component_instance):
     try:
         yarp_port = self.getPort(port_name)
     except KeyError as detail:
-        print ("ERROR: Specified port does not exist: ", detail)
+        logger.error("Specified port does not exist: ", detail)
         return
 
     message_bottle = yarp_port.read(False)
@@ -84,7 +85,7 @@ def read_json_message(self, component_instance):
             elif isinstance(data, str):
                 component_instance.local_data[variable] = json_dict[variable]
             else:
-                print ("Yarp ERROR: Unknown data type at 'read_json_data'")
+                logger.error("Unknown data type at 'read_json_data'")
             i = i + 1
 
 
@@ -100,7 +101,7 @@ def read_json_waypoint(self, component_instance):
     try:
         yarp_port = self.getPort(port_name)
     except KeyError as detail:
-        print ("ERROR: Specified port does not exist: ", detail)
+        logger.error("Specified port does not exist: ", detail)
         return
 
     message_bottle = yarp_port.read(False)
