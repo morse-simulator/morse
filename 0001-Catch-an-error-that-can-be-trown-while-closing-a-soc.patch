@@ -1,0 +1,35 @@
+From 8c52a17cbb0004b8965bf5598470a34afe80bb88 Mon Sep 17 00:00:00 2001
+From: Peter Roelants <peterroelants@Xochipilli.local>
+Date: Mon, 22 Aug 2011 16:12:26 +0200
+Subject: [PATCH] Catch an error that can be trown while closing a socket
+
+---
+ src/morse/middleware/socket_request_manager.py |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/morse/middleware/socket_request_manager.py b/src/morse/middleware/socket_request_manager.py
+index 45f33d5..20d68a7 100644
+--- a/src/morse/middleware/socket_request_manager.py
++++ b/src/morse/middleware/socket_request_manager.py
+@@ -174,7 +174,10 @@ class SocketRequestManager(RequestManager):
+                             logger.info("Sent back " + response + " to " + str(o))
+                         except socket.error:
+                             logger.warning("It seems that a socket client left. Closing the socket.")
+-                            self._client_sockets[o].close()
++                            try: # close the socket if it gives an error (this can spawn an other error!)
++                                self._client_sockets[o].close()
++                            except socket.error as error_info:
++                                logger.warning("Socket error catched while closing: " + str(error_info))
+                             del self._client_sockets[o]
+                             
+                     del self._results_to_output[o]
+@@ -202,4 +205,4 @@ class SocketRequestManager(RequestManager):
+             except (NameError, SyntaxError) as e:
+                 raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
+ 
+-        return (component, service, p)
++        return (component, service, p)
+\ No newline at end of file
+-- 
+1.7.5.4
+

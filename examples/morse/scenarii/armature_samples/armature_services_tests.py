@@ -115,16 +115,6 @@ def is_service_socket_connected():
     if service_socket.recv(1024) == b'':
         return False
     return True
-
-
-def test_service(id_, component):
-    """
-    Method to test the test_service service
-    """
-    print("\ntest_service")
-    
-    service = 'test_service' # MORSE service to call
-    gen_send_recv_parse(id_, component, service)
     
 def get_channels(id_, component):
     """
@@ -151,17 +141,17 @@ def get_rotations(id_, component):
       return rotation_dict
 
 def get_rotation(id_, component, channel_name):
-      """
-      Get the rotation tuple of the given channel_name via MORSE services.
-      """
-      print("\nget_rotation: " + channel_name)
+    """
+    Get the rotation tuple of the given channel_name via MORSE services.
+    """
+    print("\nget_rotation: " + channel_name)
 
-      service = 'get_rotation'
-      params = (channel_name,)
-      rotation = gen_send_recv_parse(id_, component, service, params)
+    service = 'get_rotation'
+    params = (channel_name,)
+    rotation = gen_send_recv_parse(id_, component, service, params)
 
-      print("\trotation type:" + str(type(rotation)) + ", value: " + str(rotation))
-      return rotation
+    print("\trotation type:" + str(type(rotation)) + ", value: " + str(rotation))
+    return rotation
     
 def get_dofs(id_, component):
     """
@@ -245,37 +235,23 @@ def main():
     """
     global service_socket
 
-    id_ = 'req1' # custom request id
-    component = 'kuka_armature' # name of the component that offers the service
+    id_ = 'req1'  # custom request id
+    component = 'kuka_armature'  # name of the component that offers the service
 
-    # make connection
-    service_socket = connect_to_services()
+    service_socket = connect_to_services()  # make connection
 
-    # test test_service
-    test_service(id_, component)
-    # test get_channels
-    channels = get_channels(id_, component)
-    # test get_rotations
-    get_rotations(id_, component)
-    # test get_rotation
-    get_rotation(id_, component, channels[0])
-    # test get_dofs
-    get_dofs(id_, component)
-    # test get_IK_minmax
-    get_IK_minmax(id_, component)
-    # test get_IK_limits
-    get_IK_limits(id_, component)
+    channels = get_channels(id_, component)  # test get_channels
+    get_rotations(id_, component)  # test get_rotations
+    get_rotation(id_, component, channels[0])  # test get_rotation
+    get_dofs(id_, component)  # test get_dofs
+    get_IK_minmax(id_, component) # test get_IK_minmax
+    get_IK_limits(id_, component) # test get_IK_limits
     # test set_rotation
     for channel in channels:
         set_rotation(id_, component, channel, [0.785398163, 0.785398163, 0.785398163]) # set every angle to 45°
-    # test get_rotations to see what angles have been changed by set_rotation
-    get_rotations(id_, component)
-    # test get_channel_lengths
-    get_channel_lengths(id_, component)
-    # test get_robot_parent_name
-    get_robot_parent_name(id_, component)
-    
-
+    get_rotations(id_, component)  # test get_rotations to see what angles have been changed by set_rotation
+    get_channel_lengths(id_, component)  # test get_channel_lengths
+    get_robot_parent_name(id_, component)  # test get_robot_parent_name
     
 
 if __name__ == "__main__":
@@ -296,8 +272,9 @@ if __name__ == "__main__":
         is_connected = is_service_socket_connected()
     print("Connection is closed.")
 
+    # try to close the socket
     try:
-        sock.close()
+        service_socket.close()
     except socket.error as error_info:
         print("Error catched while closing service_socket: " + str(error_info))
     
