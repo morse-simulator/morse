@@ -36,6 +36,8 @@ except ImportError as detail:
 
 from morse.core.exceptions import MorseServiceError
 
+def no_op():
+    pass
 
 # Create a list of the robots in the scene
 def create_dictionaries ():
@@ -97,8 +99,18 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
+        try:
+            obj['External_Robot_Tag']
+            # Create an object instance and store it
+            instance = create_instance (obj)
+            if instance != None:
+                GameLogic.externalRobotDict[obj] = instance
+            else:
+                return False
+        except KeyError as detail:
+            pass
     
-    if not GameLogic.robotDict: # No robot!
+    if not (GameLogic.robotDict or GameLogic.externalRobotDict): # No robot!
         logger.error("""
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             ERROR: no robot in your simulation!
@@ -130,6 +142,30 @@ def create_dictionaries ():
             except KeyError:
                 pass
     
+    # Get the external robot and its instance
+    for obj, robot_instance in GameLogic.externalRobotDict.items():
+        # Create an empty list for the components of this robot
+        robot_instance.components = []
+        for child in obj.childrenRecursive:
+            try:
+                # Look for the components tagged as such
+                child['Component_Tag']
+                robot_instance.components.append (child)
+
+                # Create an instance of the component class
+                #  and add it to the component list of GameLogic
+                instance = create_instance (child, robot_instance)
+                if instance != None:
+                    GameLogic.componentDict[child.name] = instance
+                else:
+                    return False
+                    
+                # Unset the default action of components of external robots
+                instance.default_action = no_op
+                logger.info("Desactivating component " + child.name + ". Parent " + obj.name + " is an External robot.")
+            except KeyError:
+                pass
+  
     # Check we have no 'free' component (they all must belong to a robot)
     for obj in scene.objects:
         try:
