@@ -162,7 +162,7 @@ def create_dictionaries ():
                     
                 # Unset the default action of components of external robots
                 instance.default_action = no_op
-                logger.info("Desactivating component " + child.name + ". Parent " + obj.name + " is an External robot.")
+                logger.info("Component " + child.name + " disabled: parent " + obj.name + " is an External robot.")
             except KeyError:
                 pass
   
