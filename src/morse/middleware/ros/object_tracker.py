@@ -61,9 +61,9 @@ def post_lisp_code(self, component_instance):
         for obj in component_instance.local_data['objects']:
             # Build string from name, description, location and orientation in the global world frame
             if sys.version_info.minor == 1: 
-                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quat()[0]) + " " + str(obj.worldOrientation.to_quat()[1]) + " " + str(obj.worldOrientation.to_quat()[2]) + " " + str(obj.worldOrientation.to_quat()[3]) + ")"
+                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quat()[1]) + " " + str(obj.worldOrientation.to_quat()[2]) + " " + str(obj.worldOrientation.to_quat()[3]) + " " + str(obj.worldOrientation.to_quat()[0]) + ")"
             else:
-                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + ")"
+                message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + ")"
         
         string.data = message + ")"
         # publish the message on the correct topic    
