@@ -41,8 +41,13 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
+        # Definition for number of tics required to heal a victim
+        self._DELAY = 10
+
         # Flag to indicate when the component is trying to heal a victim
         self._healing = False
+        self._heal_delay = self._DELAY
+        self._capable_to_heal = False
 
         # Variables to store information about the victim nearest to the robot
         self._nearest_victim = None
@@ -88,26 +93,46 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         if self._nearest_distance < self.blender_obj['Heal_range']:
             # Check the abilities of the robot
             for ability in self.blender_obj['Abilities']:
-                # Remove the needs of the victim when compatible with the
-                #  abilities of the robot
                 if ability in victim['Requirements']:
-                    victim['Requirements'].remove(ability)
+                    self._capable_to_heal = True
+                    break
 
-            if victim['Requirements'] == []:
-                # Reset the healing flag
+            # Quit if the robot has not the required capabilities
+            if not self._capable_to_heal:
                 self._healing = False
-                victim['Severity'] = 0
-                victim.color = [0.5, 1.0, 0.5, 1.0]
-                message = "Victim '%s' healed" % victim.name
-            else:
-                self._healing = False
-                victim.color = [0.5, 0.5, 1.0, 1.0]
-                message = "Victim '%s' partially healed" % victim.name
+                message = "Not equipped of helping victim"
+                self.completed(status.FAILED, message)
+                return
 
-            self.completed(status.SUCCESS, message)
+            # Delay some time to heal
+            self._heal_delay -= 1
+
+            # When the delay has finished, change the victim status
+            if self._heal_delay == 0:
+                for ability in self.blender_obj['Abilities']:
+                    # Remove the needs of the victim when compatible with the
+                    #  abilities of the robot
+                    if ability in victim['Requirements']:
+                        victim['Requirements'].remove(ability)
+
+                # Reset the healing flags
+                self._healing = False
+                self._heal_delay = self._DELAY
+
+                # Mark the victim as healed
+                if victim['Requirements'] == []:
+                    victim['Severity'] = 0
+                    victim.color = [0.5, 1.0, 0.5, 1.0]
+                    message = "Victim '%s' healed" % victim.name
+                else:
+                    victim.color = [0.5, 0.5, 1.0, 1.0]
+                    message = "Victim '%s' partially healed" % victim.name
+
+                self.completed(status.SUCCESS, message)
 
         else:
             self._healing = False
+            self._heal_delay = self._DELAY
             message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
             self.completed(status.FAILED, message)
 
@@ -120,7 +145,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         if radar.triggered and radar.positive:
             for victim_obj in radar.hitObjectList:
                 victim_position = victim_obj.worldPosition
-                self.local_data['victim_dict'][victim_obj.name] = [ [victim_position[0], victim_position[1], victim_position[2]], victim_obj['Requirements'] ]
+                self.local_data['victim_dict'][victim_obj.name] = [ [victim_position[0], victim_position[1], victim_position[2]], victim_obj['Requirements'], victim_obj['Severity'] ]
 
                 # Find the closest victim and its distance
                 new_distance = self.blender_obj.getDistanceTo(victim_obj)
