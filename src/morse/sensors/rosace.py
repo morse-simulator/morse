@@ -51,6 +51,11 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         # List of victims visible from this sensor
         self.local_data['victim_dict'] = {}
 
+        # Convert the 'Abilities' property from a string into a list of ints
+        #obj['Abilities'] = obj['Abilities'].split(',')
+        obj['Abilities'] = [int(x) for x in obj['Abilities'].split(",")]
+
+
         logger.info('Component initialized')
 
 
@@ -81,25 +86,30 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         # Check that the victim is whithing the valid range and that
         #  the robot is equiped to help the victim
         if self._nearest_distance < self.blender_obj['Heal_range']:
-            # Restore the health to the victim
-            if victim['Severity'] > 0:
-                victim['Severity'] = victim['Severity'] - 1
-                # Set the colors depending on the severity of the injuries
-                red = 1 - victim['Severity'] * 0.05
-                green = 0.5 + red
-                victim.color = [red, green, 0.5, 1.0]
+            # Check the abilities of the robot
+            for ability in self.blender_obj['Abilities']:
+                # Remove the needs of the victim when compatible with the
+                #  abilities of the robot
+                if ability in victim['Requirements']:
+                    victim['Requirements'].remove(ability)
 
-            # Change the status
-            if victim['Severity'] == 0:
-                victim['Injured'] = False
+            if victim['Requirements'] == []:
                 # Reset the healing flag
                 self._healing = False
+                victim['Severity'] = 0
+                victim.color = [0.5, 1.0, 0.5, 1.0]
                 message = "Victim '%s' healed" % victim.name
-                self.completed(status.SUCCESS, message)
+            else:
+                self._healing = False
+                victim.color = [0.5, 0.5, 1.0, 1.0]
+                message = "Victim '%s' partially healed" % victim.name
+
+            self.completed(status.SUCCESS, message)
+
         else:
             self._healing = False
             message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
-            self.completed(status.SUCCESS, message)
+            self.completed(status.FAILED, message)
 
 
     def default_action(self):
@@ -110,7 +120,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         if radar.triggered and radar.positive:
             for victim_obj in radar.hitObjectList:
                 victim_position = victim_obj.worldPosition
-                self.local_data['victim_dict'][victim_obj.name] = [victim_position[0], victim_position[1], victim_position[2]]
+                self.local_data['victim_dict'][victim_obj.name] = [ [victim_position[0], victim_position[1], victim_position[2]], victim_obj['Requirements'] ]
 
                 # Find the closest victim and its distance
                 new_distance = self.blender_obj.getDistanceTo(victim_obj)
