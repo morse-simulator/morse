@@ -81,6 +81,14 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
             message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
             raise MorseRPCInvokationError(message)
 
+    @service
+    def get_victim_severity(self):
+        if self._nearest_victim:
+            return self._nearest_victim['Severity']
+        else:
+            message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
+            raise MorseRPCInvokationError(message)
+
     def _heal_victim(self):
         """ Change the 'Severity' property of a nearby victim
 
