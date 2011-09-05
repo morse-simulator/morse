@@ -6,6 +6,9 @@ def init(contr):
     obj = contr.owner
     obj.color = [1.0, 0.5, 0.5, 1.0]
 
+    # Convert the 'Requirements' property, from a string to a list of integers
+    obj['Requirements'] = [int(x) for x in obj['Requirements'].split(",")]
+        
 
 def heal(contr):
     """ Change the status of the victim

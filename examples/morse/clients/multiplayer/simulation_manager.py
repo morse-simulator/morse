@@ -116,7 +116,7 @@ class Client(threading.Thread):
 
                 reception_time = time.time() - self.start_time
                 print ("Received data at time: %.6f" % reception_time)
-                time.sleep(0.5)
+                #time.sleep(0.5) # Already very slow
                 self.client.send(response)
 
                 """

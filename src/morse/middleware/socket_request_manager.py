@@ -7,6 +7,7 @@ from morse.core import status
 
 SERVER_HOST = '' #all available interfaces
 SERVER_PORT = 4000
+MAX_TRIES = 10 # Number of alternative ports to try if the default is already busy
 
 class SocketRequestManager(RequestManager):
     """Implements services to control the MORSE simulator over
@@ -31,7 +32,7 @@ class SocketRequestManager(RequestManager):
         return "Socket service manager"
 
     def initialization(self):
-
+        global SERVER_PORT
         #Hold for each client socket a mapping to the socket file interface (as returned
         # by socket.makefile()
         self._client_sockets = {}
@@ -45,17 +46,22 @@ class SocketRequestManager(RequestManager):
         self._results_to_output = {}
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        try:
-            self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self._server.bind((SERVER_HOST, SERVER_PORT))
-            self._server.listen(1)
-        except socket.error as msg:
+        port_ok = False
+        for i in range(MAX_TRIES):
+            try:
+                self._server.bind((SERVER_HOST, SERVER_PORT))
+                self._server.listen(1)
+                port_ok = True
+                break
+            except socket.error as msg:
+                SERVER_PORT = SERVER_PORT + 1
+
+        if not port_ok:
+            logger.error("Couldn't bind the socket server! Port busy?")
             self._server.close()
             self._server = None
-
-        if not self._server:
-            logger.error("Couldn't bind the socket server! Port busy?")
             return False
 
         logger.info("Socket service manager now listening on port " + str(SERVER_PORT) + ".")
@@ -174,7 +180,10 @@ class SocketRequestManager(RequestManager):
                             logger.info("Sent back " + response + " to " + str(o))
                         except socket.error:
                             logger.warning("It seems that a socket client left. Closing the socket.")
-                            self._client_sockets[o].close()
+                            try: # close the socket if it gives an error (this can spawn an other error!)
+                                self._client_sockets[o].close()
+                            except socket.error as error_info:
+                                logger.warning("Socket error catched while closing: " + str(error_info))
                             del self._client_sockets[o]
                             
                     del self._results_to_output[o]
