@@ -6,7 +6,7 @@ from morse.core import status
 from morse.core.services import async_service
 import morse.helpers.math as morse_math
 
-class PlatineActuatorClass(morse.core.actuator.MorseActuatorClass):
+class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Controller for pant tilt unit (platine)
 
     Reads 3 angles and applies them to the object and its children
