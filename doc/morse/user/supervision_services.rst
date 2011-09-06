@@ -5,7 +5,7 @@ MORSE exposes several services to remotely manage and monitor the simulator.
 
 These services are automatically exposed on a socket interface, on port 4000.
 
-All these services belongs the a virtual component called ``simulation`` and
+All these services belongs to a virtual component called ``simulation`` and
 follows the normal syntax for socket requests.  Thus, a request to retrieve the
 list of robots would look like that::
 
@@ -20,7 +20,7 @@ Available services
 
 - ``list_robots`` (no parameter): returns the list of the robots currently
   available in the simulation
-- ``reset_objects``(no parameter): reset the position of all objects in the
+- ``reset_objects`` (no parameter): reset the position of all objects in the
   simulation (in other word, restart the simulation)
 
 .. note::
