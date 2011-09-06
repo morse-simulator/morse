@@ -18,25 +18,45 @@ The string passed to the differents Components Classes must be an existing
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
 
+cfg_middleware = {}
+cfg_modifier = {}
+cfg_service = {}
+
 class Configuration(object):
   def __init__(self):
-    self.middleware = {}
-    self.modifier = {}
-    self.service = {}
     if not 'component_config.py' in bpy.data.texts.keys():
       bpy.ops.text.new()
       bpy.data.texts[-1].name = 'component_config.py'
+
+  @classmethod
   def write(self):
     cfg = bpy.data.texts['component_config.py']
     cfg.clear()
-    cfg.write('component_mw = ' + json.dumps(self.middleware, indent=1) )
+    cfg.write('component_mw = ' + json.dumps(cfg_middleware, indent=1) )
     cfg.write('\n')
-    cfg.write('component_modifier = ' + json.dumps(self.modifier, indent=1) )
+    cfg.write('component_modifier = ' + json.dumps(cfg_modifier, indent=1) )
     cfg.write('\n')
-    cfg.write('component_service = ' + json.dumps(self.service, indent=1) )
+    cfg.write('component_service = ' + json.dumps(cfg_service, indent=1) )
     cfg.write('\n')
-  def link(self, component, mwmethodcfg):
-    self.middleware[component.name] = mwmethodcfg
+
+  def link_mw(self, component, mw_method_cfg):
+    try:
+        cfg_middleware[component.name].append (mw_method_cfg)
+    except KeyError as detail:
+        cfg_middleware[component.name] = [mw_method_cfg]
+
+  def link_service(self, component, service_cfg):
+    #try:
+        #cfg_service[component.name].append (service_cfg)
+    #except KeyError as detail:
+        cfg_service[component.name] = [service_cfg]
+
+  def link_modifier(self, component, modifier_cfg):
+    try:
+        cfg_modifier[component.name].append (modifier_cfg)
+    except KeyError as detail:
+        cfg_modifier[component.name] = [modifier_cfg]
+
 
 class AbstractComponent(object):
   # static config common to all component of the simulation
@@ -180,6 +200,18 @@ class Component(AbstractComponent):
     # and the root (parent) object first ( [0] )
     self._blendobj = bpy.context.selected_objects[0]
 
+  def configure_mw(self, mw, config=None):
+    if not config:
+      config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
+    Component._config.link_mw(self, config)
+    #Component._config.write()
+
+  def configure_service(self, mw):
+    config = MORSE_SERVICE_DICT[mw]
+    Component._config.link_service(self, config)
+    #Component._config.write()
+
+
 class Robot(Component):
   def __init__(self, name):
     Component.__init__(self, 'robots', name)
@@ -188,16 +220,10 @@ class Sensor(Component):
   def __init__(self, name):
     Component.__init__(self, 'sensors', name)
 
-class Controller(Component):
+class Actuator(Component):
   def __init__(self, name):
-    Component.__init__(self, 'controllers', name)
+    Component.__init__(self, 'actuators', name)
 
 class Middleware(Component):
   def __init__(self, name):
     Component.__init__(self, 'middleware', name)
-  def configure(self, component, config=None):
-    if not config:
-      config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
-    Component._config.link(component, config)
-    Component._config.write()
-
