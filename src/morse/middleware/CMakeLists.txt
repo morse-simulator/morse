@@ -34,12 +34,10 @@ IF(BUILD_ROS_SUPPORT)
       )
 ENDIF(BUILD_ROS_SUPPORT)
 
-IF(BUILD_MOOS_SUPPORT)
-  INSTALL(DIRECTORY moos
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py.$ EXCLUDE
-        )
-  INSTALL(FILES moos_mw.py 
-	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-		)
-ENDIF(BUILD_MOOS_SUPPORT)
+IF(BUILD_HLA_SUPPORT)
+    INSTALL(FILES hla_mw.py
+        DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
+    INSTALL(FILES hla/morse.fed
+        DESTINATION share/federations)
+ENDIF(BUILD_HLA_SUPPORT)
+

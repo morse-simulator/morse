@@ -10,6 +10,7 @@ option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
 option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
 option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" OFF)
+option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
@@ -59,6 +60,15 @@ IF (BUILD_POCOLIBS_SUPPORT)
 	find_package(SWIG REQUIRED)
 endif(BUILD_POCOLIBS_SUPPORT)
 
+if (BUILD_HLA_SUPPORT)
+	EXECUTE_PROCESS(COMMAND 
+					${PYTHON3_EXECUTABLE} -c "import hla;"
+					RESULT_VARIABLE HLA_PY_ERR
+				   )
+	if (HLA_PY_ERR)
+		MESSAGE(FATAL_ERROR "BUILD_HLA_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find 'hla' python binding")
+	endif (HLA_PY_ERR)
+endif(BUILD_HLA_SUPPORT)
 
 ADD_SUBDIRECTORY(src)
 
