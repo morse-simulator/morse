@@ -42,6 +42,7 @@ Physics
 
 Configuring physics properties for objects in a scene can be done in the **Properties** >> **Physics** panel.
 Here it is possible to change the simulation for the selected object. The most useful settings are:
+
  - **No Collision**: All objects can occupy the same space as this one, and will not trigger any kind of event when in contact.
  - **Static**: The object will not move even when in contact with other objects, but is considered as an obstacle.
  - **Dynamic**: The object is subject to forces and collisions, but will not turn realistically.

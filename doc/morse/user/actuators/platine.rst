@@ -40,7 +40,7 @@ Configurable parameters
 
 -  **Speed**: (float) rotation speed for the movements of the pan-tilt unit
 -  **Manual**: (boolean) select whether to use control from an external
-  program or direct control using the **Logic Bricks**
+   program or direct control using the **Logic Bricks**
 
 Services
 --------
