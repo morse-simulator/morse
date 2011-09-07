@@ -1,8 +1,8 @@
 import mathutils
 import struct
 import os
-import logging; logger = logging.getLogger("morse.HLA")
-logging.basicConfig(level=logging.DEBUG)
+import logging; logger = logging.getLogger("morse." + __name__)
+#logging.basicConfig(level=logging.DEBUG)
 
 import GameLogic
 
@@ -171,7 +171,7 @@ if rti:
             if morse_ambassador.initialize() == False:
                 return False
             logger.debug("HLA middleware initialized")
-        except BaseException as error:
+        except Exception as error:
             logger.error("Error when connecting to the RTIg: %s. Please check your HLA network configuration.", error)
             return False
 
