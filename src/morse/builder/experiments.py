@@ -1,5 +1,6 @@
 import bpy
 from morse.builder.morsebuilder import *
+from morse.builder.data import MORSE_MIDDLEWARE_DICT
 
 ###############################################################################
 # following is experimental:
@@ -89,6 +90,9 @@ class ATRV(AbstractComponent):
     self._blendobj.game.use_collision_bounds = True
     self._blendobj.game.collision_bounds_type = 'CONVEX_HULL'
     self._blendobj.game.collision_margin = .05
+    # TODO make the wheels Physic property to 'No Collision' ?
+    # FIXME the robot does not fall when it goes out of the ground..
+    # does not seems to have relation to the Physic of the wheels
 
 class ROSMW(AbstractComponent):
   """ Add MotionControler 100% Python
@@ -117,6 +121,11 @@ class ROSMW(AbstractComponent):
     self._blendobj.game.controllers[controller].module = 'calling.mw_action'
     self._blendobj.game.controllers[controller].link( sensor = 
         self._blendobj.game.sensors[sensor] )
+  def configure(self, component, config=None):
+    if not config:
+      config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
+    AbstractComponent._config.link(component, config)
+    AbstractComponent._config.write()
 
 def print_prop(obj):
   for p in obj.game.properties.keys():

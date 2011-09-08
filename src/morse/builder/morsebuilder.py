@@ -23,9 +23,20 @@ class Configuration(object):
     self.middleware = {}
     self.modifier = {}
     self.service = {}
-    if not 'component_config.py' in bpy.data.texts.keys():
+    if not 'component_config.py' in bpy.data.texts:
       bpy.ops.text.new()
       bpy.data.texts[-1].name = 'component_config.py'
+      # make the current scene Morse-able
+      if not 'Scene_Script_Holder' in bpy.data.objects:
+        filepath = os.path.join(os.environ["MORSE_ROOT"], "share", "data", 
+            "morse", "morse_default.blend")
+        objlist = [{'name': 'CameraFP'}, {'name': 'HUD_plane'}, 
+            {'name': 'Title_text'}, {'name': 'Keys_text'}, {'name': 'Compass'}, 
+            {'name': 'Scene_Script_Holder'}]
+        bpy.ops.wm.link_append(directory=filepath + '/Text/', link=False, 
+            files=[{'name': 'setup_path.py'}])
+        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
+            files=objlist)
   def write(self):
     cfg = bpy.data.texts['component_config.py']
     cfg.clear()
@@ -38,29 +49,31 @@ class Configuration(object):
   def link(self, component, mwmethodcfg):
     self.middleware[component.name] = mwmethodcfg
 
+
 class AbstractComponent(object):
   # static config common to all component of the simulation
   _config = Configuration()
   def __init__(self):
     self._blendobj = None
-    self._blendname = None # for mw config
+    self._blendname = None # for middleware configuration
   def append(self, obj):
-    """ Add a child to the current object,
+    """ Add a child (obj) to the current component,
 
+    obj.name must exists (can be either a blender object or a Morse Component)
     eg: robot.append(sensor), will set the robot parent of the sensor.
-    cf: bpy.ops.object.parent_set()
-    obj._blendobj.parent = self._blendobj
-    self._blendobj.children += obj._blendobj
+    `bpy.ops.object.parent_set() 
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.ops.object.html#bpy.ops.object.parent_set>`_ 
     """
-    obj._blendobj.parent = self._blendobj
-
-    #opsobj = bpy.ops.object
-    #opsobj.select_all(action = 'DESELECT')
-    #opsobj.select_name(name = obj.name)
-    #opsobj.make_local()
-    #opsobj.select_name(name = self.name)
-    #opsobj.parent_set()
-
+    opsobj = bpy.ops.object
+    # make sure that nothing is selected
+    opsobj.select_all(action = 'DESELECT')
+    # select the futur child
+    opsobj.select_name(name = obj.name)
+    opsobj.make_local()
+    # select the parent
+    opsobj.select_name(name = self.name, extend=True)
+    # establish the relationship
+    opsobj.parent_set()
   @property
   def name(self):
     return self._blendobj.name
@@ -90,32 +103,32 @@ class AbstractComponent(object):
     default (0.0, 0.0, 0.0)
 
     cf. `bpy.types.Object.location 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
     """
     old = self._blendobj.location
-    self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
+    self._blendobj.location = (old.x + x, old.y + y, old.z + z)
   def rotate(self, x=0.0, y=0.0, z=0.0):
     """ Rotation in Eulers, float array of 3 items in [-inf, inf], 
     default (0.0, 0.0, 0.0)
 
     cf. `bpy.types.Object.rotation_euler 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
     """
     old = self._blendobj.rotation_euler
-    self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
+    self._blendobj.rotation_euler = (old.x + x, old.y + y, old.z + z)
   def properties(self, **kwargs):
     """ Add/modify the game properties of the Blender object
 
     `bpy.types.Object.game 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.Object.html#bpy.types.Object.game>`_
     `bpy.types.GameObjectSettings.properties 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
     `bpy.types.GameProperty 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
+    <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
     """
     prop = self._blendobj.game.properties
-    for k in kwargs.keys():
-      if k in prop.keys():
+    for k in kwargs:
+      if k in prop:
         prop[k].value = kwargs[k]
       else:
         self._property_new(k, kwargs[k])
@@ -135,7 +148,7 @@ class AbstractComponent(object):
     # select the last property in the list
     x = o.game.properties.keys()[-1]
     o.game.properties[x].name = n
-    if t == None:
+    if not t:
       t = v.__class__.__name__.upper()
     if t == 'STR':
       t = 'STRING'
@@ -149,21 +162,17 @@ class Component(AbstractComponent):
   """ Append a morse-component to the scene
 
   cf. `bpy.ops.wm.link_append 
-  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
+  <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
    and 
   `bpy.data.libraries.load 
-  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html>`_ 
+  <http://www.blender.org/documentation/blender_python_api_2_58_release/bpy.types.BlendDataLibraries.html>`_ 
   """
   def __init__(self, category, name):
     AbstractComponent.__init__(self)
     filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
-    if bpy.app.version > (2,56,0):
-    #if bpy.app.version[1] > 56:
-      with bpy.data.libraries.load(filepath) as (src, _):
+    with bpy.data.libraries.load(filepath) as (src, _):
         objlist = [{'name':obj} for obj in src.objects]
-    else: # Blender 2.56 does not support bpy.data.libraries.load
-      objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
 
     #print ("NAME: %s | CATEGORY: %s | objlist %s" % (name, category, objlist))
 
@@ -196,6 +205,10 @@ class Middleware(Component):
   def __init__(self, name):
     Component.__init__(self, 'middleware', name)
   def configure(self, component, config=None):
+    """ Component bindings with middlewares (hooks)
+
+    http://www.openrobots.org/morse/doc/latest/user/hooks.html#configuration
+    """
     if not config:
       config = MORSE_MIDDLEWARE_DICT[self._blendname][component._blendname]
     Component._config.link(component, config)

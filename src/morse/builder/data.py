@@ -1,5 +1,4 @@
 import os
-from morse.builder.components import MORSE_COMPONENTS_DICT
 
 """
 MORSE_COMPONENTS: 
@@ -20,7 +19,6 @@ MORSE_MIDDLEWARE_DICT = {
   'ros_empty': {
     'morse_vw_control': ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'],
     'morse_camera': ['ROS', 'post_image', 'morse/middleware/ros/camera'],
-    'morse_sick': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'], # TMP
     'morse_sick_180': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
     'morse_sick_270': ['ROS', 'post_2DLaserScan', 'morse/middleware/ros/sick'],
     'morse_odometry': ['ROS', 'post_twist', 'morse/middleware/ros/odometry_sensor'],
@@ -28,6 +26,9 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_GPS': ['ROS', 'post_message'],
     'morse_gyroscope': ['ROS', 'post_message'],
     'morse_proximity': ['ROS', 'post_message'],
+    'morse_light': ["ROS", "read_switch", "morse/middleware/ros/light"],
+    'morse_battery': ["ROS", "post_float32", "morse/middleware/ros/battery"],
+    'morse_infrared': ["ROS", "post_range", "morse/middleware/ros/infrared"]
   },
 
   'socket_empty': {
@@ -61,3 +62,4 @@ MORSE_MIDDLEWARE_DICT = {
     'morse_waypoint_control': ['Yarp', 'read_message'],
   }
 }
+
