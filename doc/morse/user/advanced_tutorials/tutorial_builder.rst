@@ -1,7 +1,10 @@
 Create your first simulation using the builder API
 ==================================================
 
-This is an extension of the current :doc:`tutorial <tutorial>` using the Morse-builder tool to build your simulation (instead of the Blender graphical user-interface) and ROS as our middleware (instead of raw Socket). But the result will be the same!
+This is an extension of the current :doc:`tutorial <../tutorial>` using the
+Morse-builder tool to build your simulation (instead of the Blender graphical
+user-interface) and ROS as our middleware (instead of raw Socket). But the
+result will be the same!
 
 cf. examples/morse/scenarii/ros_example.py
 
@@ -73,14 +76,17 @@ Use the example client program to test the bindings in the simulation
     $ ./ros_v_omega_client.sh
 
 #. Press :kbd:`a` to give speed commands to the robot
-#. Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1 rad/s), followed by :kbd:`enter` after each
+#. Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1
+   rad/s), followed by :kbd:`enter` after each
 #. The robot should start moving in MORSE
 #. Press :kbd:`b` to print the readings of the gyroscope exported by MORSE
 #. Press :kbd:`q` to exit the client
 
-Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
+Finally exit the simulation, by pressing :kbd:`esc` on the Blender window,
+then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
 
 Go further
 ----------
 
-If you want to learn more about the MORSE-builder API, see the :doc:`<dev/builder doc>`.
+If you want to learn more about the MORSE-builder API, see the
+:doc:`builder documentation <../../../../dev/builder>`.
