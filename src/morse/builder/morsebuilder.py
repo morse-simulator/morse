@@ -276,4 +276,3 @@ class Environment(Component):
     # Make CameraFP the active camera
     bpy.ops.object.select_all(action = 'DESELECT')
     bpy.ops.object.select_name(name = 'CameraFP')
-    bpy.ops.view3d.object_as_camera()
