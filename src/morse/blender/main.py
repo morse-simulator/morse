@@ -142,12 +142,12 @@ def create_dictionaries ():
     
     if not (GameLogic.robotDict or GameLogic.externalRobotDict): # No robot!
         logger.error("""
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ERROR: no robot in your simulation!
-            
-            Do not forget that components _must_ belong to a
-            robot (you can not have free objects)
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: no robot in your simulation!
+    
+    Do not forget that components _must_ belong to a
+    robot (you can not have free objects)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             """)
         return False
 
@@ -168,11 +168,11 @@ def create_dictionaries ():
             obj['Component_Tag']
             if obj.name not in GameLogic.componentDict.keys():
                 logger.error("""
-                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    ERROR: the component """ + obj.name + """ do not
-                    belong to any robot: you need to fix that by 
-                    parenting it to a robot.                    
-                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: the component '""" + obj.name + """' do not
+    belong to any robot: you need to fix that by 
+    parenting it to a robot.                    
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     """)
                 return False
         except KeyError as detail:
@@ -268,7 +268,6 @@ def create_instance(obj, parent=None):
     return instance
 
 def get_components_of_type(classname):
-    
     components = []
     for component in GameLogic.componentDict.values():
         logger.info(component.name() + " -> " + component.__class__.__name__)
@@ -277,12 +276,14 @@ def get_components_of_type(classname):
     
     return components
 
+
 def get_middleware_of_type(classname):
     for mw_instance in GameLogic.mwDict.value():
         if mw_instance.__class__.__name__ == classname:
             return mw_instance
     return None
     
+
 def link_middlewares():
     """ Read the configuration script (inside the .blend file)
         and assign the correct middleware and options to each component. """
@@ -301,11 +302,11 @@ def link_middlewares():
         except KeyError as detail:
             logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
             logger.error("""
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ERROR: your configuration file is not valid. Please
-            check the name of your components and restart the
-            simulation.
-            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: your configuration file is not valid. Please
+    check the name of your components and restart the
+    simulation.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             """)
             return False
 
@@ -340,7 +341,8 @@ def link_middlewares():
 
 def link_services():
     """ Read the configuration script (inside the .blend file)
-        and assign the correct service handlers and options to each component. """
+        and assign the correct service handlers and options to each component.
+    """
     try:
         component_list = component_config.component_service
     except AttributeError as detail:
@@ -361,11 +363,11 @@ def link_services():
             except KeyError as detail:
                 logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
                 logger.error("""
-                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                ERROR: the component_services section of your
-                configuration file is not valid. Please check the 
-                name of your components and restart the simulation.
-                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: the component_services section of your
+    configuration file is not valid. Please check the 
+    name of your components and restart the simulation.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 """)
                 return False
 
@@ -388,6 +390,7 @@ def link_services():
     
     return True
 
+
 def load_overlays():
     """ Read and initialize overlays from the configuration script.
     """
@@ -399,7 +402,6 @@ def load_overlays():
         return True
 
     for request_manager_name, overlays in overlays_list.items():
-        
         for overlaid_name, overlay_name in overlays.items():
             modulename, classname = overlay_name.rsplit('.', 1)
             
@@ -589,12 +591,12 @@ def simulation_main(contr):
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.
         logger.critical("""
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ERROR: the initialisation of the simulation
-        was not correctly done.
-        Check the terminal for error messages, and report
-        them on the morse-dev@laas.fr mailing list.
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: the initialisation of the simulation
+    was not correctly done.
+    Check the terminal for error messages, and report
+    them on the morse-dev@laas.fr mailing list.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         """)
         quit(contr)
 
@@ -624,6 +626,10 @@ def switch_camera(contr):
 
 
 def close_all(contr):
+    """ Close the open communication channels from middlewares
+    Call the destructors of all component instances. This should also call
+    the methods to close middlewares
+    """
     logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
     if hasattr(GameLogic, 'componentDict'):
@@ -654,7 +660,7 @@ def close_all(contr):
 
 
 def finish(contr):
-    """Close the open ports."""
+    """ Normal exit from the Game Engine, when pressing ESC key """
     sensor = contr.sensors['ESC_KEY']
 
     #execute only when the ESC key is released (if we don't test that,
@@ -663,8 +669,9 @@ def finish(contr):
         close_all(contr)
         quit(contr)
 
+
 def restart(contr):
-    """Close the open ports."""
+    """ Call the Game Engine restart funcionality * DOES NOT WORK * """
     sensor = contr.sensors['F11_KEY']
 
     # Execute only when the F11 key is released (if we don't test that,
@@ -675,11 +682,14 @@ def restart(contr):
         reset_objects(contr)
         return
 
+
 def quit(contr):
+    """ Exit graciously from the simulation """
     logger.log(ENDSECTION, 'EXITING SIMULATION')
 
     quitActuator = contr.actuators['Quit_sim']
     contr.activate(quitActuator)
+
 
 def reset_objects(contr):
     """ Place all objects in the initial position
