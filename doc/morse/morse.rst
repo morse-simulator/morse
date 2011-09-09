@@ -153,6 +153,7 @@ Detailled information:
     :maxdepth: 3
 
     user/hooks
+    user/overlays
     user/supported_middlewares
 
 Simulation supervision
@@ -205,6 +206,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/adding_modifier
     dev/services
     dev/new_middleware
+    dev/builder
 
 Tips and how-tos 
 ----------------
@@ -265,11 +267,16 @@ The first release of MORSE contains only a subset of the final simulator specifi
 
 Amongst the planned features for future MORSE releases:
 
-- full compatibility with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
+- full compatibility with the ROS robotics framework (other robotics framework
+  are planned as well. Let us know if you want to contribute in this area),
 - support for point cloud sensors (stereo-vision, Velodyne, Kinect,...)
 - complete support of the Willow Garage's PR-2 robot, along with all the sensors
 - Development of the user interface,
 - Scalability (both in term of simulation capacity and ease of deployment),
-- Multi-node simulations (several Blender nodes can be started on several computer and automatically synchronise, which should allow simulations of tenth of robots in the same scene),
-- Dedicated supervision node that would allow to: observe the simulation, display logs and metrics, start/stop robots, dynamically alter the scene (like moving an obstacle in front of a robot, etc.).
+- Multi-node simulations (several Blender nodes can be started on several
+  computer and automatically synchronise, which should allow simulations of
+  tenth of robots in the same scene),
+- Dedicated supervision node that would allow to: observe the simulation,
+  display logs and metrics, start/stop robots, dynamically alter the scene
+  (like moving an obstacle in front of a robot, etc.).
 
