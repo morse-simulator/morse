@@ -139,8 +139,9 @@ Supported middlewares
 MORSE relies on **middlewares** to tightly integrate in your robotic architecture.
 
 We currently support a generic socket-based interface, `YARP
-<http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_ and `pocolibs
-<https://softs.laas.fr/openrobots/wiki/pocolibs>`_. More middlewares may be
+<http://eris.liralab.it/yarp/>`_, `ROS <http://www.ros.org>`_, `pocolibs
+<https://softs.laas.fr/openrobots/wiki/pocolibs>`_ and `MOOS
+<http://www.robots.ox.ac.uk/~mobile/MOOS/wiki/pmwiki.php>`_. More middlewares may be
 added in coming versions. Drop us a mail if you have specific needs.
 
 .. note::
@@ -157,7 +158,7 @@ Detailled information:
 Simulation supervision
 ++++++++++++++++++++++
 
-Besides components-specific services and datastream (documented on component's
+Besides components-specific services and data stream (documented on component's
 own documentation page), MORSE provides a set of *supervision services* that
 may be used to remotely control the global behaviour of the simulator:
 
@@ -264,11 +265,11 @@ The first release of MORSE contains only a subset of the final simulator specifi
 
 Amongst the planned features for future MORSE releases:
 
-- full compatiblity with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
+- full compatibility with the ROS robotics framework (other robotics framework are planned as well. Let us know if you want to contribute in this area),
 - support for point cloud sensors (stereo-vision, Velodyne, Kinect,...)
 - complete support of the Willow Garage's PR-2 robot, along with all the sensors
-- Developement of the user interface,
-- Scalablity (both in term of simulation capacity and ease of deployment),
-- Multi-node simulations (several Blender nodes can be started on several computer and automaticaly synchronise, which should allow simulations of tenth of robots in the same scene),
+- Development of the user interface,
+- Scalability (both in term of simulation capacity and ease of deployment),
+- Multi-node simulations (several Blender nodes can be started on several computer and automatically synchronise, which should allow simulations of tenth of robots in the same scene),
 - Dedicated supervision node that would allow to: observe the simulation, display logs and metrics, start/stop robots, dynamically alter the scene (like moving an obstacle in front of a robot, etc.).
 
