@@ -28,17 +28,6 @@ class Configuration(object):
       bpy.ops.text.new()
       bpy.data.texts[-1].name = 'component_config.py'
 
-  @classmethod
-  def write(self):
-    cfg = bpy.data.texts['component_config.py']
-    cfg.clear()
-    cfg.write('component_mw = ' + json.dumps(cfg_middleware, indent=1) )
-    cfg.write('\n')
-    cfg.write('component_modifier = ' + json.dumps(cfg_modifier, indent=1) )
-    cfg.write('\n')
-    cfg.write('component_service = ' + json.dumps(cfg_service, indent=1) )
-    cfg.write('\n')
-
   def link_mw(self, component, mw_method_cfg):
     try:
         cfg_middleware[component.name].append (mw_method_cfg)
@@ -181,7 +170,10 @@ class Component(AbstractComponent):
     if bpy.app.version > (2,56,0):
     #if bpy.app.version[1] > 56:
       with bpy.data.libraries.load(filepath) as (src, _):
-        objlist = [{'name':obj} for obj in src.objects]
+        try:
+          objlist = [{'name':obj} for obj in src.objects]
+        except UnicodeDecodeError as detail:
+          print ("Unable to open file '%s'. Exception: %s" % (filepath, detail))
     else: # Blender 2.56 does not support bpy.data.libraries.load
       objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
 
@@ -211,6 +203,11 @@ class Component(AbstractComponent):
     Component._config.link_service(self, config)
     #Component._config.write()
 
+  def configure_modifier(self, mod):
+    config = mod
+    Component._config.link_modifier(self, config)
+    #Component._config.write()
+
 
 class Robot(Component):
   def __init__(self, name):
@@ -227,3 +224,56 @@ class Actuator(Component):
 class Middleware(Component):
   def __init__(self, name):
     Component.__init__(self, 'middleware', name)
+
+class Modifier(Component):
+  def __init__(self, name):
+    Component.__init__(self, 'modifiers', name)
+
+class Environment(Component):
+  def __init__(self, name):
+    Component.__init__(self, 'environments', name)
+    self._camera_location = [5, -5, 5]
+    self._camera_rotation = [0.7854, 0, 0.7854]
+
+  def _write(self):
+    cfg = bpy.data.texts['component_config.py']
+    cfg.clear()
+    cfg.write('component_mw = ' + json.dumps(cfg_middleware, indent=1) )
+    cfg.write('\n')
+    cfg.write('component_modifier = ' + json.dumps(cfg_modifier, indent=1) )
+    cfg.write('\n')
+    cfg.write('component_service = ' + json.dumps(cfg_service, indent=1) )
+    cfg.write('\n')
+
+  def _get_path_file(self):
+    """ Get the file which should be in the 'props/basics.blend' file """
+    filepath = os.path.join(MORSE_COMPONENTS, 'props/basics.blend')
+    with bpy.data.libraries.load(filepath) as (src, dest):
+        print ("ESTO: ", src.texts[0].as_string())
+        dest.texts['setup_path.py'] = src.texts['setup_path.py']
+
+  def place_camera(self, location):
+    """ Store the position that will be givent to the default camera
+    Expected argument is a list with the desired position for the camera """
+    self._camera_location = location
+
+  def aim_camera(self, rotation):
+    """ Store the orientation that will be givent to the default camera
+    Expected argument is a list with the desired orientation for the camera """
+    self._camera_rotation = rotation
+
+  def __del__(self):
+    """ Generate the scene configuration and insert necessary objects
+    """
+    # Write the configuration of the middlewares
+    self._write()
+    # Add the necessary objects
+    base = Component('props', 'basics')
+    # Set the position of the camera
+    camera_fp = bpy.data.objects['CameraFP']
+    camera_fp.location = self._camera_location
+    camera_fp.rotation_euler = self._camera_rotation
+    # Make CameraFP the active camera
+    bpy.ops.object.select_all(action = 'DESELECT')
+    bpy.ops.object.select_name(name = 'CameraFP')
+    bpy.ops.view3d.object_as_camera()
