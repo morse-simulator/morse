@@ -57,6 +57,7 @@ MORSE_MIDDLEWARE_DICT = {
     'orientation': ['Yarp', 'read_message'],
     'v_omega': ['Yarp', 'read_message'],
     'waypoint': ['Yarp', 'read_message'],
+    'steer_force': ['Yarp', 'read_message'],
   }
 }
 
