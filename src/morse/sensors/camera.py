@@ -71,7 +71,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             if 'CameraRobot' in child.name:
                 camera = child
             # The object that contains the material where the image is rendered
-            if 'CameraCube' in child.name:
+            if 'CameraMesh' in child.name:
                 screen = child
                 # Considering it consists of a single mesh
                 mesh = child.meshes[0]  
