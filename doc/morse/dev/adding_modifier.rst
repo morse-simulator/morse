@@ -3,7 +3,7 @@ Creating a modifier
 
 The concept of a modifier is relatively simple. Their only function is to
 change the data stored in variables in the corresponding component, by using
-the concept of :doc:`hooks <hooks>`. 
+the concept of :doc:`hooks <../user/hooks>`. 
 
 Creating a modifier is more or less the same than creating a sensor. There are
 still two parts, the blender part and the python logic. For the blender part,

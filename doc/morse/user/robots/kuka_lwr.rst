@@ -3,7 +3,7 @@ KUKA LWR arm Robot
 
 The MORSE model of the KUKA LWR arm.
 
-The KUKA LWR uses the :doc:`armature_actuator <user/actuators/armature_actuator>` for control of the armatures.
+The KUKA LWR uses the :doc:`armature_actuator <../actuators/armature_actuator>` for control of the armatures.
 
 
 Model Info

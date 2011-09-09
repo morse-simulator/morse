@@ -3,7 +3,7 @@ PR2 Robot
 
 The MORSE model of the Willow Garage's PR2 robot.
 
-The PR2 uses the :doc:`armature_actuator <user/actuators/armature_actuator>` for control of the armatures.
+The PR2 uses the :doc:`armature_actuator <../actuators/armature_actuator>` for control of the armatures.
 
 
 Model Info

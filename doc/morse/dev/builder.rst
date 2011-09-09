@@ -109,7 +109,9 @@ Middleware configuration
 ++++++++++++++++++++++++
 
 The builder script also permits creating the required ``component_config.py``
-for the scene according to the robot and components being inserted. This is done automatically so that the user does not need to modify said script by hand.
+for the scene according to the robot and components being inserted. This is
+done automatically so that the user does not need to modify said script by
+hand.
 
 A middleware controller can be inserted in the same way as other components:
 
@@ -117,10 +119,10 @@ A middleware controller can be inserted in the same way as other components:
 
     ros = Middleware('ros_empty')
 
-In order to set a component-middleware-method, we have two options, the first 
+In order to set a component-middleware-method, we have two options, the first
 one is simple for the user, but requires some pre-configuration (a dictionary
-defined in the file ``src/morse/bulder/data.py``) 
-and poses a restriction of a single middleware per component (middleware-component = 1 method). 
+defined in the file ``src/morse/bulder/data.py``) and poses a restriction of a
+single middleware per component (middleware-component = 1 method). 
 
 .. code-block:: python
 
@@ -129,13 +131,15 @@ and poses a restriction of a single middleware per component (middleware-compone
 cf. ``morse.builder.data.MORSE_MIDDLEWARE_DICT``
 
 The second one is a bit less simple for the end-user.
-It consists of including the description of the middleware binding just as it would be done by hand in the ``component_config.py`` script:
+It consists of including the description of the middleware binding just as it
+would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
     ros.configure(motion, ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
-cf. :doc:`user/hooks <../user/hooks.html>` and :doc:`user/tutorial.html#configuring-the-middlewares <../user/tutorial.html#configuring-the-middlewares>`
+cf. :doc:`user/hooks <../user/hooks>` and :doc:`user/tutorial.html
+<../user/tutorial>` (in particular the section configuring middleware)
 
 Example
 -------
