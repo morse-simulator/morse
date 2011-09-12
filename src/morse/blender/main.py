@@ -169,7 +169,7 @@ def create_dictionaries ():
             if obj.name not in GameLogic.componentDict.keys():
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: the component '""" + obj.name + """' do not
+    ERROR: the component '""" + obj.name + """' does not
     belong to any robot: you need to fix that by 
     parenting it to a robot.                    
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
