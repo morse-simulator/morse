@@ -84,7 +84,7 @@ def main(argv):
 
 def usage():
     print("""
-    This script will parse a Morse multinode configuration file as well as 
+    This script will parse a MORSE multinode configuration file as well as 
     a scenario script and will produce a set of elementary files to be executed
     on different simulation nodes.
     Usage: create_nodes <config_file> <scenario_script>

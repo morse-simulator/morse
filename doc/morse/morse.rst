@@ -87,6 +87,16 @@ other robots or humans.
 .. toctree::
 
     user/user_workflow
+    
+Multi-node simulation
+---------------------
+
+MORSE offers the possibility to deploy the simulation on a distributed, 
+multi-node infrastructure.
+
+.. toctree::
+
+    user/multinode/hla
 
 Simulated components
 --------------------

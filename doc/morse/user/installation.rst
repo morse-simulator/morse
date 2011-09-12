@@ -42,12 +42,42 @@ Required software
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for other middlewares.
 
+Moreover, if you plan to use the multi-node version of MORSE, with HLA support, 
+see the HLA installation instructions.
+
+HLA
+~~~
+
+The High Level Architecture (HLA) is a standard framework that supports
+simulations composed of different simulation components. Some introductory
+courses about HLA are available `here <http://www.ecst.csuchico.edu/~hla/>`_.
+
+The HLA implementation on which the multi-node version of MORSE is build is
+the `CERTI <https://savannah.nongnu.org/projects/certi>`_. To install the CERTI,
+follow the `Building CERTI <http://www.nongnu.org/certi/certi_doc/Install/html/build.html>`_
+documentation.
+
+The CVS version tagged "CERTI-MORSE-0_4" is the version tested at the moment of
+the MORSE 0.4 release. If you are facing some mistakes with the head cvs version,
+try to checkout the CERTI-MORSE-0_4 version::
+
+$ cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi checkout -r CERTI-MORSE-0_4 certi
+
+You also have to create the corresponding Python binding in order to have
+MORSE able to use the CERTI. The PyHLA binding can be installed following these
+`instructions <http://www.nongnu.org/certi/PyHLA/manual/node6.html>`_.
+Depending on your system configuration, you may have to configure PyHLA to use
+the Python 3.2 executable and libraries.
+
+Then you will have to update your PYTHONPATH so that MORSE will find the PyHLA
+components.
+
 YARP 
 ~~~~
 
 For the YARP bindings
 
-- YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use Morse with this version. The issue has been fixed with yarp-2.3.1).
+- YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use MORSE with this version. The issue has been fixed with yarp-2.3.1).
 - YARP python binding
 - ACE ( 5.6.3 or +, required for YARP)
 - SWIG (2.0.4, required to compile the Python bindings)
@@ -221,11 +251,12 @@ Go to the directory where you have previously downloaded the MORSE source. Then 
   $ cmake ..
 
 By default, MORSE will install in ``/usr/local``. You can easily change that by launching ``ccmake`` instead of ``cmake``.
-When using ``ccmake``, it is also possible to select the optional middleware bindings for YARP and Pocolibs.
+When using ``ccmake``, it is also possible to select the optional HLA support, and middleware bindings for YARP and Pocolibs.
 
 - ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install prefix directory is referred to as ``$MORSE_ROOT``.
-- ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE
-- ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE
+- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support for multi-node simulations in MORSE.
+- ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE.
+- ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE.
 - ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension (Release is a good choice). ::
 
   $ sudo make install
