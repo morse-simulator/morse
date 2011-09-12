@@ -168,7 +168,6 @@ class Component(AbstractComponent):
     filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
     if bpy.app.version > (2,56,0):
-    #if bpy.app.version[1] > 56:
       with bpy.data.libraries.load(filepath) as (src, _):
         try:
           objlist = [{'name':obj} for obj in src.objects]
@@ -179,10 +178,13 @@ class Component(AbstractComponent):
 
     #print ("NAME: %s | CATEGORY: %s | objlist %s" % (name, category, objlist))
 
-    if category == 'middleware' and objlist[0]['name'] in bpy.data.objects:
-        #print ("Middleware '%s' is already in the scene" % name)
-        self._blendname = name
-        return
+    if category == 'middleware' or category == 'modifiers':
+        # Avoid re-inserting middleware or modifier objects
+        if objlist[0]['name'] in bpy.data.objects:
+            self._blendname = name
+            return
+        else:
+            print ("Adding Empty component '%s'" % name)
 
     bpy.ops.object.select_all(action='DESELECT')
     bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
@@ -193,20 +195,27 @@ class Component(AbstractComponent):
     self._blendobj = bpy.context.selected_objects[0]
 
   def configure_mw(self, mw, config=None):
+    # Add the middleware empty objects as needed
+    mw_name = mw + "_mw"
+    Middleware(mw_name)
     if not config:
       config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
     Component._config.link_mw(self, config)
     #Component._config.write()
 
   def configure_service(self, mw):
+    # Add the middleware empty objects as needed
+    mw_name = mw + "_mw"
+    Middleware(mw_name)
     config = MORSE_SERVICE_DICT[mw]
     Component._config.link_service(self, config)
-    #Component._config.write()
 
   def configure_modifier(self, mod):
+    # Add the modifier empty objects as needed
+    mod_name = mod[0].lower()
+    Modifier(mod_name)
     config = mod
     Component._config.link_modifier(self, config)
-    #Component._config.write()
 
 
 class Robot(Component):

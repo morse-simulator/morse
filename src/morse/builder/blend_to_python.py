@@ -21,18 +21,11 @@ import re
 from morse.builder.data import *
 
 """
-Morse API
+Morse API to save scene files
 
-To test this module you can c/p the following code in Blender Python console::
-
-import sys
-sys.path.append("/usr/local/lib/python3.1/dist-packages")
-from morse.builder.morsebuilder import *
-atrv=Robot("atrv")
-
-The string passed to the differents Components Classes must be an existing 
-.blend file-name, ie. for ``Robot("atrv")`` the file ``atrv.blend`` must exists 
-in the folder ``MORSE_COMPONENTS/robots/``.
+To test this module you can open this file inside a Text panel in Blender,
+then run the script.
+This will generate a python file in the same directory where Blender was first executed.
 """
 
 morse_types = {
@@ -109,6 +102,11 @@ def scan_scene (out_file):
         except KeyError as detail:
             continue
 
+        # Ignore middleware and modifier empties.
+        # These will be added dinamically by the builder
+        if 'middleware' in component_path or 'modifiers' in component_path:
+            continue
+
         path_elements = component_path.split('/')
         component_type = path_elements[-2]
         component_name = path_elements[-1]
@@ -139,8 +137,9 @@ def scan_config(file_out):
     import component_config
     for key,value in component_config.component_mw.items():
         component = re.sub('\.', '_', key)
-        mw = value[0]
-        file_out.write("%s.configure_mw(%s, %s)\n" % (mw, component, value))
+        mw = value[0][0]
+        mw = mw.lower()
+        file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, value))
 
     try:
         component_config.component_service
@@ -163,7 +162,6 @@ def scan_config(file_out):
         print ("\tNo modifiers configured")
 
 
-
 def main():
     print ("\nRunning from %s" % bpy.data.filepath)
     filename = bpy.path.display_name_from_filepath(bpy.data.filepath) + ".py"
@@ -171,7 +169,7 @@ def main():
     print ("Saving scene robot configuration to file '%s'" % filename)
     scan_scene(file_out)
     scan_config(file_out)
-    file_out.write("\nConfiguration.write()")
+    file_out.write("\nenv = Environment('indoors-1/indoor-1')")
     file_out.close()
     print ("Configuration saved")
 
