@@ -1,3 +1,32 @@
+# @Authors: David Hodo hododav@tigermail.auburn.edu
+# @Owner: Auburn University
+# @File: hummer.py
+# @Description:  
+# @License: 
+# (C) 2010 Name, David Hodo
+# Auburn University, USA
+#
+# You may redistribute this software and/or modify it under either the terms of the GNU Lesser
+# General Public License version 2.1
+# (LGPLv2.1 <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>)
+# or (at your discretion) of the Modified BSD License:
+# Redistribution and use in source and binary forms, with or without modification, are permitted
+# provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright notice, this list of 
+#     conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright notice, this list of 
+#     conditions and the following disclaimer in the documentation and/or other materials
+#     provided with the distribution.
+#  3. The name of the author may not be used to endorse or promote products derived from
+#     this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+# OF SUCH DAMAGE.
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.core.robot
@@ -22,6 +51,21 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         #
         
         cont = GameLogic.getCurrentController()
+        scene = GameLogic.getCurrentScene()
+
+        for child in obj.children:
+            if 'wheel1' in child.name:
+                wheel1 = child
+                wheel1.removeParent()
+            if 'wheel2' in child.name:
+                wheel2 = child
+                wheel2.removeParent()
+            if 'wheel3' in child.name:
+                wheel3 = child
+                wheel3.removeParent()
+            if 'wheel4' in child.name:
+                wheel4 = child
+                wheel4.removeParent()
 
         obj['init'] = 1
         physicsid = obj.getPhysicsId()
@@ -33,11 +77,6 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         wx = 1.3
         wy = 1.6
         wz = -.5
-
-        #wheelAttachPosLocal:
-        #Where the wheel is attach to the car based
-        #on the vehicle's Center
-        wheelAttachPosLocal = [wx, wy, wz]
 
         #wheelAttachDirLocal:
         #Direction the suspension is pointing
@@ -69,18 +108,16 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         #	Front wheels:
         #
 
-        scene = GameLogic.getCurrentScene()
-        wheel1=scene.objects["wheel1"]
-        
         logger.debug(dir(wheel1))
-        
+
+        #Where the wheel is attached to the car based
+        #on the vehicle's Center
+        wheelAttachPosLocal = [wx, wy, wz]
+
         #creates the first wheel using all of the variables 
         #created above:
         self.vehicle.addWheel(wheel1,wheelAttachPosLocal,wheelAttachDirLocal,wheelAxleLocal,suspensionRestLength,wheelRadius,hasSteering)
         
-        #locates the second wheel:
-        wheel2=scene.objects["wheel2"]
-
         #Positions this wheel on the opposite side of the car by using a
         #negative values for the x position.
         wheelAttachPosLocal = [-wx, wy, wz]
@@ -104,9 +141,6 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         # -y moves the position toward the back of the car
         wheelAttachPosLocal = [wx ,-wy, wz]
 
-        # locate the 3rd wheel:
-        wheel3=scene.objects["wheel3"]
-
         #Creates the 3rd wheel (first rear wheel)
         self.vehicle.addWheel(wheel3,wheelAttachPosLocal,wheelAttachDirLocal,wheelAxleLocal,suspensionRestLength,wheelRadius,hasSteering)
 
@@ -114,9 +148,6 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         # changed to -x to place the wheel on the opposite side of the car
         # the same distance away from the vehicle's center
         wheelAttachPosLocal = [-wx ,-wy, wz]
-
-        #locate the fourth wheel:
-        wheel4=scene.objects["wheel4"]
 
         #create the last wheel using the above variables:
         self.vehicle.addWheel(wheel4,wheelAttachPosLocal,wheelAttachDirLocal,wheelAxleLocal,suspensionRestLength,wheelRadius,hasSteering)
