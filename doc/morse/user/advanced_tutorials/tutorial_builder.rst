@@ -17,6 +17,11 @@ In order to use the API, you should import
 
     from morse.builder.morsebuilder import *
 
+
+.. note:: The names inside the builder functions must match exactly with
+    the names of the .blend files that contain the components.
+
+
 Add a robot to the scene
 ++++++++++++++++++++++++
 .. code-block:: python
@@ -27,7 +32,7 @@ Append an actuator
 ++++++++++++++++++
 .. code-block:: python
 
-    motion = Controller('morse_vw_control')
+    motion = Actuator('v_omega')
     motion.translate(z=0.3)
     atrv.append(motion)
 
@@ -35,25 +40,21 @@ Append a Gyroscope sensor
 +++++++++++++++++++++++++
 .. code-block:: python
 
-    gyroscope = Sensor('morse_gyroscope')
+    gyroscope = Sensor('gyroscope')
     gyroscope.translate(z=0.83)
     atrv.append(gyroscope)
 
 Adding a middleware
 -------------------
 
-Insert the middleware object
-++++++++++++++++++++++++++++
-.. code-block:: python
-
-    ros = Middleware('ros_empty')
-
 Configuring the middlewares
 +++++++++++++++++++++++++++
 .. code-block:: python
 
-    ros.configure(gyroscope)
-    ros.configure(motion)
+    gyroscope.configure('ros')
+    motion.configure('ros')
+
+The middleware components will automatically be appended to the scene when necessary.
 
 Running the simulation
 ----------------------
@@ -61,7 +62,7 @@ Running the simulation
 Run the simulation
 ++++++++++++++++++
 
-#. Launch Morse passing your script in argument: ``morse mytutorial.py``
+#. Launch Morse passing your script in argument: ``morse exec mytutorial.py``
 #. On a separate terminal, launch the master ROS node using: ``roscore``
 #. Press :kbd:`p` to start the Game Engine
 

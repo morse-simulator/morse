@@ -178,6 +178,7 @@ Beginners
     :maxdepth: 1
     
     user/tutorial
+    user/advanced_tutorials/tutorial_builder
 
 Intermediate
 ++++++++++++
