@@ -1,24 +1,24 @@
 #--- ### Header
 bl_info = {
-    "name": "Blender_to_Python",
+    "name": "MORSE scene as Python API (.py)",
     "author": "Gilberto Echeverria",
     "version": (1, 0, 0),
     "blender": (2, 5, 9),
     "api": 36147,
-    "location": "View3D>Edit Mode>Specials (W-key)",
+    "location": "File>Import-Export",
     "category": "Import-Export",
-    "description": "Scan a Blender scene for robots and save their configurationas a text file readable by the 'morsebuilder' script",
+    "description": "Save a MORSE scene as a Python description",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "https://softs.laas.fr/bugzilla/"
 }
-
 
 import os
 import bpy
 import json
 import re
 from morse.builder.data import *
+from bpy.utils import register_module, unregister_module
 
 """
 Morse API to save scene files
@@ -36,9 +36,10 @@ morse_types = {
     "modifiers": "Modifier",
 }
 
-def save_translation(obj, obj_name, out_file):
+def save_translation(obj, obj_name):
     # Set its position
     position_string = ''
+    text_buffer = ''
     component_position = obj.location
     if component_position[0] != 0:
         position_string += 'x=%.4f' % component_position[0]
@@ -52,12 +53,15 @@ def save_translation(obj, obj_name, out_file):
         position_string += 'z=%.4f' % component_position[2]
     # Register a translation only if necessary
     if position_string != '':
-        out_file.write("%s.translate(%s)\n" % (obj_name, position_string))
+        text_buffer += "%s.translate(%s)\n" % (obj_name, position_string)
+
+    return (text_buffer)
 
 
-def save_rotation(obj, obj_name, out_file):
+def save_rotation(obj, obj_name):
     # Set its rotation
     rotation_string = ''
+    text_buffer = ''
     component_rotation = obj.rotation_euler
     if component_rotation[0] != 0:
         rotation_string += 'x=%.4f' % component_rotation[0]
@@ -71,29 +75,36 @@ def save_rotation(obj, obj_name, out_file):
         rotation_string += 'z=%.4f' % component_rotation[2]
     # Register a translation only if necessary
     if rotation_string != '':
-        out_file.write("%s.rotate(%s)\n" % (obj_name, rotation_string))
+        text_buffer += "%s.rotate(%s)\n" % (obj_name, rotation_string)
+
+    return (text_buffer)
 
 
-def save_properties(obj, obj_name, out_file):
+def save_properties(obj, obj_name):
+    text_buffer = ''
     # Store the properties of the component
     for key,prop in obj.game.properties.items():
         if key not in ['Robot_Tag', 'Component_Tag', 'Middleware_Tag', 'Modifier_Tag', 'Class', 'Path']:
             if prop.value != '':
                 if prop.type == 'STRING':
-                    out_file.write("%s.properties(%s = '%s')\n" % (obj_name, key, prop.value))
+                    text_buffer += "%s.properties(%s = '%s')\n" % (obj_name, key, prop.value)
                 elif prop.type == 'FLOAT' or prop.type == 'TIMER':
-                    out_file.write("%s.properties(%s = %.4f)\n" % (obj_name, key, prop.value))
+                    text_buffer += "%s.properties(%s = %.4f)\n" % (obj_name, key, prop.value)
                 else:
-                    out_file.write("%s.properties(%s = %s)\n" % (obj_name, key, prop.value))
+                    text_buffer += "%s.properties(%s = %s)\n" % (obj_name, key, prop.value)
+
+    return (text_buffer)
 
 
-def scan_scene (out_file):
+def scan_scene (file_out):
     """ Read all the MORSE components from a Blender file
 
     Create lists of robots and components to save them as a text file
     """
+    file_out.write("from morse.builder.morsebuilder import *\n\n")
 
-    out_file.write("from morse.builder.morsebuilder import *\n\n")
+    robot_text = ''
+    component_text = ''
 
     for obj in bpy.data.objects:
         try:
@@ -107,26 +118,40 @@ def scan_scene (out_file):
         if 'middleware' in component_path or 'modifiers' in component_path:
             continue
 
+        # Read what type of component this is,
+        #  from the source of its python file
         path_elements = component_path.split('/')
         component_type = path_elements[-2]
         component_name = path_elements[-1]
 
         builder_type = morse_types[component_type]
 
+        # Swap dots for underscores in object names
         obj_name = re.sub('\.', '_', obj.name)
         # Create the object instance
-        out_file.write("%s = %s('%s')\n" % (obj_name, builder_type, component_name))
-        save_translation(obj, obj_name, out_file)
-        save_rotation(obj, obj_name, out_file)
+        if component_type == 'robots':
+            robot_text += "%s = %s('%s')\n" % (obj_name, builder_type, component_name)
+            robot_text += save_translation(obj, obj_name)
+            robot_text += save_rotation(obj, obj_name)
+            robot_text += save_properties(obj, obj_name)
+            robot_text += "\n"
 
         # Assign component to the parent
         if component_type == 'sensors' or component_type == 'actuators':
+            component_text += "%s = %s('%s')\n" % (obj_name, builder_type, component_name)
+            component_text += save_translation(obj, obj_name)
+            component_text += save_rotation(obj, obj_name)
             parent_name = re.sub('\.', '_', obj.parent.name)
-            out_file.write("%s.append(%s)\n" % (parent_name, obj_name))
+            component_text += "%s.append(%s)\n" % (parent_name, obj_name)
+            component_text += save_properties(obj, obj_name)
+            component_text += "\n"
 
-            save_properties(obj, obj_name, out_file)
+    # Write the buffers to the text file
+    file_out.write("# Robots\n")
+    file_out.write(robot_text)
+    file_out.write("# Components\n")
+    file_out.write(component_text)
 
-        out_file.write("\n")
 
 def scan_config(file_out):
     """ Parse the contents of 'component_config.py'
@@ -135,6 +160,7 @@ def scan_config(file_out):
     configure the robot/middleware bindings in a scene. 
     """
     import component_config
+    file_out.write("# Scene configuration\n")
     for key,value in component_config.component_mw.items():
         component = re.sub('\.', '_', key)
         mw = value[0][0]
@@ -162,7 +188,7 @@ def scan_config(file_out):
         print ("\tNo modifiers configured")
 
 
-def main():
+def save_scene():
     print ("\nRunning from %s" % bpy.data.filepath)
     filename = bpy.path.display_name_from_filepath(bpy.data.filepath) + ".py"
     file_out = open(filename, "w")
@@ -175,23 +201,35 @@ def main():
 
 
 #--- ### Operator
-class BlenderToPython(bpy.types.Operator):
+class MorseExporter(bpy.types.Operator):
     ''' Convert a MORSE scene configuration to a python script '''
-    bl_idname = "export.blender_to_python"
-    bl_label = "Blender to Python"
+    bl_idname = "export_scene.morse"
+    bl_label = "Save MORSE scene"
     bl_description = "Convert a MORSE scene configuration to a python script"
 
+    #--- Blender interface methods
+    #@classmethod
+    #def poll(cls,context):
+        #return (context.mode == 'OBJECT')
+
     def execute(self,context):
-        main()
+        save_scene()
         return ('FINISHED')
 
+
+def menu_draw(self, context):
+    self.layout.operator_context = 'INVOKE_REGION_WIN'
+    self.layout.operator(MorseExporter.bl_idname, "Save MORSE scene (.py)")
 
 #--- ### Register
 def register():
     register_module(__name__)
+    bpy.types.INFO_MT_file_export.prepend(menu_draw)
 def unregister():
+    bpy.types.INFO_MT_file_export.remove(menu_draw)
     unregister_module(__name__)
 
 #--- ### Main code
 if __name__ == '__main__':
-    main()
+    #register()
+    save_scene()
