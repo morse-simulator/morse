@@ -144,6 +144,23 @@ would be done by hand in the ``component_config.py`` script:
 cf. :doc:`user/hooks <../user/hooks>` and :doc:`user/tutorial.html
 <../user/tutorial>` (in particular the section configuring middleware)
 
+
+Finalising the scene
+++++++++++++++++++++
+
+Every builder script must finish with an environment description. This is mandatory, or
+else the scene will not be created. The parameter for the `Environment` method is the
+name of a .blend file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+
+An additional option is to place and aim the default camera, by using the methods `aim_camera` and `place_camera`.
+
+.. code-block:: python
+
+    env = Environment('land-1/trees')
+    env.aim_camera([1.0470, 0, 0.7854])
+
+
+
 Example
 -------
 
@@ -194,6 +211,8 @@ Example
     sick.configure('ros')
     cam.configure('ros')
 
+    env = Environment('land-1/trees')
+    env.aim_camera([1.0470, 0, 0.7854])
 
 Generate the components dictionary
 -----------------------------------

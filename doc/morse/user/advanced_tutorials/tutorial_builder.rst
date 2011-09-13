@@ -56,6 +56,22 @@ Configuring the middlewares
 
 The middleware components will automatically be appended to the scene when necessary.
 
+
+Finalising the scene
+--------------------
+
+Every builder script must finish with an environment description. This is mandatory, or
+else the scene will not be created. The parameter for the `Environment` method is the
+name of a .blend file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+
+An additional option is to place and aim the default camera, by using the methods `aim_camera` and `place_camera`.
+
+.. code-block:: python
+
+    env = Environment('land-1/trees')
+    env.aim_camera([1.0470, 0, 0.7854])
+
+
 Running the simulation
 ----------------------
 
