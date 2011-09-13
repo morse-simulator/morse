@@ -243,5 +243,5 @@ def unregister():
 
 #--- ### Main code
 if __name__ == '__main__':
-    #register()
-    save_scene()
+    register()
+    #save_scene()
