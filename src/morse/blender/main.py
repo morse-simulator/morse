@@ -278,7 +278,7 @@ def get_components_of_type(classname):
 
 
 def get_middleware_of_type(classname):
-    for mw_instance in GameLogic.mwDict.value():
+    for mw_instance in GameLogic.mwDict.values():
         if mw_instance.__class__.__name__ == classname:
             return mw_instance
     return None
