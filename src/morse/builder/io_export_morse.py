@@ -163,9 +163,21 @@ def scan_config(file_out):
     file_out.write("# Scene configuration\n")
     for key,value in component_config.component_mw.items():
         component = re.sub('\.', '_', key)
-        mw = value[0][0]
-        mw = mw.lower()
-        file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, value))
+        # If the 'value' variable contains only strings, use that string
+        #  as the name of the middleware.
+        # This is done for backwards compatibility with the previous
+        #  syntax that allowed only one middleware per component
+        if isinstance (value[0], str):
+            mw = value[0]
+            mw = mw.lower()
+            file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, value))
+        # If using the new syntax that allows more than one middleware
+        #  per component
+        else:
+            for item in value:
+                mw = item[0]
+                mw = mw.lower()
+                file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, item))
 
     try:
         component_config.component_service
