@@ -1,5 +1,5 @@
-Pan-Tilt unit control actuator
-==============================
+Pan-Tilt Unit actuator
+======================
 
 This actuator reads the rotation values for pan and tilt, and applies
 them to the pan-tilt unit that must be set as children of this actuator.
@@ -10,8 +10,8 @@ Empty object, but it also includes two meshes. These are the **PanBase** and
 the **TiltBase** that must also be imported when using this actuator.
 These meshes will rotate to produce the effect of a real Pan-Tilt unit.
 
-.. note:: When mounting a camera or stereo setup on top of the Pan-Tilt unit,
-    make sure to parent the camera to the **TiltBase** object.
+.. note:: When mounting a camera or stereo unit on top of the Pan-Tilt unit,
+    make sure to parent the camera to the **PTU** object.
 
 This component can be configured to be operated manually as well as through data
 from a middleware. When using manual mode, the pan and tilt segments can be rotated

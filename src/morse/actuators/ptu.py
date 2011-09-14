@@ -3,6 +3,7 @@ import GameLogic
 import math
 import morse.core.actuator
 from morse.core import status
+from morse.core.services import service
 from morse.core.services import async_service
 import morse.helpers.math as morse_math
 
@@ -26,6 +27,12 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             elif 'TiltBase' in child.name:
                 self._tilt_base = child
                 self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
+
+        # Any other objects children of the PTU are assumed
+        #  to be mounted on top of it
+        for child in self.blender_obj.children:
+            if not 'PanBase' in child.name:
+                child.setParent(self._tilt_base)
 
         # Check the bases were found, or exit with a message
         try:
