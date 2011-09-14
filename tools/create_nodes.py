@@ -24,7 +24,7 @@ def create_node(node):
         node_script += "bpy.data.scenes[0].game_settings.show_framerate_profile = True\n"
     ### Script: HLA Empty part
     node_script += "\n### HLA Section ###\n"
-    node_script += "hla = Middleware('hla_empty')\n"
+    node_script += "hla = Middleware('hla_mw')\n"
     node_script += "hla.properties(Federate='" + node + "')\n"
     try:
         host = cfg['global']['host']
