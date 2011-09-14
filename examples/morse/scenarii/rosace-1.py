@@ -75,4 +75,4 @@ Rosace_Sensor_001.configure_service('yarp')
 Motion_Controller_001.configure_service('yarp')
 Rosace_Sensor.configure_service('yarp')
 
-env = Environment('land-1/trees')
+env = Environment('land-1/rosace_1')
