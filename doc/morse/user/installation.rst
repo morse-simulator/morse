@@ -1,4 +1,4 @@
-MORSE installation 
+MORSE installation
 ==================
 
 Requirements - What you need to install before 

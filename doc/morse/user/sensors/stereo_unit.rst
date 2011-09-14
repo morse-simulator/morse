@@ -7,9 +7,6 @@ also provide the connection interface to use the information of the cameras
 attached to it. In the case of two cameras, it will provide the stereo
 information generated from the two camera images.
 
-The movement of the stereo unit is implemented by making it the child of a
-:doc:`Pan-Tilt unit <../actuators/ptu>`_ actuator.
-
 Files
 -----
 - Blender: ``$MORSE_ROOT/data/morse/sensors/stereo_unit.blend``
@@ -33,3 +30,6 @@ Related components
 
 A stereo unit needs to be the parent of one or more :doc:`cameras <video_camera>`.
 Otherwise, it does no useful function.
+
+The movement of the stereo unit is implemented by making it the child of a
+:doc:`Pan-Tilt unit <../actuators/ptu>` actuator.

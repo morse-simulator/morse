@@ -18,9 +18,6 @@ The cameras make use of Blender's **VideoTexture** module, which requires a
 graphic card capable of GLSL shading. Also, the 3D view window in Blender must be
 set to draw **Textured** objects.
 
-The movement of the semantic camera is implemented by making it the child of a
-:doc:`Pan-Tilt unit <../actuators/ptu>`_ actuator.
-
 Files
 -----
 
@@ -50,3 +47,9 @@ Applicable modifiers
 --------------------
 
 No camera modifiers available at the moment
+
+Related components
+------------------
+
+The movement of the semantic camera is implemented by making it the child of a
+:doc:`Pan-Tilt unit <../actuators/ptu>` actuator.

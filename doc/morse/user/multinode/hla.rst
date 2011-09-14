@@ -92,7 +92,7 @@ that may be relevant to MORSE are described below:
   and the ``$CERTI_HOME/share/federations`` path.
 
 Setting up an HLA simulation using the distribution script
----------------------------------------------------------
+----------------------------------------------------------
 
 MORSE provides a distribution script that helps setting up a multi-node simulation.
 The principle of this script is that you just have to define your MORSE scenario
