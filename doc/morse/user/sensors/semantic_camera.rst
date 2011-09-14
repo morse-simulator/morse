@@ -21,7 +21,7 @@ set to draw **Textured** objects.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_camera.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/semantic_camera.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/semantic_camera.py``
 
 

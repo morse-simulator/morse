@@ -10,7 +10,7 @@ time measure.
 Files
 -----
 
-  - Blender: ``$MORSE_ROOT/data/morse/components/controllers/morse_destination_control.blend``
+  - Blender: ``$MORSE_ROOT/data/morse/actuators/destination.blend``
   - Python: ``$MORSE_ROOT/src/morse/actuators/destination.py``
 
 Local data 

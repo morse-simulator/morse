@@ -10,7 +10,7 @@ The angles for yaw, pitch and roll are given in radians.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_odometry.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/odometry.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/odometry.py``
 
 Local data

@@ -13,7 +13,7 @@ for the full environment around it.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_velodyne.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/velodyne.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/velodyne.py``
 
 Local data
@@ -86,4 +86,3 @@ Rotation speed
 The turning speed of the sensor is currently defined using the **Logic Bricks**
 of the Empty object representing the sensor. Change the value of Rot Z in the
 **Motion Actuator** to modify the rotation speed.
-

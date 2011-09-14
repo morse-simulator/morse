@@ -26,8 +26,8 @@ using the following keys:
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/components/controllers/morse_platine_control.blend``
--  Python: ``$MORSE_ROOT/src/morse/actuators/platine.py``
+-  Blender: ``$MORSE_ROOT/data/morse/actuators/ptu.blend``
+-  Python: ``$MORSE_ROOT/src/morse/actuators/ptu.py``
 
 Local data 
 ----------
@@ -48,6 +48,9 @@ Services
 - **set_pan_tilt**: (asynchronous service) This method take in parameters the
   wished pan and tilt (in radians) and finish when the actuator is effectively
   at this position.
+
+- **get_pan_tilt**: (synchronous service) Returns the current angles of the 
+  pan and tilt segments (in radians).
 
 Applicable modifiers 
 --------------------

@@ -11,7 +11,7 @@ certain distance of the sensor's origin.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_sick.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/sick.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/sick.py``
 
 Local data

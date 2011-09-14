@@ -27,7 +27,7 @@ it will change the Game Properties of the object to reduce its ``injured`` value
 Files
 -----
 
-  - Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_rosace.blend``
+  - Blender: ``$MORSE_ROOT/data/morse/sensors/rosace.blend``
   - Python: ``$MORSE_ROOT/src/morse/sensors/rosace.py``
 
 Local data 
@@ -35,7 +35,10 @@ Local data
 
   - **victim_dict**: (dictionary) Contains an entry for each of the victims that is
      located inside the cone of the sensor. The value of each entry is a list containing
-     the coordinates of the victim object.
+     three elements:
+     - a list with the coordinates of the victim object
+     - a list with the requirements of that victim
+     - the severity (priority) value of the victim
 
 Configurable parameters
 -----------------------

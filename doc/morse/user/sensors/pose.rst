@@ -6,12 +6,12 @@ the origin of the Blender coordinate reference.
 It basically does the same job as both of the
 :doc:`GPS <gps>` and :doc:`Gyroscope <gyroscope>` sensors.
 The position and orientation data is taken from the sensor's ``position_3d`` structure.
-The angles for yaw, pitch and roll are given in radians.
+The angles for yaw, pitch and roll are given in radians in the range (-pi, pi).
 
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_pose.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/pose.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/pose.py``
 
 Local data

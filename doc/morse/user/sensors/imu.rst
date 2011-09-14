@@ -1,7 +1,7 @@
 Inertial measurement unit (IMU)
 ===============================
 
-This sensor emulates an Inertial measurement unit, measuring the distance that
+This sensor emulates an Inertial Measurement Unit, measuring the distance that
 a robot has moved and the angles the robot has turned in 3D. Also the velocity
 and acceleration for each of these values is available. The arrays are in the
 following format: [x, y, z, roll, pitch, yaw]
@@ -9,7 +9,7 @@ following format: [x, y, z, roll, pitch, yaw]
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_imu.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/imu.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/imu.py``
 
 Local data

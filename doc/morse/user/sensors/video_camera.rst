@@ -1,14 +1,17 @@
 Video camera sensor
 ===================
 
-This sensor emulates a single video camera. It generates a series of RGBA images. Images are encoded as binary char arrays, with 4 bytes per pixel.
+This sensor emulates a single video camera. It generates a series of RGBA images.
+Images are encoded as binary char arrays, with 4 bytes per pixel.
 
-The cameras make use of Blender's **VideoTexture** module, which requires a graphic card capable of GLSL shading. Also, the 3D view window in Blender must be set to draw **Textured** objects.
+The cameras make use of Blender's **VideoTexture** module, which requires
+a graphic card capable of GLSL shading.
+Also, the 3D view window in Blender must be set to draw **Textured** objects.
 
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/sensors/morse_camera.blend``
+- Blender: ``$MORSE_ROOT/data/morse/sensors/video_camera.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/video_camera.py``
 
 

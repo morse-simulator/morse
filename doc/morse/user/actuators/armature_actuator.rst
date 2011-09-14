@@ -11,8 +11,8 @@ Files
 
 - Robots implementing the actuator:
 
-	- PR2: ``$MORSE_ROOT/data/morse/components/robots/pr2/pr2_25_morse.blend``
-	- KUKA LWR: ``$MORSE_ROOT/data/morse/components/robots/KUKA_LWR.blend``
+	- PR2: ``$MORSE_ROOT/data/morse/robots/pr2/pr2_25_morse.blend``
+	- KUKA LWR: ``$MORSE_ROOT/data/morse/robots/kuka_lwr.blend``
 
 Use of the armature actuator
 ----------------------------

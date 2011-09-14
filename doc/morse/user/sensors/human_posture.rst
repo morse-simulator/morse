@@ -2,7 +2,7 @@ Human posture sensor
 ====================
 
 This sensor collects the positions of the bones in the human armature
-for the file ``$MORSE_ROOT/data/morse/components/human/default_human.blend``.
+for the file ``$MORSE_ROOT/data/morse/human/default_human.blend``.
 
 It stores the position and orientation of the general armature object, as
 well as the local rotation of each individual bone. The rotation angles are
@@ -16,7 +16,7 @@ You can also check to general documentation of the :doc:`human component <../oth
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/human/default_human.blend``
+- Blender: ``$MORSE_ROOT/data/morse/human/default_human.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/human_posture.py``
 
 Local data
