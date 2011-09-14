@@ -7,7 +7,8 @@ also provide the connection interface to use the information of the cameras
 attached to it. In the case of two cameras, it will provide the stereo
 information generated from the two camera images.
 
-.. note:: The movement of the stereo unit is implemented with the actuator :doc:`pantilt <../actuators/platine>`
+The movement of the stereo unit is implemented by making it the child of a
+:doc:`Pan-Tilt unit <../actuators/ptu>`_ actuator.
 
 Files
 -----

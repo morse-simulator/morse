@@ -1,5 +1,5 @@
-Waypoint target movement
-========================
+Waypoint actuator
+=================
 
 This actuator reads the coordinates of a destination point, and moves the robot
 towards the given point, with the robot restricted to moving only forward,

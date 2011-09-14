@@ -1,13 +1,16 @@
-Armature Actuator
+Armature actuator
 =================
 
 This actuator offers services to control a generic blender armature.
+It is already included in some of the robot components that can use it,
+as mentioned below.
 
 
 Files 
 -----
 
 - Python: ``$MORSE_ROOT/src/morse/actuators/armature_actuator.py``
+- Blender: ``$MORSE_ROOT/data/morse/actuators/armature_actuator.blend``
 
 - Robots implementing the actuator:
 
