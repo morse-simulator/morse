@@ -9,7 +9,7 @@ import morse.helpers.math as morse_math
 class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Controller for pant tilt unit (platine)
 
-    Reads 3 angles and applies them to the object and its children
+    Reads 2 angles (in radians) and applies them to the object and its children
     """
 
     def __init__(self, obj, parent=None):
@@ -56,6 +56,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['pan'] = pan
         self.local_data['tilt'] = tilt
 
+    @service
     def get_pan_tilt(self):
        self._pan_position_3d.update(self._pan_base)
        self._tilt_position_3d.update(self._tilt_base)
