@@ -21,6 +21,7 @@ in the folder ``MORSE_COMPONENTS/robots/``.
 cfg_middleware = {}
 cfg_modifier = {}
 cfg_service = {}
+cfg_overlay = {}
 
 class Configuration(object):
     def __init__(self):
@@ -29,22 +30,17 @@ class Configuration(object):
             bpy.data.texts[-1].name = 'component_config.py'
 
     def link_mw(self, component, mw_method_cfg):
-        try:
-                cfg_middleware[component.name].append (mw_method_cfg)
-        except KeyError as detail:
-                cfg_middleware[component.name] = [mw_method_cfg]
+        cfg_middleware.setdefault(component.name, []).append(mw_method_cfg)
 
     def link_service(self, component, service_cfg):
-        #try:
-                #cfg_service[component.name].append (service_cfg)
-        #except KeyError as detail:
-                cfg_service[component.name] = [service_cfg]
+        cfg_service.setdefault(component.name, []).append(service_cfg)
 
     def link_modifier(self, component, modifier_cfg):
-        try:
-                cfg_modifier[component.name].append (modifier_cfg)
-        except KeyError as detail:
-                cfg_modifier[component.name] = [modifier_cfg]
+        cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
+
+    def link_overlay(self, klass,  manager, overlay_cfg):
+        cfg_overlay.setdefault(manager, {})[klass] = overlay_cfg 
+
 
 
 class AbstractComponent(object):
@@ -213,6 +209,11 @@ class Component(AbstractComponent):
         config = mod
         Component._config.link_modifier(self, config)
 
+    def configure_overlay(self, manager, overlay):
+        o = self._blendobj
+        klass = o.game.properties["Class"].value
+        Component._config.link_overlay(klass, manager, overlay)
+
 
 class Robot(Component):
     def __init__(self, name):
@@ -248,6 +249,8 @@ class Environment(Component):
         cfg.write('component_modifier = ' + json.dumps(cfg_modifier, indent=1) )
         cfg.write('\n')
         cfg.write('component_service = ' + json.dumps(cfg_service, indent=1) )
+        cfg.write('\n')
+        cfg.write('overlays = ' + json.dumps(cfg_overlay, indent=1) )
         cfg.write('\n')
 
     def _get_path_file(self):
