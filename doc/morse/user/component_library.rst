@@ -7,7 +7,7 @@ belong to three main types:
 
 - `Bare robotic bases`_
 - `Sensors`_
-- `Actuators/Controllers`_
+- `Actuators`_
 
 In general, Sensors generate data from the simulated world, to be used by
 external programs. Alternatively, Actuators read data from outside Blender to
@@ -50,8 +50,8 @@ Sensors
     sensors/*
 
 
-Actuators/Controllers
----------------------
+Actuators
+---------
 
 .. toctree::
     :glob:

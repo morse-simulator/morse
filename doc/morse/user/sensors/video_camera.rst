@@ -8,9 +8,6 @@ The cameras make use of Blender's **VideoTexture** module, which requires
 a graphic card capable of GLSL shading.
 Also, the 3D view window in Blender must be set to draw **Textured** objects.
 
-The movement of the video camera is implemented by making it the child of a
-:doc:`Pan-Tilt unit <../actuators/ptu>`_ actuator.
-
 Files
 -----
 
@@ -33,7 +30,8 @@ Configurable parameters
 The Empty object corresponding to this sensor has the following parameters:
 
 - **capturing**: (Boolean) flag that determines whether the camera should
-  generate an image. It can be toggled on or off by pressing the :kbd:`Space`
+  generate an image. It can be toggled on or off by pressing the :kbd:`Space`.
+  The default value should be `True`.
 - **cam_width**: (double) generated image width in pixels
 - **cam_height**: (double) generated image height in pixels
 - **cam_focal**: (double) camera focal length as defined in Blender (note: in
@@ -78,5 +76,7 @@ No camera modifiers available at the moment
 Related components
 ------------------
 
-A :doc:`stereo bench <stereo_camera>` is composed of two regular cameras
-parented to a :doc:`pan-tilt unit <pantilt>`.
+Two or more cameras can be mounted on a :doc:`stereo unit <stereo_unit>` so that the images they
+generate can be processed together.
+Cameras or stereo units can also be parented to a :doc:`pan-tilt unit <../actuators/ptu>` so they
+can be oriented during the simulation.

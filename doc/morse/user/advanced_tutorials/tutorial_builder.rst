@@ -11,12 +11,19 @@ cf. examples/morse/scenarii/ros_example.py
 Create the script
 -----------------
 
-In order to use the API, you should import
+For this tutorial, you will describe all the elements of your scene (robots,
+sensors, actuators) in a Python script, and then execute it using `morse`.
+We describe here how to create the script:
+
+In order to use the API, you should import some `morse` libraries:
 
 .. code-block:: python
 
     from morse.builder.morsebuilder import *
 
+
+Then you will make calls to predefined functions to create and configure the
+components necessary in your scene.
 
 .. note:: The names inside the builder functions must match exactly with
     the names of the .blend files that contain the components.
@@ -68,7 +75,7 @@ An additional option is to place and aim the default camera, by using the method
 
 .. code-block:: python
 
-    env = Environment('land-1/trees')
+    env = Environment('indoors-1/indoor-1')
     env.aim_camera([1.0470, 0, 0.7854])
 
 

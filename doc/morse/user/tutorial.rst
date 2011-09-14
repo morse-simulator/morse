@@ -1,9 +1,9 @@
-Create your first simulation
-============================
+Create your first simulation (using Blender)
+============================================
 
-This tutorial goes through the steps required to build "from scratch" a new
-simulation. Note that once created, you can save your simulation scenario
-as a regular Blender file to replay it directly any time later.
+This tutorial goes through the steps required to manually build "from scratch"
+a new robot for simulation. Note that once created, you can save your simulation
+scenario as a regular Blender file to replay it directly any time later.
 
 This tutorial assumes MORSE is properly installed. If not, follow the
 instructions :doc:`here <installation>`.
@@ -32,8 +32,8 @@ Link an actuator
 We'll add a motion controller to the robot, so that it can receive commands from an external program. The robot will then move according to the instructions received. In this case we'll add a controller that uses linear and angular speed (V, W).
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/controllers``,
-#. Press :kbd:`Left Mouse Click` over the file ``morse_vw_control.blend``,
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/actuators``,
+#. Press :kbd:`Left Mouse Click` over the file ``v_omega.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
 #. Press :kbd:`Right Mouse Click` over the item ``Motion_Controller``,
 #. Press the button **Link/Append from Library**. You'll return to the 3D View.
@@ -50,21 +50,21 @@ We'll add a motion controller to the robot, so that it can receive commands from
 
 .. _link-gyroscope-sensor:
 
-Link a Gyroscope sensor
-+++++++++++++++++++++++
+Link a Pose sensor
+++++++++++++++++++
 
 Next we will add a sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/sensors``,
-#. Press :kbd:`Left Mouse Click` over the file ``morse_gyroscope.blend``,
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/sensors``,
+#. Press :kbd:`Left Mouse Click` over the file ``pose.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Press select all items (``Gyroscope`` and ``Gyro_box``), by holding :kbd:`Shift` down, and load them.
+#. Press select all items (``Pose_sensor`` and ``Pose_mesh``), by holding :kbd:`Shift` down, and load them.
 #. Convert the two object to local, by pressing :kbd:`l` then hitting :kbd:`enter`,
 #. Switch to front view by pressing :kbd:`1` (or use the ``View`` menu at the bottom of the 3D view),
-#. Press :kbd:`g`, then move the ``Gyroscope`` object on the top of the robot (you can constraint the translation on the Z axis by simply pressing :kbd:`Z`),
+#. Press :kbd:`g`, then move the ``Pose_sensor`` object on the top of the robot (you can constraint the translation on the Z axis by simply pressing :kbd:`Z`),
 #. Press :kbd:`Left Mouse Click` to accept the movement,
-#. With the ``Gyroscope`` object selected, hold down :kbd:`Shift` and then :kbd:`Right Mouse Click` over the robot object,
+#. With the ``Pose_sensor`` object selected, hold down :kbd:`Shift` and then :kbd:`Right Mouse Click` over the robot object,
 #. Press :kbd:`Ctrl-p` and then hit :kbd:`enter` make the robot the parent of the controller.
 
 
@@ -77,8 +77,8 @@ Insert the middleware object
 To use a middleware to exchange data from the simulator, it is necessary to link in an object that will represent the middleware.
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/middleware``,
-#. Press :kbd:`Left Mouse Click` over the file ``socket_empty.blend``,
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/middleware``,
+#. Press :kbd:`Left Mouse Click` over the file ``socket_mw.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
 #. Toggle **Link** at the bottom of the window and import ``Socket_Empty``,
 #. It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene.
@@ -94,8 +94,8 @@ Binding the components in the scene with the middleware is done in a configurati
 #. Add the following items to the ``component_mw`` dictionary::
   
     component_mw = {
-        "Gyroscope": ["Socket", "post_message"],
-        "Motion_Controller": ["Socket", "read_message"]
+        "Gyroscope": [["Socket", "post_message"]],
+        "Motion_Controller": [["Socket", "read_message"]],
     }
 
 This specifies that the output of the gyroscope sensor is to be serialized to a socket with the ``MorseSocketClass.post_message`` method and 
