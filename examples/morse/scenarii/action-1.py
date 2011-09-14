@@ -4,10 +4,13 @@ from morse.builder.morsebuilder import *
 ATRV = Robot('atrv')
 ATRV.translate(z=0.1000)
 
+Platine = Actuator('ptu')
+Platine.translate(x=0.2000, z=0.9000)
+ATRV.append(Platine)
+
 Stereo = Sensor('stereo_unit')
-Stereo.translate(x=0.2000, z=0.9000)
-Stereo.rotate(y=0.3491)
-ATRV.append(Stereo)
+Stereo.translate(z=0.0400)
+Platine.append(Stereo)
 
 CameraL = Sensor('video_camera')
 CameraL.translate(x=0.1000, y=0.2000, z=0.0700)
@@ -67,6 +70,8 @@ GPS_001.configure_mw('yarp', ['Yarp', 'post_message'])
 CameraMain_002.configure_mw('yarp', ['Yarp', 'post_image_RGBA'])
 Motion_Controller.configure_mw('yarp', ['Yarp', 'read_message'])
 Gyroscope_001.configure_mw('yarp', ['Yarp', 'post_message'])
+
+Platine.configure_mw('yarp', ['Yarp', 'read_message'])
 
 Motion_Controller_001.configure_mw('pocolibs', ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/controllers/genpos', 'simu_locoSpeedRef'])
 Stereo.configure_mw('pocolibs', ['Pocolibs', 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'])
