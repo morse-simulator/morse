@@ -82,9 +82,19 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
                     if 'MAScreenMat' in mesh_material_name:
                         material_name = mesh_material_name
 
-        logger.debug("\tCAMERA: %s" % camera.name)
-        logger.debug("\tSCREEN: %s" % screen.name)
-        logger.debug("\tMATERIAL: %s" % material_name)
+        try:
+            logger.debug("\tCAMERA: %s" % camera.name)
+            logger.debug("\tSCREEN: %s" % screen.name)
+            logger.debug("\tMATERIAL: %s" % material_name)
+        except UnboundLocalError as detail:
+            logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: The video camera could not be properly initialized.
+    The children object could not be found.
+    Best solution is to re-link the camera.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """)
+            return (False)
 
         # Get the reference to the scene
         scene = GameLogic.getCurrentScene()
