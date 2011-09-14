@@ -203,12 +203,8 @@ class Component(AbstractComponent):
         Component._config.link_mw(self, config)
         #Component._config.write()
 
-    def configure_service(self, mw):
-        # Add the middleware empty objects as needed
-        mw_name = mw + "_mw"
-        Middleware(mw_name)
-        config = MORSE_SERVICE_DICT[mw]
-        Component._config.link_service(self, config)
+    def configure_service(self, service):
+        Component._config.link_service(self, service)
 
     def configure_modifier(self, mod):
         # Add the modifier empty objects as needed
