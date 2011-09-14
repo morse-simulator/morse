@@ -6,19 +6,18 @@ from morse.builder.morsebuilder import *
 atrv = Robot('atrv')
 
 # Append an actuator
-motion = Controller('morse_vw_control')
+motion = Actuator('v_omega')
 motion.translate(z=0.3)
 atrv.append(motion)
 
 # Append a Gyroscope sensor
-gyroscope = Sensor('morse_gyroscope')
+gyroscope = Sensor('gyroscope')
 gyroscope.translate(z=0.83)
 atrv.append(gyroscope)
 
-# Insert the middleware object
-ros = Middleware('ros_empty')
-
 # Configuring the middlewares
-ros.configure(gyroscope)
-ros.configure(motion)
+gyroscope.configure_mw('ros')
+motion.configure_mw('ros')
 
+env = Environment('indoors-1/indoor-1')
+env.aim_camera([1.0470, 0, 0.7854])
