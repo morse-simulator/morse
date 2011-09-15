@@ -199,7 +199,8 @@ class Component(AbstractComponent):
         Component._config.link_mw(self, config)
         #Component._config.write()
 
-    def configure_service(self, service):
+    def configure_service(self, mw):
+        service = MORSE_SERVICE_DICT[mw]
         Component._config.link_service(self, service)
 
     def configure_modifier(self, mod):

@@ -64,7 +64,7 @@ MORSE_MIDDLEWARE_DICT = {
     'stereo_unit': ['Pocolibs', 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'],
     'gyroscope': ['Pocolibs', 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseMEPos'],
 
-    'v_omega': ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/controllers/genpos', 'simu_locoSpeedRef'],
+    'v_omega': ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef'],
   },
 }
 
