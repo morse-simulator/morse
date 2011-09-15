@@ -1,21 +1,18 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #
-#    MouseLook.py        Blender 2.49
+#    view_camera.py        Blender 2.59
 #
 #    Modified version of
 #    Tutorial for using MouseLook.py found at
 #    www.tutorialsforblender3D.com
 #
 #    Gilberto Echeverria
-#    06 / 05 / 2010
+#    15 / 09 / 2010
 #
 ######################################################
 
-import Rasterizer
-import GameLogic
-import GameKeys
-#import GameTypes
+import bge
 
 def move(contr):
     """ Read the keys for specific combinations
@@ -26,7 +23,7 @@ def move(contr):
     # set the movement speed
     speed = camera['Speed']
 
-    # Get sensor named Mouse
+    # Get Blender keyboard sensor
     keyboard = contr.sensors['All_Keys']
 
     # Default movement speed
@@ -34,31 +31,27 @@ def move(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == GameKeys.keycode, key[1] = status
-        if key[1] == GameLogic.KX_INPUT_ACTIVE:
+        # key[0] == bge.events.keycode, key[1] = status
+        if key[1] == bge.logic.KX_INPUT_ACTIVE:
             # Also add the key corresponding key for an AZERTY keyboard
-            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 move_speed[2] = -speed
-            elif key[0] == GameKeys.SKEY:
+            elif key[0] == bge.events.SKEY:
                 move_speed[2] = speed
             # Also add the key corresponding key for an AZERTY keyboard
-            elif key[0] == GameKeys.AKEY or key[0] == GameKeys.QKEY:
+            elif key[0] == bge.events.AKEY or key[0] == bge.events.QKEY:
                 move_speed[0] = -speed
-            elif key[0] == GameKeys.DKEY:
+            elif key[0] == bge.events.DKEY:
                 move_speed[0] = speed
-            elif key[0] == GameKeys.RKEY:
+            elif key[0] == bge.events.RKEY:
                 move_speed[1] = speed
-            elif key[0] == GameKeys.FKEY:
+            elif key[0] == bge.events.FKEY:
                 move_speed[1] = -speed
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
             #  coordinate system
             camera.applyMovement( move_speed, True )
-
-    # Get sensor named Mouse
-    #for sensor in contr.sensors:
-        #if sensor.isA(GameTypes.SCA_KeyboardSensor):
 
 
 def rotate(contr):
@@ -69,29 +62,36 @@ def rotate(contr):
 
     # Get sensor named Mouse
     mouse = contr.sensors['Mouse']
+    # Get Blender keyboard sensor
+    keyboard = contr.sensors['All_Keys']
 
-    if mouse.positive:
-        # get width and height of game window
-        width = Rasterizer.getWindowWidth()
-        height = Rasterizer.getWindowHeight()
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == bge.events.keycode, key[1] = status
+        if key[1] == bge.logic.KX_INPUT_ACTIVE:
+            # Also add the key corresponding key for an AZERTY keyboard
+            if key[0] == bge.events.LEFTCTRLKEY and mouse.positive:
+                # get width and height of game window
+                width = bge.render.getWindowWidth()
+                height = bge.render.getWindowHeight()
 
-        # get mouse movement from function
-        move = mouse_move(camera, mouse, width, height)
+                # get mouse movement from function
+                move = mouse_move(camera, mouse, width, height)
 
-        # set mouse sensitivity
-        sensitivity = camera['Sensitivity']
+                # set mouse sensitivity
+                sensitivity = camera['Sensitivity']
 
-        # Amount, direction and sensitivity
-        leftRight = move[0] * sensitivity
-        upDown = move[1] * sensitivity
+                # Amount, direction and sensitivity
+                leftRight = move[0] * sensitivity
+                upDown = move[1] * sensitivity
 
-        # set the values
-        camera.applyRotation( [0.0, 0.0, leftRight], 0 )
-        camera.applyRotation( [upDown, 0.0, 0.0], 1 )
+                # set the values
+                camera.applyRotation( [0.0, 0.0, leftRight], 0 )
+                camera.applyRotation( [upDown, 0.0, 0.0], 1 )
 
-        # Center mouse in game window
-        # Using the '//' operator (floor division) to produce an integer result
-        Rasterizer.setMousePosition(width//2, height//2)
+                # Center mouse in game window
+                # Using the '//' operator (floor division) to produce an integer result
+                bge.render.setMousePosition(width//2, height//2)
 
 
 def mouse_move(camera, mouse, width, height):
