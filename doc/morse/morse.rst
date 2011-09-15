@@ -62,11 +62,15 @@ MORSE is partially funded by the `Foundation RTRA
 
 .. image:: ../media/stae_logo.png
    :align: center                
-   :width: 200
+   :height: 160
 
 .. image:: ../media/rosace.png
    :align: center
-   :width: 200
+   :height: 160
+                   
+.. image:: ../media/logoAction.jpg
+   :align: center
+   :height: 160
                    
 
 Installation
