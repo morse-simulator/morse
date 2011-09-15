@@ -13,11 +13,12 @@ The source code of Morse is organised in the following way :
 - examples : it contains examples about :
 
   - how to control the simulator (in clients)
-  - more or less elaborate scenarii (in scenarii)
+  - more or less elaborate test scenarii (in scenarii)
 - src : it contains all the python scripts used by the simulator : it is the core of the simulator
 
-  - morse/actuators : it contains implementation for various robot controllers
+  - morse/actuators : it contains implementation for various robot actuators
   - morse/blender : it contains some scripts needed at the initialization of the game engine
+  - morse/builder : it contains the scripts for the API that permits creating a simulation scenario from a Python file. See the :doc:`Builder API <builder>` documentation
   - morse/core : it contains core classes for the MORSE project (services, base objects, sensors, ...) 
   - morse/helpers : it contains various helpers (math transformation)
   - morse/middleware : it contains the code for linking with different middlewares 
@@ -27,6 +28,7 @@ The source code of Morse is organised in the following way :
     - socket
     - text (for logging)
     - yarp
+    - moos
 
   - morse/modifiers : it contains implementation for various modifiers to basic components
   - morse/robots : it contains instantiation of different robot classes
@@ -44,8 +46,8 @@ The following diagram shows the class hierarchy currently used in MORSE.
 The main entry point for Blender for each component is the method ``action``.
 Yet, it is not supposed to be overridden by leaf-classes. To modify the
 behaviour of a component, you need to modify the method ``default_action``. The
-action of ``action`` depends if it is a sensor or an actuator (robot doesn't do
-anything by themself). 
+action of ``action`` depends on whether the component is a sensor or an actuator
+(robots don't do anything by themselves). 
 
 MORSE execution loop
 --------------------

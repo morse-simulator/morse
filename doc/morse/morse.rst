@@ -110,7 +110,7 @@ Simulated components
    :align: center
 .. The MORSE robots
 
-MORSE offers an extended set of predefined sensors and controllers that cover 
+MORSE offers an extended set of predefined sensors and actuators that cover 
 reasonably well common simulation needs in robotics. It proposes also some 
 fully equipped robots.
 
@@ -173,7 +173,7 @@ Detailled information:
 Simulation supervision
 ++++++++++++++++++++++
 
-Besides components-specific services and data stream (documented on component's
+Besides component-specific services and data stream (documented on each component's
 own documentation page), MORSE provides a set of *supervision services* that
 may be used to remotely control the global behaviour of the simulator:
 

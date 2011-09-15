@@ -25,7 +25,7 @@ Important things to do :
 The blender part
 ----------------
 
-  - First, create a nice modelling of your object, and save it in ``$MORSE_ROOT/data/morse/components/sensors/``
+  - First, create a nice modelling of your object, and save it in ``$MORSE_ROOT/data/morse/sensors/``
   - Press :kbd:`N` to display the properties of the object. Change its name.
   - Press :kbd:`F4` to enter in the logic mode
 
@@ -47,7 +47,7 @@ The blender part
 
 The names specified in the **Path** and **Class** properties must match exactly
 the location of the Python file and the name of the defined class,
-respectively.The information in these variables will be used to dynamically
+respectively. The information in these variables will be used to dynamically
 load the module and class during initialisation of the simulation.
 
 Getting data or exporting data
@@ -66,7 +66,7 @@ you want to export a new sensor through YARP, you need to add a method to
 MorseYarpClass, in ``$MORSE_ROOT/src/morse/middleware/yarp_mw.py``). The method
 must have the following prototype :::
 
-  def your_method(self, component_instance)
+  def your_method(self, component_instance):
 
 For instance, a specific serialization method has been defined to serialize
 RGBA images for YARP :::

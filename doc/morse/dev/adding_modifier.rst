@@ -42,7 +42,7 @@ of the component.
 Examples
 --------
 
-`NED_modifier.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/ned_mod.py>`_ 
+`NED_modifier.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/ned.py>`_ 
 shows a simple example for a modifier.
 
 `GPS_noise.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/gps_noise.py>`_ 

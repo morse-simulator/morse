@@ -31,7 +31,7 @@ The Blender file
 ----------------
 
 - Copy one of the existing Blender files in
-  ``$MORSE_ROOT/data/morse/components/middleware``
+  ``$MORSE_ROOT/data/morse/middleware``
 - Change the name of the ``Empty`` object. This name will be used to identify
   the middleware in the file ``component_config.py`` that binds components
   with middlewares

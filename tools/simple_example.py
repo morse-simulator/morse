@@ -1,7 +1,7 @@
 #! /usr/bin/env python
-""" Human control with keyboard trhough sockets
+""" Human control with keyboard through sockets
 
-this exemple is meant to show how to use services with sockets.
+this example is meant to show how to use services with sockets.
 After the connection with the socket, we just send a message well formed.
 You can control the human with the numpad : 8 and 5 for forward and backward,
 and 4 and 6 for left and right.
@@ -16,12 +16,12 @@ import tty, termios
 id_ = 0
 
 HOST = '127.0.0.1'
-PORT = 4000 
+PORT = 4000
 s = None
 
 def getchar():
    #Returns a single character from standard input
-   
+
    fd = sys.stdin.fileno()
    old_settings = termios.tcgetattr(fd)
    try:
@@ -39,7 +39,7 @@ def main():
     print "Socket connected"
     print "Please press q to quit and use 8456 to move"
     esc = 0
-    
+
     while not esc :
         c = getchar()
         speed = 0
@@ -53,20 +53,17 @@ def main():
         elif (c == "6"):
             rot = -0.1
         if (speed != 0 or rot != 0) :
-            msg = "id" + str(id_) + " Human move (" 
-            msg += str(speed) + "," 
+            msg = "id" + str(id_) + " Human move ("
+            msg += str(speed) + ","
             msg += str(rot) + ")\n"
             s.send(msg)
             id_ = id_ + 1
-        
+
         if c == "q" :
             esc = 1
-       
-                
+
     s.close()
     print "\nBye bye!"
-
-
 
 main()
 
