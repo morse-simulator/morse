@@ -6,7 +6,7 @@ The base of the **DALA** robot at LAAS.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/robots/atrv.blend``
+- Blender: ``$MORSE_ROOT/data/morse/robots/atrv.blend``
 - Python: ``$MORSE_ROOT/src/morse/robots/atrv.py``
 
 Adjustable parameters

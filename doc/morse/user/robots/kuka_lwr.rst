@@ -10,13 +10,13 @@ Model Info
 ----------
 
 This model is a modified version of:
-``$MORSE_ROOT/data/morse/components/robots/kuka_arm-rig.blend``
+``$MORSE_ROOT/data/morse/robots/kuka_arm-rig.blend``
 
 
 KUKA LWR related Files
 ----------------------
 
-- Blender model: ``$MORSE_ROOT/data/morse/components/robots/kuka_arm-rig.blend``
+- Blender model: ``$MORSE_ROOT/data/morse/robots/kuka_lwr.blend``
 - Python file: ``$MORSE_ROOT/src/morse/robots/kuka_lwr.py``
 - Armature actuator: ``$MORSE_ROOT/src/morse/actuators/armature_actuator.py``
 
@@ -34,9 +34,3 @@ Adjustable parameters
 Use the **Properties >> Physics** panel in Blender to adjust the **Mass** of the robot.
 
 The friction coefficient of the robot can be adjusted in the **Properties >> Material** panel.
-	
-
-TODO
-----
-
-- ...
