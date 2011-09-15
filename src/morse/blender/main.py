@@ -6,17 +6,16 @@ import time
 import bpy
 import GameLogic
 import Rasterizer
+# The service management
+from morse.core.services import MorseServices
 
 # The file component_config.py is at the moment included
 #  in the .blend file of the scene
 try:
     import component_config
     
-    # The service management
-    from morse.core.services import MorseServices
-
 except ImportError as detail:
-    logger.warning(detail + ". No middlewares will be configured")
+    logger.warning("%s.\nNo middlewares/services/modifiers will be configured.\nMake sure the script 'component_config.py' is present in the .blend file." % detail)
 
 
 MULTINODE_SUPPORT = False
@@ -289,7 +288,7 @@ def link_middlewares():
         and assign the correct middleware and options to each component. """
     try:
         component_list = component_config.component_mw
-    except AttributeError as detail:
+    except (AttributeError, NameError) as detail:
         # Exit gracefully if there are no modifiers specified
         logger.info ("No middleware section found in configuration file.")
         return True
@@ -345,7 +344,7 @@ def link_services():
     """
     try:
         component_list = component_config.component_service
-    except AttributeError as detail:
+    except (AttributeError, NameError) as detail:
         # Exit gracefully if there are no services specified
         logger.info("No service section found in configuration file.")
         return True
@@ -396,7 +395,7 @@ def load_overlays():
     """
     try:
         overlays_list = component_config.overlays
-    except AttributeError as detail:
+    except (AttributeError, NameError) as detail:
         # Exit gracefully if there are no services specified
         logger.info("No overlay section found in configuration file.")
         return True
@@ -436,7 +435,7 @@ def add_modifiers():
         and assign the correct data modifiers to each component. """
     try:
         component_list = component_config.component_modifier
-    except AttributeError as detail:
+    except (AttributeError, NameError) as detail:
         # Exit gracefully if there are no modifiers specified
         logger.info("No modifiers section found in configuration file")
         return True
