@@ -112,14 +112,12 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         head_target = scene.objects['Target_Empty']
 
         if human['Manipulate']:
-            #Rasterizer.showMouse(False)
             human['Manipulate'] = False
             # Place the hand beside the body
             hand_target.localPosition = [0.0, -0.3, 0.8]
             head_target.setParent(human)
             head_target.localPosition = [1.3, 0.0, 1.7]
         else:
-            #Rasterizer.showMouse(True)
             human['Manipulate'] = True
             head_target.setParent(hand_target)
             # Place the hand in a nice position

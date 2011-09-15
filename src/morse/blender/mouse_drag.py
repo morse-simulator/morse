@@ -14,8 +14,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import GameLogic
-import Rasterizer
+import bge
 from mathutils import Vector
 
 motionSpeed = 5
@@ -65,14 +64,14 @@ def onePositive(contr):
 def showMouse(contr):
     if not onePositive(contr):
         return
-    Rasterizer.showMouse(1)
+    bge.render.showMouse(1)
     logger.info("Showing Mouse")
 
 
 def hideMouse(cont):
     if not onePositive(cont):
         return
-    Rasterizer.showMouse(0)
+    bge.render.showMouse(0)
     logger.info("hide Mouse")
 
 
@@ -116,7 +115,7 @@ def dragDrop(contr):
     overAny = contr.sensors["overAny"]
     activateDrag = contr.sensors["LMB"]
 
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     XYPlane = scene.objects['XYPlane']
     XZPlane = scene.objects['XZPlane']
     YZPlane = scene.objects['YZPlane']
@@ -154,7 +153,7 @@ def dragDrop(contr):
 
 def objectSelect(contr):
     """ Mark an object as selected by the user """
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     sphere = scene.objects['SelectionSphere']
 
     rightButton = contr.sensors["RMB"]

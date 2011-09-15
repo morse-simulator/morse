@@ -5,7 +5,6 @@ import re
 import time
 import bpy
 import GameLogic
-import Rasterizer
 # The service management
 from morse.core.services import MorseServices
 

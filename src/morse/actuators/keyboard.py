@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
-import GameKeys
+import bge
 import morse.core.actuator
 
 class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
@@ -26,7 +25,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
     def default_action(self):
         """ Interpret keyboard presses and assign them to movement
             for the robot."""
-        keys_sensor = GameLogic.getCurrentController().sensors['keys_sensor']
+        keys_sensor = bge.logic.getCurrentController().sensors['keys_sensor']
         #pressed_keys = keys_sensor.getPressedKeys()
         pressed_keys = keys_sensor.events
 
@@ -36,16 +35,16 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         for key, status in pressed_keys:
             logger.debug("GOT: {0}, STATUS {1}".format(key, status))
-            if key == GameKeys.UPARROWKEY:
+            if key == bge.events.UPARROWKEY:
                 vx = self.speed
 
-            if key == GameKeys.DOWNARROWKEY:
+            if key == bge.events.DOWNARROWKEY:
                 vx = -self.speed
 
-            if key == GameKeys.LEFTARROWKEY:
+            if key == bge.events.LEFTARROWKEY:
                 rz = self.speed / 2.0
 
-            if key == GameKeys.RIGHTARROWKEY:
+            if key == bge.events.RIGHTARROWKEY:
                 rz = -self.speed / 2.0
 
         # Get the Blender object of the parent robot

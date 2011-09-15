@@ -12,12 +12,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import Rasterizer
-import GameLogic
-import GameKeys
 import bge
 import math
-import mathutils
 
 def move(contr):
     """ Read the keys for specific combinations
@@ -37,21 +33,21 @@ def move(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == GameKeys.keycode, key[1] = status
-        if key[1] == GameLogic.KX_INPUT_ACTIVE:
+        # key[0] == bge.events.keycode, key[1] = status
+        if key[1] == bge.logic.KX_INPUT_ACTIVE:
             # Also add the key corresponding key for an AZERTY keyboard
-            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 move_speed[0] = speed
-            elif key[0] == GameKeys.SKEY:
+            elif key[0] == bge.events.SKEY:
                 move_speed[0] = -speed
             # Also add the key corresponding key for an AZERTY keyboard
-            elif key[0] == GameKeys.AKEY or key[0] == GameKeys.QKEY:
+            elif key[0] == bge.events.AKEY or key[0] == bge.events.QKEY:
                 rotation_speed[2] = speed
-            elif key[0] == GameKeys.DKEY:
+            elif key[0] == bge.events.DKEY:
                 rotation_speed[2] = -speed
-            elif key[0] == GameKeys.RKEY:
+            elif key[0] == bge.events.RKEY:
                 move_speed[1] = speed
-            elif key[0] == GameKeys.FKEY:
+            elif key[0] == bge.events.FKEY:
                 move_speed[1] = -speed
 
             # The second parameter of 'applyMovement' determines
@@ -61,27 +57,27 @@ def move(contr):
             human.applyRotation( rotation_speed, True )
 
             """
-            if key[0] == GameKeys.UPARROWKEY:
+            if key[0] == bge.events.UPARROWKEY:
                 move_speed[0] = speed
-            elif key[0] == GameKeys.DOWNARROWKEY:
+            elif key[0] == bge.events.DOWNARROWKEY:
                 move_speed[0] = -speed
-            elif key[0] == GameKeys.LEFTARROWKEY:
+            elif key[0] == bge.events.LEFTARROWKEY:
                 rotation_speed[2] = speed
-            elif key[0] == GameKeys.RIGHTARROWKEY:
+            elif key[0] == bge.events.RIGHTARROWKEY:
                 rotation_speed[2] = -speed
-            elif key[0] == GameKeys.AKEY:
+            elif key[0] == bge.events.AKEY:
                 move_speed[2] = speed
-            elif key[0] == GameKeys.EKEY:
+            elif key[0] == bge.events.EKEY:
                 move_speed[2] = -speed
             """
 
-        elif key[1] == GameLogic.KX_INPUT_JUST_ACTIVATED:
+        elif key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
             # Other actions activated with the keyboard
             # Reset camera to center
-            if key[0] == GameKeys.NKEY and keyboard.positive:
+            if key[0] == bge.events.NKEY and keyboard.positive:
                 reset_view(contr)
             # Switch between look and manipulate
-            elif key[0] == GameKeys.XKEY:
+            elif key[0] == bge.events.XKEY:
                 toggle_manipulate(contr)
 
 def read_status(contr):
@@ -91,7 +87,7 @@ def read_status(contr):
     is controlled via a motion actuator
     """
     human = contr.owner
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     armature = scene.objects['HumanArmature']
     tolerance = 0.001
 
@@ -117,23 +113,23 @@ def human_actions(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == GameKeys.keycode, key[1] = status
-        if key[1] == GameLogic.KX_INPUT_JUST_ACTIVATED:
+        # key[0] == bge.events.keycode, key[1] = status
+        if key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
             # Keys for moving forward or turning
-            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 armature['movingForward'] = True
-            elif key[0] == GameKeys.SKEY:
+            elif key[0] == bge.events.SKEY:
                 armature['movingBackward'] = True
 
             # TEST: Read the rotation of the bones in the armature
-            elif key[0] == GameKeys.BKEY:
+            elif key[0] == bge.events.BKEY:
                 read_pose(contr)
-            #elif key[0] == GameKeys.VKEY:
+            #elif key[0] == bge.events.VKEY:
                 #reset_pose(contr)
-        elif key[1] == GameLogic.KX_INPUT_JUST_RELEASED:
-            if key[0] == GameKeys.WKEY or key[0] == GameKeys.ZKEY:
+        elif key[1] == bge.logic.KX_INPUT_JUST_RELEASED:
+            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 armature['movingForward'] = False
-            elif key[0] == GameKeys.SKEY:
+            elif key[0] == bge.events.SKEY:
                 armature['movingBackward'] = False
 
 
@@ -144,7 +140,7 @@ def head_control(contr):
     for the human head and camera. """
     # get the object this script is attached to
     human = contr.owner
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     target = scene.objects['Target_Empty']
 
     # set mouse sensitivity
@@ -159,8 +155,8 @@ def head_control(contr):
 
     if mouse.positive:
         # get width and height of game window
-        width = Rasterizer.getWindowWidth()
-        height = Rasterizer.getWindowHeight()
+        width = bge.render.getWindowWidth()
+        height = bge.render.getWindowHeight()
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
@@ -174,7 +170,7 @@ def head_control(contr):
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
-        Rasterizer.setMousePosition(width//2, height//2)
+        bge.render.setMousePosition(width//2, height//2)
 
 
 def hand_control(contr):
@@ -184,7 +180,7 @@ def hand_control(contr):
     for the IK arm (right arm) """
     # get the object this script is attached to
     human = contr.owner
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     target = scene.objects['IK_Target_Empty.R']
 
     # set mouse sensitivity
@@ -199,8 +195,8 @@ def hand_control(contr):
 
     if mouse.positive:
         # get width and height of game window
-        width = Rasterizer.getWindowWidth()
-        height = Rasterizer.getWindowHeight()
+        width = bge.render.getWindowWidth()
+        height = bge.render.getWindowHeight()
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
@@ -214,7 +210,7 @@ def hand_control(contr):
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
-        Rasterizer.setMousePosition(width//2, height//2)
+        bge.render.setMousePosition(width//2, height//2)
 
     # Get sensors for mouse wheel
     wheel_up = contr.sensors['Wheel_Up']
@@ -255,7 +251,7 @@ def reset_pose(contr):
 def reset_view(contr):
     """ Make the human model look forward """
     human = contr.owner
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     target = scene.objects['Target_Empty']
     # Reset the Empty object to its original position
     target.localPosition = [1.3, 0.0, 1.7]
@@ -264,19 +260,19 @@ def reset_view(contr):
 def toggle_manipulate(contr):
     """ Switch mouse control between look and manipulate """
     human = contr.owner
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     hand_target = scene.objects['IK_Target_Empty.R']
     head_target = scene.objects['Target_Empty']
 
     if human['Manipulate']:
-        #Rasterizer.showMouse(False)
+        #bge.render.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
         hand_target.localPosition = [0.3, -0.3, 0.9]
         head_target.setParent(human)
         head_target.localPosition = [0.5, 0.0, 1.6]
     else:
-        #Rasterizer.showMouse(True)
+        #bge.render.showMouse(True)
         human['Manipulate'] = True
         head_target.setParent(hand_target)
         # Place the hand in a nice position
@@ -315,7 +311,7 @@ def near_object(contr):
     
     This script is called from the logic bricks of Hand_Grab.R
     """
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     hand_empty = scene.objects['Hand_Grab.R']
     near_sensor = hand_empty.sensors['Near']
 
@@ -329,7 +325,7 @@ def near_object(contr):
 
 def grabbing(contr):
     """ Mark an object as selected by the user """
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     human = contr.owner
     hand_empty = scene.objects['Hand_Grab.R']
     #sphere = scene.objects['SelectionSphere']
