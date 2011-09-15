@@ -9,15 +9,15 @@ Multi-node infrastructure
 
 The HLA multi-node infrastructure is made of a set of nodes, that are communicating
 all together to perform a simulation. In this infrastructure, each node is a
-MORSE node, i.e. a Blender application that simulates a MORSE scene as classicaly done
-in a mono-node context.
+MORSE node, i.e. a Blender application that simulates a MORSE scene as classically
+done in a mono-node context.
 
 Each node then manages a sub-set of the robots present in the simulated world.
 "Managing a robot" means that the node will export the data of the robot's sensors,
 and apply the commands of the robot's controller, from classical MORSE middlewares.
 
 Each node is considering the other robots, that the node is not managing, as *External*:
-an external robot is not updated by the node itself (robot's components are disbled),
+an external robot is not updated by the node itself (robot's components are disabled),
 but the robot's pose is updated from the HLA infrastructure in order to reflect
 the robot's pose as it is simulated by its manager node.
 
@@ -96,7 +96,7 @@ Setting up an HLA simulation using the distribution script
 
 MORSE provides a distribution script that helps setting up a multi-node simulation.
 The principle of this script is that you just have to define your MORSE scenario
-as a mono-node scenario, i.e. including all robots, sensors, controlers in the
+as a mono-node scenario, i.e. including all robots, sensors, actuators in the
 same scene.
 
 Then, from this scenario and a configuration file, MORSE will generate one script
@@ -147,7 +147,7 @@ Here is an example of a configuration file::
     Mana: no
     
 In this configuration file, the CERTI host is set to IP 134.212.24.32. Time
-syncrhonization is off, and MORSE will display profiling values.
+synchronization is off, and MORSE will display profiling values.
 
 The simulation is made of two nodes, *GroundNode* and *AerialNode*.
 The *GroundNode* node will manage both robots *Mana* and *Dala*.
@@ -174,12 +174,12 @@ The MORSE HLA component
 -----------------------
 
 HLA is managed in MORSE using the *HLA_Empty* component.
-One present in a scene, this component is responsible of exporting managed
+Once present in a scene, this component is responsible of exporting managed
 robot poses to the HLA simulation, and of updating external robot poses from the
 simulation.
 
 If you want to manually add this component, it is located in the 
-``$MORSE_ROOT/share/data/morse/components/middleware/hla_empty.blend`` file.
+``$MORSE_ROOT/share/data/morse/middleware/hla_mw.blend`` file.
 
 The HLA component has a set of properties that can be modified as any other 
 MORSE component. These properties have default values, and are configured 
@@ -194,7 +194,7 @@ multi-node simulation.
 1. Launch the RTIG on the RTIG host machine; the CERTI command is ``rtig``.
 2. On each node, launch the distributed scenario, using::
 
-$ morse exec <scenario_node.py>
+    $ morse exec <scenario_node.py>
 
 3. Then, on each node, launch the game engine by pressing *P*.
 
