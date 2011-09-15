@@ -24,7 +24,6 @@ Deadline: 15 Sept.
 - define a method to select the control of robots using position or velocity
 
 
-- Then, fix the project tree layout -> Arnaud
 
 Middleware
 ----------
@@ -110,9 +109,9 @@ Linking issues
 - when properties are added in linked components (eg, cameras),
 the new properties don't show up in the scene that import these components.
 
-- A lot of room for improvement regarding the general process of linking a robot
-component into a scene. Issue with making stuff 'local', lacking a good GUI, when
-opening a .blend file, it's not clear what should be imported...
+- A lot of room for improvement regarding the general process of linking a
+robot component into a scene. Issue with making stuff 'local', lacking a
+good GUI, when opening a .blend file, it's not clear what should be imported...
 
 Other stuff 
 -----------
@@ -126,4 +125,3 @@ Rosace Project
 --------------
 - Add timeline of events in the simulation
 - Add init script that places the robots and victims specified in a XML file
-
