@@ -73,7 +73,7 @@ Gyroscope_001.configure_mw('yarp', ['Yarp', 'post_message'])
 
 Platine.configure_mw('yarp', ['Yarp', 'read_message'])
 
-Motion_Controller_001.configure_mw('pocolibs', ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/controllers/genpos', 'simu_locoSpeedRef'])
+Motion_Controller_001.configure_mw('pocolibs', ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef'])
 Stereo.configure_mw('pocolibs', ['Pocolibs', 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'])
 Gyroscope.configure_mw('pocolibs', ['Pocolibs', 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseMEPos'])
 
