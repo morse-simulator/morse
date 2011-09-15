@@ -17,7 +17,7 @@ Save the file with a name that represents the settings of the robot. As an
 example this document will use the Ressac helicopter, so the name of the file
 should be something like::
 
-``$MORSE_ROOT/share/data/morse/components/robots/myrobot_equiped.blend``
+``$MORSE_ROOT/share/data/morse/robots/myrobot_equiped.blend``
 
 #. Press :kbd:`F2` to open the ``Save as`` dialog
 #. Navigate to the correct path and type the name of the file
@@ -26,7 +26,7 @@ should be something like::
 Next link in the base of the robot from the component library:
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/robots``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/robots``
 #. Press :kbd:`Left Mouse Click` over the file ``ressac.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
@@ -35,7 +35,7 @@ Next link in the base of the robot from the component library:
 #. Convert the objects to local: without de-selecting the object, press :kbd:`l` then hit :kbd:`enter`
 #. If you deselected the inserted objects in the scene, select it again either by 
    :kbd:`Right Mouse Click` clicking over the object in the 3D View, or 
-   :kbd:`Left Mouse Click` over the object's name in the Outliner window. The object 
+   :kbd:`Left Mouse Click` over the object's name in the **Outliner** panel. The object 
    will be highlighted in cyan colour.
 #. Select as well the child objects, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
 

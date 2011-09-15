@@ -24,7 +24,7 @@ Launch MORSE. We will use the default indoor scene, so we can keep it as it appe
 We first want to add a human:
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/humans``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/humans``
 #. Press :kbd:`Left Mouse Click` over the file ``default_human.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
@@ -84,7 +84,7 @@ Exporting the human position
 ----------------------------
 
 As a first step, we would like to export the position of the human in the world. To do so, we need the
-:doc:`GPS sensor <../sensors/gps>`. You can find it in ``$MORSE_ROOT/data/morse/components/sensors/morse_GPS.blend``.
+:doc:`GPS sensor <../sensors/gps>`. You can find it in ``$MORSE_ROOT/data/morse/sensors/gps.blend``.
 
 If you're not sure how to add the GPS to the human, please see the :ref:`Link a gyroscope <link-gyroscope-sensor>`
 section in the MORSE Quick tutorial.
@@ -93,21 +93,23 @@ Import only the ``GPS`` object (we don't need the ``GPS_box``), place it on the 
 and parent it the the human (with :kbd:`Ctrl-P`). Rename it as well to ``HumanPosition`` (you can change the name by
 pressing :kbd:`N` in the 3D view and scrolling down to the item name field).
 
-Import as well the socket middleware in ``$MORSE_ROOT/data/morse/components/middleware/socket_empty.blend``.
+Import as well the socket middleware in ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``.
 
 Open the Blender text editor, and modify ``component_config.py``:
 
 .. code-block:: python
 
    component_mw = {
-      "HumanPosition": ["Socket", "post_message"]
+      "HumanPosition": [["Socket", "post_message"]],
    }
 
    component_modifier = {}
 
 This instruct MORSE to stream the human position on a raw socket.
 
-We can now display it with this simple Python (for Python 3.x) code::
+We can now display it with this simple Python (for Python 3.x) code:
+
+.. code-block:: python
 
   import sys, socket, pickle
 

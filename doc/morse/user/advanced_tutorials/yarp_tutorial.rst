@@ -24,7 +24,7 @@ Link a Camera sensor
 ++++++++++++++++++++
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/sensors``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/sensors``
 #. Press :kbd:`Left Mouse Click` over the file ``morse_camera.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
@@ -46,8 +46,8 @@ Insert the middleware object
 ++++++++++++++++++++++++++++
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/components/middleware``
-#. Press :kbd:`Left Mouse Click` over the file ``yarp_empty.blend``
+#. Navigate to the directory ``$MORSE_ROOT/data/morse/middleware``
+#. Press :kbd:`Left Mouse Click` over the file ``yarp_mw.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Toggle the buttons **Relative Paths** and **Link** at the bottom of the window
 #. Press :kbd:`Right Mouse Click` over the item ``Yarp_Empty``
@@ -65,9 +65,9 @@ Binding the components in the scene with the middleware is done in a configurati
 #. Add the following items to the ``component_mw`` dictionary::
   
     component_mw = {
-        "CameraMain": ["Yarp", "post_image_RGBA"],
-        "GPS": ["Yarp", "post_message"],
-        "Motion_Controller": ["Yarp", "read_message"],
+        "CameraMain": [["Yarp", "post_image_RGBA"]],
+        "GPS": [["Yarp", "post_message"]],
+        "Motion_Controller": [["Yarp", "read_message"]],
     }
   
 

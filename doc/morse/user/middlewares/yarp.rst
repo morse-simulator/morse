@@ -17,7 +17,7 @@ various data types.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/middleware/yarp_empty.blend``
+- Blender: ``$MORSE_ROOT/data/morse/middleware/yarp_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/yarp_mw.py``
 
 Available methods
@@ -130,5 +130,5 @@ To correct this, it is necessary to open the Blender file, then on a Text
 Editor window, select the file ``load_yarp.py``. To the right of the file name,
 there is a checkbox named ``Register``. Check this checkbox, save the file, and
 open it again. This will ensure that the script ``load_yarp.py`` is read every
-time the file is opened, so that yarp is correctly setup.
+time the file is opened, so that yarp is correctly setup before launching the simulation.
 

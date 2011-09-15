@@ -15,7 +15,7 @@ attached to it.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/human/default_human.blend``
+- Blender: ``$MORSE_ROOT/data/morse/human/default_human.blend``
 - Python: 
 
   - ``$MORSE_ROOT/src/morse/robots/human.py``

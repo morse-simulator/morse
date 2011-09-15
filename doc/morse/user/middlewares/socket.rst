@@ -58,7 +58,7 @@ Example::
   > req1 Human move (1.0, 2.0)
   req1 OK
 
-.. note:: The socket service interface listen by default on port 4000.
+.. note:: The socket service interface listen by default on port 4000. If this port is busy, MORSE will try to connect to the next 10 ports {4001-4010} before giving up.
 
 .. note:: Why 4000?? That's all the question! A free beer for the first who finds.
 
@@ -67,7 +67,7 @@ The socket service interface is implemented in :py:mod:`morse.middleware.socket_
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/middleware/socket_empty.blend``
+- Blender: ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/socket_mw.py``
 
 Available methods

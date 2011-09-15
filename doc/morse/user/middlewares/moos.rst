@@ -10,7 +10,7 @@ Please follow the instructions in the :doc:`installation procedure  <../installa
 
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/middleware/moos_empty.blend``
+- Blender: ``$MORSE_ROOT/data/morse/middleware/moos_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/moos_mw.py``
 
 Generation of MOOS app and variables

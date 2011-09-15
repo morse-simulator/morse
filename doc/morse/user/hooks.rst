@@ -67,7 +67,7 @@ It consists of three dictionaries indexed by the name of the components
 
 - ``component_service``: Lists the middlewares that will take care of handling
   a service provided by a component. The value of the dictionary is a list of
-  *fully qualified name* of Python classes inheriting from
+  *fully qualified names* of Python classes inheriting from
   :py:class:`morse.core.request_manager.RequestManager` (like
   :py:class:`morse.middleware.socket_request_manager.SocketRequestManager`).
 
@@ -83,17 +83,17 @@ Example:
 
     # Middleware binding for regular data exchange
     component_mw = {
-      "Gyroscope": ["Yarp", "post_message"],
+      "Gyroscope": [["Yarp", "post_message"]],
       "GPS": [ ["Yarp", "post_message"], ["Socket", "post_message"] ],
-      "GPS.001": ["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"],
-      "Motion_Controller": ["Yarp", "read_message"],
-      "Motion_Controller.001": ["Pocolibs", "read_genpos", "morse/middleware/pocolibs/controllers/genpos", "simu_locoSpeedRef"],
-      "CameraMain": ["Yarp", "post_image_RGBA"]
+      "GPS.001": [["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"]],
+      "Motion_Controller": [["Yarp", "read_message"]],
+      "Motion_Controller.001": [["Pocolibs", "read_genpos", "morse/middleware/pocolibs/actuators/genpos", "simu_locoSpeedRef"]],
+      "CameraMain": [["Yarp", "post_image_RGBA"]]
     }
 
     # Component service binding with a middleware
     component_service = {
-      "Motion_Controller": ["YarpRequestManager"],
+      "Motion_Controller": ["morse.middleware.yarp_request_manager.YarpRequestManager"],
     }
     
     # Modifier configuration

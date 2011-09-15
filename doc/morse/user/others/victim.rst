@@ -10,12 +10,12 @@ This object has three important **Game Properties** that are used in the test sc
     the robots, and can be healed
 - **Injured**: (boolean) Flag to indicate the victim is in problems. By default it is
     True, and will change to False once a robot has helped it using the
-    `healer actuator <../actuators/healer>`
+    `Rosace sensor<../sensors/rosace>`
 - **Severity**: (integer) Indicator of how injured this target is. In simulation, higher
     priority should be given to victims with a larger **Severity** value
 
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/scenes/props/victim.blend``
+- Blender: ``$MORSE_ROOT/data/morse/scenes/props/victim.blend``
 - Python: ``$MORSE_ROOT/src/morse/blender/victim.py``

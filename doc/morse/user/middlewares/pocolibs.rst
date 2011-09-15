@@ -23,7 +23,7 @@ functionality of the middleware.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/components/middleware/pocolibs_empty.blend``
+- Blender: ``$MORSE_ROOT/data/morse/middleware/pocolibs_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/pocolibs_mw.py``
 
 Available methods
@@ -64,17 +64,17 @@ documentation.
 
 	- ``export_posture``: Sends data of type **SPARK_CONFIGURATION**, defined in ``spark/sparkStruct.h``
 
-- GENPOS poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/genpos.py``.
+- GENPOS poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/genpos.py``.
   It has one available input method:
 
     - ``read_genpos``: Reads data of type **GENPOS_CART_SPEED**, defined in ``genPos/genPosStruct.h``
 
-- LWR poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/lwr.py``.
+- LWR poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/lwr.py``.
   It has one available input method:
 
     - ``read_lwr_config``: Reads data of type **LWR_ARM_INST**, defined in ``lwr/lwrStruct.h``
 
-- PLATINE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/controllers/platine.py``.
+- PLATINE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/platine.py``.
   It has one available input method:
 
     - ``read_platine``: Reads data of type **POM_SE_POSTER**, defined in ``pom/pomStruct.h``
