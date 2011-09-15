@@ -21,9 +21,9 @@ macro(upcase_first all_lower first_upper)
 	set(${first_upper} "${first_letter}${${first_upper}}")
 endmacro(upcase_first)
 
-set(directories_list "sensors;controllers")
+set(directories_list "sensors;actuators")
 set(sensors_list "general;viam;pom;velodyne;viman;human_posture")
-set(controllers_list "genpos;platine;lwr")
+set(actuators_list "genpos;platine;lwr")
 
 ## Set here the dependencies of your modules
 ## over Genom modules
