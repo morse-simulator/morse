@@ -238,11 +238,11 @@ Alternatively, you can use the GitHub mirror (synchronized every hour, probably 
   $ git clone http://github.com/laas/morse.git
   
 Once you have a copy of the repository, you can get to the last stable
-version (0.3) by using ::
+version (0.4) by using ::
   
-  $ git checkout 0.3
+  $ git checkout 0.4
   
-You can get a `tarball version here <https://github.com/laas/morse/tarball/0.3>`_. 
+You can get a `tarball version here <https://github.com/laas/morse/tarball/0.4>`_. 
 
  
 Go to the directory where you have previously downloaded the MORSE source. Then type these commands::
