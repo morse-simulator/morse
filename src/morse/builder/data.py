@@ -72,5 +72,6 @@ MORSE_MIDDLEWARE_DICT = {
 MORSE_SERVICE_DICT = {
     "socket": "morse.middleware.socket_request_manager.SocketRequestManager",
     "yarp": "morse.middleware.yarp_request_manager.YarpRequestManager",
+    "yarp_json": "morse.middleware.yarp_json_request_manager.YarpRequestManager",
     "pocolibs": "morse.middleware.pocolibs_request_manager.PocolibsRequestManager",
 }

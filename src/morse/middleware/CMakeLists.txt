@@ -13,7 +13,7 @@ IF(BUILD_YARP2_SUPPORT)
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
         REGEX .*py.$ EXCLUDE
         )
-	INSTALL(FILES yarp_mw.py yarp_request_manager.py
+	INSTALL(FILES yarp_mw.py yarp_request_manager.py yarp_json_request_manager.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 ENDIF(BUILD_YARP2_SUPPORT)

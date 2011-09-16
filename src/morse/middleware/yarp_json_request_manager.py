@@ -1,6 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import yarp
+import json
+from collections import OrderedDict
 
 from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
@@ -115,7 +117,7 @@ class YarpRequestManager(RequestManager):
                     try:
                         id, component_name, service, params = self._parse_request(bottle_in)
                     except ValueError: # Request contains < 2 tokens.
-                        raise MorseRPCInvokationError("Malformed request! ")
+                        raise MorseRPCInvokationError("Malformed request!")
 
                     logger.info("Got '%s | %s | %s' (id = %s) from %s" % (component_name, service, params, id, component_name))
 
@@ -151,14 +153,18 @@ class YarpRequestManager(RequestManager):
             for component_name, port in self._yarp_request_ports.items():
                 if port in self._results_to_output:
                     for r in self._results_to_output[port]:
-                        response = "%s %s %s" % (r[0], r[1][0], str(r[1][1]) if r[1][1] else "")
+                        response = OrderedDict([
+                            ('id', r[0]),
+                            ('status', r[1][0]),
+                            ('reply', "%s" % str(r[1][1]) if r[1][1] else "") ])
+                        json_response = json.dumps(response)
                         # Send the reply through the same yarp port
                         reply_port = self._yarp_reply_ports[component_name]
                         bottle_reply = reply_port.prepare()
                         bottle_reply.clear()
-                        bottle_reply.addString(response)
+                        bottle_reply.addString(json_response)
                         reply_port.write()
-                        logger.debug("Sent back '" + response + "'. Component: " + component_name + ". Port: " + str(port))
+                        logger.debug("Sent back '" + str(response) + "'. Component: " + component_name + ". Port: " + str(port))
                             
                     del self._results_to_output[port]
 
@@ -168,14 +174,16 @@ class YarpRequestManager(RequestManager):
         Parse the incoming bottle.
         """
         try:
-            id = bottle.get(0).asInt()
-            component_name = bottle.get(1).toString()
-            service = bottle.get(2).toString()
-        except IndexError as e:
-            raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component_name, service, [params])")
+            request_msg = bottle.get(0).toString()
+            request = json.loads(request_msg, object_pairs_hook=OrderedDict)
+        except (IndexError, ValueError) as e:
+            raise MorseRPCInvokationError('Malformed request: expected a json econded request with this format:\n"{\"id\":\"13\", \"component\":\"Motion_Controller\", \"service\":\"goto\", \"params\":\"[5, 5, 0]\"}"')
 
+        id = request['id']
+        component_name = request['component']
+        service = request['service']
         try:
-            params = bottle.get(3).toString()
+            params = request['params']
             import ast
             p =  ast.literal_eval(params)
         except (NameError, SyntaxError) as e:

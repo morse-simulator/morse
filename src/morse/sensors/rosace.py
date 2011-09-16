@@ -23,6 +23,7 @@ from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.services import service
 from morse.core.services import async_service
 from morse.core import status
+from collections import OrderedDict
 
 
 class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
@@ -153,7 +154,16 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         if radar.triggered and radar.positive:
             for victim_obj in radar.hitObjectList:
                 victim_position = victim_obj.worldPosition
-                self.local_data['victim_dict'][victim_obj.name] = [ [victim_position[0], victim_position[1], victim_position[2]], victim_obj['Requirements'], victim_obj['Severity'] ]
+                # Fill the data structure for the victim
+                victim_coordinate = OrderedDict([
+                                ('x', victim_position[0]),
+                                ('y', victim_position[1]),
+                                ('z', victim_position[2])   ])
+                victim_data = OrderedDict([
+                                ('coordinate', victim_coordinate),
+                                ('requirements', victim_obj['Requirements']),
+                                ('severity', victim_obj['Severity'])    ])
+                self.local_data['victim_dict'][victim_obj.name] = victim_data
 
                 # Find the closest victim and its distance
                 new_distance = self.blender_obj.getDistanceTo(victim_obj)

@@ -70,10 +70,10 @@ GPS_001.configure_mw('yarp', ['Yarp', 'post_json_message', 'morse/middleware/yar
 Proximity_Sensor_001.configure_mw('yarp', ['Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
 Motion_Controller_001.configure_mw('yarp', ['Yarp', 'read_json_waypoint', 'morse/middleware/yarp/json_mod'])
 
-Motion_Controller.configure_service('yarp')
-Rosace_Sensor_001.configure_service('yarp')
-Motion_Controller_001.configure_service('yarp')
-Rosace_Sensor.configure_service('yarp')
+Motion_Controller.configure_service('yarp_json')
+Rosace_Sensor_001.configure_service('yarp_json')
+Motion_Controller_001.configure_service('yarp_json')
+Rosace_Sensor.configure_service('yarp_json')
 
 env = Environment('land-1/rosace_1')
 env.place_camera([9, -9, 9])
