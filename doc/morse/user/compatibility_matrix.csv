@@ -1,7 +1,7 @@
 **Feature**,                  Text file based, Raw sockets, YARP,           ROS,             Pocolibs,															Moos,
 Communications , 
-``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔(posters),														✔ (database)
-``RPC (requests)``,			  ✘,               ✔,           ✔,              ✘,               ✘,																	✘
+``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔ (posters),														✔ (database)
+``RPC (requests)``,			  ✘,               ✔,           ✔,              ✘,               ✔ (requests),																	✘
 Sensors,
 ``Accelerometer``,            ✔,               ✔,           ✔,              ✘,               ✘,																	✔ 
 ``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ ,																	✔
