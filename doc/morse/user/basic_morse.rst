@@ -97,7 +97,7 @@ in the same way as First Person Shooter game. The camera can be moved around usi
 - :kbd:`a`/:kbd:`q`, :kbd:`d` to move left and right
 - :kbd:`r`, :kbd:`f` to move up and down
 
-The direction the camera points to is controlled with the mouse.
+The direction the camera points to is controlled with the mouse. Hold down the :kbd:`Ctrl` key while moving the mouse.
 
 It is possible to adjust the speed of the camera movement, by selecting the **CameraFP** object in the scene,
 and adjusting the game properties of the camera object: **Sensitivity** for the mouse, and **Speed** for the keyboard.
@@ -109,6 +109,8 @@ Standard keyboard functions
 The following are key bindings already defined in any simulation scene
 
 - :kbd:`p` key: start the simulation (initiate the Game Engine)
+
+- :kbd:`h` key: show an on screen display with this list of keyboard functions
 
 - :kbd:`Esc` key: stop and exit the simulation (cleaning up the connections)
 
