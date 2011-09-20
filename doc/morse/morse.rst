@@ -48,6 +48,9 @@ What is MORSE?
   frameworks, 
 - easy to debug and integrate to other environments via a simple socket
   interface,
+- Multi-node simulations (several Blender nodes can be started on several
+  computer and automatically synchronise, which should allow simulations of
+  tenth of robots in the same scene) **EXPERIMENTAL**
 - Fully open source, BSD-compatible.
   
 .. image:: ../media/morse_interface.jpg
@@ -288,9 +291,6 @@ Amongst the planned features for future MORSE releases:
 - complete support of the Willow Garage's PR-2 robot, along with all the sensors
 - Development of the user interface,
 - Scalability (both in term of simulation capacity and ease of deployment),
-- Multi-node simulations (several Blender nodes can be started on several
-  computer and automatically synchronise, which should allow simulations of
-  tenth of robots in the same scene),
 - Dedicated supervision node that would allow to: observe the simulation,
   display logs and metrics, start/stop robots, dynamically alter the scene
   (like moving an obstacle in front of a robot, etc.).
