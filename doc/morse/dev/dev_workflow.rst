@@ -8,12 +8,6 @@ and **Actuator** events which can be linked together.  **Actuators** in
 particular are important because they are the places where Python scripts are
 called.
 
-For Blender to find the Python scripts referred to in the Actuators, the Python
-files must be directly in a directory listed in ``PYTHONPATH``. The standard
-location for these files in MORSE is the directory:
-``MORSE_ROOT/src/morse/blender``, which should be included in ``PYTHONPATH`` as
-described in the :doc:`MORSE installation documentation <../user/installation>`.
-
 Each object in Blender can have its own set of Logic Bricks. In every MORSE
 simulation scene, there must be one ``Scene_Script_Holder`` object, which holds
 the predefined Logic Bricks necessary to initialize and control the simulation.
@@ -27,7 +21,11 @@ The script ``main.py`` is charged of multiple tasks:
     -  Create a dictionary of components, and the robot there are associated with
     -  Create the dictionary of modifiers
     -  Create the dictionary of middlewares
-    -  Link the modifiers and middlewares to components, as specified in the file ``component_config.py``
+    -  Create the dictionary of services
+    -  Create the dictionary of overlays
+    -  Link the modifiers, middlewares, services overlays to their respective
+       components, as specified in the file ``component_config.py``
+
 -  When the simulation ends, it will destroy the objects created, and call the
    methods to cleanup ports, files, connections, etc.
 
