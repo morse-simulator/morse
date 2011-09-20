@@ -11,8 +11,8 @@ when adding a new sensor or actuator:
 The python part
 ---------------
 
-You need to implement a sub-class of ``morse.helpers.sensor.MorseSensorClass``
-(respectively of ``morse.helpers.actuator.MorseActuatorClass``)
+You need to implement a sub-class of ``morse.core.sensor.MorseSensorClass``
+(respectively of ``morse.core.actuator.MorseActuatorClass``)
 
 Important things to do :
 
