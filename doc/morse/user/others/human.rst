@@ -68,7 +68,7 @@ item, then release to let go of the object.
 Sensors and actuators
 ---------------------
 
-Currently (``morse-0.3``), the human component has one sensor already integrated, which
+Currently (``morse-0.4``), the human component has one sensor already integrated, which
 exports the joint state of the human: the :doc:`human posture sensor <../sensors/human_posture>`.
 This sensor is already embedded in the ``default_human.blend`` file. You don't need
 to link it from a separate sensor file.
