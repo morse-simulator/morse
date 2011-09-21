@@ -14,7 +14,7 @@ Overlay example
 ---------------
 
 The example below present a typical use for overlays: MORSE provides a
-:doc:`pan-tilt unit <actuators/platine>` actuator that offers a method,
+:doc:`pan-tilt unit <actuators/ptu>` actuator that offers a method,
 :py:meth:`morse.actuators.platine.Platine.set_pan_tilt`, to set the pan and 
 tilt angles of the PTU.
 
