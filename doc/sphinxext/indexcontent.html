@@ -1,0 +1,74 @@
+{% extends "defindex.html" %}
+{% block tables %}
+
+  <table class="contentstable" align="center">
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("what_new") }}">What's new in MORSE 0.4?</a><br/>
+			 <span class="linkdescr">The latest updates of the simulator</span></p>
+		</td>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("what_is_morse") }}">What is MORSE?</a><br/>
+			 <span class="linkdescr">Get an overview of MORSE features</span></p>
+		</td>	  </tr>
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/installation") }}">Installation</a><br/>
+			 <span class="linkdescr">Install MORSE on your platform</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("tutorials") }}">Tutorials</a><br/>
+			 <span class="linkdescr">Learn how to use MORSE</span></p>
+		</td>
+	  </tr>
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("components_library") }}">Component library</a><br/>
+			 <span class="linkdescr">What can be simulated in MORSE?</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/supported_middlewares") }}">Supported middlewares</a><br/>
+			 <span class="linkdescr">How to integrate MORSE in your architecture</span></p>
+		</td>
+
+	  </tr>
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("contributing") }}">Developing with MORSE</a><br/>
+			 <span class="linkdescr">Contacts and developers' documentation</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="code/morse.html">Code reference</a><br/>
+			 <span class="linkdescr">Access the MORSE source code reference</span></p>
+		</td>
+
+	  </tr> 
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("media") }}">Media & Dissemination</a><br/>
+			 <span class="linkdescr">Screenshots, videos and academic publications</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("multinode") }}">Multi-nodes simulation</a><br/>
+			 <span class="linkdescr">Scale up your simulation!</span></p>
+		</td>
+	  </tr> 
+</table>
+
+<p>For any questions about the use of MORSE or if you have any issues with the
+simulator, you can drop a mail to the mailing-list<br/>
+
+<div style="text-align:center; font-weight:bold;"><a href="mailto:morse-users@laas.fr">morse-users@laas.fr</a></div>
+<br/>
+ 
+You can subscribe to the mailing-list
+<a href="https://sympa.laas.fr/sympa/subscribe/morse-users">here</a>.</p>
+
+<p>Bug reports are always welcome on <a href="https://softs.laas.fr/bugzilla/enter_bug.cgi?product=morse">our bug-tracker</a>.</p>
+
+
+{% endblock %}

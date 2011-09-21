@@ -25,7 +25,7 @@ import sys, os
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['@CMAKE_CURRENT_SOURCE_DIR@/doc/sphinxext']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -112,6 +112,12 @@ html_theme_path = ["@CMAKE_CURRENT_SOURCE_DIR@/doc"]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = '@CMAKE_CURRENT_SOURCE_DIR@/doc/media/morse-logo.png'
+
+
+# Additional templates that should be rendered to pages.
+html_additional_pages = {
+   'morse': 'indexcontent.html',
+}
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32

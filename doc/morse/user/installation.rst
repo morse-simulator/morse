@@ -7,7 +7,10 @@ Requirements - What you need to install before
 Hardware
 ++++++++
 
-To display textures correctly in the simulator, as well as to generate images using the simulated cameras, you will need to have a graphics card that supports GLSL shading. The Blender website lists these graphic cards as compatible with GLSL:
+To display textures correctly in the simulator, as well as to generate images
+using the simulated cameras, you will need to have a graphics card that
+supports GLSL shading. The Blender website lists these graphic cards as
+compatible with GLSL:
 
 - ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
 - NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
@@ -27,164 +30,25 @@ MORSE does not currently support Microsoft Windows, although it may work
 Required software
 +++++++++++++++++
 
-.. note::
-  If you use the automated ``robotpkg``-based installation (recommended), you can skip this section: 
-  ``robotpkg`` will check and install for you all required dependencies.
-
 - Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
 - Blender 2.59 build with Python 3.2
 - MORSE source code
 
 .. note::
-  If you install Python by hand, it is important to specify the ``--with-wide-unicode`` flag, since Blender
-  expects this behaviour. Otherwise, there will be an incompatibility of types when using additional middlewares.
+  If you install Python by hand, it is important to specify the
+  ``--with-wide-unicode`` flag, since Blender expects this behaviour.
+  Otherwise, there will be an incompatibility of types when using additional
+  middlewares.
  
 If you plan to use the simulator with raw sockets of text files as "middleware",
-you don't need anything else. Otherwise, you need to install the software for other middlewares.
+you don't need anything else. Otherwise, you need to install the software for
+other middlewares :
 
-Moreover, if you plan to use the multi-node version of MORSE, with HLA support, 
-see the HLA installation instructions.
+.. toctree::
+    :glob:
+    :maxdepth: 1
 
-HLA
-~~~
-
-The High Level Architecture (HLA) is a standard framework that supports
-simulations composed of different simulation components. Some introductory
-courses about HLA are available `here <http://www.ecst.csuchico.edu/~hla/>`_.
-
-The HLA implementation on which the multi-node version of MORSE is build is
-the `CERTI <https://savannah.nongnu.org/projects/certi>`_. To install the CERTI,
-follow the `Building CERTI <http://www.nongnu.org/certi/certi_doc/Install/html/build.html>`_
-documentation.
-
-The CVS version tagged "CERTI-MORSE-0_4" is the version tested at the moment of
-the MORSE 0.4 release. If you are facing some mistakes with the head cvs version,
-try to checkout the CERTI-MORSE-0_4 version::
-
-$ cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi checkout -r CERTI-MORSE-0_4 certi
-
-You also have to create the corresponding Python binding in order to have
-MORSE able to use the CERTI. The PyHLA binding can be installed following these
-`instructions <http://www.nongnu.org/certi/PyHLA/manual/node6.html>`_.
-Depending on your system configuration, you may have to configure PyHLA to use
-the Python 3.2 executable and libraries.
-
-Then you will have to update your PYTHONPATH so that MORSE will find the PyHLA
-components.
-
-YARP 
-~~~~
-
-For the YARP bindings
-
-- YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0, don't try to use MORSE with this version. The issue has been fixed with yarp-2.3.1).
-- YARP python binding
-- ACE ( 5.6.3 or +, required for YARP)
-- SWIG (2.0.4, required to compile the Python bindings)
-
-Instructions to create YARP-Python bindings are `here <http://eris.liralab.it/wiki/YARP_and_Python>`_.
-To properly use simulated cameras with yarp < 2.3.2, you need to apply the patch from ``patches/yarp.i.diff``.
-
-
-Note that the easiest way to install YARP is probably to use ``robotpkg`` (see `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more informations). Follow the instructions on installing ``robotpkg``. Then add the environment variable ``ROBOTPKG_BASE`` to your shell.
-Then to install ``YARP`` ::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/yarp
-  $ make update
-
-Afterwards, add the following settings in ``${ROBOTPKG_BASE}/etc/robotpkg.conf`` ::
-
-  $ echo "PKG_OPTIONS.libpyyarp+= python3" >> ${ROBOTPKG_BASE}/etc/robotpkg.conf
-
-and then install the YARP python bindings bindings ::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/libpyyarp
-  $ make update
-
-
-Compiling the YARP Python binding will create two files: ``yarp.py`` and ``_yarp.so``, and install them in ``$ROBOTPKG_BASE/lib/python3.2/site-packages/``
-You'll need to set the environment variable ``PYTHONPATH`` to ``$ROBOTPKG_BASE/lib/python3.2/site-packages/`` to let python find the YARP module.
-
-If you are not using robotpkg to install YARP, then make sure to copy the files ``yarp.py`` and ``_yarp.so`` to your Python lib directory (``/usr/lib/python3.2/site-packages/``) or at some place reachable from your ``PYTHONPATH`` environment variable.
-
-.. warning::
-    The name of the installation directory may be different depending on your Linux distribution. If you use Ubuntu or similar distributions, replace the directory name of ``python3.2/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
-
-ROS 
-~~~
-Blender 2.57+ relies on Python3.2 which is partially supported by ROS Electric Emys. 
-
-The following steps explain how to get a working setup, suitable for using ROS with MORSE.
-
-#. Install ROS Electric Emys (check http://www.ros.org/wiki/ROS/Installation if needed)
-#. Install Python3.2 manually or using your system package manager and make sure, your Pythonpath variable
-   is pointing to the Python3.2-libraries (Python3.2 Debian-packages are e.g. offered by Ubuntu 11.04 and newer) 
-#. Install PyYAML with Python3 support (PyYAML >= 3.09, you can get it from http://pyyaml.org/)
-   Install it with ``python3.2 setup.py install`` to be sure to have the Python3 libraries
-
-If you are running ROS Diamondback, you can still use MORSE, but due to
-lacking Python 3 compatibility, you will have to overlay some ROS stacks to be
-compatible with Python3.
-Therefore, you can use rosinstall:
-
-``rosinstall ~/ros-py3 /opt/ros/diamondback
-http://ias.cs.tum.edu/~kargm/ros_py3.rosinstall`` (if your ROS is installed in
-/opt/ros/diamondback and your overlay should be created in ~/ros-py3) The
-ROS-stacks ros, ros_comm and common_msgs are overlayed by Python3-compatible
-versions and need to be rebuild: ``rosmake ros && rosmake ros_comm && rosmake
-common_msgs``
-
-Note: Rebuilding the common_msgs stack allows you to use all messages in this
-stack for communicating between MORSE and ROS. If you want to use any other
-messages, make sure the source-files are Python2 AND Python3 compatible! This
-can be achieved by simply rebuilding the ROS-packages of the messages with
-rosmake --pre-clean when you are running the patched ROS-stacks (make sure to
-source the right setup.bash!), e.g.: ``rosmake --pre-clean sensor_msgs``
-
-
-Pocolibs
-~~~~~~~~
-
-To build Pocolibs bindings (the LAAS-CNRS middleware), you need to install Pocolibs on your system.
-
-The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage
-<http://homepages.laas.fr/mallet/robotpkg>`_ for more informations).
-
-To install::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/pocolibs
-  $ make update
-
-MOOS
-~~~~~~~~
-
-To build the MOOS middleware, you need to install MOOS and pymoos on your system.
-
-Additional information on MOOS and pymoos can be found at `MOOS homepage <http://www.robots.ox.ac.uk/~mobile/MOOS/wiki/pmwiki.php>`_ and `pymoos homepage <http://pymooos.sourceforge.net/>`_.
-
-To install MOOS to your home directory::
-
-    $ cd ~/
-    $ svn co svn://login2.robots.ox.ac.uk/MOOS/trunk MOOS
-    $ cd MOOS
-    $ cmake .
-    $ make
-    
-Pymoos requires the Boost Python library compiled for Python 3.  The binaries available in most repositories are currently compiled for version 2.7.   The latest version of the Boost source code (currently 1.47)  can be downloaded from `Boost <http://http://www.boost.org>`_.  To install::
-
-    $ ./bootstrap.sh --prefix=path/to/installation/prefix --with-python-version=3.2
-    $ ./b2 install
-
-Finally pymoos can be installed by::
-
-    $ cd ~/
-    $ svn co https://pymooos.svn.sourceforge.net/svnroot/pymooos pymoos
-    $ cd pymoos
-    $ cmake .
-    $ make
-    $ sudo make install
-    
-When running ``cmake`` for pymoos make sure to select the MOOS support option.
+    installation/mw/*
 
 
 Installation 
@@ -193,48 +57,16 @@ Installation
 .. note::
     The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
 
-It is recommended to store this environment variable, as it is necessary to use the :doc:`scene builder script <../dev/builder>` to generate equipped robots.
+It is recommended to store this environment variable, as it is necessary to
+use the :doc:`scene builder script <../dev/builder>` to generate equipped
+robots.
 
-With ``robotpkg``
-+++++++++++++++++
+Manually
+++++++++
 
-``robotpkg`` is a package manager for robotic software based on NetBSD ports.
-It supports Linux, * BSD and Darwin (MacOS X).
+Download the latest version of the source code. It is stored in a ``git``
+repository::
 
-.. Note::
-	If you are upgrading an previous morse installation, skip directly to step 2.
-
-#. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
-   instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ and 
-   `robotpkg-wip installation <http://homepages.laas.fr/mallet/robotpkg-wip>`_
-   (should take less than 5 min)
-#. Add the following environment variables to your system::
-    
-    # If using tcsh
-    setenv ROBOTPKG_BASE $HOME/openrobots
-    setenv PKG_CONFIG_PATH $HOME/openrobots/lib/pkgconfig
-
-    # If using bash
-    export ROBOTPKG_BASE=$HOME/openrobots
-    export PKG_CONFIG_PATH=$HOME/openrobots/lib/pkgconfig
-
-#. Go to ``$ROBOTPKG/simulation/morse``
-#. Type ``make update``
-#. Go have a coffee :-) ``robotpkg`` will download and compile for you all the
-   required dependencies, including Blender.
-#. The previous package only installs middleware support for text and socket.
-   If you want support for additional middlewares, repeat the operation in
-   ``$ROBOTPKG/simulation/morse-yarp``, ``$ROBOTPKG/wip/morse-pocolibs``.
-
-By hand
-+++++++
-
-Download the latest version of the source code. It is stored in a ``git`` repository::
-
-  $ git clone http://trac.laas.fr/git/robots/morse.git
-  
-Alternatively, you can use the GitHub mirror (synchronized every hour, probably a lot faster) ::
-  
   $ git clone http://github.com/laas/morse.git
   
 Once you have a copy of the repository, you can get to the last stable
@@ -245,19 +77,31 @@ version (0.4) by using ::
 You can get a `tarball version here <https://github.com/laas/morse/tarball/0.4>`_. 
 
  
-Go to the directory where you have previously downloaded the MORSE source. Then type these commands::
+Go to the directory where you have previously downloaded the MORSE source.
+Then type these commands::
 
   $ mkdir build && cd build
   $ cmake ..
 
-By default, MORSE will install in ``/usr/local``. You can easily change that by launching ``ccmake`` instead of ``cmake``.
-When using ``ccmake``, it is also possible to select the optional HLA support, and middleware bindings for YARP and Pocolibs.
+By default, MORSE will install in ``/usr/local``. You can easily change that
+by launching ``ccmake`` instead of ``cmake``.
+When using ``ccmake``, it is also possible to select the optional HLA support,
+and middleware bindings for YARP and Pocolibs.
 
-- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install prefix directory is referred to as ``$MORSE_ROOT``.
-- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support for multi-node simulations in MORSE.
+- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install
+  prefix directory is referred to as ``$MORSE_ROOT``.
+- ``BUILD_CORE_SUPPORT`` controls the builds and install of Morse core. It is
+  ON by default
+- ``BUILD_DOC_SUPPORT`` controls the build of the documentation (require
+  sphinx)
+- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support for multi-node
+  simulations in MORSE.
 - ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE.
 - ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE.
-- ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension (Release is a good choice). ::
+- ``BUILD_ROS_SUPPORT`` controls the build of ROS support in MORSE.
+- ``BUILD_MOOS_SUPPORT`` controls the build of MOOS support in MORSE.
+- ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension
+  (Release is a good choice). ::
 
   $ sudo make install
 
@@ -266,7 +110,21 @@ For instance, to build and install MORSE with YARP support in ``/opt``, you need
 
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
-The optional ``$MORSE_BLENDER`` environment variable can be set to let the simulator know where to look for Blender if it is not accessible from the path.
+The optional ``$MORSE_BLENDER`` environment variable can be set to let the
+simulator know where to look for Blender if it is not accessible from the
+path.
+
+Packages manager
+++++++++++++++++
+
+MORSE is available through some package manager. See their associated
+documentation.
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    installation/package_manager/*
 
 You can check your configuration is ok with::
 
@@ -278,44 +136,3 @@ You can check your configuration is ok with::
     $ git checkout [version]
     $ cd build
     $ make install
-
-
-Running a simulation 
---------------------
-
-[YARP specific] Before starting a simulation: Start the YARP's server using this command in a separate terminal::
-
-  $ yarp server
-
-Launch MORSE by calling the executable::
-
-  $ morse
-
-Several options are available, check them with::
-
-  $ morse help
-
-Once launched, you can test the simulator by loading one of the example scenarii from ``$MORSE_ROOT/share/examples/morse/scenarii`` (.blend files).
-
-To start a simulation, go on Blender and press :kbd:`P` to play the scenario.
-
-Tips: If you have any problem to start to play a simulation: start ``blender``
-from a terminal and send the error messages to <morse_dev@laas.fr>.
-Note that certain scenario files are configured to use various middlewares, and will need the middleware manager to be started beforehand.
-
-Testing
--------
-
-To test the external control clients:
-
-- On a text terminal, run the ``morse`` command
-- Open the Blender file: ``$MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend``
-- Start the simulation :kbd:`P`
-- On a separate terminal, go to the root directory of the MORSE source code
-- Run the Python program::
-
-  $ python examples/morse/clients/atrv/socket_v_omega_client.py
-
-- Follow the client program's instructions to send movement commands to the robot and to read information back
-- To finish the simulation, press :kbd:`esc`
-- To close Blender, press :kbd:`C-q`, and then :kbd:`enter`

@@ -15,7 +15,7 @@ Pre-requisites
 Using the services
 ------------------
 In order to use a service, you have to know the exact name of this service, and its parameters (You can refer to the component 
-page, available here :doc:`The MORSE Component Library <../component_library>`
+page, available :doc:`here  <../../../components_library>`
 
 Here is an example using human component (the services available are :doc:`here <../others/human>`) with telnet::
 
