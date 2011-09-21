@@ -72,8 +72,10 @@ class Actuator(Component):
 class Environment(Component):
     def __init__(self, name):
         Component.__init__(self, 'environments', name)
+        self._created = False
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]
+        self._environment_file = name
 
     def _write(self):
         cfg = bpy.data.texts['component_config.py']
@@ -104,13 +106,16 @@ class Environment(Component):
         Expected argument is a list with the desired orientation for the camera """
         self._camera_rotation = rotation
 
-    def __del__(self):
+    def create(self):
         """ Generate the scene configuration and insert necessary objects
         """
         # Write the configuration of the middlewares
         self._write()
         # Add the necessary objects
         base = Component('props', 'basics')
+        # Write the name of the 'environment file'
+        ssh = bpy.data.objects['Scene_Script_Holder']
+        ssh.game.properties['environment_file'].value = self._environment_file
         # Set the position of the camera
         camera_fp = bpy.data.objects['CameraFP']
         camera_fp.location = self._camera_location
@@ -118,3 +123,9 @@ class Environment(Component):
         # Make CameraFP the active camera
         bpy.ops.object.select_all(action = 'DESELECT')
         bpy.ops.object.select_name(name = 'CameraFP')
+
+
+    def __del__(self):
+        """ Call the create method if the user has not explicitly called it """
+        if not self._created:
+            self.create()
