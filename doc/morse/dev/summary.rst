@@ -5,11 +5,14 @@ Developers documentation
 Get involved!
 -------------
 
-You can write to the list of developers of the project, writing to this address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
+You can write to the list of developers of the project, writing to this 
+address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
 
-MORSE developement can be tracked online with CGIT: `MORSE on CGIT <http://trac.laas.fr/git/morse>`_
+MORSE developement can be tracked online with GitHub: `MORSE on GitHub 
+<https://github.com/laas/morse>`_
 
-You can as well fetch the latest version of the code with GIT: ::
+Fork it from your own GitHub account, or get the source directly from 
+the LAAS master repository::
 
     $ git clone http://trac.laas.fr/git/robots/morse.git
 
