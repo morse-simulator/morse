@@ -41,14 +41,6 @@ class Component(AbstractComponent):
 
         #print ("NAME: %s | CATEGORY: %s | objlist %s" % (name, category, objlist))
 
-        if category == 'middleware' or category == 'modifiers':
-                # Avoid re-inserting middleware or modifier objects
-                if objlist[0]['name'] in bpy.data.objects:
-                        self._blendname = name
-                        return
-                else:
-                        print ("Adding Empty component '%s'" % name)
-
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
                 autoselect=True, files=objlist)
@@ -68,6 +60,14 @@ class Sensor(Component):
 class Actuator(Component):
     def __init__(self, name):
         Component.__init__(self, 'actuators', name)
+
+class Middleware(Component):
+    def __init__(self, name):
+        Component.__init__(self, 'middleware', name)
+
+class Modifier(Component):
+    def __init__(self, name):
+        Component.__init__(self, 'modifiers', name)
 
 class Environment(Component):
     def __init__(self, name):
@@ -109,6 +109,11 @@ class Environment(Component):
     def create(self):
         """ Generate the scene configuration and insert necessary objects
         """
+        # Insert middlewares and modifiers into the scene
+        for mw in scene_middlewares:
+            Middleware(mw)
+        for mod in scene_modifiers:
+            Modifier(mod)
         # Write the configuration of the middlewares
         self._write()
         # Add the necessary objects
