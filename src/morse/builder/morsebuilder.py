@@ -8,7 +8,7 @@ Morse Builder API
 To test this module you can c/p the following code in Blender Python console::
 
 import sys
-sys.path.append("/usr/local/lib/python3.1/dist-packages")
+sys.path.append("/usr/local/lib/python3/dist-packages")
 from morse.builder.morsebuilder import *
 atrv=Robot("atrv")
 
@@ -21,25 +21,20 @@ class Component(AbstractComponent):
     """ Append a morse-component to the scene
 
     cf. `bpy.ops.wm.link_append 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
+    <http://www.blender.org/documentation/blender_python_api_2_59_release/bpy.ops.wm.html#bpy.ops.wm.link_append>`_ 
      and 
     `bpy.data.libraries.load 
-    <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.BlendDataLibraries.html>`_ 
+    <http://www.blender.org/documentation/blender_python_api_2_59_release/bpy.types.BlendDataLibraries.html>`_ 
     """
     def __init__(self, category, name):
         AbstractComponent.__init__(self)
         filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
-        if bpy.app.version > (2,56,0):
-            with bpy.data.libraries.load(filepath) as (src, _):
-                try:
-                    objlist = [{'name':obj} for obj in src.objects]
-                except UnicodeDecodeError as detail:
-                    print ("Unable to open file '%s'. Exception: %s" % (filepath, detail))
-        else: # Blender 2.56 does not support bpy.data.libraries.load
-            objlist = [{'name':obj} for obj in MORSE_COMPONENTS_DICT[category][name]]
-
-        #print ("NAME: %s | CATEGORY: %s | objlist %s" % (name, category, objlist))
+        with bpy.data.libraries.load(filepath) as (src, _):
+            try:
+                objlist = [{'name':obj} for obj in src.objects]
+            except UnicodeDecodeError as detail:
+                print ("Unable to open file '%s'. Exception: %s" % (filepath, detail))
 
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
@@ -88,13 +83,6 @@ class Environment(Component):
         cfg.write('\n')
         cfg.write('overlays = ' + json.dumps(cfg_overlay, indent=1) )
         cfg.write('\n')
-
-    def _get_path_file(self):
-        """ Get the file which should be in the 'props/basics.blend' file """
-        filepath = os.path.join(MORSE_COMPONENTS, 'props/basics.blend')
-        with bpy.data.libraries.load(filepath) as (src, dest):
-                print ("ESTO: ", src.texts[0].as_string())
-                dest.texts['setup_path.py'] = src.texts['setup_path.py']
 
     def place_camera(self, location):
         """ Store the position that will be givent to the default camera
