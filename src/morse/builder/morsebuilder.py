@@ -114,7 +114,7 @@ class Environment(Component):
         # Make CameraFP the active camera
         bpy.ops.object.select_all(action = 'DESELECT')
         bpy.ops.object.select_name(name = 'CameraFP')
-
+        self._created = True
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
