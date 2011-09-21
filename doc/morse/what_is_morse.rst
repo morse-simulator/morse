@@ -106,6 +106,13 @@ network of :doc:`simulation nodes <multinode>`. Each node automatically synchron
 others (however, due to latencies, do not expect to simulate accurate physical
 interactions in the distributed mode).
 
+.. image:: ../media/ocean.jpg
+   :width: 300
+   :align: center
+.. Multi-robot simulation: one helicopter cooperates with a submarine
+   for mine hunting.
+
+
 MORSE has specific features for human-robot interaction simulation
 ------------------------------------------------------------------
 

@@ -18,11 +18,12 @@ Screenshots
 |    Simulation of ground-air cooperation. |     laser range finder in an indoors     |
 |                                          |     environment.                         |
 +------------------------------------------+------------------------------------------+
-| .. figure:: ../media/outdoor_example.jpg |  .. figure:: ../media/indoors_sick.jpg   | 
+| .. figure:: ../media/outdoor_example.jpg |  .. figure:: ../media/ocean.jpg          | 
+|                                          |     :width: 422                          |
 |                                          |                                          |
-|    An ATRV in an outdoor scenario.       |     Real-time simulation of a SICK       |
-|                                          |     laser range finder in an indoors     |
-|                                          |     environment.                         |
+|    An ATRV in an outdoor scenario.       |     Cooperation between an helicopter    |
+|                                          |     and a submarine for mine hunting.    |
+|                                          |                                          |
 +------------------------------------------+------------------------------------------+
 | .. figure:: ../media/hri.jpg             |  .. figure:: ../media/morse_interface.jpg| 
 |    :width: 422                           |     :width: 422                          |
