@@ -5,7 +5,34 @@ Media
 Videos
 ------
 
-Videos are available on the `Blender for Robotics Vimeo group <http://vimeo.com/groups/blenderandrobotics>`_.
++------------------------------------------+------------------------------------------+
+|                                          |                                          |
+|         .. vimeo:: 22693627              |        .. vimeo:: 23244699               |
+|            :width: 400                   |           :width: 400                    |
+|                                          |                                          |
+|  Some examples of integration between    |  Using ROS RVIZ vizualisation tool to    |
+|  MORSE and ROS in human-robot interaction|  display the video stream of a simulated |
+|  context.                                |  camera                                  |
++------------------------------------------+------------------------------------------+
+|                                          |                                          |
+|         .. vimeo:: 22246759              |        .. vimeo:: 19258005               |
+|            :width: 400                   |           :width: 400                    |
+|                                          |                                          |
+|  Here, a robot builds a traversability   |  MORSE can take care of navigation if    |
+|  map from simulated laser scans, and     |  you do not want to manage this part.    |
+|  uses it to navigate.                    |                                          |
++------------------------------------------+------------------------------------------+
+|                                          |                                          |
+|         .. vimeo:: 26274803              |        .. vimeo:: 9825826                |
+|            :width: 400                   |           :width: 400                    |
+|                                          |                                          |
+|  MORSE can be used to test human-robot   |  Several robots following each others.   |
+|  interaction scenarii, where a human     |  Each robot streams its camera, here     |
+|  is controlled as in a video game.       |  with YARP.                              |
++------------------------------------------+------------------------------------------+
+
+More videos are available on the `Blender for Robotics Vimeo group 
+<http://vimeo.com/groups/blenderandrobotics>`_.
 
 
 Screenshots
