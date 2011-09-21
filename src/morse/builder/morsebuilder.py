@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import bpy
 from morse.builder.abstractcomponent import *
@@ -17,6 +18,57 @@ The string passed to the differents Components Classes must be an existing
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
 
+class PassiveObject(AbstractComponent):
+    """ Allows to import any Blender object to the scene.
+    """
+
+    def __init__(self, file, object = None, keep_pose = False):
+        """
+        :param blenderfile: The Blender file to load. Path can be absolute
+                           or relative to MORSE assets' installation path
+                           (typically, $PREFIX/share/data/morse)
+        :param object: (optional) the name of the object to load in the 
+                       Blender file. If not set, all objects present in the file
+                       are loaded.
+        :param keep_pose: If set, the object pose (translation and rotation)
+                        in the Blender file is kept. Else, the object 
+                        own center is placed at origin and all rotation are
+                        reset.
+        :return: a new AbstractComponent instance.
+        """
+        AbstractComponent.__init__(self)
+        if os.path.exists(file):
+            filepath = file
+        else:
+            filepath = os.path.join(MORSE_COMPONENTS,file)
+            if not os.path.exists(filepath):
+                logger.error("Blender file %s for external asset import can not be found.\n" + \
+                         "Either provide an absolute path, or a path relative to MORSE \n" + \
+                         "asset directory (typically $PREFIX/share/data/morse)" % (file))
+
+        with bpy.data.libraries.load(filepath) as (src, _):
+            if object:
+                objlist = [{'name':object}]
+            else:
+                try:
+                    objlist = [{'name':obj} for obj in src.objects]
+                except UnicodeDecodeError as detail:
+                    logger.error("Unable to open file '%s'. Exception: %s" % (filepath, detail))
+
+        print("objlist %s" % (objlist))
+
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
+                autoselect=True, files=objlist)
+        # here we use the fact that after appending, Blender select the objects 
+        # and the root (parent) object first ( [0] )
+        self._blendobj = bpy.context.selected_objects[0]
+        
+        if not keep_pose:
+            self._blendobj.location = (0.0,0.0,0.0)
+            self._blendobj.rotation_euler = (0.0,0.0,0.0)
+
+
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
 
@@ -34,7 +86,7 @@ class Component(AbstractComponent):
             try:
                 objlist = [{'name':obj} for obj in src.objects]
             except UnicodeDecodeError as detail:
-                print ("Unable to open file '%s'. Exception: %s" % (filepath, detail))
+                logger.error("Unable to open file '%s'. Exception: %s" % (filepath, detail))
 
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
