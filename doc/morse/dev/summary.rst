@@ -74,3 +74,16 @@ Adding the support of a new middleware
 Introduce how to add the support for a new middleware
 
 :doc:`Tutorial: Adding the support for a new middleware <new_middleware>`
+
+
+Simulation supervision
+----------------------
+
+Besides component-specific services and data stream (documented on each component's
+own documentation page), MORSE provides a set of *supervision services* that
+may be used to remotely control the global behaviour of the simulator:
+
+.. toctree::
+	:maxdepth: 1
+
+	../user/supervision_services
