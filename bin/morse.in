@@ -26,12 +26,12 @@ import re
 VERSION = "@PACKAGE_VERSION@"
 
 #Python version must be egal or bigger than...
-MIN_PYTHON_VERSION = "3.0"
+MIN_PYTHON_VERSION = "3.2"
 #Python version must be smaller than...
 STRICT_MAX_PYTHON_VERSION = "4.0"
 
 #Blender version must be egal or bigger than...
-MIN_BLENDER_VERSION = "2.54"
+MIN_BLENDER_VERSION = "2.59"
 #Blender version must be smaller than...
 STRICT_MAX_BLENDER_VERSION = "3"
 
