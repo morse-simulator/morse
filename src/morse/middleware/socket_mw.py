@@ -6,10 +6,10 @@ import morse.core.middleware
 class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
     """ External communication using sockets. """
 
-    def __init__(self, obj, parent=None):
+    def __init__(self):
         """ Initialize the socket connections """
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__,self).__init__()
 
         self._socket_dict = dict()
         self._socket_ports = []

@@ -29,8 +29,7 @@ try:
     MULTINODE_SUPPORT = True
     
 except ImportError as detail:
-    logger.info("No multi-node scene configuration file found." + \
-           " Multi-node support disabled.")
+    logger.info("No multi-node scene configuration file found. Multi-node support disabled.")
 
 from morse.core.exceptions import MorseServiceError
 
@@ -188,7 +187,11 @@ def create_dictionaries ():
                 return False
         except KeyError:
             pass
-
+    
+    """ Middlewares are now dynamically created.
+    The following lines should do nothing but are still there for backward
+    compatibility.
+    """
     # Get the middlewares
     for obj in scene.objects:
         is_middleware = False
@@ -206,7 +209,7 @@ def create_dictionaries ():
                 logger.info("\tMiddleware '%s' found" % obj)
             else:
                 return False
-
+    
     # Will return true always (for the moment)
     return True
 
@@ -240,15 +243,9 @@ def check_dictionaries():
     for obj, service_variables in GameLogic.serviceDict.items():
         logger.info ("\tSERVICE: '{0}'".format(obj))
 
-
-def create_instance(obj, parent=None):
-    """ Dynamically load a Python module and create an instance object
-        of the class defined within. """
-    # Read the path and class of the object from the Logic Properties
-    source_file = obj['Path']
-    module_name = re.sub('/', '.', source_file)
-    logger.debug("Path to Component Class: %s" % module_name)
-    # Import the module containing the class
+def get_class(module_name, class_name):
+    """ Dynamically creates an instance of a Python class.
+    """
     try:
         __import__(module_name)
     except ImportError as detail:
@@ -257,13 +254,28 @@ def create_instance(obj, parent=None):
     module = sys.modules[module_name]
     # Create an instance of the object class
     try:
-        klass = getattr(module, obj['Class'])
+        klass = getattr(module, class_name)
     except AttributeError as detail:
         logger.error ("Module attribute not found: %s" % detail)
         return None
-    instance = klass(obj, parent)
+    return klass
 
-    return instance
+def create_instance(obj, parent=None):
+    """ Dynamically load a Python module and create an instance object
+        of the class defined within. """
+    # Read the path and class of the object from the Logic Properties
+    source_file = obj['Path']
+    module_name = re.sub('/', '.', source_file)
+    logger.debug("Path to Component Class: %s" % module_name)
+    klass = get_class(module_name, obj['Class'])
+    return klass(obj, parent)
+
+def create_mw(mw):
+    """ Creates an instances of a middleware class.
+    """
+    modulename, classname = mw.rsplit('.', 1)
+    klass = get_class(modulename, classname)
+    return klass()
 
 def get_components_of_type(classname):
     components = []
@@ -322,17 +334,25 @@ def link_middlewares():
             found = False
             missing_component = False
             # Look for the listed mw in the dictionary of active mw's
+            
             for mw_obj, mw_instance in GameLogic.mwDict.items():
-                #logger.info("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
-                if mw_name in mw_obj.name:
+                logger.debug("Looking for '%s' in '%s'" % (mw_name, mw_obj))
+                if mw_name in mw_obj:
                     found = True
                     # Make the middleware object take note of the component
-                    mw_instance.register_component(component_name, instance, mw_data)
                     break
 
             if not found:
-                logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
-
+                mw_instance = create_mw (mw_name)
+                if mw_instance != None:
+                    GameLogic.mwDict[mw_name] = mw_instance
+                    logger.info("\tMiddleware '%s' created" % mw_name)
+                else:
+                    logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
+                    return False
+            
+            mw_instance.register_component(component_name, instance, mw_data)
+            
     # Will return true always (for the moment)
     return True
 

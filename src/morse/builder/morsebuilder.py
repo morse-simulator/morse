@@ -97,9 +97,7 @@ class Environment(Component):
     def create(self):
         """ Generate the scene configuration and insert necessary objects
         """
-        # Insert middlewares and modifiers into the scene
-        for mw in scene_middlewares:
-            Middleware(mw)
+        # Insert modifiers into the scene
         for mod in scene_modifiers:
             Modifier(mod)
         # Write the configuration of the middlewares

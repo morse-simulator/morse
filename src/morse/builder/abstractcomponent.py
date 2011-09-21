@@ -1,8 +1,8 @@
 import os
 import bpy
 import json
-import logging; logger = logging.getLogger("morse." + __name__)
-logger.setLevel(logging.DEBUG)
+#import logging; logger = logging.getLogger("morse." + __name__)
+#logger.setLevel(logging.DEBUG)
 
 from morse.builder.data import *
 
@@ -10,7 +10,6 @@ cfg_middleware = {}
 cfg_modifier = {}
 cfg_service = {}
 cfg_overlay = {}
-scene_middlewares = []
 scene_modifiers = []
 
 class Configuration(object):
@@ -140,11 +139,6 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
         AbstractComponent._config.link_mw(self, config)
-        # Add the middleware empty objects as needed
-        mw_name = mw.lower() + "_mw"
-        if not mw_name in scene_middlewares:
-            logger.debug("Add middleware " + mw_name + " to the scene middlewares")
-            scene_middlewares.append(mw_name)
 
     def configure_service(self, mw):
         service = MORSE_SERVICE_DICT[mw]
@@ -157,7 +151,7 @@ class AbstractComponent(object):
         # Add the modifier empty objects as needed
         mod_name = mod[0].lower()
         if not mod_name in scene_modifiers:
-            logger.debug("Add modifier " + mod_name + " to the scene middlewares")
+            #logger.debug("Add modifier " + mod_name + " to the scene middlewares")
             scene_modifiers.append(mod_name)
         
     def configure_overlay(self, manager, overlay):

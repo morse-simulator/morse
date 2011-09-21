@@ -15,14 +15,13 @@ class MorseMiddlewareClass(object):
     # Make this an abstract class
     __metaclass__ = ABCMeta
 
-    def __init__ (self, obj, parent=None):
+    def __init__ (self):
         """ Constructor method. """
-        self.blender_obj = obj
         self._extra_methods = []
 
     def __del__(self):
         """ Destructor method. """
-        logger.info("%s: Middleware finishing" % self.blender_obj.name)
+        logger.info("%s: Middleware finishing" % self.__class__.__name__)
 
 
     @abstractmethod
