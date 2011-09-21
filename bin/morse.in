@@ -67,9 +67,7 @@ def check_blender_version(blender_path):
         version_str = subprocess.Popen(
                                 [blender_path, '--version'], 
                                 stdout=subprocess.PIPE).communicate()[0]
-        # Convert the bytes into a string
-        if sys.version_info>(3,0,0):
-            version_str = str(version_str)
+        version_str = version_str.decode()
         version = version_str.split()[1] + '.' + version_str.split()[3][:-1]
     except OSError:
         return None
@@ -85,11 +83,6 @@ def check_blender_version(blender_path):
 def check_blender_python_version(blender_path):
     """ Creates a small Python script to execute within Blender and get the 
     current Python version bundled with Blender
-    
-    TODO: this method doesn't works because I couldn't find a way to exit 
-    Blender in Python...
-    For now, we don't check Python version in Blender.
-    >>> blender -b or --background
     """
     
     with open("python_checker.py", "w") as f:
@@ -108,13 +101,8 @@ def check_blender_python_version(blender_path):
     logger.info("Checking version of Python within Blender " + blender_path + \
                     "... Found v." + version)
     
-    if  version.split('.') >= MIN_PYTHON_VERSION.split('.') and \
-        version.split('.') < STRICT_MAX_PYTHON_VERSION.split('.') :
-            os.remove("python_checker.py")
-            return version
-    else:
-        os.remove("python_checker.py")
-        return False
+    os.remove("python_checker.py")
+    return version
         
 def check_default_scene(prefix):
     
@@ -259,20 +247,17 @@ def check_setup():
     
     ###########################################################################
     #Check Python version within Blender
-    #TODO: skipped for now. See check_blender_python_version() docstring for details
-    '''
     python_version = check_blender_python_version(blender_exec)
     if not (python_version.split('.') >= MIN_PYTHON_VERSION.split('.') and 
             python_version.split('.') < STRICT_MAX_PYTHON_VERSION.split('.')):
         logger.error("Blender is using Python " + python_version + \
         ". Python  >= " + MIN_PYTHON_VERSION + " and < " + STRICT_MAX_PYTHON_VERSION + \
-        " is required to run MORSE. Note the Blender usually provide it owns " + \
+        " is required to run MORSE. Note that Blender usually provides its own " + \
         "Python runtime that may differ from the system one.")
         raise MorseError("Bad Python version")
     else:
         logger.info("Blender is using Python " + python_version + \
         ". Alright.")
-    '''
 
 def create_copy_default_scene(filename = None):
     """
