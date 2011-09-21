@@ -1,12 +1,17 @@
 import os
 import bpy
 import json
+import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
+
 from morse.builder.data import *
 
 cfg_middleware = {}
 cfg_modifier = {}
 cfg_service = {}
 cfg_overlay = {}
+scene_middlewares = []
+scene_modifiers = []
 
 class Configuration(object):
     def __init__(self):
@@ -131,38 +136,34 @@ class AbstractComponent(object):
         o.game.properties[n].value = v
 
     def configure_mw(self, mw, config=None):
-        # Add the middleware empty objects as needed
-        mw_name = mw + "_mw"
-        Middleware(mw_name)
+        # Configure the middleware for this component
         if not config:
             config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
-        Component._config.link_mw(self, config)
-        #Component._config.write()
+        AbstractComponent._config.link_mw(self, config)
+        # Add the middleware empty objects as needed
+        mw_name = mw.lower() + "_mw"
+        if not mw_name in scene_middlewares:
+            logger.debug("Add middleware " + mw_name + " to the scene middlewares")
+            scene_middlewares.append(mw_name)
 
     def configure_service(self, mw):
         service = MORSE_SERVICE_DICT[mw]
-        Component._config.link_service(self, service)
+        AbstractComponent._config.link_service(self, service)
 
     def configure_modifier(self, mod):
+        # Configure the middleware for this component
+        config = mod
+        AbstractComponent._config.link_modifier(self, config)
         # Add the modifier empty objects as needed
         mod_name = mod[0].lower()
-        Modifier(mod_name)
-        config = mod
-        Component._config.link_modifier(self, config)
-
+        if not mod_name in scene_modifiers:
+            logger.debug("Add modifier " + mod_name + " to the scene middlewares")
+            scene_modifiers.append(mod_name)
+        
     def configure_overlay(self, manager, overlay):
         o = self._blendobj
         klass = o.game.properties["Class"].value
-        Component._config.link_overlay(klass, manager, overlay)
+        AbstractComponent._config.link_overlay(klass, manager, overlay)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"
-
-class Middleware(Component):
-    def __init__(self, name):
-        Component.__init__(self, 'middleware', name)
-
-class Modifier(Component):
-    def __init__(self, name):
-        Component.__init__(self, 'modifiers', name)
-
