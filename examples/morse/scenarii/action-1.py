@@ -66,16 +66,16 @@ Ressac.append(Motion_Controller)
 
 
 # Scene configuration
-GPS_001.configure_mw('yarp', ['Yarp', 'post_message'])
-CameraMain_002.configure_mw('yarp', ['Yarp', 'post_image_RGBA'])
-Motion_Controller.configure_mw('yarp', ['Yarp', 'read_message'])
-Gyroscope_001.configure_mw('yarp', ['Yarp', 'post_message'])
+GPS_001.configure_mw('yarp')
+CameraMain_002.configure_mw('yarp')
+Motion_Controller.configure_mw('yarp')
+Gyroscope_001.configure_mw('yarp')
 
-Platine.configure_mw('yarp', ['Yarp', 'read_message'])
+Platine.configure_mw('yarp')
 
-Motion_Controller_001.configure_mw('pocolibs', ['Pocolibs', 'read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef'])
-Stereo.configure_mw('pocolibs', ['Pocolibs', 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'])
-Gyroscope.configure_mw('pocolibs', ['Pocolibs', 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseMEPos'])
+Motion_Controller_001.configure_mw('pocolibs')
+Stereo.configure_mw('pocolibs')
+Gyroscope.configure_mw('pocolibs')
 
 GPS_001.configure_modifier(['NED', 'blender_to_ned'])
 Motion_Controller.configure_modifier(['NED', 'ned_to_blender'])

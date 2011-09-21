@@ -67,6 +67,7 @@ MORSE_MIDDLEWARE_DICT = {
 
     'destination': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
     'orientation': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
+    'ptu': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
     'v_omega': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
     'waypoint': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
     'steer_force': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
