@@ -9,10 +9,10 @@ import GameLogic
 class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and YARP."""
 
-    def __init__(self, obj, parent=None):
+    def __init__(self):
         """ Initialize the network and connect to the yarp server."""
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__,self).__init__()
 
         self._yarpPorts = dict()
         self._component_ports = dict()
@@ -294,7 +294,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
             port.close()
 
         #self._network.fini()
-        #self._yarp_module.Network.fini()
+        self._yarp_module.Network.fini()
         #yarp.Network.fini()
         logger.info('Yarp Mid: ports have been closed.')
 

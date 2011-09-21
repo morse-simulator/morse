@@ -130,12 +130,12 @@ class HLAClass(middleware.MorseMiddlewareClass):
     
     """
     
-    def __init__(self, obj, parent=None):
+    def __init__(self):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         
         """
-        super(self.__class__, self).__init__(obj, parent)
+        super(self.__class__, self).__init__()
         ### HLA Environment Configuration:
         self.certi_env = {}
         self.certi_env["Federation"] = "MORSE" # Federation name

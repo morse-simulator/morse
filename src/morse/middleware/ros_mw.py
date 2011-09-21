@@ -12,10 +12,10 @@ from std_msgs.msg import String
 class ROSClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and ROS."""
       
-    def __init__(self, obj, parent=None):
+    def __init__(self):
         """ Initialize the network and generate a ROS node."""
         logger.info("Middleware initialization")
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__,self).__init__()
         self._topics = []
         logger.info("Middleware initialized")
         
