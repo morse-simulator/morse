@@ -21,6 +21,13 @@ Exposing methods as services
 Most of the time, adding a new service is as easy as adding ``@service``
 in front of a function declared within a component.
 
+.. note::
+	Arguments coming from remote caller are passed to service using string, so
+	be sure to convert your data in the expected type.
+
+.. warning::
+	Do not use ``eval`` to convert your data from string to expected type.
+
 Lets have a look at ``human.py``, the component that allows us to control
 a human character in the simulation.
 
@@ -39,8 +46,8 @@ a human character in the simulation.
             
             human = self.blender_obj
             
-            human.applyMovement( [speed,0,0], True )
-            human.applyRotation( [0,0,rotation], True )
+            human.applyMovement( [float(speed), 0, 0], True )
+            human.applyRotation( [0, 0 , float(rotation)], True )
 
         [...]
 
@@ -97,13 +104,13 @@ If the service call fails, you are expected to raise a
         @service
         def move(self, speed, rotation):
             
-            if speed < 0:
+            if float(speed) < 0:
                 raise MorseRPCInvokationError("Our human can not walk backward!")
 
             human = self.blender_obj
             
-            human.applyMovement( [speed,0,0], True )
-            human.applyRotation( [0,0,rotation], True )
+            human.applyMovement( [float(speed), 0, 0], True )
+            human.applyRotation( [0, 0, float(rotation)], True )
 
         [...]
 
@@ -164,8 +171,8 @@ services. For instance, the *waypoint* actuator defines an asynchronous
 
         @async_service
         def goto(self, x, y):
-            self.local_data['x'] = x
-            self.local_data['y'] = y
+            self.local_data['x'] = float(x)
+            self.local_data['y'] = float(y)
             self.local_data['z'] = 0 
 
         [...]
@@ -218,10 +225,30 @@ To set a local policy, simply decorate your services with the
 (:meth:`morse.core.services.interruptible` and
 :meth:`morse.core.services.noninterruptible`).
 
-An *interruptible* service is preempted (ends with status
-:data:`morse.core.status.PREEMPTED`) when a new asynchronous service is
-started. A *non-interruptible* service triggers a failure when someone attempts
-to start a new service.
+An *interruptible* service is preempted when a new asynchronous service is
+started. It means that the ``interrupt`` method is called, where default
+behaviour (defined in ``morse.core.AbstractObject``) is to send back to the
+caller the status :data:`morse.core.status.PREEMPTED`). One must overload this
+method in this class to ensure the service is really interrupted, and then
+call mother ``interrupt``. A *non-interruptible* service triggers a failure
+when someone attempts to start a new service. 
+
+.. note::
+	The ``interrupt`` method  must be implemented even if the default policy
+	is *non-interruptible*, as a caller can decide to manually interrupt the
+	service.
+
+.. code-block:: python
+
+    import morse.core.actuator
+
+    class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+
+         def interrupt(self):
+             self.local_data['x'] = self.blender_obj.worldPosition[0]
+             self.local_data['y'] = self.blender_obj.worldPosition[1]
+             self.local_data['z'] = self.blender_obj.worldPosition[2]
+             super(WaypointActuatorClass, self).interrupt()
 
 
 To set a global policy, you need to catch a

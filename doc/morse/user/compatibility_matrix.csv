@@ -3,10 +3,10 @@ Communications ,
 ``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔ (posters),														✔ (database)
 ``RPC (requests)``,			  ✘,               ✔,           ✔,              ✘,               ✔ (requests),																	✘
 Sensors,
-``Accelerometer``,            ✔,               ✔,           ✔,              ✘,               ✘,																	✔ 
+``Accelerometer``,            ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔ 
 ``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ ,																	✔
 ``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``,												✘	
-``Semantic camera``,          ✔,               ✔,           ✔,              ✘,               ✔ ``VimanObjectPublicArray``,										✘	
+``Semantic camera``,          ✔,               ✔,           ✔,              ✔``?``	  ,      ✔ ``VimanObjectPublicArray``,										✘	
 ``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,               ✔ ``POM_SENSOR_POS``,								✔
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
@@ -16,6 +16,7 @@ Sensors,
 ``Laser range finder``,       ✔,               ✔,           "✔``List (x, y, z)``",             "✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
+``IMU``,		            ✔,                 ✔,           ✔,               ✔``Twist``,     ✘,																	✔
 Actuators,
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,
 "``(v, ω) motion control``",    ✘,               ✔,           ✔,             "✔ ``Twist`` - supports as well (Vx, Vy, ω)",    "✔ ``GENPOS_CART_SPEED``",		✔

@@ -42,21 +42,50 @@ to MORSE default ones:
         @service
         def SetTilt(self, tilt):
             
-            ok = self.overlaid_object.set_tilt_pan(tilt, self.last_pan)
-            self.last_tilt = tilt
-            
-            return (status.SUCCESS if ok else status.FAILED, [])
+            self.overlaid_object.set_tilt_pan(tilt, self.last_pan)
+            self.last_tilt = float(tilt)
         
         @service
         def SetPan(self, pan):
             
-            ok = self.overlaid_object.set_tilt_pan(self.last_tilt, pan)
-            self.last_pan = pan
-            
-            return (status.SUCCESS if ok else status.FAILED, [])
+            self.overlaid_object.set_tilt_pan(self.last_tilt, pan)
+            self.last_pan = float(pan)
 
 You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
 file, accessible from MORSE Python path.
+
+For asynchronous service, it is a bit more complex, as we need to provide a 
+callback. The :py:meth:`morse.core.MorseOverlay.chain_callback` takes care
+about this operation. You can pass an optional function to this method to
+modify the returned data, or modify the state of your object.
+
+.. code-block:: python
+
+    from morse.core.services import async_service
+    from morse.core.overlay import MorseOverlay
+    from morse.core import status
+
+    class MyPTU(MorseOverlay):
+        
+        def __init__(self, overlaid_object):
+            # Call the constructor of the parent class
+            super(self.__class__,self).__init__(overlaid_object)
+            
+            self.last_tilt = 0.0
+            self.last_pan = 0.0
+
+        def log(self):
+            print("Chaining callback")
+        
+        @async_service
+        def SetTilt(self, tilt):
+            self.overlaid_object.set_tilt_pan(self.chain_callback(), \
+			tilt, self.last_pan)
+
+        @async_service
+        def SetPan(self, pan):
+            self.overlaid_object.set_tilt_pan(self.chain_callback(log), \
+			self.last_tilt, pan)
 
 Scene setup
 -----------
