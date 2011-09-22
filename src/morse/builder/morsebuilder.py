@@ -117,8 +117,9 @@ class Environment(Component):
     the default location and orientation of the camera, the Blender GE settings
     and also writes the 'component_config.py' file.
     """
-    def __init__(self, name):
-        Component.__init__(self, 'environments', name)
+    def __init__(self, name=None):
+        if name:
+            Component.__init__(self, 'environments', name)
         self._created = False
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]
@@ -160,11 +161,12 @@ class Environment(Component):
             Modifier(mod)
         # Write the configuration of the middlewares
         self._write()
-        # Add the necessary objects
-        base = Component('props', 'basics')
+        if not 'Scene_Script_Holder' in bpy.data.objects:
+            # Add the necessary objects
+            base = Component('props', 'basics')
         # Write the name of the 'environment file'
-        ssh = bpy.data.objects['Scene_Script_Holder']
-        ssh.game.properties['environment_file'].value = self._environment_file
+        ssh = AbstractComponent(bpy.data.objects['Scene_Script_Holder'])
+        ssh.properties(environment_file = str(self._environment_file))
         # Set the position of the camera
         camera_fp = bpy.data.objects['CameraFP']
         camera_fp.location = self._camera_location

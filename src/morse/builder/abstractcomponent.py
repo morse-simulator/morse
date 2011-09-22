@@ -30,9 +30,9 @@ class Configuration(object):
 class AbstractComponent(object):
     # static config common to all component of the simulation
     _config = Configuration()
-    def __init__(self):
-        self._blendobj = None
-        self._blendname = None # for mw config
+    def __init__(self, obj=None, name=None):
+        self._blendobj = obj
+        self._blendname = name # for mw config
     def append(self, obj):
         """ Add a child to the current object,
 
