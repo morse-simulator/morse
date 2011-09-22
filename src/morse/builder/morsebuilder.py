@@ -99,6 +99,9 @@ class Component(AbstractComponent):
 class Robot(Component):
     def __init__(self, name):
         Component.__init__(self, 'robots', name)
+    def make_external(self):
+        self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
+
 
 class Sensor(Component):
     def __init__(self, name):
@@ -113,6 +116,11 @@ class Modifier(Component):
         Component.__init__(self, 'modifiers', name)
 
 class Environment(Component):
+    """ Class to configure the general environment of the simulation
+    It handles the scenario file, general properties of the simulation,
+    the default location and orientation of the camera, the Blender GE settings
+    and also writes the 'component_config.py' file.
+    """
     def __init__(self, name):
         Component.__init__(self, 'environments', name)
         self._created = False
@@ -121,6 +129,7 @@ class Environment(Component):
         self._environment_file = name
 
     def _write(self):
+        """ Write the 'component_config.py' file with the supplied settings """
         cfg = bpy.data.texts['component_config.py']
         cfg.clear()
         cfg.write('component_mw = ' + json.dumps(cfg_middleware, indent=1) )
@@ -134,12 +143,14 @@ class Environment(Component):
 
     def place_camera(self, location):
         """ Store the position that will be givent to the default camera
-        Expected argument is a list with the desired position for the camera """
+        Expected argument is a list with the desired position for the camera
+        """
         self._camera_location = location
 
     def aim_camera(self, rotation):
         """ Store the orientation that will be givent to the default camera
-        Expected argument is a list with the desired orientation for the camera """
+        Expected argument is a list with the desired orientation for the camera
+        """
         self._camera_rotation = rotation
 
     def create(self):
@@ -163,6 +174,34 @@ class Environment(Component):
         bpy.ops.object.select_all(action = 'DESELECT')
         bpy.ops.object.select_name(name = 'CameraFP')
         self._created = True
+
+    def show_debug_properties(self, value):
+        if isinstance(value, bool):
+            bpy.data.scenes[0].game_settings.show_debug_properties = value
+
+    def show_framerate(self, value):
+        if isinstance(value, bool):
+            bpy.data.scenes[0].game_settings.show_framerate_profile = value
+
+    def show_physics(self, value):
+        if isinstance(value, bool):
+            bpy.data.scenes[0].game_settings.show_physics_visualization = value
+
+    def configure_node(self, protocol='socket', node_name='node', server_address='localhost', server_port='65000'):
+        """ Write the 'multinode_config.py' script """
+        node_config = { 'protocol': protocol,
+                        'node_name': node_name,
+                        'server_address': server_address,
+                        'server_port': server_port,}
+        # Create the config file if it does not exist
+        if not 'multinode_config.py' in bpy.data.texts.keys():
+            bpy.ops.text.new()
+            bpy.data.texts[-1].name = 'multinode_config.py'
+        cfg = bpy.data.texts['multinode_config.py']
+        cfg.clear()
+        cfg.write('node_config = ' + json.dumps(node_config, indent=1) )
+        cfg.write('\n')
+        
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

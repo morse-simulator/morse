@@ -18,16 +18,12 @@ except ImportError as detail:
 
 
 MULTINODE_SUPPORT = False
-# The file scene_config.py is at the moment included
+# The file multinode_config.py is at the moment included
 #  in the .blend file of the scene
 # Used to setup the multinode information
 try:
-    import scene_config
-    
-    # Multi-node simulation
-    import morse.core.multinode
+    import multinode_config
     MULTINODE_SUPPORT = True
-    
 except ImportError as detail:
     logger.info("No multi-node scene configuration file found. Multi-node support disabled.")
 
@@ -320,6 +316,16 @@ def link_middlewares():
             """)
             return False
 
+        # Do not configure middlewares for components that are external,
+        #  that is, they are handled by another node.
+        try:
+            instance.robot_parent.blender_obj['Robot_Tag']
+            # If the robot is external, it will have the 'External_Robot_Tag'
+            #  instead, and this test will fail
+        except KeyError as detail:
+            # Skip the configuration of this component
+            continue
+
         # If the list contains only strings, insert the list inside another one.
         # This is done for backwards compatibility with the previous
         #  syntax that allowed only one middleware per component
@@ -493,17 +499,32 @@ def init(contr):
     init_logging()
 
     if MULTINODE_SUPPORT:
+        logger.log(SECTION, 'MULTINODE INITIALIZATION')
         # Configuration for the multi-node simulation
         try:
-            node_name = scene_config.node_config["node_name"]
-            server_address = scene_config.node_config["server_address"]
-            server_port = scene_config.node_config["server_port"]
+            protocol = multinode_config.node_name["protocol"]
+        except (NameError, AttributeError) as detail:
+            protocol = "socket"
+
+        # Get the correct class reference according to the chosen protocol
+        if protocol == "socket":
+            klass = get_class("morse.multinode.socket", "SocketNode")
+        elif protocol == "hla":
+            klass = get_class("morse.multinode.hla", "HLANode")
+
+        try:
+            node_name = multinode_config.node_config["node_name"]
+            server_address = multinode_config.node_config["server_address"]
+            server_port = int(multinode_config.node_config["server_port"])
         except (NameError, AttributeError) as detail:
             logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
             node_name = "temp_name"
             server_address = "localhost"
             server_port = 65000
-        GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
+
+        logger.info ("This is node '%s'" % node_name)
+        # Create the instance of the node class
+        GameLogic.node_instance = klass(node_name, server_address, server_port)
 
 
     logger.log(SECTION, 'PRE-INITIALIZATION')
@@ -624,7 +645,7 @@ def simulation_main(contr):
     
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
-        GameLogic.node_instance.synchronise_world(GameLogic)
+        GameLogic.node_instance.synchronize(GameLogic)
 
 
 def switch_camera(contr):
@@ -674,7 +695,7 @@ def close_all(contr):
 
     if MULTINODE_SUPPORT:
         logger.log(ENDSECTION, 'CLOSING MULTINODE...')
-        GameLogic.node_instance.finish_node()
+        GameLogic.node_instance.finalize()
 
 
 def finish(contr):
