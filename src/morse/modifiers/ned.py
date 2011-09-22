@@ -2,19 +2,11 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
 
-class MorseNEDClass(object):
+from morse.core.modifier import MorseModifierClass
+
+class MorseNEDClass(MorseModifierClass):
     """ Convert between ENU and NED coordinates. """
     
-    def __init__(self, obj, parent=None):
-        self.blender_obj = obj
-        #self.init_components()
-
-
-    def __del__(self):
-        """ Destructor method. """
-        pass
-
-
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """
         # Extract the information for this modifier

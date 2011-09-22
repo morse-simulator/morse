@@ -172,6 +172,10 @@ def create_dictionaries ():
         except KeyError as detail:
             pass
             
+    """ Modifiers are now dynamically created.
+    The following lines should do nothing but are still there for backward
+    compatibility.
+    """
     # Get the modifiers
     for obj in scene.objects:
         try:
@@ -340,8 +344,8 @@ def link_middlewares():
             logger.info("Component: '%s' using middleware '%s'" % (component_name, mw_name))
             found = False
             missing_component = False
-            # Look for the listed mw in the dictionary of active mw's
             
+            # Look for the listed mw in the dictionary of active mw's
             for mw_obj, mw_instance in GameLogic.mwDict.items():
                 logger.debug("Looking for '%s' in '%s'" % (mw_name, mw_obj))
                 if mw_name in mw_obj:
@@ -467,26 +471,33 @@ def add_modifiers():
         return True
 
     for component_name, mod_list in component_list.items():
+        # Get the instance of the object
+        try:
+            instance = GameLogic.componentDict[component_name]
+        except KeyError as detail:
+            logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
+            continue
+
         for mod_data in mod_list:
             modifier_name = mod_data[0]
             logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
             found = False
             # Look for the listed modifier in the dictionary of active modifier's
             for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
-                if modifier_name in modifier_obj.name:
+                if modifier_name in modifier_obj:
                     found = True
-                    # Get the instance of the object
-                    try:
-                        instance = GameLogic.componentDict[component_name]
-                    except KeyError as detail:
-                        logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
-                        continue
-
-                    # Make the modifier object take note of the component
-                    modifier_instance.register_component(component_name, instance, mod_data)
-
+                    break
+                    
             if not found:
-                logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+                modifier_instance = create_mw(modifier_name)
+                if modifier_instance != None:
+                    GameLogic.modifierDict[modifier_name] = modifier_instance
+                    logger.info("\tModifier '%s' created" % modifier_name)
+                else:
+                    logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+                    return False
+            # Make the modifier object take note of the component
+            modifier_instance.register_component(component_name, instance, mod_data)
     
     return True
 
