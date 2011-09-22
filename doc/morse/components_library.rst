@@ -74,6 +74,9 @@ for a further explanation.
 Check the :ref:`compatibility-matrix` to see which components are supported for
 each middleware.
 
+Modifiers: Post-process your data
+---------------------------------
+
 MORSE also provides ways to alter input or output data (like adding noise to
 a GPS position) by so-called :doc:`modifiers <user/modifier_introduction>`. 
 
@@ -82,8 +85,8 @@ a GPS position) by so-called :doc:`modifiers <user/modifier_introduction>`.
     
     user/modifier_introduction
     
-Matching your architecture
---------------------------
+Overlays: Adapt to your architecture
+------------------------------------
 
 MORSE features a mechanism called :doc:`component overlays <user/overlays>` to 
 easily create pseudo-sensors or actuators that fit your specific architecture.
