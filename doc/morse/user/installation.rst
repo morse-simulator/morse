@@ -42,13 +42,23 @@ Required software
  
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for
-other middlewares :
+other middlewares:
 
 .. toctree::
     :glob:
     :maxdepth: 1
 
     installation/mw/*
+    
+If you want to distribute your simulation in a multinode infrastructure, MORSE
+provides by default a socket service for multinode synchronization. If you
+want to use HLA, you have to first install the CERTI and PyHLA packages:
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+    
+    installation/hla
 
 
 Installation 
@@ -86,7 +96,7 @@ Then type these commands::
 By default, MORSE will install in ``/usr/local``. You can easily change that
 by launching ``ccmake`` instead of ``cmake``.
 When using ``ccmake``, it is also possible to select the optional HLA support,
-and middleware bindings for YARP and Pocolibs.
+and middleware bindings.
 
 - ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install
   prefix directory is referred to as ``$MORSE_ROOT``.
