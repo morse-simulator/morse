@@ -87,14 +87,15 @@ def check_blender_python_version(blender_path):
     
     with open("python_checker.py", "w") as f:
         f.write("import sys\n")
-        f.write("print('.'.join((str(x) for x in sys.version_info[:2])))\n")
+        f.write("print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
     
     try:
         version_str = subprocess.Popen(
                   [blender_path, '-b', '-P', 'python_checker.py'], 
-                  stdout=subprocess.PIPE).communicate()[0].split()[0]
-        version = version_str.decode()
-    except OSError:
+                  stdout=subprocess.PIPE).communicate()[0]
+        version_str = version_str.decode()
+        version = version_str.split('>>>')[1][0:3]
+    except (OSError, IndexError):
         os.remove("python_checker.py")
         return None
     
