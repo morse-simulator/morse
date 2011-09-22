@@ -82,7 +82,7 @@ happen :
 Component internal data
 _______________________
 
-The base :py:meth:`morse.core.object.MorseObjectClass` defines an ordered dictionary
+The base :py:meth:`morse.core.object.MorseAbstractObjectClass` defines an ordered dictionary
 called ``local_data``. This is the place where all sensors and actuators store
 the variables with the information that can eventually be share through the
 middleware connections.  (for example, it will contain the position for a GPS

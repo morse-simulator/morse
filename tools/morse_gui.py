@@ -1,10 +1,33 @@
+bl_info = {
+    "name": "MORSE GUI",
+    "author": "Pierrick Koch",
+    "version": (1, 0, 0),
+    "blender": (2, 5, 9),
+    "api": 36147,
+    "location": "Properties>Scene",
+    "category": "Import-Export",
+    "description": "Graphical User Interface for MORSE",
+    "warning": "",
+    "wiki_url": "",
+    "tracker_url": "https://softs.laas.fr/bugzilla/"
+}
+
 import os
 import bpy
 from morse.builder.morsebuilder import *
 
+"""
+MORSE GUI to import components
+
+To test this module you can open this file inside a Text panel in Blender,
+then run the script.
+This will generate a GUI in the Properties View in the Scene tab.
+"""
+
 data = {}
 
 def init():
+    # initialize the component list, scan component directory
     path = MORSE_COMPONENTS
     for category in os.listdir(path):
         pathc = os.path.join(path, category)
@@ -58,8 +81,11 @@ class MorseOperator(bpy.types.Operator):
     category = bpy.props.StringProperty()
 
     def execute(self, context):
+        # get the index of the selected element
         select = getattr(bpy.context.scene, 'enum_%s'%self.category)
+        # get the enum list of the current category
         enum = getattr(bpy.types.Scene, 'enum_%s'%self.category)
+        # get the component name
         component = enum[1]['items'][int(select)][1]
         # import the MORSE component
         Component(self.category, component)
@@ -67,7 +93,7 @@ class MorseOperator(bpy.types.Operator):
         return{"FINISHED"}
 
 def register():
-    init()
+    init() # initialize the component list, scan component directory
     bpy.utils.register_class(MorseOperator)
     bpy.utils.register_class(MorsePanel)
 
