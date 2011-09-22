@@ -123,6 +123,6 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Reverse the image (boolean game-property)
         # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
-        if 'flip' in self.blender_obj: # backward compatibility
+        if 'Vertical_Flip' in self.blender_obj: # backward compatibility
             GameLogic.cameras[self.name()].source.flip = self.blender_obj['Vertical_Flip']
 
