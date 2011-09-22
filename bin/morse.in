@@ -37,6 +37,7 @@ STRICT_MAX_BLENDER_VERSION = "3"
 
 #Unix-style path to the MORSE default scene, within the prefix
 DEFAULT_SCENE_PATH = "share/data/morse/morse_default.blend"
+DEFAULT_SCENE_AUTORUN_PATH = "share/data/morse/morse_default_autorun.blend"
 
 #MORSE prefix (automatically detected)
 morse_prefix = ""
@@ -407,7 +408,14 @@ if __name__ == '__main__':
                 logger.error("'create' option expect exactly one option (a filename)")
                 sys.exit()
         elif sys.argv[1] in ["run"]:
-            launch_simulation()
+            if len(sys.argv) == 3:
+                prelaunch()
+                launch_simulator(
+                   os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
+                   sys.argv[2])
+            else:
+                logger.error("'run' option expect exactly one option (a filename)")
+                sys.exit()
         elif sys.argv[1] in ["exec"]:
             if len(sys.argv) == 3:
                 prelaunch()
