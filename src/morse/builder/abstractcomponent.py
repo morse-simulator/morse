@@ -13,11 +13,6 @@ cfg_overlay = {}
 scene_modifiers = []
 
 class Configuration(object):
-    def __init__(self):
-        if not 'component_config.py' in bpy.data.texts.keys():
-            bpy.ops.text.new()
-            bpy.data.texts[-1].name = 'component_config.py'
-
     def link_mw(self, component, mw_method_cfg):
         cfg_middleware.setdefault(component.name, []).append(mw_method_cfg)
 
