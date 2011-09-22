@@ -1,12 +1,8 @@
 import mathutils
 import os
-import logging; logger = logging.getLogger("morse." + __name__)
-#logger.setLevel(logging.DEBUG)
 
-import GameLogic
-
-import morse.core.middleware as middleware
-import morse.blender.main as morse
+from morse.core.multinude import SimulationNodeClass, logger
+logger.setLevel(logging.DEBUG)
 
 try:
     import hla.rti as rti
@@ -25,20 +21,16 @@ class MorseAmbassador(rti.FederateAmbassador):
     The Federate Ambassador of the MORSE node.
     
     """
-    def __init__(self, rtia, federation_name="MORSE", time_regulation=False):
+    def __init__(self, rtia, federation="MORSE", time_regulation=False, time=0):
         self.objects = []
         self.rtia_ = rtia
         self.constrained = False
         self.regulator = False
         self.tag = time_regulation
-        self.federation = federation_name
-        try:
-            scene = GameLogic.getCurrentScene()
-            self.current_time = scene.objects["HLA_Empty"]["Time"]
-        except KeyError:
-            self.current_time = 0
+        self.federation = federation
+        self.current_time = time
         self.lookahead = 0
-        logger.debug("MorseAmbassador created")
+        logger.debug("MorseAmbassador created.")
     
     def initialize(self):
         try:
@@ -86,7 +78,6 @@ class MorseAmbassador(rti.FederateAmbassador):
                 self.rtia_.getObjectInstanceName(obj))
 
     def discoverObjectInstance(self, object, objectclass, name):
-        logger.debug("DISCOVER %s", name)
         logger.info(
             "Robot %s will have its pose reflected in the current node...", 
             name)
@@ -123,41 +114,33 @@ class MorseAmbassador(rti.FederateAmbassador):
         self.current_time = time
         self.tag = True
     
-class HLAClass(middleware.MorseMiddlewareClass):
+class HLANode(SimulationNodeClass):
     """
-    HLA middleware for MORSE.
-    This HLA class is also used to synchronize several MORSE nodes.
-    
+    Implements multinode simulation using HLA.
     """
     
-    def __init__(self):
+    time_sync = False
+    fom = "morse.fed"
+    federation = "MORSE"
+    
+    def initialize(self):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         
         """
-        super(self.__class__, self).__init__()
-        ### HLA Environment Configuration:
-        self.certi_env = {}
-        self.certi_env["Federation"] = "MORSE" # Federation name
-        self.certi_env["Federate"] = (os.uname()[1] + str(os.getpid())) # Federate name
-        self.certi_env["FOM"] = "morse.fed" # FOM file
-        self.certi_env["CERTI_HOST"] = "localhost" # HOST
-        if os.getenv("CERTI_HOST") != None:
-            self.certi_env["CERTI_HOST"] = os.environ["CERTI_HOST"]
-        self.certi_env["TimeRegulation"] = False # TimeConstrained
-        logger.info("Connecting to the MORSE federation")
-        self.configureHLA()
+        logger.info("Initializing HLA node.")
+        if os.getenv("CERTI_HTTP_PROXY") == None:
+            os.environ["CERTI_HTTP_PROXY"] = ""
+        logger.debug("CERTI_HTTP_PROXY= %s", os.environ["CERTI_HTTP_PROXY"])
         try:
             logger.debug("Creating RTIA...")
             self.rtia = rti.RTIAmbassador()
             logger.debug("RTIA created!")
             try:
-                self.rtia.createFederationExecution(self.certi_env["Federation"], 
-                    self.certi_env["FOM"])
-                logger.info("%s federation created", self.certi_env["Federation"])
+                self.rtia.createFederationExecution(self.federation, self.fom)
+                logger.info("%s federation created", self.federation)
             except rti.FederationExecutionAlreadyExists:
-                logger.debug("%s federation already exists", 
-                    self.certi_env["Federation"])
+                logger.debug("%s federation already exists", self.federation)
             except rti.CouldNotOpenFED:
                 logger.error("FED file not found! " + \
                     "Please check that the '.fed' file is in the CERTI " + \
@@ -168,14 +151,15 @@ class HLAClass(middleware.MorseMiddlewareClass):
                     "Please check the '.fed' file syntax.")
                 return False
             logger.debug("Creating MorseAmbassador...")
-            self.morse_ambassador = MorseAmbassador(self.rtia)
+            self.morse_ambassador = MorseAmbassador(self.rtia, self.federation,
+                self.time_sync)
             try:
-                self.rtia.joinFederationExecution(self.certi_env["Federate"], 
-                    self.certi_env["Federation"], self.morse_ambassador)
+                self.rtia.joinFederationExecution(self.node_name, 
+                    self.federation, self.morse_ambassador)
             except rti.FederateAlreadyExecutionMember:
                 logger.error("A Federate with name %s has already registered."+\
                     " Change the name of your federate or " + \
-                    "check your federation architecture.", self.certi_env["Federate"])
+                    "check your federation architecture.", self.node_name)
                 return False
             except rti.CouldNotOpenFED:
                 logger.error("FED file not found! Please check that the " + \
@@ -187,19 +171,12 @@ class HLAClass(middleware.MorseMiddlewareClass):
                 return False
             if self.morse_ambassador.initialize() == False:
                 return False
-            logger.debug("HLA middleware initialized")
+            logger.debug("HLA middleware initialized.")
         except Exception as error:
             logger.error("Error when connecting to the RTIg: %s." + \
                 "Please check your HLA network configuration.", error)
             raise
-        
-    def __del__(self):
-        """
-        Close all open HLA connections.
-        
-        """
-        self.finalize()
-    
+            
     def finalize(self):
         """
         Close all open HLA connections.
@@ -210,45 +187,8 @@ class HLAClass(middleware.MorseMiddlewareClass):
             self.morse_ambassador.terminate()
         self.rtia.resignFederationExecution(
             rti.ResignAction.DeleteObjectsAndReleaseAttributes)
-        
-    def register_component(self, component_name, component_instance, mw_data):
-        """
-        HLA as a middleware for components has not been implemented yet...
-        
-        """
-        pass
-   
-    def configureHLA(self):
-        """
-        Configure the HLA network environment.
-        Uses the Game Properties of the HLA_Empty object if defined,
-        default values otherwise.
-        
-        """
-        logger.info("Initializing configuration")
-        if os.getenv("CERTI_HTTP_PROXY") == None:
-            os.environ["CERTI_HTTP_PROXY"] = ""
-        logger.debug("CERTI_HTTP_PROXY= %s", os.environ["CERTI_HTTP_PROXY"])
-        try:
-            hla = GameLogic.getCurrentScene().objects["HLA_Empty"]
-            for k in self.certi_env.keys():
-                try:
-                    v = hla[k]
-                    self.certi_env[k] = v
-                    logger.debug("%s= %s", k, v)
-                except KeyError:
-                    logger.debug("No property for %s; using %s", k, 
-                        self.certi_env[k])
-        except KeyError:
-            log.error("The HLA_Empty object has not been found on current scene!")
-        os.environ["CERTI_HOST"] = self.certi_env["CERTI_HOST"]
-        logger.debug("CERTI_HOST= %s", os.environ["CERTI_HOST"])
- 
-    def update_robots(self):
-        """
-        Update robots' poses in the HLA federation for multinode synchronization.
-        
-        """
+            
+    def synchronize(self, GameLogic):
         self.morse_ambassador.tag = False
         scene = GameLogic.getCurrentScene()
         t = self.morse_ambassador.current_time + self.morse_ambassador.lookahead
@@ -266,18 +206,11 @@ class HLAClass(middleware.MorseMiddlewareClass):
             except rti.InvalidFederationTime:
                 logger.debug("Invalid time for UAV: %s; Federation time is %s",
                     t, self.rtia.queryFederateTime())
-        if self.certi_env["TimeRegulation"]:
+        if self.time_sync:
             self.rtia.timeAdvanceRequest(t)
             while (not self.morse_ambassador.tag):
                 self.rtia.tick(0, 1)
-            scene.objects["HLA_Empty"]["Time"] = self.morse_ambassador.current_time
+            logger.debug("Node simulation time:" + \
+                self.morse_ambassador.current_time)
         else:
             self.rtia.tick()
-
-def update_robots():
-    """
-    Call the HLA_Empty.update_robots method.
-    """
-    #hla = GameLogic.mwDict['HLA_Empty']
-    hla = morse.get_middleware_of_type("HLAClass")
-    hla.update_robots()
