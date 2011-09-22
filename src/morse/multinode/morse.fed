@@ -1,0 +1,18 @@
+(FED
+	(Federation MORSE)
+	(FEDversion v1_3)
+	(spaces)
+	(objects
+		(class objectRoot
+			(attribute privilegeToDelete reliable timestamp)
+			(class RTIPrivate)
+			(class Robot
+                (attribute id reliable timestamp)
+				(attribute position reliable timestamp)
+				(attribute orientation reliable timestamp)
+			)
+		)
+	)
+	(interactions)
+)
+
