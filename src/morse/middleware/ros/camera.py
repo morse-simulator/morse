@@ -26,13 +26,9 @@ def post_image(self, component_instance):
 
     """
     image_local = component_instance.local_data['image']
-    if image_local == None or image_local == '' or not component_instance.capturing:
+    if not image_local or image_local == '' or not image_local.image or not component_instance.capturing:
         return # press [Space] key to enable capturing
 
-    # XXX Must not modify  image_local here, check that we can do it
-    # safely at the camera level (need to fix other middleware).
-
-    image_local.flip = True # GameLogic.video.source.flip (VideoTexture.ImageRender)
     parent_name = component_instance.robot_parent.blender_obj.name
 
     image = Image()
@@ -48,7 +44,7 @@ def post_image(self, component_instance):
     # sensor_msgs.msg.Image.image need to be len() friendly
     # TODO patch ros-py3/common_msgs/sensor_msgs/src/sensor_msgs/msg/_Image.py
     # to be C-PyBuffer "aware" ? http://docs.python.org/c-api/buffer.html
-    image.data = bytes(image_local.image) #numpy.reshape(image_local.image, (-1, image.step))
+    image.data = bytes(image_local.image)
     # RGBA8 -> RGB8 ? (remove alpha channel, save h*w bytes, CPUvore ?)
     # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture
     # http://www.blender.org/documentation/blender_python_api_2_57_release/bge.types.html#bge.types.KX_Camera.useViewport
