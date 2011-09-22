@@ -130,6 +130,9 @@ class Environment(Component):
 
     def _write(self):
         """ Write the 'component_config.py' file with the supplied settings """
+        if not 'component_config.py' in bpy.data.texts.keys():
+            bpy.ops.text.new()
+            bpy.data.texts[-1].name = 'component_config.py'
         cfg = bpy.data.texts['component_config.py']
         cfg.clear()
         cfg.write('component_mw = ' + json.dumps(cfg_middleware, indent=1) )
