@@ -108,10 +108,6 @@ class Actuator(Component):
     def __init__(self, name):
         Component.__init__(self, 'actuators', name)
 
-class Middleware(Component):
-    def __init__(self, name):
-        Component.__init__(self, 'middleware', name)
-
 class Modifier(Component):
     def __init__(self, name):
         Component.__init__(self, 'modifiers', name)
