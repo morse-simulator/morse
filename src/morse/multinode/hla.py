@@ -24,7 +24,7 @@ class MorseAmbassador(rti.FederateAmbassador):
     The Federate Ambassador of the MORSE node.
     
     """
-    def __init__(self, rtia, federation="MORSE", time_regulation=False, time=0):
+    def __init__(self, rtia, federation, time_regulation, time, gl):
         self.objects = []
         self.rtia_ = rtia
         self.constrained = False
@@ -33,6 +33,7 @@ class MorseAmbassador(rti.FederateAmbassador):
         self.federation = federation
         self.current_time = time
         self.lookahead = 0
+        self.gl = gl
         logger.debug("MorseAmbassador created.")
     
     def initialize(self):
@@ -49,7 +50,7 @@ class MorseAmbassador(rti.FederateAmbassador):
         
         self.rtia_.publishObjectClass(self.out_robot, 
             [self.out_position, self.out_orientation])
-        for obj, local_robot_data in GameLogic.robotDict.items():
+        for obj, local_robot_data in self.gl.robotDict.items():
             self.objects.append(self.rtia_.registerObjectInstance(
                     self.out_robot, obj.name))
             logger.info(
@@ -87,7 +88,7 @@ class MorseAmbassador(rti.FederateAmbassador):
 
     def reflectAttributeValues(self, object, attributes, tag, order, transport, 
                                time=None, retraction=None):
-        scene = GameLogic.getCurrentScene()
+        scene = self.gl.getCurrentScene()
         obj_name = self.rtia_.getObjectInstanceName(object)
         obj = scene.objects[obj_name]
         try:
@@ -155,7 +156,7 @@ class HLANode(SimulationNodeClass):
                 return False
             logger.debug("Creating MorseAmbassador...")
             self.morse_ambassador = MorseAmbassador(self.rtia, self.federation,
-                self.time_sync)
+                self.time_sync, 0, self.gl)
             try:
                 self.rtia.joinFederationExecution(self.node_name, 
                     self.federation, self.morse_ambassador)
@@ -191,9 +192,9 @@ class HLANode(SimulationNodeClass):
         self.rtia.resignFederationExecution(
             rti.ResignAction.DeleteObjectsAndReleaseAttributes)
             
-    def synchronize(self, GameLogic):
+    def synchronize(self):
         self.morse_ambassador.tag = False
-        scene = GameLogic.getCurrentScene()
+        scene = self.gl.getCurrentScene()
         t = self.morse_ambassador.current_time + self.morse_ambassador.lookahead
         for obj in self.morse_ambassador.objects:
             obj_name = self.rtia.getObjectInstanceName(obj)

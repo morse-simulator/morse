@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.logging import SECTION, ENDSECTION
 import sys
+import os
 import re
 import time
 import bpy
@@ -489,6 +490,37 @@ def add_modifiers():
     
     return True
 
+def init_multinode():
+    """
+    Initializes the MORSE node in a Multinode configuration.
+    """
+    logger.log(SECTION, 'MULTINODE INITIALIZATION')
+    # Configuration for the multi-node simulation
+    try:
+        protocol = multinode_config.node_config["protocol"]
+    except (NameError, AttributeError) as detail:
+        protocol = "socket"
+
+    # Get the correct class reference according to the chosen protocol
+    if protocol == "socket":
+        klass = get_class("morse.multinode.socket", "SocketNode")
+    elif protocol == "hla":
+        klass = get_class("morse.multinode.hla", "HLANode")
+
+    try:
+        node_name = multinode_config.node_config["node_name"]
+        server_address = multinode_config.node_config["server_address"]
+        server_port = int(multinode_config.node_config["server_port"])
+    except (NameError, AttributeError) as detail:
+        logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+        node_name = os.uname()[1]
+        server_address = "localhost"
+        server_port = 65000
+
+    logger.info ("This is node '%s'" % node_name)
+    # Create the instance of the node class
+    GameLogic.node_instance = klass(node_name, server_address, server_port,
+            GameLogic)
 
 def init(contr):
     """ General initialization of MORSE
@@ -497,35 +529,6 @@ def init(contr):
     """
 
     init_logging()
-
-    if MULTINODE_SUPPORT:
-        logger.log(SECTION, 'MULTINODE INITIALIZATION')
-        # Configuration for the multi-node simulation
-        try:
-            protocol = multinode_config.node_config["protocol"]
-        except (NameError, AttributeError) as detail:
-            protocol = "socket"
-
-        # Get the correct class reference according to the chosen protocol
-        if protocol == "socket":
-            klass = get_class("morse.multinode.socket", "SocketNode")
-        elif protocol == "hla":
-            klass = get_class("morse.multinode.hla", "HLANode")
-
-        try:
-            node_name = multinode_config.node_config["node_name"]
-            server_address = multinode_config.node_config["server_address"]
-            server_port = int(multinode_config.node_config["server_port"])
-        except (NameError, AttributeError) as detail:
-            logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
-            node_name = "temp_name"
-            server_address = "localhost"
-            server_port = 65000
-
-        logger.info ("This is node '%s'" % node_name)
-        # Create the instance of the node class
-        GameLogic.node_instance = klass(node_name, server_address, server_port)
-
 
     logger.log(SECTION, 'PRE-INITIALIZATION')
     # Get the version of Python used
@@ -564,7 +567,9 @@ def init(contr):
         close_all(contr)
         quit(contr)
 
-
+    if MULTINODE_SUPPORT:
+        init_multinode()
+    
     # Set the default value of the logic tic rate to 60
     #GameLogic.setLogicTicRate(60.0)
     #GameLogic.setPhysicsTicRate(60.0)
@@ -645,7 +650,7 @@ def simulation_main(contr):
     
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
-        GameLogic.node_instance.synchronize(GameLogic)
+        GameLogic.node_instance.synchronize()
 
 
 def switch_camera(contr):

@@ -42,10 +42,10 @@ class SocketNode(SimulationNodeClass):
             logger.debug("Received: %s" % in_data)
             return (in_data)
 
-    def synchronize(self, GameLogic):
+    def synchronize(self):
         if self.connected:
             # Get the coordinates of local robots
-            for obj, local_robot_data in GameLogic.robotDict.items():
+            for obj, local_robot_data in self.gl.robotDict.items():
                 #self.out_data[obj.name] = [obj.worldPosition.to_tuple()]
                 euler_rotation = obj.worldOrientation.to_euler()
                 self.out_data[obj.name] = [obj.worldPosition.to_tuple(), [euler_rotation.x, euler_rotation.y, euler_rotation.z]]
@@ -54,12 +54,12 @@ class SocketNode(SimulationNodeClass):
             in_data = self._exchange_data(self.out_data)
 
             if in_data != None:
-                scene = GameLogic.getCurrentScene()
+                scene = self.gl.getCurrentScene()
                 # Update the positions of the external robots
                 for obj_name, robot_data in in_data.items():
                     try:
                         obj = scene.objects[obj_name]
-                        if obj not in GameLogic.robotDict:
+                        if obj not in self.gl.robotDict:
                             logger.debug("Data received: ", robot_data)
                             obj.worldPosition = robot_data[0]
                             obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()

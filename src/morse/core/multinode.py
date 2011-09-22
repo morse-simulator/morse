@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import os
 from abc import ABCMeta, abstractmethod
 
 class SimulationNodeClass (object):
@@ -12,10 +11,11 @@ class SimulationNodeClass (object):
     # Make this an abstract class
     __metaclass__ = ABCMeta
     
-    def __init__(self, name=os.uname()[1], server_address="localhost", server_port=65000):
+    def __init__(self, name, server_address, server_port, GameLogic):
         self.node_name = name
         self.host = server_address
         self.port = server_port
+        self.gl = GameLogic
         self.initialize()
 
     def __del__(self):
@@ -29,7 +29,7 @@ class SimulationNodeClass (object):
         pass
 
     @abstractmethod
-    def synchronize(self, GameLogic):
+    def synchronize(self):
         """
         Synchronize simulation nodes.
         Publishes node's robots to the other simulation nodes and
