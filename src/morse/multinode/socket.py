@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import pickle
 import mathutils
