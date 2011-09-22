@@ -1,5 +1,4 @@
 import os
-from morse.builder.components import MORSE_COMPONENTS_DICT
 
 """
 MORSE_COMPONENTS: 
