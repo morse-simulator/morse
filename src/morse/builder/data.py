@@ -8,6 +8,16 @@ path to the Morse components
 MORSE_COMPONENTS = os.path.join(os.environ["MORSE_ROOT"], "share", "data", "morse")
 
 """
+MORSE_MODIFIERS:
+path to the modifiers modules
+"""
+MORSE_MODIFIERS = {
+  'NED': 'morse.modifiers.ned.MorseNEDClass',
+  'UTM': 'morse.modifiers.utm.MorseUTMClass',
+  'GPSNoise': 'morse.modifiers.gps_noise.MorseGPSNoiseClass',
+}
+
+"""
 MORSE_MW_MODULES:
 path to the middleware modules
 """

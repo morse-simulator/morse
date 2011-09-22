@@ -2,16 +2,11 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import morse.modifiers.gaussian
 
-class MorseGPSNoiseClass(object):
-    def __init__(self, obj, parent=None):
-        self.blender_obj = obj
-        self.dev = obj['Dev']
+from morse.core.modifier import MorseModifierClass
 
+class MorseGPSNoiseClass(MorseModifierClass):
 
-    def __del__(self):
-        """ Destructor method. """
-        pass
-
+    dev = 0
 
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """
@@ -31,6 +26,11 @@ class MorseGPSNoiseClass(object):
         else:
             logger.warning("Unknown function name for GPS Noise modifier. Check component_config.py file.")
 
+        # Extract the Modifier parameters
+        try:
+            self.dev = mod_data[2]
+        except:
+            pass
 
 
     def noisify(self, component_instance):
