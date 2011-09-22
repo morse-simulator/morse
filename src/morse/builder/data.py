@@ -41,12 +41,13 @@ MORSE_MIDDLEWARE_DICT = {
   'ros': {
     'v_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
     'video_camera': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_image', 'morse/middleware/ros/camera'],
-    'sick': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_2DLaserScan', 'morse/middleware/ros/sick'], # TMP
+    'sick': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_2DLaserScan', 'morse/middleware/ros/sick'],
     'odometry': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_twist', 'morse/middleware/ros/odometry_sensor'],
     'pose': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_odometry_transform', 'morse/middleware/ros/pose'],
     'gps': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
     'gyroscope': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
     'proximity': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
+    'infrared': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_range', 'morse/middleware/ros/infrared'],
   },
 
   'socket': {
