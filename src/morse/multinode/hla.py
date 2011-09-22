@@ -2,7 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import mathutils
 import os
 
-from morse.core.multinude import SimulationNodeClass, logger
+from morse.core.exceptions import MorseMultinodeError
+from morse.core.multinode import SimulationNodeClass
+
 logger.setLevel(logging.DEBUG)
 
 try:
@@ -10,7 +12,7 @@ try:
     import hla.omt as fom
 except (ImportError, SyntaxError):
     logger.error("No HLA binding found or imported!")
-    raise
+    raise MorseMultinodeError("'hla' python not found, or has syntax errors")
 
 """
 Defines the 'MorseVector' type that will be transfered on the HLA federation.
