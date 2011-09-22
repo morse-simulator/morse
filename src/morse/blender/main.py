@@ -502,7 +502,7 @@ def init(contr):
         logger.log(SECTION, 'MULTINODE INITIALIZATION')
         # Configuration for the multi-node simulation
         try:
-            protocol = multinode_config.node_name["protocol"]
+            protocol = multinode_config.node_config["protocol"]
         except (NameError, AttributeError) as detail:
             protocol = "socket"
 
