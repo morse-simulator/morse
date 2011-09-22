@@ -41,13 +41,11 @@ def move(contr):
             elif key[0] == bge.events.SKEY:
                 move_speed[0] = -speed
             # Also add the key corresponding key for an AZERTY keyboard
-            elif key[0] == bge.events.AKEY or key[0] == bge.events.QKEY:
+            elif key[0] == bge.events.QKEY or key[0] == bge.events.AKEY:
                 rotation_speed[2] = speed
-            elif key[0] == bge.events.DKEY:
+            elif key[0] == bge.events.EKEY:
                 rotation_speed[2] = -speed
-            elif key[0] == bge.events.RKEY:
-                move_speed[1] = speed
-            elif key[0] == bge.events.FKEY:
+            elif key[0] == bge.events.DKEY:
                 move_speed[1] = -speed
 
             # The second parameter of 'applyMovement' determines
@@ -105,32 +103,46 @@ def read_status(contr):
            armature['movingBackward'] = False 
 
 
-def human_actions(contr):
-    """ Toggle the animation actions of the armature """
+def set_human_animation(contr):
+    """ Toggle the animation actions (walking, standing still...) of 
+    the armature. 
+    """
     # Get sensor named Mouse
     armature = contr.owner
     keyboard = contr.sensors['All_Keys']
 
     keylist = keyboard.events
+    pressed = []      #all keys that are currently pressed
     for key in keylist:
         # key[0] == bge.events.keycode, key[1] = status
         if key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
+            pressed.append(key[0])
             # Keys for moving forward or turning
+            """
             if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 armature['movingForward'] = True
             elif key[0] == bge.events.SKEY:
                 armature['movingBackward'] = True
-
+            """
             # TEST: Read the rotation of the bones in the armature
-            elif key[0] == bge.events.BKEY:
+            if key[0] == bge.events.BKEY:
                 read_pose(contr)
             #elif key[0] == bge.events.VKEY:
                 #reset_pose(contr)
-        elif key[1] == bge.logic.KX_INPUT_JUST_RELEASED:
+        #elif key[1] == bge.logic.KX_INPUT_JUST_RELEASED:
+            """            
             if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 armature['movingForward'] = False
             elif key[0] == bge.events.SKEY:
                 armature['movingBackward'] = False
+        """
+        elif key[1] == bge.logic.KX_INPUT_ACTIVE:
+            pressed.append(key[0])
+    
+    if bge.events.WKEY in pressed or bge.events.AKEY in pressed or bge.events.SKEY in pressed or bge.events.DKEY in pressed:
+        armature['movingForward'] = True
+    else:
+        armature['movingForward'] = False
 
 
 def head_control(contr):
@@ -142,13 +154,19 @@ def head_control(contr):
     human = contr.owner
     scene = bge.logic.getCurrentScene()
     target = scene.objects['Target_Empty']
+    POS_EMPTY = scene.objects['POS_EMPTY']
+    Head_Empty = scene.objects['Head_Empty']
+    right_hand = scene.objects['Hand_Grab.R']
+    mmb = contr.sensors['MMB']
 
-    # set mouse sensitivity
-    sensitivity = human['Sensitivity']
 
     # If the manipulation mode is active, do nothing
-    if human['Manipulate']:
+	# only if nothing is grabbed
+    if human['Manipulate'] and right_hand['selected'] != 'None' and right_hand['selected'] != '':          #### --> modified
         return
+
+    if mmb.positive:
+        target = scene.objects['IK_Target_Empty.R']
 
     # Get sensor named Mouse
     mouse = contr.sensors['Mouse']
@@ -161,12 +179,23 @@ def head_control(contr):
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
 
+        # set mouse sensitivity
+        sensitivity = human['Sensitivity']
+
         # Amount, direction and sensitivity
         left_right = move[0] * sensitivity
         up_down = move[1] * sensitivity
 
-        target.applyMovement([0.0, left_right, 0.0], True)
-        target.applyMovement([0.0, 0.0, up_down], True)
+        if not human['FOCUSED']:
+            #target.applyMovement([0.0, left_right, 0.0], True)     #relict
+            POS_EMPTY.applyRotation([0.0, 0.0, left_right], True)
+            if not ((Head_Empty.localOrientation.to_euler()[1] >= 0.7 and up_down < 0) or (Head_Empty.localOrientation.to_euler()[1] <= -0.4 and up_down > 0)) and not human['Manipulate']:     #### capping the rotation to prevent the camera to be upside down
+                if not mmb.positive:
+                    Head_Empty.applyRotation([0.0, -up_down, 0.0], True)
+                target.applyMovement([0.0, 0.0, up_down], True)
+            elif human['Manipulate']:
+                Head_Empty.applyRotation([0.0, -up_down, 0.0], True)
+                target.applyMovement([0.0, 0.0, up_down], True)
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
@@ -177,40 +206,22 @@ def hand_control(contr):
     """ Move the hand following the mouse
 
     Use the movement of the mouse to determine the rotation
-    for the IK arm (right arm) """
+    for the IK arm (right arm)
+    
+    stays for better placing of objects - >(QKEY + EKEY) to rotate body<
+    """
     # get the object this script is attached to
     human = contr.owner
     scene = bge.logic.getCurrentScene()
     target = scene.objects['IK_Target_Empty.R']
-
-    # set mouse sensitivity
-    sensitivity = human['Sensitivity']
+    right_hand = scene.objects['Hand_Grab.R']
 
     # If the manipulation mode is inactive, do nothing
     if not human['Manipulate']:
         return
- 
-    # Get sensor named Mouse
-    mouse = contr.sensors['Mouse']
 
-    if mouse.positive:
-        # get width and height of game window
-        width = bge.render.getWindowWidth()
-        height = bge.render.getWindowHeight()
-
-        # get mouse movement from function
-        move = mouse_move(human, mouse, width, height)
-
-        # Amount, direction and sensitivity
-        left_right = move[0] * sensitivity
-        up_down = move[1] * sensitivity
-
-        target.applyMovement([0.0, left_right, 0.0], True)
-        target.applyMovement([0.0, 0.0, up_down], True)
-
-        # Reset mouse position to the centre of the screen
-        # Using the '//' operator (floor division) to produce an integer result
-        bge.render.setMousePosition(width//2, height//2)
+    # set mouse sensitivity
+    sensitivity = human['Sensitivity']
 
     # Get sensors for mouse wheel
     wheel_up = contr.sensors['Wheel_Up']
@@ -223,6 +234,34 @@ def hand_control(contr):
     if wheel_down.positive:
         back = -50.0 * sensitivity
         target.applyMovement([back, 0.0, 0.0], True)
+
+    # If nothing grabbed, do nothing of the following
+    if right_hand['selected'] == 'None' or right_hand['selected'] == '':     #### modified 
+        #use head_control for this
+        return
+
+    # Get sensor named Mouse
+    mouse = contr.sensors['Mouse']
+
+    if mouse.positive:
+        # get width and height of game window
+        width = bge.render.getWindowWidth()
+        height = bge.render.getWindowHeight()
+
+        # get mouse movement from function
+        move = mouse_move(human, mouse, width, height)
+
+        # Amount, direction and sensitivity
+        left_right = move[0] * sensitivity
+        up_down = move[1] * sensitivity
+
+        if not human['FOCUSED']:
+            target.applyMovement([0.0, left_right, 0.0], True)
+            target.applyMovement([0.0, 0.0, up_down], True)
+
+        # Reset mouse position to the centre of the screen
+        # Using the '//' operator (floor division) to produce an integer result
+        bge.render.setMousePosition(width//2, height//2)
 
 
 def read_pose(contr):
@@ -263,14 +302,16 @@ def toggle_manipulate(contr):
     scene = bge.logic.getCurrentScene()
     hand_target = scene.objects['IK_Target_Empty.R']
     head_target = scene.objects['Target_Empty']
+    right_hand = scene.objects['Hand_Grab.R']
 
     if human['Manipulate']:
         #bge.render.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
-        hand_target.localPosition = [0.3, -0.3, 0.9]
-        head_target.setParent(human)
-        head_target.localPosition = [0.5, 0.0, 1.6]
+        if right_hand['selected'] == 'None' or right_hand['selected'] == '':
+            hand_target.localPosition = [0.3, -0.3, 0.9]
+            head_target.setParent(human)
+            head_target.localPosition = [1.3, 0.0, 1.7]
     else:
         #bge.render.showMouse(True)
         human['Manipulate'] = True
@@ -278,7 +319,9 @@ def toggle_manipulate(contr):
         # Place the hand in a nice position
         hand_target.localPosition = [0.6, 0.0, 1.4]
         # Place the head in the same place
-        head_target.localPosition = [0.0, 0.0, 0.0]
+        #head_target.localPosition = [0.0, 0.0, 0.0]
+        head_target.worldPosition = hand_target.worldPosition	
+
 
 
 def toggle_sit(contr):
@@ -306,7 +349,7 @@ def toggle_sit(contr):
         human['statusStandUp'] = True
 
 
-def near_object(contr):
+def near_object(contr):         #### relict
     """ Store the object that is near the hand
     
     This script is called from the logic bricks of Hand_Grab.R
@@ -323,7 +366,7 @@ def near_object(contr):
         #logger.debug(near_object.name + " can be grasped!")
 
 
-def grabbing(contr):
+def grabbing(contr):            #### relict - now in 'interaction.py'
     """ Mark an object as selected by the user """
     scene = bge.logic.getCurrentScene()
     human = contr.owner
