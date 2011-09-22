@@ -17,8 +17,16 @@ digraph G {
 		color="black"
 	]
 
+	MorseAbstractObject [
+		label = "{MorseAbstractObject |+on_completion : fonction\l+ local_data : OrderedDict\l+ del_function : array\l|+ name()\l+ interrupt()\l+ completed()\l+ register_service()\l }"
+	]
+
+	MorseOverlay [
+		label = "{MorseOverlay | + overlaid_object : MorseObject\l| + chain_callback()\l}"
+	]
+
 	MorseObject [
-		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ relative_position: Vector\l+ local_data : OrderedDict\l+ del_function : array\l|+ default_action()\l+ action()\l+ register_service()\l }"
+		label = "{MorseObject | + blender_obj :\l+ robot_parent : MorseObject\l+ position_3d : Transformation3D\l+ relative_position: Vector\l|+ default_action()\l+ action()\l }"
 	]
 
 	MorseRobot [
@@ -45,6 +53,8 @@ digraph G {
 		label = "{DestinationActuator | + tolerance : float\l+ speed : float\l+ destination : point\l | }"
 	]
 
+	MorseObject -> MorseAbstractObject
+	MorseOverlay -> MorseAbstractObject
 	MorseRobot -> MorseObject
 	MorseSensor -> MorseObject
 	MorseActuator -> MorseObject
