@@ -307,6 +307,8 @@ def launch_simulator(scene=None, script=None):
     logger.info("PREFIX= " + morse_prefix)
     
     if not scene:
+        if not script: # in case of no argument, execute a default script
+            script = default_scene_abspath[:-5]+'py'
         scene = create_copy_default_scene()
         logger.info("Creating new scene " + scene)
         
