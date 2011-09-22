@@ -1,29 +1,30 @@
 # -*- coding: utf-8 -*-
 '''
- This script uses a blender file containing :
-  - Two cameras named : targetcam, obscam
-  - A lamp parent of the obscam. This lamp is a spot named obsspot to be
-    oriented to the observationnal area that the targetcam follow.
-  - An empty placed in the observationnal area that constrains the targetcam.
-  - An empty mesh to be used to create the heightmaps
-
-
  The next steps will be proceed :
-   1- Create an heightmap from the infile creating a plane with 1 vertice by pixel
-   2- Place the observed empty in the middle of the observed zone.
-   3- Place the lamp in the observation zone and render each placement.
-
+    - DtmObject: Create an heightmap (mesh) from the infile creating a plane
+      with 1 vertice in the middle of each pixel. No texture is applied.
+      Using:
+        def __init__(self, infile):
+        def readDTMHeader(self, infile):
+        def drawDTM(self, fub):
+    - Adding texture with setOrthoTexture. 
+        def setOrthoTexture(self, dirname):
+        def TextureMapTif(self, filename, coords):
+        def UVMapTif(self, filename, coords):
+    - Other utilities:
+        def distance2D(self, A, B):
+        def findZOfClosestPoint(self, findcoors):
 '''
 
 bl_addon_info = {
     'name': 'Digital Terrain Map Loader',
     'author': 'Redouane Boumghar (LAAS - Magellium)',
-    'version': '2011/01/11',
-    'blender': (2, 5, 6),
-    'location': 'View3D > Properties',
+    'version': '2011/09/22',
+    'blender': (2, 5, 9),
+    'location': 'Mesh',
     'description': 'Plugin to load geographical data',
     'warning': '', # used for warning icon and text in addons panel
-    'wiki_url': '',
+    'wiki_url': 'http://www.openrobots.org/wiki/morse/',
     'tracker_url': '',
     'category': 'Robotics'}
 
@@ -88,7 +89,7 @@ class DtmObject:
         #self.dtm_mesh.link(dtmmat)
         self.dtm_mesh.update()
         #scene = bpy.Scene.GetCurrent()
-        #self.dtm_object = scene.objects.new(self.dtm_mesh, 'morseDTMObject')
+        #self.dtm_object = scene.objects.new(self.dtm_mesh, 'morseGeoDTM')
         #self.dtm_object.link(self.dtm_mesh)
         #self.dtm_object.colbits = (1<<0) + (1<<5)
         bpy.Window.Redraw()
@@ -230,7 +231,7 @@ class DtmObject:
         # Checking if the Scene_Script_Holder exists else no info saving.
         ooo = None
         try:
-            ooo = bpy.Object.Get('Scene_Script_Holder')
+            ooo = bpy.data.objects['Scene_Script_Holder']
         except:
             ooo = None
 
@@ -238,26 +239,31 @@ class DtmObject:
             # Warn that no georeferencing is possible
             logging.info('[geoDTMLoader] This scene can not be georeferenced: Scene_Script_Holder does not exist')
         else:
+            '''
             # Check existence of properties UTMXOffset and UTMYOffset
             # Used to get real world georeferenced coordinates
             # z_blender = z_reality
             # x_reality = x_blender + UTMXOffset
             # idem for y 
+            px = None
             try:
-                px = ooo.getProperties('UTMXOffset')
+                px = ooo.get('UTMXOffset')
             except:
                 # No property with that name
                 px = None
             if px != None:
-                px.setData(str(UTMXOrigin))
+                bpy.data.objects['Scene_Script_Holder']['UTMXOffset'] = str(UTMXOrigin)
 
             try:
-                py = ooo.getProperties('UTMYOffset')
+                py = ooo.get('UTMYOffset')
             except:
                 # No property with that name
                 py = None
             if py != None:
-                py.setData(str(UTMYOrigin))
+                bpy.data.objects['Scene_Script_Holder']['UTMYOffset'] = str(UTMYOrigin)
+            '''
+            bpy.data.objects['Scene_Script_Holder']['UTMXOffset'] = str(self.UTMXOrigin)
+            bpy.data.objects['Scene_Script_Holder']['UTMYOffset'] = str(self.UTMYOrigin)
 
             
 
@@ -310,55 +316,34 @@ class DtmObject:
                 # Going on next cell
                 x = x + self.CellSize/self.u2m
                 kv = kv + 1
-            logging.info(myvertices2append)
+            #--- Flat append of vertices
+            logging.debug(myvertices2append)
             myvertices += myvertices2append
-            # Starting a new line
+            #--- Starting a new line
             x = (self.CellSize/2.0)/self.u2m
             # y's are inverted since the DTM start is on the top left corner.
             y = y - self.CellSize/self.u2m
         fub.close()
-        # Updating variables
-        #self.dtm_mesh.update()
+        #--- calculating the Z mean for later camera placement or else. 
         self.meanZ = self.meanZ / (float(self.NRows)*float(self.NCols))
+        #---
 
-        #--- 
-        # Filling vertices
-        #---
-        #myvertices = [f for v in big_vertices for f in v]
-        logging.info('myvertices')
-        logging.info(myvertices)
-
-        #---
-        # Filling Faces
-        #---
-        logging.info('[geoDTMLoader] Filling faces ... ')
-
-        #---
+        #--- Filling Faces
+        logging.info('[geoDTMLoader] Filling faces')
         v   = 0
-        #n   = 0
-        #fff = []
         vmax = self.NCols*self.NRows - self.NCols
-        #---
-        # Add all facing all at once (certainly not the best solution)
-        #self.dtm_mesh.faces.add(vmax)
+        #--- Add all facing one by one (certainly not the best solution)
         myfaces = []
-        # Updating each face's list of vertices
         while v < vmax:
-            #self.dtm_mesh.faces[v].vertices = [v, v+1, v+self.NCols+1, v+self.NCols]
             if (((v+1)%self.NCols) != 0): 
                 myfaces.append((v, v+1, v+self.NCols+1, v+self.NCols))
             v = v + 1
-        logging.info('myfaces')
-        logging.info(myfaces)
-        #---
-        # Final update 
-        logging.info('[geoDTMLoader] Creating and linking the mesh object.')
-        self.dtm_object = bpy.data.objects.new("morseDTMObject", self.dtm_mesh) 
-        logging.info('[geoDTMLoader] Object location ')
-        logging.info(self.dtm_object.location)
+        #--- Final update 
+        logging.info('[geoDTMLoader] Creating and linking the mesh object')
+        self.dtm_object = bpy.data.objects.new("morseGeoDTM", self.dtm_mesh) 
         bpy.context.scene.objects.link(self.dtm_object)
 
-        logging.info('[geoDTMLoader] Updating the mesh... ')
+        logging.info('[geoDTMLoader] Updating the mesh')
         #bpy.data.scenes[0].objects.link(self.dtm_object)
         self.dtm_mesh.from_pydata( myvertices, [], myfaces)
         self.dtm_mesh.update(calc_edges=True)

@@ -26,17 +26,18 @@ import re
 VERSION = "@PACKAGE_VERSION@"
 
 #Python version must be egal or bigger than...
-MIN_PYTHON_VERSION = "3.0"
+MIN_PYTHON_VERSION = "3.2"
 #Python version must be smaller than...
 STRICT_MAX_PYTHON_VERSION = "4.0"
 
 #Blender version must be egal or bigger than...
-MIN_BLENDER_VERSION = "2.54"
+MIN_BLENDER_VERSION = "2.59"
 #Blender version must be smaller than...
 STRICT_MAX_BLENDER_VERSION = "3"
 
 #Unix-style path to the MORSE default scene, within the prefix
 DEFAULT_SCENE_PATH = "share/data/morse/morse_default.blend"
+DEFAULT_SCENE_AUTORUN_PATH = "share/data/morse/morse_default_autorun.blend"
 
 #MORSE prefix (automatically detected)
 morse_prefix = ""
@@ -87,14 +88,15 @@ def check_blender_python_version(blender_path):
     
     with open("python_checker.py", "w") as f:
         f.write("import sys\n")
-        f.write("print('.'.join((str(x) for x in sys.version_info[:2])))\n")
+        f.write("print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
     
     try:
         version_str = subprocess.Popen(
                   [blender_path, '-b', '-P', 'python_checker.py'], 
-                  stdout=subprocess.PIPE).communicate()[0].split()[0]
-        version = version_str.decode()
-    except OSError:
+                  stdout=subprocess.PIPE).communicate()[0]
+        version_str = version_str.decode()
+        version = version_str.split('>>>')[1][0:3]
+    except (OSError, IndexError):
         os.remove("python_checker.py")
         return None
     
@@ -408,7 +410,14 @@ if __name__ == '__main__':
                 logger.error("'create' option expect exactly one option (a filename)")
                 sys.exit()
         elif sys.argv[1] in ["run"]:
-            launch_simulation()
+            if len(sys.argv) == 3:
+                prelaunch()
+                launch_simulator(
+                   os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
+                   sys.argv[2])
+            else:
+                logger.error("'run' option expect exactly one option (a filename)")
+                sys.exit()
         elif sys.argv[1] in ["exec"]:
             if len(sys.argv) == 3:
                 prelaunch()

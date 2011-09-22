@@ -48,29 +48,29 @@ from math import sqrt
 # the SHPT* constants defined in the shapelib module) and min and
 # max are 4-element lists with the min. and max. values of the
 # vertices.
-#print shp.info()
+#logging.info(shp.info())
 
 # read_object reads a shape
 #obj = shp.read_object(0)
 
 # The vertices method returns the shape as a list of lists of tuples.
-#print obj.vertices()[0][:10]
+#logging.info(obj.vertices()[0][:10])
 
 # The extents returns a tuple with two 4-element lists with the min.
 # and max. values of the vertices.
-#print obj.extents()
+#logging.info(obj.extents())
 
 # The type attribute is the type code (one of the SHPT* constants
 # defined in the shapelib module)
-#print obj.type
+#logging.info(obj.type)
 
 # The id attribute is the shape id
-#print obj.id
+#logging.info(obj.id)
 
 # the cobject method returns a PyCObject containing the shapelib
 # SHPHandle. This is useful for passing shapefile objects to
 # C-Python extensions.
-#print shp.cobject()
+#logging.info(shp.cobject())
 # --------------------------- end of def read_shapefile(filename):
 
 
@@ -101,7 +101,7 @@ def LoadBuildings(shp, hostObject):
 
     # Building barracks 
     Nshapes = (shp.info())[0]
-    print 'Loading ', Nshapes, ' BUildings'
+    logging.info('Loading ', Nshapes, ' BUildings')
     for i in range(Nshapes):
         # Oshp is a shape object
         Oshp = shp.read_object(i)
@@ -109,7 +109,7 @@ def LoadBuildings(shp, hostObject):
         #--- Building the building with the shapefile's vertices
         groundCoverage = Oshp.vertices()[0]
         N = len(groundCoverage)
-        print 'Building ', (i+1), 'with ', N, ' vertices'
+        logging.info('Building ', (i+1), 'with ', N, ' vertices')
         buildingMesh  = Blender.Mesh.New('buildingMesh');
         #--- Average the altitude of building first floor
         if (N > 0):
@@ -219,14 +219,14 @@ def LoadRoads(shp, hostObject):
         # Oshp is a shape object
         Oshp = shp.read_object(i)
         # We can read the vertices from the shape object
-        #print Oshp.vertices()[0]
+        #logging.info(Oshp.vertices()[0])
 
 
 #----------------------------------------------------------#
 def make_shapefile(filename):
     obj = shapelib.SHPObject(shapelib.SHPT_POLYGON, 1, [[(10, 10), (20, 10), (20, 20), (10, 10)]])
-    print obj.extents()
-    print obj.vertices()
+    logging.info(obj.extents())
+    logging.info(obj.vertices())
     outfile = shapelib.create(filename, shapelib.SHPT_POLYGON)
     outfile.write_object(-1, obj)
     del outfile
@@ -255,9 +255,9 @@ def add_dbf_records(file):
 
 #----------------------------------------------------------#
 def list_dbf(file):
-    # print the contents of a dbf file to stdout
+    # logging.info(the contents of a dbf file to stdout)
     dbf = dbflib.DBFFile(file)
-    print "%d records, %d fields" % (dbf.record_count(), dbf.field_count())
+    logging.info("%d records, %d fields" % (dbf.record_count(), dbf.field_count()))
     format = ""
     for i in range(dbf.field_count()):
         type, name, len, decc = dbf.field_info(i)
@@ -267,9 +267,9 @@ def list_dbf(file):
             format = format + " %%(%s)%dd" % (name, len)
         elif type == 2:
             format = format + " %%(%s)%dg" % (name, len)
-    print format
+    logging.info(format)
     for i in range(dbf.record_count()):
-        print format % dbf.read_record(i)
+        logging.info(format % dbf.read_record(i))
 
 #----------------------------------------------------------#
 #    Main method to load shapefiles according to
@@ -303,17 +303,17 @@ def LoadShapefile(filename, shpNature, hostObject):
     if os.path.isfile(filename):
         (dirname, filerelname) = os.path.split(filename)
         (bodyname, fileext) = os.path.splitext(filerelname)
-        print '(DD) Is FILE OK'
+        logging.info('(DD) Is FILE OK')
         # In order to open a shapefile the shapelib needs to have the shx corresponding files
         if os.path.isfile(os.path.join(dirname, bodyname+'.SHX')) or os.path.isfile(os.path.join(dirname, bodyname+'.shx')): 
-            print '(DD) IS SHALELIB OK'
+            logging.info('(DD) IS SHALELIB OK')
             shp = shapelib.ShapeFile(filename)
     else: 
         return 0
 
     if shp:
         Tshp =  (shp.info())[1]
-        print '(II) Reading shapefile with type ', Tshp ,' contents (', filerelname,') as ', shpNature
+        logging.info('(II) Reading shapefile with type ', Tshp ,' contents (', filerelname,') as ', shpNature)
         #-------- Loading Roads
         if (shpNature >= 20) and (shpNature <= 29):
             LoadRoads(shp, hostObject)

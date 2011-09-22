@@ -24,9 +24,9 @@ import os
 pathprefix=os.getenv('MORSE_ROOT')
 file1 = pathprefix+'/scripts/geolandloader/geoDTMLoader.py';
 file2 = pathprefix+'/scripts/geolandloader/geoShapefileLoader.py';
-print 'Loading file: '+file1;
+logging.info( 'Loading file: '+file1)
 execfile(os.path.normpath(file1));
-print 'Loading file: '+file2;
+logging.info( 'Loading file: '+file2)
 execfile(os.path.normpath(file2));
 
 ###########################################
@@ -133,26 +133,26 @@ def button(evt):     # Define what to do if a button is pressed, for example:
     if evt == 1: # DTM File Chooser
         fileDTM = Draw.PupStrInput("DTM File: ", "/home/rod/caylus-IGN-data/archive/MNT/EXTR_DEPT82.asc", 100);
         (dirname, fileDTMShort) = os.path.split(fileDTM);
-        print "Chosen file:"+fileDTM;
+        logging.info( "Chosen file:"+fileDTM)
         Blender.Window.Redraw() # This will redraw the 3d window.
     #------------------------------ Road Button
     if evt == 2: # Shapefile Road file chooser
         fileRoads = Draw.PupStrInput("Roads Shapefile: ", "/home/rod/caylus-IGN-data/archive/DONNEES/X291T092/BDTOPO_X291_SHP_L93/A_RESEAU_ROUTIER/ROUTE.SHP", 100); 
         (dirname, fileRoadsShort) = os.path.split(fileRoads);
-        print "Chosen file:"+fileRoads;
+        logging.info( "Chosen file:"+fileRoads)
         Blender.Window.Redraw();
     #------------------------------ Buildings Button
     if evt == 3: # Buildings Shapefile file chooser
         #fileBuildings = Draw.PupStrInput("Buildings Shapefile: ", "/data/caylus_SHP/BATI_REMARQUABLE.SHP", 100); 
         fileBuildings = Draw.PupStrInput("Buildings Shapefile: ", "/data/caylus_SHP/BATI_INDIFFERENCIE.SHP", 100); 
         (dirname, fileBuildingsShort) = os.path.split(fileBuildings);
-        print "Chosen file:"+fileBuildings;
+        logging.info( "Chosen file:"+fileBuildings)
         Blender.Window.Redraw();
     #------------------------------ Vegetation Button
     if evt == 4: # Vegetation Shapefile file chooser
         fileVegetation = Draw.PupStrInput("Vegetation Shapefile: ", "/home/rod/caylus-IGN-data/archive/DONNEES/X291T092/BDTOPO_X291_SHP_L93/F_VEGETATION/ZONE_VEGETATION.SHP", 100); 
         (dirname, fileVegetationShort) = os.path.split(fileVegetation);
-        print "Chosen file:"+fileVegetation;
+        logging.info( "Chosen file:"+fileVegetation)
         Blender.Window.Redraw();
     #------------------------------ Load Scene Button
     if evt == 5:
@@ -192,7 +192,7 @@ def button(evt):     # Define what to do if a button is pressed, for example:
                 LoadShapefile('/data/caylus_SHP/BATI_INDUSTRIEL.SHP', 31, dtmObject);
                 LoadShapefile('/data/caylus_SHP/BATI_REMARQUABLE.SHP', 31, dtmObject);
             else:
-                print '(WW) File ', fileBuildings, ' does not exist.'
+                logging.info( '(WW) File %s does not exist', fileBuildings)
             
             #--- Loading Vegetation
             if os.path.exists(fileVegetation): 

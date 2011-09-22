@@ -20,9 +20,8 @@
 #  License text for the above reference.)
 
 FIND_PROGRAM(PYTHON3_EXECUTABLE
-  NAMES python3.2 python3.1 python3
+  NAMES python3.2
   PATHS
-  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.1\\InstallPath]
   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.2\\InstallPath]
   )
 

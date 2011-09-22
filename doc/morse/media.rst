@@ -7,7 +7,7 @@ Videos
 
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 22693627              |        .. vimeo:: 23244699               |
+|         .. vimeo:: 27862570              |        .. vimeo:: 23244699               |
 |            :width: 400                   |           :width: 400                    |
 |                                          |                                          |
 |  Some examples of integration between    |  Using ROS RVIZ vizualisation tool to    |
@@ -18,12 +18,12 @@ Videos
 |         .. vimeo:: 22246759              |        .. vimeo:: 19258005               |
 |            :width: 400                   |           :width: 400                    |
 |                                          |                                          |
-|  Here, a robot builds a traversability   |  MORSE can take care of navigation if    |
-|  map from simulated laser scans, and     |  you do not want to manage this part.    |
+| Here, a robot builds a 2.5D terrain model|  MORSE can take care of navigation if    |
+|  map from simulated stereo-cameras, and  |  you do not want to manage this part.    |
 |  uses it to navigate.                    |                                          |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 26274803              |        .. vimeo:: 9825826                |
+|         .. vimeo:: 27862605              |        .. vimeo:: 9825826                |
 |            :width: 400                   |           :width: 400                    |
 |                                          |                                          |
 |  MORSE can be used to test human-robot   |  Several robots following each others.   |
