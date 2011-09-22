@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 from morse.core.services import service
 from morse.core import status
-from morse.blender.main import reset_objects as main_reset
+from morse.blender.main import reset_objects as main_reset, quit as main_quit
 
 @service(component = "simulation")
 def list_robots():
@@ -22,3 +22,11 @@ def reset_objects():
     contr = GameLogic.getCurrentController()
     main_reset(contr)
     return "Objects restored to initial position"
+
+@service(component = "simulation")
+def quit():
+    """ Terminate the simulation """
+
+    contr = GameLogic.getCurrentController()
+    main_quit(contr)
+
