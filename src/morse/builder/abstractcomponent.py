@@ -20,6 +20,8 @@ class Configuration(object):
         cfg_service.setdefault(component.name, []).append(service_cfg)
 
     def link_modifier(self, component, modifier_cfg):
+        mod_class = MORSE_MODIFIERS[modifier_cfg[0]]
+        modifier_cfg[0] = mod_class
         cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, klass,  manager, overlay_cfg):
@@ -143,11 +145,6 @@ class AbstractComponent(object):
         # Configure the middleware for this component
         config = mod
         AbstractComponent._config.link_modifier(self, config)
-        # Add the modifier empty objects as needed
-        mod_name = mod[0].lower()
-        if not mod_name in scene_modifiers:
-            #logger.debug("Add modifier " + mod_name + " to the scene middlewares")
-            scene_modifiers.append(mod_name)
         
     def configure_overlay(self, manager, overlay):
         o = self._blendobj

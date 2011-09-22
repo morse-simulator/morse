@@ -111,10 +111,6 @@ class Actuator(Component):
     def __init__(self, name):
         Component.__init__(self, 'actuators', name)
 
-class Modifier(Component):
-    def __init__(self, name):
-        Component.__init__(self, 'modifiers', name)
-
 class Environment(Component):
     """ Class to configure the general environment of the simulation
     It handles the scenario file, general properties of the simulation,
