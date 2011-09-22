@@ -5,7 +5,7 @@ import morse.builder.blenderobjects
 class GPS(morse.builder.creator.SensorCreator):
     def __init__(self, name="GPS"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/gps", "GPSClass", "morse_GPS")
+            "morse/sensors/gps", "GPSClass", "gps")
         mesh = morse.builder.blenderobjects.Cylinder("GPSCylinder")
         mesh.scale = (.1,.1,.05)
         self.append(mesh)
@@ -13,7 +13,7 @@ class GPS(morse.builder.creator.SensorCreator):
 class Odometry(morse.builder.creator.SensorCreator):
     def __init__(self, name="Odometry"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/odometry", "OdometryClass", "morse_odometry")
+            "morse/sensors/odometry", "OdometryClass", "odometry")
         mesh = morse.builder.blenderobjects.Cube("OdometryCube")
         mesh.scale = (.1,.1,.05)
         self.append(mesh)
@@ -21,7 +21,7 @@ class Odometry(morse.builder.creator.SensorCreator):
 class Pose(morse.builder.creator.SensorCreator):
     def __init__(self, name="Pose_sensor"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/pose", "PoseClass", "morse_pose")
+            "morse/sensors/pose", "PoseClass", "pose")
         mesh = morse.builder.blenderobjects.Cylinder("PoseCylinder")
         mesh.scale = (.1,.1,.2)
         self.append(mesh)
@@ -29,7 +29,7 @@ class Pose(morse.builder.creator.SensorCreator):
 class Proximity(morse.builder.creator.SensorCreator):
     def __init__(self, name="Proximity"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/proximity", "ProximitySensorClass", "morse_proximity")
+            "morse/sensors/proximity", "ProximitySensorClass", "proximity")
         mesh = morse.builder.blenderobjects.Cylinder("ProximityCylinder")
         mesh.scale = (.1,.1,.2)
         self.append(mesh)
@@ -42,7 +42,7 @@ class Proximity(morse.builder.creator.SensorCreator):
 class Camera(morse.builder.creator.SensorCreator):
     def __init__(self, name="CameraMain"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/video_camera", "VideoCameraClass", "morse_camera")
+            "morse/sensors/video_camera", "VideoCameraClass", "camera")
         camera = morse.builder.blenderobjects.Camera("CameraRobot")
         self.append(camera)
         self.properties(cam_width = 512, cam_height = 512, cam_focal = 35.0, 
@@ -76,13 +76,13 @@ class Camera(morse.builder.creator.SensorCreator):
 class Battery(morse.builder.creator.SensorCreator):
     def __init__(self, name="Battery"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/baterry", "BatteryClass", "morse_battery")
+            "morse/sensors/baterry", "BatteryClass", "battery")
         self.properties(DischargingRate = 1.0)
 
 class Infrared(morse.builder.creator.SensorCreator):
     def __init__(self, name="Infrared"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/infrared", "InfraredClass", "morse_infrared")
+            "morse/sensors/infrared", "InfraredClass", "infrared")
         self.properties(ir_range = 1.5)
         mesh = morse.builder.blenderobjects.Cube("InfraredCube")
         mesh.scale = (.1,.1,.05)
@@ -101,5 +101,5 @@ class Infrared(morse.builder.creator.SensorCreator):
 class Clock(morse.builder.creator.SensorCreator):
     def __init__(self, name="Clock"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/clock", "ClockClass", "morse_clock")
+            "morse/sensors/clock", "ClockClass", "clock")
 
