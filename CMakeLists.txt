@@ -15,8 +15,8 @@ option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distribute
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
-find_package(Python31Interp REQUIRED)
-find_package(Python31Libs REQUIRED)
+find_package(Python32Interp REQUIRED)
+find_package(Python32Libs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
 				${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(0,0,\"\"))"
@@ -29,7 +29,7 @@ SET(PYTHON_INSTDIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL})
 MESSAGE(STATUS "will install python files in ${PYTHON_INSTDIR}")
 
 if (NOT PYTHON3INTERP_FOUND)
-	MESSAGE(FATAL_ERROR "Can't find python 3.1 on your system")
+	MESSAGE(FATAL_ERROR "Can't find python 3.2 on your system")
 endif(NOT PYTHON3INTERP_FOUND)
 if (BUILD_YARP2_SUPPORT)
 	EXECUTE_PROCESS(COMMAND 
