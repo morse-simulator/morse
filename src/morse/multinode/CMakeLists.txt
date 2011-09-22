@@ -5,8 +5,8 @@ INSTALL(FILES __init__.py socket.py
 endif(BUILD_CORE_SUPPORT)
 
 IF(BUILD_HLA_SUPPORT)
-    INSTALL(FILES hla_mw.py
+    INSTALL(FILES hla.py
         DESTINATION ${PYTHON_INSTDIR}/morse/multinode)
-    INSTALL(FILES hla/morse.fed
+    INSTALL(FILES morse.fed
         DESTINATION share/federations)
 ENDIF(BUILD_HLA_SUPPORT)
