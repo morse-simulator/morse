@@ -20,6 +20,10 @@ def move(contr):
     # get the object this script is attached to
     camera = contr.owner
 
+    # Do not move the camera if the current view is using another camera
+    if camera != bge.logic.getCurrentScene().active_camera:
+        return
+
     # set the movement speed
     speed = camera['Speed']
 
@@ -59,6 +63,10 @@ def rotate(contr):
         as a rotation to the camera. """
     # get the object this script is attached to
     camera = contr.owner
+
+    # Do not move the camera if the current view is using another camera
+    if camera != bge.logic.getCurrentScene().active_camera:
+        return
 
     # Get sensor named Mouse
     mouse = contr.sensors['Mouse']
