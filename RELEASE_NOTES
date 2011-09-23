@@ -1,15 +1,16 @@
-MORSE 0.4 - "Multinode" release
-===============================
+MORSE 0.4.x - "Multinode" release
+=================================
 
 General changes
 ---------------
-- Full support for Blender 2.59 and Python 3.2
+- Full support for Blender 2.59 and Python 3.2.
+- Reorganized the documentation, with a brand new main page.
 
 Architectural changes
 ---------------------
 - Added infrastructure for multi-node functionality
-- Changed directory structure and file names for ease of use of the Builder API
 - Use the Builder API to create robots from their description in Python script
+- Changed directory structure and file names for ease of use of the Builder API
 - Use the Python logging interface
 
 Middlewares
