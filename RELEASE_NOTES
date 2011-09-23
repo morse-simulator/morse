@@ -1,3 +1,42 @@
+MORSE 0.5.x
+===========
+
+General
+-------
+
+- Lots of cleaning (middleware empties have been removed)
+- The command line ``morse run {scene.blend|scene.py}`` now works as expected (ie,
+  starts the simulation.
+
+GUI
+---
+
+- First version of a graphical user interface to add components to a scene
+- Plugin for loading DTM/IGN data has been ported to Blender 2.5/Python 3.2
+
+
+Builder API
+-----------
+
+- New export script (available as Blender add-on) to export a MORSE Blender
+  scene to the MORSE Builder format.
+- Added support for multi-node configuration in the builder API
+- Added support for static, passive objects
+
+Components
+----------
+
+- New infrared sensor
+- Camera images can now be vertically flipped via the ``vertical_flip`` property.
+
+Multi-node
+----------
+
+- New abstract API for multi-node implementation. The current socket-based and HLA
+  implementation now use it.
+
+
+
 MORSE 0.4.x - "Multinode" release
 =================================
 

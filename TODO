@@ -5,6 +5,9 @@ General TODO list for MORSE
    TARGET 0.5
 ==================
 
+General
+-------
+
 - Introduce a mean to externally control time, by pacing the game engine time
   (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
   blender-robotics). Add support to pause the simulation.
@@ -12,6 +15,15 @@ General TODO list for MORSE
 - Fixed the physical properties of robot to enable velocity control (cf commit 8503c9)
 - define a method to select the control of robots using position or velocity
 
+Testing
+-------
+
+- Automatic testing of MORSE via automatically generated testing scene
+
+Collada
+-------
+
+- Import/export of models in Collada 1.5, with kinematics chains.
 
 Middleware
 ----------
@@ -42,6 +54,10 @@ stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
 
+HRI
+---
+
+- Finish the integration of TUM human in MORSE
 - Properly implement the "human" as a robot: Change the script in object oriented form
 
 ================
