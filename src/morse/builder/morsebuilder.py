@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import bpy
+import json
 from morse.builder.abstractcomponent import *
 
 """
@@ -40,11 +41,12 @@ class PassiveObject(AbstractComponent):
         if os.path.exists(file):
             filepath = file
         else:
-            filepath = os.path.join(MORSE_COMPONENTS,file)
+            filepath = os.path.join(MORSE_COMPONENTS, file)
             if not os.path.exists(filepath):
-                logger.error("Blender file %s for external asset import can not be found.\n" + \
-                         "Either provide an absolute path, or a path relative to MORSE \n" + \
-                         "asset directory (typically $PREFIX/share/data/morse)" % (file))
+                logger.error("Blender file %s for external asset import can \
+                         not be found.\n Either provide an absolute path, or \
+                         a path relative to MORSE \nasset directory (typically \
+                         $PREFIX/share/data/morse)" % (file))
 
         with bpy.data.libraries.load(filepath) as (src, _):
             if object:
@@ -53,7 +55,8 @@ class PassiveObject(AbstractComponent):
                 try:
                     objlist = [{'name':obj} for obj in src.objects]
                 except UnicodeDecodeError as detail:
-                    logger.error("Unable to open file '%s'. Exception: %s" % (filepath, detail))
+                    logger.error("Unable to open file '%s'. Exception: %s" \
+                                 % (filepath, detail))
 
         print("objlist %s" % (objlist))
 
@@ -65,8 +68,8 @@ class PassiveObject(AbstractComponent):
         self._blendobj = bpy.context.selected_objects[0]
         
         if not keep_pose:
-            self._blendobj.location = (0.0,0.0,0.0)
-            self._blendobj.rotation_euler = (0.0,0.0,0.0)
+            self._blendobj.location = (0.0, 0.0, 0.0)
+            self._blendobj.rotation_euler = (0.0, 0.0, 0.0)
 
 
 class Component(AbstractComponent):
@@ -86,7 +89,8 @@ class Component(AbstractComponent):
             try:
                 objlist = [{'name':obj} for obj in src.objects]
             except UnicodeDecodeError as detail:
-                logger.error("Unable to open file '%s'. Exception: %s" % (filepath, detail))
+                logger.error("Unable to open file '%s'. Exception: %s" % \
+                             (filepath, detail))
 
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
@@ -188,7 +192,8 @@ class Environment(Component):
         if isinstance(value, bool):
             bpy.data.scenes[0].game_settings.show_physics_visualization = value
 
-    def configure_node(self, protocol='socket', node_name='node', server_address='localhost', server_port='65000'):
+    def configure_node(self, protocol='socket', node_name='node', \
+                       server_address='localhost', server_port='65000'):
         """ Write the 'multinode_config.py' script """
         node_config = { 'protocol': protocol,
                         'node_name': node_name,

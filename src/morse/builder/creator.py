@@ -1,10 +1,8 @@
 import bpy
-import math
 import morse.builder.morsebuilder
-from morse.builder.data import MORSE_MIDDLEWARE_DICT
 
 class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
-    def __init__(self, name, callingModule, blendname=None):
+    def __init__(self, name, calling_module, blendname=None):
         """ ComponentCreator constructor
         
         This class allow to create Python component for MORSE. It consists of an 
@@ -31,21 +29,23 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
         bpy.ops.logic.controller_add(type='PYTHON')
         controller = self._blendobj.game.controllers.keys()[-1]
         self._blendobj.game.controllers[controller].mode = 'MODULE'
-        self._blendobj.game.controllers[controller].module = callingModule
-        self._blendobj.game.controllers[controller].link( sensor = 
+        self._blendobj.game.controllers[controller].module = calling_module
+        self._blendobj.game.controllers[controller].link( sensor = \
                 self._blendobj.game.sensors[sensor] )
         # no collision by default for components
         self._blendobj.game.physics_type = 'NO_COLLISION'
 
 class SensorCreator(ComponentCreator):
-    def __init__(self, name, classPath, className, blendname=None):
-        ComponentCreator.__init__(self, name, 'calling.sensor_action', blendname)
-        self.properties(Component_Tag = True, Class = className, 
-                Path = classPath)
+    def __init__(self, name, class_path, class_name, blendname=None):
+        ComponentCreator.__init__(self, name, 'calling.sensor_action', \
+                                  blendname)
+        self.properties(Component_Tag = True, Class = class_name, \
+                Path = class_path)
 
 class ActuatorCreator(ComponentCreator):
-    def __init__(self, name, classPath, className, blendname=None):
-        ComponentCreator.__init__(self, name, 'calling.actuator_action', blendname)
-        self.properties(Component_Tag = True, Class = className, 
-                Path = classPath)
+    def __init__(self, name, class_path, class_name, blendname=None):
+        ComponentCreator.__init__(self, name, 'calling.actuator_action', \
+                                  blendname)
+        self.properties(Component_Tag = True, Class = class_name, \
+                Path = class_path)
 

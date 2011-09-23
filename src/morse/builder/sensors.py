@@ -7,7 +7,7 @@ class GPS(morse.builder.creator.SensorCreator):
         morse.builder.creator.SensorCreator.__init__(self, name, 
             "morse/sensors/gps", "GPSClass", "gps")
         mesh = morse.builder.blenderobjects.Cylinder("GPSCylinder")
-        mesh.scale = (.1,.1,.05)
+        mesh.scale = (.1, .1, .05)
         self.append(mesh)
 
 class Odometry(morse.builder.creator.SensorCreator):
@@ -15,7 +15,7 @@ class Odometry(morse.builder.creator.SensorCreator):
         morse.builder.creator.SensorCreator.__init__(self, name, 
             "morse/sensors/odometry", "OdometryClass", "odometry")
         mesh = morse.builder.blenderobjects.Cube("OdometryCube")
-        mesh.scale = (.1,.1,.05)
+        mesh.scale = (.1, .1, .05)
         self.append(mesh)
 
 class Pose(morse.builder.creator.SensorCreator):
@@ -23,7 +23,7 @@ class Pose(morse.builder.creator.SensorCreator):
         morse.builder.creator.SensorCreator.__init__(self, name, 
             "morse/sensors/pose", "PoseClass", "pose")
         mesh = morse.builder.blenderobjects.Cylinder("PoseCylinder")
-        mesh.scale = (.1,.1,.2)
+        mesh.scale = (.1, .1, .2)
         self.append(mesh)
 
 class Proximity(morse.builder.creator.SensorCreator):
@@ -31,7 +31,7 @@ class Proximity(morse.builder.creator.SensorCreator):
         morse.builder.creator.SensorCreator.__init__(self, name, 
             "morse/sensors/proximity", "ProximitySensorClass", "proximity")
         mesh = morse.builder.blenderobjects.Cylinder("ProximityCylinder")
-        mesh.scale = (.1,.1,.2)
+        mesh.scale = (.1, .1, .2)
         self.append(mesh)
         self.properties(Range = 30.0)
 
@@ -64,7 +64,7 @@ class Camera(morse.builder.creator.SensorCreator):
                 actuator = self._blendobj.game.actuators[actuator])
         # cf. morse.sensors.camera.VideoCameraClass._setup_video_texture
         mesh = morse.builder.blenderobjects.Cube("CameraCube")
-        mesh.scale = (.1,.1,.05)
+        mesh.scale = (.1, .1, .05)
         self.append(mesh)
         # XXX add "MAScreenMat" to "CameraCube" (!) or "ScreenMat" (?)
         bpy.ops.object.select_all(action = 'DESELECT')
@@ -85,7 +85,7 @@ class Infrared(morse.builder.creator.SensorCreator):
             "morse/sensors/infrared", "InfraredClass", "infrared")
         self.properties(ir_range = 1.5)
         mesh = morse.builder.blenderobjects.Cube("InfraredCube")
-        mesh.scale = (.1,.1,.05)
+        mesh.scale = (.1, .1, .05)
         self.append(mesh)
         bpy.ops.logic.sensor_remove(sensor="Always")
         bpy.ops.logic.sensor_add(type = 'RADAR') # add Radar sensor

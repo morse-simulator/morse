@@ -1,6 +1,4 @@
-import os
 import bpy
-import json
 #import logging; logger = logging.getLogger("morse." + __name__)
 #logger.setLevel(logging.DEBUG)
 
