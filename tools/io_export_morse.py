@@ -199,6 +199,16 @@ def scan_config(file_out):
     except AttributeError as detail:
         print ("\tNo modifiers configured")
 
+def get_environment():
+    try:
+        ssh = bpy.data.objects['Scene_Script_Holder']
+        environment_file = ssh.game.properties['environment_file'].value
+    except KeyError as detail:
+        environment_file = 'indoors-1/indoor-1'
+        print ("No environment file specified in 'Scene_Script_Holder'\nUsing '%s' as default" % environment_file)
+
+    return environment_file
+
 
 def save_scene():
     print ("\nRunning from %s" % bpy.data.filepath)
@@ -207,7 +217,9 @@ def save_scene():
     print ("Saving scene robot configuration to file '%s'" % filename)
     scan_scene(file_out)
     scan_config(file_out)
-    file_out.write("\nenv = Environment('indoors-1/indoor-1')")
+    env_name = get_environment()
+    file_out.write("\nenv = Environment('%s')" % env_name)
+    file_out.write("\nenv.create()")
     file_out.close()
     print ("Configuration saved")
 

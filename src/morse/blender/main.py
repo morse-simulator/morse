@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.logging import SECTION, ENDSECTION
 import sys
+import os
 import re
 import time
 import bpy
@@ -18,19 +19,14 @@ except ImportError as detail:
 
 
 MULTINODE_SUPPORT = False
-# The file scene_config.py is at the moment included
+# The file multinode_config.py is at the moment included
 #  in the .blend file of the scene
 # Used to setup the multinode information
 try:
-    import scene_config
-    
-    # Multi-node simulation
-    import morse.core.multinode
+    import multinode_config
     MULTINODE_SUPPORT = True
-    
 except ImportError as detail:
-    logger.info("No multi-node scene configuration file found." + \
-           " Multi-node support disabled.")
+    logger.info("No multi-node scene configuration file found. Multi-node support disabled.")
 
 from morse.core.exceptions import MorseServiceError
 
@@ -176,6 +172,10 @@ def create_dictionaries ():
         except KeyError as detail:
             pass
             
+    """ Modifiers are now dynamically created.
+    The following lines should do nothing but are still there for backward
+    compatibility.
+    """
     # Get the modifiers
     for obj in scene.objects:
         try:
@@ -188,7 +188,11 @@ def create_dictionaries ():
                 return False
         except KeyError:
             pass
-
+    
+    """ Middlewares are now dynamically created.
+    The following lines should do nothing but are still there for backward
+    compatibility.
+    """
     # Get the middlewares
     for obj in scene.objects:
         is_middleware = False
@@ -206,7 +210,7 @@ def create_dictionaries ():
                 logger.info("\tMiddleware '%s' found" % obj)
             else:
                 return False
-
+    
     # Will return true always (for the moment)
     return True
 
@@ -240,15 +244,9 @@ def check_dictionaries():
     for obj, service_variables in GameLogic.serviceDict.items():
         logger.info ("\tSERVICE: '{0}'".format(obj))
 
-
-def create_instance(obj, parent=None):
-    """ Dynamically load a Python module and create an instance object
-        of the class defined within. """
-    # Read the path and class of the object from the Logic Properties
-    source_file = obj['Path']
-    module_name = re.sub('/', '.', source_file)
-    logger.debug("Path to Component Class: %s" % module_name)
-    # Import the module containing the class
+def get_class(module_name, class_name):
+    """ Dynamically creates an instance of a Python class.
+    """
     try:
         __import__(module_name)
     except ImportError as detail:
@@ -257,13 +255,28 @@ def create_instance(obj, parent=None):
     module = sys.modules[module_name]
     # Create an instance of the object class
     try:
-        klass = getattr(module, obj['Class'])
+        klass = getattr(module, class_name)
     except AttributeError as detail:
         logger.error ("Module attribute not found: %s" % detail)
         return None
-    instance = klass(obj, parent)
+    return klass
 
-    return instance
+def create_instance(obj, parent=None):
+    """ Dynamically load a Python module and create an instance object
+        of the class defined within. """
+    # Read the path and class of the object from the Logic Properties
+    source_file = obj['Path']
+    module_name = re.sub('/', '.', source_file)
+    logger.debug("Path to Component Class: %s" % module_name)
+    klass = get_class(module_name, obj['Class'])
+    return klass(obj, parent)
+
+def create_mw(mw):
+    """ Creates an instances of a middleware class.
+    """
+    modulename, classname = mw.rsplit('.', 1)
+    klass = get_class(modulename, classname)
+    return klass()
 
 def get_components_of_type(classname):
     components = []
@@ -308,6 +321,16 @@ def link_middlewares():
             """)
             return False
 
+        # Do not configure middlewares for components that are external,
+        #  that is, they are handled by another node.
+        try:
+            instance.robot_parent.blender_obj['Robot_Tag']
+            # If the robot is external, it will have the 'External_Robot_Tag'
+            #  instead, and this test will fail
+        except KeyError as detail:
+            # Skip the configuration of this component
+            continue
+
         # If the list contains only strings, insert the list inside another one.
         # This is done for backwards compatibility with the previous
         #  syntax that allowed only one middleware per component
@@ -321,18 +344,26 @@ def link_middlewares():
             logger.info("Component: '%s' using middleware '%s'" % (component_name, mw_name))
             found = False
             missing_component = False
+            
             # Look for the listed mw in the dictionary of active mw's
             for mw_obj, mw_instance in GameLogic.mwDict.items():
-                #logger.info("Looking for '%s' in '%s'" % (mw_name, mw_obj.name))
-                if mw_name in mw_obj.name:
+                logger.debug("Looking for '%s' in '%s'" % (mw_name, mw_obj))
+                if mw_name in mw_obj:
                     found = True
                     # Make the middleware object take note of the component
-                    mw_instance.register_component(component_name, instance, mw_data)
                     break
 
             if not found:
-                logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
-
+                mw_instance = create_mw (mw_name)
+                if mw_instance != None:
+                    GameLogic.mwDict[mw_name] = mw_instance
+                    logger.info("\tMiddleware '%s' created" % mw_name)
+                else:
+                    logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
+                    return False
+            
+            mw_instance.register_component(component_name, instance, mw_data)
+            
     # Will return true always (for the moment)
     return True
 
@@ -440,29 +471,67 @@ def add_modifiers():
         return True
 
     for component_name, mod_list in component_list.items():
+        # Get the instance of the object
+        try:
+            instance = GameLogic.componentDict[component_name]
+        except KeyError as detail:
+            logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
+            continue
+
         for mod_data in mod_list:
             modifier_name = mod_data[0]
             logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
             found = False
             # Look for the listed modifier in the dictionary of active modifier's
             for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
-                if modifier_name in modifier_obj.name:
+                if modifier_name in modifier_obj:
                     found = True
-                    # Get the instance of the object
-                    try:
-                        instance = GameLogic.componentDict[component_name]
-                    except KeyError as detail:
-                        logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
-                        continue
-
-                    # Make the modifier object take note of the component
-                    modifier_instance.register_component(component_name, instance, mod_data)
-
+                    break
+                    
             if not found:
-                logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+                modifier_instance = create_mw(modifier_name)
+                if modifier_instance != None:
+                    GameLogic.modifierDict[modifier_name] = modifier_instance
+                    logger.info("\tModifier '%s' created" % modifier_name)
+                else:
+                    logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+                    return False
+            # Make the modifier object take note of the component
+            modifier_instance.register_component(component_name, instance, mod_data)
     
     return True
 
+def init_multinode():
+    """
+    Initializes the MORSE node in a Multinode configuration.
+    """
+    logger.log(SECTION, 'MULTINODE INITIALIZATION')
+    # Configuration for the multi-node simulation
+    try:
+        protocol = multinode_config.node_config["protocol"]
+    except (NameError, AttributeError) as detail:
+        protocol = "socket"
+
+    # Get the correct class reference according to the chosen protocol
+    if protocol == "socket":
+        klass = get_class("morse.multinode.socket", "SocketNode")
+    elif protocol == "hla":
+        klass = get_class("morse.multinode.hla", "HLANode")
+
+    try:
+        node_name = multinode_config.node_config["node_name"]
+        server_address = multinode_config.node_config["server_address"]
+        server_port = int(multinode_config.node_config["server_port"])
+    except (NameError, AttributeError) as detail:
+        logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+        node_name = os.uname()[1]
+        server_address = "localhost"
+        server_port = 65000
+
+    logger.info ("This is node '%s'" % node_name)
+    # Create the instance of the node class
+    GameLogic.node_instance = klass(node_name, server_address, server_port,
+            GameLogic)
 
 def init(contr):
     """ General initialization of MORSE
@@ -471,20 +540,6 @@ def init(contr):
     """
 
     init_logging()
-
-    if MULTINODE_SUPPORT:
-        # Configuration for the multi-node simulation
-        try:
-            node_name = scene_config.node_config["node_name"]
-            server_address = scene_config.node_config["server_address"]
-            server_port = scene_config.node_config["server_port"]
-        except (NameError, AttributeError) as detail:
-            logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
-            node_name = "temp_name"
-            server_address = "localhost"
-            server_port = 65000
-        GameLogic.node_instance = morse.core.multinode.SimulationNodeClass(node_name, server_address, server_port)
-
 
     logger.log(SECTION, 'PRE-INITIALIZATION')
     # Get the version of Python used
@@ -523,7 +578,9 @@ def init(contr):
         close_all(contr)
         quit(contr)
 
-
+    if MULTINODE_SUPPORT:
+        init_multinode()
+    
     # Set the default value of the logic tic rate to 60
     #GameLogic.setLogicTicRate(60.0)
     #GameLogic.setPhysicsTicRate(60.0)
@@ -604,7 +661,7 @@ def simulation_main(contr):
     
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
-        GameLogic.node_instance.synchronise_world(GameLogic)
+        GameLogic.node_instance.synchronize()
 
 
 def switch_camera(contr):
@@ -654,7 +711,7 @@ def close_all(contr):
 
     if MULTINODE_SUPPORT:
         logger.log(ENDSECTION, 'CLOSING MULTINODE...')
-        GameLogic.node_instance.finish_node()
+        GameLogic.node_instance.finalize()
 
 
 def finish(contr):

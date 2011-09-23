@@ -1,14 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 
-class MorseUTMClass(object):
+from morse.core.modifier import MorseModifierClass
+
+class MorseUTMClass(MorseModifierClass):
     """ Convert between Blender and UTM coordinates. """
     
-    def __init__(self, obj, parent=None):
+    def initialize(self):
         """ Initialize the global UTM coordinates in the scene. """
-        self.blender_obj = obj
-        #self.init_components()
-
         self._global_x = 0.0
         self._global_y = 0.0
         self._global_z = 0.0
@@ -21,12 +20,6 @@ class MorseUTMClass(object):
         self._global_x = float(script_empty['UTMXOffset'])
         self._global_y = float(script_empty['UTMYOffset'])
         self._global_z = float(script_empty['UTMZOffset'])
-
-
-    def __del__(self):
-        """ Destructor method. """
-        pass
-
 
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """

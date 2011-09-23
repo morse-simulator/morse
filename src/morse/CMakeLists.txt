@@ -12,4 +12,5 @@ INSTALL(DIRECTORY core actuators geolandloader helpers blender sensors robots bu
 ADD_SUBDIRECTORY(modifiers)
 endif()
 
+ADD_SUBDIRECTORY(multinode)
 ADD_SUBDIRECTORY(middleware)

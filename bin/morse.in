@@ -309,6 +309,8 @@ def launch_simulator(scene=None, script=None):
     logger.info("PREFIX= " + morse_prefix)
     
     if not scene:
+        if not script: # in case of no argument, execute a default script
+            script = default_scene_abspath[:-5]+'py'
         scene = create_copy_default_scene()
         logger.info("Creating new scene " + scene)
         
@@ -425,16 +427,19 @@ if __name__ == '__main__':
                 sys.exit()
         
         else:
-            #The first argument is the scene name?
-            if sys.argv[1].endswith(".blend"):
-                prelaunch()
-                launch_simulator(sys.argv[1])
-            elif sys.argv[1].endswith(".py") | sys.argv[1].endswith(".morse"):
-                prelaunch()
-                launch_simulator(script=sys.argv[1])
-            
-            else:
-                logger.error("Unknown option: " + sys.argv[1])
+            scene = None
+            script = None
+            args = sys.argv[1:]
+            for arg in args:
+                if arg.endswith(".blend"):
+                    scene = arg
+                    break
+            for arg in args:
+                if arg.endswith(".py"):
+                    script = arg
+                    break
+            prelaunch()
+            launch_simulator(scene, script)
     
     else:
         

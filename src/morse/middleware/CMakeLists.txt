@@ -43,10 +43,3 @@ IF(BUILD_MOOS_SUPPORT)
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 ENDIF(BUILD_MOOS_SUPPORT)
-
-IF(BUILD_HLA_SUPPORT)
-    INSTALL(FILES hla_mw.py
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
-    INSTALL(FILES hla/morse.fed
-        DESTINATION share/federations)
-ENDIF(BUILD_HLA_SUPPORT)

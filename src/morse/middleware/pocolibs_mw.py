@@ -11,9 +11,9 @@ from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
 class MorsePocolibsClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and Pocolibs."""
 
-    def __init__(self, obj, parent=None):
+    def __init__(self):
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__,self).__init__()
 
         # Store the id's of created posters, indexed by component name
         self._poster_dict = dict()
