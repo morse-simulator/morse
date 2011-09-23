@@ -199,8 +199,8 @@ This also means that MORSE follows a open development process: you can fork
 MORSE source code on `GitHub <http://github.com/laas/morse>`_ and everybody is
 invited to propose new features, report bugs and submit patches.
 
-MORSE is baked by a vivid community
------------------------------------
+MORSE is driven by an active community
+--------------------------------------
 
 MORSE is used by over 15 robotic labs in the world, an its
 mailing-lists are an always fast way to get answers.
@@ -217,23 +217,26 @@ This means tons of tutorials, code examples, reusable snippets, etc.
 This also ensures that, even if the MORSE core team would disappear, you would
 still be able to ask for support!
 
+MORSE also integrates with other large open-source projects like `ROS <http://www.ros.org>`,
+which further anchors it into the open-source robotics community.
+
 MORSE is driven by academics requirements
 -----------------------------------------
 
 MORSE is born at `LAAS-CNRS <http://www.laas.fr>`_, a public French laboratory,
 one of the biggest in robotics.
 
-Currently, over five universities and institutes (in Germany, USA, France) have
-joined the effort and collaboratively take part to the future of MORSE.
+Currently, over five universities and institutes (in Germany, USA, France,
+Belgium) have joined the effort and collaboratively take part in assuring the future of
+MORSE.
 
-Most of the new features and developments come from actual requirements for
-research in robotics, and the road-map may look a bit chaotic for this very
-reason.
+Our close interactions with academic research in robotics worldwide guarantees
+that many innovative requirements end up in our roadmap without much delay.
 
 Check here :doc:`MORSE related publications and workshop <media>`.
 
-MORSE has even limitations!
----------------------------
+But even MORSE has its limitations!
+-----------------------------------
 
 Last but not least, MORSE has some important limitations you must be aware of
 when assessing simulation solutions:
@@ -250,4 +253,6 @@ when assessing simulation solutions:
   on MacOSX, but it has never been tested on Microsoft Windows (it should be
   however fairly easy to port it).
 - As a not-for-profit, academic project, we do not offer any professional
-  support beyond the documentation and the public mailing-lists.
+  support beyond the documentation and the public mailing-lists. However,
+  nothing is stopping third party companies to start providing commercial
+  services around MORSE.
