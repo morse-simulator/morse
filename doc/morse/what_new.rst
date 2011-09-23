@@ -6,21 +6,24 @@ MORSE 0.4 has been code-named the ``multi-node release``.
 General changes
 ---------------
 - Full support for Blender 2.59 and Python 3.2. See the :doc:`updated installation instructions <user/installation>`.
+- A new, reorganized, documentation. You are currently browsing it :-) 
 
 Architectural changes
 ---------------------
 - Added infrastructure for :doc:`multi-node <multinode>` functionality
+- New :doc:`Builder API <dev/builder>` to create scene from Python description. 
+  This allows powerful programmable scene creation, much lighter scenario files, and
+  easier to track changes (since its a text format, instead of binary Blender files).
 - Changed directory structure and file names for ease of use of the Builder API.
-- Use the Builder API to create robots from their description in Python script
-- Use the Python logging interface
+- Pervasive use the Python logging interface
 
 Middlewares
 -----------
 - Added support for multiple middleware bindings per component
 - Added support for services through Pocolibs middleware
 - ROS support for the robot's cameras
-- Added support for HLA middleware
-- Added support for MOOS middleware
+- Added support for :doc:`HLA <user/installation/hla>` middleware
+- Added support for :doc:`MOOS <user/installation/mw/moos>` middleware
 
 New components
 --------------
