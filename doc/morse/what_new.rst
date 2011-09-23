@@ -1,7 +1,7 @@
-What's new in MORSE 0.4?
-========================
+What's new in MORSE 0.4.x?
+==========================
 
-MORSE 0.4 has been code-named the ``multi-node release``.
+The MORSE 0.4.x series has been code-named the ``multi-node release``.
 
 General changes
 ---------------
