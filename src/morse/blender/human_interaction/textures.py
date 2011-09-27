@@ -1,6 +1,9 @@
 from bge import logic
 
 def toggle_grabbed(co):
+    """
+    Show a open or closed hand
+    """
     message = co.sensors['Message']
 
 
