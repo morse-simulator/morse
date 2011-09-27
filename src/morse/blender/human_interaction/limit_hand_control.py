@@ -10,14 +10,18 @@ human = sobList['POS_EMPTY']
 
 
 
-try:
-    if human['Manipulate'] == True:
-        limitY.min = -math.sqrt(0.7**2 - (shoulder.position[2]-ow.position[2])**2)
+def limit():
+    """
+    Limit the hand's location to a sphere around the shoulder
+    """
+    try:
+        if human['Manipulate'] == True:
+            limitY.min = -math.sqrt(0.7**2 - (shoulder.position[2]-ow.position[2])**2)
 
-        limitY.max = -limitY.min
-        co.activate(limitY)
-    
-    else:
-        co.deactivate(limitY)
-except ValueError:
-    pass
+            limitY.max = -limitY.min
+            co.activate(limitY)
+        
+        else:
+            co.deactivate(limitY)
+    except ValueError:
+        pass

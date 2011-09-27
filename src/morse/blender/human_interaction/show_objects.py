@@ -1,12 +1,14 @@
-from bge import logic
-import bge
+from bge import logic, events
 
 scene = logic.getCurrentScene()
 co = logic.getCurrentController()
 keyboard = co.sensors['All_Keys']
 
 def show(contr):
-    obj_list = []
+    """
+    Add a text over all interactable Objects in the scene
+    """
+
     for obj in scene.objects:
         if 'Object' in obj:
             ob1 = scene.addObject('Text_proxy', obj, 0)
@@ -38,17 +40,22 @@ def show(contr):
             
 
 
-def hide(contr):    #end all added objects
+def hide(contr):
+    """
+    Delete all descriptions (Property 'tmp')
+    """
     for obj in scene.objects:
         if 'tmp' in obj:
             obj.endObject()
 
 def test(contr):
-
+    """
+    Test whether to show or hide the text
+    """
     keylist = keyboard.events
 
     for key in keylist:
-        if key[0] == bge.events.LEFTALTKEY:
+        if key[0] == events.LEFTALTKEY:
             if key[1] == logic.KX_INPUT_JUST_ACTIVATED:
                 show(contr)
                 #show text over all objects
@@ -56,4 +63,3 @@ def test(contr):
                 hide(contr)
                 #hide text of all objects
                 
-
