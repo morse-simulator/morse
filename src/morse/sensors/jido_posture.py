@@ -110,8 +110,9 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
         logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         ############################# KUKA joints ##############################
-
-        segment = self.kuka_obj.children[0]
+		
+        #print('################# ============> children[0]: %s '%self.kuka_obj.children[0].children)
+        segment = self.kuka_obj.children[0].children[-1]
         self._angles = []
         
         # Gather all the children of the object which are the segments of the kuka-arm
@@ -132,10 +133,11 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
                 self._angles.append(segment_euler[2])
 
             try:
-                segment = segment.children[0]
+                segment = self.kuka_obj.children[0].children[-1-i]
             # Exit when there are no more children
             except IndexError as detail:
                 break
+                
         ############################# Hand data over to middleware ##############################
 
         self.local_data['x'] = float(x)
