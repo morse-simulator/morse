@@ -1,6 +1,5 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 import bpy
-#import logging; logger = logging.getLogger("morse." + __name__)
-#logger.setLevel(logging.DEBUG)
 
 from morse.builder.data import *
 
@@ -129,10 +128,28 @@ class AbstractComponent(object):
         o.game.properties[n].type = t
         o.game.properties[n].value = v
 
-    def configure_mw(self, mw, config=None):
+    def configure_mw(self, mw, config=None, method=None, path=None):
         # Configure the middleware for this component
         if not config:
-            config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
+            if not method:
+                try:
+                    config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
+                except KeyError:
+                    logger.warning("%s: default middleware method"%self.name)
+                    # set the default method either it is an Actuator or a Sensor
+                    method = 'XXX_message'
+                    prop = self._blendobj.game.properties
+                    if 'Path' in prop:
+                        if prop['Path'].value.startswith('morse/sensors/'):
+                            method = 'post_message'
+                        elif prop['Path'].value.startswith('morse/actuators/'):
+                            method = 'read_message'
+                    config = [MORSE_MIDDLEWARE_MODULE[mw], method]
+            else:
+                if not path:
+                    config = [MORSE_MIDDLEWARE_MODULE[mw], method]
+                else:
+                    config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
         AbstractComponent._config.link_mw(self, config)
 
     def configure_service(self, mw):
