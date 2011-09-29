@@ -58,8 +58,8 @@ Configuring the middlewares
 +++++++++++++++++++++++++++
 .. code-block:: python
 
-    gyroscope.configure('ros')
-    motion.configure('ros')
+    gyroscope.configure_mw('ros')
+    motion.configure_mw('ros')
 
 The middleware components will automatically be appended to the scene when necessary.
 
