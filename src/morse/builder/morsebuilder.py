@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import bpy
 import json
+from morse.core.exceptions import MorseError
 from morse.builder.abstractcomponent import *
 
 """
@@ -121,6 +122,9 @@ class Environment(Component):
     the default location and orientation of the camera, the Blender GE settings
     and also writes the 'component_config.py' file.
     """
+    
+    multinode_distribution = dict()
+    
     def __init__(self, name=None):
         if name:
             Component.__init__(self, 'environments', name)
@@ -128,8 +132,9 @@ class Environment(Component):
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]
         self._environment_file = name
+        self._multinode_configured = False
 
-    def _write(self):
+    def _write_config(self):
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpy.data.texts.keys():
             bpy.ops.text.new()
@@ -144,7 +149,48 @@ class Environment(Component):
         cfg.write('\n')
         cfg.write('overlays = ' + json.dumps(cfg_overlay, indent=1) )
         cfg.write('\n')
+        
+    def _write_multinode(self, node_name):
+        """ Configure this node according to its name
+            and the multinode_distribution dictionnary.
+        """
+        if not self._multinode_configured:
+            return
+        if not node_name in self.multinode_distribution.keys():
+            logger.warning("Node " + node_name + " is not defined in the " + \
+                "env.multinode_distribution dict. It will manage no robot!")
+            self.multinode_distribution[node_name] = []
+        for obj in bpy.data.objects:
+            p = obj.game.properties
+            # Here we check that all objects declared for this node are robots
+            if obj.name in self.multinode_distribution[node_name]:
+                if not 'Robot_Tag' in p:
+                    logger.warning(obj.name + " is not a robot!." + \
+                        " Will not be published by this MORSE node.")
+                else:
+                    logger.info("Node " + node_name + \
+                        " will publish robot" + obj.name)
+            # Here, we make external other robots
+            if 'Robot_Tag' in p:
+                if not obj.name in self.multinode_distribution[node_name]:
+                    logger.debug("Node " + node_name + \
+                        " will not publish robot " + obj.name)
+                    p['Robot_Tag'].name = 'External_Robot_Tag'
 
+        """ Write the 'multinode_config.py' script """
+        node_config = { 'protocol': self._protocol,
+                        'node_name': node_name,
+                        'server_address': self._server_address,
+                        'server_port': self._server_port,}
+        # Create the config file if it does not exist
+        if not 'multinode_config.py' in bpy.data.texts.keys():
+            bpy.ops.text.new()
+            bpy.data.texts[-1].name = 'multinode_config.py'
+        cfg = bpy.data.texts['multinode_config.py']
+        cfg.clear()
+        cfg.write('node_config = ' + json.dumps(node_config, indent=1) )
+        cfg.write('\n')
+    
     def place_camera(self, location):
         """ Store the position that will be givent to the default camera
         Expected argument is a list with the desired position for the camera
@@ -157,14 +203,21 @@ class Environment(Component):
         """
         self._camera_rotation = rotation
 
-    def create(self):
+    def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
         """
+        # Default node name
+        if name == None:
+            try:
+                name = os.environ["MORSE_NODE"]
+            except KeyError:
+                name = os.uname()[1]
         # Insert modifiers into the scene
         for mod in scene_modifiers:
             Modifier(mod)
-        # Write the configuration of the middlewares
-        self._write()
+        # Write the configuration of the middlewares, and node configuration
+        self._write_config()
+        self._write_multinode(name)
         if not 'Scene_Script_Holder' in bpy.data.objects:
             # Add the necessary objects
             base = Component('props', 'basics')
@@ -192,22 +245,15 @@ class Environment(Component):
         if isinstance(value, bool):
             bpy.data.scenes[0].game_settings.show_physics_visualization = value
 
-    def configure_node(self, protocol='socket', node_name='node', \
-                       server_address='localhost', server_port='65000'):
-        """ Write the 'multinode_config.py' script """
-        node_config = { 'protocol': protocol,
-                        'node_name': node_name,
-                        'server_address': server_address,
-                        'server_port': server_port,}
-        # Create the config file if it does not exist
-        if not 'multinode_config.py' in bpy.data.texts.keys():
-            bpy.ops.text.new()
-            bpy.data.texts[-1].name = 'multinode_config.py'
-        cfg = bpy.data.texts['multinode_config.py']
-        cfg.clear()
-        cfg.write('node_config = ' + json.dumps(node_config, indent=1) )
-        cfg.write('\n')
-        
+    def configure_multinode(self, protocol='socket', 
+            server_address='localhost', server_port='65000', distribution=None):
+        self._protocol = protocol
+        self._server_address = server_address
+        self._server_port = server_port
+        if distribution != None:
+            self.multinode_distribution = distribution
+        self._multinode_configured = True
+    
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

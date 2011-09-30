@@ -4,7 +4,7 @@ from morse.builder.morsebuilder import *
 
 """
 This tutorial is dedicated to multi-node simulation management.
-It contains three controlable robots whose simulation will be distributed on different nodes.
+It contains two controlable robots whose simulation will be distributed on different nodes.
 """
 
 ### Scene ###
@@ -33,8 +33,11 @@ mana.append(mana_gyro)
 mana.location = [0,-4,0]
 
 ### HLA Config ###
-env.configure_node(protocol="hla", node_name="B")
-mana.make_external()
+env.configure_multinode(protocol="hla",
+    distribution = {
+        'nodeA': ['Dala'],
+        'nodeB': ['Mana'],
+    })
 
 ### Configure MORSE ###
 env.create()

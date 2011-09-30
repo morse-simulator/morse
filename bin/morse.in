@@ -300,7 +300,7 @@ def prelaunch():
         "You can also run 'morse check' for more details.")
         sys.exit()
 
-def launch_simulator(scene=None, script=None):
+def launch_simulator(scene=None, script=None, node_name=None):
     """Starts Blender on an empty new scene or with a given scene."""
     
     global morse_prefix, blender_exec, default_scene_abspath
@@ -330,6 +330,10 @@ def launch_simulator(scene=None, script=None):
     env = os.environ
     env["PYTHONPATH"] = ":".join(sys.path)
 
+    # Add the MORSE node name to env.
+    if node_name != None:
+        env["MORSE_NODE"] = node_name
+    
     #Replace the current process by Blender
     if script != None:
         logger.info("Executing Blender script: " + script)
@@ -384,6 +388,7 @@ if __name__ == '__main__':
 
     
     if len(sys.argv) > 1:
+        
         if sys.argv[1] in ["help", "--help", "-h"]:
             if len(sys.argv) > 2:
                 help(sys.argv[2])
@@ -419,13 +424,15 @@ if __name__ == '__main__':
                 logger.error("'run' option expect exactly one option (a filename)")
                 sys.exit()
         elif sys.argv[1] in ["exec"]:
-            if len(sys.argv) == 3:
-                prelaunch()
-                launch_simulator(script=sys.argv[2])
-            else:
-                logger.error("'exec' option expect exactly one option (a filename)")
+            if len(sys.argv) < 3:
+                logger.error("'exec' option expect at least one option (a filename)")
                 sys.exit()
-        
+            prelaunch()
+            node_name = os.uname()[1]
+            if len(sys.argv) > 3:
+                node_name = sys.argv[3]
+            launch_simulator(script=sys.argv[2], node_name=node_name)
+            
         else:
             scene = None
             script = None
