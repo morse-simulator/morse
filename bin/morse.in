@@ -446,7 +446,7 @@ if __name__ == '__main__':
                     script = arg
                     break
             if not scene and not script:
-                logger.error("Unknown option: " + args)
+                logger.error("Unknown option: " + str(args))
                 help()
                 sys.exit()
             prelaunch()
