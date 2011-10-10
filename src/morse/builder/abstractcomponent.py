@@ -17,8 +17,6 @@ class Configuration(object):
         cfg_service.setdefault(component.name, []).append(service_cfg)
 
     def link_modifier(self, component, modifier_cfg):
-        mod_class = MORSE_MODIFIERS[modifier_cfg[0]]
-        modifier_cfg[0] = mod_class
         cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, klass,  manager, overlay_cfg):
@@ -156,9 +154,10 @@ class AbstractComponent(object):
         service = MORSE_SERVICE_DICT[mw]
         AbstractComponent._config.link_service(self, service)
 
-    def configure_modifier(self, mod):
+    def configure_modifier(self, mod, config=None):
         # Configure the middleware for this component
-        config = mod
+        if not config:
+            config = MORSE_MODIFIER_DICT[mod][self._blendname]
         AbstractComponent._config.link_modifier(self, config)
         
     def configure_overlay(self, manager, overlay):

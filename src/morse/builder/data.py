@@ -18,7 +18,7 @@ MORSE_MODIFIERS = {
 }
 
 """
-MORSE_MW_MODULES:
+MORSE_MIDDLEWARE_MODULE:
 path to the middleware modules
 """
 MORSE_MIDDLEWARE_MODULE = {
@@ -27,6 +27,20 @@ MORSE_MIDDLEWARE_MODULE = {
   'yarp': 'morse.middleware.yarp_mw.MorseYarpClass',
   'pocolibs': 'morse.middleware.pocolibs_mw.MorsePocolibsClass',
   'text': 'morse.middleware.text_mw.TextOutClass',
+}
+
+"""
+MORSE_MODIFIER_DICT:
+associate a modifier function to a component.
+"""
+MORSE_MODIFIER_DICT = {
+  'NED': {
+    'pose': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
+    'gps': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
+    'gyroscope': [MORSE_MODIFIERS['NED'], 'blender_to_ned_angle'],
+    'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
+    'orientation': [MORSE_MODIFIERS['NED'], 'ned_angle_to_blender'],
+  },
 }
 
 """
