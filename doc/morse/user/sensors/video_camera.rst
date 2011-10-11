@@ -37,6 +37,8 @@ The Empty object corresponding to this sensor has the following parameters:
 - **cam_focal**: (double) camera focal length as defined in Blender (note: in
   Blender this parameter unit is "millimeters". This is actually misleading, as
   there is no dimension associated to Blender units.)
+- **Vertical_Flip**: (Boolean) flag that determines whether the image should be 
+  flipped.
 
 Camera calibration matrix
 -------------------------

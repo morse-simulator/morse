@@ -445,6 +445,10 @@ if __name__ == '__main__':
                 if arg.endswith(".py"):
                     script = arg
                     break
+            if not scene and not script:
+                logger.error("Unknown option: " + str(args))
+                help()
+                sys.exit()
             prelaunch()
             launch_simulator(scene, script)
     

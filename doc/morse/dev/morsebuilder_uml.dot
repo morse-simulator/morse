@@ -15,11 +15,11 @@ digraph G {
     fontname = "DejaVu Sans Mono"
     fontsize = 8
     color = "black"
-    arrowhead = empty
+    arrowhead = onormal
   ]
 
   Configuration [
-    label = "{Configuration|+ middleware : dict\l+ modifier : dict\l+ service : dict\l|+ write()\l+ link(Component [, config])\l}"
+    label = "{Configuration|+ middleware : dict\l+ modifier : dict\l+ service : dict\l|}"
   ]
   Component [
     label="{Component|+ name : string\l+ location : Vector\l+ scale : Vector\l+ rotation_euler : Vector\l|+ translate(float x, float y, float z)\l+ rotate(float x, float y, float z)\l+ properties(dict)\l+ append(Component)\l}"
@@ -33,18 +33,18 @@ digraph G {
   Controller [
     label = "{Controller|\l|}"
   ]
-  Middleware [
-    label = "{Middleware|\l|+ configure(Component [, config])\l}"
+  Environement [
+    label = "{Environement|\l|}"
   ]
 
   Robot -> Component
   Sensor -> Component
   Controller -> Component
-  Middleware -> Component
-  Component -> Configuration [arrowhead=open, arrowtail=diamond, 
-    label=" _config ", headlabel=" 1 ", taillabel=" 1 ", labelfontcolor="turquoise"]
-  Component -> Component [arrowhead=open, arrowtail=ediamond, 
-    label=" children ", headlabel=" 1 ", taillabel=" * ", labelfontcolor="turquoise"]
-  // http://www.graphviz.org/doc/info/attrs.html#k:arrowType
+  Environement -> Component
+  Component -> Configuration [dir=both, arrowhead=vee, arrowtail=diamond, 
+    taillabel=" * ", label=" _config ", headlabel=" 1 ", labelfontcolor="turquoise"]
+  Component -> Component [dir=both, arrowhead=vee, arrowtail=odiamond, 
+    taillabel=" 1 ", label=" children ", headlabel=" * ", labelfontcolor="turquoise"]
+  // http://graphviz.org/content/attrs#karrowType
 }
 

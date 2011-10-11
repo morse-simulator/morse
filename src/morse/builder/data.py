@@ -48,6 +48,8 @@ MORSE_MIDDLEWARE_DICT = {
     'gyroscope': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
     'proximity': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
     'infrared': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_range', 'morse/middleware/ros/infrared'],
+    'battery': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_float32', 'morse/middleware/ros/battery'],
+    'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light']
   },
 
   'socket': {
