@@ -37,12 +37,12 @@ def move(contr):
     for key in keylist:
         # key[0] == bge.events.keycode, key[1] = status
         if key[1] == bge.logic.KX_INPUT_ACTIVE:
-            # Also add the key corresponding key for an AZERTY keyboard
+            # Also add the corresponding key for an AZERTY keyboard
             if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 move_speed[2] = -speed
             elif key[0] == bge.events.SKEY:
                 move_speed[2] = speed
-            # Also add the key corresponding key for an AZERTY keyboard
+            # Also add the corresponding key for an AZERTY keyboard
             elif key[0] == bge.events.AKEY or key[0] == bge.events.QKEY:
                 move_speed[0] = -speed
             elif key[0] == bge.events.DKEY:
@@ -51,6 +51,10 @@ def move(contr):
                 move_speed[1] = speed
             elif key[0] == bge.events.FKEY:
                 move_speed[1] = -speed
+            else:
+                move_speed[0] = 0
+                move_speed[1] = 0
+                move_speed[2] = 0
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
