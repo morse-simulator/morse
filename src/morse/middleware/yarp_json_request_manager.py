@@ -112,6 +112,7 @@ class YarpRequestManager(RequestManager):
             bottle_in = port.read(False)
             if bottle_in != None:
                 logger.debug("Received command from port '%s'" % (component_name))
+                id = 'unknown'
 
                 try:
                     try:
@@ -122,7 +123,7 @@ class YarpRequestManager(RequestManager):
                     logger.info("Got '%s | %s | %s' (id = %s) from %s" % (component_name, service, params, id, component_name))
 
                     # on_incoming_request returns either 
-                    #(True, result) if it's a synchronous
+                    # (True, result) if it's a synchronous
                     # request that has been immediately executed, or
                     # (False, request_id) if it's an asynchronous request whose
                     # termination will be notified via
@@ -144,10 +145,10 @@ class YarpRequestManager(RequestManager):
 
 
                 except MorseRPCInvokationError as e:
-                        if port in self._results_to_output:
-                            self._results_to_output[port].append((id, (status.FAILED, e.value)))
-                        else:
-                            self._results_to_output[port] = [(id, (status.FAILED, e.value))]
+                    if port in self._results_to_output:
+                        self._results_to_output[port].append((id, (status.FAILED, e.value)))
+                    else:
+                        self._results_to_output[port] = [(id, (status.FAILED, e.value))]
         
         if self._results_to_output:
             for component_name, port in self._yarp_request_ports.items():
@@ -156,7 +157,8 @@ class YarpRequestManager(RequestManager):
                         response = OrderedDict([
                             ('id', r[0]),
                             ('status', r[1][0]),
-                            ('reply', "%s" % str(r[1][1]) if r[1][1] else "") ])
+                            ('reply', (r[1][1] if r[1][1] else "")) ])
+                            #('reply', "%s" % str(r[1][1]) if r[1][1] else "") ])
                         json_response = json.dumps(response)
                         # Send the reply through the same yarp port
                         reply_port = self._yarp_reply_ports[component_name]
@@ -177,7 +179,7 @@ class YarpRequestManager(RequestManager):
             request_msg = bottle.get(0).toString()
             request = json.loads(request_msg, object_pairs_hook=OrderedDict)
         except (IndexError, ValueError) as e:
-            raise MorseRPCInvokationError('Malformed request: expected a json econded request with this format:\n"{\"id\":\"13\", \"component\":\"Motion_Controller\", \"service\":\"goto\", \"params\":\"[5, 5, 0]\"}"')
+            raise MorseRPCInvokationError('Malformed request: expected a json econded request with this format: \'{id:13, component:Motion_Controller, service:goto, params:[5, 5, 0]}\' (all values enclosed in strings)')
 
         id = request['id']
         component_name = request['component']
