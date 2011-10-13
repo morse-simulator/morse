@@ -15,11 +15,11 @@ Files
 Local data 
 ----------
 
--  **rx**: (float) rotation around X axis
--  **ry**: (float) rotation around Y axis
--  **rz**: (float) rotation around Z axis
+-  **yaw**: (float) rotation around Z axis
+-  **pitch**: (float) rotation around Y axis
+-  **roll**: (float) rotation around X axis
 
 Applicable modifiers 
 --------------------
 
-No available modifiers
+- :doc:`NED <../modifiers/ned>`: Changes the angles reference to use North (X), East (Y), Down (Z)
