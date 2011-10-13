@@ -3,16 +3,18 @@ KUKA LWR arm actuator
 
 This actuator reads a list of angles for the segments of the LWR arm
 and applies them as local rotations.
+It is a subclass of the :doc:`armature_actuator <armature_actuator>`.
 Angles are expected in radians.
 
 Files 
 -----
 
--  Blender: Unlike other actuators, this one does not require linking
-   an empty object and making it child of the robot. However, it will
-   only work if the robot has the arm in the file:
-   ``$MORSE_ROOT/data/morse/robots/kuka_arm.blend``
--  Python: ``$MORSE_ROOT/src/morse/actuators/kuka.py``
+-  Blender: ``$MORSE_ROOT/data/morse/robots/kuka_lwr.blend``
+
+   Unlike other actuators, this one also includes the mesh of the arm
+   (composed of 8 segments) and an armature that controls its movement.
+
+-  Python: ``$MORSE_ROOT/src/morse/actuators/kuka_lwr.py``
 
 Local data 
 ----------
@@ -21,20 +23,31 @@ Local data
   :align: center
   :width: 300
 
--  **seg0**: (float) rotation for the first segment. Around Z axis.
--  **seg1**: (float) rotation for the second segment. Around Y axis.
--  **seg2**: (float) rotation for the third segment. Around Z axis.
--  **seg3**: (float) rotation for the fourth segment. Around Y axis.
--  **seg4**: (float) rotation for the fifth segment. Around Z axis.
--  **seg5**: (float) rotation for the sixth segment. Around Y axis.
--  **seg6**: (float) rotation for the seventh segment. Around Z axis.
+There are 7 floating point values, named after the bones in the armature:
+
+-  **Bone**: (float) rotation for the first segment. Around Z axis.
+-  **Bone.001**: (float) rotation for the second segment. Around Y axis.
+-  **Bone.002**: (float) rotation for the third segment. Around Z axis.
+-  **Bone.003**: (float) rotation for the fourth segment. Around Y axis.
+-  **Bone.004**: (float) rotation for the fifth segment. Around Z axis.
+-  **Bone.005**: (float) rotation for the sixth segment. Around Y axis.
+-  **Bone.006**: (float) rotation for the seventh segment. Around Z axis.
+
+These names are generated dynamically, so that if there are more than one arm
+in the scene, there will not be any conflicts.
 
 Configurable parameters
 -----------------------
 
--  **speed**: (float) rotation speed for the movements of the segments
+No configurable parameters
 
 Applicable modifiers 
 --------------------
 
 No available modifiers
+
+
+Available services
+------------------
+
+See the documentation for the :doc:`armature_actuator <armature_actuator>`.
