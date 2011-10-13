@@ -81,6 +81,10 @@ def parse_response(msg, id_):
     """
     Parse a message that is a response from a MORSE service 
     """
+    # Do not parse if the request returned a fail message
+    if "FAIL" in msg:
+        return ""
+
     msg = msg.strip() # Remove EOL character
     msg = msg.replace(id_ + " ", '') # Remove request id
     msg = msg.replace("SUCCESS ", '') # Remove SUCCESS status
