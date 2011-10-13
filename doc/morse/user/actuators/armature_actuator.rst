@@ -20,6 +20,8 @@ Files
 Available services
 ------------------
 
+All services provided by this actuator are synchronous
+
 - **get_channels**: Returns a list with the name of the bones in the armature
 
 - **get_rotations**: Returns a dictionary, where the key is the name of the channel and the value is a tuple containing the euler rotation of the bone

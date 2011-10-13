@@ -51,3 +51,9 @@ Available services
 ------------------
 
 See the documentation for the :doc:`armature_actuator <armature_actuator>`.
+
+Use of the KUKA LWR
+-------------------
+
+A sample python script of how to access the KUKA LWR via sockets can be found at:
+``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
