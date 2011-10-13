@@ -28,7 +28,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 # OF SUCH DAMAGE.
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
 import math
 import morse.core.actuator
 import morse.helpers.math as morse_math
@@ -51,8 +50,18 @@ class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
         """     
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(ArmatureActuatorClass,self).__init__(obj, parent)
         
+        # Initialize the values in local_data for each segment
+        armature = self.blender_obj
+        for channel in armature.channels:
+            self.local_data[channel.name] = 0.0
+
+        # The axis along which the different segments rotate
+        # Considering the constraints defined for the armature
+        #  in the Blender file
+        self._dofs = self.get_dofs()
+
         logger.info('Component initialized')
         
 
