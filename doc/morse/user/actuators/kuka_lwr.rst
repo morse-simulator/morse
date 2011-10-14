@@ -6,6 +6,25 @@ and applies them as local rotations.
 It is a subclass of the :doc:`armature_actuator <armature_actuator>`.
 Angles are expected in radians.
 
+To install additional components at the tip of the arm using the
+MORSE Builder API, it is necessary to make the additional component as a
+child of the arm, and to place the component in the correct position with
+respect to the kuka arm.
+Example::
+
+    kuka_arm = Actuator('kuka_lwr')
+    kuka_arm.translate(x=0.1850, y=0.2000, z=0.9070)
+    kuka_arm.rotate(x=1.5708, y=1.5708)
+    Jido.append(kuka_arm)
+
+    gripper = Actuator('gripper')
+    gripper.translate(z=1.2800)
+    kuka_arm.append(gripper)
+
+When the simulation is started any objects that are children of the KUKA arm
+will automatically be changed to be children of the last segment of the arm.
+
+
 Files 
 -----
 
