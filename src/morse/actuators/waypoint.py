@@ -49,6 +49,9 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Convert the direction tolerance to radians
         self._angle_tolerance = math.radians(10)
 
+        # Variable to store current speed. Used for the stop/resume services
+        self._previous_speed = 0
+
         # Choose the type of function to move the object
         #self._type = 'Velocity'
         self._type = 'Position'
@@ -98,7 +101,6 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     @async_service
     def goto(self, x, y, z, tolerance=0.5, speed=1.0):
         """ Provide new coordinates for the waypoint destination """
-        #self._set_service_callback()
         self.local_data['x'] = x
         self.local_data['y'] = y
         self.local_data['z'] = z
@@ -110,18 +112,33 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     #@async_service
     def stop(self):
         """ Interrup the movement of the robot """
-        #self._set_service_callback()
-        self.local_data['x'] = self.blender_obj.worldPosition[0]
-        self.local_data['y'] = self.blender_obj.worldPosition[1]
-        self.local_data['z'] = self.blender_obj.worldPosition[2]
-        self.local_data['tolerance'] = 0.5
+        #self.local_data['x'] = self.blender_obj.worldPosition[0]
+        #self.local_data['y'] = self.blender_obj.worldPosition[1]
+        #self.local_data['z'] = self.blender_obj.worldPosition[2]
+        #self.local_data['tolerance'] = 0.5
+        self._previous_speed = self.local_data['speed']
+        self.local_data['speed'] = 0
+
+        # Set the status of the robot
+        self.robot_parent.move_status = "Stop"
+
+        return self.robot_parent.move_status
+
+    @service
+    def resume(self):
+        """ Restore the previous speed and keep going towards the waypoint """
+        self.local_data['speed'] = self._previous_speed
+        self._previous_speed = 0
+
+        # Set the status of the robot
+        self.robot_parent.move_status = "Transit"
 
         return self.robot_parent.move_status
 
 
     @service
     def get_status(self):
-        """ Return the current status (Transit or Stop) """
+        """ Return the current status (Transit, Arrived or Stop) """
         return self.robot_parent.move_status
 
 
@@ -155,7 +172,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # If the target has been reached, change the status
         if distance-self.local_data['tolerance'] <= 0:
 
-            parent.move_status = "Stop"
+            parent.move_status = "Arrived"
 
             #Do we have a runing request? if yes, notify the completion
             self.completed(status.SUCCESS, parent.move_status)
@@ -164,6 +181,10 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             logger.debug("Robot {0} move status: '{1}'".format(parent, parent.move_status))
 
         else:
+            # Do nothing if the speed is zero
+            if speed == 0:
+                return
+
             parent.move_status = "Transit"
 
             ### Get the angle of the robot ###
