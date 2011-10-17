@@ -31,6 +31,10 @@ in the correct position with respect to the arm. Example::
     kuka_arm.append(gripper)
 
 
+.. warning:: This actuator does not simulate the physical interaction of the gripper
+    fingers with the objects it grabs. Its purpose is to abstract the action of
+    taking an object, for human-robot interaction experiments.
+
 Files
 -----
 
