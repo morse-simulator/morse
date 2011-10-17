@@ -63,7 +63,9 @@ MORSE_MIDDLEWARE_DICT = {
         'proximity': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
         'infrared': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_range', 'morse/middleware/ros/infrared'],
         'battery': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_float32', 'morse/middleware/ros/battery'],
-        'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light']
+        'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
+        'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
+		'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_velocity_twist'],
     },
 
     'socket': {
