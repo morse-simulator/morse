@@ -22,6 +22,7 @@ import subprocess
 import shutil
 import glob
 import re
+import tempfile
 
 VERSION = "@PACKAGE_VERSION@"
 
@@ -85,26 +86,24 @@ def check_blender_python_version(blender_path):
     """ Creates a small Python script to execute within Blender and get the 
     current Python version bundled with Blender
     """
+    with tempfile.NamedTemporaryFile() as tmpF:
+        tmpF.write(b"import sys\n")
+        tmpF.write(b"print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
+        tmpF.flush()
     
-    with open("python_checker.py", "w") as f:
-        f.write("import sys\n")
-        f.write("print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
+        try:
+            version_str = subprocess.Popen(
+                      [blender_path, '-b', '-P', tmpF.name], 
+                      stdout=subprocess.PIPE).communicate()[0]
+            version_str = version_str.decode()
+            version = version_str.split('>>>')[1][0:3]
+        except (OSError, IndexError):
+            return None
     
-    try:
-        version_str = subprocess.Popen(
-                  [blender_path, '-b', '-P', 'python_checker.py'], 
-                  stdout=subprocess.PIPE).communicate()[0]
-        version_str = version_str.decode()
-        version = version_str.split('>>>')[1][0:3]
-    except (OSError, IndexError):
-        os.remove("python_checker.py")
-        return None
+        logger.info("Checking version of Python within Blender " + blender_path + \
+                        "... Found v." + version)
     
-    logger.info("Checking version of Python within Blender " + blender_path + \
-                    "... Found v." + version)
-    
-    os.remove("python_checker.py")
-    return version
+        return version
         
 def check_default_scene(prefix):
     
