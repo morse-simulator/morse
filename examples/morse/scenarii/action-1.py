@@ -77,9 +77,9 @@ Motion_Controller_001.configure_mw('pocolibs')
 Stereo.configure_mw('pocolibs')
 Gyroscope.configure_mw('pocolibs')
 
-GPS_001.configure_modifier(['NED', 'blender_to_ned'])
-Motion_Controller.configure_modifier(['NED', 'ned_to_blender'])
-Gyroscope_001.configure_modifier(['NED', 'blender_to_ned_angle'])
+GPS_001.configure_modifier('NED')
+Motion_Controller.configure_modifier('NED')
+Gyroscope_001.configure_modifier('NED')
 
 #env = Environment('land-1/buildings_2')
 env = Environment('land-1/trees')
