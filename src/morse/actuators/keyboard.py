@@ -14,9 +14,18 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         # Choose the type of function to move the object
         #self._type = 'Velocity'
-        #self.speed = 2.0
         self._type = 'Position'
-        self.speed = 0.05
+
+        try:
+            self._speed = obj['Speed']
+        except KeyError as detail:
+            self._speed = 1.0
+            logger.debug("Using default speed of 1.0")
+
+        # Correct the speed considering the Blender clock
+        if self._type == 'Position':
+            ticks = bge.logic.getLogicTicRate()
+            self._speed = self._speed / ticks
 
         logger.info('Component initialized')
 
@@ -36,16 +45,16 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         for key, status in pressed_keys:
             logger.debug("GOT: {0}, STATUS {1}".format(key, status))
             if key == bge.events.UPARROWKEY:
-                vx = self.speed
+                vx = self._speed
 
             if key == bge.events.DOWNARROWKEY:
-                vx = -self.speed
+                vx = -self._speed
 
             if key == bge.events.LEFTARROWKEY:
-                rz = self.speed / 2.0
+                rz = self._speed / 2.0
 
             if key == bge.events.RIGHTARROWKEY:
-                rz = -self.speed / 2.0
+                rz = -self._speed / 2.0
 
         # Get the Blender object of the parent robot
         parent = self.robot_parent.blender_obj

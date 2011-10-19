@@ -19,6 +19,11 @@ Files
 -  Blender: ``$MORSE_ROOT/data/morse/actuators/keyboard.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/keyboard.py``
 
+Configurable parameters
+-----------------------
+
+-  **Speed**: (float) Movement speed of the parent robot
+
 Applicable modifiers
 --------------------
 
