@@ -14,6 +14,8 @@ import math
 import morse.core.actuator
 import morse.helpers.math as morse_math
 from morse.core.services import service
+from morse.core.exceptions import MorseRPCInvokationError
+
 
 class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
     """
@@ -36,6 +38,15 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         self._near_object = None
         self._grabbed_object = None
+
+        # Variable to indicate whether the mesh should animate closing
+        #  or opening the gripper
+        self._animation = ''
+
+        # Get references to the Logic Bricks to play animations
+        self._contr = self.blender_obj.controllers[0]
+        self._close_anim = self._contr.actuators['Close_anim']
+        self._open_anim = self._contr.actuators['Open_anim']
 
         logger.info('Component initialized')
         logger.setLevel(logging.DEBUG)
@@ -74,13 +85,21 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
                 # Parent the selected object to the gripper
                 self._grabbed_object = self._near_object
                 self._grabbed_object.setParent (self.blender_obj)
-                logger.debug("Object: %s" % type(self._grabbed_object))
                 logger.debug("New parent: %s" % self._grabbed_object.parent)
                 self._near_object = None
+
+                # Execute the close grip animation:
+                self._animation = 'close'
                 return True
 
-        # Default response
-        return False
+            else:
+                message = "No 'Graspable' object within range of gripper"
+                print (message)
+                raise MorseRPCInvokationError(message)
+        else:
+            message = "Already holding an object"
+            print (message)
+            raise MorseRPCInvokationError(message)
 
 
     @service
@@ -103,10 +122,14 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
             #previous_object.setAngularVelocity([0, 0, 0])
             # Clear the object from dragged status
             self._grabbed_object = None
+
+            # Execute the open grip animation:
+            self._animation = 'open'
             return True
 
-        # Default response
-        return False
+        else:
+            message = "No object currently being held"
+            raise MorseRPCInvokationError(message)
 
 
     def default_action(self):
@@ -114,3 +137,13 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
         Check if an object is within reach of the hand
         """
         self.find_object()
+
+        # Play the animations when necessary
+        if self._animation == 'close':
+            self._contr.activate(self._close_anim)
+            self._animation = ''
+            logger.debug('Playing CLOSE animation')
+        if self._animation == 'open':
+            self._contr.activate(self._open_anim)
+            self._animation = ''
+            logger.debug('Playing OPEN animation')
