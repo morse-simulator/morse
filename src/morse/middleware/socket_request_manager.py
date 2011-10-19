@@ -123,7 +123,19 @@ class SocketRequestManager(RequestManager):
                 logger.info("Accepted new service connection from " + str(addr))
 
             else:
-                req = self._client_sockets[i].readline().strip()
+                req = self._client_sockets[i].readline()
+                # an empty read means that the remote host has
+                # deconnected itself
+                if req == '':
+                    try: # close the socket if it gives an error
+                         # (this can spawn an other error!)
+                        self._client_sockets[i].close()
+                    except socket.error as error_info:
+                        logger.warning("Socket error catched while closing: " \
+                                       + str(error_info))
+                    del self._client_sockets[i]
+                    continue
+                req = req.strip()
 
                 component = service = "undefined"
 
@@ -208,7 +220,7 @@ class SocketRequestManager(RequestManager):
             try:
                 import ast
                 p =  ast.literal_eval(params)
-            except (NameError, SyntaxError) as e:
+            except (NameError, SyntaxError, ValueError) as e:
                 raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 
         return (component, service, p)
