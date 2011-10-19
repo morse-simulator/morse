@@ -8,10 +8,11 @@ Angles are expected in radians.
 Files 
 -----
 
--  Blender: Unlike other actuators, this one does not require linking
-   an empty object and making it child of the robot. However, it will
-   only work if the robot has the arm in the file:
-   ``$MORSE_ROOT/data/morse/robots/PA10.blend``
+-  Blender: ``$MORSE_ROOT/data/morse/actuators/pa_10.blend``
+
+   Unlike other actuators, this one also includes the mesh of the arm
+   (composed of 6 segments).
+
 -  Python: ``$MORSE_ROOT/src/morse/actuators/pa_10.py``
 
 Local data 
