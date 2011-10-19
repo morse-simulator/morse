@@ -622,7 +622,7 @@ def init_supervision_services():
         # Services can be imported *only* after GameLogic.morse_services
         # has been created. Else @service won't know where to register the RPC
         # callbacks.
-        import morse.core.supervision_services
+        import morse.services.supervision_services
 
         logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     except MorseServiceError as e:
