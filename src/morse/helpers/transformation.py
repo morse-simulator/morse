@@ -1,5 +1,6 @@
 import GameLogic
 import mathutils
+from math import sqrt
 
 class Transformation3d:
     """
@@ -95,6 +96,29 @@ class Transformation3d:
         res.matrix = o2m * t3d.matrix
         res.euler = res.matrix.to_euler()
         return res
+
+    def distance(self, t3d):
+        """ 
+        Compute the 3d distance between two transformations. 
+
+        nor self, nor t3d are modified by the call of this method
+        """
+        diff_x = self.x - t3d.x
+        diff_y = self.y - t3d.y
+        diff_z = self.z - t3d.z
+
+        return sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z)
+
+    def distance_2d(self, t3d):
+        """ 
+        Compute the 2d distance between two transformations. 
+
+        nor self, nor t3d are modified by the call of this method
+        """
+        diff_x = self.x - t3d.x
+        diff_y = self.y - t3d.y
+
+        return sqrt(diff_x * diff_x + diff_y * diff_y)
 
     def update(self, obj):
         """
