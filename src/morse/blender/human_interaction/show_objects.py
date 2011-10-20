@@ -11,17 +11,21 @@ def show(contr):
 
     for obj in scene.objects:
         if 'Object' in obj:
-            ob1 = scene.addObject('Text_proxy', obj, 0)
+            textObj = scene.addObject('Text_proxy', obj, 0)
+            # create a new instance of a text object
             if 'Description' in obj:
-                ob1['Text'] = obj['Description']
+                textObj['Text'] = obj['Description']
             else:
-                ob1['Text'] = obj['Object']
-            ob1['tmp'] = 'tmp'  #Property to identify all added text objects
-            ob1.setParent(obj, False, True)
+                textObj['Text'] = obj['Object']
+            textObj['tmp'] = 'tmp'
+            # Property to identify all added text objects
+            textObj.setParent(obj, False, True)
             
             # iterate over all verticies to get the highest
             m_i = 0
-            mesh = obj.meshes[m_i] # There can be more than one mesh (see Blender API for more information), start with the first
+            mesh = obj.meshes[m_i]
+            # There can be more than one mesh
+            # see Blender API for more information
             z = 0
             while mesh != None:
                 for mat in range(0, mesh.numMaterials):
@@ -36,7 +40,8 @@ def show(contr):
                     mesh = None
                     
 
-            ob1.applyMovement([0.0, 0.0, z*1.2])       # set the text over the highest vertex
+            textObj.applyMovement([0.0, 0.0, z*1.2])
+            # set the text over the highest vertex
             
 
 

@@ -23,7 +23,7 @@ RIGHT  = events.DKEY
 TURN_RIGHT = events.EKEY
 BACKWARDS = events.SKEY
 
-if AZERTY == True:
+if AZERTY:
     FORWARDS = events.ZKEY
     LEFT = events.QKEY
     TURN_LEFT = events.AKEY
@@ -158,7 +158,8 @@ def set_human_animation(contr):
         elif key[1] == logic.KX_INPUT_ACTIVE:
             pressed.append(key[0])
     
-    if FORWARDS in pressed or LEFT in pressed or BACKWARDS in pressed or RIGHT in pressed:
+    if (FORWARDS in pressed or LEFT in pressed or BACKWARDS in pressed or
+        RIGHT in pressed):
         armature['movingForward'] = True
     else:
         armature['movingForward'] = False
@@ -179,8 +180,10 @@ def head_control(contr):
     mmb = contr.sensors['MMB']
 
 
-    # If the manipulation mode is active, an object is grabbed and the Middle Mouse Button is pressed, do nothing
-    if human['Manipulate'] and right_hand['selected'] != 'None' and right_hand['selected'] != '' and mmb.positive:
+    # If the manipulation mode is active, an object is grabbed
+    # and the Middle Mouse Button is pressed, do nothing
+    if (human['Manipulate'] and right_hand['selected'] != 'None' and
+        right_hand['selected'] != '' and mmb.positive):
         return
 
     if mmb.positive:
@@ -206,9 +209,11 @@ def head_control(contr):
 
         if not human['FOCUSED']:
             POS_EMPTY.applyRotation([0.0, 0.0, left_right], True)
-            if not ((Head_Empty.localOrientation.to_euler()[1] >= 0.7 and up_down < 0)\
-                    or (Head_Empty.localOrientation.to_euler()[1] <= -0.4 and up_down > 0)) and not human['Manipulate']:
-                #### capping the rotation to prevent the camera to be upside down
+            if not ((Head_Empty.localOrientation.to_euler()[1] >= 0.7
+                     and up_down < 0) or
+                    (Head_Empty.localOrientation.to_euler()[1] <= -0.4
+                     and up_down > 0)) and not human['Manipulate']:
+                # capping the rotation to prevent the camera to be upside down
                 if not mmb.positive:
                     Head_Empty.applyRotation([0.0, -up_down, 0.0], True)
                 target.applyMovement([0.0, 0.0, up_down], True)
@@ -255,8 +260,10 @@ def hand_control(contr):
         back = -50.0 * sensitivity
         target.applyMovement([back, 0.0, 0.0], True)
 
-    # If nothing grabbed or Middle Mouse Button is not pressed, do nothing of the following
-    if right_hand['selected'] == 'None' or right_hand['selected'] == '' or (not mmb.positive):
+    # If nothing grabbed or Middle Mouse Button is not pressed,
+    # do nothing of the following
+    if (right_hand['selected'] == 'None' or right_hand['selected'] == '' or
+        (not mmb.positive)):
         #use head_control for this
         return
 
@@ -400,14 +407,19 @@ def applyrotate(destOr, owner):
     smoothness = 10
     currOr = owner.worldOrientation
     dZ = [0.0,0.0,0.0]
-    for x in range(0, smoothness):
-        dZ = currOr.to_euler()[2] - destOr.to_euler()[2]
-        #Blender allows multiples of 360 deg and negative angles - this is to get rid of those
-        while(dZ < math.pi):
-            dZ = dZ + 2 * math.pi
-        while(dZ > math.pi):
-            dZ = dZ - 2 * math.pi
-        owner.worldOrientation = owner.worldOrientation * Matrix.Rotation(-dZ/(10*smoothness), 3, 'Z')
+
+    dZ = currOr.to_euler()[2] - destOr.to_euler()[2]
+
+    # Blender allows multiples of 360 deg and negative angles
+    # this is to get rid of those
+    while(dZ < math.pi):
+        dZ = dZ + 2 * math.pi
+    while(dZ > math.pi):
+        dZ = dZ - 2 * math.pi
+
+    owner.worldOrientation = (owner.worldOrientation *
+                              Matrix.Rotation(-dZ/(smoothness), 3, 'Z'))
+    # turn around a bit
 
 def rotate(co):
     """
@@ -428,22 +440,37 @@ def rotate(co):
 
     if pos['Manipulate']:
         ow.worldOrientation = pos.worldOrientation
+        # lock camera to head in Manipulation Mode
     else:
         if FORWARDS in k and not(LEFT in k or RIGHT in k):  
             applyrotate(pos.worldOrientation, ow)
         elif LEFT in k and not(FORWARDS in k or BACKWARDS in k):
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)     # turn around 90 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
+            # turn around 90 deg
         elif RIGHT in k and not(FORWARDS in k or BACKWARDS in k):
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)    # turn around 270 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
+            # turn around 270 deg
         elif LEFT in k and FORWARDS in k:
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)  # turn around 45 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
+            # turn around 45 deg
         elif RIGHT in k and FORWARDS in k:
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)    # turn around 315 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
+            # turn around 315 deg
         elif BACKWARDS in k and not(LEFT in k or RIGHT in k):
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi, 3, 'Z'), ow)    # turn around 180 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi, 3, 'Z'), ow)
+            # turn around 180 deg
         elif LEFT in k and BACKWARDS in k:
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)     # turn around 135 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)
+            # turn around 135 deg
         elif RIGHT in k and BACKWARDS in k:
-            applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)    # turn around 225 deg
+            applyrotate(pos.worldOrientation *
+                        Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)
+            # turn around 225 deg
 
 
