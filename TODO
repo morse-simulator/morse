@@ -54,10 +54,21 @@ stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
 
+- PR2: what is done? what is missing?
+
 HRI
 ---
 
 - Finish the integration of TUM human in MORSE
+  - Last round of patches from Sebastian
+  - Check all paths are ok (add human_interaction/ to sys.path)
+  - Sort out the CameraFP/human bad interaction
+  - Document a bit (eg, the layer the human get added to)
+  - Add keyboard shortcuts to the help overlay.
+- Add two modes to operate the human: a "Game mode" (with first person view) and a "God mode" 
+  (control the human from outside)
+- Complete the Builder API to be easy to use for HRI needs
+- Add TUM models (appartment + kitchen) to the available environment models.
 - Properly implement the "human" as a robot: Change the script in object oriented form
 
 ================
