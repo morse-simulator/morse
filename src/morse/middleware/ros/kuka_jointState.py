@@ -25,13 +25,13 @@ def callback_wp(data, component_instance):
         
         #component_instance.local_data["x"] = data.linear.x
         #component_instance.local_data["y"] = data.linear.y
-        component_instance.local_data["Bone"] = data.position[0]
-        component_instance.local_data["Bone.001"] = data.position[1]
-        component_instance.local_data["Bone.002"] = data.position[2]
-        component_instance.local_data["Bone.003"] = data.position[3]
-        component_instance.local_data["Bone.004"] = data.position[4]
-        component_instance.local_data["Bone.005"] = data.position[5]
-        component_instance.local_data["Bone.006"] = data.position[6]
+        component_instance.local_data["kuka_1"] = data.position[0]
+        component_instance.local_data["kuka_2"] = data.position[1]
+        component_instance.local_data["kuka_3"] = data.position[2]
+        component_instance.local_data["kuka_4"] = data.position[3]
+        component_instance.local_data["kuka_5"] = data.position[4]
+        component_instance.local_data["kuka_6"] = data.position[5]
+        component_instance.local_data["kuka_7"] = data.position[6]
                         
 def read_jointState(self, component_instance):
         """ dummy function for Waypoints """
