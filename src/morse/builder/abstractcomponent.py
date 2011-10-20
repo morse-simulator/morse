@@ -1,4 +1,4 @@
-import logging; logger = logging.getLogger("morse." + __name__)
+import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import bpy
 
 from morse.builder.data import *
