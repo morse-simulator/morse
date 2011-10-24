@@ -81,7 +81,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
        
         # The axis along which the different segments of the kuka armrotate
         # Considering the rotation of the arm as installed in Jido
-        self._dofs = ['z', '-y', 'z', 'y', 'z', '-y', 'z']
+        self._dofs = ['y', 'z', 'y', 'z', 'y', 'z', 'y']
        
     def default_action(self):
         """ Get the x, y, z, yaw, pitch and roll of the blender object. """
@@ -110,33 +110,32 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
         logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         ############################# KUKA joints ##############################
-		
-        #print('################# ============> children[0]: %s '%self.kuka_obj.children[0].children)
-        segment = self.kuka_obj.children[0].children[-1]
+
+        armature = self.kuka_obj
         self._angles = []
-        
-        # Gather all the children of the object which are the segments of the kuka-arm
-        for i in range(len(self._dofs)):
-            self._segments.append(segment)
+        i = 0
+        for channel in armature.channels:
+            self._segments.append(channel)
                    
             # Extract the angles
+<<<<<<< Updated upstream
             rot_matrix = segment.localOrientation
             segment_matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], rot_matrix[2]))
             segment_euler = segment_matrix.to_euler()
 
             # Use the corresponding direction for each rotation
-            if self._dofs[i] == 'y':
-                self._angles.append(segment_euler[1])
-            elif self._dofs[i] == '-y':
-                self._angles.append(-segment_euler[1])
-            elif self._dofs[i] == 'z':
-                self._angles.append(segment_euler[2])
+=======
+            segment_angle = channel.joint_rotation
 
-            try:
-                segment = self.kuka_obj.children[0].children[-1-i]
-            # Exit when there are no more children
-            except IndexError as detail:
-                break
+>>>>>>> Stashed changes
+            if self._dofs[i] == 'y':
+                self._angles.append(segment_angle[1])
+            elif self._dofs[i] == '-y':
+                self._angles.append(-segment_angle[1])
+            elif self._dofs[i] == 'z':
+                self._angles.append(segment_angle[2])
+            
+            i = i + 1
                 
         ############################# Hand data over to middleware ##############################
 
