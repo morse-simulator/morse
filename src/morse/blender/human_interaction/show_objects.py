@@ -1,6 +1,9 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+
 from bge import logic, events
 
-scene = logic.getCurrentScene()
+from morse.helpers import objects
+
 co = logic.getCurrentController()
 keyboard = co.sensors['All_Keys']
 
@@ -9,21 +12,36 @@ def show(contr):
     Add a text over all interactable Objects in the scene
     """
 
-    for obj in scene.objects:
-        if 'Object' in obj:
+    scene = logic.getCurrentScene()
+
+    for obj in objects.active_objects():
             textObj = scene.addObject('Text_proxy', obj, 0)
+
             # create a new instance of a text object
-            if 'Description' in obj:
-                textObj['Text'] = obj['Description']
-            else:
-                textObj['Text'] = obj['Object']
-            textObj['tmp'] = 'tmp'
+            textObj['Text'] = objects.label(obj)
+
             # Property to identify all added text objects
+            textObj['_tooltip'] = True
             textObj.setParent(obj, False, True)
-            
+
             # iterate over all verticies to get the highest
             m_i = 0
-            mesh = obj.meshes[m_i]
+
+            try:
+                mesh = obj.meshes[m_i]
+            except IndexError:
+                # It seems our object has no mesh attached. It's
+                # probably an empty. In that case, the mesh is
+                # usually set as the *parent* of the empty.
+                try:
+                    mesh = obj.parent.meshes[m_i]
+                except IndexError:
+                    # The parent has no meshes either? hum...
+                    # Then give up...
+                    logger.warning("I was unable to place the %s label, since I couldn't " +\
+                                   "find any mesh attached to this object or its parent!" % obj)
+                    continue
+
             # There can be more than one mesh
             # see Blender API for more information
             z = 0
@@ -38,19 +56,17 @@ def show(contr):
                     mesh = obj.meshes[m_i]
                 except IndexError:
                     mesh = None
-                    
 
             textObj.applyMovement([0.0, 0.0, z*1.2])
             # set the text over the highest vertex
-            
 
 
 def hide(contr):
     """
-    Delete all descriptions (Property 'tmp')
+    Delete all descriptions (Property '_tooltip')
     """
-    for obj in scene.objects:
-        if 'tmp' in obj:
+    for obj in logic.getCurrentScene().objects:
+        if '_tooltip' in obj:
             obj.endObject()
 
 def test(contr):
@@ -67,4 +83,4 @@ def test(contr):
             elif key[1] == logic.KX_INPUT_JUST_RELEASED:
                 hide(contr)
                 #hide text of all objects
-                
+

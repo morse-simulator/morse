@@ -1,5 +1,8 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from bge import logic
 from mathutils import Matrix, Vector
+
+from morse.helpers import objects
 
 def open_door(door):
     if not door['Open']:     # opens the door
@@ -42,10 +45,21 @@ def interact():
     Description = co.actuators['Descr_message']
     head = sobList['Head_Empty']
     hand = sobList['Hand.R']
-    
-    focus = ray.hitObject                     # focused object
-    # 'None-Type'-Objects (if there is nothing in focus) will raise TypeErrors
-    # using try/except to prevent this
+   
+    # Get the focusing object:
+    # A ray sensor is attached to the HumanCamera sensor.
+    # It returns all colliding objects in a 10 cm range of the hand.
+    # We filter the result to keep only objects that have the 'Object'
+    # property or that have children with the 'Object' property.
+    focus = None
+    prox_obj = ray.hitObject                     # focused object
+    if prox_obj:
+        if 'Object' in prox_obj:
+            focus = prox_obj
+        else:
+            for obj in prox_obj.children:
+                if 'Object' in obj:
+                    focus = obj
     
     scenes =  logic.getSceneList()
     
@@ -53,26 +67,33 @@ def interact():
     # and texture
     if human['Manipulate']:
         try:
-            if 'Door' in focus or 'Object' in focus or 'Drawer' in focus:
+
+            can_be_manipulated = False
+
+            if focus in objects.graspable_objects():
+                can_be_manipulated = True
+                Description.body = ('Pick up ' + objects.label(focus))
+
+            elif 'Door' in focus or 'Drawer' in focus:
+                can_be_manipulated = True
                 try:
-                    if 'Object' in focus:
-                        Description.body = ('Pick up ' +
+                    if focus['Open']:
+                        Description.body = ('Close ' +
                                             str(focus['Description']))
                     else:
-                        if focus['Open']:
-                            Description.body = ('Close ' +
-                                                str(focus['Description']))
-                        else:
-                            Description.body = ('Open ' +
-                                                str(focus['Description']))
+                        Description.body = ('Open ' +
+                                            str(focus['Description']))
                 except KeyError:
                     print('Key missing in focused Object ' + focus.name +
                           ' --- no description given')
                     Description.body = ''
+
+            if can_be_manipulated:
                 ow.sendMessage('selected', str(ow['selected']), 'overlay')
                 co.activate(Description)
                 if len(scenes) == 2:
                     co.activate(AddSc)
+
             else:
                 if len(scenes) == 3:
                     co.activate(RemSc)
@@ -88,16 +109,10 @@ def interact():
     if space.positive:
         # blocks mouse movement if interactable object is focused 
         try:
-            if (('Door' in focus or 'Object' in focus or 'Drawer' in focus) and
-                (ow['selected'] == 'None' or ow['selected'] == '')):
+            if ('Door' in focus or 'Object' in focus or 'Drawer' in focus) and not ow['selected']:
+
                 human['FOCUSED'] = True
-                try:
-                    vect = (human.getVectTo(focus)[1] *
-                            Matrix.OrthoProjection('XY', 3))
-                except ValueError:
-                    vect = (Matrix.OrthoProjection('XY', 3) *
-                            human.getVectTo(focus)[1])
-                # API Change in 2.59 builds - Vectors are now column vectors
+                vect = Matrix.OrthoProjection('XY', 3) * human.getVectTo(focus)[1]
                 human.alignAxisToVect(vect, 0, 1.0)
                 # align the local x axis to point to the focused object
             else:
@@ -109,11 +124,10 @@ def interact():
 
 
     try:
-        if 'Object' in focus:
-            if lmb.positive and (ow['selected'] == 'None' or
-                                 ow['selected'] == ''):
+        if focus in objects.graspable_objects():
+            if lmb.positive and not ow['selected']:
+                # set a property - a property-sensor will fire the grab-function
                 ow['grabbing'] = focus
-            # set a property - a property-sensor will fire the grab-function
         elif 'Door' in focus and lmb.positive:
             open_door(focus)
             # if you decide to use IPOs for the doors,
@@ -128,11 +142,10 @@ def interact():
 
 
     if rmb.positive:                #drop selected Object
-        ow['grabbing'] = 'NONE'
-        if ow['selected'] != 'None' and ow['selected'] != '':
-            selected = ow['selected']
-            selected.removeParent()
-            ow['selected'] = 'None'
+        ow['grabbing'] = None
+        if ow['selected']:
+            ow['selected'].removeParent()
+            ow['selected'] = None
             right_hand['moveArm'] = True
 
 
@@ -144,6 +157,13 @@ def grab():
     """
     co = logic.getCurrentController()
     ow = co.owner
+
+    # Nothing selected for grabbing or already something in hand
+    if not ow['grabbing'] or ow['selected']:
+        return
+
+    obj = ow['grabbing']
+
     coll = co.sensors['Collision']
     sobList = logic.getCurrentScene().objects
     right_hand = sobList['IK_Target_Empty.R']
@@ -151,23 +171,23 @@ def grab():
     hand = sobList['Hand.R']
     hips = sobList['Hips_Empty']
     left_hand = sobList['IK_Target_Empty.L']
-    
-    if ow['grabbing'] != 'NONE' and (ow['selected'] == 'None' or ow['selected'] == ''):
-        obj = sobList[str(ow['grabbing'])]
-    
-        vect = right_hand.getVectTo(obj)
-        
-        move = vect[1]
-        
-        right_hand.applyMovement(move/50)
-        if obj.worldPosition[2] < human.worldPosition[2] + 0.5:
-            # if the object is located lower than 0.5 meters (local Position)
-            hips.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
-            left_hand.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
-        
-        if coll.hitObject == obj:
-            ow['grabbing'] = 'NONE'
-            ow['selected'] = obj
-            obj.setParent(ow)
-            right_hand['moveArm'] = True
-    
+
+    vect = right_hand.getVectTo(obj)
+    move = vect[1]
+    right_hand.applyMovement(move/50)
+
+    if obj.worldPosition[2] < human.worldPosition[2] + 0.5:
+        # if the object is located lower than 0.5 meters (local Position)
+        hips.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
+        left_hand.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
+
+    # Do we actually touch the object?
+    if len(obj.meshes) == 0: #Most probably an EMPTY: usually, the parent holds the mesh.
+        obj = obj.parent
+    if coll.hitObject == obj:
+        logger.debug("Grabbing %s" % obj)
+        ow['grabbing'] = None
+        ow['selected'] = obj
+        obj.setParent(ow)
+        right_hand['moveArm'] = True
+

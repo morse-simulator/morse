@@ -8,6 +8,8 @@ import bpy
 import morse.sensors.camera
 import morse.helpers.colors
 
+from morse.helpers import objects
+
 class SemanticCameraClass(morse.sensors.camera.CameraClass):
     """
     This module implements a "semantic camera" sensor for MORSE
@@ -57,24 +59,21 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         if not hasattr(GameLogic, 'trackedObjects'):
             logger.info('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
-            GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
+            GameLogic.trackedObjects = dict.fromkeys(objects.active_objects())
 
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
-                try:
-                    obj['Description']
-                except:
-                    obj['Description'] = 'Object'
 
+                label, desc, type = objects.details(obj)
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                logger.info('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
+                logger.info('    - {0} (desc:{1})'.format(label, type))
 
 
         # Prepare the exportable data of this sensor
         # In this case, it is the list of currently visible objects
-        #  by each independent robot.
+        # by each independent robot.
         self.local_data['visible_objects'] = []
 
         # Variable to indicate this is a camera
@@ -104,7 +103,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 self.local_data['visible_objects'].append(obj)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
-                logger.info("Semantic: {0}, ({1}) just appeared".format(obj.name, obj['Description']))
+                logger.info("Semantic: {0} just appeared".format(obj.name))
 
             # Object is not visible and was in the visible_objects list...
             if not visible and obj in visibles:
@@ -112,7 +111,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                logger.debug("Semantic: {0}, ({1}) just disappeared".format(obj.name, obj['Description']))
+                logger.debug("Semantic: {0} just disappeared".format(obj.name))
         logger.debug(str(self.local_data['visible_objects']))
 
 
