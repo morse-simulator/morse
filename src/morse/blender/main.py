@@ -68,11 +68,12 @@ def create_dictionaries ():
     """Creation of a list of all the robots and components in the scene.
        Uses the properties of the objects to determine what they are."""
 
-    # Create a dictionary with the middlewares used
+    # Create a dictionary that stores initial positions of all objects
+    # in the simulation, used to reset the simulation.
     if not hasattr(GameLogic, 'blender_objects'):
         GameLogic.blender_objects = {}
 
-    # Create a dictioary of the components in the scene
+    # Create a dictionary of the components in the scene
     if not hasattr(GameLogic, 'componentDict'):
         GameLogic.componentDict = {}
 
@@ -84,6 +85,11 @@ def create_dictionaries ():
     # Used for the multi-node simulation
     if not hasattr(GameLogic, 'externalRobotDict'):
         GameLogic.externalRobotDict = {}
+
+    # Create a dictionnary with the passive, but interactive (ie, with an
+    # 'Object' property) objects in the scene.
+    if not hasattr(GameLogic, 'passiveObjectsDict'):
+        GameLogic.passiveObjectsDict = {}
 
     # Create a dictionary with the modifiers
     if not hasattr(GameLogic, 'modifierDict'):
@@ -110,6 +116,28 @@ def create_dictionaries ():
             pos = mathutils.Vector(obj.worldPosition)
             ori = mathutils.Matrix(obj.worldOrientation)
             GameLogic.blender_objects[obj] = [pos, ori]
+
+    # Get the list of passive interactive objects.
+
+    # These objects have a 'Object' property set to true + several other optional
+    # properties. See the documentation for the up-to-date list
+    # (doc/morse/user/others/passive_objects.rst) -- or read the code below :-)
+    for obj in scene.objects:
+        # Check the object has an 'Object' property set to true
+        if 'Object' in obj and obj['Object']:
+            details = {
+                       'label': obj['Label'] if 'Label' in obj else str(obj),
+                       'description': obj['Description'] if 'Description' in obj else "",
+                       'type': obj['Type'] if 'Type' in obj else "Object",
+                       'graspable': obj['Graspable'] if 'Graspable' in obj else False
+                      }
+            GameLogic.passiveObjectsDict[obj] = details
+            logger.info("Added {name} as a {graspable}active object".format(
+                                 name = details['label'],
+                                 graspable = "graspable " if details['graspable'] else ""))
+
+    if not GameLogic.passiveObjectsDict:
+        logger.info("No passive objects in the scene.")
 
     # Get the robots
     for obj in scene.objects:
@@ -171,10 +199,12 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
-            
+
     """ Modifiers are now dynamically created.
     The following lines should do nothing but are still there for backward
     compatibility.
+
+    TODO: remove it when we are confident we can.
     """
     # Get the modifiers
     for obj in scene.objects:
@@ -192,6 +222,8 @@ def create_dictionaries ():
     """ Middlewares are now dynamically created.
     The following lines should do nothing but are still there for backward
     compatibility.
+
+    TODO: remove it when we are confident we can.
     """
     # Get the middlewares
     for obj in scene.objects:

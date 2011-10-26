@@ -38,39 +38,72 @@ a Python Console, within which you can import this API
 Classes and methods in the Builder API
 --------------------------------------
 
+The AbstractComponent base class
+++++++++++++++++++++++++++++++++
+
 All the basis component classes used in the Builder API inherit from a base class
 ``AbstractComponent``. This class provides the following methods:
 
  * **name**: change the object name in Blender
- * **translate**: The translation will add (x,y,z) to the current object location (default: x=0, y=0, z=0, unit: meter).
- * **rotate**: The rotation is an `euler rotation <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ relative to the object's center (default: x=0, y=0, z=0, unit: radian).
- * **properties**: Allows adding/changing the game properties of the Blender objects. It receives a list of named items: ``name``=``value``, separated by commas.
- * **append**: Add the object given as an argument as a child of this object.  The argument is an instance to another component. This method is generally used to add components to a robot.
+ * **translate**: The translation will add (x,y,z) to the current object
+   location (default: x=0, y=0, z=0, unit: meter).
+ * **rotate**: The rotation is an `euler rotation
+   <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_
+   relative to the object's center (default: x=0, y=0, z=0, unit: radian).
+ * **properties**: Allows adding/changing the game properties of the Blender
+   objects. It receives a list of named items: ``name``=``value``, separated by
+   commas.
+ * **append**: Add the object given as an argument as a child of this object.
+   The argument is an instance to another component. This method is generally
+   used to add components to a robot.
+
+This base class has one concrete subclass that can be use to insert static
+(passive) objects to your simulation:
+
+ * :py:class:`morse.builder.morsebuilder.PassiveObject`
+
+.. note::
+   When creating instances of this classe, it is necessary to give as
+   parameter to the constructor the names of the blender file that 
+   contains the desired asset. Path can be absolute or relative to MORSE 
+   assets' installation path (typically, ``$PREFIX/share/data/morse``).
+
+The Component classes
++++++++++++++++++++++
 
 The class ``Component`` inherits directly from ``AbstractComponent`` and adds
 more functions:
 
- * **configure_mw**: Do the binding between a component and the method to export/import its data. This must be used in general by sensors and actuators. A single component can make several calls to this function to add bindings with more than one middleware. The parameter can be either the name of the middleware, or a list containing the full path to the middleware class and methods that the object will use.
- * **configure_service**: Similar to the previous function. Its argument is the name of the middleware to be used.
+ * **configure_mw**: Do the binding between a component and the method to
+   export/import its data. This must be used in general by sensors and
+   actuators. A single component can make several calls to this function to add
+   bindings with more than one middleware. The parameter can be either the name
+   of the middleware, or a list containing the full path to the middleware
+   class and methods that the object will use.
+ * **configure_service**: Similar to the previous function. Its argument is the
+   name of the middleware to be used.
  * **configure_modifier**
  * **configure_overlay**
 
 These configuration functions make use of a dictionary defined in the file:
-``$MORSE_ROOT/src/morse/builder/data.py``. In these dictionaries, the keys are the names
-of the middlewares and the values are the default configurations that should be written
-in the ``component_config.py`` file.
+``$MORSE_ROOT/src/morse/builder/data.py``. In these dictionaries, the keys are
+the names of the middlewares and the values are the default configurations that
+should be written in the ``component_config.py`` file.
 
-There are four subclasses of the ``Component`` class that are used to add components to a scene.
-An instance of these classes must be created to insert a new component
+There are four subclasses of the ``Component`` class that are used to add
+components to a scene.  An instance of these classes must be created to insert
+a new component
 
- * **Robot**
- * **Sensor**
- * **Actuator**
- * **Environment**
+ * :py:class:`morse.builder.morsebuilder.Robot`
+ * :py:class:`morse.builder.morsebuilder.Sensor`
+ * :py:class:`morse.builder.morsebuilder.Actuator`
+ * :py:class:`morse.builder.morsebuilder.Environment`
 
-.. note:: When creating instances of these classes, it is necessary to give as parameters to
-    the constructors the names of the blender files (without the *.blend* extension) that contain
-    the required component. These files should be present under ``$MORSE_ROOT/share/data/morse/{class}/``.
+.. note::
+   When creating instances of these classes, it is necessary to give as
+   parameters to the constructors the names of the blender files (without the
+   *.blend* extension) that contain the required component. These files should
+   be present under ``$MORSE_ROOT/share/data/morse/{class}/``.
 
 Environment class
 +++++++++++++++++
@@ -87,20 +120,32 @@ configure the scenario to be used in MORSE.
 
 The ``Environment`` class provides these functions:
 
- * **show_framerate**: Toggle the settings in the Game Engine to display framerate and profile information of the simulation.  The parameter is a boolean value indicating whether to show or not this information.
- * **show_physics**: Toggle the display of the bounding boxes of objects during the simulation.  The parameter is a boolean value indicating whether to show or not this information.
- * **show_debug**: Toggle the printing of the value of the Game Properties marked.  The parameter is a boolean value indicating whether to show or not this information.
-
- * **aim_camera**: Set the orientation of the default camera. The parameter is a list with an euler rotation for the camera. Example: *([1.3300, 0, 0.7854])*
- * **place_camera**: Set the location of the default camera. The parameter is a list with the new 3D coordinates for the camera. Example: *([10.0, -10.0, 3.0])*
-
- * **configure_node**: Provide the information necessary for the node to connect to a multi-node server. The parameter is a list of named items. Example: *(protocol="socket", node_name="NODE A", server_address="140.93.0.93", server_port="65000")* The items accepted in as parameters are:
+ * **show_framerate**: Toggle the settings in the Game Engine to display
+   framerate and profile information of the simulation.  The parameter is a
+   boolean value indicating whether to show or not this information.
+ * **show_physics**: Toggle the display of the bounding boxes of objects during
+   the simulation.  The parameter is a boolean value indicating whether to show
+   or not this information.
+ * **show_debug**: Toggle the printing of the value of the Game Properties
+   marked.  The parameter is a boolean value indicating whether to show or not
+   this information.
+ * **aim_camera**: Set the orientation of the default camera. The parameter is
+   a list with an euler rotation for the camera. Example: *([1.3300, 0,
+   0.7854])*
+ * **place_camera**: Set the location of the default camera. The parameter is a
+   list with the new 3D coordinates for the camera. Example: *([10.0, -10.0,
+   3.0])*
+ * **configure_node**: Provide the information necessary for the node to
+   connect to a multi-node server. The parameter is a list of named items.
+   Example: *(protocol="socket", node_name="NODE A",
+   server_address="140.93.0.93", server_port="65000")* The items accepted in as
+   parameters are:
     * **protocol**: Either 'socket' or 'hla'
     * **node_name**: Unique name used as an identifier for each node
     * **server_address**: IP address where the multi-node server can be found
     * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000.
-
- * **create()**: Should always be called at the very end of the Builder script. It will finalise the building process and write the configuration files.
+ * **create()**: Should always be called at the very end of the Builder script.
+   It will finalise the building process and write the configuration files.
 
 
 Detailed explanations of class functions
@@ -153,8 +198,9 @@ would be done by hand in the ``component_config.py`` script:
 
     motion.configure_mw('ros', ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
-cf. :doc:`user/hooks <../user/hooks>` and :doc:`user/tutorial.html
-<../user/tutorial>` (in particular the section configuring middleware)
+cf. :doc:`hooks <../user/hooks>` and :doc:`tutorial
+<../user/tutorial>` (in particular the section configuring middleware) for details.
 
 
-Take a look at an :doc:`example Builder script <builder_example>` to see how all of this works.
+Take a look at an :doc:`example Builder script <builder_example>` to see how
+all of this works.

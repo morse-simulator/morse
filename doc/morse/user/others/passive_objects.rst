@@ -1,14 +1,14 @@
-Interacting with static objects
-===============================
+Interacting with passive objects
+================================
 
-Besides physical interaction and perception via cameras or depth sensors, static
-objects in a simulation can be interacted with in several other ways.
+Besides physical interaction and perception via cameras or depth sensors,
+passive objects in a simulation can be interacted with in several other ways.
 
 For instance some objects can be set to be graspable by a robot (or a human), 
 and specific sensors like the :doc:`Semantic camera <../sensors/semantic_camera>` 
 may provide extended facts on a particular object, like its type.
 
-To be set as an **interactive** static object, you only have to add the (Game)
+To be set as an **interactive** passive object, you only have to add the (Game)
 property ``Object`` to the object, and to set it as a ``True`` boolean property.
 
 Other, **optional**, properties allow to control the behaviour of the object:

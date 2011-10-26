@@ -64,11 +64,11 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
 
-                label, desc, type = objects.details(obj)
+                details = objects.details(obj)
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                logger.info('    - {0} (desc:{1})'.format(label, type))
+                logger.info('    - {0} (desc:{1})'.format(details['label'], details['type']))
 
 
         # Prepare the exportable data of this sensor
