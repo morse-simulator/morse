@@ -126,12 +126,20 @@ class AbstractComponent(object):
         o.game.properties[n].type = t
         o.game.properties[n].value = v
 
-    def configure_mw(self, mw, config=None, method=None, path=None):
+    def configure_mw(self, mw, config=None, method=None, path=None, component=None):
+        """
+
+        :param component: if set, force to use the configuration of the given 
+        component, instead of our own (default=None).
+        """
         # Configure the middleware for this component
         if not config:
             if not method:
                 try:
-                    config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
+                    if component:
+                        config = MORSE_MIDDLEWARE_DICT[mw][component]
+                    else:
+                        config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
                 except KeyError:
                     logger.warning("%s: default middleware method"%self.name)
                     # set the default method either it is an Actuator or a Sensor
