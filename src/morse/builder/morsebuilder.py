@@ -73,6 +73,68 @@ class PassiveObject(AbstractComponent):
             self._blendobj.rotation_euler = (0.0, 0.0, 0.0)
 
 
+class Human(AbstractComponent):
+    """ Append a human model to the scene.
+
+    The human model currently available in MORSE comes with its
+    own subjective camera and several features for object manipulation.
+
+    It also exposes a :doc:`human posture component <morse/user/sensors/human_posture>`
+    that can be accessed by the ``armature`` member.
+
+    Usage example:
+
+    .. code-block:: python
+       #! /usr/bin/env morseexec
+
+       from morse.builder.morsebuilder import *
+
+       human = Human()
+       human.translate(x=5.5, y=-3.2, z=0.0)
+       human.rotate(z=-3.0)
+
+       human.armature.configure_mw('pocolibs',
+                        ['Pocolibs',
+                         'export_posture',
+                         'morse/middleware/pocolibs/sensors/human_posture',
+                         'human_posture'])
+
+    Currently, only one human per simulation is supported.
+    """
+    def __init__(self):
+        AbstractComponent.__init__(self)
+        filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'human.blend')
+
+        with bpy.data.libraries.load(filepath) as (src, _):
+            try:
+                objlist = [{'name':obj} for obj in src.groups]
+            except UnicodeDecodeError as detail:
+                logger.error("Unable to open file '%s'. Exception: %s" % \
+                             (filepath, detail))
+
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.ops.wm.link_append(directory=filepath + '/Group/', link=False, 
+                autoselect=True, files=objlist)
+        self._blendname = "Human" # for middleware dictionary
+        # here we use the fact that after appending, Blender select the objects 
+        # and the root (parent) object first ( [0] )
+        self._blendobj = bpy.context.selected_objects[0]
+
+        self.armature = None
+
+        # The human is added as a dupli-group. We need to get the
+        # HumanArmature inside the original group.
+        try:
+            obj = self._blendobj.dupli_group.objects["HumanArmature"]
+            self.armature = AbstractComponent(obj, "human_posture")
+        except KeyError:
+            logger.error("Could not find the human armature! (I was looking " +\
+                         "for an object called 'HumanArmature' in the 'Human'" +\
+                         " children). I won't be able to export the human pose" +\
+                         " to any middleware.")
+
+
+
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
 

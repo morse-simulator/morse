@@ -113,8 +113,8 @@ MORSE_MIDDLEWARE_DICT = {
     'pocolibs': {
         'stereo_unit': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'],
         'gyroscope': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseMEPos'],
-
         'v_omega': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef'],
+        'human_posture': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'export_posture', 'morse/middleware/pocolibs/sensors/human_posture', 'human_posture'],
     },
 }
 
