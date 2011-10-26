@@ -377,7 +377,7 @@ to the sequence [open a Blend file in the simulator, switch to
 fullscreen, press P].
 
 file_name must be a Blender file containing a simulation already
-set up.
+set up or a Python script using the MORSE Builder API.
 """)
     else:
         print("No help for \"" + cmd + "\".")
