@@ -41,8 +41,8 @@ def init_viman_poster(self, component_instance, poster_name):
     self.scene_object_list += _read_object_list()
 
     #Complete the list with the objects already tracked by the semantic cam.
-    if hasattr(GameLogic, 'trackedObjects'):
-        self.scene_object_list += [obj.name for obj in GameLogic.trackedObjects.keys()]
+    if hasattr(GameLogic, 'passiveObjectsDict'):
+        self.scene_object_list += [obj['label'] for obj in GameLogic.passiveObjectsDict.values()]
 
     if not self.scene_object_list:
         logger.error("No VIMAN object to track. Make sure some objects have " +\

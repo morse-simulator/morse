@@ -96,22 +96,23 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         visibles = self.local_data['visible_objects']
 
         for obj in GameLogic.trackedObjects.keys():
+            label = passive_objects.label(obj)
             visible = self._check_visible(obj)
-
             # Object is visible and not yet in the visible_objects list...
-            if visible and obj not in visibles:
-                self.local_data['visible_objects'].append(obj)
+            if visible and label not in visibles:
+                self.local_data['visible_objects'].append(label)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
-                logger.info("Semantic: {0} just appeared".format(obj.name))
+                logger.info("Semantic: {0} just appeared".format(label))
 
             # Object is not visible and was in the visible_objects list...
-            if not visible and obj in visibles:
-                self.local_data['visible_objects'].remove(obj)
+            if not visible and label in visibles:
+                self.local_data['visible_objects'].remove(label)
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                logger.debug("Semantic: {0} just disappeared".format(obj.name))
+                logger.debug("Semantic: {0} just disappeared".format(label))
+
         logger.debug(str(self.local_data['visible_objects']))
 
 
