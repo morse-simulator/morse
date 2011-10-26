@@ -156,8 +156,9 @@ def service(fn = None, component = None, name = None, async = False):
     configuration file).
 
     This decorator works both with free function and for methods in
-    classes inheriting from :py:class:`MorseObjectClass`. In the former
-    case, you must specify a component (your service will belong to this
+    classes inheriting from
+    :py:class:`morse.core.object.MorseObjectClass`. In the former case,
+    you must specify a component (your service will belong to this
     namespace), in the later case, it is automatically set to the name
     of the corresponding MORSE component.
 
