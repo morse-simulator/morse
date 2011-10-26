@@ -24,14 +24,15 @@ class PassiveObject(AbstractComponent):
     """ Allows to import any Blender object to the scene.
     """
 
-    def __init__(self, file, object = None, keep_pose = False):
+    def __init__(self, file, prefix = None, keep_pose = False):
         """
         :param blenderfile: The Blender file to load. Path can be absolute
                            or relative to MORSE assets' installation path
                            (typically, $PREFIX/share/data/morse)
-        :param object: (optional) the name of the object to load in the 
+        :param prefix: (optional) the prefix of the objects to load in the 
                        Blender file. If not set, all objects present in the file
-                       are loaded.
+                       are loaded. If set, all objects **prefixed** by this
+                       name are imported.
         :param keep_pose: If set, the object pose (translation and rotation)
                         in the Blender file is kept. Else, the object 
                         own center is placed at origin and all rotation are
@@ -46,12 +47,12 @@ class PassiveObject(AbstractComponent):
             if not os.path.exists(filepath):
                 logger.error("Blender file %s for external asset import can \
                          not be found.\n Either provide an absolute path, or \
-                         a path relative to MORSE \nasset directory (typically \
+                         a path relative to MORSE \nassets directory (typically \
                          $PREFIX/share/data/morse)" % (file))
 
         with bpy.data.libraries.load(filepath) as (src, _):
-            if object:
-                objlist = [{'name':object}]
+            if prefix:
+                objlist = [{'name':obj} for obj in src.objects if obj.startswith(prefix)]
             else:
                 try:
                     objlist = [{'name':obj} for obj in src.objects]
@@ -59,7 +60,7 @@ class PassiveObject(AbstractComponent):
                     logger.error("Unable to open file '%s'. Exception: %s" \
                                  % (filepath, detail))
 
-        print("objlist %s" % (objlist))
+        logger.info("Importing the following passive object(s): %s" % (objlist))
 
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
