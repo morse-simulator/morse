@@ -8,7 +8,7 @@ import bpy
 import morse.sensors.camera
 import morse.helpers.colors
 
-from morse.helpers import objects
+from morse.helpers import passive_objects
 
 class SemanticCameraClass(morse.sensors.camera.CameraClass):
     """
@@ -59,16 +59,16 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         if not hasattr(GameLogic, 'trackedObjects'):
             logger.info('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
-            GameLogic.trackedObjects = dict.fromkeys(objects.active_objects())
+            GameLogic.trackedObjects = dict.fromkeys(passive_objects.active_objects())
 
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
 
-                details = objects.details(obj)
+                details = passive_objects.details(obj)
                 # GetBoundBox(0) returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                logger.info('    - {0} (desc:{1})'.format(details['label'], details['type']))
+                logger.info('    - {0} (type:{1})'.format(details['label'], details['type']))
 
 
         # Prepare the exportable data of this sensor

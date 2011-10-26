@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from bge import logic, events
 
-from morse.helpers import objects
+from morse.helpers import passive_objects
 
 co = logic.getCurrentController()
 keyboard = co.sensors['All_Keys']
@@ -14,11 +14,11 @@ def show(contr):
 
     scene = logic.getCurrentScene()
 
-    for obj in objects.active_objects():
+    for obj in passive_objects.active_objects():
             textObj = scene.addObject('Text_proxy', obj, 0)
 
             # create a new instance of a text object
-            textObj['Text'] = objects.label(obj)
+            textObj['Text'] = passive_objects.label(obj)
 
             # Property to identify all added text objects
             textObj['_tooltip'] = True

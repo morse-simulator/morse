@@ -63,4 +63,5 @@ def label(obj):
 
     """
 
-    return details(obj)['label']
+    det = details(obj)
+    return det['label'] if det else None

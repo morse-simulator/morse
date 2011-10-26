@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from bge import logic
 from mathutils import Matrix, Vector
 
-from morse.helpers import objects
+from morse.helpers import passive_objects
 
 def open_door(door):
     if not door['Open']:     # opens the door
@@ -70,9 +70,9 @@ def interact():
 
             can_be_manipulated = False
 
-            if focus in objects.graspable_objects():
+            if focus in passive_objects.graspable_objects():
                 can_be_manipulated = True
-                Description.body = ('Pick up ' + objects.label(focus))
+                Description.body = ('Pick up ' + passive_objects.label(focus))
 
             elif 'Door' in focus or 'Drawer' in focus:
                 can_be_manipulated = True
@@ -124,7 +124,7 @@ def interact():
 
 
     try:
-        if focus in objects.graspable_objects():
+        if focus in passive_objects.graspable_objects():
             if lmb.positive and not ow['selected']:
                 # set a property - a property-sensor will fire the grab-function
                 ow['grabbing'] = focus
