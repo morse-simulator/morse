@@ -65,3 +65,24 @@ def label(obj):
 
     det = details(obj)
     return det['label'] if det else None
+
+def obj_from_label(label):
+    """ Returns the label of a given active object.
+
+    If the object is not active (ie, it has no 'Object' property, or the
+    property is set to False), None is returned.
+
+    If no label is available, it defaults to the Blender name.
+
+    :param name: the Blender name of the object.
+    :return: the label
+
+    """
+
+    if not GameLogic.passiveObjectsDict:
+        logger.error("Initialization error! the passive objects dictionary has not been built!")
+        return None
+
+    for obj, det in GameLogic.passiveObjectsDict.items():
+        if det['label'] == label:
+            return obj
