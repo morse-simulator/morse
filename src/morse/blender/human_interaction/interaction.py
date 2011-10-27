@@ -182,12 +182,17 @@ def grab():
         left_hand.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
 
     # Do we actually touch the object?
-    if len(obj.meshes) == 0: #Most probably an EMPTY: usually, the parent holds the mesh.
-        obj = obj.parent
-    if coll.hitObject == obj:
-        logger.debug("Grabbing %s" % obj)
-        ow['grabbing'] = None
-        ow['selected'] = obj
-        obj.setParent(ow)
-        right_hand['moveArm'] = True
+    if len(obj.meshes) == 0: # Most probably an EMPTY: check children's meshes.
+        objs = obj.children
+    else:
+        objs = [obj]
+
+    for subobj in objs:
+        if coll.hitObject == subobj:
+            logger.debug("Grabbing %s" % obj)
+            ow['grabbing'] = None
+            ow['selected'] = obj
+            obj.setParent(ow)
+            right_hand['moveArm'] = True
+            break
 
