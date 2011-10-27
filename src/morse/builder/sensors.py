@@ -76,7 +76,7 @@ class Camera(morse.builder.creator.SensorCreator):
 class Battery(morse.builder.creator.SensorCreator):
     def __init__(self, name="Battery"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/baterry", "BatteryClass", "battery")
+            "morse/sensors/battery", "BatteryClass", "battery")
         self.properties(DischargingRate = 1.0)
 
 class Infrared(morse.builder.creator.SensorCreator):
