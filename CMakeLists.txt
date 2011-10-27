@@ -161,7 +161,7 @@ ELSE ()
 ENDIF()
 # TODO find a better way to check debian or redhat ?
 
-SET(CPACK_PACKAGE_CONTACT "morse-users@laas.fr")
+SET(CPACK_PACKAGE_CONTACT "morse-users <morse-users@laas.fr>")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MORSE the Open Robots Simulator")
 SET(CPACK_PACKAGE_NAME "openrobots-morse")
