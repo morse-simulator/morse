@@ -313,7 +313,7 @@ def main():
         get_IK_limits(id_, component)  # test get_IK_limits
         # test set_rotation
         for channel in channels:
-            set_rotation(id_, component, channel, [0.785398163, 0.785398163, 0.785398163]) # set every angle to 45°
+            set_rotation(id_, component, channel, [0.785398163, 0.785398163, 0.785398163]) # set every angle to 45 degree
         get_rotations(id_, component)  # test get_rotations to see what angles have been changed by set_rotation
         get_channel_lengths(id_, component)  # test get_channel_lengths
         get_robot_parent_name(id_, component)  # test get_robot_parent_name

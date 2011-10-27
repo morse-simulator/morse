@@ -14,6 +14,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from bge import logic, events, render
 import math
+import GameLogic
 from mathutils import Matrix
 
 AZERTY = False
@@ -35,6 +36,11 @@ else:
 def move(contr):
     """ Read the keys for specific combinations
         that will make the camera move in 3D space. """
+    
+    # Get the currently active camera to adapt control method
+    scene = GameLogic.getCurrentScene()
+    active_camera = scene.active_camera
+    
     # get the object this script is attached to
     human = contr.owner
 
@@ -47,8 +53,6 @@ def move(contr):
     # Default movement speed
     move_speed = [0.0, 0.0, 0.0]
     rotation_speed = [0.0, 0.0, 0.0]
-
-
 
     keylist = keyboard.events
     for key in keylist:
@@ -63,9 +67,15 @@ def move(contr):
             elif key[0] == TURN_RIGHT:
                 rotation_speed[2] = -speed
             elif key[0] == RIGHT:
-                move_speed[1] = -speed
+                if active_camera.name == "Human_Camera":
+                    move_speed[1] = -speed
+                else:
+                    rotation_speed[2] = -speed
             elif key[0] == LEFT:
-                move_speed[1] = speed
+                if active_camera.name == "Human_Camera":
+                    move_speed[1] = speed
+                else:
+                    rotation_speed[2] = speed
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
@@ -425,6 +435,7 @@ def rotate(co):
     """
     Set the human orientation in reference to the camera orientation.
     """
+       
     ow = co.owner
     keyboard = co.sensors['Keyboard']
     pos =  logic.getCurrentScene().objects['POS_EMPTY']
@@ -438,6 +449,10 @@ def rotate(co):
 
     ow.worldPosition = pos.worldPosition
 
+    # Get active camera
+    scene = GameLogic.getCurrentScene()
+    active_camera = scene.active_camera
+    
     if pos['Manipulate']:
         ow.worldOrientation = pos.worldOrientation
         # lock camera to head in Manipulation Mode
@@ -461,16 +476,20 @@ def rotate(co):
                         Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
             # turn around 315 deg
         elif BACKWARDS in k and not(LEFT in k or RIGHT in k):
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi, 3, 'Z'), ow)
-            # turn around 180 deg
-        elif LEFT in k and BACKWARDS in k:
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)
-            # turn around 135 deg
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi, 3, 'Z'), ow)
+            # turn around 180 deg if in game-mode
+        elif LEFT in k and BACKWARDS in k:          
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)
+            else:
+                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
+            # turn around 135 deg if in game-mode, else turn 45 deg
         elif RIGHT in k and BACKWARDS in k:
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)
-            # turn around 225 deg
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)
+            else:
+                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
+            # turn around 225 deg if in game mode, else turn 315 deg.
 
 
