@@ -24,41 +24,36 @@ def show(contr):
             textObj['_tooltip'] = True
             textObj.setParent(obj, False, True)
 
-            # iterate over all verticies to get the highest
-            m_i = 0
-
-            try:
-                mesh = obj.meshes[m_i]
-            except IndexError:
-                # It seems our object has no mesh attached. It's
-                # probably an empty. In that case, the mesh is
-                # usually set as the *parent* of the empty.
-                try:
-                    mesh = obj.parent.meshes[m_i]
-                except IndexError:
-                    # The parent has no meshes either? hum...
-                    # Then give up...
-                    logger.warning("I was unable to place the %s label, since I couldn't " +\
-                                   "find any mesh attached to this object or its parent!" % obj)
-                    continue
-
             # There can be more than one mesh
             # see Blender API for more information
+            if obj.meshes:
+                meshes = obj.meshes
+            else:
+                # It seems our object has no mesh attached. It's
+                # probably an empty. In that case, check the children's
+                # meshes
+                if obj.children:
+                    meshes = []
+                    for child in obj.children:
+                        meshes += child.meshes
+                else:
+                    # No children? hum...
+                    # Then give up...
+                    logger.warning("I was unable to place the %s label, since I couldn't " +\
+                                   "find any mesh attached to this object or its children!" % obj)
+                    continue
+
             z = 0
-            while mesh != None:
+            # iterate over all verticies to get the highest
+            for mesh in meshes:
                 for mat in range(0, mesh.numMaterials):
                   for vert_id in range(mesh.getVertexArrayLength(mat)):
                     vertex = mesh.getVertex(mat, vert_id)
                     if vertex.z>z:
                         z = vertex.z
-                m_i += 1
-                try:
-                    mesh = obj.meshes[m_i]
-                except IndexError:
-                    mesh = None
 
-            textObj.applyMovement([0.0, 0.0, z*1.2])
             # set the text over the highest vertex
+            textObj.applyMovement([0.0, 0.0, z*1.2])
 
 
 def hide(contr):
