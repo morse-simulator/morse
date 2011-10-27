@@ -10,6 +10,8 @@
 static char* ref_name;
 static POSTER_ID ref_id;
 
+static char poster_not_found_message = 1;
+
 POSTER_ID init_data (const char* poster_name, const char* reference_frame, 
 					 float confidence, int* ok)
 {
@@ -50,12 +52,24 @@ int post_data( POSTER_ID id, double x, double y, double z,
 	// try to get the pom reference frame
 	// if we can't get it, just returns
 	if (ref_id == NULL) {
-		fprintf(stderr, "ref id is NULL : searching for %s\n", ref_name);
+		if (poster_not_found_message == 1)
+			fprintf(stderr, "ref id is NULL : searching for %s\n", ref_name);
+
 		if (posterFind(ref_name, &ref_id) == ERROR) {
-			fprintf(stderr, "can't find %s : looping\n", ref_name);
+		    if (poster_not_found_message == 1){
+			    fprintf(stderr, "can't find %s : looping\n", ref_name);
+			    poster_not_found_message = 0;
+			}
 			ref_id = NULL;
 			return -1;
 			}
+
+		if (poster_not_found_message == 0){
+      		// poster found! re-enable poster_not_found_message in case we loose it 
+	    	// (is it actually possible?)
+		    fprintf(stderr, "Found POM poster %s. Good.\n", ref_name);
+		    poster_not_found_message = 1;
+		}
 	}
 
 	// Declare local versions of the structures used
