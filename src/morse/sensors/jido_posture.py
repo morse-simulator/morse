@@ -70,7 +70,7 @@ class JidoPostureClass(morse.core.sensor.MorseSensorClass):
         self._segments = []
 
         self.kuka_obj = 0
-        # Check if robot parent has a child named "kuka_base"
+        # Check if robot parent has a child named "kuka_amature"
         for child in self.robot_parent.blender_obj.children:
             if str(child) == self.blender_obj['KUKAname']:
                 self.kuka_obj = child
