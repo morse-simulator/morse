@@ -64,10 +64,11 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
 
-                details = passive_objects.details(obj)
-                # GetBoundBox(0) returns the bounding box in local space
+                # bound_box returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
+
+                details = passive_objects.details(obj)
                 logger.info('    - {0} (type:{1})'.format(details['label'], details['type']))
 
 
@@ -111,9 +112,9 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                logger.debug("Semantic: {0} just disappeared".format(label))
+                logger.info("Semantic: {0} just disappeared".format(label))
 
-        logger.debug(str(self.local_data['visible_objects']))
+        logger.debug("Visible objects: "+ str(self.local_data['visible_objects']))
 
 
     def _check_visible(self, obj):

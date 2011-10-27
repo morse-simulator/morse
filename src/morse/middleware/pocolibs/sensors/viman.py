@@ -4,6 +4,7 @@ import re
 import GameLogic
 from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
 from morse.helpers.transformation import Transformation3d
+from morse.helpers import passive_objects
 
 object_config_file = "objectList_cfg"
 
@@ -71,7 +72,7 @@ def init_viman_poster(self, component_instance, poster_name):
 
 
 def write_viman(self, component_instance):
-    """ Write an image and all its data to a poster """
+    """ Write the objects list to a poster """
     # Get the id of the poster already created
     poster_id = self._poster_dict[component_instance.blender_obj.name]
     parent = component_instance.robot_parent
@@ -82,12 +83,13 @@ def write_viman(self, component_instance):
     for object_id in self.scene_object_list:
 
         try:
-            object = scene.objects[object_id]
 
-            if object in component_instance.local_data['visible_objects']:
+            if object_id in component_instance.local_data['visible_objects']:
+
+                object = passive_objects.obj_from_label(object_id)
 
                 position_3d = Transformation3d(object)
-                logger.debug("VIMAN " + object.name + " is visible at " + str(position_3d))
+                logger.info("VIMAN " + object_id + "(" + object.name + ") is visible at " + str(position_3d))
                 ors_viman_poster.set_visible (self.viman_data, i, 1)
                 _fill_world_matrix(self.viman_data, position_3d, i)
             else:
