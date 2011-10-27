@@ -4,9 +4,11 @@ Semantic camera sensor
 This sensor emulates a hight level camera that outputs the names of the objects
 that are located within the field of view of the camera.
 
-The sensor determines first which objects are marked with a **Logic Property**
-called **Object**, of type String and which should have the same value as the
-name of the object.
+The sensor determines first which objects are to be tracked (objects marked with
+a **Logic Property** called ``Object``, cf documentation on :doc:`passive
+objects <../others/passive_objects>` for more on that). If the ``Label`` property
+is defined, it is used as exported name. Else the Blender object name is used.
+
 Then a test is made to identify which of these objects are inside of the view
 frustum of the camera. Finally, a single visibility test is performed by casting
 a ray from the center of the camera to the center of the object. If anything
@@ -28,8 +30,8 @@ Files
 Local data
 ----------
 
-- **visible_objects**: (List) An array with the names of the objects visible by
-  the camera.
+- **visible_objects**: (List) An array with the names (or labels) of the
+  objects visible by the camera.
 
 Configurable parameters
 -----------------------
