@@ -39,6 +39,41 @@ class Proximity(morse.builder.creator.SensorCreator):
 # Following is experimental (!)
 ##
 
+class Sick(morse.builder.creator.SensorCreator):
+    def __init__(self, name="Sick"):
+        morse.builder.creator.SensorCreator.__init__(self, name, 
+            "morse/sensors/sick", "SICKClass", "sick")
+        # append sick mesh, from MORSE_COMPONENTS/meshes/sensors/sick.blend
+        mesh = morse.builder.morsebuilder.Component("meshes/sensors", "sick")
+        # TODO still need only 1 root object + children
+        #      see which of the Arc_ / Cube should be the parent
+        self.append(mesh)
+        # set components-specific properties
+        self.properties(Visible_arc = True, laser_range = 30.0, 
+                scan_window = 180.0, resolution = 0.25)
+        # logic Always sensor frequency: 10
+        sensor = self._blendobj.game.sensors[-1]
+        sensor.frequency = 10
+
+"""
+d = {}
+o = bpy.data.objects['Sick']
+p = o.game.properties
+for k in p.keys():
+    d[k] = p[k].value
+    if p[k].type == 'TIMER':
+        d[k] = "timer(%f)"%d[k]
+    elif type(d[k]) is str:
+        d[k] = "'%s'"%d[k]
+
+print(d)
+# d = {'laser_range': 30.0, 'Component_Tag': True, 'scan_window': 180.0, 'Visible_arc': True, 'Path': 'morse/sensors/sick', 'resolution': 0.25, 'Class': 'SICKClass'}
+
+s = ", ".join(["%s = %s"%(k,d[k]) for k in d])
+print(s)
+# laser_range = 30.0, Component_Tag = True, scan_window = 180.0, Visible_arc = True, Path = 'morse/sensors/sick', resolution = 0.25, Class = 'SICKClass'
+"""
+
 class Camera(morse.builder.creator.SensorCreator):
     def __init__(self, name="CameraMain"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
