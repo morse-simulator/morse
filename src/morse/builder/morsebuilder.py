@@ -3,6 +3,7 @@ import os
 import bpy
 import json
 from morse.core.exceptions import MorseError
+from morse.core.exceptions import MorseBuilderNoComponentError
 from morse.builder.abstractcomponent import *
 
 """
@@ -149,12 +150,16 @@ class Component(AbstractComponent):
         AbstractComponent.__init__(self)
         filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
-        with bpy.data.libraries.load(filepath) as (src, _):
-            try:
-                objlist = [{'name':obj} for obj in src.objects]
-            except UnicodeDecodeError as detail:
-                logger.error("Unable to open file '%s'. Exception: %s" % \
-                             (filepath, detail))
+        try: 
+            with bpy.data.libraries.load(filepath) as (src, _):
+                try:
+                    objlist = [{'name':obj} for obj in src.objects]
+                except UnicodeDecodeError as detail:
+                    logger.error("Unable to open file '%s'. Exception: %s" % \
+                                 (filepath, detail))
+        except IOError as detail:
+            logger.error(detail)
+            raise MorseBuilderNoComponentError("Component not found")
 
         bpy.ops.object.select_all(action='DESELECT')
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
