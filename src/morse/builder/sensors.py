@@ -77,7 +77,7 @@ print(s)
 class Camera(morse.builder.creator.SensorCreator):
     def __init__(self, name="CameraMain"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/video_camera", "VideoCameraClass", "camera")
+            "morse/sensors/video_camera", "VideoCameraClass", "video_camera")
         camera = morse.builder.blenderobjects.Camera("CameraRobot")
         self.append(camera)
         self.properties(cam_width = 512, cam_height = 512, cam_focal = 35.0, 
@@ -98,15 +98,37 @@ class Camera(morse.builder.creator.SensorCreator):
                 sensor = self._blendobj.game.sensors[sensor], 
                 actuator = self._blendobj.game.actuators[actuator])
         # cf. morse.sensors.camera.VideoCameraClass._setup_video_texture
-        mesh = morse.builder.blenderobjects.Cube("CameraCube")
+        mesh = morse.builder.blenderobjects.Cube("CameraMesh")
         mesh.scale = (.1, .1, .05)
         self.append(mesh)
+        #def text(self):
         # XXX add "MAScreenMat" to "CameraCube" (!) or "ScreenMat" (?)
-        bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = "CameraCube")
-        bpy.ops.material.new()
-        # (?) bpy.ops.object.material_slot_add()
-        # (?) bpy.data.materials[-1].name = "MAScreenMat"
+        cam = bpy.data.objects['CameraMesh']
+        uvtex = cam.data.uv_textures.new()
+        # ScreenMat
+        mat = bpy.data.materials.new("ScreenMat")
+        mat.use_shadeless = True
+        mat.use_face_texture = True
+        mtex = mat.texture_slots.add()
+        mtex.texture = bpy.data.textures.new(name='ScreenTex', type='IMAGE')
+        mtex.texture_coords = 'UV'
+        mtex.uv_layer = uvtex.name
+        cam.data.materials.append(mat)
+        # CameraMat
+        mat = bpy.data.materials.new("CameraMat")
+        mat.diffuse_color = (.14, .14, .14)
+        mat.specular_color = (.28, .28, .28)
+        mtex = mat.texture_slots.add()
+        mtex.texture = bpy.data.textures.new(name='CameraTex', type='IMAGE')
+        mtex.texture_coords = 'UV'
+        mtex.uv_layer = uvtex.name
+        cam.data.materials.append(mat)
+        print(">>>>>>>>>>>>>>  Camera done!  <<<<<<<<<<<<<<")
+"""
+                for material in screen.data.materials.keys():
+                    if 'MAScreenMat' in material:
+                        material_name = material
+"""
 
 class Battery(morse.builder.creator.SensorCreator):
     def __init__(self, name="Battery"):
