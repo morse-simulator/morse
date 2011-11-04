@@ -140,7 +140,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                     msg_data = message_data.get(i).toString()
                     component_instance.local_data[variable] = msg_data
                 else:
-                    logger.error("Unknown data type at 'read_message'")
+                    logger.error("Unknown data type at 'read_message', with component '%s'" % component_instance.blender_obj.name)
                     logger.info("DATA: ", data, " | TYPE: ", type(data))
                 i = i + 1
             return True
@@ -174,7 +174,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
             elif isinstance(data, str):
                 bottle.addString(data)
             else:
-                logger.error("Unknown data type at 'post_message'")
+                logger.error("Unknown data type at 'post_message', with component '%s'" % component_instance.blender_obj.name)
                 # Trying to store 'type(data)' causes an error in the logger.
                 # Because the type is not directly printable.
                 # This is caused when sending a dictionary type
