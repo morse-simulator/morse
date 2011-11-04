@@ -76,3 +76,19 @@ Use of the KUKA LWR
 
 A sample python script of how to access the KUKA LWR via sockets can be found at:
 ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
+
+.. warning:: A note for developpers:
+    The orientation of the bones in the 'kuka_armature' in the Blender file will
+    determine the direction of the rotations.
+    To be consistent with the joint rotations of the real arm, the bones must have
+    the following ``roll`` value (in the **Bone** panel when in **Edit Mode**):
+
+    - kuka_1: 180
+    - kuka_2: 0
+    - kuka_3: 0
+    - kuka_4: 180
+    - kuka_5: 180
+    - kuka_6: 0
+    - kuka_7: 180
+
+    This is valid for Blender version 2.59
