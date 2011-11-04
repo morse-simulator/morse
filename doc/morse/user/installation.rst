@@ -68,8 +68,8 @@ Installation
     The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
 
 It is recommended to store this environment variable, as it is necessary to
-use the :doc:`scene builder script <../dev/builder>` to generate equipped
-robots.
+use the :doc:`Builder API scripts <../dev/builder>` to generate simulation
+scenes with custom equipped robots.
 
 Manually
 ++++++++
@@ -93,10 +93,10 @@ Then type these commands::
   $ mkdir build && cd build
   $ cmake ..
 
-By default, MORSE will install in ``/usr/local``. You can easily change that
-by launching ``ccmake`` instead of ``cmake``.
-When using ``ccmake``, it is also possible to select the optional HLA support,
-and middleware bindings.
+By default, MORSE will install in ``/usr/local``. You can easily change the
+install directory by giving additional parameters to ``cmake``.
+You can also change the installation type and select the middleware bindings
+by using these additional parameters.
 
 - ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install
   prefix directory is referred to as ``$MORSE_ROOT``.
@@ -111,18 +111,43 @@ and middleware bindings.
 - ``BUILD_ROS_SUPPORT`` controls the build of ROS support in MORSE.
 - ``BUILD_MOOS_SUPPORT`` controls the build of MOOS support in MORSE.
 - ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension
-  (Release is a good choice). ::
-
-  $ sudo make install
+  (Release is a good choice).
+- ``PYTHON3_EXECUTABLE`` indicate where the python3 executable is in your system
+- ``PYTHON3_INCLUDE_DIR`` indicate the directory where Python headers are installed
+- ``PYTHON3_LIBRARY`` indicate the directory where Python libraries are installed
 
 You can set up the different variables using the command line.
 For instance, to build and install MORSE with YARP support in ``/opt``, you need something like::
 
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
+Or to tell MORSE where to find a Python installed in a different location::
+
+  $ cmake -DPYTHON3_INCLUDE_PATH=/usr/local/include/python3.2mu -DPYTHON3_LIBRARY=/usr/local/lib/python3.2mu.a ..
+
+Alternatively, you can use ``ccmake ..`` to change all of these parameters using a
+graphical interface. You can modify many different variables by switching to
+"advanced mode" (pressing the ``t`` key).
+
+After configuring the necessary parameters, compile with::
+
+  $ sudo make install
+
 The optional ``$MORSE_BLENDER`` environment variable can be set to let the
 simulator know where to look for Blender if it is not accessible from the
 path.
+
+You can check your configuration is ok with::
+
+  $ morse check
+
+.. note::
+    When updating MORSE to a more recent version, you'll simply have to do::
+
+    $ git checkout [version]
+    $ cd build
+    $ make install
+
 
 Packages manager
 ++++++++++++++++
@@ -136,13 +161,9 @@ documentation.
 
     installation/package_manager/*
 
-You can check your configuration is ok with::
 
-  $ morse check
+Installation troubleshooting
+----------------------------
 
-.. note::
-    When updating MORSE to a more recent version, you'll simply have to do::
-
-    $ git checkout [version]
-    $ cd build
-    $ make install
+In case of problems installing MORSE, verify the
+:doc:`list of Frequently Asked Questions <faq>`.
