@@ -9,7 +9,8 @@ def active_objects():
 
     if not GameLogic.passiveObjectsDict:
         logger.error("Initialization error! the passive objects dictionary has not been built!")
-        return None
+        return {}
+        #return None
 
     return GameLogic.passiveObjectsDict.keys()
 
