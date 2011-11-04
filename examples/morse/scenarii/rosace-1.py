@@ -75,5 +75,14 @@ Rosace_Sensor_001.configure_service('yarp_json')
 Motion_Controller_001.configure_service('yarp_json')
 Rosace_Sensor.configure_service('yarp_json')
 
+# Victims
+victim1 = Robot('victim')
+victim1.translate(x=4.0)
+victim1.properties(Requirements = "1,2,3")
+
+victim2 = Robot('victim')
+victim2.translate(x=8.0, y=5.0)
+victim2.properties(Requirements = "1")
+
 env = Environment('land-1/rosace_1')
 env.place_camera([9, -9, 9])
