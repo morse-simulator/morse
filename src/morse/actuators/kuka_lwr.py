@@ -106,3 +106,20 @@ class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass)
                 self.local_data[channel_name] = rotation[i]
         return None
 
+    @service
+    def set_rotation_array(self, *rotation_array):
+        """
+        MORSE service to set the rotation for each of the arm joints.
+        It receives an array containing the angle to give to each of
+        the robot articulations. The array contains only one angle for
+        each joint.
+        """
+        i = 0
+        for channel in self.blender_obj.channels:
+            try:
+                self.local_data[channel.name] = rotation_array[i]
+                i += 1
+            # If there are no more arguments, set the rotation values to zero
+            except IndexError:
+                self.local_data[channel.name] = 0.0
+        return None

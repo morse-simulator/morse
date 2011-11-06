@@ -4,6 +4,7 @@ import math
 import mathutils
 import morse.core.actuator
 import morse.helpers.math as morse_math
+from morse.core.services import service
 
 class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
@@ -35,7 +36,23 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         segment = self.blender_obj.children[0]
         for i in range(6):
             self._segments.append(segment)
-            segment = segment.children[0]
+            try:
+                segment = segment.children[0]
+            except IndexError as error:
+                break
+        logger.info ("Arm segment list: ", self._segments)
+
+        # Get the references to the segment at the tip of the arm
+        for child in self.blender_obj.childrenRecursive:
+            if 'PA10-6' in child.name:
+                self._arm_tip = child
+                break
+
+        # Any other objects children of the Kuka arm are assumed
+        #  to be mounted on the tip of the arm
+        for child in self.blender_obj.children:
+            if not 'PA10' in child.name:
+                child.setParent(self._arm_tip)
 
         # Variable to store the reference to the Sound actuator
         self._sound = None
@@ -44,7 +61,6 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         logger.info('Component initialized')
         #logger.setLevel(logging.DEBUG)
-
 
 
     def default_action(self):
@@ -112,3 +128,20 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         else:
             self._sound.stopSound()
             logger.debug("STOPPING SOUND")
+
+
+    @service
+    def set_rotation_array(self, seg0=0, seg1=0, seg2=0, seg3=0, seg4=0, seg5=0):
+        """
+        MORSE service to set the rotation for each of the arm joints.
+        It receives an array containing the angle to give to each of
+        the robot articulations. The array contains only one angle for
+        each joint.
+        """
+        self.local_data['seg0'] = seg0
+        self.local_data['seg1'] = seg1
+        self.local_data['seg2'] = seg2
+        self.local_data['seg3'] = seg3
+        self.local_data['seg4'] = seg4
+        self.local_data['seg5'] = seg5
+        return None
