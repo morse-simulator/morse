@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
+from morse.core.services import service
 
 class MorseSensorClass(morse.core.object.MorseObjectClass):
     """ Basic Class for all sensors
@@ -46,3 +47,6 @@ class MorseSensorClass(morse.core.object.MorseObjectClass):
         for function in self.output_functions:
             function(self)
 
+    @service
+    def get_local_data(self):
+        return (self.local_data)
