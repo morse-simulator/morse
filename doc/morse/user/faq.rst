@@ -6,7 +6,7 @@ Here are some of the commonly found problems while installing or using MORSE, an
 During installation
 -------------------
 
-- **Problem**: Python libraries not found::
+- **Problem**: Python libraries not found when configuring using ``cmake``::
 
     morse/_build $ cmake ..
     -- Could NOT find Python3Libs (missing:  PYTHON3_LIBRARIES) 
@@ -18,7 +18,7 @@ During installation
 
         -- Configuring incomplete, errors occurred!
 
-  **Solution**: Indicate the location of the Python libraries as installed in your system::
+  **Solution**: Indicate to ``cmake`` the location of the Python libraries as installed in your system::
 
     $ cmake -DPYTHON3_INCLUDE_PATH=/usr/local/include/python3.2mu -DPYTHON3_LIBRARY=/usr/local/lib/python3.2mu.a ..
 
@@ -27,11 +27,11 @@ During installation
 When running morse
 ------------------
 
-- **Problem**: Blender not found::
+- **Problem**: Blender executable not found::
 
     * The $MORSE_BLENDER environment variable doesn't point to a Blender executable! You should fix that! Trying to look for Blender in alternative places...
 
-    which: no blender in (/home/gechever/openrobots/bin:/usr/lib/mpich2/bin:/usr/lib/ccache:/home/gechever:/home/gechever/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/home/gechever/bin)
+    which: no blender in (/usr/lib/mpich2/bin:/usr/lib/ccache:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin)
     * Could not find a correct Blender executable, neither in the path or in MORSE
     prefix. Blender >= 2.59 and < 3 is required to run MORSE.
     You can alternatively set the $MORSE_BLENDER environment variable to point to
@@ -41,12 +41,15 @@ When running morse
     Please fix it with above informations.
     You can also run 'morse check' for more details.
 
-  **Solution**: Configure the environment variable ``MORSE_BLENDER`` on your system. Depending on your shell (csh or bash) use one of these commands::
+  **Solution**: Configure the environment variable ``MORSE_BLENDER`` on your system. Locate the directory where you have installed Blender, and substitute that for *{path_to_blender_executable}* in the lines below. Depending on your shell (csh or bash) use one of these commands from your home directory.
 
-    $ setenv MORSE_BLENDER {path_to_blender_executable}/blender  (csh)
-    $ export MORSE_BLENDER={path_to_blender_executable}/blender  (bash)
+  - csh::
 
+    $ echo 'setenv MORSE_BLENDER {path_to_blender_executable}/blender' >> ~/.cshrc
 
+  - bash::
+
+    $ echo 'export MORSE_BLENDER={path_to_blender_executable}/blender' >> ~/.bashrc
 
 
 - **Problem**: MORSE libraries not found::
@@ -57,7 +60,16 @@ When running morse
     * Your environment is not yet correctly setup to run MORSE!
     Please fix it with above informations.
 
-  **Solution**: Configure the environment variable ``PYTHONPATH`` to point to the directory where Python3 is installed in your system, as well as the ``site-packages`` directory::
+  **Solution**: Configure the environment variable ``PYTHONPATH`` to point to the directory where you have installed the MORSE libraries in your system, as well as the ``site-packages`` sub-directory. By default MORSE will be installed in ``/usr/local``, otherwise you must use the directory you indicated to ``cmake``.
+  Depending on your shell (csh or bash) use one of these commands from your home directory.
 
-    $setenv PYTHONPATH /usr/local/lib/python3.2\:/usr/local/lib/python3.2/site-packages   (csh)
-    $export PYTHONPATH=/usr/local/lib/python3.2:/usr/local/lib/python3.2/site-packages    (bash)
+  - csh::
+
+    $ echo 'setenv PYTHONPATH $PYTHONPATH\:/usr/local/lib/python3.2\:/usr/local/lib/python3.2/site-packages' >> ~/.cshrc
+
+  - bash::
+
+    $ echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.2:/usr/local/lib/python3.2/site-packages' >> ~/.bashrc
+
+  .. warning::
+    The name of the installation directory may be different depending on your Linux distribution. If you use **Ubuntu** or similar distributions, replace the directory name of ``python3.2/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
