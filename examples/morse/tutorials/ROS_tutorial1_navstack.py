@@ -30,7 +30,7 @@ kuka_base.translate(x=0.1850, y=0.2000, z=0.9070)
 kuka_base.rotate(x=1.5708, y=0) 
 Jido.append(kuka_base)
 
-Motion_Controller = Actuator('xy_omega')
+Motion_Controller = Actuator('v_omega')
 Jido.append(Motion_Controller)
 
 Odometry = Sensor('odometry')
@@ -59,7 +59,7 @@ Sick.properties(resolution = 1.0000)
 Sick.properties(scan_window = 180.0000)
 
 HandLocation = Sensor('pose')
-HandLocation.name = 'HandLocation'
+HandLocation.name = 'Handlocation'
 kuka_base.append(HandLocation)
 
 # NOT YET WORKING:
