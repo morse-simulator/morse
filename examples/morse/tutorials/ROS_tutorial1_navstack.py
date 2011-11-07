@@ -1,10 +1,11 @@
 from morse.builder.morsebuilder import *
 
-# Robots
+#Human
 Human = Robot('human')
 Human.translate(x=-5.3009)
 Human.properties(Speed = 0.0100)
 
+# Robot
 Jido = Robot('jido')
 Jido.translate(x=-5)
 
@@ -32,9 +33,6 @@ Jido.append(kuka_base)
 Motion_Controller = Actuator('xy_omega')
 Jido.append(Motion_Controller)
 
-#Object_tracker = Sensor('object_tracker')
-#Jido.append(Object_tracker)
-
 Odometry = Sensor('odometry')
 Jido.append(Odometry)
 
@@ -44,10 +42,6 @@ Jido.append(Platine)
 Platine.properties(Speed = 1.0000)
 Platine.properties(Manual = False)
 
-#Pose = Sensor('pose')
-#Pose.translate(x=-5.3203)
-#Human.append(Pose)
-
 Pose_sensor = Sensor('pose')
 Pose_sensor.name = 'Pose_sensor'
 Jido.append(Pose_sensor)
@@ -55,11 +49,6 @@ Jido.append(Pose_sensor)
 SemanticCamera = Sensor('semantic_camera')
 SemanticCamera.translate(x=0.065, z=0.06)
 Platine.append(SemanticCamera)
-
-#VideoCamera = Sensor('video_camera')
-#VideoCamera.translate(x=0.065, z=0.06)
-#VideoCamera.name = 'JidoCam'
-#Platine.append(VideoCamera)
 
 Sick = Sensor('sick')
 Sick.translate(x=0.37, z=0.3)
@@ -72,6 +61,20 @@ Sick.properties(scan_window = 180.0000)
 HandLocation = Sensor('pose')
 HandLocation.name = 'HandLocation'
 kuka_base.append(HandLocation)
+
+# NOT YET WORKING:
+
+#VideoCamera = Sensor('video_camera')
+#VideoCamera.translate(x=0.065, z=0.06)
+#VideoCamera.name = 'JidoCam'
+#Platine.append(VideoCamera)
+
+#Pose = Sensor('pose')
+#Pose.translate(x=-5.3203)
+#Human.append(Pose)
+
+#Object_tracker = Sensor('object_tracker')
+#Jido.append(Object_tracker)
 
 # Scene configuration
 #Object_tracker.configure_mw('ros', ['ROS', 'post_lisp_code', 'morse/middleware/ros/object_tracker'])
