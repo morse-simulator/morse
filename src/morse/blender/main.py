@@ -650,11 +650,13 @@ def init_supervision_services():
         
         # The simulation 'supervision' always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+        GameLogic.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
 
         # Services can be imported *only* after GameLogic.morse_services
         # has been created. Else @service won't know where to register the RPC
         # callbacks.
         import morse.services.supervision_services
+        import morse.services.communication_services
 
         logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     except MorseServiceError as e:
