@@ -104,10 +104,6 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
 
-        if (abs(current_pan -  self.local_data['pan']) < self._tolerance and \
-            abs(current_tilt - self.local_data['tilt']) < self._tolerance ):
-            self.completed((status.SUCCESS))
-
         logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         # Get the angles in a range of -PI, PI
@@ -125,6 +121,10 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         correct_pan = morse_math.normalise_angle(relative_pan)
         relative_tilt = current_tilt - parent_tilt
         correct_tilt = morse_math.normalise_angle(relative_tilt)
+
+        if (abs(target_pan - correct_pan) < self._tolerance and \
+            abs(target_tilt - correct_tilt) < self._tolerance ):
+            self.completed((status.SUCCESS))
 
         # Determine the direction of the rotation, if any
         ry = morse_math.rotation_direction(correct_tilt, target_tilt, self._tolerance, normal_speed)
