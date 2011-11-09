@@ -120,6 +120,7 @@ MORSE_MIDDLEWARE_DICT = {
         'v_omega': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef'],
         'semantic_camera': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_viman', 'morse/middleware/pocolibs/sensors/viman', 'morse_viman'],
         'human_posture': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'export_posture', 'morse/middleware/pocolibs/sensors/human_posture', 'human_posture'],
+        'rosace': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_target', 'morse/middleware/pocolibs/sensors/target', 'targetPos']
     },
 }
 
