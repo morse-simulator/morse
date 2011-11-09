@@ -65,7 +65,8 @@ MORSE_MIDDLEWARE_DICT = {
         'battery': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_float32', 'morse/middleware/ros/battery'],
         'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
         'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
-		'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_velocity_twist'],
+        'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_velocity_twist'],
+        'semantic_camera': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_string', 'morse/middleware/ros/semantic_camera'],
     },
 
     'socket': {
