@@ -36,8 +36,11 @@ def post_string(self, component_instance):
         message = str("")
         #iterate through all objects of the component_instance and create one string
         for obj in component_instance.local_data['visible_objects']:
+            #if object has no description, set to '-'
+            if obj['description'] == '':
+                description = '-'
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "[" + str(obj.name) + ", " + str(obj['Description']) + ", " + str(obj.worldPosition) + ", " + str(obj.worldOrientation.to_quaternion()) + " ]\n"    
+            message = message + "[" + str(obj['name']) + ", " + description + ", " + str(obj['position']) + ", " + str(obj['orientation']) + " ]\n"    
             string.data = message
         # publish the message on the correct topic    
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
@@ -52,10 +55,14 @@ def post_lisp_code(self, component_instance):
                
     for topic in self._topics: 
         message = str("(")
+
         #iterate through all objects of the component_instance and create one string in lisp-list format
         for obj in component_instance.local_data['visible_objects']:
+            #if object has no description, set to '-'
+            if obj['description'] == '':
+                description = '-'
             # Build string from name, description, location and orientation in the global world frame
-            message = message + "(" + str(obj.name) + " " + str(obj['Description']) + " " + str(obj.worldPosition[0]) + " " + str(obj.worldPosition[1]) + " " + str(obj.worldPosition[2]) + " " + str(obj.worldOrientation.to_quaternion()[0]) + " " + str(obj.worldOrientation.to_quaternion()[1]) + " " + str(obj.worldOrientation.to_quaternion()[2]) + " " + str(obj.worldOrientation.to_quaternion()[3]) + ")"
+            message = message + "(" + str(obj['name']) + " " + description + " " + str(obj['position'].x) + " " + str(obj['position'].y) + " " + str(obj['position'].z) + " " + str(obj['orientation'].x) + " " + str(obj['orientation'].y) + " " + str(obj['orientation'].z) + " " + str(obj['orientation'].w) + ")"
         
         string.data = message + ")"
         # publish the message on the correct topic    
