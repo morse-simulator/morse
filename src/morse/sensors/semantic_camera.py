@@ -75,8 +75,11 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # Prepare the exportable data of this sensor
         # In this case, it is the list of currently visible objects
         # by each independent robot.
-        self.local_data['visible_objects'] = []
+        
+        # Array for lables of visible objects        
+        self.visibles = []
 
+        self.local_data['visible_objects'] = []
         # Variable to indicate this is a camera
         self.semantic_tag = True
 
@@ -94,27 +97,60 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # Call the action of the parent class
         super(self.__class__,self).default_action()
 
-        visibles = self.local_data['visible_objects']
+        visibles = self.visibles
 
+        # check which objects are visible
         for obj in GameLogic.trackedObjects.keys():
             label = passive_objects.label(obj)
             visible = self._check_visible(obj)
+            obj_dict = dict([('name', label), ('position', obj.worldPosition)]) 
             # Object is visible and not yet in the visible_objects list...
             if visible and label not in visibles:
-                self.local_data['visible_objects'].append(label)
+                # Create dictionary to contain object name, type, description, position and orientation
+                self.visibles.append(label)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
                 logger.info("Semantic: {0} just appeared".format(label))
-
+            
             # Object is not visible and was in the visible_objects list...
             if not visible and label in visibles:
-                self.local_data['visible_objects'].remove(label)
+                self.visibles.remove(label)
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
                 logger.info("Semantic: {0} just disappeared".format(label))
-
+        
+        # Create dictionaries
+        self.local_data['visible_objects'] = []
+        for obj in GameLogic.trackedObjects.keys():
+            label = passive_objects.label(obj)
+            if label in visibles:
+                # Create dictionary to contain object name, type, description, position and orientation
+                obj_dict = dict([('name', label), ('description', ''), ('type', ''), ('position', obj.worldPosition), ('orientation', obj.worldOrientation.to_quaternion())])  
+                # Set description and type if those properties exist
+                try:
+                    obj_dict['description'] = obj['Description']
+                except KeyError:
+                    pass
+                try:
+                    obj_dict['type'] = obj['Type']
+                except KeyError:
+                    pass
+                self.local_data['visible_objects'].append(obj_dict)
+                
         logger.debug("Visible objects: "+ str(self.local_data['visible_objects']))
+
+        # Create dictionary to contain object name, type, description, position and orientation
+        #obj_dict = dict([('name', label), ('description', ''), ('type', ''), ('position', obj.worldPosition), ('orientation', obj.worldOrientation.to_quaternion())]) 
+        # Set description and type if those properties exist
+        #try:
+        #    obj_dict['description'] = obj['Description']
+        #except KeyError:
+        #    pass
+        #try:
+        #    obj_dict['type'] = obj['Type']
+        #except KeyError:
+        #    pass
 
 
     def _check_visible(self, obj):
@@ -139,7 +175,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             #  of an object will make it invisible, even if the rest is still
             #  seen from the camera
             closest_obj = self.blender_obj.rayCastTo(obj)
-            if obj == closest_obj:
+            if closest_obj in [obj] + list(obj.children):
                 return True
 
         return False
