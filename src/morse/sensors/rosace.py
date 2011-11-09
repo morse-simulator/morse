@@ -151,32 +151,34 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         # Look for victims in the cone of the sensor
         contr = GameLogic.getCurrentController()
         radar = contr.sensors['Radar']
-        if radar.triggered and radar.positive:
-            for victim_obj in radar.hitObjectList:
-                victim_position = victim_obj.worldPosition
-                # Fill the data structure for the victim
-                victim_coordinate = OrderedDict([
-                                ('x', victim_position[0]),
-                                ('y', victim_position[1]),
-                                ('z', victim_position[2])   ])
-                victim_data = OrderedDict([
-                                ('coordinate', victim_coordinate),
-                                ('requirements', victim_obj['Requirements']),
-                                ('severity', victim_obj['Severity'])    ])
-                self.local_data['victim_dict'][victim_obj.name] = victim_data
 
-                # Find the closest victim and its distance
-                new_distance = self.blender_obj.getDistanceTo(victim_obj)
-                if new_distance < self._nearest_distance:
-                    self._nearest_victim = victim_obj
-                    self._nearest_distance = new_distance
-
-            # When instructed to do so, help a victim
-            if self._healing:
-                self._heal_victim()
-
-        if radar.triggered and not radar.positive:
+        if radar.triggered:
             # Clear the variables for the victims
             self.local_data['victim_dict'] = {}
             self._nearest_victim = None
             self._nearest_distance = 999999
+
+            if radar.positive:
+                for victim_obj in radar.hitObjectList:
+                    if victim_obj.name != self.robot_parent.name():
+                        victim_position = victim_obj.worldPosition
+                        # Fill the data structure for the victim
+                        victim_coordinate = OrderedDict([
+                                        ('x', victim_position[0]),
+                                        ('y', victim_position[1]),
+                                        ('z', victim_position[2])   ])
+                        victim_data = OrderedDict([
+                                        ('coordinate', victim_coordinate),
+                                        ('requirements', victim_obj['Requirements']),
+                                        ('severity', victim_obj['Severity'])    ])
+                        self.local_data['victim_dict'][victim_obj.name] = victim_data
+
+                        # Find the closest victim and its distance
+                        new_distance = self.blender_obj.getDistanceTo(victim_obj)
+                        if new_distance < self._nearest_distance:
+                            self._nearest_victim = victim_obj
+                            self._nearest_distance = new_distance
+
+                # When instructed to do so, help a victim
+                if self._healing:
+                    self._heal_victim()
