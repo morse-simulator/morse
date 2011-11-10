@@ -22,6 +22,7 @@ import mathutils
 import morse.core.actuator
 from morse.core.services import service
 from morse.core.services import async_service
+from morse.core.services import interruptible
 from morse.core import status
 
 class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
@@ -98,6 +99,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
 
 
+    @interruptible
     @async_service
     def goto(self, x, y, z, tolerance=0.5, speed=1.0):
         """ Provide new coordinates for the waypoint destination """
@@ -167,18 +169,16 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         logger.debug("GOT DISTANCE: %.4f" % (distance))
         logger.debug("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
-        logger.debug("Local  vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
         # If the target has been reached, change the status
         if distance-self.local_data['tolerance'] <= 0:
-
             parent.move_status = "Arrived"
 
             #Do we have a runing request? if yes, notify the completion
             self.completed(status.SUCCESS, parent.move_status)
 
             logger.debug("TARGET REACHED")
-            logger.debug("Robot {0} move status: '{1}'".format(parent, parent.move_status))
+            logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
 
         else:
             # Do nothing if the speed is zero
@@ -195,7 +195,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             # Correct the direction of the turn according to the angles
             dot = global_vector.dot(self.world_Y_vector)
-            logger.debug("DOT = {0}".format(dot))
+            logger.debug("Vector dot product = %.2f" % dot)
             if dot < 0:
                 target_angle = target_angle * -1
 
@@ -231,11 +231,23 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             except ZeroDivisionError:
                 pass
 
+            # Allow the robot to rotate in place if the waypoing is
+            #  to the side or behind the robot
+            if angle_diff >= math.pi/3.0:
+                logger.debug("Turning on the spot!!!")
+                vx = 0
+
             # Collision avoidance using the Blender radar sensor
-            if self._collisions and self._radar_r['Rcollision']:
-                rz = rotation_speed
-            elif self._collisions and self._radar_l['Lcollision']:
-                rz = - rotation_speed
+            if self._collisions and vx != 0 and self._radar_r['Rcollision']:
+                # No obstacle avoidance when the waypoint is near
+                if distance+self.local_data['tolerance'] > self._radar_r.sensors["Radar"].distance:
+                    rz = rotation_speed
+                    logger.debug("Obstacle detected to the RIGHT, turning LEFT")
+            elif self._collisions and vx != 0 and self._radar_l['Lcollision']:
+                # No obstacle avoidance when the waypoint is near
+                if distance+self.local_data['tolerance'] > self._radar_l.sensors["Radar"].distance:
+                    rz = - rotation_speed
+                    logger.debug("Obstacle detected to the LEFT, turning RIGHT")
             # Test if the orientation of the robot is within tolerance
             elif -self._angle_tolerance < angle_diff < self._angle_tolerance:
                 rz = 0
@@ -243,11 +255,13 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             else:
                 rz = rotation_speed * rotation_direction
 
-        # Give the movement instructions directly to the parent
-        # The second parameter specifies a "local" movement
-        if self._type == 'Position':
-            parent.blender_obj.applyMovement([vx, 0, 0], True)
-            parent.blender_obj.applyRotation([0, 0, rz], True)
-        elif self._type == 'Velocity':
-            parent.blender_obj.setLinearVelocity([vx, 0, 0], True)
-            parent.blender_obj.setAngularVelocity([0, 0, rz], True)
+            logger.debug("Applying [[vx = %.4f, rz = %.4f]]\n" % (vx, rz))
+
+            # Give the movement instructions directly to the parent
+            # The second parameter specifies a "local" movement
+            if self._type == 'Position':
+                parent.blender_obj.applyMovement([vx, 0, 0], True)
+                parent.blender_obj.applyRotation([0, 0, rz], True)
+            elif self._type == 'Velocity':
+                parent.blender_obj.setLinearVelocity([vx, 0, 0], True)
+                parent.blender_obj.setAngularVelocity([0, 0, rz], True)
