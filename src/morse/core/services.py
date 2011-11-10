@@ -58,13 +58,7 @@ class MorseServices:
                 logger.error("Request Manager " + classname + " not found in " + modulename + ". Check for typos in the configuration file!")
                 return False
 
-            try:
-                instance = klass()
-            except MorseServiceError:
-                # Exception during the initialization of the request
-                # manager?
-                # The cause of the exception is likely already logged.
-                return False
+            instance = klass() # In case of instantiation failure, this may raise a MorseServiceError exception
 
             self._request_managers[classname] = instance
             logger.info("Successfully initialized the %s request manager." % classname)
