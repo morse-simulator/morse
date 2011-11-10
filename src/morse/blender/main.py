@@ -413,6 +413,10 @@ def link_services():
 
     for component_name, request_manager_data in component_list.items():
         # Get the instance of the object
+        
+        if component_name == "simulation": # Special case for the pseudo-component 'simulation'
+            continue
+
         try:
             instance = GameLogic.componentDict[component_name]
         except KeyError as detail:
@@ -638,33 +642,71 @@ def init_logging():
     logger.addHandler(ch)
 
 def init_supervision_services():
-    """ This method first loads the socket service manager, map the virtual
-    'supervision' component to it, and register all supervision services
-    declared in morse.core.supervision_services;
+    """ This method first loads the socket service manager, map the
+    virtual 'simulation' component to it, loads any other request
+    manager mapped to the 'simulation' component and register all
+    simulation management services declared in
+    :py:module:`morse.core.supervision_services` 
     """
     GameLogic.morse_services = MorseServices()
 
+    ###
+    # First, load and map the socket request manager to the pseudo
+    # 'simulation' component:
     try:
         if not GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
             return False
-        
-        # The simulation 'supervision' always uses at least sockets for requests.
+        # The simulation mangement services always uses at least sockets for requests.
         GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
         GameLogic.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
 
-        # Services can be imported *only* after GameLogic.morse_services
-        # has been created. Else @service won't know where to register the RPC
-        # callbacks.
-        import morse.services.supervision_services
-        import morse.services.communication_services
-
-        logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     except MorseServiceError as e:
         #...no request manager :-(
         logger.critical(str(e))
         logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
         return False
-    
+
+    ###
+    # Then, load any other middleware request manager that was declared
+    # to also handle the 'simulation' pseudo-component:
+    try:
+        request_managers = component_config.component_service["simulation"]
+
+        for request_manager in request_managers:
+            try:
+                modulename, classname = request_manager.rsplit('.', 1)
+            except ValueError:
+                logger.error("You must specify the fully qualified name " + \
+                             "of the request manager (eg: " + \
+                             "morse.middleware.socket_request_manager.SocketRequestManager)")
+                return False
+
+            try:
+                # Load required request managers
+                if not GameLogic.morse_services.add_request_manager(request_manager):
+                    return False
+
+                GameLogic.morse_services.register_request_manager_mapping("simulation", classname)
+                logger.info("Adding '{}' to the middlewares for simulation control".format(classname))
+            except MorseServiceError as e:
+                #...no request manager :-(
+                logger.critical(str(e))
+                logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
+                return False
+
+    except (AttributeError, NameError, KeyError) as detail:
+        # Nothing to declare: skip to the next step.
+        pass
+
+
+    ###
+    # Services can be imported *only* after GameLogic.morse_services
+    # has been created. Else @service won't know where to register the RPC
+    # callbacks.
+    import morse.services.supervision_services
+    import morse.services.communication_services
+
+    logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     return True
 
 

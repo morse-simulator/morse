@@ -30,6 +30,10 @@ Middleware
 
 - add support for services through ROS middleware
 
+- support general mapping of free-function services to any middleware (currently
+  works only for free-function services declared for the 'simulation' pseudo-
+  component)
+
 Architecture
 ------------
 
