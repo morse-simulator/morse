@@ -66,10 +66,11 @@ class MorseOverlay(MorseAbstractObject):
                 @async_service
                 def mydummy_service(self, arg1):
                     # [...do smthg useful]
-                    self.overlaid_object.dummy_service(self.chain_callback(), arg1)
+
                     # We call the overlaid asynchronous service
                     # 'dummy_service' by passing a special callback
                     # returned by 'self.chain_callback()'
+                    self.overlaid_object.dummy_service(self.chain_callback(), arg1)
 
         ``chain_callback`` takes a functor as an optional parameter.
         This functor is called after the (overlaid) service completion, but
@@ -83,6 +84,7 @@ class MorseOverlay(MorseAbstractObject):
         .. code-block:python
 
             class MyDummy(MorseAbstractobject):
+
                 def mydummy_on_completion(self, result):
                     # This functor - here a simple function - simply
                     # format the result output.

@@ -42,14 +42,14 @@ to MORSE default ones:
         @service
         def SetTilt(self, tilt):
             
-            self.overlaid_object.set_tilt_pan(tilt, self.last_pan)
             self.last_tilt = float(tilt)
+            self.overlaid_object.set_tilt_pan(self.last_tilt, self.last_pan)
         
         @service
         def SetPan(self, pan):
             
-            self.overlaid_object.set_tilt_pan(self.last_tilt, pan)
             self.last_pan = float(pan)
+            self.overlaid_object.set_tilt_pan(self.last_tilt, self.last_pan)
 
 You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
 file, accessible from MORSE Python path.
@@ -58,6 +58,9 @@ For asynchronous service, it is a bit more complex, as we need to provide a
 callback. The :py:meth:`morse.core.MorseOverlay.chain_callback` takes care
 about this operation. You can pass an optional function to this method to
 modify the returned data, or modify the state of your object.
+
+This new callback *must* take one parameter (a tuple ``(status,
+result)``) and return a new tuple ``(status, result)``:
 
 .. code-block:: python
 
@@ -74,18 +77,30 @@ modify the returned data, or modify the state of your object.
             self.last_tilt = 0.0
             self.last_pan = 0.0
 
-        def log(self):
-            print("Chaining callback")
+        def format_pan_tilt_return(self, result):
+            # this callback will be called when SetTilt or SetPan
+            # completes.
+            # It simply re-format the return value of the asynchronous
+            # services.
+
+            status, value = result
+
+            return (status, 
+                    "PTU->{:.2f},{:.2f}".format(self.last_pan, self.last_tilt))
         
         @async_service
         def SetTilt(self, tilt):
-            self.overlaid_object.set_tilt_pan(self.chain_callback(), \
-			tilt, self.last_pan)
+            self.last_tilt = float(tilt)
+            self.overlaid_object.set_tilt_pan(
+                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.last_tilt, self.last_pan)
 
         @async_service
         def SetPan(self, pan):
-            self.overlaid_object.set_tilt_pan(self.chain_callback(log), \
-			self.last_tilt, pan)
+            self.last_pan = float(pan)
+            self.overlaid_object.set_tilt_pan(
+                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.last_tilt, self.last_pan)
 
 Scene setup
 -----------
