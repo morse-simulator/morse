@@ -26,7 +26,9 @@ in front of a function declared within a component.
 	be sure to convert your data in the expected type.
 
 .. warning::
-	Do not use ``eval`` to convert your data from string to expected type.
+    Do not use ``eval()`` to convert your data from string to expected type, as
+    this would cause a serious security threat. Use type specific functions
+    (like ``int()``, ``float()``,...) instead.
 
 Lets have a look at ``human.py``, the component that allows us to control
 a human character in the simulation.
@@ -76,8 +78,9 @@ In this example, we assume that ``myHuman`` is the name of the Blender
 object that instanciates a ``HumanClass``.
 
 .. note::
-  The value of the id (here ``id1``) has no importance at all: it is
-  defined and used only by the client to track requests and responses.
+  The value of the id (here ``id1``) has no importance at all: it is specific
+  to the implementation of the services with sockets and used only by the
+  client to track requests and responses.
 
 Returning values
 ++++++++++++++++
@@ -223,20 +226,16 @@ level (*local policy*).
 To set a local policy, simply decorate your services with the
 ``@interruptible`` and ``@noninterruptible`` decorators
 (:meth:`morse.core.services.interruptible` and
-:meth:`morse.core.services.noninterruptible`).
+:meth:`morse.core.services.noninterruptible`). These decorators must appear
+*before* the ``@async_service`` decorator.
 
-An *interruptible* service is preempted when a new asynchronous service is
-started. It means that the ``interrupt`` method is called, where default
-behaviour (defined in ``morse.core.AbstractObject``) is to send back to the
-caller the status :data:`morse.core.status.PREEMPTED`). One must overload this
-method in this class to ensure the service is really interrupted, and then
-call mother ``interrupt``. A *non-interruptible* service triggers a failure
-when someone attempts to start a new service. 
-
-.. note::
-	The ``interrupt`` method  must be implemented even if the default policy
-	is *non-interruptible*, as a caller can decide to manually interrupt the
-	service.
+An **interruptible** service is preempted when a new asynchronous service is
+started by calling the ``interrupt`` method. The ``interrupt`` method is
+defined in ``morse.core.AbstractObject`` to send back to the caller the status
+:data:`morse.core.status.PREEMPTED`. It is advised to overload this behaviour
+in the component class to ensure the service is actually interrupted (do not
+forget however to call overloaded ``interrupt`` method, as shown in the example
+below). 
 
 .. code-block:: python
 
@@ -250,14 +249,22 @@ when someone attempts to start a new service.
              self.local_data['z'] = self.blender_obj.worldPosition[2]
              super(WaypointActuatorClass, self).interrupt()
 
+.. note::
+    It is recommended to always implement the ``interrupt`` method even if the
+    default policy is *non-interruptible*, as a caller can decide to manually
+    interrupt the service.
+
+A **non-interruptible** service triggers a failure (status
+:data:`morse.core.status.FAILED`) when someone attempts to start a new
+asynchronous service. 
 
 To set a global policy, you need to catch a
 :class:`morse.core.exceptions.MorseServiceAlreadyRunningException` exception
 when invoking the :meth:`morse.core.request_manager.on_incoming_request`
 method.
 
-This exception has a special member ``service`` that points to the original
-service function:
+This exception has a special member ``service`` that points to the asynchronous 
+service currently running:
 
 .. code-block:: python
 
@@ -265,6 +272,12 @@ service function:
         is_synchronous, value = self.on_incoming_request(component, service, params)
     except MorseServiceAlreadyRunningError as e:
         logger.warning(e.service.__name__ + " is already running!")
+
+.. note::
+  A service with a local policy defined (*i.e.* decorated with either
+  ``@interruptible`` or ``@noninterruptible``) will never trigger a
+  ``MorseServiceAlreadyRunningException`` exception, and thus, **the local
+  policy always overrides the global policy**.
 
 The internals
 -------------
