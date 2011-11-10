@@ -130,4 +130,5 @@ MORSE_SERVICE_DICT = {
     "yarp": "morse.middleware.yarp_request_manager.YarpRequestManager",
     "yarp_json": "morse.middleware.yarp_json_request_manager.YarpRequestManager",
     "pocolibs": "morse.middleware.pocolibs_request_manager.PocolibsRequestManager",
+    "ros": "morse.middleware.ros_request_manager.RosRequestManager",
 }

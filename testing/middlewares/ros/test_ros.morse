@@ -1,0 +1,24 @@
+#! /usr/bin/env morseexec
+
+"""
+This script tests ROS services within MORSE.
+"""
+
+import random
+from morse.builder.morsebuilder import *
+
+
+robot = Robot('atrv')
+
+######### ENVIRONEMENT ########
+
+env = Environment('indoors-1/indoor-1')
+env.configure_service('ros')
+
+# Execute this script.
+#
+# If the test is successful:
+
+# $ rosnode list -> 'morse' should appear
+# $ rosservice list -> 3 services in 'morse/simulation/*' should appear
+# $ rosservice call /morse/simulation/list_robots should return ['ATRV']

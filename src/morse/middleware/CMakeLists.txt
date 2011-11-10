@@ -29,7 +29,7 @@ IF(BUILD_ROS_SUPPORT)
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
         REGEX .*py.$ EXCLUDE
         )
-  INSTALL(FILES ros_mw.py
+  INSTALL(FILES ros_mw.py ros_request_manager.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
       )
 ENDIF(BUILD_ROS_SUPPORT)

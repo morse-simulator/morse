@@ -1,0 +1,17 @@
+<package>
+  <description brief="rosmorse">
+
+	  rosmorse is an internal MORSE pseudo-package for
+	  compatibility with ROS.
+
+  </description>
+  <author>MORSE team</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://morse.openrobots.org</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+
+</package>
+
+
