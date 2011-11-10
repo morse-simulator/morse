@@ -46,7 +46,8 @@ class MorseServices:
             try:
                 __import__(modulename)
             except ImportError as detail:
-                logger.error(modulename + " does not exist! Check for typos in the configuration file!")
+                logger.error("Error while importing " + modulename + \
+                             "\nError details:\n" + str(detail))
                 return False
             module = sys.modules[modulename]
 

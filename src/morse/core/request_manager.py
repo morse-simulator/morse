@@ -24,8 +24,8 @@ class RequestManager(object):
     Components can register such a service with the 'register_service'
     method. Please check its documentation for details.
  
-    To implement a concrete RequestManager (for a new middleware, for instance)
-    , the following methods must be overloaded:
+    To implement a concrete RequestManager (for a new middleware, for instance),
+    the following methods must be overloaded:
         - :py:meth:`initialization`: perform here middleware specific initialization
         - :py:meth:`finalization`: perform here middleware specific finalization
         - :py:meth:`post_registration`: put here all middleware specific code
@@ -36,7 +36,7 @@ class RequestManager(object):
         - :py:meth:`main`: this method is called at each step of the
           simulation. You should read there incoming requests and write back
           results.
-          When a new request arrives, you must pass it to :py:meth:on_incoming_request
+          When a new request arrives, you must pass it to :py:meth:`on_incoming_request`
           that dispatch or invoke properly the request.
 
     Subclasses are also expected to overload the special :py:meth:`__str__`
@@ -109,7 +109,8 @@ class RequestManager(object):
         specific initializations to do when a new service is exposed.
 
         :param string component_name: name of the component that declare this service
-        :param string service_name: Public name of the service
+        :param string service_name: Public name of the service (usually, 
+        'component_name#service_name')
         :param boolean is_async: If true, means that the service is asynchronous.
         :return: True if the registration succeeded.
         :rtype: boolean
@@ -203,9 +204,10 @@ class RequestManager(object):
         If something goes wrong while trying to call the method, a
         :py:class:`morse.core.exceptions.MorseRPCInvokationError` is raised.
 
-        If everything goes well, the method return a tuple: (True, return_value) or
-        (False, request_id). The first item tells if the service is a synchronous
-        (short-term) service (value is True) or an asynchronous service (False).
+        If everything goes well, the method return a tuple: ``(True,
+        return_value)`` or ``(False, request_id)``. The first item tells
+        if the service is a synchronous (short-term) service (value is
+        ``True``) or an asynchronous service (``False``).
 
         For asynchronous services, the returned request id should allow to track
         the completion of the service. Upon completion, :py:meth:`on_service_completion`

@@ -125,7 +125,7 @@ class SocketRequestManager(RequestManager):
             else:
                 req = self._client_sockets[i].readline()
                 # an empty read means that the remote host has
-                # deconnected itself
+                # disconnected itself
                 if req == '':
                     try: # close the socket if it gives an error
                          # (this can spawn an other error!)
