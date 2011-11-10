@@ -321,7 +321,9 @@ class Environment(Component):
         if distribution != None:
             self.multinode_distribution = distribution
         self._multinode_configured = True
-    
+
+    def configure_service(self, mw):
+        AbstractComponent.configure_service(self, mw, "simulation")
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

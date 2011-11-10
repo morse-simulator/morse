@@ -14,9 +14,15 @@ class Configuration(object):
         cfg_middleware.setdefault(component.name, []).append(mw_method_cfg)
 
     def link_service(self, component, service_cfg):
-        cfg_service.setdefault(component.name, []).append(service_cfg)
+        # Special case here for the pseudo component 'simulation' that
+        # covers the simulator management services.
+        if component == "simulation":
+            cfg_service.setdefault(component, []).append(service_cfg)
+        else:
+            cfg_service.setdefault(component.name, []).append(service_cfg)
 
     def link_modifier(self, component, modifier_cfg):
+        cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
         cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, klass,  manager, overlay_cfg):
@@ -158,9 +164,11 @@ class AbstractComponent(object):
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
         AbstractComponent._config.link_mw(self, config)
 
-    def configure_service(self, mw):
+    def configure_service(self, mw, component = None):
+        if not component:
+            component = self._blendname
         service = MORSE_SERVICE_DICT[mw]
-        AbstractComponent._config.link_service(self, service)
+        AbstractComponent._config.link_service(component, service)
 
     def configure_modifier(self, mod, config=None):
         # Configure the middleware for this component

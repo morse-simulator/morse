@@ -147,6 +147,17 @@ The ``Environment`` class provides these functions:
  * **create()**: Should always be called at the very end of the Builder script.
    It will finalise the building process and write the configuration files.
 
+Note also that the ``configure_service()`` method of the ``Environment`` class
+is overloaded: use it to define which middlewares expose the *simulator
+internals services* (*i.e.*, the services used to remotely control the
+simulator behaviour, cf :doc:`supervision services
+<../user/supervision_services>`):
+
+.. code-block:: python
+
+    env = Environement('indoors-1/indoor-1')
+    # Set the simulation management services to be available from ROS:
+    env.configure_service("ros")
 
 Detailed explanations of class functions
 ----------------------------------------
