@@ -45,11 +45,23 @@ class Sick(morse.builder.creator.SensorCreator):
             "morse/sensors/sick", "SICKClass", "sick")
         # set components-specific properties
         self.properties(Visible_arc = True, laser_range = 30.0, 
-                scan_window = 180.0, resolution = 0.25)
+                scan_window = 180.0, resolution = 1.0)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
         # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
         self.append_meshes(['Arc_180', 'Sick_Model'])
+
+class Infrared(morse.builder.creator.SensorCreator):
+    def __init__(self, name="Infrared"):
+        morse.builder.creator.SensorCreator.__init__(self, name, 
+            "morse/sensors/sick", "SICKClass", "infrared")
+        # set components-specific properties
+        self.properties(Visible_arc = True, laser_range = 2.0, 
+                scan_window = 20.0, resolution = 1.0)
+        # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+        self.frequency(10)
+        # append sick mesh, from MORSE_COMPONENTS/sensors/infrared.blend
+        self.append_meshes(['Arc_20', 'Cube'])
 
 def get_properties_str(name):
     """ Returns the Game properties of the Blender object represented by the name
@@ -102,25 +114,6 @@ class Battery(morse.builder.creator.SensorCreator):
         morse.builder.creator.SensorCreator.__init__(self, name, 
             "morse/sensors/battery", "BatteryClass", "battery")
         self.properties(DischargingRate = 1.0)
-
-class Infrared(morse.builder.creator.SensorCreator):
-    def __init__(self, name="Infrared"):
-        morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/infrared", "InfraredClass", "infrared")
-        self.properties(ir_range = 1.5)
-        mesh = morse.builder.blenderobjects.Cube("InfraredCube")
-        mesh.scale = (.1, .1, .05)
-        self.append(mesh)
-        bpy.ops.logic.sensor_remove(sensor="Always")
-        bpy.ops.logic.sensor_add(type = 'RADAR') # add Radar sensor
-        sensor = self._blendobj.game.sensors.keys()[-1]
-        self._blendobj.game.sensors[sensor].use_pulse_true_level = True
-        self._blendobj.game.sensors[sensor].angle = 5
-        self._blendobj.game.sensors[sensor].distance = 20
-        self._blendobj.game.sensors[sensor].axis = 'XAXIS' # default
-        controller = self._blendobj.game.controllers.keys()[-1]
-        self._blendobj.game.controllers[controller].link( sensor = 
-                self._blendobj.game.sensors[sensor] )
 
 class Clock(morse.builder.creator.SensorCreator):
     def __init__(self, name="Clock"):
