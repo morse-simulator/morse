@@ -18,7 +18,7 @@ The end result is a Python script that can be executed from MORSE to generate
 a ``.blend`` file. There is no previous Blender knowledge necessary to construct
 a simulation scene.
 
-cf. examples/morse/scenarii/tutorial-1.py
+cf. examples/morse/scenarii/tutorial-1-sockets.py
 
 Create the script
 -----------------
