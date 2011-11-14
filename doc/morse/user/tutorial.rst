@@ -1,105 +1,115 @@
-Create your first simulation (using Blender)
-============================================
+Create your first simulation using the builder API
+==================================================
 
-This tutorial goes through the steps required to manually build "from scratch"
-a new robot for simulation. Note that once created, you can save your simulation
-scenario as a regular Blender file to replay it directly any time later.
+This tutorial will guide you through creating a simple scenario where you can
+control a mobile robot and read data from its sensors. It makes use of the
+:doc:`Builder API <../../../../dev/builder>` of MORSE. This consists on a series
+of Python functions to define these elements of a simulation scene:
 
-This tutorial assumes MORSE is properly installed. If not, follow the
-instructions :doc:`here <installation>`.
+ - The robots to use
+ - The components attached to them
+ - The middleware bindings used for communication
+ - The environment of the simulation
 
-Create the simulation scene
------------------------------
+Any of the elements in the :doc:`MORSE component library <../components_library>`
+can be included in this description.
 
-Load sample file
-++++++++++++++++
+The end result is a Python script that can be executed from MORSE to generate
+a ``.blend`` file. There is no previous Blender knowledge necessary to construct
+a simulation scene.
 
-Open the MORSE simulator with the test file provided with the installation, by using this command::
+cf. examples/morse/scenarii/tutorial-1.py
 
-  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1.blend
+Create the script
+-----------------
 
-This will load a scene with a robot in a room with some furniture.
+For this tutorial, you will describe all the elements of your scene (robots,
+sensors, actuators) in a Python script, and then execute it using **morse**.
+We describe here how to create the script:
 
-The file::
+Open a text file, and give it an appropriate name. For instance: ``robot_scene.py``.
+Inside it, add the code pieces described below.
 
-  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend
+In order to use the API, you should import some **morse** libraries:
 
-contains the final scene, as obtain at the end of the tutorial.
+.. code-block:: python
 
-Link an actuator
-++++++++++++++++
+    from morse.builder.morsebuilder import *
 
-We'll add a motion controller to the robot, so that it can receive commands from an external program. The robot will then move according to the instructions received. In this case we'll add a controller that uses linear and angular speed (V, W).
 
-#. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/actuators``,
-#. Press :kbd:`Left Mouse Click` over the file ``v_omega.blend``,
-#. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Press :kbd:`Right Mouse Click` over the item ``Motion_Controller``,
-#. Press the button **Link/Append from Library**. You'll return to the 3D View.
-#. The newly inserted object should be already selected (else select it, either
-   by :kbd:`Right Mouse Click` clicking over the object in the 3D View, or
-   :kbd:`Left Mouse Click` over the object's name in the Outliner window). The
-   object will be highlighted in cyan color, and can not be moved around.  #.
-   Convert the object to local, by pressing :kbd:`l` then hitting :kbd:`enter`. It
-   turns to orange outline.
-#. With the controller selected, hold down :kbd:`Shift` and then :kbd:`Right Mouse Click` over the robot object,
-#. Press :kbd:`Ctrl-p` and then hit :kbd:`enter` make the robot the parent of
-   the controller. In the scene outliner, if you press the little ``+`` symbol in
-   front of ``ATRV``, you should now see the ``Motion_Controller``.
+Then you will make calls to predefined functions to create and configure the
+components necessary in your scene.
 
-.. _link-gyroscope-sensor:
+.. note:: The names inside the builder functions must match exactly with
+    the names of the .blend files that contain the components. Check the
+    component library for references.
 
-Link a Pose sensor
+
+Add a robot to the scene
+++++++++++++++++++++++++
+The robot is the base where we will install other sensors and actuators.
+
+.. code-block:: python
+
+    atrv = Robot('atrv')
+
+Append an actuator
 ++++++++++++++++++
+We'll add a **v, omega** actuator. This one controls the robot by changing the linear and
+angular velocity of the movement.
 
-Next we will add a sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
+.. code-block:: python
 
-#. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/sensors``,
-#. Press :kbd:`Left Mouse Click` over the file ``pose.blend``,
-#. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Press select all items (``Pose_sensor`` and ``Pose_mesh``), by holding :kbd:`Shift` down, and load them.
-#. Convert the two object to local, by pressing :kbd:`l` then hitting :kbd:`enter`,
-#. Switch to front view by pressing :kbd:`1` (or use the ``View`` menu at the bottom of the 3D view),
-#. Press :kbd:`g`, then move the ``Pose_sensor`` object on the top of the robot (you can constraint the translation on the Z axis by simply pressing :kbd:`Z`),
-#. Press :kbd:`Left Mouse Click` to accept the movement,
-#. With the ``Pose_sensor`` object selected, hold down :kbd:`Shift` and then :kbd:`Right Mouse Click` over the robot object,
-#. Press :kbd:`Ctrl-p` and then hit :kbd:`enter` make the robot the parent of the controller.
+    motion = Actuator('v_omega')
+    motion.translate(z=0.3)
+    atrv.append(motion)
 
+Append a Pose sensor
++++++++++++++++++++++++++
+We'll add the **Pose** sensor, which provides us with the location and rotation of the robot.
+The data it sends back is the *(x, y, z)* coordinates, and the *(yaw, pitch, roll)* orientation.
+
+.. code-block:: python
+
+    pose = Sensor('pose')
+    pose.translate(z=0.83)
+    atrv.append(pose)
 
 Adding a middleware
 -------------------
 
-Insert the middleware object
-++++++++++++++++++++++++++++
-
-To use a middleware to exchange data from the simulator, it is necessary to link in an object that will represent the middleware.
-
-#. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/middleware``,
-#. Press :kbd:`Left Mouse Click` over the file ``socket_mw.blend``,
-#. Press :kbd:`Left Mouse Click` over the item ``Object``,
-#. Toggle **Link** at the bottom of the window and import ``Socket_Empty``,
-#. It is not necessary to make this object local or to move it. But it can be useful to avoid cluttering of items in the scene.
-
-.. note:: One single middleware Empty is necessary to enable the middleware, regardless of how many components will make use of it.
+The simplest way to test MORSE out-of-the box is to use **sockets** to access the
+**services** provided by the components. This method has no software requirements other
+than the base MORSE installation.
 
 Configuring the middlewares
 +++++++++++++++++++++++++++
 
-Binding the components in the scene with the middleware is done in a configuration file within the Blender file.
+.. code-block:: python
 
-#. On the **Text Editor** window, select the file ``component_config.py``
-#. Add the following items to the ``component_mw`` dictionary::
-  
-    component_mw = {
-        "Gyroscope": [["Socket", "post_message"]],
-        "Motion_Controller": [["Socket", "read_message"]],
-    }
+    pose.configure_service('socket')
+    motion.configure_service('socket')
 
-This specifies that the output of the gyroscope sensor is to be serialized to a socket with the ``MorseSocketClass.post_message`` method and 
-the motion controller reads its input from a socket with ``MorseSocketClass.read_message``.
+
+
+Finalising the scene
+--------------------
+
+Every builder script must finish with an environment description. This is mandatory, or
+else the scene will not be created. The parameter for the **Environment** method is the
+name of a .blend file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+
+The Environment object also provides additional options to place and aim the default camera,
+by using the methods ``aim_camera`` and ``place_camera``.
+
+.. code-block:: python
+
+    env = Environment('indoors-1/indoor-1')
+    env.aim_camera([1.0470, 0, 0.7854])
+
+
+Now save your script file!!!
+
 
 Running the simulation
 ----------------------
@@ -107,22 +117,49 @@ Running the simulation
 Run the simulation
 ++++++++++++++++++
 
-Press :kbd:`p` to start the Game Engine
+#. Launch Morse passing your script in argument::
+
+    $ morse exec robot_scene.py
+
+#. Place your mouse inside the 3D view of the scenario
+#. Press :kbd:`p` to start the Game Engine
 
 Connect with the client
 +++++++++++++++++++++++
 
-Use the example client program to test the bindings in the simulation
+Using sockets to connect to robot services is the simplest way to interact
+with the simulation. You can talk with **morse** through a simple telnet connection.
+On a separate terminal, type::
 
-#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/examples/morse/clients/atrv/``
-#. Execute the command::
+  $ telnet localhost 4000
 
-    $ python socket_v_omega_client.py
+Port 4000 is the default used by **morse**.
+We can try out the simulation by giving instructions in the telnet terminal.
 
-#. Press :kbd:`a` to give speed commands to the robot
-#. Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1 rad/s), followed by :kbd:`enter` after each
-#. The robot should start moving in MORSE
-#. Press :kbd:`b` to print the readings of the gyroscope exported by MORSE
-#. Press :kbd:`q` to exit the client
+You will need to use the services provided by the components we installed in the robot.
+To make the robot move in a circle, with linear speed 2 m/s and angular speed -1 rad/s, use this instruction::
 
-Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
+  id1 Motion_Controller set_speed [2, -1]
+
+To ask the **Pose** sensor for the data it contains, use this command::
+
+  id2 Pose get_local_data []
+
+The format of these commands is simple, they are composed of four parts:
+
+#. The **id** of the request. It is a string to identify the individual instructions
+#. The name of the component. This is the name of the Blender object in the scene that
+    represents the sensor or actuator
+#. The name of the service. These vary for each component, and are listed in the :doc:`component library <../components_library>` section
+#. The list of parameters for the function. Must be enclosed in brackets and separated by commas
+
+Try giving the **Motion_Controller** different speeds, and asking the **Pose** at different locations.
+Finally exit the simulation, by pressing :kbd:`esc` on the Blender window.
+You can save your scene as a Blender file, and then run it directly using **morse**.
+To close Blender, press :kbd:`Ctrl-q`, then :kbd:`enter`.
+
+Go further
+----------
+
+If you want to learn more about the MORSE-builder API, see the
+:doc:`builder documentation <../../../../dev/builder>`.

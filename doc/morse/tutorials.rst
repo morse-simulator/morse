@@ -30,9 +30,9 @@ Beginners tutorials
 
 .. toctree::
     :maxdepth: 1
-    
+
     user/tutorial
-    user/advanced_tutorials/tutorial_builder
+    user/advanced_tutorials/editing_in_blender
 
 Intermediate tutorials
 ----------------------
