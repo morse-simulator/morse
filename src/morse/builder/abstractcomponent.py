@@ -166,7 +166,7 @@ class AbstractComponent(object):
 
     def configure_service(self, mw, component = None):
         if not component:
-            component = self._blendname
+            component = self
         service = MORSE_SERVICE_DICT[mw]
         AbstractComponent._config.link_service(component, service)
 
