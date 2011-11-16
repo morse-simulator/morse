@@ -41,6 +41,9 @@ class ColorizingStreamHandler(logging.StreamHandler):
     def emit(self, record):
         try:
             message = self.format(record)
+            # Don't do anything if the StreamHandler does not exist
+            if message == None:
+                return
             stream = self.stream
             if not self.is_tty:
                 stream.write(message)
@@ -119,7 +122,13 @@ class ColorizingStreamHandler(logging.StreamHandler):
         return message
 
     def format(self, record):
-        message = logging.StreamHandler.format(self, record)
+        try:
+            message = logging.StreamHandler.format(self, record)
+        # Catch the case when there is a zombie logger, when re-launching
+        #  the simulation with 'p'.
+        # This seems to be caused by an incorrect cleaning on the Builder
+        except AttributeError as detail:
+            return None
         if self.is_tty:
             message = self.colorize(message, record)
         return message
