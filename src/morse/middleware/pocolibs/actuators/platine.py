@@ -37,6 +37,18 @@ def read_platine(self, component_instance):
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
     read_platine_(poster_id, component_instance)
 
+def read_platine_axis(self, component_instance):
+    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    platine_data, ok = ors_platine_poster.read_platine_axis(poster_id)
+    if ok != 0:
+        component_instance.local_data['pan'] = platine_data.pan
+        component_instance.local_data['tilt'] = platine_data.tilt
+
+        # Return true to indicate that a command has been received
+        return True
+    else:
+        return False
+
 class PosterNotFound(Exception):
     def __init__(self, value):
         self.value = value

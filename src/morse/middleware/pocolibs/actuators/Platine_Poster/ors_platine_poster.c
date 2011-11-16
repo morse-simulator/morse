@@ -21,3 +21,11 @@ POM_EULER read_platine_data( PosterHandler* handler, int* ok)
 	return (local_euler);
 }
 
+PLATINE_AXIS_STR read_platine_axis( PosterHandler* handler, int* ok)
+{
+	PLATINE_AXIS_STR axis;
+
+	read_poster(handler, ok, &axis, sizeof(axis));
+	return axis;
+}
+

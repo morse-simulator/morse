@@ -75,6 +75,8 @@ documentation.
     - ``read_lwr_config``: Reads data of type **LWR_ARM_INST**, defined in ``lwr/lwrStruct.h``
 
 - PLATINE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/platine.py``.
-  It has one available input method:
+  It has two available input methods:
 
     - ``read_platine``: Reads data of type **POM_SE_POSTER**, defined in ``pom/pomStruct.h``
+	- ``read_platine_axis``: Reads data of type **PLATINE_AXIS_STR**, defined
+	  in ``platine/platineStruct.h``

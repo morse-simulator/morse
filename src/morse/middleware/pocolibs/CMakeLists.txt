@@ -35,7 +35,7 @@ set(MODULES_MAP_VIMAN "viman")
 set(MODULES_MAP_HUMAN_POSTURE "spark")
 set(MODULES_MAP_GENPOS "genPos")
 set(MODULES_MAP_TARGET "genPos")
-set(MODULES_MAP_PLATINE "pom")
+set(MODULES_MAP_PLATINE "pom;platine")
 set(MODULES_MAP_LWR "lwr;gbM;genBasic;genManip")
 
 foreach(directory ${directories_list})

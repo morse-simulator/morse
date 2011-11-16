@@ -23,4 +23,4 @@ Actuators,
 ``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘
 ``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,              ✔ ``LWR_ARM_INST``,									✘
 ``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✘,																	✘
-``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` (not tested),					✘	
+``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` or ``PLATINE_AXIS_STR`` ,					✘	
