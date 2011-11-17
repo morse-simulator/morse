@@ -86,9 +86,9 @@ class MorseServices:
         instance = self._request_managers[request_manager]
 
         if component in self._service_mappings:
-            self._service_mappings[component].append(instance)
+            self._service_mappings[component].add(instance)
         else:
-            self._service_mappings[component] = [instance]
+            self._service_mappings[component] = {instance, }
 
 
     def __del__(self):
