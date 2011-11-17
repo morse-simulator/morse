@@ -100,9 +100,11 @@ class RequestManager(object):
         """ This method is meant to be overloaded by middlewares that have
         specific initializations to do when a new service is exposed.
 
-        :param string component_name: name of the component that declare this service
-        :param string service_name: Public name of the service (usually, 
-        'component_name#service_name')
+        :param string component_name: name of the component that declare this 
+            service
+        :param string service_name: Name of the service (if not overloaded 
+            in the @service decorator, should be the Python function name that
+            implement the service)
         :param boolean is_async: If true, means that the service is asynchronous.
         :return: True if the registration succeeded.
         :rtype: boolean
@@ -157,14 +159,13 @@ class RequestManager(object):
         if hasattr(callback, '__call__'):
             service_name = service_name if service_name else callback.__name__
 
-            name = component_name + "#" + service_name
-
             self._services[(component_name, service_name)] = (callback, async)
 
-            if self.post_registration(component_name, name, async):
+            if self.post_registration(component_name, service_name, async):
                 logger.info(str(self) + ": " + \
                     ("Asynchronous" if async else "Synchronous") + " service " + \
-                    name + " successfully registered")
+                    service_name + " for component " + component_name + \
+                    " successfully registered")
             else:
                 logger.error(str(self) + ": Error while registering a new service: " + \
                         "could not complete the post-registration step.")
