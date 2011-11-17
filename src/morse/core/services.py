@@ -189,9 +189,6 @@ def service(fn = None, component = None, name = None, async = False):
             dfn = fn
             if async:
                 def decorated_fn(self, callback, *param):
-                    if hasattr(decorated_fn, "_morse_service_interruptible"):
-                        logger.debug(decorated_fn.__name__ + " interruptible? " +\
-                                str(decorated_fn._morse_service_interruptible))
                     # Stores in the callback the original calling
                     # service.
                     callback.service = decorated_fn
