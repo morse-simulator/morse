@@ -94,6 +94,12 @@ class MorseServices:
     def __del__(self):
         """ Removes all registered request managers, calling their destructors. """
         logger.info("Deleting all request managers...")
+        for rqst_manager in self._request_managers.values():
+            if not rqst_manager.finalization():
+                logger.warning("finalization of the service manager did not complete successfully!")
+            
+            logger.info("%s: service manager closed." % rqst_manager)
+            
         self._request_managers.clear()
         self._service_mappings.clear()
         

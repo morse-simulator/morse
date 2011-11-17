@@ -267,11 +267,15 @@ def check_dictionaries():
     logger.info ("GameLogic has the following modifiers:")
     for obj, modifier_variables in GameLogic.modifierDict.items():
         logger.info ("\tMODIFIER: '{0}'".format(obj))
-
+        
     logger.info ("GameLogic has the following middlewares:")
     for obj, mw_variables in GameLogic.mwDict.items():
         logger.info ("\tMIDDLEWARE: '{0}'".format(obj))
-
+        
+    logger.info ("GameLogic has the following request managers:")
+    for rqst_manager in GameLogic.morse_services._request_managers.keys():
+        logger.info ("\tREQUEST MANAGER: '{0}'".format(rqst_manager))
+        
     logger.info ("GameLogic has the following services:")
     for obj, service_variables in GameLogic.serviceDict.items():
         logger.info ("\tSERVICE: '{0}'".format(obj))
@@ -817,7 +821,7 @@ def restart(contr):
 def quit(contr):
     """ Exit graciously from the simulation """
     logger.log(ENDSECTION, 'EXITING SIMULATION')
-
+    
     quitActuator = contr.actuators['Quit_sim']
     contr.activate(quitActuator)
 

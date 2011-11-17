@@ -24,14 +24,16 @@ class RosRequestManager(RequestManager):
     def initialization(self):
 
         # Init MORSE-node in ROS
-        rospy.init_node('morse', log_level = rospy.DEBUG)
+        rospy.init_node('morse', log_level = rospy.DEBUG, disable_signals=True)
         logger.info("ROS node 'morse' successfully created.")
 
         return True
 
     def finalization(self):
+        logger.info("Shutting down ROS node...")
+        rospy.signal_shutdown("User exited MORSE simulation")
         return True
-
+        
     def post_registration(self, component_name, service_name, is_async):
         """ We create here ROS services (for *synchronous* services) and ROS
         actions (for *asynchronous* services).

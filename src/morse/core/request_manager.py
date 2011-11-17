@@ -89,14 +89,6 @@ class RequestManager(object):
         """
         pass
 
-    def __del__(self):
-        """ Destructor method. """
-        if not self.finalization():
-            logger.warning("finalization of the service manager did not complete successfully!")
-
-        logger.info("%s: service manager closed." % self)
-
-
     def __str__(self):
         """ Should be overloaded by subclasses to help debug request handling
         for each middleware implementation.
