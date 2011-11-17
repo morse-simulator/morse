@@ -317,7 +317,7 @@ def create_mw(mw):
 def get_components_of_type(classname):
     components = []
     for component in GameLogic.componentDict.values():
-        logger.info(component.name() + " -> " + component.__class__.__name__)
+        logger.debug("Get component for class " + component.name() + ": " + component.__class__.__name__)
         if component.__class__.__name__ == classname:
             components.append(component)
     
@@ -463,6 +463,7 @@ def link_services():
 def load_overlays():
     """ Read and initialize overlays from the configuration script.
     """
+    
     try:
         overlays_list = component_config.overlays
     except (AttributeError, NameError) as detail:
@@ -471,6 +472,11 @@ def load_overlays():
         return True
 
     for request_manager_name, overlays in overlays_list.items():
+        
+        # In case the fully-qualified name of the request manager has been 
+        # provided, keep only the class name
+        request_manager_name = request_manager_name.split('.')[-1]
+        
         for overlaid_name, overlay_name in overlays.items():
             modulename, classname = overlay_name.rsplit('.', 1)
             
