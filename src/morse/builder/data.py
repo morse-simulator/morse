@@ -104,11 +104,11 @@ MORSE_MIDDLEWARE_DICT = {
     },
 
     'yarp_json': {
-        'rosace': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message' 'morse/middleware/yarp/json_mod'],
-        'gps': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message' 'morse/middleware/yarp/json_mod'],
-        'proximity': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message' 'morse/middleware/yarp/json_mod'],
+        'rosace': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message', 'morse/middleware/yarp/json_mod'],
+        'gps': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message', 'morse/middleware/yarp/json_mod'],
+        'proximity': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_json_message', 'morse/middleware/yarp/json_mod'],
 
-        'waypoint': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_json_message' 'morse/middleware/yarp/json_mod'],
+        'waypoint': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_json_message', 'morse/middleware/yarp/json_mod'],
     },
 
 
