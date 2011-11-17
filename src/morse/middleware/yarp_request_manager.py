@@ -76,8 +76,8 @@ class YarpRequestManager(RequestManager):
         self.yarp_object = self._yarp_module.Network()
 
         # Create the names of the ports
-        request_port_name = '/ors/services/{0}/request'.format(component_name)
-        reply_port_name = '/ors/services/{0}/reply'.format(component_name)
+        request_port_name = '/morse/services/{0}/request'.format(component_name)
+        reply_port_name = '/morse/services/{0}/reply'.format(component_name)
 
         if not component_name in self._yarp_request_ports.keys():
             # Create the ports to accept and reply to requests

@@ -225,7 +225,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
     def registerBufferedPortBottle(self, portList):
         """ Create a new Buffered Port Bottle, given an identifying name. """
         for portName in portList:
-            portName = '/ors/'+portName
+            portName = '/morse/'+portName
             if portName not in self._yarpPorts:
                 logger.debug('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
                 port = self._yarp_module.BufferedPortBottle()
@@ -239,7 +239,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         """ Create a new Buffered Port Bottle, given an identifying name.
             This is exclusively used for image data."""
         for portName in portList:
-            portName = '/ors/'+portName
+            portName = '/morse/'+portName
             if portName not in self._yarpPorts:
                 logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageMono()
@@ -252,7 +252,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         """ Create a new Buffered Port Bottle, given an identifying name.
             This is exclusively used for image data."""
         for portName in portList:
-            portName = '/ors/'+portName
+            portName = '/morse/'+portName
             if portName not in self._yarpPorts:
                 logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageRgb()
@@ -265,7 +265,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         """ Create a new Buffered Port Bottle, given an identifying name.
             This is exclusively used for image data."""
         for portName in portList:
-            portName = '/ors/'+portName
+            portName = '/morse/'+portName
             if portName not in self._yarpPorts:
                 logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
                 port = self._yarp_module.BufferedPortImageRgba()
@@ -278,7 +278,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         """ Open a simple yarp port.
             Used to send image data (Works better than a buffered port)."""
         for portName in portList:
-            portName = '/ors/'+portName
+            portName = '/morse/'+portName
             if portName not in self._yarpPorts:
                 logger.debug('Yarp Mid: Adding ' + portName + ' port.')
                 port = self._yarp_module.Port()
@@ -300,7 +300,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
 
     def getPort(self, portName):
         """ Retrieve a yarp port associated to the given name."""
-        port = '/ors/' + portName
+        port = '/morse/' + portName
         return self._yarpPorts[port]
 
 
