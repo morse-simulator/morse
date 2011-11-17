@@ -23,7 +23,6 @@ class Configuration(object):
 
     def link_modifier(self, component, modifier_cfg):
         cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
-        cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, klass,  manager, overlay_cfg):
         cfg_overlay.setdefault(manager, {})[klass] = overlay_cfg 
