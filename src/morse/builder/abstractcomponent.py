@@ -175,10 +175,11 @@ class AbstractComponent(object):
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         AbstractComponent._config.link_modifier(self, config)
         
-    def configure_overlay(self, manager, overlay):
+    def configure_overlay(self, mw, overlay):
         o = self._blendobj
         klass = o.game.properties["Class"].value
-        AbstractComponent._config.link_overlay(klass, manager, overlay)
+        request_manager = MORSE_SERVICE_DICT[mw]
+        AbstractComponent._config.link_overlay(klass, request_manager, overlay)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"
