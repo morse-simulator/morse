@@ -1,8 +1,8 @@
 <package>
-  <description brief="rosmorse">
+  <description brief="morsetesting">
 
-	  rosmorse is an internal MORSE pseudo-package for
-	  compatibility with ROS.
+	  morsetesting is an internal MORSE ROS package for
+	  testing purposes.
 
   </description>
   <author>MORSE team</author>
@@ -10,6 +10,7 @@
   <review status="unreviewed" notes=""/>
   <url>http://morse.openrobots.org</url>
   <depend package="std_msgs"/>
+  <depend package="geometry_msgs"/>
   <depend package="rospy"/>
 
 </package>
