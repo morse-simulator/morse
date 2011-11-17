@@ -45,9 +45,9 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         # Extract the information for this middleware
         # This will be tailored for each middleware according to its needs
         function_name = mw_data[1]
-        remote = None
-        if len(mw_data) > 2:
-            remote = mw_data[2]
+        topic = None
+        if len(mw_data) > 3:
+            topic = mw_data[3]
 
         function = self._check_function_exists(function_name)
         # The function exists within this class,
@@ -58,8 +58,6 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 port_name = port_name + '/in'
                 self.registerBufferedPortBottle([port_name])
                 component_instance.input_functions.append(function)
-                #if remote != None:
-                    #self.connectPorts(remote, "/ors/"+port_name)
                 # Store the name of the port
                 self._component_ports[component_name] = port_name
             # Data write functions
@@ -67,8 +65,6 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 port_name = port_name + '/out'
                 self.registerBufferedPortBottle([port_name])
                 component_instance.output_functions.append(function)
-                #if remote != None:
-                    #self.connectPorts("/ors/"+port_name, remote)
                 # Store the name of the port
                 self._component_ports[component_name] = port_name
             # Image write functions
@@ -76,8 +72,6 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 port_name = port_name + '/out'
                 self.registerBufferedPortImageRgba([port_name])
                 component_instance.output_functions.append(function)
-                #if remote != None:
-                    #self.connectPorts("/ors/"+port_name, remote)
                 # Store the name of the port
                 self._component_ports[component_name] = port_name
             # If it is an external function that has already been added
@@ -105,6 +99,11 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
             except IndexError as detail:
                 logger.error("Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
                 return
+            
+        # Connect to topic
+        if topic:
+            logger.info("Yarp connecting port %s to topic %s" % (port_name, topic))
+            self.connect2topic(port_name, topic)
 
 
     def read_message(self, component_instance):
@@ -311,7 +310,13 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         for name, port in self._yarpPorts.items():
             logger.info(" - Port name '{0}' = '{1}'".format(name, port))
             
-    def connectPorts(self, source, target):
-        """ Connect a yarp source to a specific yarp target.
-            Can be used to publish or subscribe to a yarp topic. """
-        self.yarp_object.connect(source, target)
+    def connect2topic(self, port, topic):
+        """ Connect a yarp port to a specific yarp topic. """
+        if port in self._yarpPorts:
+            pass
+        else:
+            port = self.getPort(port).getName().c_str()
+        if port[-2:] == "in":
+            self.yarp_object.connect("topic://"+topic, port)
+        else:
+            self.yarp_object.connect(port, "topic://"+topic)
