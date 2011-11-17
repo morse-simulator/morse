@@ -58,14 +58,14 @@ class RosRequestManager(RequestManager):
         method, is_async = self._services[(component_name, service_name)]
         try:
             rostype = method._ros_service_type
-            logger.info(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
+            logger.debug(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
         except AttributeError:
-            logger.info(component_name + "." + service_name + " has no ROS-specific service type. Using default one.")
+            logger.debug(component_name + "." + service_name + " has no ROS-specific service type. Using default one.")
         
         cb = self.add_ros_handler(component_name, service_name)
 
-        s = rospy.Service("morse/" + component_name + "/" + service_name, rostype, cb)
-        logger.info("Created new ROS service for {}.{}".format(
+        s = rospy.Service(service_name, rostype, cb)
+        logger.debug("Created new ROS service for {}.{}".format(
                                                     component_name,
                                                     service_name))
         return True
@@ -99,7 +99,7 @@ class RosRequestManager(RequestManager):
                 return (result, )
             else:
                 # failure!
-                raise rospy.ServiceException(result)
+                raise rospy.service.ServiceException(result)
 
         innermethod.__doc__ = "This method is invoked directly by MORSE when " +\
         "a new service request comes in. This handler simply redispatch it to " +\
