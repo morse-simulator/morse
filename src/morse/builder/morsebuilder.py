@@ -166,9 +166,20 @@ class Component(AbstractComponent):
 
     cf. `bpy.ops.wm.link_append` and `bpy.data.libraries.load`
     """
-    def __init__(self, category, name):
+    def __init__(self, category='', name=''):
+        """
+        :param category: The category of the component 
+                         (folder in MORSE_COMPONENTS)
+        :param name: The name of the component 
+                     (file in MORSE_COMPONENTS/category/name.blend)
+                     If ends with '.blend' category is ignored and append the 
+                     objects from the Blender file.
+        """
         AbstractComponent.__init__(self, name=name)
-        filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
+        if name.endswith('.blend'):
+            filepath = name # external blend file
+        else:
+            filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
         try: 
             with bpy.data.libraries.load(filepath) as (src, _):
