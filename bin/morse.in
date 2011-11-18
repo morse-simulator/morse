@@ -299,9 +299,14 @@ def prelaunch():
         "You can also run 'morse check' for more details.")
         sys.exit()
 
-def launch_simulator(scene=None, script=None, node_name=None):
-    """Starts Blender on an empty new scene or with a given scene."""
-    
+def launch_simulator(scene=None, script=None, node_name=None, script_options = []):
+    """Starts Blender on an empty new scene or with a given scene.
+
+
+    :param list script_options: if specified, elements of this list are passed
+            to the Python script (and are accessible via sys.argv)
+    """
+
     global morse_prefix, blender_exec, default_scene_abspath
     
     logger.info("*** Launching MORSE ***\n")
@@ -336,16 +341,13 @@ def launch_simulator(scene=None, script=None, node_name=None):
     #Replace the current process by Blender
     if script != None:
         logger.info("Executing Blender script: " + script)
-        os.execle(blender_exec, blender_exec, scene, "-P", script, env)
+        if script_options:
+            script_options.append(env)
+            os.execle(blender_exec, blender_exec, scene, "-P", script, "--", *script_options)
+        else:
+            os.execle(blender_exec, blender_exec, scene, "-P", script, env)
     else:
         os.execle(blender_exec, blender_exec, scene, env)
-
-def launch_simulation(scene):
-    """
-    Runs a specified simulation from a blend file without opening Blender.
-    """
-    logger.error("Not yet implemented")
-    sys.exit(1)
 
 def version():
     print("morse " + VERSION + "\nCopyright LAAS-CNRS 2011\n")
@@ -356,13 +358,15 @@ def help(cmd=None):
         print ("""morse [command] [options]
 
 Known commands:
-  [None]            launchs the simulator interface with a default scene.
-  create filename   creates a new empty scene and launchs the simulator interface.
-  run filename      runs a simulation without loading the simulator interface.
-  exec filename     runs the given Python script with a default scene.
-  check             checks the environment is correctly setup to run morse.
-  help              displays this message and exits.
-  version           displays the version number and exits.
+  [None]                 launchs the simulator interface with a default scene.
+  create filename        creates a new empty scene and launchs the simulator
+                         interface.
+  run filename [options] runs a simulation without loading the simulator 
+                         interface.
+  exec filename          runs the given Python script with a default scene.
+  check                  checks the environment is correctly setup to run morse.
+  help                   displays this message and exits.
+  version                displays the version number and exits.
 
 'morse' followed by a Blender file name opens the simulator with this scene.
 
@@ -370,14 +374,16 @@ Use help [command] to get more help on a specific command.""")
         return
 
     if cmd == "run":
-        print ("""morse run file_name
+        print ("""morse run file_name [script options]
 
 Runs a simulation without loading the simulator interface. Equivalent
 to the sequence [open a Blend file in the simulator, switch to 
 fullscreen, press P].
 
-file_name must be a Blender file containing a simulation already
+file_name can be either a Blender file containing a simulation already
 set up or a Python script using the MORSE Builder API.
+
+In the later case, optional options can be passed to the script.
 """)
     else:
         print("No help for \"" + cmd + "\".")
@@ -414,11 +420,13 @@ if __name__ == '__main__':
                 logger.error("'create' option expect exactly one option (a filename)")
                 sys.exit()
         elif sys.argv[1] in ["run"]:
-            if len(sys.argv) == 3:
+            if len(sys.argv) >= 3:
                 prelaunch()
+                script_options = sys.argv[3:]
                 launch_simulator(
                    os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
-                   sys.argv[2])
+                   sys.argv[2], \
+                   script_options = script_options)
             else:
                 logger.error("'run' option expect exactly one option (a filename)")
                 sys.exit()
