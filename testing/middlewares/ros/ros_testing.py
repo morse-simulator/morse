@@ -17,9 +17,10 @@ import sys
 os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
         os.path.join(os.environ['MORSE_ROOT'], "testing", "middlewares", "ros"))
 
-import roslib; roslib.load_manifest("geometry_msgs"); roslib.load_manifest("morsetesting")
+import roslib; roslib.load_manifest("morsetesting")
 import rospy
 from morsetesting.srv import *
+from morsetesting.msg import *
 from geometry_msgs.msg import *
 
 class RosTest(MorseTestCase):
@@ -44,7 +45,7 @@ class RosTest(MorseTestCase):
         with self.assertRaises(rospy.ROSException):
             rospy.wait_for_service('idonotexist', timeout = 2)
         
-    def test_move_base(self):
+    def do_not_test_move_base(self):
         try:
             rospy.wait_for_service('move_base', timeout = 2)
         except rospy.ROSException:
@@ -63,6 +64,20 @@ class RosTest(MorseTestCase):
 
         except rospy.ServiceException as e:
             self.fail("Service call failed: %s"%e)
+
+    def test_move_base(self):
+
+        try:
+            rospy.init_node('move_base_client')
+            client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+            client.wait_for_server()
+
+            goal = MoveBaseGoal(Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0)))
+            client.send_goal(goal)
+            client.wait_for_result(rospy.Duration.from_sec(5.0))
+
+        except rospy.ServiceException as e:
+            self.fail("Action call failed: %s"%e)
 
 
 ########################## Run these tests ##########################

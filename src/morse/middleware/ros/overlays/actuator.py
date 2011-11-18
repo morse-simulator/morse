@@ -1,9 +1,9 @@
-from morse.middleware.ros_request_manager import ros_service
+from morse.middleware.ros_request_manager import ros_action
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 
 import roslib; roslib.load_manifest('morsetesting')
-from morsetesting.srv import *
+from morsetesting.msg import *
 
 class WayPoint(MorseOverlay):
 
@@ -11,9 +11,17 @@ class WayPoint(MorseOverlay):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(overlaid_object)
     
-    @ros_service(type = MoveBase)
+    def move_base_on_completion(result):
+        status, value = result
+        
+        print("MoveBase completed!! got value " + str(value))
+        # In this case, 'value' should be a boolean.
+        return (status, value)
+        
+    @ros_action(type = MoveBaseAction)
     def move_base(self, req):
-        return self.overlaid_object.magic_goto(
+        self.overlaid_object.goto(
+                self.chain_callback(self.move_base_on_completion),
                 req.position.x,
                 req.position.y,
                 req.position.z)

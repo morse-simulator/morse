@@ -12,7 +12,7 @@
   <depend package="std_msgs"/>
   <depend package="geometry_msgs"/>
   <depend package="rospy"/>
-
+  <depend package="actionlib_msgs"/>
 </package>
 
 
