@@ -29,6 +29,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
 
     dev/dev_overview
     dev/dev_workflow
+    dev/testing
     dev/adding_component
     dev/adding_modifier
     dev/services

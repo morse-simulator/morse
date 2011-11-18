@@ -6,7 +6,8 @@ General
 
 - Lots of cleaning (middleware empties have been removed)
 - The command line ``morse run {scene.blend|scene.py}`` now works as expected (ie,
-  starts the simulation.
+  starts the simulation. Optional arguments can be added and are passed to the script
+- Unit-testing for MORSE (cf doc: dev/testing)
 
 GUI
 ---

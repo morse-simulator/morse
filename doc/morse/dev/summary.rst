@@ -56,6 +56,13 @@ Principle of interaction with Blender and the game engine
 
 :doc:`Overview for MORSE workflow for developers <dev_workflow>`
 
+Adding validation tests
+-----------------------
+
+New features are expected to provide unit-tests to validate them.
+
+:doc:`Unit-testing in MORSE <testing>`
+
 Creating a new component (robot, sensor or actuator)
 ----------------------------------------------------
 Create a sensor. Explain the logic
