@@ -5,6 +5,13 @@ This script tests ROS services within MORSE.
 
 from morse.testing.testing import MorseTestCase
 
+# Include this import to be able to use your test file as a regular 
+# builder script, ie, usable with: 'morse [run|exec] base_testing.py
+try:
+    from morse.builder.morsebuilder import *
+except ImportError:
+    pass
+
 import os
 os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
         os.path.join(os.environ['MORSE_ROOT'], "testing", "middlewares", "ros"))

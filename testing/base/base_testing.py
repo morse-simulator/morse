@@ -5,6 +5,13 @@ This script tests some of the base functionalities of MORSE.
 
 from morse.testing.testing import MorseTestCase
 
+# Include this import to be able to use your test file as a regular 
+# builder script, ie, usable with: 'morse [run|exec] base_testing.py
+try:
+    from morse.builder.morsebuilder import *
+except ImportError:
+    pass
+
 class BaseTest(MorseTestCase):
 
     def setUpEnv(self):

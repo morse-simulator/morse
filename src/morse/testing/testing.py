@@ -33,27 +33,14 @@ class MorseTestRunner(unittest.TextTestRunner):
 
     def run(self, suite):
         if sys.argv[0].endswith('blender'):
-            # We are in Blender: simply build the scenario and return
+            # If we arrive here from within MORSE, we have probably run
+            # morse [exec|run] my_test.py
+            # If this case, simply build the environment based on the
+            # setUpEnv of the first test.
             
-            print("Building scenario for test-case " + sys.argv[-1])
-            test_module, test_class = sys.argv[-1]
-            
-            try:
-                __import__(test_module)
-            except ImportError as detail:
-                print("Test case module %s not found: %s" % (test_module, detail))
-                bpy.ops.wm.quit_blender()
-                
-            module = sys.modules[test_module]
-            
-            # Create an instance of the object class
-            try:
-                klass = getattr(module, test_class)
-            except AttributeError as detail:
-                print("Test case class %s not found: %s" % (test_class, detail))
-                bpy.ops.wm.quit_blender()
-            
-            klass().setUpEnv()
+            for test in suite:
+                test.setUpEnv()
+                break
             
         else:
             self.setup_logging()
