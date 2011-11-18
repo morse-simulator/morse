@@ -333,6 +333,10 @@ class Environment(AbstractComponent):
         if isinstance(value, bool):
             bpy.data.scenes[0].game_settings.show_physics_visualization = value
 
+    def set_gravity(self, gravity=9.81):
+        if isinstance(gravity, float):
+            bpy.data.scenes[0].game_settings.physics_gravity = gravity
+
     def configure_multinode(self, protocol='socket', 
             server_address='localhost', server_port='65000', distribution=None):
         self._protocol = protocol
