@@ -6,11 +6,12 @@ from morse.core import status, services
 from morse.core.request_manager import RequestManager
 
 try:
-    import roslib; roslib.load_manifest('rospy')
+    import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('actionlib')
     import rospy
+    import actionlib
 except ImportError as ie:
-    raise ImportError("Could not import the 'rospy' ROS module. Check" +\
-            "your ROS configuration is ok. Details:\n" + str(ie))
+    raise ImportError("Could not import one of the 'rospy' or 'actionlib' "+ \
+        "ROS module. Check your ROS configuration is ok. Details:\n" + str(ie))
 
 class RosRequestManager(RequestManager):
 
@@ -35,7 +36,45 @@ class RosRequestManager(RequestManager):
         logger.info("Shutting down ROS node...")
         rospy.signal_shutdown("User exited MORSE simulation")
         return True
+
+    def register_action(self, method, component_name, service_name):
         
+        # Default service type
+        rostype = rospy.msg.AnyMsg
+        
+        try:
+            rostype = method._ros_action_type # Is it a ROS action?
+            logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
+        except AttributeError:
+            logger.info(component_name + "." + service_name + " has no ROS-specific action type. Using default one.")
+        
+        cb = self.add_ros_handler(component_name, service_name)
+        
+        s = actionlib.SimpleActionServer(service_name, rostype, cb)
+        
+        logger.info("Created new ROS simple action server for {}.{}".format(
+                                                    component_name,
+                                                    service_name))
+
+
+    def register_service(self, method, component_name, service_name):
+        
+        # Default service type
+        rostype = MorseAnyService
+        
+        try:
+            rostype = method._ros_service_type # Is it a ROS service?
+            logger.debug(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
+        except AttributeError:
+            logger.debug(component_name + "." + service_name + " has no ROS-specific service type. Using default one.")
+        
+        cb = self.add_ros_handler(component_name, service_name)
+
+        s = rospy.Service(service_name, rostype, cb)
+        logger.debug("Created new ROS service for {}.{}".format(
+                                                    component_name,
+                                                    service_name))
+    
     def post_registration(self, component_name, service_name, is_async):
         """ We create here ROS services (for *synchronous* services) and ROS
         actions (for *asynchronous* services).
@@ -49,25 +88,20 @@ class RosRequestManager(RequestManager):
         If none is set, a default type is used (:py:class:`MorseAnyService`).
         """
         
-        # Default service type
-        rostype = MorseAnyService
+        rostype = None
         
         # TODO: I access here an internal member of the parent class to 
         # retrieve the ROS type, if set. _services should probably be 
         # 'officially' exposed
         method, is_async = self._services[(component_name, service_name)]
-        try:
-            rostype = method._ros_service_type
-            logger.debug(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
-        except AttributeError:
-            logger.debug(component_name + "." + service_name + " has no ROS-specific service type. Using default one.")
         
-        cb = self.add_ros_handler(component_name, service_name)
+        if is_async:
+            self.register_action(method, component_name, service_name)
+        else:
+            self.register_service(method, component_name, service_name)
 
-        s = rospy.Service(service_name, rostype, cb)
-        logger.debug("Created new ROS service for {}.{}".format(
-                                                    component_name,
-                                                    service_name))
+
+
         return True
 
     def add_ros_handler(self, component_name, service_name):
