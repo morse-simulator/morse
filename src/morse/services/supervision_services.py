@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 from morse.core.services import service
 from morse.core import status
-from morse.blender.main import reset_objects as main_reset, quit as main_quit
+from morse.blender.main import reset_objects as main_reset, close_all as main_close, quit as main_terminate
 
 @service(component = "simulation")
 def list_robots():
@@ -25,8 +25,18 @@ def reset_objects():
 
 @service(component = "simulation")
 def quit():
-    """ Terminate the simulation """
+    """ Cleanly quit the simulation
+    """
 
     contr = GameLogic.getCurrentController()
-    main_quit(contr)
+    main_close(contr)
+    main_terminate(contr)
+    
+@service(component = "simulation")
+def terminate():
+    """ Terminate the simulation (no finalization done!)
+    """
+
+    contr = GameLogic.getCurrentController()
+    main_terminate(contr)
 
