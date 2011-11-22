@@ -39,18 +39,25 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             logger.info("Using pan base: '%s'" % self._pan_base.name)
             logger.info("Using tilt base: '%s'" % self._tilt_base.name)
         except AttributeError as detail:
-            logger.error("Platine is missing the pan and tilt bases. Module will not work!")
+            logger.error("PTU is missing the pan and tilt bases. Module will not work!")
             return
 
         self._speed = self.blender_obj['Speed']
+        # Define the tolerance to the desired angle
+        try:
+            self._tolerance = self.blender_obj['Tolerance']
+        except KeyError as detail:
+            self._tolerance = math.radians(0.3)
+            logger.warn("Component '%s' dones not have a Logic Property\n\t%s\n\tUsing default value = %.4f radians" % (obj.name, detail, self._tolerance))
         
         try:
             self._is_manual_mode = self.blender_obj['Manual']
         except KeyError:
             self._is_manual_mode = False 
 
-        # Define the tolerance to the desired angle
-        self._tolerance = math.radians(0.5)
+        # Variables to store current angles
+        self._current_pan = 0.0
+        self._current_tilt = 0.0
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
@@ -65,13 +72,10 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def get_pan_tilt(self):
-       self._pan_position_3d.update(self._pan_base)
-       self._tilt_position_3d.update(self._tilt_base)
-
-       current_pan = self._pan_position_3d.yaw
-       current_tilt = self._tilt_position_3d.pitch
-
-       return current_pan, current_tilt
+       """
+           Return the current angles for the pan and tilt segments.
+       """
+       return self._current_pan, self._current_tilt
 
     def default_action(self):
         """ Apply rotation to the platine unit """
@@ -121,6 +125,10 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         correct_pan = morse_math.normalise_angle(relative_pan)
         relative_tilt = current_tilt - parent_tilt
         correct_tilt = morse_math.normalise_angle(relative_tilt)
+
+        # Store the variables to acces as a service:
+        self._current_pan = correct_pan
+        self._current_tilt = correct_tilt
 
         if (abs(target_pan - correct_pan) < self._tolerance and \
             abs(target_tilt - correct_tilt) < self._tolerance ):

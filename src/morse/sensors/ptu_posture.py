@@ -1,12 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
-import math
 import morse.core.sensor
-import mathutils
-import morse.helpers.math as morse_math
 
 class PTUPostureClass(morse.core.sensor.MorseSensorClass):
-    """ KUKA posture sensor """
+    """ Reader for the PTU posture sensor """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -18,48 +15,38 @@ class PTUPostureClass(morse.core.sensor.MorseSensorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
         
-        # Check if robot parent has a child named "kuka_base"
-        for child in self.robot_parent.blender_obj.children:
-            if str(child) == self.blender_obj['PTUname']:
-                self._ptu_obj = child
-        
-        # Get the references to the childen object and
-        #  store a transformation3d structure for their position
-        for child in self._ptu_obj.childrenRecursive:
-            if 'PanBase' in child.name:
-                self._pan_base = child
-                self._pan_position_3d = morse.helpers.transformation.Transformation3d(child)
-            elif 'TiltBase' in child.name:
-                self._tilt_base = child
-                self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
-        # Check the bases were found, or exit with a message
-        try:
-            logger.info("Using PTU: '%s'" % self._ptu_obj.name)
-            logger.info("Using pan base: '%s'" % self._pan_base.name)
-            logger.info("Using tilt base: '%s'" % self._tilt_base.name)
-        except AttributeError as detail:
-            logger.error("Platine is missing the pan and tilt bases. Module will not work!")
+        self._ptu_found = False
+
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
         logger.info('Component initialized')
 
-    def default_action(self):
-        """ Apply rotation to the platine unit """
-        # Reset movement variables
-        rx, ry, rz = 0.0, 0.0, 0.0
 
-        # Update the postition of the base platforms
-        try:
-            self._pan_position_3d.update(self._pan_base)
-            self._tilt_position_3d.update(self._tilt_base)
-        except AttributeError as detail:
-            logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
+    def find_ptu(self):
+        # Check if I have a child called 'PTU'
+        for child in self.blender_obj.childrenRecursive:
+            if self.blender_obj['PTUname'] in str(child):
+                logger.debug("Found a PTU called: %s" % child.name)
+                #self._ptu_obj = child
+                try:
+                    self._ptu_obj = GameLogic.componentDict[child.name]
+                    self._ptu_found = True
+                except:
+                    return
+ 
+
+    def default_action(self):
+        """ Read the rotation of the platine unit """
+        # Find the actual PTU unit as my child
+        if self._ptu_found == False:
+            self.find_ptu()
             return
 
-        current_pan = self._pan_position_3d.yaw
-        current_tilt = self._tilt_position_3d.pitch
+        # Update the postition of the base platforms
+        current_pan, current_tilt = self._ptu_obj.get_pan_tilt()
         logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
         
-        # Store the data acquired by this sensor that could be sent via a middleware.
+        # Store the data acquired by this sensor that could be sent
+        #  via a middleware.
         self.local_data['pan'] = float(current_pan)
         self.local_data['tilt'] = float(current_tilt)
