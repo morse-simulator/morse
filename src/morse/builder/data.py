@@ -92,6 +92,7 @@ MORSE_MIDDLEWARE_DICT = {
         'pose': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_message'],
         'gps': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_message'],
         'thermometer': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_message'],
+        'ptu_posture': [MORSE_MIDDLEWARE_MODULE['yarp'], 'post_message'],
 
         'destination': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
         'orientation': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
