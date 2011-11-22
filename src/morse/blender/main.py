@@ -43,24 +43,32 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         try:
             # Look for the components tagged as such
             child['Component_Tag']
-            robot_instance.components.append (child)
-
-            # Create an instance of the component class
-            #  and add it to the component list of GameLogic
-            instance = create_instance (child, robot_instance)
-            if instance != None:
-                GameLogic.componentDict[child.name] = instance
-            else:
-                return False
-
-            # Unset the default action of components of external robots
-            if unset_default:
-                instance.default_action = no_op
-                logger.info("Component " + child.name + " disabled: parent "  \
-                                         + obj.name + " is an External robot.")
-
         except KeyError:
-            pass
+            continue
+
+        robot_instance.components.append (child)
+
+        # Create an instance of the component class
+        #  and add it to the component list of GameLogic
+        instance = create_instance (child, robot_instance)
+        if instance != None:
+            GameLogic.componentDict[child.name] = instance
+        else:
+            logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: the component '""" + obj.name + """' could not
+    be properly initialized.
+    There was an error when creating the class instance.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                """)
+            return False
+
+        # Unset the default action of components of external robots
+        if unset_default:
+            instance.default_action = no_op
+            logger.info("Component " + child.name + " disabled: parent "  \
+                                     + obj.name + " is an External robot.")
+
     return True
 
 # Create a list of the robots in the scene
