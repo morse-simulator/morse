@@ -64,5 +64,8 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         line = "==> Data at X,Y,Z: [%.6f %.6f %.6f] yaw,pitch,roll: [%.6f %.6f %.6f] | time %s\n" % (parent_position.x, parent_position.y, parent_position.z, parent_position.yaw, parent_position.pitch, parent_position.roll, GameLogic.current_time)
         FILE.write(line.encode())
         for variable, data in component_instance.local_data.items():
-            line = "\t%s = %s\n" % (variable, repr(data))
+            if isinstance(data, float):
+                line = "\t%s = %.6f\n" % (variable, data)
+            else:
+                line = "\t%s = %s\n" % (variable, repr(data))
             FILE.write(line.encode())
