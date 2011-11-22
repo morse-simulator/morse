@@ -38,16 +38,26 @@ Local data
 Configurable parameters
 -----------------------
 
--  **Speed**: (float) rotation speed for the movements of the pan-tilt unit
+-  **Speed**: (float) rotation speed for the movements of the pan-tilt unit. Default value is 1 radian/s
+-  **Tolerance**: (float) the accepted error between the angle of each segment and the one specified. If set too low, the actuator will jump back and forth between positions close to those indicated. Default value is 0.005 radians
 -  **Manual**: (boolean) select whether to use control from an external
    program or direct control using the **Logic Bricks**
 
 Services
 --------
 
-- **set_pan_tilt**: (asynchronous service) This method take in parameters the
-  wished pan and tilt (in radians) and finish when the actuator is effectively
+- **set_pan_tilt**: (asynchronous service) Receives as parameters the expected
+  pan and tilt angles (in radians) and finishes when the actuator is effectively
   at this position.
+
+    +------------+---------------+------------------+
+    | Parameters | ``pan``       | float            |
+    |            +---------------+------------------+
+    |            | ``tilt``      | float            |
+    +------------+---------------+------------------+
+
+    Parameters: ``(pan, tilt)``
+
 
 - **get_pan_tilt**: (synchronous service) Returns the current angles of the 
   pan and tilt segments (in radians).
@@ -56,3 +66,11 @@ Applicable modifiers
 --------------------
 
 No available modifiers
+
+Related components
+------------------
+
+The sensor :doc:`PTU posture <../sensors/ptu_posture>` will read the data from the **get_pan_tilt**
+service of this component, providing a constant stream of data.
+For them to work, the PTU posture sensor must be set as the parent of the PTU actuator.
+It will generate errors if not set in this way.

@@ -70,6 +70,20 @@ Available services
 ------------------
 
 See the documentation for the :doc:`armature_actuator <armature_actuator>`.
+There is also an additional service specific to this armature:
+
+- **set_rotation_array**: (service) Receives an array indicating the angle to give
+  to each of the segments of the arm. Angles are expected in radians. The length
+  of the array should be equal to 7 or less, where any values not specified will
+  be considered as 0.0.
+
+    +------------+--------------------+-----------------+
+    | Parameters | ``rotation_array`` | array of floats |
+    +------------+--------------------+-----------------+
+
+    Parameters: ``(rotation_array)``
+
+
 
 Use of the KUKA LWR
 -------------------
