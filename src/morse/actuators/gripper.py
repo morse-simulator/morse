@@ -115,7 +115,7 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
             # Place the object on the nearest surface
             #morse.helpers.place_object.do_place(previous_object)
             # Reset rotation of object
-            self._grabbed_object.worldOrientation = [0.0, 0.0, 0.0]
+            #self._grabbed_object.worldOrientation = [0.0, 0.0, 0.0]
             # Restore Physics simulation
             #previous_object.restoreDynamics()
             #previous_object.setLinearVelocity([0, 0, 0])
