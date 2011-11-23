@@ -36,7 +36,7 @@ class BaseTest(MorseTestCase):
         sockf = s.makefile()
         
         # Queries for the list of robots
-        s.send("id1 simulation list_robots\n")
+        s.send(b"id1 simulation list_robots\n")
         
         result = sockf.readline()
         id, success, robots = result.strip().split(' ', 2)

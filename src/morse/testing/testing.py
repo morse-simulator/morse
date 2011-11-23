@@ -80,7 +80,13 @@ class MorseTestCase(unittest.TestCase):
         temp_builder_script = self.generate_builder_script(test_case)
         try:
             original_script_name = os.path.abspath(inspect.stack()[-1][1])
-            self.morse_process = subprocess.Popen(['morse', 'run', temp_builder_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            prefix = os.environ['MORSE_ROOT']
+            if prefix == "":
+                cmd = 'morse'
+            else:
+                cmd = prefix + "/bin/morse"
+
+            self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         except OSError:
             return None
         
@@ -102,7 +108,7 @@ class MorseTestCase(unittest.TestCase):
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(("localhost", 4000))
-        s.send("id1 simulation quit\n")
+        s.send(b"id1 simulation quit\n")
 
         for line in iter(self.morse_process.stdout.readline,''):
             morselogger.info(line.rstrip())
@@ -122,7 +128,7 @@ class MorseTestCase(unittest.TestCase):
         with tempfile.NamedTemporaryFile(delete = False) as tmp:
             tmp.write(b"from morse.builder.morsebuilder import *\n")
             tmp.write(b"class MyEnv():\n")
-            tmp.write(inspect.getsource(test_case.setUpEnv))
+            tmp.write(inspect.getsource(test_case.setUpEnv).encode())
             tmp.write(b"MyEnv().setUpEnv()\n")
             tmp.flush()
             tmp_name = tmp.name
