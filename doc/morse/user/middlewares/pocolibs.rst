@@ -80,3 +80,8 @@ documentation.
     - ``read_platine``: Reads data of type **POM_SE_POSTER**, defined in ``pom/pomStruct.h``
 	- ``read_platine_axis``: Reads data of type **PLATINE_AXIS_STR**, defined
 	  in ``platine/platineStruct.h``
+
+- PLATINE_POSTURE poster: Stored in the file ``$MORSE_ROOT/src/morse/middleware/sensors/platine_posture.py``.
+  It has one available input method:
+
+	- ``write_platine_posture``: Sends data of type **PLATINE_STATE**, defined in ``platine/platineStruct.hh``

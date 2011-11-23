@@ -22,7 +22,7 @@ macro(upcase_first all_lower first_upper)
 endmacro(upcase_first)
 
 set(directories_list "sensors;actuators")
-set(sensors_list "general;viam;pom;velodyne;viman;human_posture;target")
+set(sensors_list "general;viam;pom;velodyne;viman;human_posture;target;platine_posture")
 set(actuators_list "genpos;platine;lwr")
 
 ## Set here the dependencies of your modules
@@ -37,6 +37,7 @@ set(MODULES_MAP_GENPOS "genPos")
 set(MODULES_MAP_TARGET "genPos")
 set(MODULES_MAP_PLATINE "pom;platine")
 set(MODULES_MAP_LWR "lwr;gbM;genBasic;genManip")
+set(MODULES_MAP_PLATINE_POSTURE "platine")
 
 foreach(directory ${directories_list})
 	set(items_list "${directory}_list")

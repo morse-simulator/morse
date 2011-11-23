@@ -17,6 +17,7 @@ Sensors,
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
 ``IMU``,		            ✔,                 ✔,           ✔,               ✔``Twist``,     ✘,																	✔
+``ptu_posture``,	        ✔,                 ✔,           ✔,               ✘,			     ✔ ``PLATINE_STATE'',														✔
 Actuators,
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,
 "``(v, ω) motion control``",    ✘,               ✔,           ✔,             "✔ ``Twist`` - supports as well (Vx, Vy, ω)",    "✔ ``GENPOS_CART_SPEED``",		✔
