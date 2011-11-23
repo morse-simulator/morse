@@ -50,3 +50,23 @@ class MorsePocolibsClass(morse.core.middleware.MorseMiddlewareClass):
                 t.second * 1000 + t.microsecond / 1000)
 
         return date, t
+
+
+def init_extra_actuator(self, component_instance, function, mw_data, kind):
+    """ Setup the middleware connection with this data
+    Prepare the middleware to handle the serialised data as necessary.
+    """
+    component_name = component_instance.blender_obj.name
+    parent_name = component_instance.robot_parent.blender_obj.name
+    # Check if the name of the poster has been given in mw_data
+    try:
+        # It should be the 4th parameter
+        poster_name = mw_data[3]
+    except IndexError as detail:
+        # Compose the name of the poster, based on the parent and module names
+        poster_name = '{0}_{1}'.format(parent_name, component_name)
+
+    logger.debug("Creating poster_name %s" % poster_name)
+    poster_id = kind.createPosterHandler(poster_name)
+    self._poster_in_dict[component_name] = poster_id
+    component_instance.input_functions.append(function)

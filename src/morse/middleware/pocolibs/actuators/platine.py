@@ -1,3 +1,4 @@
+from morse.middleware.pocolibs_mw import init_extra_actuator
 from morse.middleware.pocolibs.actuators.Platine_Poster import ors_platine_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
@@ -5,19 +6,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
-    # Check if the name of the poster has been given in mw_data
-    try:
-        # It should be the 4th parameter
-        poster_name = mw_data[3]
-    except IndexError as detail:
-        # Compose the name of the poster, based on the parent and module names
-        poster_name = '{0}_{1}'.format(parent_name, component_name)
-
-    poster_id = ors_platine_poster.createPosterHandler(poster_name)
-    self._poster_in_dict[component_name] = poster_id
-    component_instance.input_functions.append(function)
+    init_extra_actuator(self, component_instance, function, mw_data, ors_platine_poster)
 
 def read_platine_(poster_id, component_instance):
     platine_data, ok = ors_platine_poster.read_platine_data(poster_id)
