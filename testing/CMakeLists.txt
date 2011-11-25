@@ -4,7 +4,10 @@ macro(add_morse_test name)
 	add_test(NAME ${test_name} COMMAND ${PYTHON3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.py)
 endmacro()
 
-add_subdirectory(base)
+if (BUILD_CORE_SUPPORT)
+	add_subdirectory(base)
+endif()
+
 if (BUILD_ROS_SUPPORT)
 	add_subdirectory(middlewares/ros)
 endif()
