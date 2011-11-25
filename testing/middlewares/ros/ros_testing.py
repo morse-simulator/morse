@@ -13,6 +13,7 @@ except ImportError:
     pass
 
 import os
+import sys
 os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
         os.path.join(os.environ['MORSE_ROOT'], "testing", "middlewares", "ros"))
 
@@ -69,5 +70,5 @@ if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
     suite = unittest.TestLoader().loadTestsFromTestCase(RosTest)
-    MorseTestRunner().run(suite)
+    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 

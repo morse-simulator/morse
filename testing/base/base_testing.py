@@ -3,6 +3,7 @@
 This script tests some of the base functionalities of MORSE.
 """
 
+import sys
 from morse.testing.testing import MorseTestCase
 
 # Include this import to be able to use your test file as a regular 
@@ -53,5 +54,5 @@ if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
     suite = unittest.TestLoader().loadTestsFromTestCase(BaseTest)
-    MorseTestRunner().run(suite)
+    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 

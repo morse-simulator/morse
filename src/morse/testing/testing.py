@@ -45,8 +45,7 @@ class MorseTestRunner(unittest.TextTestRunner):
         else:
             self.setup_logging()
             
-            unittest.TextTestRunner.run(self, suite)
-                
+            return unittest.TextTestRunner.run(self, suite)
                 
 
 class MorseTestCase(unittest.TestCase):

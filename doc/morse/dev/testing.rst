@@ -105,6 +105,6 @@ It is convenient to add at the end of a test-case the following lines:
         import unittest
         from morse.testing.testing import MorseTestRunner
         suite = unittest.TestLoader().loadTestsFromTestCase(<Your test class>)
-        MorseTestRunner().run(suite)
+        sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
 Thus, you can run your test by simply call it with the Python VM.
