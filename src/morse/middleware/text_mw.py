@@ -43,7 +43,7 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         data = []
         data.append("ROBOT %s || SENSOR %s\n" % (parent_name, component_name))
         data.append("(distance, globalVector(3), localVector(3))\n")
-        data.append(repr(component_instance.relative_position) + "\n")
+        data.append(repr(component_instance.relative_position) + "\n\n")
 
         # Open the file and write a header
         file_name = '{0}_{1}.txt'.format(parent_name, component_name)
@@ -61,7 +61,7 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         """
         parent_position = component_instance.robot_parent.position_3d
         FILE = self._file_list[component_instance.blender_obj.name]
-        line = "==> Data at X,Y,Z: [%.6f %.6f %.6f] yaw,pitch,roll: [%.6f %.6f %.6f] | time %s\n" % (parent_position.x, parent_position.y, parent_position.z, parent_position.yaw, parent_position.pitch, parent_position.roll, GameLogic.current_time)
+        line = "==> Data at X,Y,Z: [%.6f %.6f %.6f] yaw,pitch,roll: [%.6f %.6f %.6f] | time %.2f\n" % (parent_position.x, parent_position.y, parent_position.z, parent_position.yaw, parent_position.pitch, parent_position.roll, GameLogic.current_time)
         FILE.write(line.encode())
         for variable, data in component_instance.local_data.items():
             if isinstance(data, float):

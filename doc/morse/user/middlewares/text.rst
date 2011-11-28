@@ -17,6 +17,24 @@ Where ``globalVector`` is a list of 3 elements with the X, Y and Z coordinates
 of the sensor with respect to the global origin. ``localVector`` gives the
 coordinates with respect to the position of the robot.
 
+After the header there is a blank line, and then the data captured by the sensor
+is printed with this format::
+
+    ==> Data at X,Y,Z: [3.001482 -5.997612 0.036998] yaw,pitch,roll: [0.002257 0.004322 -0.005083] | time 3.08
+        dx = -0.000040
+        dy = 0.000089
+        dz = 0.000492
+        dyaw = -0.000292
+        dpitch = -0.000182
+        droll = 0.002484
+
+There is a line that starts with the string '==>', and shows the position and
+orientation of the robot at the moment of capturing the data. It also indicates
+the time, measured in seconds, since the simulation was started.
+
+The following lines show the contents of the ``local_data`` dictionary of the
+sensor. In the example, the data from the :doc:`Odometry sensor <../sensors/odometry>`.
+
 Files
 -----
 
