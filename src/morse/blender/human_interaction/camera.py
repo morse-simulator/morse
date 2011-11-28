@@ -118,18 +118,10 @@ def change():
 
 
     # camera points to several empties according to the current situation
-    if right_hand['selected'] != 'None' and right_hand['selected'] != '':
-        if human['Manipulate'] and mmb.positive:
-            track.object = hand_target
-        elif human['Manipulate'] and not mmb.positive:
-            track.object = head_target
-        else:
-            track.object = look_target
+    if human['Manipulate']:
+        track.object = head_target
     else:
-        if human['Manipulate']:
-            track.object = head_target
-        else:
-            track.object = look_target
+        track.object = look_target
     co.activate(track)
 
 def smooth_move(goal, owner):
