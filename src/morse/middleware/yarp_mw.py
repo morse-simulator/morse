@@ -315,7 +315,13 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         if port in self._yarpPorts:
             pass
         else:
-            port = self.getPort(port).getName().c_str()
+            try:
+                port = self.getPort(port).getName().c_str()
+            except KeyError:
+                try:
+                    port = self.getPort(port+"/in").getName().c_str()
+                except KeyError:
+                    port = self.getPort(port+"/out").getName().c_str()
         if port[-2:] == "in":
             self.yarp_object.connect("topic://"+topic, port)
         else:
