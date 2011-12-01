@@ -6,21 +6,15 @@ Data-stream interface
 ---------------------
 
 A simple method to export data through the network. The MORSE sockets
-middleware will create a single UDP port for each robot, and the communication
-for all components of the robot using sockets will be made through the same
-port.
+middleware will create one socket for each component. The service ``get_port``
+will allow to retrieve the port number associated to a specific component.
 
-Data is shared as simple text strings.
+Data is shared as json object, encoded in utf-8 strings.
 
 The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_mw`.
 
 .. note:: The port numbers used for the socket datastream interface start at 60000.
 
-.. warning::
-    Because of `bug 162 <https://softs.laas.fr/bugzilla/show_bug.cgi?id=162>`_,
-    the socket interface does not currently allow for *outbound* connection without a
-    prior *inbound* connection from the client.
-    
 
 Service interface
 -----------------
@@ -58,7 +52,9 @@ Example::
   > req1 Human move (1.0, 2.0)
   req1 OK
 
-.. note:: The socket service interface listen by default on port 4000. If this port is busy, MORSE will try to connect to the next 10 ports {4001-4010} before giving up.
+.. note:: The socket service interface listen by default on port 4000. If this
+	port is busy, MORSE will try to connect to the next 10 ports {4001-4010}
+	before giving up.
 
 .. note:: Why 4000?? That's all the question! A free beer for the first who finds.
 
@@ -73,10 +69,10 @@ Files
 Available methods
 -----------------
 
-- ``read_message``: Reads data as a pickled_ Python dictionary into the
+- ``read_message``: Reads data as a json dictionary into the
   ``local_data`` associated to the component. The dictionary keys must
   be identical to the component ``local_data`` keys.
-- ``post_message``: Dumps a pickled_ version of the tuple ``(component_name, local_data)`` on the socket.
-  It can be read on the other end with ``pickle.loads``.
+- ``post_message``: Dumps a json version of the component ``local_data`` on the socket.
+  It can be read on the other end with ``json.loads``.
 
-.. _pickled: http://docs.python.org/library/pickle.html
+.. _json: http://docs.python.org/library/json.html
