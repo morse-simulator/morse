@@ -56,6 +56,7 @@ class MorseTestCase(unittest.TestCase):
     def setUp(self):
         print("Starting test " + self.id())
         self.startmorse(self)
+
     
     def tearDown(self):
         self.stopmorse()
@@ -79,15 +80,23 @@ class MorseTestCase(unittest.TestCase):
         temp_builder_script = self.generate_builder_script(test_case)
         try:
             original_script_name = os.path.abspath(inspect.stack()[-1][1])
-            prefix = os.environ['MORSE_ROOT']
+
+            try:
+                prefix = os.environ['MORSE_ROOT']
+            except KeyError:
+                prefix=""
+
             if prefix == "":
                 cmd = 'morse'
             else:
                 cmd = prefix + "/bin/morse"
 
             self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        except OSError:
-            return None
+        except OSError as ose:
+            print("Error while launching MORSE! Check you can run it from command-line\n" + \
+                    " and if you use the $MORSE_ROOT env variable, check it points to a correct " + \
+                    " place!")
+            raise ose
         
         morse_initialized = False
         for line in iter(self.morse_process.stdout.readline,''):
