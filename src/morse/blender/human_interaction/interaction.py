@@ -56,9 +56,7 @@ def interact():
     if prox_obj:
         if 'Object' in prox_obj:
             focus = prox_obj
-        elif 'Door' in prox_obj:
-            focus = prox_obj
-        elif 'Drawer' in prox_obj:
+        elif 'Door' in prox_obj or 'Drawer' in prox_obj:
             focus = prox_obj
         else:
             for obj in prox_obj.children:

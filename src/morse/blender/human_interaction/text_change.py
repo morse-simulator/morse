@@ -13,7 +13,7 @@ def set_text(contr):
     
     try:
         ow['Text'] = message.bodies[0]
-        if human['selected'] != '' and human['selected'] !=  'None':
+        if human['selected'] != '' and human['selected'] !=  None:
             ow['Text'] = ow['Text'].replace('Pick up', '')
     except IndexError:
         pass
