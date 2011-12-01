@@ -50,7 +50,7 @@ class MorseSocketServ:
             self._client_sockets.append(sock)
 
         if outputready != []:
-            message = json.dumps(component_instance.local_data).encode()
+            message = (json.dumps(component_instance.local_data) + '\n').encode()
             for o in outputready:
                 try:
                     o.send(message)
