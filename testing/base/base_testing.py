@@ -26,7 +26,9 @@ class BaseTest(MorseTestCase):
         env = Environment('indoors-1/indoor-1')
 
     def test_list_robots(self):
-        """ This test is guaranteed to be started only when the simulator
+        """ Tests the simulator can return the list of robots
+        
+        This test is guaranteed to be started only when the simulator
         is ready.
         """
         
