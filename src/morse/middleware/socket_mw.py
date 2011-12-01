@@ -4,7 +4,7 @@ import select
 import json
 import morse.core.middleware
 from functools import partial
-from morse.core.services import service
+from morse.core import services
 
 class MorseSocketServ:
     def __init__(self, port, component_name):
@@ -107,8 +107,18 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         self._base_port = 60000
 
-    @service
-    def get_port(self, name):
+        # Register two special services in the socket service manager:
+
+        # TODO To use a new special component instead of 'simulation',
+        # uncomment the line :-)
+        # GameLogic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
+        services.do_service_registration(self.list_streams, 'simulation')
+        services.do_service_registration(self.get_stream_port, 'simulation')
+    
+    def list_streams(self):
+        return list(self._component_nameservice.keys())
+
+    def get_stream_port(self, name):
         port = -1
         try:
             port = self._component_nameservice[name]

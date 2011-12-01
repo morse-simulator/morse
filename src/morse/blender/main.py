@@ -616,9 +616,9 @@ def init(contr):
     
     logger.log(SECTION, 'SCENE INITIALIZATION')
     init_ok = init_ok and create_dictionaries()
+    init_ok = init_ok and link_services()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_middlewares()
-    init_ok = init_ok and link_services()
     init_ok = init_ok and load_overlays()
 
     if init_ok:
