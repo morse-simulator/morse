@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
+import json
 
 from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
@@ -184,7 +185,14 @@ class SocketRequestManager(RequestManager):
             for o in outputready:
                 if o in self._results_to_output:
                     for r in self._results_to_output[o]:
-                        response = "%s %s %s" % (r[0], r[1][0], str(r[1][1]) if r[1][1] else "")
+                        return_value = None
+                        try:
+                            if r[1][1]:
+                                return_value = json.dumps(r[1][1])
+                        except TypeError as te:
+                            logger.error("Error while serializing a service return value to JSON!\n" +\
+                                    "Details:" + te.value)
+                        response = "%s %s%s" % (r[0], r[1][0], (" " + return_value) if return_value else "")
                         try:
                             self._client_sockets[o].write(response)
                             self._client_sockets[o].write("\n")
@@ -218,8 +226,7 @@ class SocketRequestManager(RequestManager):
             component, service, params = tokens
 
             try:
-                import ast
-                p =  ast.literal_eval(params)
+                p =  json.loads(params)
             except (NameError, SyntaxError, ValueError) as e:
                 raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 
