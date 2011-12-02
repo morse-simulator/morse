@@ -337,6 +337,16 @@ class Environment(AbstractComponent):
         if isinstance(gravity, float):
             bpy.data.scenes[0].game_settings.physics_gravity = gravity
 
+    def set_viewport(self, viewport_shade='WIREFRAME'):
+        """ set_viewport
+        :param viewport_shade: enum in ['BOUNDBOX', 'WIREFRAME', 'SOLID', 'TEXTURED'], default 'WIREFRAME'
+        """
+        for area in bpy.context.window.screen.areas:
+            if area.type == 'VIEW_3D':
+                for space in area.spaces:
+                    if space.type == 'VIEW_3D':
+                        space.viewport_shade = viewport_shade
+
     def configure_multinode(self, protocol='socket', 
             server_address='localhost', server_port='65000', distribution=None):
         self._protocol = protocol
