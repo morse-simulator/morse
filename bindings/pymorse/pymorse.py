@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""A Python bridge to the ORO-server ontology server.
+"""A Python interface to control the Morse simulator
 
 This library use the standard Python logging mechanism.
 You can retrieve pymorse log messages through the "pymorse" logger. See the end of
@@ -124,10 +124,11 @@ class Morse(Thread):
         or an event, and dispatch accordingly the answer's content.
         """
         
-        inputs = [self._morse_server]
-        outputs = [self._morse_server]
+        inputs = [self.s]
+        outputs = [self.s]
         
         while self._running:
+
         
             try:
                 inputready,outputready,exceptready = select.select(inputs, outputs, [])
@@ -138,7 +139,7 @@ class Morse(Thread):
             
             if not self._morse_requests_queue.empty():
                 for o in outputready:
-                    if o == self._morse_server:
+                    if o == self.s:
                         r = self._morse_requests_queue.get()
                         if r['args']:
                             r['args'] = ', '.join(json.dumps(a) for a in r['args'])
@@ -150,7 +151,7 @@ class Morse(Thread):
                         self._morse_server.flush()
             
             for i in inputready:
-                if i == self._morse_server:
+                if i == self.s:
                     res = self.get_morse_response()
 
                     # NOT USED YET
