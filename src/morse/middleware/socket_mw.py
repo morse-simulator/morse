@@ -25,7 +25,7 @@ class MorseSocketServ:
         """ Terminate the ports used to accept requests """
         if self._client_sockets:
             logger.info("Closing client sockets...")
-            for s in self._client_sockets():
+            for s in self._client_sockets:
                 s.close()
 
         if self._server:
