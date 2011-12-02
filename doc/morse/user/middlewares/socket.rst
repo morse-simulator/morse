@@ -6,10 +6,12 @@ Data-stream interface
 ---------------------
 
 A simple method to export data through the network. The MORSE sockets
-middleware will create one socket for each component. The service ``get_port``
-will allow to retrieve the port number associated to a specific component.
+middleware will create one socket for each component. The service
+``simulation.list_streams'' returns the list of available data streams, and the
+service ``simulation.get_stream_port(<stream name>)`` returns the port number
+associated to this stream.
 
-Data is shared as json object, encoded in utf-8 strings.
+Data is shared as JSON object, encoded in utf-8 strings.
 
 The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_mw`.
 
@@ -34,7 +36,8 @@ The (ASCII) protocol is simple::
 
 - ``service``: the name of the request to invoke.
 - ``parameters`` (can be omitted if the request takes no argument): request
-  arguments. Arguments must be enclosed in brackets.
+  arguments in JSON format. Arguments must be enclosed in a list (ie, inside
+  brackets).
 
 MORSE answer follows this model::
 
@@ -42,14 +45,13 @@ MORSE answer follows this model::
 
 - ``id`` the same id the client used to send the request,
 - ``status``: one of the :py:mod:`morse.core.status` constants
-- ``result``: a JSON-like result (actually, the representation of the Python
-  result object), if any.
+- ``result``: a JSON-serialized result, if any.
 
 Example::
 
   $ telnet localhost 4000
   Connected to localhost.
-  > req1 Human move (1.0, 2.0)
+  > req1 Human move [1.0, 2.0]
   req1 OK
 
 .. note:: The socket service interface listen by default on port 4000. If this
@@ -64,7 +66,8 @@ Files
 -----
 
 - Blender: ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``
-- Python: ``$MORSE_ROOT/src/morse/modifiers/socket_mw.py``
+- Python (data-stream): ``$MORSE_ROOT/src/morse/middleware/socket_mw.py``
+- Python (services): ``$MORSE_ROOT/src/morse/middleware/socket_request_manager.py``
 
 Available methods
 -----------------

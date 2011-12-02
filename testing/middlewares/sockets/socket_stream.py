@@ -53,9 +53,9 @@ class SocketDataStreamTest(MorseTestCase):
 
         morse = Morse()
 
-        pose_stream = morse.join_stream('Pose')
+        pose_stream = morse.stream('Pose')
 
-        pose = pose_stream.pop()
+        pose = pose_stream.get()
 
         for coord in pose.values():
             self.assertAlmostEqual(coord, 0.0, 2)

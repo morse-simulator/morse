@@ -9,13 +9,16 @@ import time
 import logging
 import socket
 import select
-from threading import Thread
+import threading
 
 try:
     from queue import Queue
 except ImportError:
     # Python 2.x
     from Queue import Queue
+
+# Double-ended queue, thread-safe append/pop.
+from collections import deque
 
 import json
 
@@ -29,6 +32,7 @@ class NullHandler(logging.Handler):
         pass
 
 pymorselogger = logging.getLogger("pymorse")
+pymorselogger.setLevel(logging.DEBUG)
 
 h = NullHandler()
 pymorselogger.addHandler(h)
@@ -42,49 +46,135 @@ class MorseServerError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class MorseStream:
+class MorseStream(threading.Thread):
 
-    def __init__(self, host, port, readonly = True):
+    def __init__(self, host, port, readonly = True, maxlength = 100):
+        threading.Thread.__init__(self)
 
-        self._client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._client.connect((host, port))
+        self.maxlength = maxlength
+        self._queue = deque([], maxlength)
+        self.readonly = readonly
+        self._running = True
 
-        if readonly:
-            self.stream = self._client.makefile('r')
-            pymorselogger.info("Connected to a MORSE stream (read only).")
-        else:
-            self.stream = self._client.makefile('rw')
-            pymorselogger.info("Connected to a MORSE stream (read and write).")
+        self.host = host
+        self.port = port
+
+        # Lock required for proper slicing of the queue (when returning 
+        # the n latest records).
+        # Condition variable required for the blocking get() method.
+        self.cv = threading.Condition()
+
+        self.subscribers = []
+
+        self.start()
 
     def __del__(self):
+        self.close()
+    
+    def close(self):
+        self._running = False
+        self.join()
 
-        if self.stream:
-            self.stream.close()
+    def run(self):
+        """ Reads a data stream on a socket, convert it to Python object, and store it
+        in a ring buffer of length self.maxlength.
+        """
+        _client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        _client.connect((self.host, self.port))
 
-        if self._client:
-            pymorselogger.info("Shutting down the socket...")
-            self._client.shutdown(socket.SHUT_RDWR)
-            pymorselogger.info("Closing socket client...")
-            self._client.close()
+        stream = None
 
-    def pop(self):
-        return json.loads(self.stream.readline())
+        if self.readonly:
+            stream = _client.makefile('r')
+            pymorselogger.info("Connected to a MORSE stream (read only).")
+        else:
+            stream = _client.makefile('rw')
+            pymorselogger.info("Connected to a MORSE stream (read and write).")
+
+        while self._running:
+            try:
+                record = json.loads(stream.readline().rstrip('\n'))
+            except ValueError:
+                pymorselogger.error("Received invalid JSON content from MORSE."
+                                    " The connection has been maybe lost. Closing"
+                                    " the stream.")
+                break
+
+            self.cv.acquire()
+            self._queue.appendleft(record)
+            self.cv.notify()
+            self.cv.release()
+
+            # Attention: call-back subscribers are called from the
+            # reading thread. Better to keep them short!
+            for cb in self.subscribers:
+                cb(record)
+
+        stream.close()
+
+        pymorselogger.info("Shutting down the socket...")
+        _client.shutdown(socket.SHUT_RDWR)
+        pymorselogger.info("Closing socket client...")
+        _client.close()
 
 
-class Morse(Thread):
+    def last(self, n = None):
+        """ Returns the latest or the n latest data records read
+        from the data stream.
+
+        If called without parameter, returns a single record, as a
+        Python object. If no record has been received yet, returns None.
+        
+        If called with a parameter n, returns the n latest ones or less
+        if less records have been received.
+        """
+        if not self._queue:
+            return None
+
+        if not n:
+            self.cv.acquire()
+            res = self._queue[0]
+            self.cv.release()
+
+        else:
+            n = min(n, self.maxlength)
+            self.cv.acquire()
+            res = list(self._queue)[:n] #TODO: optimize that! currently, the whole queue is copied :-/
+            self.cv.release()
+
+        return res
+
+    def get(self):
+        """ Blocks until a new record is read from the data stream, and returns it.
+        """
+        self.cv.acquire()
+        self.cv.wait()
+        res = self._queue[0]
+        self.cv.release()
+
+        return res
+
+    def subscribe(self, cb):
+        self.subscribers.append(cb)
+
+    def unsubscribe(self, cb):
+        self.subscribers.remove(cb)
+
+class Morse(threading.Thread):
 
     id = 0
 
     def __init__(self, host = "localhost", port = 4000):
-        Thread.__init__(self)
-        
+        threading.Thread.__init__(self)
+
         self._morse_requests_queue = Queue()
         self._morse_responses_queue = Queue()
-        
+
+        self.open_streams = [] #Keep an eye on open streams in case we need to close them
         self._running = True
-        
+
         self._morse_server = None
-        
+
         self.host = host
         try:
             #create an INET, STREAMing socket
@@ -162,7 +252,7 @@ class Morse(Thread):
                             
                             cbThread = Thread(target=self._registered_events[evt_id], args=evt_params)
                             cbThread.start()
-                            pymorselogger.log(4, "Event notified")
+                            pymorselogger.debug("Event notified")
                             
                         except KeyError:
                             pymorselogger.error("Got a event notification, but I " + \
@@ -193,7 +283,7 @@ class Morse(Thread):
                         "id": id,
                         "result":result}
 
-        pymorselogger.log(4, "Got answer: " + morse_answer['status'] + \
+        pymorselogger.debug("Got answer: " + morse_answer['status'] + \
                 ", " + str(morse_answer['result']))
 
         return morse_answer
@@ -227,7 +317,7 @@ class Morse(Thread):
             req = ["%s" % m[0]]
             for a in args:
                 req.append(str(a))
-            pymorselogger.log(4, "Sending request: " + req[0])
+            pymorselogger.debug("Sending request: " + req[0])
             return self.call_server(req)
                 
         innermethod.__doc__ = "This method is a proxy for the MORSE %s service." % m[0]
@@ -237,10 +327,10 @@ class Morse(Thread):
     def close(self):
         self._running = False
         self.join()
-        pymorselogger.log(4, 'Closing the connection to MORSE...')
+        #pymorselogger.debug('Closing the connection to MORSE...')
         self._morse_server.close()
         self.s.close()
-        pymorselogger.log(4, 'Done. Bye bye!')
+        #pymorselogger.debug('Done. Bye bye!')
     
     def __del__(self):
         if self._morse_server:
@@ -250,7 +340,10 @@ class Morse(Thread):
        return self.call_server("simulation", "list_robots")
 
     def quit(self):
-       return self.call_server("simulation", "quit")
+        # Close data streams
+        for stream in self.open_streams:
+            stream.close()
+        return self.call_server("simulation", "quit")
 
     def reset(self):
        return self.call_server("simulation", "reset")
@@ -262,7 +355,7 @@ class Morse(Thread):
        return self.call_server("simulation", "get_stream_port", stream)
 
 
-    def join_stream(self, stream):
+    def stream(self, stream, maxlength = 100):
 
         port = self.get_stream_port(stream)
 
@@ -271,7 +364,10 @@ class Morse(Thread):
         #pymorselogger.info("Connected to a MORSE stream (read only).")
         #return _client.makefile('r')
 
-        return MorseStream(self.host, port, readonly = True)
+        stream =  MorseStream(self.host, port, readonly = True, maxlength = maxlength)
+        self.open_streams.append(stream)
+
+        return stream
 
 if __name__ == '__main__':
 
@@ -289,16 +385,16 @@ if __name__ == '__main__':
     HOST = 'localhost'    # MORSE host
     PORT = 4000        # MORSE port
     
+    pymorselogger.info("Starting now...")
     morse = Morse(HOST, PORT)
     
-    pymorselogger.info("Starting now...")
     try:
         print(str(morse.robots()))
         streams = morse.streams()
         print(str(streams))
-        pose_stream = morse.join_stream(streams[0])
+        pose_stream = morse.stream(streams[0])
 
-        print(pose_stream.readline())
+        print(pose_stream.get())
 
         morse.quit()
 
