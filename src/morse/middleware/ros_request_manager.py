@@ -1,16 +1,81 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
+import threading
 from functools import partial
 
 from morse.core import status, services
 from morse.core.request_manager import RequestManager
 
 try:
-    import roslib; roslib.load_manifest('rospy')
+    import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('actionlib_msgs')
     import rospy
+    import actionlib_msgs
 except ImportError as ie:
-    raise ImportError("Could not import 'rospy' ROS module."
+    raise ImportError("Could not import some ROS modules."
                       " Check your ROS configuration is ok. Details:\n" + str(ie))
+
+def ros_timer(callable,frequency):
+    # Shamelessly stolen from actionlib/action_server.py
+
+    rate = rospy.Rate(frequency)
+
+    rospy.logdebug("Starting timer");
+    while not rospy.is_shutdown():
+        try:
+            rate.sleep()
+            callable()
+        except rospy.exceptions.ROSInterruptException:
+            rospy.logdebug("Sleep interrupted");
+
+class RosAction:
+    def __init__(self, component, action, rostype):
+
+        self._pending_goals = []
+        self.goal_lock = threading.Lock()
+
+        self.name = component + "/" + action
+
+        # Retrieves the types of the goal msg, feedback msg and result
+        # msg (check roslib.message.Message for details)
+        rosinstance = rostype()
+        types = [type(getattr(rosinstance, t)) for t in rosinstance.__slots__]
+
+        # Create the 5 topics required by an action server
+        self.goal_topic = rospy.Subscriber(self.name + "/goal", types[0], self.on_goal)
+        self.result_topic = rospy.Publisher(self.name + "/result", types[1])
+        self.feedback_topic = rospy.Publisher(self.name + "/feedback", types[2])
+
+        self.cancel_topic = rospy.Subscriber(self.name + "/cancel", actionlib_msgs.msg.GoalID, self.on_cancel)
+        self.status_topic = rospy.Publisher(self.name + "/status", actionlib_msgs.msg.GoalStatusArray)
+
+        # read the frequency with which to publish status from the parameter server
+        # (taken from actionlib/action_server.py)
+        self.status_frequency = rospy.get_param(self.name + "/status_frequency", 5.0);
+
+        status_list_timeout = rospy.get_param(self.name + "/status_list_timeout", 5.0);
+        self.status_list_timeout = rospy.Duration(status_list_timeout);
+
+        self.status_timer = threading.Thread(None, ros_timer, None, (self._publish_status,self.status_frequency) );
+        self.status_timer.start();
+
+    def on_goal(self, goal):
+        logger.info("Got a goooooooal! " + str(goal))
+
+    def on_cancel(self, goalid):
+        logger.info("Got a cancel request for " + str(goalid))
+
+    def _publish_status(self):
+        """ This private method is called asynchronously to update the status of pending goals.
+        """
+
+        status_array = actionlib_msgs.msg.GoalStatusArray()
+
+        with self.goal_lock:
+            for goal in self._pending_goals:
+                status_array.status_list.append(goal.status);
+
+        status_array.header.stamp = rospy.Time.now()
+        self.status_topic.publish(status_array)
 
 class RosRequestManager(RequestManager):
 
@@ -37,24 +102,20 @@ class RosRequestManager(RequestManager):
         return True
 
     def register_ros_action(self, method, component_name, service_name):
-        
-        # Default service type
-        #rostype = rospy.msg.AnyMsg
-        
-        #try:
-        #    rostype = method._ros_action_type # Is it a ROS action?
-        #    logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
-        #except AttributeError:
-        #    logger.info(component_name + "." + service_name + " has no ROS-specific action type. Using default one.")
-        #
-        #cb = self.add_ros_handler(component_name, service_name)
-        #
-        #s = actionlib.SimpleActionServer(service_name, rostype, cb)
-        #
-        #logger.info("Created new ROS action server for {}.{}".format(
-        #                                            component_name,
-        #                                            service_name))
-        pass
+
+        rostype = None
+        try:
+            rostype = method._ros_action_type # Is it a ROS action?
+            logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
+        except AttributeError:
+            logger.info(component_name + "." + service_name + " has no ROS-specific action type. Skipping it.")
+            return
+
+        self.actions.append(RosAction(component_name, service_name, rostype))
+
+        logger.info("Created new ROS action server for {}.{}".format(
+                                                    component_name,
+                                                    service_name))
 
 
     def register_ros_service(self, method, component_name, service_name):
@@ -178,13 +239,13 @@ def ros_action(fn = None, type = None, name = None):
       type of the ROS action.
     :param string name: by default, the name of the service is the name
       of the method. You can override it by setting the 'name' argument.
-      Your ROS action will appear as /<name>/...
+      Your ROS action will appear as /component_instance/<name>/...
     """
     if not type:
         logger.error("You must provide a valid ROS action type when using the " + \
         "@ros_action decorator, e.g. @ros_action(type=MyRosAction). Action ignored.")
         return
-        
+    
     if not hasattr(fn, "__call__"):
         return partial(ros_action, type = type, name = name)
         

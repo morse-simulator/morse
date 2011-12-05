@@ -197,6 +197,12 @@ def service(fn = None, component = None, name = None, async = False):
                 dfn = decorated_fn
                 dfn.__name__ = fn.__name__
 
+                # Copy all special values the original method may have.
+                # This is useful in case of cascading decorator (cf
+                # @ros_action for instance).
+                for attr, value in fn.__dict__.items():
+                    setattr(dfn, attr, value)
+
             dfn._morse_service = True
             dfn._morse_service_name = name
             dfn._morse_service_is_async = async

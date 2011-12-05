@@ -48,7 +48,7 @@ class RosActionsTest(MorseTestCase):
         env = Environment('indoors-1/indoor-1')
         env.configure_service('ros')
 
-    def test_no_action(self):
+    def _test_no_action(self):
             rospy.init_node('move_base_client')
             client = actionlib.SimpleActionClient('phantom_action', MoveBaseAction)
             self.assertFalse(client.wait_for_server(rospy.Duration(1)))
@@ -56,12 +56,12 @@ class RosActionsTest(MorseTestCase):
     def test_move_base(self):
 
             rospy.init_node('move_base_client')
-            client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+            client = actionlib.SimpleActionClient('Motion_Controller/move_base', MoveBaseAction)
             self.assertTrue(client.wait_for_server(rospy.Duration(1)))
 
             goal = MoveBaseGoal(Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0)))
-            client.send_goal(goal)
-            client.wait_for_result(rospy.Duration.from_sec(5.0))
+            self.assertEqual(client.send_goal_and_wait(goal, rospy.Duration.from_sec(5.0)), 
+                        actionlib.GoalStatus.SUCCEEDED)
 
 
 
