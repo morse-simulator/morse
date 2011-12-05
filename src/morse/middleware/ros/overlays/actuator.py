@@ -1,9 +1,10 @@
-from morse.middleware.ros_request_manager import ros_action
+from morse.middleware.ros_request_manager import ros_action, ros_service
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 
 import roslib; roslib.load_manifest('morsetesting')
 from morsetesting.msg import *
+from morsetesting.srv import *
 
 class WayPoint(MorseOverlay):
 
@@ -25,3 +26,11 @@ class WayPoint(MorseOverlay):
                 req.position.x,
                 req.position.y,
                 req.position.z)
+
+    @ros_service(type = MoveBase)
+    def set_destination(self, req):
+        return self.overlaid_object.setdest(
+                            req.position.x,
+                            req.position.y,
+                            req.position.z)
+

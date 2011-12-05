@@ -1,1 +1,1 @@
-add_morse_test(ros_testing)
+add_morse_test(services)

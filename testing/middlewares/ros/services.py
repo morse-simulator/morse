@@ -14,8 +14,15 @@ except ImportError:
 
 import os
 import sys
+try:
+    os.environ['MORSE_SRC_ROOT']
+except KeyError:
+    print("You must define the environment variable MORSE_SRC_ROOT"
+          " to point to the MORSE source before running ROS tests.")
+    sys.exit(1)
+
 os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
-        os.path.join(os.environ['MORSE_ROOT'], "testing", "middlewares", "ros"))
+        os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros"))
 
 import roslib; roslib.load_manifest("morsetesting")
 import rospy
@@ -23,7 +30,7 @@ from morsetesting.srv import *
 from morsetesting.msg import *
 from geometry_msgs.msg import *
 
-class RosTest(MorseTestCase):
+class RosServicesTest(MorseTestCase):
 
     def setUpEnv(self):
         
@@ -45,45 +52,44 @@ class RosTest(MorseTestCase):
         with self.assertRaises(rospy.ROSException):
             rospy.wait_for_service('idonotexist', timeout = 2)
         
-    def do_not_test_move_base(self):
+    def test_move_base(self):
         try:
-            rospy.wait_for_service('move_base', timeout = 2)
+            rospy.wait_for_service('set_destination', timeout = 2)
         except rospy.ROSException:
             self.fail("The move_base service never showed up!")
 
         try:
-            move_base = rospy.ServiceProxy('move_base', MoveBase)
+            set_dest = rospy.ServiceProxy('set_destination', MoveBase)
 
-            pose = Pose(Point(2.0,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0))
-            success = move_base(pose).success
+            # Send a destination target at the robot current position ->
+            # should return False
+            pose = Pose(Point(0.0,0.0,0.0), Quaternion(0.0,0.0,0.0,1.0))
+            success = set_dest(pose).success
+            self.assertFalse(success)
+
+            # Send a destination target within tolerance (default = 0.5) of robot current position ->
+            # should return False
+            pose = Pose(Point(0.1,0.3,0.0), Quaternion(0.0,0.0,0.0,1.0))
+            success = set_dest(pose).success
+            self.assertFalse(success)
+
+            # Send a new destination target
+            pose = Pose(Point(-1.0,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0))
+            success = set_dest(pose).success
             self.assertTrue(success)
 
-            pose = Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0))
-            success = move_base(pose).success
-            self.assertFalse(success)
+            # Override the previous target
+            pose = Pose(Point(1.0,0.0,0.0), Quaternion(0.0,0.0,0.0,1.0))
+            success = set_dest(pose).success
+            self.assertTrue(success)
 
         except rospy.ServiceException as e:
             self.fail("Service call failed: %s"%e)
-
-    def test_move_base(self):
-
-        try:
-            rospy.init_node('move_base_client')
-            client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-            client.wait_for_server()
-
-            goal = MoveBaseGoal(Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0)))
-            client.send_goal(goal)
-            client.wait_for_result(rospy.Duration.from_sec(5.0))
-
-        except rospy.ServiceException as e:
-            self.fail("Action call failed: %s"%e)
-
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(RosTest)
+    suite = unittest.TestLoader().loadTestsFromTestCase(RosServicesTest)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 

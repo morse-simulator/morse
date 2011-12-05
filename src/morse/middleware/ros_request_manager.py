@@ -6,12 +6,11 @@ from morse.core import status, services
 from morse.core.request_manager import RequestManager
 
 try:
-    import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('actionlib')
+    import roslib; roslib.load_manifest('rospy')
     import rospy
-    import actionlib
 except ImportError as ie:
-    raise ImportError("Could not import one of the 'rospy' or 'actionlib' "+ \
-        "ROS module. Check your ROS configuration is ok. Details:\n" + str(ie))
+    raise ImportError("Could not import 'rospy' ROS module."
+                      " Check your ROS configuration is ok. Details:\n" + str(ie))
 
 class RosRequestManager(RequestManager):
 
@@ -37,27 +36,28 @@ class RosRequestManager(RequestManager):
         rospy.signal_shutdown("User exited MORSE simulation")
         return True
 
-    def register_action(self, method, component_name, service_name):
+    def register_ros_action(self, method, component_name, service_name):
         
         # Default service type
-        rostype = rospy.msg.AnyMsg
+        #rostype = rospy.msg.AnyMsg
         
-        try:
-            rostype = method._ros_action_type # Is it a ROS action?
-            logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
-        except AttributeError:
-            logger.info(component_name + "." + service_name + " has no ROS-specific action type. Using default one.")
-        
-        cb = self.add_ros_handler(component_name, service_name)
-        
-        s = actionlib.SimpleActionServer(service_name, rostype, cb)
-        
-        logger.info("Created new ROS simple action server for {}.{}".format(
-                                                    component_name,
-                                                    service_name))
+        #try:
+        #    rostype = method._ros_action_type # Is it a ROS action?
+        #    logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
+        #except AttributeError:
+        #    logger.info(component_name + "." + service_name + " has no ROS-specific action type. Using default one.")
+        #
+        #cb = self.add_ros_handler(component_name, service_name)
+        #
+        #s = actionlib.SimpleActionServer(service_name, rostype, cb)
+        #
+        #logger.info("Created new ROS action server for {}.{}".format(
+        #                                            component_name,
+        #                                            service_name))
+        pass
 
 
-    def register_service(self, method, component_name, service_name):
+    def register_ros_service(self, method, component_name, service_name):
         
         # Default service type
         rostype = MorseAnyService
@@ -96,9 +96,9 @@ class RosRequestManager(RequestManager):
         method, is_async = self._services[(component_name, service_name)]
         
         if is_async:
-            self.register_action(method, component_name, service_name)
+            self.register_ros_action(method, component_name, service_name)
         else:
-            self.register_service(method, component_name, service_name)
+            self.register_ros_service(method, component_name, service_name)
 
 
 
