@@ -98,11 +98,46 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         logger.info('Component initialized')
 
 
+    @service
+    def setdest(self, x, y, z, tolerance=0.5, speed=1.0):
+        """ Set a new waypoint and returns.
+
+        The robot will try to go to this position, but the service 
+        caller has no mean to know when the destination is reached
+        or if it failed.
+
+        In most cases, the asynchronous service 'goto' should be 
+        prefered.
+
+        Returns always True (if the robot is already moving, the
+        previous target is replaced by the new one) except if
+        the destination is already reached. In this case, returns
+        False.
+        """
+
+        distance, gv, lv = self.blender_obj.getVectTo([x,y,z])
+        if distance - tolerance <= 0:
+            logger.info("Robot already at destination (distance = {})."
+                    " I do not set a new destination.".format(distance))
+            return False
+
+        self.local_data['x'] = x
+        self.local_data['y'] = y
+        self.local_data['z'] = z
+        self.local_data['tolerance'] = tolerance
+        self.local_data['speed'] = speed
+
+        return True
+
 
     @interruptible
     @async_service
     def goto(self, x, y, z, tolerance=0.5, speed=1.0):
-        """ Provide new coordinates for the waypoint destination """
+        """ Go to a new destination.
+
+        The service returns when the destination is reached within
+        the provided tolerance bounds.
+        """
         self.local_data['x'] = x
         self.local_data['y'] = y
         self.local_data['z'] = z
@@ -171,7 +206,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         logger.debug("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
 
         # If the target has been reached, change the status
-        if distance-self.local_data['tolerance'] <= 0:
+        if distance - self.local_data['tolerance'] <= 0:
             parent.move_status = "Arrived"
 
             #Do we have a runing request? if yes, notify the completion
