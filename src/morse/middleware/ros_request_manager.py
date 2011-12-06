@@ -251,7 +251,7 @@ class RosRequestManager(RequestManager):
         
         cb = self.add_ros_handler(component_name, service_name)
 
-        s = rospy.Service(service_name, rostype, cb)
+        s = rospy.Service(component_name + "/" + service_name, rostype, cb)
         logger.debug("Created new ROS service for {}.{}".format(
                                                     component_name,
                                                     service_name))
