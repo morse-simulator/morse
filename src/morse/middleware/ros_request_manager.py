@@ -28,10 +28,20 @@ def ros_timer(callable,frequency):
             rospy.logdebug("Sleep interrupted");
 
 class RosAction:
-    def __init__(self, component, action, rostype):
+    """ Implements a minimal action state machine.
 
-        self._pending_goals = []
+    See http://www.ros.org/wiki/actionlib/DetailedDescription
+    for the possible states.
+    """
+    def __init__(self, manager, component, action, rostype):
+
+        self.manager = manager
+
+        self._pending_goals = {}
         self.goal_lock = threading.Lock()
+
+        self.component = component
+        self.action = action
 
         self.name = component + "/" + action
 
@@ -39,6 +49,9 @@ class RosAction:
         # msg (check roslib.message.Message for details)
         rosinstance = rostype()
         types = [type(getattr(rosinstance, t)) for t in rosinstance.__slots__]
+
+        self.result_type = types[1]
+        self.feedback_type = types[2]
 
         # Create the 5 topics required by an action server
         self.goal_topic = rospy.Subscriber(self.name + "/goal", types[0], self.on_goal)
@@ -58,11 +71,115 @@ class RosAction:
         self.status_timer = threading.Thread(None, ros_timer, None, (self._publish_status,self.status_frequency) );
         self.status_timer.start();
 
-    def on_goal(self, goal):
-        logger.info("Got a goooooooal! " + str(goal))
+    def setstatus(self, id, status):
 
-    def on_cancel(self, goalid):
-        logger.info("Got a cancel request for " + str(goalid))
+        with self.goal_lock:
+            goal_id = self._pending_goals[id]['goal_id']
+            goal_status = actionlib_msgs.msg.GoalStatus(goal_id = goal_id,
+                                                   status = status)
+            self._pending_goals[id]['status'] = goal_status
+
+    def getstatus(self, id):
+
+        with self.goal_lock:
+            return self._pending_goals[id]['status'].status
+
+    def set_internal_id(self, id, morse_id):
+
+        with self.goal_lock:
+            self._pending_goals[id]['morse_id'] = morse_id
+
+    def manage_internal_id(self, morse_id):
+        """ Check if this ROS action manager manages the given
+        internal request ID.
+
+        This is used by RosRequestManager to dispatch the service
+        'on completion' event.
+        """
+        return self.get_id_from_internal_id(morse_id) != None
+
+    def get_id_from_internal_id(self, morse_id):
+
+        with self.goal_lock:
+            for id, goal in self._pending_goals.items():
+                if goal.setdefault('morse_id') == morse_id:
+                    return id
+
+    def on_goal(self, goal):
+        logger.info("Got a new goal for ROS action " + self.name)
+
+        # Workaround for encoding issues (-> goal_id.id comes as bytes,
+        # and must be converted to string before being reserialized)
+        id = actionlib_msgs.msg.GoalID(id = goal.goal_id.id.decode(),
+                                       stamp = goal.goal_id.stamp)
+
+        with self.goal_lock:
+            self._pending_goals[id.id] = {'goal_id': id, 'status': None}
+
+        self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.PENDING)
+
+        is_sync, morse_id = self.manager.on_incoming_request(self.component, self.action, [goal.goal])
+
+        # is_sync should be always True for ROS services!
+        if is_sync:
+            # TODO: clean terminated goals 'after a few seconds' (as
+            # said by actionlib doc)
+            self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.REJECTED)
+            logger.error("Internal error: This ROS action is bound to a "
+                         "synchronous MORSE service! ({})".format(component_name + '.' + service_name))
+
+        self.set_internal_id(id.id, morse_id)
+        self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.ACTIVE)
+        logger.debug("Started action. GoalID=" + id.id + " MORSE ID=" + str(morse_id))
+
+    def on_cancel(self, goal_id):
+        logger.info("Got a cancel request for ROS action " + self.name)
+
+        current_status = None
+
+        try:
+            current_status = self.getstatus(goal_id.id)
+        except KeyError:
+            # Unknown GoalID...? skipping this cancel request.
+            logger.info("I can not find any goal matching this cancel request. Skipping it.")
+            return
+
+        if current_status == actionlib_msgs.msg.GoalStatus.PENDING:
+            self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.RECALLING)
+        else: #current status = ACTIVE (or smth else...)
+            self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.PREEMPTING)
+
+    def on_result(self, morse_id, state, result):
+
+        logger.info("Got a result for action " + self.name + ": " + str(state) + " " + str(result))
+        id = self.get_id_from_internal_id(morse_id)
+
+        if state == status.PREEMPTED:
+            logger.info("The action " + self.name + " has been preempted. "
+                         "Reporting it to ROS system.")
+            self.setstatus(id, actionlib_msgs.msg.GoalStatus.PREEMPTED)
+        if state == status.FAILED:
+            logger.info("The action " + self.name + " has been aborted. "
+                         "Reporting it to ROS system.")
+            self.setstatus(id, actionlib_msgs.msg.GoalStatus.ABORTED)
+        if state == status.SUCCESS:
+            logger.debug("The action " + self.name + " has succeeded. Reporting"
+                         " it to ROS system and publishing results.")
+            self.setstatus(id, actionlib_msgs.msg.GoalStatus.SUCCEEDED)
+            self.publish_result(id, result)
+
+    def publish_result(self, goal_id, result):
+
+        goal_status = None
+
+        with self.goal_lock:
+            goal_status = self._pending_goals[goal_id]['status']
+
+        res = self.result_type(status = goal_status,
+                               result = result)
+        
+        self.result_topic.publish(res)
+
 
     def _publish_status(self):
         """ This private method is called asynchronously to update the status of pending goals.
@@ -71,8 +188,9 @@ class RosAction:
         status_array = actionlib_msgs.msg.GoalStatusArray()
 
         with self.goal_lock:
-            for goal in self._pending_goals:
-                status_array.status_list.append(goal.status);
+            for goal in self._pending_goals.values():
+                if goal['status']:
+                    status_array.status_list.append(goal['status']);
 
         status_array.header.stamp = rospy.Time.now()
         self.status_topic.publish(status_array)
@@ -109,13 +227,15 @@ class RosRequestManager(RequestManager):
             logger.info(component_name + "." + service_name + " is a ROS action of type " + str(rostype))
         except AttributeError:
             logger.info(component_name + "." + service_name + " has no ROS-specific action type. Skipping it.")
-            return
+            return False
 
-        self.actions.append(RosAction(component_name, service_name, rostype))
+        self.actions.append(RosAction(self, component_name, service_name, rostype))
 
         logger.info("Created new ROS action server for {}.{}".format(
                                                     component_name,
                                                     service_name))
+
+        return True
 
 
     def register_ros_service(self, method, component_name, service_name):
@@ -135,6 +255,8 @@ class RosRequestManager(RequestManager):
         logger.debug("Created new ROS service for {}.{}".format(
                                                     component_name,
                                                     service_name))
+
+        return True
     
     def post_registration(self, component_name, service_name, is_async):
         """ We create here ROS services (for *synchronous* services) and ROS
@@ -157,16 +279,15 @@ class RosRequestManager(RequestManager):
         method, is_async = self._services[(component_name, service_name)]
         
         if is_async:
-            self.register_ros_action(method, component_name, service_name)
+            return self.register_ros_action(method, component_name, service_name)
         else:
-            self.register_ros_service(method, component_name, service_name)
-
-
-
-        return True
+            return self.register_ros_service(method, component_name, service_name)
 
     def add_ros_handler(self, component_name, service_name):
-        """ Dynamically creates custom ROS->MORSE dispatchers.
+        """ Dynamically creates custom ROS->MORSE dispatchers
+        for ROS *services* only.
+
+        ROS actions are dealt with in the :py:class:`RosAction` class.
         """
 
         def innermethod(request):
@@ -184,6 +305,12 @@ class RosRequestManager(RequestManager):
             is_sync, value = self.on_incoming_request(component_name, service_name, args)
 
             # is_sync should be always True for ROS services!
+            if not is_sync:
+                logger.error("Internal error: This ROS "
+                             "service is bound to an asynchronous MORSE"
+                             " service! ({})".format(component_name + '.' + service_name))
+                raise rospy.service.ServiceException("MORSE Internal error! Check MORSE logs for details.")
+
 
             state, result = value
 
@@ -210,7 +337,20 @@ class RosRequestManager(RequestManager):
         return innermethod
 
     def on_service_completion(self, request_id, result):
-        pass
+        # First, figure out which 'ROSAction' manages this request id:
+        manager = None
+
+        for action in self.actions:
+            if action.manage_internal_id(request_id):
+                manager = action
+                break
+
+        if manager == None:
+            logger.error("A ROS action call has been lost! Nobody manage request " + request_id)
+
+        # Then, dispatch the 'on completion' event.
+        status, value = result
+        manager.on_result(request_id, status, value)
 
     def main(self):
         pass

@@ -55,13 +55,18 @@ class RosActionsTest(MorseTestCase):
 
     def test_move_base(self):
 
+            rospy.loginfo("Starting ROS test case for actions.")
             rospy.init_node('move_base_client')
             client = actionlib.SimpleActionClient('Motion_Controller/move_base', MoveBaseAction)
             self.assertTrue(client.wait_for_server(rospy.Duration(1)))
 
             goal = MoveBaseGoal(Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0)))
-            self.assertEqual(client.send_goal_and_wait(goal, rospy.Duration.from_sec(5.0)), 
-                        actionlib.GoalStatus.SUCCEEDED)
+            
+            print("Sending a first goal to the robot...(timeout=5sec)")
+            status = client.send_goal_and_wait(goal, rospy.Duration.from_sec(5.0))
+
+            print("Got this status: " + str(status))
+            self.assertEqual(status, actionlib.GoalStatus.SUCCEEDED)
 
 
 
