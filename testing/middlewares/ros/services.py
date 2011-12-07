@@ -21,7 +21,7 @@ except KeyError:
           " to point to the MORSE source before running ROS tests.")
     sys.exit(1)
 
-os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
+os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.dirname(
         os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros"))
 
 import roslib; roslib.load_manifest("morsetesting")
@@ -52,15 +52,17 @@ class RosServicesTest(MorseTestCase):
         with self.assertRaises(rospy.ROSException):
             rospy.wait_for_service('idonotexist', timeout = 2)
         
-    def test_move_base(self):
+    def test_set_destination(self):
+
         try:
-            rospy.wait_for_service('set_destination', timeout = 2)
+            rospy.wait_for_service('Motion_Controller/set_destination', timeout = 2)
         except rospy.ROSException:
-            self.fail("The move_base service never showed up!")
+            self.fail("The set_destination service never showed up!")
 
         try:
-            set_dest = rospy.ServiceProxy('set_destination', MoveBase)
+            set_dest = rospy.ServiceProxy('Motion_Controller/set_destination', MoveBase)
 
+            
             # Send a destination target at the robot current position ->
             # should return False
             pose = Pose(Point(0.0,0.0,0.0), Quaternion(0.0,0.0,0.0,1.0))

@@ -21,7 +21,7 @@ except KeyError:
           " to point to the MORSE source before running ROS tests.")
     sys.exit(1)
 
-os.environ['ROS_PACKAGE_PATH'] += os.path.dirname(
+os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.dirname(
         os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros"))
 
 import roslib; roslib.load_manifest("morsetesting")
