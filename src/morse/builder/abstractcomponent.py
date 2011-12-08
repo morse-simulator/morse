@@ -24,8 +24,8 @@ class Configuration(object):
     def link_modifier(self, component, modifier_cfg):
         cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
 
-    def link_overlay(self, klass,  manager, overlay_cfg):
-        cfg_overlay.setdefault(manager, {})[klass] = overlay_cfg 
+    def link_overlay(self, component,  manager, overlay_cfg):
+        cfg_overlay.setdefault(manager, {})[component.name] = overlay_cfg 
 
 class AbstractComponent(object):
     # static config common to all component of the simulation
@@ -176,10 +176,8 @@ class AbstractComponent(object):
         AbstractComponent._config.link_modifier(self, config)
         
     def configure_overlay(self, mw, overlay):
-        o = self._blendobj
-        klass = o.game.properties["Class"].value
         request_manager = MORSE_SERVICE_DICT[mw]
-        AbstractComponent._config.link_overlay(klass, request_manager, overlay)
+        AbstractComponent._config.link_overlay(self, request_manager, overlay)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"

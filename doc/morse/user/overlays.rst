@@ -21,8 +21,7 @@ tilt angles of the PTU.
 But in your architecture, you are using 2 different methods, ``SetTilt`` and
 ``SetPan``.
 
-The following overlay for the ``PlatineActuatorClass`` maps your functions 
-to MORSE default ones:
+The following overlay for maps your functions to MORSE default ones:
 
 .. code-block:: python
 
@@ -102,33 +101,68 @@ result)``) and return a new tuple ``(status, result)``:
                     self.chain_callback(self.format_pan_tilt_return), \
                     self.last_tilt, self.last_pan)
 
+
+.. warning::
+    The behaviour is currently undefined in case of service name collision
+    between the original sensor services and the services defined in the overlay.
+
 Scene setup
 -----------
+
+With the MORSE Builder API
+++++++++++++++++++++++++++
+
+Components can be easily overlaid from the :doc:`MORSE Builder API
+<../dev/builder>` with the method
+:py:meth:`morse.builder.abstractcomponent.configure_overlay`.
+
+This method takes two parameters, the middleware to use (cf
+:py:mod:`morse.builder.data` for the list of available options) and the
+full-qualified Python name of the overlay class (for instance,
+``morse.my_overlays.MyPTU``)
+
+The following example is taken from one of the ROS unit-tests:
+
+.. code-block:: python
+
+   #! /usr/bin/env morseexec
+
+   from morse.builder.morsebuilder import *
+
+   robot = Robot('atrv')
+    
+   waypoint = Actuator('waypoint')
+   robot.append(waypoint)
+    
+   waypoint.configure_overlay('ros',
+                              'morse.middleware.ros.overlays.actuator.WayPoint')
+    
+   env = Environment('indoors-1/indoor-1')
+
+
+Here, the ``waypoint`` actuator get overlaid by the ``WayPoint`` class defined
+in the module ``morse.middleware.ros.overlays.actuator``.
+
+By manually editing the scene configuration file
+++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 Overlays definitions must be added to the scene ``component_config.py`` (cf 
 :doc:`../user/hooks` for details on the scene configuration file).
 
-An overlay is defined by the triple (``middleware|request manager``, ``class of 
-object to overlay``, ``class of the overlay``)
+An overlay is defined by the triple (``middleware|request manager``, ``object
+to overlay``, ``class of the overlay``)
 
-The following example shows how all instances of ``PlatineActuatorClass`` can be
+The following example shows how a PTU instance ``ptu.00`` can be
 overloaded with our ``MyPTU`` overlay, for the ``YarpRequestManager`` service manager:
 
 .. code-block:: python
 
     overlays = {
       "YarpRequestManager": {
-            "PlatineActuatorClass": "morse.my_overlays.MyPTU"
+            "ptu.00": "morse.my_overlays.MyPTU"
        }
     }
-
-At initialization, MORSE will look for all components of type 
-``PlatineActuatorClass``, and for each of them, it adds all services defined
-above in ``MyPTU`` class.
-
-.. warning::
-    The behaviour is currently undefined in case of service name collision
-    between the original sensor service and the services defined in the overlay.
 
 Name remapping
 --------------
@@ -154,12 +188,5 @@ Let's complete our previous example:
 In this case, at initialization, a new (pseudo) component (called ``MyPTU`` in 
 this case) is created, with services as defined in the overlay class.
 
-The original components are also created and stay available as usual.
-
-.. warning::
-    If an overlay overlays more than one object (for instance, two components of
-    type ``PlatineActuatorClass`` have been added in the simulation), a name 
-    conflict will arise (since two components will be created with the same 
-    remapped name). In this case, the behaviour is currently undefined.
-
+The original component is also created and remain available as usual.
 

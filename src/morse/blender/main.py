@@ -491,25 +491,30 @@ def load_overlays():
             try:
                 __import__(modulename)
             except ImportError as detail:
-                logger.error("Module for overlay %s not found: %s" % (classname, detail))
-                continue
+                logger.error("Module for overlay %s not found: %s." % (classname, detail))
+                return False
+
             module = sys.modules[modulename]
             # Create an instance of the object class
             try:
                 klass = getattr(module, classname)
             except AttributeError as detail:
-                logger.error("Overlay not found: %s" % detail)
-                continue
-            
-            for overlaid_object in get_components_of_type(overlaid_name):
-                # BUG TODO: If more than one object is overlaid with the same overlay 
-                # (eg, 2 instances of the same component class), and if the overlay
-                # redefines the name, a name collision will occur.
-                instance = klass(overlaid_object)
-                GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
-                instance.register_services()
-                GameLogic.overlayDict[overlay_name] = instance
-                logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
+                logger.error("Overlay not found: %s." % detail)
+                return False
+
+            try:
+                overlaid_object = GameLogic.componentDict[overlaid_name]
+            except KeyError:
+                logger.error("Could not find the object to overlay: %s." % overlaid_name)
+                return False
+
+            # Instanciate the overlay, passing the overlaid object to
+            # the constructor
+            instance = klass(overlaid_object)
+            GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+            instance.register_services()
+            GameLogic.overlayDict[overlay_name] = instance
+            logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
     
     return True
 
