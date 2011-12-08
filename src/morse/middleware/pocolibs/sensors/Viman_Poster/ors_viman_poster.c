@@ -63,6 +63,11 @@ void set_visible(VimanObjectPublicArray* viman_data, int index, int visible)
 	viman_data->objects[index].found_Stereo = visible;
 }
 
+void set_tacq(VimanObjectPublicArray* viman_data, int index, unsigned long tacq_sec, unsigned long tacq_usec)
+{
+	viman_data->objects[index].tacq_sec = tacq_sec;
+	viman_data->objects[index].tacq_usec = tacq_usec;
+}
 
 /*
  * Copy the values of the variables sent into the data structure

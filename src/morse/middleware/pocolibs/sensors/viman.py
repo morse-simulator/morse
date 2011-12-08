@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
+import time
 import re
 import GameLogic
 from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
@@ -83,14 +84,18 @@ def write_viman(self, component_instance):
     for object_id in self.scene_object_list:
 
         try:
-
+            t = time.time()
+            tacq_sec = int(t)
+            tacq_usec = int((t - tacq_sec) * 1000)
+            ors_viman_poster.set_tacq(self.viman_data, i, tacq_sec, tacq_usec)
+            
             if object_id in component_instance.local_data['visible_objects']:
 
                 object = passive_objects.obj_from_label(object_id)
 
                 position_3d = Transformation3d(object)
                 logger.info("VIMAN " + object_id + "(" + object.name + ") is visible at " + str(position_3d))
-                ors_viman_poster.set_visible (self.viman_data, i, 1)
+                ors_viman_poster.set_visible(self.viman_data, i, 1)
                 _fill_world_matrix(self.viman_data, position_3d, i)
             else:
                 ors_viman_poster.set_visible (self.viman_data, i, 0)
