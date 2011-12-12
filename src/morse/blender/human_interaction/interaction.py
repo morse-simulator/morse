@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from bge import logic
 from mathutils import Matrix, Vector
+from bpy import data        # needed to check for actor flag
 
 from morse.helpers import passive_objects
 
@@ -38,6 +39,7 @@ def interact():
     lmb=co.sensors['LMB']
     ray = co.sensors['Ray']
     cam = ray.owner
+    lay_down_ray = co.sensors['LayDownRay']
     rmb=co.sensors['RMB']
     space = co.sensors['SPACEBAR']
     AddSc = co.actuators['AddScene']
@@ -145,10 +147,21 @@ def interact():
 
     if rmb.positive:                #drop selected Object
         ow['grabbing'] = None
-        if ow['selected']:
-            ow['selected'].removeParent()
-            ow['selected'] = None
-            right_hand['moveArm'] = True
+        focused_object = lay_down_ray.hitObject
+        actor_focused = data.objects[focused_object.name].game.use_actor
+        # accurate placing of objects under certain conditions
+        if human['Manipulate'] and lay_down_ray.positive \
+           and focused_object != ow['selected'] \
+           and actor_focused:
+            # check not to lay the object on itself
+            if ow['selected']:
+                right_hand['LayDown'] = lay_down_ray.hitPosition
+        # otherwise just drop the object
+        else:
+            if ow['selected']:
+                ow['selected'].removeParent()
+                ow['selected'] = None
+                right_hand['moveArm'] = True
 
 
 
@@ -197,4 +210,71 @@ def grab():
             obj.setParent(ow)
             right_hand['moveArm'] = True
             break
+
+def lay_down():
+    """
+    lay the object down to given coordinates
+    """
+    co = logic.getCurrentController()
+    pos = co.owner
+    objects = logic.getCurrentScene().objects
+    hand = objects['Hand_Grab.R']
+    
+    obj = hand['selected']
+    if obj == None or not pos['LayDown']:
+        return
+
+    vect = pos.getVectTo(Vector(pos['LayDown']))[1]
+    
+    obj_collision = obj.sensors['Collision']
+    
+    if not obj_collision.positive:
+        pos.worldPosition += vect/75
+    else:
+        obj.removeParent()
+        hand['selected'] = None
+        pos['moveArm'] = True
+        pos['LayDown'] = False
+
+def lay_down_visualize():
+    """
+    Show a green rectangle if you can accurately place the selected object
+    """
+    co = logic.getCurrentController()
+    ow = co.owner
+    scene = logic.getCurrentScene()
+    objects = scene.objects
+    human = objects['POS_EMPTY']
+    hand = objects['Hand_Grab.R']
+    ray = co.sensors['LayDownRay']
+    
+    message = co.actuators['DropState']
+
+    focused_object = ray.hitObject
+    try:
+        actor_focused = data.objects[focused_object.name].game.use_actor
+    except AttributeError:
+        actor_focused = False
+    if human['Manipulate'] and ray.positive and \
+       focused_object != hand['selected'] and hand['selected'] and \
+       actor_focused:
+        message.body = "Activate"
+    else:
+        message.body = "Deactivate"
+    
+    co.activate(message)
+
+def color_placing():
+    co = logic.getCurrentController()
+    ow = co.owner
+    
+    try:
+        active = co.sensors['Message'].bodies[0]
+        
+        if active == "Activate":
+            ow.color = [0.0, 0.8, 0.0, 0.75]
+        else:
+            ow.color = [0,0,0,0]
+    except IndexError:
+        pass
 
