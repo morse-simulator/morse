@@ -1,5 +1,5 @@
 from morse.builder.morsebuilder import *
-from morse.builder.pr2extension import PR2
+from morse.builder.extensions.pr2extension import PR2
 
 # http://www.openrobots.org/morse/doc/latest/user/tutorial.html
 
@@ -7,23 +7,54 @@ from morse.builder.pr2extension import PR2
 james = PR2()
 james.configure_service('ros')
 james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.translate(x=2.5, y=3.2, z=0.0)
 
-motion = Actuator('v_omega')
-motion.translate(z=0.3)
-james.append(motion)
+human = Human()
+human.translate(x=2.5, y=0, z=0.0)
+#human.rotate(z=-3.0)
+
+# Sensors and Actuators for navigation stack 
+pr2_posture = Sensor('pr2_posture')
+james.append(pr2_posture)
+
+Motion_Controller = Actuator('xy_omega')
+james.append(Motion_Controller)
+
+Odometry = Sensor('odometry')
+james.append(Odometry)
+
+Pose_sensor = Sensor('pose')
+Pose_sensor.name = 'Pose_sensor'
+james.append(Pose_sensor)
+
+IMU = Sensor('imu')
+james.append(IMU)
+
+Sick = Sensor('sick')
+Sick.translate(x=0.275, z=0.252)
+james.append(Sick)
+Sick.properties(Visible_arc = False)
+Sick.properties(laser_range = 30.0000)
+Sick.properties(resolution = 1.0000)
+Sick.properties(scan_window = 180.0000)
 
 # Keyboard control
 keyboard = Actuator('keyboard')
+keyboard.name = 'keyboard_control'
 james.append(keyboard)
 
-# Append a Gyroscope sensor
-gyroscope = Sensor('gyroscope')
-gyroscope.translate(z=0.83)
-james.append(gyroscope)
-
 # Configuring the middlewares
-#gyroscope.configure_mw('ros')
-#motion.configure_mw('ros')
+Pose_sensor.configure_mw('ros')
+#IMU.configure_mw('ros') # does NOT work
+IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
+Sick.configure_mw('ros')
+Motion_Controller.configure_mw('ros')
+pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
+#pr2_posture.configure_mw('ros')
 
-env = Environment('indoors-1/indoor-1')
+
+
+env = Environment('tum_kitchen/tum_kitchen')
 env.aim_camera([1.0470, 0, 0.7854])
