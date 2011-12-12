@@ -48,7 +48,7 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
         logger.info(" ######################## %s"%component_name )
         
         # Init MORSE-node in ROS
-        rospy.init_node('morse')
+        rospy.init_node('morse', log_level = rospy.DEBUG, disable_signals=True)
         function = self._check_function_exists(function_name)
         
         # The function exists within this class,
