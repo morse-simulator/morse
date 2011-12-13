@@ -75,9 +75,19 @@ in the scene:
     from morse.builder.morsebuilder import *
 
     table = PassiveObject('props/objects.blend','SmallTable')
-    table.properties(Object = True, Graspable = False, Label = "HRP2TABLE")
+    table.make_graspable(human_readable_label = "HRP2TABLE")
     table.translate(x=3.5, y=-3, z=0)
     table.rotate(z=0.2)
+
+The ``make_graspable(..)`` function equips the object  with a collision sensor, that allows for do pick- and place 
+actions with the human avatar and automatically sets the label of the object. ``make_graspable()`` can also be
+used without arguments. In that case, the label of the object is set according to the name of the Python object. 
+
+The optional game properties (and also the others) can also be set using the following command:
+
+.. code-block:: python
+
+  table.properties(Object = True, Graspable = False, Label = "HRP2TABLE")
 
 The next example shows how to add semi-randomly placed chairs in a
 scene:
