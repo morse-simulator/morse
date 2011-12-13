@@ -177,7 +177,7 @@ class Component(AbstractComponent):
         """
         AbstractComponent.__init__(self, name=name)
         if name.endswith('.blend'):
-            filepath = name # external blend file
+            filepath = os.path.abspath(name) # external blend file
         else:
             filepath = os.path.join(MORSE_COMPONENTS, category, name + '.blend')
 
