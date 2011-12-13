@@ -148,7 +148,8 @@ def interact():
     if rmb.positive:                #drop selected Object
         ow['grabbing'] = None
         focused_object = lay_down_ray.hitObject
-        actor_focused = data.objects[focused_object.name].game.use_actor
+        if focused_object != None:
+            actor_focused = data.objects[focused_object.name].game.use_actor
         # accurate placing of objects under certain conditions
         if human['Manipulate'] and lay_down_ray.positive \
            and focused_object != ow['selected'] \
