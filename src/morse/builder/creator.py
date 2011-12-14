@@ -2,6 +2,17 @@ import os
 import bpy
 import morse.builder.morsebuilder
 
+def diff_list(l1, l2):
+    return [obj for obj in l1 if obj not in l2]
+
+def objects_names():
+    return [obj.name for obj in bpy.data.objects]
+
+def collada_importer(filepath):
+    l1 = objects_names()
+    bpy.ops.wm.collada_import(filepath=filepath)
+    return diff_list(objects_names(), l1)
+
 class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
     def __init__(self, name, calling_module, filename=None):
         """ ComponentCreator constructor
@@ -44,21 +55,20 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
         """
         sensor = self._blendobj.game.sensors['Always']
         sensor.frequency = delay
-    def _append_meshes(self, objects, category, component=None):
+    def append_meshes(self, objects, component=None):
         """ Append the objects to this component
 
         The `objects` are located in:
-        MORSE_COMPONENTS/`category`/`component`.blend/Object/
+        MORSE_COMPONENTS/`self.category`/`component`.blend/Object/
 
         :param objects: list of the objects names to append
-        :param category: category of the compon
         :param component: component in which the objects are located
         :return: list of the selected Blender objects
         """
         if not component:
             component = self._blendname
         filepath = os.path.join(morse.builder.morsebuilder.MORSE_COMPONENTS, \
-                                category, component + '.blend')
+                                self.category, component + '.blend')
         objlist = [{'name':obj} for obj in objects]
         bpy.ops.object.select_all(action='DESELECT')
         # append the objects to the scene, and (auto)select them
@@ -66,8 +76,30 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
                 autoselect=True, files=objlist)
         # make the objects children of the component
         for child in bpy.context.selected_objects:
-            child.parent = self._blendobj
+            if not child.parent:
+                child.parent = self._blendobj
         return bpy.context.selected_objects
+    def append_collada(self, component=None):
+        """ Append Collada objects to this component
+
+        The objects are located in:
+        MORSE_COMPONENTS/`self.category`/`component`.dae
+
+        :param component: component in which the objects are located
+        :return: list of the selected Blender objects
+        """
+        if not component:
+            component = self._blendname
+        filepath = os.path.join(morse.builder.morsebuilder.MORSE_COMPONENTS, \
+                                self.category, component + '.dae')
+        return self._append_collada_filepath(filepath)
+    def _append_collada_filepath(self, filepath):
+        imported_objects = collada_importer(filepath)
+        for childname in imported_objects:
+            child = bpy.data.objects[childname]
+            if not child.parent:
+                child.parent = self._blendobj
+        return imported_objects
 
 class SensorCreator(ComponentCreator):
     def __init__(self, name, class_path, class_name, blendname=None):
@@ -75,8 +107,7 @@ class SensorCreator(ComponentCreator):
                                   blendname)
         self.properties(Component_Tag = True, Class = class_name, \
                 Path = class_path)
-    def append_meshes(self, objects, component=None):
-        return self._append_meshes(objects, "sensors", component)
+        self.category = "sensors"
 
 class ActuatorCreator(ComponentCreator):
     def __init__(self, name, class_path, class_name, blendname=None):
@@ -84,6 +115,13 @@ class ActuatorCreator(ComponentCreator):
                                   blendname)
         self.properties(Component_Tag = True, Class = class_name, \
                 Path = class_path)
-    def append_meshes(self, objects, component=None):
-        return self._append_meshes(objects, "actuators", component)
+        self.category = "actuators"
+
+class RobotCreator(ComponentCreator):
+    def __init__(self, name, class_path, class_name, blendname=None):
+        ComponentCreator.__init__(self, name, 'calling.robot_action', \
+                                  blendname)
+        self.properties(Robot_Tag = True, Class = class_name, \
+                Path = class_path)
+        self.category = "robots"
 
