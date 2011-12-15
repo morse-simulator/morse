@@ -67,6 +67,7 @@ MORSE_MIDDLEWARE_DICT = {
         'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
         'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_velocity_twist'],
         'semantic_camera': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_string', 'morse/middleware/ros/semantic_camera'],
+        'clock': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_clock', 'morse/middleware/ros/clock'],
     },
 
     'socket': {
