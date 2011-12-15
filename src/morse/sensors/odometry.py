@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
 import math
+import morse.helpers.math as morse_math
 import morse.core.sensor
 
 class OdometryClass(morse.core.sensor.MorseSensorClass):
@@ -17,8 +18,8 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         super(self.__class__,self).__init__(obj, parent)
 
         # Variables to store the previous status of the robot
-        self.previous_position = [self.position_3d.x, self.position_3d.y, self.position_3d.z]
-        self.previous_orientation = [self.position_3d.yaw, self.position_3d.pitch, self.position_3d.roll]
+        self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
+        self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
 
         self.local_data['dx'] = 0.0
         self.local_data['dy'] = 0.0
@@ -42,11 +43,13 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         self.local_data['dz'] = self.robot_parent.position_3d.z - self.previous_position[2]
 
         # Compute the difference in orientation with the previous loop
-        self.local_data['dyaw'] = self.robot_parent.position_3d.yaw - self.previous_orientation[0]
-        self.local_data['dpitch'] = self.robot_parent.position_3d.pitch - self.previous_orientation[1]
-        self.local_data['droll'] = self.robot_parent.position_3d.roll - self.previous_orientation[2]
+        dyaw = self.robot_parent.position_3d.yaw - self.previous_orientation[0]
+        dpitch = self.robot_parent.position_3d.pitch - self.previous_orientation[1]
+        droll = self.robot_parent.position_3d.roll - self.previous_orientation[2]
+        self.local_data['dyaw'] = morse_math.normalise_angle(dyaw)
+        self.local_data['dpitch'] = morse_math.normalise_angle(dpitch)
+        self.local_data['droll'] = morse_math.normalise_angle(droll)
 
         # Store the 'new' previous data
         self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
         self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
-
