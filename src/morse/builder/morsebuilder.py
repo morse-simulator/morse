@@ -166,14 +166,16 @@ class Component(AbstractComponent):
 
     cf. `bpy.ops.wm.link_append` and `bpy.data.libraries.load`
     """
-    def __init__(self, category='', name=''):
-        """
-        :param category: The category of the component 
-                         (folder in MORSE_COMPONENTS)
-        :param name: The name of the component 
-                     (file in MORSE_COMPONENTS/category/name.blend)
-                     If ends with '.blend' category is ignored and append the 
-                     objects from the Blender file.
+    def __init__(self, category='', name='', make_morseable=True):
+        """ Initialize a MORSE component
+
+        :param category: The category of the component (folder in 
+            MORSE_COMPONENTS)
+        :param name: The name of the component (file in 
+            MORSE_COMPONENTS/category/name.blend) If ends with '.blend', 
+            append the objects from the Blender file.
+        :param make_morseable: If the component has no property for the 
+            simulation, append default Morse ones. See self.morseable()
         """
         AbstractComponent.__init__(self, name=name)
         if name.endswith('.blend'):
@@ -198,6 +200,44 @@ class Component(AbstractComponent):
         # here we use the fact that after appending, Blender select the objects 
         # and the root (parent) object first ( [0] )
         self._blendobj = bpy.context.selected_objects[0]
+        self._category = category
+        if make_morseable and category in ['sensors', 'actuators', 'robots'] \
+                and not self.is_morseable():
+            self.morseable()
+    def is_morseable(self):
+        return 'Class' in self._blendobj.game.properties
+    def morseable(self, calling_module=None):
+        """ Make this component simulable in MORSE
+
+        :param calling_module: Module called each simulation cycle.
+            enum in ['calling.sensor_action', 'calling.actuator_action', 
+                    'calling.robot_action']
+        """
+        obj = self._blendobj
+        if not calling_module:
+            calling_module = 'calling.'+self._category[:-1]+'_action'
+        # add default class to this component
+        if calling_module == 'calling.robot_action':
+            self.properties(Robot_Tag = True, Path = 'morse/core/robot', \
+                Class = 'MorseRobotClass')
+        elif calling_module == 'calling.sensor_action':
+            self.properties(Component_Tag = True, Path = 'morse/core/sensor', \
+                Class = 'MorseSensorClass')
+        elif calling_module == 'calling.actuator_action':
+            self.properties(Component_Tag = True, Path = 'morse/core/actuator',\
+                Class = 'MorseActuatorClass')
+
+        # add Game Logic sensor and controller to simulate the component
+        bpy.ops.object.select_all(action = 'DESELECT')
+        bpy.ops.object.select_name(name = obj.name)
+        bpy.ops.logic.sensor_add() # default is Always sensor
+        sensor = obj.game.sensors[-1]
+        sensor.use_pulse_true_level = True
+        bpy.ops.logic.controller_add(type='PYTHON')
+        controller = obj.game.controllers[-1]
+        controller.mode = 'MODULE'
+        controller.module = calling_module
+        controller.link(sensor = sensor)
 
 
 class Robot(Component):
