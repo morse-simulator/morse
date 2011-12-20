@@ -28,8 +28,7 @@ PR2 support in the Builder API
 PR2 Sensors
 ===========
 
-[PARTIAL] * Export the PR2 joint state as sensor_msgs/JointState topic + unit-test
-    => unit-test is missing
+[DONE] * Export the PR2 joint state as sensor_msgs/JointState topic + unit-test
 [TDB] * Export PR2 cameras + unit-test
 [PARTIAL] * Export base laser scanner + unit-test
     => works with the SICK laser scanner + Builder API
