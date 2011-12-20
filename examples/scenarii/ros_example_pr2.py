@@ -96,3 +96,6 @@ nutella.rotate(z=1.45)
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
 env.aim_camera([1.0470, 0, 0.7854])
+
+
+
