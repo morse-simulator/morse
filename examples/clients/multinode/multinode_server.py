@@ -62,7 +62,7 @@ class Server:
                 elif s == sys.stdin:
                     # handle standard input
                     junk = sys.stdin.readline()
-                    running = 0 
+                    running = 0
 
         # close all threads
 
@@ -103,7 +103,7 @@ class Client(threading.Thread):
                 #else:
                     #client_list[client_name] = True
                 client_list[client_name] = True
-                
+
 
                 # Build/update the list of robots from the data received from all the clients
                 for robot_name, robot_position in client_robot_list.items():

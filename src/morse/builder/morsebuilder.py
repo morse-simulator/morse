@@ -29,7 +29,7 @@ class PassiveObject(AbstractComponent):
         """
         :param blenderfile: The Blender file to load. Path can be absolute
                            or relative to MORSE assets' installation path
-                           (typically, $PREFIX/share/data/morse)
+                           (typically, $PREFIX/share/morse/data)
         :param prefix: (optional) the prefix of the objects to load in the 
                        Blender file. If not set, all objects present in the file
                        are loaded. If set, all objects **prefixed** by this
@@ -49,7 +49,7 @@ class PassiveObject(AbstractComponent):
                 logger.error("Blender file %s for external asset import can \
                          not be found.\n Either provide an absolute path, or \
                          a path relative to MORSE \nassets directory (typically \
-                         $PREFIX/share/data/morse)" % (file))
+                         $PREFIX/share/morse/data)" % (file))
 
         with bpy.data.libraries.load(filepath) as (src, _):
             if prefix:

@@ -14,7 +14,7 @@ env.configure_multinode(protocol="socket", distribution={
     "nodeA": [dala1.name],
     "nodeB": [dala2.name],
     })
-#env.configure_multinode(protocol="socket", 
+#env.configure_multinode(protocol="socket",
 #    server_address="140.93.0.93", server_port="65000", distribution=dict())
 
 env.aim_camera([1.3300, 0, 0.7854])

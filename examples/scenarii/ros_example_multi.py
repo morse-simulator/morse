@@ -36,4 +36,3 @@ env.aim_camera([1.0470, 0, 0.7854])
 # rostopic pub /ATRV/Motion_Controller geometry_msgs/Twist -1 [1,0,0] [0,0,1]
 # rostopic pub /ATRV.001/Motion_Controller.001 geometry_msgs/Twist -1 [1,0,0] [0,0,1]
 # rostopic pub /ATRV.002/Motion_Controller.002 geometry_msgs/Twist -1 [1,0,0] [0,0,1]
-

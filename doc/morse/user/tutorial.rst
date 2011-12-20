@@ -97,7 +97,7 @@ Finalising the scene
 
 Every builder script must finish with an environment description. This is mandatory, or
 else the scene will not be created. The parameter for the **Environment** method is the
-name of a .blend file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+name of a .blend file that should be located in ``$MORSE_ROOT/share/morse/data/environments/``.
 
 The Environment object also provides additional options to place and aim the default camera,
 by using the methods ``aim_camera`` and ``place_camera``.

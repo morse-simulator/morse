@@ -66,7 +66,7 @@ This base class has one concrete subclass that can be use to insert static
    When creating instances of this classe, it is necessary to give as
    parameter to the constructor the names of the blender file that 
    contains the desired asset. Path can be absolute or relative to MORSE 
-   assets' installation path (typically, ``$PREFIX/share/data/morse``).
+   assets' installation path (typically, ``$PREFIX/share/morse/data``).
 
 The Component classes
 +++++++++++++++++++++
@@ -103,7 +103,7 @@ a new component
    When creating instances of these classes, it is necessary to give as
    parameters to the constructors the names of the blender files (without the
    *.blend* extension) that contain the required component. These files should
-   be present under ``$MORSE_ROOT/share/data/morse/{class}/``.
+   be present under ``$MORSE_ROOT/share/morse/data/{class}/``.
 
 Environment class
 +++++++++++++++++

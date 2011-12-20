@@ -1,8 +1,8 @@
 # @Authors: Peter Roelants peter.roelants@gmail.com
 # @Owner: KU Leuven - Dep. Mechanical Eng. - Robotics
-# @File: pr2_services_tests.py
-# @Description:  
-# @License: 
+# @File: armature_services_tests.py
+# @Description:
+# @License:
 # (C) 2010 Name, peter.roelants@gmail.com, Department of Mechanical
 # Engineering, Katholieke Universiteit Leuven, Belgium.
 #
@@ -12,25 +12,23 @@
 # or (at your discretion) of the Modified BSD License:
 # Redistribution and use in source and binary forms, with or without modification, are permitted
 # provided that the following conditions are met:
-#  1. Redistributions of source code must retain the above copyright notice, this list of 
+#  1. Redistributions of source code must retain the above copyright notice, this list of
 #     conditions and the following disclaimer.
-#  2. Redistributions in binary form must reproduce the above copyright notice, this list of 
+#  2. Redistributions in binary form must reproduce the above copyright notice, this list of
 #     conditions and the following disclaimer in the documentation and/or other materials
 #     provided with the distribution.
 #  3. The name of the author may not be used to endorse or promote products derived from
 #     this software without specific prior written permission.
 # THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 """
-Script to test the different MORSE PR2 Services.
-
-The MORSE Simulation with a PR2 model 'pr2' must be running for this to work.
+Script to test the different MORSE Armature Services.
 """
 
 import sys
@@ -76,14 +74,18 @@ def send_recv(msg):
     print("Msg send: " + str(msg) + ", bytes: " + str(bytessend))
 
     #recieve back requested information
-    response = service_socket.recv(1024)    
+    response = service_socket.recv(1024)
     print("Msg response: " + str(response))
     return response.decode('ascii')
 
 def parse_response(msg, id_):
     """
-    Parse a message that is a response from a MORSE service 
+    Parse a message that is a response from a MORSE service
     """
+    # Do not parse if the request returned a fail message
+    if "FAIL" in msg:
+        return ""
+
     msg = msg.strip() # Remove EOL character
     msg = msg.replace(id_ + " ", '') # Remove request id
     msg = msg.replace("SUCCESS ", '') # Remove SUCCESS status
@@ -119,57 +121,6 @@ def is_service_socket_connected():
         return False
     return True
 
-
-def get_armatures(id_, component):
-    """
-    Method the test the get_armatures service provided by the PR2.
-    """
-    print("\nget_armatures:")
-
-    service = 'get_armatures' # MORSE Service to call
-    armature_list = gen_send_recv_parse(id_, component, service)
-
-    print("\tarmature_list type" + str(type(armature_list)) + ", values: " + str(armature_list))
-    return armature_list
-
-def get_torso(id_, component):
-    """
-    Method that returns the z-translation of the torso.
-    """
-    print("\nget_torso:")
-    
-    service = 'get_torso'
-    height = gen_send_recv_parse(id_, component, service)
-    
-    print("\theight type" + str(type(height)) + ", values: " + str(height))
-    return height
-
-def set_torso(id_, component, height):
-    """
-    Method that sets the z-translation of the torso to original_z + height.
-    """
-    print("\nset_torso:")
-    
-    service = 'set_torso'
-    params = (height,)  
-    gen_send_recv_parse(id_, component, service, params)
-    
-    return None
-
-def get_torso_minmax(id_, component):
-    """
-    Method that returns the minimum an maximum z-translation that the torso can make from the base.
-    Returns a list [min,max]
-    """
-    print("\nget_torso_minmax:")
-    
-    service = 'get_torso_minmax'
-    minmax = gen_send_recv_parse(id_, component, service)
-    
-    print("\tminmax type" + str(type(minmax)) + ", values: " + str(minmax))
-    return minmax
-
-    
 def get_channels(id_, component):
     """
     Get the channels of the armature via MORSE services.
@@ -183,16 +134,16 @@ def get_channels(id_, component):
     return channel_list
 
 def get_rotations(id_, component):
-    """
-    Get the rotation tuples and the corresponding channels of the armature via MORSE services.
-    """
-    print("\nget_rotations: ")
+      """
+      Get the rotation tuples and the corresponding channels of the armature via MORSE services.
+      """
+      print("\nget_rotations: ")
 
-    service = 'get_rotations'
-    rotation_dict = gen_send_recv_parse(id_, component, service)
-    
-    print("\trotation_dict type:" + str(type(rotation_dict)) + ", values: " + str(rotation_dict))
-    return rotation_dict
+      service = 'get_rotations'
+      rotation_dict = gen_send_recv_parse(id_, component, service)
+
+      print("\trotation_dict type:" + str(type(rotation_dict)) + ", values: " + str(rotation_dict))
+      return rotation_dict
 
 def get_rotation(id_, component, channel_name):
     """
@@ -289,35 +240,23 @@ def main():
     """
     global service_socket
 
-    id_ = 'req1' # custom request id
-    component = 'pr2' # name of the component that offers the service
+    id_ = 'req1'  # custom request id
+    component = 'kuka_armature'  # name of the component that offers the service
 
     service_socket = connect_to_services()  # make connection
 
-    # test out the pr2 services
-    armatures = get_armatures(id_, component)  # try to get the armatures
-    height = get_torso(id_, component)  # test get_torso
-    set_torso(id_, component, 0.3)  # test set_torso
-    height = get_torso(id_, component)  # test get_torso
-    minmax = get_torso_minmax(id_, component)  # test get_torso_minmax
-
-    # test out the armature actuator services
-    for armature in armatures:
-        component = armature
-        print("\n\tNew component: " + component)
-        
-        channels = get_channels(id_, component)  # test get_channels
-        get_rotations(id_, component)  # test get_rotations
-        get_rotation(id_, component, channels[0])  # test get_rotation
-        get_dofs(id_, component)  # test get_dofs
-        get_IK_minmax(id_, component)  # test get_IK_minmax
-        get_IK_limits(id_, component)  # test get_IK_limits
-        # test set_rotation
-        for channel in channels:
-            set_rotation(id_, component, channel, [0.785398163, 0.785398163, 0.785398163]) # set every angle to 45 degree
-        get_rotations(id_, component)  # test get_rotations to see what angles have been changed by set_rotation
-        get_channel_lengths(id_, component)  # test get_channel_lengths
-        get_robot_parent_name(id_, component)  # test get_robot_parent_name
+    channels = get_channels(id_, component)  # test get_channels
+    get_rotations(id_, component)  # test get_rotations
+    get_rotation(id_, component, channels[0])  # test get_rotation
+    get_dofs(id_, component)  # test get_dofs
+    get_IK_minmax(id_, component) # test get_IK_minmax
+    get_IK_limits(id_, component) # test get_IK_limits
+    # test set_rotation
+    for channel in channels:
+        set_rotation(id_, component, channel, [0.785398163, 0.785398163, 0.785398163]) # set every angle to 45°
+    get_rotations(id_, component)  # test get_rotations to see what angles have been changed by set_rotation
+    get_channel_lengths(id_, component)  # test get_channel_lengths
+    get_robot_parent_name(id_, component)  # test get_robot_parent_name
 
 
 if __name__ == "__main__":
@@ -343,4 +282,3 @@ if __name__ == "__main__":
         service_socket.close()
     except socket.error as error_info:
         print("Error catched while closing service_socket: " + str(error_info))
-

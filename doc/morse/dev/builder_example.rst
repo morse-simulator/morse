@@ -22,7 +22,7 @@ To append a robot on the scene, we just need to write:
     atrv = Robot('atrv')
 
 In order for this work, there must be a blender-file name atrv.blend in 
-the folder ``$MORSE_ROOT/share/data/morse/robots/``.
+the folder ``$MORSE_ROOT/share/morse/data/robots/``.
 
 Append a component
 ++++++++++++++++++
@@ -36,7 +36,7 @@ parent relationship with the robot. *ie.*:
     atrv.append(motion)
 
 Once again, this implies that ``v_omega.blend`` exists in 
-``$MORSE_ROOT/share/data/morse/actuators/``.
+``$MORSE_ROOT/share/morse/data/actuators/``.
 
 cf. :doc:`<code/morse.builder.html#morse.builder.morsebuilder.Component>`
 
@@ -112,7 +112,7 @@ Finalising the scene
 
 Every builder script must finish with an environment description. This is mandatory, or
 else the scene will not be created. The parameter for the `Environment` method is the
-name of a *.blend* file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+name of a *.blend* file that should be located in ``$MORSE_ROOT/share/morse/data/environments/``.
 
 An additional option is to place and aim the default camera, by using the methods `aim_camera` and `place_camera`.
 
