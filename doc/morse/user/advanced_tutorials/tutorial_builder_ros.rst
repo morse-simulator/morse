@@ -69,7 +69,7 @@ Finalising the scene
 
 Every builder script must finish with an environment description. This is mandatory, or
 else the scene will not be created. The parameter for the `Environment` method is the
-name of a .blend file that should be located in ``$MORSE_ROOT/share/data/morse/environments/``.
+name of a .blend file that should be located in ``$MORSE_ROOT/share/morse/data/environments/``.
 
 An additional option is to place and aim the default camera, by using the methods `aim_camera` and `place_camera`.
 
@@ -94,7 +94,7 @@ Connect with the client
 
 Use the example client program to test the bindings in the simulation
 
-#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/examples/morse/clients/atrv/``
+#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/morse/examples/clients/atrv/``
 #. Execute the command::
 
     $ ./ros_v_omega_client.sh

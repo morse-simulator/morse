@@ -38,10 +38,13 @@ def print_data(data):
             print_data(item)
         elif isinstance(item, str):
             print ("\t%s" % item)
-        elif isinstance(item, collections.OrderedDict):
-            print ("\t%s" % item)
         elif isinstance(item, float):
             print ("\t%.4f" % item)
+        elif isinstance(item, collections.OrderedDict):
+            print ("\t%s" % item)
+        else:
+            print ("Read data of type: %s" % type(item))
+
 
 
 def usage(program_name):
@@ -52,6 +55,12 @@ def main():
     global server_port
     global connected
 
+    px = 0
+    py = 0
+    pz = 0
+    tolerance = 0.5
+    speed = 1
+
     # Read the arguments
     argc = len(sys.argv)
     if argc == 2:
@@ -60,45 +69,60 @@ def main():
         usage(sys.argv[0])
         sys.exit()
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    host = (server_ip, server_port)    
-    client_socket.setblocking(0)
+    socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    host = (server_ip, server_port)
+    socket_client.setblocking(0)
 
 
     while True:
-
-    #--------- ASK FOR OPTIONS ----------------#
-
+        #--------- ASK FOR OPTIONS ----------------#
         print ("Select an option:")
-        print ("a) Enter speed")
-        print ("b) Read coordinates")
+        print ("a) Enter destination")
+        print ("b) Enter speed")
+        print ("c) Read coordinates")
         print ("q) Quit client program")
         if sys.version_info >= (3,0,0):
             op = input("Enter option: ")
         else:
             op = raw_input("Enter option: ")
-        
+
         if op == 'a':
-            # Ask for the new speeds
             if sys.version_info >= (3,0,0):
-                v = input("Enter V speed: ")
-                w = input("Enter W speed: ")
+                px = input("Enter X coordinate: ")
+                py = input("Enter Y coordinate: ")
+                pz = input("Enter Z coordinate: ")
             else:
-                v = raw_input("Enter V speed: ")
-                w = raw_input("Enter W speed: ")
+                px = raw_input("Enter X coordinate: ")
+                py = raw_input("Enter Y coordinate: ")
+                pz = raw_input("Enter Z coordinate: ")
+            waypoint = [float(px), float(py), float(pz), float(tolerance), float(speed)]
+            print ("Sending the command: {0}".format(waypoint))
 
-            v_w = [float(v), float(w)]
-            print ("Sending the command: {0}".format(v_w))
-
-            # Send the data
-            data_out = pickle.dumps((v_w))
-            sent = client_socket.sendto(data_out,host)
+            # Send data
+            Data = pickle.dumps((waypoint))
+            sent = socket_client.sendto(Data,host)
 
             print ("Just sent %d bytes to server" % sent)
+            # Set the flag that a connection has been established
             connected = True
 
         elif op == 'b':
-            data_in = read_data(client_socket)
+            if sys.version_info >= (3,0,0):
+                speed = input("Enter speed: ")
+            else:
+                speed = raw_input("Enter speed: ")
+            waypoint = [float(px), float(py), float(pz), float(tolerance), float(speed)]
+            print ("Sending the command: {0}".format(waypoint))
+
+            # Send data
+            Data = pickle.dumps((waypoint))
+            sent = socket_client.sendto(Data,host)
+
+            print ("Just sent %d bytes to server" % sent)
+
+        elif op == 'c':
+            # Read data
+            data_in = read_data(socket_client)
             try:
                 pickled_data = pickle.loads(data_in)
                 print_data(pickled_data)

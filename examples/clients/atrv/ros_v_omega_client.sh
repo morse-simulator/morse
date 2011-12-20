@@ -8,16 +8,15 @@ do
   echo "q) Quit client program"
   read -p "Enter option: " OPTION
   case $OPTION in
-  a) 
+  a)
     read -p "Enter V speed: " SPEEDV
     read -p "Enter W speed: " SPEEDW
     rostopic pub /ATRV/Motion_Controller geometry_msgs/Twist -1 [$SPEEDV,0,0] [0,0,$SPEEDW];;
-  b) 
+  b)
     rostopic echo -n 1 /ATRV/Gyroscope;;
-  q) 
+  q)
     break;;
-  *) 
+  *)
     echo "Unknown option. Try again."
   esac
 done
-

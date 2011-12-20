@@ -24,9 +24,9 @@ BufferedPort<Bottle> toTargetVelocityPort;
 void sigproc(int);
 
 int main(void){
-  
+
   char cmd;
-  
+
   /*
   string ressac_position_port = "/ors/robots/OBRessac/Motion_Controller/vxvyvz ";
   string ressac_rotation_port = "/ors/robots/OBRessac/Motion_Controller/vxvyvz ";
@@ -42,33 +42,33 @@ int main(void){
   string target_position_port ="/ors/robots/OBATRV/Position_Controller/position";
   string ressac_port = "ressac";
   string target_port = "target";
-  
+
 
   cout << "********* Ressac client *********" << endl;
   cout << "Display RESSAC drone gps position + move RESSAC in OpenRobots simulator" << endl;
   cout << "Press ctrl+c to exit." << endl;
-  
+
   //We catch ctrl+c to cleanly close the application
   signal( SIGINT,sigproc);
-  
-  
+
+
   //setvbuf(stdin, NULL, _IONBF, 0);
-  
+
   //Initialization of Yarp network
   Network::init();
-  
+
   cout << "\n * YARP network initialized." << endl;
-  
+
   //Connect to OpenRobots simulator
   toRessacPositionPort.open(("/" + ressac_port + "/position").c_str());
   toTargetPositionPort.open(("/" + target_port + "/position").c_str());
-  
+
 
   Network::connect(toRessacPositionPort.getName().c_str(), ressac_position_port.c_str());
-  
+
   Network::connect(toTargetPositionPort.getName().c_str(), target_position_port.c_str());
 
-  
+
   cout << " * Writing commands to " << ressac_position_port << endl;
   cout << " * Writing commands to " << target_position_port << endl;
 
@@ -76,7 +76,7 @@ int main(void){
 
   ifstream file;
   file.open("data_sync_vol4.txt", ifstream::in);
-  
+
   //nextCmd=time(NULL);
   if(!file.is_open()){
     cout <<"File not found."<<endl;
@@ -104,15 +104,15 @@ int main(void){
     double tvx=0;
     double tvy=0;
     double tvz=0;
-    
+
     double prrx=0;
     double prry=0;
     double prrz=0;
-	
+
     double clockTime=0;
     while(!file.eof()){
-      usleep((nextTime-prevTime)*1000.0);      
-      
+      usleep((nextTime-prevTime)*1000.0);
+
       //	nextCmd=time(NULL);
       prevTime=nextTime;
       file >> nextTime;
@@ -133,37 +133,37 @@ int main(void){
       file >> tz;
       file >> tvx;
       file >> tvy;
-      file >> tvz;  
-      
+      file >> tvz;
+
       static double stx=tx;
       static double sty=ty;
       static double stz=tz;
-	
-	
-	
+
+
+
       Bottle& cmdRessacBottle = toRessacPositionPort.prepare();
       cmdRessacBottle.clear();
-      
-      
+
+
       cmdRessacBottle.addDouble(rx);
-      cmdRessacBottle.addDouble(ry);	
+      cmdRessacBottle.addDouble(ry);
       cmdRessacBottle.addDouble(rz);
-      
-      
+
+
       cmdRessacBottle.addDouble(rrx);
-      cmdRessacBottle.addDouble(rry);	
+      cmdRessacBottle.addDouble(rry);
       cmdRessacBottle.addDouble(rrz);
-	
-      
-           
+
+
+
       /*
       cmdBottle.addDouble(ax);
-      cmdBottle.addDouble(ay);	
-      cmdBottle.addDouble(az);    
+      cmdBottle.addDouble(ay);
+      cmdBottle.addDouble(az);
       */
-      
-      toRessacPositionPort.write();  
-      
+
+      toRessacPositionPort.write();
+
       cout << (nextTime-prevTime)<<" Send Ressac position        -> rx: " << rx << " ry: " << ry <<" rz: "<< rz <<endl;
       cout << (nextTime-prevTime)<<" Send Ressac rotation        -> ax: " << rrx-prrx << " ay: " << rry-prry <<" az: "<< rrz-prrz <<endl;
 
@@ -173,34 +173,34 @@ int main(void){
 
       Bottle& cmdTargetBottle = toTargetPositionPort.prepare();
       cmdTargetBottle.clear();
-      
+
       cmdTargetBottle.addDouble(tvx);
-      cmdTargetBottle.addDouble(-tvy);	
+      cmdTargetBottle.addDouble(-tvy);
       cmdTargetBottle.addDouble(tvz);
-	
-      
+
+
       /*    cmdBottle.addDouble(ax);
-	    cmdBottle.addDouble(ay);	
-	    cmdBottle.addDouble(az);    
-     
+	    cmdBottle.addDouble(ay);
+	    cmdBottle.addDouble(az);
+
       */
-      toTargetPositionPort.write();  
-      
+      toTargetPositionPort.write();
+
       cout << (nextTime-prevTime)<<" Send Target position        -> tx: " << tvx << " ty: " << tvy <<" tz: "<< tvz <<endl;
-       
-      
-    } 
+
+
+    }
     Bottle& cmdRessacBottle = toRessacPositionPort.prepare();
     cmdRessacBottle.clear();
-      
+
     cmdRessacBottle.addDouble(0);
-    cmdRessacBottle.addDouble(0);	
+    cmdRessacBottle.addDouble(0);
     cmdRessacBottle.addDouble(0);
 
     cmdRessacBottle.addDouble(0);
-    cmdRessacBottle.addDouble(0);	
     cmdRessacBottle.addDouble(0);
-    toRessacPositionPort.write(); 
+    cmdRessacBottle.addDouble(0);
+    toRessacPositionPort.write();
   }
 }
 
@@ -208,7 +208,7 @@ void sigproc(int sig){
   signal(SIGINT, sigproc); /*  */
   /* NOTE some versions of UNIX will reset signal to default
      after each call. So for portability reset signal each time */
-  
+
   cout << " * Exiting now!" << endl;
   toRessacPositionPort.close();
   toRessacVelocityPort.close();

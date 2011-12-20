@@ -5,7 +5,7 @@ MORSE_COMPONENTS:
 path to the Morse components
 """
 
-MORSE_COMPONENTS = os.path.join(os.environ["MORSE_ROOT"], "share", "data", "morse")
+MORSE_COMPONENTS = os.path.join(os.environ["MORSE_ROOT"], "share", "morse", "data")
 
 """
 MORSE_MODIFIERS:

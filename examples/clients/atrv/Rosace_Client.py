@@ -86,7 +86,7 @@ def command_robot():
 
         command = input("Enter command: [ (g)ps / (n)eighbours / s(t)atus / (w)aypoint / (h)eal / e(x)it ] ")
         #command = input("Enter command: [ (m)ove / (s)top / s(t)atus / (w)aypoint / (n)eighbours / (h)eal / e(x)it ] ")
-        
+
         if command == "move" or command == "m":
             command = {"command":"move"}
             send_command(command)
