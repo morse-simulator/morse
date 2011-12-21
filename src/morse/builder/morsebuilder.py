@@ -238,6 +238,17 @@ class Component(AbstractComponent):
         controller.mode = 'MODULE'
         controller.module = calling_module
         controller.link(sensor = sensor)
+    def frequency(self, delay=0):
+        """ Set the frequency delay for the call of the Python module
+
+        :param delay: (int) Delay between repeated pulses 
+            (in logic tics, 0 = no delay)
+        """
+        sensors = [s for s in self._blendobj.game.sensors if s.type == 'ALWAYS']
+        if len(sensors) > 1:
+            logger.warning(self.name + " has too many Game Logic sensors to "+\
+                    "tune its frequency, change it through Blender")
+        sensors[0].frequency = delay
 
 
 class Robot(Component):
