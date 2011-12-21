@@ -398,6 +398,9 @@ class Environment(AbstractComponent):
                     if space.type == 'VIEW_3D':
                         space.viewport_shade = viewport_shade
 
+    def set_debug(self, debug=True):
+        bpy.app.debug = debug
+
     def configure_multinode(self, protocol='socket', 
             server_address='localhost', server_port='65000', distribution=None):
         self._protocol = protocol
