@@ -36,6 +36,7 @@ The MORSE Simulation with a PR2 model 'pr2' must be running for this to work.
 import sys
 import socket
 import time
+import json
 
 host = 'localhost'
 services_port = 4000
@@ -62,7 +63,7 @@ def generate_msg(id_, component, service, params = None):
     if params is None:
         msg = id_ + " " + component + " " + service + "\n"
     else:
-        msg = id_ + " " + component + " " + service + " " + str(params) + "\n"
+        msg = id_ + " " + component + " " + service + " " + json.dumps(params) + "\n"
     return msg
 
 def send_recv(msg):
