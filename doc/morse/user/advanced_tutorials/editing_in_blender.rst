@@ -23,13 +23,13 @@ Load sample file
 
 Open the MORSE simulator with the test file provided with the installation, by using this command::
 
-  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1.blend
+  $ morse $MORSE_ROOT/share/morse/examples/tutorials/tutorial-1.blend
 
 This will load a scene with a robot in a room with some furniture.
 
 The file::
 
-  $ morse $MORSE_ROOT/share/examples/morse/tutorials/tutorial-1-solved.blend
+  $ morse $MORSE_ROOT/share/morse/examples/tutorials/tutorial-1-solved.blend
 
 contains the final scene, as obtained at the end of the tutorial.
 
@@ -107,7 +107,7 @@ Connect with the client
 
 Use the example client program to test the bindings in the simulation
 
-#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/examples/morse/clients/atrv/``
+#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/morse/examples/clients/atrv/``
 #. Execute the command::
 
     $ python socket_v_omega_client.py

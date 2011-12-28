@@ -71,7 +71,7 @@ def command_robot():
 		#print ("The coordinates read are: {0}, of type ({1})".format(raw_coords, type(raw_coords)))
 
 		command = raw_input("Enter command: [ (m)ove / (s)top / s(t)atus / (d)estination / (n)eighbours / (r)adius / e(x)it ] ")
-		
+
 		if command == "move" or command == "m":
 			command = {"command":"move"}
 			send_command(command)

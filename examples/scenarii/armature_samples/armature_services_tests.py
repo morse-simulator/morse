@@ -1,8 +1,8 @@
 # @Authors: Peter Roelants peter.roelants@gmail.com
 # @Owner: KU Leuven - Dep. Mechanical Eng. - Robotics
 # @File: armature_services_tests.py
-# @Description:  
-# @License: 
+# @Description:
+# @License:
 # (C) 2010 Name, peter.roelants@gmail.com, Department of Mechanical
 # Engineering, Katholieke Universiteit Leuven, Belgium.
 #
@@ -12,20 +12,20 @@
 # or (at your discretion) of the Modified BSD License:
 # Redistribution and use in source and binary forms, with or without modification, are permitted
 # provided that the following conditions are met:
-#  1. Redistributions of source code must retain the above copyright notice, this list of 
+#  1. Redistributions of source code must retain the above copyright notice, this list of
 #     conditions and the following disclaimer.
-#  2. Redistributions in binary form must reproduce the above copyright notice, this list of 
+#  2. Redistributions in binary form must reproduce the above copyright notice, this list of
 #     conditions and the following disclaimer in the documentation and/or other materials
 #     provided with the distribution.
 #  3. The name of the author may not be used to endorse or promote products derived from
 #     this software without specific prior written permission.
 # THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 """
 Script to test the different MORSE Armature Services.
@@ -73,13 +73,13 @@ def send_recv(msg):
     print("Msg send: " + str(msg) + ", bytes: " + str(bytessend))
 
     #recieve back requested information
-    response = service_socket.recv(1024)    
+    response = service_socket.recv(1024)
     print("Msg response: " + str(response))
     return response.decode('ascii')
 
 def parse_response(msg, id_):
     """
-    Parse a message that is a response from a MORSE service 
+    Parse a message that is a response from a MORSE service
     """
     # Do not parse if the request returned a fail message
     if "FAIL" in msg:
@@ -109,8 +109,8 @@ def gen_send_recv_parse(id_, component, service, params = None):
     msg = send_recv(msg)
     msg = parse_response(msg, id_)
     return msg
-    
-    
+
+
 def is_service_socket_connected():
     """
     Method to check if the service_socket is still connected
@@ -119,7 +119,7 @@ def is_service_socket_connected():
     if service_socket.recv(1024) == b'':
         return False
     return True
-    
+
 def get_channels(id_, component):
     """
     Get the channels of the armature via MORSE services.
@@ -131,7 +131,7 @@ def get_channels(id_, component):
 
     print("\tchannel_list type" + str(type(channel_list)) + ", values: " + str(channel_list))
     return channel_list
-    
+
 def get_rotations(id_, component):
       """
       Get the rotation tuples and the corresponding channels of the armature via MORSE services.
@@ -156,16 +156,16 @@ def get_rotation(id_, component, channel_name):
 
     print("\trotation type:" + str(type(rotation)) + ", value: " + str(rotation))
     return rotation
-    
+
 def get_dofs(id_, component):
     """
     Get the dofs list corresponding to each channel as a dict via MORSE services.
     """
     print("\nget_dofs:")
-    
+
     service = 'get_dofs'
     dofs_dict = gen_send_recv_parse(id_, component, service)
-    
+
     print("\tdofs_dict type:" + str(type(dofs_dict)) + ", values: " + str(dofs_dict))
     return dofs_dict
 
@@ -174,7 +174,7 @@ def set_rotation(id_, component, channel_name, angles):
     Set the axes with a dof of the channel 'channel_name' to the given angles (x,y,z).
     """
     print("\nset_rotation: channel: " + channel_name + ", angles: " + str(angles))
-    
+
     service = 'set_rotation'
     params = (channel_name, angles)
     gen_send_recv_parse(id_, component, service, params)
@@ -186,10 +186,10 @@ def get_IK_minmax(id_, component):
     [[ik_min_x,ik_max_x], [ik_min_y,ik_max_y], [ik_min_z,ik_max_z]] (list of lists of floats)
     """
     print("\nget_IK_minmax:")
-    
+
     service = 'get_IK_minmax'
     minmax_dict = gen_send_recv_parse(id_, component, service)
-    
+
     print("\tminmax_dict:" + str(type(minmax_dict)) + ", values: " + str(minmax_dict))
     return minmax_dict
 
@@ -200,10 +200,10 @@ def get_IK_limits(id_, component):
     [ik_limit_x,ik_limit_y,ik_limit_z] (list of booleans)
     """
     print("\nget_IK_limits:")
-    
+
     service = 'get_IK_limits'
     limits_dict = gen_send_recv_parse(id_, component, service)
-    
+
     print("\tlimits_dict:" + str(type(limits_dict)) + ", values: " + str(limits_dict))
     return limits_dict
 
@@ -213,10 +213,10 @@ def get_channel_lengths(id_, component):
     and values the channel's lenght.
     """
     print("\nget_channel_lengths:")
-    
+
     service = 'get_channel_lengths'
     lenghts_dict = gen_send_recv_parse(id_, component, service)
-    
+
     print("\tlenghts_dict:" + str(type(lenghts_dict)) + ", values: " + str(lenghts_dict))
     return lenghts_dict
 
@@ -225,13 +225,13 @@ def get_robot_parent_name(id_, component):
     Get the blender name of the robot that is the parent of the armature.
     """
     print("\nget_robot_parent_name:")
-    
+
     service = 'get_robot_parent_name'
     name = gen_send_recv_parse(id_, component, service)
-    
+
     print("\tname:" + str(type(name)) + ", values: " + str(name))
     return name
-    
+
 
 def main():
     """
@@ -256,7 +256,7 @@ def main():
     get_rotations(id_, component)  # test get_rotations to see what angles have been changed by set_rotation
     get_channel_lengths(id_, component)  # test get_channel_lengths
     get_robot_parent_name(id_, component)  # test get_robot_parent_name
-    
+
 
 if __name__ == "__main__":
     # try to catch all errors and exceptions in the main so that we can wait for the connection
@@ -281,4 +281,3 @@ if __name__ == "__main__":
         service_socket.close()
     except socket.error as error_info:
         print("Error catched while closing service_socket: " + str(error_info))
-    

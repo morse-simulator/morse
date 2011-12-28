@@ -15,7 +15,7 @@ human = Human()
 human.translate(x=2.5, y=0, z=0.0)
 #human.rotate(z=-3.0)
 
-# Sensors and Actuators for navigation stack 
+# Sensors and Actuators for navigation stack
 pr2_posture = Sensor('pr2_posture')
 james.append(pr2_posture)
 
@@ -77,6 +77,3 @@ plate.rotate(z=1.45)
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
 env.aim_camera([1.0470, 0, 0.7854])
-
-
-

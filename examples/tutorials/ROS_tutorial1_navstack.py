@@ -27,7 +27,7 @@ Jido.append(keyboard_control)
 
 kuka_base = Actuator('kuka_lwr')
 kuka_base.translate(x=0.1850, y=0.2000, z=0.9070)
-kuka_base.rotate(x=1.5708, y=0) 
+kuka_base.rotate(x=1.5708, y=0)
 Jido.append(kuka_base)
 
 Motion_Controller = Actuator('v_omega')

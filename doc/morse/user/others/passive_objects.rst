@@ -18,7 +18,7 @@ of objects that all share the same prefix.
   :align: center
 
 In the screenshot above (from
-``$MORSE/share/data/morse/props/objects.blend``), the ``RollingChair``
+``$MORSE/share/morse/data/props/objects.blend``), the ``RollingChair``
 hierarchy is made of an empty (the ``RollingChair`` object itself) and
 five children (four for the bounding box, one for the actual mesh).
 
