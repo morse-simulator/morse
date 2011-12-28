@@ -34,6 +34,7 @@ Script to test the different MORSE Armature Services.
 import sys
 import socket
 import time
+import json
 
 host = 'localhost'
 services_port = 4000
@@ -60,7 +61,7 @@ def generate_msg(id_, component, service, params = None):
     if params is None:
         msg = id_ + " " + component + " " + service + "\n"
     else:
-        msg = id_ + " " + component + " " + service + " " + str(params) + "\n"
+        msg = id_ + " " + component + " " + service + " " + json.dumps(params) + "\n"
     return msg
 
 def send_recv(msg):
