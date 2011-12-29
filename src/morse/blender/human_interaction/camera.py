@@ -147,26 +147,6 @@ def smooth_move(goal, owner):
     owner.worldPosition = smoothVec
 
 
-def track():
-    """
-    TrackTo Actuator does not work properly
-    when object has a parent with different
-    orientation
-    
-    This script is tracks the object to the
-    Camera. The z axis points to the Camera
-    and the y axis upwards.
-    """
-
-    ow = logic.getCurrentController().owner
-
-    vect = ow.getVectTo('Human_Camera')[1]     # get the global Vector
-
-    ow.alignAxisToVect(vect, 2, 1.0)    # align z axis to the camera
-    ow.alignAxisToVect([0.0, 0.0, 1.0], 1, 1.0)
-    # make the y axis point upwards
-
-
 def raylength():
     """
     Objects can only be grabbed if they are hit by the Ray-Sensor called 'Ray'.

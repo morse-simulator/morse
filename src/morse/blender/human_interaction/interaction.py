@@ -1,9 +1,77 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from bge import logic
+from bge import logic, render, texture
+import bgl, blf
 from mathutils import Matrix, Vector
-from bpy import data        # needed to check for actor flag
+
+from bpy import data        
 
 from morse.helpers import passive_objects
+
+font_id = 0
+
+windowWidth = render.getWindowWidth()
+windowHeight = render.getWindowHeight()
+scene= logic.getCurrentScene()
+objects = scene.objects
+
+texco=[(0,0), (1,0), (1,1), (0,1)]
+
+# load overlay_closed.tga and overlay_open.tga into the global dictionary
+if not "open" in  logic.globalDict:
+    TexName = "overlay_open.tga"
+    
+    id_buf = bgl.Buffer(bgl.GL_INT, 1)
+    bgl.glGenTextures(1, id_buf)
+    open_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, open_id)
+    filepath = data.images[TexName].filepath
+    img = logic.expandPath(filepath)
+    image = texture.ImageFFmpeg(img)
+    im_buf = image.image
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
+    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
+    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
+    logic.globalDict["open"] = open_id
+open_id = logic.globalDict.get("open")
+
+if not "closed" in logic.globalDict:
+    TexName = "overlay_closed.tga"
+    
+    id_buf = bgl.Buffer(bgl.GL_INT, 1)
+    bgl.glGenTextures(1, id_buf)
+    closed_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, closed_id)
+    filepath = data.images[TexName].filepath
+    img = logic.expandPath(filepath)
+    image = texture.ImageFFmpeg(img)
+    im_buf = image.image
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
+    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
+    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
+    logic.globalDict["closed"] = closed_id
+closed_id = logic.globalDict.get("closed")
+
+# load CrossHairs.tga into the global dictionary
+if not "crosshairs" in logic.globalDict:
+    TexName = "CrossHairs.tga"
+    
+    id_buf = bgl.Buffer(bgl.GL_INT, 1)
+    bgl.glGenTextures(1, id_buf)
+    crosshairs_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, crosshairs_id)
+    filepath = data.images[TexName].filepath
+    img = logic.expandPath(filepath)
+    image = texture.ImageFFmpeg(img)
+    im_buf = image.image
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
+    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
+    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
+    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
+    logic.globalDict["crosshairs"] = crosshairs_id
+crosshairs_id = logic.globalDict.get("crosshairs")
+
 
 def open_door(door):
     if not door['Open']:     # opens the door
@@ -29,11 +97,10 @@ def interact():
     press left mousebutton to open, close or grab
     press right mousebutton to drop the currently selected object
     """
-    sobList= logic.getCurrentScene().objects
-    # list of all objects in current scene
-    right_hand=sobList['IK_Target_Empty.R']
-    look = sobList['Target_Empty']
-    human = sobList['POS_EMPTY']
+
+    right_hand=objects['IK_Target_Empty.R']
+    look = objects['Target_Empty']
+    human = objects['POS_EMPTY']
     co =  logic.getCurrentController()
     ow = co.owner
     lmb=co.sensors['LMB']
@@ -42,12 +109,10 @@ def interact():
     lay_down_ray = co.sensors['LayDownRay']
     rmb=co.sensors['RMB']
     space = co.sensors['SPACEBAR']
-    AddSc = co.actuators['AddScene']
-    RemSc = co.actuators['RemoveScene']
-    Description = co.actuators['Descr_message']
-    head = sobList['Head_Empty']
-    hand = sobList['Hand.R']
-   
+    head = objects['Head_Empty']
+    hand = objects['Hand.R']
+
+    
     # Get the focusing object:
     # A ray sensor is attached to the HumanCamera sensor.
     # It returns all colliding objects in a 10 cm range of the hand.
@@ -65,48 +130,53 @@ def interact():
                 if 'Object' in obj:
                     focus = obj
     
-    scenes =  logic.getSceneList()
-    
     # set the overlay scene and send messages to change the displayed text
     # and texture
-    if human['Manipulate']:
-        try:
+    if human['Manipulate'] and focus:
+            
+        can_be_manipulated = False
 
-            can_be_manipulated = False
-
-            if focus in passive_objects.graspable_objects():
-                can_be_manipulated = True
-                Description.body = ('Pick up ' + passive_objects.label(focus))
-
-            elif 'Door' in focus or 'Drawer' in focus:
-                can_be_manipulated = True
-                try:
-                    if focus['Open']:
-                        Description.body = ('Close ' +
-                                            str(focus['Description']))
-                    else:
-                        Description.body = ('Open ' +
-                                            str(focus['Description']))
-                except KeyError:
-                    print('Key missing in focused Object ' + focus.name +
-                          ' --- no description given')
-                    Description.body = ''
-
-            if can_be_manipulated:
-                ow.sendMessage('selected', str(ow['selected']), 'overlay')
-                co.activate(Description)
-                if len(scenes) == 2:
-                    co.activate(AddSc)
-
+        if focus in passive_objects.graspable_objects():
+            can_be_manipulated = True
+            if not ow['selected']:
+                ow['Status'] = 'Pick up ' + passive_objects.label(focus)
             else:
-                if len(scenes) == 3:
-                    co.activate(RemSc)
-        except TypeError:
-            if len(scenes) == 3:
-                    co.activate(RemSc)
+                ow['Status'] = passive_objects.label(focus)
+        elif 'Door' in focus or 'Drawer' in focus:
+            can_be_manipulated = True
+            
+            try:
+                if focus['Open']:
+                    ow['Status'] = 'Close ' + str(focus['Description'])
+                else:
+                    ow['Status'] = 'Open ' + str(focus['Description'])
+            except KeyError:
+                print('Key missing in focused Object ' + focus.name +
+                      ' --- no description given')
+
+        else:
+            ow['Status'] = None
     else:
-        if len(scenes) == 3:
-                    co.activate(RemSc)
+        ow['Status'] = None
+
+    if human['Manipulate']:
+        if not crosshairs in scene.post_draw:
+            scene.post_draw.append(crosshairs)
+    else:
+        if crosshairs in scene.post_draw:
+            scene.post_draw.remove(crosshairs)
+
+
+    if ow['Status']:
+        if not write_interaction_status in scene.post_draw:
+            scene.post_draw.append(write_interaction_status)
+        if not status_image in scene.post_draw:
+            scene.post_draw.append(status_image)
+    else:
+        if write_interaction_status in scene.post_draw:
+            scene.post_draw.remove(write_interaction_status)
+        if status_image in scene.post_draw:
+            scene.post_draw.remove(status_image)
 
 
 
@@ -181,12 +251,12 @@ def grab():
     obj = ow['grabbing']
 
     coll = co.sensors['Collision']
-    sobList = logic.getCurrentScene().objects
-    right_hand = sobList['IK_Target_Empty.R']
-    human = sobList['Human']
-    hand = sobList['Hand.R']
-    hips = sobList['Hips_Empty']
-    left_hand = sobList['IK_Target_Empty.L']
+
+    right_hand = objects['IK_Target_Empty.R']
+    human = objects['Human']
+    hand = objects['Hand.R']
+    hips = objects['Hips_Empty']
+    left_hand = objects['IK_Target_Empty.L']
 
     vect = right_hand.getVectTo(obj)
     move = vect[1]
@@ -248,34 +318,222 @@ def lay_down_visualize():
     human = objects['POS_EMPTY']
     hand = objects['Hand_Grab.R']
     ray = co.sensors['LayDownRay']
-    
-    message = co.actuators['DropState']
+
 
     focused_object = ray.hitObject
     try:
         actor_focused = data.objects[focused_object.name].game.use_actor
     except AttributeError:
         actor_focused = False
+        
     if human['Manipulate'] and ray.positive and \
        focused_object != hand['selected'] and hand['selected'] and \
        actor_focused:
-        message.body = "Activate"
+        if not color_placing in scene.post_draw:
+            scene.post_draw.append(color_placing)
+            
     else:
-        message.body = "Deactivate"
-    
-    co.activate(message)
+        if color_placing in scene.post_draw:
+            scene.post_draw.remove(color_placing)
+
 
 def color_placing():
-    co = logic.getCurrentController()
-    ow = co.owner
+    """
+    Draw the green rectangle via OpenGL-Wrapper
+    """
+    imageHeight = windowHeight * 0.05
+    imageWidth = imageHeight
+
+    x = windowWidth * 0.5 - imageWidth/2
+    y = windowHeight * 0.5 - imageHeight/2
     
-    try:
-        active = co.sensors['Message'].bodies[0]
-        
-        if active == "Activate":
-            ow.color = [0.0, 0.8, 0.0, 0.75]
-        else:
-            ow.color = [0,0,0,0]
-    except IndexError:
-        pass
+    gl_position = [[x, y],[x+imageWidth, y],[x+imageWidth, y+imageHeight],[x, y+imageHeight]]
+    
+    view_buf = bgl.Buffer(bgl.GL_INT, 4)
+    bgl.glGetIntegerv(bgl.GL_VIEWPORT, view_buf)
+    view = view_buf.to_list() if hasattr(view_buf, "to_list") else view_buf.list
+    # Save the state
+    bgl.glPushAttrib(bgl.GL_ALL_ATTRIB_BITS)      
+    # Disable depth test so we always draw over things
+    bgl.glDisable(bgl.GL_DEPTH_TEST)   
+    # Disable lighting so everything is shadless
+    bgl.glDisable(bgl.GL_LIGHTING)   
+    # Make sure we're using smooth shading instead of flat
+    bgl.glShadeModel(bgl.GL_SMOOTH)
+    # Setup the matrices
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    bgl.gluOrtho2D(0, view[2], 0, view[3])
+    bgl.glMatrixMode(bgl.GL_MODELVIEW)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    
+    
+    # Enable alpha blending
+    bgl.glEnable(bgl.GL_BLEND)
+    bgl.glBlendFunc(bgl.GL_SRC_ALPHA, bgl.GL_ONE_MINUS_SRC_ALPHA)
+    # Draw the colored quad
+    bgl.glColor4f(0, 1, 0, 0.25)
+    bgl.glEnable(bgl.GL_POLYGON_OFFSET_FILL)
+    bgl.glPolygonOffset(1.0, 1.0)
+    bgl.glBegin(bgl.GL_QUADS)
+    for i in range(4):
+       bgl.glTexCoord2f(texco[i][0], texco[i][1])
+       bgl.glVertex2f(gl_position[i][0], gl_position[i][1])
+    bgl.glEnd()
+
+    bgl.glPopMatrix()
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPopMatrix()
+    bgl.glPopAttrib()
+
+    
+def write_interaction_status():
+    """
+    Write the interaction status on Screen
+    The status is stored in a property
+    """
+    hand = objects['Hand_Grab.R']
+    
+    # OpenGL setup
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glLoadIdentity()
+    bgl.gluOrtho2D(0, windowWidth, 0, windowHeight)
+    bgl.glMatrixMode(bgl.GL_MODELVIEW)
+    bgl.glLoadIdentity()
+    
+    blf.size(font_id, int(windowHeight*0.04), 72)
+    # draw a black shadow around the text
+    blf.enable(font_id, blf.SHADOW)
+    blf.shadow(font_id, 5, 0.0, 0.0, 0.0, 1.0)
+    blf.position(font_id, windowWidth*0.4, windowHeight*0.4,0)
+    blf.draw(font_id, hand['Status'])
+
+def status_image():
+    """
+    Show the corrensponding Image for the status
+    """
+    imageHeight = windowHeight * 0.075
+    imageWidth = imageHeight
+
+    x = windowWidth * 0.35 - imageWidth/2
+    y = windowHeight * 0.45 - imageHeight/2
+    
+    gl_position = [[x, y],[x+imageWidth, y],[x+imageWidth, y+imageHeight],[x, y+imageHeight]]
+
+
+    hand = objects['Hand_Grab.R']
+
+    # select the right Image
+    if hand["selected"]:
+        tex_id = closed_id
+    else:
+        tex_id = open_id
+
+    
+    view_buf = bgl.Buffer(bgl.GL_INT, 4)
+    bgl.glGetIntegerv(bgl.GL_VIEWPORT, view_buf)
+    view = view_buf.to_list() if hasattr(view_buf, "to_list") else view_buf.list
+    # Save the state
+    bgl.glPushAttrib(bgl.GL_ALL_ATTRIB_BITS)      
+    # Disable depth test so we always draw over things
+    bgl.glDisable(bgl.GL_DEPTH_TEST)   
+    # Disable lighting so everything is shadless
+    bgl.glDisable(bgl.GL_LIGHTING)   
+    # Unbinding the texture prevents BGUI frames from somehow picking up on
+    # color of the last used texture
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, 0)      
+    # Make sure we're using smooth shading instead of flat
+    bgl.glShadeModel(bgl.GL_SMOOTH)
+    # Setup the matrices
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    bgl.gluOrtho2D(0, view[2], 0, view[3])
+    bgl.glMatrixMode(bgl.GL_MODELVIEW)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    
+    
+    bgl.glEnable(bgl.GL_TEXTURE_2D)
+    # Enable alpha blending
+    bgl.glEnable(bgl.GL_BLEND)
+    bgl.glBlendFunc(bgl.GL_SRC_ALPHA, bgl.GL_ONE_MINUS_SRC_ALPHA)
+    # Bind the texture
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, tex_id)
+    # Draw the textured quad
+    bgl.glColor4f(1, 1, 1, 1)
+    bgl.glEnable(bgl.GL_POLYGON_OFFSET_FILL)
+    bgl.glPolygonOffset(1.0, 1.0)
+    bgl.glBegin(bgl.GL_QUADS)
+    for i in range(4):
+       bgl.glTexCoord2f(texco[i][0], texco[i][1])
+       bgl.glVertex2f(gl_position[i][0], gl_position[i][1])
+    bgl.glEnd()
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, 0)
+
+    bgl.glPopMatrix()
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPopMatrix()
+    bgl.glPopAttrib()
+
+def crosshairs():
+    """
+    Show crosshais in Manipulation Mode
+    Use the OpenGL-Wrapper to draw the image
+    """
+    
+    imageHeight = windowHeight * 0.05
+    imageWidth = imageHeight
+
+    x = windowWidth * 0.5 - imageWidth/2
+    y = windowHeight * 0.5 - imageHeight/2
+    
+    gl_position = [[x, y],[x+imageWidth, y],[x+imageWidth, y+imageHeight],[x, y+imageHeight]]
+    
+    view_buf = bgl.Buffer(bgl.GL_INT, 4)
+    bgl.glGetIntegerv(bgl.GL_VIEWPORT, view_buf)
+    view = view_buf.to_list() if hasattr(view_buf, "to_list") else view_buf.list
+    # Save the state
+    bgl.glPushAttrib(bgl.GL_ALL_ATTRIB_BITS)      
+    # Disable depth test so we always draw over things
+    bgl.glDisable(bgl.GL_DEPTH_TEST)   
+    # Disable lighting so everything is shadless
+    bgl.glDisable(bgl.GL_LIGHTING)   
+    # Unbinding the texture prevents BGUI frames from somehow picking up on
+    # color of the last used texture
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, 0)      
+    # Make sure we're using smooth shading instead of flat
+    bgl.glShadeModel(bgl.GL_SMOOTH)
+    # Setup the matrices
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    bgl.gluOrtho2D(0, view[2], 0, view[3])
+    bgl.glMatrixMode(bgl.GL_MODELVIEW)
+    bgl.glPushMatrix()
+    bgl.glLoadIdentity()
+    
+    bgl.glEnable(bgl.GL_TEXTURE_2D)
+    # Enable alpha blending
+    bgl.glEnable(bgl.GL_BLEND)
+    bgl.glBlendFunc(bgl.GL_SRC_ALPHA, bgl.GL_ONE_MINUS_SRC_ALPHA)
+    # Bind the texture
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, crosshairs_id)
+    # Draw the textured quad
+    bgl.glColor4f(1, 1, 1, 1)
+    bgl.glEnable(bgl.GL_POLYGON_OFFSET_FILL)
+    bgl.glPolygonOffset(1.0, 1.0)
+    bgl.glBegin(bgl.GL_QUADS)
+    for i in range(4):
+       bgl.glTexCoord2f(texco[i][0], texco[i][1])
+       bgl.glVertex2f(gl_position[i][0], gl_position[i][1])
+    bgl.glEnd()
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, 0)
+
+    bgl.glPopMatrix()
+    bgl.glMatrixMode(bgl.GL_PROJECTION)
+    bgl.glPopMatrix()
+    bgl.glPopAttrib()
 

@@ -302,7 +302,7 @@ class MorseDoorDialog(bpy.types.Operator):
         self.assignProp(context, 'Open', self.open)
         self.assignProp(context, 'Description', self.description)
         
-        # make the drawer an actor
+        # make the door an actor
         obj.game.use_actor = True
 
         # uncomment this part as well for the IPO Setup
