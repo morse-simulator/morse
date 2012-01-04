@@ -13,8 +13,7 @@ PR2 Model
 =========
 
 [DONE] * Import a good PR2 mesh in MORSE
-[PARTIAL] * Ensure all joints are covered by an armature
-    => torso armature is missing
+[DONE] * Ensure all joints are covered by an armature
 [DONE] * Fix the names of the joints to match TF names
 [PARTIAL] * Allow for easy modification of the PR2 colour
     => Does not work yet from the Builder API

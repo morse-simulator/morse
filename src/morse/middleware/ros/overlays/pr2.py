@@ -19,7 +19,6 @@ class PR2(MorseOverlay):
     @ros_service(type = SetHead)
     def set_head(self, pan, tilt):
         #print("Setting head to: %s"%pan, tilt)
-        print("Channels are %s"%self.overlaid_object.get_channels())
         self.overlaid_object.set_rotation("head_pan", [0, pan, 0])
         self.overlaid_object.set_rotation("head_tilt", [0, 0, tilt])
         return True

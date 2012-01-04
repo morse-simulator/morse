@@ -9,7 +9,8 @@ class PR2(Robot):
         self.head = None
         self.l_arm = None
         self.r_arm = None
-
+        self.torso_lift = None
+        
         try:
             self._blendobj = bpy.context.selected_objects[0]            
             # !!! WARNING (TODO)!!!! If we import the armature like this, it will NOT work if there are more than one PR2!
@@ -17,12 +18,12 @@ class PR2(Robot):
             head_obj = bpy.data.objects["head_armature"]
             l_arm_obj = bpy.data.objects["l_arm_armature"]
             r_arm_obj = bpy.data.objects["r_arm_armature"]
-            
+            torso_lift_obj = bpy.data.objects["torso_lift_armature"]
+
             self.head = AbstractComponent(head_obj, "head_armature")
             self.l_arm = AbstractComponent(l_arm_obj, "l_arm_armature")
             self.r_arm = AbstractComponent(r_arm_obj, "r_arm_armature")
-
-            
+            self.torso_lift = AbstractComponent(torso_lift_obj, "torso_lift_armature")
             
         except KeyError:
             logger.error("Could not find the PR2 head armature! (I was looking " +\
