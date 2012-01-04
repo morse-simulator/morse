@@ -50,6 +50,29 @@ class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
         return channels
 
     @service
+    def get_location(self, channel_name):
+        """
+        MORSE Service that returns the location corresponding to
+        the given channel 'channel_name' on the armature.
+        """
+        armature = self.blender_obj
+        channel = armature.channels[str(channel_name)]
+        # get the rotation in xyz
+        rotation = channel.location
+
+        return rotation
+
+    def set_location(self, channel_name, location):
+        """
+        Method that sets the location of the given channel to location.
+        We do NOT take into account the IK limits here.
+        """
+        armature = self.blender_obj
+        channel = armature.channels[str(channel_name)]
+        channel.location = location
+        armature.update()
+        
+    @service
     def get_rotations(self):
         """
         MORSE Service that returns a dict with keys the channel names of
