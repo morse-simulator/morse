@@ -96,9 +96,10 @@ class PR2PostureClass(morse.core.sensor.MorseSensorClass):
         self.local_data['l_gripper_l_finger_tip_joint'] = 0.0
 
         # Get names of armatures (for ptu and arm joints)
-        self.ptu_armature_name = self.robot_parent.armatures[2]
-        self.l_arm_armature_name = self.robot_parent.armatures[1]
-        self.r_arm_armature_name = self.robot_parent.armatures[0]
+        self.ptu_armature_name = self.robot_parent.armatures[3]
+        self.l_arm_armature_name = self.robot_parent.armatures[2]
+        self.r_arm_armature_name = self.robot_parent.armatures[1]
+        self.torso_lift_armature_name = self.robot_parent.armatures[0]
         logger.info("Found PTU: %s"%self.ptu_armature_name)
         logger.info("Found Left arm: %s"%self.l_arm_armature_name)
         logger.info("Found Right arm: %s"%self.r_arm_armature_name)
@@ -145,10 +146,8 @@ class PR2PostureClass(morse.core.sensor.MorseSensorClass):
         logger.debug("L arm Rotations are: %s"%self.l_arm_rotations)
         logger.debug("R arm Rotations are: %s"%self.r_arm_rotations)
         logger.debug("Torso joint: %s"%self.torso)
+        
         ############################# Hand data over to middleware ##############################
-
-        # Before handing over to middleware, find out what values are postet on real PR2 (full tuples of angles or 
-        # only values for specific degree of freedom?)
 
         # joints of PTU-unit
         self.local_data['head_pan_joint'] = self.ptu_rotations['head_pan'][1]
@@ -171,6 +170,3 @@ class PR2PostureClass(morse.core.sensor.MorseSensorClass):
         self.local_data['r_forearm_roll_joint'] = self.r_arm_rotations['r_forearm'][1]
         self.local_data['r_wrist_flex_joint'] = - self.r_arm_rotations['r_wrist_flex'][0]
         self.local_data['r_wrist_roll_joint'] = self.r_arm_rotations['r_wrist_roll'][1]
-        
-
-        
