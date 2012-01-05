@@ -1,0 +1,5 @@
+before_script: ". .travis-before.bash"
+script: morsemake && morsetest
+notifications:
+  irc: "irc.freenode.org#morse"
+
