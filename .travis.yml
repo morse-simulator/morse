@@ -1,0 +1,5 @@
+language: python
+python: "3.2"
+script: ". .travis.bash"
+notifications:
+  irc: "irc.freenode.org#morse"
