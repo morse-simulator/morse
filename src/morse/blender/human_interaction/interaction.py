@@ -123,14 +123,14 @@ def interact():
     if prox_obj:
         if 'Object' in prox_obj:
             focus = prox_obj
-        elif 'Door' in prox_obj or 'Drawer' in prox_obj:
+        elif 'Door' in prox_obj or 'Drawer' in prox_obj or 'Switch' in prox_obj:
             focus = prox_obj
         else:
             for obj in prox_obj.children:
                 if 'Object' in obj:
                     focus = obj
     
-    # set the overlay scene and send messages to change the displayed text
+    # set the overlay scene and change the displayed text
     # and texture
     if human['Manipulate'] and focus:
             
@@ -153,7 +153,12 @@ def interact():
             except KeyError:
                 print('Key missing in focused Object ' + focus.name +
                       ' --- no description given')
-
+        elif 'Switch' in focus:
+            can_be_manipulated = True
+            if objects[focus['Switch']]['On']:
+                ow['Status'] = "Turn off " + focus['Switch']
+            else:
+                ow['Status'] = "Turn on " + focus['Switch']
         else:
             ow['Status'] = None
     else:
@@ -211,6 +216,8 @@ def interact():
             # focus['Open'] = not focus['Open']
         elif 'Drawer' in focus and lmb.positive:
             focus['Open'] = not focus['Open']
+        elif 'Switch' in focus and lmb.positive:
+            objects[focus['Switch']]['On'] = not objects[focus['Switch']]['On']
     except TypeError:
         pass
 
