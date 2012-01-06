@@ -398,6 +398,10 @@ class Environment(AbstractComponent):
                     if space.type == 'VIEW_3D':
                         space.viewport_shade = viewport_shade
 
+    def set_auto_start(self, auto_start=True):
+        bpy.context.scene.render.engine = 'BLENDER_GAME'
+        bpy.context.scene.game_settings.use_auto_start = auto_start
+
     def set_debug(self, debug=True):
         bpy.app.debug = debug
 
