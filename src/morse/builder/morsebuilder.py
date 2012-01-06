@@ -401,6 +401,12 @@ class Environment(AbstractComponent):
     def set_debug(self, debug=True):
         bpy.app.debug = debug
 
+    def set_stereo(self, stereo='STEREO'):
+        """ set_stereo
+        :param stereo: enum in ['NONE', 'STEREO', 'DOME'], default 'STEREO'
+        """
+        bpy.context.scene.game_settings.stereo = stereo
+
     def configure_multinode(self, protocol='socket', 
             server_address='localhost', server_port='65000', distribution=None):
         self._protocol = protocol
