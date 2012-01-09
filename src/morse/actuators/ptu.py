@@ -48,7 +48,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             self._tolerance = self.blender_obj['Tolerance']
         except KeyError as detail:
             self._tolerance = math.radians(0.3)
-            logger.warn("Component '%s' dones not have a Logic Property\n\t%s\n\tUsing default value = %.4f radians" % (obj.name, detail, self._tolerance))
+            logger.warn("Component '%s' does not have a Logic Property\n\t%s\n\tUsing default value = %.4f radians" % (obj.name, detail, self._tolerance))
         
         try:
             self._is_manual_mode = self.blender_obj['Manual']

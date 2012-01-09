@@ -1,31 +1,56 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import bpy
+import json
 
 from morse.builder.data import *
 
-cfg_middleware = {}
-cfg_modifier = {}
-cfg_service = {}
-cfg_overlay = {}
+# TODO check if scene_modifiers == AbstractComponent._config.modifier.keys() ?
 scene_modifiers = []
 
 class Configuration(object):
+    """ class morse.builder.Configuration
+
+    meant to be singleton (one static instance shared by all components)
+    contains the configuration of the simulation.
+    """
+    def __init__(self):
+        self.middleware = {}
+        self.modifier = {}
+        self.service = {}
+        self.overlay = {}
+
     def link_mw(self, component, mw_method_cfg):
-        cfg_middleware.setdefault(component.name, []).append(mw_method_cfg)
+        self.middleware.setdefault(component.name, []).append(mw_method_cfg)
 
     def link_service(self, component, service_cfg):
         # Special case here for the pseudo component 'simulation' that
         # covers the simulator management services.
         if component == "simulation":
-            cfg_service.setdefault(component, []).append(service_cfg)
+            self.service.setdefault(component, []).append(service_cfg)
         else:
-            cfg_service.setdefault(component.name, []).append(service_cfg)
+            self.service.setdefault(component.name, []).append(service_cfg)
 
     def link_modifier(self, component, modifier_cfg):
-        cfg_modifier.setdefault(component.name, []).append(modifier_cfg)
+        self.modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, component,  manager, overlay_cfg):
-        cfg_overlay.setdefault(manager, {})[component.name] = overlay_cfg 
+        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg 
+
+    def write_config(self):
+        """ Write the 'component_config.py' file with the supplied settings """
+        if not 'component_config.py' in bpy.data.texts.keys():
+            bpy.ops.text.new()
+            bpy.data.texts[-1].name = 'component_config.py'
+        cfg = bpy.data.texts['component_config.py']
+        cfg.clear()
+        cfg.write('component_mw = ' + json.dumps(self.middleware, indent=1) )
+        cfg.write('\n')
+        cfg.write('component_modifier = ' + json.dumps(self.modifier, indent=1) )
+        cfg.write('\n')
+        cfg.write('component_service = ' + json.dumps(self.service, indent=1) )
+        cfg.write('\n')
+        cfg.write('overlays = ' + json.dumps(self.overlay, indent=1) )
+        cfg.write('\n')
 
 class AbstractComponent(object):
     # static config common to all component of the simulation
@@ -37,18 +62,8 @@ class AbstractComponent(object):
         """ Add a child to the current object,
 
         eg: robot.append(sensor), will set the robot parent of the sensor.
-        cf: bpy.ops.object.parent_set()
-        obj._blendobj.parent = self._blendobj
-        self._blendobj.children += obj._blendobj
         """
         obj._blendobj.parent = self._blendobj
-
-        #opsobj = bpy.ops.object
-        #opsobj.select_all(action = 'DESELECT')
-        #opsobj.select_name(name = obj.name)
-        #opsobj.make_local()
-        #opsobj.select_name(name = self.name)
-        #opsobj.parent_set()
 
     @property
     def name(self):
@@ -92,15 +107,26 @@ class AbstractComponent(object):
         """
         old = self._blendobj.rotation_euler
         self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
+    def property_value(name):
+        return self._blendobj.game.properties[name].value
     def properties(self, **kwargs):
         """ Add/modify the game properties of the Blender object
 
-        `bpy.types.Object.game 
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.game>`_
-        `bpy.types.GameObjectSettings.properties 
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameObjectSettings.html#bpy.types.GameObjectSettings.properties>`_
-        `bpy.types.GameProperty 
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.GameProperty.html#bpy.types.GameProperty>`_
+        Usage example:
+
+        .. code-block:: python
+            self.properties(Component_Tag = True, Class='XXXClass', speed = 5.0)
+
+        will create and/or set the 3 game properties Component_Tag, Class, and 
+        speed at the value True (boolean), XXXClass (string), 5.0 (float).
+        In Python the type of numeric value is 'int', if you want to force it to
+        float, use the following: float(5) or 5.0
+        Same if you want to force to integer, use: int(a/b)
+        For the TIMER type, see the class timer(float) defined in this module:
+
+        .. code-block:: python
+            self.properties(My_Clock = timer(5.0), My_Speed = int(5/2))
+
         """
         prop = self._blendobj.game.properties
         for k in kwargs.keys():
@@ -112,24 +138,25 @@ class AbstractComponent(object):
     def _property_new(self, n, v, t=None):
         """ Add a new game property for the Blender object
 
-        n: property name (string)
-        v: property value
-        t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
+        :param n: property name (string)
+        :param v: property value
+        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
                 optional, auto-detect, default=None)
         """
-        o = self._blendobj
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = o.name)
+        bpy.ops.object.select_name(name = self.name)
         bpy.ops.object.game_property_new()
-        # select the last property in the list
-        x = o.game.properties.keys()[-1]
-        o.game.properties[x].name = n
+        prop = self._blendobj.game.properties
+        # select the last property in the list (which is the one we just added)
+        prop[-1].name = n
         if t == None:
+            # Detect the type (class name upper case)
             t = v.__class__.__name__.upper()
         if t == 'STR':
+            # Blender property string are called 'STRING' (and not 'str' as in Python)
             t = 'STRING'
-        o.game.properties[n].type = t
-        o.game.properties[n].value = v
+        prop[-1].type = t
+        prop[-1].value = v
 
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
         """
@@ -144,6 +171,8 @@ class AbstractComponent(object):
                     if component:
                         config = MORSE_MIDDLEWARE_DICT[mw][component]
                     else:
+                        # TODO self._blendobj.game.properties["Class"].value ?
+                        #      as map-key (in data, instead of blender-filename)
                         config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
                 except KeyError:
                     logger.warning("%s: default middleware method"%self.name)
