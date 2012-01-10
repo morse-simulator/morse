@@ -16,6 +16,79 @@ bl_info = {
 import bpy
 from bpy.props import *
 
+
+def update(self, context):
+    objects = []
+    for index, obj in enumerate(bpy.context.scene.objects):
+        objects.append((str(index), obj.name, str(index)))
+    return objects
+     
+class MorseSwitchDialog(bpy.types.Operator):
+    '''
+    Make Switches usable for the Human
+    '''
+    bl_idname = "object.morse_switch_dialog"
+    bl_label = "Morse Switch"
+
+
+    objs = {}
+    inv_objs = {}
+    
+    master = EnumProperty(name = "Switch",items = update)
+    on = BoolProperty(name = "On")
+
+    def update_dict(self, context):
+        objs = {}
+        inv_objs = {}
+        for index, obj in enumerate(bpy.context.scene.objects):
+            objs[str(index)] = obj.name
+            inv_objs[obj.name] = str(index)
+        self.objs = objs
+        self.inv_objs = inv_objs
+        
+    
+    def assignProp(self, context, name, value):
+        prop = context.object.game.properties[name]
+        prop.value = value
+
+    def execute(self, context):
+        obj = context.active_object
+
+        obj.game.use_actor = True
+
+        if not 'Switch' in obj.game.properties:
+            bpy.ops.object.game_property_new()
+            prop = context.object.game.properties[-1]
+            prop.name = 'Switch'
+            prop.type = 'STRING'
+
+        self.assignProp(context, 'Switch', self.objs[self.master])
+
+        
+        try:
+            master = context.scene.objects[obj.game.properties['Switch'].value]
+            context.scene.objects.active = master
+            if not 'On' in master.game.properties:
+                bpy.ops.object.game_property_new()
+                prop = context.object.game.properties[-1]
+                prop.name = 'On'
+                prop.type = 'BOOL'
+
+            self.assignProp(context, 'On', self.on)
+        except KeyError:
+            pass
+
+        return{'FINISHED'}
+            
+    def invoke(self, context, event):
+        self.update_dict(context)
+        obj = context.object
+
+        if 'Switch' in obj.game.properties:
+            self.master = self.inv_objs[obj.game.properties['Switch'].value]
+
+        return context.window_manager.invoke_props_dialog(self)
+    
 class MorseObjectDialog(bpy.types.Operator):
     '''
     Operator class that assigns a "Object" and a "Description" Property,
@@ -394,15 +467,21 @@ class MorsePanel(bpy.types.Panel):
         layout.operator("object.morse_object_dialog")
         layout.operator("object.morse_drawer_dialog")
         layout.operator("object.morse_door_dialog")
+        layout.operator("object.morse_switch_dialog")
  
 
 def register():
     bpy.utils.register_class(MorseObjectDialog)
     bpy.utils.register_class(MorseDoorDialog)
     bpy.utils.register_class(MorseDrawerDialog)
+    bpy.utils.register_class(MorseSwitchDialog)
     bpy.utils.register_class(MorsePanel)
+    bpy.app.handlers.scene_update_post.append(update)
 def unregister():
     bpy.utils.unregister_class(MorseObjectDialog)
     bpy.utils.unregister_class(MorseDoorDialog)
     bpy.utils.unregister_class(MorseDrawerDialog)
+    bpy.utils.unregister_class(MorseSwitchDialog)
     bpy.utils.unregister_class(MorsePanel)
+    bpy.app.handlers.scene_update_post.remove(update)
+    
