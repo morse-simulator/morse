@@ -201,3 +201,9 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# -- Options for man page output -----------------------------------------------
+# List of man pages described by
+# (startdocname, name, description, authors, section) tuples
+man_pages = [("morse_man_page", "morse", "A robotics simulator based upon the Blender Game Engine", "", 1),
+             ("morseexec_man_page", "morseexec", "Run a Python script with the default scene", "", 1)]
