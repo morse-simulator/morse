@@ -453,6 +453,74 @@ class MorseDoorDialog(bpy.types.Operator):
         '''
         return context.window_manager.invoke_props_dialog(self)
 
+class MorseLightDialog(bpy.types.Operator):
+    '''
+    Set up a light that can be switched on and off
+    '''
+    bl_idname = "object.morse_light_dialog"
+    bl_label = "Morse Light"
+
+    On = BoolProperty(name = "On")
+    energy = FloatProperty(name = "Energy")
+
+    def assignProp(self, context, name, value):
+        prop = context.object.game.properties[name]
+        prop.value = value
+
+    def execute(self, context):
+        obj = bpy.context.active_object
+        
+        # add game properties if needed
+        if not 'On' in obj.game.properties:
+            bpy.ops.object.game_property_new()
+            prop = context.object.game.properties[-1]
+            prop.name = 'On'
+            prop.type = 'BOOL'
+
+        self.assignProp(context, 'On', self.On)
+        
+        if not 'Energy' in obj.game.properties:
+            bpy.ops.object.game_property_new()
+            prop = context.object.game.properties[-1]
+            prop.name = 'Energy'
+            prop.type = 'FLOAT'
+
+        self.assignProp(context, 'Energy', self.energy)
+
+        # add logic setup
+        if not 'PropertyChange' in context.object.game.sensors:
+            bpy.ops.logic.sensor_add(type = 'PROPERTY')
+            sens = context.object.game.sensors[-1]
+            sens.name = 'PropertyChange'
+            sens.property = 'On'
+            sens.evaluation_type = 'PROPCHANGED'
+
+            bpy.ops.logic.controller_add(type = 'PYTHON')
+            contr = context.object.game.controllers[-1]
+            contr.mode = 'MODULE'
+            contr.module = "lights.change_light_energy"
+
+            contr.link(sensor = sens)
+
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        obj = context.object
+
+        if obj.type != 'LAMP':
+            print("Sorry, no lamp selected")
+            self.report({'INFO'}, "Sorry, no lamp selected")
+            return {'CANCELLED'}
+        
+        if 'On' in obj.game.properties:
+            self.On = obj.game.properties['On'].value
+        self.energy = obj.data.energy
+
+        return context.window_manager.invoke_props_dialog(self)
+        
+
+
+
 # Panel in tools region
 class MorsePanel(bpy.types.Panel):
     '''
@@ -468,6 +536,10 @@ class MorsePanel(bpy.types.Panel):
         layout.operator("object.morse_drawer_dialog")
         layout.operator("object.morse_door_dialog")
         layout.operator("object.morse_switch_dialog")
+
+        col = layout.column()
+        col.label(text = "Presets for electric devices")
+        layout.operator("object.morse_light_dialog", icon = 'LAMP_SPOT')
  
 
 def register():
@@ -475,6 +547,7 @@ def register():
     bpy.utils.register_class(MorseDoorDialog)
     bpy.utils.register_class(MorseDrawerDialog)
     bpy.utils.register_class(MorseSwitchDialog)
+    bpy.utils.register_class(MorseLightDialog)
     bpy.utils.register_class(MorsePanel)
     bpy.app.handlers.scene_update_post.append(update)
 def unregister():
@@ -482,6 +555,7 @@ def unregister():
     bpy.utils.unregister_class(MorseDoorDialog)
     bpy.utils.unregister_class(MorseDrawerDialog)
     bpy.utils.unregister_class(MorseSwitchDialog)
+    bpy.utils.unregister_class(MorseLightDialog)
     bpy.utils.unregister_class(MorsePanel)
     bpy.app.handlers.scene_update_post.remove(update)
     
