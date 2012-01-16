@@ -4,7 +4,7 @@ from morse.builder.morsebuilder import *
 
 class PR2(Robot):
     def __init__(self):
-        Component.__init__(self, 'robots', 'pr2/pr2_25_morse')
+        Component.__init__(self, 'robots', 'pr2')
         
         self.head = None
         self.l_arm = None
