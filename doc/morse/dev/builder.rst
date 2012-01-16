@@ -170,10 +170,8 @@ You can modify the game-properties of any components within Python
 
 .. code-block:: python
 
-    sick = Sensor('sick')
-    sick.properties(resolution = 1)
-    cam = Sensor('video_camera')
-    cam.properties(cam_width = 128, cam_height = 128)
+    camera = Sensor('video_camera')
+    camera.properties(cam_width = 128, cam_height = 128)
 
 Middleware configuration
 ++++++++++++++++++++++++
