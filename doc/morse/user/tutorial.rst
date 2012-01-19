@@ -19,7 +19,7 @@ a ``.blend`` file. There is no previous Blender knowledge necessary to construct
 a simulation scene.
 
 .. note:: The end result of this tutorial should be a file similar to the one at:
-    examples/tutorials/tutorial-1-sockets.py
+    ``$MORSE_ROOT/share/morse/examples/tutorials/tutorial-1-sockets.py``
 
 Create the script
 -----------------

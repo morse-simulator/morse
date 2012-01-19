@@ -44,3 +44,18 @@ These tutorials provide more in-depth explanations of how to setup simulations w
     :maxdepth: 1
 
     user/advanced_tutorials/*
+
+Blender specific instructions
+-----------------------------
+
+Since MORSE is completely built over Blender, it is important to know some of its functionality.
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    user/blender_tutorials/*
+
+
+
+
