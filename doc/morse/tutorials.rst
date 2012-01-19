@@ -1,10 +1,10 @@
 Tutorials 
 =========
 
-The MORSE Workflow 
-------------------
+General Workflow description
+----------------------------
 
-How to build a complete simulation scenario, from the creation of a custom
+This section will describe how to build a complete simulation scenario, from the creation of a custom
 robot with predefined sensors and actuators to the complete scene, including
 other robots or humans.
 

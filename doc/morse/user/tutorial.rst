@@ -18,7 +18,8 @@ The end result is a Python script that can be executed from MORSE to generate
 a ``.blend`` file. There is no previous Blender knowledge necessary to construct
 a simulation scene.
 
-cf. examples/morse/scenarii/tutorial-1-sockets.py
+.. note:: The end result of this tutorial should be a file similar to the one at:
+    examples/tutorials/tutorial-1-sockets.py
 
 Create the script
 -----------------
@@ -55,7 +56,7 @@ The robot is the base where we will install other sensors and actuators.
 
 Append an actuator
 ++++++++++++++++++
-We'll add a **v, omega** actuator. This one controls the robot by changing the linear and
+We'll add a :doc:`v, omega <actuators/v_omega>` actuator. This one controls the robot by changing the linear and
 angular velocity of the movement.
 
 .. code-block:: python
@@ -66,7 +67,7 @@ angular velocity of the movement.
 
 Append a Pose sensor
 +++++++++++++++++++++++++
-We'll add the **Pose** sensor, which provides us with the location and rotation of the robot.
+We'll add the :doc:`Pose <sensors/pose>` sensor, which provides us with the location and rotation of the robot.
 The data it sends back is the *(x, y, z)* coordinates, and the *(yaw, pitch, roll)* orientation.
 
 .. code-block:: python
@@ -105,6 +106,7 @@ by using the methods ``aim_camera`` and ``place_camera``.
 .. code-block:: python
 
     env = Environment('indoors-1/indoor-1')
+    env.place_camera([5, -5, 6])
     env.aim_camera([1.0470, 0, 0.7854])
 
 
@@ -153,7 +155,7 @@ The format of these commands is simple, they are composed of four parts:
 #. The name of the service. These vary for each component, and are listed in the :doc:`component library <../components_library>` section
 #. The list of parameters for the function. Must be enclosed in brackets and separated by commas
 
-Try giving the **Motion_Controller** different speeds, and asking the **Pose** at different locations.
+Try giving the **Motion_Controller** different speeds, and querying the **Pose** sensor at different locations.
 Finally exit the simulation, by pressing :kbd:`esc` on the Blender window.
 You can save your scene as a Blender file, and then run it directly using **morse**.
 To close Blender, press :kbd:`Ctrl-q`, then :kbd:`enter`.
@@ -161,5 +163,8 @@ To close Blender, press :kbd:`Ctrl-q`, then :kbd:`enter`.
 Go further
 ----------
 
-If you want to learn more about the MORSE-builder API, see the
+You can try to add different components to the robot, by experimenting with the
+various objects available in the component library.
+
+Also, if you want to learn more about the MORSE-builder API, see the
 :doc:`builder documentation <../../../../dev/builder>`.

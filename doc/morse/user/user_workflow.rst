@@ -3,7 +3,7 @@ The MORSE user workflow
 
 The general steps to follow to do a simulation in MORSE are the following:
 
-#. Write a Python script with the description of the robot and scenario, using the Builder API. The file must specify:
+#. Write a Python script with the description of the robot and scenario, using the :doc:`Builder API <../dev/builder>`. The file must specify:
 
     - The robots
     - The sensors and actuators
@@ -16,13 +16,13 @@ The general steps to follow to do a simulation in MORSE are the following:
   
 #. Save the new scene: Press :kbd:`F2` and enter a new name for the Blender file
 
-#. Prepare the middleware environments (in the case of YARP or Pocolibs) outside of Blender
+#. Initialise the middleware environments (in the case of YARP or Pocolibs) outside of Blender
 
 #. Start the simulation: Place your mouse inside the 3D view of Blender and press :kbd:`p`
 
 #. Look at the terminal window to check that everything started correctly
 
-#. Start the client programs that will connect with the simulator
+#. Start the client programs that will connect with the simulator, and carry out your simulation experiment
 
 #. Finish the simulation by pressing :kbd:`Esc`
 
