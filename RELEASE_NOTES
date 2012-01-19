@@ -19,7 +19,7 @@ GUI
 Middlewares
 -----------
 
-- Support of ROS services
+- Support of ROS services. Partial support for ROS actions (cf commit 02fda)
 - The long-standing issue with the socket server (bug #162) has been solved. It
   is now possible to listen to a socket stream without prior initialization.
 

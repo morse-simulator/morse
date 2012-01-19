@@ -1,24 +1,97 @@
 General TODO list for MORSE
 ---------------------------
 
-=================
-   TARGET 0.5
-==================
+==============
+ TARGET 0.5
+==============
 
 General
 -------
 
-- Introduce a mean to externally control time, by pacing the game engine time
-  (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th in
-  blender-robotics). Add support to pause the simulation.
-- Export simulator time
-- Fix the physical properties of robot to enable velocity control (cf commit 8503c9)
-- define a method to select the control of robots using position or velocity
+- Check version Blender < 2.62 (Severin)
+
+Multi-node
+----------
+
+- Document time synchronization (Gilberto)
+- Move the socket multinode server to bin/ (Gilberto)
+- Add the corresponding man page (Gilberto)
+
+Bindings
+--------
+
+- Install pymorse (Severin)
 
 Testing
 -------
 
-- Automatic testing of MORSE via automatically generated testing scene (testing framework: already done)
+- Test pymorse presence before running tests (Arnaud)
+- add tests for:
+  * (v,w) actuator (Gilberto)
+  * waypoint actuator (Gilberto)
+  * semantic camera (Severin)
+  * laser scanner (Arnaud)
+  * odometry (Arnaud)
+
+Components
+----------
+
+- Fix bug in odometry sensor (Gilberto)
+
+Packaging
+---------
+
+- Add package(s) for pymorse
+
+Installation
+------------
+
+- Install the add-ons in  $PREFIX/share/morse/blender/addons (Arnaud)
+- Update documentation to configure Blender to find these addons (File > Uesr Preferences > File) (Gilberto/Arnaud)
+
+Documentation
+-------------
+
+- Add docstrings to all modules (everyone)
+
+Misc
+----
+
+- Bug 189: Most of scenarii and tutorials are broken in current.
+
+HRI
+---
+
+- Bug 188: Builder Script - Erros when adding Pose Sensor to Human
+- Check cameras and lights are required in human model
+
+PR2
+---
+
+- Update TODO.pr2 list
+- Fix path in pr2extension.py
+
+Public Relations
+----------------
+
+- Fresh screenshots!
+- Fresh videos!
+
+==============
+ NEXT TARGETS
+==============
+
+
+General
+-------
+
+[PARTIAL] - Introduce a mean to externally control time, by pacing the game
+	engine time (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th
+	in blender-robotics). Add support to pause the simulation. Currently, time
+	synchronization only implemented in multinode mode.
+- Export simulator time + test it
+[?] - Fix the physical properties of robot to enable velocity control (cf commit 8503c9)
+[?] - define a method to select the control of robots using position or velocity
 
 Collada
 -------
@@ -28,20 +101,15 @@ Collada
 Middleware
 ----------
 
-- add support for actions through ROS middleware
+[PARTIAL] - add support for actions through ROS middleware (cf commit 02fda)
 
 - support general mapping of free-function services to any middleware (currently
   works only for free-function services declared for the 'simulation' pseudo-
   component)
 
-Architecture
-------------
-
-- make clear how components access other components? (eg: the cameras need the
-  position of the robot) -> need refinements: what is the general use case?
-
 Simulation supervision
 ----------------------
+
 - Introduce means to define scenarios with controlled dynamic events (through
   requests and/or a simple scripting API). Requires a notion of timeline (in
   the API? in the simulator?)
@@ -53,25 +121,20 @@ Components
 by allowing the designer to paste markers in the scene whose position will be
 exported
 
-- "Point Cloud" sensors: generate 3D depth images to simulate either
+[WIP] - "Point Cloud" sensors: generate 3D depth images to simulate either
 stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define mofifiers that sample the data according
 to a given sensor geometry.
 
-- PR2: what is done? what is missing?
+- PR2: cf TODO.pr2
 
-Add-ons
--------
+[PARTIAL] - Support for 4-wheeled vehicles (cf https://github.com/pierriko/morse/tree/experimental_wjwwood)
 
-- Install the add-ons in  ~/.blender/$version/scripts/addons
+
 
 ================
  OTHERS and MISC
 ================
-
-Installation
-------------
-- Add rules in CMakeLists to avoid copying backup files of python scripts (eg.: ".sick.py.swp")
 
 GUI
 ---
@@ -94,7 +157,6 @@ Frame transformations
 - Geo-referenced frames for initial geographic data (define and store a frame
   transformation between the Blender reference frame and an abosolute
   geo-reference frame)
-- Camera geometry: associate a projection matrix to each camera
 - Respect the usual standards (e.g. for cameras), define and document the other
   choices
 
@@ -109,15 +171,6 @@ Architecture
 Simulated component
 -------------------
 - Simulation of wireless communication between robots: delay, lost of connection, noise...
-
-Linking issues
---------------
-- when properties are added in linked components (eg, cameras),
-the new properties don't show up in the scene that import these components.
-
-- A lot of room for improvement regarding the general process of linking a
-robot component into a scene. Issue with making stuff 'local', lacking a
-good GUI, when opening a .blend file, it's not clear what should be imported...
 
 Other stuff 
 -----------
