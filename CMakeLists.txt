@@ -71,8 +71,6 @@ if (BUILD_HLA_SUPPORT)
 endif(BUILD_HLA_SUPPORT)
 
 ADD_SUBDIRECTORY(src)
-enable_testing()
-ADD_SUBDIRECTORY(testing)
 
 IF(BUILD_CORE_SUPPORT)
 INSTALL (DIRECTORY data examples addons
@@ -97,6 +95,20 @@ INSTALL(PROGRAMS
 	    )
 ENDIF()
 
+
+###### Testing ######
+EXECUTE_PROCESS(COMMAND
+				${PYTHON3_EXECUTABLE} -c "import pymorse"
+								RESULT_VARIABLE PYTHON_ERR
+								OUTPUT_QUIET
+								ERROR_QUIET
+				)
+IF (PYTHON_ERR)
+	MESSAGE(WARNING "Can't run test, pymorse is required but cannot be found")
+ELSE()
+	enable_testing()
+	ADD_SUBDIRECTORY(testing)
+ENDIF()
 
 IF (BUILD_DOC_SUPPORT)
 ### Doc target ###

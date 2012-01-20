@@ -25,7 +25,6 @@ Bindings
 Testing
 -------
 
-- Test pymorse presence before running tests (Arnaud)
 - add tests for:
   * (v,w) actuator (Gilberto)
   * waypoint actuator (Gilberto)
