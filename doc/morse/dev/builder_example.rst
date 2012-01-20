@@ -65,7 +65,6 @@ You can modify the game-properties of any components within Python
 .. code-block:: python
 
     sick = Sensor('sick')
-    sick.properties(resolution = 1)
     cam = Sensor('video_camera')
     cam.properties(cam_width = 128, cam_height = 128)
 
@@ -157,7 +156,6 @@ Example
     sick = Sensor('sick')
     sick.translate(x=0.18,z=0.94)
     atrv.append(sick)
-    sick.properties(resolution = 1)
 
     # Append a camera
     cam = Sensor('video_camera')
