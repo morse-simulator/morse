@@ -226,6 +226,8 @@ class Component(AbstractComponent):
         elif calling_module == 'calling.actuator_action':
             self.properties(Component_Tag = True, Path = 'morse/core/actuator',\
                 Class = 'MorseActuatorClass')
+        else:
+            logger.warning(self.name + ": unknown category: " + calling_module)
 
         # add Game Logic sensor and controller to simulate the component
         bpy.ops.object.select_all(action = 'DESELECT')
