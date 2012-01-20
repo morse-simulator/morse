@@ -5,11 +5,6 @@ General TODO list for MORSE
  TARGET 0.5
 ==============
 
-General
--------
-
-- Check version Blender < 2.62 (Severin)
-
 Multi-node
 ----------
 
@@ -83,6 +78,7 @@ Public Relations
 General
 -------
 
+- Support for Blender >= 2.62
 [PARTIAL] - Introduce a mean to externally control time, by pacing the game
 	engine time (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th
 	in blender-robotics). Add support to pause the simulation. Currently, time

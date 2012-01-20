@@ -34,7 +34,7 @@ STRICT_MAX_PYTHON_VERSION = "4.0"
 #Blender version must be egal or bigger than...
 MIN_BLENDER_VERSION = "2.59"
 #Blender version must be smaller than...
-STRICT_MAX_BLENDER_VERSION = "3"
+STRICT_MAX_BLENDER_VERSION = "2.62"
 
 #Unix-style path to the MORSE default scene, within the prefix
 DEFAULT_SCENE_PATH = "share/morse/data/morse_default.blend"

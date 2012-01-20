@@ -33,7 +33,7 @@ When running morse
 
     which: no blender in (/usr/lib/mpich2/bin:/usr/lib/ccache:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin)
     * Could not find a correct Blender executable, neither in the path or in MORSE
-    prefix. Blender >= 2.59 and < 3 is required to run MORSE.
+    prefix. Blender >= 2.59 and < 2.62 is required to run MORSE.
     You can alternatively set the $MORSE_BLENDER environment variable to point to
     a specific Blender executable
 

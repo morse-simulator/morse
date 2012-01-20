@@ -1,9 +1,10 @@
-MORSE 0.5.x
-===========
+MORSE 0.5
+=========
 
 General
 -------
 
+- MORSE 0.5 requires Blender >= 2.59 and < 2.62 (because of some changes in the matrices handling - support for Blender >= 2.62 is expected for next release)
 - Lots of cleaning (middleware empties have been removed)
 - The command line ``morse run {scene.blend|scene.py}`` now works as expected (ie,
   starts the simulation. Optional arguments can be added and are passed to the script
