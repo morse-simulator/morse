@@ -112,9 +112,9 @@ class SocketRequestManager(RequestManager):
         try:
             inputready, outputready, exceptready = select.select(sockets, sockets, [], 0) #timeout = 0 : Never block, just poll
         except select.error:
-           pass
+            pass
         except socket.error:
-           pass
+            pass
 
         for i in inputready:
             if i == self._server:
@@ -176,10 +176,10 @@ class SocketRequestManager(RequestManager):
 
 
                 except MorseRPCInvokationError as e:
-                        if i in self._results_to_output:
-                            self._results_to_output[i].append((id, (status.FAILED, e.value)))
-                        else:
-                            self._results_to_output[i] = [(id, (status.FAILED, e.value))]
+                    if i in self._results_to_output:
+                        self._results_to_output[i].append((id, (status.FAILED, e.value)))
+                    else:
+                        self._results_to_output[i] = [(id, (status.FAILED, e.value))]
         
         if self._results_to_output:
             for o in outputready:

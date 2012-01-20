@@ -21,9 +21,9 @@ def init_extra_module(self, component_instance, function, mw_data):
     logger.info('ROS subscriber initialized')
 
 def callback_wp(data, component_instance):
-        """ this function is called as soon as Twist messages are published on the specific topic """
-        component_instance.local_data["emit"] = data.data
+    """ this function is called as soon as Twist messages are published on the specific topic """
+    component_instance.local_data["emit"] = data.data
 
 def read_switch(self, component_instance):
-        """ dummy function for Waypoints """
+    """ dummy function for Waypoints """
 

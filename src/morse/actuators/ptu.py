@@ -72,10 +72,9 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def get_pan_tilt(self):
-       """
-           Return the current angles for the pan and tilt segments.
-       """
-       return self._current_pan, self._current_tilt
+        """ Return the current angles for the pan and tilt segments. """
+
+        return self._current_pan, self._current_tilt
 
     def default_action(self):
         """ Apply rotation to the platine unit """

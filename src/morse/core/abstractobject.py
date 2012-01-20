@@ -66,8 +66,8 @@ class MorseAbstractObject(object):
 
         """
         if self.on_completion:
-             self.on_completion((status, result))
-             self.on_completion = None
+            self.on_completion((status, result))
+            self.on_completion = None
 
     def interrupt(self):
         """ This method is automatically invoked by the component when a

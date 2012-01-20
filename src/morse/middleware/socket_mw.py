@@ -41,9 +41,9 @@ class MorseSocketServ:
         try:
             inputready, outputready, exceptready = select.select(sockets, sockets, [], 0)
         except select.error:
-           pass
+            pass
         except socket.error:
-           pass
+            pass
 
         if self._server in inputready:
             sock, addr = self._server.accept()
@@ -62,9 +62,9 @@ class MorseSocketServ:
         try:
             inputready, outputready, exceptready = select.select(sockets, [], [], 0)
         except select.error:
-           pass
+            pass
         except socket.error:
-           pass
+            pass
 
         for i in inputready:
             if i == self._server:

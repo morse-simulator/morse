@@ -17,10 +17,10 @@ def init_extra_module(self, component_instance, function, mw_data):
     self._topics.append(rospy.Subscriber(parent_name + "/" + component_name, Twist, callback_wp, component_instance))
 
 def callback_wp(data, component_instance):
-        """ this function is called as soon as Twist messages are published on the specific topic """
-        component_instance.local_data["v"] = data.linear.x
-        yaw = data.angular.z
-        component_instance.local_data["w"] = yaw 
+    """ this function is called as soon as Twist messages are published on the specific topic """
+    component_instance.local_data["v"] = data.linear.x
+    yaw = data.angular.z
+    component_instance.local_data["w"] = yaw 
         
 def read_twist(self, component_instance):
-        """ dummy function for Waypoints """
+    """ dummy function for Waypoints """

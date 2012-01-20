@@ -142,10 +142,10 @@ class YarpRequestManager(RequestManager):
 
 
                 except MorseRPCInvokationError as e:
-                        if port in self._results_to_output:
-                            self._results_to_output[port].append((id, (status.FAILED, e.value)))
-                        else:
-                            self._results_to_output[port] = [(id, (status.FAILED, e.value))]
+                    if port in self._results_to_output:
+                        self._results_to_output[port].append((id, (status.FAILED, e.value)))
+                    else:
+                        self._results_to_output[port] = [(id, (status.FAILED, e.value))]
         
         if self._results_to_output:
             for component_name, port in self._yarp_request_ports.items():

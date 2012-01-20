@@ -105,10 +105,10 @@ class MorseServices:
         
     def get_request_managers(self, component):
         if not component in self._service_mappings:
-           logger.error("no service manager is available for the " + component + " component! This error " +  \
+            logger.error("no service manager is available for the " + component + " component! This error " +  \
                 "can have several causes. Maybe you forgot to add the middleware 'empty', or " + \
                 "you are using a middleware that does not currently support requests. ")
-           raise MorseServiceError("No request manager has been mapped to the component %s" % component)
+            raise MorseServiceError("No request manager has been mapped to the component %s" % component)
         
         return self._service_mappings[component]
 
