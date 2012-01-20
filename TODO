@@ -12,11 +12,6 @@ Multi-node
 - Move the socket multinode server to bin/ (Gilberto)
 - Add the corresponding man page (Gilberto)
 
-Bindings
---------
-
-- Install pymorse (Severin)
-
 Testing
 -------
 

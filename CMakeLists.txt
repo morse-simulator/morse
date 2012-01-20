@@ -12,6 +12,8 @@ option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
 option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" OFF)
 option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." OFF)
 
+option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." OFF)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
@@ -95,6 +97,7 @@ INSTALL(PROGRAMS
 	    )
 ENDIF()
 
+ADD_SUBDIRECTORY(bindings)
 
 ###### Testing ######
 EXECUTE_PROCESS(COMMAND
@@ -104,7 +107,7 @@ EXECUTE_PROCESS(COMMAND
 								ERROR_QUIET
 				)
 IF (PYTHON_ERR)
-	MESSAGE(WARNING "Can't run test, pymorse is required but cannot be found")
+	MESSAGE(WARNING "Can't run test, pymorse is required but cannot be found.\nYou may want to install it first.")
 ELSE()
 	enable_testing()
 	ADD_SUBDIRECTORY(testing)
