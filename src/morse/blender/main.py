@@ -127,8 +127,9 @@ def create_dictionaries ():
 
     # Get the list of passive interactive objects.
 
-    # These objects have a 'Object' property set to true + several other optional
-    # properties. See the documentation for the up-to-date list
+    # These objects have a 'Object' property set to true
+    # (plus several other optional properties).
+    # See the documentation for the up-to-date list
     # (doc/morse/user/others/passive_objects.rst) -- or read the code below :-)
     for obj in scene.objects:
         # Check the object has an 'Object' property set to true
@@ -249,6 +250,15 @@ def create_dictionaries ():
                 GameLogic.mwDict[obj] = instance
                 logger.info("\tMiddleware '%s' found" % obj)
             else:
+                logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: Middleware '""" + obj.name + """' module could not be found!
+    
+    Make sure you selected the required middleware for
+    install from the cmake configuration.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                """)
+
                 return False
     
     # Will return true always (for the moment)
@@ -313,14 +323,27 @@ def create_instance(obj, parent=None):
     module_name = re.sub('/', '.', source_file)
     logger.debug("Path to Component Class: %s" % module_name)
     klass = get_class(module_name, obj['Class'])
-    return klass(obj, parent)
+    if klass != None:
+        return klass(obj, parent)
+    else:
+        return None
 
 def create_mw(mw):
     """ Creates an instances of a middleware class.
     """
     modulename, classname = mw.rsplit('.', 1)
     klass = get_class(modulename, classname)
-    return klass()
+    if klass != None:
+        return klass()
+    else:
+        logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ERROR: Middleware '""" + modulename + """' module could not be found!
+    
+    Make sure you selected the required middleware for
+    install from the cmake configuration.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        """)
 
 def get_components_of_type(classname):
     components = []
