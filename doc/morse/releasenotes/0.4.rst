@@ -1,0 +1,36 @@
+What's new in MORSE 0.4.x?
+==========================
+
+The MORSE 0.4.x series has been code-named the ``multi-node release``.
+
+General changes
+---------------
+- Full support for Blender 2.59 and Python 3.2. See the :doc:`updated installation instructions <user/installation>`.
+- A new, reorganized, documentation. You are currently browsing it :-) 
+
+Architectural changes
+---------------------
+- Added infrastructure for :doc:`multi-node <multinode>` functionality
+- New :doc:`Builder API <dev/builder>` to create scene from Python description. 
+  This allows powerful programmable scene creation, much lighter scenario files, and
+  easier to track changes (since its a text format, instead of binary Blender files).
+- Changed directory structure and file names for ease of use of the Builder API.
+- Pervasive use the Python logging interface
+
+Middlewares
+-----------
+- Added support for multiple middleware bindings per component
+- Added support for services through Pocolibs middleware
+- ROS support for the robot's cameras
+- Added support for :doc:`HLA <user/installation/hla>` middleware
+- Added support for :doc:`MOOS <user/installation/mw/moos>` middleware
+
+New components
+--------------
+- Added a Hummer robot that implements the Blender Vehicle Wrapper
+- Added a ``steer_force`` actuator to control the Hummer robot
+- Added an ``armature_actuator`` to control the bone structure in the LWR and PR2 robot arms
+
+User interface
+--------------
+- Add a help display with the keyboard shortcuts available during simulation. Activated by pressing the ``H`` key
