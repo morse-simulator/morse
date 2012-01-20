@@ -17,7 +17,8 @@ The `official Blender documentation on add-ons <http://wiki.blender.org/index.ph
 explains how to install the Python scripts, either by hand or using the ``User preferences`` GUI.
 
 The add-ons provided by MORSE are located in the source directory 
-(where you downloaded the rest of MORSE), under the folder ``addons``.
+(where you downloaded the rest of MORSE), under the folder ``addons``,
+or are installed in ``${PREFIX}/share/morse/addons``.
 
 Currently available add-ons
 ---------------------------

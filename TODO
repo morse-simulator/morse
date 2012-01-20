@@ -46,7 +46,6 @@ Packaging
 Installation
 ------------
 
-- Install the add-ons in  $PREFIX/share/morse/blender/addons (Arnaud)
 - Update documentation to configure Blender to find these addons (File > Uesr Preferences > File) (Gilberto/Arnaud)
 
 Documentation

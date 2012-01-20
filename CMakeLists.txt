@@ -75,7 +75,7 @@ enable_testing()
 ADD_SUBDIRECTORY(testing)
 
 IF(BUILD_CORE_SUPPORT)
-INSTALL (DIRECTORY data examples
+INSTALL (DIRECTORY data examples addons
 	     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/morse
          REGEX .*blend.$ EXCLUDE
          REGEX .*py.$ EXCLUDE
