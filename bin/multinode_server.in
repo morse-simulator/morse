@@ -1,3 +1,4 @@
+#! @PYTHON3_EXECUTABLE@
 # Based on an example from:
 #  http://ilab.cs.byu.edu/python/threadingmodule.html
 
@@ -17,8 +18,11 @@ import time
 counter = 0
 client_counter = 0
 client_list = {}
-robot_list = {}
+robot_dict = {}
 
+paused = False
+
+sync_delay = 0.0
 
 class Server:
     def __init__(self):
@@ -45,6 +49,8 @@ class Server:
             sys.exit(1)
 
     def run(self):
+        global paused
+
         self.open_socket()
         input = [self.server,sys.stdin]
         running = 1
@@ -53,22 +59,33 @@ class Server:
 
             for s in inputready:
 
+                # handle the server socket
                 if s == self.server:
-                    # handle the server socket
                     c = Client(self.server.accept())
                     c.start()
                     self.threads.append(c)
 
+                # handle standard input
                 elif s == sys.stdin:
-                    # handle standard input
-                    junk = sys.stdin.readline()
-                    running = 0
+                    data = sys.stdin.readline()
+                    data = data.rstrip()
+                    if data == 'p':
+                        paused = not paused
+                        if paused:
+                            print ("SIMULATION PAUSED")
+                        else:
+                            print ("CONTINUING SIMULATION")
+                            for c in self.threads:
+                                c.broadcast_positions()
+                    else:
+                        print ("Terminating simulation server. Good bye!")
+                        running = 0
 
         # close all threads
-
         self.server.close()
         for c in self.threads:
             c.join()
+
 
 class Client(threading.Thread):
     def __init__(self, xxx_todo_changeme1):
@@ -79,12 +96,12 @@ class Client(threading.Thread):
         self.size = 1024
         self.start_time = time.time()
 
+
     def run(self):
         global counter
         global client_counter
         global client_list
-        global robot_list
-
+        global robot_dict
 
         running = 1
         while running:
@@ -104,34 +121,40 @@ class Client(threading.Thread):
                     #client_list[client_name] = True
                 client_list[client_name] = True
 
-
-                # Build/update the list of robots from the data received from all the clients
+                # Build/update the list of robots from
+                #  the data received from all the clients
                 for robot_name, robot_position in client_robot_list.items():
-                    robot_list[robot_name] = robot_position
+                    robot_dict[robot_name] = robot_position
 
-                response = pickle.dumps(robot_list)
-
-                #print ("New robot list: ", robot_list)
-                #print ("Client %d, connected from %s, has been served" % (counter, self.address))
-
-                reception_time = time.time() - self.start_time
-                print ("Received data at time: %.6f" % reception_time)
-                #time.sleep(0.5) # Already very slow
-                self.client.send(response)
-
-                """
-                if self._clients_have_replied (client_list):
-                    self.client.send(response)
-                    # Reset the counter for the client updates
-                    for key in client_list.keys():
-                        client_list[key] = False
-                else:
-                    print ("Still waiting for some clients")
-                """
+                self.broadcast_positions()
 
             else:
                 self.client.close()
                 running = 0
+
+
+    def broadcast_positions(self):
+        """ Send the updated robot positions to all the connected clients """
+        response = pickle.dumps(robot_dict)
+
+        #print ("New robot list: ", robot_dict)
+        #print ("Client %d, connected from %s, has been served" % (counter, self.address))
+
+        reception_time = time.time() - self.start_time
+        print ("Received data at time: %.6f" % reception_time)
+        time.sleep(sync_delay)
+        if not paused:
+            self.client.send(response)
+
+        """
+        if self._clients_have_replied (client_list):
+            self.client.send(response)
+            # Reset the counter for the client updates
+            for key in client_list.keys():
+                client_list[key] = False
+        else:
+            print ("Still waiting for some clients")
+        """
 
 
     def _clients_have_replied (self, client_list):
@@ -145,7 +168,16 @@ class Client(threading.Thread):
 
 
 if __name__ == "__main__":
+    sync_delay = 0.0
     print ("Simulation Manager started...")
-    print ("Enter any input in this terminal to terminate the server")
+    print ("Type 'p' and ENTER to pause the simulation, and the same to continue")
+    print ("Enter any other input in this terminal to terminate the server")
+
+    argc = len(sys.argv)
+
+    if argc == 2:
+        sync_delay = float(sys.argv[1])
+
+    print ("Delay between synchronisation messages is %.2f seconds" % sync_delay)
     s = Server()
     s.run()
