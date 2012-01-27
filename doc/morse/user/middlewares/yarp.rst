@@ -67,7 +67,7 @@ documentation.
 Service interface
 -----------------
 
-MORSE components providing `services <../../dev/services>` can expose this interface using YARP ports.
+MORSE components providing :doc:`services <../../dev/services>` can expose this interface using YARP ports.
 
 .. note:: Services handled with YARP will create two ports, named:
   ``/ors/services/[component_name]/[service_name]/request`` and
@@ -83,7 +83,7 @@ The (ASCII) protocol of the requests is simple::
 - ``component`` is the name of the component you want to invoke the service on.
 
 .. note::
-  Services that control the whole simulator belongs to the special component ``simulation``.
+  Services that control the whole simulator belong to the special component ``simulation``.
 
 - ``service``: the name of the request to invoke.
 - ``parameters`` (can be omitted if the request takes no argument): request

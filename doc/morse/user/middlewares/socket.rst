@@ -7,7 +7,7 @@ Data-stream interface
 
 A simple method to export data through the network. The MORSE sockets
 middleware will create one socket for each component. The service
-``simulation.list_streams'' returns the list of available data streams, and the
+``simulation.list_streams`` returns the list of available data streams, and the
 service ``simulation.get_stream_port(<stream name>)`` returns the port number
 associated to this stream.
 
@@ -32,11 +32,11 @@ The (ASCII) protocol is simple::
 - ``component`` is the name of the component you want to invoke the service on.
 
 .. note::
-  Services that control the whole simulator belongs to the special component ``simulation``.
+  Services that control the whole simulator belong to the special component ``simulation``.
 
 - ``service``: the name of the request to invoke.
 - ``parameters`` (can be omitted if the request takes no argument): request
-  arguments in JSON format. Arguments must be enclosed in a list (ie, inside
+  arguments in JSON format. Arguments must be enclosed in a list (*i.e.*, inside
   brackets).
 
 MORSE answer follows this model::
@@ -58,7 +58,7 @@ Example::
 	port is busy, MORSE will try to connect to the next 10 ports {4001-4010}
 	before giving up.
 
-.. note:: Why 4000?? That's all the question! A free beer for the first who finds.
+.. note:: Why 4000?? That's a good question! A free beer for the first one who finds out.
 
 The socket service interface is implemented in :py:mod:`morse.middleware.socket_request_manager`.
 

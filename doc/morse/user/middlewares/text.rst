@@ -28,12 +28,9 @@ is printed with this format::
         dpitch = -0.000182
         droll = 0.002484
 
-There is a line that starts with the string '==>', and shows the position and
-orientation of the robot at the moment of capturing the data. It also indicates
-the time, measured in seconds, since the simulation was started.
+- The first line starts with the string '==>', and shows the position and orientation of the robot at the moment of capturing the data. It also indicates the time, measured in seconds, since the simulation was started.
 
-The following lines show the contents of the ``local_data`` dictionary of the
-sensor. In the example, the data from the :doc:`Odometry sensor <../sensors/odometry>`.
+- The following lines show the contents of the ``local_data`` dictionary of the sensor, each line containing one (key, value) pair. In the example, the data from the :doc:`Odometry sensor <../sensors/odometry>`.
 
 Files
 -----

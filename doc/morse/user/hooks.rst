@@ -18,7 +18,7 @@ which is a common data structure to all the components.
 MORSE components have a dictionary called ``local_data`` that has the names
 of the variables as keys, and stores the values of each variable. The values
 stored in this dictionary can be of any type allowed in Python: String, Integer,
-Float, Lists or Dictionaries.
+Float, List or Dictionary.
 
 Data modifiers can also be applied to the ``local_data`` dictionary, to alter 
 the data to fit the requirements of the simulation scenario.
@@ -27,8 +27,11 @@ through the middleware. The opposite happens with actuators, which first read
 data through middlewares and then change it using modifiers, before using it
 inside of Blender.
 
-A component can be connected to more than one middleware, and MORSE will keep a communication channel for each middleware and export the data through all of them when required.
-Components can also use more than one modifier. These will change the data in the same order as they are listed in the configuration (see below).
+A component can be connected to more than one middleware, and MORSE will keep
+a communication channel for each middleware and export the data through all of
+them when required.
+Components can also use more than one modifier. These will change the data in
+the same order as they are listed in the configuration (see below).
 
 Component services are also configured in a way similar to middlewares and
 modifiers, since they also make use of the ``local_data`` dictionary. However,
@@ -45,13 +48,21 @@ should be edited from a **Text Editor** window in Blender.
 It consists of three dictionaries indexed by the name of the components
 (they are all optional):
 
-- ``component_mw``: Lists which middlewares are bound to the specific 
-  component. The value of the dictionary is either a list of strings (for only one middleware) or a list of lists (describing the binding to several middlewares).
+- ``component_mw``: Lists which middlewares are bound to specific components.
+  The value of the dictionary is either a list of strings (for only one
+  middleware) or a list of lists (describing the binding to several middlewares).
   In both cases, each list describing a middleware consists of at least 2,
   strings, with the information detailed below:
   
-  - The first element is the name of the Middleware, and must be written exactly
-    as the name of the Empty object that represents the Middleware in the scene.
+  - The first element is the *fully qualified class name* of the Middleware, using
+    the whole path to the corresponding Python script in MORSE. There are only
+    a handful of options for this value at the moment:
+
+    - ``morse.middleware.ros_mw.ROSClass``
+    - ``morse.middleware.socket_mw.MorseSocketClass``
+    - ``morse.middleware.yarp_mw.MorseYarpClass``
+    - ``morse.middleware.pocolibs_mw.MorsePocolibsClass``
+    - ``morse.middleware.text_mw.TextOutClass``
 
   - The second item is the name of the function to be added to the component's
     action list. To determine which function to use, refer to the documentation
@@ -76,6 +87,7 @@ It consists of three dictionaries indexed by the name of the components
   representing a modifier. Thus a single component can have multiple modifiers changing
   its data in sequence, following the order given here.
   Each modifier list has two elements: the name of the modifier and the name of the function to use.
+  The format of these elements is the same as in ``component_mw``.
 
 Example:
 
@@ -83,12 +95,12 @@ Example:
 
     # Middleware binding for regular data exchange
     component_mw = {
-      "Gyroscope": [["Yarp", "post_message"]],
-      "GPS": [ ["Yarp", "post_message"], ["Socket", "post_message"] ],
-      "GPS.001": [["Yarp", "post_json_data", "morse/middleware/yarp/json_mod"]],
-      "Motion_Controller": [["Yarp", "read_message"]],
-      "Motion_Controller.001": [["Pocolibs", "read_genpos", "morse/middleware/pocolibs/actuators/genpos", "simu_locoSpeedRef"]],
-      "CameraMain": [["Yarp", "post_image_RGBA"]]
+      "Gyroscope": [["morse.middleware.yarp_mw.MorseYarpClass", "post_message"]],
+      "GPS": [["morse.middleware.yarp_mw.MorseYarpClass", "post_message"], ["morse.middleware.socket_mw.MorseSocketClass", "post_message"]],
+      "GPS.001": [["morse.middleware.yarp_mw.MorseYarpClass", "post_json_data", "morse/middleware/yarp/json_mod"]],
+      "Motion_Controller": [["morse.middleware.yarp_mw.MorseYarpClass", "read_message"]],
+      "Motion_Controller.001": [["morse.middleware.pocolibs_mw.MorsePocolibsClass", "read_genpos", "morse/middleware/pocolibs/actuators/genpos", "simu_locoSpeedRef"]],
+      "CameraMain": [["morse.middleware.yarp_mw.MorseYarpClass", "post_image_RGBA"]]
     }
 
     # Component service binding with a middleware
@@ -98,8 +110,8 @@ Example:
     
     # Modifier configuration
     component_modifier = {
-      "GPS.001": [ ["NED", "blender_to_ned"], ["UTM", "blender_to_utm"] ],
-      "Motion_Controller": [ ["NED", "ned_to_blender"] ]
+      "GPS.001": [ ["morse.modifiers.ned.MorseNEDClass", "blender_to_ned"], ["morse.modifiers.utm.MorseUTMClass", "blender_to_utm"] ],
+      "Motion_Controller": [ ["morse.modifiers.ned.MorseNEDClass", "ned_to_blender"] ]
     }
 
 
