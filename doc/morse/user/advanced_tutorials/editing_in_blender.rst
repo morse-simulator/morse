@@ -119,22 +119,26 @@ To give it movement instructions, you can do the following::
   telnet localhost 60000
   {"v": 2.0, "w": 1.0}
 
-The second line must be given when inside the telnet environment, and will instruct the robot to move at 2.0 m/s and rotate with an angular speed of 1.0 rad/s.
+The second line must be given when inside the telnet environment, and will
+instruct the robot to move at 2.0 m/s and rotate with an angular speed of
+1.0 rad/s.
 
+Of course, ``telnet`` is not the only way to interact with the simulation.
+You can connect with the socket ports from another program.
 
-.. warning:: The next procedure is currently not working. We are updating the client program to connect to MORSE using sockets
+As an example, we have provided a simple Python client program that you
+can use to test, and to guide you in creating your own programs.
+Just follow these instructions to try the client program:
+   
+#. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/morse/examples/clients/atrv/``
+#. Execute the command::
 
-    Use the example client program to test the bindings in the simulation
-    
-    #. On a separate terminal, navigate to the directory ``$MORSE_ROOT/share/morse/examples/clients/atrv/``
-    #. Execute the command::
-    
-        $ python socket_v_omega_client.py
-    
-    #. Press :kbd:`a` to give speed commands to the robot
-    #. Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1 rad/s), followed by :kbd:`enter` after each
-    #. The robot should start moving in MORSE
-    #. Press :kbd:`b` to print the readings of the **Pose** sensor exported by MORSE
-    #. Press :kbd:`q` to exit the client
-    
-    Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
+    $ python socket_v_omega_client.py
+
+#. Press :kbd:`a` to give speed commands to the robot
+#. Type linear (for instance 0.2 m/s) and angular speeds (for instance 0.1 rad/s), followed by :kbd:`enter` after each
+#. The robot should start moving in MORSE
+#. Press :kbd:`b` to print the readings of the **Pose** sensor exported by MORSE
+#. Press :kbd:`q` to exit the client
+
+Finally exit the simulation, by pressing :kbd:`esc` on the Blender window, then close Blender by pressing :kbd:`Ctrl-q`, then :kbd:`enter`.
