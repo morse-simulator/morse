@@ -1,11 +1,10 @@
 bl_info = {
     "name": "Morse Utils",
-    "description": "Utils for Morse Simulator. Generates a basic setup for \
-     interactable Objects, Doors and Drawers, so the human can use them",
+    "description": "Utils for Environment Creation for MORSE",
     "author": "Sebastian Schmidt",
-    "version": (0,4,99),
-    "blender": (2, 5, 0),
-    "api": 31236,
+    "version": (0,5,0),
+    "blender": (2, 61, 0),
+    "api": 39307,
     "location": "Logic",
     "warning": '',
     "wiki_url": "",
@@ -34,7 +33,13 @@ class MorseSwitchDialog(bpy.types.Operator):
     objs = {}
     inv_objs = {}
     
-    master = EnumProperty(name = "Switch",items = update)
+    try:
+        bpy.app.handlers.scene_update_post
+        handler_available = True
+        master = EnumProperty(name = "Switch",items = update)
+    except AttributeError:
+        handler_available = False
+        master = StringProperty(name = "Switch")
     on = BoolProperty(name = "On")
 
     def update_dict(self, context):
@@ -62,7 +67,7 @@ class MorseSwitchDialog(bpy.types.Operator):
             prop.name = 'Switch'
             prop.type = 'STRING'
 
-        self.assignProp(context, 'Switch', self.objs[self.master])
+        self.assignProp(context, 'Switch', self.objs[self.master] if self.handler_available else self.master)
 
         
         try:
@@ -76,7 +81,7 @@ class MorseSwitchDialog(bpy.types.Operator):
 
             self.assignProp(context, 'On', self.on)
         except KeyError:
-            pass
+            self.report({'INFO'}, "No object with this name - switch will not function in simulation")
 
         return{'FINISHED'}
             
@@ -85,7 +90,10 @@ class MorseSwitchDialog(bpy.types.Operator):
         obj = context.object
 
         if 'Switch' in obj.game.properties:
-            self.master = self.inv_objs[obj.game.properties['Switch'].value]
+            if self.handler_available:
+                self.master = self.inv_objs[obj.game.properties['Switch'].value]
+            else:
+                self.master = obj.game.properties['Switch'].value
 
         return context.window_manager.invoke_props_dialog(self)
     
@@ -205,6 +213,8 @@ class MorseObjectDialog(bpy.types.Operator):
             self.graspable = True
         if 'Type' in obj.game.properties:
             self.typeProp = obj.game.properties['Type'].value
+        else:
+            self.typeProp = "Object"
 
 
         
@@ -226,7 +236,7 @@ class MorseDrawerDialog(bpy.types.Operator):
     end_frame = IntProperty(name = "End Frame")
     open = BoolProperty(name = "Open")
 
-    if bpy.app.version > (2, 60, 0):
+    if bpy.app.version >= (2, 60, 0):
         direction = EnumProperty(name = "Generate Action",
                              items = [('one', 'No', 'one'),
                                       ('two', 'X+', 'two'),
@@ -235,6 +245,9 @@ class MorseDrawerDialog(bpy.types.Operator):
                                       ('five', 'Y-', 'five')])
 
         vec = {'two':(1.0, 0.0, 0.0), 'three':(-1.0, 0.0, 0.0), 'four':(0.0, 1.0, 0.0), 'five':(0.0, -1.0, 0.0)}
+    else:
+        direction = 'one'
+        # means no action generation
     
     def generate_action(self, endframe, direction):
         # create an action
@@ -292,7 +305,7 @@ class MorseDrawerDialog(bpy.types.Operator):
         obj.game.use_actor = True
 
         # generate action
-        if self.direction != 'one' and bpy.app.version > (2, 60, 0):
+        if self.direction != 'one':
             action = self.generate_action(self.end_frame,self.vec[self.direction])
         else:
             action = None
@@ -591,7 +604,10 @@ def register():
     bpy.utils.register_class(MorseSwitchDialog)
     bpy.utils.register_class(MorseLightDialog)
     bpy.utils.register_class(MorsePanel)
-    bpy.app.handlers.scene_update_post.append(update)
+    try:
+        bpy.app.handlers.scene_update_post.append(update)
+    except AttributeError:
+        pass
 def unregister():
     bpy.utils.unregister_class(MorseObjectDialog)
     bpy.utils.unregister_class(MorseDoorDialog)
@@ -599,5 +615,8 @@ def unregister():
     bpy.utils.unregister_class(MorseSwitchDialog)
     bpy.utils.unregister_class(MorseLightDialog)
     bpy.utils.unregister_class(MorsePanel)
-    bpy.app.handlers.scene_update_post.remove(update)
+    try:
+        bpy.app.handlers.scene_update_post.remove(update)
+    except AttributeError:
+        pass
     
