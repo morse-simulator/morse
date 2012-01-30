@@ -225,6 +225,38 @@ class MorseDrawerDialog(bpy.types.Operator):
     description = StringProperty(name="Description")
     end_frame = IntProperty(name = "End Frame")
     open = BoolProperty(name = "Open")
+
+    if bpy.app.version > (2, 60, 0):
+        direction = EnumProperty(name = "Generate Action",
+                             items = [('one', 'No', 'one'),
+                                      ('two', 'X+', 'two'),
+                                      ('three', 'X-', 'three'),
+                                      ('four', 'Y+', 'four'),
+                                      ('five', 'Y-', 'five')])
+
+        vec = {'two':(1.0, 0.0, 0.0), 'three':(-1.0, 0.0, 0.0), 'four':(0.0, 1.0, 0.0), 'five':(0.0, -1.0, 0.0)}
+    
+    def generate_action(self, endframe, direction):
+        # create an action
+        action = bpy.data.actions.new(name = bpy.context.object.name + 'Open')
+        bpy.context.object.animation_data_create()
+        bpy.context.object.animation_data.action = action
+        
+        # set starting keyframe
+        bpy.ops.anim.change_frame(frame = 0)
+        bpy.ops.anim.keyframe_insert(type = 'Location')
+        
+        # set endframe 
+        bpy.ops.anim.change_frame(frame = endframe)
+        dim = bpy.context.object.dimensions
+        translate_tuple = tuple(0.8 * dim[i] * direction[i] for i in range(0,3))    
+        bpy.ops.transform.translate(value = translate_tuple)
+        bpy.ops.anim.keyframe_insert(type = 'Location')
+        
+        
+        bpy.ops.anim.change_frame(frame = 0)
+        
+        return action
         
     def assignProp(self, context, name, value):
         prop = context.object.game.properties[name]
@@ -258,6 +290,12 @@ class MorseDrawerDialog(bpy.types.Operator):
         
         # make the drawer an actor
         obj.game.use_actor = True
+
+        # generate action
+        if self.direction != 'one' and bpy.app.version > (2, 60, 0):
+            action = self.generate_action(self.end_frame,self.vec[self.direction])
+        else:
+            action = None
         
         # set the logic to open and close the drawer if needed
         if 'Open' not in context.object.game.sensors:
@@ -278,6 +316,8 @@ class MorseDrawerDialog(bpy.types.Operator):
                 bpy.ops.logic.actuator_add(type = 'ACTION')
             act = context.object.game.actuators[-1]
             act.name = 'Open'
+            if action:
+                act.action = action
         
             contr.link(actuator=act)
         
@@ -300,6 +340,8 @@ class MorseDrawerDialog(bpy.types.Operator):
                 bpy.ops.logic.actuator_add(type = 'ACTION')
             act = context.object.game.actuators[-1]
             act.name = 'Close'
+            if action:
+                act.action = action
         
             contr.link(actuator=act)
         
