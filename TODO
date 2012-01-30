@@ -16,11 +16,9 @@ Testing
 -------
 
 - add tests for:
-  * (v,w) actuator (Gilberto)
   * waypoint actuator (Gilberto)
   * semantic camera (Severin)
-  * laser scanner (Arnaud)
-  * odometry (Arnaud)
+  * laser scanner (Gilberto)
 
 Components
 ----------
