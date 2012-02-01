@@ -11,7 +11,16 @@ middleware will create one socket for each component. The service
 service ``simulation.get_stream_port(<stream name>)`` returns the port number
 associated to this stream.
 
-Data is shared as JSON object, encoded in utf-8 strings.
+Data is shared as JSON object, encoded in utf-8 strings. As such, when
+exchanging data with a particular component using this middleware, it is
+necessary to create a similar data structure to the ``local_data`` dictionary
+in the component.
+For example, when using telnet to connect to a
+:doc:`waypoint actuator <../actuators/waypoint>`, you need to send a message
+like the following::
+
+  $ telnet localhost 6000
+  {'x':3.0, 'y':5.0, 'z':0.0, 'tolerance':0.5, 'speed':2.0}
 
 The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_mw`.
 
