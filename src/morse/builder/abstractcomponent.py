@@ -13,6 +13,12 @@ class Configuration(object):
     meant to be singleton (one static instance shared by all components)
     contains the configuration of the simulation.
     """
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Configuration, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.middleware = {}
         self.modifier = {}
