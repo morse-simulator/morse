@@ -12,24 +12,11 @@ import tempfile
 import subprocess
 
 from morse.testing.exceptions import MorseTestingError
-        
+
 class MorseTestRunner(unittest.TextTestRunner):
         
     def setup_logging(self):
-        # get the top logger
-        logger = logging.getLogger('morsetesting')
-        logger.setLevel(logging.DEBUG)
-
-        ch = logging.FileHandler("testing.log")
-        ch.setLevel(logging.DEBUG)
-
-        formatter = logging.Formatter('[%(asctime)s %(name)s (%(levelname)s)]   %(message)s')
-
-        ch.setFormatter(formatter)
-
-        logger.addHandler(ch)
-        
-
+       pass 
 
     def run(self, suite):
         if sys.argv[0].endswith('blender'):
@@ -53,8 +40,11 @@ class MorseTestCase(unittest.TestCase):
     # Make this an abstract class
     __metaclass__ = ABCMeta
 
+
     def setUp(self):
         print("Starting test " + self.id())
+
+        self.logfile_name = self.__class__.__name__ + ".log"
         self.startmorse(self)
 
     
@@ -91,7 +81,8 @@ class MorseTestCase(unittest.TestCase):
             else:
                 cmd = prefix + "/bin/morse"
 
-            self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            self.logfile = open(self.logfile_name, 'w')
+            self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=self.logfile, stderr=subprocess.STDOUT)
         except OSError as ose:
             print("Error while launching MORSE! Check you can run it from command-line\n" + \
                     " and if you use the $MORSE_ROOT env variable, check it points to a correct " + \
@@ -99,16 +90,13 @@ class MorseTestCase(unittest.TestCase):
             raise ose
         
         morse_initialized = False
-        for line in iter(self.morse_process.stdout.readline,''):
-            morselogger.info(line.rstrip())
-            if b"SCENE INITIALIZED" in line:
-                morse_initialized = True
-                break
+
+        with open(self.logfile_name) as log:
+            line = ""
+            while not "SCENE INITIALIZED" in line:
+                line  = log.readline()
         
-        if morse_initialized:
-            print("MORSE successfully initialized")
-        else:
-            raise(MorseTestingError("MORSE failed to start!"))
+        testlogger.info("MORSE successfully initialized")
     
     def stopmorse(self):
         """ Cleanly stop MORSE
@@ -118,13 +106,14 @@ class MorseTestCase(unittest.TestCase):
         s.connect(("localhost", 4000))
         s.send(b"id1 simulation quit\n")
 
-        for line in iter(self.morse_process.stdout.readline,''):
-            morselogger.info(line.rstrip())
-            if b"EXITING SIMULATION" in line:
-                break
+        with open(self.logfile_name) as log:
+            line = ""
+            while not "EXITING SIMULATION" in line:
+                line  = log.readline()
+        
 
         self.morse_process.terminate()
-        print("MORSE stopped")
+        testlogger.info("MORSE stopped")
     
     def generate_builder_script(self, test_case):
         
