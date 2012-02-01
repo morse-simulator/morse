@@ -42,7 +42,8 @@ class Odometry_Test(MorseTestCase):
         robot.append(odo)
         odo.configure_mw('socket')
         
-        env = Environment('indoors-1/indoor-1')
+        #env = Environment('indoors-1/indoor-1')
+        env = Environment('land-1/rosace_1')
         env.configure_service('socket')
 
     def clear_datas(self, x, y, yaw):
@@ -118,6 +119,13 @@ class Odometry_Test(MorseTestCase):
         self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.08)
         self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.08)
         self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.08)
+
+        pose = self.pose_stream.get()
+        self.odometry_test_helper(0.0, math.pi/2.0, 12.0)
+        pose2 = self.pose_stream.get()
+        self.assertAlmostEqual(self.x, pose['x'] , delta=0.08)
+        self.assertAlmostEqual(self.y, pose['y'], delta=0.08)
+        self.assertAlmostEqual(self.yaw, pose2['yaw'], delta=0.08)
 
         morse.close()
 
