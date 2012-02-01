@@ -277,7 +277,13 @@ class Morse(threading.Thread):
                         result)
         except ValueError:
             # No return value
-            id, status = raw.split(' ')
+            if ' ' in raw:
+                id, status = raw.split(' ')
+            else:
+                pymorselogger.error("Could not receive a valid response from MORSE")
+                pymorselogger.error("One of the tests has probably failed!")
+                id = '???'
+                status = 'FAIL'
 
         morse_answer = {"status": status,
                         "id": id,
