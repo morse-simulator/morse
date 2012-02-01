@@ -135,15 +135,29 @@ The ``Environment`` class provides these functions:
  * **place_camera**: Set the location of the default camera. The parameter is a
    list with the new 3D coordinates for the camera. Example: *([10.0, -10.0,
    3.0])*
- * **configure_node**: Provide the information necessary for the node to
+ * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
-   Example: *(protocol="socket", node_name="NODE A",
-   server_address="140.93.0.93", server_port="65000")* The items accepted in as
-   parameters are:
+   Example:
+
+     .. code-block:: python
+    
+        dala1 = Robot('atrv')
+        dala2 = Robot('atrv')
+    
+        env = Environment('land-1/trees')
+        env.configure_multinode(  protocol='socket',
+                                  server_address='localhost',
+                                  server_port='65000',
+                                  distribution={
+                                      "nodeA": [dala1.name],
+                                      "nodeB": [dala2.name],
+                                  })
+
+   The items accepted in as parameters are:
     * **protocol**: Either 'socket' or 'hla'
-    * **node_name**: Unique name used as an identifier for each node
     * **server_address**: IP address where the multi-node server can be found
     * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000.
+    * **distribution**: A Python dictionary. The keys are the names of the nodes, and the values are lists with the names of the robots handled by each node
  * **create()**: Should always be called at the very end of the Builder script.
    It will finalise the building process and write the configuration files.
 
@@ -205,10 +219,10 @@ would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
-    motion.configure_mw('ros', ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
+    motion.configure_mw(['morse.middleware.ros_mw.ROSClass', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
-cf. :doc:`hooks <../user/hooks>` and :doc:`tutorial
-<../user/tutorial>` (in particular the section configuring middleware) for details.
+cf. :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually building a scene
+<../user/advanced_tutorials/editing_in_blender>` (in particular the section configuring middleware) for details.
 
 
 Take a look at an :doc:`example Builder script <builder_example>` to see how

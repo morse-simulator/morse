@@ -38,7 +38,7 @@ parent relationship with the robot. *ie.*:
 Once again, this implies that ``v_omega.blend`` exists in 
 ``$MORSE_ROOT/share/morse/data/actuators/``.
 
-cf. :doc:`<code/morse.builder.html#morse.builder.morsebuilder.Component>`
+cf. :py:mod:`morse.builder.morsebuilder.Component`
 
 Place a component
 +++++++++++++++++
@@ -100,20 +100,20 @@ would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
-    motion.configure_mw('ros', ['ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
+    motion.configure_mw(['morse.middleware.ros_mw.ROSClass', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
-cf. :doc:`user/hooks <../user/hooks>` and :doc:`user/tutorial.html
-<../user/tutorial>` (in particular the section configuring middleware)
+cf. :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually building a scene
+<../user/advanced_tutorials/editing_in_blender>` (in particular the section configuring middleware) for details.
 
 
 Finalising the scene
 ++++++++++++++++++++
 
 Every builder script must finish with an environment description. This is mandatory, or
-else the scene will not be created. The parameter for the `Environment` method is the
+else the scene will not be created. The parameter for the *Environment* method is the
 name of a *.blend* file that should be located in ``$MORSE_ROOT/share/morse/data/environments/``.
 
-An additional option is to place and aim the default camera, by using the methods `aim_camera` and `place_camera`.
+An additional option is to place and aim the default camera, by using the methods *aim_camera* and *place_camera*.
 
 .. code-block:: python
 
