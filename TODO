@@ -16,7 +16,6 @@ Testing
 -------
 
 - add tests for:
-  * waypoint actuator (Gilberto)
   * semantic camera (Severin)
   * laser scanner (Gilberto)
 
