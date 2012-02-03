@@ -351,11 +351,10 @@ class Environment(AbstractComponent):
             except KeyError:
                 name = os.uname()[1]
         # Insert modifiers into the scene
-        # TODO for mod in AbstractComponent._config.modifier.keys():
-        for mod in scene_modifiers:
+        for mod in Configuration().scene_modifiers():
             Modifier(mod)
         # Write the configuration of the middlewares, and node configuration
-        AbstractComponent._config.write_config()
+        Configuration().write_config()
         self._write_multinode(name)
         if not 'Scene_Script_Holder' in bpy.data.objects:
             # Add the necessary objects
