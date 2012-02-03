@@ -4,15 +4,18 @@ import json
 
 from morse.builder.data import *
 
-# TODO check if scene_modifiers == AbstractComponent._config.modifier.keys() ?
-scene_modifiers = []
-
 class Configuration(object):
     """ class morse.builder.Configuration
 
-    meant to be singleton (one static instance shared by all components)
+    Singleton (one static instance shared by all components)
     contains the configuration of the simulation.
     """
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Configuration, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.middleware = {}
         self.modifier = {}
@@ -52,9 +55,10 @@ class Configuration(object):
         cfg.write('overlays = ' + json.dumps(self.overlay, indent=1) )
         cfg.write('\n')
 
+    def scene_modifiers(self):
+        return self.modifier.keys()
+
 class AbstractComponent(object):
-    # static config common to all component of the simulation
-    _config = Configuration()
     def __init__(self, obj=None, name=None):
         self._blendobj = obj
         self._blendname = name # for mw config
@@ -190,23 +194,23 @@ class AbstractComponent(object):
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method]
                 else:
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
-        AbstractComponent._config.link_mw(self, config)
+        Configuration().link_mw(self, config)
 
     def configure_service(self, mw, component = None):
         if not component:
             component = self
         service = MORSE_SERVICE_DICT[mw]
-        AbstractComponent._config.link_service(component, service)
+        Configuration().link_service(component, service)
 
     def configure_modifier(self, mod, config=None):
         # Configure the middleware for this component
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
-        AbstractComponent._config.link_modifier(self, config)
+        Configuration().link_modifier(self, config)
         
     def configure_overlay(self, mw, overlay):
         request_manager = MORSE_SERVICE_DICT[mw]
-        AbstractComponent._config.link_overlay(self, request_manager, overlay)
+        Configuration().link_overlay(self, request_manager, overlay)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"
