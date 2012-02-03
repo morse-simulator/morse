@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 """
-This script tests the waypoint actuator paired with the odometry sensor
-in MORSE.
+This script tests the waypoints actuator, both the data and service api
 """
 
 import sys
@@ -19,12 +18,7 @@ try:
 except ImportError:
     pass
 
-def send_destination(s, x, y, z, t, tolerance=0.4, speed=4.0):
-    s.send(json.dumps({'x': x, 'y': y, 'z': z, 'tolerance': tolerance, 'speed': speed}).encode())
-    sleep(t)
-
-
-class Waypoint_Test(MorseTestCase):
+class Waypoints_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
@@ -38,78 +32,69 @@ class Waypoint_Test(MorseTestCase):
         motion = Actuator('waypoint')
         robot.append(motion)
         motion.configure_mw('socket')
+        motion.configure_service('socket')
 
-        odo = Sensor('odometry')
-        robot.append(odo)
-        odo.configure_mw('socket')
         
-        #env = Environment('indoors-1/indoor-1')
-        env = Environment('land-1/rosace_1')
+        env = Environment('indoors-1/indoor-1')
         env.configure_service('socket')
 
-    def clear_datas(self, x, y, yaw):
-        self.x = x
-        self.y = y
-        self.yaw = yaw
-
-    def record_datas(self, record):
-        dx = record['dx']
-        dy = record['dy']
-
-        self.yaw+= record['dyaw']
-        
-        # normalise angle
-        while (self.yaw > math.pi): 
-            self.yaw+= -2 * math.pi
-        while (self.yaw < -math.pi):
-            self.yaw+= 2 * math.pi
-
-#        self.x+= dx * math.cos(self.yaw)
-#        self.y+= dx * math.sin(self.yaw)
-        self.x += dx
-        self.y += dy
-
-    def odometry_test_helper(self, x, y, z, t, tolerance=0.4, speed=4.0):
-        pose = self.pose_stream.get()
-        self.clear_datas(pose['x'], pose['y'], pose['yaw'])
-        self.odo_stream.subscribe(self.record_datas)
-        send_destination(self.waypoint_client, x, y, z, t, tolerance, speed)
-        self.odo_stream.unsubscribe(self.record_datas)
-
-
-    def test_odometry(self):
+    def test_waypoint_controller(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
-        pass
-
         morse = Morse()
         
         # Read the start position, it must be (0.0, 0.0, 0.0)
-        self.pose_stream = morse.stream('Pose')
-        self.odo_stream = morse.stream('Odometry')
+        pose_stream = morse.stream('Pose')
+        pose = pose_stream.get()
+        for coord in pose.values():
+            self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
-        # v_w socket
+        # waypoint controller socket
         port = morse.get_stream_port('Motion_Controller')
-        self.waypoint_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.waypoint_client.connect(('localhost', port))
+        v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        v_w_client.connect(('localhost', port))
 
-        # Numerical integration is maybe not really good, so test with a
-        # precision of 0.05
-        self.odometry_test_helper(2.0, 4.0, 0.0, 5.0)
-        self.assertAlmostEqual(self.x, 2.0, delta=0.55)
-        self.assertAlmostEqual(self.y, 4.0, delta=0.55)
-        #self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+        v_w_client.send(json.dumps({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
+                                     'tolerance' : 0.5, 
+                                     'speed' : 1.0}).encode());
+        sleep(15)
 
-        self.odometry_test_helper(-3.0, -2.0, 0.0, 5.0)
-        self.assertAlmostEqual(self.x, -3.0, delta=0.55)
-        self.assertAlmostEqual(self.y, -2.0, delta=0.55)
-        #self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+        pose = pose_stream.get()
+        self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
+        self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
 
-        self.odometry_test_helper(0.0, 0.0, 0.0, 5.0)
-        self.assertAlmostEqual(self.x, 0.0, delta=0.55)
-        self.assertAlmostEqual(self.y, 0.0, delta=0.55)
-        #self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.05)
+
+        # test tolerance parameter
+        v_w_client.send(json.dumps({'x' : 0.0, 'y': 0.0, 'z': 0.0, 
+                                     'tolerance' : 2.5, 
+                                     'speed' : 1.0}).encode());
+        sleep(15)
+        pose = pose_stream.get()
+        distance_goal = math.sqrt( pose['x'] * pose['x'] + pose['y'] * pose['y'])
+        self.assertLess(distance_goal, 2.5)
+        self.assertGreater(distance_goal, 2.0)
+
+        morse.close()
+
+    def test_waypoint_service_controller(self):
+        morse = Morse()
+
+        # Read the start position, it must be (0.0, 0.0, 0.0)
+        pose_stream = morse.stream('Pose')
+        pose = pose_stream.get()
+        for coord in pose.values():
+            self.assertAlmostEqual(coord, 0.0, delta=0.02)
+
+        morse.call_server('Motion_Controller', 'goto', 10.0, 5.0, 0.0, 0.5, 1.0)
+
+        pose = pose_stream.get()
+        self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
+        self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
+
+        # XXX need to test other services offered by waypoint
+        # controller, but pymorse support is not good enough at the
+        # moment
 
         morse.close()
 
@@ -117,6 +102,6 @@ class Waypoint_Test(MorseTestCase):
 if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(Waypoint_Test)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Waypoints_Test)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
