@@ -160,6 +160,20 @@ class Human(AbstractComponent):
                          " children). I won't be able to export the human pose" +\
                          " to any middleware.")
 
+        # fix for Blender 2.6 Animations
+        if bpy.app.version > (2,59,0):
+            if obj:
+                hips = self._blendobj.dupli_group.objects["Hips_Empty"]
+                i = 0
+                for act in hips.game.actuators:
+                    act.layer = i
+                    i = i + 1
+
+                i = 0
+                for act in obj.game.actuators:
+                    act.layer = i
+                    i = i + 1
+
 
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
