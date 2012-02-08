@@ -8,6 +8,8 @@ from abc import ABCMeta, abstractmethod
 import unittest
 import inspect
 import tempfile
+from time import sleep
+
 
 import subprocess
 
@@ -45,6 +47,10 @@ class MorseTestCase(unittest.TestCase):
         print("Starting test " + self.id())
 
         self.logfile_name = self.__class__.__name__ + ".log"
+        # Wait for a second
+        #  to wait for ports open in previous tests to be closed
+        sleep(1)
+
         self.startmorse(self)
 
     
