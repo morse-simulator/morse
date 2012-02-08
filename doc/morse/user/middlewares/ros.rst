@@ -4,9 +4,10 @@ ROS
 Installation
 ------------
 
-MORSE is compatible with the ROS Electric Emys Release. It can also be used with ROS Diamondback, but due to lacking Python 3 compatibility, you need to patch ROS Diamondback. Furthermore you need to install PyYAML.
+Due to lacking Python 3 compatibility of ROS message generation, you need to
+patch ROS. Furthermore you need to install PyYAML.
 
-Please follow the instructions in the :doc:`installation procedure  <../installation>`.
+Please follow the instructions in the :doc:`installation procedure  <../installation/mw/ros>`.
 
 Files
 -----
