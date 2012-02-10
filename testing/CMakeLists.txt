@@ -6,7 +6,6 @@ endmacro()
 
 if (BUILD_CORE_SUPPORT)
 	add_subdirectory(base)
-	add_subdirectory(middlewares/sockets)
 endif()
 
 if (BUILD_ROS_SUPPORT)
