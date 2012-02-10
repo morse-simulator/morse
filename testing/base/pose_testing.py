@@ -19,7 +19,7 @@ import json
 from pymorse import Morse
 
 
-class SocketDataStreamTest(MorseTestCase):
+class PoseTest(MorseTestCase):
 
     def setUpEnv(self):
         
@@ -40,7 +40,7 @@ class SocketDataStreamTest(MorseTestCase):
         morse = Morse()
         morse.close()
 
-    def test_get_streams_service(self):
+    def test_get_pose_streams_service(self):
         """ Tests if we can retrieve the list of published data streams.
         """
         morse = Morse()
@@ -65,6 +65,6 @@ class SocketDataStreamTest(MorseTestCase):
 if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(SocketDataStreamTest)
+    suite = unittest.TestLoader().loadTestsFromTestCase(PoseTest)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
