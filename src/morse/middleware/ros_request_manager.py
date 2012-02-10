@@ -110,7 +110,7 @@ class RosAction:
 
         # Workaround for encoding issues (-> goal_id.id comes as bytes,
         # and must be converted to string before being reserialized)
-        id = actionlib_msgs.msg.GoalID(id = goal.goal_id.id.decode(),
+        id = actionlib_msgs.msg.GoalID(id = goal.goal_id.id,
                                        stamp = goal.goal_id.stamp)
 
         with self.goal_lock:
