@@ -77,6 +77,9 @@ def rotate(contr):
     # Get Blender keyboard sensor
     keyboard = contr.sensors['All_Keys']
 
+    # Show the cursor
+    bge.logic.mouse.visible = True
+
     keylist = keyboard.events
     for key in keylist:
         # key[0] == bge.events.keycode, key[1] = status
@@ -104,6 +107,9 @@ def rotate(contr):
                 # Center mouse in game window
                 # Using the '//' operator (floor division) to produce an integer result
                 bge.render.setMousePosition(width//2, height//2)
+
+                # Hide the cursor while we control the camera
+                bge.logic.mouse.visible = False
 
 
 def mouse_move(camera, mouse, width, height):
