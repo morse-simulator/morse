@@ -12,13 +12,6 @@ Multi-node
 - Move the socket multinode server to bin/ (Gilberto)
 - Add the corresponding man page (Gilberto)
 
-Testing
--------
-
-- add tests for:
-  * semantic camera (Severin)
-  * laser scanner (Gilberto)
-
 Components
 ----------
 
@@ -109,8 +102,11 @@ exported
 
 [WIP] - "Point Cloud" sensors: generate 3D depth images to simulate either
 stereovision at an abstract level or various Lidars. Make it generic: export
-depth data (openGL z-buffer?), define mofifiers that sample the data according
+depth data (openGL z-buffer?), define modifiers that sample the data according
 to a given sensor geometry.
+
+- Export position in a consistent way through in different components (use
+  Transformation3D)
 
 - PR2: cf TODO.pr2
 
