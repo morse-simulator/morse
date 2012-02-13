@@ -1,7 +1,7 @@
 :orphan:
 
 multinode_server manual page
-============================
+=================================
 
 Synopsis
 --------
@@ -26,8 +26,9 @@ and **Enter**. The same command will allow the simulation to continue.
 This mechanism relies on the fact that the clients will remain waiting for
 a reply from the server before continuing with the simulation.
 
+
 Parameters
---------
+----------
 :[synchronisation delay]:
         Optional parameter that defines the delay (in seconds) between messages
         to the connected clients. A larger delay will slow down the simulation

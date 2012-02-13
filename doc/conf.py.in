@@ -206,4 +206,5 @@ latex_documents = [
 # List of man pages described by
 # (startdocname, name, description, authors, section) tuples
 man_pages = [("morse_man_page", "morse", "A robotics simulator based upon the Blender Game Engine", "", 1),
-             ("morseexec_man_page", "morseexec", "Run a Python script with the default scene", "", 1)]
+             ("morseexec_man_page", "morseexec", "Run a Python script with the default scene", "", 1),
+             ("multinode_server_man_page", "multinode_server", "Server program to synchronise several instances of MORSE", "", 1)]

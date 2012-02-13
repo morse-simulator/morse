@@ -151,7 +151,7 @@ ELSE()
 									   ${CMAKE_CURRENT_SOURCE_DIR}/doc/man
         								   ${SPHINX_MAN_OUTPUT} &&
 						  ${GZIP} -f ${SPHINX_MAN_OUTPUT}/*.1)
-		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz ${SPHINX_MAN_OUTPUT}/morseexec.1.gz
+		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz ${SPHINX_MAN_OUTPUT}/morseexec.1.gz ${SPHINX_MAN_OUTPUT}/multinode_server.1.gz
 			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man/man1
 		)
 	ENDIF()

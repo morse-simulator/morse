@@ -23,9 +23,9 @@ interface.
 Commands
 --------
 :[None]:
-        Launchs the simulator interface with a default scene
+        Launches the simulator interface with a default scene
 :create filename:
-        Creates a new empty scene and launchs the simulator interface
+        Creates a new empty scene and launches the simulator interface
 :run filename:
         Runs a simulation without loading the simulator interface
 :exec filename:
@@ -33,7 +33,7 @@ Commands
 :check:
         Checks the environment is correctly setup to run morse
 :help:
-        Displays information reguarding the program
+        Displays information regarding the program
 :version:
         Displays the version number
 
