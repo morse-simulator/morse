@@ -35,7 +35,8 @@ class MorseSocketServ:
             self._server.close()
             del self._server
 
-    def main_export(self, component_instance):
+
+    def main_export(self, encode, component_instance):
         sockets = self._client_sockets + [self._server]
 
         try:
@@ -50,14 +51,14 @@ class MorseSocketServ:
             self._client_sockets.append(sock)
 
         if outputready != []:
-            message = (json.dumps(component_instance.local_data) + '\n').encode()
+            message = encode(component_instance)
             for o in outputready:
                 try:
                     o.send(message)
                 except socket.error:
                     self.close_socket(o)
 
-    def main_read(self, component_instance):
+    def main_read(self, decode, component_instance):
         sockets = self._client_sockets + [self._server]
         try:
             inputready, outputready, exceptready = select.select(sockets, [], [], 0)
@@ -79,7 +80,7 @@ class MorseSocketServ:
                     if msg == b'':
                         self.close_socket(i)
                     else:
-                        component_instance.local_data = json.loads(msg.decode('utf-8'))
+                        component_instance.local_data = decode(msg)
                 except socket.error as detail:
                     self.close_socket(i)
 
@@ -130,21 +131,36 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
         """
-        # Extract the information for this middleware
-        # This will be tailored for each middleware according to its needs
-        function_name = mw_data[1]
+
+        # Create a socket server for this component
         serv = MorseSocketServ(self._base_port, component_name)
         self._server_dict[self._base_port] = serv
         self._component_nameservice[component_name] = self._base_port
         self._base_port = self._base_port + 1
 
-        # Choose what to do, depending on the function being used
-        # Data read functions
-        if function_name == "read_message":
-            component_instance.input_functions.append(partial(MorseSocketServ.main_read, serv))
-        # Data write functions
-        elif function_name == "post_message":
-            component_instance.output_functions.append(partial(MorseSocketServ.main_export, serv))
+        # Extract the information for this middleware
+        # This will be tailored for each middleware according to its needs
+        function_name = mw_data[1]
+        fun = self._check_function_exists(function_name)
+
+        if fun != None:
+            # Choose what to do, depending on the function being used
+            # Data read functions
+            if function_name == "read_message":
+                component_instance.input_functions.append(partial(MorseSocketServ.main_read, serv, fun))
+            # Data write functions
+            elif function_name == "post_message":
+                component_instance.output_functions.append(partial(MorseSocketServ.main_export, serv, fun))
+        else:
+            # Pass by mw_data the generated server
+            mw_data.append(serv)
+            self._add_method(mw_data, component_instance)
+
+    def post_message(self, component_instance):
+        return (json.dumps(component_instance.local_data) + '\n').encode()
+
+    def read_message(self, msg):
+        return json.loads(msg.decode('utf-8'))
 
     def post_image(self, component_instance):
         """ Send an RGB image using a port. (STILL INCOMPLETE)"""
