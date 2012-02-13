@@ -18,8 +18,9 @@ This is done by going into the individual package directories and running ``make
 Finally, you have to install the MORSE-Pocolibs bindings as well.
 At the time of writing, there are two options for installing,
 depending on the type of simulation needed, and they affect which modules will be linked:
- - **hri** (for human-robot interaction) 
- - **outdoor**
+
+* **hri** (for human-robot interaction) 
+* **outdoor**
 
 To specify the type of simulation (**outdoor** in this example),
 it is necessary to edit the file

@@ -1,5 +1,5 @@
-Human-Robot interaction tutorial
-================================
+Human-Robot interaction tutorial (deprecated)
+=============================================
 
 This tutorial shows how to build a simulation with a robot and a human that
 is interactively controlled by the simulation user.
@@ -9,8 +9,8 @@ In this simple scenario, the robot is ordered to follow the human.
 Pre-requisites
 --------------
 
-- You must have completed the :doc:`first tutorial <../tutorial>`.
-- In this tutorial, we use ROS as middleware. We assume you have a functionnal 
+- You must have completed the :doc:`first tutorial <../advanced_tutorials/editing_in_blender>`.
+- In this tutorial, we use ROS as middleware. We assume you have a functional 
   ROS installation (you should only need the core ROS tools). If you need to
   install ROS, please refer to `ROS installation instruction <http://www.ros.org/wiki/ROS/installation>`_.
 
@@ -49,7 +49,7 @@ target of the head. This allows you to control the head direction.
 
 Picking objects
 ---------------
-Our human can pick and release objects. Let's add a new cube on one of the tables: switch to the ortho
+Our human can pick and release objects. Let's add a new cube on one of the tables: switch to the orthogonal
 view (:kbd:`Numpad 5`), and using the front view (:kbd:`Numpad 1`) and top view (:kbd:`Numpad 7`), place
 the 3D cursor on the top of a table:
 

@@ -13,7 +13,7 @@ a new robot for simulation. Note that once created, you can save your simulation
 scenario as a regular Blender file to replay it directly any time later.
 
 This tutorial assumes MORSE is properly installed. If not, follow the
-instructions :doc:`here <installation>`.
+instructions :doc:`here <../installation>`.
 
 Create the simulation scene
 -----------------------------
@@ -106,8 +106,9 @@ Connect with the client
 
 You can connect directly to the simulated sensors/actuators using the ``telnet`` program.
 With the configuration provided before, MORSE will create two ports:
- - Port 60000 for the **Motion_Controller**
- - Port 60001 for the **Pose** sensor
+
+* Port 60000 for the **Motion_Controller**
+* Port 60001 for the **Pose** sensor
 
 By issuing this command from a terminal you will read a constant feed of the current position
 of the robot::

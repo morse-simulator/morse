@@ -9,7 +9,7 @@ This tutorial shows how to use those services. Different middleware are supporte
 Pre-requisites
 --------------
 
-- You must have completed the :doc:`first tutorial <../tutorial>`.
+- You must have completed the :doc:`first tutorial <../beginner_tutorials/tutorial>`.
 
 
 Using the services

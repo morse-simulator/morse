@@ -1,7 +1,7 @@
 Builder API and ROS middleware
 ==============================
 
-This is an extension of the current :doc:`tutorial <../tutorial>` using the
+This is an extension of the current :doc:`tutorial <../beginner_tutorials/tutorial>` using the
 Morse-builder tool to build your simulation (instead of the Blender graphical
 user-interface) and ROS as our middleware (instead of raw Socket). But the
 result will be the same!

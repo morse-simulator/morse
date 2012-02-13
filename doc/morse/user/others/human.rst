@@ -51,8 +51,8 @@ to instantiate the :py:class:`morse.builder.morsebuilder.Human` class.
    from morse.builder.morsebuilder import *
    human = Human()
 
-The :doc:`human posture component <morse/user/sensors/human_posture>`
-that can be accessed through the ``armature`` member.
+The :doc:`human posture component <../sensors/human_posture>`
+can then be accessed through the ``armature`` member.
 
 Usage example:
 
@@ -67,7 +67,7 @@ Usage example:
    human.rotate(z=-3.0)
 
    human.armature.configure_mw('pocolibs',
-                    ['Pocolibs',
+                    ['morse.middleware.pocolibs_mw.MorsePocolibsClass',
                      'export_posture',
                      'morse/middleware/pocolibs/sensors/human_posture',
                      'human_posture'])

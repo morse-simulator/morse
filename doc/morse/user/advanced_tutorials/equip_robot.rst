@@ -1,9 +1,14 @@
-Building an equipped robot 
+Building an equipped robot
 ==========================
 
-This tutorial provides instructions on how to create a file for a robot
+This tutorial provides instructions on how to create a Blender file for a robot
 prepared with a defined number of components, which can later be inserted into
 scenario files.
+
+.. warning::
+    The preferred way of creating equipped robots is now using the
+    ``Builder API``. See the documentation on how to use it.
+
 
 Setup of the robot file 
 -----------------------
@@ -15,8 +20,7 @@ Launch MORSE by typing ``morse``, and erase all objects in the file:
 
 Save the file with a name that represents the settings of the robot. As an
 example this document will use the Ressac helicopter, so the name of the file
-should be something like::
-
+should be something like:
 ``$MORSE_ROOT/share/morse/data/robots/myrobot_equiped.blend``
 
 #. Press :kbd:`F2` to open the ``Save as`` dialog
@@ -40,13 +44,13 @@ Next link in the base of the robot from the component library:
 #. Select as well the child objects, by pressing :kbd:`Shift-g`, then hitting :kbd:`enter`
 
 The rest of the components (sensors and actuators) should be linked similarly.
-Refer to the :doc:`Quick tutorial <../tutorial>` for instructions. In the
-case of a robot file, no middlewares or modifiers should be added, since those
-would be specific to every particular scenario.
+Refer to the tutorial about :doc:`creating a scene in Blender
+<../advanced_tutorials/editing_in_blender>` for instructions.
+In the case of a robot file, no middlewares or modifiers should be added,
+since those would be specific to every particular scenario.
 
 Adjust the properties of the component if necessary. Then save the file again,
 by pressing :kbd:`Ctrl-w`, followed by :kbd:`enter`.
 
 This robot file should be liked into scenarii files by following the same
 procedure, while selecting all the objects contained in the file.
-
