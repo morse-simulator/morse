@@ -15,7 +15,7 @@ GUI
 ---
 
 - First version of a graphical user interface to add components to a scene
-- Plugin for loading DTM/IGN data has been ported to Blender 2.5/Python 3.2
+- Blender Plugin for loading DTM/IGN data has been ported to Blender 2.5/Python 3.2
 
 Middlewares
 -----------
@@ -47,6 +47,9 @@ Multi-node
 
 - New abstract API for multi-node implementation. The current socket-based and HLA
   implementation now use it.
+- Added the 'multinode_server' program, which synchronises several instances
+  of MORSE, and is capable of pausing the simulation on the nodes
+
 
 HRI
 ---

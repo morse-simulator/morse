@@ -5,16 +5,6 @@ General TODO list for MORSE
  TARGET 0.5
 ==============
 
-Multi-node
-----------
-
-- Document time synchronization (Gilberto)
-- Move the socket multinode server to bin/ (Gilberto)
-- Add the corresponding man page (Gilberto)
-
-Components
-----------
-
 - Fix bug in odometry sensor (Gilberto)
 
 Packaging
@@ -112,6 +102,9 @@ to a given sensor geometry.
 
 [PARTIAL] - Support for 4-wheeled vehicles (cf https://github.com/pierriko/morse/tree/experimental_wjwwood)
 
+Documentation
+-------------
+- Correct documentation for the HRI experiments (current one does not mention the Builder)
 
 
 ================
