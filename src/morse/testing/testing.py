@@ -1,7 +1,6 @@
 import logging
 #testrunnerlogger = logging.getLogger("test.runner")
 testlogger = logging.getLogger("morsetesting.general")
-morselogger = logging.getLogger("morsetesting.morse")
 
 import sys, os
 from abc import ABCMeta, abstractmethod
@@ -9,16 +8,27 @@ import unittest
 import inspect
 import tempfile
 from time import sleep
-
-
+import threading # Used to be able to timeout when waiting for Blender initialization
 import subprocess
 
 from morse.testing.exceptions import MorseTestingError
 
+BLENDER_INITIALIZATION_TIMEOUT = 15 # seconds
+
 class MorseTestRunner(unittest.TextTestRunner):
         
     def setup_logging(self):
-       pass 
+        logger = logging.getLogger('morsetesting')
+        logger.setLevel(logging.DEBUG)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+
+        formatter = logging.Formatter('[%(asctime)s (%(levelname)s)]   %(message)s')
+
+        ch.setFormatter(formatter)
+
+        logger.addHandler(ch)
 
     def run(self, suite):
         if sys.argv[0].endswith('blender'):
@@ -44,13 +54,15 @@ class MorseTestCase(unittest.TestCase):
 
 
     def setUp(self):
-        print("Starting test " + self.id())
+        
+        testlogger.info("Starting test " + self.id())
 
         self.logfile_name = self.__class__.__name__ + ".log"
         # Wait for a second
         #  to wait for ports open in previous tests to be closed
         sleep(1)
-
+        
+        self.morse_initialized = False
         self.startmorse(self)
 
     
@@ -67,6 +79,20 @@ class MorseTestCase(unittest.TestCase):
         is automatically added).
         """
         pass
+
+    def wait_initialization(self):
+        testlogger.info("Waiting for MORSE to initialize... (timeout: %s sec)" % \
+                        BLENDER_INITIALIZATION_TIMEOUT)
+        with open(self.logfile_name) as log:
+            line = ""
+            while not "SCENE INITIALIZED" in line:
+                line  = log.readline()
+                if "INITIALIZATION ERROR" in line:
+                    testlogger.error("Error during MORSE initialization! Check "
+                                     "the log file.")
+                    return
+            
+            self.morse_initialized = True
 
     def startmorse(self, test_case):
         """ This starts MORSE in a new process, passing the script itself as parameter (to
@@ -90,19 +116,24 @@ class MorseTestCase(unittest.TestCase):
             self.logfile = open(self.logfile_name, 'w')
             self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=self.logfile, stderr=subprocess.STDOUT)
         except OSError as ose:
-            print("Error while launching MORSE! Check you can run it from command-line\n" + \
+            testlogger.error("Error while launching MORSE! Check you can run it from command-line\n" + \
                     " and if you use the $MORSE_ROOT env variable, check it points to a correct " + \
                     " place!")
             raise ose
         
         morse_initialized = False
 
-        with open(self.logfile_name) as log:
-            line = ""
-            while not "SCENE INITIALIZED" in line:
-                line  = log.readline()
+        t = threading.Thread(target=self.wait_initialization)
+        t.start()
+        t.join(BLENDER_INITIALIZATION_TIMEOUT)
         
-        testlogger.info("MORSE successfully initialized")
+        if self.morse_initialized:
+            self.pid = self.morse_process.pid
+            testlogger.info("MORSE successfully initialized with PID %s" % self.pid)
+        else:
+            self.morse_process.terminate()
+            raise MorseTestingError("MORSE did not start successfully! Check %s "
+                                    "for details." % self.logfile_name)
     
     def stopmorse(self):
         """ Cleanly stop MORSE

@@ -56,7 +56,7 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         else:
             logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: the component '""" + obj.name + """' could not
+    INITIALIZATION ERROR: the component '""" + obj.name + """' could not
     be properly initialized.
     There was an error when creating the class instance.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -174,7 +174,7 @@ def create_dictionaries ():
     if not (GameLogic.robotDict or GameLogic.externalRobotDict): # No robot!
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: no robot in your simulation!
+    INITIALIZATION ERROR: no robot in your simulation!
     
     Do not forget that components _must_ belong to a
     robot (you can not have free objects)
@@ -200,7 +200,7 @@ def create_dictionaries ():
             if obj.name not in GameLogic.componentDict.keys():
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: the component '""" + obj.name + """' does not
+    INITIALIZATION ERROR: the component '""" + obj.name + """' does not
     belong to any robot: you need to fix that by 
     parenting it to a robot.                    
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -252,7 +252,7 @@ def create_dictionaries ():
             else:
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: Middleware '""" + obj.name + """' module could not be found!
+    INITIALIZATION ERROR: Middleware '""" + obj.name + """' module could not be found!
     
     Make sure you selected the required middleware for
     install from the cmake configuration.
@@ -338,7 +338,7 @@ def create_mw(mw):
     else:
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: Middleware '""" + modulename + """' module could not be found!
+    INITIALIZATION ERROR: Middleware '""" + modulename + """' module could not be found!
     
     Make sure you selected the required middleware for
     install from the cmake configuration.
@@ -381,7 +381,7 @@ def link_middlewares():
             logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
             logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: your configuration file is not valid. Please
+    INITIALIZATION ERROR: your configuration file is not valid. Please
     check the name of your components and restart the
     simulation.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -464,7 +464,7 @@ def link_services():
                 logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: the component_services section of your
+    INITIALIZATION ERROR: the component_services section of your
     configuration file is not valid. Please check the 
     name of your components and restart the simulation.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -769,8 +769,9 @@ def simulation_main(contr):
         #  a problem while doing the init, so we'll abort the simulation.
         logger.critical("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: the initialisation of the simulation
-    was not correctly done.
+    INITIALIZATION ERROR: failure during initialization
+    of the simulator.
+    
     Check the terminal for error messages, and report
     them on the morse-dev@laas.fr mailing list.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
