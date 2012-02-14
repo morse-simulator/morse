@@ -132,12 +132,15 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
                 if isinstance(data, int):
                     msg_data = message_data.get(i).asInt()
                     component_instance.local_data[variable] = msg_data
+                    logger.debug("read %s as %d" % (variable, msg_data))
                 elif isinstance(data, float):
                     msg_data = message_data.get(i).asDouble()
                     component_instance.local_data[variable] = msg_data
+                    logger.debug("read %s as %f" % (variable, msg_data))
                 elif isinstance(data, str):
                     msg_data = message_data.get(i).toString()
                     component_instance.local_data[variable] = msg_data
+                    logger.debug("read %s as %s" % (variable, msg_data))
                 else:
                     logger.error("Unknown data type at 'read_message', with component '%s'" % component_instance.blender_obj.name)
                     logger.info("DATA: ", data, " | TYPE: ", type(data))
