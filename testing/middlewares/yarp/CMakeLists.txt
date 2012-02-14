@@ -1,0 +1,1 @@
+add_morse_test(yarp_mw_testing)
