@@ -107,11 +107,22 @@ Manipulation mode
 
 To toggle in and out of **Manipulation Mode**, press :kbd:`X`.
 
+You can move the hand by holding :kbd:`Middle Mouse Button` and moving the 
+``Mouse``.
+
 In manipulation mode, when the hand is close enough of a graspable object (see
 :doc:`passive objects <passive_objects>` documentation to know how to define a
 graspable object), a label ``Pickup the object`` appears. Press the :kbd:`Left
-Mouse Button` to take the item, and :kbd:`Right Mouse Button` to release it.
+Mouse Button` to take the item. To lay the item down, press :kbd:`Right Mouse 
+Button`. To precisely lay the item down, move the crosshairs over this point. 
+If this point is in reach (and the object that the item is to be placed on is 
+marked as ``Actor`` in Blender's Physic settings), a green rectangle appears.
+Press :kbd:`Right Mouse Button` to lay it down.
 
+Futhermore the human can interact with doors, drawers and switches. To do so, 
+move the crosshairs over the door/drawer/switch and press :kbd:`Left Mouse 
+Button`. See :doc:`Setting up a Scene with MORSE Utils <../addons/morse_utils>` 
+on how to set up the environment for the human.
 
 Sensors and actuators
 ---------------------
