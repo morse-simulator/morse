@@ -12,13 +12,12 @@ class PR2(Robot):
         self.torso_lift = None
         
         try:
-            self._blendobj = bpy.context.selected_objects[0]            
-            # !!! WARNING (TODO)!!!! If we import the armature like this, it will NOT work if there are more than one PR2!
-            # if we incude a second PR2, the armatures will be named "head_armature.001" etc.
-            head_obj = bpy.data.objects["head_armature"]
-            l_arm_obj = bpy.data.objects["l_arm_armature"]
-            r_arm_obj = bpy.data.objects["r_arm_armature"]
-            torso_lift_obj = bpy.data.objects["torso_lift_armature"]
+            self._blendobj = bpy.context.selected_objects[0]
+            head_obj = self._get_selected("head_armature")
+            l_arm_obj = self._get_selected("l_arm_armature")
+            r_arm_obj = self._get_selected("r_arm_armature")
+            torso_lift_obj = self._get_selected("torso_lift_armature")
+            self._head_tilt_link = self._get_selected("head_tilt_link")
 
             self.head = AbstractComponent(head_obj, "head_armature")
             self.l_arm = AbstractComponent(l_arm_obj, "l_arm_armature")
@@ -33,6 +32,15 @@ class PR2(Robot):
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color
-        bpy.data.objects['head_tilt_link'].material_slots['HeadTilt'].material.node_tree.nodes['Material'].material.diffuse_color = color
+        self._head_tilt_link.material_slots['HeadTilt'].material.node_tree.nodes['Material'].material.diffuse_color = color
 
+    def _get_selected(self, name):
+        """ _get_selected
+        :param name: name of the object
+        :return: the first Blender object for which his name strats with the 
+        param `name` from those selected (imported object are selected)
+
+        ie. if we import a second PR2, objects will be named "`name`.001" etc.
+        """
+        return [obj for obj in bpy.context.selected_objects if obj.name.startswith(name)].pop()
 
