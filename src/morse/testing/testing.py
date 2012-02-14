@@ -53,6 +53,15 @@ class MorseTestCase(unittest.TestCase):
     __metaclass__ = ABCMeta
 
 
+    @abstractmethod
+    def setUpMw(self):
+        """ This method can be overloaded by subclasses to define
+        environment setup, before the launching of the Morse environment
+        pass
+        """
+        pass
+
+
     def setUp(self):
         
         testlogger.info("Starting test " + self.id())
@@ -63,11 +72,19 @@ class MorseTestCase(unittest.TestCase):
         sleep(1)
         
         self.morse_initialized = False
+        self.setUpMw()
         self.startmorse(self)
 
+    @abstractmethod
+    def tearDownMw(self):
+        """ This method can be overloaded by subclasses to clean up
+        environment setup
+        """
+        pass
     
     def tearDown(self):
         self.stopmorse()
+        self.tearDownMw()
         
     @abstractmethod
     def setUpEnv(self):
