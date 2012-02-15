@@ -12,9 +12,9 @@ Files
 
 Local data
 ~~~~~~~~~~
-- **X**: (float) X coordinate of the sensor
-- **Y**: (float) Y coordinate of the sensor
-- **Z**: (float) Z coordinate of the sensor
+- **x**: (float) X coordinate of the sensor
+- **y**: (float) Y coordinate of the sensor
+- **z**: (float) Z coordinate of the sensor
 
 .. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
 
