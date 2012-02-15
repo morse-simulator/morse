@@ -12,20 +12,11 @@ Packaging
 
 - Add package(s) for pymorse
 
-Installation
-------------
-
-- Update documentation to configure Blender to find these addons (File > Uesr Preferences > File) (Gilberto/Arnaud)
-
 Documentation
 -------------
 
 - Add docstrings to all modules (everyone)
-
-Misc
-----
-
-- Bug 189: Most of scenarii and tutorials are broken in current.
+- Update the documentation for the human "robot" and the tutorial on its use
 
 HRI
 ---
