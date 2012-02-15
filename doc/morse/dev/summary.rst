@@ -14,7 +14,7 @@ MORSE developement can be tracked online with GitHub: `MORSE on GitHub
 Fork it from your own GitHub account, or get the source directly from 
 the LAAS master repository::
 
-    $ git clone http://trac.laas.fr/git/robots/morse.git
+    $ git clone git://git.openrobots.org/git/robots/morse
 
 Coding guidelines
 -----------------
