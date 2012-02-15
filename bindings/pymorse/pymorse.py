@@ -1,9 +1,153 @@
 #!/usr/bin/python
-"""A Python interface to control the Morse simulator
+"""A Python interface to control the `MORSE <http://morse.openrobots.org>`_ robotics simulator
 
-This library use the standard Python logging mechanism.
-You can retrieve pymorse log messages through the "pymorse" logger. See the end of
-this file for an example showing how to display to the console the log messages.
+The ``pymorse`` library exposes MORSE services and data stream with a
+friendly Python API.
+
+It uses underneath the MORSE socket API.
+
+Usage
+=====
+
+..note ::
+  The current version of pymorse only support a largely incomplete set of features.
+  You may need to directly access the MORSE socket interface to perform certain
+  actions like writing on a data stream.
+
+
+General usage
+-------------
+
+- Import the ``pymorse`` module
+- Create an instance of the :py:class:`pymorse.Morse` class, passing the
+  host and/or port of the simulator (defaults to localhost:4000)
+- Play with it!
+- Close the communication at the end with :py:meth:`pymorse.Morse.close`.
+
+MORSE control
+-------------
+
+Once the simulator is started, you can query the list of all robots
+present in the simulation with :py:meth:`pymorse.Morse.robots`.
+
+You can stop the simulator (MORSE will quit) with
+:py:meth:`pymorse.quit`, and reset it with :py:meth:`pymorse.Morse.reset`.
+
+These methods are demonstrated in the example below:
+
+..code-block:: python
+
+    import pymorse
+
+    morse = Morse("localhost", 4000)
+
+    try:
+        print(str(morse.robots()))
+        morse.quit()
+
+    except MorseServerError as ose:
+        print('Oups! An error occured!')
+        print(ose)
+    finally:
+        morse.close()
+
+Accessing services
+------------------
+
+This is not supported by this version of ``pymorse``.
+
+Reading a data stream
+---------------------
+
+The :py:meth:`pymorse.Morse.streams` method returns the list of the
+names of available data streams from the simulator.
+
+A :py:class:`pymorse.MorseStream` object can be then created with
+:py:meth:`pymorse.Morse.stream` by passing the name of the stream you
+want to subscribe to.
+
+:py:class:`pymorse.MorseStream` proposes several methods to read the
+stream:
+
+- :py:meth:`pymorse.MorseStream.get`: blocks until new data are
+  available and returns them.
+- :py:meth:`pymorse.MorseStream.last`: returns the last/the n last (if
+  an integer argument is passed) records received, or none/less, if
+  none/less have been received.
+- :py:meth:`pymorse.MorseStream.subscribe (and
+  `:py:meth:`pymorse.MorseStream.unsubscribe`): this method is called
+  with a callback that is triggered everytime incoming data is received.
+
+These methods are demonstrated in the example below:
+
+..code-block:: python
+
+    import pymorse
+
+    morse = Morse("localhost", 4000)
+
+    def printer(data):
+        print("Incoming data! " + str(data))
+
+    try:
+        streams = morse.streams()
+
+        # Take arbitrary the first one
+        mystream = morse.stream(streams[0])
+
+        # Blocks until something is available
+        print(str(mystream.get()))
+
+        # Asynchronous read: the following line do not block.
+        mystream.subscribe(printer)
+
+    except MorseServerError as ose:
+        print('Oups! An error occured!')
+        print(ose)
+    finally:
+        morse.close()
+
+
+Writing to a data stream
+------------------------
+
+This is not supported by this version of ``pymorse``.
+
+Logging
+=======
+
+This library use the standard Python logging mechanism.  You can
+retrieve pymorse log messages through the "pymorse" logger.
+
+The complete example below shows how to retrieve the logger and how to
+configure it to print debug messages on the console.
+
+..code-block:: python
+
+    import logging
+    import pymorse
+
+    logger = logging.getLogger("pymorse")
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)-15s %(name)s: %(levelname)s - %(message)s')
+    console.setFormatter(formatter)
+
+    logger.addHandler(console)
+
+    morse = Morse("localhost", 4000)
+
+    try:
+        print(str(morse.robots()))
+
+        morse.quit()
+
+    except MorseServerError as ose:
+        print('Oups! An error occured!')
+        print(ose)
+    finally:
+        morse.close()
 """
 import time
 import logging
@@ -165,6 +309,13 @@ class Morse(threading.Thread):
     id = 0
 
     def __init__(self, host = "localhost", port = 4000):
+        """ Creates an instance of the MORSE simulator proxy.
+
+        This is the main object you need to instanciate to communicate with the simulator.
+
+        :param host: the simulator host (default: localhost)
+        :param port: the port of the simulator socket interface (default: 4000)
+        """
         threading.Thread.__init__(self)
 
         self._morse_requests_queue = Queue()
