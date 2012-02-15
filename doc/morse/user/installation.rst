@@ -31,7 +31,7 @@ Required software
 +++++++++++++++++
 
 - Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
-- Blender 2.59 build with Python 3.2
+- Blender (>= 2.59 & < 2.62) build with Python 3.2
 - MORSE source code
 
 .. note::
@@ -110,6 +110,9 @@ by using these additional parameters.
 - ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE.
 - ``BUILD_ROS_SUPPORT`` controls the build of ROS support in MORSE.
 - ``BUILD_MOOS_SUPPORT`` controls the build of MOOS support in MORSE.
+- ``PYMORSE_SUPPORT`` controls the build and installation of pymorse, a
+  library to interact with Morse through the socket interface. It is needed
+  for test infrastructure.
 - ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension
   (Release is a good choice).
 - ``PYTHON3_EXECUTABLE`` indicate where the python3 executable is in your system
