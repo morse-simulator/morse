@@ -39,7 +39,7 @@ Components
 ----------
 
 - Static objects have a redefined set of options to make them active or not,
-  graspable or not, etc. See doc: user/others/passive_objects)
+  graspable or not, etc. See :doc:`user/others/passive_objects`)
 - New infrared sensor
 - Camera images can now be vertically flipped via the ``vertical_flip`` property.
 
@@ -54,7 +54,7 @@ HRI
 
 Much work has been done in this domain:
 
-- New human avatar with a much improved behaviour/animation. It is controlable
+- New human avatar with a much improved behaviour/animation. It is controllable
   from mouse + keyboard or Kinect
 - The avatar features an 'manipulation mode' where objects can be picked and
   dropped, and special objects like drawers and cupboards can be opened.
