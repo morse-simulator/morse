@@ -1,27 +1,33 @@
 **Feature**,                  Text file based, Raw sockets, YARP,           ROS,             Pocolibs,															Moos,
 Communications , 
 ``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔ (posters),														✔ (database)
-``RPC (requests)``,			  ✘,               ✔,           ✔,               ✔ (only services), ✔ (requests),																	✘
+``RPC (requests)``,			  ✘,               ✔,           ✔,              ✔ (only services), ✔ (requests),													✘
 Sensors,
 ``Accelerometer``,            ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔ 
-``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ ,																	✔
-``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``,												✘	
-``Semantic camera``,          ✔,               ✔,           ✔,              ✔``?``	  ,      ✔ ``VimanObjectPublicArray``,										✘	
+``Battery``,				  ✔,			   ✔,			✔,				✔``Float32``,	✘,																	✔
 ``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,               ✔ ``POM_SENSOR_POS``,								✔
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
-``Generic joint state``,      ✔,               ✔,           ✔,              ✔ ``TF``,        ✘,																	✘
-``Pan-Tilt unit``,            ✔,               ✔,           ✔,              ✔ ``JointState``,               ✘,													✘
-``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,               ✘,																	✔
-``Laser range finder``,       ✔,               ✔,           "✔``List (x, y, z)``",             "✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
-``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
+``IMU``,		              ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔
+``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ ,																	✔
+``Pose``,					  ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔ 	
+``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
+``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATE'',												✔
+``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
+``Semantic camera``,          ✔,               ✔,           ✔,              ✔``String``	  ,  ✔ ``VimanObjectPublicArray``,										✘	
+``Sick (Laser range finder)``,✔,               ✔,          "✔``List (x, y, z)``",             "✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
-``IMU``,		            ✔,                 ✔,           ✔,               ✔``Twist``,     ✘,																	✔
-``ptu_posture``,	        ✔,                 ✔,           ✔,               ✘,			     ✔ ``PLATINE_STATE'',														✔
+``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
+``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``,												✘	
 Actuators,
-``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,
-"``(v, ω) motion control``",    ✘,               ✔,           ✔,             "✔ ``Twist`` - supports as well (Vx, Vy, ω)",    "✔ ``GENPOS_CART_SPEED``",		✔
-``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘
-``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,              ✔ ``LWR_ARM_INST``,									✘
+``armature actuator``,		  ✘,               ✔,           ✔,              ✔,               ✘,																	?
+``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,																	✔
+``gripper``,				  ✘,               ✔,           ✔,              ✔ ``Bool``,		 ✘,																	?
+``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,✔ ``LWR_ARM_INST``,												✘
+``light``,					  ✘,               ✔,           ✔,              ✔ ``Bool``		,✘,																	?
+``orientation``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
 ``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✘,																	✘
-``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` or ``PLATINE_AXIS_STR`` ,					✘	
+``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` or ``PLATINE_AXIS_STR`` ,		✘	
+``steer_force``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
+"``(v, ω) motion control``",  ✘,               ✔,           ✔,				"✔ ``Twist`` - supports as well (Vx,Vy,ω)",    "✔ ``GENPOS_CART_SPEED``",		✔
+``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘
