@@ -25,7 +25,7 @@ Important things to do :
 The blender part
 ----------------
 
-  - First, create a nice modelling of your object, and save it in ``$MORSE_ROOT/data/morse/sensors/``
+  - First, create a nice modelling of your object, and save it in ``$MORSE_ROOT/data/sensors/``
   - Press :kbd:`N` to display the properties of the object. Change its name.
   - Press :kbd:`F4` to enter in the logic mode
 

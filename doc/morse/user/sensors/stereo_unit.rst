@@ -9,7 +9,7 @@ information generated from the two camera images.
 
 Files
 -----
-- Blender: ``$MORSE_ROOT/data/morse/sensors/stereo_unit.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/stereo_unit.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/stereo_unit.py``
 
 Applicable modifiers

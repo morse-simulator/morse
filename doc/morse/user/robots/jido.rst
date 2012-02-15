@@ -6,7 +6,7 @@ This robot is build on a NeoBotix base.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/robots/jido.blend``
+- Blender: ``$MORSE_ROOT/data/robots/jido.blend``
 - Python: ``$MORSE_ROOT/src/morse/robots/jido.py``
 
 Adjustable parameters

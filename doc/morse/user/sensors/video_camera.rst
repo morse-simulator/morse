@@ -11,7 +11,7 @@ Also, the 3D view window in Blender must be set to draw **Textured** objects.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/video_camera.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/video_camera.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/video_camera.py``
 
 

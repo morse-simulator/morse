@@ -20,7 +20,7 @@ sensor must be defined as ::
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/ptu_posture.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/ptu_posture.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/ptu_posture.py``
 
 Local data

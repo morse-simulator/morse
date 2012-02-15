@@ -12,7 +12,7 @@ such as the :doc:`Hummer robot <../robots/hummer>`.
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/steer_force.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/steer_force.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/steer_force.py``
 
 Local data 

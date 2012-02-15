@@ -39,7 +39,7 @@ Link an actuator
 We'll add a :doc:`motion controller <../actuators/v_omega>` to the robot, so that it can receive commands from an external program. The robot will then move according to the instructions received. In this case we'll add a controller that uses linear and angular speed (V, W).
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/actuators``,
+#. Navigate to the directory ``$MORSE_ROOT/data/actuators``,
 #. Press :kbd:`Left Mouse Click` over the file ``v_omega.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
 #. Press :kbd:`Right Mouse Click` over the item ``Motion_Controller``,
@@ -62,7 +62,7 @@ Link a Pose sensor
 Next we will add a :doc:`pose <../sensors/pose>` sensor to the robot that will report the angles of the robot orientation with respect to the reference axes (yaw, pitch and roll)
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser,
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/sensors``,
+#. Navigate to the directory ``$MORSE_ROOT/data/sensors``,
 #. Press :kbd:`Left Mouse Click` over the file ``pose.blend``,
 #. Press :kbd:`Left Mouse Click` over the item ``Object``,
 #. Press select all items (``Pose_sensor`` and ``Pose_mesh``), by holding :kbd:`Shift` down, and load them.

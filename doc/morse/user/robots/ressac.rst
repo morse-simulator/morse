@@ -5,7 +5,7 @@ The base of the **Ressac** robot at ONERA.
 
 Files
 -----
-- Blender: ``$MORSE_ROOT/data/morse/robots/ressac.blend``
+- Blender: ``$MORSE_ROOT/data/robots/ressac.blend``
 - Python: ``$MORSE_ROOT/src/morse/robots/ressac.py``
 
 Adjustable parameters

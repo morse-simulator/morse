@@ -9,7 +9,7 @@ The angles are given in radians.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/gyroscope.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/gyroscope.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/gyroscope.py``
 
 Local data

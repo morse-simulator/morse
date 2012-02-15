@@ -28,7 +28,7 @@ will automatically be changed to be children of the last segment of the arm.
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/robots/kuka_lwr.blend``
+-  Blender: ``$MORSE_ROOT/data/robots/kuka_lwr.blend``
 
    Unlike other actuators, this one also includes the mesh of the arm
    (composed of 8 segments) and an armature that controls its movement.

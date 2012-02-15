@@ -7,7 +7,7 @@ The values for velocity and acceleration are measured at each tic of the Game En
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/accelerometer.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/accelerometer.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/accelerometer.py``
 
 Local data

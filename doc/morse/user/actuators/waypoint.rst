@@ -32,7 +32,7 @@ and the robot can get blocked by any object between it and the target.
 Files
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/waypoint.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/waypoint.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/waypoint.py``
 
 Local data

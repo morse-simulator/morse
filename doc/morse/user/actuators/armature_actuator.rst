@@ -10,12 +10,12 @@ Files
 -----
 
 - Python: ``$MORSE_ROOT/src/morse/actuators/armature_actuator.py``
-- Blender: ``$MORSE_ROOT/data/morse/actuators/armature_actuator.blend``
+- Blender: ``$MORSE_ROOT/data/actuators/armature_actuator.blend``
 
 - Robots implementing the actuator:
 
-	- PR2: ``$MORSE_ROOT/data/morse/robots/pr2/pr2_25_morse.blend``
-	- KUKA LWR: ``$MORSE_ROOT/data/morse/robots/kuka_lwr.blend``
+	- PR2: ``$MORSE_ROOT/data/robots/pr2/pr2_25_morse.blend``
+	- KUKA LWR: ``$MORSE_ROOT/data/robots/kuka_lwr.blend``
 
 Available services
 ------------------

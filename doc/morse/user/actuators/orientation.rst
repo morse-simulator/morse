@@ -9,7 +9,7 @@ Angles are expected in radians.
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/orientation.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/orientation.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/orientation.py``
 
 Local data 

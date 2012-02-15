@@ -7,7 +7,7 @@ This vehicle uses the Blender `vehicle wrapper <http://www.blender.org/documenta
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/robots/hummer.blend``
+- Blender: ``$MORSE_ROOT/data/robots/hummer.blend``
 - Python: ``$MORSE_ROOT/src/morse/robots/hummer.py``
 
 Adjustable parameters

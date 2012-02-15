@@ -38,7 +38,7 @@ in the correct position with respect to the arm. Example::
 Files
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/gripper.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/gripper.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/gripper.py``
 
 Local data

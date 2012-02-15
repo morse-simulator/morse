@@ -9,7 +9,7 @@ following format: [x, y, z, roll, pitch, yaw]
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/imu.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/imu.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/imu.py``
 
 Local data

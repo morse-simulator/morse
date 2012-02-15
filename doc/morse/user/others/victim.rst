@@ -17,5 +17,5 @@ This object has three important **Game Properties** that are used in the test sc
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/scenes/props/victim.blend``
+- Blender: ``$MORSE_ROOT/data/robots/victim.blend``
 - Python: ``$MORSE_ROOT/src/morse/blender/victim.py``

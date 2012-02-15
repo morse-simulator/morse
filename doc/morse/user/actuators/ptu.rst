@@ -26,7 +26,7 @@ using the following keys:
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/ptu.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/ptu.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/ptu.py``
 
 Local data 

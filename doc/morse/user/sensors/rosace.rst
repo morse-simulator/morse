@@ -27,7 +27,7 @@ it will change the Game Properties of the object to reduce its ``injured`` value
 Files
 -----
 
-  - Blender: ``$MORSE_ROOT/data/morse/sensors/rosace.blend``
+  - Blender: ``$MORSE_ROOT/data/sensors/rosace.blend``
   - Python: ``$MORSE_ROOT/src/morse/sensors/rosace.py``
 
 Local data 

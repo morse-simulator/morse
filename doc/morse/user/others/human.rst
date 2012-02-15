@@ -19,7 +19,7 @@ For a general introduction to human-robot interaction simulation with MORSE, che
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/human/human.blend``
+- Blender: ``$MORSE_ROOT/data/robots/human.blend``
 - Python: 
 
   - ``$MORSE_ROOT/src/morse/robots/human.py``
@@ -35,7 +35,7 @@ From Blender interface
 ++++++++++++++++++++++
 
 You can append a human while editing a scenario in Blender by importing the ``Human``
-**group** available in ``$MORSE_ROOT/data/morse/human/human.blend``.
+**group** available in ``$MORSE_ROOT/data/robots/human.blend``.
 
 If the model do not appear, it has probably be added to an invisible layer. Check in
 the layers panel.

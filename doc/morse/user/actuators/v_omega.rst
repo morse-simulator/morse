@@ -11,7 +11,7 @@ The default value in Blender is ``tics = 60``.
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/v_omega.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/v_omega.blend``
 -  Python: ``$MORSE_ROOT/src/morse/actuators/v_omega.py``
 
 Local data 

@@ -9,7 +9,7 @@ The type of tracked objects can be specified using the 'Track' property.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/proximity.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/proximity.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/proximity.py``
 
 

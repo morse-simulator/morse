@@ -13,7 +13,7 @@ degrees Celsius.
 
 Files
 -----
-- Blender: ``$MORSE_ROOT/data/morse/sensors/thermometer.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/thermometer.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/thermometer.py``
 
 Local data

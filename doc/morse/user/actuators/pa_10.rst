@@ -8,7 +8,7 @@ Angles are expected in radians.
 Files 
 -----
 
--  Blender: ``$MORSE_ROOT/data/morse/actuators/pa_10.blend``
+-  Blender: ``$MORSE_ROOT/data/actuators/pa_10.blend``
 
    Unlike other actuators, this one also includes the mesh of the arm
    (composed of 6 segments).

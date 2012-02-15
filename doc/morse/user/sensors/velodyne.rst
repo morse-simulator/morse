@@ -13,7 +13,7 @@ for the full environment around it.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/velodyne.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/velodyne.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/velodyne.py``
 
 Local data

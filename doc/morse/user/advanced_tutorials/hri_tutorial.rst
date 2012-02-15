@@ -24,8 +24,8 @@ Launch MORSE. We will use the default indoor scene, so we can keep it as it appe
 We first want to add a human:
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/humans``
-#. Press :kbd:`Left Mouse Click` over the file ``default_human.blend``
+#. Navigate to the directory ``$MORSE_ROOT/data/robots``
+#. Press :kbd:`Left Mouse Click` over the file ``human.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
 #. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added 
@@ -84,7 +84,7 @@ Exporting the human position
 ----------------------------
 
 As a first step, we would like to export the position of the human in the world. To do so, we need the
-:doc:`GPS sensor <../sensors/gps>`. You can find it in ``$MORSE_ROOT/data/morse/sensors/gps.blend``.
+:doc:`GPS sensor <../sensors/gps>`. You can find it in ``$MORSE_ROOT/data/sensors/gps.blend``.
 
 If you're not sure how to add the GPS to the human, please see the :ref:`Link a gyroscope <link-gyroscope-sensor>`
 section in the MORSE Quick tutorial.
@@ -92,8 +92,6 @@ section in the MORSE Quick tutorial.
 Import only the ``GPS`` object (we don't need the ``GPS_box``), place it on the ground, between the human legs,
 and parent it the the human (with :kbd:`Ctrl-P`). Rename it as well to ``HumanPosition`` (you can change the name by
 pressing :kbd:`N` in the 3D view and scrolling down to the item name field).
-
-Import as well the socket middleware in ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``.
 
 Open the Blender text editor, and modify ``component_config.py``:
 

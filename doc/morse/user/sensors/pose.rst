@@ -11,7 +11,7 @@ The angles for yaw, pitch and roll are given in radians in the range (-pi, pi).
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/sensors/pose.blend``
+- Blender: ``$MORSE_ROOT/data/sensors/pose.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/pose.py``
 
 Local data
