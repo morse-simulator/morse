@@ -11,7 +11,6 @@ It utilises a module programmed in C.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/modifiers/gps_noise.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/gps_noise.py``
 
 Modified data

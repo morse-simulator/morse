@@ -11,7 +11,6 @@ inverting the sense of the Z axis.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/modifiers/ned.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/ned.py``
 
 Modified data
