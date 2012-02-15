@@ -3,9 +3,6 @@ import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); ro
 import rospy
 import std_msgs
 from geometry_msgs.msg import Twist
-import GameLogic
-import math
-import mathutils
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -26,7 +23,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     logger.info('######## IMU-SENSOR INITIALIZED ########')
 
 def post_velocity_twist(self, component_instance):
-    """ Publish the data of the Odometry-sensor as a ROS-Pose message
+    """ Publish the data of the IMU sensor as a ROS-Twist message
     """
     parent_name = component_instance.robot_parent.blender_obj.name
     twist = Twist()

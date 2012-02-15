@@ -24,7 +24,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     logger.info('ROS publisher initialized')
 
 def post_clock(self, component_instance):
-    """ Publish the data of the Pose-sensor as a ROS-Odometry message.
+    """ Publish the simulator clock as a Clock ROS msg
 
     """
     msg = Clock()

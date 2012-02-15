@@ -26,7 +26,9 @@ def init_extra_module(self, component_instance, function, mw_data):
     logger.info('######## ACCELEROMETER-SENSOR INITIALIZED ########')
 
 def post_twist(self, component_instance):
-    """ Publish the data of the Odometry-sensor as a ROS-Pose message
+    """ Publish the data of the acceleromter sensor as a ROS Twist message
+       
+    Only the velocity part is exported.
     """
     parent_name = component_instance.robot_parent.blender_obj.name
     twist = Twist()

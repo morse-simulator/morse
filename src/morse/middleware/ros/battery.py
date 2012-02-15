@@ -21,7 +21,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     logger.info('ROS publisher initialized')
 
 def post_float32(self, component_instance):
-    """ Publish the data of the Pose-sensor as a ROS-Odometry message.
+    """ Publish the data of the battery sensor as a single float32 message.
 
     """
     msg = Float32()
