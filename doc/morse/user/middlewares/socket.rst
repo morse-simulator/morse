@@ -74,7 +74,6 @@ The socket service interface is implemented in :py:mod:`morse.middleware.socket_
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``
 - Python (data-stream): ``$MORSE_ROOT/src/morse/middleware/socket_mw.py``
 - Python (services): ``$MORSE_ROOT/src/morse/middleware/socket_request_manager.py``
 

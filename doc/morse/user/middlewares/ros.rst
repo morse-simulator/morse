@@ -12,7 +12,6 @@ Please follow the instructions in the :doc:`installation procedure  <../installa
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/middleware/ros_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/ros_mw.py``
 
 Generation of ROS-node and topics

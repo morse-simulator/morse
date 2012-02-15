@@ -23,7 +23,6 @@ functionality of the middleware.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/middleware/pocolibs_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/pocolibs_mw.py``
 
 Available methods

@@ -35,7 +35,6 @@ is printed with this format::
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/middleware/text_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/text_mw.py``
 
 Available methods

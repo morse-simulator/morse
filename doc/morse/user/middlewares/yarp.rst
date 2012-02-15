@@ -17,7 +17,6 @@ various data types.
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/morse/middleware/yarp_mw.blend``
 - Python: ``$MORSE_ROOT/src/morse/modifiers/yarp_mw.py``
 
 Available methods
