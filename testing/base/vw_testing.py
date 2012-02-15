@@ -23,6 +23,11 @@ def send_speed(s, v, w, t):
     sleep(t)
     s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
 
+def send_service_speed(s, v, w, t):
+    s.call_server('Motion_Controller', 'set_speed', v, w)
+    sleep(t)
+    s.call_server('Motion_Controller', 'stop')
+
 class VW_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
@@ -37,16 +42,12 @@ class VW_Test(MorseTestCase):
         motion = Actuator('v_omega')
         robot.append(motion)
         motion.configure_mw('socket')
+        motion.configure_service('socket')
         
         env = Environment('indoors-1/indoor-1')
         env.configure_service('socket')
 
     def test_vw_controller(self):
-        """ This test is guaranteed to be started only when the simulator
-        is ready.
-        """
-        pass
-
         morse = Morse()
         
         # Read the start position, it must be (0.0, 0.0, 0.0)
@@ -101,6 +102,44 @@ class VW_Test(MorseTestCase):
         self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.08)
         self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.08)
         self.assertAlmostEqual(pose['roll'], 0.0, delta=0.08)
+
+        morse.close()
+
+    def test_vw_service_controller(self):
+        morse = Morse()
+        
+        # Read the start position, it must be (0.0, 0.0, 0.0)
+        pose_stream = morse.stream('Pose')
+        pose = pose_stream.get()
+        for coord in pose.values():
+            self.assertAlmostEqual(coord, 0.0, delta=0.02)
+
+        send_service_speed(morse, 1.0, 0.0, 2.0)
+
+        pose = pose_stream.get()
+        self.assertAlmostEqual(pose['x'], 2.0, delta=0.15)
+        self.assertAlmostEqual(pose['y'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['yaw'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
+
+        send_service_speed(morse, -1.0, 0.0, 2.0)
+
+        pose = pose_stream.get()
+        for coord in pose.values():
+            self.assertAlmostEqual(coord, 0.0, delta=0.15)
+
+        send_service_speed(morse, 1.0, -math.pi/4.0, 2.0)
+        pose = pose_stream.get()
+
+        # for non-null w, we have r = v /  w
+        self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.15)
+        self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.15)
+        self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.15)
+        self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
+        self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
 
         morse.close()
 
