@@ -1,4 +1,4 @@
-PYMORSE
+pymorse
 =======
 
 .. automodule:: pymorse

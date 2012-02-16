@@ -9,7 +9,7 @@ It uses underneath the MORSE socket API.
 Usage
 =====
 
-..note ::
+.. note ::
   The current version of pymorse only support a largely incomplete set of features.
   You may need to directly access the MORSE socket interface to perform certain
   actions like writing on a data stream.
@@ -35,7 +35,7 @@ You can stop the simulator (MORSE will quit) with
 
 These methods are demonstrated in the example below:
 
-..code-block:: python
+.. code-block:: python
 
     import pymorse
 
@@ -54,7 +54,10 @@ These methods are demonstrated in the example below:
 Accessing services
 ------------------
 
-This is not supported by this version of ``pymorse``.
+No high level interface is currently supported by this version of ``pymorse``.
+
+Services can be invoked in a blocking way with 
+:py:meth:`pymorse.Morse.call_server`.
 
 Reading a data stream
 ---------------------
@@ -74,13 +77,13 @@ stream:
 - :py:meth:`pymorse.MorseStream.last`: returns the last/the n last (if
   an integer argument is passed) records received, or none/less, if
   none/less have been received.
-- :py:meth:`pymorse.MorseStream.subscribe (and
-  `:py:meth:`pymorse.MorseStream.unsubscribe`): this method is called
+- :py:meth:`pymorse.MorseStream.subscribe` (and
+  :py:meth:`pymorse.MorseStream.unsubscribe`): this method is called
   with a callback that is triggered everytime incoming data is received.
 
 These methods are demonstrated in the example below:
 
-..code-block:: python
+.. code-block:: python
 
     import pymorse
 
@@ -122,7 +125,7 @@ retrieve pymorse log messages through the "pymorse" logger.
 The complete example below shows how to retrieve the logger and how to
 configure it to print debug messages on the console.
 
-..code-block:: python
+.. code-block:: python
 
     import logging
     import pymorse
@@ -147,6 +150,7 @@ configure it to print debug messages on the console.
         print('Oups! An error occured!')
         print(ose)
     finally:
+        morse.close()
         morse.close()
 """
 import time
@@ -310,9 +314,9 @@ class Morse(threading.Thread):
 
     def __init__(self, host = "localhost", port = 4000):
         """ Creates an instance of the MORSE simulator proxy.
-
+        
         This is the main object you need to instanciate to communicate with the simulator.
-
+        
         :param host: the simulator host (default: localhost)
         :param port: the port of the simulator socket interface (default: 4000)
         """
@@ -446,6 +450,14 @@ class Morse(threading.Thread):
         return morse_answer
 
     def call_server(self, component, service, *args):
+        """ Calls a service from the simulator.
+        
+        The call will block until a response from the simulator is received.
+        
+        :param component: the component that expose the service (like a robot name)
+        :param service: the name of the service
+        :param args...: (variadic) each service parameter, as a separate argument
+        """
         
         req = {'id': self.id,
                'component': component,
