@@ -84,7 +84,16 @@ Running all MORSE tests
 -----------------------
 
 The MORSE tests infrastructure is integrated with cmake, so you can run `make
-test` to check that all currently defined unit-tests for MORSE pass.
+test` to check that all currently defined unit-tests for MORSE pass. 
+
+ROS tests
+---------
+
+To run ROS tests, you need first to set the variable `MORSE_SRC_ROOT` to the
+root of your MORSE source. Moreover, you need to generate messages for the
+morsetesting helper: to do so, you must go in
+`${MORSE_SRC_ROOT}/testing/middlewares/ros/morsetesting` and then use rosmake
+to build them.
 
 Tests log
 ---------
