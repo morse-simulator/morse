@@ -27,10 +27,20 @@ os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.dirname(
 import roslib; roslib.load_manifest("morsetesting")
 import rospy
 import actionlib
+import subprocess
 from morsetesting.msg import *
 from geometry_msgs.msg import *
 
 class RosActionsTest(MorseTestCase):
+    def setUpMw(self):
+        try:
+            self.roscore_process = subprocess.Popen(['roscore'])
+        except OSError as ose:
+            testlogger.error("Error while launching roscore ! Check you can run it from command-line\n")
+            raise ose
+
+    def tearDownMw(self):
+        self.roscore_process.terminate()
 
     def setUpEnv(self):
         # Identical to ROS service testing
