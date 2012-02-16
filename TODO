@@ -24,12 +24,6 @@ HRI
 - Bug 188: Builder Script - Erros when adding Pose Sensor to Human
 - Check cameras and lights are required in human model
 
-PR2
----
-
-- Update TODO.pr2 list
-- Fix path in pr2extension.py
-
 Public Relations
 ----------------
 

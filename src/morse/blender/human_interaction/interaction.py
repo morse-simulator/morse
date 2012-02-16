@@ -151,7 +151,7 @@ def interact():
                 else:
                     ow['Status'] = 'Open ' + str(focus['Description'])
             except KeyError:
-                print('Key missing in focused Object ' + focus.name +
+                logger.warning('Key missing in focused Object ' + focus.name +
                       ' --- no description given')
         elif 'Switch' in focus:
             can_be_manipulated = True
