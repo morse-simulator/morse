@@ -10,7 +10,7 @@ contributions are very welcome!
 You can write to the list of developers of the project, writing to this 
 address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
 
-MORSE developement can be tracked online with GitHub: `MORSE on GitHub 
+MORSE development can be tracked online with GitHub: `MORSE on GitHub 
 <https://github.com/laas/morse>`_
 
 Fork it from your own GitHub account, or get the source directly from 
@@ -34,6 +34,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/adding_modifier
     dev/services
     dev/new_middleware
+    dev/new_pocolibs_interface
     dev/builder
 
 Tips and how-tos 
