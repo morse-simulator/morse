@@ -9,11 +9,16 @@ and do not include themselves any means of sharing their internal data.
 To be able to use this data outside the simulator, it is necessary to bind
 a middleware to each component, specifying the expected behaviour.
 
+Every MORSE sensor class has a list called ``output_functions``, and every
+actuator has a list called ``input_functions``. These lists are empty by
+default, but during execution, any function listed in them will be called
+each time the component executes its main task.
+
 When a component is linked to a middleware, a function described in the 
-middleware will be added to the list of methods executed by the component, 
-to be called each time the component executes its main task. In this way, 
-the middleware can read the data provided by the component via a *hook*, 
-which is a common data structure to all the components.
+middleware will be added to the corresponding list of functions (input or
+output). The functions then become part of the component class, and can
+read the data provided by the component via a *hook*, which is a data
+structure common to all the components.
 
 MORSE components have a dictionary called ``local_data`` that has the names
 of the variables as keys, and stores the values of each variable. The values
