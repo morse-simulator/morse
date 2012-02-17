@@ -60,7 +60,7 @@ endif(BUILD_MOOS_SUPPORT)
 
 IF (BUILD_POCOLIBS_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
-	find_package(SWIG REQUIRED)
+	find_package(SWIG REQUIRED 2.0.4)
 endif(BUILD_POCOLIBS_SUPPORT)
 
 if (BUILD_HLA_SUPPORT)
