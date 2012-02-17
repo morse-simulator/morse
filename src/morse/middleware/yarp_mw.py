@@ -2,9 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import re
 import yarp
-import array
 import morse.core.middleware
-import GameLogic
 
 class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and YARP."""

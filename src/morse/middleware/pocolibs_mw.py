@@ -1,7 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
 import datetime
-import GameLogic
 
 import morse.core.middleware
 

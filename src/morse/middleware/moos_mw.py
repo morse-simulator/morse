@@ -2,10 +2,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
 import GameLogic
-#if GameLogic.pythonVersion < 3:
-#    import Mathutils as mathutils
-#else:
-import mathutils
 
 class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and MOOS."""

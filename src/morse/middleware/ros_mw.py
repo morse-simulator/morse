@@ -2,10 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy');
 import roscpp
 import rospy
-import array
 import morse.core.middleware
 import std_msgs
-import mathutils
 
 from std_msgs.msg import String
 
