@@ -23,24 +23,19 @@ Launch MORSE. We will use the default indoor scene, so we can keep it as it appe
 
 We first want to add a human:
 
-#. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser
-#. Navigate to the directory ``$MORSE_ROOT/data/morse/humans``
-#. Press :kbd:`Left Mouse Click` over the file ``default_human.blend``
-#. Press :kbd:`Left Mouse Click` over the item ``Object``
-#. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
+#. With the mouse over the 3D view in Blender, press :kbd:`Shift-F1` to open the Load Library browser
+#. Navigate to the directory ``$MORSE_ROOT/data/robots``
+#. Press :kbd:`Left Mouse Click` over the file ``human.blend``
+#. Press :kbd:`Left Mouse Click` over the item ``Group``
+#. Press :kbd:`Right Mouse Click` over the item ``Human``
 #. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added 
    human is selected.
-#. Convert the objects to local: without de-selecting the object, press :kbd:`l` then hit :kbd:`enter`
 
 .. image:: ../../../media/hri_import_human.jpg
    :align: center
 
 Controlling the human
 ---------------------
-
-To avoid keyboard mapping issues, remove the ``CameraFP`` object by selecting it in the scene outliner, and
-pressing :kbd:`del`. Set the human camera as the new *main* camera: select it and press :kbd:`Ctrl-Numpad 0`
-(or menu ``View > Cameras > Set Active Object As Camera``).
 
 You can control the human with the :kbd:`W`, :kbd:`A`, :kbd:`S`, :kbd:`D`  keys.
 
@@ -57,28 +52,26 @@ the 3D cursor on the top of a table:
   :align: center
 
 Push :kbd:`space` and type ``Add cube`` followed by :kbd:`enter`. Using ``Scale`` (:kbd:`S` key) and
-``Translate along Z`` (:kbd:`G` fllowed by :kbd:`Z`), turn the box into a reasonably sized object:
+``Translate along Z`` (:kbd:`G` followed by :kbd:`Z`), turn the box into a reasonably sized object:
 
 .. image:: ../../../media/place_cube.jpg 
   :align: center
 
-To allow this object to be grasped, add a custom game property (of any type) to your box named ``Object``:
+Easiest way to allow this object to be grasped is using the addon ``morse_object_utils.py``. Use the 
+``Morse Object`` button (see :doc:`Setting up a Scene with MORSE Utils <../addons/morse_utils>`):
 
-.. image:: ../../../media/gameproperty_object.jpg 
+.. image:: ../../../media/object_dialog.png 
   :align: center
 
 Start again the simulation, and press the :kbd:`X` key to switch to the manipulation mode. You can control
-the hand with the mouse and the scroll wheel. Press the :kbd:`Left Mouse Button` when near an object to
-pick it, and release the button to place the object.
+the hand with the mouse while holding :kbd:`Middle Mouse Button`. Press the :kbd:`Left Mouse Button` with 
+the crosshairs over an object to pick it, and press :kbd:`Right Mouse Button` to drop the object.
 
 .. image:: ../../../media/hri_pick_object.jpg 
   :align: center
 
 Check the :doc:`human component <../others/human>` documentation for more details on what can be done
 with the human component.
-
-.. note:: The box has currently no physical properties. If you set it to be a ``Rigid Body`` with the default
-    collision bounds, the box will fall down when you release it.
 
 Exporting the human position
 ----------------------------
