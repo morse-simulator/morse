@@ -6,9 +6,10 @@ General
 
 - MORSE 0.5 requires Blender >= 2.59 and < 2.62 (because of some changes in the
   matrices handling - support for Blender >= 2.62 is expected for next release)
-  - Lots of cleaning (middleware empties have been removed)
-- The command line ``morse run {scene.blend|scene.py}`` now works as expected (ie,
-  starts the simulation. Optional arguments can be added and are passed to the script
+- Lots of cleaning (middleware empties have been removed)
+- The command line ``morse run {scene.blend|scene.py}`` now works as expected (*i.e.*,
+  starts the simulation as soon as Blender opens).
+  Optional arguments can be added and are passed to the script
 - Unit-testing support for MORSE (cf doc: dev/testing). Added a target to the build file
   ('make test').
 
@@ -32,7 +33,6 @@ Builder API
   scene to the MORSE Builder format.
 - Added support for multi-node configuration in the builder API
 - Added support for static, passive objects
-
 - Many examples and tutorials have been converted to the Builder API.
 
 Components
@@ -40,14 +40,20 @@ Components
 
 - Static objects have a redefined set of options to make them active or not,
   graspable or not, etc. See :doc:`user/others/passive_objects`)
-- New infrared sensor
-- Camera images can now be vertically flipped via the ``vertical_flip`` property.
+- New components that can be created from the Builder API, such as:
+
+  - Infrared sensor
+  - Battery sensor
+  - Light switch actuator
+- Camera images can now be vertically flipped via the ``vertical_flip`` property
 
 Multi-node
 ----------
 
 - New abstract API for multi-node implementation. The current socket-based and HLA
-  implementation now use it.
+  implementation now use it
+- This allows for having a single builder script to be used on all nodes. The
+  configuration of each node is done using the environment variable ``MORSE_NODE``
 
 HRI
 ---
@@ -55,10 +61,10 @@ HRI
 Much work has been done in this domain:
 
 - New human avatar with a much improved behaviour/animation. It is controllable
-  from mouse + keyboard or Kinect
-- The avatar features an 'manipulation mode' where objects can be picked and
+  from mouse + keyboard or Kinect (experimental)
+- The avatar features a 'manipulation mode' where objects can be picked and
   dropped, and special objects like drawers and cupboards can be opened.
-- The human avatar can be easily be added via the Builder API (instantiate the
+- The human avatar can be easily added via the Builder API (instantiate the
   'Human' class)
 
 Previous releases
