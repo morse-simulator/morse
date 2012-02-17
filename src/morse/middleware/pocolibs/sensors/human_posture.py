@@ -34,9 +34,7 @@ def init_human_poster(self, component_instance, poster_name):
         logger.error("Creating poster. The Human Posture Pocolib export module may not work")
         return None
 
-    #else:
     logger.info("Human Posture Poster '%s' created (ID: %d)" % (poster_name, poster_id))
-
     return poster_id
 
 
@@ -55,11 +53,12 @@ def export_posture(self, component_instance):
     
     nb_dofs = 46
     
-    dofs = ors_human_posture_poster.doubleArray(nb_dofs) #Special SWIG type declared in ors_human_posture_poster.i
+    #Special SWIG type declared in ors_human_posture_poster.i
+    dofs = ors_human_posture_poster.doubleArray(nb_dofs) 
     
     raw_dofs = list(component_instance.local_data.values())
     
-    logger.debug("Exporting posture: ", str(raw_dofs))
+    logger.debug("Exporting posture: "+ str(raw_dofs))
 
     for i in range(nb_dofs):
         dofs[i] = raw_dofs[i]
