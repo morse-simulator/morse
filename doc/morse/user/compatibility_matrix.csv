@@ -3,31 +3,31 @@ Communications ,
 ``IN/OUT Data streams``,      ✔,               ✔,           ✔ (ports),      ✔ (topics),      ✔ (posters),														✔ (database)
 ``RPC (requests)``,			  ✘,               ✔,           ✔,              ✔ (only services), ✔ (requests),													✘
 Sensors,
-``Accelerometer``,            ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔ 
-``Battery``,				  ✔,			   ✔,			✔,				✔``Float32``,	✘,																	✔
-``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,               ✔ ``POM_SENSOR_POS``,								✔
-``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_SENSOR_POS``,												✔
+``Accelerometer``,            ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔ 
+``Battery``,				  ✔,			   ✔,			✔,				✔ ``Float32``,	✘,																	✔
+``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,✔ ``POM_ME_POS``,								✔
+``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
-``IMU``,		              ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔
-``Odometry``,                 ✔,               ✔,           ✔,              ✔``Odometry``,  ✘ ,																	✔
-``Pose``,					  ✔,               ✔,           ✔,              ✔``Twist``,     ✘,																	✔ 	
+``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔
+``Odometry``,                 ✔,               ✔,           ✔,              ✔ ``Odometry``,  ✘ ,																	✔
+``Pose``,					  ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
-``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATE'',												✔
+``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
 ``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
-``Semantic camera``,          ✔,               ✔,           ✔,              ✔``String``	  ,  ✔ ``VimanObjectPublicArray``,										✘	
-``Sick (Laser range finder)``,✔,               ✔,          "✔``List (x, y, z)``",             "✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
+``Semantic camera``,          ✔,               ✔,           ✔,              ✔ ``String``  ,  ✔ ``VimanObjectPublicArray``,										✘	
+``Sick (Laser range finder)``,✔,               ✔,          "✔ ``List (x, y, z)``","✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
-``Video camera``,             ✘,               ✘,           ✔``YarpImage``, ✔``Image``,      ✔ ``viamImageBank``,												✘	
+``Video camera``,             ✘,               ✘,           ✔ ``YarpImage``, ✔ ``Image``,     ✔ ``viamImageBank``,												✘	
 Actuators,
 ``armature actuator``,		  ✘,               ✔,           ✔,              ✔,               ✘,																	?
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,																	✔
 ``gripper``,				  ✘,               ✔,           ✔,              ✔ ``Bool``,		 ✘,																	?
-``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,✔ ``LWR_ARM_INST``,												✘
+``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,✔ ``Gb_q7``,												✘
 ``light``,					  ✘,               ✔,           ✔,              ✔ ``Bool``		,✘,																	?
 ``orientation``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
 ``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✘,																	✘
 ``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` or ``PLATINE_AXIS_STR`` ,		✘	
 ``steer_force``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
-"``(v, ω) motion control``",  ✘,               ✔,           ✔,				"✔ ``Twist`` - supports as well (Vx,Vy,ω)",    "✔ ``GENPOS_CART_SPEED``",		✔
+"``(v, w) motion control``",     ✘,               ✔,           ✔,              "✔ ``Twist`` - supports as well (Vx,Vy,ω)",    "✔ ``GENPOS_CART_SPEED``",		✔     
 ``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘

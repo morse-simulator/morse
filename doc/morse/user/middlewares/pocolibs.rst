@@ -41,7 +41,7 @@ documentation.
 - POM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/pom.py``.
   It has one available output method:
 
-    - ``write_pom``: Sends data of type **POM_SENSOR_POS**, defined in ``pom/pomStruct.h``
+    - ``write_pom``: Sends data of type **POM_ME_POS**, defined in ``pom/pomStruct.h``
 
 - VIAM poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/sensors/viam.py``.
   It has one available output method:
@@ -71,7 +71,7 @@ documentation.
 - LWR poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/lwr.py``.
   It has one available input method:
 
-    - ``read_lwr_config``: Reads data of type **LWR_ARM_INST**, defined in ``lwr/lwrStruct.h``
+    - ``read_lwr_config``: Reads data of type **Gb_q7**, defined in `gbM/gbStruct.h``
 
 - PLATINE poster: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/pocolibs/actuators/platine.py``.
   It has two available input methods:
@@ -83,4 +83,4 @@ documentation.
 - PLATINE_POSTURE poster: Stored in the file ``$MORSE_ROOT/src/morse/middleware/sensors/platine_posture.py``.
   It has one available input method:
 
-	- ``write_platine_posture``: Sends data of type **PLATINE_STATE**, defined in ``platine/platineStruct.hh``
+	- ``write_platine_posture``: Sends data of type **PLATINE_STATES**, defined in ``platine/platineStruct.hh``
