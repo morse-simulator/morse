@@ -375,8 +375,20 @@ class Environment(Component):
         bpymorse.get_context_scene().render.engine = 'BLENDER_GAME'
         bpymorse.get_context_scene().game_settings.use_auto_start = auto_start
 
+    def fullscreen(self, fullscreen=True):
+        """ Run the simulation fullscreen
+
+        :param fullscreen: Start player in a new fullscreen display
+        :type  fullscreen: Boolean, default: True
+        """
+        bpymorse.fullscreen(fullscreen)
+
     def set_debug(self, debug=True):
-        """ Set the debug bit in blender """
+        """ Set Blender debug mode
+
+        :param debug: set when blender is running in debug mode (started with --debug)
+        :type  debug: Boolean, default: True
+        """
         bpymorse.set_debug(debug)
 
     def set_stereo(self, mode='ANAGLYPH', eye_separation=0.1, stereo='STEREO'):
