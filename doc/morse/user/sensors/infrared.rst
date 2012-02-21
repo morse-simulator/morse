@@ -8,6 +8,15 @@ a certain distance of the sensor's origin.
 .. note:: Objects in the scene with the **No collision** setting in their Game
   properties will not be detected by this sensor
 
+This sensor can also be added directly from a Builder API script, without
+requiring a Blender file. 
+Yo do this by adding these lines into your script:
+
+.. code-block:: python
+
+  infrared = morse.builder.sensors.Infrared()
+
+
 Files
 -----
 

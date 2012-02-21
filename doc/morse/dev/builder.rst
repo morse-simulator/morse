@@ -107,6 +107,45 @@ a new component
    *.blend* extension) that contain the required component. These files should
    be present under ``$MORSE_ROOT/share/morse/data/{class}/``.
 
+
+The Creator classes
++++++++++++++++++++
+
+Another subclass of ``AbstractComponent`` is ``ComponentCreator``. This class
+is used to instantiate components without the need of having a .blend file
+associated with them. It is limited to generating components with simple
+geometry for their meshes, and limited use of the Logic Bricks in their
+behaviour.
+
+As with the regular ``ComponentClass``, there are also a number of subclasses
+that inherit from this one:
+
+ * :py:class:`morse.builder.creator.SensorCreator`
+ * :py:class:`morse.builder.creator.ActuatorCreator`
+
+The actual definitions of the components that can be instantiated in this way
+can be found in the files:
+``$MORSE_ROOT/srs/morse/builder/sensors.py`` and 
+``$MORSE_ROOT/srs/morse/builder/actuators.py``.
+
+To instantiate these kind of objects, you'll need to use the full path of the
+class. For example:
+
+.. code-block:: python
+
+  from morse.builder.morsebuilder import *
+  import morse.builder.sensors
+  import morse.builder.actuators
+
+  atrv = Robot('atrv')
+
+  infrared = morse.builder.sensors.Infrared("MyInfrared")
+  atrv.append(infrared)
+
+  v_w = morse.builder.actuators.MotionController("MyVOmega")
+  atrv.append(v_w)
+
+
 Environment class
 +++++++++++++++++
 

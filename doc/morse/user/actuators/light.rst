@@ -4,6 +4,14 @@ Light (On/Off) actuator
 This actuator is a simple On/Off light. Based on `SPOT 
 <http://wiki.blender.org/index.php/Doc:2.6/Manual/Lighting/Lamps/Spot>`_ light.
 
+Since this actuator does not have a Blender file, it can only be added into
+a scene using the Builder API. Yo do this by adding these lines into
+your script:
+
+.. code-block:: python
+
+  light = morse.builder.actuators.Light()
+
 Files 
 -----
 
