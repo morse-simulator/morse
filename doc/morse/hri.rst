@@ -1,7 +1,7 @@
 Human-Robot Interaction simulation
 ==================================
 
-.. image:: ../media/hri_move_mode.jpg
+.. image:: ../media/hri_human.jpg
    :align: center
    :width: 400px
 
@@ -12,6 +12,11 @@ perspective), or remotely, via remote services.
 
 .. vimeo:: 27862605
    :width: 400px 
+
+Tutorials
+---------
+
+Check the :doc:`HRI tutorial <user/beginner_tutorials/hri_tutorial>`.
 
 Adding a human
 --------------
