@@ -1,0 +1,14 @@
+Sie können Türen und Schubladen genauso 
+schließen, wie Sie sie geöffnet haben.
+
+Benutzen Sie das gleiche Vorgehen, um 
+Schalter zu benutzen.
+
+Mit der <ALT>-Taste können Sie sich 
+außerdem alle Objekte anzeigen lassen, 
+die Sie aufheben können.
+
+Damit haben Sie die Steuerung des 
+Menschen in MORSE erlernt. Sie können
+weiter üben oder mit <ESC> das Tutorial
+beenden.

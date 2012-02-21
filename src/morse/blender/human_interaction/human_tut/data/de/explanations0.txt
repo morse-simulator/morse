@@ -1,0 +1,8 @@
+Dieses Tutorial wird Ihnen die grundlegende 
+Steuerung des Menschen näher bringen. Dazu
+werden Sie durch eine einfache Pick-and-Place 
+Aufgabe geführt.
+
+Zuerst werden Sie die Navigation erlernen.
+Mit der Maus können Sie die Kamera um den 
+Menschen drehen.

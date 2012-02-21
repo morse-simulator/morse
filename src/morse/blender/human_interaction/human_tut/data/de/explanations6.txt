@@ -1,0 +1,10 @@
+Um Objekte abzulegen, drücken Sie die
+<Rechte Maustaste>. Bei einigen Stellen 
+können Objekte genau platziert werden.
+In diesem Fall erscheint ein grünes 
+Rechteck, in das das Objekt gelegt wird. 
+Anderenfalls wird das Objekt einfach
+fallen gelassen. Bewegen Sie dann die 
+Hand, um Objekte gezielt abzulegen.
+
+Legen Sie die Tasse nun im Schrank ab.

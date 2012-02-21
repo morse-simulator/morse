@@ -1,0 +1,10 @@
+Press <X> to switch to First-Person-
+View. Press <X> again to switch back to 
+Third-Person-View.
+
+Use the First-Person-View to pick up objects,
+open doors and drawers and use switches.
+
+In Third-Person-View you have a better overview.
+Hence Third-Person-View is recommended for 
+navigation.
