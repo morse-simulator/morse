@@ -82,8 +82,10 @@ more functions:
    class and methods that the object will use.
  * **configure_service**: Similar to the previous function. Its argument is the
    name of the middleware to be used.
- * **configure_modifier**
- * **configure_overlay**
+ * **configure_modifier**: Add a modifier specified by its first argument to
+   the current object
+ * **configure_overlay**: Add a service overlay for a specific service manager
+   (as defined for configure_service) to the current object.
 
 These configuration functions make use of a dictionary defined in the file:
 ``$MORSE_ROOT/src/morse/builder/data.py``. In these dictionaries, the keys are
@@ -126,7 +128,7 @@ The ``Environment`` class provides these functions:
  * **show_physics**: Toggle the display of the bounding boxes of objects during
    the simulation.  The parameter is a boolean value indicating whether to show
    or not this information.
- * **show_debug**: Toggle the printing of the value of the Game Properties
+ * **show_debug_properties**: Toggle the printing of the value of the Game Properties
    marked.  The parameter is a boolean value indicating whether to show or not
    this information.
  * **aim_camera**: Set the orientation of the default camera. The parameter is
@@ -135,6 +137,14 @@ The ``Environment`` class provides these functions:
  * **place_camera**: Set the location of the default camera. The parameter is a
    list with the new 3D coordinates for the camera. Example: *([10.0, -10.0,
    3.0])*
+ * **set_gravity**: Set the gravity for the specific scene. The parameter is a
+   float defaulting to 9.81.
+ * **set_viewport**: Set the default view mode in one of 'BOUNDBOX',
+   * 'WIREFRAME', 'SOLID' or 'TEXTURED'
+ * **set_debug**: set the debug bit in blender
+ * **set_stereo**: configure to renderer to render image in 'STEREO', allowing
+ to see them in 3d with special glasses. Allowed argument is one of 'NONE'
+ (normal 2d mode), 'STEREO' or 'DOME'.
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    Example:
@@ -157,7 +167,9 @@ The ``Environment`` class provides these functions:
     * **protocol**: Either 'socket' or 'hla'
     * **server_address**: IP address where the multi-node server can be found
     * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000.
-    * **distribution**: A Python dictionary. The keys are the names of the nodes, and the values are lists with the names of the robots handled by each node
+	* **distribution**: A Python dictionary. The keys are the names of the
+	  nodes, and the values are lists with the names of the robots handled
+	  by each node
  * **create()**: Should always be called at the very end of the Builder script.
    It will finalise the building process and write the configuration files.
 
