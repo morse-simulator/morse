@@ -58,7 +58,7 @@ Picking objects
 
 Our human can pick and release objects. Let's add a new object (a cornflakes
 box, from the kitchen objects library) on one of the tables. Exit the
-simulation (:kdb:`Esc`), and re-open your script.
+simulation (:kbd:`Esc`), and re-open your script.
 
 Add the following lines:
 
