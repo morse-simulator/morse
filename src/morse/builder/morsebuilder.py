@@ -75,19 +75,21 @@ class PassiveObject(AbstractComponent):
             self._blendobj.location = (0.0, 0.0, 0.0)
             self._blendobj.rotation_euler = (0.0, 0.0, 0.0)
         
-    def make_graspable(self, human_readable_label = None):
+    def setgraspable(self):
         """
-        Makes an object graspable for the human avatar
-        :param human_readable label: A Description of the object. This text is shown by the human
-                  interface when picking up the object. If no label is provided, it is set to the
-                  name of the blender object
+        Makes an object graspable to the human avatar by adding a NEAR collision
+        sensor to the object.
+        
+        This function also set the object to be an active game object (property 
+        'Object' set to true), and set the object label to the Blender object 
+        name (if not already set).        
         """
         obj = self._blendobj
         
-        if not human_readable_label:
-            human_readable_label = obj.name
-            
-        self.properties(Object = True, Graspable = True, Label = human_readable_label)
+        if not "Label" in obj.game.properties:
+            self.properties(Object = True, Graspable = True, Label = obj.name)
+        else:
+            self.properties(Object = True, Graspable = True)        
         
         # Add collision sensor for object placement
         if not 'Collision' in obj.game.sensors:

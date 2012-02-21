@@ -53,7 +53,7 @@ You can temporarly disable an object by simply setting its ``Object`` property t
 .. [#] Not used yet.
 .. [#] Used by the semantic camera sensor, defaults to ``Object``.
 .. [#] Used by the human's manipulation mode and the :doc:`gripper <../actuators/gripper>` 
-   sensors.
+   actuators.
 
 .. note::
    
@@ -75,19 +75,20 @@ in the scene:
     from morse.builder.morsebuilder import *
 
     table = PassiveObject('props/objects.blend','SmallTable')
-    table.make_graspable(human_readable_label = "HRP2TABLE")
+    table.setgraspable()
     table.translate(x=3.5, y=-3, z=0)
     table.rotate(z=0.2)
 
-The ``make_graspable(..)`` function equips the object  with a collision sensor, that allows for do pick- and place 
-actions with the human avatar and automatically sets the label of the object. ``make_graspable()`` can also be
-used without arguments. In that case, the label of the object is set according to the name of the Python object. 
-
-The optional game properties (and also the others) can also be set using the following command:
-
+As any other property, the game properties can be set using the following command:
 .. code-block:: python
 
-  table.properties(Object = True, Graspable = False, Label = "HRP2TABLE")
+  table.properties(Object = True, Graspable = False, Label = "TABLE")
+
+.. warning::
+    To set an object to be graspable, you **must** also call the ``setgraspable(..)`` function.
+    It adds an internal collision sensor to the object, required for pick and place 
+    actions with the human avatar.
+
 
 The next example shows how to add semi-randomly placed chairs in a
 scene:
