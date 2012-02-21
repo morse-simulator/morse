@@ -34,7 +34,18 @@ All services provided by this actuator are synchronous
 
 - **get_IK_limits**: Same result as the **get_dofs** service
 
-- **set_rotation**: This method receives as parameters the name of a bone and a list with three floating point numbers, indicating the euler rotation to be given to the bone
+- **set_rotation**: This method receives as parameters the name of a bone and a list with three floating point numbers, indicating the euler rotation to be given to the bone. Angles are in radians
+
+    +------------+--------------------+--------------------------------------+
+    | Parameters | ``channel_name``   | Name of the armature bone to rotate  |
+    |            |                    | (see the list above)                 |
+    +------------+--------------------+--------------------------------------+
+    |            | ``rotation``       | Array of 3 floats, with the angles   |
+    |            |                    | to rotate around X, Y, Z.            |
+    +------------+--------------------+--------------------------------------+
+
+    Parameters: ``(channel_name, rotation)``
+
 
 - **get_channel_lengths**: Returns a dictionary, where the key is the name of the channel and the value is a floating point number indicating the length of the bone
 

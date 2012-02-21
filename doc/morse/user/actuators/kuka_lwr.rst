@@ -78,10 +78,27 @@ There is also an additional service specific to this armature:
   be considered as 0.0.
 
     +------------+--------------------+-----------------+
-    | Parameters | ``rotation_array`` | array of floats |
+    | Parameters | ``rotation_array`` | Array of floats |
     +------------+--------------------+-----------------+
 
     Parameters: ``(rotation_array)``
+
+- **set_rotation**: (service) Makes the indicated segment rotate by the indicated
+  angle. Receives the name of the segment to rotate, and the amount in radians.
+
+    +------------+--------------------+--------------------------------------+
+    | Parameters | ``channel_name``   | Name of the armature bone to rotate  |
+    |            |                    | (see the list above)                 |
+    +------------+--------------------+--------------------------------------+
+    |            | ``rotation``       | Array of 3 floats, with the angles   |
+    |            |                    | to rotate around X, Y, Z.            |
+    |            |                    | Note that given the restrictions     |
+    |            |                    | imposed on the armature, only one of |
+    |            |                    | the rotation angles will be used.    |
+    +------------+--------------------+--------------------------------------+
+
+    Parameters: ``(channel_name, rotation)``
+
 
 
 
