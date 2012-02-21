@@ -85,6 +85,7 @@ These methods are demonstrated in the example below:
 
 .. code-block:: python
 
+    import time
     import pymorse
 
     morse = pymorse.Morse("localhost", 4000)
@@ -103,6 +104,9 @@ These methods are demonstrated in the example below:
 
         # Asynchronous read: the following line do not block.
         mystream.subscribe(printer)
+        
+        # Read for 10 sec
+        time.sleep(10)
 
     except MorseServerError as ose:
         print('Oups! An error occured!')
@@ -494,6 +498,10 @@ class Morse(threading.Thread):
         setattr(self,innermethod.__name__,innermethod)
     
     def close(self):
+        # Close data streams
+        for stream in self.open_streams:
+            stream.close()
+            
         self._running = False
         self.join()
         #pymorselogger.debug('Closing the connection to MORSE...')
@@ -509,10 +517,8 @@ class Morse(threading.Thread):
        return self.call_server("simulation", "list_robots")
 
     def quit(self):
-        # Close data streams
-        for stream in self.open_streams:
-            stream.close()
-        return self.call_server("simulation", "quit")
+        self.call_server("simulation", "quit")
+        self.close()
 
     def reset(self):
        return self.call_server("simulation", "reset")
