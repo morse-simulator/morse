@@ -39,7 +39,7 @@ These methods are demonstrated in the example below:
 
     import pymorse
 
-    morse = Morse("localhost", 4000)
+    morse = pymorse.Morse("localhost", 4000)
 
     try:
         print(str(morse.robots()))
@@ -87,7 +87,7 @@ These methods are demonstrated in the example below:
 
     import pymorse
 
-    morse = Morse("localhost", 4000)
+    morse = pymorse.Morse("localhost", 4000)
 
     def printer(data):
         print("Incoming data! " + str(data))
@@ -139,7 +139,7 @@ configure it to print debug messages on the console.
 
     logger.addHandler(console)
 
-    morse = Morse("localhost", 4000)
+    morse = pymorse.Morse("localhost", 4000)
 
     try:
         print(str(morse.robots()))
