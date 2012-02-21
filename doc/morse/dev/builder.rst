@@ -140,16 +140,24 @@ The ``Environment`` class provides these functions:
  * **set_gravity**: Set the gravity for the specific scene. The parameter is a
    float defaulting to 9.81.
  * **set_viewport**: Set the default view mode in one of 'BOUNDBOX',
-   * 'WIREFRAME', 'SOLID' or 'TEXTURED'
+   'WIREFRAME', 'SOLID' or 'TEXTURED'
  * **set_debug**: set the debug bit in blender
- * **set_stereo**: configure to renderer to render image in 'STEREO', allowing
- to see them in 3d with special glasses. Allowed argument is one of 'NONE'
- (normal 2d mode), 'STEREO' or 'DOME'.
+ * **set_stereo**: configure to renderer to render image in 'STEREO' using
+   anaglyphs, allowing to see them in 3d with special red-cyan glasses.
+   Allowed argument is one of 'NONE' (normal 2d mode), 'STEREO' or 'DOME'
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
+   The items accepted in as parameters are:
+    * **protocol**: Either 'socket' or 'hla'
+    * **server_address**: IP address where the multi-node server can be found
+    * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000
+    * **distribution**: A Python dictionary. The keys are the names of the
+      nodes, and the values are lists with the names of the robots handled by
+      each node
+
    Example:
 
-     .. code-block:: python
+   .. code-block:: python
     
         dala1 = Robot('atrv')
         dala2 = Robot('atrv')
@@ -163,13 +171,7 @@ The ``Environment`` class provides these functions:
                                       "nodeB": [dala2.name],
                                   })
 
-   The items accepted in as parameters are:
-    * **protocol**: Either 'socket' or 'hla'
-    * **server_address**: IP address where the multi-node server can be found
-    * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000.
-	* **distribution**: A Python dictionary. The keys are the names of the
-	  nodes, and the values are lists with the names of the robots handled
-	  by each node
+
  * **create()**: Should always be called at the very end of the Builder script.
    It will finalise the building process and write the configuration files.
 
