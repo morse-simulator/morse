@@ -16,13 +16,8 @@ Documentation
 -------------
 
 - Add docstrings to all modules (everyone)
-- Update the documentation for the human "robot" and the tutorial on its use
+- Update the documentation for the human "robot"
 
-HRI
----
-
-- Bug 188: Builder Script - Erros when adding Pose Sensor to Human
-- Check cameras and lights are required in human model
 
 Public Relations
 ----------------
