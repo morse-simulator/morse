@@ -136,25 +136,21 @@ class Human(AbstractComponent):
 
         with bpy.data.libraries.load(filepath) as (src, _):
             try:
-                objlist = [{'name':obj} for obj in src.groups]
+                objlist = [{'name':obj} for obj in src.objects]
             except UnicodeDecodeError as detail:
                 logger.error("Unable to open file '%s'. Exception: %s" % \
                              (filepath, detail))
 
         bpy.ops.object.select_all(action='DESELECT')
-        bpy.ops.wm.link_append(directory=filepath + '/Group/', link=False, 
+        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
                 autoselect=True, files=objlist)
         self._blendname = "Human" # for middleware dictionary
-        # here we use the fact that after appending, Blender select the objects 
-        # and the root (parent) object first ( [0] )
-        self._blendobj = bpy.context.selected_objects[0]
+        self._blendobj = bpy.data.objects["Human"] #TODO: only work with ONE human.
 
         self.armature = None
 
-        # The human is added as a dupli-group. We need to get the
-        # HumanArmature inside the original group.
         try:
-            obj = self._blendobj.dupli_group.objects["HumanArmature"]
+            obj = bpy.data.objects["HumanArmature"] #TODO: only work with ONE human.
             self.armature = AbstractComponent(obj, "human_posture")
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
@@ -165,7 +161,7 @@ class Human(AbstractComponent):
         # fix for Blender 2.6 Animations
         if bpy.app.version > (2,59,0):
             if obj:
-                hips = self._blendobj.dupli_group.objects["Hips_Empty"]
+                hips = bpy.data.objects["Hips_Empty"] #TODO: only work with ONE human.
                 i = 0
                 for act in hips.game.actuators:
                     act.layer = i
