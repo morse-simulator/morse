@@ -1,4 +1,4 @@
-MORSE-builder API
+MORSE Builder API
 =================
 
 Abstract
@@ -57,8 +57,8 @@ All the basis component classes used in the Builder API inherit from a base clas
    The argument is an instance to another component. This method is generally
    used to add components to a robot.
 
-This base class has one concrete subclass that can be use to insert static
-(passive) objects to your simulation:
+This base class has one concrete subclass that can be use to insert :doc:`static
+(passive) objects <../user/others/passive_objects>` to your simulation:
 
  * :py:class:`morse.builder.morsebuilder.PassiveObject`
 

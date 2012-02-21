@@ -1,8 +1,11 @@
-Setting up a Scene with MORSE Utils
-===================================
+Setting up an interactive scene for human-robot interaction
+===========================================================
 
 This add-on creates the new menu ``Morse Utils`` in Blender's ``Logic Editor`` window.
-It helps you make your scene an interactable Environment.
+It helps you make your scene an interactive environment when running a
+human-robot interaction scenario.
+
+See :doc:`MORSE add-ons introduction <../available_addons>` for help to install this add-on.
 
 Objects
 -------
