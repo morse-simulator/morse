@@ -59,12 +59,3 @@ A sample python script of how to access the armature actuator via sockets
 can be found at:
 ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
 
-
-
-:mod:`armature_actuator` Module
--------------------------------
-
-.. automodule:: morse.actuators.armature_actuator
-    :members:
-    :undoc-members:
-    :show-inheritance:
