@@ -1,0 +1,10 @@
+Sie können die Hand bewegen, indem Sie bei
+gedrückter <Mittlerer Maustaste> die Maus 
+bewegen. Wenn Sie mit dem <Mausrad> scrollen,
+beugt sich der Mensch nach vorne und zurück.
+
+Sie können Türen und Schubladen öffnen, 
+indem Sie das Fadenkreuz über diese bewegen
+und die <linke Maustaste> drücken.
+
+Öffnen Sie nun die grüne Schranktür.

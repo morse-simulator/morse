@@ -1,0 +1,11 @@
+Drücken Sie <W> um nach vorne zu laufen.
+Mit <A> und <D> können Sie seitwärts laufen, 
+mit <S> laufen Sie auf die Kamera zu.
+Die Richtung, in die Sie gehen, hängt von 
+der Orientierung der Kamera ab, nicht von 
+der des Menschen. Benutzen Sie deshalb die
+Maus, um sich während des Laufens zu drehen.
+Drücken Sie <SHIFT>, um sich schneller zu
+bewegen.
+
+Laufen Sie nun zum Raum am Ende des Pfades.

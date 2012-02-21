@@ -1,0 +1,9 @@
+Press <W> to walk forwards.
+Use <A> and <D> to walk sidewards and 
+<S> to walk towards the camera.
+The direction you go depends on the 
+camera's orientation, not on the human's.
+Thus use the mouse to turn while walking.
+Hold down <Shift> to walk faster.
+
+Now walk to the room at the end of this path.

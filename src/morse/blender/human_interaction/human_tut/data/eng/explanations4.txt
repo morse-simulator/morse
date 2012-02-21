@@ -1,0 +1,11 @@
+To pick up objects, go to the object and 
+move the crosshairs over the object. A open
+hand and the object's name should appear.
+If not so, the object is certainly out of 
+reach.
+Press the <left Mousebutton> to grab the 
+object. If the object lies on the floor the 
+human automatically stoops down.
+You can only carry one object at a time.
+
+Pick up the green cup.

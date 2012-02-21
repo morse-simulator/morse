@@ -1,0 +1,11 @@
+You can close doors and drawers the same
+way you opened them.
+
+To use switches the same scheme applies.
+
+Use the <ALT>-Key to show all objects
+that can be grasped.
+
+You mastered the human control in 
+MORSE. You can try more or exit the 
+tutorial with <ESC>.

@@ -1,0 +1,12 @@
+Drücken Sie <X>, um in die Ego-Perspektive 
+zu wechseln. Durch erneutes Drücken wechseln 
+Sie in die Verfolgerperspektive zurück.
+
+Benutzen Sie die Ego-Perspektive, um Objekte 
+aufzuheben, Türen und Schubladen zu öffnen
+und Schalter zu betätigen.
+
+In der Verfolgerperspektive haben Sie einen 
+besseren Überblick. Aus diesem Grund ist die 
+Verfolgerperspektive zum Navigieren 
+empfehlenswert.

@@ -1,0 +1,12 @@
+Um Objekte aufzuheben, gehen Sie zum Objekt 
+und bewegen Sie das Fadenkreuz über das Objekt.
+Es erscheint eine offene Hand und der Name des 
+Objektes wird angezeigt. Sollte dies nicht 
+geschehen, liegt das Objekt außerhalb der 
+Reichweite.
+Drücken Sie die <linke Maustaste>, um das Objekt 
+aufzuheben. Der Mensch bückt sich automatisch,
+sollte ein Objekt auf dem Boden liegen. Sie können
+dabei nur ein Objekt gleichzeitig tragen.
+
+Heben Sie nun die grüne Tasse auf.
