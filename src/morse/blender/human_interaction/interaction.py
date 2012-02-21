@@ -1,9 +1,12 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+
+import os
+
 from bge import logic, render, texture
 import bgl, blf
 from mathutils import Matrix, Vector
 
-from bpy import data        
+from bpy import data
 
 from morse.helpers import passive_objects
 
@@ -16,60 +19,50 @@ objects = scene.objects
 
 texco=[(0,0), (1,0), (1,1), (0,1)]
 
+def loadtexture(filepath):
+    """ Loads a texture from an image (tga, jpg...any format supported by FFMPEG)
+    and returns the texture buffer ID.
+    """
+
+    id_buf = bgl.Buffer(bgl.GL_INT, 1)
+    bgl.glGenTextures(1, id_buf)
+    id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
+    bgl.glBindTexture(bgl.GL_TEXTURE_2D, id)
+    image = texture.ImageFFmpeg(filepath)
+    if not image.image:
+        logger.error("Error when loading " + filepath + ". File not found? Format not "
+                     "supported by FFMPEG? (tga, jpg, png do work)")
+        return -1
+    else:
+        im_buf = image.image
+        bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
+        bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
+        bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
+        bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
+        return id
+
+
 # load overlay_closed.tga and overlay_open.tga into the global dictionary
 if not "open" in  logic.globalDict:
     TexName = "overlay_open.tga"
-    
-    id_buf = bgl.Buffer(bgl.GL_INT, 1)
-    bgl.glGenTextures(1, id_buf)
-    open_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
-    bgl.glBindTexture(bgl.GL_TEXTURE_2D, open_id)
-    filepath = data.images[TexName].filepath
-    img = logic.expandPath(filepath)
-    image = texture.ImageFFmpeg(img)
-    im_buf = image.image
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
-    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
-    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
-    logic.globalDict["open"] = open_id
+    filepath = logic.expandPath(os.path.join(os.environ["MORSE_ROOT"], "share","morse","data","props",TexName))
+    logic.globalDict["open"] = loadtexture(filepath)
+
 open_id = logic.globalDict.get("open")
 
 if not "closed" in logic.globalDict:
     TexName = "overlay_closed.tga"
-    
-    id_buf = bgl.Buffer(bgl.GL_INT, 1)
-    bgl.glGenTextures(1, id_buf)
-    closed_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
-    bgl.glBindTexture(bgl.GL_TEXTURE_2D, closed_id)
-    filepath = data.images[TexName].filepath
-    img = logic.expandPath(filepath)
-    image = texture.ImageFFmpeg(img)
-    im_buf = image.image
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
-    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
-    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
-    logic.globalDict["closed"] = closed_id
+    filepath = os.path.join(os.environ["MORSE_ROOT"], "share","morse","data","props",TexName)
+    logic.globalDict["closed"] = loadtexture(filepath)
+
 closed_id = logic.globalDict.get("closed")
 
 # load CrossHairs.tga into the global dictionary
 if not "crosshairs" in logic.globalDict:
-    TexName = "CrossHairs.tga"
-    
-    id_buf = bgl.Buffer(bgl.GL_INT, 1)
-    bgl.glGenTextures(1, id_buf)
-    crosshairs_id = id_buf.to_list()[0] if hasattr(id_buf, "to_list") else id_buf.list[0]
-    bgl.glBindTexture(bgl.GL_TEXTURE_2D, crosshairs_id)
-    filepath = data.images[TexName].filepath
-    img = logic.expandPath(filepath)
-    image = texture.ImageFFmpeg(img)
-    im_buf = image.image
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MAG_FILTER, bgl.GL_LINEAR)
-    bgl.glTexParameteri(bgl.GL_TEXTURE_2D, bgl.GL_TEXTURE_MIN_FILTER, bgl.GL_LINEAR)
-    bgl.glTexEnvf(bgl.GL_TEXTURE_ENV, bgl.GL_TEXTURE_ENV_MODE, bgl.GL_MODULATE)
-    bgl.glTexImage2D(bgl.GL_TEXTURE_2D, 0, bgl.GL_RGBA, image.size[0], image.size[1], 0, bgl.GL_RGBA, bgl.GL_UNSIGNED_BYTE, im_buf)
-    logic.globalDict["crosshairs"] = crosshairs_id
+    TexName = "overlay_crosshairs.tga"
+    filepath = os.path.join(os.environ["MORSE_ROOT"], "share","morse","data","props",TexName)
+    logic.globalDict["crosshairs"] = loadtexture(filepath)
+
 crosshairs_id = logic.globalDict.get("crosshairs")
 
 
