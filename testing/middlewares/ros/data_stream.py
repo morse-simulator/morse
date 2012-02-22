@@ -71,14 +71,19 @@ class DataStreamTest(MorseTestCase):
         rospy.init_node('morse_ros_data_stream_test')
         rospy.Subscriber('ATRV/Pose', Odometry, self.pose_callback)
 
+        msg = rospy.client.wait_for_message('ATRV/Pose', Odometry, timeout = 10)
+        self.assertTrue(msg != None)
+
         cmd_stream = rospy.Publisher('ATRV/Motion_Controller', Twist)
-        
-        # sleep to make sure that the other peer can read it ...
-        sleep(2)
+       
+        self.assertTrue(hasattr(self, "pos"))
 
         self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=0.1)
         self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=0.1)
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+ 
+        # sleep to make sure that the other peer can read it ...
+        sleep(5)
 
         send_speed(cmd_stream, 1.0, 0.0, 2.0)
 
