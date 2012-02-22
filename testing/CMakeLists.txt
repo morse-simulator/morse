@@ -6,6 +6,7 @@ endmacro()
 
 if (BUILD_CORE_SUPPORT)
 	add_subdirectory(base)
+	add_subdirectory(robots/human)
 endif()
 
 if (BUILD_ROS_SUPPORT)
