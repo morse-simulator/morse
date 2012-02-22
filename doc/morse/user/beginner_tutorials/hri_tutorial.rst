@@ -172,36 +172,20 @@ a distant one, just replace ``localhost`` by the appropriate host).
   You could achieve roughly the same result with a direct socket connection:
       
     .. code-block:: python
-
-      import sys, socket, json
-
-      host = "localhost"
-
-      # Port of the 'stream' of the pose sensor. By default,
-      #starts at 60000 and increments for each sensor. You can have a look to
-      #MORSE console output to know exactly which port is used by which sensor.
-      port = 60000
-
-      def read_data(simu):
-        done = False
-        data_in = ''
-
-        while not done:
-          try:
-            data_in = simu.recv(1024)
-          except socket.error:
-            done = True
-
-        return data_in
-      
-      simu = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-      simu.setblocking(0)
-      simu.connect((host, port))
-      
-      while True:
-        raw = read_data(simu)
-        if raw:
-          data = json.loads(read_data(simu))
-          print(str(data))
-
-
+    
+        import sys, socket, json
+        
+        host = "localhost"
+        
+        # Port of the 'stream' of the pose sensor. By default,
+        #starts at 60000 and increments for each sensor. You can have a look to
+        #MORSE console output to know exactly which port is used by which sensor.
+        port = 60000
+        
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((host, port))
+        morse = sock.makefile("r")
+        
+        data = json.loads(morse.readline())
+        
+        print(str(data))
