@@ -79,12 +79,16 @@ repository::
 
   $ git clone http://github.com/laas/morse.git
   
-Once you have a copy of the repository, you can get to the last stable
-version (0.4) by using ::
+If you want to get only the latest stable version (0.5) of Morse, you can get
+it in the branch `0.5_STABLE`. You can get it directly using ::
+ 
+  $ git clone http://github.com/laas/morse.git -b 0.5_STABLE
+
+or if you have already download the repository ::
   
-  $ git checkout 0.4
+  $ git checkout -b 0.5_STABLE -t origin/0.5_STABLE
   
-You can get a `tarball version here <https://github.com/laas/morse/tarball/0.4>`_. 
+You can get a `tarball version here <https://github.com/laas/morse/tarball/0.5>`_. 
 
  
 Go to the directory where you have previously downloaded the MORSE source.
