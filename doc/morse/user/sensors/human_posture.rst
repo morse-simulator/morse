@@ -2,7 +2,7 @@ Human posture sensor
 ====================
 
 This sensor collects the positions of the bones in the human armature
-for the file ``$MORSE_ROOT/data/human/default_human.blend``.
+for the file ``$MORSE_ROOT/data/robots/human.blend``.
 
 It stores the position and orientation of the general armature object, as
 well as the local rotation of each individual bone. The rotation angles are
@@ -91,7 +91,7 @@ Related components
 ------------------
 
 This sensor will only be useful for the armature of the human in the
-``default_human.blend`` file. The human in this file is also considered as a
+``human.blend`` file. The human in this file is also considered as a
 robot, with the sensor integrated into the armature. Check the general 
 documentation of the :doc:`human component <../others/human>`.
 
