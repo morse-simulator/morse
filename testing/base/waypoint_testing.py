@@ -42,61 +42,57 @@ class Waypoints_Test(MorseTestCase):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
-        morse = Morse()
+        with Morse() as morse:
         
-        # Read the start position, it must be (0.0, 0.0, 0.0)
-        pose_stream = morse.stream('Pose')
-        pose = pose_stream.get()
-        for coord in pose.values():
-            self.assertAlmostEqual(coord, 0.0, delta=0.02)
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            pose_stream = morse.stream('Pose')
+            pose = pose_stream.get()
+            for coord in pose.values():
+                self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
-        # waypoint controller socket
-        port = morse.get_stream_port('Motion_Controller')
-        v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        v_w_client.connect(('localhost', port))
+            # waypoint controller socket
+            port = morse.get_stream_port('Motion_Controller')
+            v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            v_w_client.connect(('localhost', port))
 
-        v_w_client.send(json.dumps({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
-                                     'tolerance' : 0.5, 
-                                     'speed' : 1.0}).encode());
-        sleep(15)
+            v_w_client.send(json.dumps({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
+                                         'tolerance' : 0.5, 
+                                         'speed' : 1.0}).encode());
+            sleep(15)
 
-        pose = pose_stream.get()
-        self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
-        self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
+            pose = pose_stream.get()
+            self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
+            self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
 
 
-        # test tolerance parameter
-        v_w_client.send(json.dumps({'x' : 0.0, 'y': 0.0, 'z': 0.0, 
-                                     'tolerance' : 2.5, 
-                                     'speed' : 1.0}).encode());
-        sleep(15)
-        pose = pose_stream.get()
-        distance_goal = math.sqrt( pose['x'] * pose['x'] + pose['y'] * pose['y'])
-        self.assertLess(distance_goal, 2.5)
-        self.assertGreater(distance_goal, 2.0)
-
-        morse.close()
+            # test tolerance parameter
+            v_w_client.send(json.dumps({'x' : 0.0, 'y': 0.0, 'z': 0.0, 
+                                         'tolerance' : 2.5, 
+                                         'speed' : 1.0}).encode());
+            sleep(15)
+            pose = pose_stream.get()
+            distance_goal = math.sqrt( pose['x'] * pose['x'] + pose['y'] * pose['y'])
+            self.assertLess(distance_goal, 2.5)
+            self.assertGreater(distance_goal, 2.0)
 
     def test_waypoint_service_controller(self):
-        morse = Morse()
+        with Morse() as morse:
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            pose_stream = morse.stream('Pose')
+            pose = pose_stream.get()
+            for coord in pose.values():
+                self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
-        # Read the start position, it must be (0.0, 0.0, 0.0)
-        pose_stream = morse.stream('Pose')
-        pose = pose_stream.get()
-        for coord in pose.values():
-            self.assertAlmostEqual(coord, 0.0, delta=0.02)
+            morse.call_server('Motion_Controller', 'goto', 10.0, 5.0, 0.0, 0.5, 1.0)
 
-        morse.call_server('Motion_Controller', 'goto', 10.0, 5.0, 0.0, 0.5, 1.0)
+            pose = pose_stream.get()
+            self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
+            self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
 
-        pose = pose_stream.get()
-        self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)
-        self.assertAlmostEqual(pose['y'], 5.0, delta=0.5)
+            # XXX need to test other services offered by waypoint
+            # controller, but pymorse support is not good enough at the
+            # moment
 
-        # XXX need to test other services offered by waypoint
-        # controller, but pymorse support is not good enough at the
-        # moment
-
-        morse.close()
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

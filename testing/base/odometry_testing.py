@@ -82,52 +82,50 @@ class Odometry_Test(MorseTestCase):
         """
         pass
 
-        morse = Morse()
-        
-        # Read the start position, it must be (0.0, 0.0, 0.0)
-        self.pose_stream = morse.stream('Pose')
-        self.odo_stream = morse.stream('Odometry')
+        with Morse() as morse:
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            self.pose_stream = morse.stream('Pose')
+            self.odo_stream = morse.stream('Odometry')
 
-        # v_w socket
-        port = morse.get_stream_port('Motion_Controller')
-        self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.v_w_client.connect(('localhost', port))
+            # v_w socket
+            port = morse.get_stream_port('Motion_Controller')
+            self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.v_w_client.connect(('localhost', port))
 
-        # Numerical integration is maybe not really good, so test with a
-        # precision of 0.05
-        self.odometry_test_helper(1.0, 0.0, 2.0)
-        self.assertAlmostEqual(self.x, 2.0, delta=0.05)
-        self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-        self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            # Numerical integration is maybe not really good, so test with a
+            # precision of 0.05
+            self.odometry_test_helper(1.0, 0.0, 2.0)
+            self.assertAlmostEqual(self.x, 2.0, delta=0.05)
+            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
+            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
 
-        self.odometry_test_helper(-1.0, 0.0, 2.0)
-        self.assertAlmostEqual(self.x, 0.0, delta=0.05)
-        self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-        self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            self.odometry_test_helper(-1.0, 0.0, 2.0)
+            self.assertAlmostEqual(self.x, 0.0, delta=0.05)
+            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
+            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
 
-        self.odometry_test_helper(1.0, -math.pi/4.0, 2.0)
-        self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.05)
-        self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.05)
-        self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.05)
+            self.odometry_test_helper(1.0, -math.pi/4.0, 2.0)
+            self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.05)
+            self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.05)
+            self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.05)
 
-        self.odometry_test_helper(0.5, -math.pi/8.0, 12.0)
-        self.assertAlmostEqual(self.x, 0.0, delta=0.05)
-        self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-        self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            self.odometry_test_helper(0.5, -math.pi/8.0, 12.0)
+            self.assertAlmostEqual(self.x, 0.0, delta=0.05)
+            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
+            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
 
-        self.odometry_test_helper(-2.0, math.pi/2.0, 3.0)
-        self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.08)
-        self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.08)
-        self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.08)
+            self.odometry_test_helper(-2.0, math.pi/2.0, 3.0)
+            self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.08)
+            self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.08)
+            self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.08)
 
-        pose = self.pose_stream.get()
-        self.odometry_test_helper(0.0, math.pi/2.0, 12.0)
-        pose2 = self.pose_stream.get()
-        self.assertAlmostEqual(self.x, pose['x'] , delta=0.08)
-        self.assertAlmostEqual(self.y, pose['y'], delta=0.08)
-        self.assertAlmostEqual(self.yaw, pose2['yaw'], delta=0.08)
+            pose = self.pose_stream.get()
+            self.odometry_test_helper(0.0, math.pi/2.0, 12.0)
+            pose2 = self.pose_stream.get()
+            self.assertAlmostEqual(self.x, pose['x'] , delta=0.08)
+            self.assertAlmostEqual(self.y, pose['y'], delta=0.08)
+            self.assertAlmostEqual(self.yaw, pose2['yaw'], delta=0.08)
 
-        morse.close()
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

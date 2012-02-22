@@ -51,16 +51,14 @@ class PoseTest(MorseTestCase):
         """ Test if we can connect to the pose data stream, and read from it.
         """
 
-        morse = Morse()
+        with Morse() as morse:
+            pose_stream = morse.stream('Pose')
 
-        pose_stream = morse.stream('Pose')
+            pose = pose_stream.get()
 
-        pose = pose_stream.get()
+            for coord in pose.values():
+                self.assertAlmostEqual(coord, 0.0, 2)
 
-        for coord in pose.values():
-            self.assertAlmostEqual(coord, 0.0, 2)
-
-        morse.close()
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     import unittest

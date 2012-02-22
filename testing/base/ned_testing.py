@@ -44,23 +44,21 @@ class NedTest(MorseTestCase):
         """ Test if we can connect to the pose data stream, and read from it.
         """
 
-        morse = Morse()
+        with Morse() as morse:
+            pose_stream = morse.stream('Pose')
+            pose_ned_stream = morse.stream('Pose.001')
 
-        pose_stream = morse.stream('Pose')
-        pose_ned_stream = morse.stream('Pose.001')
+            pose = pose_stream.get()
+            pose_ned = pose_ned_stream.get()
 
-        pose = pose_stream.get()
-        pose_ned = pose_ned_stream.get()
+            self.assertAlmostEqual(pose['x'], 42.0, delta=0.01)
+            self.assertAlmostEqual(pose['y'], -10.0, delta=0.01)
+            self.assertAlmostEqual(pose['z'], 40.0, delta=0.1)
 
-        self.assertAlmostEqual(pose['x'], 42.0, delta=0.01)
-        self.assertAlmostEqual(pose['y'], -10.0, delta=0.01)
-        self.assertAlmostEqual(pose['z'], 40.0, delta=0.1)
+            self.assertAlmostEqual(pose['x'], pose_ned['y'])
+            self.assertAlmostEqual(pose['y'], pose_ned['x'])
+            self.assertAlmostEqual(pose['z'], -pose_ned['z'])
 
-        self.assertAlmostEqual(pose['x'], pose_ned['y'])
-        self.assertAlmostEqual(pose['y'], pose_ned['x'])
-        self.assertAlmostEqual(pose['z'], -pose_ned['z'])
-
-        morse.close()
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     import unittest

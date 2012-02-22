@@ -14,7 +14,6 @@ from geometry_msgs.msg import Twist
 from time import sleep
 import subprocess
 from morse.testing.testing import MorseTestCase
-from pymorse import Morse
 
 # Include this import to be able to use your test file as a regular 
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -69,7 +68,6 @@ class DataStreamTest(MorseTestCase):
         # test the orientation part, but the easy way is to use numpy or
         # tf, and don't want to add too much dependency for test
 
-        morse = Morse()
         rospy.init_node('morse_ros_data_stream_test')
         rospy.Subscriber('ATRV/Pose', Odometry, self.pose_callback)
 
@@ -125,8 +123,6 @@ class DataStreamTest(MorseTestCase):
        # self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.08)
        # self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.08)
        # self.assertAlmostEqual(pose['roll'], 0.0, delta=0.08)
-
-        morse.close()
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

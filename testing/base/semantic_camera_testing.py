@@ -47,37 +47,34 @@ class Semantic_Camera_Test(MorseTestCase):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
-        morse = Morse()
-        
-        # Read the data from the semantic camera
-        semantic_stream = morse.stream('CameraMain')
+        with Morse() as morse:
+            # Read the data from the semantic camera
+            semantic_stream = morse.stream('CameraMain')
 
-        port = morse.get_stream_port('Motion_Controller')
-        self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.v_w_client.connect(('localhost', port))
+            port = morse.get_stream_port('Motion_Controller')
+            self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.v_w_client.connect(('localhost', port))
 
-        objects = semantic_stream.get()
-        self.assertEqual(objects, [])
+            objects = semantic_stream.get()
+            self.assertEqual(objects, [])
 
-        # Change the orientation of the robot using the v_w socket
-        send_speed(self.v_w_client, 0.0, math.pi/2.0, 2.5)
+            # Change the orientation of the robot using the v_w socket
+            send_speed(self.v_w_client, 0.0, math.pi/2.0, 2.5)
 
-        # Second test for the sensor, with objects in front
-        objects = semantic_stream.get()
-        self.assertEqual(objects[0]['name'],'BlueBox')
-        self.assertAlmostEqual(objects[0]['position']['x'], -3.48, delta=0.1)
-        self.assertAlmostEqual(objects[0]['position']['y'], -3.0, delta=0.1)
+            # Second test for the sensor, with objects in front
+            objects = semantic_stream.get()
+            self.assertEqual(objects[0]['name'],'BlueBox')
+            self.assertAlmostEqual(objects[0]['position']['x'], -3.48, delta=0.1)
+            self.assertAlmostEqual(objects[0]['position']['y'], -3.0, delta=0.1)
 
-        send_speed(self.v_w_client, 0.0, -math.pi/2.0, 0.5)
-        sleep(1)
-        send_speed(self.v_w_client, 1.0, 0.0, 5.0)
+            send_speed(self.v_w_client, 0.0, -math.pi/2.0, 0.5)
+            sleep(1)
+            send_speed(self.v_w_client, 1.0, 0.0, 5.0)
 
-        objects = semantic_stream.get()
-        self.assertEqual(objects[0]['name'],'RedBox')
-        self.assertAlmostEqual(objects[0]['position']['x'], -7.48, delta=0.1)
-        self.assertAlmostEqual(objects[0]['position']['y'], 0.0, delta=0.1)
-
-        morse.close()
+            objects = semantic_stream.get()
+            self.assertEqual(objects[0]['name'],'RedBox')
+            self.assertAlmostEqual(objects[0]['position']['x'], -7.48, delta=0.1)
+            self.assertAlmostEqual(objects[0]['position']['y'], 0.0, delta=0.1)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

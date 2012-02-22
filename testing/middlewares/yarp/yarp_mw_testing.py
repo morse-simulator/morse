@@ -66,7 +66,6 @@ class YARP_MW_Test(MorseTestCase):
         """
         pass
 
-        morse = Morse()
         yarp.Network.init()
 
         pose_stream = yarp.BufferedPortBottle()
@@ -123,7 +122,6 @@ class YARP_MW_Test(MorseTestCase):
         self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
 
         yarp.Network.fini()
-        morse.close()
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

@@ -48,61 +48,59 @@ class Sick_Test(MorseTestCase):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
-        morse = Morse()
+        with Morse() as morse:
         
-        # Read the data from the sick sensor
-        self.sick_stream = morse.stream('Sick')
+            # Read the data from the sick sensor
+            self.sick_stream = morse.stream('Sick')
 
-        port = morse.get_stream_port('Motion_Controller')
-        self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.v_w_client.connect(('localhost', port))
+            port = morse.get_stream_port('Motion_Controller')
+            self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.v_w_client.connect(('localhost', port))
 
-        sleep(5)
-        # Initial test of the sensor with no visible objects
-        sick = self.sick_stream.get()
-        for ray in sick['point_list']:
-            self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
+            sleep(5)
+            # Initial test of the sensor with no visible objects
+            sick = self.sick_stream.get()
+            for ray in sick['point_list']:
+                self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
+                self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
+                self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
+            for length in sick['range_list']:
+                self.assertAlmostEqual(length, 10.0, delta=0.05)
+     
+            # Change the orientation of the robot using the v_w socket
+            send_speed(self.v_w_client, 0.0, math.pi/2.0, 2.0)
+
+            # Second test for the sensor, with objects in front
+            sick = self.sick_stream.get()
+
+            # First few rays should not hit anything
+            for index in range(30):
+                ray = sick['point_list'][index]
+                self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
+                self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
+                self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
+                length = sick['range_list'][index]
+                self.assertAlmostEqual(length, 10.0, delta=0.05)
+
+            # Make particular tests for a few rays at locations
+            #  known to have objects
+            ray = sick['point_list'][45]
+            self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
+            self.assertAlmostEqual(ray[1], -6.0, delta=0.05)
+            length = sick['range_list'][45]
+            self.assertAlmostEqual(length, 8.485, delta=0.05)
+
+            ray = sick['point_list'][90]
+            self.assertAlmostEqual(ray[0], 7.0, delta=0.05)
             self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-            self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
-        for length in sick['range_list']:
-            self.assertAlmostEqual(length, 10.0, delta=0.05)
- 
-        # Change the orientation of the robot using the v_w socket
-        send_speed(self.v_w_client, 0.0, math.pi/2.0, 2.0)
+            length = sick['range_list'][90]
+            self.assertAlmostEqual(length, 7.0, delta=0.05)
 
-        # Second test for the sensor, with objects in front
-        sick = self.sick_stream.get()
-
-        # First few rays should not hit anything
-        for index in range(30):
-            ray = sick['point_list'][index]
-            self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
-            self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-            self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
-            length = sick['range_list'][index]
-            self.assertAlmostEqual(length, 10.0, delta=0.05)
-
-        # Make particular tests for a few rays at locations
-        #  known to have objects
-        ray = sick['point_list'][45]
-        self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
-        self.assertAlmostEqual(ray[1], -6.0, delta=0.05)
-        length = sick['range_list'][45]
-        self.assertAlmostEqual(length, 8.485, delta=0.05)
-
-        ray = sick['point_list'][90]
-        self.assertAlmostEqual(ray[0], 7.0, delta=0.05)
-        self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-        length = sick['range_list'][90]
-        self.assertAlmostEqual(length, 7.0, delta=0.05)
-
-        ray = sick['point_list'][135]
-        self.assertAlmostEqual(ray[0], 3.0, delta=0.05)
-        self.assertAlmostEqual(ray[1], 3.0, delta=0.05)
-        length = sick['range_list'][135]
-        self.assertAlmostEqual(length, 4.243, delta=0.05)
- 
-        morse.close()
+            ray = sick['point_list'][135]
+            self.assertAlmostEqual(ray[0], 3.0, delta=0.05)
+            self.assertAlmostEqual(ray[1], 3.0, delta=0.05)
+            length = sick['range_list'][135]
+            self.assertAlmostEqual(length, 4.243, delta=0.05)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
