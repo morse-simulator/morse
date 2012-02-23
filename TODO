@@ -42,6 +42,16 @@ General
 [?] - Fix the physical properties of robot to enable velocity control (cf commit 8503c9)
 [?] - define a method to select the control of robots using position or velocity
 
+- Make sure only the camera currently currently active in simulation
+    (cameraFP, human, etc.) can be controlled with mouse and keyboard.
+    Other cameras should not be affected
+
+- Allow configuring of the Screen object (present by default in all scenes) to
+    display the view of the selected camera. Either:
+    - Toggle between cameras with a button press
+    - Select the chosen camera from the Builder API
+
+
 Collada
 -------
 
@@ -70,6 +80,9 @@ Components
 by allowing the designer to paste markers in the scene whose position will be
 exported
 
+[WIP] - Kinect integration: Control of the arms of the human avatar with a Kinect,
+using the IK chains in the armature
+
 [WIP] - "Point Cloud" sensors: generate 3D depth images to simulate either
 stereovision at an abstract level or various Lidars. Make it generic: export
 depth data (openGL z-buffer?), define modifiers that sample the data according
@@ -82,10 +95,12 @@ to a given sensor geometry.
 
 [PARTIAL] - Support for 4-wheeled vehicles (cf https://github.com/pierriko/morse/tree/experimental_wjwwood)
 
+
 Documentation
 -------------
 - Correct documentation for the HRI experiments (current one does not mention the Builder)
 
+- Fix the outdated documentation at http://wiki.blender.org/index.php/Community:Science/Robotics
 
 ================
  OTHERS and MISC
@@ -133,8 +148,3 @@ Other stuff
 - find a way to limit the framerate of the simulation, without lowering the physics clock (only the display).
   This would allow to free CPU for other application while the simulator is running.
 - commit policy
-
-Rosace Project
---------------
-- Add timeline of events in the simulation
-- Add init script that places the robots and victims specified in a XML file
