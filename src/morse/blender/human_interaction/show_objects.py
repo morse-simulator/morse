@@ -12,7 +12,6 @@ co = logic.getCurrentController()
 keyboard = co.sensors['All_Keys']
 
 scene = logic.getCurrentScene()
-cam = scene.active_camera
 
 windowWidth = render.getWindowWidth()
 windowHeight = render.getWindowHeight()
@@ -28,6 +27,8 @@ def write():
     bgl.glMatrixMode(bgl.GL_MODELVIEW)
     bgl.glLoadIdentity()
     
+    cam = scene.active_camera
+
     for obj in passive_objects.active_objects():
         # test if the object is in the view frustum
         if cam.pointInsideFrustum(obj.worldPosition):
