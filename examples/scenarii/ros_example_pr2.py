@@ -9,7 +9,7 @@ james.configure_service('ros')
 james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-james.torso.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.translate(x=2.5, y=3.2, z=0.0)
 
 human = Human()
