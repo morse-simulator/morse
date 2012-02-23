@@ -12,15 +12,14 @@ co = logic.getCurrentController()
 keyboard = co.sensors['All_Keys']
 
 scene = logic.getCurrentScene()
-cam = scene.active_camera
 
 windowWidth = render.getWindowWidth()
 windowHeight = render.getWindowHeight()
 
 def write():
     """
-    Write the name of all active objects on Screen
-    """
+Write the name of all active objects on Screen
+"""
     # OpenGL setup
     bgl.glMatrixMode(bgl.GL_PROJECTION)
     bgl.glLoadIdentity()
@@ -28,6 +27,8 @@ def write():
     bgl.glMatrixMode(bgl.GL_MODELVIEW)
     bgl.glLoadIdentity()
     
+    cam = scene.active_camera
+
     for obj in passive_objects.active_objects():
         # test if the object is in the view frustum
         if cam.pointInsideFrustum(obj.worldPosition):
@@ -43,8 +44,8 @@ def write():
 
 def test(contr):
     """
-    Show which objects are interactable
-    """
+Show which objects are interactable
+"""
     keylist = keyboard.events
 
     for key in keylist:
