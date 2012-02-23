@@ -57,7 +57,7 @@ pr2_posture.configure_mw('ros')
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
-cornflakes.make_graspable(human_readable_label = 'TUM_Cornflakes')
+cornflakes.setgraspable()
 cornflakes.translate(x=0.5, y=1.67, z=0.9)
 
 fork = PassiveObject('props/kitchen_objects.blend', 'Fork')
