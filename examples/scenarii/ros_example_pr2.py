@@ -48,12 +48,10 @@ james.append(keyboard)
 
 # Configuring the middlewares
 Pose_sensor.configure_mw('ros')
-#IMU.configure_mw('ros') # does NOT work
-IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
 Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
-#pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
-pr2_posture.configure_mw('ros')
+IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
+pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
