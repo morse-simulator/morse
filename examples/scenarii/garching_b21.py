@@ -46,41 +46,41 @@ Motion_Controller.configure_mw('ros')
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
-cornflakes.make_graspable(human_readable_label = 'TUM_Cornflakes')
+cornflakes.setgraspable()
 cornflakes.translate(x=0.5, y=1.9, z=0.9)
 
 fork = PassiveObject('props/kitchen_objects.blend', 'Fork')
-fork.make_graspable()
+fork.setgraspable()
 fork.translate(x=0.27, y=2.48, z=0.74)
 fork.rotate(z=1.45)
 
 knife = PassiveObject('props/kitchen_objects.blend', 'Knife')
-knife.make_graspable()
+knife.setgraspable()
 knife.translate(x=0.27, y=2.42, z=0.74)
 knife.rotate(z=1.45)
 
 plate = PassiveObject('props/kitchen_objects.blend', 'Plate')
-plate.make_graspable()
+plate.setgraspable()
 plate.translate(x=0.195, y=3.635, z=1.704)
 plate.rotate(z=1.45)
 
 #bread = PassiveObject('props/kitchen_objects.blend', 'Bread')
-#bread.make_graspable()
+#bread.setgraspable()
 #bread.translate(x=0.5, y=1.97, z=0.86)
 #bread.rotate(z=1.45)
 
 bowl = PassiveObject('props/kitchen_objects.blend', 'Bowl')
-bowl.make_graspable()
+bowl.setgraspable()
 bowl.translate(x=0.5, y=1.97, z=0.99)
 bowl.rotate(z=1.45)
 
 jam = PassiveObject('props/kitchen_objects.blend', 'Jam')
-jam.make_graspable()
+jam.setgraspable()
 jam.translate(x=0.5, y=2.6, z=0.99)
 jam.rotate(z=1.45)
 
 nutella = PassiveObject('props/kitchen_objects.blend', 'Nutella')
-nutella.make_graspable()
+nutella.setgraspable()
 nutella.translate(x=0.5, y=2.8, z=0.99)
 nutella.rotate(z=1.45)
 
