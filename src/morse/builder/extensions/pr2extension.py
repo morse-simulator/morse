@@ -34,13 +34,3 @@ class PR2(Robot):
         #set the head color
         self._head_tilt_link.material_slots['HeadTilt'].material.node_tree.nodes['Material'].material.diffuse_color = color
 
-    def _get_selected(self, name):
-        """ _get_selected
-        :param name: name of the object
-        :return: the first Blender object for which his name strats with the 
-        param `name` from those selected (imported object are selected)
-
-        ie. if we import a second PR2, objects will be named "`name`.001" etc.
-        """
-        return [obj for obj in bpy.context.selected_objects if obj.name.startswith(name)].pop()
-
