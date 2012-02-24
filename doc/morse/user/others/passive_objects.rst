@@ -80,6 +80,7 @@ in the scene:
     table.rotate(z=0.2)
 
 As any other property, the game properties can be set using the following command:
+
 .. code-block:: python
 
   table.properties(Object = True, Graspable = False, Label = "TABLE")
