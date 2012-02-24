@@ -8,7 +8,7 @@ During installation
 
 - **Problem**: Python libraries not found when configuring using ``cmake``::
 
-    morse/_build $ cmake ..
+    morse/build $ cmake ..
     -- Could NOT find Python3Libs (missing:  PYTHON3_LIBRARIES) 
     -- will install python files in /usr/local/lib/python3.2/site-packages
     -- Can't find sphinx-build : will not build the documentation
@@ -73,3 +73,45 @@ When running morse
 
   .. warning::
     The name of the installation directory may be different depending on your Linux distribution. If you use **Ubuntu** or similar distributions, replace the directory name of ``python3.2/site-packages`` for ``python3/dist-packages``. Make sure to indicate the correct path used in your computer for all Python 3 libraries.
+
+
+Developer specific
+------------------
+
+- **Problem**: No rule to make target 'test'
+
+  * When trying to run ``make test``, you get this error and make stops::
+
+      morse/build $ make test
+      make: *** No rule to make target 'test'. Stop.
+
+  * This is because the ``pymorse`` bindings have not been installed
+
+  **Solution**: Reconfigure MORSE with the ``PYMORSE_SUPPORT`` option, either
+  by selecting the option using ``ccmake`` or by running::
+
+    $ cd [your morse source directory]/build
+    $ cmake -DPYMORSE_SUPPORT=ON [other options] ..
+
+  You then need to run::
+
+    $ make install
+    $ make rebuild_cache
+
+  And finally::
+
+    $ make test
+
+
+- **Problem**: pymorse not found. When running ``make rebuild_cache``, there is an error indicating::
+
+      morse/build $ make rebuild_cache
+      Running CMake to regenerate build system...
+      \-\- will install python files in [your installation directory]
+      CMake Warning at CMakeLists.txt:116 (MESSAGE):
+            Can't run test, pymorse is required but cannot be found.
+            You may want to install it first.
+
+  **Solution**: The ``PYTHONPATH`` variable is not correctly setup. The location
+  where ``pymorse.py`` was installed must be included in ``PYTHONPATH``.
+  The directory is indicated in the error message
