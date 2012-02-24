@@ -161,6 +161,36 @@ class AbstractComponent(object):
         prop[-1].type = t
         prop[-1].value = v
 
+    def _get_selected(self, name):
+        """ get_selected returns the object with the name ``name`` from the 
+        selected objects list (usefull after appending)
+        ie. importing a second object will be named "`name`.001" etc.
+
+        :param name: name of the object
+        :return: the first Blender object for which his name strats with the 
+        param `name` from those selected (imported object are selected)
+        """
+        for obj in bpy.context.selected_objects:
+            if obj.name == name:
+                return obj
+        # fix Blender shorten the name
+        # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
+        if len(name) > 15:
+            test_prefix = name[0:15]
+        else:
+            test_prefix = name + '.'
+        # look for candidates
+        candidates = [obj for obj in bpy.context.selected_objects if \
+                      obj.name.startswith(test_prefix)]
+        if len(candidates) > 0:
+            if len(candidates) > 1:
+                logger.warning(test_prefix + ": more than 1 candidate: " + candidate)
+            return candidates[0]
+        else:
+            logger.warning(test_prefix + ": no candidate in " + \
+                           str(bpy.context.selected_objects))
+            return None
+
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
         """
 
