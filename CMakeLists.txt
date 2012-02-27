@@ -18,6 +18,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
 find_package(Python32Interp REQUIRED)
+
+if (NOT PYTHON3INTERP_FOUND)
+	MESSAGE(FATAL_ERROR "Can't find python 3.2 on your system")
+endif(NOT PYTHON3INTERP_FOUND)
+
 find_package(Python32Libs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
@@ -31,9 +36,6 @@ if(NOT PYTHON_INSTDIR)
 endif(NOT PYTHON_INSTDIR)
 MESSAGE(STATUS "will install python files in ${PYTHON_INSTDIR}")
 
-if (NOT PYTHON3INTERP_FOUND)
-	MESSAGE(FATAL_ERROR "Can't find python 3.2 on your system")
-endif(NOT PYTHON3INTERP_FOUND)
 if (BUILD_YARP2_SUPPORT)
 	EXECUTE_PROCESS(COMMAND 
 					${PYTHON3_EXECUTABLE} -c "import yarp;"

@@ -27,54 +27,19 @@ INCLUDE(CMakeFindFrameworks)
 # Search for the python framework on Apple.
 # CMAKE_FIND_FRAMEWORKS(Python)
 
-FOREACH(_CURRENT_VERSION 3.2)
-  STRING(REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
-  IF(WIN32)
-    FIND_LIBRARY(PYTHON3_DEBUG_LIBRARY
-      NAMES python${_CURRENT_VERSION_NO_DOTS}_d python
-      PATHS
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs/Debug
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs )
-  ENDIF(WIN32)
+EXECUTE_PROCESS(COMMAND
+					${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())"
+					OUTPUT_VARIABLE PYTHON3_INCLUDE_DIR
+					ERROR_VARIABLE PYTHON_STDERR
+					RESULT_VARIABLE PYTHON_ERR
+					)
 
-  FIND_LIBRARY(PYTHON3_LIBRARY
-    NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
-    PATHS
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
-    # Avoid finding the .dll in the PATH.  We want the .lib.
-    NO_SYSTEM_ENVIRONMENT_PATH
-  )
-  # Look for the static library in the Python config directory
-  FIND_LIBRARY(PYTHON3_LIBRARY
-    NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
-    # Avoid finding the .dll in the PATH.  We want the .lib.
-    NO_SYSTEM_ENVIRONMENT_PATH
-    # This is where the static library is usually located
-    PATH_SUFFIXES python${_CURRENT_VERSION}/config
-  )
-
-#  SET(PYTHON_FRAMEWORK_INCLUDES)
-#  IF(Python_FRAMEWORKS AND NOT PYTHON_INCLUDE_DIR)
-#    FOREACH(dir ${Python_FRAMEWORKS})
-#      SET(PYTHON_FRAMEWORK_INCLUDES ${PYTHON_FRAMEWORK_INCLUDES}
-#        ${dir}/Versions/${_CURRENT_VERSION}/include/python${_CURRENT_VERSION})
-#    ENDFOREACH(dir)
-#  ENDIF(Python_FRAMEWORKS AND NOT PYTHON_INCLUDE_DIR)
-
-  FIND_PATH(PYTHON3_INCLUDE_DIR
-    NAMES Python.h
-    PATHS
-      ${PYTHON_FRAMEWORK_INCLUDES}
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
-    PATH_SUFFIXES
-      python${_CURRENT_VERSION}
-  )
-
-  # For backward compatibility, set PYTHON_INCLUDE_PATH, but make it internal.
-  SET(PYTHON_INCLUDE_PATH "${PYTHON_INCLUDE_DIR}" CACHE INTERNAL 
-    "Path to where Python.h is found (deprecated)")
-  
-ENDFOREACH(_CURRENT_VERSION)
+EXECUTE_PROCESS(COMMAND
+	${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_config_vars()['LIBDIR'] + '/' + distutils.sysconfig.get_config_vars()['LDLIBRARY'])"
+					OUTPUT_VARIABLE PYTHON3_LIBRARY
+					ERROR_VARIABLE PYTHON_STDERR
+					RESULT_VARIABLE PYTHON_ERR
+					)
 
 MARK_AS_ADVANCED(
   PYTHON3_DEBUG_LIBRARY
