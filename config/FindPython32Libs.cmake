@@ -28,7 +28,7 @@ INCLUDE(CMakeFindFrameworks)
 # CMAKE_FIND_FRAMEWORKS(Python)
 
 EXECUTE_PROCESS(COMMAND
-					${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())"
+					${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_inc())"
 					OUTPUT_VARIABLE PYTHON3_INCLUDE_DIR
 					ERROR_VARIABLE PYTHON_STDERR
 					RESULT_VARIABLE PYTHON_ERR
