@@ -9,24 +9,6 @@ server_motion_port = 60000
 server_pose_port = 60001
 connected = False
 
-def _read_data(client_socket):
-    """ Read the input socket until no more data is available """
-    finished = False
-    data_in = ''
-
-    if connected:
-        # Receiving
-        while not finished:
-            try:
-                data_in, SRIP = client_socket.recvfrom(1024)
-                #print ("READ: {0}".format(data_in))
-            except socket.error as detail:
-                finished = True
-                #print ("Socket error: %s" % detail)
-                continue
-
-        return data_in
-
 
 def _print_data(data):
     """ Choose how to print, depending on the type """
