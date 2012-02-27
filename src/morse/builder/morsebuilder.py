@@ -145,12 +145,12 @@ class Human(AbstractComponent):
         bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False, 
                 autoselect=True, files=objlist)
         self._blendname = "Human" # for middleware dictionary
-        self._blendobj = bpy.data.objects["Human"] #TODO: only work with ONE human.
+        self._blendobj = self._get_selected("Human")
 
         self.armature = None
 
         try:
-            obj = bpy.data.objects["HumanArmature"] #TODO: only work with ONE human.
+            obj = self._get_selected("HumanArmature")
             self.armature = AbstractComponent(obj, "human_posture")
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
@@ -161,7 +161,7 @@ class Human(AbstractComponent):
         # fix for Blender 2.6 Animations
         if bpy.app.version > (2,59,0):
             if obj:
-                hips = bpy.data.objects["Hips_Empty"] #TODO: only work with ONE human.
+                hips = self._get_selected("Hips_Empty")
                 i = 0
                 for act in hips.game.actuators:
                     act.layer = i
