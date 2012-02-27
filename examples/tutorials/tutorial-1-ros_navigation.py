@@ -1,55 +1,57 @@
 from morse.builder.morsebuilder import *
+from morse.builder.extensions.pr2extension import PR2
 
-# Robot
-Jido = Robot('jido')
-Jido.translate(x=-5)
+# http://www.openrobots.org/morse/doc/latest/user/tutorial.html
 
-IMU = Sensor('imu')
-Jido.append(IMU)
+# Append ATRV robot to the scene
+james = PR2()
+james.configure_service('ros')
+james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.translate(x=2.5, y=3.2, z=0.0)
 
-jido_posture = Sensor('jido_posture')
-Jido.append(jido_posture)
-jido_posture.properties(KUKAname = 'kuka_armature')
-jido_posture.properties(PTUname = 'PTU')
+# Sensors and Actuators for navigation stack
+pr2_posture = Sensor('pr2_posture')
+james.append(pr2_posture)
 
-Platine = Actuator('ptu')
-Platine.translate(x=0.25, y=0, z=1.336)
-Jido.append(Platine)
-Platine.properties(Speed = 1.0000)
-Platine.properties(Manual = False)
-
-keyboard_control = Actuator('keyboard')
-keyboard_control.name = 'keyboard_control'
-Jido.append(keyboard_control)
-
-kuka_base = Actuator('kuka_lwr')
-kuka_base.translate(x=0.1850, y=0.2000, z=0.9070)
-kuka_base.rotate(x=1.5708, y=0)
-Jido.append(kuka_base)
-
-Motion_Controller = Actuator('v_omega')
-Jido.append(Motion_Controller)
+Motion_Controller = Actuator('xy_omega')
+james.append(Motion_Controller)
 
 Odometry = Sensor('odometry')
-Jido.append(Odometry)
+james.append(Odometry)
 
 Pose_sensor = Sensor('pose')
 Pose_sensor.name = 'Pose_sensor'
-Jido.append(Pose_sensor)
+james.append(Pose_sensor)
+
+IMU = Sensor('imu')
+james.append(IMU)
 
 Sick = Sensor('sick')
-Sick.translate(x=0.37, z=0.3)
-Jido.append(Sick)
+Sick.translate(x=0.275, z=0.252)
+james.append(Sick)
 Sick.properties(Visible_arc = False)
 Sick.properties(laser_range = 30.0000)
 Sick.properties(resolution = 1.0000)
 Sick.properties(scan_window = 180.0000)
 
+# Keyboard control
+keyboard = Actuator('keyboard')
+keyboard.name = 'keyboard_control'
+james.append(keyboard)
+
+# Configuring the middlewares
 Pose_sensor.configure_mw('ros')
-IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
 Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
-kuka_base.configure_mw('ros', ['ROS', 'read_jointState', 'morse/middleware/ros/kuka_jointState'])
-jido_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/jido_posture'])
+IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
+pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
 
-env = Environment('indoors-1/indoor-1')
+# Set scenario
+env = Environment('tum_kitchen/tum_kitchen')
+env.aim_camera([1.0470, 0, 0.7854])
+
+
+
