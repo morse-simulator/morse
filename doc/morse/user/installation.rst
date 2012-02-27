@@ -30,16 +30,23 @@ MORSE does not currently support Microsoft Windows, although it may work
 Required software
 +++++++++++++++++
 
-- Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
+- Python (3.2 or +) On Linux: compiled with the ``--with-wide-unicode`` flag
 - Blender (>= 2.59 & < 2.62) build with Python 3.2
 - MORSE source code
 
 .. note::
-  If you install Python by hand, it is important to specify the
-  ``--with-wide-unicode`` flag, since Blender expects this behaviour.
-  Otherwise, there will be an incompatibility of types when using additional
-  middlewares.
+  If you install Python by hand, the compilation must be done according to
+  your operating system, to match the Python complied in Blender:
+  
+  - On **Linux** compile with the ``--with-wide-unicode`` flag. This will
+    provide you with 4-byte Unicode characters (max size: 1114111)
+
+  - On **Mac OS** do not use the ``--with-wide-unicode`` flag. This will
+    provide you with 2-byte Unicode characters (max size: 65535)
  
+  It the sizes between your Python and Blender's do not match, you will get
+  errors about undefined symbols with names starting with  PyUnicodeUCS4
+
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for
 other middlewares:
@@ -77,12 +84,12 @@ Manually
 Download the latest version of the source code. It is stored in a ``git``
 repository::
 
-  $ git clone http://github.com/laas/morse.git
+  $ git clone https://github.com/laas/morse.git
   
 If you want to get only the latest stable version (0.5) of Morse, you can get
 it in the branch `0.5_STABLE`. You can get it directly using ::
  
-  $ git clone http://github.com/laas/morse.git -b 0.5_STABLE
+  $ git clone https://github.com/laas/morse.git -b 0.5_STABLE
 
 or if you have already download the repository ::
   
@@ -130,7 +137,7 @@ For instance, to build and install MORSE with YARP support in ``/opt``, you need
 
 Or to tell MORSE where to find a Python installed in a different location::
 
-  $ cmake -DPYTHON3_INCLUDE_PATH=/usr/local/include/python3.2mu -DPYTHON3_LIBRARY=/usr/local/lib/python3.2mu.a ..
+  $ cmake -DPYTHON3_INCLUDE_PATH=/usr/local/include/python3.2mu -DPYTHON3_LIBRARY=/usr/local/lib/python3.2mu.so ..
 
 Alternatively, you can use ``ccmake ..`` to change all of these parameters using a
 graphical interface. You can modify many different variables by switching to
