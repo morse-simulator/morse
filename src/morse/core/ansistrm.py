@@ -20,19 +20,49 @@ class ColorizingStreamHandler(logging.StreamHandler):
         'white': 7,
     }
 
-    #levels to (background, foreground, bold/intense)
-    level_map = {
-        logging.DEBUG: (None, 'blue', False),
-        logging.INFO: (None, 'white', False),
-        logging.WARNING: (None, 'yellow', False),
-        logging.ERROR: (None, 'red', False),
-        logging.CRITICAL: ('red', 'white', True),
-        SECTION: (None, 'green', True),
-        ENDSECTION: (None, 'green', False),
+    #levels to (background, foreground, bold/intense, blink -- only if bold = False)
+    bright_scheme = {
+        logging.DEBUG: (None, 'blue', False, False),
+        logging.INFO: (None, 'white', False, False),
+        logging.WARNING: (None, 'yellow', False, False),
+        logging.ERROR: (None, 'red', False, False),
+        logging.CRITICAL: ('red', 'white', True, False),
+        SECTION: (None, 'green', True, False),
+        ENDSECTION: (None, 'green', False, False),
     }
+    
+    dark_scheme = {
+        logging.DEBUG: (None, 'blue', False, False),
+        logging.INFO: (None, 'black', False, False),
+        logging.WARNING: (None, 'yellow', False, False),
+        logging.ERROR: (None, 'red', False, False),
+        logging.CRITICAL: ('red', 'black', True, False),
+        SECTION: (None, 'green', True, False),
+        ENDSECTION: (None, 'green', False, False),
+    }
+
+    xmas_scheme = {
+        logging.DEBUG: ('red', 'yellow', False, True),
+        logging.INFO: ('red', 'white', False, True),
+        logging.WARNING: ('red', 'yellow', False, True),
+        logging.ERROR: ('red', 'yellow', False, True),
+        logging.CRITICAL: ('red', 'white', False, True),
+        SECTION: ('red', 'yellow', False, True),
+        ENDSECTION: ('red', 'white', False, True),
+    }
+    
     csi = '\x1b['
     reset = '\x1b[0m'
-
+    
+    def __init__(self, scheme = None):
+        super(ColorizingStreamHandler,self).__init__()
+        if scheme == "xmas":
+            self.level_map = self.xmas_scheme
+        elif scheme == "dark":
+            self.level_map = self.dark_scheme
+        else:
+            self.level_map = self.bright_scheme
+    
     @property
     def is_tty(self):
         isatty = getattr(self.stream, 'isatty', None)
@@ -108,7 +138,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
 
     def colorize(self, message, record):
         if record.levelno in self.level_map:
-            bg, fg, bold = self.level_map[record.levelno]
+            bg, fg, bold, blink = self.level_map[record.levelno]
             params = []
             if bg in self.color_map:
                 params.append(str(self.color_map[bg] + 40))
@@ -116,6 +146,8 @@ class ColorizingStreamHandler(logging.StreamHandler):
                 params.append(str(self.color_map[fg] + 30))
             if bold:
                 params.append('1')
+            elif blink:
+                params.append('5')
             if params:
                 message = ''.join((self.csi, ';'.join(params),
                                    'm', message, self.reset))

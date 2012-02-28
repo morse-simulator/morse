@@ -409,7 +409,7 @@ if __name__ == '__main__':
     parser.add_argument('--name', default=os.uname()[1],
                        help="when running in multi-node mode, sets the name of this node (defaults "
                             "to current hostname")
-    parser.add_argument('--reverse-colors', action='store_true',
+    parser.add_argument('--reverse-color', action='store_true',
                        help='uses colors for MORSE output')
     parser.add_argument('-c', '--color', action='store_true',
                        help='uses colors for MORSE output')
@@ -422,7 +422,7 @@ if __name__ == '__main__':
     script_options = args.pyoptions
     if args.color:
         script_options.append("with-colors")
-    if args.reverse_colors:
+    if args.reverse_color:
         script_options.append("with-colors")
         script_options.append("with-reverse-colors")
 

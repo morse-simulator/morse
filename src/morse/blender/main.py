@@ -620,7 +620,7 @@ def init(contr):
 
     Here, all components, modifiers and middleware are initialized.
     """
-
+    
     init_logging()
 
     logger.log(SECTION, 'PRE-INITIALIZATION')
@@ -668,14 +668,26 @@ def init(contr):
     #GameLogic.setPhysicsTicRate(60.0)
 
 def init_logging():
-    from morse.core.ansistrm import ColorizingStreamHandler
+    
+    if "with-colors" in sys.argv:
+        from morse.core.ansistrm import ColorizingStreamHandler
+        if "with-xmas-colors" in sys.argv:
+            ch = ColorizingStreamHandler(scheme = "xmas")
+        elif "with-reverse-colors" in sys.argv:
+            ch = ColorizingStreamHandler(scheme = "dark")
+        else:
+            ch = ColorizingStreamHandler()
+        
+    else:
+        ch = logging.StreamHandler()
+    
     from morse.core.logging import MorseFormatter
     # create logger
     logger = logging.getLogger('morse')
     logger.setLevel(logging.INFO)
 
     # create console handler and set level to debug
-    ch = ColorizingStreamHandler()
+    
     ch.setLevel(logging.DEBUG)
 
     # create formatter
