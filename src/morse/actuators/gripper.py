@@ -74,9 +74,13 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def grab(self):
-        """ Mark an object as selected by the user """
+        """ Tries to grab an object close to the gripper.
+
+        :returns: if successful (or if an object is already in hand), the
+        name of the object, else None
+        """
         # Check that no other object is being carried
-        if self._grabbed_object == None:
+        if not self._grabbed_object:
             # If the object is draggable
             if self._near_object != None:
                 logger.debug("Grabbing object: '%s'" % self._near_object)
@@ -90,22 +94,25 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
 
                 # Execute the close grip animation:
                 self._animation = 'close'
-                return True
+                return self._grabbed_object.name
 
             else:
-                message = "No 'Graspable' object within range of gripper"
-                print (message)
-                raise MorseRPCInvokationError(message)
+                logger.debug("No 'Graspable' object within range of gripper")
+                return None
         else:
-            message = "Already holding an object"
-            print (message)
-            raise MorseRPCInvokationError(message)
-
+            logger.debug("Already holding object %s" % self._grabbed_object )
+            return self._grabbed_object.name
 
     @service
     def release(self):
         """ Free the grabbed object
-        Lets it fall down after reseting its rotation
+
+        Let it fall down after resetting its rotation.
+
+        Does nothing if no object is held.
+
+        :returns: True if an object has been released, else False (if
+        no object was held).
         """
         # Clear the previously selected object, if any
         if self._grabbed_object != None:
@@ -128,9 +135,8 @@ class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
             return True
 
         else:
-            message = "No object currently being held"
-            raise MorseRPCInvokationError(message)
-
+            logger.debug("No object currently being held: nothing to release.")
+            return False
 
     def default_action(self):
         """
