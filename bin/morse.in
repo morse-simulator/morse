@@ -410,7 +410,7 @@ if __name__ == '__main__':
                        help="when running in multi-node mode, sets the name of this node (defaults "
                             "to current hostname")
     parser.add_argument('--reverse-color', action='store_true',
-                       help='uses colors for MORSE output')
+                       help='uses dark colors for MORSE output')
     parser.add_argument('-c', '--color', action='store_true',
                        help='uses colors for MORSE output')
     parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
