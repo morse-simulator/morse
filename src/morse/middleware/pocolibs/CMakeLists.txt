@@ -121,3 +121,9 @@ endforeach(directory)
 install (FILES __init__.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs
 		)
+
+install(DIRECTORY overlays
+        DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs
+        REGEX .*py.$ EXCLUDE
+        )
+
