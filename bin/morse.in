@@ -4,10 +4,10 @@ import os
 import logging
 ## Configuring default logging
 try:
-	from morse.core.ansistrm import ColorizingStreamHandler
-	log_handler = ColorizingStreamHandler()
+    from morse.core.ansistrm import ColorizingStreamHandler
+    log_handler = ColorizingStreamHandler()
 except ImportError:
-	log_handler = logging.StreamHandler()
+    log_handler = logging.StreamHandler()
 
 logger = logging.getLogger('morse')
 
@@ -23,7 +23,12 @@ import shutil
 import glob
 import re
 import tempfile
-
+try:
+    import argparse
+except ImportError:
+    logger.error("You need Python>=3.2 to run morse.")
+    sys.exit()
+    
 VERSION = "@PACKAGE_VERSION@"
 
 #Python version must be egal or bigger than...
@@ -288,7 +293,7 @@ def create_copy_default_scene(filename = None):
     return new_scene
 
 def prelaunch():
-    version()
+    logger.info(version())
     try:
         logger.setLevel(logging.WARNING)
         logger.info("Checking up your environment...\n")
@@ -299,12 +304,16 @@ def prelaunch():
         "You can also run 'morse check' for more details.")
         sys.exit()
 
-def launch_simulator(scene=None, script=None, node_name=None, script_options = []):
+def launch_simulator(scene=None, script=None, node_name=None, geometry=None, script_options = []):
     """Starts Blender on an empty new scene or with a given scene.
 
-
+    :param tuple geometry: if specified, a tuple (width, height, dx, dy) that
+            specify the Blender window geometry. dx and dy are the distance in
+            pixels from the lower left corner. They can be None (in this case, they 
+            default to 0).
     :param list script_options: if specified, elements of this list are passed
-            to the Python script (and are accessible via sys.argv)
+            to the Python script (and are accessible with MORSE scripts via 
+            sys.argv)
     """
 
     global morse_prefix, blender_exec, default_scene_abspath
@@ -335,131 +344,129 @@ def launch_simulator(scene=None, script=None, node_name=None, script_options = [
     env["PYTHONPATH"] = ":".join(sys.path)
 
     # Add the MORSE node name to env.
-    if node_name != None:
+    if node_name:
         env["MORSE_NODE"] = node_name
     
+    # Prepare the geometry
+    if geometry:
+        w,h,dx,dy = geometry
+        # -w for a window with borders, -p for the window geometry
+        other_params = ["-w", "-p", dx if dx else '0', dy if dy else '0', w, h]
+    else:
+        other_params = ["-w"]
+
+    if script_options:
+        other_params.append('--')
+        other_params += script_options
+
+    other_params.append(env) # must be the last option
+
     #Replace the current process by Blender
     if script != None:
         logger.info("Executing Blender script: " + script)
-        if script_options:
-            script_options.append(env)
-            os.execle(blender_exec, blender_exec, scene, "-P", script, "--", *script_options)
-        else:
-            os.execle(blender_exec, blender_exec, scene, "-P", script, env)
+        os.execle(blender_exec, blender_exec, scene, "-P", script, *other_params)
     else:
-        os.execle(blender_exec, blender_exec, scene, env)
+        os.execle(blender_exec, blender_exec, scene, *other_params)
 
 def version():
-    print("morse " + VERSION + "\nCopyright LAAS-CNRS 2011\n")
-
-def help(cmd=None):
-    
-    if not cmd:
-        print ("""morse [command] [options]
-
-Known commands:
-  [None]                 launchs the simulator interface with a default scene.
-  create filename        creates a new empty scene and launchs the simulator
-                         interface.
-  run filename [options] runs a simulation without loading the simulator 
-                         interface.
-  exec filename          runs the given Python script with a default scene.
-  check                  checks the environment is correctly setup to run morse.
-  help                   displays this message and exits.
-  version                displays the version number and exits.
-
-'morse' followed by a Blender file name opens the simulator with this scene.
-
-Use help [command] to get more help on a specific command.""")
-        return
-
-    if cmd == "run":
-        print ("""morse run file_name [script options]
-
-Runs a simulation without loading the simulator interface. Equivalent
-to the sequence [open a Blend file in the simulator, switch to 
-fullscreen, press P].
-
-file_name can be either a Blender file containing a simulation already
-set up or a Python script using the MORSE Builder API.
-
-In the later case, optional options can be passed to the script.
-""")
-    else:
-        print("No help for \"" + cmd + "\".")
-        help()
+    return("morse " + VERSION)
 
 if __name__ == '__main__':
 
-    
-    if len(sys.argv) > 1:
-        
-        if sys.argv[1] in ["help", "--help", "-h"]:
-            if len(sys.argv) > 2:
-                help(sys.argv[2])
-            else:
-                help()
-            sys.exit()
-        elif sys.argv[1] in ["version", "--version", "-v"]:
-            version()
-            sys.exit()
-        elif sys.argv[1] in ["check"]:
-            try:
-                logger.info("Checking up your environment...\n")
-                check_setup()
-            except MorseError as e:
-                logger.error("Your environment is not correctly setup to run MORSE!")
-                sys.exit()
-            logger.info("Your environment is correctly setup to run MORSE.")
-            
-        elif sys.argv[1] in ["create"]:
-            if len(sys.argv) == 3:
-                prelaunch()
-                launch_simulator(create_copy_default_scene(sys.argv[2]))                
-            else:
-                logger.error("'create' option expect exactly one option (a filename)")
-                sys.exit()
-        elif sys.argv[1] in ["run"]:
-            if len(sys.argv) >= 3:
-                prelaunch()
-                script_options = sys.argv[3:]
-                launch_simulator(
-                   os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
-                   sys.argv[2], \
-                   script_options = script_options)
-            else:
-                logger.error("'run' option expect exactly one option (a filename)")
-                sys.exit()
-        elif sys.argv[1] in ["exec"]:
-            if len(sys.argv) < 3:
-                logger.error("'exec' option expect at least one option (a filename)")
-                sys.exit()
-            prelaunch()
-            node_name = os.uname()[1]
-            if len(sys.argv) > 3:
-                node_name = sys.argv[3]
-            launch_simulator(script=sys.argv[2], node_name=node_name)
-            
+    def validscene(string):
+        if string == "":
+           return None
+        if string.endswith(".blend"):
+           return({"type":"blend", "name":string})
         else:
-            scene = None
-            script = None
-            args = sys.argv[1:]
-            for arg in args:
-                if arg.endswith(".blend"):
-                    scene = arg
-                    break
-            for arg in args:
-                if arg.endswith(".py"):
-                    script = arg
-                    break
-            if not scene and not script:
-                logger.error("Unknown option: " + str(args))
-                help()
-                sys.exit()
-            prelaunch()
-            launch_simulator(scene, script)
+           return({"type":"python", "name":string})
+
+    def parsegeom(string):
+        dx = dy = None
+        try:
+             w, remain = string.split('x')
+             if '+' in remain:
+                h, remain = remain.split('+')
+                dx, dy = remain.split(',')
+             else:
+                h = remain
+        except ValueError:
+             raise argparse.ArgumentTypeError("The geometry must be formatted as WxH or WxH+dx,dy")
+        return (w,h,dx,dy)
+
+    parser = argparse.ArgumentParser(description='The Modular OpenRobots Simulation Engine')
+    parser.add_argument('mode', choices=['check', 'edit', 'run'], type=str,
+                      help="Check: checks your environment is correctly configured. "
+                           "Edit: opens an existing scene for edition. "
+                           "Run: starts a simulation.")
+    parser.add_argument('scene', type=validscene, default="", nargs='?',
+                       help="the scene to create, edit or run. Either a Blender file"
+                            " or a Python file using the MORSE BuilderAPI.")
+    parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
+                       help="optional parameters, passed to the Blender python engine in sys.argv")
+    parser.add_argument('-v', '--version', action='version',
+                       version=version(), help='returns the current MORSE version')
+    parser.add_argument('--name', default=os.uname()[1],
+                       help="when running in multi-node mode, sets the name of this node (defaults "
+                            "to current hostname")
+    parser.add_argument('--reverse-colors', action='store_true',
+                       help='uses colors for MORSE output')
+    parser.add_argument('-c', '--color', action='store_true',
+                       help='uses colors for MORSE output')
+    parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
+                       help="sets the simulator window geometry. Expected format: WxH or WxH+dx,dy "
+                            "to set an initial x,y delta (from bottom left)")
     
-    else:
+    args = parser.parse_args()
+    
+    script_options = args.pyoptions
+    if args.color:
+        script_options.append("with-colors")
+    if args.reverse_colors:
+        script_options.append("with-colors")
+        script_options.append("with-reverse-colors")
+
+    # xmas mode!
+    import datetime
+    today = datetime.date.today()
+    if today > datetime.date(today.year, 12, 25):
+        script_options.append("with-xmas-colors")
         
+    if args.mode == "check":
+        try:
+            logger.info("Checking up your environment...\n")
+            check_setup()
+        except MorseError as e:
+            logger.error("Your environment is not correctly setup to run MORSE!")
+            sys.exit()
+        logger.info("Your environment is correctly setup to run MORSE.")
+        
+    elif args.mode == "run":
+        if not args.scene:
+            logger.error("'run' mode requires a simulation script (.py)")
+            sys.exit()
         prelaunch()
-        launch_simulator()
+        launch_simulator(
+               os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
+               args.scene["name"], \
+               geometry=args.geom, \
+               node_name=args.name, \
+               script_options = script_options)
+    elif args.mode == "edit":
+        if not args.scene:
+            logger.error("'edit' mode requires a simulation to edit (.blend or .py)")
+            sys.exit()
+        prelaunch()
+        if args.scene["type"] == "blend":
+            launch_simulator(
+                   args.scene["name"], \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
+        else:
+            launch_simulator(
+                   script = args.scene["name"], \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
+        
