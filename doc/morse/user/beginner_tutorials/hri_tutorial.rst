@@ -42,8 +42,7 @@ Launch MORSE with this script (``morse run hri.py``).
     ``#! /usr/bin/env morseexec``.
     
     Mark then your script as executable (``chmod +x hri.py``). You can now quickly
-    open your simulation by calling ``./hri.py``. You still need to press :kbd:`p` 
-    to start the simulation.
+    start your simulation by calling ``./hri.py``.
 
 
 You can control the human with the :kbd:`w`, :kbd:`a`, :kbd:`s`, :kbd:`d`
