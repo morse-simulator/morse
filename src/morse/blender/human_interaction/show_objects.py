@@ -18,8 +18,8 @@ windowHeight = render.getWindowHeight()
 
 def write():
     """
-    Write the name of all active objects on Screen
-    """
+Write the name of all active objects on Screen
+"""
     # OpenGL setup
     bgl.glMatrixMode(bgl.GL_PROJECTION)
     bgl.glLoadIdentity()
@@ -44,8 +44,8 @@ def write():
 
 def test(contr):
     """
-    Show which objects are interactable
-    """
+Show which objects are interactable
+"""
     keylist = keyboard.events
 
     for key in keylist:
