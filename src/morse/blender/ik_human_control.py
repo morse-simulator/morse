@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+logger.setLevel(logging.DEBUG)
 
 ######################################################
 #
@@ -260,7 +261,7 @@ def reset_view(contr):
     scene = bge.logic.getCurrentScene()
     target = scene.objects['IK_Target_Empty.Head']
     # Reset the Empty object to its original position
-    target.localPosition = [1.3, 0.0, 1.7]
+    target.localPosition = [0.5, 0.0, 1.6]
 
 
 def toggle_manipulate(contr):
@@ -269,22 +270,27 @@ def toggle_manipulate(contr):
     scene = bge.logic.getCurrentScene()
     hand_target = scene.objects['IK_Target_Empty.R']
     head_target = scene.objects['IK_Target_Empty.Head']
+    torso = scene.objects['Torso_Reference_Empty']
 
     if human['Manipulate']:
         #bge.render.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
         hand_target.localPosition = [0.3, -0.3, 0.9]
-        head_target.setParent(human)
+        head_target.setParent(torso)
+        #head_target.localPosition = [0.0, 0.0, 0.0]
         head_target.localPosition = [0.5, 0.0, 1.6]
+
     else:
         #bge.render.showMouse(True)
         human['Manipulate'] = True
-        head_target.setParent(hand_target)
         # Place the hand in a nice position
         hand_target.localPosition = [0.6, 0.0, 1.4]
         # Place the head in the same place
-        head_target.localPosition = [0.0, 0.0, 0.0]
+        head_target.localPosition = hand_target.localPosition
+        logger.debug("Moving head_target to: %s" % head_target.localPosition)
+        #head_target.localPosition = [0.0, 0.0, 0.0]
+        head_target.setParent(hand_target)
 
 
 def toggle_sit(contr):
