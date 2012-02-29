@@ -13,6 +13,28 @@ import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 
 import bge
+import mathutils
+
+start_position = []
+start_orientation = []
+
+def store_default(contr):
+    """ Save the initial position and orientation of the camera """
+    global start_position
+    global start_orientation
+
+    camera = contr.owner
+    # Create a copy of the current positions
+    start_position = mathutils.Vector(camera.worldPosition)
+    start_orientation = mathutils.Matrix(camera.worldOrientation)
+
+
+def reset_position(contr):
+    """ Put the camera in the initial position and orientation """
+    camera = contr.owner
+    camera.worldPosition = start_position
+    camera.worldOrientation = start_orientation
+
 
 def move(contr):
     """ Read the keys for specific combinations
@@ -60,6 +82,12 @@ def move(contr):
             #  a movement with respect to the object's local
             #  coordinate system
             camera.applyMovement( move_speed, True )
+
+        elif key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
+            # Other actions activated with the keyboard
+            # Reset camera to center
+            if key[0] == bge.events.F10KEY and keyboard.positive:
+                reset_position(contr)
 
 
 def rotate(contr):
