@@ -6,12 +6,12 @@ This tutorial shows how to use the ROS navigation stack to navigate a robot in M
 Setup
 -----
 
-You need to have a working installation of ROS Electric or Diamonback and also have the python3-compatible stacks for MORSE-ROS installed. You can find
+You need to have a working installation of ROS Electric (or Diamonback) and also have the python3-compatible stacks for MORSE-ROS installed. You can find
 information about this here:  :doc:`installation notes <../installation>`
 
-You should also be familiar with the basic usage of ROS and how to use TF and the ROS navigation stack. You should also know about launchfiles and topic remapping as well as the robot state publisher. Also experience with RVIZ are of advantage. Tutorials on all of those topics can be found on http://www.ros.org.
+You should also be familiar with the basic usage of ROS and how to use TF and the ROS navigation stack. You should also know about launchfiles and topic remapping as well as the robot state publisher. Also experience with RVIZ is of advantage. Tutorials on all of those topics can be found on http://www.ros.org.
 
-To create the TF-tree, you have to write a TF-broadcaster that build a TF-tree from informations about the robot`s pose, velocity and the robot model (in ROS usually given as URDF-file). The TF-tree also need information about the current configuration of the joints of the robot in case they are not fixed joints. You also need to set the parameters of the ROS navigation (local planner, move_base, etc). Detailed information about the ROS navigation-stack can be found here: http://www.ros.org/wiki/navigation.
+To create the TF-tree, you have to write a TF-broadcaster that builds a TF-tree from informations about the robot`s pose, velocity and the robot model (in ROS usually given as URDF-file). The TF-tree also needs information about the current configuration of the flexible joints of the robot. You also need to set the parameters of the ROS navigation (local planner, move_base, etc). Detailed information about the ROS navigation-stack can be found here: http://www.ros.org/wiki/navigation.
 
 You can download a ROS-stack including an example implementation for using ROS navigation with the simulated PR2 robot in MORSE using rosinstall:
 
@@ -26,11 +26,11 @@ Alternatively you can git clone the morse_ros stack from ``http://code.in.tum.de
 Configuring the scenario
 ------------------------
 
-There is already a completely configured builder-script in `$MORSE_DIR/morse/share/morse/examples/tutorials/tutorial-1-ros_navigation.py```. Open this file in MORSE by:
+There is already a completely configured builder-script in ``$MORSE_DIR/morse/share/morse/examples/tutorials/tutorial-1-ros_navigation.py``. Open this file in MORSE by:
 
 ``morse run $MORSE_DIR/morse/share/morse/examples/tutorials/tutorial-1-ros_navigation.py``
 
-For the navigation-stack to work, you need your robot (in our example the Jido robot) equipped with the following components:
+For the navigation-stack to work, you need your robot (in our example the PR2 robot) equipped with the following components:
 
 #. **Pose sensor** - posts the position of the robot on a ROS topic and will be read to create the TF-tree
 #. **IMU** - posts the Velocity of the robot and will be read by ROS navigation 
@@ -43,7 +43,7 @@ More information about how to equip your robot with those components using build
 Linking the MORSE-ROS topics with the ROS navigation stack.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-The ROS navigation stack expects a tf-tree of the robot and the map as well as the pose of the robot and its speed. The morse_ros-package includes a tf-broadcaster that reads the values of the Pose Sensor and the IMU sensor and posts the messages and TF-frames on the topic needed by the ROS navigation stack. It also sets the odom-TF-frame to the initial robot's starting position when starting the Simulation. The TF-tree of the robot is created by the odom frame, the map frame and a urdf of the robot posted the robot state publisher. The URDF of the PR2 robot can be found in the ROS package ``morse_tf`` in the folder ``urdf``. The robot state publisher also needs the jointstates of all non-fixed joints of the robot which are exported by the ``pr2_posture`` component.
+The ROS navigation stack expects a tf-tree of the robot and the map as well as the pose of the robot and its speed. The morse_ros-package includes a tf-broadcaster that reads the values of the Pose Sensor and the IMU sensor and posts the messages and TF-frames on the topic needed by the ROS navigation stack. It also sets the odom-TF-frame to the initial robot's starting position when starting the Simulation. The TF-tree of the robot is created by the odom frame, the map frame and urdf of the robot posted the robot state publisher. The URDF of the PR2 robot can be found in the ROS package ``morse_tf`` in the folder ``urdf``. The robot state publisher also needs the jointstates of all non-fixed joints of the robot which are exported by the ``pr2_posture`` component.
 
 NOTE: We are not going to deep into the ROS navigation stack, TF and the robot state publisher here. It is strongly recommended to do the tutorials on that topic on http://www.ros.org! 
 
