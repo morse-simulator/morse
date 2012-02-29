@@ -9,6 +9,9 @@ from morse.helpers import passive_objects
 
 object_config_file = "objectList_cfg"
 
+ABSOLUTE = 0
+RELATIVE = 1
+
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
@@ -99,6 +102,7 @@ def write_viman(self, component_instance):
                 logger.debug("VIMAN " + object_id + "(" + object.name + ") is visible at " + str(position_3d))
                 ors_viman_poster.set_visible(self.viman_data, i, 1)
                 _fill_world_matrix(self.viman_data, position_3d, i)
+                _fill_robot_matrix(self.viman_data, parent, position_3d, i)
             else:
                 ors_viman_poster.set_visible (self.viman_data, i, 0)
         
@@ -120,7 +124,6 @@ def _fill_world_matrix(viman_data, t3d, index):
     It calls a module function to fill out data structure of type VimanThetaMat
     """
 
-    logger.debug(t3d)
     nx = t3d.matrix[0][0]
     ox = t3d.matrix[1][0]
     ax = t3d.matrix[2][0]
@@ -136,7 +139,35 @@ def _fill_world_matrix(viman_data, t3d, index):
     az = t3d.matrix[2][2]
     pz = t3d.z
 
-    result = ors_viman_poster.write_matrix (viman_data, index,
+    result = ors_viman_poster.write_matrix (viman_data, index, ABSOLUTE,
+        nx, ny, nz, ox, oy, oz, ax, ay, az, px, py, pz)
+
+def _fill_robot_matrix(viman_data, robot, obj_3dpose, index):
+    """ Fill the world matix part of the structure
+
+    This function receives the Blender rotation matrix and position of an object
+    It calls a module function to fill out data structure of type VimanThetaMat
+    """
+    robot3d = robot.position_3d
+
+    t3d = robot3d.transformation3d_with(obj_3dpose)
+
+    nx = t3d.matrix[0][0]
+    ox = t3d.matrix[1][0]
+    ax = t3d.matrix[2][0]
+    px = t3d.x
+
+    ny = t3d.matrix[0][1]
+    oy = t3d.matrix[1][1]
+    ay = t3d.matrix[2][1]
+    py = t3d.y
+
+    nz = t3d.matrix[0][2]
+    oz = t3d.matrix[1][2]
+    az = t3d.matrix[2][2]
+    pz = t3d.z
+
+    result = ors_viman_poster.write_matrix (viman_data, index, RELATIVE,
         nx, ny, nz, ox, oy, oz, ax, ay, az, px, py, pz)
 
 
