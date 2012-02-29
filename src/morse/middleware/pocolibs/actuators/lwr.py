@@ -15,17 +15,18 @@ def read_lwr_config(self, component_instance):
     poster_id = self._poster_in_dict[component_instance.blender_obj.name]
     gbm_conf, ok = ors_lwr_poster.read_lwr_data(poster_id)
 
-    logger.debug("DATA READ by LWR: ", component_instance.local_data)
+    logger.debug("LWR READ DATA OK: %s" % ok)
 
     if ok != 0:
-        component_instance.local_data['seg0'] = gbm_conf.q1
-        component_instance.local_data['seg1'] = gbm_conf.q2
-        component_instance.local_data['seg2'] = gbm_conf.q3
-        component_instance.local_data['seg3'] = gbm_conf.q4
-        component_instance.local_data['seg4'] = gbm_conf.q5
-        component_instance.local_data['seg5'] = gbm_conf.q6
-        component_instance.local_data['seg6'] = gbm_conf.q7
+        component_instance.local_data['kuka_1'] = gbm_conf.q1
+        component_instance.local_data['kuka_2'] = gbm_conf.q2
+        component_instance.local_data['kuka_3'] = gbm_conf.q3
+        component_instance.local_data['kuka_4'] = gbm_conf.q4
+        component_instance.local_data['kuka_5'] = gbm_conf.q5
+        component_instance.local_data['kuka_6'] = gbm_conf.q6
+        component_instance.local_data['kuka_7'] = gbm_conf.q7
 
+        logger.debug("DATA READ by LWR: %s" % str(component_instance.local_data))
         # Return true to indicate that a command has been received
         return True
     else:
