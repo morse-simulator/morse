@@ -404,18 +404,20 @@ if __name__ == '__main__':
                             " or a Python file using the MORSE BuilderAPI.")
     parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
                        help="optional parameters, passed to the Blender python engine in sys.argv")
-    parser.add_argument('-v', '--version', action='version',
-                       version=version(), help='returns the current MORSE version')
+    parser.add_argument('-b', '--base', dest='BASE',
+                       help='in Edit mode, specify a Blender scene used as base to apply the Python script.')
     parser.add_argument('--name', default=os.uname()[1],
                        help="when running in multi-node mode, sets the name of this node (defaults "
-                            "to current hostname")
-    parser.add_argument('--reverse-color', action='store_true',
-                       help='uses dark colors for MORSE output')
+                            "to current hostname).")
     parser.add_argument('-c', '--color', action='store_true',
-                       help='uses colors for MORSE output')
+                       help='uses colors for MORSE output.')
+    parser.add_argument('--reverse-color', action='store_true',
+                       help='uses darker colors for MORSE output.')
     parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
                        help="sets the simulator window geometry. Expected format: WxH or WxH+dx,dy "
-                            "to set an initial x,y delta (from bottom left)")
+                            "to set an initial x,y delta (from lower left corner).")
+    parser.add_argument('-v', '--version', action='version',
+                       version=version(), help='returns the current MORSE version')
     
     args = parser.parse_args()
     
@@ -465,6 +467,7 @@ if __name__ == '__main__':
                    script_options = script_options)
         else:
             launch_simulator(
+			       scene = args.base, \
                    script = args.scene["name"], \
                    geometry=args.geom, \
                    node_name=args.name, \

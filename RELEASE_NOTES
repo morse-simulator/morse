@@ -1,3 +1,13 @@
+MORSE 0.6
+=========
+
+General
+-------
+
+- The 'morse' executable has slightly different options now. run 'morse -h' for details.
+- Added support for 'no color' and 'reverse colors' log output.
+- Added support for specifying the geometry of the simulator window.
+
 MORSE 0.5
 =========
 
