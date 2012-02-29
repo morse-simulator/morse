@@ -187,8 +187,12 @@ def head_control(contr):
     POS_EMPTY = scene.objects['POS_EMPTY']
     Head_Empty = scene.objects['Head_Empty']
     right_hand = scene.objects['Hand_Grab.R']
+    camera = scene.objects['Human_Camera']
     mmb = contr.sensors['MMB']
 
+    # Do not move the camera if the current view is using another camera
+    if camera != logic.getCurrentScene().active_camera:
+        return
 
     # If the manipulation mode is active, an object is grabbed
     # and the Middle Mouse Button is pressed, do nothing
