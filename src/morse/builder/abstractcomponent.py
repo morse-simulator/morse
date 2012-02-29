@@ -175,10 +175,7 @@ class AbstractComponent(object):
                 return obj
         # fix Blender shorten the name
         # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
-        if len(name) > 15:
-            test_prefix = name[0:15]
-        else:
-            test_prefix = name + '.'
+        test_prefix = name[:17] + '.'
         # look for candidates
         candidates = [obj for obj in bpy.context.selected_objects if \
                       obj.name.startswith(test_prefix)]
