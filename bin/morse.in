@@ -329,7 +329,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
         
     elif not os.path.exists(scene):
         logger.error(scene + " does not exist!\nIf you want to create a new scene " + \
-        "called " + scene + ",\nplease use 'morse create " + scene + "'.")
+        "called " + scene + ",\nplease create a Python script using the Builder API, run 'morse edit [script_filename]' and save as a .blend file.")
         sys.exit(1)
         
     logger.info("Executing: " + blender_exec + " " + scene + "\n\n")
@@ -466,10 +466,19 @@ if __name__ == '__main__':
                    node_name=args.name, \
                    script_options = script_options)
         else:
-            launch_simulator(
-			       scene = args.base, \
-                   script = args.scene["name"], \
-                   geometry=args.geom, \
-                   node_name=args.name, \
-                   script_options = script_options)
-        
+            try:
+                launch_simulator(
+                       scene = args.base, \
+                       script = args.scene["name"], \
+                       geometry=args.geom, \
+                       node_name=args.name, \
+                       script_options = script_options)
+            # Check if we got a 'base' option. If not, don't use it
+            except AttributeError:
+                launch_simulator(
+                       scene = None, \
+                       #os.path.join(morse_prefix, DEFAULT_SCENE_PATH), \
+                       script = args.scene["name"], \
+                       geometry=args.geom, \
+                       node_name=args.name, \
+                       script_options = script_options)
