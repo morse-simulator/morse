@@ -73,27 +73,35 @@ void set_tacq(VimanObjectPublicArray* viman_data, int index, unsigned long tacq_
  * Copy the values of the variables sent into the data structure
  *  at the specified index
  */
-int write_matrix (VimanObjectPublicArray* viman_data, int index, //matrixRef type,
+int write_matrix (VimanObjectPublicArray* viman_data, int index, int relative,
 	double nx, double ny, double nz,
 	double ox, double oy, double oz,
 	double ax, double ay, double az,
 	double px, double py, double pz)
 {
-	viman_data->objects[index].thetaMatOrigin.nx = nx;
-	viman_data->objects[index].thetaMatOrigin.ny = ny;
-	viman_data->objects[index].thetaMatOrigin.nz = nz;
+    VimanThetaMat* mat; 
+    if (relative){
+        mat = &viman_data->objects[index].thetaMatRobot;
+    }
+    else {
+        mat = &viman_data->objects[index].thetaMatOrigin;
+    }
 
-	viman_data->objects[index].thetaMatOrigin.ox = ox;
-	viman_data->objects[index].thetaMatOrigin.oy = oy;
-	viman_data->objects[index].thetaMatOrigin.oz = oz;
+	mat->nx = nx;
+	mat->ny = ny;
+	mat->nz = nz;
 
-	viman_data->objects[index].thetaMatOrigin.ax = ax;
-	viman_data->objects[index].thetaMatOrigin.ay = ay;
-	viman_data->objects[index].thetaMatOrigin.az = az;
+	mat->ox = ox;
+	mat->oy = oy;
+	mat->oz = oz;
 
-	viman_data->objects[index].thetaMatOrigin.px = px;
-	viman_data->objects[index].thetaMatOrigin.py = py;
-	viman_data->objects[index].thetaMatOrigin.pz = pz;
+	mat->ax = ax;
+	mat->ay = ay;
+	mat->az = az;
+
+	mat->px = px;
+	mat->py = py;
+	mat->pz = pz;
 
 	return 0;
 }

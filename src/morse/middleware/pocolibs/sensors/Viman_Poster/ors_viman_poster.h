@@ -21,7 +21,7 @@ void set_name(VimanObjectPublicArray* viman_data, int index, char* name);
 void set_visible(VimanObjectPublicArray* viman_data, int index, int visible);
 void set_tacq(VimanObjectPublicArray* viman_data, int index, unsigned long tacq_sec, unsigned long tacq_usec);
 
-int write_matrix (VimanObjectPublicArray* viman_data, int index, //matrixRef type,
+int write_matrix (VimanObjectPublicArray* viman_data, int index, int relative,
 	double nx, double ny, double nz,
 	double ox, double oy, double oz,
 	double ax, double ay, double az,
