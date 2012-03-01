@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-logger.setLevel(logging.DEBUG)
 
 ######################################################
 #
@@ -277,20 +276,22 @@ def toggle_manipulate(contr):
         human['Manipulate'] = False
         # Place the hand beside the body
         hand_target.localPosition = [0.3, -0.3, 0.9]
+        # Make the head follow the body
         head_target.setParent(torso)
-        #head_target.localPosition = [0.0, 0.0, 0.0]
-        head_target.localPosition = [0.5, 0.0, 1.6]
+        # Put the head_target in front and above the waist
+        head_target.localPosition = [0.5, 0.0, 0.5]
+        logger.debug("Moving head_target to CENTER: %s" % head_target.localPosition)
 
     else:
         #bge.render.showMouse(True)
         human['Manipulate'] = True
         # Place the hand in a nice position
         hand_target.localPosition = [0.6, 0.0, 1.4]
-        # Place the head in the same place
-        head_target.localPosition = hand_target.localPosition
-        logger.debug("Moving head_target to: %s" % head_target.localPosition)
-        #head_target.localPosition = [0.0, 0.0, 0.0]
+        # Make the head follow the hand
         head_target.setParent(hand_target)
+        # Reset the head_target position to the same as its parent
+        head_target.localPosition = [0.0, 0.0, 0.0]
+        logger.debug("Moving head_target to HAND: %s" % head_target.localPosition)
 
 
 def toggle_sit(contr):
