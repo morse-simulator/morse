@@ -35,13 +35,6 @@ class Proximity(morse.builder.creator.SensorCreator):
         self.append(mesh)
         self.properties(Range = 30.0)
 
-class Human_Posture(morse.builder.creator.SensorCreator):
-    def __init__(self, name="Human_Posture"):
-        morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/sensors/human_posture", "HumanPostureClass")
-
-
-
 ##
 # Following is experimental (!)
 ##
