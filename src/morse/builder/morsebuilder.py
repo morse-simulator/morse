@@ -131,9 +131,13 @@ class Human(AbstractComponent):
 
     Currently, only one human per simulation is supported.
     """
-    def __init__(self):
+    def __init__(self, style=None):
+        """ The 'style' parameter is only to switch to the ik_human file.  """
         AbstractComponent.__init__(self)
-        filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'human.blend')
+        if style == 'ik_human':
+            filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'ik_human.blend')
+        else:
+            filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'human.blend')
 
         with bpy.data.libraries.load(filepath) as (src, _):
             try:
@@ -159,19 +163,21 @@ class Human(AbstractComponent):
                          " children). I won't be able to export the human pose" +\
                          " to any middleware.")
 
-        # fix for Blender 2.6 Animations
-        if bpy.app.version > (2,59,0):
-            if obj:
-                hips = self._get_selected("Hips_Empty")
-                i = 0
-                for act in hips.game.actuators:
-                    act.layer = i
-                    i = i + 1
+        # IK human has no object called Hips_Empty, so avoid this step
+        if not style:
+            # fix for Blender 2.6 Animations
+            if bpy.app.version > (2,59,0):
+                if obj:
+                    hips = self._get_selected("Hips_Empty")
+                    i = 0
+                    for act in hips.game.actuators:
+                        act.layer = i
+                        i = i + 1
 
-                i = 0
-                for act in obj.game.actuators:
-                    act.layer = i
-                    i = i + 1
+                    i = 0
+                    for act in obj.game.actuators:
+                        act.layer = i
+                        i = i + 1
 
     def use_world_camera(self):
         human = self._blendobj
