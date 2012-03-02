@@ -43,7 +43,7 @@ class IKHumanClass(morse.core.robot.MorseRobotClass):
         
         human = self.blender_obj
         scene = GameLogic.getCurrentScene()
-        target = scene.objects['Target_Empty']
+        target = scene.objects['IK_Target_Empty.Head']
         
         if human['Manipulate']:
             return
@@ -102,28 +102,44 @@ class IKHumanClass(morse.core.robot.MorseRobotClass):
         
     @service
     def toggle_manipulation(self):
-        """ change from and to manipulation mode. a request to use by a socket.
+        """ Switch manipulation mode on and off. a request to use by a socket.
         Done for wiimote remote control.
         """
-        
         human = self.blender_obj
         scene = GameLogic.getCurrentScene()
         hand_target = scene.objects['IK_Target_Empty.R']
-        head_target = scene.objects['Target_Empty']
+        head_target = scene.objects['IK_Target_Empty.Head']
+        torso = scene.objects['Torso_Reference_Empty']
 
         if human['Manipulate']:
             human['Manipulate'] = False
             # Place the hand beside the body
-            hand_target.localPosition = [0.0, -0.3, 0.8]
-            head_target.setParent(human)
-            head_target.localPosition = [1.3, 0.0, 1.7]
+            hand_target.localPosition = [0.3, -0.3, 0.9]
+            # Make the head follow the body
+            head_target.setParent(torso)
+            # Put the head_target in front and above the waist
+            head_target.localPosition = [0.5, 0.0, 0.5]
+            logger.debug("Moving head_target to CENTER: %s" % head_target.localPosition)
+
+            #hand_target.localPosition = [0.0, -0.3, 0.8]
+            #head_target.setParent(human)
+            #head_target.localPosition = [1.3, 0.0, 1.7]
         else:
             human['Manipulate'] = True
-            head_target.setParent(hand_target)
             # Place the hand in a nice position
             hand_target.localPosition = [0.6, 0.0, 1.4]
-            # Place the head in the same place
+            # Make the head follow the hand
+            head_target.setParent(hand_target)
+            # Reset the head_target position to the same as its parent
             head_target.localPosition = [0.0, 0.0, 0.0]
+            logger.debug("Moving head_target to HAND: %s" % head_target.localPosition)
+
+
+            #head_target.setParent(hand_target)
+            # Place the hand in a nice position
+            #hand_target.localPosition = [0.6, 0.0, 1.4]
+            # Place the head in the same place
+            #head_target.localPosition = [0.0, 0.0, 0.0]
         
     def default_action(self):
         """ Main function of this component. """

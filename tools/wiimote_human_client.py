@@ -32,24 +32,50 @@ tabOfExistentButtons = [cwiid.BTN_PLUS, cwiid.BTN_UP, cwiid.BTN_DOWN,
     cwiid.BTN_A, cwiid.BTN_B, cwiid.BTN_1, cwiid.BTN_2]
 
 
+def _connect_port(port):
+    """ Establish the connection with the given MORSE port"""
+    local_socket = None
+
+    for res in socket.getaddrinfo(HOST, port, socket.AF_UNSPEC, socket.SOCK_STREAM):
+        af, socktype, proto, canonname, sa = res
+        try:
+            local_socket = socket.socket(af, socktype, proto)
+        except socket.error as msg:
+            local_socket = None
+            continue
+        try:
+            local_socket.connect(sa)
+        except socket.error as msg:
+            local_socket.close()
+            local_socket = None
+            continue
+        break
+
+    return local_socket
+
+
 def main():
     """ Main function containing a loop for getting wiimote's inputs. """
     global s
     global toggled
     
-    print "Please, put the Wiimote on discoverable mode (press 1+2)"
+    print ("Please, put the Wiimote on discoverable mode (press 1+2)")
     wiimote = cwiid.Wiimote()
-    print "Wiimote detected"
+    print ("Wiimote detected")
     
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print "Socket connected"
+    s = _connect_port(PORT)
+    if not s:
+        sys.exit(1)
+
+    print ("Socket connected")
 
     wiimote.led = cwiid.LED1_ON 
     wiimote.enable(cwiid.FLAG_MESG_IFC)
     wm_cal = wiimote.get_acc_cal(cwiid.EXT_NONE)
-    s.connect((HOST, PORT))
     esc = 0
     
+
+
     tabOfExistentButtons.sort()
     tabOfExistentButtons.reverse()
     
@@ -83,8 +109,8 @@ def main():
     wiimote.led = 0
     wiimote.close()
     
-    print "Wiimote connection and socket connection closed succefully"
-    print "Bye bye!"
+    print ("Wiimote connection and socket connection closed succefully")
+    print ("Bye bye!")
         
         
 def acceleration(mesg,wm_cal):
@@ -104,9 +130,7 @@ def acceleration(mesg,wm_cal):
     if fabs(tilt) < seuil :
         seuil = 0.0
         
-    msg = "id" + str(id_) + " Human move (" 
-    msg += str(tilt) + "," 
-    msg += str(roll) + ")\n"
+    msg = "id%s Human move [%s, %s]\n" % (str(id_), str(tilt), str(roll))
     s.send(msg)
     id_ = id_ + 1
    
@@ -182,23 +206,17 @@ def head_move(pan,tilt):
     """ Sending socket messages """
     global id_
     
-    msg = "id" + str(id_) + " Human move_head (" 
-    msg += str(pan) + "," 
-    msg += str(tilt) + ")\n"
+    msg = "id%s Human move_head [%s, %s]\n" % (str(id_), str(pan), str(tilt))
     s.send(msg)
     id_ = id_ + 1
-    #print msg
 
 def hand_move(diff):
     """ Sending socket messages """
     global id_
     
-    msg = "id" + str(id_) + " Human move_hand (" 
-    msg += str(diff) + "," 
-    msg += str(0.0) + ")\n"
+    msg = "id%s Human move_hand [%s, 0.0]\n" % (str(id_), str(diff))
     # The second argument should be removed, however,
     # the socket have a probleme with a single argument.
-    
     s.send(msg)
     id_ = id_ + 1
 
@@ -206,7 +224,7 @@ def toggle_manip():
     """ Sending socket messages """
     global id_
     
-    msg = "id" + str(id_) + " Human toggle_manipulation ()\n" 
+    msg = "id%s Human toggle_manipulation []\n" % (str(id_))
     s.send(msg)
     id_ = id_ + 1
 
@@ -214,7 +232,7 @@ def grasp(seq):
     """ Sending socket messages """
     global id_
     
-    msg = "id" + str(id_) + " Human grasp_ ('"+ str(seq) +"')\n" 
+    msg = "id%s Human grasp_ ['%s']\n" % (str(id_), str(seq))
     s.send(msg)
     id_ = id_ + 1
 
