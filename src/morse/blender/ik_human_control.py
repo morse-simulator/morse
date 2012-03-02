@@ -35,6 +35,19 @@ def move(contr):
     for key in keylist:
         # key[0] == bge.events.keycode, key[1] = status
         if key[1] == bge.logic.KX_INPUT_ACTIVE:
+            if key[0] == bge.events.IKEY:
+                move_speed[0] = speed
+            elif key[0] == bge.events.KKEY:
+                move_speed[0] = -speed
+            elif key[0] == bge.events.JKEY:
+                rotation_speed[2] = speed
+            elif key[0] == bge.events.LKEY:
+                rotation_speed[2] = -speed
+            elif key[0] == bge.events.UKEY:
+                move_speed[1] = speed
+            elif key[0] == bge.events.OKEY:
+                move_speed[1] = -speed
+            """
             # Also add the key corresponding key for an AZERTY keyboard
             if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
                 move_speed[0] = speed
@@ -49,6 +62,7 @@ def move(contr):
                 move_speed[1] = speed
             elif key[0] == bge.events.FKEY:
                 move_speed[1] = -speed
+            """
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
@@ -116,9 +130,9 @@ def human_actions(contr):
         # key[0] == bge.events.keycode, key[1] = status
         if key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
             # Keys for moving forward or turning
-            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
+            if key[0] == bge.events.IKEY:
                 armature['movingForward'] = True
-            elif key[0] == bge.events.SKEY:
+            elif key[0] == bge.events.KKEY:
                 armature['movingBackward'] = True
 
             # TEST: Read the rotation of the bones in the armature
@@ -127,9 +141,9 @@ def human_actions(contr):
             #elif key[0] == bge.events.VKEY:
                 #reset_pose(contr)
         elif key[1] == bge.logic.KX_INPUT_JUST_RELEASED:
-            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
+            if key[0] == bge.events.IKEY:
                 armature['movingForward'] = False
-            elif key[0] == bge.events.SKEY:
+            elif key[0] == bge.events.KKEY:
                 armature['movingBackward'] = False
 
 
