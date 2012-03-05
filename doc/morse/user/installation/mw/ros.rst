@@ -28,6 +28,10 @@ with MORSE.
    installed in ``/opt/ros/electric`` and your overlay should be created in
    ``~/ros-py3``)
        
+   **Note:** rosinstall will create a new setup.bash in the folder *~/ros-py3/*.
+   It has to be sourced (instead of the original setup.bash) before using MORSE 
+   with ROS.
+
    You can also use MORSE with ROS Diamondback:
 
    ``rosinstall ~/ros-py3 /opt/ros/diamondback
@@ -39,7 +43,7 @@ with MORSE.
    versions and need to be rebuild: ``rosmake ros && rosmake ros_comm && rosmake
    common_msgs``
 
-   Note: Rebuilding the common_msgs stack allows you to use all messages in this
+   **Note:** Rebuilding the common_msgs stack allows you to use all messages in this
    stack for communicating between MORSE and ROS. If you want to use any other
    messages, make sure the source-files are Python2 AND Python3 compatible! This
    can be achieved by simply rebuilding the ROS-packages of the messages with
