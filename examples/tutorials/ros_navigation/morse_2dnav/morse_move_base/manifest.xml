@@ -1,0 +1,15 @@
+<package>
+  <description brief="morse_2dnav">
+
+     morse_2dnav
+
+  </description>
+  <author>Michael Karg</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <depend package="move_base"/>
+  <depend package="map_server"/>
+
+</package>
+
+

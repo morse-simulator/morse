@@ -1,0 +1,19 @@
+DWAPlannerROS:
+  acc_lim_th: 2.0
+  acc_lim_x: 1.0
+  acc_lim_y: 1.0
+  xy_goal_tolerance: 0.3
+  yaw_goal_tolerance: 0.095
+  # if the robot ever reaches the goal xy location it will simply rotate in place, even if it ends up outside the goal tolerance while it is doing so. (false)
+  latch_xy_goal_tolerance: true
+  prune_plan: true
+  max_rot_vel: 1.0
+  min_rot_vel: 0.4
+  #How far the robot must travel in meters before oscillation flags are reset (0.05)
+  oscillation_reset_dist: 0.03
+  #32
+  goal_distance_bias: 9.0
+  #24
+  path_distance_bias: 5.0
+  #The amount of time to forward-simulate trajectories in seconds (1.7)
+  sim_time: 1.3

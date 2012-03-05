@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+    <rosparam file="$(find morse_2dnav)/launch/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find morse_2dnav)/launch/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find morse_2dnav)/launch/morse_move_base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find morse_2dnav)/launch/morse_move_base/global_costmap_params.yaml" command="load" />
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find morse_2dnav)/launch/morse_move_base/dwa_planner_ros.yaml" command="load" />
+  </node>
+  <!--node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/maps/white.yaml"/--> 
+</launch>

@@ -1,0 +1,18 @@
+<package>
+  <description brief="morse_2dnav">
+
+      morse_2dnav is a sample ROS node used to demo
+      2D planar navigation in the MORSE simulator.
+
+  </description>
+  <author>MORSE Team</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://morse.openrobots.org</url>
+  <depend package="move_base"/>
+  <depend package="morse_tf"/>
+  <depend package="map_server"/>
+  <depend package="robot_state_publisher"/>
+</package>
+
+

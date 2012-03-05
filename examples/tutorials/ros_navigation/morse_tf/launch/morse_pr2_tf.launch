@@ -1,0 +1,9 @@
+<launch>
+ 
+  <node pkg="morse_tf" type="morse_tf_pr2.py" name="morse_tf_pr2"/>  
+  <param name="robot_description"  command="cat $(find morse_tf)/urdfs/pr2.urdf" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
+  <remap from="joint_states" to="/pr2/pr2_posture" />
+  </node>
+
+</launch>
