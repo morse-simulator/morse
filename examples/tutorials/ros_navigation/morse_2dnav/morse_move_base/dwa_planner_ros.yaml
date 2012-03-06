@@ -17,3 +17,4 @@ DWAPlannerROS:
   path_distance_bias: 5.0
   #The amount of time to forward-simulate trajectories in seconds (1.7)
   sim_time: 1.3
+  holonomic_robot: false
