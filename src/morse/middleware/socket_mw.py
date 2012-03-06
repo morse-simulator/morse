@@ -151,6 +151,12 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             # Data write functions
             elif function_name == "post_message":
                 component_instance.output_functions.append(partial(MorseSocketServ.main_export, serv, fun))
+
+            # If the function is external and has already been loaded before
+            else:
+                # Pass by mw_data the generated server
+                mw_data.append(serv)
+                self._add_method(mw_data, component_instance)
         else:
             # Pass by mw_data the generated server
             mw_data.append(serv)
