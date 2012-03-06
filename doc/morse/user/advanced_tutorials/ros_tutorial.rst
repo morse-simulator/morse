@@ -1,8 +1,16 @@
-ROS-navigation tutorial
+ROS navigation tutorial
 =======================
 
-This tutorial shows how to use the ROS navigation stack to navigate a robot in
-MORSE.
+This tutorial shows how to use the ROS navigation stack to build a map and make
+your robot navigate in MORSE.
+
+.. note::
+    All the scripts, nodes and launch files mentioned in this tutorial are
+    available in
+    ``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation``. If you
+    wish to directly reuse the ROS nodes, do not forget to add this path to
+    your ``$ROS_PACKAGE_PATH``.
+
 
 Prerequisites
 -------------
@@ -17,101 +25,171 @@ We also assume you know how to use the MORSE Builder API to equip your robot
 with components.  If not, please follow first the :doc:`Builder API and ROS
 middleware  <./tutorial_builder_ros>` tutorial.
 
-Tutorial setup
---------------
+Environment setup
+-----------------
 
 You need to have a working installation of ROS Electric or Diamonback and also
 have the python3-compatible stacks for MORSE-ROS installed. You can find
-information about this here:  :doc:`installation notes <../installation/mw/ros>`
+information about this in the :doc:`installation notes <../installation/mw/ros>`
 
 .. note::
-    We base the tutorial on ROS Electric. The tutorial is however also compatible with
-    ROS Diamondback. When significant, differences are noted.
+    We base the tutorial on ROS Electric. The tutorial should however also be
+    compatible with ROS Diamondback.
 
-If you are running Ubuntu, you specifically need the packages
-``ros-electric-pr2-navigation`` and ``ros-electric-visualization`` that should install
-all required dependencies (but you still need the ROS Python 3 overlay, see the
-installation notes linked above).
+If you are running Ubuntu, you can simply install the packages
+``ros-electric-pr2-navigation`` and ``ros-electric-visualization``. They will
+install all required dependencies (but you still need the ROS Python 3 overlay,
+see the installation notes linked above).
 
-Setting up the scenario
------------------------
+You also need MORSE installed with ROS support: check that the
+``BUILD_ROS_SUPPORT`` CMake option is enabled when building MORSE.
 
-For the navigation-stack to work, you need your robot (in our example the PR2
-robot) equipped with the following components:
+Bringing up your robot in RVIZ
+------------------------------
 
-#. **Pose sensor** - posts the position of the robot on a ROS topic and will be
-   read to create the TF-tree
-#. **IMU** - posts the Velocity of the robot and will be read by ROS navigation 
-#. **Motion controller** - receives speeds for translation and rotation of the
-   robot from ROS navigation
-#. **Laserscanner** - Perception of the robot for localization and costmaps of
-   ROS navigation
-#. **Joint state publisher** - Posts the current state of the joints of the
-   robot (this is needed because we are also working with non-fixed joints
-   here. If the URDF of your robot only has fixed joints, you will not need
-   this component.)
+Our first step is to get a robot to show up in RVIZ. In this tutorial, we
+will use the PR2 robot, but any robot (with an URDF file to describe it
+to RVIZ) would do.
 
-There is already a completely configured builder-script in
-``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/scenario.py``.
+Let's create a first simple scenario script (``scenario.py``): a PR2 in a kitchen
+environment, a keyboard actuator to move it around, and a IMU sensor to
+get some odometry feedback.
 
-You can open this script in your favorite Python editor to have a look at it.
-Note that the components in this tutorial are linked using the ROS middleware.
+.. code-block:: python
+
+    from morse.builder.morsebuilder import *
+    from morse.builder.extensions.pr2extension import PR2
+
+    # A 'naked' PR2 robot to the scene
+    james = PR2()
+    james.translate(x=2.5, y=3.2, z=0.0)
+
+    # A IMU sensor to get odometry information
+    imu = Sensor('imu')
+    james.append(imu)
+    imu.configure_mw('ros')
+
+    # Keyboard control
+    keyboard = Actuator('keyboard')
+    keyboard.name = 'keyboard_control'
+    james.append(keyboard)
+
+    # Set the environment
+    env = Environment('tum_kitchen/tum_kitchen')
+    env.aim_camera([1.0470, 0, 0.7854])
 
 
-Getting the pose of the robot out of MORSE
-------------------------------------------
+Run it by first starting a ROS core (``roscore``) and then ``morse run
+scenario.py``.
 
-.. note::
-    All the nodes and launch files mentioned in this section are available
-    in ``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation``. If
-    you wish to directly reuse these ROS nodes, do not forget to add this
-    path to your ``$ROS_PACKAGE_PATH``.
+The IMU sensor automatically publish the TF transformation between the
+``/odom`` and ``/base_footprint`` frames, so you actually do not need anything
+more to display the ``/base_footprint`` of your robot in RVIZ. Launch RVIZ
+(``rosrun rviz rviz``), and add a TF display. You should see the frames
+``/odom`` and ``/base_footprint`` connected together, on a black background.
 
-From MORSE to the standard ROS navigation datastructures
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+We will soon build and add a map, but in the meantime, we want to display the
+full robot TF tree (it is needed by the ROS localization stack to know where
+the laser scanner is).
 
-MORSE does not currently directly export a TF tree of the robot, which is
-required by the navigation stack. Precisely, the ROS navigation stack expects a
-TF tree of the robot, the map as well as the pose and speed of the robot.
+To do that, we need to publish the TF tree with the ``robot_state_publisher``
+module. This module takes as input the robot joint state (exported by a
+``pr2_posture`` sensor in our case) and the URDF file of our robot.
 
-The ``morse_tf`` package implements a TF-broadcaster that reads the values of
-the MORSE Pose and IMU sensors and posts the messages and TF-frames on the
-topic needed by the ROS navigation stack. It also sets the odom-TF frame to the
-initial robot's starting position when starting the simulation. 
+First complete the ``scenario.py`` script to add a posture sensor:
 
-The complete TF-tree of the robot results from the combination of the odom
-frame, the map frame and a URDF model of the robot, posted the robot state
-publisher.
+.. code-block:: python
 
-The URDF of the PR2 robot can be found in the ROS package ``morse_tf`` in the
-folder ``urdf``. The robot state publisher also needs the jointstates of all
-non-fixed joints of the robot which are exported by the ``pr2_posture``
-component.
+    from morse.builder.morsebuilder import *
+    from morse.builder.extensions.pr2extension import PR2
 
-.. note::
-    We are not going deep into the ROS navigation stack, TF and the robot
-    state publisher here. It is strongly recommended to do the tutorials on that
-    topic on http://www.ros.org!
+    # A PR2 robot to the scene
+    james = PR2()
+    james.translate(x=2.5, y=3.2, z=0.0)
 
-TODO: creation/installation de morse-tf
+    pr2_posture = Sensor('pr2_posture')
+    james.append(pr2_posture)
+    pr2_posture.configure_mw('ros')
+
+    [...]
+
+
+Then, to simplify our life, we create a new ROS node with only a launch file start will
+start for us the ``robot_state_publisher``::
+
+  $> mkdir morse_2dnav && cd morse_2dnav
+  $> touch manifest.xml
+  $> touch nav.launch
+  $> export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:`pwd`/..
+
+Edit ``manifest.xml`` and copy-paste the code below:
+
+.. code-block:: xml
+
+    <package>
+        <description brief="morse_2dnav">
+            morse_2dnav is a sample ROS node used to demo
+            2D planar navigation in the MORSE simulator.
+        </description>
+        <author>MORSE Team</author>
+        <license>BSD</license>
+        <review status="unreviewed" notes=""/>
+        <url>http://morse.openrobots.org</url>
+        <depend package="move_base"/>
+        <depend package="map_server"/>
+        <depend package="robot_state_publisher"/>
+    </package>
+
+Edit ``nav.launch`` and copy-paste this code:
+
+.. code-block:: xml
+
+    <launch>
+        <param name="robot_description" command="cat $(find morse_2dnav)/pr2.urdf"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
+            <remap from="joint_states" to="/pr2/pr2_posture" />
+        </node>
+    </launch>
+
+Lastly, build the ``pr2.urdf`` file in your node by running::
+  
+  rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > pr2.urdf
+
+Restart the MORSE simulation and launch your new ROS node with
+``roslaunch morse_2dnav nav.launch``.
+
+In RVIZ, set the *Fixed frame* to ``/odom``. You should now see the full
+PR2 TF tree.
 
 Creating a map
 --------------
 
-We can now build a first map of our environment. Start the simulation with:
+The ROS navigation stacks include the powerful ``gmapping`` module that allows to easily build 2D maps using SLAM techniques.
 
-``morse run
-$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/scenario.py``
+To do so, we first need to add a laser scanner to our PR2 model.
 
-Start as well RVIZ: ``rosrun rviz rviz``.
+Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hokuyo laser scanners:
 
-You can add a *TF* and a *Robot Model* display to visualize the robot.
+.. code-block:: python
+
+    sick = Sensor('sick')
+    sick.translate(x=0.275, z=0.252)
+    james.append(sick)
+    sick.properties(Visible_arc = False)
+    sick.properties(laser_range = 30.0)
+    sick.properties(resolution = 1.0)
+    sick.properties(scan_window = 180.0)
+    sick.configure_mw('ros')
+
+We can now build a first map of our environment. Restart the simulation with
+``morse run scenario.py``.
 
 To build the map, we simply need to run the ROS GMapping stack:
 
 ``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=pr2/Pose``
 
-Move around the robot in the simulation with the keyboard to fill the map.
+Move around the robot in the simulation with the keyboard to fill the map
+(displayed in RVIZ).
 
 When you are satisfied, save it with ``rosrun map_server map_saver``.
 
@@ -120,77 +198,18 @@ that should be similar to the one provided with the tutorial in
 ``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/maps/``
 
 In the next parts of the tutorial, you can either keep the ``gmapping`` node
-running to produce the map, or use the map you have just recorded by adding the
-following line to your launch file:
+running to produce the map, or use the map you have just recorded by copying it
+in your ``morse_2dnav`` node and adding the following line to your launch file:
 
 .. code-block:: xml
 
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/maps/map.yaml"/> 
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/> 
 
-In this case, you do not need anymore the ``gmapping`` node, and you can kill it.
- 
-The ROS navigation node
-+++++++++++++++++++++++
+In this case, you do not need anymore the ``gmapping`` node, and you can kill
+it.
 
-We need to create a new ROS node to specify:
-
-- the required dependencies (navigation, etc.: a *manifest* file)
-- the launch procedure (a *launch* file)
-
-
-The manifest
-~~~~~~~~~~~~
-
-.. code-block:: xml
-
-    <package>
-    <description brief="morse_2dnav">
-
-        morse_2dnav is a sample ROS node used to demo
-        2D planar navigation in the MORSE simulator.
-
-    </description>
-    <author>MORSE Team</author>
-    <license>BSD</license>
-    <review status="unreviewed" notes=""/>
-    <url>http://morse.openrobots.org</url>
-    <depend package="move_base"/>
-    <depend package="morse_tf"/>
-    <depend package="map_server"/>
-    <depend package="robot_state_publisher"/>
-    </package>
-
-The manifest file mainly lists the package dependencies.
-
-The launch file
-~~~~~~~~~~~~~~~
-
-.. code-block:: xml
-
-    <launch>
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
-        <remap from="/base_scan" to="/pr2/Sick"/>
-        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
-        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-        <rosparam file="$(find morse_2dnav)/morse_move_base/local_costmap_params.yaml" command="load" />
-        <rosparam file="$(find morse_2dnav)/morse_move_base/global_costmap_params.yaml" command="load" />
-        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
-        <rosparam file="$(find morse_2dnav)/launch/morse_move_base/dwa_planner_ros.yaml" command="load" />
-    </node>
-
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/maps/tut1_map.yaml"/> 
-
-    <node pkg="morse_tf" type="morse_tf_pr2.py" name="morse_tf_pr2"/>
-
-    <param name="robot_description" command="cat $(find morse_tf)/urdfs/pr2.urdf"/>
-
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
-        <remap from="joint_states" to="/pr2/ptu_posture" />
-    </node>
-    </launch>
-
-Starting the navigation
------------------------
+Navigating in the map
+---------------------
 
 Now we can finally start our navigation-simulation
 

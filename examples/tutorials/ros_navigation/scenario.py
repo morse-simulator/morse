@@ -1,7 +1,7 @@
 from morse.builder.morsebuilder import *
 from morse.builder.extensions.pr2extension import PR2
 
-# Append ATRV robot to the scene
+# Append PR2 robot to the scene
 james = PR2()
 james.translate(x=2.5, y=3.2, z=0.0)
 
