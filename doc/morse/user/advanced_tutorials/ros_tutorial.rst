@@ -29,7 +29,7 @@ information about this here:  :doc:`installation notes <../installation/mw/ros>`
     ROS Diamondback. When significant, differences are noted.
 
 If you are running Ubuntu, you specifically need the packages
-``ros-electric-navigation`` and ``ros-electric-visualization`` that should install
+``ros-electric-pr2-navigation`` and ``ros-electric-visualization`` that should install
 all required dependencies (but you still need the ROS Python 3 overlay, see the
 installation notes linked above).
 
@@ -57,14 +57,9 @@ There is already a completely configured builder-script in
 You can open this script in your favorite Python editor to have a look at it.
 Note that the components in this tutorial are linked using the ROS middleware.
 
-Open it then in MORSE with:
 
-``morse edit
-$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/scenario.py``
-
-
-Creating the ROS nodes
-----------------------
+Getting the pose of the robot out of MORSE
+------------------------------------------
 
 .. note::
     All the nodes and launch files mentioned in this section are available
@@ -98,6 +93,42 @@ component.
     state publisher here. It is strongly recommended to do the tutorials on that
     topic on http://www.ros.org!
 
+TODO: creation/installation de morse-tf
+
+Creating a map
+--------------
+
+We can now build a first map of our environment. Start the simulation with:
+
+``morse run
+$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/scenario.py``
+
+Start as well RVIZ: ``rosrun rviz rviz``.
+
+You can add a *TF* and a *Robot Model* display to visualize the robot.
+
+To build the map, we simply need to run the ROS GMapping stack:
+
+``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=pr2/Pose``
+
+Move around the robot in the simulation with the keyboard to fill the map.
+
+When you are satisfied, save it with ``rosrun map_server map_saver``.
+
+This will create a pair ``map.pgm`` and ``map.yaml`` in your home directory
+that should be similar to the one provided with the tutorial in
+``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/maps/``
+
+In the next parts of the tutorial, you can either keep the ``gmapping`` node
+running to produce the map, or use the map you have just recorded by adding the
+following line to your launch file:
+
+.. code-block:: xml
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/maps/map.yaml"/> 
+
+In this case, you do not need anymore the ``gmapping`` node, and you can kill it.
+ 
 The ROS navigation node
 +++++++++++++++++++++++
 
