@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import copy
 import mathutils
+import math
 
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('geometry_msgs')
 
@@ -89,9 +90,9 @@ def post_odometry(self, component_instance):
     odometry.pose.pose.orientation = quaternion
 
     # fill twist
-    vx, vy, vz, vyaw, vpitch, vroll = component_instance.local_data["velocity"]
-    odometry.twist.twist.linear.x = vx
-    odometry.twist.twist.linear.y = vy
+    vx, vy, vz, vroll, vpitch, vyaw = component_instance.local_data["velocity"]
+    odometry.twist.twist.linear.x = math.sqrt(vx**2 + vy**2)
+    odometry.twist.twist.linear.y = 0 
     odometry.twist.twist.linear.z = vz
     odometry.twist.twist.angular.x = vroll
     odometry.twist.twist.angular.y = vpitch
