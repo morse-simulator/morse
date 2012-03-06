@@ -32,7 +32,7 @@ odom_quat_w = 0
 # Global variables for odometry message
 pub = rospy.Publisher('/odom', Odometry)
                      
-def handle_odom_tf(msg, robotname):
+def handle_odom_tf(msg):
     
     global br3
     global odom_init
@@ -71,7 +71,7 @@ def handle_odom_tf(msg, robotname):
                      "/base_footprint",
                      "/map")
 
-def handle_odom_msg(msg, robotname):
+def handle_odom_msg(msg):
 
     global pub
     odometry = Odometry()
@@ -94,15 +94,13 @@ if __name__ == '__main__':
     rospy.init_node('morse_tf_broadcaster')
     
     # Initialize odom-frame with robot starting-position
-    rospy.Subscriber('/pr2/Pose_sensor',
+    rospy.Subscriber('/pr2/Pose',
                      nav_msgs.msg.Odometry,
-                     handle_odom_tf,
-                     '/pr2/Pose_sensor')
+                     handle_odom_tf)
 
     # Handle speed-information using IMU sensor of Jido
     rospy.Subscriber('/pr2/IMU',
                      geometry_msgs.msg.Twist,
-                     handle_odom_msg,
-                     '/pr2/Pose_sensor')
+                     handle_odom_msg)
 
     rospy.spin()
