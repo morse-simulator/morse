@@ -162,6 +162,12 @@ Restart the MORSE simulation and launch your new ROS node with
 In RVIZ, set the *Fixed frame* to ``/odom``. You should now see the full
 PR2 TF tree.
 
+.. image:: ../../../media/MORSE_ROS-tutorial-1.jpg
+   :align: center
+
+.. note::
+    You can display the robot geometry by add a *Robot Model* display in RVIZ.
+
 Creating a map
 --------------
 
@@ -191,6 +197,9 @@ To build the map, we simply need to run the ROS GMapping stack:
 
 Move around the robot in the simulation with the keyboard to fill the map
 (displayed in RVIZ).
+
+.. image:: ../../../media/MORSE_ROS-tutorial-2.jpg
+   :align: center
 
 When you are satisfied, save it with ``rosrun map_server map_saver``.
 
@@ -223,8 +232,8 @@ Start the AMCL estimator, passing the laser scans topic as paramter::
 
 Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
 display (topic name is ``pr2/Sick``) to see the simulated laser scans and set
-an initial pose estimate by clicking on the *2D Pose Estimate* button in RVIZ
-interface.
+an initial pose estimate (*ie* an estimate of the pose of the robot in MORSE)
+by clicking on the *2D Pose Estimate* button in RVIZ interface.
 
 Now, move the robot in the simulator with the arrow keys. You should see the
 localization of the robot in RVIZ improving with time and displacements.
@@ -233,33 +242,64 @@ localization of the robot in RVIZ improving with time and displacements.
 Navigating in the map
 ---------------------
 
-Now we can finally start our navigation-simulation
+We can finally get the robot to autonomously navigate in our environment.
 
-#. Hit ``p`` in MORSE to start the simulation
-#. Start a ROS master node by typing ``roscore`` (This step is optional but
-   recommended)
-#. Type ``roslaunch morse_2dnav 2dnav.launch``. This should bring up all needed
-   nodes and topics. 
-#. You can now start RVIZ in a seperate terminal by ``rosrun rviz rviz`` and
-   see if everything is fine by visualizing for example the map, laserscan,
-   odometry, etc... There is also a default configuration for RVIZ that
-   visualizes everything needed for navigation in the ``morse_2dnav``
-   ROS-package in the folder ``rviz``.  By using "move_base_simple/goal" as 2D
-   Nav Goal (you can edit the 2D Nav Goal in the Windows "Tool Properties"),
-   you can set a navigation-goal the robot should navigate to by clicking on
-   the map. Your robot should now start to navigate towards that point on the
-   map.
+First, add AMCL to the launch file:
+
+.. code-block:: xml
+
+    <node name="amcl" pkg="amcl" type="amcl"> 
+        <remap to="/scan" from="/pr2/Sick" />
+    </node>
+
+For the navigation, we will use the high-level ``move_base`` ROS module. The
+*2D Nav Goal* button in RVIZ interface will allow us to easily send navigation
+goals to our robot.
+
+``move_base`` requires numerous settings to be set. Visit
+www.ros.org/wiki/move_base for details. In the meantime, copy the subdirectory
+``morse_move_base`` that you can find in
+``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/morse_2dnav`` to
+your own ROS node, and add the following new section to your ``nav.launch``
+file:
+
+.. code-block:: xml
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+        <remap from="/base_scan" to="/pr2/Sick"/>
+        <remap from="/cmd_vel" to="/pr2/Motion_Controller"/>
+        <remap from="/odom" to="/pr2/IMU"/>
+
+        <param name="footprint_padding" value="0.01" />
+        <param name="controller_frequency" value="10.0" />
+        <param name="controller_patience" value="100.0" />
+        <param name="planner_frequency" value="2.0" />
+
+        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/global_costmap_params.yaml" command="load" />
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/dwa_planner_ros.yaml" command="load" />
+    </node>
+
+
+Run your launch script with ``roslaunch morse_2dnav nav.launch``. This should
+bring up all needed nodes and topics. 
+
+In RVIZ, change the *2D Nav Goal* topic in the *Tool properties* panel, and set
+it to ``move_base_simple/goal``.
+
+You can now set a navigation goal by clicking the *2D Nav Goal* button. The
+robot should navigate towards that point on the map.
+
+.. note::
+
+    You can add a display ``Path`` (with topic
+    ``/move_base/DWAPlannerROS/global_plan``) to display the computed path in
+    RVIZ.
 
 If everything worked out fine, it should look something like this:
 
 .. image:: ../../../media/morse_ros_navigation.png
    :align: center
-
-Notes
-+++++
-
-The morse_2dnav package already includes a 2D gridmap of the environment. This
-map has been generated by using the simulated SICK-laserscanner in MORSE and
-ROS GMapping. Watch out for a tutorial soon.
-
-If you have further questions or problems, don't hesitate too write on the mailing-list!
