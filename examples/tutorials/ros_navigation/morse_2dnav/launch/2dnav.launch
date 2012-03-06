@@ -1,5 +1,6 @@
 <launch>
-   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
     <remap from="/base_scan" to="/pr2/Sick"/>
     <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
@@ -11,11 +12,10 @@
 
   <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/maps/map.yaml"/>
 
-  <node pkg="morse_tf" type="morse_tf_pr2.py" name="morse_tf_pr2"/>
-
   <param name="robot_description" command="cat $(find morse_tf)/urdfs/pr2.urdf"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
     <remap from="joint_states" to="/pr2/pr2_posture" />
   </node>
+
 </launch>

@@ -8,19 +8,15 @@ james.translate(x=2.5, y=3.2, z=0.0)
 # Sensors and Actuators for navigation stack
 pr2_posture = Sensor('pr2_posture')
 james.append(pr2_posture)
-pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
+pr2_posture.configure_mw('ros')
 
 Motion_Controller = Actuator('xy_omega')
 james.append(Motion_Controller)
 Motion_Controller.configure_mw('ros')
 
-Pose = Sensor('pose')
-james.append(Pose)
-Pose.configure_mw('ros')
-
-IMU = Sensor('imu')
-james.append(IMU)
-IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
+imu = Sensor('imu')
+james.append(imu)
+imu.configure_mw('ros')
 
 Sick = Sensor('sick')
 Sick.translate(x=0.275, z=0.252)
@@ -39,6 +35,4 @@ james.append(keyboard)
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
 env.aim_camera([1.0470, 0, 0.7854])
-
-
 

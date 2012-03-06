@@ -1,8 +1,0 @@
-# Goal
-geometry_msgs/Pose target
----
-# Define the result
-bool success
----
-# Define a feedback message
-#float32 percent_complete

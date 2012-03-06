@@ -1,6 +1,0 @@
-*_gen/
-src/
-*Action.msg
-*ActionGoal.msg
-*ActionResult.msg
-*ActionFeedback.msg
