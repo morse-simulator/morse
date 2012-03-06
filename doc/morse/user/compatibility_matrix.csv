@@ -8,9 +8,9 @@ Sensors,
 ``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,✔ ``POM_ME_POS``,								✔
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
-``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔
-``Odometry``,                 ✔,               ✔,           ✔,              ✔ ``Odometry``,  ✘ ,																	✔
-``Pose``,					  ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔ 	
+``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Odometry`` (or ``Twist``),     ✘,																	✔
+``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see IMU),    ✘ ,																	✔
+``Pose``,					  ✔,               ✔,           ✔,              ✔ ``PoseStamped``,     ✘,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
 ``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
