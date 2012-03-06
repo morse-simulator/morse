@@ -10,7 +10,6 @@
   <review status="unreviewed" notes=""/>
   <url>http://morse.openrobots.org</url>
   <depend package="move_base"/>
-  <depend package="morse_tf"/>
   <depend package="map_server"/>
   <depend package="robot_state_publisher"/>
 </package>

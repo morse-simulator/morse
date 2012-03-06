@@ -85,8 +85,9 @@ scenario.py``.
 The IMU sensor automatically publish the TF transformation between the
 ``/odom`` and ``/base_footprint`` frames, so you actually do not need anything
 more to display the ``/base_footprint`` of your robot in RVIZ. Launch RVIZ
-(``rosrun rviz rviz``), and add a TF display. You should see the frames
-``/odom`` and ``/base_footprint`` connected together, on a black background.
+(``rosrun rviz rviz``), select ``/odom`` as *Fixed frame*, and add a TF
+display. You should see the frames ``/odom`` and ``/base_footprint`` connected
+together, on a black background.
 
 We will soon build and add a map, but in the meantime, we want to display the
 full robot TF tree (it is needed by the ROS localization stack to know where
@@ -186,7 +187,7 @@ We can now build a first map of our environment. Restart the simulation with
 
 To build the map, we simply need to run the ROS GMapping stack:
 
-``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=pr2/Pose``
+``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=/odom``
 
 Move around the robot in the simulation with the keyboard to fill the map
 (displayed in RVIZ).
@@ -197,16 +198,37 @@ This will create a pair ``map.pgm`` and ``map.yaml`` in your home directory
 that should be similar to the one provided with the tutorial in
 ``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/maps/``
 
-In the next parts of the tutorial, you can either keep the ``gmapping`` node
-running to produce the map, or use the map you have just recorded by copying it
-in your ``morse_2dnav`` node and adding the following line to your launch file:
+Copy the map you have just recorded in your ``morse_2dnav`` node and add the
+following line to your launch file to start a map server with your map:
 
 .. code-block:: xml
 
     <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/> 
 
-In this case, you do not need anymore the ``gmapping`` node, and you can kill
-it.
+You do not need anymore the ``gmapping`` node, and you can kill it.
+
+Using ROS localization
+----------------------
+
+The ROS navigation stacks provide a Monte-Carlo based module for localisation
+estimation called ``amcl``.
+
+We can use it to localize our robot in the map.
+
+Restart the simulation with the map server enabled.
+
+Start the AMCL estimator, passing the laser scans topic as paramter::
+
+  $> rosrun amcl amcl scan:=/pr2/Sick
+
+Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
+display (topic name is ``pr2/Sick``) to see the simulated laser scans and set
+an initial pose estimate by clicking on the *2D Pose Estimate* button in RVIZ
+interface.
+
+Now, move the robot in the simulator with the arrow keys. You should see the
+localization of the robot in RVIZ improving with time and displacements.
+
 
 Navigating in the map
 ---------------------
