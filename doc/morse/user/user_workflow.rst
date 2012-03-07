@@ -12,7 +12,7 @@ The general steps to follow to do a simulation in MORSE are the following:
 
 #. Execute the builder script with **morse**::
   
-    $ morse exec [file_name].py
+    $ morse edit [file_name].py
   
 #. Save the new scene: Press :kbd:`F2` and enter a new name for the Blender file
 

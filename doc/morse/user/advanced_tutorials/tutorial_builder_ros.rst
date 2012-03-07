@@ -85,7 +85,7 @@ Running the simulation
 Run the simulation
 ++++++++++++++++++
 
-#. Launch Morse passing your script in argument: ``morse exec mytutorial.py``
+#. Launch Morse passing your script in argument: ``morse edit mytutorial.py``
 #. On a separate terminal, launch the master ROS node using: ``roscore``
 #. Press :kbd:`p` to start the Game Engine
 

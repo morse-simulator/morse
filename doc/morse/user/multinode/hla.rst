@@ -181,7 +181,7 @@ multi-node simulation.
 2. On each node, launch the distributed scenario, using::
 
     $ export MORSE_NODE="NODE A"
-    $ morse exec <scenario_node.py>
+    $ morse edit <scenario_node.py>
 
 3. Then, on each node, launch the game engine by pressing :kbd:`p`.
 
