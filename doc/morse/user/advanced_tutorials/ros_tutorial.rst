@@ -191,7 +191,9 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
 We can now build a first map of our environment. Restart the simulation with
 ``morse run scenario.py``.
 
-To build the map, we simply need to run the ROS GMapping stack:
+Start your launch file: ``roslaunch morse_2dnav nav.launch``.
+
+You can now run the ROS GMapping stack:
 
 ``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=/odom``
 
@@ -252,16 +254,24 @@ First, add AMCL to the launch file:
         <remap to="/scan" from="/pr2/Sick" />
     </node>
 
+Then, we need to add a motion controller to our robot. Open your ``scenario.py`` and add:
+
+.. code-block:: python
+
+    motion_controller = Actuator('xy_omega')
+    james.append(motion_controller)
+    motion_controller.configure_mw('ros')
+
 For the navigation, we will use the high-level ``move_base`` ROS module. The
 *2D Nav Goal* button in RVIZ interface will allow us to easily send navigation
 goals to our robot.
 
 ``move_base`` requires numerous settings to be set. Visit
-www.ros.org/wiki/move_base for details. In the meantime, copy the subdirectory
-``morse_move_base`` that you can find in
-``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/morse_2dnav`` to
-your own ROS node, and add the following new section to your ``nav.launch``
-file:
+www.ros.org/wiki/move_base for details. The subdirectory ``morse_move_base``
+that you can find in
+``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/morse_2dnav``
+contains standard values for the parameters.  Copy it to to your own ROS node,
+and add the following new section to your ``nav.launch`` file:
 
 .. code-block:: xml
 

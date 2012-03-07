@@ -10,9 +10,9 @@ pr2_posture = Sensor('pr2_posture')
 james.append(pr2_posture)
 pr2_posture.configure_mw('ros')
 
-Motion_Controller = Actuator('xy_omega')
-james.append(Motion_Controller)
-Motion_Controller.configure_mw('ros')
+motion_controller = Actuator('xy_omega')
+james.append(motion_controller)
+motion_controller.configure_mw('ros')
 
 imu = Sensor('imu')
 james.append(imu)
