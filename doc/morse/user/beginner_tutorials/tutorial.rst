@@ -122,7 +122,7 @@ Starting the simulation in Blender
 
 #. Launch Morse passing your script in argument::
 
-    $ morse exec robot_scene.py
+    $ morse edit robot_scene.py
 
 #. Place your mouse inside the 3D view of the scenario
 #. Press :kbd:`p` to start the Game Engine
