@@ -2,11 +2,13 @@ Waypoint actuator
 =================
 
 This actuator reads the coordinates of a destination point, and moves the robot
-towards the given point, with the robot restricted to moving only forward,
-backwards or turning around its Z axis.
+towards the given point, with the robot restricted to moving only forward, 
+turning around its Z axis, and possibly going up and down.
 This controller is meant to be used mainly by non-holonomic robots.  
 
-While a robot is moving towards a given waypoint, a property of the **MorseRobotClass** will be changed in indicate the status of the robot. The ``movement_status`` property will take one of these values: **Stop**, **Transit** or **Arrived**.
+While a robot is moving towards a given waypoint, a property of the **MorseRobotClass** 
+will be changed in indicate the status of the robot. The ``movement_status`` property will 
+take one of these values: **Stop**, **Transit** or **Arrived**.
 
 The movement speed of the robot is internally adjusted to the Blender time measure,
 following the formula: ``blender_speed = given_speed * tics``, where
@@ -53,6 +55,9 @@ Configurable parameters
 -  **Speed**: (float) movement speed for the robot, given in meters per second
 -  **Target**: (string) name of a blender object in the scene. When specified, this object will
     be placed at the coordinates given to the actuator, to indicate the expected destination of the robot
+-  **ObstacleAvoidance**: (boolean) if true (default), will activate obstacle avoidance if the radars are present
+-  **FreeZ**: (boolean) if false (default), the robot is only controlled on 'X' and heading; if true,
+    'Z' is also controlled (for aerial or submarine robots)
 
 Services
 --------
