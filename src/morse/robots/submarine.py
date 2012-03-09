@@ -3,8 +3,8 @@ import GameLogic
 import morse.core.robot
 
 
-class DauradeClass(morse.core.robot.MorseRobotClass):
-    """ Class definition for the Submarine (Daurade).
+class SubmarineClass(morse.core.robot.MorseRobotClass):
+    """ Class definition for the Submarine.
         Sub class of Morse_Object. """
 
     def __init__(self, obj, parent=None):
