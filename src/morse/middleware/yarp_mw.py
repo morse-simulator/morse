@@ -150,6 +150,24 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
 
 
 
+    def _post_message(self, bottle, data, component_name):
+        """ Prepare the content of the bottle 
+
+        This function can be recursively called in case of list processing
+        """
+        if isinstance(data, int):
+            bottle.addInt(data)
+        elif isinstance(data, float):
+            bottle.addDouble(data)
+        elif isinstance(data, str):
+            bottle.addString(data)
+        elif isinstance(data, list):
+            m_bottle = bottle.addList()
+            for m_data in data:
+                self._post_message(m_bottle, m_data, component_name)
+        else:
+            logger.error("Unknown data type at 'post_message', with component '%s'" % component_name)
+
     def post_message(self, component_instance):
         """ Send the data of a component through a simple port.
 
@@ -167,18 +185,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         bottle.clear()
         # Sort the data accodring to its type
         for variable, data in component_instance.local_data.items():
-            if isinstance(data, int):
-                bottle.addInt(data)
-            elif isinstance(data, float):
-                bottle.addDouble(data)
-            elif isinstance(data, str):
-                bottle.addString(data)
-            else:
-                logger.error("Unknown data type at 'post_message', with component '%s'" % component_instance.blender_obj.name)
-                # Trying to store 'type(data)' causes an error in the logger.
-                # Because the type is not directly printable.
-                # This is caused when sending a dictionary type
-                #logger.info("DATA: ", data, " | TYPE: ", type(data))
+            self._post_message(bottle, data, component_instance.blender_obj.name)
 
         #yarp_port.writeStrict()
         yarp_port.write()
