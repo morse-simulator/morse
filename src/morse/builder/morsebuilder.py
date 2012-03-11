@@ -301,6 +301,7 @@ class Environment(AbstractComponent):
         self._camera_rotation = [0.7854, 0, 0.7854]
         self._environment_file = name
         self._multinode_configured = False
+        self._display_camera = None
 
     def _write_multinode(self, node_name):
         """ Configure this node according to its name
@@ -370,6 +371,10 @@ class Environment(AbstractComponent):
         if not 'Scene_Script_Holder' in bpy.data.objects:
             # Add the necessary objects
             base = Component('props', 'basics')
+
+        # Change the Screen material
+        if self._display_camera:
+            self._set_scren_mat()
         # Write the name of the 'environment file'
         ssh = AbstractComponent(bpy.data.objects['Scene_Script_Holder'])
         ssh.properties(environment_file = str(self._environment_file))
@@ -432,6 +437,34 @@ class Environment(AbstractComponent):
 
     def configure_service(self, mw):
         AbstractComponent.configure_service(self, mw, "simulation")
+
+    def select_display_camera(self, robot_camera):
+        """ Select the camera that will be displayed on the Screen object
+        :param robot_camera: AbstractComponent reference to the camera desired to be displayed
+        """
+        self._display_camera = robot_camera
+
+    def _set_scren_mat(self):
+        """ Set the material of the Screen object to the same as the one indicated in the _display_camera variable
+        """
+        camera = None
+        screen = bpy.data.objects['Screen']
+        blender_component = self._display_camera._blendobj
+        # Find the mesh object with a texture called 'ScreenMat'
+        for child in blender_component.children:
+            if 'CameraMesh' in child.name:
+                camera = child
+                break
+        if not camera:
+            logger.warning("BUILDER WARNING: Argument to 'select_display_camera' is not a camera (%s). Camera display will not work" % self._display_camera.name)
+            return
+        # Find the material with name "ScreenMat"
+        for mat in camera.material_slots:
+            if "ScreenMat" in mat.name:
+                material = mat.material
+                break
+        logger.debug ("Setting material %s for the Screen" % material)
+        screen.active_material = material
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

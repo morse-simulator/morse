@@ -4,12 +4,13 @@ def change_text(contr):
     obj['Text'] = '''
     * Esc key:        stop and exit the simulation
     * H key:           show this help message
+    * V key:           toggle display of robot camera on HUD
     * W, S keys:    move main camera forward/bakwards
     * A, D keys:     move main camera left/right
     * R, F keys:     move main camera up/down
     * Left CTRL:    hold to aim main camera with mouse
-    * Spacebar:     toggle cameras on and off
+    * F8 key:         reset position of CameraFP
     * F9 key:         switch camera view
     * F11 key:       reset positions of all objects
-    * F12 key:       emergency exit from the simulation
+    * F12 key:       forced exit from the simulation
 '''
