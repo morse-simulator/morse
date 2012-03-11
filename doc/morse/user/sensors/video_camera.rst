@@ -8,6 +8,15 @@ The cameras make use of Blender's **VideoTexture** module, which requires
 a graphic card capable of GLSL shading.
 Also, the 3D view window in Blender must be set to draw **Textured** objects.
 
+.. note::
+    The streaming of data from this sensor can be toggled off and on by
+    pressing the SPACE key during the simulation. This will affect all the
+    video cameras on the scene.
+
+    Toggling off the cameras can help make the simulation run faster,
+    specially when there are several cameras. However, the lack of
+    data on the stream may cause problems to some middlewares.
+
 Files
 -----
 
