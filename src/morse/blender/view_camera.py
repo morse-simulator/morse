@@ -86,7 +86,7 @@ def move(contr):
         elif key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
             # Other actions activated with the keyboard
             # Reset camera to center
-            if key[0] == bge.events.F10KEY and keyboard.positive:
+            if key[0] == bge.events.F8KEY and keyboard.positive:
                 reset_position(contr)
 
 
