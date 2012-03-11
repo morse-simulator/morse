@@ -101,7 +101,12 @@ And finally we complete the scene configuration:
     env = Environment('land-1/trees')
     env.place_camera([10.0, -10.0, 10.0])
     env.aim_camera([1.0470, 0, 0.7854])
+    env.select_display_camera(Semantic_L)
 
+The last line indicates to MORSE that you want the images seen from the left
+camera to be displayed on the HUD screen, visible when you press :kbd:`v`
+during the simulation.
+You can easily change it to display the view of the right camera.
 
 The complete script can be found at: ``$MORSE_SRC/examples/tutorials/cat_mouse_game.py``.
 
@@ -109,18 +114,22 @@ The complete script can be found at: ``$MORSE_SRC/examples/tutorials/cat_mouse_g
 Testing the output
 ------------------
 
-You can check that the data from the cameras is being correctly streamed, by launching the simulator and connecting to the data ports via telnet.
+You can check that the data from the cameras is being correctly streamed, by
+launching the simulator and connecting to the data ports via telnet.
 
 Run morse with the builder script to create the scenario::
 
   $ cd MORSE_SRC/examples/tutorials
   $ morse run cat_mouse_game.py
 
-Then start the simulation pressing :kbd:`p` in Blender. On the terminal you will get messages indicating the port numbers used by the semantic cameras. Normally they should be:
+Then start the simulation pressing :kbd:`p` in Blender. On the terminal you
+will get messages indicating the port numbers used by the semantic cameras.
+Normally they should be:
   - Right camera: ``60001``
   - Left camera: ``60002``
 
-Try connecting to these ports using the ``telnet`` program on another terminal, and you should see the data of object visibility comming from the cameras::
+Try connecting to these ports using the ``telnet`` program on another terminal,
+and you should see the data of object visibility comming from the cameras::
 
   $ telnet localhost 60001
 
@@ -202,7 +211,8 @@ Run morse with the builder script to create the scenario. Then start the
 simulation pressing :kbd:`p` in Blender. You will be able to control the
 ``MOUSE`` robot with the arrow keys on the keyboard.
 
-Run the Python control script from a terminal. The ``CAT`` mouse will start moving and using the data from its cameras to chase after the ``MOUSE``.
+Run the Python control script from a terminal. The ``CAT`` mouse will start
+moving and using the data from its cameras to chase after the ``MOUSE``.
 
 
 Going further

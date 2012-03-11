@@ -162,13 +162,13 @@ configure the scenario to be used in MORSE.
 The ``Environment`` class provides these functions:
 
  * **show_framerate**: Toggle the settings in the Game Engine to display
-   framerate and profile information of the simulation.  The parameter is a
+   framerate and profile information of the simulation. The parameter is a
    boolean value indicating whether to show or not this information.
  * **show_physics**: Toggle the display of the bounding boxes of objects during
-   the simulation.  The parameter is a boolean value indicating whether to show
+   the simulation. The parameter is a boolean value indicating whether to show
    or not this information.
  * **show_debug_properties**: Toggle the printing of the value of the Game Properties
-   marked.  The parameter is a boolean value indicating whether to show or not
+   marked. The parameter is a boolean value indicating whether to show or not
    this information.
  * **aim_camera**: Set the orientation of the default camera. The parameter is
    a list with an euler rotation for the camera. Example: *([1.3300, 0,
@@ -180,10 +180,14 @@ The ``Environment`` class provides these functions:
    float defaulting to 9.81.
  * **set_viewport**: Set the default view mode in one of 'BOUNDBOX',
    'WIREFRAME', 'SOLID' or 'TEXTURED'
- * **set_debug**: set the debug bit in blender
- * **set_stereo**: configure to renderer to render image in 'STEREO' using
+ * **set_debug**: Set the debug bit in blender
+ * **set_stereo**: Configure to renderer to render image in 'STEREO' using
    anaglyphs, allowing to see them in 3d with special red-cyan glasses.
    Allowed argument is one of 'NONE' (normal 2d mode), 'STEREO' or 'DOME'
+ * **select_display_camera**: Indicate to MORSE which camera to display in the
+   HUD screen. This method receives as parameter the name of the Builder instance
+   of a camera sensor. It will do nothing if the parameter is not a camera.
+   The HUD screen can be shown by pressing :kbd:`v` during the simulation
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    The items accepted in as parameters are:
@@ -233,12 +237,18 @@ Component properties
 ++++++++++++++++++++
 
 You can modify the game-properties of any components within Python 
-(even add them) 
+(or even add new properties). The documentation for each component
+lists the game properties it uses, their type and how they affect
+the functioning of the component.
+
+For example, to change the resolution of the images captured by a
+video camera sensor, modify its properties like this:
 
 .. code-block:: python
 
     camera = Sensor('video_camera')
     camera.properties(cam_width = 128, cam_height = 128)
+
 
 Middleware configuration
 ++++++++++++++++++++++++

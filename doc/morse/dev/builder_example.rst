@@ -60,7 +60,7 @@ Component properties
 ++++++++++++++++++++
 
 You can modify the game-properties of any components within Python 
-(even add them) 
+(or even add new ones).
 
 .. code-block:: python
 
@@ -118,7 +118,8 @@ An additional option is to place and aim the default camera, by using the method
 .. code-block:: python
 
     env = Environment('land-1/trees')
-    env.aim_camera([1.0470, 0, 0.7854])
+    env.place_camera([-5.0, 5.0, 3.0])
+    env.aim_camera([1.0470, 0, -0.7854])
 
 
 
@@ -172,5 +173,5 @@ Example
     cam.configure_mw('ros')
 
     env = Environment('land-1/trees')
-    env.pose_camera([-5.0, 5.0, 3.0])
+    env.place_camera([-5.0, 5.0, 3.0])
     env.aim_camera([1.0470, 0, -0.7854])
