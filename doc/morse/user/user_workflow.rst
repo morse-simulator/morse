@@ -16,7 +16,7 @@ The general steps to follow to do a simulation in MORSE are the following:
   
 #. Save the new scene: Press :kbd:`F2` and enter a new name for the Blender file
 
-#. Initialise the middleware environments (in the case of YARP or Pocolibs) outside of Blender
+#. Initialise the middleware environments (ROS, YARP, Pocolibs, etc.) outside of Blender
 
 #. Start the simulation: Place your mouse inside the 3D view of Blender and press :kbd:`p`
 
@@ -28,7 +28,6 @@ The general steps to follow to do a simulation in MORSE are the following:
 
 #. Quit Blender by pressing :kbd:`Ctrl-q` and :kbd:`Enter`
 
-
 #. To repeat the simulation using the same settings, run **morse** directly with the Blender file::
 
-    $ morse [file_name].blend
+    $ morse edit [file_name].blend

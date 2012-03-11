@@ -11,6 +11,17 @@ other robots or humans.
 .. toctree::
 
     user/user_workflow
+
+
+Basic MORSE user interface
+--------------------------
+
+The commands to launch the simulator and the basic controls are explained in this section.
+
+
+.. toctree::
+
+    user/basic_morse
     
 
 Interacting with MORSE
