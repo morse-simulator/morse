@@ -302,6 +302,13 @@ class Environment(AbstractComponent):
         self._environment_file = name
         self._multinode_configured = False
         self._display_camera = None
+        
+        # define 'Scene_Script_Holder' as the blender object of Enrivonment 
+        if not 'Scene_Script_Holder' in bpy.data.objects:
+            # Add the necessary objects
+            base = Component('props', 'basics')
+        self._blendobj = bpy.data.objects['Scene_Script_Holder']
+        # Write the name of the 'environment file'
 
     def _write_multinode(self, node_name):
         """ Configure this node according to its name
@@ -368,16 +375,12 @@ class Environment(AbstractComponent):
         # Write the configuration of the middlewares, and node configuration
         Configuration().write_config()
         self._write_multinode(name)
-        if not 'Scene_Script_Holder' in bpy.data.objects:
-            # Add the necessary objects
-            base = Component('props', 'basics')
 
         # Change the Screen material
         if self._display_camera:
             self._set_scren_mat()
-        # Write the name of the 'environment file'
-        ssh = AbstractComponent(bpy.data.objects['Scene_Script_Holder'])
-        ssh.properties(environment_file = str(self._environment_file))
+        
+        self.properties(environment_file = str(self._environment_file))
         # Set the position of the camera
         camera_fp = bpy.data.objects['CameraFP']
         camera_fp.location = self._camera_location
