@@ -39,7 +39,14 @@ MORSE_MODIFIER_DICT = {
         'gps': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
         'gyroscope': [MORSE_MODIFIERS['NED'], 'blender_to_ned_angle'],
         'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
+        'waypoint': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'orientation': [MORSE_MODIFIERS['NED'], 'ned_angle_to_blender'],
+    },
+    'UTM' : {
+        'pose': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
+        'gps': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
+        'destination': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
+        'waypoint': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
     },
 }
 
