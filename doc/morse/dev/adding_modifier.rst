@@ -5,10 +5,7 @@ The concept of a modifier is relatively simple. Their only function is to
 change the data stored in variables in the corresponding component, by using
 the concept of :doc:`hooks <../user/hooks>`. 
 
-Creating a modifier is more or less the same than creating a sensor. There are
-still two parts, the blender part and the python logic. For the blender part,
-it is the same thing than for a sensor / actuator.
-
+A modifier is defined by a Python script.
 The Python script is responsible for altering the data by changing directly the
 information stored in the ``local_data`` dictionary of each component.
 
@@ -19,8 +16,8 @@ information stored in the ``local_data`` dictionary of each component.
     the modified data for a particular sensor, the recommended method is to add
     two sensors of the same type, and only bind one of them with the modifier.
 
-Python part 
------------
+The python part 
+---------------
 
 There is no strict class hierarchy for modifiers, we rely on python duck
 typing. We only expect than a modifier exposes a method ``register_component``,
