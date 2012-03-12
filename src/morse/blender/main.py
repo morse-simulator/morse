@@ -208,58 +208,6 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
-
-    """ Modifiers are now dynamically created.
-    The following lines should do nothing but are still there for backward
-    compatibility.
-
-    TODO: remove it when we are confident we can.
-    """
-    # Get the modifiers
-    for obj in scene.objects:
-        try:
-            obj['Modifier_Tag']
-            # Create an object instance and store it
-            instance = create_instance (obj)
-            if instance != None:
-                GameLogic.modifierDict[obj] = instance
-            else:
-                return False
-        except KeyError:
-            pass
-    
-    """ Middlewares are now dynamically created.
-    The following lines should do nothing but are still there for backward
-    compatibility.
-
-    TODO: remove it when we are confident we can.
-    """
-    # Get the middlewares
-    for obj in scene.objects:
-        is_middleware = False
-        try:
-            obj['Middleware_Tag']
-            is_middleware = True
-        except KeyError as detail:
-            pass
-    
-        if is_middleware:
-            # Create an object instance and store it
-            instance = create_instance (obj)
-            if instance != None:
-                GameLogic.mwDict[obj] = instance
-                logger.info("\tMiddleware '%s' found" % obj)
-            else:
-                logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Middleware '""" + obj.name + """' module could not be found!
-    
-    Make sure you selected the required middleware for
-    install from the cmake configuration.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                """)
-
-                return False
     
     # Will return true always (for the moment)
     return True
@@ -338,7 +286,8 @@ def create_mw(mw):
     else:
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Middleware '""" + modulename + """' module could not be found!
+    INITIALIZATION ERROR: Middleware '""" + modulename + """'
+    module could not be found!
     
     Make sure you selected the required middleware for
     install from the cmake configuration.
@@ -426,7 +375,16 @@ def link_middlewares():
                     GameLogic.mwDict[mw_name] = mw_instance
                     logger.info("\tMiddleware '%s' created" % mw_name)
                 else:
-                    logger.warning("WARNING: There is no '%s' middleware object in the scene." % mw_name)
+                    logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    INITIALIZATION ERROR: Middleware '""" + mw_name + """'
+    module could not be found!
+    
+    Could not import modules necessary for the selected
+    middleware. Check that they can be found inside
+    your PYTHONPATH variable.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """)
                     return False
             
             mw_instance.register_component(component_name, instance, mw_data)
@@ -576,8 +534,18 @@ def add_modifiers():
                     GameLogic.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
                 else:
-                    logger.warning("There is no '%s' modifier object in the scene." % modifier_name)
+                    logger.error("""
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    INITIALIZATION ERROR: Modifier '""" + modifier_name + """'
+    module could not be found!
+    
+    Could not import modules necessary for the selected
+    modifier. Check that they can be found inside
+    your PYTHONPATH variable.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """)
                     return False
+
             # Make the modifier object take note of the component
             modifier_instance.register_component(component_name, instance, mod_data)
     
