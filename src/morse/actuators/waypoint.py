@@ -99,8 +99,8 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             for child in self.blender_obj.children:
                 if "Radar.R" in child.name:
                     self._radar_r = child
-                    if "Radar.L" in child.name:
-                        self._radar_l = child
+                if "Radar.L" in child.name:
+                    self._radar_l = child
             try:
                 logger.info("Radar Right is '%s'" % self._radar_r.name)
                 logger.info("Radar Left  is '%s'" % self._radar_l.name)
