@@ -50,7 +50,7 @@ james.append(keyboard)
 Pose_sensor.configure_mw('ros')
 Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
-IMU.configure_mw('ros', ['ROS', 'post_velocity_twist', 'morse/middleware/ros/imu'])
+IMU.configure_mw('ros')
 pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
 
 # Add passive objects
