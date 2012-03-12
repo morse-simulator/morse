@@ -66,8 +66,17 @@ class MorseAbstractObject(object):
 
         """
         if self.on_completion:
-            self.on_completion((status, result))
+            """ In overlays or in a chain of service, it is legal to call again a
+            service in the completion handler. However, to test if there
+            is a running service or not for a service, we test if
+            self.on_completion is None or not. So, we need to make sure
+            that self.on_completion is None when calling the completion
+            handler. To do that, store another reference, clean up the
+            one stored in self.on_completion, and call it through our reference
+            """
+            fn = self.on_completion
             self.on_completion = None
+            fn((status, result))
 
     def interrupt(self):
         """ This method is automatically invoked by the component when a
