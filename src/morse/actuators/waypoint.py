@@ -240,32 +240,37 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             parent.move_status = "Transit"
 
-            ### Get the angle of the robot ###
-            robot_angle = parent.position_3d.yaw
+            angle_diff = 0
+            rotation_direction = 0
 
-            ### Get the angle to the target ###
-            target_angle = projection_vector.angle(self.world_X_vector)
+            # If the projected distance is not null: else computing the target angle is not possible!
+            if projection_distance > 0:
+                ### Get the angle of the robot ###
+                robot_angle = parent.position_3d.yaw
 
-            # Correct the direction of the turn according to the angles
-            dot = projection_vector.dot(self.world_Y_vector)
-            logger.debug("Vector dot product = %.2f" % dot)
-            if dot < 0:
-                target_angle = target_angle * -1
+                ### Get the angle to the target ###
+                target_angle = projection_vector.angle(self.world_X_vector)
 
-            ### Get the angle that the robot must turn ###
-            if target_angle < robot_angle:
-                angle_diff = robot_angle - target_angle
-                rotation_direction = -1
-            else:
-                angle_diff = target_angle - robot_angle
-                rotation_direction = 1
+                # Correct the direction of the turn according to the angles
+                dot = projection_vector.dot(self.world_Y_vector)
+                logger.debug("Vector dot product = %.2f" % dot)
+                if dot < 0:
+                    target_angle = target_angle * -1
 
-            # Make a correction when the angles change signs
-            if angle_diff > math.pi:
-                angle_diff = (2 * math.pi) - angle_diff
-                rotation_direction = rotation_direction * -1
+                ### Get the angle that the robot must turn ###
+                if target_angle < robot_angle:
+                    angle_diff = robot_angle - target_angle
+                    rotation_direction = -1
+                else:                        
+                    angle_diff = target_angle - robot_angle
+                    rotation_direction = 1
 
-            logger.debug("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
+                # Make a correction when the angles change signs
+                if angle_diff > math.pi:
+                    angle_diff = (2 * math.pi) - angle_diff
+                    rotation_direction = rotation_direction * -1
+
+                logger.debug("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
             # Tick rate is the real measure of time in Blender.
             # By default it is set to 60, regardles of the FPS
