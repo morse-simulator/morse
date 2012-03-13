@@ -9,6 +9,8 @@ try:
 except ImportError:
     log_handler = logging.StreamHandler()
 
+from morse.version import VERSION
+
 logger = logging.getLogger('morse')
 
 formatter = logging.Formatter("* %(message)s\n")
@@ -29,8 +31,6 @@ except ImportError:
     logger.error("You need Python>=3.2 to run morse.")
     sys.exit()
     
-VERSION = "@PACKAGE_VERSION@"
-
 #Python version must be egal or bigger than...
 MIN_PYTHON_VERSION = "3.2"
 #Python version must be smaller than...
