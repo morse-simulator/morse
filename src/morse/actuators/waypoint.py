@@ -219,8 +219,9 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         else:
             distance = projection_distance
         
-        logger.debug("GOT DISTANCE: %.4f" % (distance))
+        logger.debug("GOT DISTANCE: xy: %.4f ; xyz: %.4f" % (projection_distance, true_distance))
         logger.debug("Global vector: %.4f, %.4f, %.4f" % (global_vector[0], global_vector[1], global_vector[2]))
+        logger.debug("Local vector: %.4f, %.4f, %.4f" % (local_vector[0], local_vector[1], local_vector[2]))
         logger.debug("Projection vector: %.4f, %.4f, %.4f" % (projection_vector[0], projection_vector[1], projection_vector[2]))
 
         # If the target has been reached, change the status
@@ -244,7 +245,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             rotation_direction = 0
 
             # If the projected distance is not null: else computing the target angle is not possible!
-            if projection_distance > 0:
+            if projection_distance - self.local_data['tolerance'] / 2 > 0:
                 ### Get the angle of the robot ###
                 robot_angle = parent.position_3d.yaw
 
@@ -314,12 +315,12 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
                 rz = rotation_speed * rotation_direction
 
             if self._free_z:
-                vx = math.fabs(v * global_vector.dot(self.world_X_vector))
-                vz = v * global_vector.dot(self.world_Z_vector)
+                vx = math.fabs(v * local_vector.dot(self.world_X_vector))
+                vz = v * local_vector.dot(self.world_Z_vector)
             else:
                 vx = v
                 vz = 0
-            logger.debug("Applying [[vx = %.4f, vz = %.4f, rz = %.4f]]\n" % (vx, vz, rz))
+            logger.debug("Applying [[vx = %.4f, vz = %.4f, rz = %.4f]] (v = %.4f)\n" % (vx, vz, rz, v))
 
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement
