@@ -426,6 +426,17 @@ class Environment(AbstractComponent):
         # Make CameraFP the active camera
         bpy.ops.object.select_all(action = 'DESELECT')
         bpy.ops.object.select_name(name = 'CameraFP')
+        # make sure OpenGL shading language shaders (GLSL) is the 
+        # material mode to use for rendering
+        bpy.context.scene.game_settings.material_mode = 'GLSL'
+        # Set the unit system to use for button display (in edit mode) to metric
+        bpy.context.scene.unit_settings.system = 'METRIC'
+        # Select the type of Framing to Extend, 
+        # Show the entire viewport in the display window, 
+        # viewing more horizontally or vertically.
+        bpy.context.scene.game_settings.frame_type = 'EXTEND'
+        # Set default camera
+        bpy.context.scene.camera = camera_fp
         self._created = True
 
     def show_debug_properties(self, value=True):
