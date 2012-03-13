@@ -225,11 +225,12 @@ class AbstractComponent(object):
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
         Configuration().link_mw(self, config)
 
-    def configure_service(self, mw, component = None):
+    def configure_service(self, mw, component = None, config=None):
         if not component:
             component = self
-        service = MORSE_SERVICE_DICT[mw]
-        Configuration().link_service(component, service)
+        if not config:
+            config = MORSE_SERVICE_DICT[mw]
+        Configuration().link_service(component, config)
 
     def configure_modifier(self, mod, config=None):
         # Configure the middleware for this component
@@ -237,9 +238,10 @@ class AbstractComponent(object):
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         Configuration().link_modifier(self, config)
         
-    def configure_overlay(self, mw, overlay):
-        request_manager = MORSE_SERVICE_DICT[mw]
-        Configuration().link_overlay(self, request_manager, overlay)
+    def configure_overlay(self, mw, overlay, config=None):
+        if not config:
+            config = MORSE_SERVICE_DICT[mw]
+        Configuration().link_overlay(self, config, overlay)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"
