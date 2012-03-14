@@ -473,6 +473,7 @@ class Environment(AbstractComponent):
         """
         camera = None
         screen = bpy.data.objects['Screen']
+        caption = bpy.data.objects['CameraID_text']
         blender_component = self._display_camera._blendobj
         # Find the mesh object with a texture called 'ScreenMat'
         for child in blender_component.children:
@@ -489,6 +490,12 @@ class Environment(AbstractComponent):
                 break
         logger.debug ("Setting material %s for the Screen" % material)
         screen.active_material = material
+
+        # Make the screen visible when starting the scene
+        screen.game.properties['Visible'].value = True
+
+        # Change the text with the name of the camera being displayed
+        caption.game.properties['Text'].value = self._display_camera.name
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
