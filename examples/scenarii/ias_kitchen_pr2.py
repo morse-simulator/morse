@@ -16,6 +16,9 @@ human = Human()
 human.translate(x=2.5, y=0, z=0.0)
 #human.rotate(z=-3.0)
 
+human_pose = Sensor('pose')
+human.append(human_pose)
+
 # Sensors and Actuators for navigation stack
 pr2_posture = Sensor('pr2_posture')
 james.append(pr2_posture)
@@ -48,6 +51,7 @@ james.append(keyboard)
 
 # Configuring the middlewares
 Pose_sensor.configure_mw('ros')
+human_pose.configure_mw('ros')
 Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
 IMU.configure_mw('ros')
