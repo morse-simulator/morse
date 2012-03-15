@@ -60,7 +60,10 @@ Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
 IMU.configure_mw('ros')
 pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
-semantic_camera.configure_mw('ros')
+semantic_camera.configure_mw('ros', ['morse.middleware.ros_mw.ROSClass', 'post_lisp_code', 'morse/middleware/ros/semantic_camera'])
+#semantic_camera.configure_mw('ros')
+
+#morse.middleware.ros_mw.ROSClass
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
