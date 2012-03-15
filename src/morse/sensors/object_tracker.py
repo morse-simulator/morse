@@ -5,16 +5,17 @@ import bpy
 # Import the ontology server proxy
 #import oro
 
-# import morse.sensors.camera
+import morse.sensors.camera
 import morse.helpers.colors
 
-class ObjectTrackerClass(morse.core.sensor.MorseSensorClass):
-    """
-    This module implements a "semantic camera" sensor for MORSE
+from morse.helpers import passive_objects
 
-    This special camera returns the list of objects as seen by the robot's
-    cameras, with unique id, possibly (if set in the objects' properties)
-    the type of object and the colour of the object.
+class ObjectTrackerClass(morse.sensors.camera.CameraClass):
+    """
+    This module implements an "object tracker" sensor for MORSE
+
+    This special camera returns the list of all passive objects in the environment, 
+    with the type of object and the colour of the object.
     This camera is able to recognise objects marked with a 'Object' property
     An additional 'Description' property can be set that defines the object 
     category (like 'book', 'box', 'glass'...). If this property is not set, the 
@@ -23,9 +24,11 @@ class ObjectTrackerClass(morse.core.sensor.MorseSensorClass):
     Other such high-level information (the semantic description of the scene)
     can be added.
 
+    The object tracker is based on the semantic camera by Severin Lemaignan
+
     Version: 1.0
     Date: 16 Nov. 2009
-    Author: Severin Lemaignan <severin.lemaignan@laas.fr>
+    Author: Michael Karg, Severin Lemaignan <kargm@in.tum.de><severin.lemaignan@laas.fr>
 
     Copyright LAAS-CNRS 2009
     """
@@ -36,50 +39,65 @@ class ObjectTrackerClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        logger.info("######## SEMANTIC CAMERA '%s' INITIALIZING ########" % obj.name)
+        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        # Locate the Blender camera object associated with this sensor
-        main_obj = self.blender_obj
-  
+        # TrackedObject is a dictionary containing the list of tracked objects 
+        # (->meshes with a class property set up) as keys
+        #  and the bounding boxes of these objects as value.
         if not hasattr(GameLogic, 'trackedObjects'):
             logger.info('Initialization of tracked objects:')
             scene = GameLogic.getCurrentScene()
-            GameLogic.trackedObjects = dict.fromkeys([ obj for obj in scene.objects if obj.getPropertyNames().count('Object')!=0 ])
+            GameLogic.trackedObjects = dict.fromkeys(passive_objects.active_objects())
 
             # Store the bounding box of the marked objects
             for obj in GameLogic.trackedObjects.keys():
-                try:
-                    obj['Description']
-                except:
-                    obj['Description'] = 'Object'
 
-                # GetBoundBox(0) returns the bounding box in local space
+                # bound_box returns the bounding box in local space
                 #  instead of world space.
                 GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
-                logger.info('    - {0} (desc:{1})'.format(obj.name, obj['Description']))
+
+                details = passive_objects.details(obj)
+                logger.info('    - {0} (type:{1})'.format(details['label'], details['type']))
 
 
         # Prepare the exportable data of this sensor
-        # In this case, it is the list of all objects
-        self.local_data['objects'] = []
-
+        self.local_data['tracked_objects'] = []
         # Variable to indicate this is a camera
         self.semantic_tag = True
 
-        logger.info('######## OBJECT TRACKER INITIALIZED ########')
+        logger.info('Component initialized')
+
 
     def default_action(self):
         """ Do the actual semantic 'grab'.
 
-        Iterate over all the tracked objects and collect them in th objects-array
+        Iterate over all the tracked objects,
+        and check if they are visible for the robot.
+        Visible objects must have a boundin box and be active
+        for physical simulation (have the 'Actor' checkbox selected)
         """
         # Call the action of the parent class
         super(self.__class__,self).default_action()
-        objects = self.local_data['objects']
 
+        # Create dictionaries
+        self.local_data['tracked_objects'] = []
         for obj in GameLogic.trackedObjects.keys():
-            # Append object if not already in list
-            if obj not in objects:
-                self.local_data['objects'].append(obj)
+            label = passive_objects.label(obj)
+
+            # Create dictionary to contain object name, type, description, position and orientation
+            obj_dict = dict([('name', label), ('description', ''), ('type', ''), ('position', obj.worldPosition), ('orientation', obj.worldOrientation.to_quaternion())])  
+                # Set description and type if those properties exist
+            try:
+                obj_dict['description'] = obj['Description']
+            except KeyError:
+                pass
+            try:
+                obj_dict['type'] = obj['Type']
+            except KeyError:
+                pass
+            self.local_data['visible_objects'].append(obj_dict)
+            
+        logger.info("tracked objects: "+ str(self.local_data['tracked_objects']))
+
