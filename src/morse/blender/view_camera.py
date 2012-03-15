@@ -106,39 +106,41 @@ def rotate(contr):
     keyboard = contr.sensors['All_Keys']
 
     # Show the cursor
-    bge.logic.mouse.visible = True
+    mouse_visible = True
 
     keylist = keyboard.events
     for key in keylist:
         # key[0] == bge.events.keycode, key[1] = status
         if key[1] == bge.logic.KX_INPUT_ACTIVE:
-            # Also add the key corresponding key for an AZERTY keyboard
-            if key[0] == bge.events.LEFTCTRLKEY and mouse.positive:
-                # get width and height of game window
-                width = bge.render.getWindowWidth()
-                height = bge.render.getWindowHeight()
-
-                # get mouse movement from function
-                move = mouse_move(camera, mouse, width, height)
-
-                # set mouse sensitivity
-                sensitivity = camera['Sensitivity']
-
-                # Amount, direction and sensitivity
-                leftRight = move[0] * sensitivity
-                upDown = move[1] * sensitivity
-
-                # set the values
-                camera.applyRotation( [0.0, 0.0, leftRight], 0 )
-                camera.applyRotation( [upDown, 0.0, 0.0], 1 )
-
-                # Center mouse in game window
-                # Using the '//' operator (floor division) to produce an integer result
-                bge.render.setMousePosition(width//2, height//2)
-
+            # Left CTRL key allow to rotate the camera
+            if key[0] == bge.events.LEFTCTRLKEY:
                 # Hide the cursor while we control the camera
-                bge.logic.mouse.visible = False
+                mouse_visible = False
+                if mouse.positive:
+                    # get width and height of game window
+                    width = bge.render.getWindowWidth()
+                    height = bge.render.getWindowHeight()
 
+                    # get mouse movement from function
+                    move = mouse_move(camera, mouse, width, height)
+
+                    # set mouse sensitivity
+                    sensitivity = camera['Sensitivity']
+
+                    # Amount, direction and sensitivity
+                    leftRight = move[0] * sensitivity
+                    upDown = move[1] * sensitivity
+
+                    # set the values
+                    camera.applyRotation( [0.0, 0.0, leftRight], 0 )
+                    camera.applyRotation( [upDown, 0.0, 0.0], 1 )
+
+                    # Center mouse in game window
+                    # Using the '//' operator (floor division) to produce an integer result
+                    bge.render.setMousePosition(width//2, height//2)
+
+    # Set the cursor visibility
+    bge.logic.mouse.visible = mouse_visible
 
 def mouse_move(camera, mouse, width, height):
     """ Get the movement of the mouse as an X, Y coordinate. """
