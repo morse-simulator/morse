@@ -94,6 +94,10 @@ def post_lisp_code(self, component_instance):
             #if object has no description, set to '-'
             if obj['description'] == '':
                 description = '-'
+
+            # send tf-frame for every object
+            sendTransform(self, obj['position'], obj['orientation'],rospy.Time.now(), str(obj['name']), "/map")
+
             # Build string from name, description, location and orientation in the global world frame
             message = message + "(" + str(obj['name']) + " " + description + " " + str(obj['position'].x) + " " + str(obj['position'].y) + " " + str(obj['position'].z) + " " + str(obj['orientation'].x) + " " + str(obj['orientation'].y) + " " + str(obj['orientation'].z) + " " + str(obj['orientation'].w) + ")"
         
