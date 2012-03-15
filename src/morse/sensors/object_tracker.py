@@ -1,16 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import GameLogic
-
+import morse.core.sensor
 import bpy
 # Import the ontology server proxy
 #import oro
 
-import morse.sensors.camera
-import morse.helpers.colors
-
 from morse.helpers import passive_objects
 
-class ObjectTrackerClass(morse.sensors.camera.CameraClass):
+class ObjectTrackerClass(morse.core.sensor.MorseSensorClass):
     """
     This module implements an "object tracker" sensor for MORSE
 
@@ -97,7 +94,7 @@ class ObjectTrackerClass(morse.sensors.camera.CameraClass):
                 obj_dict['type'] = obj['Type']
             except KeyError:
                 pass
-            self.local_data['visible_objects'].append(obj_dict)
+            self.local_data['tracked_objects'].append(obj_dict)
             
         logger.info("tracked objects: "+ str(self.local_data['tracked_objects']))
 
