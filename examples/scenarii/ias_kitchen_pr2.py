@@ -23,6 +23,10 @@ human.append(human_pose)
 pr2_posture = Sensor('pr2_posture')
 james.append(pr2_posture)
 
+semantic_camera = Sensor('semantic_camera')
+semantic_camera.translate(x=0.086, y=0, z=1.265)
+james.append(semantic_camera)
+
 Motion_Controller = Actuator('xy_omega')
 james.append(Motion_Controller)
 
@@ -56,6 +60,7 @@ Sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
 IMU.configure_mw('ros')
 pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
+semantic_camera.configure_mw('ros')
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
