@@ -272,6 +272,27 @@ class Robot(Component):
         self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
 
 
+class WheeledRobot(Robot):
+    def __init__(self, name):
+        Robot.__init__(self, name)
+        self._wheels = []
+        #self.unparent_wheels()
+
+    def unparent_wheels (self):
+        """ Make the wheels orphans, but keep the transormation applied to
+            the parent robot """
+        # Force Blender to update the transformation matrices of objects
+        bpy.data.scenes['Scene'].update()
+        children = self._blendobj.children
+        self._wheels = [child for child in children if "wheel" in child.name.lower()]
+        import mathutils
+        for wheel in self._wheels:
+            # Make a copy of the current transformation matrix
+            transformation = mathutils.Matrix(wheel.matrix_world)
+            wheel.parent = None
+            wheel.matrix_world = transformation
+
+
 class Sensor(Component):
     def __init__(self, name):
         Component.__init__(self, 'sensors', name)
