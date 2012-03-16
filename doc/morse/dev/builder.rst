@@ -188,9 +188,14 @@ The ``Environment`` class provides these functions:
    HUD screen. This method receives as parameter the name of the Builder instance
    of a camera sensor. It will do nothing if the parameter is not a camera.
    The HUD screen can be shown by pressing :kbd:`v` during the simulation
+ * **set_horizon_color**: Configure the horizon color to the specified color
+   (defined as a triplet R, G, B). See `the blender documentation
+   <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Background>`_ for more
+   information about this particular setting.
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    The items accepted in as parameters are:
+
     * **protocol**: Either 'socket' or 'hla'
     * **server_address**: IP address where the multi-node server can be found
     * **server_port**: Used only for 'socket' protocol. Currently it should always be 65000
