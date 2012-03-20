@@ -18,7 +18,7 @@ Sensors,
 ``Sick (Laser range finder)``,✔,               ✔,          "✔ ``List (x, y, z)``","✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
-``Video camera``,             ✘,               ✘,           ✔ ``YarpImage``, ✔ ``Image``,     ✔ ``viamImageBank``,												✘	
+``Video camera``,             ✘,               ✘,           ✔ ``YarpImage``, "✔ ``Image`` + ``CameraInfo``",     ✔ ``viamImageBank``,												✘	
 Actuators,
 ``armature actuator``,		  ✘,               ✔,           ✔,              ✔,               ✘,																	?
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,																	✔

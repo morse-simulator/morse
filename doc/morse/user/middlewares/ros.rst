@@ -53,7 +53,8 @@ documentation.
   It has one available method:
 
 	- ``post_image``: Reads image information from the camera sensor and
-	  publishes them as ``sensor_msgs/Image``
+	  publishes them as ``sensor_msgs/Image``. Moreover, it exports camera
+	  information through a port of kind ``sensor_msgs/CameraInfo``.
 
 - clock sensor : Stored in the file ``$MORSE_ROOT/src/morse/middleware/ros/clock.py``;
   It has one available method:
