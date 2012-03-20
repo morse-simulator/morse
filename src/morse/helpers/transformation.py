@@ -40,6 +40,12 @@ class Transformation3d:
         if obj != None:
             self.update(obj)
 
+        # For use only by robots moving along the Y axis
+        self.correction_matrix = mathutils.Matrix(( [0.0, 1.0, 0.0], \
+                                                    [-1.0, 0.0, 0.0], \
+                                                    [0.0, 0.0, 1.0] ))
+
+
     @property
     def x(self):
         """
@@ -123,8 +129,7 @@ class Transformation3d:
     def update(self, obj):
         """
         Update the transformation3D to reflect the tranformation
-        between ob (a blender object) and the blender world origin
-
+        between obj (a blender object) and the blender world origin
         """
         rot_matrix = obj.orientation
         if GameLogic.blenderVersion <= (2,56,0):
@@ -143,6 +148,38 @@ class Transformation3d:
         self.matrix[3][3] = 1
 
         self.euler = self.matrix.to_euler()
+
+    def update_Y_forward(self, obj):
+        """
+        Update the transformation3D to reflect the tranformation
+        between obj (a blender object) and the blender world origin.
+        In this case, the robot moves forwad along the Y axis.
+
+        Change the values of yaw, pitch, roll for Blender vehicles
+        Robots that use the Blender vehicle constrainst move in the
+        direction of the Y axis, contrary to most of the MORSE components
+        that move along the X axis.
+        """
+        rot_matrix = obj.orientation
+        if GameLogic.blenderVersion <= (2,56,0):
+        #if GameLogic.pythonVersion <= (3,1,0):
+            self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
+                                                          rot_matrix[2])
+            self.matrix = self.matrix * self.correction_matrix
+            self.matrix.resize4x4()
+        else:
+            self.matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], \
+                                                          rot_matrix[2]))
+            self.matrix = self.matrix * self.correction_matrix
+            self.matrix.resize_4x4()
+
+        pos = obj.worldPosition
+        for i in range(0, 3):
+            self.matrix[3][i] = pos[i]
+        self.matrix[3][3] = 1
+
+        self.euler = self.matrix.to_euler()
+
 
     def __str__(self):
         """

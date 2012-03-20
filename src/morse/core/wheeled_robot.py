@@ -20,6 +20,16 @@ class FourWheelRobotClass(morse.core.robot.MorseRobotClass):
     _wheel_orientations = {}
     _wheel_joints = {}
 
+    def action(self):
+        """ Overload the 'action' method of the MorseRobotClass
+            This one will compute the transformations considering the different
+            axis orientation used by this kind of robots """
+        # Update the component's position in the world
+        self.position_3d.update_Y_forward(self.blender_obj)
+
+        self.default_action()
+
+
     def GetWheels(self):
         # get pointers to and physicsIds of all objects
         # get wheel pointers - needed by wheel speed sensors and to
@@ -189,12 +199,13 @@ class MorsePhysicsRobotClass(FourWheelRobotClass):
         logger.debug("Added wheel '%s' at ('%f','%f','%f')" %(wheel.name, wheelPos[0], wheelPos[1], wheelPos[2]))
 
         # create constraint to allow wheel to spin
-        joint = bge.constraints.createConstraint( parent.getPhysicsId(),  # get physics ID of the parent object
-                                     wheel.getPhysicsId(),  # get physics ID of the wheel object
-                                     12,    # 6dof constraint
-                                     wheelPos[0], wheelPos[1], wheelPos[2],  # pivot position
-                                     0,0,0,     # pivot axis
-                                     128) # flag, 128=disable collision between wheel and parent
+        joint = bge.constraints.createConstraint(
+                parent.getPhysicsId(),  # get physics ID of the parent object
+                wheel.getPhysicsId(),  # get physics ID of the wheel object
+                12,    # 6dof constraint
+                wheelPos[0], wheelPos[1], wheelPos[2],  # pivot position
+                0,0,0,     # pivot axis
+                128) # flag, 128=disable collision between wheel and parent
         # no parameters are set on x axis to allow full rotation about it
         joint.setParam(4,0.0,0.0) # no rotation about Y axis - min=0, max=0
         joint.setParam(5,0.0,0.0) # no rotation about Z axis - min=0, max=0

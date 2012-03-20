@@ -21,31 +21,17 @@ Files
 - Blender: ``$MORSE_ROOT/data/robots/segwayrmp400.blend``
 - Python: ``$MORSE_ROOT/src/morse/robots/segwayrmp400.py``
 
-Configurable parameters
------------------------
-
-The robot itself has several properties that describe its physical behaviour.
-None of these properties have an effect in the current version of the robot,
-but may be used in future releases.
-These can be changed using the Builder API:
-
-- **HasSuspension**: (Boolean) flag that determines if the wheels move
-  independently of the body of the robot. For the case of the Segway RMP 400,
-  this should always be ``False``
-- **HasSteering**: (Boolean) flag
-  that determines if the wheels turn independently of the body of the robot.
-  For the case of the Segway RMP 400, this should always be ``False``
-- **Influence**: (double)
-- **Friction**: (double)
-
-
 
 Adjustable parameters
 ---------------------
 
-Use the **Properties >> Physics** panel in Blender to adjust the **Mass** of the robot.
+These parameters are inherent to the Blender model for the robot, and must be
+modified directly in the Blender file:
 
-The friction coefficient of the robot can be adjusted in the **Properties >> Material** panel.
+- The **Mass** of the robot can be changed in the **Properties >> Physics**
+  panel
+- The **Friction** coefficient of the robot can be adjusted in the
+  **Properties >> Material** panel
 
 
 Example in Builder API
@@ -65,3 +51,43 @@ instance. Otherwise the robot will not move.
     robot.rotate(z=0.73)
     robot.translate(x=-2.0, z=0.2)
     robot.unparent_wheels()
+
+Another restriction with this kind of robots is that for any additional
+components added to it, translations and rotations must be applied before
+parenting them to the robot.
+
+**WRONG:**
+
+.. code-block:: python
+
+    pose = Sensor('pose')
+    robot.append(pose)
+    pose.translate(x=0.5, y=0.1, z=0.4)
+    pose.rotate(x=1.57)
+
+**RIGHT:**
+
+.. code-block:: python
+
+    pose = Sensor('pose')
+    pose.translate(x=0.5, y=0.1, z=0.4)
+    pose.rotate(x=1.57)
+    robot.append(pose)
+
+
+Configurable parameters
+-----------------------
+
+The robot itself has several properties that describe its physical behaviour.
+None of these properties have an effect in the current version of the robot,
+but may be used in future releases.
+These can be changed using the Builder API:
+
+- **HasSuspension**: (Boolean) flag that determines if the wheels move
+  independently of the body of the robot. For the case of the Segway RMP 400,
+  this should always be ``False``
+- **HasSteering**: (Boolean) flag
+  that determines if the wheels turn independently of the body of the robot.
+  For the case of the Segway RMP 400, this should always be ``False``
+- **Influence**: (double)
+- **Friction**: (double)

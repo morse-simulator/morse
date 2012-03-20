@@ -292,6 +292,23 @@ class WheeledRobot(Robot):
             wheel.parent = None
             wheel.matrix_world = transformation
 
+    def append(self, obj):
+        """ Add a child to the current object,
+        Overload the append method of AbstractObject
+        eg: robot.append(sensor), will set the robot parent of the sensor.
+        """
+        import math
+        # Correct the rotation of the object
+        old = obj._blendobj.rotation_euler
+        obj._blendobj.rotation_euler = (old[0], old[1], old[2]+math.pi/2)
+
+        # Switch the values of X and Y location
+        tmp_x = obj._blendobj.location[0]
+        obj._blendobj.location[0] = -obj._blendobj.location[1]
+        obj._blendobj.location[1] = tmp_x
+
+        obj._blendobj.parent = self._blendobj
+
 
 class Sensor(Component):
     def __init__(self, name):
