@@ -73,6 +73,7 @@ documentation.
 - IMU sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/imu.py``.
   It has one available method:
 
+	- ``post_odometry``: Exports the data of the IMU sensor as a ``nav_msgs/Odometry``
 	- ``post_velocity_twist``: Exports the data of the IMU sensor as a ``geometry_msgs/Twist``
 
 - Kuka-Arm controller: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/kuka_jointState.py``.
@@ -86,15 +87,6 @@ documentation.
   Available callback:
 
 	- read a single ROS boolean and control if we must or not emit light
-
-- Odometry sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/odometry_sensor.py``.
-  It has two available methods:
-
-	- ``post_pose``: Reads sensor-information from the pose sensor publishes
-	  them as a ``geometry_msgs/PoseStamped`` message.
-	- ``post_twist``: Reads sensor-information from the pose sensor publishes
-	  them as a ``geometry_msgs/Twist`` message.  NOTE: The angular part of
-	  the twist messages is build as follows: (x,y,z) = (roll, pitch, yaw)
 
 - Platine controller: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/platine.py``.
   Available methods:

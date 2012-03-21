@@ -10,11 +10,11 @@ Sensors,
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
 ``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Odometry`` (or ``Twist``),     ✘,																	✔
 ``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see IMU),    ✘ ,																	✔
-``Pose``,					  ✔,               ✔,           ✔,              ✔ ``PoseStamped``,     ✘,																	✔ 	
+``Pose``,					  ✔,               ✔,           ✔,              ✔ ``Odometry, PoseStamped``,     ✘,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
 ``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
-``Semantic camera``,          ✔,               ✔,           ✔,              ✔ ``String``  ,  ✔ ``VimanObjectPublicArray``,										✘	
+``Semantic camera``,          ✔,               ✔,           ✔,              ✔ ``String, TF``  ,  ✔ ``VimanObjectPublicArray``,										✘	
 ``Sick (Laser range finder)``,✔,               ✔,          "✔ ``List (x, y, z)``","✔ ``LaserScan``, ``PointCloud``",   ✘,							✔
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
