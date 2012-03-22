@@ -3,8 +3,8 @@ import GameLogic
 import morse.core.robot
 
 
-class RessacClass(morse.core.robot.MorseRobotClass):
-    """ Class definition for the Ressac.
+class RmaxClass(morse.core.robot.MorseRobotClass):
+    """ Class definition for the Yamaha RMAX helicopter.
         Sub class of Morse_Object. """
 
     def __init__(self, obj, parent=None):
@@ -15,9 +15,6 @@ class RessacClass(morse.core.robot.MorseRobotClass):
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
         super(self.__class__,self).__init__(obj, parent)
-
-        # Add the variable move_status to the object
-        self.move_status = "Stop"
 
         logger.info('Component initialized')
 

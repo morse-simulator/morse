@@ -1,12 +1,12 @@
 Yamaha RMAX platform
 ====================
 
-The base of the **Ressac** robot at ONERA.
+The base of the **Yamaha RMAX** unmanned helicopter.
 
 Files
 -----
-- Blender: ``$MORSE_ROOT/data/robots/ressac.blend``
-- Python: ``$MORSE_ROOT/src/morse/robots/ressac.py``
+- Blender: ``$MORSE_ROOT/data/robots/rmax.blend``
+- Python: ``$MORSE_ROOT/src/morse/robots/rmax.py``
 
 Adjustable parameters
 ---------------------
