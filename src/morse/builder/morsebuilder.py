@@ -426,7 +426,28 @@ class Environment(AbstractComponent):
         # Make CameraFP the active camera
         bpy.ops.object.select_all(action = 'DESELECT')
         bpy.ops.object.select_name(name = 'CameraFP')
+        # make sure OpenGL shading language shaders (GLSL) is the 
+        # material mode to use for rendering
+        bpy.context.scene.game_settings.material_mode = 'GLSL'
+        # Set the unit system to use for button display (in edit mode) to metric
+        bpy.context.scene.unit_settings.system = 'METRIC'
+        # Select the type of Framing to Extend, 
+        # Show the entire viewport in the display window, 
+        # viewing more horizontally or vertically.
+        bpy.context.scene.game_settings.frame_type = 'EXTEND'
+        # Start player with a visible mouse cursor
+        bpy.context.scene.game_settings.show_mouse = True
+        # Set default camera
+        bpy.context.scene.camera = camera_fp
         self._created = True
+
+    def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
+        """ Set the horizon color
+        :param color: (0.0, 0.0, 0.0) < (R, B, G) < (1.0, 1.0, 1.0) 
+                      default: dark azure (0.05, 0.22, 0.4)
+        """
+        # Set the color at the horizon to dark azure
+        bpy.context.scene.world.horizon_color = color
 
     def show_debug_properties(self, value=True):
         if isinstance(value, bool):
