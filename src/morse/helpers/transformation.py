@@ -24,17 +24,10 @@ class Transformation3d:
         reference
 
         """
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
-            self.matrix = mathutils.Matrix([1, 0, 0, 0], \
-                                           [0, 1, 0, 0], \
-                                           [0, 0, 1, 0], \
-                                           [0, 0, 0, 1])
-        else:
-            self.matrix = mathutils.Matrix(([1, 0, 0, 0], \
-                                            [0, 1, 0, 0], \
-                                            [0, 0, 1, 0], \
-                                            [0, 0, 0, 1]))
+        self.matrix = mathutils.Matrix(([1, 0, 0, 0], \
+                                        [0, 1, 0, 0], \
+                                        [0, 0, 1, 0], \
+                                        [0, 0, 0, 1]))
 
         self.euler = mathutils.Euler([0, 0, 0])
         if obj != None:
@@ -51,21 +44,30 @@ class Transformation3d:
         """
         Return the translation  against the x axle
         """
-        return self.matrix[3][0]
+        if GameLogic.blenderVersion <= (2,62,0):
+            return self.matrix[3][0]
+        else:
+            return self.matrix[0][3]
 
     @property
     def y(self):
         """
         Return the translation  against the y axle
         """
-        return self.matrix[3][1]
+        if GameLogic.blenderVersion <= (2,62,0):
+            return self.matrix[3][1]
+        else:
+            return self.matrix[1][3]
 
     @property
     def z(self):
         """
         Return the translation  against the z axle
         """
-        return self.matrix[3][2]
+        if GameLogic.blenderVersion <= (2,62,0):
+            return self.matrix[3][2]
+        else:
+            return self.matrix[2][3]
 
     @property
     def yaw(self):
@@ -132,19 +134,17 @@ class Transformation3d:
         between obj (a blender object) and the blender world origin
         """
         rot_matrix = obj.orientation
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
-            self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
-                                                          rot_matrix[2])
-            self.matrix.resize4x4()
-        else:
-            self.matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], \
-                                                          rot_matrix[2]))
-            self.matrix.resize_4x4()
+        self.matrix = mathutils.Matrix((rot_matrix[0], \
+                                        rot_matrix[1], \
+                                        rot_matrix[2]))
+        self.matrix.resize_4x4()
 
         pos = obj.worldPosition
         for i in range(0, 3):
-            self.matrix[3][i] = pos[i]
+            if GameLogic.blenderVersion <= (2,62,0):
+                self.matrix[3][i] = pos[i]
+            else:
+                self.matrix[i][3] = pos[i]
         self.matrix[3][3] = 1
 
         self.euler = self.matrix.to_euler()
@@ -161,21 +161,18 @@ class Transformation3d:
         that move along the X axis.
         """
         rot_matrix = obj.orientation
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
-            self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
-                                                          rot_matrix[2])
-            self.matrix = self.matrix * self.correction_matrix
-            self.matrix.resize4x4()
-        else:
-            self.matrix = mathutils.Matrix((rot_matrix[0], rot_matrix[1], \
-                                                          rot_matrix[2]))
-            self.matrix = self.matrix * self.correction_matrix
-            self.matrix.resize_4x4()
+        self.matrix = mathutils.Matrix((rot_matrix[0], \
+                                        rot_matrix[1], \
+                                        rot_matrix[2]))
+        self.matrix = self.matrix * self.correction_matrix
+        self.matrix.resize_4x4()
 
         pos = obj.worldPosition
         for i in range(0, 3):
-            self.matrix[3][i] = pos[i]
+            if GameLogic.blenderVersion <= (2,62,0):
+                self.matrix[3][i] = pos[i]
+            else:
+                self.matrix[i][3] = pos[i]
         self.matrix[3][3] = 1
 
         self.euler = self.matrix.to_euler()

@@ -264,12 +264,23 @@ class Component(AbstractComponent):
                     "tune its frequency, change it through Blender")
         sensors[0].frequency = delay
 
-
 class Robot(Component):
     def __init__(self, name):
         Component.__init__(self, 'robots', name)
     def make_external(self):
         self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
+#    def remove_wheels(self):
+#        wheels = [child for child in self._blendobj.children if \
+#                  child.name.lower().startswith("wheel")]
+#        for wheel in wheels:
+#            bpy.ops.object.select_all(action='DESELECT')
+#            bpy.ops.object.select_pattern(pattern=wheel.name, extend=False)
+#            bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+#    def __del__(self):
+#        """ Call the remove_wheels method if the robot is a Bullet Vehicle """
+#        # HasSuspension game property is used for Bullet Vehicle
+#        if "HasSuspension" in self._blendobj.game.properties:
+#            self.remove_wheels()
 
 
 class WheeledRobot(Robot):
@@ -423,9 +434,7 @@ class Environment(AbstractComponent):
         camera_fp = bpy.data.objects['CameraFP']
         camera_fp.location = self._camera_location
         camera_fp.rotation_euler = self._camera_rotation
-        # Make CameraFP the active camera
-        bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = 'CameraFP')
+
         # make sure OpenGL shading language shaders (GLSL) is the 
         # material mode to use for rendering
         bpy.context.scene.game_settings.material_mode = 'GLSL'
@@ -437,8 +446,13 @@ class Environment(AbstractComponent):
         bpy.context.scene.game_settings.frame_type = 'EXTEND'
         # Start player with a visible mouse cursor
         bpy.context.scene.game_settings.show_mouse = True
-        # Set default camera
+
+        # Make CameraFP the active camera
+        bpy.ops.object.select_all(action='DESELECT')
+        camera_fp.select = True
+        bpy.context.scene.objects.active = camera_fp
         bpy.context.scene.camera = camera_fp
+
         self._created = True
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):

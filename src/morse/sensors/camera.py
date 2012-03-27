@@ -104,25 +104,29 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             GameLogic.cameras = {}
 
         mat_id = VideoTexture.materialID(screen, material_name)
-        GameLogic.cameras[self.name()] = VideoTexture.Texture(screen, mat_id)
-        GameLogic.cameras[self.name()].source = \
-                                    VideoTexture.ImageRender(scene, camera)
+        vt_camera = VideoTexture.Texture(screen, mat_id)
+        vt_camera.source = VideoTexture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
+        logger.info("\tFocal length of the camera is: %s" % camera.lens)
 
         # Set the background to be used for the render
-        GameLogic.cameras[self.name()].source.background = self.bg_color
+        vt_camera.source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
-        GameLogic.cameras[self.name()].source.capsize = \
-                [self.image_width, self.image_height]
-        logger.info("Camera '{0}': Exporting an image of capsize: {1} pixels". \
-                format(self.name(), GameLogic.cameras[self.name()].source.capsize))
-        logger.info("\tFocal length of the camera is: %s" % camera.lens)
+        vt_camera.source.capsize = [self.image_width, self.image_height]
+        logger.info("Camera '%s': Exporting an image of capsize: %s pixels" % \
+                (self.name(), vt_camera.source.capsize))
 
         # Reverse the image (boolean game-property)
         # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         if 'Vertical_Flip' in self.blender_obj: # backward compatibility
-            GameLogic.cameras[self.name()].source.flip = self.blender_obj['Vertical_Flip']
+            vt_camera.source.flip = self.blender_obj['Vertical_Flip']
 
+        GameLogic.cameras[self.name()] = vt_camera
+#
+#        import inspect
+#        logger.error("CAMERA SOURCE '%s':" % self.name())
+#        for name, thing in inspect.getmembers(GameLogic.cameras[self.name()].source):
+#            logger.error("\t%s = %s" % (name, thing))

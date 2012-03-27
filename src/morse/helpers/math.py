@@ -32,13 +32,6 @@ def invert_rotation_matrix(object):
     this one. """
     rotation_matrix = get_rotation_matrix(object)
 
-    # TEMPORARY solution for Blender 2.56
-    # Should be deprecated soon
-    import bpy
-    if bpy.app.version[1] <= 56:
-        inverted_matrix = mathutils.Matrix(rotation_matrix[0], rotation_matrix[1], rotation_matrix[2])
-        return inverted_matrix.invert()
-
     # Return a new inverted matrix (requires Blender 2.58)
     return rotation_matrix.inverted()
 
