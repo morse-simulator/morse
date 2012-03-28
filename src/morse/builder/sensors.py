@@ -95,7 +95,8 @@ class Camera(morse.builder.creator.SensorCreator):
         self.frequency(3)
         # add toggle capture action (`Space` key)
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = self._blendobj.name)
+        bpy.ops.object.select_pattern(pattern=self._blendobj.name,
+                                      case_sensitive=True, extend=False)
         bpy.ops.logic.sensor_add(type="KEYBOARD")
         sensor = self._blendobj.game.sensors[-1]
         sensor.key = 'SPACE'

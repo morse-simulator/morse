@@ -243,7 +243,8 @@ class Component(AbstractComponent):
 
         # add Game Logic sensor and controller to simulate the component
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = obj.name)
+        bpy.ops.object.select_pattern(pattern=obj.name, case_sensitive=True,
+                                      extend=False)
         bpy.ops.logic.sensor_add() # default is Always sensor
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True
@@ -425,7 +426,8 @@ class Environment(AbstractComponent):
         camera_fp.rotation_euler = self._camera_rotation
         # Make CameraFP the active camera
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = 'CameraFP')
+        bpy.ops.object.select_pattern(pattern='CameraFP', case_sensitive=True,
+                                      extend=False)
         self._created = True
 
     def show_debug_properties(self, value=True):
