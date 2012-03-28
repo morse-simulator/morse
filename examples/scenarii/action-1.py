@@ -42,16 +42,16 @@ Motion_Controller_001 = Actuator('v_omega')
 ATRV.append(Motion_Controller_001)
 
 # Helicopter robot
-Ressac = Robot('ressac')
-Ressac.translate(x=5.0, y=0.0, z=9.0)
+RMax = Robot('rmax')
+RMax.translate(x=5.0, y=0.0, z=9.0)
 
 GPS_001 = Sensor('gps')
-Ressac.append(GPS_001)
+RMax.append(GPS_001)
 
 CameraMain_002 = Sensor('video_camera')
 CameraMain_002.translate(x=1.4000)
 CameraMain_002.rotate(x=-1.5708)
-Ressac.append(CameraMain_002)
+RMax.append(CameraMain_002)
 CameraMain_002.properties(capturing = True)
 CameraMain_002.properties(cam_width = 512)
 CameraMain_002.properties(cam_height = 512)
@@ -59,10 +59,10 @@ CameraMain_002.properties(cam_focal = 35.0000)
 
 Gyroscope_001 = Sensor('gyroscope')
 Gyroscope_001.translate(x=0.8000, z=1.1000)
-Ressac.append(Gyroscope_001)
+RMax.append(Gyroscope_001)
 
 Motion_Controller = Actuator('destination')
-Ressac.append(Motion_Controller)
+RMax.append(Motion_Controller)
 
 
 # Scene configuration
