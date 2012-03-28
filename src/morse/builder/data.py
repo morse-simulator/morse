@@ -154,6 +154,22 @@ MORSE_MIDDLEWARE_DICT = {
         'rosace': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_target', 'morse/middleware/pocolibs/sensors/target', 'targetPos'],
         'ptu_posture': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_platine_posture', 'morse/middleware/pocolibs/sensors/platine_posture', 'platineState']
     },
+
+    'text': {
+        'accelerometer': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'battery': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'gps': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'gyroscope': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'imu': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'odometry': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'pose': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'proximity': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'ptu_posture': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'rosace': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+        'thermometer': [MORSE_MIDDLEWARE_MODULE['text'], 'write_data'],
+    },
+
+
 }
 
 
