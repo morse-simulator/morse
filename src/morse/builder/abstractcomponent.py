@@ -147,7 +147,8 @@ class AbstractComponent(object):
                 optional, auto-detect, default=None)
         """
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = self.name)
+        bpy.ops.object.select_pattern(pattern=self.name, case_sensitive=True,
+                                      extend=False)
         bpy.ops.object.game_property_new()
         prop = self._blendobj.game.properties
         # select the last property in the list (which is the one we just added)
