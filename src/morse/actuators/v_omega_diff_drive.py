@@ -9,7 +9,7 @@ class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
     This class will read linear and angular speeds (V, W)
     as input from an external middleware, and then apply them
     to the parent robot.  Differs from the standard V,W controller
-    in that individual wheel speeds are controlled rather than 
+    in that individual wheel speeds are controlled rather than
     chassis speed
     """
 
@@ -49,7 +49,7 @@ class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
             # stop the wheel when velocity is below a given threshold
             for index in self.robot_parent._wheel_index:
                 self.robot_parent._wheel_joints[index].setParam(9,0,100.0)
-            
+
             self._stopped=True
             pass
         else:
@@ -57,18 +57,23 @@ class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
 			# apply a tiny impulse straight down on the object
             if (self._stopped==True):
                 self.robot_parent.blender_obj.applyImpulse(self.robot_parent.blender_obj.position,(0.0,0.1,-0.000001))
-            
+
 			# no longer stopped
             self._stopped=False
-            
+
             # left and right wheel speeds in m/s
-            v_ws_l=(2*self.local_data['v']-self.local_data['w']*self._trackWidth)/2
-            v_ws_r=(2*self.local_data['v']+self.local_data['w']*self._trackWidth)/2
+            #v_ws_l=(2*self.local_data['v']-self.local_data['w']*self._trackWidth)/2
+            #v_ws_r=(2*self.local_data['v']+self.local_data['w']*self._trackWidth)/2
+
+            # Another formula for computing wheel speeds:
+            #  http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
+            v_ws_l = self.local_data['v'] - (self._trackWidth / 2.0) * self.local_data['w']
+            v_ws_r = self.local_data['v'] + (self._trackWidth / 2.0) * self.local_data['w']
 
             # convert to angular speeds
-            w_ws_l=v_ws_l/self._radius
-            w_ws_r=v_ws_r/self._radius
-            
+            w_ws_l = v_ws_l / self._radius
+            w_ws_r = v_ws_r / self._radius
+
             # set wheel speeds - front and rear wheels have the same speed
             # Left side wheels
             self.robot_parent._wheel_joints['FL'].setParam(9,w_ws_l,100.0)
