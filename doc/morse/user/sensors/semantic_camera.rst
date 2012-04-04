@@ -16,7 +16,7 @@ other than the test object is found first by the ray, the object is considered
 to be occluded by something else, even if it is only the center that is being
 blocked.
 
-The cameras make use of Blender's **VideoTexture** module, which requires a
+The cameras make use of Blender's **bge.texture** module, which requires a
 graphic card capable of GLSL shading. Also, the 3D view window in Blender must be
 set to draw **Textured** objects.
 

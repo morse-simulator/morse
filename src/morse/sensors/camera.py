@@ -1,6 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
+<<<<<<< HEAD
 import bge.texture
+=======
+>>>>>>> [bge] s/VideoTexture/bge.texture/g
 import morse.core.sensor
 
 
@@ -120,7 +123,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
         # Reverse the image (boolean game-property)
         # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
-        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/bge.texture#Setup_the_source
+        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         if 'Vertical_Flip' in self.blender_obj: # backward compatibility
             vt_camera.source.flip = self.blender_obj['Vertical_Flip']
 
