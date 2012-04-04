@@ -26,7 +26,7 @@ os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.dirname(
 
 import roslib; roslib.load_manifest("morsetesting")
 import rospy
-import actionlib
+#import actionlib
 import subprocess
 from morsetesting.msg import *
 from geometry_msgs.msg import *
