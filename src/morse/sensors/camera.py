@@ -1,13 +1,12 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
-import VideoTexture
 import morse.core.sensor
 
 
 class CameraClass(morse.core.sensor.MorseSensorClass):
     """ Base class for cameras in MORSE
 
-    This class implements the configuration of the VideoTexture module
+    This class implements the configuration of the bge.texture module
     required by the different cameras, such as video or semantic.
     """
 
@@ -57,12 +56,12 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
                     something must have failed when configuring the cameras")
             return
 
-        # Call the VideoTexture method to refresh the image
+        # Call the bge.texture method to refresh the image
         bge.logic.cameras[self.name()].refresh(True)
 
 
     def _setup_video_texture(self):
-        """ Prepare this camera to use the VideoTexture module.
+        """ Prepare this camera to use the bge.texture module.
         Extract the references to the Blender camera and material where
         the images will be rendered.
         """
@@ -99,14 +98,14 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Get the reference to the scene
         scene = bge.logic.getCurrentScene()
 
-        # Link the objects using VideoTexture
+        # Link the objects using bge.texture
         if not hasattr(bge.logic, 'cameras'):
             bge.logic.cameras = {}
 
-        mat_id = VideoTexture.materialID(screen, material_name)
-        bge.logic.cameras[self.name()] = VideoTexture.Texture(screen, mat_id)
+        mat_id = bge.texture.materialID(screen, material_name)
+        bge.logic.cameras[self.name()] = bge.texture.Texture(screen, mat_id)
         bge.logic.cameras[self.name()].source = \
-                                    VideoTexture.ImageRender(scene, camera)
+                                    bge.texture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
@@ -121,7 +120,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
 
         # Reverse the image (boolean game-property)
-        # cf. bge.logic.video.source.flip (VideoTexture.ImageRender)
+        # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         if 'Vertical_Flip' in self.blender_obj: # backward compatibility
             bge.logic.cameras[self.name()].source.flip = self.blender_obj['Vertical_Flip']
