@@ -14,14 +14,14 @@ class PR2(Robot):
         try:
             self._blendobj = bpy.context.selected_objects[0]
             head_obj = self._get_selected("head_armature")
-            l_arm_obj = self._get_selected("l_arm_armature")
-            r_arm_obj = self._get_selected("r_arm_armature")
+            l_arm_obj = self._get_selected("l_arm_controller")
+            r_arm_obj = self._get_selected("r_arm_controller")
             torso_lift_obj = self._get_selected("torso_lift_armature")
             self._head_tilt_link = self._get_selected("head_tilt_link")
 
             self.head = AbstractComponent(head_obj, "head_armature")
-            self.l_arm = AbstractComponent(l_arm_obj, "l_arm_armature")
-            self.r_arm = AbstractComponent(r_arm_obj, "r_arm_armature")
+            self.l_arm = AbstractComponent(l_arm_obj, "l_arm_controller")
+            self.r_arm = AbstractComponent(r_arm_obj, "r_arm_controller")
             self.torso_lift = AbstractComponent(torso_lift_obj, "torso_lift_armature")
             
         except KeyError:
