@@ -215,7 +215,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         if img_string != None and img_string != '':
             try:
                 data = img_string
-                # Pass the data as is, from the VideoTexture module
+                # Pass the data as is, from the bge.texture module
                 # NOTE: This requires the patch to yarp-python bindings
                 img.setExternal(data,img_X,img_Y)
             except TypeError as detail:

@@ -1,4 +1,4 @@
-import GameLogic
+import bge
 import mathutils
 from math import sqrt
 
@@ -24,8 +24,8 @@ class Transformation3d:
         reference
 
         """
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
+        if bge.logic.blenderVersion <= (2,56,0):
+        #if bge.logic.pythonVersion <= (3,1,0):
             self.matrix = mathutils.Matrix([1, 0, 0, 0], \
                                            [0, 1, 0, 0], \
                                            [0, 0, 1, 0], \
@@ -132,8 +132,8 @@ class Transformation3d:
         between obj (a blender object) and the blender world origin
         """
         rot_matrix = obj.orientation
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
+        if bge.logic.blenderVersion <= (2,56,0):
+        #if bge.logic.pythonVersion <= (3,1,0):
             self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
                                                           rot_matrix[2])
             self.matrix.resize4x4()
@@ -161,8 +161,8 @@ class Transformation3d:
         that move along the X axis.
         """
         rot_matrix = obj.orientation
-        if GameLogic.blenderVersion <= (2,56,0):
-        #if GameLogic.pythonVersion <= (3,1,0):
+        if bge.logic.blenderVersion <= (2,56,0):
+        #if bge.logic.pythonVersion <= (3,1,0):
             self.matrix = mathutils.Matrix(rot_matrix[0], rot_matrix[1], \
                                                           rot_matrix[2])
             self.matrix = self.matrix * self.correction_matrix

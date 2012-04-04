@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import math
 import morse.helpers.math as morse_math
 import morse.core.sensor

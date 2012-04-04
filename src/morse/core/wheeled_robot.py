@@ -116,7 +116,7 @@ class MorsePhysicsRobotClass(FourWheelRobotClass):
     def build_vehicle(self):
         """ Apply the constraints to the vehicle parts. """
 
-        # get a link to the blender scene to look for wheel and suspension objectsscene = GameLogic.getCurrentScene()
+        # get a link to the blender scene to look for wheel and suspension objectsscene = bge.logic.getCurrentScene()
         # get needed parameters from the blender object
         self.ReadGenericParameters()
 
@@ -136,7 +136,7 @@ class MorsePhysicsRobotClass(FourWheelRobotClass):
 #    def BuildModelWithSuspension(self):
 #        """ Add all the constraints to attach the wheels to
 #        the a-arms and then the a-arms to the body """
-#        scene = GameLogic.getCurrentScene()
+#        scene = bge.logic.getCurrentScene()
 #        # get suspension arm ID's
 #        # front left A-arm
 #        try:

@@ -3,7 +3,7 @@ import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); ro
 import rospy
 import std_msgs
 from geometry_msgs.msg import Twist
-import GameLogic
+import bge
 import math
 import mathutils
 

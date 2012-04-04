@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 
 from morse.core.modifier import MorseModifierClass
 
@@ -13,7 +13,7 @@ class MorseUTMClass(MorseModifierClass):
         self._global_z = 0.0
 
         # Get the global coordinates if defined in the scene
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
         script_empty_name = 'Scene_Script_Holder'
 
         script_empty = scene.objects[script_empty_name]

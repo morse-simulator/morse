@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 
 import bpy
 # Import the ontology server proxy
@@ -56,17 +56,17 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # TrackedObject is a dictionary containing the list of tracked objects 
         # (->meshes with a class property set up) as keys
         #  and the bounding boxes of these objects as value.
-        if not hasattr(GameLogic, 'trackedObjects'):
+        if not hasattr(bge.logic, 'trackedObjects'):
             logger.info('Initialization of tracked objects:')
-            scene = GameLogic.getCurrentScene()
-            GameLogic.trackedObjects = dict.fromkeys(passive_objects.active_objects())
+            scene = bge.logic.getCurrentScene()
+            bge.logic.trackedObjects = dict.fromkeys(passive_objects.active_objects())
 
             # Store the bounding box of the marked objects
-            for obj in GameLogic.trackedObjects.keys():
+            for obj in bge.logic.trackedObjects.keys():
 
                 # bound_box returns the bounding box in local space
                 #  instead of world space.
-                GameLogic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
+                bge.logic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
 
                 details = passive_objects.details(obj)
                 logger.info('    - {0} (type:{1})'.format(details['label'], details['type']))
@@ -100,7 +100,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         visibles = self.visibles
 
         # check which objects are visible
-        for obj in GameLogic.trackedObjects.keys():
+        for obj in bge.logic.trackedObjects.keys():
             label = passive_objects.label(obj)
             visible = self._check_visible(obj)
             obj_dict = dict([('name', label), ('position', obj.worldPosition)]) 
@@ -122,7 +122,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         
         # Create dictionaries
         self.local_data['visible_objects'] = []
-        for obj in GameLogic.trackedObjects.keys():
+        for obj in bge.logic.trackedObjects.keys():
             label = passive_objects.label(obj)
             if label in visibles:
                 # Create dictionary to contain object name, type, description, position and orientation
@@ -157,7 +157,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         """ Check if an object lies inside of the camera frustrum. """
         # TrackedObjects was filled at initialization
         #  with the object's bounding boxes
-        bb = GameLogic.trackedObjects[obj]
+        bb = bge.logic.trackedObjects[obj]
         pos = obj.position
 
         logger.debug("\n--- NEW TEST ---")

@@ -54,4 +54,4 @@ Game Engine was started. Time is measured in seconds, and stored as a floating
 point value with two decimals. It is obtained using the Python method:
 ``time.clock()``, which relies on the C function of the same name.
 Simulation time is accessible from any Python script that imports the
-``GameLogic`` module, by reading the variable: ``GameLogic.current_time``.
+``bge.logic`` module, by reading the variable: ``bge.logic.current_time``.

@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import morse.core.robot
 from morse.core.services import service
 
@@ -29,7 +29,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
             human.applyMovement( [speed,0,0], True )
             human.applyRotation( [0,0,rotation], True )
         else :
-            scene = GameLogic.getCurrentScene()
+            scene = bge.logic.getCurrentScene()
             target = scene.objects['IK_Target_Empty.R']
 
             target.applyMovement([0.0, rotation, 0.0], True)
@@ -42,7 +42,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         """
         
         human = self.blender_obj
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
         target = scene.objects['Target_Empty']
         
         if human['Manipulate']:
@@ -57,7 +57,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         """
         human = self.blender_obj
         if human['Manipulate']:
-            scene = GameLogic.getCurrentScene()
+            scene = bge.logic.getCurrentScene()
             hand_empty = scene.objects['Hand_Grab.R']
 
             selected_object = hand_empty['Near_Object']
@@ -96,7 +96,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         
         human = self.blender_obj
         if human['Manipulate']:
-            scene = GameLogic.getCurrentScene()
+            scene = bge.logic.getCurrentScene()
             target = scene.objects['IK_Target_Empty.R']
             target.applyMovement([diff, 0.0, 0.0], True)  
         
@@ -107,7 +107,7 @@ class HumanClass(morse.core.robot.MorseRobotClass):
         """
         
         human = self.blender_obj
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
         hand_target = scene.objects['IK_Target_Empty.R']
         head_target = scene.objects['Target_Empty']
 
