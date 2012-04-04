@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import math
-import GameLogic
+import bge
 from morse.middleware.pocolibs.sensors.Viam_Poster import ors_viam_poster
 
 def init_extra_module(self, component_instance, function, mw_data):
@@ -33,7 +33,7 @@ def init_viam_poster(component_instance, poster_name):
     pos_cam = []
     # Get the names of the data for the cameras
     for camera_name in component_instance.camera_list:
-        camera_instance = GameLogic.componentDict[camera_name]
+        camera_instance = bge.logic.componentDict[camera_name]
 
         # Create an image structure for each camera
         image_init = ors_viam_poster.simu_image_init()
@@ -100,7 +100,7 @@ def write_viam(self, component_instance):
     # Cycle throught the cameras on the base
     # In normal circumstances, there will be two for stereo
     for camera_name in component_instance.camera_list:
-        camera_instance = GameLogic.componentDict[camera_name]
+        camera_instance = bge.logic.componentDict[camera_name]
 
         main_to_sensor = camera_instance.sensor_to_robot_position_3d()
 

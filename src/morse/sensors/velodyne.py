@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import mathutils
 import math
 import morse.core.sensor
@@ -85,7 +85,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
         # Create a vector for the mathutils operations
         vector_point = mathutils.Vector()
 
-        logger.debug("=== NEW SCAN at time %s ===" % GameLogic.current_time)
+        logger.debug("=== NEW SCAN at time %s ===" % bge.logic.current_time)
         logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
         # Get the mesh for the semicircle
         for mesh in self._ray_arc.meshes:

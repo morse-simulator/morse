@@ -1,13 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
-import VideoTexture
+import bge
+import bge.texture
 import morse.core.sensor
 
 
 class CameraClass(morse.core.sensor.MorseSensorClass):
     """ Base class for cameras in MORSE
 
-    This class implements the configuration of the VideoTexture module
+    This class implements the configuration of the bge.texture module
     required by the different cameras, such as video or semantic.
     """
 
@@ -52,17 +52,17 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         """ Update the texture image. """
 
         # Exit if the cameras could not be prepared
-        if not hasattr(GameLogic, 'cameras'):
-            logger.warning("GameLogic does not have the 'cameras' variable, \
+        if not hasattr(bge.logic, 'cameras'):
+            logger.warning("bge.logic does not have the 'cameras' variable, \
                     something must have failed when configuring the cameras")
             return
 
-        # Call the VideoTexture method to refresh the image
-        GameLogic.cameras[self.name()].refresh(True)
+        # Call the bge.texture method to refresh the image
+        bge.logic.cameras[self.name()].refresh(True)
 
 
     def _setup_video_texture(self):
-        """ Prepare this camera to use the VideoTexture module.
+        """ Prepare this camera to use the bge.texture module.
         Extract the references to the Blender camera and material where
         the images will be rendered.
         """
@@ -97,15 +97,15 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             return (False)
 
         # Get the reference to the scene
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
 
-        # Link the objects using VideoTexture
-        if not hasattr(GameLogic, 'cameras'):
-            GameLogic.cameras = {}
+        # Link the objects using bge.texture
+        if not hasattr(bge.logic, 'cameras'):
+            bge.logic.cameras = {}
 
-        mat_id = VideoTexture.materialID(screen, material_name)
-        vt_camera = VideoTexture.Texture(screen, mat_id)
-        vt_camera.source = VideoTexture.ImageRender(scene, camera)
+        mat_id = bge.texture.materialID(screen, material_name)
+        vt_camera = bge.texture.Texture(screen, mat_id)
+        vt_camera.source = bge.texture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
@@ -119,12 +119,12 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
                 (self.name(), vt_camera.source.capsize))
 
         # Reverse the image (boolean game-property)
-        # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
-        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
+        # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
+        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/bge.texture#Setup_the_source
         if 'Vertical_Flip' in self.blender_obj: # backward compatibility
             vt_camera.source.flip = self.blender_obj['Vertical_Flip']
 
-        GameLogic.cameras[self.name()] = vt_camera
+        bge.logic.cameras[self.name()] = vt_camera
 #
 #        import inspect
 #        logger.error("CAMERA SOURCE '%s':" % self.name())

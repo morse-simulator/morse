@@ -1,4 +1,4 @@
-import GameLogic
+import bge
 import mathutils
 from math import sqrt
 
@@ -169,7 +169,7 @@ class Transformation3d:
 
         pos = obj.worldPosition
         for i in range(0, 3):
-            if GameLogic.blenderVersion <= (2,62,0):
+            if bge.logic.blenderVersion <= (2,62,0):
                 self.matrix[3][i] = pos[i]
             else:
                 self.matrix[i][3] = pos[i]

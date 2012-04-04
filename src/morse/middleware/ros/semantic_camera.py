@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 import std_msgs
-import GameLogic
+import bge
 import math
 import mathutils
 

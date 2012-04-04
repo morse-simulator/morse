@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import morse.core.sensor
 
 class PTUPostureClass(morse.core.sensor.MorseSensorClass):
@@ -29,7 +29,7 @@ class PTUPostureClass(morse.core.sensor.MorseSensorClass):
                 logger.debug("Found a PTU called: %s" % child.name)
                 #self._ptu_obj = child
                 try:
-                    self._ptu_obj = GameLogic.componentDict[child.name]
+                    self._ptu_obj = bge.logic.componentDict[child.name]
                     self._ptu_found = True
                 except:
                     return

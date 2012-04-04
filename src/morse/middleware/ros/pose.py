@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-import GameLogic
+import bge
 import math
 import mathutils
 

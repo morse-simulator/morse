@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 from morse.core.services import service
 from morse.core import status
 from morse.blender.main import reset_objects as main_reset, close_all as main_close, quit as main_terminate
@@ -11,7 +11,7 @@ def list_robots():
 
     Uses the list generated during the initialisation of the scenario
     """
-    return [obj.name for obj in GameLogic.robotDict.keys()]
+    return [obj.name for obj in bge.logic.robotDict.keys()]
 
 @service(component = "simulation")
 def reset_objects():
@@ -20,7 +20,7 @@ def reset_objects():
     Upon receiving the request using sockets, call the
     'reset_objects' function located in morse/blender/main.py
     """
-    contr = GameLogic.getCurrentController()
+    contr = bge.logic.getCurrentController()
     main_reset(contr)
     return "Objects restored to initial position"
 
@@ -28,7 +28,7 @@ def reset_objects():
 def quit():
     """ Cleanly quit the simulation
     """
-    contr = GameLogic.getCurrentController()
+    contr = bge.logic.getCurrentController()
     main_close(contr)
     main_terminate(contr)
     
@@ -36,7 +36,7 @@ def quit():
 def terminate():
     """ Terminate the simulation (no finalization done!)
     """
-    contr = GameLogic.getCurrentController()
+    contr = bge.logic.getCurrentController()
     main_terminate(contr)
 
 @service(component = "simulation")
@@ -44,7 +44,7 @@ def activate(component_name):
     """ Enable the functionality of the component specified
     """
     try:
-        GameLogic.componentDict[component_name]._active = True
+        bge.logic.componentDict[component_name]._active = True
     except KeyError as detail:
         logger.warn("Component %s not found. Can't activate" % detail)
         raise MorseRPCTypeError("Component %s not found. Can't activate" % detail)
@@ -54,7 +54,7 @@ def deactivate(component_name):
     """ Stop the specified component from calling its default_action method
     """
     try:
-        GameLogic.componentDict[component_name]._active = False
+        bge.logic.componentDict[component_name]._active = False
     except KeyError as detail:
         logger.warn("Component %s not found. Can't deactivate" % detail)
         raise MorseRPCTypeError("Component %s not found. Can't deactivate" % detail)

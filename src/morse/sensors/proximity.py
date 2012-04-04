@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 
 import morse.core.sensor
 from morse.core.services import service
@@ -51,7 +51,7 @@ class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
         parent = self.robot_parent.blender_obj
 
         # Get the tracked sources
-        for obj in GameLogic.getCurrentScene().objects:
+        for obj in bge.logic.getCurrentScene().objects:
             try:
                 obj[self._tag]
                 # Skip distance to self

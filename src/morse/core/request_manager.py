@@ -3,7 +3,7 @@ logger.setLevel(logging.DEBUG)
 import os
 import sys
 import uuid
-import GameLogic
+import bge
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
@@ -278,14 +278,14 @@ class RequestManager(object):
         """
         component_name, service_name = self._pending_requests[request_id]
 
-        for component in GameLogic.componentDict.values():
+        for component in bge.logic.componentDict.values():
             if component.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(component))
                 component.interrupt()
                 return
 
         # if not found, search in the overlay dictionnary
-        for overlay in GameLogic.overlayDict.values():
+        for overlay in bge.logic.overlayDict.values():
             if overlay.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(overlay))
                 overlay.interrupt()

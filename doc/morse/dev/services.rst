@@ -134,12 +134,12 @@ returns the list of robot declared in the simulation:
 
 .. code-block:: python
 
-    import GameLogic
+    import bge
     from morse.core.services import service
 
     @service(component = "simulation")
     def list_robots():
-        return [obj.name for obj in GameLogic.robotDict.keys()]
+        return [obj.name for obj in bge.logic.robotDict.keys()]
 
 The pseudo-component ``simulation`` is used as *namespace* for the
 service: this one is accessible as ``simulation.list_robots``.

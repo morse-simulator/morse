@@ -14,7 +14,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from bge import logic, events, render
 import math
-import GameLogic
+import bge
 from mathutils import Matrix
 
 AZERTY = False
@@ -38,7 +38,7 @@ def move(contr):
         that will make the camera move in 3D space. """
     
     # Get the currently active camera to adapt control method
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     active_camera = scene.active_camera
     
     # get the object this script is attached to
@@ -461,7 +461,7 @@ def rotate(co):
     pos.worldPosition = ow.worldPosition
 
     # Get active camera
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     active_camera = scene.active_camera
     
     if ow['Manipulate']:

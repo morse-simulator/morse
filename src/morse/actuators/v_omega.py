@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
-import GameLogic
+import bge
 import morse.core.actuator
 
 class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
@@ -46,7 +46,7 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Tick rate is the real measure of time in Blender.
         # By default it is set to 60, regardles of the FPS
         # If logic tick rate is 60, then: 1 second = 60 ticks
-        ticks = GameLogic.getLogicTicRate()
+        ticks = bge.logic.getLogicTicRate()
 
         # Scale the speeds to the time used by Blender
         try:

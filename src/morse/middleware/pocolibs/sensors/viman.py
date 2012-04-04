@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import time
 import re
-import GameLogic
+import bge
 from morse.middleware.pocolibs.sensors.Viman_Poster import ors_viman_poster
 from morse.helpers.transformation import Transformation3d
 from morse.helpers import passive_objects
@@ -46,8 +46,8 @@ def init_viman_poster(self, component_instance, poster_name):
     self.scene_object_list += _read_object_list()
 
     #Complete the list with the objects already tracked by the semantic cam.
-    if hasattr(GameLogic, 'passiveObjectsDict'):
-        self.scene_object_list += [obj['label'] for obj in GameLogic.passiveObjectsDict.values()]
+    if hasattr(bge.logic, 'passiveObjectsDict'):
+        self.scene_object_list += [obj['label'] for obj in bge.logic.passiveObjectsDict.values()]
 
     if not self.scene_object_list:
         logger.error("No VIMAN object to track. Make sure some objects have " +\
@@ -81,7 +81,7 @@ def write_viman(self, component_instance):
     poster_id = self._poster_dict[component_instance.blender_obj.name]
     parent = component_instance.robot_parent
 
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
     
     seen_objects = [obj['name'] for obj in component_instance.local_data['visible_objects']]
 

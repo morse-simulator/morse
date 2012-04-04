@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 logger.setLevel(logging.DEBUG)
-import GameLogic
+import bge
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.services import service
 from morse.core import status
@@ -8,12 +8,12 @@ import morse.helpers.transformation
 
 def _robot_exists(robot):
     try:
-        for obj, robot_instance in GameLogic.robotDict.items():
+        for obj, robot_instance in bge.logic.robotDict.items():
             if obj.name == robot:
                 return robot_instance
     except KeyError:
         try:
-            for obj, robot_instance in GameLogic.externalRobotDict.items():
+            for obj, robot_instance in bge.logic.externalRobotDict.items():
                 if obj.name == robot:
                     return robot_instance
         except KeyError:

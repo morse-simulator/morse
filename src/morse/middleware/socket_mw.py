@@ -112,7 +112,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
         # TODO To use a new special component instead of 'simulation',
         # uncomment the line :-)
-        # GameLogic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
+        # bge.logic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
         services.do_service_registration(self.list_streams, 'simulation')
         services.do_service_registration(self.get_stream_port, 'simulation')
     

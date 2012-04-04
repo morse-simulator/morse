@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
-import GameLogic
+import bge
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -16,7 +16,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     component_instance.output_functions.append(function)
 
     # post lidar settings to the database only once at startup
-    curTime=GameLogic.current_time
+    curTime=bge.logic.current_time
     self.m.Notify('sScanAngle',component_instance.blender_obj['scan_window'],curTime) 
     self.m.Notify('sScanResolution',component_instance.blender_obj['resolution'],curTime) 
     self.m.Notify('sScanRange',component_instance.blender_obj['laser_range'],curTime)

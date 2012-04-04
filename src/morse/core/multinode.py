@@ -11,11 +11,11 @@ class SimulationNodeClass (object):
     # Make this an abstract class
     __metaclass__ = ABCMeta
     
-    def __init__(self, name, server_address, server_port, GameLogic):
+    def __init__(self, name, server_address, server_port, bge.logic):
         self.node_name = name
         self.host = server_address
         self.port = server_port
-        self.gl = GameLogic
+        self.gl = bge.logic
         self.initialize()
 
     def __del__(self):

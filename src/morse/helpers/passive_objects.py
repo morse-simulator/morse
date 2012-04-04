@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 
 
 def active_objects():
@@ -7,23 +7,23 @@ def active_objects():
     'Object' property set to True.
     """
 
-    if not GameLogic.passiveObjectsDict:
+    if not bge.logic.passiveObjectsDict:
         logger.error("Initialization error! the passive objects dictionary has not been built!")
         return {}
         #return None
 
-    return GameLogic.passiveObjectsDict.keys()
+    return bge.logic.passiveObjectsDict.keys()
 
 def graspable_objects():
     """ Returns all objects in current scene that have the
     'Graspable' property set to True, amongst active objects.
     """
 
-    if not GameLogic.passiveObjectsDict:
+    if not bge.logic.passiveObjectsDict:
         logger.error("Initialization error! the passive objects dictionary has not been built!")
         return None
 
-    return [obj for (obj, details) in GameLogic.passiveObjectsDict.items() if details['graspable']]
+    return [obj for (obj, details) in bge.logic.passiveObjectsDict.items() if details['graspable']]
 
 def details(obj):
     """ Returns a dictionary containing the differents properties for a given
@@ -42,14 +42,14 @@ def details(obj):
 
     """
 
-    if not GameLogic.passiveObjectsDict:
+    if not bge.logic.passiveObjectsDict:
         logger.error("Initialization error! the passive objects dictionary has not been built!")
         return None
 
-    if not obj in GameLogic.passiveObjectsDict.keys():
+    if not obj in bge.logic.passiveObjectsDict.keys():
         return None
     else:
-        return GameLogic.passiveObjectsDict[obj]
+        return bge.logic.passiveObjectsDict[obj]
 
 def label(obj):
     """ Returns the label of a given active object.
@@ -80,10 +80,10 @@ def obj_from_label(label):
 
     """
 
-    if not GameLogic.passiveObjectsDict:
+    if not bge.logic.passiveObjectsDict:
         logger.error("Initialization error! the passive objects dictionary has not been built!")
         return None
 
-    for obj, det in GameLogic.passiveObjectsDict.items():
+    for obj, det in bge.logic.passiveObjectsDict.items():
         if det['label'] == label:
             return obj

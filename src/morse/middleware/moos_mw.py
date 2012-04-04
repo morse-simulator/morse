@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
-import GameLogic
+import bge
 
 class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
     """ Handle communication between Blender and MOOS."""
@@ -96,7 +96,7 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
             logger.debug(parent_name+"_"+component_instance.blender_obj.name+"_"+variable)
             logger.debug(str(data))
             logger.debug(type(data))
-            self.m.Notify(parent_name+"_"+component_instance.blender_obj.name+"_"+variable,str(data),GameLogic.current_time)
+            self.m.Notify(parent_name+"_"+component_instance.blender_obj.name+"_"+variable,str(data),bge.logic.current_time)
 
                             
     # NOTE: This is a dummy function that is executed for every actuator. Since ROS uses the concept of callbacks, it does nothing ...    
