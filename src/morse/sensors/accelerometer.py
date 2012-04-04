@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import math
 import morse.core.sensor
 
@@ -33,7 +33,7 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         # Tick rate is the real measure of time in Blender.
         # By default it is set to 60, regardles of the FPS
         # If logic tick rate is 60, then: 1 second = 60 ticks
-        self.ticks = GameLogic.getLogicTicRate()
+        self.ticks = bge.logic.getLogicTicRate()
 
         self.local_data['distance'] = 0.0
         self.local_data['velocity'] = [0.0, 0.0, 0.0]

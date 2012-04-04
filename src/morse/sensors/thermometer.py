@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import GameLogic
+import bge
 import morse.core.sensor
 
 class ThermometerClass(morse.core.sensor.MorseSensorClass):
@@ -20,7 +20,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
         self._fire_temp = 200.0
 
         # Get the global coordinates of defined in the scene
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
         script_empty_name = 'Scene_Script_Holder'
 
         script_empty = scene.objects[script_empty_name]
@@ -37,7 +37,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
         min_distance = 100000.0
         fires = False
 
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
         # Look for the fire sources marked so
         for obj in scene.objects:
             try:

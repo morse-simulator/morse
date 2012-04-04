@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
 import morse.core.middleware
-import GameLogic
+import bge
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
@@ -25,7 +25,7 @@ def post_pose(self, component_instance):
     parent_name = component_instance.robot_parent.blender_obj.name
     
     # post the simulation time so that it can be synced to MOOSTime
-    self.m.Notify('actual_time',GameLogic.current_time,curTime)
+    self.m.Notify('actual_time',bge.logic.current_time,curTime)
     # post the robot position
     self.m.Notify('simEast',component_instance.local_data['x'],curTime)
     self.m.Notify('simNorth',component_instance.local_data['y'],curTime)

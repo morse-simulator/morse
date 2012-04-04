@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import morse.core.robot
 import PhysicsConstraints
 
@@ -21,8 +21,8 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         #  This section runs only once to create the vehicle:
         #
         
-        cont = GameLogic.getCurrentController()
-        scene = GameLogic.getCurrentScene()
+        cont = bge.logic.getCurrentController()
+        scene = bge.logic.getCurrentScene()
 
         for child in obj.children:
             if 'wheel1' in child.name:

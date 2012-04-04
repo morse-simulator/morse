@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 import VideoTexture
 import morse.core.sensor
 
@@ -52,13 +52,13 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         """ Update the texture image. """
 
         # Exit if the cameras could not be prepared
-        if not hasattr(GameLogic, 'cameras'):
-            logger.warning("GameLogic does not have the 'cameras' variable, \
+        if not hasattr(bge.logic, 'cameras'):
+            logger.warning("bge.logic does not have the 'cameras' variable, \
                     something must have failed when configuring the cameras")
             return
 
         # Call the VideoTexture method to refresh the image
-        GameLogic.cameras[self.name()].refresh(True)
+        bge.logic.cameras[self.name()].refresh(True)
 
 
     def _setup_video_texture(self):
@@ -97,32 +97,32 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             return (False)
 
         # Get the reference to the scene
-        scene = GameLogic.getCurrentScene()
+        scene = bge.logic.getCurrentScene()
 
         # Link the objects using VideoTexture
-        if not hasattr(GameLogic, 'cameras'):
-            GameLogic.cameras = {}
+        if not hasattr(bge.logic, 'cameras'):
+            bge.logic.cameras = {}
 
         mat_id = VideoTexture.materialID(screen, material_name)
-        GameLogic.cameras[self.name()] = VideoTexture.Texture(screen, mat_id)
-        GameLogic.cameras[self.name()].source = \
+        bge.logic.cameras[self.name()] = VideoTexture.Texture(screen, mat_id)
+        bge.logic.cameras[self.name()].source = \
                                     VideoTexture.ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
 
         # Set the background to be used for the render
-        GameLogic.cameras[self.name()].source.background = self.bg_color
+        bge.logic.cameras[self.name()].source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
-        GameLogic.cameras[self.name()].source.capsize = \
+        bge.logic.cameras[self.name()].source.capsize = \
                 [self.image_width, self.image_height]
         logger.info("Camera '{0}': Exporting an image of capsize: {1} pixels". \
-                format(self.name(), GameLogic.cameras[self.name()].source.capsize))
+                format(self.name(), bge.logic.cameras[self.name()].source.capsize))
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
 
         # Reverse the image (boolean game-property)
-        # cf. GameLogic.video.source.flip (VideoTexture.ImageRender)
+        # cf. bge.logic.video.source.flip (VideoTexture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         if 'Vertical_Flip' in self.blender_obj: # backward compatibility
-            GameLogic.cameras[self.name()].source.flip = self.blender_obj['Vertical_Flip']
+            bge.logic.cameras[self.name()].source.flip = self.blender_obj['Vertical_Flip']
 

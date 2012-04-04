@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import GameLogic
+import bge
 
 """ Generic Python Module to be called by all MORSE components.
     It will locate the calling object in the dictionary,
@@ -9,7 +9,7 @@ def robot_action(contr):
     """ Call the 'action' method of the correct robot. """
     # Do nothing if morse has not been properly initialised
     try:
-        if not GameLogic.morse_initialised:
+        if not bge.logic.morse_initialised:
             return
     except AttributeError as detail:
         return
@@ -20,7 +20,7 @@ def robot_action(contr):
 
         # Get the intance of this objects class
         try:
-            robot_object = GameLogic.robotDict[obj]
+            robot_object = bge.logic.robotDict[obj]
             if robot_object:
                 robot_object.action()
         # Do nothing if the component was not initialised.
@@ -33,7 +33,7 @@ def sensor_action(contr):
     """ Call the 'action' method of the correct sensor. """
     # Do nothing if morse has not been properly initialised
     try:
-        if not GameLogic.morse_initialised:
+        if not bge.logic.morse_initialised:
             return
     except AttributeError as detail:
         return
@@ -44,7 +44,7 @@ def sensor_action(contr):
         
         # Get the intance of this objects class
         try:
-            sensor_object = GameLogic.componentDict[obj.name]
+            sensor_object = bge.logic.componentDict[obj.name]
             if sensor_object:
                 sensor_object.action()
         # Do nothing if the component was not initialised.
@@ -57,7 +57,7 @@ def actuator_action(contr):
     """ Call the 'action' method of the correct actuator. """
     # Do nothing if morse has not been properly initialised
     try:
-        if not GameLogic.morse_initialised:
+        if not bge.logic.morse_initialised:
             return
     except AttributeError as detail:
         return
@@ -68,7 +68,7 @@ def actuator_action(contr):
 
         # Get the instance of this objects class
         try:
-            actuator_object = GameLogic.componentDict[obj.name]
+            actuator_object = bge.logic.componentDict[obj.name]
             if actuator_object:
                 actuator_object.action()
         # Do nothing if the component was not initialised.
@@ -85,5 +85,5 @@ def mw_action(contr):
     #obj = contr.owner
     
     # Get the intance of this objects class
-    #mw_object = GameLogic.componentDict[obj.name]
+    #mw_object = bge.logic.componentDict[obj.name]
     #mw_object.action()

@@ -16,7 +16,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 
 import math
-import GameLogic
+import bge
 import mathutils
 import morse.core.sensor
 from morse.core.exceptions import MorseRPCInvokationError
@@ -149,7 +149,7 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
     def default_action(self):
         """ Look for nearby victims, and heal when instructed to """
         # Look for victims in the cone of the sensor
-        contr = GameLogic.getCurrentController()
+        contr = bge.logic.getCurrentController()
         radar = contr.sensors['Radar']
 
         if radar.triggered:

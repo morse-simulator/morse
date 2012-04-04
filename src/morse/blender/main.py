@@ -5,7 +5,7 @@ import os
 import re
 import time
 import bpy
-import GameLogic
+import bge
 # The service management
 from morse.core.services import MorseServices
 
@@ -49,10 +49,10 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         robot_instance.components.append (child)
 
         # Create an instance of the component class
-        #  and add it to the component list of GameLogic
+        #  and add it to the component list of bge.logic
         instance = create_instance (child, robot_instance)
         if instance != None:
-            GameLogic.componentDict[child.name] = instance
+            bge.logic.componentDict[child.name] = instance
         else:
             logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -78,44 +78,44 @@ def create_dictionaries ():
 
     # Create a dictionary that stores initial positions of all objects
     # in the simulation, used to reset the simulation.
-    if not hasattr(GameLogic, 'blender_objects'):
-        GameLogic.blender_objects = {}
+    if not hasattr(bge.logic, 'blender_objects'):
+        bge.logic.blender_objects = {}
 
     # Create a dictionary of the components in the scene
-    if not hasattr(GameLogic, 'componentDict'):
-        GameLogic.componentDict = {}
+    if not hasattr(bge.logic, 'componentDict'):
+        bge.logic.componentDict = {}
 
     # Create a dictionary of the robots in the scene
-    if not hasattr(GameLogic, 'robotDict'):
-        GameLogic.robotDict = {}
+    if not hasattr(bge.logic, 'robotDict'):
+        bge.logic.robotDict = {}
 
     # Create a dictionary of the external robots in the scene
     # Used for the multi-node simulation
-    if not hasattr(GameLogic, 'externalRobotDict'):
-        GameLogic.externalRobotDict = {}
+    if not hasattr(bge.logic, 'externalRobotDict'):
+        bge.logic.externalRobotDict = {}
 
     # Create a dictionnary with the passive, but interactive (ie, with an
     # 'Object' property) objects in the scene.
-    if not hasattr(GameLogic, 'passiveObjectsDict'):
-        GameLogic.passiveObjectsDict = {}
+    if not hasattr(bge.logic, 'passiveObjectsDict'):
+        bge.logic.passiveObjectsDict = {}
 
     # Create a dictionary with the modifiers
-    if not hasattr(GameLogic, 'modifierDict'):
-        GameLogic.modifierDict = {}
+    if not hasattr(bge.logic, 'modifierDict'):
+        bge.logic.modifierDict = {}
 
     # Create a dictionary with the middlewares used
-    if not hasattr(GameLogic, 'mwDict'):
-        GameLogic.mwDict = {}
+    if not hasattr(bge.logic, 'mwDict'):
+        bge.logic.mwDict = {}
 
     # Create a dictionary with the service used
-    if not hasattr(GameLogic, 'serviceDict'):
-        GameLogic.serviceDict = {}
+    if not hasattr(bge.logic, 'serviceDict'):
+        bge.logic.serviceDict = {}
 
     # Create a dictionnary with the overlaid used
-    if not hasattr(GameLogic, 'overlayDict'):
-        GameLogic.overlayDict = {}
+    if not hasattr(bge.logic, 'overlayDict'):
+        bge.logic.overlayDict = {}
 
-    scene = GameLogic.getCurrentScene()
+    scene = bge.logic.getCurrentScene()
 
     # Store the position and orientation of all objects
     for obj in scene.objects:
@@ -123,7 +123,7 @@ def create_dictionaries ():
             import mathutils
             pos = mathutils.Vector(obj.worldPosition)
             ori = mathutils.Matrix(obj.worldOrientation)
-            GameLogic.blender_objects[obj] = [pos, ori]
+            bge.logic.blender_objects[obj] = [pos, ori]
 
     # Get the list of passive interactive objects.
 
@@ -140,12 +140,12 @@ def create_dictionaries ():
                        'type': obj['Type'] if 'Type' in obj else "Object",
                        'graspable': obj['Graspable'] if 'Graspable' in obj else False
                       }
-            GameLogic.passiveObjectsDict[obj] = details
+            bge.logic.passiveObjectsDict[obj] = details
             logger.info("Added {name} as a {graspable}active object".format(
                                  name = details['label'],
                                  graspable = "graspable " if details['graspable'] else ""))
 
-    if not GameLogic.passiveObjectsDict:
+    if not bge.logic.passiveObjectsDict:
         logger.info("No passive objects in the scene.")
 
     # Get the robots
@@ -155,7 +155,7 @@ def create_dictionaries ():
             # Create an object instance and store it
             instance = create_instance (obj)
             if instance != None:
-                GameLogic.robotDict[obj] = instance
+                bge.logic.robotDict[obj] = instance
             else:
                 return False
         except KeyError as detail:
@@ -165,13 +165,13 @@ def create_dictionaries ():
             # Create an object instance and store it
             instance = create_instance (obj)
             if instance != None:
-                GameLogic.externalRobotDict[obj] = instance
+                bge.logic.externalRobotDict[obj] = instance
             else:
                 return False
         except KeyError as detail:
             pass
     
-    if not (GameLogic.robotDict or GameLogic.externalRobotDict): # No robot!
+    if not (bge.logic.robotDict or bge.logic.externalRobotDict): # No robot!
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     INITIALIZATION ERROR: no robot in your simulation!
@@ -184,12 +184,12 @@ def create_dictionaries ():
 
     
     # Get the robot and its instance
-    for obj, robot_instance in GameLogic.robotDict.items():
+    for obj, robot_instance in bge.logic.robotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, False):
             return False
     
     # Get the external robot and its instance
-    for obj, robot_instance in GameLogic.externalRobotDict.items():
+    for obj, robot_instance in bge.logic.externalRobotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, True):
             return False
   
@@ -197,7 +197,7 @@ def create_dictionaries ():
     for obj in scene.objects:
         try:
             obj['Component_Tag']
-            if obj.name not in GameLogic.componentDict.keys():
+            if obj.name not in bge.logic.componentDict.keys():
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     INITIALIZATION ERROR: the component '""" + obj.name + """' does not
@@ -216,34 +216,34 @@ def create_dictionaries ():
 def check_dictionaries():
     """ Print the contents of the robot and component dictionaries."""
     logger.info("------------------------------------")
-    logger.info("GameLogic has the following robots:")
-    for obj, robot_instance in GameLogic.robotDict.items():
+    logger.info("bge.logic has the following robots:")
+    for obj, robot_instance in bge.logic.robotDict.items():
         logger.info("\tROBOT: '{0}'".format(obj))
         for component in robot_instance.components:
             logger.info ("\t\t- Component: '{0}'".format(component))
 
-    logger.info ("GameLogic has the following external robots:")
-    for obj, robot_position in GameLogic.externalRobotDict.items():
+    logger.info ("bge.logic has the following external robots:")
+    for obj, robot_position in bge.logic.externalRobotDict.items():
         logger.info ("\tROBOT: '{0}'".format(obj))
 
-    logger.info ("GameLogic has the following components:")
-    for obj, component_variables in GameLogic.componentDict.items():
+    logger.info ("bge.logic has the following components:")
+    for obj, component_variables in bge.logic.componentDict.items():
         logger.info ("\tCOMPONENT: '{0}'".format(obj))
 
-    logger.info ("GameLogic has the following modifiers:")
-    for obj, modifier_variables in GameLogic.modifierDict.items():
+    logger.info ("bge.logic has the following modifiers:")
+    for obj, modifier_variables in bge.logic.modifierDict.items():
         logger.info ("\tMODIFIER: '{0}'".format(obj))
         
-    logger.info ("GameLogic has the following middlewares:")
-    for obj, mw_variables in GameLogic.mwDict.items():
+    logger.info ("bge.logic has the following middlewares:")
+    for obj, mw_variables in bge.logic.mwDict.items():
         logger.info ("\tMIDDLEWARE: '{0}'".format(obj))
         
-    logger.info ("GameLogic has the following request managers:")
-    for rqst_manager in GameLogic.morse_services._request_managers.keys():
+    logger.info ("bge.logic has the following request managers:")
+    for rqst_manager in bge.logic.morse_services._request_managers.keys():
         logger.info ("\tREQUEST MANAGER: '{0}'".format(rqst_manager))
         
-    logger.info ("GameLogic has the following services:")
-    for obj, service_variables in GameLogic.serviceDict.items():
+    logger.info ("bge.logic has the following services:")
+    for obj, service_variables in bge.logic.serviceDict.items():
         logger.info ("\tSERVICE: '{0}'".format(obj))
 
 def get_class(module_name, class_name):
@@ -296,7 +296,7 @@ def create_mw(mw):
 
 def get_components_of_type(classname):
     components = []
-    for component in GameLogic.componentDict.values():
+    for component in bge.logic.componentDict.values():
         logger.debug("Get component for class " + component.name() + ": " + component.__class__.__name__)
         if component.__class__.__name__ == classname:
             components.append(component)
@@ -305,7 +305,7 @@ def get_components_of_type(classname):
 
 
 def get_middleware_of_type(classname):
-    for mw_instance in GameLogic.mwDict.values():
+    for mw_instance in bge.logic.mwDict.values():
         if mw_instance.__class__.__name__ == classname:
             return mw_instance
     return None
@@ -325,7 +325,7 @@ def link_middlewares():
     for component_name, mw_list in component_list.items():
         # Get the instance of the object
         try:
-            instance = GameLogic.componentDict[component_name]
+            instance = bge.logic.componentDict[component_name]
         except KeyError as detail:
             logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
             logger.error("""
@@ -362,7 +362,7 @@ def link_middlewares():
             missing_component = False
             
             # Look for the listed mw in the dictionary of active mw's
-            for mw_obj, mw_instance in GameLogic.mwDict.items():
+            for mw_obj, mw_instance in bge.logic.mwDict.items():
                 logger.debug("Looking for '%s' in '%s'" % (mw_name, mw_obj))
                 if mw_name in mw_obj:
                     found = True
@@ -372,7 +372,7 @@ def link_middlewares():
             if not found:
                 mw_instance = create_mw (mw_name)
                 if mw_instance != None:
-                    GameLogic.mwDict[mw_name] = mw_instance
+                    bge.logic.mwDict[mw_name] = mw_instance
                     logger.info("\tMiddleware '%s' created" % mw_name)
                 else:
                     logger.error("""
@@ -411,12 +411,12 @@ def link_services():
             continue
 
         try:
-            instance = GameLogic.componentDict[component_name]
+            instance = bge.logic.componentDict[component_name]
         except KeyError as detail:
             try:
-                scene = GameLogic.getCurrentScene()
+                scene = bge.logic.getCurrentScene()
                 robot_obj = scene.objects[component_name]
-                instance = GameLogic.robotDict[robot_obj]
+                instance = bge.logic.robotDict[robot_obj]
 
             except KeyError as detail:
                 logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
@@ -439,10 +439,10 @@ def link_services():
                 return False
             
             # Load required request managers
-            if not GameLogic.morse_services.add_request_manager(request_manager):
+            if not bge.logic.morse_services.add_request_manager(request_manager):
                 return False
             
-            GameLogic.morse_services.register_request_manager_mapping(component_name, classname)
+            bge.logic.morse_services.register_request_manager_mapping(component_name, classname)
             instance.register_services()
             logger.info("Component: '%s' using middleware '%s' for services" % (component_name, classname))
     
@@ -484,7 +484,7 @@ def load_overlays():
                 return False
 
             try:
-                overlaid_object = GameLogic.componentDict[overlaid_name]
+                overlaid_object = bge.logic.componentDict[overlaid_name]
             except KeyError:
                 logger.error("Could not find the object to overlay: %s." % overlaid_name)
                 return False
@@ -492,9 +492,9 @@ def load_overlays():
             # Instanciate the overlay, passing the overlaid object to
             # the constructor
             instance = klass(overlaid_object)
-            GameLogic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+            bge.logic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
-            GameLogic.overlayDict[overlay_name] = instance
+            bge.logic.overlayDict[overlay_name] = instance
             logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
     
     return True
@@ -513,7 +513,7 @@ def add_modifiers():
     for component_name, mod_list in component_list.items():
         # Get the instance of the object
         try:
-            instance = GameLogic.componentDict[component_name]
+            instance = bge.logic.componentDict[component_name]
         except KeyError as detail:
             logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
             continue
@@ -523,7 +523,7 @@ def add_modifiers():
             logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
             found = False
             # Look for the listed modifier in the dictionary of active modifier's
-            for modifier_obj, modifier_instance in GameLogic.modifierDict.items():
+            for modifier_obj, modifier_instance in bge.logic.modifierDict.items():
                 if modifier_name in modifier_obj:
                     found = True
                     break
@@ -531,7 +531,7 @@ def add_modifiers():
             if not found:
                 modifier_instance = create_mw(modifier_name)
                 if modifier_instance != None:
-                    GameLogic.modifierDict[modifier_name] = modifier_instance
+                    bge.logic.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
                 else:
                     logger.error("""
@@ -580,8 +580,8 @@ def init_multinode():
 
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
-    GameLogic.node_instance = klass(node_name, server_address, server_port,
-            GameLogic)
+    bge.logic.node_instance = klass(node_name, server_address, server_port,
+            bge.logic)
 
 def init(contr):
     """ General initialization of MORSE
@@ -594,16 +594,16 @@ def init(contr):
     logger.log(SECTION, 'PRE-INITIALIZATION')
     # Get the version of Python used
     # This is used to determine also the version of Blender
-    GameLogic.pythonVersion = sys.version_info
-    GameLogic.blenderVersion = bpy.app.version
-    logger.info ("Python Version: %s.%s.%s" % GameLogic.pythonVersion[:3])
-    logger.info ("Blender Version: %s.%s.%s" % GameLogic.blenderVersion)
+    bge.logic.pythonVersion = sys.version_info
+    bge.logic.blenderVersion = bpy.app.version
+    logger.info ("Python Version: %s.%s.%s" % bge.logic.pythonVersion[:3])
+    logger.info ("Blender Version: %s.%s.%s" % bge.logic.blenderVersion)
 
-    GameLogic.morse_initialised = False
-    GameLogic.base_clock = time.clock()
-    GameLogic.current_time = 0.0
+    bge.logic.morse_initialised = False
+    bge.logic.base_clock = time.clock()
+    bge.logic.current_time = 0.0
     # Variable to keep trac of the camera being used
-    GameLogic.current_camera_index = 0
+    bge.logic.current_camera_index = 0
     init_ok = True
 
 
@@ -620,11 +620,11 @@ def init(contr):
     if init_ok:
         logger.log(ENDSECTION, 'SCENE INITIALIZED')
         check_dictionaries()
-        GameLogic.morse_initialised = True
+        bge.logic.morse_initialised = True
     else:
         logger.critical('INITIALIZATION FAILED!')
         logger.info("Exiting now.")
-        contr = GameLogic.getCurrentController()
+        contr = bge.logic.getCurrentController()
         close_all(contr)
         quit(contr)
 
@@ -632,8 +632,8 @@ def init(contr):
         init_multinode()
     
     # Set the default value of the logic tic rate to 60
-    #GameLogic.setLogicTicRate(60.0)
-    #GameLogic.setPhysicsTicRate(60.0)
+    #bge.logic.setLogicTicRate(60.0)
+    #bge.logic.setPhysicsTicRate(60.0)
 
 def init_logging():
     
@@ -674,17 +674,17 @@ def init_supervision_services():
     simulation management services declared in
     :py:module:`morse.core.supervision_services` 
     """
-    GameLogic.morse_services = MorseServices()
+    bge.logic.morse_services = MorseServices()
 
     ###
     # First, load and map the socket request manager to the pseudo
     # 'simulation' component:
     try:
-        if not GameLogic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
+        if not bge.logic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
             return False
         # The simulation mangement services always uses at least sockets for requests.
-        GameLogic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
-        GameLogic.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
+        bge.logic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+        bge.logic.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
 
     except MorseServiceError as e:
         #...no request manager :-(
@@ -709,10 +709,10 @@ def init_supervision_services():
 
             try:
                 # Load required request managers
-                if not GameLogic.morse_services.add_request_manager(request_manager):
+                if not bge.logic.morse_services.add_request_manager(request_manager):
                     return False
 
-                GameLogic.morse_services.register_request_manager_mapping("simulation", classname)
+                bge.logic.morse_services.register_request_manager_mapping("simulation", classname)
                 logger.info("Adding '{}' to the middlewares for simulation control".format(classname))
             except MorseServiceError as e:
                 #...no request manager :-(
@@ -726,7 +726,7 @@ def init_supervision_services():
 
 
     ###
-    # Services can be imported *only* after GameLogic.morse_services
+    # Services can be imported *only* after bge.logic.morse_services
     # has been created. Else @service won't know where to register the RPC
     # callbacks.
     import morse.services.supervision_services
@@ -743,7 +743,7 @@ def simulation_main(contr):
     """
     # Update the time variable
     try:
-        GameLogic.current_time = time.clock() - GameLogic.base_clock
+        bge.logic.current_time = time.clock() - bge.logic.base_clock
     except AttributeError as detail:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.
@@ -758,13 +758,13 @@ def simulation_main(contr):
         """)
         quit(contr)
 
-    if hasattr(GameLogic, "morse_services"):
+    if hasattr(bge.logic, "morse_services"):
         # let the service managers process their inputs/outputs
-        GameLogic.morse_services.process()
+        bge.logic.morse_services.process()
     
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
-        GameLogic.node_instance.synchronize()
+        bge.logic.node_instance.synchronize()
 
 
 def switch_camera(contr):
@@ -773,14 +773,14 @@ def switch_camera(contr):
     sensor = contr.sensors['F9_KEY']
     # Activate only once for each key press
     if sensor.positive and sensor.triggered:
-        scene = GameLogic.getCurrentScene()
-        index = GameLogic.current_camera_index
+        scene = bge.logic.getCurrentScene()
+        index = bge.logic.current_camera_index
         next_camera = scene.cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
         # Update the index for the next call
         index = (index + 1) % len(scene.cameras)
-        GameLogic.current_camera_index = index
+        bge.logic.current_camera_index = index
 
 
 def close_all(contr):
@@ -790,22 +790,22 @@ def close_all(contr):
     """
     logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
-    if hasattr(GameLogic, 'componentDict'):
-        for obj, component_instance in GameLogic.componentDict.items():
+    if hasattr(bge.logic, 'componentDict'):
+        for obj, component_instance in bge.logic.componentDict.items():
             del obj
 
     # Force the deletion of the robot objects
-    if hasattr(GameLogic, 'robotDict'):
-        for obj, robot_instance in GameLogic.robotDict.items():
+    if hasattr(bge.logic, 'robotDict'):
+        for obj, robot_instance in bge.logic.robotDict.items():
             del obj
 
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
-    del GameLogic.morse_services
+    del bge.logic.morse_services
 
     logger.log(ENDSECTION, 'CLOSING MIDDLEWARES...')
     # Force the deletion of the middleware objects
-    if hasattr(GameLogic, 'mwDict'):
-        for obj, mw_instance in GameLogic.mwDict.items():
+    if hasattr(bge.logic, 'mwDict'):
+        for obj, mw_instance in bge.logic.mwDict.items():
             if mw_instance:
                 mw_instance.cleanup()
                 import gc # Garbage Collector
@@ -814,7 +814,7 @@ def close_all(contr):
 
     if MULTINODE_SUPPORT:
         logger.log(ENDSECTION, 'CLOSING MULTINODE...')
-        GameLogic.node_instance.finalize()
+        bge.logic.node_instance.finalize()
 
 
 def finish(contr):
@@ -855,7 +855,7 @@ def reset_objects(contr):
     Restore the position and rotation of objects and robots
     to their original state, during the simulation.
     """
-    for b_obj, state in GameLogic.blender_objects.items():
+    for b_obj, state in bge.logic.blender_objects.items():
         # Stop physics simulation
         b_obj.suspendDynamics()
         b_obj.setLinearVelocity([0.0, 0.0, 0.0], True)

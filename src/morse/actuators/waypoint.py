@@ -17,7 +17,7 @@
 
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import GameLogic
+import bge
 import mathutils
 import morse.core.actuator
 from morse.core.services import service
@@ -88,7 +88,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         try:
             wp_name = self.blender_obj['Target']
             if wp_name != '':
-                scene = GameLogic.getCurrentScene()
+                scene = bge.logic.getCurrentScene()
                 self._wp_object = scene.objects[wp_name]
                 logger.info("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:
@@ -276,7 +276,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             # Tick rate is the real measure of time in Blender.
             # By default it is set to 60, regardles of the FPS
             # If logic tick rate is 60, then: 1 second = 60 ticks
-            ticks = GameLogic.getLogicTicRate()
+            ticks = bge.logic.getLogicTicRate()
             try:
                 # Compute the speeds
                 if self._type == 'Position':

@@ -4,7 +4,7 @@ import rospy
 import std_msgs
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseStamped
-import GameLogic
+import bge
 import math
 import mathutils
 

@@ -1,4 +1,4 @@
-import GameLogic
+import bge
 import bpy
 
 def RGBtoHue(rgbList):
