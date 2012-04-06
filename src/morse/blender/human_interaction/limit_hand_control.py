@@ -6,7 +6,7 @@ ow = co.owner
 limitY = co.actuators['LimitLocY']
 sobList =  logic.getCurrentScene().objects
 shoulder = sobList['Shoulder_Empty.R']
-human = sobList['POS_EMPTY']
+human = sobList['Human']
 
 
 

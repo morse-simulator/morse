@@ -7,7 +7,7 @@ def set_body_position(co):
     ow = co.owner
 
     head = logic.getCurrentScene().objects['Head']
-    human = logic.getCurrentScene().objects['POS_EMPTY']
+    human = logic.getCurrentScene().objects['Human']
 
 
     if human['Manipulate']:

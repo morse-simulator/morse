@@ -93,7 +93,7 @@ def interact():
 
     right_hand=objects['IK_Target_Empty.R']
     look = objects['Target_Empty']
-    human = objects['POS_EMPTY']
+    human = objects['Human']
     co =  logic.getCurrentController()
     ow = co.owner
     lmb=co.sensors['LMB']
@@ -315,7 +315,7 @@ def lay_down_visualize():
     ow = co.owner
     scene = logic.getCurrentScene()
     objects = scene.objects
-    human = objects['POS_EMPTY']
+    human = objects['Human']
     hand = objects['Hand_Grab.R']
     ray = co.sensors['LayDownRay']
 

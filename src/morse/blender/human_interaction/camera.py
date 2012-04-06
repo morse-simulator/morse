@@ -35,7 +35,7 @@ def collision():
     ray = co.sensors['collision']
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
-    human =   logic.getCurrentScene().objects['POS_EMPTY']
+    human =   logic.getCurrentScene().objects['Human']
     Orig_Pos = logic.getCurrentScene().objects['POS_3P_Camera_Orig']
     distance = 0.05     # the distance the camera keeps to Objects
 
@@ -89,7 +89,7 @@ def change():
     ow = co.owner
     track = co.actuators['TrackCamera']
     sobList = logic.getCurrentScene().objects
-    human = sobList['POS_EMPTY']
+    human = sobList['Human']
     FP = sobList['POS_1P_Camera']
     FP_POS = sobList['POS_1P_Camera'].worldPosition
     TP_POS = sobList['POS_3P_Camera'].worldPosition

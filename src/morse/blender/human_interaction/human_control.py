@@ -58,24 +58,28 @@ def move(contr):
     for key in keylist:
         # key[0] == events.keycode, key[1] = status
         if key[1] == logic.KX_INPUT_ACTIVE:
-            if key[0] == FORWARDS:
-                move_speed[0] = speed
-            elif key[0] == BACKWARDS:
-                move_speed[0] = -speed
-            elif key[0] == TURN_LEFT:
-                rotation_speed[2] = speed
-            elif key[0] == TURN_RIGHT:
-                rotation_speed[2] = -speed
-            elif key[0] == RIGHT:
-                if active_camera.name == "Human_Camera":
-                    move_speed[1] = -speed
-                else:
-                    rotation_speed[2] = -speed
-            elif key[0] == LEFT:
-                if active_camera.name == "Human_Camera":
-                    move_speed[1] = speed
-                else:
+            if human['Manipulate']:
+                if key[0] == FORWARDS:
+                    move_speed[0] = speed
+                elif key[0] == BACKWARDS:
+                    move_speed[0] = -speed
+                elif key[0] == TURN_LEFT:
                     rotation_speed[2] = speed
+                elif key[0] == TURN_RIGHT:
+                    rotation_speed[2] = -speed
+                elif key[0] == RIGHT:
+                    if active_camera.name == "Human_Camera":
+                        move_speed[1] = -speed
+                    else:
+                        rotation_speed[2] = -speed
+                elif key[0] == LEFT:
+                    if active_camera.name == "Human_Camera":
+                        move_speed[1] = speed
+                    else:
+                        rotation_speed[2] = speed
+            else:
+                if key[0] in (FORWARDS, BACKWARDS, LEFT, RIGHT):
+                    move_speed[0] = speed
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
@@ -441,7 +445,7 @@ def rotate(co):
     """
        
     ow = co.owner
-    keyboard = co.sensors['Keyboard']
+    keyboard = co.sensors['All_Keys']
     pos =  logic.getCurrentScene().objects['POS_EMPTY']
 
     keylist = keyboard.events
@@ -451,13 +455,13 @@ def rotate(co):
         if key[1] ==  logic.KX_INPUT_ACTIVE:
             k.append(key[0])        # add all pressed keys to a list - as ASCII CODES
 
-    ow.worldPosition = pos.worldPosition
+    pos.worldPosition = ow.worldPosition
 
     # Get active camera
     scene = GameLogic.getCurrentScene()
     active_camera = scene.active_camera
     
-    if pos['Manipulate']:
+    if ow['Manipulate']:
         ow.worldOrientation = pos.worldOrientation
         # lock camera to head in Manipulation Mode
     else:
