@@ -61,11 +61,7 @@ class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
 			# no longer stopped
             self._stopped=False
 
-            # left and right wheel speeds in m/s
-            #v_ws_l=(2*self.local_data['v']-self.local_data['w']*self._trackWidth)/2
-            #v_ws_r=(2*self.local_data['v']+self.local_data['w']*self._trackWidth)/2
-
-            # Another formula for computing wheel speeds:
+            # Another formula for computing left and right wheel speeds:
             #  http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
             v_ws_l = self.local_data['v'] - (self._trackWidth / 2.0) * self.local_data['w']
             v_ws_r = self.local_data['v'] + (self._trackWidth / 2.0) * self.local_data['w']
@@ -77,9 +73,11 @@ class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
             # set wheel speeds - front and rear wheels have the same speed
             # Left side wheels
             self.robot_parent._wheel_joints['FL'].setParam(9,w_ws_l,100.0)
-            self.robot_parent._wheel_joints['RL'].setParam(9,w_ws_l,100.0)
+            if self.robot_parent._wheels['RL'] != None:
+                self.robot_parent._wheel_joints['RL'].setParam(9,w_ws_l,100.0)
             # Right side wheels
             self.robot_parent._wheel_joints['FR'].setParam(9,w_ws_r,100.0)
-            self.robot_parent._wheel_joints['RR'].setParam(9,w_ws_r,100.0)
+            if self.robot_parent._wheels['RR'] != None:
+                self.robot_parent._wheel_joints['RR'].setParam(9,w_ws_r,100.0)
 
             logger.debug("New speeds set: left=%.4f, right=%.4f" % (w_ws_l, w_ws_r))

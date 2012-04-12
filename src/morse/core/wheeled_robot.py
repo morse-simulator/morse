@@ -5,7 +5,7 @@ import bge
 import bpy
 import mathutils
 
-class FourWheelRobotClass(morse.core.robot.MorseRobotClass):
+class PhysicsWheelRobotClass(morse.core.robot.MorseRobotClass):
     """ Abstract base class for robots with wheels that turn as
         the robot moves.
         The wheels must be children of the robot in the Blender file.
@@ -45,19 +45,29 @@ class FourWheelRobotClass(morse.core.robot.MorseRobotClass):
             try:
                 wheel = scene.objects[self.blender_obj[name]]
             except:
-                import traceback
-                traceback.print_exc()
+                #import traceback
+                #traceback.print_exc()
+                wheel = None
+
             self._wheels[index] = wheel
-            self._wheel_positions[index] = mathutils.Vector(wheel.worldPosition)
-            self._wheel_orientations[index] = mathutils.Matrix(wheel.worldOrientation)
-            # Make the wheels orphans
-            wheel.removeParent()
-            # Keep their transformations
-            #wheel.worldPosition = self._wheel_positions[index]
-            #wheel.worldOrientation = self._wheel_orientations[index]
+            if self._wheels[index] != None:
+                logger.info("\tWheel %s: %s" % (index, wheel.name))
+                self._wheel_positions[index] = mathutils.Vector(wheel.worldPosition)
+                self._wheel_orientations[index] = mathutils.Matrix(wheel.worldOrientation)
+                # Make the wheels orphans
+                wheel.removeParent()
+                # Keep their transformations
+                #wheel.worldPosition = self._wheel_positions[index]
+                #wheel.worldOrientation = self._wheel_orientations[index]
 
         # get wheel radius
         self._wheelRadius=self.GetWheelRadius(self.blender_obj['WheelFLName'])
+
+        # Add a free rotating wheel if indicated in the robot
+        if 'CasterWheelName' in self.blender_obj:
+            wheel = scene.objects[self.blender_obj['CasterWheelName']]
+            wheel_position = mathutils.Vector(wheel.worldPosition)
+            self.AttachCasterWheelToBody(wheel, self.blender_obj, wheel_position)
 
 
     def ReadGenericParameters(self):
@@ -95,7 +105,7 @@ class FourWheelRobotClass(morse.core.robot.MorseRobotClass):
         return (dims[0]+dims[1])/4
 
 
-class MorsePhysicsRobotClass(FourWheelRobotClass):
+class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
     """ Basic Class for robots using individual physics constraints
 
     Inherits from the base robot class.
@@ -180,7 +190,8 @@ class MorsePhysicsRobotClass(FourWheelRobotClass):
     def BuildModelWithoutSuspension(self):
         """ Add all the constraints to attach the wheels to the body """
         for index in self._wheel_index:
-            self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.blender_obj, self._wheel_positions[index])
+            if self._wheels[index] != None:
+                self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.blender_obj, self._wheel_positions[index])
 
     def AttachWheelToBody(self, wheel, parent, wheelPos):
         """ Attaches the wheel to the given parent using a 6DOF constraint """
@@ -199,17 +210,42 @@ class MorsePhysicsRobotClass(FourWheelRobotClass):
         logger.debug("Added wheel '%s' at ('%f','%f','%f')" %(wheel.name, wheelPos[0], wheelPos[1], wheelPos[2]))
 
         # create constraint to allow wheel to spin
+        # For an explanation on the parameters, see:
+        # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
         joint = bge.constraints.createConstraint(
                 parent.getPhysicsId(),  # get physics ID of the parent object
-                wheel.getPhysicsId(),  # get physics ID of the wheel object
-                12,    # 6dof constraint
+                wheel.getPhysicsId(),   # get physics ID of the wheel object
+                12,                     # 6dof constraint
                 wheelPos[0], wheelPos[1], wheelPos[2],  # pivot position
-                0,0,0,     # pivot axis
-                128) # flag, 128=disable collision between wheel and parent
+                0,0,0,                  # pivot axis
+                128)    # flag, 128=disable collision between wheel and parent
         # no parameters are set on x axis to allow full rotation about it
         joint.setParam(4,0.0,0.0) # no rotation about Y axis - min=0, max=0
         joint.setParam(5,0.0,0.0) # no rotation about Z axis - min=0, max=0
         return joint # return a reference to the constraint
+
+    def AttachCasterWheelToBody(self, wheel, parent, wheelPos):
+        """ Attaches a freely rotating wheel to the given parent
+        using a 6DOF constraint. It can also rotate around the Z axis """
+        result = parent.getVectTo(wheel);
+        ## result is a unit vector (result[2]) and a length(result[0])
+        ## multiply them together to get the complete vector
+        wheelPos=result[0]*result[2]
+
+        logger.debug("Added caster wheel '%s' at ('%f','%f','%f')" %(wheel.name, wheelPos[0], wheelPos[1], wheelPos[2]))
+
+        # create constraint to allow wheel to spin
+        joint = bge.constraints.createConstraint(
+                parent.getPhysicsId(),  # get physics ID of the parent object
+                wheel.getPhysicsId(),   # get physics ID of the wheel object
+                12,                     # 6dof constraint
+                wheelPos[0], wheelPos[1], wheelPos[2],  # pivot position
+                0,0,0,                  # pivot axis
+                128)    # flag, 128=disable collision between wheel and parent
+        # no parameters are set on x and z axis to allow full rotation about it
+        joint.setParam(4,0.0,0.0) # no rotation about Y axis - min=0, max=0
+        return joint # return a reference to the constraint
+
 
     def AttachWheelWithSuspension(self, wheel, parent, suspensionArm):
         """ Attaches the wheel to the a-arm and then the a-arm to the body """
