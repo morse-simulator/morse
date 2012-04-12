@@ -451,6 +451,7 @@ class Environment(AbstractComponent):
         bpy.ops.object.select_all(action='DESELECT')
         camera_fp.select = True
         bpy.context.scene.objects.active = camera_fp
+        # Set default camera
         bpy.context.scene.camera = camera_fp
 
         self._created = True
