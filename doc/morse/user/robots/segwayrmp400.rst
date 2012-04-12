@@ -8,6 +8,11 @@ behave more realistically. The wheels turn as the robot moves, and they have
 ``Rigid Body`` physics, so that they can also have collisions with nearby
 objects.
 
+It has four differential drive wheels, with the pairs of wheels on each side
+always moving at the same speed. Since the wheels of this robot use the
+``Rigid Body`` physics, it must be controlled with the :doc:`v_omega_diff_drive
+<../actuators/v_omega_diff_drive>` actuator.
+
 .. warning::
   Because of the physics constraints used in this robot, its wheels must NOT be
   children of the robot when the simulation is started. To properly include an
