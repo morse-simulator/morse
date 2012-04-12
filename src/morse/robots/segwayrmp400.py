@@ -16,11 +16,13 @@ class SegwayRMP400PhysicsClass(morse.core.wheeled_robot.MorsePhysicsRobotClass):
         super(self.__class__,self).__init__(obj, parent)
 
         # XXX: Hack to make the robot turn at the expected speed
+        #  using the v_omega_differential_drive actuator
         # Real distance between the wheel objects in Blender:
         #self._trackWidth = 0.624
-        # Best working when using this distance
-        self._trackWidth = 1.425
-        #self._trackWidth = 1.43
+        # Best working when using this distance, obtained by comparing the
+        #  trayectories followed by this robot with those of the ATRV with
+        #  the regular v_omega actuator
+        #self._trackWidth = 1.425
 
         logger.info('Component initialized')
 
