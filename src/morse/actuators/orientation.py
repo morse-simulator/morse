@@ -15,9 +15,11 @@ class OrientationActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.local_data['yaw'] = 0.0
-        self.local_data['pitch'] = 0.0
-        self.local_data['roll'] = 0.0
+        self.orientation = self.blender_obj.orientation.to_euler('XYZ')
+
+        self.local_data['yaw'] = self.orientation.z
+        self.local_data['pitch'] = self.orientation.y
+        self.local_data['roll'] = self.orientation.x
 
         logger.info('Component initialized')
 
