@@ -19,11 +19,19 @@
 # (To distributed this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+if (WIN32)
+FIND_PROGRAM(PYTHON3_EXECUTABLE
+  NAMES python3.2 python
+  PATHS
+  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.2\\InstallPath]
+  )
+else (WIN32)
 FIND_PROGRAM(PYTHON3_EXECUTABLE
   NAMES python3.2
   PATHS
   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.2\\InstallPath]
   )
+endif (WIN32)
 
 # handle the QUIETLY and REQUIRED arguments and set PYTHONINTERP_FOUND to TRUE if
 # all listed variables are TRUE

@@ -6,6 +6,9 @@ import logging
 import os
 from morse.core.logging import SECTION, ENDSECTION
 
+if os.name == 'nt':
+    import ctypes
+    import re
 
 class ColorizingStreamHandler(logging.StreamHandler):
     # color names to indices
@@ -90,8 +93,6 @@ class ColorizingStreamHandler(logging.StreamHandler):
         def output_colorized(self, message):
             self.stream.write(message)
     else:
-        import ctypes
-        import re
         ansi_esc = re.compile(r'\x1b\[((?:\d+)(?:;(?:\d+))*)m')
 
         nt_color_map = {

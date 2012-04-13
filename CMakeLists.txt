@@ -96,6 +96,21 @@ INSTALL (DIRECTORY data examples addons
 		 REGEX .*clients.* EXCLUDE
 		)
 
+IF(WIN32)
+CONFIGURE_FILE(
+   ${CMAKE_CURRENT_SOURCE_DIR}/bin/morse.in
+   ${CMAKE_CURRENT_BINARY_DIR}/bin/morserun.py
+   )
+CONFIGURE_FILE(
+   ${CMAKE_CURRENT_SOURCE_DIR}/bin/multinode_server.in
+   ${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server.py
+   )
+INSTALL(PROGRAMS
+       ${CMAKE_CURRENT_BINARY_DIR}/bin/morserun.py
+       ${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server.py
+       DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+       )
+ELSE(WIN32)
 CONFIGURE_FILE(
 	${CMAKE_CURRENT_SOURCE_DIR}/bin/morse.in
 	${CMAKE_CURRENT_BINARY_DIR}/bin/morse
@@ -114,6 +129,7 @@ INSTALL(PROGRAMS
 		${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 	    )
+ENDIF(WIN32)
 ENDIF()
 
 ADD_SUBDIRECTORY(bindings)
