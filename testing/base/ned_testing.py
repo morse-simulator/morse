@@ -23,7 +23,7 @@ class NedTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('ressac')
+        robot = Robot('rmax')
         robot.translate(42.0, -10, 40)
 
         pose = Sensor('pose')

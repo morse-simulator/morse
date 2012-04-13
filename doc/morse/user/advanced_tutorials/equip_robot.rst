@@ -31,7 +31,7 @@ Next link in the base of the robot from the component library:
 
 #. With the mouse over the 3D view in Blender, press :kbd:`Ctrl-Alt-O` to open the Load Library browser
 #. Navigate to the directory ``$MORSE_ROOT/morse/data/robots``
-#. Press :kbd:`Left Mouse Click` over the file ``ressac.blend``
+#. Press :kbd:`Left Mouse Click` over the file ``rmax.blend``
 #. Press :kbd:`Left Mouse Click` over the item ``Object``
 #. Press :kbd:`Right Mouse Click` and drag over the names of all the objects listed, to select them all
 #. Press the button **Link/Append from Library**. You'll return to the 3D View, and the newly added
