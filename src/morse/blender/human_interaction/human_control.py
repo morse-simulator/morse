@@ -80,6 +80,8 @@ def move(contr):
             else:
                 if key[0] in (FORWARDS, BACKWARDS, LEFT, RIGHT):
                     move_speed[0] = speed
+                    if active_camera.name != "Human_Camera" and key[0] == BACKWARDS:
+                        move_speed[0] = -speed
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
@@ -447,6 +449,7 @@ def rotate(co):
     ow = co.owner
     keyboard = co.sensors['All_Keys']
     pos =  logic.getCurrentScene().objects['POS_EMPTY']
+    human_pos = logic.getCurrentScene().objects['Human']
 
     keylist = keyboard.events
 
@@ -466,22 +469,40 @@ def rotate(co):
         # lock camera to head in Manipulation Mode
     else:
         if FORWARDS in k and not(LEFT in k or RIGHT in k):  
-            applyrotate(pos.worldOrientation, ow)
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation, ow)
+            else:
+                applyrotate(human_pos.worldOrientation, ow) 
         elif LEFT in k and not(FORWARDS in k or BACKWARDS in k):
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation *
+                            Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
+            else: 
+                applyrotate(human_pos.worldOrientation *
+                            Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
             # turn around 90 deg
         elif RIGHT in k and not(FORWARDS in k or BACKWARDS in k):
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation *
+                            Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
+            else:
+                applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
             # turn around 270 deg
         elif LEFT in k and FORWARDS in k:
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation *
+                            Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
+            else: 
+                applyrotate(human_pos.worldOrientation *
+                            Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
             # turn around 45 deg
         elif RIGHT in k and FORWARDS in k:
-            applyrotate(pos.worldOrientation *
-                        Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
+            if active_camera.name == "Human_Camera":
+                applyrotate(pos.worldOrientation *
+                            Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
+            else:
+                applyrotate(human_pos.worldOrientation *
+                            Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
             # turn around 315 deg
         elif BACKWARDS in k and not(LEFT in k or RIGHT in k):
             if active_camera.name == "Human_Camera":
@@ -491,13 +512,13 @@ def rotate(co):
             if active_camera.name == "Human_Camera":
                 applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)
             else:
-                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
+                applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
             # turn around 135 deg if in game-mode, else turn 45 deg
         elif RIGHT in k and BACKWARDS in k:
             if active_camera.name == "Human_Camera":
                 applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)
             else:
-                applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
+                applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
             # turn around 225 deg if in game mode, else turn 315 deg.
 
 
