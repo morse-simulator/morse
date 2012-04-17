@@ -2,10 +2,13 @@ General TODO list for MORSE
 ---------------------------
 
 ==============
- TARGET 0.5
+ TARGET 0.6
 ==============
 
 - Fix bug in odometry sensor (Gilberto)
+- Make correction of distance between wheels in SegwayRPM400 robot and document it
+- Merge build_arc.py into the Builder API
+- Testing for windows
 
 Packaging
 ---------
@@ -98,7 +101,6 @@ to a given sensor geometry.
 
 Documentation
 -------------
-- Correct documentation for the HRI experiments (current one does not mention the Builder)
 
 - Fix the outdated documentation at http://wiki.blender.org/index.php/Community:Science/Robotics
 
