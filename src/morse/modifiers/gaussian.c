@@ -1,6 +1,3 @@
-#if defined(WIN32)
-#define PY_LONG_LONG long long
-#endif
 #include <Python.h>
 
 #include <math.h>
