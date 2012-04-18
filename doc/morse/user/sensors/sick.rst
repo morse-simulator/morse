@@ -2,8 +2,14 @@ SICK laser range scanner
 ========================
 
 This sensor emulates a laser range scanner, by generating a series of rays in
-predefined directions, and then computing whether they find any object within a
-certain distance of the sensor's origin.
+predefined directions, and then computing whether they find any active object
+within a certain distance of the sensor's origin.
+
+The rays cast by the sensor are determined by the geometry of a flat mesh with
+a semi-circular shape. There must be a mesh whose name starts with ``Arc_`` and
+is a child of the Sick sensor. The sensor will cast rays in the direction of
+the vertices of this mesh. Because of this, it is imperative that the mesh is
+correctly configured.
 
 .. note:: Objects in the scene with the **No collision** setting in their Game
   properties will not be detected by this sensor
@@ -33,43 +39,54 @@ The Empty object corresponding to this sensor has the following parameters
 in the **Logic Editor** panel:
 
 - **Visible_arc**: (Boolean) A toggle that determines whether the scanned area
-  is displayed during the execution of the simulation or not. If the robot is
-  also producing camera images, it is better to set this variable to False,
-  otherwise the scanned area will also appear on the captured images.
+  is displayed during the execution of the simulation or not (Default: True).
+  If the robot is also equipped with a camera, it is better to set this
+  variable to False, otherwise the scanned area will also appear on the
+  captured images.
 - **laser_range**: (Float) The distance in meters from the center of the sensor
   to which it is capable of detecting other objects.
 - **resolution**: (Float) The angle between each laser in the sensor. Expressed
-  in degrees in decimal format. (i. e.), half a degree is expressed as 0.5.
-  Used only for arc creation.
+  in degrees in decimal format. (*i. e.*), half a degree is expressed as 0.5.
+  Used when creating the arc object.
 - **scan_window**: (Float) The full angle covered by the sensor. Expressed in
-  degrees in decimal format. Used only for arc creation.
+  degrees in decimal format. Used when creating the arc object.
 
 Number and angle of rays
 ++++++++++++++++++++++++
 
 The number and direction of the rays emitted by the sensor is determined by the
-use of a semicircle object parented to the sensor. The sensor will cast rays
+use of a semi-circle object parented to the sensor. The sensor will cast rays
 from the center of the sensor in the direction of each of the vertices in the
-semicircle.
-There is a Python script that can be used to create a new arc with the
-parameters of **resolution** and **scan_window** specified for the sensor.
-The script is called ``create_arc.py`` and is included in the Blender file for
-the sensor. To run it, specify the parameters desired in the Game Properties panel,
-then in a Text Window select the script, place the mouse cursor inside the Text Window
-and press :kbd:`Alt-p`. This will generate a new arc object with the correct geometry,
-and with an adequate name. At this point it is only necessary to assign a material to
-the arc (you can use the **RayMat** material used in other examples).
+semi-circle.
+
+By default, the Sick sensor will be created with an arc that spans 180 degrees,
+with a resolution of 1 degree.
+This can be changed using a special method in the Builder API, which can create
+any arc of the desired geometry. The shape of the arc is determined from the
+parameters of **resolution** and **scan_window** specified as game properties
+of the Sick sensor. The name of the method is ``create_sick_arc``, and must be
+called after setting the desired value for the previously mentioned properties.
 
 The new arc object will have the following characteristics (all of them are
-correctly configured by the ``create_arc.py`` script):
+correctly configured by the ``create_sick_arc`` method):
 
 - Name: Its name must begin with 'Arc\_', for the SICK Module to recognize it.
   The currently used method is to name the arcs according to the number of
   degrees it covers, for example: Arc_180, Arc_16, Arc_360
-- Normals: For the circle to be visible in the GE, the normals of the faces
-  must be facing up. Otherwise the object will not be displayed 
+- Normals: For the semi-circle to be visible in the Game Engine, the normals of
+  the faces must be facing up. Otherwise the object will not be displayed 
 - Physics: Make sure that on the **Physics Properties** panel this object is
   set to **No collision**, otherwise it will push objects around
 
-When adding the sick sensor to a robot, make sure to link in the corresponding
-arc object.
+An example of how to change the arc object using the Builder API is show below:
+
+.. code-block:: python
+
+    from morse.builder.morsebuilder import *
+
+    # Append a sick laser
+    sick = Sensor('sick')
+    sick.properties(resolution = 5)
+    sick.properties(scan_window = 90)
+    sick.properties(laser_range = 5.0)
+    sick.create_sick_arc()
