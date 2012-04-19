@@ -8,6 +8,20 @@ and the :doc:`Pioneer 3-DX <../robots/pioneer3dx>`.  The movement of the robot
 is more realistic, but also depends on more factors,
 such as the friction between the wheels and the surface.
 
+The speeds for the left and right wheels are calculated as::
+
+    left_speed = (v - e w) / R
+
+    right_speed = (v + e w) / R
+
+Where:
+
+- **v** is the linear velocity given as parameter
+- **w** is the angular velocity given as parameter
+- **e** is half of the distance between the left and right wheels
+- **R** is the radius of the wheels
+
+
 Files 
 -----
 

@@ -96,3 +96,13 @@ These can be changed using the Builder API:
   For the case of the Segway RMP 400, this should always be ``False``
 - **Influence**: (double)
 - **Friction**: (double)
+- **FixTurningSpeed**:(double) Overwrite the value of the distance between
+  wheels in the computations of the wheel speeds. This effectively changes the
+  turning speed of the robot, and can be used to compensate for the slip of the
+  wheels while turning.
+  The real distance between wheels in the robot is 0.624m. By forcing a
+  distance of 1.23m, the robot will turn over a smaller radius, as would a two
+  wheeled differential drive robot.
+  Leaving this value as 0.0 (the default) will use the real distance between
+  wheels
+

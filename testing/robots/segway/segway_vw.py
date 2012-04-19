@@ -18,10 +18,27 @@ try:
 except ImportError:
     pass
 
-def send_speed(s, v, w, t):
+def gradual_speed(s, v, w, t):
+    """ Start and finish applying only half of the desired speed """
+    tic = t/20.0
+    s.send(json.dumps({'v' : v/4, 'w' : w/4}).encode())
+    sleep(tic*2)
+    s.send(json.dumps({'v' : v/2, 'w' : w/2}).encode())
+    sleep(tic*1)
     s.send(json.dumps({'v' : v, 'w' : w}).encode())
-    sleep(t)
+    sleep(tic*18)
+    s.send(json.dumps({'v' : v/2, 'w' : w/2}).encode())
+    sleep(tic*2)
+    s.send(json.dumps({'v' : v/4, 'w' : w/4}).encode())
+    sleep(tic*2)
     s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
+
+
+def send_speed(s, v, w, t):
+    #s.send(json.dumps({'v' : v, 'w' : w}).encode())
+    #sleep(t)
+    #s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
+    gradual_speed(s, v, w, t)
     sleep(1)
 
 def send_service_speed(s, v, w, t):
@@ -36,6 +53,7 @@ class Differential_VW_Test(MorseTestCase):
         """
         
         robot = WheeledRobot('segwayrmp400')
+        robot.properties(FixTurningSpeed=1.23)
         robot.translate(z=0.1)
         robot.unparent_wheels()
 
