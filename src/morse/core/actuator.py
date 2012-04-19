@@ -23,6 +23,10 @@ class MorseActuatorClass(morse.core.object.MorseObjectClass):
 
     def action(self):
         """ Call the action functions that have been added to the list. """
+        # Do nothing if this component has been deactivated
+        if not self._active:
+            return
+
         # Update the component's position in the world
         self.position_3d.update(self.blender_obj)
 
