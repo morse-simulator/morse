@@ -163,9 +163,9 @@ class RequestManager(object):
 
             if self.post_registration(component_name, service_name, async):
                 logger.info(str(self) + ": " + \
-                    ("Asynchronous" if async else "Synchronous") + " service " + \
-                    service_name + " for component " + component_name + \
-                    " successfully registered")
+                    ("Asynchronous" if async else "Synchronous") + \
+                    " service '" + service_name + "' for component '" + \
+                    component_name + "' successfully registered")
             else:
                 logger.error(str(self) + ": Error while registering a new service: " + \
                         "could not complete the post-registration step.")
@@ -245,7 +245,7 @@ class RequestManager(object):
                 else:
                     raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
-            logger.debug("Asynchronous request " + str(request_id) + " successfully started.")
+            logger.debug("Asynchronous request '" + str(request_id) + "' successfully started.")
             return (False, request_id)
 
         else: #Synchronous service.
