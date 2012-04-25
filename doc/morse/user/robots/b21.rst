@@ -1,0 +1,14 @@
+RWI B21 platform
+================
+
+Cylindrical robot for Human-Robot interactions
+
+.. image:: ../../../media/robots/b21.png 
+  :align: center
+  :width: 600
+
+Files
+-----
+
+- Blender: ``$MORSE_ROOT/data/robots/b21.blend``
+- Python: ``$MORSE_ROOT/src/morse/robots/b21.py``
