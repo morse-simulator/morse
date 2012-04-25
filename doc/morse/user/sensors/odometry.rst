@@ -7,6 +7,11 @@ The position and orientation data is taken from the sensor's ``position_3d`` str
 
 The angles for yaw, pitch and roll are given in radians.
 
+
+.. image:: ../../../media/sensors/odometry.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

@@ -14,6 +14,11 @@ correctly configured.
 .. note:: Objects in the scene with the **No collision** setting in their Game
   properties will not be detected by this sensor
 
+
+.. image:: ../../../media/sensors/sick.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

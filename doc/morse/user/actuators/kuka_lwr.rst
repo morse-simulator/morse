@@ -25,6 +25,11 @@ When the simulation is started any objects that are children of the KUKA arm
 will automatically be changed to be children of the last segment of the arm.
 
 
+.. image:: ../../../media/actuators/kuka_lwr.png 
+  :align: center
+  :width: 600
+
+
 Files 
 -----
 

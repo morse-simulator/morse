@@ -17,6 +17,11 @@ Also, the 3D view window in Blender must be set to draw **Textured** objects.
     specially when there are several cameras. However, the lack of
     data on the stream may cause problems to some middlewares.
 
+
+.. image:: ../../../media/sensors/video_camera.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

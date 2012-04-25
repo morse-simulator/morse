@@ -3,6 +3,10 @@ LAAS Jido robot
 
 This robot is build on a NeoBotix base.
 
+.. image:: ../../../media/robots/jido.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

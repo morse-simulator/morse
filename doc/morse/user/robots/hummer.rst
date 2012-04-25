@@ -4,6 +4,10 @@ Hummer car robot
 This is a generic car like robot. It is driven using steering, power and braking as provided by the :doc:`steer/force actuator <../actuators/steer_force>`.
 This vehicle uses the Blender `vehicle wrapper <http://www.blender.org/documentation/blender_python_api_2_59_0/bge.types.html#bge.types.KX_VehicleWrapper>`_ constraint, to give it a realistic behaviour, including the interaction of the wheels with the ground and suspension.
 
+.. image:: ../../../media/robots/hummer.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

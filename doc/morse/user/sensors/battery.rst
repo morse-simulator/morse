@@ -15,6 +15,11 @@ A planned feature is to allow for designated **Charging Zones** where
 the battery will gradually recharge. However, this is not implemented yet.
 
 
+.. image:: ../../../media/sensors/battery.png 
+  :align: center
+  :width: 600
+
+
 Files
 -----
 

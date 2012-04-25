@@ -6,6 +6,11 @@ certain radius of the sensor. It performs its test based only on distance.
 The type of tracked objects can be specified using the 'Track' property.
 
 
+.. image:: ../../../media/sensors/proximity.png 
+  :align: center
+  :width: 600
+
+
 Files
 -----
 

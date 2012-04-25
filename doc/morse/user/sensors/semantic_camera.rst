@@ -20,6 +20,11 @@ The cameras make use of Blender's **VideoTexture** module, which requires a
 graphic card capable of GLSL shading. Also, the 3D view window in Blender must be
 set to draw **Textured** objects.
 
+
+.. image:: ../../../media/sensors/semantic_camera.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

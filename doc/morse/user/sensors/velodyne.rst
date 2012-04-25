@@ -10,6 +10,11 @@ for the full environment around it.
 .. note:: Objects in the scene with the **No collision** setting in their Game
   properties will not be detected by this sensor
 
+
+.. image:: ../../../media/sensors/velodyne.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

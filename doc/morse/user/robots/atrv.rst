@@ -3,6 +3,11 @@ iRobot ATRV platform
 
 The base of the **DALA** robot at LAAS.
 
+.. image:: ../../../media/robots/atrv.png 
+  :align: center
+  :width: 600
+
+
 Files
 -----
 

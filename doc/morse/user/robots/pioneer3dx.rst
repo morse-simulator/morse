@@ -18,6 +18,10 @@ must be controlled with the :doc:`v_omega_diff_drive
   Builder API, and then calling a method to unparent the wheels from the robot.
   See below for an example.
 
+.. image:: ../../../media/robots/pioneer3dx.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

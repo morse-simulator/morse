@@ -5,6 +5,10 @@ This sensor emulates a GPS, providing the exact coordinates in the Blender
 scene. The coordinates provided by the GPS are with respect to the origin of
 the Blender coordinate reference.
 
+.. image:: ../../../media/sensors/gps.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 - Blender: ``$MORSE_ROOT/data/sensors/gps.blend``
@@ -16,7 +20,8 @@ Local data
 - **y**: (float) Y coordinate of the sensor
 - **z**: (float) Z coordinate of the sensor
 
-.. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
+.. note:: Coordinates are given with respect to the origin of Blender's
+  coordinate axis.
 
 Applicable modifiers
 --------------------

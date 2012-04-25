@@ -20,6 +20,10 @@ always moving at the same speed. Since the wheels of this robot use the
   Builder API, and then calling a method to unparent the wheels from the robot.
   See below for an example.
 
+.. image:: ../../../media/robots/segwayrmp400.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

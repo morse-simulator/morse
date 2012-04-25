@@ -17,6 +17,11 @@ Yo do this by adding these lines into your script:
   infrared = morse.builder.sensors.Infrared()
 
 
+.. image:: ../../../media/sensors/infrared.png 
+  :align: center
+  :width: 600
+
+
 Files
 -----
 

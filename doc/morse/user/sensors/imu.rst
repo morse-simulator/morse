@@ -6,6 +6,10 @@ a robot has moved and the angles the robot has turned in 3D. Also the velocity
 and acceleration for each of these values is available. The arrays are in the
 following format: [x, y, z, roll, pitch, yaw]
 
+.. image:: ../../../media/sensors/imu.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 

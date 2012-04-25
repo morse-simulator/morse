@@ -3,6 +3,10 @@ Yamaha RMAX platform
 
 The base of the **Yamaha RMAX** unmanned helicopter.
 
+.. image:: ../../../media/robots/rmax.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 - Blender: ``$MORSE_ROOT/data/robots/rmax.blend``

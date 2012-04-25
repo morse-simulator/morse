@@ -5,6 +5,11 @@ This actuator reads a list of angles for the segments of the
 Mitsubishi PA-10 arm and applies them as local rotations.
 Angles are expected in radians.
 
+
+.. image:: ../../../media/actuators/pa_10.png 
+  :align: center
+  :width: 600
+
 Files 
 -----
 
