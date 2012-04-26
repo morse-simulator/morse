@@ -208,6 +208,14 @@ ENDIF()
 ENDIF()
 
 ### CPack ###
+
+#EXECUTE_PROCESS(COMMAND
+#				python -c "import version, sys; sys.stdout.write(version.VERSION)"
+#					OUTPUT_VARIABLE PROJECT_VERSION)
+#set(PACKAGE_VERSION ${PROJECT_VERSION})
+# TODO TMP find a way to get git revisiontag (ImportError: No module named version)
+set(PACKAGE_VERSION "5.1")
+
 EXECUTE_PROCESS(COMMAND
 				which dpkg
 					OUTPUT_VARIABLE SYSTEST_DPKG)
