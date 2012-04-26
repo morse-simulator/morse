@@ -148,7 +148,9 @@ class MorseLoadTextCoords(bpy.types.Operator):
 
         # A trick to make the selection and join correctly
         # First select one of the segments. This will be the Active Object
-        bpy.ops.object.select_name(name="Segment1")
+        active_segment = bpy.data.objects["Segment1"]
+        active_segment.select = True
+        bpy.context.scene.objects.active = active_segment
         # Then select all the rest. This does not change the Active Object
         bpy.ops.object.select_pattern(pattern="Segment*")
         # Join. The active Object must be selected

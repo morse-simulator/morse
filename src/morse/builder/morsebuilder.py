@@ -244,7 +244,8 @@ class Component(AbstractComponent):
 
         # add Game Logic sensor and controller to simulate the component
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = obj.name)
+        obj.select = True
+        bpy.context.scene.objects.active = obj
         bpy.ops.logic.sensor_add() # default is Always sensor
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True

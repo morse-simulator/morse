@@ -147,11 +147,8 @@ class AbstractComponent(object):
                 optional, auto-detect, default=None)
         """
         bpy.ops.object.select_all(action = 'DESELECT')
-        #bpy.ops.object.select_pattern(pattern = self.name, extend=False)
-        #bpy.ops.object.select_name(name = self.name)
-        blend_obj = bpy.data.objects[self.name]
-        blend_obj.select = True
-        bpy.context.scene.objects.active = blend_obj
+        self._blendobj.select = True
+        bpy.context.scene.objects.active = self._blendobj
         bpy.ops.object.game_property_new()
         prop = self._blendobj.game.properties
         # select the last property in the list (which is the one we just added)

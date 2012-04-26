@@ -36,7 +36,8 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
         self._blendobj.name = name
         self._blendname = filename # for middleware configuration
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.ops.object.select_name(name = self._blendobj.name)
+        self._blendobj.select = True
+        bpy.context.scene.objects.active = self._blendobj
         bpy.ops.logic.sensor_add() # default is Always sensor
         sensor = self._blendobj.game.sensors[-1]
         sensor.use_pulse_true_level = True
