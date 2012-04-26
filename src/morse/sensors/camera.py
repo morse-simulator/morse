@@ -1,9 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
-<<<<<<< HEAD
-import bge.texture
-=======
->>>>>>> [bge] s/VideoTexture/bge.texture/g
 import morse.core.sensor
 
 
@@ -131,5 +127,5 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 #
 #        import inspect
 #        logger.error("CAMERA SOURCE '%s':" % self.name())
-#        for name, thing in inspect.getmembers(GameLogic.cameras[self.name()].source):
+#        for name, thing in inspect.getmembers(bge.logic.cameras[self.name()].source):
 #            logger.error("\t%s = %s" % (name, thing))

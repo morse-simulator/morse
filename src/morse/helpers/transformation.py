@@ -44,7 +44,7 @@ class Transformation3d:
         """
         Return the translation  against the x axle
         """
-        if GameLogic.blenderVersion <= (2,62,0):
+        if bge.logic.blenderVersion <= (2,62,0):
             return self.matrix[3][0]
         else:
             return self.matrix[0][3]
@@ -54,7 +54,7 @@ class Transformation3d:
         """
         Return the translation  against the y axle
         """
-        if GameLogic.blenderVersion <= (2,62,0):
+        if bge.logic.blenderVersion <= (2,62,0):
             return self.matrix[3][1]
         else:
             return self.matrix[1][3]
@@ -64,7 +64,7 @@ class Transformation3d:
         """
         Return the translation  against the z axle
         """
-        if GameLogic.blenderVersion <= (2,62,0):
+        if bge.logic.blenderVersion <= (2,62,0):
             return self.matrix[3][2]
         else:
             return self.matrix[2][3]
@@ -141,7 +141,7 @@ class Transformation3d:
 
         pos = obj.worldPosition
         for i in range(0, 3):
-            if GameLogic.blenderVersion <= (2,62,0):
+            if bge.logic.blenderVersion <= (2,62,0):
                 self.matrix[3][i] = pos[i]
             else:
                 self.matrix[i][3] = pos[i]
