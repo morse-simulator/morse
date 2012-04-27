@@ -6,9 +6,12 @@ General TODO list for MORSE
 ==============
 
 - Fix bug in odometry sensor (Gilberto)
-- Make correction of distance between wheels in SegwayRPM400 robot and document it
-- Merge build_arc.py into the Builder API
-- Testing for windows
+
+- Make table of contents of the components with images
+- Fix cameras in Blender 2.62
+- Fix text objects for Blender 2.63
+
+
 
 Packaging
 ---------
