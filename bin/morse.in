@@ -356,6 +356,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
     # Add the MORSE node name to env.
     if node_name:
         env["MORSE_NODE"] = node_name
+        logger.info("Setting MORSE_NODE to " + env["MORSE_NODE"])
     
     # Prepare the geometry
     if geometry:
@@ -426,7 +427,14 @@ if __name__ == '__main__':
         except ValueError:
              raise argparse.ArgumentTypeError("The geometry must be formatted as WxH or WxH+dx,dy")
         return (w,h,dx,dy)
-
+        
+    # Check whether MORSE_NODE is defined
+    default_morse_node = platform.uname()[1]
+    try:
+        default_morse_node = os.environ["MORSE_NODE"]
+    except:
+        pass
+    
     parser = argparse.ArgumentParser(description='The Modular OpenRobots Simulation Engine')
     parser.add_argument('mode', choices=['check', 'edit', 'run'], type=str,
                       help="Check: checks your environment is correctly configured. "
@@ -439,9 +447,9 @@ if __name__ == '__main__':
                        help="optional parameters, passed to the Blender python engine in sys.argv")
     parser.add_argument('-b', '--base', dest='BASE',
                        help='in Edit mode, specify a Blender scene used as base to apply the Python script.')
-    parser.add_argument('--name', default=platform.uname()[1],
+    parser.add_argument('--name', default=default_morse_node,
                        help="when running in multi-node mode, sets the name of this node (defaults "
-                            "to current hostname).")
+                            "to either MORSE_NODE if defined or current hostname).")
     parser.add_argument('-c', '--color', action='store_true',
                        help='uses colors for MORSE output.')
     parser.add_argument('--reverse-color', action='store_true',
