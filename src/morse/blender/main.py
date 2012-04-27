@@ -569,14 +569,18 @@ def init_multinode():
         klass = get_class("morse.multinode.hla", "HLANode")
 
     try:
-        node_name = multinode_config.node_config["node_name"]
         server_address = multinode_config.node_config["server_address"]
         server_port = int(multinode_config.node_config["server_port"])
     except (NameError, AttributeError) as detail:
         logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
-        node_name = os.uname()[1]
         server_address = "localhost"
         server_port = 65000
+
+    try:
+        node_name = multinode_config.node_config["node_name"]
+    except (NameError, AttributeError) as detail:
+        logger.warning("No node name defined. Using host name.\n\tException: ", detail)
+        node_name = os.uname()[1]
 
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
