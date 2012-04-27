@@ -50,6 +50,15 @@ EXECUTE_PROCESS(COMMAND
 					)
 endif (WIN32)
 
+if (NOT EXISTS ${PYTHON3_LIBRARY})
+	message(FATAL_ERROR "PYTHON3_LIBRARY detected at ${PYTHON3_LIBRARY}, but does not seem to exist")
+endif()
+
+if (NOT EXISTS ${PYTHON3_INCLUDE_DIR}/Python.h)
+	message(FATAL_ERROR "PYTHON3_INCLUDE_DIR detected at ${PYTHON3_INCLUDE_DIR}, "
+						"but ${PYTHON3_INCLUDE_DIR}/Python.h does not seem to exist")
+endif()
+
 MARK_AS_ADVANCED(
   PYTHON3_DEBUG_LIBRARY
   PYTHON3_LIBRARY
