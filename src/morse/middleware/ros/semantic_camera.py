@@ -24,8 +24,11 @@ def init_extra_module(self, component_instance, function, mw_data):
  
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     self._topics.append(rospy.Publisher(parent_name + "/" + component_name, String))
-    
-    logger.info('######## ROS SEMANTIC CAMERA PUBLISHER INITIALIZED ########')
+    self.pub_tf = rospy.Publisher("/tf", tfMessage)
+
+    self._seq = 0
+
+    logger.info('Initialized ROS Semantic Camera')
 
 def sendTransform(self, translation, rotation, time, child, parent):
     """
