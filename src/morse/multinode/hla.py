@@ -8,6 +8,7 @@ from morse.core.multinode import SimulationNodeClass
 logger.setLevel(logging.DEBUG)
 
 try:
+    import hla
     import hla.rti as rti
     import hla.omt as fom
 except (ImportError, SyntaxError):
@@ -136,8 +137,8 @@ class HLANode(SimulationNodeClass):
         if os.getenv("CERTI_HTTP_PROXY") == None:
             os.environ["CERTI_HTTP_PROXY"] = ""
         logger.debug("CERTI_HTTP_PROXY= %s", os.environ["CERTI_HTTP_PROXY"])
-        os.environ["CERTI_HOST"] = self.host
-        os.environ["CERTI_TCP_PORT"] = self.port
+        os.environ["CERTI_HOST"] = str(self.host)
+        os.environ["CERTI_TCP_PORT"] = str(self.port)
         try:
             logger.debug("Creating RTIA...")
             self.rtia = rti.RTIAmbassador()
