@@ -174,18 +174,13 @@ for HLA multinode simulation::
 If you want to use an other port, you have to specify it in the Builder configuration (as described above),
 and set the ``CERTI_TCP_PORT`` environment variable before launching the RTIG.
 
-Executing an HLA multi-node simulation
-++++++++++++++++++++++++++++++++++++++
+HLA-related tutorials
+---------------------
 
-Once you have configured your nodes and your environment in the Builder, you are ready to launch the 
-multi-node simulation.
+You can find some multi-node tutorials in ``$MORSE_ROOT/share/morse/examples/tutorials/multinode/``:
 
-1. Launch the RTIG on the RTIG host machine; the CERTI command is ``rtig``.
+.. toctree::
+    :glob:
+    :maxdepth: 1
 
-2. On each node, launch the distributed scenario, using::
-
-    $ export MORSE_NODE="nodeA"
-    $ morse run <scenario_node.py>
-
-The nodes are now synchronized: move one robot on the node where it is
-managed, its pose will be reflected on the other nodes.
+    tutorials/*

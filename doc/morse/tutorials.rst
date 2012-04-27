@@ -55,6 +55,18 @@ These tutorials provide more in-depth explanations of how to setup simulations w
     :maxdepth: 1
 
     user/advanced_tutorials/*
+    
+Multi-node tutorials
+--------------------
+
+These tutorials help setting up a multi-node simulation environment.
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    user/multinode/tutorials/*
+
 
 Blender specific instructions
 -----------------------------

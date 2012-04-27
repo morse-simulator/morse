@@ -1,6 +1,6 @@
 from morse.builder.morsebuilder import *
 
-def equipped_robot():
+def equipped_robot(mw='yarp'):
     # Append ATRV robot to the scene
     atrv = Robot('atrv')
 
@@ -27,9 +27,9 @@ def equipped_robot():
     cam.properties(cam_width = 128, cam_height = 128)
 
     # Configure the middlewares
-    motion.configure_mw('yarp')
-    pose.configure_mw('yarp')
-    sick.configure_mw('yarp')
-    cam.configure_mw('yarp')
+    motion.configure_mw(mw)
+    pose.configure_mw(mw)
+    sick.configure_mw(mw)
+    cam.configure_mw(mw)
 
     return (atrv)

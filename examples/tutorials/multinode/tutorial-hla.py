@@ -1,43 +1,22 @@
-import bpy
-
 from morse.builder.morsebuilder import *
 
-"""
-This tutorial is dedicated to multi-node simulation management.
-It contains two controlable robots whose simulation will be distributed on different nodes.
-"""
+from dala_simple import equipped_robot
 
-### Scene ###
-env = Environment('land-1/trees')
+dala1 = equipped_robot(mw='yarp')
+dala2 = equipped_robot(mw='yarp')
+dala2.translate(5, -3, 0)
 
-### ATRV Robot ###
-dala = Robot("atrv")
-dala.name = "Dala"
-dala_control = Actuator("v_omega")
-dala_control.configure_mw("socket")
-dala.append(dala_control)
-dala_gyro = Sensor("gyroscope")
-dala_gyro.configure_mw("socket")
-dala.append(dala_gyro)
-dala.location = [0,0,0]
+env = Environment('laas/grande_salle')
+env.show_framerate(True)
+env.show_physics(False)
 
-### ATRV Robot ###
-mana = Robot("atrv")
-mana.name = "Mana"
-mana_control = Actuator("v_omega")
-mana_control.configure_mw("socket")
-mana.append(mana_control)
-mana_gyro = Sensor("gyroscope")
-mana_gyro.configure_mw("socket")
-mana.append(mana_gyro)
-mana.location = [0,-4,0]
-
-### HLA Config ###
-env.configure_multinode(protocol="hla",
-    distribution = {
-        'nodeA': ['Dala'],
-        'nodeB': ['Mana'],
+env.configure_multinode(protocol="hla", server_port=60400, 
+    distribution={
+        "nodeA": [dala1.name],
+        "nodeB": [dala2.name],
     })
 
-### Configure MORSE ###
+env.aim_camera([1.3300, 0, 0.7854])
+env.place_camera([10.0, -10.0, 3.0])
+
 env.create()
