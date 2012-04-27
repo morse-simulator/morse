@@ -61,6 +61,22 @@ Commands
 :version:
         Displays the version number.
 
+Environment
+-----------
+
+:MORSE_ROOT:
+			Use this variable to determine where are localised data. This
+			variable is mandatory
+
+:MORSE_BLENDER:
+			Determine which blender binary is started. If it does not exist, 
+			rely on the first blender in the PATH
+
+:MORSE_NODE:
+			In multi-node mode, if no name has been given, look for this
+			variable to determine the name of the node. If it does not exist,
+			rely on the name of the host.
+
 See Also
 --------
 :manpage:`morseexec(1)` :manpage:`blender(1)`
