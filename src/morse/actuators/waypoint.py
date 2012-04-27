@@ -108,6 +108,16 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             except AttributeError as detail:
                 logger.warning("No radars found attached to the waypoint actuator.\n\tThere will be no obstacle avoidance")
 
+            # Convert a string listing the properties to avoid into a list
+            # Objects with any of these properties will be ignored
+            #  when doing obstacle avoidance
+            try:
+                props = self.blender_obj['Ignore'].split(',')
+                self.blender_obj['Ignore'] = props
+            except KeyError as detail:
+                self.blender_obj['Ignore'] = []
+
+
         logger.info('Component initialized')
 
 
@@ -300,13 +310,29 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
             if self._collisions and v != 0 and self._radar_r['Rcollision']:
                 # No obstacle avoidance when the waypoint is near
                 if distance+self.local_data['tolerance'] > self._radar_r.sensors["Radar"].distance:
-                    rz = rotation_speed
-                    logger.debug("Obstacle detected to the RIGHT, turning LEFT")
+                    # Ignore obstacles with the properties specified
+                    ignore = False
+                    for prop in self.blender_obj['Ignore']:
+                        if prop in self._radar_r.sensors["Radar"].hitObject:
+                            ignore = True
+                            logger.debug("Ignoring object '%s' with property '%s'" % (self._radar_r.sensors["Radar"].hitObject, prop))
+                            break
+                    if not ignore:
+                        rz = rotation_speed
+                        logger.debug("Obstacle detected to the RIGHT, turning LEFT")
             elif self._collisions and v != 0 and self._radar_l['Lcollision']:
                 # No obstacle avoidance when the waypoint is near
                 if distance+self.local_data['tolerance'] > self._radar_l.sensors["Radar"].distance:
-                    rz = - rotation_speed
-                    logger.debug("Obstacle detected to the LEFT, turning RIGHT")
+                    # Ignore obstacles with the properties specified
+                    ignore = False
+                    for prop in self.blender_obj['Ignore']:
+                        if prop in self._radar_l.sensors["Radar"].hitObject:
+                            ignore = True
+                            logger.debug("Ignoring object '%s' with property '%s'" % (self._radar_l.sensors["Radar"].hitObject, prop))
+                            break
+                    if not ignore:
+                        rz = - rotation_speed
+                        logger.debug("Obstacle detected to the LEFT, turning RIGHT")
             # Test if the orientation of the robot is within tolerance
             elif -self._angle_tolerance < angle_diff < self._angle_tolerance:
                 rz = 0
