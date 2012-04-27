@@ -10,7 +10,7 @@ james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-james.translate(x=0.1, y=2.7, z=0.0)
+james.translate(x=-3.2, y=2.7, z=0.0)
 
 human = Human()
 human.rotate(z=-3.0)
@@ -65,23 +65,47 @@ semantic_camera.configure_mw('ros', ['morse.middleware.ros_mw.ROSClass', 'post_l
 #morse.middleware.ros_mw.ROSClass
 
 # Add passive objects
+
+table = PassiveObject('props/objects.blend','SmallTable')
+table.rotate(z=1.485)
+# without object displacement
+#table.translate(x=-0.928, y=-0.544, z=0)
+table.translate(x=-0.313, y=-1.237, z=0)
+
+placemat = PassiveObject('props/kitchen_objects.blend', 'Placemat')
+placemat.setgraspable()
+placemat.translate(x=1.248, y=0.404, z=0.9)
+
+napkin = PassiveObject('props/kitchen_objects.blend', 'Napkin')
+napkin.setgraspable()
+napkin.translate(x=1.222, y=0.40, z=0.87)
+
+cup = PassiveObject('props/kitchen_objects.blend', 'Cup_Gray')
+cup.setgraspable()
+cup.translate(x=-1.196, y=1.177, z=0.95)
+
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
 cornflakes.setgraspable()
-cornflakes.translate(x=1.37, y=0.5, z=0.9)
+cornflakes.translate(x=-1.570, y=1.477,  z=1.060)
+
+spoon = PassiveObject('props/kitchen_objects.blend', 'Spoon')
+spoon.setgraspable()
+spoon.translate(x=1.279, y=1.060, z=0.86)
+spoon.rotate(z=1.45)
 
 fork = PassiveObject('props/kitchen_objects.blend', 'Fork')
 fork.setgraspable()
-fork.translate(x=1.38, y=0.5, z=0.86)
+fork.translate(x=1.279, y=1.117, z=0.86)
 fork.rotate(z=1.45)
 
 knife = PassiveObject('props/kitchen_objects.blend', 'Knife')
 knife.setgraspable()
-knife.translate(x=1.39, y=0.5, z=0.86)
+knife.translate(x=1.279, y=1.189, z=0.86)
 knife.rotate(z=1.45)
 
 plate = PassiveObject('props/kitchen_objects.blend', 'Plate')
 plate.setgraspable()
-plate.translate(x=-1.36, y=2.27, z=0.86)
+plate.translate(x=-1.210, y=1.556, z=0.86)
 plate.rotate(z=1.45)
 
 #bread = PassiveObject('props/kitchen_objects.blend', 'Bread')
@@ -96,13 +120,18 @@ bowl.rotate(z=1.45)
 
 jam = PassiveObject('props/kitchen_objects.blend', 'Jam')
 jam.setgraspable()
-jam.translate(x=1.33, y=0.45, z=0.86)
+jam.translate(x=-1.642, y=1.371, z=0.9)
 jam.rotate(z=1.45)
 
 nutella = PassiveObject('props/kitchen_objects.blend', 'Nutella')
 nutella.setgraspable()
-nutella.translate(x=1.35, y=0.42, z=0.86)
+nutella.translate(x=-1.594, y=1.258, z=0.86)
 nutella.rotate(z=1.45)
+
+bread = PassiveObject('props/kitchen_objects.blend', 'Bread')
+bread.setgraspable()
+bread.translate(x=-1.699, y=1.636, z=0.86)
+bread.rotate(z=1.45)
 
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
