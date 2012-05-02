@@ -173,6 +173,10 @@ class Human(AbstractComponent):
                     act.layer = i
                     i = i + 1
 
+    def use_world_camera(self):
+        human = self._blendobj
+        human.game.properties['WorldCamera'].value = True
+
 
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
