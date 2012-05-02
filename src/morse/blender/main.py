@@ -782,6 +782,11 @@ def switch_camera(contr):
         next_camera = scene.cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
+        # Disable mouse cursor for Human camera
+        if next_camera.name == "Human_Camera":
+            bge.logic.mouse.visible = False
+        else:
+            bge.logic.mouse.visible = True
         # Update the index for the next call
         index = (index + 1) % len(scene.cameras)
         bge.logic.current_camera_index = index
