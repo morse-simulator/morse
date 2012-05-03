@@ -1,5 +1,18 @@
 (as ordered by 'git shortlog -sn TAG1..TAG2')
 
+MORSE 0.6
+---------
+Gilberto Echeverria (LAAS-CNRS)
+Séverin Lemaignan (LAAS-CNRS)
+Arnaud Degroote (LAAS-CNRS)
+Charles Lesire-Cabaniols (ONERA)
+Michael Karg (TUM-IAS)
+Pierrick Koch (IRD)
+Sebastian Schmidt (TUM-IAS)
+Markus Sander (Ingolstadt University of Applied Sciences)
+Denis Štogl (Karlsruhe Institute of Technology)
+Thomas Moulard (LAAS-CNRS)
+
 MORSE 0.5
 ---------
 Gilberto Echeverria

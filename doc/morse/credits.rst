@@ -3,7 +3,7 @@ List of MORSE developers and contributors
 
 This are the main people involved in the development of MORSE:
 
-LAAS (Toulouse, France)
+LAAS-CNRS (Toulouse, France)
 +++++++++++++++++++++++
 
 - Gilberto Echeverria
@@ -11,6 +11,7 @@ LAAS (Toulouse, France)
 - Arnaud Degroote
 - Redouane Boumghar
 - Simon Lacroix
+- Thomas Moulard
 
 TUM (Munich, Germany)
 +++++++++++++++++++++
@@ -42,6 +43,16 @@ Cornell University (Ithaca, USA)
 ++++++++++++++++++++++++++++++++
 
 - Spencer Jackson
+
+Ingolstadt University of Applied Sciences (Ingolstadt, Germany)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Markus Sander
+
+Karlsruhe Institute of Technology (Karlsruhe, Germany)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Denis Štogl 
 
 
 Project funding
