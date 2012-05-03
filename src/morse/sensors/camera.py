@@ -40,8 +40,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
         self.image_size = 4 * self.image_width * self.image_height
 
-        # Prepare the camera object in Blender
-        self._setup_video_texture()
+        self._texture_ok = False
 
         logger.info('Component initialized')
 
@@ -49,6 +48,12 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
 
     def default_action(self):
         """ Update the texture image. """
+        # Configure the texture settings the first time the sensor is called
+        if not self._texture_ok:
+            # Prepare the camera object in Blender
+            self._setup_video_texture()
+            self._texture_ok = True
+            return
 
         # Exit if the cameras could not be prepared
         if not hasattr(bge.logic, 'cameras'):
