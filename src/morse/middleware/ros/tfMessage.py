@@ -4,6 +4,10 @@ import struct
 
 import geometry_msgs.msg
 import std_msgs.msg
+try:
+    import genpy # ROS Fuerte
+except ImportError:
+    pass
 
 class tfMessage(roslib.message.Message):
   _md5sum = "94810edda583a504dfda3829e70d7eec"
@@ -266,7 +270,11 @@ float64 w
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
-_struct_I = roslib.message.struct_I
+try: 
+  _struct_I = roslib.message.struct_I
+except AttributeError:
+  _struct_I = genpy.message.struct_I
+
 _struct_4d = struct.Struct("<4d")
 _struct_2I = struct.Struct("<2I")
 _struct_3d = struct.Struct("<3d")
