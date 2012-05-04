@@ -140,6 +140,7 @@ documentation.
 
     - ``read_waypoint``: Reads a ``geometry_msgs/Pose2D`` message from the specific ROS-topic and stores values for ``x``, ``y`` and ``z`` in ``local_data``. This is designed to be used with the waypoint actuator
 
+- Destination actuator: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/destination.py``.
+  Available methods:
 
-
-
+    - ``read_point``: Reads a ``geometry_msgs/Point`` message from the specific ROS-topic and stores values for ``x``, ``y`` and ``z`` in ``local_data``.

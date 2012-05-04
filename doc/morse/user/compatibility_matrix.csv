@@ -31,3 +31,4 @@ Actuators,
 ``steer_force``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
 "``(v, w) motion control``",     ✘,               ✔,           ✔,              "✔ ``Twist`` - supports as well (Vx,Vy,ω)",    "✔ ``GENPOS_CART_SPEED``",		✔     
 ``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘
+``destination``,              ✘,               ✔,           ✔,              ✔ (``Point``),   ✘,                                                                 ✘
