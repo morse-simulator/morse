@@ -251,7 +251,7 @@ First, add AMCL to the launch file:
 .. code-block:: xml
 
     <node name="amcl" pkg="amcl" type="amcl"> 
-        <remap to="/scan" from="/pr2/Sick" />
+        <remap to="/pr2/Sick" from="/scan" />
     </node>
 
 Then, we need to add a motion controller to our robot. Open your ``scenario.py`` and add:
