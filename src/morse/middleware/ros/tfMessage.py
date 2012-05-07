@@ -4,7 +4,10 @@ import struct
 
 import geometry_msgs.msg
 import std_msgs.msg
-import genpy # ROS Fuerte
+try:
+    import genpy # ROS Fuerte
+except ImportError:
+    pass
 
 class tfMessage(roslib.message.Message):
   _md5sum = "94810edda583a504dfda3829e70d7eec"
