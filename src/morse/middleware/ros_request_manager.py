@@ -355,7 +355,7 @@ class RosRequestManager(RequestManager):
     def main(self):
         pass
 
-class MorseAnyService(roslib.message.ServiceDefinition):
+class MorseAnyService(object):
     _type = 'morse/AnonymousService'
     _md5sum = ''
     _request_class = rospy.msg.AnyMsg
