@@ -8,9 +8,8 @@ General TODO list for MORSE
 - Fix bug in odometry sensor (Gilberto)
 
 - Make table of contents of the components with images
-- Fix cameras in Blender 2.62
-- Fix text objects for Blender 2.63
 
+- Add methods in builder to configure UTM coordinates and temperature in the scene. Previously in the Scene_Script_Holder
 
 
 Packaging
@@ -39,8 +38,8 @@ Public Relations
 General
 -------
 
-- Support for Blender >= 2.62
-[PARTIAL] - Introduce a mean to externally control time, by pacing the game
+- Support for Blender >= 2.63
+[DONE] - Introduce a mean to externally control time, by pacing the game
 	engine time (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th
 	in blender-robotics). Add support to pause the simulation. Currently, time
 	synchronization only implemented in multinode mode.
@@ -86,8 +85,7 @@ Components
 by allowing the designer to paste markers in the scene whose position will be
 exported
 
-[WIP] - Kinect integration: Control of the arms of the human avatar with a Kinect,
-using the IK chains in the armature
+[WIP] - Kinect integration: Control of the arms of the human avatar with a Kinect, using the IK chains in the armature
 
 [WIP] - "Point Cloud" sensors: generate 3D depth images to simulate either
 stereovision at an abstract level or various Lidars. Make it generic: export
@@ -98,8 +96,6 @@ to a given sensor geometry.
   Transformation3D)
 
 - PR2: cf TODO.pr2
-
-[PARTIAL] - Support for 4-wheeled vehicles (cf https://github.com/pierriko/morse/tree/experimental_wjwwood)
 
 
 Documentation
