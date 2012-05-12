@@ -42,3 +42,27 @@ def post_sick_message(self, component_instance):
             bottle2.addDouble(point[i])
 
     yarp_port.write()
+
+
+def post_sick_distances(self, component_instance):
+    """ Send the data of the SICK sensor using YARP
+
+    The argument is a copy of the component instance.
+    Send the contents of the 'range_list' component of local_data
+    """
+    port_name = self._component_ports[component_instance.blender_obj.name]
+
+    try:
+        yarp_port = self.getPort(port_name)
+    except KeyError as detail:
+        logger.error("Specified port does not exist: ", detail)
+        return
+
+    bottle = yarp_port.prepare()
+    bottle.clear()
+    # Go through the list of points
+    point_list = component_instance.local_data['range_list']
+    for distance in point_list:
+        bottle.addDouble(distance)
+
+    yarp_port.write()
