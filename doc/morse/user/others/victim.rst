@@ -14,6 +14,10 @@ This object has three important **Game Properties** that are used in the test sc
 - **Severity**: (integer) Indicator of how injured this target is. In simulation, higher
     priority should be given to victims with a larger **Severity** value
 
+.. image:: ../../../media/robots/victim.png 
+  :align: center
+  :width: 600
+
 Files
 -----
 
