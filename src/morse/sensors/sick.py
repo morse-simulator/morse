@@ -4,9 +4,7 @@ import math
 import morse.core.sensor
 import morse.helpers.math
 import bge
-import morse.sensors.sickc as sickc
 
-#logger.setLevel(logging.DEBUG)
 
 class SICKClass(morse.core.sensor.MorseSensorClass):
     """ SICK laser range sensor """
