@@ -1,28 +1,45 @@
-SICK laser range scanner
-========================
+Laser range scanners
+====================
 
-This sensor emulates a laser range scanner, by generating a series of rays in
-predefined directions, and then computing whether they find any active object
-within a certain distance of the sensor's origin.
+This is a whole collection of sensors that emulate laser range scanners,
+including a variety of SICK and Hokuyo sensors.
 
-The rays cast by the sensor are determined by the geometry of a flat mesh with
-a semi-circular shape. There must be a mesh whose name starts with ``Arc_`` and
-is a child of the Sick sensor. The sensor will cast rays in the direction of
-the vertices of this mesh. Because of this, it is imperative that the mesh is
-correctly configured.
+This sensor works by generating a series of rays in predefined directions, and
+then computing whether any active object is found within a certain distance
+from the origin of the sensor.
+
+The resolution and detection range can be completely configured using the MORSE
+Builder API.  This will generate a flat mesh with a semi-circular shape, where
+its vertices represent the directions in which the rays of the sensor are cast.
+It is also possible to create a sensor with multiple scan layers, such as the
+SICK LD-MRS. This is configured using the parameters specified below.
 
 .. note:: Objects in the scene with the **No collision** setting in their Game
   properties will not be detected by this sensor
 
 
-.. image:: ../../../media/sensors/sick.png 
-  :align: center
-  :width: 600
++----------------------------------------------------+----------------------------------------------------+
+| .. figure:: ../../../media/sensors/sick.png        | .. figure:: ../../../media/sensors/sick-ld-mrs.png |
+|    :width: 400                                     |    :width: 400                                     |
+|                                                    |                                                    |
+|    SICK LMS500                                     |    SICK LD-MRS                                     |
++----------------------------------------------------+----------------------------------------------------+
+|.. figure:: ../../../media/sensors/hokuyo.png       |                                                    |
+|   :width: 400                                      |                                                    |
+|                                                    |                                                    |
+|   Hokuyo                                           |                                                    |
++----------------------------------------------------+----------------------------------------------------+
 
 Files
 -----
 
-- Blender: ``$MORSE_ROOT/data/sensors/sick.blend``
+There are a few different Blender files available for this type of sensor, with
+meshes representing various models of laser range scanners. They all use the
+same Python script for their behaviour.
+
+- Blender: ``$MORSE_ROOT/data/sensors/sick.blend``,
+  ``$MORSE_ROOT/data/sensors/sick-ld-mrs.blend``,
+  ``$MORSE_ROOT/data/sensors/hokuyo.blend``
 - Python: ``$MORSE_ROOT/src/morse/sensors/sick.py``
 
 Local data
@@ -44,7 +61,7 @@ The Empty object corresponding to this sensor has the following parameters
 in the **Logic Editor** panel:
 
 - **Visible_arc**: (Boolean) A toggle that determines whether the scanned area
-  is displayed during the execution of the simulation or not (Default: True).
+  is displayed during the execution of the simulation or not (Default: False).
   If the robot is also equipped with a camera, it is better to set this
   variable to False, otherwise the scanned area will also appear on the
   captured images.
@@ -56,32 +73,30 @@ in the **Logic Editor** panel:
 - **scan_window**: (Float) The full angle covered by the sensor. Expressed in
   degrees in decimal format. Used when creating the arc object.
 
-Number and angle of rays
-++++++++++++++++++++++++
+The following parameters are optional. Mainly used to create multiple scanning
+layers, as is the case for the SICK LD-MRS sensor:
+
+- **layers**: (Integer) Number of scanning planes used by the sensor.
+- **layer_separation**: (Float) The angular separation between the planes. Must
+  be given in degrees.
+- **layer_offset**: (Float) The horizontal distance between the scan points in
+  consecutive scanning layers. Must be given in degrees.
+
+Configuration of the scanning parameters
+++++++++++++++++++++++++++++++++++++++++
 
 The number and direction of the rays emitted by the sensor is determined by the
-use of a semi-circle object parented to the sensor. The sensor will cast rays
-from the center of the sensor in the direction of each of the vertices in the
-semi-circle.
+vertices of a semi-circle mesh parented to the sensor. The sensor will cast
+rays from the center of the sensor in the direction of each of the vertices in
+the semi-circle.
 
-By default, the Sick sensor will be created with an arc that spans 180 degrees,
-with a resolution of 1 degree.
-This can be changed using a special method in the Builder API, which can create
-any arc of the desired geometry. The shape of the arc is determined from the
-parameters of **resolution** and **scan_window** specified as game properties
-of the Sick sensor. The name of the method is ``create_sick_arc``, and must be
-called after setting the desired value for the previously mentioned properties.
-
-The new arc object will have the following characteristics (all of them are
-correctly configured by the ``create_sick_arc`` method):
-
-- Name: Its name must begin with 'Arc\_', for the SICK Module to recognize it.
-  The currently used method is to name the arcs according to the number of
-  degrees it covers, for example: Arc_180, Arc_16, Arc_360
-- Normals: For the semi-circle to be visible in the Game Engine, the normals of
-  the faces must be facing up. Otherwise the object will not be displayed 
-- Physics: Make sure that on the **Physics Properties** panel this object is
-  set to **No collision**, otherwise it will push objects around
+By default, the SICK has an arc that spans 180 degrees, with a resolution of 1
+degree.  This can be changed using a special method in the Builder API, which
+can create any arc of the desired geometry. The shape of the arc is determined
+from the parameters of **resolution** and **scan_window** specified as game
+properties of the Sick sensor. The name of the method is ``create_sick_arc``,
+and must be called after setting the desired value for the previously mentioned
+properties.
 
 An example of how to change the arc object using the Builder API is show below:
 
@@ -94,4 +109,21 @@ An example of how to change the arc object using the Builder API is show below:
     sick.properties(resolution = 5)
     sick.properties(scan_window = 90)
     sick.properties(laser_range = 5.0)
+    sick.create_sick_arc()
+
+
+An example for creating a properly configured SICK LD-MRS is given below:
+
+.. code-block:: python
+
+    from morse.builder.morsebuilder import *
+
+    sick = Sensor('sick-ld-mrs')
+    sick.properties(Visible_arc = True)
+    sick.properties(resolution = 0.25)
+    sick.properties(scan_window = 100)
+    sick.properties(laser_range = 50.0)
+    sick.properties(layers = 4)
+    sick.properties(layer_separation = 0.8)
+    sick.properties(layer_offset = 0.125)
     sick.create_sick_arc()

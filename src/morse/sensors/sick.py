@@ -4,6 +4,9 @@ import math
 import morse.core.sensor
 import morse.helpers.math
 import bge
+import morse.sensors.sickc as sickc
+
+#logger.setLevel(logging.DEBUG)
 
 class SICKClass(morse.core.sensor.MorseSensorClass):
     """ SICK laser range sensor """
@@ -28,7 +31,8 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                 break
 
         # Set its visibility, according to the settings
-        self._ray_arc.setVisible(self.blender_obj['Visible_arc'])
+        self._visible = self.blender_obj['Visible_arc']
+        self._ray_arc.setVisible(self._visible)
         self._ray_list = []
 
         # Create an empty list to store the intersection points
@@ -40,28 +44,25 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
             for mat in range(mesh.numMaterials):
                 index = 0
                 for v_index in range(mesh.getVertexArrayLength(mat)):
+                    # Skip the center vertex
+                    # NOTE: It should always be the first vertex,
+                    #  as created by the Builder script
+                    if v_index == 0:
+                        continue
+
+                    # Get the vertices from the mesh
                     vertex = mesh.getVertex(mat, v_index)
                     vertex_pos = vertex.getXYZ()
-
-                    # Create a vector for the mathutils operations
-                    vector_point = mathutils.Vector()
-
-                    # Convert the vertex to a vector
-                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
-
-                    # Skip the center vertex
-                    # NOTE: Make sure the center vertex of the arc
-                    #  has local coordinates 0.0, 0.0, 0.0
-                    if vector_point.length == 0:
-                        logger.debug("Center vertex has index: %d" % index)
-                        continue
+                    # Create a vector with the direction of the vertex
+                    vector_point = mathutils.Vector(vertex_pos)
+                    # Store the vector in a list
+                    self._ray_list.append(vector_point)
 
                     # Insert empty points into the data list
                     self.local_data['point_list'].append([0.0, 0.0, 0.0])
                     # Insert zeros into the range list
                     self.local_data['range_list'].append(0.0)
-                    # Insert the coordinates of the ray
-                    self._ray_list.append(vector_point)
+
                     logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
 
                     index = index + 1
@@ -76,118 +77,53 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
         Also deforms the geometry of the arc associated to the SICK,
         as a way to display the results obtained.
         """
-        # Obtain the rotation matrix of the sensor.
-        inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
-
-        # Create a vector for the mathutils operations
-        vector_point = mathutils.Vector()
-
         logger.debug("=== NEW SCAN at time %s ===" % bge.logic.current_time)
         logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
-        # Get the mesh for the semicircle
-        for mesh in self._ray_arc.meshes:
-            for mat in range(mesh.numMaterials):
-                index = 0
-                for v_index in range(mesh.getVertexArrayLength(mat)):
-                    vertex = mesh.getVertex(mat, v_index)
-                    vertex_pos = vertex.getXYZ()
 
-                    # Convert the vertex to a vector
-                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
+        # Get the inverse of the transformation matrix
+        inverse = self.position_3d.matrix.inverted()
 
-                    # Skip the center vertex
-                    # NOTE: Make sure the center vertex of the arc
-                    #  has local coordinates 0.0, 0.0, 0.0
-                    if vector_point.length == 0:
-                        continue
+        index = 0
+        for ray in self._ray_list:
+            # Transform the ray to the current position and rotation
+            #  of the sensor
+            correct_ray = self.position_3d.matrix * ray
 
-                    base_ray = self._ray_list[index]
-                    # Adjust the vector coordinates to the rotation
-                    #  of the robot
-                    corrected_ray = self.blender_obj.getAxisVect(base_ray)
+            # Shoot a ray towards the target
+            target,point,normal = self.blender_obj.rayCast(correct_ray,None,self.blender_obj['laser_range'])
+            logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
-                    ray = [0, 0, 0]
-                    # Displace according to the arc vertices
-                    for i in range(3):
-                        ray[i] = self.blender_obj.position[i] + corrected_ray[i]
+            # Register when an intersection occurred
+            if target:
+                logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (correct_ray[0], correct_ray[1], correct_ray[2]))
+                logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
 
-                    logger.debug("\t%d: base_ray: [%.2f, %.2f, %.2f]\tray: [%.2f, %.2f, %.2f]" % (index, base_ray[0], base_ray[1], base_ray[2], ray[0], ray[1], ray[2]))
+                distance = self.blender_obj.getDistanceTo(point)
 
-                    # Shoot a ray towards the target
-                    target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['laser_range'])
-                    logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
+                # Return the point to the reference of the sensor
+                new_point = inverse * point
+            # If there was no intersection, store the default values
+            else:
+                distance = self.blender_obj['laser_range']
+                new_point = [0.0, 0.0, 0.0]
 
-                    # If there was an intersection,
-                    #  send the vertex to that point
-                    if target:
-                        logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (ray[0], ray[1], ray[2]))
-                        logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
+            # Save the information gathered
+            self.local_data['point_list'][index] = [new_point[0], new_point[1], new_point[2]]
+            self.local_data['range_list'][index] = distance
+            index += 1
 
-                        # Substract the sensor coordinates
-                        #  from the intersection point
-                        for i in range(3):
-                            point[i] = point[i] - self.blender_obj.position[i]
-                        logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
+        # Change the shape of the arc to show what the sensor detects
+        if self._visible:
+            for mesh in self._ray_arc.meshes:
+                for mat in range(mesh.numMaterials):
+                    index = 0
+                    for v_index in range(mesh.getVertexArrayLength(mat)):
+                        # Skip the center vertex
+                        # NOTE: It should always be the first vertex,
+                        #  as created by the Builder script
+                        if v_index == 0:
+                            continue
 
-                        # Create a vector object
-                        morse.helpers.math.fill_vector (vector_point, point)
-
-                        # Multiply the resulting point by the inverse
-                        #  of the sensor rotation matrix
-                        arc_point = inverted_matrix * vector_point
-                        logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (arc_point[0], arc_point[1], arc_point[2]))
-
-                        # Do not move the point if the ray intersection
-                        #  happened at the origin
-                        #  (because this breaks the arc and makes all
-                        #  subsequent rays wrong)
-                        if valid_range (arc_point, 0.1):
-                            # Send the vertex to the new location
-                            vertex.setXYZ(arc_point)
-
-                        # Convert the arc point from a vector to a list
-                        arc_point = [arc_point[0], arc_point[1], arc_point[2]]
-
-                    # Otherwise return the vertex to its original position
-                    else:
-                        # Create a vector object
-                        morse.helpers.math.fill_vector (vector_point, base_ray)
-                        # Give it the correct size
-                        vector_point.normalize()
-                        vector_point = vector_point * self.blender_obj['laser_range']
-
-                        # Move the vertex to the computed position
-                        vertex.setXYZ(vector_point)
-                        logger.debug("\t\tNO intersection. [%.4f, %.4f, %.4f]" % (vector_point[0], vector_point[1], vector_point[2]))
-
-                        # Add a point at 0,0,0 to the output file,
-                        #  to mark that this ray did not find anything
-                        arc_point = [0.0, 0.0, 0.0]
-
-                    
-                    #calculate ranges of the laserscanner based on Blender_object pose and points
-                    distance = math.sqrt(pow(arc_point[0],2)+pow(arc_point[1],2))
-                    
-                    # Distance is 0 when maxrange, set to maxrange in range-array
-                    if distance < self.blender_obj['laser_range']:
-                        self.local_data['range_list'][index] = distance
-                    #else:
-                    if distance == 0:
-                        self.local_data['range_list'][index] = self.blender_obj['laser_range']
-                        				
-                    self.local_data['point_list'][index] = arc_point
-                    index = index + 1
-
-
-def valid_range(point_vector, radius):
-    """ Determine if a ray is longer than radius
-
-    A ray intersection will only be valid if it happens
-    outside of a certain radius from the source.
-    This radius should be equivalent to the size of
-    the laser emiter.
-    """
-    if point_vector.length < radius:
-        return False
-    else:
-        return True
+                        vertex = mesh.getVertex(mat, v_index)
+                        vertex.setXYZ(self.local_data['point_list'][index])
+                        index += 1

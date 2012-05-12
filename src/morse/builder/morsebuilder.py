@@ -217,8 +217,10 @@ class Component(AbstractComponent):
         if make_morseable and category in ['sensors', 'actuators', 'robots'] \
                 and not self.is_morseable():
             self.morseable()
+
     def is_morseable(self):
         return 'Class' in self._blendobj.game.properties
+
     def morseable(self, calling_module=None):
         """ Make this component simulable in MORSE
 
@@ -254,10 +256,11 @@ class Component(AbstractComponent):
         controller.mode = 'MODULE'
         controller.module = calling_module
         controller.link(sensor = sensor)
+
     def frequency(self, frequency=None, delay=0):
         """ Set the frequency delay for the call of the Python module
 
-        :param frequency: (int) Desired frequency, 
+        :param frequency: (int) Desired frequency,
             0 < frequency < logic tics
         :param delay: (int) Delay between repeated pulses
             (in logic tics, 0 = no delay)
@@ -274,6 +277,7 @@ class Component(AbstractComponent):
 class Robot(Component):
     def __init__(self, name):
         Component.__init__(self, 'robots', name)
+
     def make_external(self):
         self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
 #    def remove_wheels(self):
@@ -365,31 +369,55 @@ class Sensor(Component):
         properties = sick_obj.game.properties
         resolution = properties['resolution'].value
         window = properties['scan_window'].value
-        logger.debug ("Creating arc of %.2f degrees, resolution %.2f" % (window, resolution))
+        # Parameters for multi layer sensors
+        try:
+            layers = properties['layers'].value
+            layer_separation = properties['layer_separation'].value
+            layer_offset = properties['layer_offset'].value
+        except KeyError as detail:
+            layers = 1
+            layer_separation = 0.0
+            layer_offset = 0.0
+        logger.debug ("Creating %d arc(s) of %.2f degrees, resolution %.2f" % (layers, window, resolution))
         mesh = bpy.data.meshes.new( "ArcMesh" )
         # Add the center vertex to the list of vertices
         verts = [ [0.0, 0.0, 0.0] ]
         faces = []
-
-        start_angle = -window / 2.0
-        end_angle = window / 2.0
-        logger.debug ("Arc from %.2f to %.2f" % (start_angle, end_angle))
-        arc_angle = start_angle
         vertex_index = 0
 
-        # Create all the vertices and faces
-        while arc_angle <= end_angle:
-            # Compute the coordinates of the new vertex
-            new_vertex = [ math.cos(math.radians(arc_angle)), math.sin(math.radians(arc_angle)), 0.0 ]
-            verts.append(new_vertex)
-            vertex_index = vertex_index + 1
-            # Add the faces after inserting the 2nd vertex
-            if arc_angle > start_angle:
-                faces.append([0, vertex_index-1, vertex_index])
-            # Increment the angle by the resolution
-            arc_angle = arc_angle + resolution
+        # Set the vertical angle, in case of multiple layers
+        if layers > 1:
+            v_angle = layer_separation * (layers-1) / 2.0
+        else:
+            v_angle = 0.0
 
-        mesh.from_pydata( verts, [], faces ) # simple plane
+        # Initialise the parameters for every layer
+        for layer_index in range(layers):
+            start_angle = -window / 2.0
+            end_angle = window / 2.0
+            # Offset the consecutive layers
+            if (layer_index % 2) == 0:
+                start_angle += layer_offset
+                end_angle += layer_offset
+            logger.debug ("Arc from %.2f to %.2f" % (start_angle, end_angle))
+            logger.debug ("Vertical angle: %.2f" % v_angle)
+            arc_angle = start_angle
+
+            # Create all the vertices and faces in a layer
+            while arc_angle <= end_angle:
+                # Compute the coordinates of the new vertex
+                new_vertex = [ math.cos(math.radians(arc_angle)), math.sin(math.radians(arc_angle)), math.sin(math.radians(v_angle)) ]
+                verts.append(new_vertex)
+                vertex_index = vertex_index + 1
+                # Add the faces after inserting the 2nd vertex
+                if arc_angle > start_angle:
+                    faces.append([0, vertex_index-1, vertex_index])
+                # Increment the angle by the resolution
+                arc_angle = arc_angle + resolution
+
+            v_angle -= layer_separation
+
+        mesh.from_pydata( verts, [], faces )
         mesh.update()
         # Compose the name of the arc
         arc_name = "Arc_%d" % window
@@ -416,7 +444,6 @@ class Environment(AbstractComponent):
     the default location and orientation of the camera, the Blender GE settings
     and also writes the 'component_config.py' file.
     """
-
     multinode_distribution = dict()
 
     def __init__(self, name=None):
