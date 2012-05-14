@@ -49,12 +49,14 @@ class VW_Test(MorseTestCase):
 
     def test_vw_controller(self):
         with Morse() as morse:
+
+            precision=0.05
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.stream('Pose')
             pose = pose_stream.get()
             for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             # v_w socket
             port = morse.get_stream_port('Motion_Controller')
@@ -64,80 +66,81 @@ class VW_Test(MorseTestCase):
             send_speed(v_w_client, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=0.02)
-            self.assertAlmostEqual(pose['y'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.02)
+            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
+            self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
             send_speed(v_w_client, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(v_w_client, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
 
             # for non-null w, we have r = v /  w
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.02)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.02)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.02)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.02)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.02)
+            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
+            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
             send_speed(v_w_client, 0.5, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
             for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(v_w_client, -2.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.08)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.08)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.08)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.08)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.08)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.08)
+            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
+            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=0.1)
+            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.1)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.1)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.1)
 
     def test_vw_service_controller(self):
         with Morse() as morse:
+            precision=0.15
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.stream('Pose')
             pose = pose_stream.get()
             for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_service_speed(morse, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=0.15)
-            self.assertAlmostEqual(pose['y'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
+            self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
             send_service_speed(morse, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.15)
+                self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_service_speed(morse, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
 
             # for non-null w, we have r = v /  w
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.15)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.15)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
+            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
