@@ -1,3 +1,18 @@
+MORSE 0.5.2
+===========
+
+- Fixed detection of Python headers
+- Removed non-free font from documentation
+- Fixed a bug in YARP serialization for lists
+
+MORSE 0.5.1
+===========
+
+- Mostly documentation updates
+- Several fixes in the human avatar models and behaviour
+- Better detection of Python 3.2
+- Improvements to the objects.blend assets library
+
 MORSE 0.5
 =========
 
