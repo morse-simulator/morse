@@ -438,7 +438,7 @@ class Actuator(Component):
         Component.__init__(self, 'actuators', name)
 
 
-class Environment(AbstractComponent):
+class Environment(Component):
     """ Class to configure the general environment of the simulation
     It handles the scenario file, general properties of the simulation,
     the default location and orientation of the camera, the Blender GE settings
@@ -446,11 +446,8 @@ class Environment(AbstractComponent):
     """
     multinode_distribution = dict()
 
-    def __init__(self, name=None):
-        if name:
-            Component.__init__(self, 'environments', name)
-        else:
-            AbstractComponent.__init__(self)
+    def __init__(self, name):
+        Component.__init__(self, 'environments', name)
         self._created = False
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]

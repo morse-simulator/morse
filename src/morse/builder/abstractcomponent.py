@@ -195,16 +195,15 @@ class AbstractComponent(object):
         :param component: if set, force to use the configuration of the given 
         component, instead of our own (default=None).
         """
+        if not component:
+            component = self._blendname
         # Configure the middleware for this component
         if not config:
             if not method:
                 try:
-                    if component:
-                        config = MORSE_MIDDLEWARE_DICT[mw][component]
-                    else:
-                        # TODO self._blendobj.game.properties["Class"].value ?
-                        #      as map-key (in data, instead of blender-filename)
-                        config = MORSE_MIDDLEWARE_DICT[mw][self._blendname]
+                    config = MORSE_MIDDLEWARE_DICT[mw][component]
+                    # TODO self._blendobj.game.properties["Class"].value ?
+                    #      as map-key (in data, instead of blender-filename)
                 except KeyError:
                     logger.warning("%s: default middleware method"%self.name)
                     # set the default method either it is an Actuator or a Sensor
@@ -218,7 +217,11 @@ class AbstractComponent(object):
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method]
             else:
                 if not path:
-                    config = [MORSE_MIDDLEWARE_MODULE[mw], method]
+                    try:
+                        path = MORSE_MIDDLEWARE_DICT[mw][component][2]
+                        config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
+                    except KeyError:
+                        config = [MORSE_MIDDLEWARE_MODULE[mw], method]
                 else:
                     config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
         Configuration().link_mw(self, config)
