@@ -75,8 +75,8 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
         Also deforms the geometry of the arc associated to the SICK,
         as a way to display the results obtained.
         """
-        logger.debug("=== NEW SCAN at time %s ===" % bge.logic.current_time)
-        logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+        #logger.debug("=== NEW SCAN at time %s ===" % bge.logic.current_time)
+        #logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
 
         # Get the inverse of the transformation matrix
         inverse = self.position_3d.matrix.inverted()
@@ -89,17 +89,16 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
 
             # Shoot a ray towards the target
             target,point,normal = self.blender_obj.rayCast(correct_ray,None,self.blender_obj['laser_range'])
-            logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
+            #logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
             # Register when an intersection occurred
             if target:
-                logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (correct_ray[0], correct_ray[1], correct_ray[2]))
-                logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
-
                 distance = self.blender_obj.getDistanceTo(point)
-
                 # Return the point to the reference of the sensor
                 new_point = inverse * point
+
+                #logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (correct_ray[0], correct_ray[1], correct_ray[2]))
+                #logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
             # If there was no intersection, store the default values
             else:
                 distance = self.blender_obj['laser_range']
