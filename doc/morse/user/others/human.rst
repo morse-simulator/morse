@@ -118,11 +118,19 @@ Button`. To precisely lay the item down, move the crosshairs over this point.
 If this point is in reach (and the object that the item is to be placed on is 
 marked as ``Actor`` in Blender's Physic settings), a green rectangle appears.
 Press :kbd:`Right Mouse Button` to lay it down.
+If you want to know which objects are graspable hold :kbd:`Alt`. Their respective 
+name will appear over every active object.
 
-Futhermore the human can interact with doors, drawers and switches. To do so, 
-move the crosshairs over the door/drawer/switch and press :kbd:`Left Mouse 
-Button`. See :doc:`Setting up a Scene with MORSE Utils <../addons/morse_utils>` 
+Futhermore the human can interact with the environment- namely doors, drawers 
+and mechanical and electric devices. See :doc:`Setting up a Scene with MORSE Utils <../addons/morse_utils>` 
 on how to set up the environment for the human.
+
+To open or close doors and drawers, simply hover the crosshairs over the door.
+A label ``Open/Close Door/Drawer`` should appear. Now press :kbd:`Left Mouse Button`.
+
+To use mechanical and electric devices you can interact with switches.
+Again press :kbd:`Left Mouse Button` with the crosshairs over the switch. This 
+way you can turn the device on and off.
 
 Sensors and actuators
 ---------------------
