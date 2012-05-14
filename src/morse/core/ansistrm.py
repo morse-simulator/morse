@@ -1,6 +1,6 @@
 #
 # Based on https://gist.github.com/758430
-# Copyright (C) 2010, 2011 Vinay Sajip. All rights reserved.
+# Copyright (C) 2010-2011 Vinay Sajip. All rights reserved. Licensed under the new BSD license.
 #
 import logging
 import os
