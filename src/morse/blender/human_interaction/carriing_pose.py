@@ -1,10 +1,11 @@
 from bge import logic
+from mathutils import Vector
 
 ow = logic.getCurrentController().owner
 dest = logic.getCurrentScene().objects['IK_Pose_Empty.R']
 hips = logic.getCurrentScene().objects['Hips_Empty']
 left_hand = logic.getCurrentScene().objects['IK_Target_Empty.L']
-
+human = logic.getCurrentScene().objects['Human']
 
 def move():
     """
@@ -12,7 +13,11 @@ def move():
     This script is executed as long as the Property 'moveArm' is True
     """
     # get the Vector to the right position
-    vect = ow.getVectTo(dest)
+    if human['Manipulate']:
+        vect = ow.getVectTo(dest)
+    else:
+        walk_hand_position = human.worldPosition + human.worldOrientation*Vector((0.3, -0.3, 0.9))
+        vect = ow.getVectTo(walk_hand_position)
     # vect[0] is Distance
     # vect[1] and vect[2] are the Vector in global and local coordinates
 
@@ -25,7 +30,7 @@ def move():
 
     if vect[0] < 0.02:
         # if the owner is near enough to the right position, set this position
-        ow.worldPosition = dest.worldPosition
+        ow.worldPosition = dest.worldPosition if human['Manipulate'] else walk_hand_position
         ow['moveArm'] = False
         # stop this script from being executed all the time
         # interaction.py will set the property again if needed
