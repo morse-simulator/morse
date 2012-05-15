@@ -355,7 +355,7 @@ def toggle_manipulate(contr):
         #render.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
-        if right_hand['selected'] == 'None' or right_hand['selected'] == '':
+        if right_hand['selected'] == 'None' or right_hand['selected'] == '' or right_hand['selected'] == None:
             hand_target.localPosition = [0.3, -0.3, 0.9]
             head_target.setParent(human)
             head_target.localPosition = [1.3, 0.0, 1.7]
