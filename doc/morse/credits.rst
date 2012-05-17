@@ -4,7 +4,7 @@ List of MORSE developers and contributors
 This are the main people involved in the development of MORSE:
 
 LAAS-CNRS (Toulouse, France)
-+++++++++++++++++++++++
+++++++++++++++++++++++++++++
 
 - Gilberto Echeverria
 - Séverin Lemaignan
@@ -19,10 +19,10 @@ TUM (Munich, Germany)
 - Michael Karg
 - Sebastian Schmidt
 
-IRD (Hanoi, Vietnam)
-++++++++++++++++++++
+GREYC-CNRS (University of Caen, France)
++++++++++++++++++++++++++++++++++++++++
 
-- Pierrick Koch
+- Pierrick Koch (for `ANR-PROTEUS`<http://anr-proteus.fr>_)
 
 ONERA (Toulouse, France)
 ++++++++++++++++++++++++
