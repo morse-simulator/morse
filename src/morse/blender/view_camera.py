@@ -42,9 +42,16 @@ def move(contr):
     # get the object this script is attached to
     camera = contr.owner
 
+    scene = bge.logic.getCurrentScene()
+
     # Do not move the camera if the current view is using another camera
-    if camera != bge.logic.getCurrentScene().active_camera:
+    if camera != scene.active_camera:
         return
+
+    if 'Human'  in scene.objects:
+        human = scene.objects['Human']
+        if not human['move_cameraFP']:
+            return
 
     # set the movement speed
     speed = camera['Speed']
