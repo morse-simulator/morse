@@ -53,7 +53,7 @@ builder script to generate the simulation scenario.
 However, the builder script must include the information about the robots that
 will be handled by each node.
 This is done through the instance of the ``Environment`` class that must be in
-any builder script. The method ``configure_node`` must be called to configure
+any builder script. The method ``configure_multinode`` must be called to configure
 the information about the server that will coordinate the nodes.
 In this example we show part of a builder script for a multi-node scene:
 
@@ -71,7 +71,7 @@ In this example we show part of a builder script for a multi-node scene:
                                     "nodeB": [dala2.name],
                                 })
 
-The parameters to the `configure_node` method are the following:
+The parameters to the `configure_multinode` method are the following:
   - **protocol**: currently limited to two options: 'socket' or 'hla' (see list of protocols below)
   - **server_address**: (optional) IP address where the synchronisation server is running. The default value is 'localhost'
   - **server_port**: (optional) used for the socket protocol. It should always be 65000
