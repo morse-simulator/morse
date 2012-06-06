@@ -127,8 +127,7 @@ by using these additional parameters.
 - ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension
   (Release is a good choice).
 - ``PYTHON3_EXECUTABLE`` indicate where the python3 executable is in your system
-- ``PYTHON3_INCLUDE_DIR`` indicate the directory where Python headers are installed
-- ``PYTHON3_LIBRARY`` indicate the directory where Python libraries are installed
+- ``PYTHON_EXECUTABLE`` indicate where the python2 executable is in your system
 
 You can set up the different variables using the command line.
 For instance, to build and install MORSE with YARP support in ``/opt``, you need something like::
@@ -137,7 +136,7 @@ For instance, to build and install MORSE with YARP support in ``/opt``, you need
 
 Or to tell MORSE where to find a Python installed in a different location::
 
-  $ cmake -DPYTHON3_INCLUDE_PATH=/usr/local/include/python3.2mu -DPYTHON3_LIBRARY=/usr/local/lib/python3.2mu.so ..
+  $ cmake -DPYTHON3_EXECUTABLE=/usr/local/bin/python3.2 ..
 
 Alternatively, you can use ``ccmake ..`` to change all of these parameters using a
 graphical interface. You can modify many different variables by switching to
