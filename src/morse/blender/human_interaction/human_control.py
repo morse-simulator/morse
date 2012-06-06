@@ -301,14 +301,19 @@ def hand_control(contr):
     # Get sensors for mouse wheel
     wheel_up = contr.sensors['Wheel_Up']
     wheel_down = contr.sensors['Wheel_Down']
+    keyboard = contr.sensors['All_Keys']
 
-    if wheel_up.positive:
-        front = 50.0 * sensitivity
-        target.applyMovement([front, 0.0, 0.0], True)
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_NONE and key[0] == events.LEFTCTRLKEY:
+            if wheel_up.positive:
+                front = 50.0 * sensitivity
+                target.applyMovement([front, 0.0, 0.0], True)
 
-    if wheel_down.positive:
-        back = -50.0 * sensitivity
-        target.applyMovement([back, 0.0, 0.0], True)
+            if wheel_down.positive:
+                back = -50.0 * sensitivity
+                target.applyMovement([back, 0.0, 0.0], True)
 
     # If nothing grabbed or Middle Mouse Button is not pressed,
     # do nothing of the following
