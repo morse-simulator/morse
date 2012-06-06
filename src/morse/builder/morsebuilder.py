@@ -393,8 +393,8 @@ class Sensor(Component):
 
         # Initialise the parameters for every layer
         for layer_index in range(layers):
-            start_angle = -window / 2.0
-            end_angle = window / 2.0
+            start_angle = window / 2.0
+            end_angle = -window / 2.0
             # Offset the consecutive layers
             if (layer_index % 2) == 0:
                 start_angle += layer_offset
