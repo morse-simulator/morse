@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import os
 
-from bge import logic, render, texture
+from bge import logic, render, texture, events
 import bgl, blf
 from mathutils import Matrix, Vector
 
@@ -281,6 +281,34 @@ def grab():
             obj.setParent(ow)
             right_hand['moveArm'] = True
             break
+
+def roll_hand_r(cont):
+    """
+    roll the right hand
+    """
+    armature = cont.owner
+    human = armature.parent
+    hand_r = armature.channels['Hand.R']
+
+    keyboard = cont.sensors['All_Keys']
+    wheel_down = cont.sensors['WheelDown']
+    wheel_up = cont.sensors['WheelUp']
+
+    if not ((wheel_down.positive or wheel_up.positive) and human['Manipulate']):
+        return
+    
+    roll_speed = 0.1
+    
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_ACTIVE and key[0] == events.LEFTCTRLKEY:
+            if wheel_down.positive:
+                roll_speed = -roll_speed
+            hand_r.rotation_quaternion += Vector((0.0, 0.0, roll_speed, 0.0))
+            armature.update()
+            
+
 
 def lay_down():
     """
