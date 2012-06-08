@@ -4,6 +4,7 @@ import math
 import morse.core.sensor
 import morse.helpers.math
 import bge
+import bpy
 
 
 class SICKClass(morse.core.sensor.MorseSensorClass):
@@ -37,6 +38,30 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
         self.local_data['point_list'] = []
         self.local_data['range_list'] = []
 
+        ray_object = bpy.data.objects[self._ray_arc.name]
+        for vertex in ray_object.data.vertices:
+            print ("Vertex %d = %s" % (vertex.index, vertex.co))
+
+            if vertex.index == 0:
+                continue
+
+            # Get the vertices from the mesh
+            #vertex_pos = vertex.co
+            # Create a vector with the direction of the vertex
+            #vector_point = mathutils.Vector(vertex_pos)
+            # Store the vector in a list
+            self._ray_list.append(vertex.co)
+
+            # Insert empty points into the data list
+            self.local_data['point_list'].append([0.0, 0.0, 0.0])
+            # Insert zeros into the range list
+            self.local_data['range_list'].append(0.0)
+
+            logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (vertex.index, self._ray_list[vertex.index-1][0],self._ray_list[vertex.index-1][1],self._ray_list[vertex.index-1][2]))
+
+
+
+        """
         # Initialize the ray vectors and the point list
         for mesh in self._ray_arc.meshes:
             for mat in range(mesh.numMaterials):
@@ -64,6 +89,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                     logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
 
                     index = index + 1
+        """
 
         logger.info('Component initialized')
 
@@ -109,6 +135,7 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
             self.local_data['range_list'][index] = distance
             index += 1
 
+        """
         # Change the shape of the arc to show what the sensor detects
         if self._visible:
             for mesh in self._ray_arc.meshes:
@@ -124,3 +151,4 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
                         vertex = mesh.getVertex(mat, v_index)
                         vertex.setXYZ(self.local_data['point_list'][index])
                         index += 1
+        """
