@@ -404,16 +404,16 @@ class Sensor(Component):
             arc_angle = start_angle
 
             # Create all the vertices and faces in a layer
-            while arc_angle <= end_angle:
+            while arc_angle >= end_angle:
                 # Compute the coordinates of the new vertex
                 new_vertex = [ math.cos(math.radians(arc_angle)), math.sin(math.radians(arc_angle)), math.sin(math.radians(v_angle)) ]
                 verts.append(new_vertex)
                 vertex_index = vertex_index + 1
                 # Add the faces after inserting the 2nd vertex
-                if arc_angle > start_angle:
+                if arc_angle < start_angle:
                     faces.append([0, vertex_index-1, vertex_index])
                 # Increment the angle by the resolution
-                arc_angle = arc_angle + resolution
+                arc_angle = arc_angle - resolution
 
             v_angle -= layer_separation
 
