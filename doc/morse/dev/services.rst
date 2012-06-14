@@ -208,6 +208,7 @@ object.
   request is received, the behaviour may vary, as explained below.
 
 .. note::
+
   Asynchronous services can normally only exist inside components (*i.e.*,
   they must be declared within a class inheriting from
   :py:class:`morse.core.abstractobject.MorseAbstractObject`).

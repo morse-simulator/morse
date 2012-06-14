@@ -125,6 +125,7 @@ Run morse with the builder script to create the scenario::
 Then start the simulation pressing :kbd:`p` in Blender. On the terminal you
 will get messages indicating the port numbers used by the semantic cameras.
 Normally they should be:
+
   - Right camera: ``60001``
   - Left camera: ``60002``
 

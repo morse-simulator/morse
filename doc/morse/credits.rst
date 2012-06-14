@@ -22,7 +22,7 @@ TUM (Munich, Germany)
 GREYC-CNRS (University of Caen, France)
 +++++++++++++++++++++++++++++++++++++++
 
-- Pierrick Koch (for `ANR-PROTEUS`<http://anr-proteus.fr>_)
+- Pierrick Koch (for `ANR-PROTEUS <http://anr-proteus.fr>_`)
 
 ONERA (Toulouse, France)
 ++++++++++++++++++++++++
