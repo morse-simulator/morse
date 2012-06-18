@@ -227,6 +227,7 @@ def interact():
             # check not to lay the object on itself
             if ow['selected']:
                 right_hand['LayDown'] = lay_down_ray.hitPosition
+                right_hand['LayDownObj'] = focused_object
         # otherwise just drop the object
         else:
             if ow['selected']:
@@ -323,13 +324,14 @@ def lay_down():
     
     obj_collision = obj.sensors['Collision']
     
-    if not obj_collision.positive:
+    if not (obj_collision.positive and pos['LayDownObj'] in obj_collision.hitObjectList):
         pos.worldPosition += vect/75
     else:
         obj.removeParent()
         hand['selected'] = None
         pos['moveArm'] = True
         pos['LayDown'] = False
+        pos['LayDownObj'] = None
 
 def lay_down_visualize():
     """
