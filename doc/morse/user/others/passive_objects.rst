@@ -107,4 +107,32 @@ scene:
                         z=0.0000)
         chair.rotate(z=random.uniform(0.0, 6.2)) # rotation in radians
 
+Combining passive objects with switches
+---------------------------------------
 
+It is possible to create portable devices by combining switches with 
+a passive object. The creation of such devices will be explained on 
+basis of a flashlight.
+
+First of all we need to create the mesh of our flashlight. After that
+create the switch as a seperate object and parent it to the mesh. Next 
+add a lamp object and parent it to the mesh. Name those objects so that 
+they all share the same prefix. 
+Now all that's left is defining the single objects for the use with Morse.
+So use the :doc:`Morse Utils <../addons/morse_utils>` Addon to define the 
+switch. Add the Logic for the lamp using the ``Morse Light`` preset.
+Disable the physics for the switch with the ``Ghost`` option in the Physics
+Properties, so that there can't be collisions with the mesh.
+
+You can now import the flashlight using the :doc:`MORSE Builder API <../../dev/builder>`
+like explained above. You can also import it manually and set the mesh to be 
+a passive object using the ``Morse Utils``.
+
+.. warning::
+    If you use :doc:`compound bounding boxes <../tips/bounding_boxes>` do not use the ``Compound``
+    option on the switch object. Also do not make it a ``No Collision`` 
+    object or otherwise you can't use the switch.
+
+The switch works exactly the same as a static one. Use the ``Left Mouse Button``
+to turn the device on and off. This does also function while the object
+is carried.
