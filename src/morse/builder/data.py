@@ -53,7 +53,7 @@ middleware-dictionary-convention:
 """
 MORSE_MIDDLEWARE_DICT = {
     'ros': {
-        'accelerometer': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_twist', 'morse/middleware/ros/acceleromter'],
+        'accelerometer': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_twist', 'morse/middleware/ros/accelerometer'],
         'battery': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_float32', 'morse/middleware/ros/battery'],
         'clock': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_clock', 'morse/middleware/ros/clock'],
         'gps': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
@@ -70,7 +70,7 @@ MORSE_MIDDLEWARE_DICT = {
 
         'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
         'ptu': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_Vector3', 'morse/middleware/ros/platine'],
-        'kuka_lwr': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_joinState', 'morse/middleware/ros/kuka_joinState'],
+        'kuka_lwr': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_jointState', 'morse/middleware/ros/kuka_jointState'],
         'v_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
         'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
     },
