@@ -41,6 +41,8 @@ MORSE_MODIFIER_DICT = {
         'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'waypoint': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'orientation': [MORSE_MODIFIERS['NED'], 'ned_angle_to_blender'],
+        'set_pose': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
+        'set_pose': [MORSE_MODIFIERS['NED'], 'ned_quaternion_to_blender'],
     },
     'UTM' : {
         'pose': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
