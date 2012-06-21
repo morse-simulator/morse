@@ -81,6 +81,7 @@ MORSE_MIDDLEWARE_DICT = {
         'v_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
         'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
         'destination': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_point', 'morse/middleware/ros/destination'], 
+        'orientation': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_quaternion', 'morse/middleware/ros/read_quaternion'],
     },
 
     'socket': {
