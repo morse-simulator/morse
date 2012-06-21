@@ -18,8 +18,8 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self._speed = self.blender_obj['Speed']
-        self._tolerance = math.radians(5)
+        self.add_property('_speed', 1.0, 'Speed')
+        self.add_property('_tolerance', math.radians(5), 'Tolerance')
 
         self.local_data['seg0'] = 0.0
         self.local_data['seg1'] = 0.0

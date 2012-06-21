@@ -49,19 +49,9 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._wp_object = None
         self._collisions = False
         
-        # Read the ObstacleAvoidance property
-        try:
-            self._obstacle_avoidance = obj['ObstacleAvoidance']
-        except KeyError:
-            self._obstacle_avoidance = True
-        # Read the FreeZ property
-        try:
-            self._free_z = obj['FreeZ']
-        except KeyError:
-            self._free_z = False
-
-        # Convert the direction tolerance to radians
-        self._angle_tolerance = math.radians(10)
+        self.add_property('_obstacle_avoidance', True, 'ObstacleAvoidance')
+        self.add_property('_free_z', False, 'FreeZ')
+        self.add_property('_angle_tolerance', math.radians(10), 'AngleTolerance')
 
         # Variable to store current speed. Used for the stop/resume services
         self._previous_speed = 0

@@ -15,12 +15,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Choose the type of function to move the object
         #self._type = 'Velocity'
         self._type = 'Position'
-
-        try:
-            self._speed = obj['Speed']
-        except KeyError as detail:
-            self._speed = 1.0
-            logger.debug("Using default speed of 1.0")
+        self.add_property('_speed', 1.0, 'Speed')
 
         # Correct the speed considering the Blender clock
         if self._type == 'Position':

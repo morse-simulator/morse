@@ -20,17 +20,8 @@ class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
         self.local_data['near_objects'] = {}
         self.local_data['near_robots'] = {}
         
-        try:
-            self._range = self.blender_obj['Range']
-        except KeyError:
-            # Set a default range of 100m
-            self._range = 100
-        
-        try:
-            self._tag = self.blender_obj['Track']
-        except KeyError:
-            # Set default tracked objects to 'Robots'
-            self._tag = "Robot_Tag"
+        self.add_property('_range', 100, 'Range')
+        self.add_property('_tag', "Robot_Tag", 'Track')
         
         logger.info('Component initialized')
 
