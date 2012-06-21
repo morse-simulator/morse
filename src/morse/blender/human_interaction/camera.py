@@ -21,6 +21,7 @@ def init():
         camAct.camera = worldCam
     else:
         camAct.camera = humCam
+        logic.mouse.visible = False
     # set Camera following the human or displaying the world
     
     
@@ -32,11 +33,15 @@ def collision():
     """
     co =  logic.getCurrentController()
     ow = co.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
     ray = co.sensors['collision']
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
-    human =   logic.getCurrentScene().objects['Human']
-    Orig_Pos = logic.getCurrentScene().objects['POS_3P_Camera_Orig']
+    human =   logic.getCurrentScene().objects['Human' + suffix]
+    Orig_Pos = logic.getCurrentScene().objects['POS_3P_Cam_Orig' + suffix]
     distance = 0.05     # the distance the camera keeps to Objects
 
     # if near an object, place the camera slightly in front of it
@@ -87,22 +92,26 @@ def change():
     """
     co = logic.getCurrentController()
     ow = co.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
     track = co.actuators['TrackCamera']
     sobList = logic.getCurrentScene().objects
-    human = sobList['Human']
-    FP = sobList['POS_1P_Camera']
-    FP_POS = sobList['POS_1P_Camera'].worldPosition
-    TP_POS = sobList['POS_3P_Camera'].worldPosition
-    head_target = sobList['Target_Empty']
-    hand_target = sobList['IK_Target_Look.R']
-    look_target = sobList['LOOK_TARGET']
-    right_hand = sobList['Hand_Grab.R']
+    human = sobList['Human' + suffix]
+    FP = sobList['POS_1P_Cam' + suffix]
+    FP_POS = sobList['POS_1P_Cam' + suffix].worldPosition
+    TP_POS = sobList['POS_3P_Cam' + suffix].worldPosition
+    head_target = sobList['Target_Empty' + suffix]
+    hand_target = sobList['IK_Target_Look.R' + suffix]
+    look_target = sobList['LOOK_TARGET' + suffix]
+    right_hand = sobList['Hand_Grab.R' + suffix]
     mmb = ow.sensors['MMB']
 
 
     if ow.getDistanceTo(FP) < 0.08:
         # if the distance is smaller than 0.08,
-        # snap the camera to the 'POS_1P_Camera'-empty
+        # snap the camera to the 'POS_1P_Cam'-empty
         ow['FP'] = True
 
 
