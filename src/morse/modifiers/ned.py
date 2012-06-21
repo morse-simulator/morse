@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import math
+import mathutils
 
 from morse.core.modifier import MorseModifierClass
 
@@ -34,9 +35,16 @@ class MorseNEDClass(MorseModifierClass):
         # Data write functions
         elif function_name == "blender_to_ned_angle":
             component_instance.output_modifiers.append(function)
+        
+        # Data read functions
+        if function_name == "ned_quaternion_to_blender":
+            component_instance.input_modifiers.append(function)
+        # Data write functions
+        elif function_name == "blender_to_ned_quaternion":
+            component_instance.output_modifiers.append(function)
 
     def blender_to_ned(self, component_instance):
-        """ Convert the coordinates from Blender to UTM reference. """
+        """ Convert the coordinates from Blender to NED reference. """
         tmp = component_instance.local_data['x']
         component_instance.local_data['x'] = component_instance.local_data['y']
         component_instance.local_data['y'] = tmp
@@ -44,7 +52,7 @@ class MorseNEDClass(MorseModifierClass):
 
 
     def ned_to_blender(self, component_instance):
-        """ Convert the coordinates from UTM to Blender reference. """
+        """ Convert the coordinates from NED to Blender reference. """
         tmp = component_instance.local_data['x']
         component_instance.local_data['x'] = component_instance.local_data['y']
         component_instance.local_data['y'] = tmp
@@ -71,3 +79,35 @@ class MorseNEDClass(MorseModifierClass):
             component_instance.local_data['yaw'] = yaw
         except KeyError as detail:
             logger.warning("Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            
+            
+    def blender_to_ned_quaternion(self, component_instance):
+        """ Convert the quaternion from Blender to NED reference. """
+        try:
+            q = mathutils.Quaternion((component_instance.local_data['qw'],
+                                     component_instance.local_data['qx'],
+                                     component_instance.local_data['qy'],
+                                     component_instance.local_data['qz']))
+            q_ned = mathutils.Quaternion((1, 1, 0, 0)) * q
+            component_instance.local_data['qw'] = q_ned.w
+            component_instance.local_data['qx'] = q_ned.x
+            component_instance.local_data['qy'] = q_ned.y
+            component_instance.local_data['qz'] = q_ned.z
+        except KeyError as detail:
+            logger.warning("Unable to use 'blender_to_ned_quaternion component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+
+    def ned_quaternion_to_blender(self, component_instance):
+        """ Convert the quaternion from NED to Blender reference. """
+        try:
+            q = mathutils.Quaternion((component_instance.local_data['qw'],
+                                     component_instance.local_data['qx'],
+                                     component_instance.local_data['qy'],
+                                     component_instance.local_data['qz']))
+            q_ned = mathutils.Quaternion((1, -1, 0, 0)) * q
+            component_instance.local_data['qw'] = q_ned.w
+            component_instance.local_data['qx'] = q_ned.x
+            component_instance.local_data['qy'] = q_ned.y
+            component_instance.local_data['qz'] = q_ned.z
+        except KeyError as detail:
+            logger.warning("Unable to use 'ned_quaternion_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            
