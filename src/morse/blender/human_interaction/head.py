@@ -6,8 +6,11 @@ def set_body_position(co):
     """
     ow = co.owner
 
-    head = logic.getCurrentScene().objects['Head']
-    human = logic.getCurrentScene().objects['Human']
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+
+    head = logic.getCurrentScene().objects['Head' + suffix]
+    human = logic.getCurrentScene().objects['Human' + suffix]
 
 
     if human['Manipulate']:

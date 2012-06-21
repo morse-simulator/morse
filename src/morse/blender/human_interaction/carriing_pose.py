@@ -1,17 +1,22 @@
 from bge import logic
 from mathutils import Vector
 
-ow = logic.getCurrentController().owner
-dest = logic.getCurrentScene().objects['IK_Pose_Empty.R']
-hips = logic.getCurrentScene().objects['Hips_Empty']
-left_hand = logic.getCurrentScene().objects['IK_Target_Empty.L']
-human = logic.getCurrentScene().objects['Human']
-
-def move():
+def move(cont):
     """
     Move the hand to a nice position for carriing objects.
     This script is executed as long as the Property 'moveArm' is True
     """
+    ow = cont.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
+    dest = logic.getCurrentScene().objects['IK_Pose_Empty.R' + suffix]
+    hips = logic.getCurrentScene().objects['Hips_Empty' + suffix]
+    left_hand = logic.getCurrentScene().objects['IK_Target_Empty.L' + suffix]
+    human = logic.getCurrentScene().objects['Human' + suffix]
+
+    
     # get the Vector to the right position
     if human['Manipulate']:
         vect = ow.getVectTo(dest)
