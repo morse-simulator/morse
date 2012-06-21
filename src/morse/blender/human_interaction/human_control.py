@@ -144,7 +144,11 @@ def read_status(contr):
     """
     human = contr.owner
     scene = logic.getCurrentScene()
-    armature = scene.objects['HumanArmature']
+    
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+    
+    armature = scene.objects['HumanArmature' + suffix]
     tolerance = 0.001
 
     # TODO: Do not change the movement properties until the controllers
@@ -167,6 +171,10 @@ def set_human_animation(contr):
     """
     # Get sensor named Mouse
     armature = contr.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = armature.name[-4:] if armature.name[-4] == "." else ""
+    
     keyboard = contr.sensors['All_Keys']
 
     keylist = keyboard.events
@@ -199,7 +207,7 @@ def set_human_animation(contr):
 
     scene = logic.getCurrentScene()
     active_camera = scene.active_camera
-    human = scene.objects['Human']
+    human = scene.objects['Human' + suffix]
     
     if human['move_cameraFP'] and active_camera.name != 'Human_Camera':
         return
@@ -218,12 +226,16 @@ def head_control(contr):
     for the human head and camera. """
     # get the object this script is attached to
     human = contr.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+
     scene = logic.getCurrentScene()
-    target = scene.objects['Target_Empty']
-    POS_EMPTY = scene.objects['POS_EMPTY']
-    Head_Empty = scene.objects['Head_Empty']
-    right_hand = scene.objects['Hand_Grab.R']
-    camera = scene.objects['Human_Camera']
+    target = scene.objects['Target_Empty' + suffix]
+    POS_EMPTY = scene.objects['POS_EMPTY' + suffix]
+    Head_Empty = scene.objects['Head_Empty' + suffix]
+    right_hand = scene.objects['Hand_Grab.R' + suffix]
+    camera = scene.objects['Human_Camera' + suffix]
     mmb = contr.sensors['MMB']
 
     # Do not move the camera if the current view is using another camera
@@ -237,7 +249,7 @@ def head_control(contr):
         return
 
     if mmb.positive:
-        target = scene.objects['IK_Target_Empty.R']
+        target = scene.objects['IK_Target_Empty.R' + suffix]
 
     # Get sensor named Mouse
     mouse = contr.sensors['Mouse']
@@ -286,9 +298,13 @@ def hand_control(contr):
     """
     # get the object this script is attached to
     human = contr.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+    
     scene = logic.getCurrentScene()
-    target = scene.objects['IK_Target_Empty.R']
-    right_hand = scene.objects['Hand_Grab.R']
+    target = scene.objects['IK_Target_Empty.R' + suffix]
+    right_hand = scene.objects['Hand_Grab.R' + suffix]
     mmb = human.sensors['MMB']
 
     # If the manipulation mode is inactive, do nothing
@@ -372,8 +388,12 @@ def reset_pose(contr):
 def reset_view(contr):
     """ Make the human model look forward """
     human = contr.owner
+    
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+    
     scene = logic.getCurrentScene()
-    target = scene.objects['Target_Empty']
+    target = scene.objects['Target_Empty' + suffix]
     # Reset the Empty object to its original position
     target.localPosition = [1.3, 0.0, 1.7]
 
@@ -381,10 +401,14 @@ def reset_view(contr):
 def toggle_manipulate(contr):
     """ Switch mouse control between look and manipulate """
     human = contr.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+    
     scene = logic.getCurrentScene()
-    hand_target = scene.objects['IK_Target_Empty.R']
-    head_target = scene.objects['Target_Empty']
-    right_hand = scene.objects['Hand_Grab.R']
+    hand_target = scene.objects['IK_Target_Empty.R' + suffix]
+    head_target = scene.objects['Target_Empty' + suffix]
+    right_hand = scene.objects['Hand_Grab.R' + suffix]
 
     if human['Manipulate']:
         #render.showMouse(False)
@@ -482,13 +506,17 @@ def rotate(co):
     """
        
     ow = co.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
     keyboard = co.sensors['All_Keys']
     scene = logic.getCurrentScene()
-    pos =  scene.objects['POS_EMPTY']
-    human_pos = scene.objects['Human']
+    pos =  scene.objects['POS_EMPTY' + suffix]
+    human_pos = scene.objects['Human' + suffix]
     active_camera = scene.active_camera
     
-    if human_pos['move_cameraFP'] and active_camera.name != 'Human_Camera':
+    if human_pos['move_cameraFP'] and active_camera.name != ('Human_Camera'+suffix):
         return
     
     keylist = keyboard.events
@@ -509,12 +537,12 @@ def rotate(co):
         # lock camera to head in Manipulation Mode
     else:
         if FORWARDS in k and not(LEFT in k or RIGHT in k):  
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation, ow)
             else:
                 applyrotate(human_pos.worldOrientation, ow) 
         elif LEFT in k and not(FORWARDS in k or BACKWARDS in k):
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation *
                             Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
             else: 
@@ -522,14 +550,14 @@ def rotate(co):
                             Matrix.Rotation(math.pi / 2, 3, 'Z'), ow)
             # turn around 90 deg
         elif RIGHT in k and not(FORWARDS in k or BACKWARDS in k):
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation *
                             Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
             else:
                 applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi * 3/2, 3, 'Z'), ow)
             # turn around 270 deg
         elif LEFT in k and FORWARDS in k:
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation *
                             Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
             else: 
@@ -537,7 +565,7 @@ def rotate(co):
                             Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
             # turn around 45 deg
         elif RIGHT in k and FORWARDS in k:
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation *
                             Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
             else:
@@ -545,17 +573,17 @@ def rotate(co):
                             Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
             # turn around 315 deg
         elif BACKWARDS in k and not(LEFT in k or RIGHT in k):
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi, 3, 'Z'), ow)
             # turn around 180 deg if in game-mode
         elif LEFT in k and BACKWARDS in k:          
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 3/4, 3, 'Z'), ow)
             else:
                 applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi / 4, 3, 'Z'), ow)
             # turn around 135 deg if in game-mode, else turn 45 deg
         elif RIGHT in k and BACKWARDS in k:
-            if active_camera.name == "Human_Camera":
+            if active_camera.name == ("Human_Camera"+suffix):
                 applyrotate(pos.worldOrientation * Matrix.Rotation(math.pi * 5/4, 3, 'Z'), ow)
             else:
                 applyrotate(human_pos.worldOrientation * Matrix.Rotation(math.pi * 7 / 4, 3, 'Z'), ow)
