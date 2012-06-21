@@ -15,8 +15,9 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self._tolerance = 0.5
-        self._speed = 5.0
+        self.add_property('_tolerance', 0.5, 'Tolerance')
+        self.add_property('_speed', 5.0, 'Speed')
+
         self.destination = self.blender_obj.position
 
         #self.local_data['speed'] = 0.0

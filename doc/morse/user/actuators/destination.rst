@@ -22,6 +22,24 @@ Local data
 
 .. note:: Coordinates are given with respect to the origin of Blender's coordinate axis.
 
+
+Properties
+----------
+
+  - **Speed**: (float) The robot speed in Blender units per second
+  - **Tolerance**: (float) The tolerance to determine if the target has been reached
+
+
+.. note:: Properties are modifiable in the Builder API. Example:
+
+	.. code-block:: python
+
+		atrv = Robot('atrv')
+		dest = Actuator('destination')
+		atrv.append(dest)
+		dest.properties(Speed=2.5, Tolerance=0.5)
+
+
 Applicable modifiers
 --------------------
 
