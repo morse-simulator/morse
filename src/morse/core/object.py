@@ -38,6 +38,24 @@ class MorseObjectClass(MorseAbstractObject):
         """ Destructor method. """
         logger.info("%s: I'm dying!!" % self.name())
 
+    def add_property(self, prop, default_value, name):
+        """ Add a property to the current object 
+
+        :param string prop: the name of the property, on the Python
+        side.
+        :param default_value: the default value
+        :param string name: the name of the property, on the Blender
+        object side.
+
+        Add a property to the current obj, using the value stored in the
+        Blender obj if it exists, otherwise use the default value
+        """
+        try:
+            val = self.blender_obj[name]
+        except KeyError:
+            val = default_value
+        setattr(self, prop, val)
+
     def name(self):
         return self.blender_obj.name
 
