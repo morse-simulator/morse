@@ -7,9 +7,20 @@ def init():
     """
     co =  logic.getCurrentController()
     ow = co.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
     camAct = co.actuators['Set_Camera']
     sobList =  logic.getCurrentScene().objects
-    humCam = sobList['Human_Camera']
+
+    human = sobList['Human' + suffix]
+
+    # if the Human is external, do not use his camera initially
+    if human.get('External_Robot_Tag'):
+        return
+    
+    humCam = sobList['Human_Camera' + suffix]
     
     try:
         worldCam = sobList['CameraFP']
