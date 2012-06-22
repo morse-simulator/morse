@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import os
 
-from bge import logic, render, texture
+from bge import logic, render, texture, events
 import bgl, blf
 from mathutils import Matrix, Vector
 
@@ -268,19 +268,43 @@ def grab():
         left_hand.applyMovement([0.0, 0.0, -(hips.worldPosition[2]-0.5)/50])
 
     # Do we actually touch the object?
-    if len(obj.meshes) == 0: # Most probably an EMPTY: check children's meshes.
-        objs = obj.children
-    else:
-        objs = [obj]
+    # Even if the physics shape consists of several compound objects,
+    # the parent is considered when one of them is touched
 
-    for subobj in objs:
-        if coll.hitObject == subobj:
-            logger.debug("Grabbing %s" % obj)
-            ow['grabbing'] = None
-            ow['selected'] = obj
-            obj.setParent(ow)
-            right_hand['moveArm'] = True
-            break
+    if coll.hitObject == obj:
+        logger.debug("Grabbing %s" % obj)
+        ow['grabbing'] = None
+        ow['selected'] = obj
+        obj.setParent(ow)
+        right_hand['moveArm'] = True
+
+def roll_hand_r(cont):
+    """
+    roll the right hand
+    """
+    armature = cont.owner
+    human = armature.parent
+    hand_r = armature.channels['Hand.R']
+
+    keyboard = cont.sensors['All_Keys']
+    wheel_down = cont.sensors['WheelDown']
+    wheel_up = cont.sensors['WheelUp']
+
+    if not ((wheel_down.positive or wheel_up.positive) and human['Manipulate']):
+        return
+    
+    roll_speed = 0.1
+    
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_ACTIVE and key[0] == events.LEFTCTRLKEY:
+            if wheel_down.positive:
+                roll_speed = -roll_speed
+            hand_r.rotation_quaternion += Vector((0.0, 0.0, roll_speed, 0.0))
+            armature.update()
+            
+
 
 def lay_down():
     """

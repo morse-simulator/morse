@@ -14,7 +14,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from bge import logic, events, render
 import math
-import bge
 from mathutils import Matrix
 
 AZERTY = False
@@ -33,12 +32,33 @@ else:
     LEFT = events.AKEY
     TURN_LEFT = events.QKEY
 
+def lock_movement(contr):
+    human = contr.owner
+    keyboard = contr.sensors['All_Keys']
+
+    scene = logic.getCurrentScene()
+
+    if scene.active_camera.name != 'CameraFP':
+        return
+
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_JUST_ACTIVATED:
+            if key[0] == events.F5KEY:
+                human['move_cameraFP'] = not human['move_cameraFP']
+                if human['move_cameraFP']:
+                    logger.info("Moving CameraFP")
+                else:
+                    logger.info("Moving Human")
+                
+
 def move(contr):
     """ Read the keys for specific combinations
         that will make the camera move in 3D space. """
     
     # Get the currently active camera to adapt control method
-    scene = bge.logic.getCurrentScene()
+    scene = logic.getCurrentScene()
     active_camera = scene.active_camera
     
     # get the object this script is attached to
@@ -53,6 +73,9 @@ def move(contr):
     # Default movement speed
     move_speed = [0.0, 0.0, 0.0]
     rotation_speed = [0.0, 0.0, 0.0]
+
+    if human['move_cameraFP'] and active_camera.name != 'Human_Camera':
+        return
 
     keylist = keyboard.events
     for key in keylist:
@@ -173,6 +196,13 @@ def set_human_animation(contr):
         """
         elif key[1] == logic.KX_INPUT_ACTIVE:
             pressed.append(key[0])
+
+    scene = logic.getCurrentScene()
+    active_camera = scene.active_camera
+    human = scene.objects['Human']
+    
+    if human['move_cameraFP'] and active_camera.name != 'Human_Camera':
+        return
     
     if (FORWARDS in pressed or LEFT in pressed or BACKWARDS in pressed or
         RIGHT in pressed):
@@ -271,14 +301,19 @@ def hand_control(contr):
     # Get sensors for mouse wheel
     wheel_up = contr.sensors['Wheel_Up']
     wheel_down = contr.sensors['Wheel_Down']
+    keyboard = contr.sensors['All_Keys']
 
-    if wheel_up.positive:
-        front = 50.0 * sensitivity
-        target.applyMovement([front, 0.0, 0.0], True)
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_NONE and key[0] == events.LEFTCTRLKEY:
+            if wheel_up.positive:
+                front = 50.0 * sensitivity
+                target.applyMovement([front, 0.0, 0.0], True)
 
-    if wheel_down.positive:
-        back = -50.0 * sensitivity
-        target.applyMovement([back, 0.0, 0.0], True)
+            if wheel_down.positive:
+                back = -50.0 * sensitivity
+                target.applyMovement([back, 0.0, 0.0], True)
 
     # If nothing grabbed or Middle Mouse Button is not pressed,
     # do nothing of the following
@@ -355,7 +390,7 @@ def toggle_manipulate(contr):
         #render.showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
-        if right_hand['selected'] == 'None' or right_hand['selected'] == '':
+        if right_hand['selected'] == 'None' or right_hand['selected'] == '' or right_hand['selected'] == None:
             hand_target.localPosition = [0.3, -0.3, 0.9]
             head_target.setParent(human)
             head_target.localPosition = [1.3, 0.0, 1.7]
@@ -448,9 +483,14 @@ def rotate(co):
        
     ow = co.owner
     keyboard = co.sensors['All_Keys']
-    pos =  logic.getCurrentScene().objects['POS_EMPTY']
-    human_pos = logic.getCurrentScene().objects['Human']
-
+    scene = logic.getCurrentScene()
+    pos =  scene.objects['POS_EMPTY']
+    human_pos = scene.objects['Human']
+    active_camera = scene.active_camera
+    
+    if human_pos['move_cameraFP'] and active_camera.name != 'Human_Camera':
+        return
+    
     keylist = keyboard.events
 
     k = []    #initiate a list with all currently pressed keys
@@ -461,7 +501,7 @@ def rotate(co):
     pos.worldPosition = ow.worldPosition
 
     # Get active camera
-    scene = bge.logic.getCurrentScene()
+    scene = logic.getCurrentScene()
     active_camera = scene.active_camera
     
     if ow['Manipulate']:

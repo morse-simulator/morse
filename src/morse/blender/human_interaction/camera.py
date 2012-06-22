@@ -21,6 +21,7 @@ def init():
         camAct.camera = worldCam
     else:
         camAct.camera = humCam
+        logic.mouse.visible = False
     # set Camera following the human or displaying the world
     
     
