@@ -43,7 +43,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             return
 
         self.add_property('_speed', 1.0, 'Speed')
-        self.add_property('_tolerance', math.radian(0.3), 'Tolerance')
+        self.add_property('_tolerance', math.radians(0.3), 'Tolerance')
         self.add_property('_is_manual_mode', False, 'Manual')
 
         # Variables to store current angles
