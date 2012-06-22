@@ -22,7 +22,7 @@ TUM (Munich, Germany)
 GREYC-CNRS (University of Caen, France)
 +++++++++++++++++++++++++++++++++++++++
 
-- Pierrick Koch (for `ANR-PROTEUS <http://anr-proteus.fr>_`)
+- Pierrick Koch (for `ANR-PROTEUS <http://anr-proteus.fr>`_)
 
 ONERA (Toulouse, France)
 ++++++++++++++++++++++++
@@ -53,6 +53,11 @@ Karlsruhe Institute of Technology (Karlsruhe, Germany)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 - Denis Štogl 
+
+DLR (Oberpfaffenhofen, Germany)
++++++++++++++++++++++++++++++++
+
+- Felix Ruess
 
 
 Project funding
