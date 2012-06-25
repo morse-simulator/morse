@@ -7,28 +7,36 @@ Videos
 
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 27862570              |        .. vimeo:: 23244699               |
-|            :width: 400                   |           :width: 400                    |
+|         .. vimeo:: 44505701              |            .. vimeo:: 23244699           |
+|            :width: 400                   |                :width: 400               |
 |                                          |                                          |
-|  Some examples of integration between    |  Using ROS RVIZ vizualisation tool to    |
-|  MORSE and ROS in human-robot interaction|  display the video stream of a simulated |
-|  context.                                |  camera                                  |
+|  A comilation of simulated scenarios     |  Using ROS RVIZ vizualisation tool to    |
+|  used in several research laboratories.  |  display the video stream of a simulated |
+|                                          |  camera                                  |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 22246759              |        .. vimeo:: 19258005               |
-|            :width: 400                   |           :width: 400                    |
+|         .. vimeo:: 27862570              |            .. vimeo:: 19258005           |
+|            :width: 400                   |               :width: 400                |
 |                                          |                                          |
-| Here, a robot builds a 2.5D terrain model|  MORSE can take care of navigation if    |
-|  map from simulated stereo-cameras, and  |  you do not want to manage this part.    |
-|  uses it to navigate.                    |                                          |
+|  Some examples of integration between    | MORSE can take care of navigation if     |
+|  MORSE and ROS in human-robot interaction| you do not want to manage this part.     |
+|  context.                                |                                          |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 27862605              |        .. vimeo:: 9825826                |
-|            :width: 400                   |           :width: 400                    |
+|         .. vimeo:: 22246759              |            .. vimeo:: 9825826            |
+|            :width: 400                   |               :width: 400                |
 |                                          |                                          |
-|  MORSE can be used to test human-robot   |  Several robots following each others.   |
-|  interaction scenarii, where a human     |  Each robot streams its camera, here     |
-|  is controlled as in a video game.       |  with YARP.                              |
+| Here, a robot builds a 2.5D terrain model|   Several robots following each other.   |
+|  map from simulated stereo-cameras, and  |     Each robot streams its camera, here  |
+|  uses it to navigate.                    |                with YARP.                |
++------------------------------------------+------------------------------------------+
+|                                          |                                          |
+|         .. vimeo:: 27862605              |                                          |
+|            :width: 400                   |                                          |
+|                                          |                                          |
+|  MORSE can be used to test human-robot   |                                          |
+|  interaction scenarii, where a human     |                                          |
+|  is controlled as in a video game.       |                                          |
 +------------------------------------------+------------------------------------------+
 
 More videos are available on the `Blender for Robotics Vimeo group 
