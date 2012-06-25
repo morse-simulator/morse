@@ -51,6 +51,12 @@ to instantiate the :py:class:`morse.builder.morsebuilder.Human` class.
    from morse.builder.morsebuilder import *
    human = Human()
 
+If you want to use the World Camera initially, add
+
+.. code-block:: python
+
+   human.use_world_camera()
+
 The :doc:`human posture component <../sensors/human_posture>`
 can then be accessed through the ``armature`` member.
 
@@ -80,6 +86,9 @@ When starting a simulation with a human, the active camera is automatically
 set behind the human, in *immersive* mode (so-called *first-person 
 shooter* view). You can switch to another camera with the :kbd:`F9` key.
 
+If you are using the World Camera (``CameraFP``), press :kbd:`F5` to change 
+if you want to control the Human or the Camera.
+
 
 Motion mode
 +++++++++++
@@ -92,6 +101,8 @@ Motion mode
 The human always starts in so-called **Motion Mode**.
 
 - Move the character with the :kbd:`W`, :kbd:`A`, :kbd:`S`, :kbd:`D` keys
+
+- Move the Camera around the human by moving the Mouse
     
 - The direction of the head is controlled with the movement of the camera.
 
@@ -108,7 +119,8 @@ Manipulation mode
 To toggle in and out of **Manipulation Mode**, press :kbd:`X`.
 
 You can move the hand by holding :kbd:`Middle Mouse Button` and moving the 
-``Mouse``.
+``Mouse``. Furthermore you can roll the hand with the :kbd:`Mouse Wheel` while
+holding the :kbd:`Left Ctrl` Button.
 
 In manipulation mode, when the hand is close enough of a graspable object (see
 :doc:`passive objects <passive_objects>` documentation to know how to define a

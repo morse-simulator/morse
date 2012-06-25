@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import os
 
-from bge import logic, render, texture
+from bge import logic, render, texture, events
 import bgl, blf
 from mathutils import Matrix, Vector
 
@@ -83,7 +83,7 @@ def open_door(door):
 
 
 
-def interact():
+def interact(cont):
     """
     Script for opening doors, drawers and grabbing objects
     
@@ -91,19 +91,22 @@ def interact():
     press right mousebutton to drop the currently selected object
     """
 
-    right_hand=objects['IK_Target_Empty.R']
-    look = objects['Target_Empty']
-    human = objects['Human']
-    co =  logic.getCurrentController()
-    ow = co.owner
-    lmb=co.sensors['LMB']
-    ray = co.sensors['Ray']
+    ow = cont.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+
+    right_hand=objects['IK_Target_Empty.R' + suffix]
+    look = objects['Target_Empty' + suffix]
+    human = objects['Human' + suffix]
+    lmb=cont.sensors['LMB']
+    ray = cont.sensors['Ray']
     cam = ray.owner
-    lay_down_ray = co.sensors['LayDownRay']
-    rmb=co.sensors['RMB']
-    space = co.sensors['SPACEBAR']
-    head = objects['Head_Empty']
-    hand = objects['Hand.R']
+    lay_down_ray = cont.sensors['LayDownRay']
+    rmb=cont.sensors['RMB']
+    space = cont.sensors['SPACEBAR']
+    head = objects['Head_Empty' + suffix]
+    hand = objects['Hand.R' + suffix]
 
     
     # Get the focusing object:
@@ -227,6 +230,7 @@ def interact():
             # check not to lay the object on itself
             if ow['selected']:
                 right_hand['LayDown'] = lay_down_ray.hitPosition
+                right_hand['LayDownObj'] = focused_object
         # otherwise just drop the object
         else:
             if ow['selected']:
@@ -236,13 +240,15 @@ def interact():
 
 
 
-def grab():
+def grab(cont):
     """
     Makes the right hand move to the object
     and parent the object to the hand if colliding
     """
-    co = logic.getCurrentController()
-    ow = co.owner
+    ow = cont.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
 
     # Nothing selected for grabbing or already something in hand
     if not ow['grabbing'] or ow['selected']:
@@ -250,13 +256,13 @@ def grab():
 
     obj = ow['grabbing']
 
-    coll = co.sensors['Collision']
+    coll = cont.sensors['Collision']
 
-    right_hand = objects['IK_Target_Empty.R']
-    human = objects['Human']
-    hand = objects['Hand.R']
-    hips = objects['Hips_Empty']
-    left_hand = objects['IK_Target_Empty.L']
+    right_hand = objects['IK_Target_Empty.R' + suffix]
+    human = objects['Human' + suffix]
+    hand = objects['Hand.R' + suffix]
+    hips = objects['Hips_Empty' + suffix]
+    left_hand = objects['IK_Target_Empty.L' + suffix]
 
     vect = right_hand.getVectTo(obj)
     move = vect[1]
@@ -278,14 +284,45 @@ def grab():
         obj.setParent(ow)
         right_hand['moveArm'] = True
 
-def lay_down():
+def roll_hand_r(cont):
+    """
+    roll the right hand
+    """
+    armature = cont.owner
+    human = armature.parent
+    hand_r = armature.channels['Hand.R']
+
+    keyboard = cont.sensors['All_Keys']
+    wheel_down = cont.sensors['WheelDown']
+    wheel_up = cont.sensors['WheelUp']
+
+    if not ((wheel_down.positive or wheel_up.positive) and human['Manipulate']):
+        return
+    
+    roll_speed = 0.1
+    
+    keylist = keyboard.events
+    for key in keylist:
+        # key[0] == events.keycode, key[1] = status
+        if key[1] == logic.KX_INPUT_ACTIVE and key[0] == events.LEFTCTRLKEY:
+            if wheel_down.positive:
+                roll_speed = -roll_speed
+            hand_r.rotation_quaternion += Vector((0.0, 0.0, roll_speed, 0.0))
+            armature.update()
+            
+
+
+def lay_down(cont):
     """
     lay the object down to given coordinates
     """
-    co = logic.getCurrentController()
-    pos = co.owner
+    pos = cont.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = pos.name[-4:] if pos.name[-4] == "." else ""
+    
     objects = logic.getCurrentScene().objects
-    hand = objects['Hand_Grab.R']
+    hand = objects['Hand_Grab.R' + suffix]
     
     obj = hand['selected']
     if obj == None or not pos['LayDown']:
@@ -295,25 +332,29 @@ def lay_down():
     
     obj_collision = obj.sensors['Collision']
     
-    if not obj_collision.positive:
+    if not (obj_collision.positive and pos['LayDownObj'] in obj_collision.hitObjectList):
         pos.worldPosition += vect/75
     else:
         obj.removeParent()
         hand['selected'] = None
         pos['moveArm'] = True
         pos['LayDown'] = False
+        pos['LayDownObj'] = None
 
-def lay_down_visualize():
+def lay_down_visualize(cont):
     """
     Show a green rectangle if you can accurately place the selected object
     """
-    co = logic.getCurrentController()
-    ow = co.owner
+    ow = cont.owner
+
+    # get the suffix of the human to reference the right objects
+    suffix = ow.name[-4:] if ow.name[-4] == "." else ""
+    
     scene = logic.getCurrentScene()
     objects = scene.objects
-    human = objects['Human']
-    hand = objects['Hand_Grab.R']
-    ray = co.sensors['LayDownRay']
+    human = objects['Human' + suffix]
+    hand = objects['Hand_Grab.R' + suffix]
+    ray = cont.sensors['LayDownRay']
 
 
     focused_object = ray.hitObject
@@ -390,7 +431,12 @@ def write_interaction_status():
     Write the interaction status on Screen
     The status is stored in a property
     """
-    hand = objects['Hand_Grab.R']
+    cam = logic.getCurrentScene().active_camera
+
+    # get the suffix of the human to reference the right objects
+    suffix = cam.name[-4:] if cam.name[-4] == "." else ""
+    
+    hand = objects['Hand_Grab.R' + suffix]
     
     # OpenGL setup
     bgl.glMatrixMode(bgl.GL_PROJECTION)
@@ -418,8 +464,12 @@ def status_image():
     
     gl_position = [[x, y],[x+imageWidth, y],[x+imageWidth, y+imageHeight],[x, y+imageHeight]]
 
+    cam = logic.getCurrentScene().active_camera
 
-    hand = objects['Hand_Grab.R']
+    # get the suffix of the human to reference the right objects
+    suffix = cam.name[-4:] if cam.name[-4] == "." else ""
+
+    hand = objects['Hand_Grab.R' + suffix]
 
     # select the right Image
     if hand["selected"]:
