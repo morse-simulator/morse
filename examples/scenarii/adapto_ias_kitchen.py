@@ -145,7 +145,7 @@ pancakemix.rotate(z=1.45)
 
 spatula = PassiveObject('props/kitchen_objects.blend', 'Spatula')
 spatula.setgraspable()
-spatula.translate(x=-1.45, y=2.78, z=0.86)
+spatula.translate(x=1.398, y=1.279, z=0.86)
 spatula.rotate(z=1.45)
 
 cooker = PassiveObject('props/kitchen_objects.blend', 'Cooker')
