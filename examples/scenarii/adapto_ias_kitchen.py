@@ -133,6 +133,26 @@ bread.setgraspable()
 bread.translate(x=-1.699, y=1.636, z=0.86)
 bread.rotate(z=1.45)
 
+milk = PassiveObject('props/kitchen_objects.blend', 'Milk')
+milk.setgraspable()
+milk.translate(x=1.35, y=-0.7, z=0.86)
+milk.rotate(z=1.45)
+
+pancakemix = PassiveObject('props/kitchen_objects.blend', 'PancakeMix')
+pancakemix.setgraspable()
+pancakemix.translate(x=1.35, y=-0.9, z=0.86)
+pancakemix.rotate(z=1.45)
+
+spatula = PassiveObject('props/kitchen_objects.blend', 'Spatula')
+spatula.setgraspable()
+spatula.translate(x=-1.45, y=2.78, z=0.86)
+spatula.rotate(z=1.45)
+
+cooker = PassiveObject('props/kitchen_objects.blend', 'Cooker')
+cooker.setgraspable()
+cooker.translate(x=-1.523, y=2.55, z=0.86)
+cooker.rotate(z=1.45)
+
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
 env.aim_camera([1.0470, 0, 0.7854])
