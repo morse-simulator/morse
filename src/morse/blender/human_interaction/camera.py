@@ -52,6 +52,11 @@ def collision():
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
     human =   logic.getCurrentScene().objects['Human' + suffix]
+
+    # if the Human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
     Orig_Pos = logic.getCurrentScene().objects['POS_3P_Cam_Orig' + suffix]
     distance = 0.05     # the distance the camera keeps to Objects
 
@@ -110,6 +115,11 @@ def change():
     track = co.actuators['TrackCamera']
     sobList = logic.getCurrentScene().objects
     human = sobList['Human' + suffix]
+
+    # if the Human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
     FP = sobList['POS_1P_Cam' + suffix]
     FP_POS = sobList['POS_1P_Cam' + suffix].worldPosition
     TP_POS = sobList['POS_3P_Cam' + suffix].worldPosition

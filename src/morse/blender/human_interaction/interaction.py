@@ -99,6 +99,11 @@ def interact(cont):
     right_hand=objects['IK_Target_Empty.R' + suffix]
     look = objects['Target_Empty' + suffix]
     human = objects['Human' + suffix]
+
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
     lmb=cont.sensors['LMB']
     ray = cont.sensors['Ray']
     cam = ray.owner
@@ -292,6 +297,10 @@ def roll_hand_r(cont):
     human = armature.parent
     hand_r = armature.channels['Hand.R']
 
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
     keyboard = cont.sensors['All_Keys']
     wheel_down = cont.sensors['WheelDown']
     wheel_up = cont.sensors['WheelUp']

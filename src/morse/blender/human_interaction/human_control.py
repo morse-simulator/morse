@@ -64,6 +64,13 @@ def move(contr):
     # get the object this script is attached to
     human = contr.owner
 
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
+    # get the suffix of the human to reference the right objects
+    suffix = human.name[-4:] if human.name[-4] == "." else ""
+
     # set the movement speed
     speed = human['Speed']
 
@@ -74,7 +81,9 @@ def move(contr):
     move_speed = [0.0, 0.0, 0.0]
     rotation_speed = [0.0, 0.0, 0.0]
 
-    if human['move_cameraFP'] and active_camera.name != 'Human_Camera':
+    human_camera = "Human_Camera" + suffix
+
+    if human['move_cameraFP'] and active_camera.name != human_camera:
         return
 
     keylist = keyboard.events
@@ -91,19 +100,19 @@ def move(contr):
                 elif key[0] == TURN_RIGHT:
                     rotation_speed[2] = -speed
                 elif key[0] == RIGHT:
-                    if active_camera.name == "Human_Camera":
+                    if active_camera.name == human_camera:
                         move_speed[1] = -speed
                     else:
                         rotation_speed[2] = -speed
                 elif key[0] == LEFT:
-                    if active_camera.name == "Human_Camera":
+                    if active_camera.name == human_camera:
                         move_speed[1] = speed
                     else:
                         rotation_speed[2] = speed
             else:
                 if key[0] in (FORWARDS, BACKWARDS, LEFT, RIGHT):
                     move_speed[0] = speed
-                    if active_camera.name != "Human_Camera" and key[0] == BACKWARDS:
+                    if active_camera.name != human_camera and key[0] == BACKWARDS:
                         move_speed[0] = -speed
 
             # The second parameter of 'applyMovement' determines
@@ -174,7 +183,15 @@ def set_human_animation(contr):
 
     # get the suffix of the human to reference the right objects
     suffix = armature.name[-4:] if armature.name[-4] == "." else ""
-    
+
+    scene = logic.getCurrentScene()
+    active_camera = scene.active_camera
+    human = scene.objects['Human' + suffix]
+
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return    
+
     keyboard = contr.sensors['All_Keys']
 
     keylist = keyboard.events
@@ -205,9 +222,6 @@ def set_human_animation(contr):
         elif key[1] == logic.KX_INPUT_ACTIVE:
             pressed.append(key[0])
 
-    scene = logic.getCurrentScene()
-    active_camera = scene.active_camera
-    human = scene.objects['Human' + suffix]
     
     if human['move_cameraFP'] and active_camera.name != 'Human_Camera':
         return
@@ -226,6 +240,10 @@ def head_control(contr):
     for the human head and camera. """
     # get the object this script is attached to
     human = contr.owner
+    
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
 
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
@@ -298,6 +316,10 @@ def hand_control(contr):
     """
     # get the object this script is attached to
     human = contr.owner
+    
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
 
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
@@ -389,6 +411,10 @@ def reset_view(contr):
     """ Make the human model look forward """
     human = contr.owner
     
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
+    
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
     
@@ -401,6 +427,10 @@ def reset_view(contr):
 def toggle_manipulate(contr):
     """ Switch mouse control between look and manipulate """
     human = contr.owner
+    
+    # if the human is external, do nothing
+    if human.get('External_Robot_Tag'):
+        return
 
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
@@ -434,6 +464,10 @@ def toggle_sit(contr):
     Make the human sit down or stand up, using a preset animation.
     """
     human = contr.owner
+        
+    # if the human is external, do nothing
+    if human.parent.get('External_Robot_Tag'):
+        return
 
     # get the keyboard sensor
     sit_down_key = contr.sensors["sit_down"]
@@ -515,6 +549,10 @@ def rotate(co):
     pos =  scene.objects['POS_EMPTY' + suffix]
     human_pos = scene.objects['Human' + suffix]
     active_camera = scene.active_camera
+        
+    # if the human is external, do nothing
+    if human_pos.get('External_Robot_Tag'):
+        return
     
     if human_pos['move_cameraFP'] and active_camera.name != ('Human_Camera'+suffix):
         return
