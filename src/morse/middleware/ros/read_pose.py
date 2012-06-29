@@ -32,7 +32,7 @@ def callback_pose(data, component_instance):
     component_instance.local_data['qy'] = quat.y
     component_instance.local_data['qz'] = quat.z
     euler = quat.to_euler()
-    logger.debug("Set orientation to RPY (%.3f %.3f %.3f)" % (euler.x * 180. / math.pi, euler.y * 180. / math.pi, euler.z * 180. / math.pi))
+    logger.debug("Set orientation to RPY (%.3f %.3f %.3f)" % (math.degrees(euler.x), math.degrees(euler.y), math.degrees(euler.z)))
 
 def read_pose(self, component_instance):
     """ dummy function orientation controller """
