@@ -12,6 +12,8 @@ object_config_file = "objectList_cfg"
 ABSOLUTE = 0
 RELATIVE = 1
 
+#logger.setLevel(logging.DEBUG)
+
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
@@ -30,7 +32,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     poster_id = init_viman_poster(self, component_instance, poster_name)
     if poster_id != None:
-        logger.info("Pocolibs created poster '%s' of type viman" % poster_id)
+        logger.info("Pocolibs created poster of type viman")
         component_instance.output_functions.append(function)
         # Store the name of the port
         self._poster_dict[component_name] = poster_id
