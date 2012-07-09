@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 from morse.core.services import service, async_service, interruptible
 from morse.core.overlay import MorseOverlay
 from morse.core import status
