@@ -6,6 +6,13 @@ import morse.helpers.math
 import bge
 import bpy
 
+"""
+Important note:
+
+    The 'logger.debug' instructions take some processor work, even if they are
+    not displayed. For this reason, it is best to comment out these lines in
+    the 'default_action' method.
+"""
 
 class SICKClass(morse.core.sensor.MorseSensorClass):
     """ SICK laser range sensor """
@@ -38,18 +45,18 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
         self.local_data['point_list'] = []
         self.local_data['range_list'] = []
 
+        # Get the datablock of the arc, to extract its vertices
         ray_object = bpy.data.objects[self._ray_arc.name]
         for vertex in ray_object.data.vertices:
-            print ("Vertex %d = %s" % (vertex.index, vertex.co))
+            logger.debug ("Vertex %d = %s" % (vertex.index, vertex.co))
 
+            # Skip the first vertex.
+            # It is the one located at the center of the sensor
             if vertex.index == 0:
                 continue
 
-            # Get the vertices from the mesh
-            #vertex_pos = vertex.co
-            # Create a vector with the direction of the vertex
-            #vector_point = mathutils.Vector(vertex_pos)
-            # Store the vector in a list
+            # Store the position of the vertex in a list
+            # The position is already given as a mathutils.Vector
             self._ray_list.append(vertex.co)
 
             # Insert empty points into the data list
@@ -59,37 +66,9 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
 
             logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (vertex.index, self._ray_list[vertex.index-1][0],self._ray_list[vertex.index-1][1],self._ray_list[vertex.index-1][2]))
 
-
-
-        """
-        # Initialize the ray vectors and the point list
-        for mesh in self._ray_arc.meshes:
-            for mat in range(mesh.numMaterials):
-                index = 0
-                for v_index in range(mesh.getVertexArrayLength(mat)):
-                    # Skip the center vertex
-                    # NOTE: It should always be the first vertex,
-                    #  as created by the Builder script
-                    if v_index == 0:
-                        continue
-
-                    # Get the vertices from the mesh
-                    vertex = mesh.getVertex(mat, v_index)
-                    vertex_pos = vertex.getXYZ()
-                    # Create a vector with the direction of the vertex
-                    vector_point = mathutils.Vector(vertex_pos)
-                    # Store the vector in a list
-                    self._ray_list.append(vector_point)
-
-                    # Insert empty points into the data list
-                    self.local_data['point_list'].append([0.0, 0.0, 0.0])
-                    # Insert zeros into the range list
-                    self.local_data['range_list'].append(0.0)
-
-                    logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (index, self._ray_list[index][0],self._ray_list[index][1],self._ray_list[index][2]))
-
-                    index = index + 1
-        """
+        # Get some information to be able to deform the arcs
+        if self._visible:
+            self._vertex_per_layer = len(self._ray_list) // self.blender_obj['layers']
 
         logger.info('Component initialized')
 
@@ -135,20 +114,29 @@ class SICKClass(morse.core.sensor.MorseSensorClass):
             self.local_data['range_list'][index] = distance
             index += 1
 
-        """
         # Change the shape of the arc to show what the sensor detects
         if self._visible:
             for mesh in self._ray_arc.meshes:
                 for mat in range(mesh.numMaterials):
                     index = 0
                     for v_index in range(mesh.getVertexArrayLength(mat)):
-                        # Skip the center vertex
-                        # NOTE: It should always be the first vertex,
-                        #  as created by the Builder script
-                        if v_index == 0:
+                        # Switch to a new layer after a set number of vertices
+                        if index % self._vertex_per_layer == 0:
+                            index += 1
+
+                        # Skip the first vertex of a tringle. It will always
+                        #  be at the origin, and should not be changed
+                        if v_index % 3 == 0:
                             continue
 
-                        vertex = mesh.getVertex(mat, v_index)
-                        vertex.setXYZ(self.local_data['point_list'][index])
-                        index += 1
-        """
+                        # Place the next vertex in the triangle
+                        if v_index % 3 == 1:
+                            vertex = mesh.getVertex(mat, v_index)
+                            vertex.setXYZ(self.local_data['point_list'][index])
+
+                        # Set the final vertex, in the correct order to have
+                        #  the normals facing upwards.
+                        if v_index % 3 == 2:
+                            vertex = mesh.getVertex(mat, v_index)
+                            vertex.setXYZ(self.local_data['point_list'][index-1])
+                            index += 1

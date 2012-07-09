@@ -61,9 +61,9 @@ The Empty object corresponding to this sensor has the following parameters
 in the **Logic Editor** panel:
 
 - **Visible_arc**: (Boolean) A toggle that determines whether the scanned area
-  is displayed during the execution of the simulation or not (Default: False).
+  is displayed during the execution of the simulation or not (Default: *False*).
   If the robot is also equipped with a camera, it is better to set this
-  variable to False, otherwise the scanned area will also appear on the
+  variable to *False*, otherwise the scanned area will also appear on the
   captured images.
 - **laser_range**: (Float) The distance in meters from the center of the sensor
   to which it is capable of detecting other objects.
@@ -120,10 +120,18 @@ An example for creating a properly configured SICK LD-MRS is given below:
 
     sick = Sensor('sick-ld-mrs')
     sick.properties(Visible_arc = True)
-    sick.properties(resolution = 0.25)
+    sick.properties(resolution = 1.0)
     sick.properties(scan_window = 100)
     sick.properties(laser_range = 50.0)
     sick.properties(layers = 4)
     sick.properties(layer_separation = 0.8)
-    sick.properties(layer_offset = 0.125)
+    sick.properties(layer_offset = 0.25)
     sick.create_sick_arc()
+
+As with any other component, it is possible to adjust the refresh frequency of
+the sensor, after it has been defined in the builder script. For example, to
+set the frequency to 1 Hz:
+
+.. code-block:: python
+
+    sick.frequency(1.0)
