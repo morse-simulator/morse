@@ -218,12 +218,16 @@ def buttonPressAllTab(t) :
 
 
     ################ manipulation option ##############
-    if cwiid.BTN_A in t and not toggled :
-        toggle_manip()
-        toggled = True
-    elif cwiid.BTN_A not in t and toggled :
-        toggle_manip()
-        toggled = False
+    #if cwiid.BTN_A in t and not toggled :
+    #    toggle_manip()
+    #    toggled = True
+    #elif cwiid.BTN_A not in t and toggled :
+    #    toggle_manip()
+    #    toggled = False
+
+    ################ manipulation option ##############
+    if cwiid.BTN_A in t:
+        switch_cameras()
 
     ################ grasp option ##############
     if cwiid.BTN_B in t and not grasped :
@@ -277,6 +281,14 @@ def toggle_manip():
     global id_
 
     msg = "id%s Human toggle_manipulation []\n" % (str(id_))
+    s.send(msg)
+    id_ = id_ + 1
+
+def switch_cameras():
+    """ Sending socket messages """
+    global id_
+
+    msg = "id%s Human switch_cameras []\n" % (str(id_))
     s.send(msg)
     id_ = id_ + 1
 
