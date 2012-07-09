@@ -110,7 +110,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 self.visibles.append(label)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
-                logger.info("Semantic %s: %s just appeared" % (self.blender_obj.name, label))
+                logger.debug("Semantic %s: %s just appeared" % (self.blender_obj.name, label))
             
             # Object is not visible and was in the visible_objects list...
             if not visible and label in visibles:
@@ -118,7 +118,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                logger.info("Semantic %s: %s just disappeared" % (self.blender_obj.name, label))
+                logger.debug("Semantic %s: %s just disappeared" % (self.blender_obj.name, label))
         
         # Create dictionaries
         self.local_data['visible_objects'] = []
