@@ -5,7 +5,10 @@ import morse.core.actuator
 from morse.core import status
 from morse.core.services import service
 from morse.core.services import async_service
+from morse.core.services import interruptible
 import morse.helpers.math as morse_math
+
+#logger.setLevel(logging.DEBUG)
 
 class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Controller for pant tilt unit (platine)
@@ -55,16 +58,18 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         
         logger.info('Component initialized')
 
+
+    @interruptible
     @async_service
     def set_pan_tilt(self, pan, tilt):
         """ """
+        logger.debug("Service 'set_pan_tilt' setting angles to %.4f, %.4f" % (pan, tilt))
         self.local_data['pan'] = pan
         self.local_data['tilt'] = tilt
 
     @service
     def get_pan_tilt(self):
         """ Return the current angles for the pan and tilt segments. """
-
         return self._current_pan, self._current_tilt
 
     def default_action(self):
