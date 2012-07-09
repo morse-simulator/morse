@@ -155,7 +155,8 @@ MORSE_MIDDLEWARE_DICT = {
         'human_posture': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'export_posture', 'morse/middleware/pocolibs/sensors/human_posture', 'human_posture'],
         'rosace': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_target', 'morse/middleware/pocolibs/sensors/target', 'targetPos'],
         'ptu_posture': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'write_platine_posture', 'morse/middleware/pocolibs/sensors/platine_posture', 'platineState'],
-        'ik_control': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'read_niut_ik_positions', 'morse/middleware/pocolibs/actuators/niut', 'niutHuman']
+        'ik_control': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'read_niut_ik_positions', 'morse/middleware/pocolibs/actuators/niut', 'niutHuman'],
+        'mocap_control': [MORSE_MIDDLEWARE_MODULE['pocolibs'], 'read_niut_ik_positions', 'morse/middleware/pocolibs/actuators/niut', 'niutHuman']
     },
 
     'text': {

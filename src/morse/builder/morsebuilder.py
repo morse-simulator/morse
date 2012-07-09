@@ -136,6 +136,8 @@ class Human(AbstractComponent):
         AbstractComponent.__init__(self)
         if style == 'ik_human':
             filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'ik_human.blend')
+        elif style == 'mocap_human':
+            filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'mocap_human.blend')
         else:
             filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'human.blend')
 
@@ -498,6 +500,9 @@ class Environment(Component):
                     logger.debug("Node " + node_name + \
                         " will not publish robot " + obj.name)
                     p['Robot_Tag'].name = 'External_Robot_Tag'
+                    # Make external robots static
+                    # This should stop them from drifting downwards
+                    obj.game.physics_type = 'STATIC'
 
         """ Write the 'multinode_config.py' script """
         node_config = { 'protocol': self._protocol,
