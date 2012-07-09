@@ -132,10 +132,10 @@ class Human(AbstractComponent):
     Currently, only one human per simulation is supported.
     """
     def __init__(self, style=None):
-        """ The 'style' parameter is only to switch to the ik_human file.  """
+        """ The 'style' parameter is only to switch to the mocap_human file. """
         AbstractComponent.__init__(self)
         if style == 'ik_human':
-            filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'ik_human.blend')
+            filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'mocap_human.blend')
         elif style == 'mocap_human':
             filepath = os.path.join(MORSE_COMPONENTS, 'robots', 'mocap_human.blend')
         else:
