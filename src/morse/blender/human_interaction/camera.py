@@ -17,7 +17,7 @@ def init():
     human = sobList['Human' + suffix]
 
     # if the Human is external, do not use his camera initially
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     humCam = sobList['Human_Camera' + suffix]
@@ -54,7 +54,7 @@ def collision():
     human =   logic.getCurrentScene().objects['Human' + suffix]
 
     # if the Human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     Orig_Pos = logic.getCurrentScene().objects['POS_3P_Cam_Orig' + suffix]
@@ -117,7 +117,7 @@ def change():
     human = sobList['Human' + suffix]
 
     # if the Human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     FP = sobList['POS_1P_Cam' + suffix]
