@@ -79,6 +79,27 @@ Usage example:
                      'human_posture'])
 
 
+Simulation with multiple Humans
+-------------------------------
+
+There are two ways of using multiple Human in one Simulation. The first
+one is through the use of actuators. For this you should disable the 
+keyboard control for every instance you don't need it for:
+
+.. code-block:: python
+
+    human.disable_keyboard_control()
+
+This way you can control only one Human via keyboard control.
+
+If you need more than one Human that is controlled by a user you can use
+a :doc:`Multinode Simulation <../../multinode>`.
+
+.. note::
+    You can only control one Human per node with the keyboard control
+    so that they can move independently.
+
+
 Human control
 -------------
 
