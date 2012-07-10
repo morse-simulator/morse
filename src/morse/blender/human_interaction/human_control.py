@@ -65,7 +65,7 @@ def move(contr):
     human = contr.owner
 
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     # get the suffix of the human to reference the right objects
@@ -189,7 +189,7 @@ def set_human_animation(contr):
     human = scene.objects['Human' + suffix]
 
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return    
 
     keyboard = contr.sensors['All_Keys']
@@ -242,7 +242,7 @@ def head_control(contr):
     human = contr.owner
     
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
 
     # get the suffix of the human to reference the right objects
@@ -318,7 +318,7 @@ def hand_control(contr):
     human = contr.owner
     
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
 
     # get the suffix of the human to reference the right objects
@@ -412,7 +412,7 @@ def reset_view(contr):
     human = contr.owner
     
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     # get the suffix of the human to reference the right objects
@@ -429,7 +429,7 @@ def toggle_manipulate(contr):
     human = contr.owner
     
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
 
     # get the suffix of the human to reference the right objects
@@ -466,7 +466,7 @@ def toggle_sit(contr):
     human = contr.owner
         
     # if the human is external, do nothing
-    if human.parent.get('External_Robot_Tag'):
+    if human.parent.get('External_Robot_Tag') or human.parent['disable_keyboard_control']:
         return
 
     # get the keyboard sensor
@@ -551,7 +551,7 @@ def rotate(co):
     active_camera = scene.active_camera
         
     # if the human is external, do nothing
-    if human_pos.get('External_Robot_Tag'):
+    if human_pos.get('External_Robot_Tag') or human_pos['disable_keyboard_control']:
         return
     
     if human_pos['move_cameraFP'] and active_camera.name != ('Human_Camera'+suffix):

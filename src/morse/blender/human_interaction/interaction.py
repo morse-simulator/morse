@@ -101,7 +101,7 @@ def interact(cont):
     human = objects['Human' + suffix]
 
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     lmb=cont.sensors['LMB']
@@ -298,7 +298,7 @@ def roll_hand_r(cont):
     hand_r = armature.channels['Hand.R']
 
     # if the human is external, do nothing
-    if human.get('External_Robot_Tag'):
+    if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
     keyboard = cont.sensors['All_Keys']
