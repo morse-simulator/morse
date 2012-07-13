@@ -85,6 +85,11 @@ class PlatineModule(MorseOverlay):
 
     @interruptible
     @async_service
+    def AimAtTargetPoint(self, p1, p2, p3, p4, p5, p6, frame, p7, x, y, z):
+        self.overlaid_object.look_at_point(self.chain_callback(), float(x), float(y), float(z))
+
+    @interruptible
+    @async_service
     def TrackPos(self, poster_name):
         try:
             poster = PlatinePoster(poster_name)
@@ -102,4 +107,3 @@ class PlatineModule(MorseOverlay):
 
     def name(self):
         return "platine"
-
