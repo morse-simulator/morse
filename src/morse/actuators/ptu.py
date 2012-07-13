@@ -72,6 +72,63 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         """ Return the current angles for the pan and tilt segments. """
         return self._current_pan, self._current_tilt
 
+    @interruptible
+    @async_service
+    def look_at_point(self, x, y, z):
+        """ Service to make the camera look towards a given point
+        Coordiantes given in world space
+        """
+        self._aim_camera_at_point(x, y, z)
+
+    @interruptible
+    @async_service
+    def look_at_object(self, obj_name):
+        """ Look in the direction of the given object """
+        scene = bge.logic.getCurrentScene()
+        try:
+            obj = scene.objects[obj_name]
+        except KeyError as detail:
+            logger.error("Object '%s' not found in scene. Can not look at it" % obj_name)
+            return False
+
+        logger.debug ("Found object '%s'" % obj)
+        self._aim_camera_at_point(obj.worldPosition[0], obj.worldPosition[1], obj.worldPosition[2])
+
+
+    def _aim_camera_at_point(self, x, y, z):
+        """ Turn the unit to face a given point in space
+
+        Receive the coordinates of the point to look at,
+        given in world coordinates.
+        Return the corresponding pan and tilt to aim in that direction.
+        Use the formulas at http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
+        """
+        goalPos = [0,0,0]
+
+        # Get the postitions with respect to the PTU
+        goalPos[0] = x - self.position_3d.x
+        goalPos[1] = y - self.position_3d.y
+        goalPos[2] = z - self.position_3d.z
+
+        logger.debug("target  = [%.4f, %.4f, %.4f]" % (x, y, z))
+        logger.debug("goalPos = [%.4f, %.4f, %.4f]" % (goalPos[0], goalPos[1], goalPos[2]))
+
+
+        distance = math.sqrt(goalPos[0] ** 2 + goalPos[1] ** 2 + goalPos[2] ** 2)
+        theta = math.asin(goalPos[2] / distance)
+        phi = math.atan2(goalPos[1], goalPos[0])
+
+        logger.debug("Theta = %.4f | Phi = %.4f" % (theta, phi))
+
+        # Get the current rotation of the parent robot
+        parent_pan = self.robot_parent.position_3d.euler.z
+        parent_tilt = self.robot_parent.position_3d.euler.y
+
+        # Adjust the rotation with respect to the parent
+        self.local_data['pan'] = phi - parent_pan
+        self.local_data['tilt'] = -theta + parent_tilt
+
+
     def default_action(self):
         """ Apply rotation to the platine unit """
         # Reset movement variables
