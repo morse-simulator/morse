@@ -64,7 +64,6 @@ class MocapHumanClass(morse.core.robot.MorseRobotClass):
 
         #if human['Manipulate']:
         if seq == "t":
-            logger.error ("TRYING TO GRAB")
             # Check that no other object is being carried
             if (human['DraggedObject'] == None or
             human['DraggedObject'] == '') :
@@ -81,8 +80,6 @@ class MocapHumanClass(morse.core.robot.MorseRobotClass):
                     logger.debug ("OBJECT %s PARENTED TO %s" % (selected_object.name, hand_empty.name))
 
         if seq == "f":
-            logger.error ("TRYING TO RELEASE")
-
             if (human['DraggedObject'] != None and
             human['DraggedObject'] != '') :
                 previous_object = human["DraggedObject"]
