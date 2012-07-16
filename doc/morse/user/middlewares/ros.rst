@@ -144,3 +144,10 @@ documentation.
   Available methods:
 
     - ``read_point``: Reads a ``geometry_msgs/Point`` message from the specific ROS-topic and stores values for ``x``, ``y`` and ``z`` in ``local_data``.
+
+- Orientation actuator: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/read_quaternion.py``.
+  Available methods:
+	
+	- ``read_quaternion`` Reads a ``geometry_msgs/Quaternion`` message from
+	  the specific ROS-topic and converts it to an Euler representation
+	  (``yaw``, ``pitch``, ``roll`` in ``local_data``. 

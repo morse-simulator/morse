@@ -25,7 +25,7 @@ Actuators,
 ``gripper``,				  ✘,               ✔,           ✔,              ✔ ``Bool``,		 ✘,																	?
 ``KUKA LWR arm``,             ✘,               ✔,           ✔,              ✔ ``JointState``,✔ ``Gb_q7``,												✘
 ``light``,					  ✘,               ✔,           ✔,              ✔ ``Bool``		,✘,																	?
-``orientation``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
+``orientation``,			  ✘,               ✔,           ✔,              ✔ ``Quaternion``,✘,																	?
 ``Mitsubishi PA-10 arm``,     ✘,               ✔,           ✔,              ✘,               ✘,																	✘
 ``Pan-Tilt unit``,            ✘,               ✔,           ✔,              ✔ ``JointState``,               ✔ ``POM_SE_POSTER`` or ``PLATINE_AXIS_STR`` ,		✘	
 ``steer_force``,			  ✘,               ✔,           ✔,              ✘,				 ✘,																	?
