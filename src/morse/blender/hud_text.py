@@ -9,6 +9,7 @@ def change_text(contr):
     * A, D keys:     move main camera left/right
     * R, F keys:     move main camera up/down
     * Left CTRL:    hold to aim main camera with mouse
+    * F5 key:         toggle camera/human movement
     * F8 key:         reset position of CameraFP
     * F9 key:         switch camera view
     * F11 key:       reset positions of all objects

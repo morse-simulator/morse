@@ -2,10 +2,14 @@ ROS Installation Notes
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Blender 2.57+ relies on Python3.2 which is not yet supported by ROS Electric
-Emys. 
+Emys but will be partially supported by ROS Fuerte from the upcoming patch 
+release 1.8.15. 
 
-The following steps explain how to get a working setup, suitable for using ROS
-with MORSE.
+If you need to use MORSE with Fuerte right now, please write to the mailing 
+list for a preliminary tutorial on how to get a working setup.
+
+To get a working setup suitable for using ROS Electric or Diamondback with 
+MORSE, please follow the following steps:
 
 #. Install ROS Electric Emys (check http://www.ros.org/wiki/ROS/Installation if
    needed)

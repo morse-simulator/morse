@@ -185,6 +185,10 @@ class Human(AbstractComponent):
         human = self._blendobj
         human.game.properties['WorldCamera'].value = True
 
+    def disable_keyboard_control(self):
+        human = self._blendobj
+        human.game.properties['disable_keyboard_control'].value = True
+
 
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
