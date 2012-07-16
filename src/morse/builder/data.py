@@ -79,9 +79,10 @@ MORSE_MIDDLEWARE_DICT = {
         'ptu': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_Vector3', 'morse/middleware/ros/platine'],
         'kuka_lwr': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_jointState', 'morse/middleware/ros/kuka_jointState'],
         'v_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
-        'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'], 
+        'xy_omega': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'],
         'destination': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_point', 'morse/middleware/ros/destination'],
         'force_torque': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_wrench', 'morse/middleware/ros/read_wrench'],
+        'orientation': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_quaternion', 'morse/middleware/ros/read_quaternion'],
     },
 
     'socket': {
