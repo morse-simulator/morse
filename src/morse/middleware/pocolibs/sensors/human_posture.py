@@ -51,7 +51,7 @@ def export_posture(self, component_instance):
     # Get the id of the poster already created
     poster_id = self._poster_dict[component_instance.blender_obj.name]
     
-    nb_dofs = 46
+    nb_dofs = 50
     
     #Special SWIG type declared in ors_human_posture_poster.i
     dofs = ors_human_posture_poster.doubleArray(nb_dofs) 
