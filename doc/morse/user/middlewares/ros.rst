@@ -4,8 +4,9 @@ ROS
 Installation
 ------------
 
-Due to lacking Python 3 compatibility of ROS message generation, you need to
-patch ROS. Furthermore you need to install PyYAML.
+Morse is supported by **ROS Fuerte** from patch release 1.8.15 which was rolled out at 20.July 2012
+You will also have to install PyYAML for Python3.2. If you want to use MORSE with ROS **Electric** 
+or **Diamondback**, you need to overlay some stacks due to lacking Python3 compatibility. 
 
 Please follow the instructions in the :doc:`installation procedure  <../installation/mw/ros>`.
 
