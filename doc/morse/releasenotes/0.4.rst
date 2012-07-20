@@ -11,7 +11,7 @@ General changes
 Architectural changes
 ---------------------
 - Added infrastructure for :doc:`multi-node <../multinode>` functionality
-- New :doc:`Builder API <../dev/builder>` to create scene from Python description. 
+- New :doc:`Builder API <../user/builder>` to create scene from Python description. 
   This allows powerful programmable scene creation, much lighter scenario files, and
   easier to track changes (since its a text format, instead of binary Blender files).
 - Changed directory structure and file names for ease of use of the Builder API.

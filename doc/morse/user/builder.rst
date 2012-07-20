@@ -1,39 +1,34 @@
-MORSE Builder API
-=================
+Creating simulations: the Builder scripts
+=========================================
 
-Abstract
---------
+The main and easiest way to create simulations in MORSE is by the way of a
+``Builder`` script.
 
-The idea is to allow user to write a simulation in few lines of Python, without 
-having to learn Python (neither Blender). We want to give the ease of a DSL, 
-without its technical complication.
+``Builder`` scripts rely on the **Builder API** (described below) to define the
+components, environments and middlewaresthat are going to be used in the
+simulation. When running MORSE, the simulator interprets the scripts to build
+the complete simulation as a Blender scene, configures the components, and starts
+the Blender 3D Engine.
 
-Code organization
------------------
+Since these scripts are regular Python scripts, you can easily create one
+function or class for each of your robots. This way, you can quickly reuse them
+in different contexts.
 
-The following diagram shows the class hierarchy currently used in MORSE-builder.
-
-.. image:: ../../media/morsebuilder_uml.png
-   :align: center 
-
-
-The point when we want to simplify things, is that we often have to limit the 
-freedom of the user. The complexity in simplification is to let user free enough 
-to make what he wants without asking him to know every concept behind our 
-technologies. The main aim of this API is to build a simulation as simple as 
-possible. To do so, we encapsulate the potential complexities of Blender, 
-Python or Morse.
-
-To test the API step by step, you can open morse, and in the Blender UI, open 
-a Python Console, within which you can import this API 
-``from morse.builder.morsebuilder import *``
-
+``Builder`` scripts are not the only option to create and/or edit a simulation:
+alternatively, you can directly edit from Blender: `Simulation edition in
+Blender <advanced_tutorials/editing_in_blender>`.
 
 .. note:: Configuring the environment variables:
     It is necessary to indicate the builder where to look for the installed MORSE
     components in the computer. This is done by specifying the environment variable
-    ``$MORSE_ROOT``, which should point to the prefix directory used during MORSE installation.
+    ``$MORSE_ROOT``, which should point to the prefix directory used during
+    MORSE installation.
 
+A first example
+---------------
+
+First, have a look to :doc:`a Builder script example <builder_example>` to
+see how all of this works.
 
 Classes and methods in the Builder API
 --------------------------------------
@@ -41,14 +36,16 @@ Classes and methods in the Builder API
 The AbstractComponent base class
 ++++++++++++++++++++++++++++++++
 
-All the basis component classes used in the Builder API inherit from a base class
-``AbstractComponent``. This class provides the following methods:
+All the components known to MORSE inherit from the base class
+``AbstractComponent``. You should not directly instanciate it.
 
- * **name**: change the object name in Blender
+This class provides the following methods:
+
+ * **name**: change the object name (including the Blender object name)
  * **translate**: The translation will add (x,y,z) to the current object
    location (default: x=0, y=0, z=0, unit: meter).
  * **rotate**: The rotation is an `euler rotation
-   <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_
+   <http://www.blender.org/documentation/blender_python_api_2_62_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_
    relative to the object's center (default: x=0, y=0, z=0, unit: radian).
  * **properties**: Allows adding/changing the game properties of the Blender
    objects. It receives a list of named items: ``name``=``value``, separated by
@@ -61,12 +58,6 @@ This base class has one concrete subclass that can be use to insert :doc:`static
 (passive) objects <../user/others/passive_objects>` to your simulation:
 
  * :py:class:`morse.builder.morsebuilder.PassiveObject`
-
-.. note::
-   When creating instances of this classe, it is necessary to give as
-   parameter to the constructor the names of the blender file that 
-   contains the desired asset. Path can be absolute or relative to MORSE 
-   assets' installation path (typically, ``$PREFIX/share/morse/data``).
 
 The Component classes
 +++++++++++++++++++++
@@ -293,5 +284,4 @@ cf. :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually building a s
 <../user/advanced_tutorials/editing_in_blender>` (in particular the section configuring middleware) for details.
 
 
-Take a look at an :doc:`example Builder script <builder_example>` to see how
-all of this works.
+

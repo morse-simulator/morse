@@ -35,7 +35,7 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/services
     dev/new_middleware
     dev/new_pocolibs_interface
-    dev/builder
+    user/builder
 
 Code reference
 --------------

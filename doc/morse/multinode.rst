@@ -23,7 +23,7 @@ Every node will load the same simulation scene as all other nodes,
 but with a different configuration to indicate what robots will be handled by each
 node and how the nodes will synchronise.
 Currently the configuration of the different nodes is done through the 
-:doc:`Builder API <../../../dev/builder>`.
+:doc:`Builder API <../../../user/builder>`.
 
 Each node considers the robots it does not manage as *External*:
 an external robot is not updated by the node itself (robot's components are disabled),
@@ -39,7 +39,7 @@ Setting up the simulation scenes
 --------------------------------
 
 The definition of multi-node scenarii is done by means of the
-:doc:`Builder API <../../../dev/builder>`.
+:doc:`Builder API <../../../user/builder>`.
 Initially, the scene is generated the same way as in a single node simulation.
 Additionally, it is necessary to configure which robots will be managed by each
 node, provide the information about the central server that will do the

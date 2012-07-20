@@ -17,7 +17,7 @@ To start the simulation right away, do::
   $ morse run [Filename]
 
 Where ``Filename`` can be a Blender file or a Python script that uses the
-:doc:`Builder API <../dev/builder>` to describe a simulation scenario.
+:doc:`Builder API <../user/builder>` to describe a simulation scenario.
 
 To load the simulation scenario in the Blender interface::
 
@@ -84,7 +84,7 @@ The following are key bindings already defined in any simulation scene
 - :kbd:`v` key: toggle the display of a "picture-in-picture" screen that can
   display the image viewed from a specified camera. The camera to display is
   determined using the **select_display_camera** option of the
-  :doc:`Builder API <../dev/builder>` Environment class
+  :doc:`Builder API <../user/builder>` Environment class
 
 - :kbd:`Esc` key: stop and exit the simulation (cleaning up the connections)
 

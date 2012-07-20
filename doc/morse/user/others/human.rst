@@ -43,7 +43,7 @@ the layers panel.
 With the Builder API
 ++++++++++++++++++++
 
-To add a human with the :doc:`MORSE Builder API <../../dev/builder>`, you just need
+To add a human with the :doc:`MORSE Builder API <../../user/builder>`, you just need
 to instantiate the :py:class:`morse.builder.morsebuilder.Human` class.
 
 .. code-block:: python

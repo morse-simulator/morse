@@ -113,7 +113,7 @@ With the MORSE Builder API
 ++++++++++++++++++++++++++
 
 Components can be easily overlaid from the :doc:`MORSE Builder API
-<../dev/builder>` with the method
+<../user/builder>` with the method
 :py:meth:`morse.builder.abstractcomponent.configure_overlay`.
 
 This method takes two parameters, the middleware to use (cf

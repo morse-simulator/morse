@@ -64,7 +64,7 @@ Importing passive objects with the MORSE Builder API
 ----------------------------------------------------
 
 Passive objects can easily get added to a scenario defined with the
-:doc:`MORSE Builder API <../../dev/builder>`.
+:doc:`MORSE Builder API <../../user/builder>`.
 
 The following example imports the ``SmallTable`` Blender object from the
 ``props/objects.blend`` assets file, set some properties, and place it
@@ -124,7 +124,7 @@ switch. Add the Logic for the lamp using the ``Morse Light`` preset.
 Disable the physics for the switch with the ``Ghost`` option in the Physics
 Properties, so that there can't be collisions with the mesh.
 
-You can now import the flashlight using the :doc:`MORSE Builder API <../../dev/builder>`
+You can now import the flashlight using the :doc:`MORSE Builder API <../../user/builder>`
 like explained above. You can also import it manually and set the mesh to be 
 a passive object using the ``Morse Utils``.
 

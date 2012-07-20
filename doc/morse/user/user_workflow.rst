@@ -3,7 +3,7 @@ The MORSE user workflow
 
 The general steps to follow to do a simulation in MORSE are the following:
 
-#. Write a Python script with the description of the robot and scenario, using the :doc:`Builder API <../dev/builder>`. The file must specify:
+#. Write a Python script with the description of the robot and scenario, using the :doc:`Builder API <../user/builder>`. The file must specify:
 
     - The robots
     - The sensors and actuators

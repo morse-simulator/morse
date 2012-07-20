@@ -24,7 +24,7 @@ class, the :py:class:`morse.testing.testing.MorseTestCase` takes care of startin
 MORSE and initializing it with a specified environment.
 
 This environment is defined by overloading the :py:meth:`morse.testing.testing.MorseTestCase.setUpEnv`
-with a description of the environment using the :doc:`Builder API <builder>`.
+with a description of the environment using the :doc:`Builder API <../user/builder>`.
 Moreover, you can overload the
 :py:meth:`morse.testing.testing.MorseTestCase.setUpMw` and
 :py:meth:`morse.testing.testing.MorseTestCase.tearDownMw` if you want to

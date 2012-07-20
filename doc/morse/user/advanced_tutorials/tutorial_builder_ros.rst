@@ -113,4 +113,4 @@ Go further
 ----------
 
 If you want to learn more about the MORSE-builder API, see the
-:doc:`builder documentation <../../../../dev/builder>`.
+:doc:`builder documentation <../../../../user/builder>`.

@@ -76,7 +76,7 @@ Installation
     The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
 
 It is recommended to store this environment variable, as it is necessary to
-use the :doc:`Builder API scripts <../dev/builder>` to generate simulation
+use the :doc:`Builder API scripts <../user/builder>` to generate simulation
 scenes with custom equipped robots.
 
 Manually

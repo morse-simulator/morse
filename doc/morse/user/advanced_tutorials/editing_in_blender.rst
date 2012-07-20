@@ -2,7 +2,7 @@ Modifying scenes from Blender
 =============================
 
 Although now the main method to create scenario files in **morse** is using the
-:doc:`Builder API <../../../../dev/builder>`, it remains possible and useful to
+:doc:`Builder API <../../../../user/builder>`, it remains possible and useful to
 be able to modify the settings and environment from the Blender interface.
 
 This tutorial explains how to link components into an existing scene.

@@ -31,7 +31,7 @@ def visit_gallery_node(self, node):
         for j in range(images_per_row):
             if i + j < len(images):
                 obj = images[i + j][:-4] #remove extension
-                self.body.append("<td style='text-align:center'><a href='" + HTML_PATH + node["directory"] + "/" + obj + ".html'><img style='width: 200px;' src='" + IMAGE_PATH + obj + ".png' /><br/><em>" + obj + "</em></a></td>")
+                self.body.append("<td style='text-align:center'><a href='" + HTML_PATH + node["directory"] + "/" + obj + ".html'><img style='width: 200px;' src='" + IMAGE_PATH + obj + ".png' /><br/><pre>" + obj + "</pre></a></td>")
         self.body.append("</tr>")
     self.body.append("</table>")
 

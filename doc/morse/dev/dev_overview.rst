@@ -25,7 +25,7 @@ The source code of Morse is organised in the following way :
 	the game engine
   - morse/builder: it contains the scripts for the API that permits creating a
 	simulation scenario from a Python file. See the :doc:`Builder API
-	<builder>` documentation
+	<../user/builder>` documentation
   - morse/core: it contains core classes for the MORSE project (services, base
 	objects, sensors, ...) 
   - morse/helpers: it contains various helpers (math transformation)

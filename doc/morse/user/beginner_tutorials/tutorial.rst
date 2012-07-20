@@ -3,7 +3,7 @@ Create your first simulation using the builder API
 
 This tutorial will guide you through creating a simple scenario where you can
 control a mobile robot and read data from its sensors. It makes use of the
-:doc:`Builder API <../../../../dev/builder>` of MORSE. This consists on a series
+:doc:`Builder API <../../../../user/builder>` of MORSE. This consists on a series
 of Python functions to define these elements of a simulation scene:
 
  - The robots to use
@@ -168,4 +168,4 @@ You can try to add different components to the robot, by experimenting with the
 various objects available in the component library.
 
 Also, if you want to learn more about the MORSE-builder API, see the
-:doc:`builder documentation <../../../../dev/builder>`.
+:doc:`builder documentation <../../../../user/builder>`.
