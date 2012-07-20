@@ -1,11 +1,6 @@
 Components library
 ==================
 
-.. image:: ../media/morse_robot.jpg
-    :align: center
-    :width: 400
-.. Some of the MORSE robots
-
 MORSE offers an extended set of predefined sensors and actuators that cover 
 reasonably well common simulation needs in robotics. It proposes also some 
 fully equipped robots.
@@ -13,8 +8,22 @@ fully equipped robots.
 Available components
 --------------------
 
+Robots and robotic bases
+++++++++++++++++++++++++
+
+.. gallery:: robots
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    user/robots/*
+
+
 Sensors
 +++++++
+
+.. gallery:: sensors
 
 .. toctree::
     :glob:
@@ -26,24 +35,18 @@ Sensors
 Actuators
 +++++++++
 
+.. gallery:: actuators
+
 .. toctree::
     :glob:
     :maxdepth: 1
 
     user/actuators/*
 
-Bare robotic bases
-++++++++++++++++++
-
-.. toctree::
-    :glob:
-    :maxdepth: 1
-
-    user/robots/*
-
-
 Other components
 ++++++++++++++++
+
+.. gallery:: others
 
 .. toctree::
     :glob:
@@ -67,9 +70,9 @@ The data flow is similar for actuators, except that the direction is inverted,
 with the data arriving first from the evaluated software via the middleware,
 then processed by the modifiers and finally applied in the simulation.
 
-To interact with the outside world, components rely on Middlewares connected to
-Blender. See also :doc:`the list of supported middlewares <user/supported_middlewares>`
-for a further explanation.
+To interact with the outside world, components rely on middlewares connected to
+Blender. See also :doc:`the list of supported middlewares and language bindings
+<user/integration>` for a further explanation.
 
 Check the :ref:`compatibility-matrix` to see which components are supported for
 each middleware.

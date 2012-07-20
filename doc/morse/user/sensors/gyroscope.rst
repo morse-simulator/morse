@@ -6,10 +6,6 @@ the sensor object with respect to the Blender world reference axes.
 
 The angles are given in radians.
 
-.. image:: ../../../media/sensors/gyroscope.png 
-  :align: center
-  :width: 600
-
 Files
 -----
 

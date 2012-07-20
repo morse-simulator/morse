@@ -8,11 +8,6 @@ It basically does the same job as both of the
 The position and orientation data is taken from the sensor's ``position_3d`` structure.
 The angles for yaw, pitch and roll are given in radians in the range (-pi, pi).
 
-
-.. image:: ../../../media/sensors/pose.png 
-  :align: center
-  :width: 600
-
 Files
 -----
 

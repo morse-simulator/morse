@@ -8,10 +8,6 @@ velocity and acceleration are measured at each tic of the Game Engine,
 measuring the difference in distance from the previous tic, and the
 estimated time between tics (60 tics per second is the default in Blender).
 
-.. image:: ../../../media/sensors/accelerometer.png 
-  :align: center
-  :width: 600
-
 Files
 -----
 

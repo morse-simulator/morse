@@ -24,11 +24,6 @@ victim to *green*, and its status to healthy.
 It will detect if a victim is in front of the robot. When instructed to heal the victim,
 it will change the Game Properties of the object to reduce its ``injured`` value.
 
-
-.. image:: ../../../media/sensors/rosace.png 
-  :align: center
-  :width: 600
-
 Files
 -----
 

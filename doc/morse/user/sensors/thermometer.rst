@@ -11,11 +11,6 @@ The default temperature is specified as a parameter of the
 ``Scene_Script_Holder`` Empty object in the simulation file. It is expressed in 
 degrees Celsius.
 
-
-.. image:: ../../../media/sensors/thermometer.png 
-  :align: center
-  :width: 600
-
 Files
 -----
 - Blender: ``$MORSE_ROOT/data/sensors/thermometer.blend``
