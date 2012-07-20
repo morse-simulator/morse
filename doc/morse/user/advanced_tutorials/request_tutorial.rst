@@ -1,30 +1,40 @@
 Services tutorial
 =================
-MORSE has a concept of services: services are remote procedure call commonly used to configure or control the behaviour of the simulation.
 
-This tutorial shows how to use those services. Different middleware are supported refer to the :doc:`Middleware Support in MORSE <../supported_middlewares>` (search requests in the :ref:`compatibility-matrix`).
+MORSE has a concept of services: services are remote procedure call commonly
+used to configure or control the behaviour of the simulation.
 
+This tutorial shows how to use those services. Different middleware are
+supported refer to the :doc:`Middleware support in MORSE <../integration>`
+(search requests in the :ref:`compatibility-matrix`).
 
 
 Pre-requisites
 --------------
 
-- You must have completed the :doc:`first tutorial <../beginner_tutorials/tutorial>`.
+- You must have completed the :doc:`first tutorial
+  <../beginner_tutorials/tutorial>`.
 
 
 Using the services
 ------------------
-In order to use a service, you have to know the exact name of this service, and its parameters (You can refer to the component 
-page, available :doc:`here  <../../../components_library>`
 
-Here is an example using human component (the services available are :doc:`here <../others/human>`) with telnet::
+In order to use a service, you have to know the exact name of this service, and
+its parameters (You can refer to the component page, available :doc:`here
+<../../../components_library>`
+
+Here is an example using human component (the services available are :doc:`here
+<../others/human>`) with telnet::
 
     $ telnet 127.0.0.1 4000
     $ id1 Human move (0.1,0.0)
 
-where ``id1`` is the arbitrary id of the request, ``Human`` is the name of the used component, ``move`` and ``(0.1,0.1)`` are respectively the name of the request and its parameters. This parameters have to be in a tuple ( () or [] ).
+where ``id1`` is the arbitrary id of the request, ``Human`` is the name of the
+used component, ``move`` and ``(0.1,0.1)`` are respectively the name of the
+request and its parameters. This parameters have to be in a tuple ( () or [] ).
 
-Here is a simple example of using services with sockets in python (available at ``$MORSE_ROOT/tools/simlple_exemple.py``):
+Here is a simple example of using services with sockets in python (available at
+``$MORSE_ROOT/tools/simlple_exemple.py``):
 
 .. code-block:: python
 
@@ -86,7 +96,9 @@ Here is a simple example of using services with sockets in python (available at 
 
 
 .. note::
-  You can find a more complete example of python file using services to move the human here: ``$MORSE_ROOT/tools/wiimote_human_client.py``. (using wiimote to control the human)
+  You can find a more complete example of python file using services to move
+  the human here: ``$MORSE_ROOT/tools/wiimote_human_client.py``. (using wiimote
+  to control the human)
   
   
 Creating the Service

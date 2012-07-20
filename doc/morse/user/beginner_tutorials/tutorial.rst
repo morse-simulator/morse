@@ -92,7 +92,7 @@ with the outside world. This is done with these instructions:
     motion.configure_service('socket')
 
 Each of the components could possible use a different middleware. You can check the
-:doc:`full list of supported middlewares <../supported_middlewares>` for reference.
+:doc:`full list of supported middlewares <../integration>` for reference.
 
 Finalising the scene
 --------------------

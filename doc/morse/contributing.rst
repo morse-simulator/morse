@@ -37,6 +37,11 @@ Check the :doc:`Developers documentation <dev/summary>`.
     dev/new_pocolibs_interface
     dev/builder
 
+Code reference
+--------------
+
+Automatically generated code reference is `accessible here <code/morse.html>`_
+
 Tips and how-tos 
 ----------------
 

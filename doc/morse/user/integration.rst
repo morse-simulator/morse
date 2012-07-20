@@ -1,5 +1,22 @@
-Middleware Support in MORSE
-===========================
+
+Integrate MORSE in your software architecture
+=============================================
+
+By relying on various *middlewares* as the primary mean of communication with
+other software modules, MORSE should be able to insert in your existing
+architecture with minimum changes.
+
+We also provide (partial) language bindings that allows to directly (at the programming language level) include support MORSE in other softwares.
+
+Bindings
+++++++++
+
+Currently, we only have bindings for the Python language (contributions are welcome!).
+
+These bindings are documented here: :doc:`pymorse <../pymorse>`.
+
+Middlewares support
++++++++++++++++++++
 
 Middlewares provide a means for the simulated data to be shared with external
 programs. MORSE is designed to be middleware independent, so that its internal

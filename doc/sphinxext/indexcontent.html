@@ -1,16 +1,17 @@
 {% extends "defindex.html" %}
 {% block tables %}
 
-  <table class="contentstable" align="center">
+<table class="contentstable" align="center">
 	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("what_is_morse") }}">What is MORSE?</a><br/>
+			 <span class="linkdescr">Get an overview of MORSE features</span></p>
+         </td>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("what_new") }}">What's new in MORSE 0.5?</a><br/>
 			 <span class="linkdescr">The latest updates of the simulator</span></p>
 		</td>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("what_is_morse") }}">What is MORSE?</a><br/>
-			 <span class="linkdescr">Get an overview of MORSE features</span></p>
-		</td>	  </tr>
+    </tr>
 	  <tr>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("user/installation") }}">Installation</a><br/>
@@ -24,16 +25,47 @@
 	  </tr>
 	  <tr>
 		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("media") }}">Media & Dissemination</a><br/>
+			 <span class="linkdescr">Screenshots, videos and academic publications</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/faq") }}">Frequently Asked Questions (FAQ)</a><br/>
+			 <span class="linkdescr">Having trouble installing or running MORSE?</span></p>
+		</td>
+	  </tr> 
+
+</table>
+
+<h2>Reference documentation</h2>
+
+<table class="contentstable" align="center">
+
+	  <tr>
+		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("components_library") }}">Component library</a><br/>
 			 <span class="linkdescr">What can be simulated in MORSE?</span></p>
 		</td>
 
 		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/supported_middlewares") }}">Supported middlewares</a><br/>
-			 <span class="linkdescr">How to integrate MORSE in your architecture</span></p>
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/integration") }}">Integrate MORSE in your architecture</a><br/>
+			 <span class="linkdescr">Supported middlewares and language bindings</span></p>
+         </td>
+     </tr>
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("dev/builder") }}">Creating simulations</a><br/>
+			 <span class="linkdescr">Documentation of the Builder API</span></p>
 		</td>
 
-	  </tr>
+	  </tr> 
+ </table>
+
+<h2>Advanced usages</h2>
+
+<table class="contentstable" align="center">
+
+
 	  <tr>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("hri") }}">Human-Robot Interaction Simulation</a><br/>
@@ -47,52 +79,29 @@
 	  </tr> 
 	  <tr>
 		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("contributing") }}">Developing with MORSE</a><br/>
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/available_addons") }}">Blender add-ons for MORSE</a><br/>
+			 <span class="linkdescr">Simplifying simulation creation within Blender</span></p>
+		</td>
+
+	  </tr> 
+  
+</table>
+
+<h2>And more...</h2>
+
+<table class="contentstable" align="center">
+
+
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("contributing") }}">Contributing to MORSE</a><br/>
 			 <span class="linkdescr">Contacts and developers' documentation</span></p>
 		</td>
-
 		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/faq") }}">Frequently Asked Questions (FAQ)</a><br/>
-			 <span class="linkdescr">Having trouble installing or running MORSE?</span></p>
+		  <p class="biglink"><a class="biglink" href="{{ pathto("credits") }}">Credits</a><br/>
+			 <span class="linkdescr">The people behind MORSE</span></p>
 		</td>
 	  </tr> 
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("media") }}">Media & Dissemination</a><br/>
-			 <span class="linkdescr">Screenshots, videos and academic publications</span></p>
-		</td>
-
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="code/morse.html">Code reference</a><br/>
-			 <span class="linkdescr">Access the MORSE source code reference</span></p>
-		</td>
-	  </tr> 
-
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/available_addons") }}">Blender add-ons</a><br/>
-			 <span class="linkdescr">Simplify working with MORSE in Blender</span></p>
-		</td>
-
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="pymorse.html">Controlling the simulator</a><br/>
-			 <span class="linkdescr">Bindings to dynamically control the MORSE simulator</span></p>
-		</td>
-		</td>
-	  </tr> 
-
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("credits") }}">List of credits</a><br/>
-			 <span class="linkdescr">The people bringing you MORSE</span></p>
-		</td>
-
-		<td width="50%">
-		</td>
-		</td>
-	  </tr> 
-
-
 </table>
 
 <p>For any questions about the use of MORSE or if you have any issues with the
