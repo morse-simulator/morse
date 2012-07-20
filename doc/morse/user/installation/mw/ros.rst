@@ -1,11 +1,27 @@
 ROS Installation Notes
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Blender 2.57+ relies on Python3.2 which is partially supported by ROS Fuerte 
+Blender 2.57+ relies on Python3.2 which is partially supported by **ROS Fuerte** 
 from patch release 1.8.15 which was rolled out at 20.July 2012. Any ROS Fuerte 
-installation from that day on works fine with MORSE.
+installation from that day on works fine with MORSE. Furthermore, you have to 
+install Python3.2 and PyYaml for Python3.2. Please follow the following steps: 
 
-To get a working setup suitable for using ROS Electric or Diamondback with 
+#. Install ROS Fuerte (check http://www.ros.org/wiki/ROS/Installation if
+   needed)
+
+
+#. Install Python3.2 manually or using your system package manager and make
+   sure, your Pythonpath variable is pointing to the Python3.2-libraries
+   (Python3.2 Debian-packages are e.g. offered by Ubuntu 11.04 and newer)
+
+#. Install PyYAML with Python3 support (PyYAML >= 3.09, you can get it from
+   http://pyyaml.org/) Install it with ``python3.2 setup.py install`` to be sure
+   to have the Python3 libraries.
+
+#. Start having fun with MORSE!
+
+
+To get a working setup suitable for using **ROS Electric** or **Diamondback** with 
 MORSE, please follow the following steps:
 
 #. Install ROS Electric Emys (check http://www.ros.org/wiki/ROS/Installation if
