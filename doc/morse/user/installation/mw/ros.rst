@@ -1,12 +1,9 @@
 ROS Installation Notes
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Blender 2.57+ relies on Python3.2 which is not yet supported by ROS Electric
-Emys but will be partially supported by ROS Fuerte from the upcoming patch 
-release 1.8.15. 
-
-If you need to use MORSE with Fuerte right now, please write to the mailing 
-list for a preliminary tutorial on how to get a working setup.
+Blender 2.57+ relies on Python3.2 which is partially supported by ROS Fuerte 
+from patch release 1.8.15 which was rolled out at 20.July 2012. Any ROS Fuerte 
+installation from that day on works fine with MORSE.
 
 To get a working setup suitable for using ROS Electric or Diamondback with 
 MORSE, please follow the following steps:
