@@ -243,6 +243,66 @@ simulator behaviour, cf :doc:`supervision services
   the simulation is run in wireframe mode, for improved performances. Note that it may be not desirable
   when using video cameras!
 
+Naming of components
+--------------------
+
+You can set the name of a component through the setter ``name``::
+
+    mouse = Robot('atrv')
+    mouse.name = "jerry"
+
+
+If you do not explicitely set the name of your components, ``Builder``
+scripts rename automatically your components (which includes the Blender
+objects representing your components) based on **the name of the variable used
+in your Builder script**.
+
+In all cases, the components names are automatically **prefixed with their
+parents**, to prevent name collision.
+
+Let take an example. Consider this script, with two robots::
+
+    tom = Robot('atrv')
+    lefteye = Sensor('camera')
+    ptu = Actuator('ptu')
+    righteye = Sensor('camera')
+    righteye.name = "blindeye"
+    
+    tom.append(lefteye)
+    ptu.append(righteye)
+    tom.append(ptu)
+    
+    mouse = Robot('atrv')
+    mouse.name = "jerry"
+    cam = Sensor('camera')
+    jerry.append(cam)
+
+If you open it in MORSE for edition (with ``morse edit``) and you look at the
+outliner, you see that the hierarchy of objects looks like that:
+
+.. code-block:: none
+    
+    tom
+     |-> tom.lefteye
+     |-> tom.ptu
+        |-> tom.ptu.blindeye
+    jerry
+     |-> jerry.cam
+
+``tom`` comes from the variable name, whereas ``jerry`` was manually set.
+
+.. note::
+
+    Automatic renaming only works for components *visible* from your
+    script (*ie*, a component declared in a function or class, which is not
+    assigned to a variable that belongs to you ``Builder`` script, will not be
+    renamed) or components that were appended to a component which is visible.
+
+.. note::
+    
+    If name collisions occur anyway, Blender automatically adds an
+    incremental suffix like ``.001``, ``.002``, etc.
+
 Detailed explanations of class functions
 ----------------------------------------
 
