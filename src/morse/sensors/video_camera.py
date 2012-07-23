@@ -34,7 +34,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
                   self.image_focal / BLENDER_HORIZONTAL_APERTURE
         intrinsic[0][0] = alpha_u
         intrinsic[1][1] = alpha_u
-        if bge.logic.blenderVersion <= (2,62,0):
+        if bge.logic.blenderVersion < (2,62,0):
             intrinsic[2][0] =  self.image_width / 2.0
             intrinsic[2][1] =  self.image_height / 2.0
         else:
