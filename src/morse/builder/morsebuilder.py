@@ -370,6 +370,8 @@ class Environment(Component):
 
                 def renametree(cmpt, fqn):
                     fqn.append(cmpt.basename)
+                    new_name = '.'.join(fqn)
+                    Configuration.update_name(cmpt.name, new_name)
                     cmpt._blendobj.name = '.'.join(fqn)
                     for child in cmpt.children:
                         renametree(child, fqn[:])
