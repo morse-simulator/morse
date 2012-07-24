@@ -37,7 +37,6 @@ class PTUTest(MorseTestCase):
         robot.append(ptu)
 
         posture = PTUPosture()
-        robot.append(posture)
         posture.configure_mw('socket')
         ptu.append(posture)
 
@@ -198,7 +197,7 @@ class PTUTest(MorseTestCase):
             # Reset position
             morse.rpc('robot.ptu', 'set_pan_tilt', 0.0, 0.0)
 
-            res = morse.rpc('robot.ptu', 'look_at_object', 'RollingChair')
+            res = morse.rpc('robot.ptu', 'look_at_object', 'chair')
             res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], math.radians(90), delta=precision)
             self.assertAlmostEqual(res[1], 0.466, delta=precision)

@@ -38,7 +38,28 @@ class Yarp(morse.core.datastream.Datastream):
         the direction of the communication. """
         # Compose the name of the port
         parent_name = component_instance.robot_parent.blender_obj.name
-        port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
+        # Check if the component_name is a full qualified name or not
+        # For that, check the number of . in its name. If it is more
+        # than 2, we are sure it is a qualified name. If it is 0, it is
+        # definitevely not one. If it is 1, check that the end is not a
+        # string of kind 0XY.
+
+        fqn = False
+        s = component_name.split(".")
+        size = len(s)
+        if size > 3:
+            fqn = True
+        elif size == 2:
+            last = s[-1]
+            try:
+                v = int(last)
+            except ValueError:
+                fqn = True
+
+        if fqn:
+            port_name = 'robots/{0}'.format(component_name.replace('.', '/'))
+        else:
+            port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
 
         # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs

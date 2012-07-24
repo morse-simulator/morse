@@ -164,7 +164,7 @@ class Differential_VW_Test(MorseTestCase):
         with Morse() as morse:
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.robot.Pose
+            pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':

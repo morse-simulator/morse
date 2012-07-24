@@ -22,7 +22,7 @@ class LightTest(MorseTestCase):
     def setUpEnv(self):
         atrv = Robot('atrv')
 
-        cam = VideoCamera('VideoCamera')
+        cam = VideoCamera()
         cam.properties(capturing = True, cam_width = 320, cam_height = 240, \
                        cam_focal = 25.0000, Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
@@ -42,9 +42,9 @@ class LightTest(MorseTestCase):
 
     def test_light(self):
         with Morse() as morse:
-            cam_stream = morse.robot.cam
+            cam_stream = morse.atrv.cam
+            light_stream = morse.atrv.light
 
-            light_stream = morse.robot.light
             light_stream.publish({"emit": False})
 
             time.sleep(1.0)
