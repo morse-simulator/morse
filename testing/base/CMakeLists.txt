@@ -1,6 +1,7 @@
 add_morse_test(base_testing)
 add_morse_test(battery_testing)
 add_morse_test(gps_testing)
+add_morse_test(utm_mod_testing)
 add_morse_test(pose_testing)
 add_morse_test(vw_testing)
 add_morse_test(odometry_testing)
