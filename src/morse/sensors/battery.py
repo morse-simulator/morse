@@ -31,8 +31,12 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
 
         if self.isInChargingZone() and charge < 100:
             charge = charge + (dt * self.blender_obj['DischargingRate'])
+            if charge > 100.0:
+                charge = 100.0
         elif charge > 0:
             charge = charge - (dt * self.blender_obj['DischargingRate'])
+            if charge < 0.0:
+                charge = 0.0
 
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
