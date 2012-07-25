@@ -13,7 +13,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from time import sleep
 import subprocess
-from morse.testing.testing import MorseTestCase
+from morse.testing.testing import MorseTestCase, testlogger
 
 # Include this import to be able to use your test file as a regular 
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -77,50 +77,51 @@ class DataStreamTest(MorseTestCase):
         cmd_stream = rospy.Publisher('ATRV/Motion_Controller', Twist)
        
         self.assertTrue(hasattr(self, "pos"))
+        precision=0.15
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
  
         # sleep to make sure that the other peer can read it ...
         sleep(5)
 
         send_speed(cmd_stream, 1.0, 0.0, 2.0)
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 2.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 2.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
         send_speed(cmd_stream, -1.0, 0.0, 2.0)
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
         send_speed(cmd_stream, 1.0, -math.pi/4.0, 2.0)
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
-       # self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
-       # self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
-       # self.assertAlmostEqual(pose['z'], 0.0, delta=0.1)
-       # self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.1)
-       # self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.1)
-       # self.assertAlmostEqual(pose['roll'], 0.0, delta=0.1)
+       # self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
+       # self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
+       # self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
+       # self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
+       # self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
+       # self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
         send_speed(cmd_stream, 0.5, -math.pi/8.0, 12.0)
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
         send_speed(cmd_stream, -2.0, math.pi/2.0, 3.0)
 
-        self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=0.1)
+        self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=precision)
+        self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
        # pose = pose_stream.get()
        # self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.08)
        # self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.08)
