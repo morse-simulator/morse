@@ -21,6 +21,8 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         self.local_data['charge'] = 100.0
         self._time = time.clock()
 
+        self.add_property('_discharging_rate', 0.05, 'DischargingRate')
+
         logger.info('Component initialized')
 
     def default_action(self):
@@ -30,11 +32,11 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         dt = newtime - self._time
 
         if self.isInChargingZone() and charge < 100:
-            charge = charge + (dt * self.blender_obj['DischargingRate'])
+            charge = charge + dt * self._discharging_rate
             if charge > 100.0:
                 charge = 100.0
         elif charge > 0:
-            charge = charge - (dt * self.blender_obj['DischargingRate'])
+            charge = charge - dt * self._discharging_rate
             if charge < 0.0:
                 charge = 0.0
 
