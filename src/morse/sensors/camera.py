@@ -29,6 +29,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             self.image_width = obj['cam_width']
             self.image_height = obj['cam_height']
             self.image_focal = obj['cam_focal']
+            self.near_clipping = obj['cam_near']
         except KeyError:
             # Provide default values for the image properties
             # The performance is much better with power of two sizes:
@@ -37,6 +38,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             self.image_width = obj['cam_width'] = 256
             self.image_height = obj['cam_height'] = 256
             self.image_focal = obj['cam_focal'] = 25
+            self.near_clipping = obj['cam_near'] = 0.1
 
         self.image_size = 4 * self.image_width * self.image_height
 
@@ -114,6 +116,10 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
+        
+        # Set the near clipping distance of the camera using the Game Logic Property
+        camera.near = self.near_clipping
+        logger.info("\tNear clipping distance of the camera is: %s" % camera.near)
 
         # Set the background to be used for the render
         vt_camera.source.background = self.bg_color
