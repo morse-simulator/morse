@@ -168,19 +168,6 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
     def read_message(self, msg):
         return json.loads(msg.decode('utf-8'))
 
-    def post_image(self, component_instance):
-        """ Send an RGB image using a port. (STILL INCOMPLETE)"""
-        try:
-            out_socket = self._socket_dict[component_instance.blender_obj.name]
-            
-            (conn, addr) = out_socket.accept()
-            logger.info('Socket Mid: Connected by', addr)
-            out_socket.send(message)
-
-        except KeyError as detail:
-            logger.error("Specified port does not exist: ", detail)
-    ### ^^^ NOT USED ^^^ ###
-
     def print_open_sockets(self):
         """ Display a list of all currently opened sockets."""
         logger.info("Socket Mid: Currently opened sockets:")
