@@ -21,6 +21,7 @@ add_morse_test(waypoint_testing)
 # Sensor + Actuator 
 
 add_morse_test(kuka_lwr_testing) 
+add_morse_test(ptu_testing)
 
 # Modifier
 
