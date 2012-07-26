@@ -25,20 +25,10 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
     
         # Set the values of image size from the variables
         #  in the Blender Logic Properties
-        try:
-            self.image_width = obj['cam_width']
-            self.image_height = obj['cam_height']
-            self.image_focal = obj['cam_focal']
-            self.near_clipping = obj['cam_near']
-        except KeyError:
-            # Provide default values for the image properties
-            # The performance is much better with power of two sizes:
-            #  4, 16, 32, ... 256, 512
-            logger.warning("Missing camera parameters. Using defaults")
-            self.image_width = obj['cam_width'] = 256
-            self.image_height = obj['cam_height'] = 256
-            self.image_focal = obj['cam_focal'] = 25
-            self.near_clipping = obj['cam_near'] = 0.1
+        self.add_property('image_width', 256, 'cam_width')
+        self.add_property('image_height', 256, 'cam_height')
+        self.add_property('image_focal', 25.0, 'cam_focal')
+        self.add_property('near_clipping', 0.1, 'cam_near')
 
         self.image_size = 4 * self.image_width * self.image_height
 
