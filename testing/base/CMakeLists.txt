@@ -1,14 +1,28 @@
+# Base concept 
+
 add_morse_test(base_testing)
+
+# Sensor
+
 add_morse_test(battery_testing)
 add_morse_test(gps_testing)
 add_morse_test(gyroscope_testing)
-add_morse_test(utm_mod_testing)
-add_morse_test(pose_testing)
-add_morse_test(vw_testing)
 add_morse_test(odometry_testing)
-add_morse_test(waypoint_testing)
+add_morse_test(pose_testing)
 add_morse_test(sick_testing)
-add_morse_test(kuka_lwr_testing)
 add_morse_test(semantic_camera_testing)
-add_morse_test(ned_testing)
+
+# Actuator
+
 add_morse_test(orientation_testing)
+add_morse_test(vw_testing)
+add_morse_test(waypoint_testing)
+
+# Sensor + Actuator 
+
+add_morse_test(kuka_lwr_testing) 
+
+# Modifier
+
+add_morse_test(ned_testing)
+add_morse_test(utm_mod_testing)
