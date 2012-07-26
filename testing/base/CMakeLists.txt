@@ -11,6 +11,7 @@ add_morse_test(odometry_testing)
 add_morse_test(pose_testing)
 add_morse_test(sick_testing)
 add_morse_test(semantic_camera_testing)
+add_morse_test(video_camera_testing)
 
 # Actuator
 
