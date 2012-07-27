@@ -3,7 +3,7 @@ import math
 import morse.actuators.armature_actuator
 import morse.helpers.math as morse_math
 from morse.core.services import service
-
+from morse.core.exceptions import MorseRPCInvokationError
 
 class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass):
     """
@@ -73,10 +73,14 @@ class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass)
         Overrides the default method of the ArmatureActuatorClass, so that data
          is stored in the expected format of a list of angles for each joint.
         """
-        for i in range(3):
-            if self._dofs[channel_name][i] != 0:
-                self.local_data[channel_name] = rotation[i]
-        return None
+        try:
+            for i in range(3):
+                if self._dofs[channel_name][i] != 0:
+                    self.local_data[channel_name] = rotation[i]
+            return None
+        except KeyError:
+            msg = str(channel_name) + " is not a valid channel name "
+            raise MorseRPCInvokationError(msg)
 
     @service
     def set_rotation_array(self, *rotation_array):

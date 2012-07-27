@@ -3,6 +3,7 @@ import math
 import morse.core.actuator
 import morse.helpers.math as morse_math
 from morse.core.services import service
+from morse.core.exceptions import MorseRPCInvokationError
 
 
 class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
@@ -93,11 +94,15 @@ class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
         the given channel 'channel_name' on the armature.
         """
         armature = self.blender_obj
-        channel = armature.channels[str(channel_name)]
-        # get the rotation in xyz
-        rotation = channel.joint_rotation.to_tuple()
+        try : 
+            channel = armature.channels[str(channel_name)]
+            # get the rotation in xyz
+            rotation = channel.joint_rotation.to_tuple()
 
-        return rotation
+            return rotation
+        except KeyError:
+            msg = str(channel_name) + " is not a valid channel name"
+            raise MorseRPCInvokationError(msg)
 
     def find_dof(self, channel):
         """
@@ -139,9 +144,13 @@ class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
         MORSE Service to set the rotation angle of the given channel_name to the angles list (x,y,z).
         """
         armature = self.blender_obj
-        channel = armature.channels[str(channel_name)]
-        self.set_joint_rotation(armature, channel, rotation)
-        return None
+        try:
+            channel = armature.channels[str(channel_name)]
+            self.set_joint_rotation(armature, channel, rotation)
+            return None
+        except KeyError:
+            msg = str(channel_name) + " is not a valid channel name"
+            raise MorseRPCInvokationError(msg)
 
     @service
     def get_IK_minmax(self):
