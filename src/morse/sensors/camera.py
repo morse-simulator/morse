@@ -29,6 +29,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         self.add_property('image_height', 256, 'cam_height')
         self.add_property('image_focal', 25.0, 'cam_focal')
         self.add_property('near_clipping', 0.1, 'cam_near')
+        self.add_property('vertical_flip', False, 'Vertical_Flip')
 
         self.image_size = 4 * self.image_width * self.image_height
 
@@ -121,8 +122,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Reverse the image (boolean game-property)
         # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
-        if 'Vertical_Flip' in self.blender_obj: # backward compatibility
-            vt_camera.source.flip = self.blender_obj['Vertical_Flip']
+        vt_camera.source.flip = self.vertical_flip
 
         bge.logic.cameras[self.name()] = vt_camera
 #
