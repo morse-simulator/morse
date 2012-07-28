@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-This script tests the SICK laser range sensor in MORSE.
+This script tests the proximity sensor in MORSE.
 """
 
 import sys
@@ -88,7 +88,7 @@ class ProximityTest(MorseTestCase):
             self.assertTrue('Target1' in prox['near_objects'])
 
             # Don't care about the direction, only check the distance
-            send_speed(v_w_client, -2.0, 0.0, 7.0)
+            send_speed(v_w_client, -2.0, 0.0, 5.5)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target3' in prox['near_objects'])
