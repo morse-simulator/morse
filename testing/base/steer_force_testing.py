@@ -63,8 +63,8 @@ class SteerForceTest(MorseTestCase):
             time.sleep(1.0)
 
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], x + 8.0, delta = 0.2)
-            self.assertAlmostEqual(pose['y'], y, delta = 0.2)
+            self.assertAlmostEqual(pose['x'], x + 8.0, delta = 1.0)
+            self.assertAlmostEqual(pose['y'], y, delta = 1.0)
 
 
 
