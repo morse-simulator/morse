@@ -602,6 +602,7 @@ def init(contr):
     bge.logic.blenderVersion = bpy.app.version
     logger.info ("Python Version: %s.%s.%s" % bge.logic.pythonVersion[:3])
     logger.info ("Blender Version: %s.%s.%s" % bge.logic.blenderVersion)
+    logger.info ("PID: %d" % os.getpid())
 
     bge.logic.morse_initialised = False
     bge.logic.base_clock = time.clock()
