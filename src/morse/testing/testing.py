@@ -10,6 +10,7 @@ import tempfile
 from time import sleep
 import threading # Used to be able to timeout when waiting for Blender initialization
 import subprocess
+import signal
 
 from morse.testing.exceptions import MorseTestingError
 
@@ -47,6 +48,19 @@ class MorseTestRunner(unittest.TextTestRunner):
             return unittest.TextTestRunner.run(self, suite)
                 
 
+def follow(file):
+    """ Really emulate tail -f
+
+    See http://stackoverflow.com/questions/1475950/tail-f-in-python-with-no-time-sleep
+    for a detailled discussion on the subject
+    """
+    while True:
+        line = file.readline()
+        if not line:
+            sleep(0.1)    # Sleep briefly
+            continue
+        yield line
+
 class MorseTestCase(unittest.TestCase):
 
     # Make this an abstract class
@@ -60,6 +74,23 @@ class MorseTestCase(unittest.TestCase):
         """
         pass
 
+    def _checkMorseException(self):
+        """ Check in the Morse output if some python error happens"""
+
+        with open(self.logfile_name) as log:
+            lines = follow(log)
+            for line in lines:
+                # Python Error Case
+                if "Python script error" in line:
+                    testlogger.error("Exception detected in Morse execution : "
+                                     "see %s for details."
+                                     " Exiting the current test !" % self.logfile_name)
+                    os.kill(os.getpid(), signal.SIGINT)
+                    return
+
+                # End of simulation, exit the thread
+                if "EXITING SIMULATION" in line:
+                    return
 
     def setUp(self):
         
@@ -69,10 +100,12 @@ class MorseTestCase(unittest.TestCase):
         # Wait for a second
         #  to wait for ports open in previous tests to be closed
         sleep(1)
-        
+
         self.morse_initialized = False
         self.setUpMw()
         self.startmorse(self)
+        self.t = threading.Thread(target=self._checkMorseException)
+        self.t.start()
 
     def tearDownMw(self):
         """ This method can be overloaded by subclasses to clean up
@@ -83,6 +116,7 @@ class MorseTestCase(unittest.TestCase):
     def tearDown(self):
         self.stopmorse()
         self.tearDownMw()
+        self.t.join()
         
     @abstractmethod
     def setUpEnv(self):
@@ -96,18 +130,46 @@ class MorseTestCase(unittest.TestCase):
         pass
 
     def wait_initialization(self):
+        """ Wait until Morse is initialized """
+
         testlogger.info("Waiting for MORSE to initialize... (timeout: %s sec)" % \
                         BLENDER_INITIALIZATION_TIMEOUT)
         with open(self.logfile_name) as log:
-            line = ""
-            while not "SCENE INITIALIZED" in line:
-                line  = log.readline()
+            lines = follow(log)
+            for line in lines:
                 if "INITIALIZATION ERROR" in line:
                     testlogger.error("Error during MORSE initialization! Check "
                                      "the log file.")
                     return
-            
-            self.morse_initialized = True
+                if "SCENE INITIALIZED" in line:
+                    self.morse_initialized = True
+                    return
+
+    def run(self, result=None):
+        """ Overwrite unittest.TestCase::run
+
+        Detect KeyBoardInterrupt exception , due to user or a SIGINIT In
+        particular, it can happen if we detect an exception in the Morse
+        execution. In this case, clean up correctly the environnement.
+        """
+       
+        try:
+            return unittest.TestCase.run(self, result)
+        except KeyboardInterrupt as e:
+            self.tearDownMw()
+            os.kill(self.pid, signal.SIGKILL)
+            if result:
+                result.addError(self, sys.exc_info())
+
+    def _extract_pid(self):
+        """ Extract the pid from the log file """
+
+        with open(self.logfile_name) as log:
+            for line in log:
+                if "PID" in line:
+                    words = line.split()
+                    return int(words[-1])
+
 
     def startmorse(self, test_case):
         """ This starts MORSE in a new process, passing the script itself as parameter (to
@@ -143,7 +205,7 @@ class MorseTestCase(unittest.TestCase):
         t.join(BLENDER_INITIALIZATION_TIMEOUT)
         
         if self.morse_initialized:
-            self.pid = self.morse_process.pid
+            self.pid = self._extract_pid()
             testlogger.info("MORSE successfully initialized with PID %s" % self.pid)
         else:
             self.morse_process.terminate()
@@ -162,9 +224,8 @@ class MorseTestCase(unittest.TestCase):
             line = ""
             while not "EXITING SIMULATION" in line:
                 line  = log.readline()
-        
 
-        self.morse_process.terminate()
+        os.kill(self.pid, signal.SIGKILL)
         testlogger.info("MORSE stopped")
     
     def generate_builder_script(self, test_case):
