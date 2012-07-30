@@ -210,8 +210,9 @@ class RequestManager(object):
 
         logger.info("Incoming request " + service + " for " + component + "!")
 
-        request_id = uuid.uuid4() #Unique ID for our request
-        
+        #Unique ID for our request
+        request_id = uuid.uuid3(uuid.NAMESPACE_URL, "http://morse.openrobots.org")
+
         try:
             method, is_async = self._services[(component, service)]
         except KeyError:
