@@ -41,6 +41,7 @@ MORSE_MODIFIER_DICT = {
         'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'waypoint': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'orientation': [MORSE_MODIFIERS['NED'], 'ned_angle_to_blender'],
+        'teleport': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
     },
     'UTM' : {
         'pose': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
@@ -83,6 +84,7 @@ MORSE_MIDDLEWARE_DICT = {
         'destination': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_point', 'morse/middleware/ros/destination'],
         'force_torque': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_wrench', 'morse/middleware/ros/read_wrench'],
         'orientation': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_quaternion', 'morse/middleware/ros/read_quaternion'],
+        'teleport': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_pose', 'morse/middleware/ros/read_pose'],
     },
 
     'socket': {
@@ -108,6 +110,7 @@ MORSE_MIDDLEWARE_DICT = {
         'steer_force': [MORSE_MIDDLEWARE_MODULE['socket'], 'read_message'],
         'v_omega': [MORSE_MIDDLEWARE_MODULE['socket'], 'read_message'],
         'waypoint': [MORSE_MIDDLEWARE_MODULE['socket'], 'read_message'],
+        'teleport': [MORSE_MIDDLEWARE_MODULE['socket'], 'read_message'],
     },
 
     'yarp': {
@@ -136,6 +139,7 @@ MORSE_MIDDLEWARE_DICT = {
         'steer_force': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
         'v_omega': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
         'waypoint': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
+        'teleport': [MORSE_MIDDLEWARE_MODULE['yarp'], 'read_message'],
     },
 
     'yarp_json': {
