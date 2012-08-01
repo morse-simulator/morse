@@ -33,3 +33,4 @@ Actuators,
 ``waypoint motion``,          ✘,               ✔,           ✔,              ✔ (set of ``Pose2D``),    ✘,														✘
 ``destination``,              ✘,               ✔,           ✔,              ✔ (``Point``),   ✘,                                                                 ✘
 ``force_torque``,              ✘,              ✔,           ✔,              ✔ (``Wrench``),   ✘,                                                                ✔
+``teleport``,		  ✘,               ✔,           ✔,              ✔ ``Pose``,✘,																	?

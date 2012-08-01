@@ -151,4 +151,11 @@ documentation.
 	
 	- ``read_quaternion`` Reads a ``geometry_msgs/Quaternion`` message from
 	  the specific ROS-topic and converts it to an Euler representation
-	  (``yaw``, ``pitch``, ``roll`` in ``local_data``. 
+	  ``yaw``, ``pitch``, ``roll`` in ``local_data``. 
+	  
+- Teleport actuator: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/read_pose.py``.
+  Available methods:
+	
+	- ``read_pose`` Reads a ``geometry_msgs/Pose`` message from
+	  the specific ROS-topic and stores position values for ``x``, ``y`` and ``z`` and orientation
+	  (converted to an Euler representation) as ``yaw``, ``pitch``, ``roll`` in ``local_data``. 
