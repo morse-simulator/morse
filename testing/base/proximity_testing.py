@@ -18,10 +18,9 @@ try:
 except ImportError:
     pass
 
-def send_speed(s, v, w, t):
-    s.send(json.dumps({'v' : v, 'w' : w}).encode())
-    sleep(t)
-    s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
+def send_dest(s, x, y, yaw):
+    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    sleep(0.1)
 
 class ProximityTest(MorseTestCase):
     def setUpEnv(self):
@@ -41,7 +40,7 @@ class ProximityTest(MorseTestCase):
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('v_omega')
+        motion = Actuator('teleport')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -69,26 +68,26 @@ class ProximityTest(MorseTestCase):
             prox_stream = morse.stream('Proximity')
 
             port = morse.get_stream_port('Motion_Controller')
-            v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            v_w_client.connect(('localhost', port))
+            teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            teleport_client.connect(('localhost', port))
 
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 0)
 
             # still emtpy
-            send_speed(v_w_client, 1.0, 0.0, 7.0)
+            send_dest(teleport_client, 8.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 0)
 
             # one more meter, must find target1. target2 is at equal
             # distance but don't have the good tag
-            send_speed(v_w_client, 1.0, 0.0, 1.5)
+            send_dest(teleport_client, 9.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target1' in prox['near_objects'])
 
             # Don't care about the direction, only check the distance
-            send_speed(v_w_client, -2.0, 0.0, 5.5)
+            send_dest(teleport_client, -2.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target3' in prox['near_objects'])
