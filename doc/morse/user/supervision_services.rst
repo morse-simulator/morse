@@ -23,6 +23,11 @@ Available services
 - ``reset_objects`` (no parameter): reset the position of all objects in the
   simulation (in other word, restart the simulation)
 - ``quit`` (no parameter): quit the game mode and so terminate the simulation
+- ``suspend_dynamics`` (no parameter): suspend the physics at the game engine
+  level
+- ``restore_dynamics`` (no parameter): enable again the physics at the game
+  engine level
+
 
 .. note::
   Simulation services are stored in :py:mod:`morse.core.supervision_services`.

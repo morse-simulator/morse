@@ -58,3 +58,25 @@ def deactivate(component_name):
     except KeyError as detail:
         logger.warn("Component %s not found. Can't deactivate" % detail)
         raise MorseRPCTypeError("Component %s not found. Can't deactivate" % detail)
+        
+@service(component = "simulation")
+def suspend_dynamics():
+    """ Suspends physics for all object in the scene.
+    """
+
+    scene = bge.logic.getCurrentScene()
+    for object in scene.objects:
+        object.suspendDynamics()
+        
+    return "Physics is suspended"
+        
+@service(component = "simulation")
+def restore_dynamics():
+    """ Resumes physics for all object in the scene.
+    """
+
+    scene = bge.logic.getCurrentScene()
+    for object in scene.objects:
+        object.restoreDynamics()
+    
+    return "Physics is resumed"
