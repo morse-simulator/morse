@@ -29,6 +29,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         self.add_property('image_height', 256, 'cam_height')
         self.add_property('image_focal', 25.0, 'cam_focal')
         self.add_property('near_clipping', 0.1, 'cam_near')
+        self.add_property('far_clipping', 100.0, 'cam_far')
         self.add_property('vertical_flip', False, 'Vertical_Flip')
 
         self.image_size = 4 * self.image_width * self.image_height
@@ -108,9 +109,11 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         camera.lens = self.image_focal
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
         
-        # Set the near clipping distance of the camera using the Game Logic Property
+        # Set the clipping distances of the camera using the Game Logic Property
         camera.near = self.near_clipping
         logger.info("\tNear clipping distance of the camera is: %s" % camera.near)
+        camera.far = self.far_clipping
+        logger.info("\tFar clipping distance of the camera is: %s" % camera.far)
 
         # Set the background to be used for the render
         vt_camera.source.background = self.bg_color
@@ -123,6 +126,20 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
         # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         vt_camera.source.flip = self.vertical_flip
+
+        try:
+            # Use the z buffer as an image texture for the camera
+            if 'Zbuffer' in self.blender_obj:
+                vt_camera.source.zbuff = self.blender_obj['Zbuffer']
+        except AttributeError as detail:
+            logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
+
+        try:
+            # Use the z buffer as input with an array of depths
+            if 'Depth' in self.blender_obj:
+                vt_camera.source.depth = self.blender_obj['Depth']
+        except AttributeError as detail:
+            logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
 
         bge.logic.cameras[self.name()] = vt_camera
 #

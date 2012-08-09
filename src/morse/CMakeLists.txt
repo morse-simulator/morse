@@ -11,6 +11,7 @@ INSTALL(DIRECTORY core actuators geolandloader helpers blender sensors services 
 
 ADD_SUBDIRECTORY(builder)
 ADD_SUBDIRECTORY(modifiers)
+ADD_SUBDIRECTORY(sensors)
 endif()
 
 ADD_SUBDIRECTORY(multinode)
