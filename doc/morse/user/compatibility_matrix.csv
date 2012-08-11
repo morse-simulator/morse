@@ -8,8 +8,8 @@ Sensors,
 ``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,✔ ``POM_ME_POS``,								✔
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
-``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Odometry`` (or ``Twist``),     ✘,																	✔
-``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see IMU),    ✘ ,																	✔
+``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Imu``,     ✘,																	✔
+``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see Pose),    ✘ ,																	✔
 ``Pose``,					  ✔,               ✔,           ✔,              ✔ ``Odometry`` and ``PoseStamped``,     ✘,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
