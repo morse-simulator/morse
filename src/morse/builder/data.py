@@ -67,7 +67,7 @@ MORSE_MIDDLEWARE_DICT = {
         'gps': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
         'gyroscope': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
         'infrared': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_range', 'morse/middleware/ros/infrared'],
-        'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_odometry', 'morse/middleware/ros/imu'],
+        'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_imu', 'morse/middleware/ros/imu'],
         'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
         'pose': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_odometry', 'morse/middleware/ros/pose'],
         'proximity': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
