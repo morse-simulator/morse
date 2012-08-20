@@ -15,6 +15,7 @@ MORSE_MODIFIERS = {
     'NED': 'morse.modifiers.ned.MorseNEDClass',
     'UTM': 'morse.modifiers.utm.MorseUTMClass',
     'GPSNoise': 'morse.modifiers.gps_noise.MorseGPSNoiseClass',
+    'IMUNoise': 'morse.modifiers.imu_noise.MorseIMUNoiseClass',
 }
 
 """
