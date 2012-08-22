@@ -1,5 +1,5 @@
 Teleport actuator
-================
+=================
 
 This actuator teleports the robot to the absolute position and orientation
 with respect to the origin of the Blender coordinate reference.
