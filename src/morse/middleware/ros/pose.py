@@ -23,9 +23,6 @@ def init_extra_module(self, component_instance, function, mw_data):
     # Add the new method to the component
     component_instance.output_functions.append(function)
 
-    self._parent_frame = "/map"
-    self._child_frame = "/base_footprint"
-
     # Generate one publisher and one topic for each component that is a sensor and uses post_message
     if mw_data[1] == "post_pose":
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, PoseStamped))
@@ -33,6 +30,19 @@ def init_extra_module(self, component_instance, function, mw_data):
         self._topics.append(rospy.Publisher("/tf", tfMessage))
     else:
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Odometry))
+
+    # Extract the Middleware parameters
+    # First one is the parent frame_id
+    try:
+        self._parent_frame = mw_data[2]
+    except:
+        self._parent_frame = "/map"
+
+    # Second one is the child frame_id
+    try:
+        self._child_frame = mw_data[3]
+    except:
+        self._child_frame = "/base_footprint"
 
     logger.info('Initialized the ROS pose sensor')
 
@@ -71,17 +81,17 @@ def post_odometry(self, component_instance):
 
     odometry.pose.pose.position.x = component_instance.local_data['x']
     odometry.pose.pose.position.y = component_instance.local_data['y']
-    odometry.pose.pose.position.z = component_instance.local_data['z'] 
+    odometry.pose.pose.position.z = component_instance.local_data['z']
 
     euler = mathutils.Euler((component_instance.local_data['roll'], component_instance.local_data['pitch'], component_instance.local_data['yaw']))
     quaternion = euler.to_quaternion()
     odometry.pose.pose.orientation = quaternion
 
-    for topic in self._topics: 
+    for topic in self._topics:
         # publish the message on the correct topic    
-        if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name): 
+        if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(odometry)
-            
+
 def post_pose(self, component_instance):
     """ Publish the data of the Pose as a ROS-PoseStamped message
     """
@@ -101,9 +111,9 @@ def post_pose(self, component_instance):
     poseStamped.header.stamp = rospy.Time.now()
 
     # Default baseframe is map  
-    poseStamped.header.frame_id = "map"
+    poseStamped.header.frame_id = self._parent_frame
 
-    for topic in self._topics: 
+    for topic in self._topics:
         # publish the message on the correct topic    
-        if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name): 
+        if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(poseStamped)
