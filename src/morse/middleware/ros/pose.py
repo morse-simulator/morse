@@ -32,17 +32,13 @@ def init_extra_module(self, component_instance, function, mw_data):
         self._topics.append(rospy.Publisher(parent_name + "/" + component_name, Odometry))
 
     # Extract the Middleware parameters
-    # First one is the parent frame_id
+    # additional parameter should be a dict
     try:
-        self._parent_frame = mw_data[2]
+        self._frame_id = mw_data[3].get("frame_id", "/map")
+        self._child_frame_id = mw_data[3].get("child_frame_id", "/base_footprint")
     except:
-        self._parent_frame = "/map"
-
-    # Second one is the child frame_id
-    try:
-        self._child_frame = mw_data[3]
-    except:
-        self._child_frame = "/base_footprint"
+        self._frame_id = "/map"
+        self._child_frame_id = "/base_footprint"
 
     logger.info('Initialized the ROS pose sensor')
 
@@ -52,9 +48,9 @@ def post_tf(self, component_instance):
     quaternion = euler.to_quaternion()
 
     t = TransformStamped()
-    t.header.frame_id = self._parent_frame
+    t.header.frame_id = self._frame_id
     t.header.stamp = rospy.Time.now()
-    t.child_frame_id = self._child_frame
+    t.child_frame_id = self._child_frame_id
     t.transform.translation.x = component_instance.local_data['x']
     t.transform.translation.y = component_instance.local_data['y']
     t.transform.translation.z = component_instance.local_data['z']
@@ -76,8 +72,8 @@ def post_odometry(self, component_instance):
 
     odometry = Odometry()
     odometry.header.stamp = rospy.Time.now()
-    odometry.header.frame_id = self._parent_frame
-    odometry.child_frame_id = self._child_frame
+    odometry.header.frame_id = self._frame_id
+    odometry.child_frame_id = self._child_frame_id
 
     odometry.pose.pose.position.x = component_instance.local_data['x']
     odometry.pose.pose.position.y = component_instance.local_data['y']
@@ -111,7 +107,7 @@ def post_pose(self, component_instance):
     poseStamped.header.stamp = rospy.Time.now()
 
     # Default baseframe is map  
-    poseStamped.header.frame_id = self._parent_frame
+    poseStamped.header.frame_id = self._frame_id
 
     for topic in self._topics:
         # publish the message on the correct topic    
