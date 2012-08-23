@@ -10,7 +10,7 @@ Sensors,
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
 ``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Imu``,     ✘,																	✔
 ``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see Pose),    ✘ ,																	✔
-``Pose``,					  ✔,               ✔,           ✔,              ✔ ``Odometry`` and ``PoseStamped``,     ✘,																	✔ 	
+``Pose``,					  ✔,               ✔,           ✔,              "✔ ``Odometry``, ``PoseStamped``, ``TF``",     ✘,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
 ``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
