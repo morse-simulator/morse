@@ -27,13 +27,13 @@ def visit_gallery_node(self, node):
     self.body.append(self.starttag(node, "table", style=css(style)))
     images =  os.listdir(os.path.join(MEDIA_PATH, node["directory"]))
     for i in range(len(images))[::images_per_row]:
-        self.body.append("<tr>")
+        self.body.append("<tr>\n")
         for j in range(images_per_row):
             if i + j < len(images):
                 obj = images[i + j][:-4] #remove extension
-                self.body.append("<td style='text-align:center'><a href='" + HTML_PATH + node["directory"] + "/" + obj + ".html'><img style='width: 200px;' src='" + IMAGE_PATH + obj + ".png' /><br/><pre>" + obj + "</pre></a></td>")
-        self.body.append("</tr>")
-    self.body.append("</table>")
+                self.body.append("\t<td style='text-align:center'><a href='" + HTML_PATH + node["directory"] + "/" + obj + ".html'><img style='width: 200px;' src='" + IMAGE_PATH + obj + ".png' /><br/><pre>" + obj + "</pre></a></td>\n")
+        self.body.append("</tr>\n")
+    self.body.append("</table>\n")
 
 def depart_gallery_node(self, node):
     pass

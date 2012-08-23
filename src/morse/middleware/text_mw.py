@@ -39,6 +39,9 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         # Data write functions
         if function_name == "write_data":
             component_instance.output_functions.append(function)
+        # Data write functions
+        if function_name == "post_message":
+            component_instance.output_functions.append(function)
 
         # Prepare a list with the data for the header of the file
         data = []
@@ -54,6 +57,10 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         self._file_list[component_name] = FILE
         self._index_list[component_name] = 1
         logger.info("File: '%s' opened for writing" % file_name)
+
+    def post_message(self, component_instance):
+        """ Dummy function to call the real storage method """
+        self.write_data(component_instance)
 
 
     def write_data(self, component_instance):

@@ -74,8 +74,8 @@ documentation.
 - IMU sensor: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/imu.py``.
   It has one available method:
 
-	- ``post_odometry``: Exports the data of the IMU sensor as a ``nav_msgs/Odometry``
-	- ``post_velocity_twist``: Exports the data of the IMU sensor as a ``geometry_msgs/Twist``
+	- ``post_imu``: Exports the data of the IMU sensor (without covariance) as a 
+	  ``sensor_msgs/Imu`` message
 
 - Kuka-Arm controller: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/kuka_jointState.py``.
   Available methods:

@@ -116,6 +116,12 @@ class PocolibsRequestManager(RequestManager):
     def post_registration(self, component, service, is_async):
         return True # No post-registration steps
 
+    def _remove_client(self, i):
+        del self._clients[i]
+        del self._answer_clients[i]
+        self._inputs.remove(i)
+        self._outputs.remove(i)
+
     def main(self):
         
         try:
@@ -150,23 +156,21 @@ class PocolibsRequestManager(RequestManager):
                 data = None
                 try:
                     data = i.recv(1024).decode('ascii')
-                except socket.error:
-                    logger.warning("Client " + str(self._clients[i]) + " disconnected")
-                    del self._clients[i]
-                    self._inputs.remove(i)
-                    self._outputs.remove(i)
+                except socket.error as msg:
+                    logger.warning("Client " + str(self._clients[i]) +
+                                    " disconnected : error " + str(msg))
+                    self._remove_client(i)
 
                 if not data:
-                    return
+                    logger.warning("Client disconnected without BYE")
+                    self._remove_client(i)
+                    continue
+
                 logger.debug("[Client " + str(self._clients[i]) + "]: " + data)
-                
-                        
+
                 if data.startswith("BYE"):
                     logger.info("Client " + str(self._clients[i]) + " is leaving. Bye bye")
-                    del self._clients[i]
-                    del self._answer_clients[i]
-                    self._inputs.remove(i)
-                    self._outputs.remove(i)
+                    self._remove_client(i)
                     continue
                     
                 ok, msg = self._dispatch(data, self._clients[i])
@@ -207,11 +211,10 @@ class PocolibsRequestManager(RequestManager):
                         try:
                             o.send((r + "\r\n").encode('ascii'))
                             logger.debug("Sending [" + r + "] to " + str(self._clients[o]))
-                        except socket.error:
-                            logger.info("It seems that a socket client left. Closing the socket.")
-                            del self._clients[o]
-                            self._inputs.remove(o)
-                            self._outputs.remove(o)
+                        except socket.error as msg:
+                            logger.warning("It seems that a socket client left. Closing the socket. "
+                                           "Error " + msg)
+                            self._remove_client(o)
                             
                     del self._results_to_output[o]
 
