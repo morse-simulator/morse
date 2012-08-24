@@ -17,8 +17,6 @@ class MorseSocketServ:
         self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._server.bind((str(socket.INADDR_ANY), port))
         self._server.listen(1)
-        
-        self._active = 1
 
         logger.info("Socket Mw Server now listening on port " + str(port) + \
                     " for component " + str(component_name) + ".")
@@ -39,54 +37,52 @@ class MorseSocketServ:
 
 
     def main_export(self, encode, component_instance):
-        if self._active:
-            sockets = self._client_sockets + [self._server]
+        sockets = self._client_sockets + [self._server]
 
-            try:
-                inputready, outputready, exceptready = select.select(sockets, sockets, [], 0)
-            except select.error:
-                pass
-            except socket.error:
-                pass
+        try:
+            inputready, outputready, exceptready = select.select(sockets, sockets, [], 0)
+        except select.error:
+            pass
+        except socket.error:
+            pass
 
-            if self._server in inputready:
-                sock, addr = self._server.accept()
-                self._client_sockets.append(sock)
+        if self._server in inputready:
+            sock, addr = self._server.accept()
+            self._client_sockets.append(sock)
 
-            if outputready != []:
-                message = encode(component_instance)
-                for o in outputready:
-                    try:
-                        o.send(message)
-                    except socket.error:
-                        self.close_socket(o)
+        if outputready != []:
+            message = encode(component_instance)
+            for o in outputready:
+                try:
+                    o.send(message)
+                except socket.error:
+                    self.close_socket(o)
 
     def main_read(self, decode, component_instance):
-        if self._active:
-            sockets = self._client_sockets + [self._server]
-            try:
-                inputready, outputready, exceptready = select.select(sockets, [], [], 0)
-            except select.error:
-                pass
-            except socket.error:
-                pass
+        sockets = self._client_sockets + [self._server]
+        try:
+            inputready, outputready, exceptready = select.select(sockets, [], [], 0)
+        except select.error:
+            pass
+        except socket.error:
+            pass
 
-            for i in inputready:
-                if i == self._server:
-                    sock, addr = self._server.accept()
-                    if self._client_sockets != []:
-                        logger.warning("More than one clients for an actuator!!")
-                    self._client_sockets.append(sock)
-                else:
-                    try:
-                        msg = i.recv(self._message_size)
-                        logger.debug("received msg %s" % msg)
-                        if msg == b'':
-                            self.close_socket(i)
-                        else:
-                            component_instance.local_data = decode(msg)
-                    except socket.error as detail:
+        for i in inputready:
+            if i == self._server:
+                sock, addr = self._server.accept()
+                if self._client_sockets != []:
+                    logger.warning("More than one clients for an actuator!!")
+                self._client_sockets.append(sock)
+            else:
+                try:
+                    msg = i.recv(self._message_size)
+                    logger.debug("received msg %s" % msg)
+                    if msg == b'':
                         self.close_socket(i)
+                    else:
+                        component_instance.local_data = decode(msg)
+                except socket.error as detail:
+                    self.close_socket(i)
 
     def close_socket(self, sock):
         self._client_sockets.remove(sock)
@@ -119,59 +115,18 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
         # bge.logic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
         services.do_service_registration(self.list_streams, 'simulation')
         services.do_service_registration(self.get_stream_port, 'simulation')
-        services.do_service_registration(self.get_all_stream_ports, 'simulation')
-        services.do_service_registration(self.suspend_post_read_message, 'simulation')
-        services.do_service_registration(self.resume_post_read_message, 'simulation')
-        services.do_service_registration(self.suspend_all_messages, 'simulation')
-        services.do_service_registration(self.resume_all_messages, 'simulation')
     
     def list_streams(self):
-        """ List all publish streams.
-        """
         return list(self._component_nameservice.keys())
-  
 
     def get_stream_port(self, name):
-        """ Get stream port for stream name.
-        """
         port = -1
         try:
             port = self._component_nameservice[name]
         except KeyError:
             pass
 
-        return port        
-            
-    def get_all_stream_ports(self):
-        """ Get stream ports for all streams.
-        """
-        return self._component_nameservice
-        
-    def suspend_post_read_message(self, name):
-        """ Suspend posting/reading a messages for stream name.
-        """
-        self._server_dict[self._component_nameservice[name]]._active = 0
-        return ("Stream %s is suspended." % name)        
-        
-    def resume_post_read_message(self, name):
-        """ Resume posting/reading a messages for stream name.
-        """
-        self._server_dict[self._component_nameservice[name]]._active = 1
-        return ("Stream %s is resumed." % name)
-        
-    def suspend_all_messages(self):
-        """ Suspend posting/reading a messages for all streams.
-        """
-        for name in self._component_nameservice:
-            self._server_dict[self._component_nameservice[name]]._active = 0
-        return "All streams are suspended."
-        
-    def resume_all_messages(self):
-        """ Resume posting/reading a messages for all streams.
-        """
-        for name in self._component_nameservice:
-            self._server_dict[self._component_nameservice[name]]._active = 1
-        return "All streams are resumed."
+        return port
 
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
@@ -212,19 +167,6 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
 
     def read_message(self, msg):
         return json.loads(msg.decode('utf-8'))
-
-    def post_image(self, component_instance):
-        """ Send an RGB image using a port. (STILL INCOMPLETE)"""
-        try:
-            out_socket = self._socket_dict[component_instance.blender_obj.name]
-            
-            (conn, addr) = out_socket.accept()
-            logger.info('Socket Mid: Connected by', addr)
-            out_socket.send(message)
-
-        except KeyError as detail:
-            logger.error("Specified port does not exist: ", detail)
-    ### ^^^ NOT USED ^^^ ###
 
     def print_open_sockets(self):
         """ Display a list of all currently opened sockets."""
