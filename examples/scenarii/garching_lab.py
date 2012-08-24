@@ -14,6 +14,13 @@ human.append(Pose_sensor)
 Pose_sensor.configure_mw('ros')
 
 # Add passive objects
+
+table = PassiveObject('props/objects.blend','SmallTable')
+#table.rotate(z=1.485)
+# without object displacement
+#table.translate(x=-0.928, y=-0.544, z=0)
+table.translate(x=3.11, y=3.151, z=0)
+
 cornflakes = PassiveObject('props/kitchen_objects.blend', 'Cornflakes')
 cornflakes.setgraspable()
 cornflakes.translate(x=0.5, y=1.9, z=0.9)
