@@ -95,6 +95,7 @@ MORSE_MIDDLEWARE_DICT = {
         'imu': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'odometry': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'pose': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
+        'property': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'proximity': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'ptu_posture': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'rosace': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
