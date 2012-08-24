@@ -115,28 +115,18 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
         # bge.logic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
         services.do_service_registration(self.list_streams, 'simulation')
         services.do_service_registration(self.get_stream_port, 'simulation')
-        services.do_service_registration(self.get_all_stream_ports, 'simulation')
-
+    
     def list_streams(self):
-        """ List all publish streams.
-        """
         return list(self._component_nameservice.keys())
 
     def get_stream_port(self, name):
-        """ Get stream port for stream name.
-        """
         port = -1
         try:
             port = self._component_nameservice[name]
         except KeyError:
             pass
 
-        return port        
-
-    def get_all_stream_ports(self):
-        """ Get stream ports for all streams.
-        """
-        return self._component_nameservice
+        return port
 
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
