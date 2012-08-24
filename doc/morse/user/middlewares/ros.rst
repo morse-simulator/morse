@@ -103,6 +103,8 @@ documentation.
 	  publishes them as a ``nav_msgs/Odometry`` message.
 	- ``post_poseStamped``: Reads sensor-information from the pose sensor
 	  publishes them as a ``geometry_msgs/PoseStamped`` message.
+	- ``post_tf``: Reads sensor-information from the pose sensor
+	  publishes it as a tf transform between ``/map`` and ``/base_footprint``
 
 
 - v-omega actuator: Stored in the file: ``$MORSE_ROOT/src/morse/middleware/ros/read_vw_twist.py``.
