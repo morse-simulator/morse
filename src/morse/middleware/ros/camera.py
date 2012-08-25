@@ -4,6 +4,8 @@ import rospy
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo
 
+import bge
+
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
@@ -73,13 +75,21 @@ def post_image(self, component_instance):
     camera_info.height = image.height
     camera_info.width = image.width
     camera_info.distortion_model = 'plumb_bob'
-    camera_info.K = [intrinsic[0][0], intrinsic[1][0], intrinsic[2][0], 
-                     intrinsic[0][1], intrinsic[1][1], intrinsic[2][1], 
-                     intrinsic[0][2], intrinsic[1][2], intrinsic[2][2]]
     camera_info.R = R
-    camera_info.P = [intrinsic[0][0], intrinsic[1][0], intrinsic[2][0], Tx, 
-                     intrinsic[0][1], intrinsic[1][1], intrinsic[2][1], Ty, 
-                     intrinsic[0][2], intrinsic[1][2], intrinsic[2][2], 0]
+    if bge.logic.blenderVersion < (2,62,0):
+        camera_info.K = [intrinsic[0][0], intrinsic[1][0], intrinsic[2][0], 
+                         intrinsic[0][1], intrinsic[1][1], intrinsic[2][1], 
+                         intrinsic[0][2], intrinsic[1][2], intrinsic[2][2]]
+        camera_info.P = [intrinsic[0][0], intrinsic[1][0], intrinsic[2][0], Tx, 
+                         intrinsic[0][1], intrinsic[1][1], intrinsic[2][1], Ty, 
+                         intrinsic[0][2], intrinsic[1][2], intrinsic[2][2], 0]
+    else:
+        camera_info.K = [intrinsic[0][0], intrinsic[0][1], intrinsic[0][2], 
+                         intrinsic[1][0], intrinsic[1][1], intrinsic[1][2], 
+                         intrinsic[2][0], intrinsic[2][1], intrinsic[2][2]]
+        camera_info.P = [intrinsic[0][0], intrinsic[0][1], intrinsic[0][2], Tx, 
+                         intrinsic[1][0], intrinsic[1][1], intrinsic[1][2], Ty, 
+                         intrinsic[2][0], intrinsic[2][1], intrinsic[2][2], 0]
 
     for topic in self._topics:
         # publish the message on the correct topic
