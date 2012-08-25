@@ -27,19 +27,15 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         self.local_data['image'] = ''
 
         # Prepare the intrinsic matrix for this camera.
-        # Note that the matrix is stored in column major
+        # Note that the matrix is stored in row major
         intrinsic = mathutils.Matrix()
         intrinsic.identity()
         alpha_u = self.image_width  * \
                   self.image_focal / BLENDER_HORIZONTAL_APERTURE
         intrinsic[0][0] = alpha_u
         intrinsic[1][1] = alpha_u
-        if bge.logic.blenderVersion < (2,62,0):
-            intrinsic[2][0] =  self.image_width / 2.0
-            intrinsic[2][1] =  self.image_height / 2.0
-        else:
-            intrinsic[0][2] =  self.image_width / 2.0
-            intrinsic[1][2] =  self.image_height / 2.0
+        intrinsic[0][2] = self.image_width / 2.0
+        intrinsic[1][2] = self.image_height / 2.0
         self.local_data['intrinsic_matrix'] = intrinsic
 
         self.capturing = False

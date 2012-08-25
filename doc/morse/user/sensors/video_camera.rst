@@ -36,7 +36,7 @@ Local data
   object. The data is of size ``(cam_width X cam_height * 4)`` bytes. The image
   is stored as RGBA.
 - **intrinsic_matrix**: The intrinsic calibration matrix, stored as a 3x3
-  column major Matrix
+  row major Matrix
 
 Configurable parameters
 -----------------------
