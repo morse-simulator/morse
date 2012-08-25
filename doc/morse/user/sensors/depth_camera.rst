@@ -49,7 +49,7 @@ Local data
   ``[x, y, z]``, with the coordinates given with respect to the origin of
   the camera.
 - **intrinsic_matrix**: The intrinsic calibration matrix, stored as a 3x3
-  column major Matrix
+  row major Matrix
 
 Configurable parameters
 -----------------------
