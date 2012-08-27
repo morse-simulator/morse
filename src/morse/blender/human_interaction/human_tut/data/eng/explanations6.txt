@@ -2,8 +2,8 @@ To lay down objects, press the <right
 Mousebutton>. On some places objects 
 can be placed accurately. In this case
 a green rectangle appears where the 
-object will be layed. Failing this the 
-object will simply be dropped. Move the 
-hand to place the object.
+object will be placed. If it cannot be placed
+accurately, the object will simply be dropped. 
+Move the hand to place the object.
 
 Now place the cup in the cabinet.

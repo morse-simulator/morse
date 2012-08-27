@@ -7,5 +7,5 @@ Use the <ALT>-Key to show all objects
 that can be grasped.
 
 You mastered the human control in 
-MORSE. You can try more or exit the 
-tutorial with <ESC>.
+MORSE. You can now play around some 
+more or exit the tutorial with <ESC>.
