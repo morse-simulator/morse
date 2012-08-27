@@ -2,6 +2,15 @@ from morse.builder.morsebuilder import *
 
 # http://www.openrobots.org/morse/doc/latest/user/tutorial.html
 
+# Append b21 robot to the scene
+bender = Robot('b21')
+bender.translate(x=6.8, y=3.9, z=0.0)
+
+object_tracker = Sensor('object_tracker')
+#object_tracker.translate(x=0.086, y=0, z=1.265)
+bender.append(object_tracker)
+object_tracker.configure_mw('ros', ['morse.middleware.ros_mw.ROSClass', 'post_lisp_code', 'morse/middleware/ros/object_tracker'])
+
 human = Human()
 human.translate(x=2.5, y=1, z=0.0)
 #human.rotate(z=-3.0)
