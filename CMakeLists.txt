@@ -5,7 +5,7 @@ set(PACKAGE_VERSION "0.5.99")
 
 
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
-option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" ON)
+option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" OFF)
 
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
 option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
@@ -158,7 +158,7 @@ CONFIGURE_FILE(
 
 FIND_PROGRAM(SPHINX_BUILD NAMES sphinx-build)
 IF (NOT SPHINX_BUILD)
-	MESSAGE(STATUS "Can't find sphinx-build : will not build the documentation")
+	MESSAGE(FATAL_ERROR "Can't find sphinx-build : will not build the documentation")
 ELSE()
 	SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
 	SET (SPHINX_LATEX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/tex)
