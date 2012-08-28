@@ -48,17 +48,12 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
         if distance > self._tolerance:
             # Set the robot status
             parent.move_status = "Transit"
-
-            # Tick rate is the real measure of time in Blender.
-            # By default it is set to 60, regardles of the FPS
-            # If logic tick rate is 60, then: 1 second = 60 ticks
-            ticks = bge.logic.getLogicTicRate()
     
             # Scale the speeds to the time used by Blender
             try:
-                vx = global_vector[0] * self._speed / ticks
-                vy = global_vector[1] * self._speed / ticks
-                vz = global_vector[2] * self._speed / ticks
+                vx = global_vector[0] * self._speed / self.frequency
+                vy = global_vector[1] * self._speed / self.frequency
+                vz = global_vector[2] * self._speed / self.frequency
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:

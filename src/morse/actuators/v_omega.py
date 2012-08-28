@@ -14,7 +14,7 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         self.local_data['v'] = 0.0
         self.local_data['w'] = 0.0
@@ -43,16 +43,11 @@ class VWActuatorClass(morse.core.actuator.MorseActuatorClass):
         vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardles of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        ticks = bge.logic.getLogicTicRate()
-
         # Scale the speeds to the time used by Blender
         try:
             if self._type == 'Position':
-                vx = self.local_data['v'] / ticks
-                rz = self.local_data['w'] / ticks
+                vx = self.local_data['v'] / self.frequency
+                rz = self.local_data['w'] / self.frequency
             elif self._type == 'Velocity':
                 vx = self.local_data['v']
                 rz = self.local_data['w']
