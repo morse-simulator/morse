@@ -19,7 +19,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         # Get the references to the childen object and
         #  store a transformation3d structure for their position
@@ -55,7 +55,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        
+
         logger.info('Component initialized')
 
 
@@ -103,7 +103,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         Return the corresponding pan and tilt to aim in that direction.
         Use the formulas at http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         """
-        goalPos = [0,0,0]
+        goalPos = [0, 0, 0]
 
         # Get the postitions with respect to the PTU
         goalPos[0] = x - self.position_3d.x
@@ -145,13 +145,8 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
             return
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardles of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        ticks = bge.logic.getLogicTicRate()
-
         try:
-            normal_speed = self._speed / ticks
+            normal_speed = self._speed / self.frequency
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -183,7 +178,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._current_tilt = correct_tilt
 
         if (abs(target_pan - correct_pan) < self._tolerance and \
-            abs(target_tilt - correct_tilt) < self._tolerance ):
+            abs(target_tilt - correct_tilt) < self._tolerance):
             self.completed((status.SUCCESS))
 
         # Determine the direction of the rotation, if any

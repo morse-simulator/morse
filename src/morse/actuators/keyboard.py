@@ -19,8 +19,7 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         # Correct the speed considering the Blender clock
         if self._type == 'Position':
-            ticks = bge.logic.getLogicTicRate()
-            self._speed = self._speed / ticks
+            self._speed = self._speed / self.frequency
 
         logger.info('Component initialized')
 
