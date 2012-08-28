@@ -76,13 +76,9 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Reset movement variables
         rx, ry, rz = 0.0, 0.0, 0.0
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardles of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        ticks = bge.logic.getLogicTicRate()
         # Scale the speeds to the time used by Blender
         try:
-            rotation = self._speed / ticks
+            rotation = self._speed / self.frequency
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:

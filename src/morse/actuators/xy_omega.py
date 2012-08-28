@@ -31,16 +31,11 @@ class XYWActuatorClass(morse.core.actuator.MorseActuatorClass):
         vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardles of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        ticks = bge.logic.getLogicTicRate()
-
         # Scale the speeds to the time used by Blender
         try:
-            vx = self.local_data['x'] / ticks
-            vy = self.local_data['y'] / ticks
-            rz = self.local_data['w'] / ticks
+            vx = self.local_data['x'] / self.frequency
+            vy = self.local_data['y'] / self.frequency
+            rz = self.local_data['w'] / self.frequency
 
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts

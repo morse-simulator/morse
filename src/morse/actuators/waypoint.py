@@ -273,15 +273,11 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
                 logger.debug("Angles: R=%.4f, T=%.4f  Diff=%.4f  Direction = %d" % (robot_angle, target_angle, angle_diff, rotation_direction))
 
-            # Tick rate is the real measure of time in Blender.
-            # By default it is set to 60, regardles of the FPS
-            # If logic tick rate is 60, then: 1 second = 60 ticks
-            ticks = bge.logic.getLogicTicRate()
             try:
                 # Compute the speeds
                 if self._type == 'Position':
-                    v = speed / ticks
-                    rotation_speed = (speed / ticks) / 2.0
+                    v = speed / self.frequency
+                    rotation_speed = (speed / self.frequency) / 2.0
                 elif self._type == 'Velocity':
                     v = speed
                     rotation_speed = 1.0 #speed / 2.0
