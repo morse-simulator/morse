@@ -59,6 +59,13 @@ DLR (Oberpfaffenhofen, Germany)
 
 - Felix Ruess
 
+ISAE (Institut Supérieur de l'Aéronautique et de l'Espace) (Toulouse, France) 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Charles-Ivan Chesneau
+- Jean-Guillaume Durand
+- Houssam Assany
+
 
 Project funding
 ---------------
