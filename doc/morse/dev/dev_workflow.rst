@@ -46,6 +46,12 @@ While the simulation is running, the Logic Bricks of each component will make
 regular calls to their ``default_action`` method. At this point the component
 will perform its task and update its internal data.
 
+To run a component at a lower frequency some calls to ``default_action`` can
+be skipped by setting the frequency in the Game Logic Sensor or more
+conveniently specifying the desired frequency in the builder script.
+The real frequency the ``default_action`` is called at can be read from the
+``frequency`` property of the component.
+
 Time management
 ---------------
 
