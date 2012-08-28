@@ -116,7 +116,7 @@ that inherit from this one:
 
 The actual definitions of the components that can be instantiated in this way
 can be found in the files:
-``$MORSE_ROOT/srs/morse/builder/sensors.py`` and 
+``$MORSE_ROOT/srs/morse/builder/sensors.py`` and
 ``$MORSE_ROOT/srs/morse/builder/actuators.py``.
 
 To instantiate these kind of objects, you'll need to use the full path of the
@@ -183,6 +183,10 @@ The ``Environment`` class provides these functions:
    (defined as a triplet R, G, B). See `the blender documentation
    <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Background>`_ for more
    information about this particular setting.
+ * **set_animation_record**: Record the simulation as a Blender animation
+   (F-Curves) so you can render it later. See the tutorial: `Recording Game
+   Physics to Keyframes <http://cgcookie.com/blender/2011/05/10/tip-recording-game-physics-to-keyframes/>`_
+   for more information about this particular setting.
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    The items accepted in as parameters are:
@@ -197,10 +201,10 @@ The ``Environment`` class provides these functions:
    Example:
 
    .. code-block:: python
-    
+
         dala1 = Robot('atrv')
         dala2 = Robot('atrv')
-    
+
         env = Environment('land-1/trees')
         env.configure_multinode(  protocol='socket',
                                   server_address='localhost',
@@ -232,7 +236,7 @@ Detailed explanations of class functions
 Component properties
 ++++++++++++++++++++
 
-You can modify the game-properties of any components within Python 
+You can modify the game-properties of any components within Python
 (or even add new properties). The documentation for each component
 lists the game properties it uses, their type and how they affect
 the functioning of the component.
