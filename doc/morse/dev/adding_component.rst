@@ -62,6 +62,16 @@ the location of the Python file and the name of the defined class,
 respectively. The information in these variables will be used to dynamically
 load the module and class during initialisation of the simulation.
 
+Also make sure that the `Parent Inverse
+<http://wiki.blender.org/index.php/User:Pepribal/Ref/Appendices/ParentInverse>`_
+is identity, otherwise your sensor might have an offset when parented to your
+robot even if you specified zero as location.
+
+You can inspect this matrix from the python console:
+    ``bpy.data.objects['your_object_name'].matrix_parent_inverse``
+And set it to identity again if needed:
+    ``bpy.data.objects['your_object_name'].matrix_parent_inverse.identity()``
+
 The Python part
 ---------------
 
