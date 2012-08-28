@@ -5,6 +5,7 @@ from morse.core.abstractobject import MorseAbstractObject
 import morse.helpers.transformation
 from morse.core.services import service
 
+import bge
 
 class MorseObjectClass(MorseAbstractObject):
     """ Basic Class for all 3D objects (components) used in the simulation.
@@ -16,7 +17,7 @@ class MorseObjectClass(MorseAbstractObject):
 
     def __init__ (self, obj, parent=None):
 
-        super(MorseObjectClass,self).__init__()
+        super(MorseObjectClass, self).__init__()
 
         # Fill in the data sent as parameters
         self.blender_obj = obj
@@ -33,6 +34,12 @@ class MorseObjectClass(MorseAbstractObject):
 
         # Create an instance of the 3d transformation class
         self.position_3d = morse.helpers.transformation.Transformation3d(obj)
+
+        # The actual frequency at which the action is called
+        # The frequency of the game sensor specifies how many times
+        # the action is skipped when the logic brick is executed.
+        # e.g. game sensor frequency = 0 -> sensor runs at full logic rate
+        self._frequency = bge.logic.getLogicTicRate() / (obj.sensors[0].frequency + 1)
 
     def __del__(self):
         """ Destructor method. """
@@ -77,3 +84,8 @@ class MorseObjectClass(MorseAbstractObject):
 
     def toggle_active(self):
         self._active = not self._active
+
+    @property
+    def frequency(self):
+        """ Frequency of the object action in Hz (float). """
+        return self._frequency
