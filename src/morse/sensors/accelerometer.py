@@ -30,11 +30,6 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
         self.a = [0.0, 0.0, 0.0]            # Acceleration
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardles of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        self.ticks = bge.logic.getLogicTicRate()
-
         self.local_data['distance'] = 0.0
         self.local_data['velocity'] = [0.0, 0.0, 0.0]
         self.local_data['acceleration'] = [0.0, 0.0, 0.0]
@@ -47,12 +42,10 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
 
         The speed and acceleration are computed using the blender tics
         to measure time.
-        Since the time in Blender is computed with N ticks equaling a second,
-        this method will be called N times each second, and so the time
-        between calls is 1/N.
-        When computing velocity as v = d / t, and t = 1 / N, then
-        v = d * N
-        where N is the number of ticks
+        When computing velocity as v = d / t, and t = 1 / frequency, then
+        v = d * frequency
+        where frequency is computed from the blender tics and number of skipped
+        logic steps for this sensor.
         """
         # Compute the difference in positions with the previous loop
         dx = self.p[0] - self.ppx
@@ -67,14 +60,14 @@ class AccelerometerClass(morse.core.sensor.MorseSensorClass):
         self.ppz = self.p[2]
 
         # Scale the speeds to the time used by Blender
-        self.v[0] = dx * self.ticks
-        self.v[1] = dy * self.ticks
-        self.v[2] = dz * self.ticks
+        self.v[0] = dx * self.frequency
+        self.v[1] = dy * self.frequency
+        self.v[2] = dz * self.frequency
         logger.debug("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2]))
 
-        self.a[0] = (self.v[0] - self.pvx) * self.ticks
-        self.a[1] = (self.v[1] - self.pvy) * self.ticks
-        self.a[2] = (self.v[2] - self.pvz) * self.ticks
+        self.a[0] = (self.v[0] - self.pvx) * self.frequency
+        self.a[1] = (self.v[1] - self.pvy) * self.frequency
+        self.a[2] = (self.v[2] - self.pvz) * self.frequency
         logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2]))
 
         # Update the data for the velocity
