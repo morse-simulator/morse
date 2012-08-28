@@ -27,18 +27,6 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
 
         #logger.setLevel(logging.DEBUG)
 
-        # Tick rate is the real measure of time in Blender.
-        # By default it is set to 60, regardless of the FPS
-        # If logic tick rate is 60, then: 1 second = 60 ticks
-        self.ticks = bge.logic.getLogicTicRate()
-
-        # The actual frequency at which the sensor action is called
-        # When a delay of the sensor is set via frequency,
-        # the action is not called for every logic tick.
-        # frequency of the game sensor specifies how many actions are skipped
-        # e.g. game sensor freq = 0 -> sensor runs at full logic rate
-        self.freq = self.ticks / (self.blender_obj.sensors[0].frequency + 1)
-
         # The robot needs a physics controller!
         # Since the imu does not have physics,
         # make new references to the robot velocities and use those.
@@ -74,7 +62,7 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
         self.local_data['angular_velocity'] = [0.0, 0.0, 0.0]
         self.local_data['linear_acceleration'] = [0.0, 0.0, 0.0]
 
-        logger.info("IMU Component initialized, runs at %.2f Hz" % self.freq)
+        logger.info("IMU Component initialized, runs at %.2f Hz ", self.frequency)
 
 
     def default_action(self):
@@ -88,7 +76,7 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
 
         # differentiate linear velocity in world (inertial) frame
         # and rotate to imu frame
-        dv_imu = self.rot_w2i.transposed() * (self.robot_vel - self.plv) * self.freq
+        dv_imu = self.rot_w2i.transposed() * (self.robot_vel - self.plv) * self.frequency
         #logger.debug("velocity_dot in imu frame (% .4f, % .4f, % .4f)", dv_imu[0], dv_imu[1], dv_imu[2])
 
         # rotate acceleration due to gravity into imu frame
@@ -104,7 +92,7 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
             #logger.debug("centripetal acceleration (% .4f, % .4f, % .4f)", a_rot[0], a_rot[1], a_rot[2])
 
             # linear acceleration due to angular acceleration
-            a_alpha = self.rot_b2i.conjugated() * (self.robot_w - self.pav).cross(self.trans_b2i) * self.freq
+            a_alpha = self.rot_b2i.conjugated() * (self.robot_w - self.pav).cross(self.trans_b2i) * self.frequency
 
             # final measurement includes acceleration due to rotation center not in IMU
             accel_meas += a_centripetal + a_alpha
