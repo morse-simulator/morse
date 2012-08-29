@@ -625,6 +625,12 @@ class Environment(Component):
         """
         bpy.context.scene.game_settings.stereo = stereo
 
+    def set_animation_record(self, record=True):
+        """ Record animation to F-Curves, so you can render it later
+        :param record: boolean, default True
+        """
+        bpy.context.scene.game_settings.use_animation_record = record
+
     def configure_multinode(self, protocol='socket',
             server_address='localhost', server_port='65000', distribution=None):
         self._protocol = protocol
