@@ -625,7 +625,7 @@ class Environment(Component):
         """
         bpy.context.scene.game_settings.stereo = stereo
 
-    def set_animation_record(self record=True):
+    def set_animation_record(self, record=True):
         """ Record animation to F-Curves, so you can render it later
         :param record: boolean, default True
         """
