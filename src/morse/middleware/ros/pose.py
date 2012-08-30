@@ -40,8 +40,10 @@ def init_extra_module(self, component_instance, function, mw_data):
         frame_id = "/map"
         child_frame_id = "/base_footprint"
 
-    # create a new dictionary to store the frame ids
-    self._properties[component_name] = {}
+    # create a new dictionary for this sensor if necessary
+    if component_name not in self._properties:
+        self._properties[component_name] = {}
+    # store the frame ids in the dict
     self._properties[component_name]['frame_id'] = frame_id
     self._properties[component_name]['child_frame_id'] = child_frame_id
 
