@@ -56,6 +56,10 @@ General
     - Toggle between cameras with a button press
     - Select the chosen camera from the Builder API
 
+- Allow to pass real objects to the middleware layer, so we can keep some kind
+  of states, properties at the middleware layer. While here, propose a better
+  interface at the builder level to pass this arguments to the middleware layer.
+
 
 Collada
 -------
