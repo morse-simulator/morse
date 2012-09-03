@@ -2,33 +2,13 @@ General TODO list for MORSE
 ---------------------------
 
 ==============
- TARGET 0.6
+ TARGET 1.0
 ==============
 
-- Fix bug in odometry sensor (Gilberto)
+The TODO items for MORSE-1.0 are available from the MORSE
+GitHub page: https://github.com/laas/morse/issues
 
-- Make table of contents of the components with images
-
-- Add methods in builder to configure UTM coordinates and temperature in the scene. Previously in the Scene_Script_Holder
-
-
-Packaging
----------
-
-- Add package(s) for pymorse
-
-Documentation
--------------
-
-- Add docstrings to all modules (everyone)
-- Update the documentation for the human "robot"
-
-
-Public Relations
-----------------
-
-- Fresh screenshots!
-- Fresh videos!
+Remember also to have fresh screenshots and fresh videos before the release!
 
 ==============
  NEXT TARGETS
@@ -38,18 +18,11 @@ Public Relations
 General
 -------
 
-- Support for Blender >= 2.63
 [DONE] - Introduce a mean to externally control time, by pacing the game
 	engine time (e.g. through a socket, cf mail from Benoit Bolsee on Jan. the 10th
 	in blender-robotics). Add support to pause the simulation. Currently, time
 	synchronization only implemented in multinode mode.
 - Export simulator time + test it
-[?] - Fix the physical properties of robot to enable velocity control (cf commit 8503c9)
-[?] - define a method to select the control of robots using position or velocity
-
-- Make sure only the camera currently currently active in simulation
-    (cameraFP, human, etc.) can be controlled with mouse and keyboard.
-    Other cameras should not be affected
 
 - Allow configuring of the Screen object (present by default in all scenes) to
     display the view of the selected camera. Either:
@@ -69,7 +42,6 @@ Collada
 Middleware
 ----------
 
-[PARTIAL] - add support for actions through ROS middleware (cf commit 02fda)
 
 - support general mapping of free-function services to any middleware (currently
   works only for free-function services declared for the 'simulation' pseudo-

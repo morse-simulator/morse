@@ -6,11 +6,7 @@ General
 
 - Lots of improvents on ROS compatibility. Many new tutorials with detailed
   explanations
-- Compatibility with Blender 2.62:
-    - Handling of mathutils.Matrix unsing row major logic
-    - Update for changes in the Python API
-    - Workaroung for a bug in videotexture
-    - Removed references to deprecated GameLogic module
+- Compatibility with Blender 2.63a and 2.64 (2.63a is the minimum)
 - MORSE is now compatible with Windows 32 and 64 bit. Thanks to Markus Sander
   for providing the patches and testing
 - Improvements in human-robot interaction scenarios
@@ -20,6 +16,7 @@ General
 - Added support for specifying the geometry of the simulator window.
 - Improvements to the multi-node architecture using HLA. Including new
   tutorials and documentation
+- Add methods in builder to configure UTM coordinates and temperature in the scene. Previously in the Scene_Script_Holder
 
 User interface
 --------------
@@ -50,6 +47,10 @@ Middlewares
 - Corrections to YARP middleware, allowing it to export data stored as Python
   lists
 
+Documentation
+-------------
+
+- Make table of contents of the components with images
 
 MORSE 0.5
 =========
