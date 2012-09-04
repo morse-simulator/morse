@@ -40,10 +40,15 @@ class MorseObjectClass(MorseAbstractObject):
         # the action is skipped when the logic brick is executed.
         # e.g. game sensor frequency = 0 -> sensor runs at full logic rate
         sensors = [s for s in obj.sensors if isinstance(s, bge.types.SCA_AlwaysSensor)]
-        if len(sensors) > 1:
-            logger.warning(self.name + " has too many Game Logic sensors to get " + \
+        self._frequency = bge.logic.getLogicTicRate()
+        if len(sensors) == 1:
+            self._frequency /= sensors[0].frequency + 1
+        elif len(sensors) == 0:
+            logger.warning("Can't get frequency for " + self.name() + \
+                           " as the Game Logic sensor calling the action can't be found.")
+        else:
+            logger.warning(self.name() + " has too many Game Logic sensors to get " + \
                     "an unambiguous frequency for the action.")
-        self._frequency = bge.logic.getLogicTicRate() / (sensors[0].frequency + 1)
 
     def __del__(self):
         """ Destructor method. """
