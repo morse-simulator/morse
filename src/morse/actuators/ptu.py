@@ -8,12 +8,10 @@ from morse.core.services import async_service
 from morse.core.services import interruptible
 import morse.helpers.math as morse_math
 
-#logger.setLevel(logging.DEBUG)
-
 class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Controller for pant tilt unit (platine)
+    """ Generic controller for pan-tilt units
 
-    Reads 2 angles (in radians) and applies them to the object and its children
+    Reads 2 angles (in radians) and applies them to the object and its children.
     """
 
     def __init__(self, obj, parent=None):
@@ -21,8 +19,8 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
-        # Get the references to the childen object and
-        #  store a transformation3d structure for their position
+        # Get the references (based on their name) to the childen object and
+        # store a transformation3d structure for their position
         for child in self.blender_obj.childrenRecursive:
             if 'PanBase' in child.name:
                 self._pan_base = child
@@ -42,9 +40,10 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             logger.info("Using pan base: '%s'" % self._pan_base.name)
             logger.info("Using tilt base: '%s'" % self._tilt_base.name)
         except AttributeError as detail:
-            logger.error("PTU is missing the pan and tilt bases. Module will not work!")
+            logger.error("PTU is missing the pan and/or tilt bases. Module will not work!")
             return
 
+        # Initialises a couple of properties. They can be changed by Builder scripts
         self.add_property('_speed', 1.0, 'Speed')
         self.add_property('_tolerance', math.radians(0.3), 'Tolerance')
         self.add_property('_is_manual_mode', False, 'Manual')
@@ -62,28 +61,36 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     @interruptible
     @async_service
     def set_pan_tilt(self, pan, tilt):
-        """ """
+        """ Asynchronous, interruptible service that moves the PTU to a given
+        target position.
+        """
+
         logger.debug("Service 'set_pan_tilt' setting angles to %.4f, %.4f" % (pan, tilt))
         self.local_data['pan'] = pan
         self.local_data['tilt'] = tilt
 
     @service
     def get_pan_tilt(self):
-        """ Return the current angles for the pan and tilt segments. """
+        """ Returns the current angles for the pan and tilt segments. """
         return self._current_pan, self._current_tilt
 
     @interruptible
     @async_service
     def look_at_point(self, x, y, z):
-        """ Service to make the camera look towards a given point
-        Coordiantes given in world space
+        """ Interruptible, asynchronous service to make the camera look towards
+        a given point.
+
+        Coordinates must be given in the world reference.
         """
         self._aim_camera_at_point(x, y, z)
 
     @interruptible
     @async_service
     def look_at_object(self, obj_name):
-        """ Look in the direction of the given object """
+        """ Look in the direction of the given object.
+        
+        :param obj_name: the (Blender) name of an object present in the scene
+        """
         scene = bge.logic.getCurrentScene()
         try:
             obj = scene.objects[obj_name]
@@ -100,8 +107,12 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         Receive the coordinates of the point to look at,
         given in world coordinates.
-        Return the corresponding pan and tilt to aim in that direction.
-        Use the formulas at http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
+
+        Fill local_data with the corresponding pan and tilt to aim in that
+        direction.
+
+        Use the formulas at
+        http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         """
         goalPos = [0, 0, 0]
 
@@ -142,7 +153,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             self._pan_position_3d.update(self._pan_base)
             self._tilt_position_3d.update(self._tilt_base)
         except AttributeError as detail:
-            logger.error("Platine is missing the pan and tilt bases. Platine does not work!")
+            logger.error("The PTU is missing the pan and/or tilt bases. Discarding action.")
             return
 
         try:
@@ -155,7 +166,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         current_pan = self._pan_position_3d.yaw
         current_tilt = self._tilt_position_3d.pitch
 
-        logger.debug("Platine: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
+        logger.debug("PTU: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
 
         # Get the angles in a range of -PI, PI
         target_pan = morse_math.normalise_angle(self.local_data['pan'])

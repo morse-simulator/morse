@@ -38,10 +38,12 @@ Local data
 Configurable parameters
 -----------------------
 
--  **Speed**: (float) rotation speed for the movements of the pan-tilt unit. Default value is 1 radian/s
--  **Tolerance**: (float) the accepted error between the angle of each segment and the one specified. If set too low, the actuator will jump back and forth between positions close to those indicated. Default value is 0.005 radians
--  **Manual**: (boolean) select whether to use control from an external
-   program or direct control using the **Logic Bricks**
+-  **Speed**: (float) rotation speed for the movements of the pan-tilt unit. Default value is 1 radian/s.
+-  **Tolerance**: (float) the accepted error between the angle of each segment
+  and the one specified. If set too low, the actuator will jump back and forth
+  between positions close to those indicated. Default value is 0.005 radians.
+- **Manual**: (boolean) select whether to use control from an external
+   program or direct control using the **Logic Bricks**.
 
 Services
 --------
