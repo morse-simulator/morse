@@ -6,7 +6,11 @@ import sys
 import morse.helpers.math as morse_math
 
 class PR2PostureClass(morse.core.sensor.MorseSensorClass):
-    """ Jido posture sensor. Currently working with PTU and KUKA arm """
+    """ PR2 posture sensor
+
+        Exports the joint state of the PR2 robot, using the official joint
+        names from Willow Garage.
+    """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -115,10 +119,12 @@ class PR2PostureClass(morse.core.sensor.MorseSensorClass):
         logger.info('Component initialized')
         
     def default_action(self):
-        """ Collect jointstates and publish them to ROS """
-        
-        ##################### get joints of PTU and arm-armatures and objects##################
-        # Get Blender object of armatures
+        """ 
+        Collect the joint state by reading the PR2 armature in Blender, and
+        update accordingly the local_data dictionary.
+        """
+
+        # Retrieves the reference to the Blender armatures for the PTU, the arms and the torso
         for child in self.robot_parent.blender_obj.childrenRecursive:
             if child.name == self.ptu_armature_name:
                 self.ptu_armature_object = child
@@ -129,6 +135,7 @@ class PR2PostureClass(morse.core.sensor.MorseSensorClass):
             elif child.name == 'torso_lift_joint':
                 self.torso_object = child
         
+        # Channel names in the armatures are defined in the Blender file directly
         for channel in self.ptu_armature_object.channels:
             self.ptu_rotations[channel.name] = channel.joint_rotation.to_tuple()
         
