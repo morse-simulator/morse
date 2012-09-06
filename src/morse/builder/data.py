@@ -96,6 +96,7 @@ MORSE_MIDDLEWARE_DICT = {
         'force_torque': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_wrench', 'morse/middleware/ros/read_wrench'],
         'orientation': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_quaternion', 'morse/middleware/ros/read_quaternion'],
         'teleport': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_pose', 'morse/middleware/ros/read_pose'],
+        'rotorcraft_waypoint': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_pose', 'morse/middleware/ros/read_pose'],
     },
 
     'socket': {
