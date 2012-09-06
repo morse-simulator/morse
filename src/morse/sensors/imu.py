@@ -29,9 +29,23 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
 
         # The robot needs a physics controller!
         # Since the imu does not have physics,
-        # make new references to the robot velocities and use those.
-        self.robot_w = self.robot_parent.blender_obj.localAngularVelocity
-        self.robot_vel = self.robot_parent.blender_obj.worldLinearVelocity
+        self.has_physics = bool(self.robot_parent.blender_obj.getPhysicsId())
+
+        if not self.has_physics:
+            logger.warning("The robot doesn't have a physics controller," \
+                           "falling back to simple IMU sensor.")
+
+        if self.has_physics:
+            # make new references to the robot velocities and use those.
+            self.robot_w = self.robot_parent.blender_obj.localAngularVelocity
+            self.robot_vel = self.robot_parent.blender_obj.worldLinearVelocity
+        else:
+            # reference to sensor position
+            self.pos = self.blender_obj.worldPosition
+            # previous position
+            self.pp = self.pos.copy()
+            # previous attitude euler angles as vector
+            self.patt = mathutils.Vector(self.position_3d.euler)
 
         # previous linear velocity
         self.plv = mathutils.Vector((0.0, 0.0, 0.0))
@@ -50,7 +64,7 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
         # store body to imu rotation and translation
         self.rot_b2i = rot
         self.trans_b2i = loc
-        
+
         if (loc.length > 0.01):
             self.compute_offset_acceleration = True
         else:
@@ -63,10 +77,40 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
         self.local_data['linear_acceleration'] = [0.0, 0.0, 0.0]
 
         logger.info("IMU Component initialized, runs at %.2f Hz ", self.frequency)
+        
+    def sim_imu_simple(self):
+        """
+        Simulate angular velocity and linear acceleration measurements via simple differences.
+        """
+        
+        # Compute the differences with the previous loop
+        #dp = self.pos - self.pp
+        #deuler = mathutils.Vector(self.position_3d.euler - self.peuler)
 
+        # linear and angular velocities
+        lin_vel = (self.pos - self.pp) * self.frequency
+        att = mathutils.Vector(self.position_3d.euler)
+        ang_vel = (att - self.patt) * self.frequency
 
-    def default_action(self):
-        """ Get the speed and acceleration of the robot and transform it into the imu frame """
+        # linear acceleration in imu frame
+        dv_imu = self.rot_w2i.transposed() * (lin_vel - self.plv) * self.frequency
+
+        # measurement includes gravity and acceleration 
+        accel_meas = dv_imu + self.rot_w2i.transposed() * self.gravity
+
+        # save current position and attitude for next step
+        self.pp = self.pos.copy()
+        self.peuler = att
+        # save velocity for next step
+        self.plv = lin_vel
+        self.pav = ang_vel
+
+        return (ang_vel, accel_meas)
+
+    def sim_imu_with_physics(self):
+        """
+        Simulate angular velocity and linear acceleration measurements using the physics of the robot.
+        """
 
         # rot_b2i rotates body frame to imu frame
         # take the inverse rotation to transform a vector from body to imu
@@ -101,11 +145,17 @@ class ImuClass(morse.core.sensor.MorseSensorClass):
         self.plv = self.robot_vel.copy()
         self.pav = self.robot_w.copy()
 
-        # Store the important data
-        self.local_data['angular_velocity'][0] = rates[0]
-        self.local_data['angular_velocity'][1] = rates[1]
-        self.local_data['angular_velocity'][2] = rates[2]
+        return (rates, accel_meas)
 
-        self.local_data['linear_acceleration'][0] = accel_meas[0]
-        self.local_data['linear_acceleration'][1] = accel_meas[1]
-        self.local_data['linear_acceleration'][2] = accel_meas[2]
+    def default_action(self):
+        """
+        Get the speed and acceleration of the robot and transform it into the imu frame
+        """
+        if self.has_physics:
+            (rates, accel) = self.sim_imu_with_physics()
+        else:
+            (rates, accel) = self.sim_imu_simple()
+
+        # Store the important data
+        self.local_data['angular_velocity'] = rates
+        self.local_data['linear_acceleration'] = accel
