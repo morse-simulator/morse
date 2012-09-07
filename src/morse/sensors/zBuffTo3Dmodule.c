@@ -57,11 +57,7 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
     for (i=0; i<img_buffer.len; i+=4)
     {
         pixel = i / 4;
-        //memcpy (&z_b, &(img_buffer.buf)[i], sizeof(float));
-
-        memcpy (&z_int, &(img_buffer.buf)[i], sizeof(unsigned int));
-        // Change the value of the pixel from integer to double
-        z_b = z_int / 4294967295.0;
+        z_b = f[pixel];
 
         z_n = 2.0 * z_b - 1.0;
         z_e = 2.0 * near * far / (far + near - z_n * (far - near));
@@ -122,7 +118,7 @@ static struct PyModuleDef zBuffTo3Dmodule = {
     NULL
 };
 
- 
+
 PyMODINIT_FUNC
 PyInit_zBuffTo3D(void)
 {
