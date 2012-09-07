@@ -122,7 +122,7 @@ static struct PyModuleDef zBuffTo3Dmodule = {
     NULL
 };
 
- 
+
 PyMODINIT_FUNC
 PyInit_zBuffTo3D(void)
 {

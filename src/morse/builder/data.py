@@ -1,7 +1,7 @@
 import os
 
 """
-MORSE_COMPONENTS: 
+MORSE_COMPONENTS:
 path to the Morse components
 """
 
@@ -86,6 +86,7 @@ MORSE_DATASTREAM_DICT = {
         'semantic_camera': [MORSE_DATASTREAM_MODULE['ros'], 'post_string', 'morse/middleware/ros/semantic_camera'],
         'sick': [MORSE_DATASTREAM_MODULE['ros'], 'post_2DLaserScan', 'morse/middleware/ros/sick'],
         'video_camera': [MORSE_DATASTREAM_MODULE['ros'], 'post_image', 'morse/middleware/ros/camera'],
+        'depth_camera': [MORSE_DATASTREAM_MODULE['ros'], 'post_pointcloud2', 'morse/middleware/ros/depth_camera'],
 
         'light': [MORSE_DATASTREAM_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
         'ptu': [MORSE_DATASTREAM_MODULE['ros'], 'read_Vector3', 'morse/middleware/ros/platine'],

@@ -19,6 +19,7 @@ Sensors,
 ``Thermometer``,              ✔,               ✔,           ✔,              ✘,               ✘,																	✔
 ``Velodyne``,				  ✔,               ✘,           ✘,              ✘,				 ✔ ``Velodyne3DImage``,												✘
 ``Video camera``,             ✘,               ✔,            ✔``YarpImage``, "✔ ``Image`` + ``CameraInfo``",     ✔ ``viamImageBank``,												✘	
+``Depth camera``,             ✔,               ✔,           ✘,              ✔ ``PointCloud2``, ✘,                                                               ✘
 Actuators,
 ``armature actuator``,		  ✘,               ✔,           ✔,              ✔,               ✘,																	?
 ``Straight line movement``,   ✘,               ✔,           ✔,              ✘,               ✘,																	✔
