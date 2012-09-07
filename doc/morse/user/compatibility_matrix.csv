@@ -6,11 +6,11 @@ Sensors,
 ``Accelerometer``,            ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔ 
 ``Battery``,				  ✔,			   ✔,			✔,				✔ ``Float32``,	✘,																	✔
 ``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,✔ ``POM_ME_POS``,								✔
-``Gyroscope``,                ✔,               ✔,           ✔,              ✘,               ✔ ``POM_ME_POS``,												✔
+``Gyroscope``,                ✔,               ✔,           ✔,              ✘,                ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
 ``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Imu``,     ✘,																	✔
-``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see Pose),    ✘ ,																	✔
-``Pose``,					  ✔,               ✔,           ✔,              "✔ ``Odometry``, ``PoseStamped``, ``TF``",     ✘,																	✔ 	
+``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see Pose),   ✔ ``POM_ME_POS``  ,																	✔
+``Pose``,					  ✔,               ✔,           ✔,              "✔ ``Odometry``, ``PoseStamped``, ``TF``",  ✔ ``POM_ME_POS``,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔
 ``Rosace (victim sensor)``,	  ✔,               ✔,           ✔,              ✘,			     ✘,																	✘
