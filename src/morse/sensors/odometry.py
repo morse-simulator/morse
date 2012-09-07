@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
-import math
-import morse.helpers.math as morse_math
+from morse.helpers.math import normalise_angle
 import morse.core.sensor
+import copy
 
 class OdometryClass(morse.core.sensor.MorseSensorClass):
     """ Odometer sensor """
@@ -15,18 +14,18 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
+
+        self.original_pos = copy.copy(self.position_3d)
+
+        self.previous_pos = self.original_pos.transformation3d_with(
+                                                            self.position_3d)
 
         # Variables to store the previous status of the robot
-        self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
-        self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
-
-        self.local_data['dx'] = 0.0
-        self.local_data['dy'] = 0.0
-        self.local_data['dz'] = 0.0
-        self.local_data['dyaw'] = 0.0
-        self.local_data['dpitch'] = 0.0
-        self.local_data['droll'] = 0.0
+        for i in ['dS', 'dx', 'dy', 'dz', 'dyaw', 'dpitch', 'droll',
+                  'x', 'y', 'z', 'yaw', 'pitch', 'roll',
+                  'vx', 'vy', 'vz', 'wz', 'wy', 'wx']:
+            self.local_data[i] = 0.0
 
         logger.info('Component initialized')
 
@@ -37,19 +36,39 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         The measurements are taken with respect to the previous position
         and orientation of the robot
         """
+        # Compute the position of the sensor within the original frame
+        current_pos = self.original_pos.transformation3d_with(self.position_3d)
+
         # Compute the difference in positions with the previous loop
-        self.local_data['dx'] = self.robot_parent.position_3d.x - self.previous_position[0]
-        self.local_data['dy'] = self.robot_parent.position_3d.y - self.previous_position[1]
-        self.local_data['dz'] = self.robot_parent.position_3d.z - self.previous_position[2]
+        self.local_data['dS'] = current_pos.distance(self.previous_pos)
+
+        self.local_data['dx'] = current_pos.x - self.previous_pos.x
+        self.local_data['dy'] = current_pos.y - self.previous_pos.y
+        self.local_data['dz'] = current_pos.z - self.previous_pos.z
 
         # Compute the difference in orientation with the previous loop
-        dyaw = self.robot_parent.position_3d.yaw - self.previous_orientation[0]
-        dpitch = self.robot_parent.position_3d.pitch - self.previous_orientation[1]
-        droll = self.robot_parent.position_3d.roll - self.previous_orientation[2]
-        self.local_data['dyaw'] = morse_math.normalise_angle(dyaw)
-        self.local_data['dpitch'] = morse_math.normalise_angle(dpitch)
-        self.local_data['droll'] = morse_math.normalise_angle(droll)
+        dyaw = current_pos.yaw - self.previous_pos.yaw
+        dpitch = current_pos.pitch - self.previous_pos.pitch
+        droll = current_pos.roll - self.previous_pos.roll
+        self.local_data['dyaw'] = normalise_angle(dyaw)
+        self.local_data['dpitch'] = normalise_angle(dpitch)
+        self.local_data['droll'] = normalise_angle(droll)
+
+        # Integrated version
+        self.local_data['x'] = current_pos.x
+        self.local_data['y'] = current_pos.y
+        self.local_data['z'] = current_pos.z
+        self.local_data['yaw'] = current_pos.yaw
+        self.local_data['pitch'] = current_pos.pitch
+        self.local_data['roll'] = current_pos.roll
+
+        # speed in the sensor frame, related to the initial pose
+        self.local_data['vx'] = self.local_data['dx'] / self.frequency
+        self.local_data['vy'] = self.local_data['dy'] / self.frequency
+        self.local_data['vz'] = self.local_data['dz'] / self.frequency
+        self.local_data['wz'] = dyaw / self.frequency
+        self.local_data['wy'] = dpitch / self.frequency
+        self.local_data['wx'] = droll / self.frequency
 
         # Store the 'new' previous data
-        self.previous_position = [self.robot_parent.position_3d.x, self.robot_parent.position_3d.y, self.robot_parent.position_3d.z]
-        self.previous_orientation = [self.robot_parent.position_3d.yaw, self.robot_parent.position_3d.pitch, self.robot_parent.position_3d.roll]
+        self.previous_pos = current_pos

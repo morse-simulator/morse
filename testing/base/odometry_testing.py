@@ -23,12 +23,14 @@ def send_speed(s, v, w, t):
     sleep(t)
     s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
 
-class Odometry_Test(MorseTestCase):
+class OdometryTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
         
         robot = Robot('atrv')
+        robot.translate(x = 5.0, y = 2.0)
+        robot.rotate(z = math.pi / 2)
 
         pose = Sensor('pose')
         robot.append(pose)
@@ -55,26 +57,40 @@ class Odometry_Test(MorseTestCase):
         dx = record['dx']
         dy = record['dy']
 
-        self.yaw+= record['dyaw']
+        self.yaw += record['dyaw']
         
         # normalise angle
-        while (self.yaw > math.pi): 
+        while (self.yaw > math.pi):
             self.yaw+= -2 * math.pi
         while (self.yaw < -math.pi):
             self.yaw+= 2 * math.pi
 
-#        self.x+= dx * math.cos(self.yaw)
-#        self.y+= dx * math.sin(self.yaw)
         self.x += dx
         self.y += dy
 
     def odometry_test_helper(self, v, w, t):
-        pose = self.pose_stream.get()
-        self.clear_datas(pose['x'], pose['y'], pose['yaw'])
         self.odo_stream.subscribe(self.record_datas)
         send_speed(self.v_w_client, v, w, t)
         self.odo_stream.unsubscribe(self.record_datas)
 
+    
+    def verify(self, expected_x, expected_y, expected_yaw):
+        # Numerical integration is maybe not really good, so test with a
+        # precision of 0.06
+        precision = 0.06
+
+        pose = self.pose_stream.get()
+        odo = self.odo_stream.get()
+        self.assertAlmostEqual(self.x, expected_x, delta=precision)
+        self.assertAlmostEqual(self.y, expected_y, delta=precision)
+        self.assertAlmostEqual(self.yaw, expected_yaw, delta=precision)
+        self.assertAlmostEqual(pose['x'], 5.0 - expected_y, delta=precision)
+        self.assertAlmostEqual(pose['y'], 2.0 + expected_x, delta=precision)
+        self.assertAlmostEqual(pose['yaw'], expected_yaw + math.pi/2, delta=precision)
+        self.assertAlmostEqual(odo['x'], expected_x, delta=precision)
+        self.assertAlmostEqual(odo['y'], expected_y, delta=precision)
+        self.assertAlmostEqual(odo['yaw'], expected_yaw, delta=precision)
+        self.clear_datas(expected_x, expected_y, expected_yaw)
 
     def test_odometry(self):
         """ This test is guaranteed to be started only when the simulator
@@ -91,46 +107,29 @@ class Odometry_Test(MorseTestCase):
             port = morse.get_stream_port('Motion_Controller')
             self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.v_w_client.connect(('localhost', port))
+        
+            self.clear_datas(0.0, 0.0, 0.0)
 
-            # Numerical integration is maybe not really good, so test with a
-            # precision of 0.05
             self.odometry_test_helper(1.0, 0.0, 2.0)
-            self.assertAlmostEqual(self.x, 2.0, delta=0.05)
-            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            self.verify(2.0, 0.0, 0.0)
 
             self.odometry_test_helper(-1.0, 0.0, 2.0)
-            self.assertAlmostEqual(self.x, 0.0, delta=0.05)
-            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            self.verify(0.0, 0.0, 0.0)
 
             self.odometry_test_helper(1.0, -math.pi/4.0, 2.0)
-            self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.05)
-            self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.05)
-            self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.05)
+            self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
 
             self.odometry_test_helper(0.5, -math.pi/8.0, 12.0)
-            self.assertAlmostEqual(self.x, 0.0, delta=0.05)
-            self.assertAlmostEqual(self.y, 0.0, delta=0.05)
-            self.assertAlmostEqual(self.yaw, 0.0, delta=0.05)
+            self.verify(0.0, 0.0, 0.0)
 
             self.odometry_test_helper(-2.0, math.pi/2.0, 3.0)
-            self.assertAlmostEqual(self.x, 4.0/ math.pi , delta=0.08)
-            self.assertAlmostEqual(self.y, -4.0/ math.pi , delta=0.08)
-            self.assertAlmostEqual(self.yaw, -math.pi/2.0, delta=0.08)
-
-            pose = self.pose_stream.get()
-            self.odometry_test_helper(0.0, math.pi/2.0, 12.0)
-            pose2 = self.pose_stream.get()
-            self.assertAlmostEqual(self.x, pose['x'] , delta=0.08)
-            self.assertAlmostEqual(self.y, pose['y'], delta=0.08)
-            self.assertAlmostEqual(self.yaw, pose2['yaw'], delta=0.08)
+            self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
 
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(Odometry_Test)
+    suite = unittest.TestLoader().loadTestsFromTestCase(OdometryTest)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
