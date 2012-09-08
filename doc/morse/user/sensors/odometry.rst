@@ -47,3 +47,4 @@ This sensor always provides perfect data.
 To obtain more realistic readings, it is recommended to add modifiers.
 
 - **Noise modifier**: Adds random Gaussian noise to the data
+- **Odometry Noise modifier**: Simulate scale factor error and gyroscope drift

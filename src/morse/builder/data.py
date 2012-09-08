@@ -15,6 +15,7 @@ MORSE_MODIFIERS = {
     'NED': 'morse.modifiers.ned.MorseNEDClass',
     'UTM': 'morse.modifiers.utm.MorseUTMClass',
     'GPSNoise': 'morse.modifiers.gps_noise.MorseGPSNoiseClass',
+    'OdometryNoise': 'morse.modifiers.odometry_noise.MorseOdometryNoiseClass',
 }
 
 """
@@ -48,6 +49,9 @@ MORSE_MODIFIER_DICT = {
         'gps': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
         'destination': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
         'waypoint': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
+    },
+    'OdometryNoise' : {
+        'odometry': [MORSE_MODIFIERS['OdometryNoise'], 'noisify']
     },
 }
 
