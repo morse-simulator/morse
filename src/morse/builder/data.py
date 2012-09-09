@@ -55,6 +55,10 @@ MORSE_MODIFIER_DICT = {
     'OdometryNoise' : {
         'odometry': [MORSE_MODIFIERS['OdometryNoise'], 'noisify']
     },
+    'Noise' : {
+        'imu': [MORSE_MODIFIERS['IMUNoise'], 'noisify'],
+        'pose': [MORSE_MODIFIERS['PoseNoise'], 'noisify'],
+    }
 }
 
 """
