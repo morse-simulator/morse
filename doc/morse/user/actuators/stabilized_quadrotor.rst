@@ -1,9 +1,10 @@
-Stabilized Fly for quadrotor
-============================
+Stabilized Flight for quadrotor
+===============================
 
 This actuator controls a stabilized quadrotor using a linear model. 
 Basically, it reads a command (phi, theta, psi, h), and computes, using a
 second order filter the speed of the robot.
+The quadrotor does not need ``Rigid Body`` physics.
 
 Files
 -----
