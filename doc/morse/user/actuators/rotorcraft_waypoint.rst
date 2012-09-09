@@ -52,7 +52,7 @@ Configurable parameters
   the inner loop.
 - **MaxBankAngle**: (float) limit the maximum roll/pitch angle of the robot.
   This effectively limits the horizontal acceleration of the robot.
-- **WpIndicator**: (string) name of a blender object in the scene.
+- **Target**: (string) name of a blender object in the scene.
   When specified, this object will be placed at the coordinates given to the
   actuator, to indicate the expected destination of the robot.
   Make sure that this object has ``NO_COLLISION`` set.
@@ -67,7 +67,7 @@ following example:
 
     # Create a waypoint controller
     waypoint = Actuator('rotorcraft_waypoint')
-    waypoint.properties(WpIndicator='myWpObject')
+    waypoint.properties(Target='myTargetObject')
     waypoint.properties(MaxBankAngle=radians(20))
 
 
