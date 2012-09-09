@@ -1,14 +1,16 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-import math
 import bge
-import mathutils
+from mathutils import Vector, Matrix
+from math import radians, degrees, sin, cos, fabs, copysign
+from morse.helpers.math import normalise_angle
+
 import morse.core.actuator
 from morse.core.services import service
 from morse.core.services import async_service
 from morse.core.services import interruptible
 from morse.core import status
-import morse.helpers.math as morse_math
+
 
 class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Waypoint motion controller
@@ -29,15 +31,15 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._destination = self.robot_parent.blender_obj.worldPosition
         self._wp_object = None
 
-        self.add_property('_h_pgain', math.radians(6), 'HorizontalPgain')
-        self.add_property('_h_dgain', math.radians(8), 'HorizontalDgain')
+        self.add_property('_h_pgain', radians(6), 'HorizontalPgain')
+        self.add_property('_h_dgain', radians(8), 'HorizontalDgain')
         self.add_property('_v_pgain', 8, 'VerticalPgain')
         self.add_property('_v_dgain', 8, 'VerticalDgain')
         self.add_property('_yaw_pgain', 12.0, 'YawPgain')
         self.add_property('_yaw_dgain', 6.0, 'YawDgain')
         self.add_property('_rp_pgain', 9.7, 'RollPitchPgain')
         self.add_property('_rp_dgain', 2, 'RollPitchDgain')
-        self.add_property('_max_bank_angle', math.radians(30), 'MaxBankAngle')
+        self.add_property('_max_bank_angle', radians(30), 'MaxBankAngle')
         self.add_property('_target', 'wp_target', 'Target')
 
         self.local_data['x'] = self._destination[0]
@@ -55,12 +57,12 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         # get the robot inertia (list [ix, iy, iz])
         robot_inertia = self.robot_parent.blender_obj.localInertia
-        self.inertia = mathutils.Vector(tuple(robot_inertia))
+        self.inertia = Vector(tuple(robot_inertia))
         logger.info("robot inertia: (%.3f %.3f %.3f)" % tuple(self.inertia))
 
         self.nominal_thrust = self.robot_parent.blender_obj.mass * 9.81
         logger.info("nominal thrust: %.3f", self.nominal_thrust)
-        self._attitude_compensation_limit = math.cos(self._max_bank_angle) ** 2
+        self._attitude_compensation_limit = cos(self._max_bank_angle) ** 2
 
         # current attitude setpoints in radians
         self.roll_setpoint = 0.0
@@ -70,7 +72,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.thrust = 0.0
 
         #previous attitude error
-        self.prev_err = mathutils.Vector((0.0, 0.0, 0.0))
+        self.prev_err = Vector((0.0, 0.0, 0.0))
 
         # Identify an object as the target of the motion
         try:
@@ -135,7 +137,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def get_status(self):
-        """ Return the current status (Transit, Arrived or Stop) """
+        """ Return the current status (Transit or Arrived) """
         return self.robot_parent.move_status
 
 
@@ -144,7 +146,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         robot = self.robot_parent
 
         if self._pos_initalized:
-            self._destination = mathutils.Vector((self.local_data['x'], self.local_data['y'], self.local_data['z']))
+            self._destination = Vector((self.local_data['x'], self.local_data['y'], self.local_data['z']))
         else:
             self._destination = self.robot_parent.blender_obj.worldPosition
             self.local_data['x'] = self._destination[0]
@@ -157,7 +159,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Place the target marker where the robot should go
         if self._wp_object:
             self._wp_object.worldPosition = self._destination
-            self._wp_object.worldOrientation = mathutils.Matrix.Rotation(self.local_data['yaw'], 3, 'Z')
+            self._wp_object.worldOrientation = Matrix.Rotation(self.local_data['yaw'], 3, 'Z')
 
         # current angles to horizontal plane (not quite, but approx good enough)
         roll = self.position_3d.roll
@@ -182,30 +184,30 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         command_world_y = self._h_pgain * pos_error[1] + self._h_dgain * vel_error[1]
 
         # setpoints in body frame
-        self.roll_setpoint = math.sin(yaw) * command_world_x - math.cos(yaw) * command_world_y
-        self.pitch_setpoint = math.cos(yaw) * command_world_x + math.sin(yaw) * command_world_y
+        self.roll_setpoint = sin(yaw) * command_world_x - cos(yaw) * command_world_y
+        self.pitch_setpoint = cos(yaw) * command_world_x + sin(yaw) * command_world_y
         self.yaw_setpoint = self.local_data['yaw']
 
         # saturate max roll/pitch angles
-        if math.fabs(self.roll_setpoint) > self._max_bank_angle:
-            self.roll_setpoint = math.copysign(self._max_bank_angle, self.roll_setpoint)
-        if math.fabs(self.pitch_setpoint) > self._max_bank_angle:
-            self.pitch_setpoint = math.copysign(self._max_bank_angle, self.pitch_setpoint)
+        if fabs(self.roll_setpoint) > self._max_bank_angle:
+            self.roll_setpoint = copysign(self._max_bank_angle, self.roll_setpoint)
+        if fabs(self.pitch_setpoint) > self._max_bank_angle:
+            self.pitch_setpoint = copysign(self._max_bank_angle, self.pitch_setpoint)
 
         # wrap yaw setpoint
-        self.yaw_setpoint = morse_math.normalise_angle(self.yaw_setpoint)
+        self.yaw_setpoint = normalise_angle(self.yaw_setpoint)
 
         logger.debug("roll  current: % 2.3f   setpoint: % 2.3f", \
-                     math.degrees(roll), math.degrees(self.roll_setpoint))
+                     degrees(roll), degrees(self.roll_setpoint))
         logger.debug("pitch current: % 2.3f   setpoint: % 2.3f", \
-                     math.degrees(pitch), math.degrees(self.pitch_setpoint))
+                     degrees(pitch), degrees(self.pitch_setpoint))
         logger.debug("yaw   current: % 2.3f   setpoint: % 2.3f", \
-                     math.degrees(yaw), math.degrees(self.yaw_setpoint))
+                     degrees(yaw), degrees(self.yaw_setpoint))
 
 
         # compute thrust
         # nominal command to keep altitude (feed forward)
-        thrust_attitude_compensation = max(self._attitude_compensation_limit, math.cos(roll) * math.cos(pitch))
+        thrust_attitude_compensation = max(self._attitude_compensation_limit, cos(roll) * cos(pitch))
         thrust_ff = self.nominal_thrust / thrust_attitude_compensation
         # feedback to correct altitude
         thrust_fb = self._v_pgain * pos_error[2] + self._v_dgain * vel_error[2]
@@ -215,29 +217,29 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Compute attitude errors
         #
         # e = att_sp - att = attitude error
-        roll_err = morse_math.normalise_angle(self.roll_setpoint - roll)
-        pitch_err = morse_math.normalise_angle(self.pitch_setpoint - pitch)
-        yaw_err = morse_math.normalise_angle(self.yaw_setpoint - yaw)
+        roll_err = normalise_angle(self.roll_setpoint - roll)
+        pitch_err = normalise_angle(self.pitch_setpoint - pitch)
+        yaw_err = normalise_angle(self.yaw_setpoint - yaw)
 
-        err = mathutils.Vector((roll_err, pitch_err, yaw_err))
+        err = Vector((roll_err, pitch_err, yaw_err))
 
         # derivative
         we = (err - self.prev_err) * self.frequency
         #we = mathutils.Vector((0.0, 0.0, 0.0))
         #logger.debug("yaw rate error: %.3f", we[2])
 
-        kp = mathutils.Vector((self._rp_pgain, self._rp_pgain, self._yaw_pgain))
-        kd = mathutils.Vector((self._rp_dgain, self._rp_pgain, self._yaw_dgain))
+        kp = Vector((self._rp_pgain, self._rp_pgain, self._yaw_pgain))
+        kd = Vector((self._rp_dgain, self._rp_pgain, self._yaw_dgain))
 
         #torque = self.inertia * (kp * err + kd * we)
         t = []
         for i in range(3):
             t.append(self.inertia[i] * (kp[i] * err[i] + kd[i] * we[i]))
         # scale with thrust
-        torque = mathutils.Vector((t[0], t[1], t[2])) * self.thrust / self.nominal_thrust
+        torque = Vector((t[0], t[1], t[2])) * self.thrust / self.nominal_thrust
         logger.debug("applied torques: (% .3f % .3f % .3f)", torque[0], torque[1], torque[2])
 
-        force = mathutils.Vector((0.0, 0.0, self.thrust))
+        force = Vector((0.0, 0.0, self.thrust))
         logger.debug("applied thrust force: %.3f", force[2])
 
         self.prev_err = err.copy()
