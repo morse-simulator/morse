@@ -4,9 +4,10 @@ Inertial measurement unit (IMU)
 This sensor emulates an Inertial Measurement Unit, measuring the angular
 velocity and linear acceleration including acceleration due to gravity.
 
-The robot needs to have a physics enabled.
-Angular Velocity is read from the parent robot, linear acceleration is
-computed by differentiation of the linear velocities of the robot.
+If the robot has a physics controller, the velocities are directly read from
+it's properties ``localAngularVelocity`` and ``worldLinearVelocity``.
+Otherwise the velocities are calculated by simple differentiation.
+Linear acceleration is always computed by differentiation of the linear velocity.
 The measurements are given in the IMU coordinate system, so the location
 and rotation of the IMU with respect to the robot is taken into account.
 
