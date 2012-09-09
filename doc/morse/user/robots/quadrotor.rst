@@ -1,7 +1,7 @@
 Quadrotor
 =========
 
-The base of a generic **quadrotor**
+The base of a generic **quadrotor** without ``Rigid Body`` physics.
 
 .. image:: ../../../media/robots/quadrotoro.png 
   :align: center
