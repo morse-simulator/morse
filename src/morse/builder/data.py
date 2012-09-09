@@ -51,6 +51,10 @@ MORSE_MODIFIER_DICT = {
         'destination': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
         'waypoint': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
     },
+    'Noise' : {
+        'imu': [MORSE_MODIFIERS['IMUNoise'], 'noisify'],
+        'pose': [MORSE_MODIFIERS['PoseNoise'], 'noisify'],
+    }
 }
 
 """
