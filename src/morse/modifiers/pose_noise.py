@@ -7,9 +7,6 @@ from morse.core.modifier import MorseModifierClass
 
 class MorsePoseNoiseClass(MorseModifierClass):
 
-    _pos_std_dev = 0.05
-    _rot_std_dev = radians(5)
-
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """
         # Extract the information for this modifier
@@ -28,10 +25,12 @@ class MorsePoseNoiseClass(MorseModifierClass):
         else:
             logger.warning("Unknown function name for Pose Noise modifier. Check component_config.py file.")
 
-        # Extract the Modifier parameters from the dictionary
+        self._pos_std_dev = 0.05
+        self._rot_std_dev = radians(5)
+        # Extract the Modifier parameters from the dictionary if it is given
         try:
-            self._pos_std_dev = mod_data[2].get("pos_std", 0.05)
-            self._rot_std_dev = mod_data[2].get("rot_std", radians(5))
+            self._pos_std_dev = mod_data[2].get("pos_std", self._pos_std_dev)
+            self._rot_std_dev = mod_data[2].get("rot_std", self._rot_std_dev)
         except:
             pass
 

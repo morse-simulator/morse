@@ -5,9 +5,6 @@ from morse.core.modifier import MorseModifierClass
 
 class MorseIMUNoiseClass(MorseModifierClass):
 
-    _gyro_std_dev = 0.05
-    _accel_std_dev = 0.5
-
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """
         # Extract the information for this modifier
@@ -26,10 +23,12 @@ class MorseIMUNoiseClass(MorseModifierClass):
         else:
             logger.warning("Unknown function name for IMU Noise modifier. Check component_config.py file.")
 
-        # Extract the Modifier parameters from the dictionary
+        self._gyro_std_dev = 0.5
+        self._accel_std_dev = 0.5
+        # Extract the Modifier parameters from the dictionary if it is given
         try:
-            self._gyro_std_dev = mod_data[2].get("gyro_std", 0.05)
-            self._accel_std_dev = mod_data[2].get("accel_std", 0.5)
+            self._gyro_std_dev = mod_data[2].get("gyro_std", self._gyro_std_dev)
+            self._accel_std_dev = mod_data[2].get("accel_std", self._accel_std_dev)
         except:
             pass
 
