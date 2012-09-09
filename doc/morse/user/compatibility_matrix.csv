@@ -9,7 +9,7 @@ Sensors,
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,                ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
 ``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Imu``,     ✘,																	✔
-``Odometry``,                 ✔,               ✔,           ✔,              ✘  (see Pose),   ✔ ``POM_ME_POS``  ,																	✔
+``Odometry``,                 ✔,               ✔,           ✔,     "✔ ``Odometry``, ``TF``" ,   ✔ ``POM_ME_POS``  ,																	✔
 ``Pose``,					  ✔,               ✔,           ✔,              "✔ ``Odometry``, ``PoseStamped``, ``TF``",  ✔ ``POM_ME_POS``,																	✔ 	
 ``Proximity sensor``,         ✔,               ✔,           ✔,              ✘,              ✘,																	✔
 ``ptu_posture``,	          ✔,               ✔,           ✔,              ✘,			     ✔ ``PLATINE_STATES``,												✔

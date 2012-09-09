@@ -73,6 +73,7 @@ MORSE_MIDDLEWARE_DICT = {
         'infrared': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_range', 'morse/middleware/ros/infrared'],
         'imu': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_imu', 'morse/middleware/ros/imu'],
         'light': [MORSE_MIDDLEWARE_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
+        'odometry': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_odometry', 'morse/middleware/ros/odometry'],
         'pose': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_odometry', 'morse/middleware/ros/pose'],
         'proximity': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_message'],
         'pr2_posture': [MORSE_MIDDLEWARE_MODULE['ros'], 'post_jointState', 'morse/middleware/ros/pr2_posture'],

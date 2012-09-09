@@ -14,7 +14,7 @@
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
     <remap from="/base_scan" to="/pr2/Sick"/>
     <remap from="/cmd_vel" to="/pr2/Motion_Controller"/>
-    <remap from="/odom" to="/pr2/IMU"/>
+    <remap from="/odom" to="/pr2/Odometry"/>
     
     <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
