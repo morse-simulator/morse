@@ -690,3 +690,35 @@ a.reference.external:before {
 }
 */
 
+
+/*--------------------- tags ----------------*/
+
+.tag {
+    border-radius: 2px 2px 2px 2px;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 4px;
+    text-decoration: none;
+}
+
+.tag-api {
+    background: -moz-linear-gradient(center top , #02E81D, #08D901) repeat scroll 0 0 transparent !important;
+    color: #006605 !important;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.tag-middleware {
+    background: -moz-linear-gradient(center top , #E80C02, #D90B01) repeat scroll 0 0 transparent !important;
+    color: #FFFFFF !important;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+.tag-access {
+   background: -moz-linear-gradient(center top , #2D02E8, #0119D9) repeat scroll 0 0 transparent !important;
+    color: #FFFFFF !important;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+

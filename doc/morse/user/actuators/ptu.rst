@@ -22,15 +22,15 @@ using the following keys:
 -  :kbd:`Home` pan left
 -  :kbd:`Insert` pan right
 
+Code samples
+------------
 
-Files 
------
+- `Scenario with a PTU from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L28>`_ :tag:`builder` 
+- `Datastream usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L56>`_ :tag:`pymorse` :tag:`datastream` 
+- `Service usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L121>`_ :tag:`pymorse` :tag:`service` 
 
--  Blender: ``$MORSE_ROOT/data/actuators/ptu.blend``
--  Python: ``$MORSE_ROOT/src/morse/actuators/ptu.py``
-
-Local data 
-----------
+Exported data
+-------------
 
 -  **pan**: (float) rotation around the Z axis
 -  **tilt**: (float) rotation around the Y axis
@@ -69,6 +69,13 @@ Applicable modifiers
 --------------------
 
 No available modifiers
+
+Files 
+-----
+
+-  Blender: ``$MORSE_ROOT/data/actuators/ptu.blend``
+-  Python: ``$MORSE_ROOT/src/morse/actuators/ptu.py``
+
 
 Related components
 ------------------
