@@ -142,7 +142,7 @@ class SocketRequestManager(RequestManager):
 
                 try:
                     try:
-                        id, req = req.split(" ", 1)
+                        id, req = req.split(None, 1)
                     except ValueError: # Request contains < 2 tokens.
                         id = req
                         raise MorseRPCInvokationError("Malformed request! ")
@@ -214,7 +214,7 @@ class SocketRequestManager(RequestManager):
         Parse the incoming request.
         """
 
-        tokens = req.split(" ", 2)
+        tokens = req.split(None, 2)
         if len(tokens) < 2 or len(tokens) > 3:
             raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component, service, [params])")
 

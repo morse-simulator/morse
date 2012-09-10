@@ -51,6 +51,34 @@ class BaseTest(MorseTestCase):
         sockf.close()
         s.close()
 
+    def test_socket_request_parser_resilience(self):
+        """ Tests that the socket request parser is resilient to
+        useless whitespaces.
+        
+        """
+        
+        # Initialize a socket connection to the simulator
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("localhost", 4000))
+        sockf = s.makefile()
+        
+        queries = [b"id1 simulation list_robots\n",
+                   b"id1  simulation list_robots\n",
+                   b"id1\tsimulation\tlist_robots\n",
+                   b"id1 \t simulation \t list_robots\n",
+                   b"   id1 simulation list_robots  \n"]
+
+        for q in queries:
+            s.send(q)
+            result = sockf.readline()
+            id, success, robots = result.strip().split(' ', 2)
+            self.assertEquals(success, "SUCCESS")
+
+        sockf.close()
+        s.close()
+
+
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     import unittest
