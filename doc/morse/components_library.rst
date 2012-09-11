@@ -20,10 +20,10 @@ Robots and robotic bases
     user/robots/*
 
 .. note::
-    Include these robots in your simulation by using the identifiants below the pictures::
+    Include these robots in your simulation by using the identifier below the pictures::
 
         from morse.builder.morsebuilder import *
-        myrobot = Robot('<identifiant>') # for instance, 'atrv'
+        myrobot = Robot('<identifier>') # for instance, 'atrv'
         myrobot.append(...)
   
 
@@ -39,7 +39,7 @@ Sensors
     user/sensors/*
 
 .. note::
-    Include the sensors in your simulation by using the identifiants below the pictures::
+    Include the sensors in your simulation by using the identifier below the pictures::
 
         from morse.builder.morsebuilder import *
         myrobot = Robot('atrv')
@@ -60,7 +60,7 @@ Actuators
     user/actuators/*
 
 .. note::
-    Include the actuators in your simulation by using the identifiants below the pictures::
+    Include the actuators in your simulation by using the identifier below the pictures::
 
         from morse.builder.morsebuilder import *
         myrobot = Robot('atrv')
