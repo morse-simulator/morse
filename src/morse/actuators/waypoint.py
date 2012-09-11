@@ -19,10 +19,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 from morse.core import status, blenderapi, mathutils
 import morse.core.actuator
-from morse.core.services import service
-from morse.core.services import async_service
-from morse.core.services import interruptible
-from morse.core import status
+from morse.core.services import service, async_service, interruptible
+from morse.helpers.components import add_data, add_property
 
 class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Waypoint motion controller
@@ -31,6 +29,14 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     make the robot move to that location by moving forward and turning.
     This controller is meant for land robots that can not move sideways.
     """
+    _name = "Waypoints"
+    add_property('_obstacle_avoidance', True, 'ObstacleAvoidance', 'boolean')
+    add_property('_free_z', False, 'FreeZ', 'boolean')
+    add_property('_angle_tolerance', math.radians(10), 'AngleTolerance', 'float', "Tolerance in radians regarding the final heading of the robot")
+
+    add_data('x', 0.0, "float", "X coordinate of the destination, in")
+ 
+
 
     def __init__(self, obj, parent=None):
 
@@ -48,10 +54,6 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._wp_object = None
         self._collisions = False
         
-        self.add_property('_obstacle_avoidance', True, 'ObstacleAvoidance')
-        self.add_property('_free_z', False, 'FreeZ')
-        self.add_property('_angle_tolerance', math.radians(10), 'AngleTolerance')
-
         # Variable to store current speed. Used for the stop/resume services
         self._previous_speed = 0
 

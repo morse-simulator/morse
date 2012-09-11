@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
+from morse.helpers.components import add_data, add_property
 
 class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Destination motion controller
@@ -8,14 +9,22 @@ class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
     make the robot move to that location by moving without turning.
     """
 
+    _name = "Destination"
+    _short_desc = "Instruct the robot to move towards a given target"
+
+    add_data('x', 'current X pos')
+    add_data('y', 'current Y pos')
+    add_data('z', 'current Z pos')
+
+    add_property('_tolerance', 0.5, 'Tolerance')
+    add_property('_speed', 5.0, 'Speed')
+
+
     def __init__(self, obj, parent=None):
 
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
-
-        self.add_property('_tolerance', 0.5, 'Tolerance')
-        self.add_property('_speed', 5.0, 'Speed')
 
         self.destination = self.blender_obj.position
 

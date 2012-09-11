@@ -5,6 +5,7 @@ from morse.core import blenderapi
 from morse.core import mathutils
 import morse.helpers.math as morse_math
 from morse.core.services import service
+from morse.helpers.components import add_data, add_property
 
 class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller using linear and angular speeds
@@ -13,20 +14,22 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
     rotation for the parts of the PA-10 arm.
     """
 
+    _name = "PA-10"
+    _short_desc = "PA-10 6-DOF robotic arm"
+
+    add_property('_speed', 1.0, "Speed", "float", 'speed of each joint, in rad/s')
+    add_property('_tolerance', math.radians(5), "Tolerance", "float", 'tolerance on the position, in radians')
+
+    add_data('seg0', 0.0, "float", "first joint (base)")
+    add_data('seg1', 0.0, "float", "second joint")
+    add_data('seg2', 0.0, "float", "third joint")
+    add_data('seg3', 0.0, "float", "fourth joint")
+    add_data('seg4', 0.0, "float", "fifth joint")
+    add_data('seg5', 0.0, "float", "sixth joint (wrist)")
+
     def __init__(self, obj, parent=None):
-        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
-
-        self.add_property('_speed', 1.0, 'Speed')
-        self.add_property('_tolerance', math.radians(5), 'Tolerance')
-
-        self.local_data['seg0'] = 0.0
-        self.local_data['seg1'] = 0.0
-        self.local_data['seg2'] = 0.0
-        self.local_data['seg3'] = 0.0
-        self.local_data['seg4'] = 0.0
-        self.local_data['seg5'] = 0.0
 
         # The axis along which the different segments rotate
         # Considering the rotation of the arm as installed in Jido
@@ -68,7 +71,7 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Get the reference to the Sound actuator
         if self._sound == None:
             logger.debug ("ACTIVATING THE SOUND ACTUATOR")
-            contr = blenderapi.getcontroller()
+            contr = blenderapi.controller()
             self._sound = contr.actuators['Sound']
             contr.activate(self._sound)
             self._sound.stopSound()
@@ -78,7 +81,7 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         # Scale the speeds to the time used by Blender
         try:
-            rotation = self._speed / self.frequency
+            rotation = _speed / self.frequency
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -100,11 +103,12 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
-                ry = morse_math.rotation_direction(segment_euler[1], target_angle, self._tolerance, rotation)
-                #logger.debug("PARAMETERS Y: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[1], target_angle, self._tolerance, rotation, ry))
+                ry = morse_math.rotation_direction(segment_euler[1], target_angle, _tolerance, rotation)
+                #logger.debug("PARAMETERS Y: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[1], target_angle, _tolerance, rotation, ry))
+
             elif self._dofs[i] == 'z':
-                rz = morse_math.rotation_direction(segment_euler[2], target_angle, self._tolerance, rotation)
-                #logger.debug("PARAMETERS Z: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, self._tolerance, rotation, rz))
+                rz = morse_math.rotation_direction(segment_euler[2], target_angle, _tolerance, rotation)
+                #logger.debug("PARAMETERS Z: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, _tolerance, rotation, rz))
 
             logger.debug("ry = %.4f, rz = %.4f" % (ry, rz))
 
@@ -133,6 +137,13 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         It receives an array containing the angle to give to each of
         the robot articulations. The array contains only one angle for
         each joint.
+
+        :param seg0: 1st joint angle (base)
+        :param seg1: 2nd joint angle
+        :param seg2: 3rd joint angle
+        :param seg3: 4th joint angle
+        :param seg4: 5th joint angle
+        :param seg5: 6th joint angle (wrist)
         """
         self.local_data['seg0'] = seg0
         self.local_data['seg1'] = seg1

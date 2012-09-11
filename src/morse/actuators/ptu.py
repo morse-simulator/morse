@@ -8,12 +8,24 @@ from morse.core.services import service
 from morse.core.services import async_service
 from morse.core.services import interruptible
 import morse.helpers.math as morse_math
+from morse.helpers.components import add_data, add_property
 
 class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Generic controller for pan-tilt units
 
     Reads 2 angles (in radians) and applies them to the object and its children.
     """
+
+    _name = "Pan-Tilt Unit"
+    _short_desc = "An actuator to control pan-tilt supports"
+
+    add_data('pan', 0.0, 'float', "Pan vlaue, in radians")
+    add_data('tilt', 0.0, 'float', "Tilt value, in radians")
+
+    # Initialises a couple of properties. They can be changed by Builder scripts
+    add_property('_speed', 1.0, 'Speed', 'float', "Rotation speed, in rad/s")
+    add_property('_tolerance', math.radians(0.3), 'Tolerance', 'float')
+    add_property('_is_manual_mode', False, 'Manual', 'boolean', "If true, the PTU can only move via the keyboard.")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -44,17 +56,11 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
             logger.error("PTU is missing the pan and/or tilt bases. Module will not work!")
             return
 
-        # Initialises a couple of properties. They can be changed by Builder scripts
-        self.add_property('_speed', 1.0, 'Speed')
-        self.add_property('_tolerance', math.radians(0.3), 'Tolerance')
-        self.add_property('_is_manual_mode', False, 'Manual')
 
         # Variables to store current angles
         self._current_pan = 0.0
         self._current_tilt = 0.0
 
-        self.local_data['pan'] = 0.0
-        self.local_data['tilt'] = 0.0
 
         logger.info('Component initialized')
 

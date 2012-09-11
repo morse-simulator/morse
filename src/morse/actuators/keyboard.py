@@ -1,10 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.actuator
+from morse.helpers.components import add_data, add_property
 
 class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Class definition for a motion controller that changes speed
         and rotation of the robot using the keyboard arrows. """
+
+    add_property('_speed', 1.0, 'Speed', 'float')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -15,7 +18,6 @@ class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Choose the type of function to move the object
         #self._type = 'Velocity'
         self._type = 'Position'
-        self.add_property('_speed', 1.0, 'Speed')
 
         # Correct the speed considering the Blender clock
         if self._type == 'Position':

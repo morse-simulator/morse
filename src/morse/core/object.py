@@ -29,11 +29,14 @@ class MorseObjectClass(MorseAbstractObject):
         # Define the position of sensors with respect
         #  to their robot parent
         # TODO: implement this using morse.helpers.transformation
-        if not parent == None:
+        if parent:
             self.relative_position = obj.getVectTo(parent.blender_obj)
 
         # Create an instance of the 3d transformation class
         self.position_3d = morse.helpers.transformation.Transformation3d(obj)
+
+        self.initialize_local_data()
+        self.update_properties()
 
         # The actual frequency at which the action is called
         # The frequency of the game sensor specifies how many times
@@ -54,23 +57,29 @@ class MorseObjectClass(MorseAbstractObject):
         """ Destructor method. """
         logger.info("%s: I'm dying!!" % self.name())
 
-    def add_property(self, prop, default_value, name):
-        """ Add a property to the current object 
+    def initialize_local_data(self):
 
-        :param string prop: the name of the property, on the Python
-        side.
-        :param default_value: the default value
-        :param string name: the name of the property, on the Blender
-        object side.
+        if hasattr(self, '_data_fields'):
+            for name, details in self._data_fields.items():
+                default_value, type, doc = details
+                self.local_data[name] = default_value
 
-        Add a property to the current obj, using the value stored in the
-        Blender obj if it exists, otherwise use the default value
+    def update_properties(self):
         """
-        try:
-            val = self.blender_obj[name]
-        except KeyError:
-            val = default_value
-        setattr(self, prop, val)
+        Takes all registered properties (see add_property), and update
+        their values according to the values set in Blender object.
+        """
+
+        if hasattr(self, '_properties'):
+            for name, details in self._properties.items():
+                default_value, type, doc, python_name = details
+                val = default_value
+
+                try:
+                    val = self.blender_obj[name]
+                except KeyError:
+                    pass
+                setattr(self, python_name, val)
 
     def name(self):
         return self.blender_obj.name

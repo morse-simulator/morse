@@ -1,14 +1,27 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.sensor
+from morse.helpers.components import add_property
 
 
 class CameraClass(morse.core.sensor.MorseSensorClass):
-    """ Base class for cameras in MORSE
-
-    This class implements the configuration of the bge.texture module
-    required by the different cameras, such as video or semantic.
     """
+    This class implements the configuration of the Blender's bge.texture
+    module required by the different cameras, such as video or semantic.
+    """
+
+    _name = "Generic Camera"
+    _short_desc = "Base class for cameras in MORSE"
+
+    # Set the values of image size from the variables
+    #  in the Blender Logic Properties
+    add_property('image_width', 256, 'cam_width')
+    add_property('image_height', 256, 'cam_height')
+    add_property('image_focal', 25.0, 'cam_focal')
+    add_property('near_clipping', 0.1, 'cam_near')
+    add_property('far_clipping', 100.0, 'cam_far')
+    add_property('vertical_flip', False, 'Vertical_Flip')
+
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -23,15 +36,6 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         # Set the background color of the scene
         self.bg_color = [143, 143, 143, 255]
     
-        # Set the values of image size from the variables
-        #  in the Blender Logic Properties
-        self.add_property('image_width', 256, 'cam_width')
-        self.add_property('image_height', 256, 'cam_height')
-        self.add_property('image_focal', 25.0, 'cam_focal')
-        self.add_property('near_clipping', 0.1, 'cam_near')
-        self.add_property('far_clipping', 100.0, 'cam_far')
-        self.add_property('vertical_flip', False, 'Vertical_Flip')
-
         self.image_size = 4 * self.image_width * self.image_height
 
         self._texture_ok = False

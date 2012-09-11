@@ -2,9 +2,37 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.helpers.math import normalise_angle
 import morse.core.sensor
 import copy
+from morse.helpers.components import add_data
 
 class OdometryClass(morse.core.sensor.MorseSensorClass):
-    """ Odometer sensor """
+    """Odometer sensor
+    """
+
+    _name = "Odometry"
+    _short_desc = "An odometry sensor that returns raw, partially integrated or fully integrated displacement information."
+
+    #MorseSensorClass.add_property('Speed', 1.0, 'speed of each joint, in rad/s')
+
+    add_data('dS', 0.0, "float")
+    add_data('dx', 0.0, "float")
+    add_data('dy', 0.0, "float")
+    add_data('dz', 0.0, "float")
+    add_data('dyaw', 0.0, "float")
+    add_data('dpitch', 0.0, "float")
+    add_data('droll', 0.0, "float")
+    add_data('x', 0.0, "float")
+    add_data('y', 0.0, "float")
+    add_data('z', 0.0, "float")
+    add_data('yaw', 0.0, "float")
+    add_data('pitch', 0.0, "float")
+    add_data('roll', 0.0, "float")
+    add_data('vx', 0.0, "float")
+    add_data('vy', 0.0, "float")
+    add_data('vz', 0.0, "float")
+    add_data('wz', 0.0, "float")
+    add_data('wy', 0.0, "float")
+    add_data('wx', 0.0, "float")
+
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -12,7 +40,6 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
@@ -20,12 +47,6 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
 
         self.previous_pos = self.original_pos.transformation3d_with(
                                                             self.position_3d)
-
-        # Variables to store the previous status of the robot
-        for i in ['dS', 'dx', 'dy', 'dz', 'dyaw', 'dpitch', 'droll',
-                  'x', 'y', 'z', 'yaw', 'pitch', 'roll',
-                  'vx', 'vy', 'vz', 'wz', 'wy', 'wx']:
-            self.local_data[i] = 0.0
 
         logger.info('Component initialized')
 
