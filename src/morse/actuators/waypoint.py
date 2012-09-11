@@ -17,8 +17,7 @@
 
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import bge
-import mathutils
+from morse.core import status, blenderapi, mathutils
 import morse.core.actuator
 from morse.core.services import service
 from morse.core.services import async_service
@@ -78,7 +77,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         try:
             wp_name = self.blender_obj['Target']
             if wp_name != '':
-                scene = bge.logic.getCurrentScene()
+                scene = blenderapi.scene()
                 self._wp_object = scene.objects[wp_name]
                 logger.info("Using object '%s' to indicate motion target" % wp_name)
         except KeyError as detail:

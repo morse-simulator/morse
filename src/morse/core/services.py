@@ -1,18 +1,10 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 
-try:
-    import bge
-except ImportError:
-    import sys
-    #TODO: the only reason why we need this bge.logic import is for the @service 
-    # decorator that need somehow to know where to register the
-    # service...
-    logger.info("services are only available within Blender")
-    sys.exit(-1)
 
 from functools import partial
 
+from morse.core import blenderapi
 from morse.core.exceptions import MorseServiceError
 
 class MorseServices:
@@ -126,7 +118,7 @@ def do_service_registration(fn, component_name = None, service_name = None, asyn
         return
 
     if not request_managers:
-        request_managers = bge.logic.morse_services.get_request_managers(component_name)
+        request_managers = blenderapi.persistantstorage().morse_services.get_request_managers(component_name)
 
     for manager in request_managers:
         name = service_name if service_name else fn.__name__

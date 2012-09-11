@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
+from morse.core import blenderapi
 import morse.core.sensor
 
 
@@ -50,13 +50,13 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             return
 
         # Exit if the cameras could not be prepared
-        if not hasattr(bge.logic, 'cameras'):
-            logger.warning("bge.logic does not have the 'cameras' variable, \
+        if not blenderapi.hascameras():
+            logger.warning("Blender's bge.logic does not have the 'cameras' variable, \
                     something must have failed when configuring the cameras")
             return
 
         # Call the bge.texture method to refresh the image
-        bge.logic.cameras[self.name()].refresh(True)
+        blenderapi.cameras()[self.name()].refresh(True)
 
 
     def _setup_video_texture(self):
@@ -95,15 +95,15 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
             return (False)
 
         # Get the reference to the scene
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
 
         # Link the objects using bge.texture
-        if not hasattr(bge.logic, 'cameras'):
-            bge.logic.cameras = {}
+        if not blenderapi.hascameras():
+            blenderapi.initcameras()
 
-        mat_id = bge.texture.materialID(screen, material_name)
-        vt_camera = bge.texture.Texture(screen, mat_id)
-        vt_camera.source = bge.texture.ImageRender(scene, camera)
+        mat_id = blenderapi.texture().materialID(screen, material_name)
+        vt_camera = blenderapi.texture().Texture(screen, mat_id)
+        vt_camera.source = blenderapi.texture().ImageRender(scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
@@ -141,7 +141,7 @@ class CameraClass(morse.core.sensor.MorseSensorClass):
         except AttributeError as detail:
             logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
 
-        bge.logic.cameras[self.name()] = vt_camera
+        blenderapi.cameras()[self.name()] = vt_camera
 #
 #        import inspect
 #        logger.error("CAMERA SOURCE '%s':" % self.name())

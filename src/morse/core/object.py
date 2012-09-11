@@ -5,7 +5,7 @@ from morse.core.abstractobject import MorseAbstractObject
 import morse.helpers.transformation
 from morse.core.services import service
 
-import bge
+from morse.core import blenderapi
 
 class MorseObjectClass(MorseAbstractObject):
     """ Basic Class for all 3D objects (components) used in the simulation.
@@ -39,8 +39,8 @@ class MorseObjectClass(MorseAbstractObject):
         # The frequency of the game sensor specifies how many times
         # the action is skipped when the logic brick is executed.
         # e.g. game sensor frequency = 0 -> sensor runs at full logic rate
-        sensors = [s for s in obj.sensors if isinstance(s, bge.types.SCA_AlwaysSensor)]
-        self._frequency = bge.logic.getLogicTicRate()
+        sensors = blenderapi.getalwayssensors(obj)
+        self._frequency = blenderapi.getfrequency()
         if len(sensors) == 1:
             self._frequency /= sensors[0].frequency + 1
         elif len(sensors) == 0:

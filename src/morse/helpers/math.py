@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import mathutils
 
 # euler_angle(object) returns a tuple yaw, pitch, roll, in degree,
 # corresponding to the transformation between the origin frame

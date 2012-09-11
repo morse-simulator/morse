@@ -1,7 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 import math
 import morse.core.actuator
+from morse.core import blenderapi
+from morse.core.actuator import MorseActuatorClass
 from morse.core import status
 from morse.core.services import service
 from morse.core.services import async_service
@@ -91,7 +92,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         
         :param obj_name: the (Blender) name of an object present in the scene
         """
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         try:
             obj = scene.objects[obj_name]
         except KeyError as detail:

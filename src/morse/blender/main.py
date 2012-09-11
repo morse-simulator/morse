@@ -6,6 +6,10 @@ import re
 import time
 import bpy
 import bge
+
+import morse
+morse.running_in_blender = True
+
 # The service management
 from morse.core.services import MorseServices
 

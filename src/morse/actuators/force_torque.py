@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
-import mathutils
+from morse.core import mathutils
 import morse.core.actuator
 
 class ForceTorqueActuatorClass(morse.core.actuator.MorseActuatorClass):

@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 import math
-import mathutils
 import morse.core.actuator
+from morse.core import blenderapi
+from morse.core import mathutils
 import morse.helpers.math as morse_math
 from morse.core.services import service
 
@@ -68,7 +68,7 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         # Get the reference to the Sound actuator
         if self._sound == None:
             logger.debug ("ACTIVATING THE SOUND ACTUATOR")
-            contr = bge.logic.getCurrentController()
+            contr = blenderapi.getcontroller()
             self._sound = contr.actuators['Sound']
             contr.activate(self._sound)
             self._sound.stopSound()
