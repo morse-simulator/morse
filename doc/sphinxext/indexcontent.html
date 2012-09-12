@@ -5,7 +5,7 @@
 	  <tr>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("what_is_morse") }}">What is MORSE?</a><br/>
-			 <span class="linkdescr">Get an overview of MORSE features</span></p>
+			 <span class="linkdescr">A tour of MORSE features</span></p>
          </td>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("what_new") }}">What's new in MORSE 0.5?</a><br/>
@@ -23,7 +23,42 @@
 			 <span class="linkdescr">Learn how to use MORSE</span></p>
 		</td>
 	  </tr>
+
+</table>
+
+<h2>Core documentation</h2>
+
+<table class="contentstable" align="center">
+
 	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/builder") }}">Build your simulations</a><br/>
+			 <span class="linkdescr">Documentation of the Builder API</span></p>
+		</td>
+
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/integration") }}">Integrate MORSE in your architecture</a><br/>
+			 <span class="linkdescr">Supported middlewares and language bindings</span></p>
+         </td>
+     </tr>
+	  <tr>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("components_library") }}">Component library</a><br/>
+			 <span class="linkdescr">What can be simulated in MORSE?</span></p>
+		</td>
+		<td width="50%">
+		  <p class="biglink"><a class="biglink" href="{{ pathto("contributing") }}">Extend and contribute to MORSE</a><br/>
+			 <span class="linkdescr">Fit MORSE to your needs: the developers' documentation</span></p>
+		</td>
+
+	  </tr> 
+ </table>
+
+<h2>And more...</h2>
+
+<table class="contentstable" align="center">
+
+    <tr>
 		<td width="50%">
 		  <p class="biglink"><a class="biglink" href="{{ pathto("media") }}">Media & Dissemination</a><br/>
 			 <span class="linkdescr">Screenshots, videos and academic publications</span></p>
@@ -35,31 +70,20 @@
 		</td>
 	  </tr> 
 
-</table>
-
-<h2>Reference documentation</h2>
-
-<table class="contentstable" align="center">
 
 	  <tr>
 		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("components_library") }}">Component library</a><br/>
-			 <span class="linkdescr">What can be simulated in MORSE?</span></p>
+		  <p class="biglink"><a class="biglink" href="{{ pathto("credits") }}">Credits</a><br/>
+			 <span class="linkdescr">The people behind MORSE</span></p>
 		</td>
-
 		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/integration") }}">Integrate MORSE in your architecture</a><br/>
-			 <span class="linkdescr">Supported middlewares and language bindings</span></p>
-         </td>
-     </tr>
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/builder") }}">Creating simulations</a><br/>
-			 <span class="linkdescr">Documentation of the Builder API</span></p>
+		  <p class="biglink"><a class="biglink" href="{{ pathto("user/available_addons") }}">Blender add-ons for MORSE</a><br/>
+			 <span class="linkdescr">Simplifying simulation creation within Blender</span></p>
 		</td>
 
 	  </tr> 
- </table>
+</table>
+
 
 <h2>Advanced usages</h2>
 
@@ -77,32 +101,8 @@
 			 <span class="linkdescr">Scale up your simulation!</span></p>
 		</td>
 	  </tr> 
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("user/available_addons") }}">Blender add-ons for MORSE</a><br/>
-			 <span class="linkdescr">Simplifying simulation creation within Blender</span></p>
-		</td>
-
-	  </tr> 
   
-</table>
-
-<h2>And more...</h2>
-
-<table class="contentstable" align="center">
-
-
-	  <tr>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("contributing") }}">Contributing to MORSE</a><br/>
-			 <span class="linkdescr">Contacts and developers' documentation</span></p>
-		</td>
-		<td width="50%">
-		  <p class="biglink"><a class="biglink" href="{{ pathto("credits") }}">Credits</a><br/>
-			 <span class="linkdescr">The people behind MORSE</span></p>
-		</td>
-	  </tr> 
-</table>
+  </table>
 
 <p>For any questions about the use of MORSE or if you have any issues with the
 simulator, you can drop a mail to the mailing-list<br/>
@@ -110,10 +110,10 @@ simulator, you can drop a mail to the mailing-list<br/>
 <div style="text-align:center; font-weight:bold;"><a href="mailto:morse-users@laas.fr">morse-users@laas.fr</a></div>
 <br/>
  
-You can subscribe to the mailing-list
+You can also subscribe to the mailing-list
 <a href="https://sympa.laas.fr/sympa/subscribe/morse-users">here</a>.</p>
 
-<p>Bug reports are always welcome on <a href="https://trac.laas.fr/bugzilla/enter_bug.cgi?product=morse">our bug-tracker</a>.</p>
+<p>Bug reports and feature proposals are always welcome on <a href="https://github.com/laas/morse/issues">our bug-tracker</a>.</p>
 
 
 {% endblock %}
