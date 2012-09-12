@@ -171,6 +171,13 @@ def post_odometry(self, component_instance):
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(odometry)
 
+    # send current odometry transform
+    sendTransform(self, get_translation(self, component_instance),
+                  get_orientation(self, component_instance),
+                  time,
+                  child_frame_id,
+                  odom_frame_id)
+
     # send initial transformation from blender to odom frame
     sendTransform(self, self._inital_translation,
                   self._inital_rotation,
