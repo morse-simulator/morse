@@ -13,8 +13,8 @@ class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
     _name = "Proximity Sensor"
     _short_desc = "Distance sensor to detect nearby objects."
 
-    add_data('near_objects', {}, "A list of the tracked objects located within the given radius. The keys of the dictionary are the object names, and the values are the distances (in meters) from the sensor.")
-    add_data('near_robots', {}, "deprecated. Points to near_objects for compatibility reasons.")
+    add_data('near_objects', {}, "dict", "A list of the tracked objects located within the given radius. The keys of the dictionary are the object names, and the values are the distances (in meters) from the sensor.")
+    add_data('near_robots', {}, "dict", "deprecated. Points to near_objects for compatibility reasons.")
 
     add_property('_range', 100, 'Range', "float", "The distance, in meters beyond which this sensor is unable to locate other robots.")
     add_property('_tag', 
