@@ -1,4 +1,4 @@
-from morse.builder.morsebuilder import *
+from morse.builder import *
 from morse.builder.extensions.pr2extension import PR2
 
 # Append PR2 robot to the scene

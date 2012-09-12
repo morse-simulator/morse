@@ -15,7 +15,7 @@ To test this module you can c/p the following code in Blender Python console::
 .. code-block:: python
     import sys
     sys.path.append("/usr/local/lib/python3/dist-packages")
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
     atrv=Robot("atrv")
 
 The string passed to the differents Components Classes must be an existing
@@ -117,7 +117,7 @@ class Human(AbstractComponent):
     .. code-block:: python
        #! /usr/bin/env morseexec
 
-       from morse.builder.morsebuilder import *
+       from morse.builder import *
 
        human = Human()
        human.translate(x=5.5, y=-3.2, z=0.0)

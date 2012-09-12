@@ -1,4 +1,4 @@
-from morse.builder.morsebuilder import *
+from morse.builder import *
 from math import pi
 
 human = Human()

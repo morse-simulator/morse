@@ -51,7 +51,7 @@ instance. Otherwise the robot will not move.
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Append Pioneer robot to the scene
     robot = WheeledRobot('pioneer3dx')

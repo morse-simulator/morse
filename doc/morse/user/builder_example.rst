@@ -6,7 +6,7 @@ Let's have a look to a typical ``Builder`` script, and explain it, step by step:
 .. code-block:: python
     :linenos:
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Append ATRV robot to the scene
     atrv = Robot('atrv')

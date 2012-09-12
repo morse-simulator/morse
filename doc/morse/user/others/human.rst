@@ -48,7 +48,7 @@ to instantiate the :py:class:`morse.builder.morsebuilder.Human` class.
 
 .. code-block:: python
 
-   from morse.builder.morsebuilder import *
+   from morse.builder import *
    human = Human()
 
 If you want to use the World Camera initially, add
@@ -66,7 +66,7 @@ Usage example:
 
    #! /usr/bin/env morseexec
 
-   from morse.builder.morsebuilder import *
+   from morse.builder import *
 
    human = Human()
    human.translate(x=5.5, y=-3.2, z=0.0)

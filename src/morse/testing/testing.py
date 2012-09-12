@@ -236,7 +236,7 @@ class MorseTestCase(unittest.TestCase):
         # Blender must be restarted and called again with the right
         # environment.
         with tempfile.NamedTemporaryFile(delete = False) as tmp:
-            tmp.write(b"from morse.builder.morsebuilder import *\n")
+            tmp.write(b"from morse.builder import *\n")
             tmp.write(b"class MyEnv():\n")
             tmp.write(inspect.getsource(test_case.setUpEnv).encode())
             tmp.write(b"MyEnv().setUpEnv()\n")

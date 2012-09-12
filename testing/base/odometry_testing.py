@@ -14,7 +14,7 @@ from pymorse import Morse
 # Include this import to be able to use your test file as a regular 
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
 try:
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 except ImportError:
     pass
 

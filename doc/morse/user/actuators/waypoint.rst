@@ -76,7 +76,7 @@ An example of how to change the arc object using the Builder API is show below:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Create a waypoint controller
     Motion_Controller = Actuator('waypoint')

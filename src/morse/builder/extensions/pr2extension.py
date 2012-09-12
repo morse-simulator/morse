@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("pr2extension." + __name__)
 
-from morse.builder.morsebuilder import *
+from morse.builder import *
 
 class PR2(Robot):
     def __init__(self):
