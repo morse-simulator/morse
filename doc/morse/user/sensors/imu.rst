@@ -25,4 +25,9 @@ Local data
 Applicable modifiers
 --------------------
 
-- No applicable modifiers at the moment
+This sensor always provides perfect data (except for errors induced by the
+physics engine and differentiation).
+To obtain more realistic readings, it is recommended to add modifiers.
+
+- :doc:`Noise modifier <../modifiers/imu_noise>`: Will add noise to the
+  measurements.
