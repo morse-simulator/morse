@@ -66,7 +66,7 @@ This kind of actuator should only be added to a robot created from the
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Append Segway robot to the scene
     robot = WheeledRobot('segwayrmp400')

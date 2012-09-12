@@ -27,7 +27,7 @@ Create a new scene ``hri.py`` and add these lines:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Import the human model.
     human = Human()
@@ -63,7 +63,7 @@ Add the following lines:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     human = Human()
 
@@ -103,7 +103,7 @@ Appending a pose sensor to the human is easy:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     human = Human()
 
@@ -117,7 +117,7 @@ In this tutorial, we will use sockets to stream the pose out of MORSE:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     human = Human()
 

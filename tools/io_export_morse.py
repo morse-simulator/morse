@@ -101,7 +101,7 @@ def scan_scene (file_out):
 
     Create lists of robots and components to save them as a text file
     """
-    file_out.write("from morse.builder.morsebuilder import *\n\n")
+    file_out.write("from morse.builder import *\n\n")
 
     robot_text = ''
     component_text = ''

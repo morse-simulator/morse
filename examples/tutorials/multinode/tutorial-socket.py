@@ -9,7 +9,7 @@ if cmd_folder not in sys.path:
         sys.path.insert(0, cmd_folder)
 
 
-from morse.builder.morsebuilder import *
+from morse.builder import *
 
 from dala_simple import equipped_robot
 

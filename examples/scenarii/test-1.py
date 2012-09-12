@@ -1,4 +1,4 @@
-from morse.builder.morsebuilder import *
+from morse.builder import *
 
 # Append ATRV robot to the scene
 atrv = Robot('atrv')

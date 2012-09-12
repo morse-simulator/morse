@@ -8,7 +8,7 @@ from morse.testing.testing import MorseTestCase
 try:
     # Include this import to be able to use your test file as a regular 
     # builder script, ie, usable with: 'morse [run|exec] <your test>.py
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 except ImportError:
     pass
 

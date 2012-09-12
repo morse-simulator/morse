@@ -127,7 +127,7 @@ The following example is taken from one of the ROS unit-tests:
 
    #! /usr/bin/env morseexec
 
-   from morse.builder.morsebuilder import *
+   from morse.builder import *
 
    robot = Robot('atrv')
     

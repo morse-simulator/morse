@@ -22,7 +22,7 @@ Robots and robotic bases
 .. note::
     Include these robots in your simulation by using the identifiants below the pictures::
 
-        from morse.builder.morsebuilder import *
+        from morse.builder import *
         myrobot = Robot('<identifiant>') # for instance, 'atrv'
         myrobot.append(...)
   
@@ -41,7 +41,7 @@ Sensors
 .. note::
     Include the sensors in your simulation by using the identifiants below the pictures::
 
-        from morse.builder.morsebuilder import *
+        from morse.builder import *
         myrobot = Robot('atrv')
         cam = Sensor('video_camera')
         myrobot.append(cam)
@@ -62,7 +62,7 @@ Actuators
 .. note::
     Include the actuators in your simulation by using the identifiants below the pictures::
 
-        from morse.builder.morsebuilder import *
+        from morse.builder import *
         myrobot = Robot('atrv')
         arm = Sensor('kuka_lwr')
         myrobot.append(arm)
