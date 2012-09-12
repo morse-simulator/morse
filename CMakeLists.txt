@@ -136,18 +136,8 @@ ENDIF()
 ADD_SUBDIRECTORY(bindings)
 
 ###### Testing ######
-EXECUTE_PROCESS(COMMAND
-				${PYTHON3_EXECUTABLE} -c "import pymorse"
-								RESULT_VARIABLE PYTHON_ERR
-								OUTPUT_QUIET
-								ERROR_QUIET
-				)
-IF (PYTHON_ERR)
-	MESSAGE(WARNING "Can't run test, pymorse is required but cannot be found.\nYou may want to install it first.")
-ELSE()
-	enable_testing()
-	ADD_SUBDIRECTORY(testing)
-ENDIF()
+enable_testing()
+ADD_SUBDIRECTORY(testing)
 
 IF (BUILD_DOC_SUPPORT)
 ### Doc target ###
