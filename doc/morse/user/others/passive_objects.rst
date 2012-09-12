@@ -72,7 +72,7 @@ in the scene:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     table = PassiveObject('props/objects.blend','SmallTable')
     table.setgraspable()
@@ -97,7 +97,7 @@ scene:
 .. code-block:: python
 
     import random
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Add some randomly placed chairs
     for i in range(3):

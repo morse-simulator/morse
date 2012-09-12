@@ -102,7 +102,7 @@ An example of how to change the arc object using the Builder API is show below:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Append a sick laser
     sick = Sensor('sick')
@@ -116,7 +116,7 @@ An example for creating a properly configured SICK LD-MRS is given below:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     sick = Sensor('sick-ld-mrs')
     sick.properties(Visible_arc = True)

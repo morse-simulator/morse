@@ -124,7 +124,7 @@ class. For example:
 
 .. code-block:: python
 
-  from morse.builder.morsebuilder import *
+  from morse.builder import *
   import morse.builder.sensors
   import morse.builder.actuators
 

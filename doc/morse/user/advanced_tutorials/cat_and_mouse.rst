@@ -28,7 +28,7 @@ First we will configure the *Mouse* robot, which is a lot simpler.
 
   .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     Mouse = Robot('atrv')
     Mouse.name = "MOUSE"

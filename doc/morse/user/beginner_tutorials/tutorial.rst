@@ -35,7 +35,7 @@ In order to use the API, you should import some **morse** libraries:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
 
 Then you will make calls to predefined functions to create and configure the

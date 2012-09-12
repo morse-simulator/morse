@@ -1,4 +1,4 @@
-from morse.builder.morsebuilder import *
+from morse.builder import *
 
 def equipped_robot(mw='yarp'):
     # Append ATRV robot to the scene

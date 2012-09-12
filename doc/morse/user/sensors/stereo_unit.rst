@@ -40,7 +40,7 @@ appended to each other, as this is important to get the desired functionality:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Add a robot
     ATRV = Robot('atrv')

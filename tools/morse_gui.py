@@ -14,7 +14,7 @@ bl_info = {
 
 import os
 import bpy
-from morse.builder.morsebuilder import *
+from morse.builder import *
 
 """
 MORSE GUI to import components

@@ -53,7 +53,7 @@ instance. Otherwise the robot will not move.
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
 
     # Append Segway robot to the scene
     robot = WheeledRobot('segwayrmp400')

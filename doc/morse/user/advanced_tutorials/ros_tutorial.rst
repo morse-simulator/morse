@@ -57,7 +57,7 @@ get some odometry feedback.
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
     from morse.builder.extensions.pr2extension import PR2
 
     # A 'naked' PR2 robot to the scene
@@ -101,7 +101,7 @@ First complete the ``scenario.py`` script by adding a posture sensor:
 
 .. code-block:: python
 
-    from morse.builder.morsebuilder import *
+    from morse.builder import *
     from morse.builder.extensions.pr2extension import PR2
 
     # A PR2 robot to the scene
