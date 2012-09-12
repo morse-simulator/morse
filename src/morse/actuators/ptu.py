@@ -1,16 +1,15 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
-import morse.core.actuator
+from math import radians, sin, cos, asin, atan2, sqrt
 from morse.core import blenderapi
 from morse.core.actuator import MorseActuatorClass
 from morse.core import status
 from morse.core.services import service
 from morse.core.services import async_service
 from morse.core.services import interruptible
-import morse.helpers.math as morse_math
+from morse.helpers.math import normalise_angle, rotation_direction
 from morse.helpers.components import add_data, add_property
 
-class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
+class PTUActuatorClass(MorseActuatorClass):
     """ Generic controller for pan-tilt units
 
     Reads 2 angles (in radians) and applies them to the object and its children.
@@ -24,8 +23,9 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     # Initialises a couple of properties. They can be changed by Builder scripts
     add_property('_speed', 1.0, 'Speed', 'float', "Rotation speed, in rad/s")
-    add_property('_tolerance', math.radians(0.3), 'Tolerance', 'float')
-    add_property('_is_manual_mode', False, 'Manual', 'boolean', "If true, the PTU can only move via the keyboard.")
+    add_property('_tolerance', radians(0.3), 'Tolerance', 'float')
+    add_property('_is_manual_mode', False, 'Manual', 'boolean', 
+                 "If true, the PTU can only move via the keyboard.")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -37,10 +37,10 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         for child in self.blender_obj.childrenRecursive:
             if 'PanBase' in child.name:
                 self._pan_base = child
-                self._pan_position_3d = morse.helpers.transformation.Transformation3d(child)
+                self._pan_orientation = child.localOrientation
             elif 'TiltBase' in child.name:
                 self._tilt_base = child
-                self._tilt_position_3d = morse.helpers.transformation.Transformation3d(child)
+                self._tilt_orientation = child.localOrientation
 
         # Any other objects children of the PTU are assumed
         #  to be mounted on top of it
@@ -52,7 +52,7 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         try:
             logger.info("Using pan base: '%s'" % self._pan_base.name)
             logger.info("Using tilt base: '%s'" % self._tilt_base.name)
-        except AttributeError as detail:
+        except AttributeError:
             logger.error("PTU is missing the pan and/or tilt bases. Module will not work!")
             return
 
@@ -72,7 +72,8 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         target position.
         """
 
-        logger.debug("Service 'set_pan_tilt' setting angles to %.4f, %.4f" % (pan, tilt))
+        logger.debug("Service 'set_pan_tilt' setting angles to %.4f, %.4f" % 
+                                                                (pan, tilt))
         self.local_data['pan'] = pan
         self.local_data['tilt'] = tilt
 
@@ -101,12 +102,14 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         scene = blenderapi.scene()
         try:
             obj = scene.objects[obj_name]
-        except KeyError as detail:
-            logger.error("Object '%s' not found in scene. Can not look at it" % obj_name)
+        except KeyError:
+            logger.error("Object '%s' not found in scene.\
+                         Can not look at it" % obj_name)
             return False
 
         logger.debug ("Found object '%s'" % obj)
-        self._aim_camera_at_point(obj.worldPosition[0], obj.worldPosition[1], obj.worldPosition[2])
+        self._aim_camera_at_point(obj.worldPosition[0], obj.worldPosition[1],
+                                                        obj.worldPosition[2])
 
 
     def _aim_camera_at_point(self, x, y, z):
@@ -121,20 +124,20 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         Use the formulas at
         http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         """
-        goalPos = [0, 0, 0]
+        goal_pos = [0, 0, 0]
 
         # Get the postitions with respect to the PTU
-        goalPos[0] = x - self.position_3d.x
-        goalPos[1] = y - self.position_3d.y
-        goalPos[2] = z - self.position_3d.z
+        goal_pos[0] = x - self.position_3d.x
+        goal_pos[1] = y - self.position_3d.y
+        goal_pos[2] = z - self.position_3d.z
 
         logger.debug("target  = [%.4f, %.4f, %.4f]" % (x, y, z))
-        logger.debug("goalPos = [%.4f, %.4f, %.4f]" % (goalPos[0], goalPos[1], goalPos[2]))
+        logger.debug("goal_pos = [%.4f, %.4f, %.4f]" % (goal_pos[0], goal_pos[1], goal_pos[2]))
 
 
-        distance = math.sqrt(goalPos[0] ** 2 + goalPos[1] ** 2 + goalPos[2] ** 2)
-        theta = math.asin(goalPos[2] / distance)
-        phi = math.atan2(goalPos[1], goalPos[0])
+        distance = sqrt(goal_pos[0] ** 2 + goal_pos[1] ** 2 + goal_pos[2] ** 2)
+        theta = asin(goal_pos[2] / distance)
+        phi = atan2(goal_pos[1], goal_pos[0])
 
         logger.debug("Theta = %.4f | Phi = %.4f" % (theta, phi))
 
@@ -150,17 +153,9 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
     def default_action(self):
         """ Apply rotation to the platine unit """
         # Reset movement variables
-        rx, ry, rz = 0.0, 0.0, 0.0
+        ry, rz = 0.0, 0.0
 
         if self._is_manual_mode:
-            return
-
-        # Update the postition of the base platforms
-        try:
-            self._pan_position_3d.update(self._pan_base)
-            self._tilt_position_3d.update(self._tilt_base)
-        except AttributeError as detail:
-            logger.error("The PTU is missing the pan and/or tilt bases. Discarding action.")
             return
 
         try:
@@ -170,38 +165,26 @@ class PTUActuatorClass(morse.core.actuator.MorseActuatorClass):
         except ZeroDivisionError:
             pass
 
-        current_pan = self._pan_position_3d.yaw
-        current_tilt = self._tilt_position_3d.pitch
+        self._current_pan = self._pan_orientation.to_euler().z
+        self._current_tilt = self._tilt_orientation.to_euler().y
 
-        logger.debug("PTU: pan=%.4f, tilt=%.4f" % (current_pan, current_tilt))
+        logger.debug("PTU: pan=%.4f, tilt=%.4f" % (self._current_pan,
+                                                   self._current_tilt))
 
         # Get the angles in a range of -PI, PI
-        target_pan = morse_math.normalise_angle(self.local_data['pan'])
-        target_tilt = morse_math.normalise_angle(self.local_data['tilt'])
+        target_pan = normalise_angle(self.local_data['pan'])
+        target_tilt = normalise_angle(self.local_data['tilt'])
         logger.debug("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
 
-        # Get the current rotation of the parent robot
-        parent_pan = self.robot_parent.position_3d.euler.z
-        parent_tilt = self.robot_parent.position_3d.euler.y
-        logger.debug("Parent: pan=%.4f, tilt=%.4f" % (parent_pan, parent_tilt))
-
-        # Compute the rotation relative to the parent robot
-        relative_pan = current_pan - parent_pan
-        correct_pan = morse_math.normalise_angle(relative_pan)
-        relative_tilt = current_tilt - parent_tilt
-        correct_tilt = morse_math.normalise_angle(relative_tilt)
-
-        # Store the variables to acces as a service:
-        self._current_pan = correct_pan
-        self._current_tilt = correct_tilt
-
-        if (abs(target_pan - correct_pan) < self._tolerance and \
-            abs(target_tilt - correct_tilt) < self._tolerance):
+        if (abs(target_pan - self._current_pan) < self._tolerance and \
+            abs(target_tilt - self._current_tilt) < self._tolerance):
             self.completed((status.SUCCESS))
 
         # Determine the direction of the rotation, if any
-        ry = morse_math.rotation_direction(correct_tilt, target_tilt, self._tolerance, normal_speed)
-        rz = morse_math.rotation_direction(correct_pan, target_pan, self._tolerance, normal_speed)
+        ry = rotation_direction(self._current_tilt, target_tilt,
+                                self._tolerance, normal_speed)
+        rz = rotation_direction(self._current_pan, target_pan,
+                                self._tolerance, normal_speed)
 
         # Give the rotation instructions directly to the parent
         # The second parameter specifies a "local" movement
