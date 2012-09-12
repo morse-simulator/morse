@@ -8,7 +8,7 @@ All this informations can be read online:
 http://www.openrobots.org/morse/doc/stable/user/installation.html
 
 
-Requirements - What you need to install before 
+Requirements - What you need to install before
 ----------------------------------------------
 
 Hardware
@@ -38,7 +38,7 @@ Required software
 +++++++++++++++++
 
 - Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
-- Blender 2.59 build with Python 3.2
+- Blender 2.61 or superior build with Python 3.2
 - MORSE source code
 
 .. note::
@@ -46,13 +46,13 @@ Required software
   ``--with-wide-unicode`` flag, since Blender expects this behaviour.
   Otherwise, there will be an incompatibility of types when using additional
   middlewares.
- 
+
 If you plan to use the simulator with raw sockets of text files as "middleware",
 you don't need anything else. Otherwise, you need to install the software for
-other middlewares. Installation details for each supported middleware is 
+other middlewares. Installation details for each supported middleware is
 detailed at the end of this document.
 
-Installation 
+Installation
 ------------
 
 .. note::
@@ -69,15 +69,15 @@ Download the latest version of the source code. It is stored in a ``git``
 repository::
 
   $ git clone http://github.com/laas/morse.git
-  
-Once you have a copy of the repository, you can get to the last stable
-version (0.4) by using ::
-  
-  $ git checkout 0.4
-  
-You can get a `tarball version here <https://github.com/laas/morse/tarball/0.4>`_. 
 
- 
+Once you have a copy of the repository, you can get to the last stable
+version (0.6) by using ::
+
+  $ git checkout 0.6
+
+You can get a `tarball version here <https://github.com/laas/morse/tarball/0.6>`_.
+
+
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
 
@@ -138,39 +138,43 @@ You can check your configuration is ok with::
     $ cd build
     $ make install
 
-Installation of ROS support for MORSE 
+Installation of ROS support for MORSE
 -------------------------------------
 
-Blender 2.57+ relies on Python3.2 which is partially supported by ROS Electric Emys. 
+MORSE is based on Blender and requires Python 3.2. Python 3 is
+partially supported by **ROS Fuerte** from patch release 1.8.15,
+which was rolled out on 20/07/2012. Any ROS Fuerte installation
+from that day on works fine with MORSE.
 
-The following steps explain how to get a working setup, suitable for using ROS with MORSE.
 
-#. Install ROS Electric Emys (check http://www.ros.org/wiki/ROS/Installation if needed)
-#. Install Python3.2 manually or using your system package manager and make sure, your Pythonpath variable
-   is pointing to the Python3.2-libraries (Python3.2 Debian-packages are e.g. offered by Ubuntu 11.04 and newer) 
-#. Install PyYAML with Python3 support (PyYAML >= 3.09, you can get it from http://pyyaml.org/)
-   Install it with ``python3.2 setup.py install`` to be sure to have the Python3 libraries
+#. Install ROS Fuerte if needed: http://www.ros.org/wiki/ROS/Installation
 
-If you are running ROS Diamondback, you can still use MORSE, but due to
-lacking Python 3 compatibility, you will have to overlay some ROS stacks to be
-compatible with Python3.
-Therefore, you can use rosinstall:
+#. Install Python 3.2 using your system package manager (available in Ubuntu >=
+   11.04) or manually from the sources, and make sure your ``$PYTHONPATH``
+   variable includes the Python3.2 libraries.
 
-``rosinstall ~/ros-py3 /opt/ros/diamondback
-http://ias.cs.tum.edu/~kargm/ros_py3.rosinstall`` (if your ROS is installed in
-/opt/ros/diamondback and your overlay should be created in ~/ros-py3) The
-ROS-stacks ros, ros_comm and common_msgs are overlayed by Python3-compatible
-versions and need to be rebuild: ``rosmake ros && rosmake ros_comm && rosmake
-common_msgs``
+#. Install ``PyYAML`` with Python3 support (package ``python3-yaml`` on
+   Debian/Ubuntu, or you can get the sources from http://pyyaml.org/. Install
+   the source by running ``python3.2 setup.py install`` to be sure to have the
+   Python 3 libraries.
 
-Note: Rebuilding the common_msgs stack allows you to use all messages in this
-stack for communicating between MORSE and ROS. If you want to use any other
-messages, make sure the source-files are Python2 AND Python3 compatible! This
-can be achieved by simply rebuilding the ROS-packages of the messages with
-rosmake --pre-clean when you are running the patched ROS-stacks (make sure to
-source the right setup.bash!), e.g.: ``rosmake --pre-clean sensor_msgs``
+#. Install rospkg using Python3.2:
 
-Installation of YARP support for MORSE 
+   ``git clone git://github.com/ros/rospkg.git``
+
+   ``cd rospkg``
+
+   ``sudo python3.2 setup.py install``
+
+#. Done. You can start having fun with MORSE!
+
+
+To get a working setup suitable for using **ROS Electric** or **Diamondback**
+with MORSE, please follow the instructions online:
+http://www.openrobots.org/morse/doc/latest/user/installation/mw/ros.html
+
+
+Installation of YARP support for MORSE
 --------------------------------------
 
 For the YARP bindings
@@ -221,16 +225,16 @@ files ``yarp.py`` and ``_yarp.so`` to your Python lib directory
 
 .. warning::
     The name of the installation directory may be different depending on
-     your Linux distribution. If you use Ubuntu or similar distributions, 
-     replace the directory name of ``python3.2/site-packages`` for 
-     ``python3/dist-packages``. Make sure to indicate the correct path 
+     your Linux distribution. If you use Ubuntu or similar distributions,
+     replace the directory name of ``python3.2/site-packages`` for
+     ``python3/dist-packages``. Make sure to indicate the correct path
      used in your computer for all Python 3 libraries.
 
 
-Installation of Pocolibs support for MORSE 
+Installation of Pocolibs support for MORSE
 ------------------------------------------
 
-To build Pocolibs bindings (the LAAS-CNRS middleware), you need to 
+To build Pocolibs bindings (the LAAS-CNRS middleware), you need to
 install Pocolibs on your system.
 
 The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage
@@ -242,7 +246,7 @@ To install::
   $ make update
 
 
-Installation of MOOS support for MORSE 
+Installation of MOOS support for MORSE
 --------------------------------------
 
 
@@ -257,11 +261,11 @@ To install MOOS to your home directory::
     $ cd MOOS
     $ cmake .
     $ make
-    
-Pymoos requires the Boost Python library compiled for Python 3.  The 
-binaries available in most repositories are currently compiled for 
-version 2.7.   The latest version of the Boost source code (currently 
-1.47)  can be downloaded from `Boost <http://http://www.boost.org>`_.  
+
+Pymoos requires the Boost Python library compiled for Python 3.  The
+binaries available in most repositories are currently compiled for
+version 2.7.   The latest version of the Boost source code (currently
+1.47)  can be downloaded from `Boost <http://http://www.boost.org>`_.
 To install::
 
     $ ./bootstrap.sh --prefix=path/to/installation/prefix --with-python-version=3.2
@@ -275,11 +279,11 @@ Finally pymoos can be installed by::
     $ cmake .
     $ make
     $ sudo make install
-    
+
 When running ``cmake`` for pymoos make sure to select the MOOS support option.
 
 
-Installation of HLA support for MORSE 
+Installation of HLA support for MORSE
 -------------------------------------
 
 The High Level Architecture (HLA) is a standard framework that supports
