@@ -65,9 +65,9 @@ get some odometry feedback.
     james.translate(x=2.5, y=3.2, z=0.0)
 
     # An IMU sensor to get odometry information
-    imu = Sensor('imu')
-    james.append(imu)
-    imu.configure_mw('ros')
+    odometry = Sensor('odometry')
+    james.append(odometry)
+    odometry.configure_mw('ros')
 
     # Keyboard control
     keyboard = Actuator('keyboard')
@@ -82,7 +82,7 @@ get some odometry feedback.
 Run it by first starting a ROS core (``roscore``) and then ``morse run
 scenario.py``.
 
-The IMU sensor automatically publishes the TF transformation between the
+The Odometry sensor automatically publishes the TF transformation between the
 ``/odom`` and ``/base_footprint`` frames, so you actually do not need anything
 more to display than the ``/base_footprint`` of your robot in RVIZ. Launch RVIZ
 (``rosrun rviz rviz``), select ``/odom`` as *Fixed frame*, and add a TF
@@ -278,7 +278,7 @@ and add the following new section to your ``nav.launch`` file:
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
         <remap from="/base_scan" to="/pr2/Sick"/>
         <remap from="/cmd_vel" to="/pr2/Motion_Controller"/>
-        <remap from="/odom" to="/pr2/IMU"/>
+        <remap from="/odom" to="/pr2/Odometry"/>
 
         <param name="footprint_padding" value="0.01" />
         <param name="controller_frequency" value="10.0" />
