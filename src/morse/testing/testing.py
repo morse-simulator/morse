@@ -137,7 +137,7 @@ class MorseTestCase(unittest.TestCase):
         with open(self.logfile_name) as log:
             lines = follow(log)
             for line in lines:
-                if "INITIALIZATION ERROR" in line:
+                if  ("Python script error" in line) or ("INITIALIZATION ERROR" in line):
                     testlogger.error("Error during MORSE initialization! Check "
                                      "the log file.")
                     return
