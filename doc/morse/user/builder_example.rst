@@ -63,8 +63,8 @@ of them, with their options.
 
     When appending objects to the scene, it is necessary to use the file names
     that contain the Blender object corresponding to your component. For
-    :doc:`standard components <../components_library>`, you can omit the
-    `.blend` extension. For your own components, give the full path to your
+    :doc:`standard components <../components_library>`, you can omit the path and
+    the `.blend` extension. For your own components, give the full path to your
     Blender file.
 
 Append a robot
@@ -91,6 +91,22 @@ parent relationship with the robot (lines 7 to 9). *ie.*::
 
 Once again, this implies that ``v_omega.blend`` exists in 
 ``$MORSE_ROOT/share/morse/data/actuators/``.
+
+.. note::
+    In this example, the motion controller in your simulation will be named
+    ``motion``.
+    
+    The name is used by MORSE to refer to the component in the
+    simulator
+    interface. Each middleware has it's own naming convention, but for
+    instance with the basic ``socket`` interface, you can send a command to
+    the motion controller like that::
+
+        $ telnet localhost 4000
+        Connected to localhost.
+        > req1 motion set_speed [1.0, 0.002]
+        req1 OK
+
 
 Position a component
 ++++++++++++++++++++

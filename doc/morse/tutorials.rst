@@ -1,17 +1,48 @@
 Tutorials 
 =========
 
-General Workflow description
-----------------------------
+Welcome in the MORSE tutorials section!
 
-This section will describe how to build a complete simulation scenario, from the creation of a custom
-robot with predefined sensors and actuators to the complete scene, including
-other robots or humans.
+As a academic simulator for robotics, MORSE is a large piece of software which may require some time to master.
 
-.. toctree::
+However, you should hopefully be able to get very quickly your first simulation running.
 
-    user/user_workflow
+What is the general workflow?
+-----------------------------
 
+MORSE relies on the Blender 3D package to model and run your simulation.
+
+While it is possible to create and configure a simulation entierly from the
+:doc:`Blender interface<user/advanced_tutorials/editing_in_blender>`, it is easier
+and ways faster to rely on the so-called **Builder** scripts: these scripts
+are simple Python scripts that describe simulations. More about that in a
+second.
+
+Once you have a description of your simulation (as a Builder script or as
+a Blender file), you can run it::
+
+ $ morse run <your file>
+
+Now, instruct your :doc:`middleware (ROS, YARP,...)<user/integration>` to address
+the simulator instead of the real robot, and start your control softwares as
+you would do on a real robot. If you are not relying on an explicit middleware,
+you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`sockets`
+or the :doc:`Python API <pymorse>` :tag:`pymorse`.
+
+.. note::
+
+    In various places in the documentation, you will see labels like
+    :tag:`builder`, :tag:`ros` or :tag:`service`. They denote the main subjects
+    that the section or the tutorial deal with.
+
+The first simulation
+--------------------
+
+First of all, :doc:`install MORSE<user/installation>` if it is not already
+done.
+
+Next step, :doc:`user/beginner_tutorials/tutorial`. :tag:`builder`
+:tag:`sockets`
 
 Basic MORSE user interface
 --------------------------
