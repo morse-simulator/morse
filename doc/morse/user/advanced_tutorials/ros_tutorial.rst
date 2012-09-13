@@ -52,7 +52,7 @@ will use the PR2 robot, but any robot (with an URDF file to describe it
 to RVIZ) would do.
 
 Let's create a first simple scenario script (``scenario.py``): a PR2 in a kitchen
-environment, a keyboard actuator to move it around, and an IMU sensor to
+environment, a keyboard actuator to move it around, and an Odometry sensor to
 get some odometry feedback.
 
 .. code-block:: python
@@ -64,7 +64,7 @@ get some odometry feedback.
     james = PR2()
     james.translate(x=2.5, y=3.2, z=0.0)
 
-    # An IMU sensor to get odometry information
+    # An odometry sensor to get odometry information
     odometry = Sensor('odometry')
     james.append(odometry)
     odometry.configure_mw('ros')
