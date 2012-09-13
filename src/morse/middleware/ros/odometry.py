@@ -178,11 +178,4 @@ def post_odometry(self, component_instance):
                   child_frame_id,
                   odom_frame_id)
 
-    # send initial transformation from blender to odom frame
-    sendTransform(self, self._inital_translation,
-                  self._inital_rotation,
-                  time,
-                  odom_frame_id,
-                  blender_frame_id)
-
     self._seq += 1
