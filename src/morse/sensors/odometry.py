@@ -83,13 +83,14 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
         self.local_data['pitch'] = current_pos.pitch
         self.local_data['roll'] = current_pos.roll
 
-        # speed in the sensor frame, related to the initial pose
-        self.local_data['vx'] = self.local_data['dx'] / self.frequency
-        self.local_data['vy'] = self.local_data['dy'] / self.frequency
-        self.local_data['vz'] = self.local_data['dz'] / self.frequency
-        self.local_data['wz'] = dyaw / self.frequency
-        self.local_data['wy'] = dpitch / self.frequency
-        self.local_data['wx'] = droll / self.frequency
+        # speed in the sensor frame, related to the robot pose
+        self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
+        self.local_data['vx'] = self.delta_pos.x * self.frequency
+        self.local_data['vy'] = self.delta_pos.y * self.frequency
+        self.local_data['vz'] = self.delta_pos.z * self.frequency
+        self.local_data['wz'] = self.delta_pos.yaw * self.frequency
+        self.local_data['wy'] = self.delta_pos.pitch * self.frequency
+        self.local_data['wx'] = self.delta_pos.roll * self.frequency
 
         # Store the 'new' previous data
         self.previous_pos = current_pos
