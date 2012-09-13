@@ -6,6 +6,7 @@ from morse.core import status
 from functools import partial
 
 from morse.middleware.pocolibs.actuators.platine import PlatinePoster, PosterNotFound
+from morse.middleware.pocolibs.sensors.General_Poster.ors_poster import new_poster
 
 import math
 
@@ -15,6 +16,7 @@ class PlatineModule(MorseOverlay):
         super(self.__class__,self).__init__(overlaid_object)
         self._clean_track = False
         self._rot = 1.0
+        new_poster("platineCntrl", 4)
 
     def _dummy_completion(self, *args):
         logger.debug("enter in _dummy_completion")
