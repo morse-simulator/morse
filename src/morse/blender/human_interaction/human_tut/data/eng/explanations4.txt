@@ -1,7 +1,7 @@
 To pick up objects, go to the object and 
-move the crosshairs over the object. A open
-hand and the object's name should appear.
-If not so, the object is certainly out of 
+move the cross-hair over the object. An open
+hand and the name of the object should appear.
+If not, the object is most likely out of 
 reach.
 Press the <left Mousebutton> to grab the 
 object. If the object lies on the floor the 

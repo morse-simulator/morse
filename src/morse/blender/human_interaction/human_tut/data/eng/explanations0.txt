@@ -3,6 +3,6 @@ of the basics of the human control. Therefore
 it will show you how to master a simple 
 Pick-and-Place task.
 
-First of you will learn the navigation.
+First, you will learn the navigation.
 Use the mouse to rotate the camera around
 the Human.

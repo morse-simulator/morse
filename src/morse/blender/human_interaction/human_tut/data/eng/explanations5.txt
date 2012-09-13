@@ -4,7 +4,7 @@ the <Mousewheel> to make the human bend forward
 and backward.
 
 You can open doors and drawers by pressing
-<left Mousebutton> while the crosshairs are
+<left Mousebutton> while the cross-hair is
 over them.
 
 Now open the green cabinet door.
