@@ -31,7 +31,7 @@ def init_extra_module(self, component_instance, function, mw_data):
         logger.info("posting Odometry information via TF")
 
     # default frame_ids
-    blender_frame_id = "/world"
+    blender_frame_id = "/morse_world"
     odom_frame_id = "/odom"
     child_frame_id = "/base_footprint"
 
