@@ -31,7 +31,7 @@ def init_extra_module(self, component_instance, function, mw_data):
         logger.info("posting Odometry information via TF")
 
     # default frame_ids
-    blender_frame_id = "/world"
+    blender_frame_id = "/morse_world"
     odom_frame_id = "/odom"
     child_frame_id = "/base_footprint"
 
@@ -170,6 +170,13 @@ def post_odometry(self, component_instance):
         # publish the message on the correct w
         if str(topic.name) == str("/" + parent_name + "/" + component_instance.blender_obj.name):
             topic.publish(odometry)
+
+    # send current odometry transform
+    sendTransform(self, get_translation(self, component_instance),
+                  get_orientation(self, component_instance),
+                  time,
+                  child_frame_id,
+                  odom_frame_id)
 
     # send initial transformation from blender to odom frame
     sendTransform(self, self._inital_translation,
