@@ -17,8 +17,8 @@ It modifies so the following variables :
 
 	- **angular_velocity**: adds Gaussian noise with std dev ``gyro_std``
 	  (default: 0.05)
-    - **linear_acceleration**: adds Gaussian noise with std dev ``accel_std``
-      (default: 0.5)
+	- **linear_acceleration**: adds Gaussian noise with std dev ``accel_std``
+	  (default: 0.5)
 
 Available methods
 -----------------
