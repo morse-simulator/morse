@@ -1,0 +1,247 @@
+\documentclass{article}
+
+\usepackage{bchart}
+
+
+\newcommand{\answer}[1]{Answers: #1}
+\newcommand{\skipped}[1]{Question skipped: #1}
+\newcommand{\barcolor}{green!60!blue}
+
+
+\title{
+    \textbf{First MORSE users survey}\\[1cm]
+    August 2012\\[1cm]
+}
+
+\begin{document}
+
+\maketitle
+
+During a month, in August 2012, we have run a survey to better understand who
+are the users of MORSE, what are their use-cases and what are their needs.
+
+In total, 34 peoples participated, from 13 countries.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What country do you live in (country of residence)?}
+
+\answer{31}
+\skipped{3}
+
+\begin{bchart}[max=10]
+\bcbar[label=France,color=\barcolor]{7}
+\bcbar[label=Germany,color=\barcolor]{7}
+\bcbar[label=United States,color=\barcolor]{4}
+\bcbar[label=Brazil,color=\barcolor]{2}
+\bcbar[label=Belgium,color=\barcolor]{2}
+\bcbar[label=Portugal,color=\barcolor]{2}
+\bcbar[label=India,color=\barcolor]{1}
+\bcbar[label=Argentina,color=\barcolor]{1}
+\bcbar[label=Vietnam,color=\barcolor]{1}
+\bcbar[label=Australia,color=\barcolor]{1}
+\bcbar[label=Norway,color=\barcolor]{1}
+\bcbar[label=Italy,color=\barcolor]{1}
+\bcbar[label=Spain,color=\barcolor]{1}
+\end{bchart}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Where are you using MORSE?}
+
+\answer{33}
+\skipped{1}
+
+\begin{bchart}[max=30]
+\bcbar[label=at the university/research lab (in robotics) (72.7\%),color=\barcolor]{24}
+\bcbar[label=at the university/research lab (in another field) (9.1\%),color=\barcolor]{3}
+\bcbar[label=in a company (12.1\%),color=\barcolor]{4}
+\bcbar[label=at home (hobby projects) (24.2\%),color=\barcolor]{8}
+\end{bchart}
+
+\begin{itemize}
+	\item Bielefeld University
+	\item Carnegie Mellon University / CORAL Research Group
+	\item CNRS
+	\item Dassault aviation
+	\item DLR
+	\item Escola Superior de Tecnologia de Castelo Branco (x 2)
+	\item Georgia Institute of Technology (x 2)
+	\item Homembala Multimídia
+	\item INRIA
+	\item inSightful Robotics
+	\item Instituto Tecnologico de Aeronautica
+	\item ISAE - SUPAERO (x 2)
+	\item KIT, Institute for Process Control and Robotics
+	\item KUL Leuven (x 2)
+	\item LAAS-CNRS (x 2)
+    \item Norwegian University of Science and Technology - Department of Production and Quality Engineering - Robot lab
+	\item ONERA
+	\item Technische Universität München
+	\item TECNALIA
+	\item University of Siegen
+	\item University of Sydney
+	\item UNQUI
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Have you found MORSE easy to learn?}
+
+\answer{30}
+\skipped{4}
+
+\begin{bchart}[max=30]
+\bcbar[label=1 - Easy (3.3\%),color=\barcolor]{1}
+\bcbar[label=2 - Reasonably easy (76.7\%),color=\barcolor]{23}
+\bcbar[label=3 - Hard (20\%),color=\barcolor]{6}
+\bcbar[label=4- Very hard (0.0\%),color=\barcolor]{0}
+\end{bchart}
+
+Average ranking: 2.17
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Have you an experience with another simulator for robotics?}
+
+\answer{14}
+\skipped{20}
+
+\begin{bchart}[max=30]
+\bcbar[label=Gazebo (78.6\%),color=\barcolor]{11}
+\bcbar[label=Stage (64.3\%),color=\barcolor]{9}
+\bcbar[label=Webots (14.3\%),color=\barcolor]{2}
+\bcbar[label=Simbad (7.1\%),color=\barcolor]{1}
+\end{bchart}
+
+Other:
+
+\begin{itemize}
+    \item ROS
+    \item proper dassault environment
+    \item custom blender scripts
+    \item USARSim
+    \item Microsoft Robotics Studio - Agia PhysX ADAMS CAD-like simulations
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Have you found MORSE easy to use?}
+
+\answer{30}
+\skipped{4}
+
+\begin{bchart}[max=30]
+\bcbar[label=1 - Easy (20\%),color=\barcolor]{6}
+\bcbar[label=2 - Reasonably easy (60\%),color=\barcolor]{18}
+\bcbar[label=3 - Hard (16.7\%),color=\barcolor]{5}
+\bcbar[label=4- Very hard (3.3\%),color=\barcolor]{1}
+\end{bchart}
+
+Average ranking: 2.03
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{How do you rate your proficiency with MORSE?}
+
+\answer{30}
+\skipped{4}
+
+\begin{bchart}[max=30]
+\bcbar[label=1 - novice (23.3\%),color=\barcolor]{7}
+\bcbar[label=2 - needs advice (40\%),color=\barcolor]{12}
+\bcbar[label=3 - everyday use (16.7\%),color=\barcolor]{5}
+\bcbar[label=4- can offer advices (10\%),color=\barcolor]{3}
+\bcbar[label=5- know it very well (10\%),color=\barcolor]{3}
+\end{bchart}
+
+Average ranking: 2.43
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{How do/did you obtain MORSE (install and/or upgrade)?}
+
+\answer{30}
+\skipped{4}
+
+\begin{bchart}[max=30]
+\bcbar[label=From the sources (80.0\%),color=\barcolor]{24}
+\bcbar[label=robotpkg (30.0\%),color=\barcolor]{9}
+\bcbar[label=rosinstall (3.3\%),color=\barcolor]{1}
+\bcbar[label=autoproj (6.7\%),color=\barcolor]{2}
+\end{bchart}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What do you simulate?}
+
+\answer{30}
+\skipped{4}
+
+\begin{bchart}[max=30]
+\bcbar[label=Single robot (73.3\%),color=\barcolor]{22}
+\bcbar[label=Multiple robots (23.3\%),color=\barcolor]{7}
+\bcbar[label=Outdoor robotics (40.0\%),color=\barcolor]{12}
+\bcbar[label=Indoor robotics (43.3\%),color=\barcolor]{13}
+\bcbar[label=Human-robot interaction (26.7\%),color=\barcolor]{8}
+\bcbar[label=Physical interactions with the environment (36.7\%),color=\barcolor]{11}
+\bcbar[label=Flying robots (13.3\%),color=\barcolor]{4}
+\bcbar[label=Underwater robots (6.7\%),color=\barcolor]{2}
+\end{bchart}
+
+More details:
+\begin{itemize}
+    \item trying to build a distributed simulation (HLA) in which all robots will be driven with OROCOS components via YARP. Trying also to integrate a real robot in the simulation.
+	\item More into Player/Stage and ROS, have used Morse in the passing.
+	\item Multi robots configuration for a Convoy of vehicles
+	\item I'm using it mainly to simulate a robotic car and test some algorithms learned in Udacity.com's class CS373.
+	\item Multiple autonomous underwater vehicles (AUV)
+	\item Reasoning based on sensory information with decision taking in unstructured, outdoor environments.
+	\item Surgery
+	\item Swarm of aerial robots
+	\item Segway-style dynamic robot
+	\item Using MORSE for testing Human Aware Navigation and Activity Recognition and Monitoring for Human Robot Interaction in Human Everyday Environments
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Which of the following features would you like to see implemented/improved in MORSE? (use the field below to give details if needed!)}
+
+\answer{28}
+\skipped{6}
+
+\begin{bchart}[max=30]
+\bcbar[label=More "off the shelf" robots (Nao...) (25.0\%),color=\barcolor]{7}
+\bcbar[label=Better point cloud sensors (Kinect or Velodyne...) (50.0\%),color=\barcolor]{14}
+\bcbar[label=Grasp simulation (17.9\%),color=\barcolor]{5}
+\bcbar[label=Access to low-level control (32.1\%),color=\barcolor]{9}
+\bcbar[label=More "standard" indoor environments (14.3\%),color=\barcolor]{4}
+\bcbar[label=More "standard" outdoor environments (17.9\%),color=\barcolor]{5}
+\bcbar[label=Remote GUI to control the simulator (14.3\%),color=\barcolor]{4}
+\bcbar[label=GUI to help designing simulations within Blender (28.6\%),color=\barcolor]{8}
+\bcbar[label=Better logging/monitoring tools (17.9\%),color=\barcolor]{5}
+\bcbar[label=Better integration with ROS (35.7\%),color=\barcolor]{10}
+\bcbar[label=Better performances (21.4\%),color=\barcolor]{6}
+\bcbar[label=API in C++/Java/Python/... (46.4\%),color=\barcolor]{13}
+\bcbar[label=Easier installation (39.3\%),color=\barcolor]{11}
+\bcbar[label=Better documentation (50.0\%),color=\barcolor]{14}
+\bcbar[label=Ability to speed-up/slow-down the simulation (35.7\%),color=\barcolor]{10}
+\bcbar[label=Ability to record and replay a simulation (35.7\%),color=\barcolor]{10}
+\end{bchart}
+
+More details:
+\begin{itemize}
+	\item We could build a website to share robots, much like Blendersap.com.
+	\item Easier to install is big time - if there can be deb packages (like gazebo) then it can be wonderful.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overall, how happy are you with MORSE?}
+
+\answer{28}
+\skipped{6}
+
+\begin{bchart}[max=30]
+\bcbar[label=unhappy (0.0\%),color=\barcolor]{0}
+\bcbar[label=not so happy (14.3\%),color=\barcolor]{4}
+\bcbar[label=happy (35.7\%),color=\barcolor]{10}
+\bcbar[label=very happy (39.3\%),color=\barcolor]{11}
+\bcbar[label=completely ecstatic (10.7\%),color=\barcolor]{3}
+\end{bchart}
+
+
+
+\end{document}
+
