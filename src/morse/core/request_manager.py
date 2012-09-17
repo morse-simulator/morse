@@ -211,7 +211,7 @@ class RequestManager(object):
         logger.info("Incoming request " + service + " for " + component + "!")
 
         #Unique ID for our request
-        request_id = uuid.uuid3(uuid.NAMESPACE_URL, "http://morse.openrobots.org")
+        request_id = uuid.uuid1()
 
         try:
             method, is_async = self._services[(component, service)]
