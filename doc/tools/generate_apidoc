@@ -1,0 +1,65 @@
+#! /bin/sh
+
+if [ $# != 2 ]; then
+	echo "Usage : generate_apidoc SRC_DIR BUILD_DIR\n"
+	exit 1
+fi
+
+SPHINX=sphinx-build
+SPHINX_APIDOC=sphinx-apidoc
+SRC_DIR=${1}
+BUILDDIR=${2}
+FAKEPYTHON_PATH=${BUILDDIR}/fake_python
+DOC_PATH=${BUILDDIR}/doc
+
+build_false_blender_env()
+{
+	mkdir ${FAKEPYTHON_PATH}
+	for i in bge  bpy  GameKeys  GameLogic  mathutils  Rasterizer  VideoTexture; do
+		mkdir ${FAKEPYTHON_PATH}/${i}
+		touch ${FAKEPYTHON_PATH}/${i}/__init__.py
+	done
+
+	mkdir ${FAKEPYTHON_PATH}/mathutils/Vector
+	touch ${FAKEPYTHON_PATH}/mathutils/Vector/__init__.py
+
+	echo "pythonVersion=3.1" > ${FAKEPYTHON_PATH}/GameLogic/__init__.py
+}
+
+build_doc_env()
+{
+	mkdir ${DOC_PATH}/src
+	ln -s ${SRC_DIR}/doc/media ${DOC_PATH}/
+	cp ${SRC_DIR}/doc/morse/morse.rst ${DOC_PATH}/src/
+	sed -i -e 's/Tips and/Code documentation\n------------------\n\n.. toctree ::\n    :maxdepth: 3\n\n    code\/morse\n\nTips and/' ${DOC_PATH}/src/morse.rst 
+	ln -s ${SRC_DIR}/doc/morse/user ${DOC_PATH}/src/
+	ln -s ${SRC_DIR}/doc/morse/dev ${DOC_PATH}/src/
+	mkdir ${DOC_PATH}/src/code
+	$SPHINX_APIDOC -o ${DOC_PATH}/src/code ${SRC_DIR}/src
+
+	# The second pattern is needed because there is some bugs in sphinx current
+	sed -i.bak -e "s/extensions = \[\(.*\)\]/extensions = [\1, 'sphinx.ext.viewcode']/" \
+		-e "s/#html_use_modindex = True/html_use_modindex = False/" ${DOC_PATH}/conf.py 
+
+}
+
+cleanup()
+{
+	rm -rf ${DOC_PATH}/src
+	rm ${DOC_PATH}/media
+	rm -rf ${FAKEPYTHON_PATH}
+	mv ${DOC_PATH}/conf.py.bak ${DOC_PATH}/conf.py
+}
+
+generate_doc()
+{
+	build_false_blender_env
+	build_doc_env
+
+	export PYTHONPATH=${SRC_DIR}/src:${FAKEPYTHON_PATH}:${PYTHONPATH}
+	$SPHINX -b html -c ${DOC_PATH} ${DOC_PATH}/src/ ${DOC_PATH}/html
+
+	cleanup
+}
+
+generate_doc

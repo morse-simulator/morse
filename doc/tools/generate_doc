@@ -1,0 +1,214 @@
+#! /usr/bin/env python
+"""
+This tools import various components of MORSE (currently, the sensors and actuators)
+and generates a set of documentation in RST format based on the Python source.
+
+It generates doc for:
+    - the component itself, based on the component class docstring,
+    - the data fields exposed by the components and created with add_data,
+    - the configurable parameters created with add_property
+    - the services exported by the conmponent.
+"""
+
+from morse.actuators import pa_10, ptu, destination, force_torque, waypoint, keyboard
+from morse.sensors import odometry, camera, battery, proximity
+
+
+import sys, os
+from morse.core.actuator import MorseActuatorClass
+from morse.core.sensor import MorseSensorClass
+
+
+PREFIX = "."
+
+# documentation of special parameters
+special_doc = {}
+
+def underline(text, char = '='):
+    return text + '\n' + (char * len(text) + '\n')
+
+
+def parse_docstring(doc):
+    """ Parses the doc string, and return the doc without :param *: or :return:
+    but with a list of params, return values and their associated doc.
+
+    Also replace known keywords by hyperlinks.
+    Also replace :see: by 'See also:'
+    """
+    doc = " ".join([(("[[#" + anchors[word] + "|" + word + "]]") if word in anchors else word) for word in doc.split()])
+    doc.replace(":see:", "'''\nSee also:'''")
+    r = doc.split(":param ")
+    doc = r[0]
+    
+    params = [param.split(':',1) for param in r[1:]]
+
+    returndoc = None
+
+    if params:
+        if ':return:' in params[-1][1]:
+            params[-1][1], returndoc = params[-1][1].split(':return:')
+    else:
+        if ':return:' in doc:
+            doc, returndoc = doc.split(':return:')
+
+
+    return (doc, params,returndoc)
+
+components = {}
+anchors = {}
+
+m = sys.modules[__name__]
+
+# First, retreive components classes
+for module in [getattr(m, fn) for fn in dir(m)]:
+    for component in [getattr(module, fn) for fn in dir(module)]:
+
+        try:
+            name = component.__name__
+            ctype = None
+
+            if MorseActuatorClass in component.mro() and name != 'MorseActuatorClass':
+                print("Found actuator " + name)
+                ctype = 'actuator'
+                
+            if MorseSensorClass in component.mro() and name != 'MorseSensorClass':
+                print("Found sensor " + name)
+                ctype = 'sensor'
+
+            if not ctype:
+                continue
+
+            if hasattr(component, '_name'):
+                name = getattr(component, '_name')
+
+            if hasattr(component, '_short_desc'):
+                desc = getattr(component, '_short_desc')
+            else:
+                desc = ""
+
+            components[name] = {'object': component, 
+                                'type': ctype, 
+                                'desc': desc, 
+                                'doc': component.__doc__}
+
+        except TypeError: # .mro() not defined => not a class => not a component
+            pass
+        except AttributeError: # .mro() not defined => not a class => not a component
+            pass
+
+# Extract data fields
+for name, props in components.items():
+    c = props['object'] # component class
+    if hasattr(c, "_data_fields"):
+            print("Found datafields '" + str(c._data_fields) + "' in component " + name)
+            components[name]['data_fields'] = c._data_fields
+
+# Extract properties
+for name, props in components.items():
+    c = props['object'] # component class
+    if hasattr(c, "_properties"):
+            print("Found properties '" + str(c._properties) + "' in component " + name)
+            components[name]['properties'] = c._properties
+
+# Then, extract services
+for name, props in components.items():
+    c = props['object'] # component class
+    services = {}
+    for fn in [getattr(c, fn) for fn in dir(c)]:
+        if hasattr(fn, "_morse_service"):
+            print("Found service '" + fn.__name__ + "' in component " + name)
+
+            services[fn.__name__] = {'async': fn._morse_service_is_async, 
+                                     'doc': fn.__doc__}
+
+    components[name]['services'] = services
+
+
+# Finally, generate doc
+def print_data(out, name, props):
+        title = "Exported data"
+        out.write(underline(title, '-') + '\n')
+
+        try:
+            prop = props['data_fields']
+        except KeyError:
+            out.write("No exported data.\n\n")
+            return
+
+        for name, prop in prop.items():
+            out.write('- **' + name + '** (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ' + str(prop[0]) + '): ' + prop[2] + "\n")
+
+        out.write("\n\n")
+
+def print_properties(out, name, props):
+        title = "Configuration parameters for " + name
+        out.write(underline(title, '-') + '\n')
+
+        try:
+            prop = props['properties']
+        except KeyError:
+            out.write("No configurable parameter.\n\n")
+            return
+
+
+        for name, prop in prop.items():
+            out.write('- **' + name + '** (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ' + str(prop[0]) + '): ' + prop[2] + "\n")
+
+        out.write("\n\n")
+
+def print_services(out, name, props):
+        title = "Services for " + name
+        out.write(underline(title, '-') + '\n')
+
+        services = props['services']
+
+        for name, serv in services.items():
+            out.write('- **' + name + '**')
+
+            if serv['async']:
+                out.write(' (non blocking): ')
+            else:
+                out.write(' (blocking): ')
+
+            if serv['doc']:
+                    doc, params, returndoc = parse_docstring(serv['doc'])
+                    out.write(doc)
+                    if params:
+                        out.write("\n\n - Parameters\n\n")
+                        for p, d in params:
+                            out.write("  - **" + p + "**: " + d + "\n")
+                    if returndoc:
+                        out.write("\n\n - Return value:")
+                        out.write(returndoc)
+                        out.write("\n")
+            else:
+                out.write(" (no documentation yet)")
+            out.write("\n")
+
+        out.write("\n\n")
+
+
+
+if not os.path.exists(PREFIX):
+        os.makedirs(PREFIX)
+
+if not os.path.exists(os.path.join(PREFIX, 'actuators')):
+        os.makedirs(os.path.join(PREFIX, 'actuators'))
+if not os.path.exists(os.path.join(PREFIX, 'sensors')):
+        os.makedirs(os.path.join(PREFIX, 'sensors'))
+
+
+for name, props in components.items():
+    module = (props['object'].__module__.split('.'))[-1]
+    with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w') as out:
+        out.write(underline(name) + '\n')
+
+        if props['desc']:
+            out.write("\n**" + props['desc'] + "**\n\n")
+        
+        out.write(parse_docstring(props['doc'])[0] + "\n\n")
+        
+        print_data(out, name, props)
+        print_services(out, name, props)
+        print_properties(out, name, props)
+
