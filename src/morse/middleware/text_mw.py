@@ -1,5 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
+import re
+import sys
 import morse.core.middleware
 
 class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
@@ -25,39 +27,63 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         """
         parent_name = component_instance.robot_parent.blender_obj.name
 
-        # Extract the information for this middleware
-        # This will be tailored for each middleware according to its needs
-        function_name = mw_data[1]
-
-        try:
-            # Get the reference to the function
-            function = getattr(self, function_name)
-        except AttributeError as detail:
-            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
-            return
-
-        # Data write functions
-        if function_name == "write_data":
-            component_instance.output_functions.append(function)
-        # Data write functions
-        if function_name == "post_message":
-            component_instance.output_functions.append(function)
-
-        # Prepare a list with the data for the header of the file
-        data = []
-        data.append("ROBOT %s || SENSOR %s\n" % (parent_name, component_name))
-        data.append("(distance, globalVector(3), localVector(3))\n")
-        data.append(repr(component_instance.relative_position) + "\n\n")
-
-        # Open the file and write a header
+        # Open the file
         file_name = '{0}_{1}.txt'.format(parent_name, component_name)
         FILE = open(file_name, 'wb')
-        for line in data:
-            FILE.write(line.encode())
         self._file_list[component_name] = FILE
         self._index_list[component_name] = 1
         logger.info("File: '%s' opened for writing" % file_name)
 
+        # Extract the information for this middleware
+        # This will be tailored for each middleware according to its needs
+        function_name = mw_data[1]
+
+        function = self._check_function_exists(function_name)
+
+        if function != None:
+            # The function exists within this class,
+            #  so it can be directly assigned to the instance
+            if function_name == "write_data":
+                component_instance.output_functions.append(function)
+            # Data write functions
+            elif function_name == "post_message":
+                component_instance.output_functions.append(function)
+
+            else:
+                # Get the reference to the external module
+                # (should be already included)
+                source_file = mw_data[2]
+                module_name = re.sub('/', '.', source_file)
+                module = sys.modules[module_name]
+                try:
+                    # Call the init method of the new serialisation
+                    # Sends the name of the function as a means to identify
+                    #  what kind of port it should use.
+                    module.init_extra_module(self, component_instance, function, mw_data)
+                except AttributeError as detail:
+                    logger.error("%s in module '%s'" % (detail, source_file))
+                return
+
+            # Prepare a list with the data for the header of the file
+            data = []
+            data.append("ROBOT %s || SENSOR %s\n" % (parent_name, component_name))
+            data.append("(distance, globalVector(3), localVector(3))\n")
+            data.append(repr(component_instance.relative_position) + "\n\n")
+            # Write the header
+            for line in data:
+                FILE.write(line.encode())
+
+        else:
+            # If there is no such function in this module,
+            #  try importing from another one
+            try:
+                # Insert the method in this class
+                function = self._add_method(mw_data, component_instance)
+
+            except IndexError as detail:
+                logger.error("Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
+                return
+                    
     def post_message(self, component_instance):
         """ Dummy function to call the real storage method """
         self.write_data(component_instance)
