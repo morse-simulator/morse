@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import morse.core.blenderapi
+from morse.core import blenderapi
 import morse.core.robot
 from morse.core.services import service
 

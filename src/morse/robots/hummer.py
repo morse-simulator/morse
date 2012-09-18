@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import morse.core.blenderapi
 import morse.core.robot
 import PhysicsConstraints
 
@@ -20,9 +19,6 @@ class HummerClass(morse.core.robot.MorseRobotClass):
         #
         #  This section runs only once to create the vehicle:
         #
-        
-        cont = blenderapi.controller()
-        scene = blenderapi.scene()
 
         for child in obj.children:
             if 'wheel1' in child.name:
