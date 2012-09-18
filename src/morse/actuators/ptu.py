@@ -6,7 +6,7 @@ from morse.core import status
 from morse.core.services import service
 from morse.core.services import async_service
 from morse.core.services import interruptible
-from morse.helpers.math import normalise_angle, rotation_direction
+from morse.helpers.morse_math import normalise_angle, rotation_direction
 from morse.helpers.components import add_data, add_property
 
 class PTUActuatorClass(MorseActuatorClass):

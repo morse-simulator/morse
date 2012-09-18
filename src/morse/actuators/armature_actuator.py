@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.actuator
-import morse.helpers.math as morse_math
 from morse.core.services import service
 from morse.core.exceptions import MorseRPCInvokationError
 

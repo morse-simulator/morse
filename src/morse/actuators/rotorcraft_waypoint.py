@@ -3,7 +3,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 from mathutils import Vector, Matrix
 from math import radians, degrees, sin, cos, fabs, copysign
-from morse.helpers.math import normalise_angle
+from morse.helpers.morse_math import normalise_angle
 
 import morse.core.actuator
 from morse.core.services import service

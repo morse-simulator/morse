@@ -1,9 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
 import morse.core.sensor
-import mathutils
-import sys
-import morse.helpers.math as morse_math
 
 class PR2PostureClass(morse.core.sensor.MorseSensorClass):
     """ PR2 posture sensor

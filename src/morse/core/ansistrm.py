@@ -4,7 +4,7 @@
 #
 import logging
 import os
-from morse.core.logging import SECTION, ENDSECTION
+from morse.helpers.morse_logging import SECTION, ENDSECTION
 
 if os.name == 'nt':
     import ctypes

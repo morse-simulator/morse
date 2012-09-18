@@ -3,7 +3,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from math import degrees
 from mathutils import Vector
-from morse.helpers.math import normalise_angle
+from morse.helpers.morse_math import normalise_angle
 
 class RotorcraftAttitudeActuatorClass(morse.core.actuator.MorseActuatorClass):
     """ Motion controller for RollPitchYawThrust control input

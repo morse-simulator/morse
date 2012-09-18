@@ -1,9 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
 import morse.core.sensor
-import mathutils
-import sys
-import morse.helpers.math as morse_math
 
 class JidoPostureClass(morse.core.sensor.MorseSensorClass):
     """ Jido posture sensor. Currently working with PTU and KUKA arm """

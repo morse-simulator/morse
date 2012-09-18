@@ -3,7 +3,7 @@ import bge
 import mathutils
 import math
 import morse.core.sensor
-import morse.helpers.math
+import morse.helpers.morse_math
 
 class VelodyneClass(morse.core.sensor.MorseSensorClass):
     """ Velodyne laser range sensor """
@@ -47,7 +47,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     vector_point = mathutils.Vector()
 
                     # Convert the vertex to a vector
-                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
+                    morse.helpers.morse_math.fill_vector (vector_point, vertex_pos)
 
                     # Skip the center vertex
                     # NOTE: Make sure the center vertex of the arc
@@ -79,8 +79,8 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
         as a way to display the results obtained.
         """
         # Obtain the rotation matrix of the sensor.
-        robot_inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.robot_parent.blender_obj)
-        sensor_inverted_matrix = morse.helpers.math.invert_rotation_matrix(self.blender_obj)
+        robot_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.robot_parent.blender_obj)
+        sensor_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.blender_obj)
 
         # Create a vector for the mathutils operations
         vector_point = mathutils.Vector()
@@ -96,7 +96,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     vertex_pos = vertex.getXYZ()
 
                     # Convert the vertex to a vector
-                    morse.helpers.math.fill_vector (vector_point, vertex_pos)
+                    morse.helpers.morse_math.fill_vector (vector_point, vertex_pos)
 
                     # Skip the center vertex
                     # NOTE: Make sure the center vertex of the arc
@@ -133,7 +133,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                         logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
 
                         # Create a vector object
-                        morse.helpers.math.fill_vector (vector_point, point)
+                        morse.helpers.morse_math.fill_vector (vector_point, point)
 
                         # Multiply the resulting point by the inverse
                         #  of the sensor rotation matrix
@@ -155,7 +155,7 @@ class VelodyneClass(morse.core.sensor.MorseSensorClass):
                     # Otherwise return the vertex to its original position
                     else:
                         # Create a vector object
-                        morse.helpers.math.fill_vector (vector_point, base_ray)
+                        morse.helpers.morse_math.fill_vector (vector_point, base_ray)
                         # Give it the correct size
                         vector_point.normalize()
                         vector_point = vector_point * self.blender_obj['laser_range']

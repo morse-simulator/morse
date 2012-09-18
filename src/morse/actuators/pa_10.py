@@ -3,7 +3,7 @@ import math
 import morse.core.actuator
 from morse.core import blenderapi
 from morse.core import mathutils
-import morse.helpers.math as morse_math
+from morse.helpers.morse_math import normalise_angle, rotation_direction
 from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
@@ -91,7 +91,7 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
 
         for i in range(6):
             key = ('seg%d' % i)
-            target_angle = morse_math.normalise_angle(self.local_data[key])
+            target_angle = normalise_angle(self.local_data[key])
 
             # Get the next segment
             segment = self._segments[i]
@@ -103,11 +103,11 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
-                ry = morse_math.rotation_direction(segment_euler[1], target_angle, _tolerance, rotation)
+                ry = rotation_direction(segment_euler[1], target_angle, _tolerance, rotation)
                 #logger.debug("PARAMETERS Y: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[1], target_angle, _tolerance, rotation, ry))
 
             elif self._dofs[i] == 'z':
-                rz = morse_math.rotation_direction(segment_euler[2], target_angle, _tolerance, rotation)
+                rz = rotation_direction(segment_euler[2], target_angle, _tolerance, rotation)
                 #logger.debug("PARAMETERS Z: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, _tolerance, rotation, rz))
 
             logger.debug("ry = %.4f, rz = %.4f" % (ry, rz))

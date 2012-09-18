@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.helpers.math import normalise_angle
+from morse.helpers.morse_math import normalise_angle
 import morse.core.sensor
 import copy
 from morse.helpers.components import add_data

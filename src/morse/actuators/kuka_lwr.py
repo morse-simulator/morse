@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.actuators.armature_actuator
-import morse.helpers.math as morse_math
+from morse.helpers.morse_math import normalise_angle
 from morse.core.services import service
 from morse.core.exceptions import MorseRPCInvokationError
 
@@ -49,14 +49,12 @@ class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass)
             logger.debug("Channel '%s' st: [%.4f, %.4f, %.4f]" % (channel, segment_angle[0], segment_angle[1], segment_angle[2]))
 
             # Get the normalised angle for this segment
-            target_angle = morse_math.normalise_angle(self.local_data[channel.name])
+            target_angle = normalise_angle(self.local_data[channel.name])
 
             # Use the corresponding direction for each rotation
             if self._dofs[channel.name][1] == 1:
-                #ry = morse_math.rotation_direction(segment_angle[1], target_angle, self._tolerance, rotation)
                 segment_angle[1] = target_angle
             elif self._dofs[channel.name][2] == 1:
-                #rz = morse_math.rotation_direction(segment_angle[2], target_angle, self._tolerance, rotation)
                 segment_angle[2] = target_angle
 
             logger.debug("Channel '%s' fn: [%.4f, %.4f, %.4f]" % (channel, segment_angle[0], segment_angle[1], segment_angle[2]))

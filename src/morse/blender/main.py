@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.core.logging import SECTION, ENDSECTION
+from morse.helpers.morse_logging import SECTION, ENDSECTION
 import sys
 import os
 import re
@@ -658,7 +658,7 @@ def init_logging():
     else:
         ch = logging.StreamHandler()
     
-    from morse.core.logging import MorseFormatter
+    from morse.helpers.morse_logging import MorseFormatter
     # create logger
     logger = logging.getLogger('morse')
     logger.setLevel(logging.INFO)

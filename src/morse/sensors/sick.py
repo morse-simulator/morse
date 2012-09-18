@@ -1,9 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import mathutils
-import math
 import morse.core.sensor
-import morse.helpers.math
-import bge
 import bpy
 
 """
