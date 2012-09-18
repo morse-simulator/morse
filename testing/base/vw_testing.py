@@ -36,6 +36,7 @@ class VW_Test(MorseTestCase):
         robot = Robot('atrv')
 
         pose = Sensor('pose')
+        pose.translate(z=-0.10) # atrv base is 10cm over ground
         robot.append(pose)
         pose.configure_mw('socket')
 

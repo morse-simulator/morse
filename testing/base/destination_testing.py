@@ -53,7 +53,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 20.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
             # destination socket
             port = morse.get_stream_port('Motion_Controller')
@@ -71,7 +71,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], 3.0 * 2.0, delta=0.1)
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 20.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
             time.sleep(2.0)
             # Only x has changed
@@ -81,7 +81,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], 9.7, delta=0.1)
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 20.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
             x = pose['x']
             send_goal(dest_client, x, 10.0, 20.0)
@@ -94,14 +94,14 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], x, delta=0.1)
             self.assertAlmostEqual(pose['y'], 9.7, delta=0.1)
-            self.assertAlmostEqual(pose['z'], 20.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
 
             x = pose['x']
             y = pose['y']
             z = pose['z']
 
-            send_goal(dest_client, x, y, z+10)
+            send_goal(dest_client, x, y, 30.0)
             time.sleep(5.0)
 
             # Only Z has changed
@@ -112,7 +112,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], x, delta=precision)
             self.assertAlmostEqual(pose['y'], y, delta=precision)
-            self.assertAlmostEqual(pose['z'], z+10-0.3, delta=0.1)
+            self.assertAlmostEqual(pose['z'], 30.0, delta=0.2)
 
             send_goal(dest_client, 0, 0, 20)
             time.sleep(10.0)

@@ -50,6 +50,7 @@ class YARP_MW_Test(MorseTestCase):
         robot = Robot('atrv')
 
         pose = Sensor('pose')
+        pose.translate(z=-0.10)
         robot.append(pose)
         pose.configure_mw('yarp')
 

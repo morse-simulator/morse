@@ -26,6 +26,7 @@ class Waypoints_Test(MorseTestCase):
         robot = Robot('atrv')
 
         pose = Sensor('pose')
+        pose.translate(z=-0.10) # atrv body
         robot.append(pose)
         pose.configure_mw('socket')
 
