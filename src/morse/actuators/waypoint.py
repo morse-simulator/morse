@@ -71,7 +71,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self.local_data['z'] = self._destination[2]
         # Waypoint tolerance (in meters)
         self.local_data['tolerance'] = 0.5
-        self.local_data['speed'] = _speed
+        self.local_data['speed'] = self._speed
 
         # Identify an object as the target of the motion
         try:
