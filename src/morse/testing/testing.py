@@ -221,9 +221,10 @@ class MorseTestCase(unittest.TestCase):
         s.send(b"id1 simulation quit\n")
 
         with open(self.logfile_name) as log:
-            line = ""
-            while not "EXITING SIMULATION" in line:
-                line  = log.readline()
+            lines = follow(log)
+            for line in lines:
+                if "EXITING SIMULATION" in line:
+                    return
 
         os.kill(self.pid, signal.SIGKILL)
         testlogger.info("MORSE stopped")
