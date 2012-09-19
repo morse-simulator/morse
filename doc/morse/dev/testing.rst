@@ -5,7 +5,7 @@ Introduction
 ------------
 
 Unit-tests (using the standard Python unit-testing framework) can be added
-to MORSE by creating a test class inheriting from 
+to MORSE by creating a test class inheriting from
 :py:class:`morse.testing.testing.MorseTestCase`.
 
 We contributing code to MORSE, we recommend you to create unit-tests for the new
@@ -42,35 +42,35 @@ checks that MORSE `list_robots` control service actually returns both robots.
     from morse.testing.testing import MorseTestCase
 
     class BaseTest(MorseTestCase):
-    
+
         def setUpEnv(self):
             """ Defines the test scenario, using the Builder API.
             """
-            
+
             # Adding 2 robots
-            robot1 = Robot('jido')        
+            robot1 = Robot('jido')
             robot2 = Robot('atrv')
-            
+
             env = Environment('indoors-1/indoor-1')
-    
+
         def test_list_robots(self):
             """ This test is guaranteed to be started only when the simulator
             is ready.
             """
-            
+
             # Initialize a socket connection to the simulator
             import socket
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect(("localhost", 4000))
             sockf = s.makefile()
-            
+
             # Queries for the list of robots
             s.send("id1 simulation list_robots\n")
-            
+
             result = sockf.readline()
             id, success, robots = result.strip().split(' ', 2)
             self.assertEquals(success, "SUCCESS")
-            
+
             import ast
             robotsset = set(ast.literal_eval(robots))
             self.assertEquals(robotsset, {'Jido', 'ATRV'})
@@ -82,7 +82,7 @@ checks that MORSE `list_robots` control service actually returns both robots.
 Compiling MORSE to allow testing
 --------------------------------
 
-To be able to run the test suite, you must have compiled MORSE with the option 
+To be able to run the test suite, you must have compiled MORSE with the option
 ``PYMORSE_SUPPORT`` enabled. For example::
 
   $ cmake -DPYMORSE_SUPPORT=ON [other options] ..
@@ -101,7 +101,7 @@ the creation of scenes and some of the components are running properly on your
 system.
 
 
-    
+
 Running tests
 -------------
 
@@ -109,7 +109,7 @@ Running all MORSE tests
 +++++++++++++++++++++++
 
 The MORSE tests infrastructure is integrated with cmake, so you can run `make
-test` to check that all currently defined unit-tests for MORSE pass. 
+test` to check that all currently defined unit-tests for MORSE pass.
 
 ROS tests
 +++++++++
@@ -119,6 +119,21 @@ root of your MORSE source. Moreover, you need to generate messages for the
 morsetesting helper: to do so, you must go in
 `${MORSE_SRC_ROOT}/testing/middlewares/ros/morsetesting` and then use rosmake
 to build them.
+
+ie.
+
+    export MORSE_SRC_ROOT="$HOME/work/morse" # where you cloned MORSE sources
+    MORSE_ROS_TESTING=$MORSE_SRC_ROOT/testing/middlewares/ros/morsetesting
+    export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$MORSE_ROS_TESTING
+    cd $MORSE_ROS_TESTING
+    rosmake
+    cd $MORSE_SRC_ROOT
+    rm -rf build && mkdir build && cd build
+    cmake -DPYMORSE_SUPPORT=ON -DBUILD_ROS_SUPPORT=ON ..
+    make
+    sudo make install
+    make test
+
 
 Tests log
 +++++++++
