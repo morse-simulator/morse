@@ -109,12 +109,12 @@ class CameraTest(MorseTestCase):
                 if (o['r'] > 155 and o['g'] < 50 and o['b'] < 50):
                     res.append(i)
 
-            self.assertTrue(len(res) > 200)
+            self.assertTrue(len(res) > 190)
             for i in range(32335, 32342):
                 self.assertTrue(i in res)
-            for i in range(32976, 32991):
+            for i in range(32976, 32988):
                 self.assertTrue(i in res)
-            for i in range(33299, 33319):
+            for i in range(33299, 33315):
                 self.assertTrue(i in res)
             for i in range(33946, 33977):
                 self.assertTrue(i in res)
