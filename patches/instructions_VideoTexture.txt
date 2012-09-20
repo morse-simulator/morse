@@ -1,0 +1,16 @@
+Instructions to patch the VideoTexture module in Blender to output data from the z-buffer:
+
+- Download the Blender source code following the instructions here:
+    http://wiki.blender.org/index.php/Dev:Doc/Tools/SVN_checkout_and_usage
+
+- Copy the patch file (depth_images-3.diff) into the directory 'blender/source/gameengine/VideoTexture/' of the Blender source tree
+
+- Apply the patch:
+    cd blender/source/gameengine/VideoTexture/
+    patch < depth_images-3.diff
+
+- Compile Blender from source, following the instructions here:
+    http://wiki.blender.org/index.php/Dev:Doc/Building_Blender
+
+- To compile only the VideoTexture module (when compiling with scons):
+    python scons/scons.py -j9 {path_to_blender_svn}/build/linux/lib/libge_videotex.a install  

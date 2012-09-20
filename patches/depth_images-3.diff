@@ -1,0 +1,346 @@
+Index: ImageViewport.cpp
+===================================================================
+--- ImageViewport.cpp	(revision 50470)
++++ ImageViewport.cpp	(working copy)
+@@ -1,4 +1,7 @@
+-/*
++/** \file gameengine/VideoTexture/ImageViewport.cpp
++ *  \ingroup bgevideotex
++ */
++/* $Id: ImageViewport.cpp 39834 2011-09-01 02:12:53Z campbellbarton $
+ -----------------------------------------------------------------------------
+ This source file is part of VideoTexture library
+ 
+@@ -20,10 +23,6 @@
+ -----------------------------------------------------------------------------
+ */
+ 
+-/** \file gameengine/VideoTexture/ImageViewport.cpp
+- *  \ingroup bgevideotex
+- */
+-
+ // implementation
+ 
+ #include "PyObjectPlus.h"
+@@ -51,13 +50,18 @@
+ 	//glGetIntegerv(GL_VIEWPORT, m_viewport);
+ 	// create buffer for viewport image
+ 	m_viewportImage = new BYTE [4 * getViewportSize()[0] * getViewportSize()[1]];
++    // create a buffer for depth images
++    m_depthImage = new float[getViewportSize()[0] * getViewportSize()[1]];
+ 	// set attributes
+ 	setWhole(false);
+ }
+ 
+ // destructor
+ ImageViewport::~ImageViewport (void)
+-{ delete [] m_viewportImage; }
++{
++    delete [] m_viewportImage;
++    delete [] m_depthImage;
++}
+ 
+ 
+ // use whole viewport to capture image
+@@ -131,17 +135,39 @@
+ 	}
+ 	// if texture can be directly created
+ 	if (texId != 0 && m_pyfilter == NULL && m_capSize[0] == calcSize(m_capSize[0])
+-	        && m_capSize[1] == calcSize(m_capSize[1]) && !m_flip)
++	        && m_capSize[1] == calcSize(m_capSize[1]) && !m_flip && !m_zbuff && !m_depth)
+ 	{
+ 		// just copy current viewport to texture
+-		glBindTexture(GL_TEXTURE_2D, texId);
+-		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_upLeft[0], m_upLeft[1], (GLsizei)m_capSize[0], (GLsizei)m_capSize[1]);
+-		// image is not available
+-		m_avail = false;
++	    glBindTexture(GL_TEXTURE_2D, texId);
++        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_upLeft[0], m_upLeft[1], (GLsizei)m_capSize[0], (GLsizei)m_capSize[1]);
++	    // image is not available
++	    m_avail = false;
+ 	}
+ 	// otherwise copy viewport to buffer, if image is not available
+ 	else if (!m_avail)
+ 	{
++        if (m_zbuff)
++        {
++            // Use read pixels with the depth buffer
++            glReadPixels(m_upLeft[0], m_upLeft[1], (GLsizei)m_capSize[0], (GLsizei)m_capSize[1],
++                    GL_DEPTH_COMPONENT, GL_FLOAT, m_depthImage);
++            // filter loaded data
++            FilterZZZA filt;
++            filterImage(filt, m_depthImage, m_capSize);
++        }
++        else
++
++        if (m_depth)
++        {
++            // Use read pixels with the depth buffer
++            glReadPixels(m_upLeft[0], m_upLeft[1], (GLsizei)m_capSize[0], (GLsizei)m_capSize[1],
++                    GL_DEPTH_COMPONENT, GL_FLOAT, m_depthImage);
++            // filter loaded data
++            FilterDEPTH filt;
++            filterImage(filt, m_depthImage, m_capSize);
++        }
++        else
++
+ 		// get frame buffer data
+ 		if (m_alpha)
+ 		{
+@@ -310,6 +336,8 @@
+ 	{(char*)"size", (getter)Image_getSize, NULL, (char*)"image size", NULL},
+ 	{(char*)"scale", (getter)Image_getScale, (setter)Image_setScale, (char*)"fast scale of image (near neighbor)", NULL},
+ 	{(char*)"flip", (getter)Image_getFlip, (setter)Image_setFlip, (char*)"flip image vertically", NULL},
++	{(char*)"zbuff", (getter)Image_getZbuff, (setter)Image_setZbuff, (char*)"use depth buffer as texture", NULL},
++	{(char*)"depth", (getter)Image_getDepth, (setter)Image_setDepth, (char*)"get depth information from z-buffer using unsigned int precision", NULL},
+ 	{(char*)"filter", (getter)Image_getFilter, (setter)Image_setFilter, (char*)"pixel filter", NULL},
+ 	{NULL}
+ };
+Index: ImageRender.cpp
+===================================================================
+--- ImageRender.cpp	(revision 50470)
++++ ImageRender.cpp	(working copy)
+@@ -385,6 +385,8 @@
+ 	{(char*)"size", (getter)Image_getSize, NULL, (char*)"image size", NULL},
+ 	{(char*)"scale", (getter)Image_getScale, (setter)Image_setScale, (char*)"fast scale of image (near neighbor)",	NULL},
+ 	{(char*)"flip", (getter)Image_getFlip, (setter)Image_setFlip, (char*)"flip image vertically", NULL},
++	{(char*)"zbuff", (getter)Image_getZbuff, (setter)Image_setZbuff, (char*)"use depth buffer as texture", NULL},
++	{(char*)"depth", (getter)Image_getDepth, (setter)Image_setDepth, (char*)"get depth information from z-buffer using unsigned int precision", NULL},
+ 	{(char*)"filter", (getter)Image_getFilter, (setter)Image_setFilter, (char*)"pixel filter", NULL},
+ 	{NULL}
+ };
+@@ -547,6 +549,8 @@
+ 	{(char*)"size", (getter)Image_getSize, NULL, (char*)"image size", NULL},
+ 	{(char*)"scale", (getter)Image_getScale, (setter)Image_setScale, (char*)"fast scale of image (near neighbor)",	NULL},
+ 	{(char*)"flip", (getter)Image_getFlip, (setter)Image_setFlip, (char*)"flip image vertically", NULL},
++	{(char*)"zbuff", (getter)Image_getZbuff, (setter)Image_setZbuff, (char*)"use depth buffer as texture", NULL},
++	{(char*)"depth", (getter)Image_getDepth, (setter)Image_setDepth, (char*)"get depth information from z-buffer using unsigned int precision", NULL},
+ 	{(char*)"filter", (getter)Image_getFilter, (setter)Image_setFilter, (char*)"pixel filter", NULL},
+ 	{NULL}
+ };
+Index: ImageBase.h
+===================================================================
+--- ImageBase.h	(revision 50470)
++++ ImageBase.h	(working copy)
+@@ -78,6 +78,14 @@
+ 	bool getFlip (void) { return m_flip; }
+ 	/// set vertical flip
+ 	void setFlip (bool flip) { m_flip = flip; }
++	/// get Z buffer
++	bool getZbuff (void) { return m_zbuff; }
++	/// set Z buffer
++	void setZbuff (bool zbuff) { m_zbuff = zbuff; }
++	/// get depth
++	bool getDepth (void) { return m_depth; }
++	/// set depth
++	void setDepth (bool depth) { m_depth = depth; }
+ 
+ 	/// get source object
+ 	PyImage * getSource (const char * id);
+@@ -111,6 +119,10 @@
+ 	bool m_scaleChange;
+ 	/// flip image vertically
+ 	bool m_flip;
++	/// use the Z buffer as a texture
++	bool m_zbuff;
++	/// extract the Z buffer with unisgned int precision
++	bool m_depth;
+ 
+ 	/// source image list
+ 	ImageSourceList m_sources;
+@@ -342,6 +354,14 @@
+ PyObject * Image_getFlip (PyImage * self, void * closure);
+ // set flip
+ int Image_setFlip (PyImage * self, PyObject * value, void * closure);
++// get Z buffer
++PyObject * Image_getZbuff (PyImage * self, void * closure);
++// set Z buffer
++int Image_setZbuff (PyImage * self, PyObject * value, void * closure);
++// get depth
++PyObject * Image_getDepth (PyImage * self, void * closure);
++// set depth
++int Image_setDepth (PyImage * self, PyObject * value, void * closure);
+ 
+ // get filter source object
+ PyObject * Image_getSource (PyImage * self, PyObject * args);
+Index: FilterSource.h
+===================================================================
+--- FilterSource.h	(revision 50470)
++++ FilterSource.h	(working copy)
+@@ -31,7 +31,6 @@
+ 
+ #include "FilterBase.h"
+ 
+-
+ /// class for RGB24 conversion
+ class FilterRGB24 : public FilterBase
+ {
+@@ -97,6 +96,73 @@
+ 	{ VT_RGBA(val,src[2],src[1],src[0],0xFF); return val; }
+ };
+ 
++/// class for Z_buffer conversion
++class FilterZZZA : public FilterBase
++{
++public:
++	/// constructor
++	FilterZZZA (void) {}
++	/// destructor
++	virtual ~FilterZZZA (void) {}
++
++	/// get source pixel size
++	virtual unsigned int getPixelSize (void) { return 1; }
++
++protected:
++	/// filter pixel, source float buffer
++	virtual unsigned int filter (float * src, short x, short y,
++		short * size, unsigned int pixSize, unsigned int val)
++	{
++		// calculate gray value
++        // convert float to unsigned char
++		unsigned int depth = int(src[0] * 255);
++		// return depth scale value
++		VT_R(val) = depth;
++		VT_G(val) = depth;
++		VT_B(val) = depth;
++		VT_A(val) = 0xFF;
++
++		return val;
++	}
++};
++
++
++/// class for Z_buffer conversion
++class FilterDEPTH : public FilterBase
++{
++public:
++	/// constructor
++	FilterDEPTH (void) {}
++	/// destructor
++	virtual ~FilterDEPTH (void) {}
++
++	/// get source pixel size
++	virtual unsigned int getPixelSize (void) { return 1; }
++
++protected:
++	/// filter pixel, source float buffer
++	virtual unsigned int filter (float * src, short x, short y,
++		short * size, unsigned int pixSize, unsigned int val)
++	{
++		// calculate the value multiplying by the limit of a unsigned int (assuming 32 bits)
++        double result = src[0] * 4294967295.0;
++		unsigned int depth = (unsigned int)result;
++        //printf ("src = %f | result = %lf | depth = %u\n", src[0], result, depth);
++
++        // copy the integer value directly into the unsigned int array
++        memcpy(&val, &depth, sizeof (unsigned int));
++
++        /*
++        // Copy the float value straight away
++        memcpy(&val, src, sizeof (unsigned int));
++        */
++		return val;
++	}
++};
++
++
++
++
+ /// class for YV12 conversion
+ class FilterYV12 : public FilterBase
+ {
+Index: ImageBase.cpp
+===================================================================
+--- ImageBase.cpp	(revision 50470)
++++ ImageBase.cpp	(working copy)
+@@ -49,6 +49,8 @@
+ // constructor
+ ImageBase::ImageBase (bool staticSrc) : m_image(NULL), m_imgSize(0),
+ m_avail(false), m_scale(false), m_scaleChange(false), m_flip(false),
++m_zbuff(false),
++m_depth(false),
+ m_staticSources(staticSrc), m_pyfilter(NULL)
+ {
+ 	m_size[0] = m_size[1] = 0;
+@@ -532,7 +534,53 @@
+ 	return 0;
+ }
+ 
++// get zbuff
++PyObject * Image_getZbuff (PyImage * self, void * closure)
++{
++	if (self->m_image != NULL && self->m_image->getZbuff()) Py_RETURN_TRUE;
++	else Py_RETURN_FALSE;
++}
+ 
++// set zbuff
++int Image_setZbuff (PyImage * self, PyObject * value, void * closure)
++{
++	// check parameter, report failure
++	if (value == NULL || !PyBool_Check(value))
++	{
++		PyErr_SetString(PyExc_TypeError, "The value must be a bool");
++		return -1;
++	}
++	// set scale
++	if (self->m_image != NULL) self->m_image->setZbuff(value == Py_True);
++	// success
++	return 0;
++}
++
++// get depth
++PyObject * Image_getDepth (PyImage * self, void * closure)
++{
++	if (self->m_image != NULL && self->m_image->getDepth()) Py_RETURN_TRUE;
++	else Py_RETURN_FALSE;
++}
++
++// set depth
++int Image_setDepth (PyImage * self, PyObject * value, void * closure)
++{
++	// check parameter, report failure
++	if (value == NULL || !PyBool_Check(value))
++	{
++		PyErr_SetString(PyExc_TypeError, "The value must be a bool");
++		return -1;
++	}
++	// set scale
++	if (self->m_image != NULL) self->m_image->setDepth(value == Py_True);
++	// success
++	return 0;
++}
++
++
++
++
+ // get filter source object
+ PyObject * Image_getSource (PyImage * self, PyObject * args)
+ {
+Index: FilterBase.h
+===================================================================
+--- FilterBase.h	(revision 50470)
++++ FilterBase.h	(working copy)
+@@ -95,6 +95,10 @@
+ 	virtual unsigned int filter (unsigned int * src, short x, short y,
+ 		short * size, unsigned int pixSize, unsigned int val = 0)
+ 	{ return val; }
++	/// filter pixel, source float buffer
++	virtual unsigned int filter (float * src, short x, short y,
++		short * size, unsigned int pixSize, unsigned int val = 0)
++	{ return val; }
+ 
+ 	/// get source pixel size
+ 	virtual unsigned int getPixelSize (void) { return 1; }
+Index: ImageViewport.h
+===================================================================
+--- ImageViewport.h	(revision 50470)
++++ ImageViewport.h	(working copy)
+@@ -81,6 +81,8 @@
+ 
+ 	/// buffer to copy viewport
+ 	BYTE * m_viewportImage;
++    /// buffer to copy z buffer images
++    float * m_depthImage;
+ 	/// texture is initialized
+ 	bool m_texInit;
+ 
