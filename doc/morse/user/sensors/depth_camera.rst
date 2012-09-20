@@ -13,6 +13,14 @@ This sensor requires the generation of z-buffer images instead of the usual
 RGBA. For this reason, exporting the images will result in strange (and quite
 Psychodelic) colours.
 
+.. warning::
+    Currently distributed builds of Blender do not export the z-buffer data.
+    A patch has been developed to allow such functionality, but it is not yet
+    included in the regular Blender distributions. To allow this functionality,
+    you'll need to build Blender from the source code, and apply a patch
+    included in the MORSE distribution, under the ``patches`` directory. Follow
+    the instructions within to apply the patch.
+
 The settings for the ``near`` and ``far`` planes of the camera are important
 for this sensor. They will determine the resolution of the depth data
 recovered. For best results, it is recommended to keep the ``near`` plane as
@@ -78,8 +86,16 @@ The Empty object corresponding to this sensor has the following parameters:
 - **Depth**: (Boolean) flag that determines whether the sensor generates
   z-buffer images or plain images. It should be set to `True` for this sensor
   to work properly. In this case, the images generated will not be really
-  ``Visible``, since the data will be stored as floats, instead
-  of the usual RGBA strings. Default value is `True`.
+  ``Visible``, since the pixels stored in the image will correspond to a single
+  unsigned integer of 4 bytes instead of the usual 4 values of RGBA. Default
+  value is `True`.
+- **Zbuffer**: (Boolean) flag that determines whether the sensor generates a
+  grayscale image for the z-buffer, to be exported as an image. In this case,
+  the objects closer to the camera are shown in black, while those beyond the
+  `far_clipping` plane are shown in white. Depth information is stored in a
+  single byte, and copied for each of the R, G and B values, so the resolution
+  is only of 256 different depth values. This option should only be used to
+  show off.
 
 Camera calibration matrix
 -------------------------
@@ -110,6 +126,21 @@ Services
 
 - **capture**: (asynchronous service) the method expects an integer **n** in
   input and answer back when the simulated camera has token **n** shots.
+
+Configuring the camera to use z-buffer data
+-------------------------------------------
+
+An example for creating a properly configured dept_camera is given below:
+
+.. code-block:: python
+
+    from morse.builder import *
+
+    d_camera = Sensor('depth_camera')
+    d_camera.properties(cam_near = 2)
+    d_camera.properties(cam_far = 15)
+    d_camera.properties(Depth = True)
+
 
 Applicable modifiers
 --------------------

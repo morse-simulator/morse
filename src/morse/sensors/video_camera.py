@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status
-import bge
+import morse.core.blenderapi
 import mathutils
 import morse.sensors.camera
 
@@ -64,7 +64,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
 
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA
-            image_data = bge.logic.cameras[self.name()].source
+            image_data = morse.core.blenderapi.cameras()[self.name()].source
 
             # Fill in the exportable data
             self.local_data['image'] = image_data

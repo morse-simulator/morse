@@ -37,7 +37,9 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
 
     int i;
     int pixel;
-    float z_b, z_n, z_e;
+    unsigned int z_int;
+    double z_b;
+    float z_n, z_e;
     float x, y;
     int u, v;
 
@@ -55,11 +57,16 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
     for (i=0; i<img_buffer.len; i+=4)
     {
         pixel = i / 4;
-        memcpy (&z_b, &(img_buffer.buf)[i], sizeof(float));
+        //memcpy (&z_b, &(img_buffer.buf)[i], sizeof(float));
+
+        memcpy (&z_int, &(img_buffer.buf)[i], sizeof(unsigned int));
+        // Change the value of the pixel from integer to double
+        z_b = z_int / 4294967295.0;
+
         z_n = 2.0 * z_b - 1.0;
         z_e = 2.0 * near * far / (far + near - z_n * (far - near));
 
-        // The image we receive is tored as a single array of floats.
+        // The image we receive is stored as a single array of floats.
         // Pixel 0, 0 in the data is located at the bottom left, according to
         // the OpenGL conventions.
         // We need to convert this frame of reference to (u, v), starting at the
@@ -73,7 +80,8 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
         y = z_e * (v - v_0) / alpha_v;
 
         //printf("PIXEL %d\n", pixel);
-        //printf("\tz_b %f = z_n %f = z_e %f\n", z_b, z_n, z_e);
+        //printf("\tz_int = %u | ", z_int);
+        //printf("\tz_b = %f | z_n = %f | z_e = %f\n", z_b, z_n, z_e);
         //printf("\tu, v (%d, %d) = x, y (%f, %f)\n", u, v, x, y);
 
         // Store the x, y, z coordinates in the list
