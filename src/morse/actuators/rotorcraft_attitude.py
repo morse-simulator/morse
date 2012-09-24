@@ -2,15 +2,29 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import morse.core.actuator
 from math import degrees
-from mathutils import Vector
+from morse.core.mathutils import Vector
 from morse.helpers.morse_math import normalise_angle
+from morse.helpers.components import add_data, add_property
 
 class RotorcraftAttitudeActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Motion controller for RollPitchYawThrust control input
-
+    """
     This class will read desired attitude and thrust as input
     from an external middleware.
     """
+    
+    _name = "Rotorcraft attitude motion controller"
+    _short_desc = "Motion controller using force and torque to achieve desired attitude."
+    
+    add_data('roll', 0.0, 'float', "roll angle in radians")
+    add_data('pitch', 0.0, 'float', "pitch angle in radians")
+    add_data('yaw', 0.0, 'float', "yaw angle in radians")
+    add_data('thrust', 0.0, 'float', "collective thrust: 0 .. 1 (= 0 .. 100%)")
+
+    add_property('_rp_pgain', 100.0, 'RollPitchPgain')
+    add_property('_rp_dgain', 20.0, 'RollPitchDgain')
+    add_property('_yaw_pgain', 16.0, 'YawPgain')
+    add_property('_yaw_dgain', 4.0, 'YawDgain')
+    add_property('_thrust_factor', 40.0, 'ThrustFactor')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -18,21 +32,6 @@ class RotorcraftAttitudeActuatorClass(morse.core.actuator.MorseActuatorClass):
         super(self.__class__, self).__init__(obj, parent)
 
         #logger.setLevel(logging.DEBUG)
-
-        # roll input in radians
-        self.local_data['roll'] = 0.0
-        # pitch input in radians
-        self.local_data['pitch'] = 0.0
-        # yaw rate in rad/s
-        self.local_data['yaw'] = 0.0
-        # Collective: 0 .. 1 (= 0 .. 100%)
-        self.local_data['thrust'] = 0.0
-
-        self.add_property('_rp_pgain', 100.0, 'RollPitchPgain')
-        self.add_property('_rp_dgain', 20.0, 'RollPitchDgain')
-        self.add_property('_yaw_pgain', 16.0, 'YawPgain')
-        self.add_property('_yaw_dgain', 4.0, 'YawDgain')
-        self.add_property('_thrust_factor', 40.0, 'ThrustFactor')
 
         # Make new reference to the robot velocities (mathutils.Vector)
         self.robot_w = self.robot_parent.blender_obj.localAngularVelocity

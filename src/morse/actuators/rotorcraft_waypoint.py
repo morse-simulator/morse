@@ -1,24 +1,42 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-import bge
-from mathutils import Vector, Matrix
+from morse.core import blenderapi
+from morse.core.mathutils import Vector, Matrix
 from math import radians, degrees, sin, cos, fabs, copysign
 from morse.helpers.morse_math import normalise_angle
+from morse.helpers.components import add_data, add_property
 
 import morse.core.actuator
-from morse.core.services import service
-from morse.core.services import async_service
-from morse.core.services import interruptible
+from morse.core.services import service, async_service, interruptible
 from morse.core import status
 
 
 class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Waypoint motion controller
-
+    """ 
     This controller will receive a 3D destination point and heading
     and make the robot move to that location by changing attitude.
     This controller is meant for rotorcrafts like quadrotors.
     """
+
+    _name = "Rotorcraft Waypoint motion controller"
+    _short_desc = "Motion controller using force and torque to move a rotorcraft to a waypoint."
+
+    add_data('x', 0.0, 'float', "waypoint x coordinate in meters")
+    add_data('y', 0.0, 'float', "waypoint y coordinate in meters")
+    add_data('z', 0.0, 'float', "waypoint z coordinate in meters")
+    add_data('yaw', 0.0, 'float', "desired yaw angle in radians")
+    add_data('tolerance', 0.2, 'float', "waypoint tolerance in meters")
+
+    add_property('_h_pgain', radians(6), 'HorizontalPgain')
+    add_property('_h_dgain', radians(8), 'HorizontalDgain')
+    add_property('_v_pgain', 8, 'VerticalPgain')
+    add_property('_v_dgain', 8, 'VerticalDgain')
+    add_property('_yaw_pgain', 12.0, 'YawPgain')
+    add_property('_yaw_dgain', 6.0, 'YawDgain')
+    add_property('_rp_pgain', 9.7, 'RollPitchPgain')
+    add_property('_rp_dgain', 2, 'RollPitchDgain')
+    add_property('_max_bank_angle', radians(30), 'MaxBankAngle')
+    add_property('_target', 'wp_target', 'Target')
 
     def __init__(self, obj, parent=None):
 
@@ -31,23 +49,11 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         self._destination = self.robot_parent.blender_obj.worldPosition
         self._wp_object = None
 
-        self.add_property('_h_pgain', radians(6), 'HorizontalPgain')
-        self.add_property('_h_dgain', radians(8), 'HorizontalDgain')
-        self.add_property('_v_pgain', 8, 'VerticalPgain')
-        self.add_property('_v_dgain', 8, 'VerticalDgain')
-        self.add_property('_yaw_pgain', 12.0, 'YawPgain')
-        self.add_property('_yaw_dgain', 6.0, 'YawDgain')
-        self.add_property('_rp_pgain', 9.7, 'RollPitchPgain')
-        self.add_property('_rp_dgain', 2, 'RollPitchDgain')
-        self.add_property('_max_bank_angle', radians(30), 'MaxBankAngle')
-        self.add_property('_target', 'wp_target', 'Target')
-
+        # set desired position to current position
         self.local_data['x'] = self._destination[0]
         self.local_data['y'] = self._destination[1]
         self.local_data['z'] = self._destination[2]
         self.local_data['yaw'] = self.robot_parent.position_3d.yaw
-        # Waypoint tolerance (in meters)
-        self.local_data['tolerance'] = 0.2
 
         logger.info("inital wp: (%.3f %.3f %.3f)", self._destination[0], self._destination[0], self._destination[0])
         self._pos_initalized = False
@@ -78,7 +84,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
         try:
             wp_name = self._target
             if wp_name != '':
-                scene = bge.logic.getCurrentScene()
+                scene = blenderapi.scene()
                 self._wp_object = scene.objects[wp_name]
                 logger.info("Using object '%s' to indicate motion target", wp_name)
         except KeyError as detail:
