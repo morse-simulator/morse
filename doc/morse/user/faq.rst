@@ -38,7 +38,7 @@ When running morse
     a specific Blender executable
 
     * Your environment is not yet correctly setup to run MORSE!
-    Please fix it with above informations.
+    Please fix it with above information.
     You can also run 'morse check' for more details.
 
   **Solution**: Configure the environment variable ``MORSE_BLENDER`` on your
@@ -61,7 +61,7 @@ When running morse
     installed to some strange location, you may want to add it to your
     PYTHONPATH. Check INSTALL for more details.
     * Your environment is not yet correctly setup to run MORSE!
-    Please fix it with above informations.
+    Please fix it with above information.
 
   **Solution**: Configure the environment variable ``PYTHONPATH`` to point to
   the directory where you have installed the MORSE libraries in your system, as
