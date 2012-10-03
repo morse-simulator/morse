@@ -310,7 +310,7 @@ def prelaunch():
         check_setup()
     except MorseError as e:
         logger.error("Your environment is not yet correctly setup to run MORSE!\n" +\
-        "Please fix it with above informations.\n" +\
+        "Please fix it with above information.\n" +\
         "You can also run 'morse check' for more details.")
         sys.exit()
 

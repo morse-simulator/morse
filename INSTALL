@@ -4,7 +4,7 @@
 ===============================================================================
 
 
-All this informations can be read online:
+All this information can be read online:
 http://www.openrobots.org/morse/doc/stable/user/installation.html
 
 
@@ -194,7 +194,7 @@ cameras with yarp < 2.3.2, you need to apply the patch from
 
 Note that the easiest way to install YARP is probably to use ``robotpkg`` (see
 `robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more
-informations). Follow the instructions on installing ``robotpkg``. Then add
+information). Follow the instructions on installing ``robotpkg``. Then add
 the environment variable ``ROBOTPKG_BASE`` to your shell.  Then to install
 ``YARP`` ::
 
@@ -238,7 +238,7 @@ To build Pocolibs bindings (the LAAS-CNRS middleware), you need to
 install Pocolibs on your system.
 
 The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage
-<http://homepages.laas.fr/mallet/robotpkg>`_ for more informations).
+<http://homepages.laas.fr/mallet/robotpkg>`_ for more information).
 
 To install::
 
