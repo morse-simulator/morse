@@ -5,7 +5,7 @@ import os
 from morse.core.exceptions import MorseMultinodeError
 from morse.core.multinode import SimulationNodeClass
 
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 try:
     import hla
@@ -91,8 +91,9 @@ class MorseAmbassador(rti.FederateAmbassador):
                                time=None, retraction=None):
         scene = self.gl.getCurrentScene()
         obj_name = self.rtia_.getObjectInstanceName(object)
-        obj = scene.objects[obj_name]
+        logger.debug("RAV %s", obj_name)
         try:
+            obj = scene.objects[obj_name]
             if self.in_position in attributes:
                 pos, offset = MorseVector.unpack(attributes[self.in_position])
                 # Update the positions of the robots
@@ -136,9 +137,11 @@ class HLANode(SimulationNodeClass):
         logger.info("Initializing HLA node.")
         if os.getenv("CERTI_HTTP_PROXY") == None:
             os.environ["CERTI_HTTP_PROXY"] = ""
-        logger.debug("CERTI_HTTP_PROXY= %s", os.environ["CERTI_HTTP_PROXY"])
         os.environ["CERTI_HOST"] = str(self.host)
         os.environ["CERTI_TCP_PORT"] = str(self.port)
+        logger.debug("CERTI_HTTP_PROXY= %s", os.environ["CERTI_HTTP_PROXY"])
+        logger.debug("CERTI_HOST= %s", os.environ["CERTI_HOST"])
+        logger.debug("CERTI_TCP_PORT= %s", os.environ["CERTI_TCP_PORT"])
         try:
             logger.debug("Creating RTIA...")
             self.rtia = rti.RTIAmbassador()
@@ -178,7 +181,7 @@ class HLANode(SimulationNodeClass):
                 return False
             if self.morse_ambassador.initialize() == False:
                 return False
-            logger.debug("HLA middleware initialized.")
+            logger.info("HLA middleware initialized.")
         except Exception as error:
             logger.error("Error when connecting to the RTIg: %s." + \
                 "Please check your HLA network configuration.", error)
