@@ -21,7 +21,7 @@ env = Environment('laas/grande_salle')
 env.show_framerate(True)
 env.show_physics(False)
 
-env.configure_multinode(protocol="hla", server_port=60400, 
+env.configure_multinode(protocol="hla", server_address="127.0.0.1", server_port=60400, 
     distribution={
         "nodeA": [dala1.name],
         "nodeB": [dala2.name],
