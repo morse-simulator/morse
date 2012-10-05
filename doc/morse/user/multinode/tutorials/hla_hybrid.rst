@@ -151,5 +151,3 @@ a bit less strait-forward than for publishing.
 If you are interesting in such a behavior, look at the HLA plugin for MORSE, that
 actually implements publishing/subscribing behaviors. You can find it in
 ``$MORSE_ROOT/lib/python3.2/site-packages/morse/multinode/hla.py``.
-
-
