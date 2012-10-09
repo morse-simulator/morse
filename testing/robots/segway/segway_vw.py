@@ -59,6 +59,7 @@ class Differential_VW_Test(MorseTestCase):
 
         pose = Sensor('pose')
         robot.append(pose)
+        pose.translate(z=-0.1)
         pose.configure_mw('socket')
         pose.configure_mw('text')
 
