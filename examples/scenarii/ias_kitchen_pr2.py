@@ -5,11 +5,11 @@ from morse.builder.extensions.pr2extension import PR2
 
 # Append ATRV robot to the scene
 james = PR2()
-#james.configure_service('ros')
-#james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-#james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-#james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-#james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.configure_service('ros')
+james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.translate(x=0.1, y=2.7, z=0.0)
 
 human = Human()
