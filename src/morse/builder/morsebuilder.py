@@ -283,7 +283,7 @@ class Component(AbstractComponent):
             if frequency is set, delay is obtained by fps / frequency.
         """
         if frequency:
-            delay = bpy.context.scene.game_settings.fps // frequency
+            delay = max(0, bpy.context.scene.game_settings.fps // frequency - 1)
         sensors = [s for s in self._blendobj.game.sensors if s.type == 'ALWAYS']
         if len(sensors) > 1:
             logger.warning(self.name + " has too many Game Logic sensors to "+\
