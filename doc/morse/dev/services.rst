@@ -218,7 +218,7 @@ object.
 Interruption policy for asynchronous services
 +++++++++++++++++++++++++++++++++++++++++++++
 
-As of ``morse-0.5``, only one asynchronous service may run at a given time.
+As of ``morse-0.6``, only one asynchronous service may run at a given time.
 
 You can define the behaviour of the simulator when a second request is received
 either at the middleware level (*global policy*) or at the individual service
