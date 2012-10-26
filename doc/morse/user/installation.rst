@@ -32,7 +32,7 @@ Required software
 
 - Python (3.2 or +) On Linux: compiled with the ``--with-wide-unicode`` flag
 - Python-dev package (if installing from a repository)
-- Blender (>= 2.59 & < 2.62) build with Python 3.2
+- Blender (>= 2.61a) build with Python 3.2
 - MORSE source code
 
 .. note::
