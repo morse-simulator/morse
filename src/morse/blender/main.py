@@ -10,6 +10,10 @@ import bge
 import morse
 morse.running_in_blender = True
 
+# Force the full import of blenderapi so python computes correctly all
+# values in its  namespace
+import morse.core.blenderapi
+
 # The service management
 from morse.core.services import MorseServices
 
