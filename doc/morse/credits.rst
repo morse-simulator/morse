@@ -66,6 +66,11 @@ ISAE (Institut Supérieur de l'Aéronautique et de l'Espace) (Toulouse, France)
 - Jean-Guillaume Durand
 - Houssam Assany
 
+The Debian Project
+++++++++++++++++++
+
+-  Sylvestre Ledru
+
 
 Project funding
 ---------------
