@@ -1,73 +1,66 @@
-What's new in MORSE 0.5.x?
-==========================
+MORSE 0.6
+=========
 
 General
 -------
 
-- MORSE 0.5 requires Blender >= 2.59 and < 2.62 (because of some changes in the
-  matrices handling - support for Blender >= 2.62 is expected for next release)
-- Lots of cleaning (middleware empties have been removed)
-- The command line ``morse run {scene.blend|scene.py}`` now works as expected (*i.e.*,
-  starts the simulation as soon as Blender opens).
-  Optional arguments can be added and are passed to the script
-- Unit-testing support for MORSE (cf doc: dev/testing). Added a target to the build file
-  ('make test').
+- Lots of improvents on ROS compatibility. Many new tutorials with detailed
+  explanations
+- Compatibility with Blender 2.63a and 2.64 
+- MORSE is now compatible with Windows 32 and 64 bit. Thanks to Markus Sander
+  for providing the patches and testing
+- Improvements in human-robot interaction scenarios
+- The 'morse' executable has slightly different options now. run 'morse -h' for
+  details.
+- Added support for 'no color' and 'reverse colors' log output.
+- Added support for specifying the geometry of the simulator window.
+- Improvements to the multi-node architecture using HLA. Including new
+  tutorials and documentation
+- Add methods in builder to configure UTM coordinates and temperature in the
+  scene. Previously in the Scene_Script_Holder
+- Improve unit-tests coverage
 
-GUI
----
+User interface
+--------------
 
-- First version of a graphical user interface to add components to a scene
-- Plugin for loading DTM/IGN data has been ported to Blender 2.5/Python 3.2
-
-Middlewares
------------
-
-- Support of ROS services. Partial support for ROS actions (cf commit 02fda)
-- The long-standing issue with the socket server (bug #162) has been solved. It
-  is now possible to listen to a socket stream without prior initialization.
-
-Builder API
------------
-
-- New export script (available as Blender add-on) to export a MORSE Blender
-  scene to the MORSE Builder format.
-- Added support for multi-node configuration in the builder API
-- Added support for static, passive objects
-- Many examples and tutorials have been converted to the Builder API.
+- Possibility to configure and display the view from a simulated camera inside
+  the Blender screen
+- Reset the position of the global camera (CameraFP) by pressing F8
 
 Components
 ----------
 
-- Static objects have a redefined set of options to make them active or not,
-  graspable or not, etc. See :doc:`user/others/passive_objects`)
-- New components that can be created from the Builder API, such as:
+- New more physically realistic robots: Segway RMP 400 and Pioneer 3-DX. Thanks
+  to David Hodo and Pierrick Koch for their work on the physics simulation
+- New differential drive actuator associated to the previously mentioned
+  robots, called 'v_omega_diff_drive'. It converts a given v, omega into left
+  and right wheel speeds
+- Waypoint actuator can be configured to give target destination also in the Z
+  axis. Useful for helicopters and submarines
+- Human avatar can now be correctly placed in the scene using the Builder API
+  scripts
+- New textured model for the Yamaha R-Max helicopter
+- Corrections to the bounding boxes of buildings in outdoor scenarios. Also
+  added textures to the buildings
+- Several models for quadrotors, including more or less realistic controls
+  (using waypoints, stabilized fly model or directly in force)
+- Major rewriting of the IMU sensor and odometry sensor, which now returns more 
+  precise datas. While here, add some modifiers to allow more realistic
+  behaviour of such sensors.
 
-  - Infrared sensor
-  - Battery sensor
-  - Light switch actuator
-- Camera images can now be vertically flipped via the ``vertical_flip`` property
+Middlewares
+-----------
 
-Multi-node
-----------
+- Corrections to YARP middleware, allowing it to export data stored as Python
+  lists
 
-- New abstract API for multi-node implementation. The current socket-based and HLA
-  implementation now use it
-- This allows for having a single builder script to be used on all nodes. The
-  configuration of each node is done using the environment variable ``MORSE_NODE``
+Documentation
+-------------
 
-HRI
----
-
-Much work has been done in this domain:
-
-- New human avatar with a much improved behaviour/animation. It is controllable
-  from mouse + keyboard or Kinect (experimental)
-- The avatar features a 'manipulation mode' where objects can be picked and
-  dropped, and special objects like drawers and cupboards can be opened.
-- The human avatar can be easily added via the Builder API (instantiate the
-  'Human' class)
+- Make table of contents of the components with images
 
 Previous releases
 -----------------
 
 - :doc:`0.4.x release notes <releasenotes/0.4>`
+- :doc:`0.5.x release notes <releasenotes/0.5>`

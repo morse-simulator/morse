@@ -6,7 +6,7 @@ General
 
 - Lots of improvents on ROS compatibility. Many new tutorials with detailed
   explanations
-- Compatibility with Blender 2.63a and 2.64 (2.63a is the minimum)
+- Compatibility with Blender 2.63a and 2.64 
 - MORSE is now compatible with Windows 32 and 64 bit. Thanks to Markus Sander
   for providing the patches and testing
 - Improvements in human-robot interaction scenarios
@@ -16,7 +16,9 @@ General
 - Added support for specifying the geometry of the simulator window.
 - Improvements to the multi-node architecture using HLA. Including new
   tutorials and documentation
-- Add methods in builder to configure UTM coordinates and temperature in the scene. Previously in the Scene_Script_Holder
+- Add methods in builder to configure UTM coordinates and temperature in the
+  scene. Previously in the Scene_Script_Holder
+- Improve unit-tests coverage
 
 User interface
 --------------
@@ -40,6 +42,11 @@ Components
 - New textured model for the Yamaha R-Max helicopter
 - Corrections to the bounding boxes of buildings in outdoor scenarios. Also
   added textures to the buildings
+- Several models for quadrotors, including more or less realistic controls
+  (using waypoints, stabilized fly model or directly in force)
+- Major rewriting of the IMU sensor and odometry sensor, which now returns more 
+  precise datas. While here, add some modifiers to allow more realistic
+  behaviour of such sensors.
 
 Middlewares
 -----------
