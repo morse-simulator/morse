@@ -71,6 +71,35 @@ Screenshots
 MORSE related academic publications
 ===================================
 
+- `Simulating Complex Robotic Scenarios with MORSE <http://homepages.laas.fr/adegroot/publis/SIMPAR_2012.pdf>`_, SIMPAR 2012::
+
+	@inproceedings{morseSIMPAR2012,
+	  author    = {Gilberto Echeverria and
+				   Séverin Lemaignan and
+				   Arnaud Degroote and
+				   Simon Lacroix and
+				   Michael Karg and
+				   Pierrick Koch and
+				   Charles Lesire and
+				   Serge Stinckwich},
+	  title     = {Simulating Complex Robotic Scenarios with MORSE},
+	  booktitle = {SIMPAR},
+	  year      = {2012},
+	  pages     = {197-208},
+	  ee        = {http://dx.doi.org/10.1007/978-3-642-34327-8_20},
+	}
+- `Human-robot interaction in the MORSE simulator <http://hal.archives-ouvertes.fr/docs/00/66/70/26/PDF/lemaignan2012morse.pdf>`_, HRI 2012::
+
+	@inproceedings{lemaignan2012human,
+	  title={Human-robot interaction in the MORSE simulator},
+	  author={Lemaignan, S. and Echeverria, G. and Karg, M. and Mainprice, J. and Kirsch, A. and Alami, R.},
+	  booktitle={Proceedings of the seventh annual ACM/IEEE international conference on Human-Robot Interaction},
+	  pages={181--182},
+	  year={2012},
+	  organization={ACM}
+	}
+
+
 - `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011::
 
     @InProceedings{morseICRA2011,
