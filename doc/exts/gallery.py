@@ -7,7 +7,6 @@ from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive
 
-MEDIA_PATH="../doc/media/"
 IMAGE_PATH="_images/"
 HTML_PATH="user/"
 RST_PATH="morse/" + HTML_PATH
@@ -22,6 +21,8 @@ def visit_widegallery_node(self, node):
     visit_gallery_node(self, node, wide = True)
 
 def visit_gallery_node(self, node, wide = False):
+
+    MEDIA_PATH=os.path.join(node.document.settings.env.config.html_theme_path[0], "media")
 
     if wide:
         images_per_row = 2
