@@ -76,15 +76,25 @@ def retrieve_blender_from_path():
     return res
     
 def check_blender_version(blender_path):
+    version = None
     try:
         version_str = subprocess.Popen(
                                 [blender_path, '--version'], 
                                 stdout=subprocess.PIPE).communicate()[0]
-        version_str = version_str.decode()
-        version = version_str.split()[1] + '.' + version_str.split()[3][:-1]
+        for line in version_str.splitlines():
+            line = line.decode().strip()
+            if line.startswith("Blender"):
+                version = line.split()[1] + '.' + line.split()[3][:-1]
+                break
     except OSError:
         return None
     
+    if not version:
+        logger.error("Could not recognize Blender version!" \
+                     "Please copy the output of " +  blender_path + \
+                     " --version and send it to morse-dev@laas.fr.")
+        return None
+
     logger.info("Checking version of " + blender_path + "... Found v." + version)
     
     if  version.split('.') >= MIN_BLENDER_VERSION.split('.') and \
