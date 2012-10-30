@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(PACKAGE_NAME morse)
-set(PACKAGE_VERSION "0.5.99") 
+set(PACKAGE_VERSION "0.6")
 
 
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
