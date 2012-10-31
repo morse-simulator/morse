@@ -20,6 +20,7 @@ logger.setLevel(logging.DEBUG)
 ##
 
 try:
+    sys.path.append("@PYTHON_INSTDIR@")
     from morse.version import VERSION
 except ImportError as detail:
     logger.error("Unable to continue: '%s'\nVerify that your PYTHONPATH variable points to the MORSE installed libraries" % detail)
