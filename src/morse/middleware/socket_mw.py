@@ -15,7 +15,7 @@ class MorseSocketServ:
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._server.bind((str(socket.INADDR_ANY), port))
+        self._server.bind(('', port))
         self._server.listen(1)
 
         logger.info("Socket Mw Server now listening on port " + str(port) + \
