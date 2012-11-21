@@ -80,7 +80,8 @@ There is also an additional service specific to this armature:
 - **set_rotation_array**: (service) Receives an array indicating the angle to give
   to each of the segments of the arm. Angles are expected in radians. The length
   of the array should be equal to 7 or less, where any values not specified will
-  be considered as 0.0.
+  be considered as 0.0. If parameters exceeds IK limits, the whole request is
+  rejected.
 
     +------------+--------------------+-----------------+
     | Parameters | ``rotation_array`` | Array of floats |
@@ -89,7 +90,8 @@ There is also an additional service specific to this armature:
     Parameters: ``(rotation_array)``
 
 - **set_rotation**: (service) Makes the indicated segment rotate by the indicated
-  angle. Receives the name of the segment to rotate, and the amount in radians.
+  angle. Receives the name of the segment to rotate, and the amount in
+  radians. If rotations exceeds IK limits, the request is rejected.
 
     +------------+--------------------+--------------------------------------+
     | Parameters | ``channel_name``   | Name of the armature bone to rotate  |

@@ -72,9 +72,16 @@ class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass)
          is stored in the expected format of a list of angles for each joint.
         """
         try:
+            limits = self.get_IK_minmax()
+            limit = limits[channel_name]
             for i in range(3):
                 if self._dofs[channel_name][i] != 0:
-                    self.local_data[channel_name] = rotation[i]
+                    if (rotation[i] < limit[i][0] or rotation[i] > limit[i][1]):
+                        msg = str(rotation[i]) + " exceeds limits for " + \
+                              str(channel_name)
+                        raise MorseRPCInvokationError(msg)
+                    else:
+                        self.local_data[channel_name] = rotation[i]
             return None
         except KeyError:
             msg = str(channel_name) + " is not a valid channel name "
@@ -89,11 +96,22 @@ class KukaActuatorClass(morse.actuators.armature_actuator.ArmatureActuatorClass)
         each joint.
         """
         i = 0
+        rotations = {}
+        limits = self.get_IK_minmax()
         for channel in self.blender_obj.channels:
             try:
-                self.local_data[channel.name] = rotation_array[i]
+                limit = limits[channel.name]
+                rotation = rotation_array[i]
+                for j in range(3):
+                    if self._dofs[channel.name][j] != 0:
+                        if (rotation < limit[j][0] or rotation > limit[j][1]):
+                            msg = str(rotation) + " exceeds limits for " + \
+                                  str(channel.name)
+                            raise MorseRPCInvokationError(msg)
+                rotations[channel.name] = rotation
                 i += 1
             # If there are no more arguments, set the rotation values to zero
             except IndexError:
                 self.local_data[channel.name] = 0.0
+        self.local_data = rotations
         return None

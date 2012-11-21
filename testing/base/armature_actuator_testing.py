@@ -110,14 +110,14 @@ class ArmatureActuatorTest(MorseTestCase):
 
 
             # Move the arm now, and get the measure 
-            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -2.28, 1.0, -2.0, 1.0)
+            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
             sleep(2)
 
             posture = posture_stream.get()
             self.assertAlmostEqual(posture['kuka_1'], 1.57, delta=precision)
             self.assertAlmostEqual(posture['kuka_2'], 2.0, delta=precision)
             self.assertAlmostEqual(posture['kuka_3'], 1.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_4'], -2.28, delta=precision)
+            self.assertAlmostEqual(posture['kuka_4'], -1.28, delta=precision)
             self.assertAlmostEqual(posture['kuka_5'], 1.0, delta=precision)
             self.assertAlmostEqual(posture['kuka_6'], -2.0, delta=precision)
             self.assertAlmostEqual(posture['kuka_7'], 1.0, delta=precision)
@@ -134,7 +134,36 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][2], -2.28, delta=precision)
+            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
+            self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_5'][1], 1.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_6'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_6'][1], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_6'][2], -2.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_7'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_7'][1], 1.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_7'][2], 0.0, delta=precision)
+
+
+            # Injecting an angle too important is rejected. No angle is
+            # modified
+            with self.assertRaises(MorseServerError):
+                morse.call_server('kuka_armature', 'set_rotation_array', 0.0, 0.0, 0.0, -2.28, 0.0, 0.0, 0.0)
+
+            res = morse.call_server('kuka_armature', 'get_rotations')
+            self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
+            self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_2'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_2'][1], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_2'][2], 2.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_3'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_3'][1], 1.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
+            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][1], 1.0, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
@@ -156,7 +185,7 @@ class ArmatureActuatorTest(MorseTestCase):
                 morse.call_server('kuka_armature', 'set_rotation', 'kuka_5')
 
             morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [0.0, math.pi/2, 0.0])
-            sleep(1)
+            sleep(2)
 
             # Only kuka_5 has changed to the value math.pi/2
             res = morse.call_server('kuka_armature', 'get_rotations')
@@ -171,7 +200,7 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][2], -2.28, delta=precision)
+            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][1], math.pi/2, delta=precision)
             self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
@@ -191,16 +220,17 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
 
-            # Injecting value > max must be rejected or limited to max
+            # Injecting value > max is rejected 
             # See bug #87 on Morse GitHub
             res = morse.call_server('kuka_armature', 'get_IK_minmax')
             max = res['kuka_5'][1][1]
-            morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [0.0, max + 0.1, 0.0])
-            sleep(1)
+            with self.assertRaises(MorseServerError):
+                morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [0.0, max + 0.1, 0.0])
+                sleep(1)
 
             res = morse.call_server('kuka_armature', 'get_rotation', 'kuka_5')
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
-            self.assertAlmostEqual(res[1], max, delta=precision)
+            self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
 
 

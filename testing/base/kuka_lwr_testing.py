@@ -102,7 +102,7 @@ class KUKA_LWR_Test(MorseTestCase):
             self.assertAlmostEqual(posture['kuka_6'], 0.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_7'], 0.0, delta=0.02)
 
-            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -2.28, 1.0, -2.0, 1.0)
+            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
             sleep(2)
 
             posture = posture_stream.get()
@@ -110,7 +110,7 @@ class KUKA_LWR_Test(MorseTestCase):
             self.assertAlmostEqual(posture['kuka_2'], 2.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_3'], 1.0, delta=0.02)
             # Angles larger than PI are transformed
-            self.assertAlmostEqual(posture['kuka_4'], -2.28, delta=0.02)
+            self.assertAlmostEqual(posture['kuka_4'], -1.28, delta=0.02)
             self.assertAlmostEqual(posture['kuka_5'], 1.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_6'], -2.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_7'], 1.0, delta=0.02)
