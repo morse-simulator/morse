@@ -22,14 +22,14 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self._time = time.clock()
+        self._time = time.time()
 
 
         logger.info('Component initialized')
 
     def default_action(self):
         """ Main function of this component. """
-        newtime = time.clock()
+        newtime = time.time()
         charge = self.local_data['charge']
         dt = newtime - self._time
 
@@ -47,6 +47,8 @@ class BatteryClass(morse.core.sensor.MorseSensorClass):
         self.local_data['charge'] = float(charge)
         # update the current time
         self._time = newtime
+
+
 
     def isInChargingZone(self):
         # Test if the robot (parent) is in a charging zone
