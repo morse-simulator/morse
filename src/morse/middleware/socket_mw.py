@@ -2,7 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 import json
+import mathutils
 import morse.core.middleware
+from morse.helpers.transformation import Transformation3d
 from functools import partial
 from morse.core import services
 
@@ -91,6 +93,20 @@ class MorseSocketServ:
         except socket.error as error_info:
             logger.warning("Socket error catched while closing: " + str(error_info))
 
+class MorseEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, mathutils.Vector):
+            return obj[:]
+        if isinstance(obj, mathutils.Matrix):
+            return obj[:][:]
+        if isinstance(obj, mathutils.Quaternion):
+            return {'x' : obj.x, 'y': obj.y, 'z': obj.z, 'w': obj.w }
+        if isinstance(obj, mathutils.Euler):
+            return {'yaw': obj.z, 'pitch': obj.y, 'roll': obj.x }
+        if isinstance(obj, Transformation3d):
+            return {'x': obj.x, 'y': obj.y, 'z': obj.z,
+                    'yaw': obj.yaw, 'pitch': obj.pitch, 'roll': obj.roll }
+        return json.JSONEncoder.default(self, obj)
 
 class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
     """ External communication using sockets. """
@@ -173,7 +189,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
             self._add_method(mw_data, component_instance)
 
     def post_message(self, component_instance):
-        return (json.dumps(component_instance.local_data) + '\n').encode()
+        return (json.dumps(component_instance.local_data, cls=MorseEncoder) + '\n').encode()
 
     def read_message(self, msg):
         return json.loads(msg.decode('utf-8'))
