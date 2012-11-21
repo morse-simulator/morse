@@ -112,7 +112,7 @@ MORSE_MIDDLEWARE_DICT = {
         'ptu_posture': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'rosace': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'thermometer': [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
-        'semantic_camera' : [MORSE_MIDDLEWARE_MODULE['socket'], 'post_semantic_camera', 'morse/middleware/sockets/semantic_camera'],
+        'semantic_camera' : [MORSE_MIDDLEWARE_MODULE['socket'], 'post_message'],
         'video_camera' : [MORSE_MIDDLEWARE_MODULE['socket'], 'post_video_camera', 'morse/middleware/sockets/video_camera'],
 
         'destination': [MORSE_MIDDLEWARE_MODULE['socket'], 'read_message'],
