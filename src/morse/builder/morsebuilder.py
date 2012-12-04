@@ -612,11 +612,19 @@ class Environment(Component):
                     if space.type == 'VIEW_3D':
                         space.viewport_shade = viewport_shade
 
-    def set_auto_start(self, auto_start=True):
+    def set_auto_start(self, auto_start=True, fullscreen=True):
+        """ Run the simulation automatically
+        :param auto_start: Automatically start game at load time
+        :param fullscreen: Start player in a new fullscreen display
+        """
         bpy.context.scene.render.engine = 'BLENDER_GAME'
         bpy.context.scene.game_settings.use_auto_start = auto_start
+        bpy.context.scene.game_settings.show_fullscreen = fullscreen
 
     def set_debug(self, debug=True):
+        """ Set Blender debug mode
+        :param debug: Boolean, set when blender is running in debug mode (started with --debug)
+        """
         bpy.app.debug = debug
 
     def set_stereo(self, stereo='STEREO'):
