@@ -1,5 +1,5 @@
 from morse.builder import *
-from morse.builder.extensions.pr2extension import PR2
+from morse.builder.robots.pr2 import PR2
 
 # Append PR2 robot to the scene
 james = PR2()

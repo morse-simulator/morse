@@ -5,7 +5,7 @@ This script tests ROS services within MORSE.
 
 from morse.testing.ros import RosTestCase
 
-# Include this import to be able to use your test file as a regular 
+# Include this import to be able to use your test file as a regular
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
 try:
     from morse.builder import *
@@ -24,9 +24,9 @@ from sensor_msgs.msg import JointState
 class PR2JointStateTest(RosTestCase):
 
     pr2_joints_list = ['head_pan', 'head_tilt', 'l_shoulder_pan', 'l_shoulder_lift', 'l_upper_arm', 'l_elbow', 'l_forearm', 'l_wrist_flex', 'l_wrist_roll', 'r_shoulder_pan', 'r_shoulder_lift', 'r_upper_arm', 'r_elbow', 'r_forearm', 'r_wrist_flex', 'r_wrist_roll', 'torso_lift_joint', 'laser_tilt_mount_joint', 'fl_caster_rotation_joint', 'fl_caster_l_wheel_joint', 'fl_caster_r_wheel_joint', 'fr_caster_rotation_joint', 'fr_caster_l_wheel_joint', 'fr_caster_r_wheel_joint', 'bl_caster_rotation_joint', 'bl_caster_l_wheel_joint', 'bl_caster_r_wheel_joint', 'br_caster_rotation_joint', 'br_caster_l_wheel_joint', 'br_caster_r_wheel_joint', 'r_gripper_motor_slider_joint', 'r_gripper_motor_screw_joint', 'r_gripper_l_finger_joint', 'r_gripper_r_finger_joint', 'r_gripper_l_finger_tip_joint', 'r_gripper_r_finger_tip_joint', 'r_gripper_joint', 'l_gripper_motor_slider_joint', 'l_gripper_motor_screw_joint', 'l_gripper_l_finger_joint', 'l_gripper_r_finger_joint', 'l_gripper_l_finger_tip_joint', 'l_gripper_r_finger_tip_joint', 'l_gripper_joint', 'torso_lift_motor_screw_joint', 'head_pan_joint', 'head_tilt_joint', 'l_shoulder_pan_joint', 'l_shoulder_lift_joint', 'l_upper_arm_roll_joint', 'l_elbow_flex_joint', 'l_forearm_roll_joint', 'l_wrist_flex_joint', 'l_wrist_roll_joint', 'r_shoulder_pan_joint', 'r_shoulder_lift_joint', 'r_upper_arm_roll_joint', 'r_elbow_flex_joint', 'r_forearm_roll_joint', 'r_wrist_flex_joint', 'r_wrist_roll_joint']
-    
+
     def setUpEnv(self):
-        from morse.builder.extensions.pr2extension import PR2
+        from morse.builder.robots.pr2 import PR2
         print("Adding a PR2 robot...")
         pr2 = PR2()
         pr2_posture = Sensor("pr2_posture")
@@ -35,8 +35,8 @@ class PR2JointStateTest(RosTestCase):
 
         env = Environment('indoors-1/indoor-1')
         env.aim_camera([1.0470, 0, 0.7854])
-    
-    
+
+
     def test_base_jointstates(self):
         rospy.loginfo("Creating listener node to check if posture of PR2 is published.")
         rospy.init_node('pr2_jointstate_listener', log_level = rospy.DEBUG, disable_signals=True)

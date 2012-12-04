@@ -58,7 +58,7 @@ get some odometry feedback.
 .. code-block:: python
 
     from morse.builder import *
-    from morse.builder.extensions.pr2extension import PR2
+    from morse.builder.robots.pr2 import PR2
 
     # A 'naked' PR2 robot to the scene
     james = PR2()
@@ -102,7 +102,7 @@ First complete the ``scenario.py`` script by adding a posture sensor:
 .. code-block:: python
 
     from morse.builder import *
-    from morse.builder.extensions.pr2extension import PR2
+    from morse.builder.robots.pr2 import PR2
 
     # A PR2 robot to the scene
     james = PR2()
@@ -147,13 +147,13 @@ Edit ``nav.launch`` and copy-paste this code:
 
     <launch>
         <param name="robot_description" command="cat $(find morse_2dnav)/pr2.urdf"/>
-        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
             <remap from="joint_states" to="/pr2/pr2_posture" />
         </node>
     </launch>
 
 Lastly, build the ``pr2.urdf`` file in your node by running::
-  
+
   rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > pr2.urdf
 
 Restart the MORSE simulation and launch your new ROS node with
@@ -214,7 +214,7 @@ following line to your launch file to start a map server with your map:
 
 .. code-block:: xml
 
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/> 
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/>
 
 You do not need the ``gmapping`` node anymore; you should kill it.
 
@@ -250,7 +250,7 @@ First, add AMCL to the launch file:
 
 .. code-block:: xml
 
-    <node name="amcl" pkg="amcl" type="amcl"> 
+    <node name="amcl" pkg="amcl" type="amcl">
         <remap to="/pr2/Sick" from="/scan" />
     </node>
 
@@ -295,7 +295,7 @@ and add the following new section to your ``nav.launch`` file:
 
 
 Run your launch script with ``roslaunch morse_2dnav nav.launch``. This should
-bring up all needed nodes and topics. 
+bring up all needed nodes and topics.
 
 In RVIZ, change the *2D Nav Goal* topic in the *Tool properties* panel, and set
 it to ``move_base_simple/goal``.
