@@ -7,21 +7,26 @@ from morse.helpers.components import add_data, add_property
 
 class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
     """
-    This sensor can be used to determine which other objects are within a certain radius of the sensor. It performs its test based only on distance. The type of tracked objects can be specified using the ‘Track’ property.
+    This sensor can be used to determine which other objects are within a
+    certain radius of the sensor. It performs its test based only on distance.
+    The type of tracked objects can be specified using the **Track** property.
     """
 
     _name = "Proximity Sensor"
     _short_desc = "Distance sensor to detect nearby objects."
 
-    add_data('near_objects', {}, "dict", "A list of the tracked objects located within the given radius. The keys of the dictionary are the object names, and the values are the distances (in meters) from the sensor.")
+    add_data('near_objects', {}, "dict", "A list of the tracked objects located "
+            "within the given radius. The keys of the dictionary are the object "
+            "names, and the values are the distances (in meters) from the "
+            "sensor.")
     add_data('near_robots', {}, "dict", "deprecated. Points to near_objects for compatibility reasons.")
 
-    add_property('_range', 100, 'Range', "float", "The distance, in meters beyond which this sensor is unable to locate other robots.")
-    add_property('_tag', 
-                 "Robot_Tag", 
-                 'Track', 
-                 "string", 
-                 "The type of tracked objects. This type is looked for as game property of scene objects. You must then add a new game property to the objects you want to be detected by the proximity sensor.")
+    add_property('_range', 100, 'Range', "float", "The distance, in meters "
+            "beyond which this sensor is unable to locate other robots.")
+    add_property('_tag', "Robot_Tag",  'Track',  "string",  "The type of "
+            "tracked objects. This type is looked for as game property of scene "
+            "objects. You must then add a new game property to the objects you "
+            "want to be detected by the proximity sensor.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.

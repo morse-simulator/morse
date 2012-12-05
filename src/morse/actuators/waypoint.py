@@ -23,17 +23,57 @@ from morse.core.services import service, async_service, interruptible
 from morse.helpers.components import add_data, add_property
 
 class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Waypoint motion controller
+    """
+    This actuator reads the coordinates of a destination point, and moves the robot
+    towards the given point, with the robot restricted to moving only forward,
+    turning around its Z axis, and possibly going up and down.
+    This controller is meant to be used mainly by non-holonomic robots.
+    
+    While a robot is moving towards a given waypoint, a property of the
+    **MorseRobotClass** will be changed in indicate the status of the robot.
+    The ``movement_status`` property will take one of these values: **Stop**,
+    **Transit** or **Arrived**.
+    
+    The movement speed of the robot is internally adjusted to the Blender time
+    measure, following the formula: ``blender_speed = given_speed * tics``, where
+    **tics** is the number of times the code gets executed per second.
+    The default value in Blender is ``tics = 60``.
+    
+    This actuator also implements a simple obstacle avoidance mechanism. The blend
+    file contains the **Motion_Controller** empty, as well as two additional Empty
+    objects: **Radar.L** and **Radar.R**.
+    These detect nearby objects to the left or right of the robot, and will
+    instruct the robot to turn in the opposite direction of the obstacle.
+    If the radar objects are not present, the controller will not have any obstacle
+    avoidance, and the robot can get blocked by any object between it and the
+    target.
 
-    This controller will receive a destination point and
-    make the robot move to that location by moving forward and turning.
-    This controller is meant for land robots that can not move sideways.
+    .. note:: For objects to be detectable by the radars, they must have the
+        following settings in the **Physics Properties** panel:
+    
+        - **Actor** must be checked
+        - **Collision Bounds** must be checked
+    
+        This will work even for Static objects
     """
     _name = "Waypoint"
-    add_property('_obstacle_avoidance', True, 'ObstacleAvoidance', 'boolean')
-    add_property('_free_z', False, 'FreeZ', 'boolean')
+
+    add_property('_obstacle_avoidance', True, 'ObstacleAvoidance', 'bool', "if "
+            "true (default), will activate obstacle avoidance if the radars are "
+            "present") 
+    add_property('_free_z', False, 'FreeZ', 'bool', "if false "
+            "(default), the robot is only controlled on 'X' and heading; if "
+            "true, 'Z' is also controlled (for aerial or submarine robots)")
     add_property('_angle_tolerance', math.radians(10), 'AngleTolerance', 'float', "Tolerance in radians regarding the final heading of the robot")
-    add_property('_speed', 1.0, 'Speed', 'float')
+    add_property('_speed', 1.0, 'Speed', 'float', "movement speed for the robot, given in m/s")
+    add_property('_target', "", 'Target', 'string', "name of a blender object in the scene. When specified,"
+            "this object will be placed at the coordinates given to the actuator, to"
+            "indicate the expected destination of the robot")
+    add_property('_ignore', "", 'Ignore', 'string', "List of property names. If "
+            "the object detected by the radars has any of these properties "
+            "defined, it will be ignored by the obstacle avoidance, and will not "
+            "make the robot change its trajectory. Useful when trying to move "
+            "close to an object of a certain kind")
 
     add_data('x', 0.0, "float", "X coordinate of the destination, in world frame")
     add_data('y', 0.0, "float", "Y coordinate of the destination, in world frame")
@@ -145,10 +185,12 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     @interruptible
     @async_service
     def goto(self, x, y, z, tolerance=0.5, speed=1.0):
-        """ Go to a new destination.
-
-        The service returns when the destination is reached within
-        the provided tolerance bounds.
+        """ This method can be used to give a one time
+        instruction to the actuator.  When the robot reaches the destination, it will
+        send a reply, indicating that the new status of the robot is "Stop". The
+        function can be called with 3 to 5 parameters, corresponding to the variables
+        in ``local_data``.  The coordinates are mandatory, while the values for
+        **tolerance** and **speed** can be omitted.
         """
         self.local_data['x'] = x
         self.local_data['y'] = y
@@ -160,7 +202,11 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     @service
     #@async_service
     def stop(self):
-        """ Interrup the movement of the robot """
+        """ 
+        This method will instruct the robot to set
+        its speed to 0.0, and reply immediately. If a **goto** request is ongoing, it
+        will remain "pending", as the current destination is not changed.
+        """
         #self.local_data['x'] = self.blender_obj.worldPosition[0]
         #self.local_data['y'] = self.blender_obj.worldPosition[1]
         #self.local_data['z'] = self.blender_obj.worldPosition[2]
@@ -175,7 +221,11 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def resume(self):
-        """ Restore the previous speed and keep going towards the waypoint """
+        """
+        Restores the speed to the same value as
+        before the last call to the **stop** service. The robot will continue to the
+        last waypoint specified.
+        """
         self.local_data['speed'] = self._previous_speed
         self._previous_speed = 0
 
@@ -187,7 +237,11 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
 
     @service
     def get_status(self):
-        """ Return the current status (Transit, Arrived or Stop) """
+        """
+        Ask the actuator to send a message
+        indicating the current movement status of the parent robot. There are three
+        possible states: **Transit**, **Arrived** and **Stop**.
+        """
         return self.robot_parent.move_status
 
 

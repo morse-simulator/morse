@@ -10,15 +10,41 @@ from morse.helpers.morse_math import normalise_angle, rotation_direction
 from morse.helpers.components import add_data, add_property
 
 class PTUActuatorClass(MorseActuatorClass):
-    """ Generic controller for pan-tilt units
+    """
+    This actuator reads the rotation values for pan and tilt, and applies
+    them to the pan-tilt unit that must be set as children of this actuator.
+    Angles are expected in radians.
 
-    Reads 2 angles (in radians) and applies them to the object and its children.
+    Unlike most other actuators, the Pan-Tilt unit is composed not only of an
+    Empty object, but it also includes two meshes. These are the **PanBase** and
+    the **TiltBase** that must also be imported when using this actuator.
+    These meshes will rotate to produce the effect of a real Pan-Tilt unit.
+
+    .. note:: When mounting a camera or stereo unit on top of the Pan-Tilt unit,
+        make sure to parent the camera to the **PTU** object.
+
+    This component can be configured to be operated manually as well as through data
+    from a middleware. When using manual mode, the pan and tilt segments can be rotated
+    using the following keys:
+
+    -  :kbd:`Page Up` tilt up
+    -  :kbd:`Page Down` tilt down
+    -  :kbd:`Home` pan left
+    -  :kbd:`Insert` pan right
+
+
+    Code samples
+    ------------
+
+    - `Scenario with a PTU from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L28>`_ :tag:`builder`
+    - `Datastream usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L56>`_ :tag:`pymorse` :tag:`datastre~
+    - `Service usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L121>`_ :tag:`pymorse` :tag:`service`
     """
 
     _name = "Pan-Tilt Unit"
-    _short_desc = "An actuator to control pan-tilt supports"
+    _short_desc = "A generic actuator to control pan-tilt supports"
 
-    add_data('pan', 0.0, 'float', "Pan vlaue, in radians")
+    add_data('pan', 0.0, 'float', "Pan value, in radians")
     add_data('tilt', 0.0, 'float', "Tilt value, in radians")
 
     # Initialises a couple of properties. They can be changed by Builder scripts

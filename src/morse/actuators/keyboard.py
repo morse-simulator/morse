@@ -4,10 +4,23 @@ import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
 class KeyboardActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Class definition for a motion controller that changes speed
-        and rotation of the robot using the keyboard arrows. """
+    """ This actuator does not require a connection with external data. It simply
+    responds to the keyboard arrows to generate movement instructions for the robot
+    attached.
 
-    add_property('_speed', 1.0, 'Speed', 'float')
+    When parented to a robot, the user can press the arrow keys to modify the
+    linear and angular velocities (V, W) of the robot.
+
+    :kbd:`Up` forward
+    :kbd:`Down` backwards
+    :kbd:`Left` turn left
+    :kbd:`Right` turn right
+    """
+
+    _name = "Keyboard Actuator"
+    _short_desc="A 'fake' actuator that allows to move a robot from the keyboard."
+
+    add_property('_speed', 1.0, 'Speed', 'float', "Movement speed of the parent robot, in m/s")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)

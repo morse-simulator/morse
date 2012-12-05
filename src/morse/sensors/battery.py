@@ -4,15 +4,26 @@ import time
 from morse.helpers.components import add_data, add_property
 
 class BatteryClass(morse.core.sensor.MorseSensorClass):
-    """ Class definition for the battery sensor.
-        Sub class of Morse_Object. 
+    """
+    This sensor emulates the remaining charge of a battery on the robot.
+    It is meant to be used only as an informative measure, to be taken in
+    consideration by the planning algorithms. It does not prevent the robot
+    from working.
+
+    The charge of the battery decreases with time, using a predefined
+    **Discharge rate** specified as a property of the Blender object.
+    This rate is independent of the actions performed by the robot, and
+    only dependant on the time elapsed since the beginning of the simulation.
+
+    A planned feature is to allow for designated **Charging Zones** where
+    the battery will gradually recharge. However, this is not implemented yet.
     """
 
     _name = "Battery Sensor"
 
     add_property('_discharging_rate', 0.05, 'DischargingRate', "float", "Battery discharging rate, in percent per seconds")
 
-    add_data('charge', 100.0, "Initial battery level, in percent")
+    add_data('charge', 100.0, "float", "Initial battery level, in percent")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.

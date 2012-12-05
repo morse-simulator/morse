@@ -3,18 +3,20 @@ import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
 class DestinationActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Destination motion controller
-
-    This controller will receive a destination point and
-    make the robot move to that location by moving without turning.
+    """
+    This actuator reads the coordinates of a destination point, and moves the robot
+    in a straight line towards the given point, without turning.  It provides a
+    very simplistic movement, and can be used for testing or for robots with
+    holonomic movement.  The speeds provided are internally adjusted to the Blender
+    time measure.
     """
 
     _name = "Destination"
     _short_desc = "Instruct the robot to move towards a given target"
 
-    add_data('x', 'current X pos')
-    add_data('y', 'current Y pos')
-    add_data('z', 'current Z pos')
+    add_data('x', 'current X pos', "float", "X coordinate of the destination")
+    add_data('y', 'current Y pos', "float", "Y coordinate of the destination")
+    add_data('z', 'current Z pos', "float", "Z coordinate of the destination")
 
     add_property('_tolerance', 0.5, 'Tolerance')
     add_property('_speed', 5.0, 'Speed')

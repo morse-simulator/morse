@@ -8,24 +8,24 @@ from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
 class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
-    """ Motion controller using linear and angular speeds
+    """ This actuator reads a list of angles for the segments of the
+    Mitsubishi PA-10 arm and applies them as local rotations.
 
-    This component will read an array of 6 floats, and apply them as
-    rotation for the parts of the PA-10 arm.
+    Angles are expected in radians.
     """
 
-    _name = "PA-10"
+    _name = "Mitsubishi PA-10"
     _short_desc = "PA-10 6-DOF robotic arm"
 
     add_property('_speed', 1.0, "Speed", "float", 'speed of each joint, in rad/s')
     add_property('_tolerance', math.radians(5), "Tolerance", "float", 'tolerance on the position, in radians')
 
-    add_data('seg0', 0.0, "float", "first joint (base)")
-    add_data('seg1', 0.0, "float", "second joint")
-    add_data('seg2', 0.0, "float", "third joint")
-    add_data('seg3', 0.0, "float", "fourth joint")
-    add_data('seg4', 0.0, "float", "fifth joint")
-    add_data('seg5', 0.0, "float", "sixth joint (wrist)")
+    add_data('seg0', 0.0, "float", "first joint (base), in radians")
+    add_data('seg1', 0.0, "float", "second joint, in radians")
+    add_data('seg2', 0.0, "float", "third joint, in radians")
+    add_data('seg3', 0.0, "float", "fourth joint, in radians")
+    add_data('seg4', 0.0, "float", "fifth joint, in radians")
+    add_data('seg5', 0.0, "float", "sixth joint (wrist), in radians")
 
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
@@ -135,8 +135,9 @@ class PA10ActuatorClass(morse.core.actuator.MorseActuatorClass):
         """
         MORSE service to set the rotation for each of the arm joints.
         It receives an array containing the angle to give to each of
-        the robot articulations. The array contains only one angle for
-        each joint.
+        the robot articulations. Angles are expected in radians. The length
+        of the array should be equal to 6 or less, where any values not 
+        specified will be considered as 0.0.
 
         :param seg0: 1st joint angle (base)
         :param seg1: 2nd joint angle

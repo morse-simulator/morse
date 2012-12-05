@@ -17,10 +17,12 @@ class ForceTorqueActuatorClass(morse.core.actuator.MorseActuatorClass):
     _short_desc="Motion controller using force and torque"
 
 
-    add_data('force', [0.0, 0.0, 0.0])
-    add_data('torque', [0.0, 0.0, 0.0])
+    add_data('force', [0.0, 0.0, 0.0], "vec3<float>", "force along x, y, z")
+    add_data('torque', [0.0, 0.0, 0.0], "vec3<float>", "torque around x, y, z")
 
-    add_property('_robot_frame', False, 'RobotFrame')
+    add_property('_robot_frame', False, 'RobotFrame', 'bool', 'If set to true '
+            'the inputs are applied in the Robot coordinate frame instead of the '
+            'actuator frame.')
 
 
     def __init__(self, obj, parent=None):

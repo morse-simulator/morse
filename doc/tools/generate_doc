@@ -15,11 +15,14 @@ from morse.sensors import odometry, camera, battery, proximity
 
 
 import sys, os
+import fnmatch
+
 from morse.core.actuator import MorseActuatorClass
 from morse.core.sensor import MorseSensorClass
 
 
 PREFIX = "."
+MEDIA_PATH = "../../media"
 
 # documentation of special parameters
 special_doc = {}
@@ -27,6 +30,19 @@ special_doc = {}
 def underline(text, char = '='):
     return text + '\n' + (char * len(text) + '\n')
 
+def insert_image(name):
+    matches = []
+    for root, dirnames, filenames in os.walk(MEDIA_PATH):
+      for filename in fnmatch.filter(filenames, '%s.png' % name):
+            matches.append(os.path.join(root, filename))
+
+    if matches:
+        file = matches[0]
+        print("Found image %s for the component %s" % (file, name))
+        # take the first file found
+        return ".. image:: %s\n  :align: center\n  :width: 600\n\n" % file
+
+    return ""
 
 def parse_docstring(doc):
     """ Parses the doc string, and return the doc without :param *: or :return:
@@ -35,7 +51,19 @@ def parse_docstring(doc):
     Also replace known keywords by hyperlinks.
     Also replace :see: by 'See also:'
     """
-    doc = " ".join([(("[[#" + anchors[word] + "|" + word + "]]") if word in anchors else word) for word in doc.split()])
+
+    # Try to 'safely' remove leading spaces introduced by natural Python
+    # docstring formatting. We can not simply strip leading withspaces,
+    # because they may be significant for rst (like in ..note:)
+    orig = doc.split('\n')
+    new = []
+    for l in orig:
+        
+        if l.startswith(" " * 4):
+            new.append(l[4:])
+        else:
+            new.append(l)
+    doc = "\n".join(new)
     doc.replace(":see:", "'''\nSee also:'''")
     r = doc.split(":param ")
     doc = r[0]
@@ -55,7 +83,6 @@ def parse_docstring(doc):
     return (doc, params,returndoc)
 
 components = {}
-anchors = {}
 
 m = sys.modules[__name__]
 
@@ -203,6 +230,9 @@ for name, props in components.items():
     with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w') as out:
         out.write(underline(name) + '\n')
 
+        # if an image if available, use it
+        out.write(insert_image(module))
+
         if props['desc']:
             out.write("\n**" + props['desc'] + "**\n\n")
         
@@ -212,3 +242,4 @@ for name, props in components.items():
         print_services(out, name, props)
         print_properties(out, name, props)
 
+        out.write('\n\n*(this page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
