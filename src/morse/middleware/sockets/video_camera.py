@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import json
-from morse.middleware.socket_mw import MorseSocketServ
+from morse.middleware.socket_datastream import MorseSocketServ
 from functools import partial
 
 def init_extra_module(self, component_instance, function, mw_data):

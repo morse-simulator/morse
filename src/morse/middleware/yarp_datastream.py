@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import re
 import yarp
-import morse.core.middleware
+import morse.core.datastream
 
-class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
+class Yarp(morse.core.datastream.Datastream):
     """ Handle communication between Blender and YARP."""
 
     def __init__(self):
@@ -40,7 +40,7 @@ class MorseYarpClass(morse.core.middleware.MorseMiddlewareClass):
         parent_name = component_instance.robot_parent.blender_obj.name
         port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
 
-        # Extract the information for this middleware
+        # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
         function_name = mw_data[1]
         topic = None

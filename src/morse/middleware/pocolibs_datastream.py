@@ -1,12 +1,12 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import datetime
 
-import morse.core.middleware
+import morse.core.datastream
 
 from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
 
 
-class MorsePocolibsClass(morse.core.middleware.MorseMiddlewareClass):
+class Pocolibs(morse.core.datastream.Datastream):
     """ Handle communication between Blender and Pocolibs."""
 
     def __init__(self):

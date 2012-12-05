@@ -98,13 +98,13 @@ Import only the ``Pose`` object (we don't need the ``Pose_mesh``), place it on t
 and parent it the the human (with :kbd:`Ctrl-P`). Rename it as well to ``HumanPosition`` (you can change the name by
 pressing :kbd:`n` in the 3D view and scrolling down to the item name field).
 
-Import as well the socket middleware in ``$MORSE_ROOT/data/morse/middleware/socket_mw.blend``.
+Import as well the socket middleware in ``$MORSE_ROOT/data/morse/middleware/socket_datastream.blend``.
 
 Open the Blender text editor, and modify ``component_config.py``:
 
 .. code-block:: python
 
-   component_mw = {
+   component_datastream = {
       "HumanPosition": [["Socket", "post_message"]],
    }
 

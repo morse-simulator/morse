@@ -73,7 +73,7 @@ Usage example:
    human.rotate(z=-3.0)
 
    human.armature.configure_mw('pocolibs',
-                    ['morse.middleware.pocolibs_mw.MorsePocolibsClass',
+                    ['morse.middleware.pocolibs_datastream.Pocolibs',
                      'export_posture',
                      'morse/middleware/pocolibs/sensors/human_posture',
                      'human_posture'])

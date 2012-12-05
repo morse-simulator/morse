@@ -160,7 +160,7 @@ the :doc:`compatibility matrix <integration>`.
     Sometimes, you will need to use a specific serialization method.
     This can be achieved by passing more parameters to ``configure_mw``::
 
-        motion.configure_mw(['morse.middleware.ros_mw.ROSClass', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
+        motion.configure_mw(['morse.middleware.ros_datastream.ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
 
     In that case, we instruct MORSE to use ROS with the ``read_twist`` method
     defined in the ``morse.middleware.ros.read_vw_twist`` module.

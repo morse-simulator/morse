@@ -18,14 +18,14 @@ class Configuration(object):
 
     def __init__(self):
         if not "_init" in dir(self):
-            self.middleware = {}
+            self.datastream = {}
             self.modifier = {}
             self.service = {}
             self.overlay = {}
             self._init = True
 
-    def link_mw(self, component, mw_method_cfg):
-        self.middleware.setdefault(component.name, []).append(mw_method_cfg)
+    def link_datastream(self, component, mw_method_cfg):
+        self.datastream.setdefault(component.name, []).append(mw_method_cfg)
 
     def link_service(self, component, service_cfg):
         # Special case here for the pseudo component 'simulation' that
@@ -48,7 +48,7 @@ class Configuration(object):
             bpy.data.texts[-1].name = 'component_config.py'
         cfg = bpy.data.texts['component_config.py']
         cfg.clear()
-        cfg.write('component_mw = ' + json.dumps(self.middleware, indent=1) )
+        cfg.write('component_datastream = ' + json.dumps(self.datastream, indent=1) )
         cfg.write('\n')
         cfg.write('component_modifier = ' + json.dumps(self.modifier, indent=1) )
         cfg.write('\n')
@@ -197,15 +197,15 @@ class AbstractComponent(object):
         """
         if not component:
             component = self._blendname
-        # Configure the middleware for this component
+        # Configure the datastream for this component
         if not config:
             if not method:
                 try:
-                    config = MORSE_MIDDLEWARE_DICT[mw][component]
+                    config = MORSE_DATASTREAM_DICT[mw][component]
                     # TODO self._blendobj.game.properties["Class"].value ?
                     #      as map-key (in data, instead of blender-filename)
                 except KeyError:
-                    logger.warning("%s: default middleware method"%self.name)
+                    logger.warning("%s: default datastream method"%self.name)
                     # set the default method either it is an Actuator or a Sensor
                     method = 'XXX_message'
                     prop = self._blendobj.game.properties
@@ -214,17 +214,17 @@ class AbstractComponent(object):
                             method = 'post_message'
                         elif prop['Path'].value.startswith('morse/actuators/'):
                             method = 'read_message'
-                    config = [MORSE_MIDDLEWARE_MODULE[mw], method]
+                    config = [MORSE_DATASTREAM_MODULE[mw], method]
             else:
                 if not path:
                     try:
-                        path = MORSE_MIDDLEWARE_DICT[mw][component][2]
-                        config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
+                        path = MORSE_DATASTREAM_DICT[mw][component][2]
+                        config = [MORSE_DATASTREAM_MODULE[mw], method, path]
                     except KeyError:
-                        config = [MORSE_MIDDLEWARE_MODULE[mw], method]
+                        config = [MORSE_DATASTREAM_MODULE[mw], method]
                 else:
-                    config = [MORSE_MIDDLEWARE_MODULE[mw], method, path]
-        Configuration().link_mw(self, config)
+                    config = [MORSE_DATASTREAM_MODULE[mw], method, path]
+        Configuration().link_datastream(self, config)
 
     def configure_service(self, mw, component = None, config=None):
         if not component:
@@ -234,7 +234,7 @@ class AbstractComponent(object):
         Configuration().link_service(component, config)
 
     def configure_modifier(self, mod, config=None):
-        # Configure the middleware for this component
+        # Configure the modifier for this component
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         Configuration().link_modifier(self, config)

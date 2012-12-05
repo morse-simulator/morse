@@ -35,7 +35,7 @@ is printed with this format::
 Files
 -----
 
-- Python: ``$MORSE_ROOT/src/morse/modifiers/text_mw.py``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/text_datastream.py``
 
 Available methods
 -----------------

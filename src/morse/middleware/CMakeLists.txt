@@ -1,6 +1,6 @@
 
 if (BUILD_CORE_SUPPORT)
-INSTALL(FILES __init__.py socket_mw.py text_mw.py socket_request_manager.py 
+INSTALL(FILES __init__.py socket_datastream.py text_datastream.py socket_request_manager.py 
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 
@@ -13,14 +13,14 @@ IF(BUILD_YARP2_SUPPORT)
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
         REGEX .*py.$ EXCLUDE
         )
-	INSTALL(FILES yarp_mw.py yarp_request_manager.py yarp_json_request_manager.py
+	INSTALL(FILES yarp_datastream.py yarp_request_manager.py yarp_json_request_manager.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 ENDIF(BUILD_YARP2_SUPPORT)
 
 IF(BUILD_POCOLIBS_SUPPORT)
 	ADD_SUBDIRECTORY(pocolibs)
-	INSTALL(FILES pocolibs_mw.py pocolibs_request_manager.py
+	INSTALL(FILES pocolibs_datastream.py pocolibs_request_manager.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 ENDIF(BUILD_POCOLIBS_SUPPORT)
 
@@ -29,7 +29,7 @@ IF(BUILD_ROS_SUPPORT)
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
         REGEX .*py.$ EXCLUDE
         )
-  INSTALL(FILES ros_mw.py ros_request_manager.py
+  INSTALL(FILES ros_datastream.py ros_request_manager.py
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
       )
 ENDIF(BUILD_ROS_SUPPORT)
@@ -39,7 +39,7 @@ IF(BUILD_MOOS_SUPPORT)
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware
         REGEX .*py.$ EXCLUDE
         )
-  INSTALL(FILES moos_mw.py 
+  INSTALL(FILES moos_datastream.py 
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 ENDIF(BUILD_MOOS_SUPPORT)

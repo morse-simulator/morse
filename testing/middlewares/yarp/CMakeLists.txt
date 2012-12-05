@@ -1,1 +1,1 @@
-add_morse_test(yarp_mw_testing)
+add_morse_test(yarp_datastream_testing)

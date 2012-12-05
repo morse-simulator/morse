@@ -23,7 +23,7 @@ try:
     import component_config
     
 except ImportError as detail:
-    logger.warning("%s.\nNo middlewares/services/modifiers will be configured.\nMake sure the script 'component_config.py' is present in the .blend file." % detail)
+    logger.warning("%s.\nNo datastream/services/modifiers will be configured.\nMake sure the script 'component_config.py' is present in the .blend file." % detail)
 
 
 MULTINODE_SUPPORT = False
@@ -111,9 +111,9 @@ def create_dictionaries ():
     if not hasattr(bge.logic, 'modifierDict'):
         bge.logic.modifierDict = {}
 
-    # Create a dictionary with the middlewares used
-    if not hasattr(bge.logic, 'mwDict'):
-        bge.logic.mwDict = {}
+    # Create a dictionary with the datastream interfaces used
+    if not hasattr(bge.logic, 'datastreamDict'):
+        bge.logic.datastreamDict = {}
 
     # Create a dictionary with the service used
     if not hasattr(bge.logic, 'serviceDict'):
@@ -242,9 +242,9 @@ def check_dictionaries():
     for obj, modifier_variables in bge.logic.modifierDict.items():
         logger.info ("\tMODIFIER: '{0}'".format(obj))
         
-    logger.info ("bge.logic has the following middlewares:")
-    for obj, mw_variables in bge.logic.mwDict.items():
-        logger.info ("\tMIDDLEWARE: '{0}'".format(obj))
+    logger.info ("bge.logic has the following datastream interfaces:")
+    for obj, datastream_variables in bge.logic.datastreamDict.items():
+        logger.info ("\tDATASTREAM: '{0}'".format(obj))
         
     logger.info ("bge.logic has the following request managers:")
     for rqst_manager in bge.logic.morse_services._request_managers.keys():
@@ -284,21 +284,21 @@ def create_instance(obj, parent=None):
     else:
         return None
 
-def create_mw(mw):
-    """ Creates an instances of a middleware class.
+def create_datastream(datastream):
+    """ Creates an instances of a datastream class.
     """
-    modulename, classname = mw.rsplit('.', 1)
+    modulename, classname = datastream.rsplit('.', 1)
     klass = get_class(modulename, classname)
     if klass != None:
         return klass()
     else:
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Middleware '""" + modulename + """'
+    INITIALIZATION ERROR: Datastream '""" + modulename + """'
     module could not be found!
     
-    Make sure you selected the required middleware for
-    install from the cmake configuration.
+    Make sure the required middleware has been selected
+    for installation from the cmake configuration.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         """)
 
@@ -312,25 +312,25 @@ def get_components_of_type(classname):
     return components
 
 
-def get_middleware_of_type(classname):
-    for mw_instance in bge.logic.mwDict.values():
-        if mw_instance.__class__.__name__ == classname:
-            return mw_instance
+def get_datastream_of_type(classname):
+    for datastream_instance in bge.logic.datastreamDict.values():
+        if datastream_instance.__class__.__name__ == classname:
+            return datastream_instance
     return None
     
 
-def link_middlewares():
+def link_datastreams():
     """ Read the configuration script (inside the .blend file)
-        and assign the correct middleware and options to each component. """
+        and assign the correct datastream and options to each component. """
     try:
-        component_list = component_config.component_mw
+        component_list = component_config.component_datastream
     except (AttributeError, NameError) as detail:
         # Exit gracefully if there are no modifiers specified
-        logger.info ("No middleware section found in configuration file.")
+        logger.info ("No datastream section found in configuration file.")
         return True
 
-    #for component_name, mw_data in component_list.items():
-    for component_name, mw_list in component_list.items():
+    #for component_name, datastream_data in component_list.items():
+    for component_name, datastream_list in component_list.items():
         # Get the instance of the object
         try:
             instance = bge.logic.componentDict[component_name]
@@ -358,44 +358,44 @@ def link_middlewares():
         # If the list contains only strings, insert the list inside another one.
         # This is done for backwards compatibility with the previous
         #  syntax that allowed only one middleware per component
-        if isinstance (mw_list[0], str):
-            mw_list = [mw_list]
+        if isinstance (datastream_list[0], str):
+            datastream_list = [datastream_list]
 
-        # Register all mw's in the list
-        for mw_data in mw_list:
+        # Register all datastream's in the list
+        for datastream_data in datastream_list:
 
-            mw_name = mw_data[0]
-            logger.info("Component: '%s' using middleware '%s'" % (component_name, mw_name))
+            datastream_name = datastream_data[0]
+            logger.info("Component: '%s' using datastream '%s'" % (component_name, datastream_name))
             found = False
             missing_component = False
             
-            # Look for the listed mw in the dictionary of active mw's
-            for mw_obj, mw_instance in bge.logic.mwDict.items():
-                logger.debug("Looking for '%s' in '%s'" % (mw_name, mw_obj))
-                if mw_name in mw_obj:
+            # Look for the listed datastream in the dictionary of active datastream's
+            for datastream_obj, datastream_instance in bge.logic.datastreamDict.items():
+                logger.debug("Looking for '%s' in '%s'" % (datastream_name, datastream_obj))
+                if datastream_name in datastream_obj:
                     found = True
-                    # Make the middleware object take note of the component
+                    # Make the datastream object take note of the component
                     break
 
             if not found:
-                mw_instance = create_mw (mw_name)
-                if mw_instance != None:
-                    bge.logic.mwDict[mw_name] = mw_instance
-                    logger.info("\tMiddleware '%s' created" % mw_name)
+                datastream_instance = create_datastream (datastream_name)
+                if datastream_instance != None:
+                    bge.logic.datastreamDict[datastream_name] = datastream_instance
+                    logger.info("\tDatastream interface '%s' created" % datastream_name)
                 else:
                     logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Middleware '""" + mw_name + """'
+    INITIALIZATION ERROR: Datastream '""" + datastream_name + """'
     module could not be found!
     
-    Could not import modules necessary for the selected
-    middleware. Check that they can be found inside
+    Could not import modules required for the desired
+    datastream interface. Check that they can be found inside
     your PYTHONPATH variable.
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     """)
                     return False
             
-            mw_instance.register_component(component_name, instance, mw_data)
+            datastream_instance.register_component(component_name, instance, datastream_data)
             
     # Will return true always (for the moment)
     return True
@@ -537,7 +537,7 @@ def add_modifiers():
                     break
                     
             if not found:
-                modifier_instance = create_mw(modifier_name)
+                modifier_instance = create_datastream(modifier_name)
                 if modifier_instance != None:
                     bge.logic.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
@@ -598,7 +598,7 @@ def init_multinode():
 def init(contr):
     """ General initialization of MORSE
 
-    Here, all components, modifiers and middleware are initialized.
+    Here, all components, modifiers and middlewares are initialized.
     """
     
     init_logging()
@@ -627,13 +627,13 @@ def init(contr):
     init_ok = init_ok and create_dictionaries()
     init_ok = init_ok and link_services()
     init_ok = init_ok and add_modifiers()
-    init_ok = init_ok and link_middlewares()
+    init_ok = init_ok and link_datastreams()
     init_ok = init_ok and load_overlays()
 
     if init_ok:
-        logger.log(ENDSECTION, 'SCENE INITIALIZED')
         check_dictionaries()
         bge.logic.morse_initialised = True
+        logger.log(ENDSECTION, 'SCENE INITIALIZED')
     else:
         logger.critical('INITIALIZATION FAILED!')
         logger.info("Exiting now.")
@@ -820,14 +820,14 @@ def close_all(contr):
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
     del bge.logic.morse_services
 
-    logger.log(ENDSECTION, 'CLOSING MIDDLEWARES...')
-    # Force the deletion of the middleware objects
-    if hasattr(bge.logic, 'mwDict'):
-        for obj, mw_instance in bge.logic.mwDict.items():
-            if mw_instance:
-                mw_instance.cleanup()
+    logger.log(ENDSECTION, 'CLOSING DATASTREAMS...')
+    # Force the deletion of the datastream objects
+    if hasattr(bge.logic, 'datastreamDict'):
+        for obj, datastream_instance in bge.logic.datastreamDict.items():
+            if datastream_instance:
+                datastream_instance.cleanup()
                 import gc # Garbage Collector
-                logger.debug("At closing time, %s has %s references" % (mw_instance, gc.get_referents(mw_instance)))
+                logger.debug("At closing time, %s has %s references" % (datastream_instance, gc.get_referents(datastream_instance)))
                 del obj
 
     if MULTINODE_SUPPORT:

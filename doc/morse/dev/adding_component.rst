@@ -121,7 +121,7 @@ through the middleware. This works only for the basic data types of integer,
 float or string.  If you want more specific behaviour for other data types, you
 need to add a method to the middleware provider of your choice (for example, if
 you want to export a new sensor through YARP, you need to add a method to
-MorseYarpClass, in ``$MORSE_ROOT/src/morse/middleware/yarp_mw.py``). The method
+Yarp, in ``$MORSE_ROOT/src/morse/middleware/yarp_datastream.py``). The method
 must have the following prototype :::
 
   def your_method(self, component_instance):
@@ -134,7 +134,7 @@ RGBA images for YARP :::
 	#...formatting the sensor data stored in component_instance.local_data
 	yarp_port.write()
 
-(see ``$MORSE_ROOT/src/morse/middleware/yarp_mw.py`` for the complete method)
+(see ``$MORSE_ROOT/src/morse/middleware/yarp_datastream.py`` for the complete method)
 
 In this method, you can access / store component information through its dictionary
 ``local_data``. In case of a sensor, it is not expected that you change the
@@ -153,7 +153,7 @@ Middleware specific information
 YARP
 ____
 
-In MorseYarpClass, the different port_name are stored in a dictionary
+In Yarp, the different port_name are stored in a dictionary
 ``_component_ports``, indexed by the name of the component
 (``component.blender_obj.name``). You can retrieve the associated port with the
 method ``getPort(port_name)``
@@ -172,13 +172,13 @@ Example: ::
 Pocolibs
 ________
 
-In MorsePocolibsClass, the different poster_id are stored in a dictionary
+In Pocolibs, the different poster_id are stored in a dictionary
 ``_poster_dict``, indexed by the name of the component
 (``component.blender_obj.name``)
 
 Text
 ____
 
-In TextOutClass, the different files are stored in a dictionary
+In Text, the different files are stored in a dictionary
 ``_file_list``, indexed by the name of the component
 (``component.blender_obj.name``)

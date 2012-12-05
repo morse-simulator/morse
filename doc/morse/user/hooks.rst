@@ -53,7 +53,7 @@ should be edited from a **Text Editor** window in Blender.
 It consists of three dictionaries indexed by the name of the components
 (they are all optional):
 
-- ``component_mw``: Lists which middlewares are bound to specific components.
+- ``component_datastream``: Lists which middlewares are bound to specific components.
   The value of the dictionary is either a list of strings (for only one
   middleware) or a list of lists (describing the binding to several middlewares).
   In both cases, each list describing a middleware consists of at least 2,
@@ -63,11 +63,11 @@ It consists of three dictionaries indexed by the name of the components
     the whole path to the corresponding Python script in MORSE. There are only
     a handful of options for this value at the moment:
 
-    - ``morse.middleware.ros_mw.ROSClass``
-    - ``morse.middleware.socket_mw.MorseSocketClass``
-    - ``morse.middleware.yarp_mw.MorseYarpClass``
-    - ``morse.middleware.pocolibs_mw.MorsePocolibsClass``
-    - ``morse.middleware.text_mw.TextOutClass``
+    - ``morse.middleware.ros_datastream.ROS``
+    - ``morse.middleware.socket_datastream.Socket``
+    - ``morse.middleware.yarp_datastream.Yarp``
+    - ``morse.middleware.pocolibs_datastream.Pocolibs``
+    - ``morse.middleware.text_datastream.Text``
 
   - The second item is the name of the function to be added to the component's
     action list. To determine which function to use, refer to the documentation
@@ -92,20 +92,20 @@ It consists of three dictionaries indexed by the name of the components
   representing a modifier. Thus a single component can have multiple modifiers changing
   its data in sequence, following the order given here.
   Each modifier list has two elements: the name of the modifier and the name of the function to use.
-  The format of these elements is the same as in ``component_mw``.
+  The format of these elements is the same as in ``component_datastream``.
 
 Example:
 
 .. code-block:: python
 
     # Middleware binding for regular data exchange
-    component_mw = {
-      "Gyroscope": [["morse.middleware.yarp_mw.MorseYarpClass", "post_message"]],
-      "GPS": [["morse.middleware.yarp_mw.MorseYarpClass", "post_message"], ["morse.middleware.socket_mw.MorseSocketClass", "post_message"]],
-      "GPS.001": [["morse.middleware.yarp_mw.MorseYarpClass", "post_json_data", "morse/middleware/yarp/json_mod"]],
-      "Motion_Controller": [["morse.middleware.yarp_mw.MorseYarpClass", "read_message"]],
-      "Motion_Controller.001": [["morse.middleware.pocolibs_mw.MorsePocolibsClass", "read_genpos", "morse/middleware/pocolibs/actuators/genpos", "simu_locoSpeedRef"]],
-      "CameraMain": [["morse.middleware.yarp_mw.MorseYarpClass", "post_image_RGBA"]]
+    component_datastream = {
+      "Gyroscope": [["morse.middleware.yarp_datastream.Yarp", "post_message"]],
+      "GPS": [["morse.middleware.yarp_datastream.Yarp", "post_message"], ["morse.middleware.socket_datastream.Socket", "post_message"]],
+      "GPS.001": [["morse.middleware.yarp_datastream.Yarp", "post_json_data", "morse/middleware/yarp/json_mod"]],
+      "Motion_Controller": [["morse.middleware.yarp_datastream.Yarp", "read_message"]],
+      "Motion_Controller.001": [["morse.middleware.pocolibs_datastream.Pocolibs", "read_genpos", "morse/middleware/pocolibs/actuators/genpos", "simu_locoSpeedRef"]],
+      "CameraMain": [["morse.middleware.yarp_datastream.Yarp", "post_image_RGBA"]]
     }
 
     # Component service binding with a middleware

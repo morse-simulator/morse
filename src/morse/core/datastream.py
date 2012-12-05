@@ -7,7 +7,7 @@ import types
 
 from abc import ABCMeta, abstractmethod
 
-class MorseMiddlewareClass(object):
+class Datastream(object):
     """ Basic Class for all middlewares
 
     Provides common attributes. """
@@ -28,7 +28,7 @@ class MorseMiddlewareClass(object):
     def register_component():
         """ Abstract model for the component binding method
 
-        Implemented by all subclasses of MorseMiddlewareClass.
+        Implemented by all subclasses of Datastream.
         """
         
         

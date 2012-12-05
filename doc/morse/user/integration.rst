@@ -75,7 +75,7 @@ Alternatively, when building a scene using the Blender interface, as explained
 in the :doc:`tutorial <advanced_tutorials/editing_in_blender>`, you have to\
 add the full description of the middleware into the file ``component_config.py``
 that should be part of every MORSE scenario file.
-In that file, the dictionary ``component_mw`` lists the components and the
+In that file, the dictionary ``component_datastream`` lists the components and the
 middleware they will use to export/import their data. The unique names of the
 components are the keys of the dictionary, and the values are lists.
 The first item in the list is the full path and class name of the middleware

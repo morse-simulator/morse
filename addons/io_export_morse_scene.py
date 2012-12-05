@@ -161,7 +161,7 @@ def scan_config(file_out):
     """
     import component_config
     file_out.write("# Scene configuration\n")
-    for key,value in component_config.component_mw.items():
+    for key,value in component_config.component_datastream.items():
         component = re.sub('\.', '_', key)
         # If the 'value' variable contains only strings, use that string
         #  as the name of the middleware.

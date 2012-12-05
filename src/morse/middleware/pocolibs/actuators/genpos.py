@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.middleware.pocolibs_mw import init_extra_actuator
+from morse.middleware.pocolibs_datastream import init_extra_actuator
 from morse.middleware.pocolibs.actuators.Genpos_Poster import ors_genpos_poster
 
 def init_extra_module(self, component_instance, function, mw_data):

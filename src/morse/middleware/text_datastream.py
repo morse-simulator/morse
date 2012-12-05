@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import re
 import sys
-import morse.core.middleware
+import morse.core.datastream
 
-class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
+class Text(morse.core.datastream.Datastream):
     """ Produce text files as output for the components """
 
     def __init__(self):
@@ -34,7 +34,7 @@ class TextOutClass(morse.core.middleware.MorseMiddlewareClass):
         self._index_list[component_name] = 1
         logger.info("File: '%s' opened for writing" % file_name)
 
-        # Extract the information for this middleware
+        # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
         function_name = mw_data[1]
 

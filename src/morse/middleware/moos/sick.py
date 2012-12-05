@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
-import morse.core.middleware
+import morse.core.datastream
 import bge
 
 def init_extra_module(self, component_instance, function, mw_data):

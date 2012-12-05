@@ -3,7 +3,7 @@ import socket
 import select
 import json
 import mathutils
-import morse.core.middleware
+import morse.core.datastream
 from morse.helpers.transformation import Transformation3d
 from functools import partial
 from morse.core import services
@@ -108,7 +108,7 @@ class MorseEncoder(json.JSONEncoder):
                     'yaw': obj.yaw, 'pitch': obj.pitch, 'roll': obj.roll }
         return json.JSONEncoder.default(self, obj)
 
-class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
+class Socket(morse.core.datastream.Datastream):
     """ External communication using sockets. """
 
     def __init__(self):
@@ -164,7 +164,7 @@ class MorseSocketClass(morse.core.middleware.MorseMiddlewareClass):
         self._component_nameservice[component_name] = self._base_port
         self._base_port = self._base_port + 1
 
-        # Extract the information for this middleware
+        # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
         function_name = mw_data[1]
         fun = self._check_function_exists(function_name)

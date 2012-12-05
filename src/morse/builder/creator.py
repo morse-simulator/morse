@@ -26,7 +26,7 @@ class ComponentCreator(morse.builder.morsebuilder.AbstractComponent):
         :param calling_module: (string) in ['calling.actuator_action', 'calling.sensor_action', 'calling.mw_action']
         :param filename: (string, optional) used for the middleware configuration
             name of the Blender file in MORSE_COMPONENTS/category/filename.blend
-            see morse.builder.data.MORSE_MIDDLEWARE_DICT (default: None)
+            see morse.builder.data.MORSE_DATASTREAM_DICT (default: None)
         :return: a new AbstractComponent instance.
         """
         morse.builder.morsebuilder.AbstractComponent.__init__(self)

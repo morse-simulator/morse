@@ -1,15 +1,15 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
-import morse.core.middleware
+import morse.core.datastream
 import bge
 
-class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
+class MOOS(morse.core.datastream.Datastream):
     """ Handle communication between Blender and MOOS."""
       
     def __init__(self):
         """ Initialize the MOOS app"""
         super(self.__class__,self).__init__()
-        logger.info("Middleware initialization")
+        logger.info("MOOS datastream interface initialization")
         self.m = pymoos.MOOSCommClient.MOOSApp()
         #self.m.SetOnConnectCallBack( self.m.DoRegistrations )
         #self.m.SetOnMailCallBack( self.m.MailCallback )
@@ -18,13 +18,13 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
 
         fundamental_frequency = 10 # [Hz]
         self.m.Run( "127.0.0.1", 9000, "MORSE_SIM", fundamental_frequency) 
-        logger.info("Middleware initialized")
+        logger.info("MOOS datastream interface initialized")
         
         
     def __del__(self):
         """ Kill the morse MOOS app."""
         self.m.Close();
-        logger.info("Shutting down MOOS middleware...")
+        logger.info("Shutting down MOOS datastream interface...")
    
       
     def register_component(self, component_name, component_instance, mw_data):
@@ -42,7 +42,7 @@ class MOOSClass(morse.core.middleware.MorseMiddlewareClass):
         logger.info("========== Registering component =================")
         parent_name = component_instance.robot_parent.blender_obj.name
 
-        # Extract the information for this middleware
+        # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
         # This is specified in the component_config.py in Blender: [mw_data[0], mw_data[1]]
         function_name = mw_data[1]

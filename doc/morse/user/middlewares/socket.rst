@@ -22,7 +22,7 @@ like the following::
   $ telnet localhost 6000
   {'x':3.0, 'y':5.0, 'z':0.0, 'tolerance':0.5, 'speed':2.0}
 
-The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_mw`.
+The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_datastream`.
 
 .. note:: The port numbers used for the socket datastream interface start at 60000.
 
@@ -74,7 +74,7 @@ The socket service interface is implemented in :py:mod:`morse.middleware.socket_
 Files
 -----
 
-- Python (data-stream): ``$MORSE_ROOT/src/morse/middleware/socket_mw.py``
+- Python (data-stream): ``$MORSE_ROOT/src/morse/middleware/socket_datastream.py``
 - Python (services): ``$MORSE_ROOT/src/morse/middleware/socket_request_manager.py``
 
 Available methods

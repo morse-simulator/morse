@@ -83,15 +83,15 @@ Configuring the middlewares
 Binding the components in the scene with the middleware is done in a configuration file within the Blender file.
 
 #. On the **Text Editor** window, select the file ``component_config.py``
-#. Add the following items to the ``component_mw`` dictionary::
+#. Add the following items to the ``component_datastream`` dictionary::
   
-    component_mw = {
-        "Pose": [["morse.middleware.socket_mw.MorseSocketClass", "post_message"]],
-        "Motion_Controller": [["morse.middleware.socket_mw.MorseSocketClass", "read_message"]],
+    component_datastream = {
+        "Pose": [["morse.middleware.socket_datastream.Socket", "post_message"]],
+        "Motion_Controller": [["morse.middleware.socket_datastream.Socket", "read_message"]],
     }
 
-This specifies that the output of the **Pose** sensor is to be serialized to a socket with the ``MorseSocketClass.post_message`` method and 
-the **Motion Controller** reads its input from a socket with ``MorseSocketClass.read_message``.
+This specifies that the output of the **Pose** sensor is to be serialized to a socket with the ``Socket.post_message`` method and 
+the **Motion Controller** reads its input from a socket with ``Socket.read_message``.
 
 Running the simulation
 ----------------------

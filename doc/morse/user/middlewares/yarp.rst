@@ -17,7 +17,7 @@ various data types.
 Files
 -----
 
-- Python: ``$MORSE_ROOT/src/morse/modifiers/yarp_mw.py``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/yarp_datastream.py``
 
 Available methods
 -----------------

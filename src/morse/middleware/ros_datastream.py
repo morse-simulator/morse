@@ -2,21 +2,21 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy');
 import roscpp
 import rospy
-import morse.core.middleware
+import morse.core.datastream
 import std_msgs
 
 from std_msgs.msg import String
 
-class ROSClass(morse.core.middleware.MorseMiddlewareClass):
+class ROS(morse.core.datastream.Datastream):
     """ Handle communication between Blender and ROS."""
 
     def __init__(self):
         """ Initialize the network and generate a ROS node."""
-        logger.info("Middleware initialization")
+        logger.info("ROS datastream interface initialization")
         super(self.__class__, self).__init__()
         self._topics = []
         self._properties = {}
-        logger.info("Middleware initialized")
+        logger.info("ROS datastream interface initialized")
 
 
     def __del__(self):
@@ -39,7 +39,7 @@ class ROSClass(morse.core.middleware.MorseMiddlewareClass):
         logger.info("========== Registering component =================")
         parent_name = component_instance.robot_parent.blender_obj.name
 
-        # Extract the information for this middleware
+        # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
         # This is specified in the component_config.py in Blender: [mw_data[0], mw_data[1]]
         function_name = mw_data[1]

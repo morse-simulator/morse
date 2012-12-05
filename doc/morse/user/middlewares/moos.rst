@@ -10,7 +10,7 @@ Please follow the instructions in the :doc:`installation procedure  <../installa
 
 -----
 
-- Python: ``$MORSE_ROOT/src/morse/modifiers/moos_mw.py``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/moos_datastream.py``
 
 Generation of MOOS app and variables
 ------------------------------------

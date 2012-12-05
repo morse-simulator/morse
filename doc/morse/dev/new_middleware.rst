@@ -16,7 +16,7 @@ the :doc:`YARP <../user/middlewares/yarp>` middleware.
 The Python script
 -----------------
 
-- Copy one of the existing ``${middleware}_mw.py`` Python files in
+- Copy one of the existing ``${middleware}_datastream.py`` Python files in
   ``$MORSE_SRC/src/morse/middleware``
 - Change the name of the class, and write down its behaviour, implementing
   the ``register_component`` function
@@ -31,7 +31,7 @@ Basic data serialization
 ++++++++++++++++++++++++
 
 If you have a few different messages to decode / encode, it is possible to
-implement everything in the single file ``${middleware}_mw.py``.
+implement everything in the single file ``${middleware}_datastream.py``.
 This is normally the case when you want to transmit data of the basic types:
 integer, float, string, boolean.
 

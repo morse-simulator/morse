@@ -60,15 +60,15 @@ Thermometer_001.translate(y=-0.2000, z=0.9000)
 ATRV_001.append(Thermometer_001)
 
 
-GPS.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
-Motion_Controller.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'read_json_waypoint', 'morse/middleware/yarp/json_mod'])
-Rosace_Sensor.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
-Proximity_Sensor.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+GPS.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+Motion_Controller.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'read_json_waypoint', 'morse/middleware/yarp/json_mod'])
+Rosace_Sensor.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+Proximity_Sensor.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
 
-Rosace_Sensor_001.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
-GPS_001.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
-Proximity_Sensor_001.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'post_json_message', 'morse/middleware/yarp/json_mod'])
-Motion_Controller_001.configure_mw('yarp', ['morse.middleware.yarp_mw.MorseYarpClass', 'read_json_waypoint', 'morse/middleware/yarp/json_mod'])
+Rosace_Sensor_001.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+GPS_001.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+Proximity_Sensor_001.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'post_json_message', 'morse/middleware/yarp/json_mod'])
+Motion_Controller_001.configure_mw('yarp', ['morse.middleware.yarp_datastream.Yarp', 'read_json_waypoint', 'morse/middleware/yarp/json_mod'])
 
 Motion_Controller.configure_service('yarp_json')
 Rosace_Sensor_001.configure_service('yarp_json')

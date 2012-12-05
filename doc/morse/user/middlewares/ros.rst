@@ -13,7 +13,7 @@ Please follow the instructions in the :doc:`installation procedure  <../installa
 Files
 -----
 
-- Python: ``$MORSE_ROOT/src/morse/modifiers/ros_mw.py``
+- Python: ``$MORSE_ROOT/src/morse/modifiers/ros_datastream.py``
 
 Generation of ROS-node and topics
 ----------------------------------

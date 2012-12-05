@@ -21,7 +21,7 @@ else:
     # simple controller taking RC-like roll/pitch/yaw/thrust input
     motion = Actuator('rotorcraft_attitude')
     motion.name = 'attitude'
-    motion.configure_mw('morse.middleware.ros_mw.rosclass', ['morse.middleware.ros_mw.ROSClass', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input'])
+    motion.configure_mw('morse.middleware.ros_datastream.rosclass', ['morse.middleware.ros_datastream.ROS', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input'])
 
 Quadrotor.append(motion)
 
