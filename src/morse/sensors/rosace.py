@@ -14,7 +14,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-
 import math
 import bge
 import mathutils
@@ -95,8 +94,9 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
 
         When the victim is fully healed, set its status as not Injured
         """
+
         victim = self._nearest_victim
-        logger.debug("Healing victim %s at distance %d" % (victim.name, self._nearest_distance))
+        logger.debug("Healing victim %s at distance %f" % (victim.name, self._nearest_distance))
         # Check that the victim is whithing the valid range and that
         #  the robot is equiped to help the victim
         if self._nearest_distance < self.blender_obj['Heal_range']:
@@ -152,33 +152,38 @@ class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
         contr = bge.logic.getCurrentController()
         radar = contr.sensors['Radar']
 
-        if radar.triggered:
-            # Clear the variables for the victims
-            self.local_data['victim_dict'] = {}
-            self._nearest_victim = None
-            self._nearest_distance = 999999
+        # Clear the variables for the victims
+        self.local_data['victim_dict'] = {}
+        self._nearest_victim = None
+        self._nearest_distance = 999999
 
-            if radar.positive:
-                for victim_obj in radar.hitObjectList:
-                    if victim_obj.name != self.robot_parent.name():
-                        victim_position = victim_obj.worldPosition
-                        # Fill the data structure for the victim
-                        victim_coordinate = OrderedDict([
-                                        ('x', victim_position[0]),
-                                        ('y', victim_position[1]),
-                                        ('z', victim_position[2])   ])
-                        victim_data = OrderedDict([
-                                        ('coordinate', victim_coordinate),
-                                        ('requirements', victim_obj['Requirements']),
-                                        ('severity', victim_obj['Severity'])    ])
-                        self.local_data['victim_dict'][victim_obj.name] = victim_data
+        if radar.positive:
+            logger.debug('radar positive')
+            for victim_obj in radar.hitObjectList:
+                if victim_obj.name != self.robot_parent.name():
+                    victim_position = victim_obj.worldPosition
+                    # Fill the data structure for the victim
+                    victim_coordinate = OrderedDict([
+                                    ('x', victim_position[0]),
+                                    ('y', victim_position[1]),
+                                    ('z', victim_position[2])   ])
+                    victim_data = OrderedDict([
+                                    ('coordinate', victim_coordinate),
+                                    ('requirements', victim_obj['Requirements']),
+                                    ('severity', victim_obj['Severity'])    ])
+                    self.local_data['victim_dict'][victim_obj.name] = victim_data
 
-                        # Find the closest victim and its distance
-                        new_distance = self.blender_obj.getDistanceTo(victim_obj)
-                        if new_distance < self._nearest_distance:
-                            self._nearest_victim = victim_obj
-                            self._nearest_distance = new_distance
+                    # Find the closest victim and its distance
+                    new_distance = self.blender_obj.getDistanceTo(victim_obj)
+                    if new_distance < self._nearest_distance:
+                        self._nearest_victim = victim_obj
+                        self._nearest_distance = new_distance
 
-                # When instructed to do so, help a victim
-                if self._healing:
-                    self._heal_victim()
+            # When instructed to do so, help a victim
+            if self._healing:
+                self._heal_victim()
+        else:
+            if self._healing:
+                self._healing = False
+                message = "No victim within range (%.2f m)" % self.blender_obj['Heal_range']
+                self.completed(status.FAILED, message)
