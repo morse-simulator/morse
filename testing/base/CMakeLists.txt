@@ -13,6 +13,7 @@ add_morse_test(proximity_testing)
 add_morse_test(sick_testing)
 add_morse_test(semantic_camera_testing)
 add_morse_test(thermometer_testing)
+add_morse_test(victim_testing)
 add_morse_test(video_camera_testing)
 
 # Actuator
