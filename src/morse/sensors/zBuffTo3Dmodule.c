@@ -47,6 +47,8 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "w*", &img_buffer))
         return NULL;
 
+    float * fbuffer = (float *) img_buffer.buf;
+
     // check that there is no division by 0
     if (width == 0)
         return NULL;
@@ -57,7 +59,7 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
     for (i=0; i<img_buffer.len; i+=4)
     {
         pixel = i / 4;
-        z_b = f[pixel];
+        z_b = fbuffer[pixel];
 
         z_n = 2.0 * z_b - 1.0;
         z_e = 2.0 * near * far / (far + near - z_n * (far - near));
