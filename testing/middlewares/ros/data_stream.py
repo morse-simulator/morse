@@ -5,6 +5,9 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
+from morse.testing.ros import RosTestCase
+from morse.testing.testing import testlogger
+
 import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); 
 roslib.load_manifest('geometry_msgs')
 import rospy
@@ -12,8 +15,6 @@ import std_msgs
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from time import sleep
-import subprocess
-from morse.testing.testing import MorseTestCase, testlogger
 
 # Include this import to be able to use your test file as a regular 
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -32,16 +33,7 @@ def send_speed(s, v, w, t):
     msg.angular.z = 0.0
     s.publish(msg)
 
-class DataStreamTest(MorseTestCase):
-    def setUpMw(self):
-        try:
-            self.roscore_process = subprocess.Popen(['roscore'])
-        except OSError as ose:
-            testlogger.error("Error while launching roscore ! Check you can run it from command-line\n")
-            raise ose
-
-    def tearDownMw(self):
-        self.roscore_process.terminate()
+class DataStreamTest(RosTestCase):
 
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.

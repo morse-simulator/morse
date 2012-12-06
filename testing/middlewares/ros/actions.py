@@ -3,7 +3,7 @@
 This script tests ROS actions within MORSE.
 """
 
-from morse.testing.testing import MorseTestCase
+from morse.testing.ros import RosTestCase
 
 # Include this import to be able to use your test file as a regular 
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -14,33 +14,14 @@ except ImportError:
 
 import os
 import sys
-try:
-    os.environ['MORSE_SRC_ROOT']
-except KeyError:
-    print("You must define the environment variable MORSE_SRC_ROOT"
-          " to point to the MORSE source before running ROS tests.")
-    sys.exit(1)
-
-os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.dirname(
-        os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros"))
 
 import roslib; roslib.load_manifest("morsetesting")
 import rospy
 import actionlib
-import subprocess
 from morsetesting.msg import *
 from geometry_msgs.msg import *
 
-class RosActionsTest(MorseTestCase):
-    def setUpMw(self):
-        try:
-            self.roscore_process = subprocess.Popen(['roscore'])
-        except OSError as ose:
-            testlogger.error("Error while launching roscore ! Check you can run it from command-line\n")
-            raise ose
-
-    def tearDownMw(self):
-        self.roscore_process.terminate()
+class RosActionsTest(RosTestCase):
 
     def setUpEnv(self):
         # Identical to ROS service testing
