@@ -1,11 +1,26 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import bge
+from morse.core import blenderapi
 import morse.core.sensor
+from morse.helpers.components import add_data
 
 class ThermometerClass(morse.core.sensor.MorseSensorClass):
-    """ Class definition for the gyroscope sensor.
-        Sub class of Morse_Object. """
+    """
+    This sensor emulates a Thermometer, measuring the temperature with respect
+    to the distance to heat sources. It defines a default temperature throughout
+    the scenario, which is affected by local fire sources. The temperature rises
+    exponentially when the distance between the sensor and the heat source
+    decreases. 
+
+    The default temperature is specified as a parameter ``Temperature'' of the
+    Scene_Script_Holder Empty object in the simulation file. It is expressed in
+    degrees Celsius.
+    """
+
+    _name = "Thermomether Sensor"
+    _short_desc = "Thermomether sensor to detect nearby objects."
+
+    add_data('temperature', 0.0, "float", "temperature in Celsius")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -13,14 +28,13 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
             The second parameter should be the name of the object's parent. """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
-        self.local_data['temperature'] = 0.0
         self._global_temp = 15.0
         self._fire_temp = 200.0
 
         # Get the global coordinates of defined in the scene
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         script_empty_name = 'Scene_Script_Holder'
 
         script_empty = scene.objects[script_empty_name]
@@ -37,7 +51,7 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
         min_distance = 100000.0
         fires = False
 
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         # Look for the fire sources marked so
         for obj in scene.objects:
             try:
@@ -51,7 +65,6 @@ class ThermometerClass(morse.core.sensor.MorseSensorClass):
                     fires = True
             except KeyError as detail:
                 logger.debug("Exception: " + str(detail))
-                pass
 
         temperature = self._global_temp
         # Trial and error formula to get a temperature dependant on
