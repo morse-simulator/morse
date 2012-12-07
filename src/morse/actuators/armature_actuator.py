@@ -1,9 +1,10 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.actuator
-from morse.core.services import service
+from morse.core import status
+from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
-
+from morse.helpers.components import add_data, add_property
 
 class ArmatureActuatorClass(morse.core.actuator.Actuator):
     """
@@ -13,6 +14,8 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
     This class has many MORSE Services that you can access via sockets/telnet.
     """
 
+    add_property('_distance_tolerance', 0.01, 'DistanceTolerance', 'float', "Tolerance in meters when translating a joint")
+    add_property('_angle_tolerance', math.radians(2), 'AngleTolerance', 'float', "Tolerance in radians when rotating a joint")
 
     def __init__(self, obj, parent=None):
         """
@@ -35,6 +38,8 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
 
         logger.info('Component initialized')
         
+        self.active_translations = {}
+        self.active_rotations = {}
 
     @service
     def get_channels(self):
@@ -62,16 +67,78 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
 
         return rotation
 
-    def set_location(self, channel_name, location):
+    @service
+    def set_translation(self, channel_name, translation):
         """
-        Method that sets the location of the given channel to location.
+        Method that translates the given channel by the given translation.
         We do NOT take into account the IK limits here.
+
+        :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.location
         """
         armature = self.blender_obj
-        channel = armature.channels[str(channel_name)]
-        channel.location = location
-        armature.update()
-        
+
+        try:
+            channel = armature.channels[str(channel_name)]
+            channel.location = translation
+            armature.update()
+            return None
+        except KeyError:
+            msg = str(channel_name) + " is not a valid channel name"
+            raise MorseRPCInvokationError(msg)
+    
+    @interruptible
+    @async_service
+    def translate(self, joint, target, speed = 0.05):
+        """
+        Translates a joint at a given speed (in m/s).
+
+        :param joint: name of the armature's joint to translate
+        :param target: vector of 3 floats, in the bone local space. It
+        is always an *absolute* translation, relative to the joint origin.
+        :param speed: (default: 0.05) translation speed, in m/s
+        """
+        logger.info("Initiating translation of joint %s to %s at speed %s"%(joint, target, speed))
+        armature = self.blender_obj
+
+        try:
+            channel = armature.channels[str(joint)]
+        except KeyError:
+            msg = "Joint %s does not exist" % joint
+            raise MorseRPCInvokationError(msg)
+
+        translation = [i - j for i,j in zip(target, channel.location)]
+
+        dt = speed / self.frequency
+        dist = math.sqrt(sum([i**2 for i in translation]))
+
+        # v is the 3D speed vector, scaled up to ensure a uniform motion
+        # along the 3 axis
+        v = [dt * i / dist for i in translation]
+
+        self.active_translations[channel] = (target, v)
+
+    @interruptible
+    @async_service
+    def rotate(self, joint, rotation, speed = 0.05):
+        """
+        Rotates a joint at a given speed (in rad/s).
+
+        :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.joint_rotation
+
+        :param joint: name of the armature's joint to rotate
+        :param rotation: vector of 3 floats. See documentation above for the meaning.
+        :param speed: (default: 0.05) rotation speed, in rad/s
+        """
+        armature = self.blender_obj
+
+        try:
+            channel = armature.channels[str(channel_name)]
+            return None
+        except KeyError:
+            msg = str(channel_name) + " is not a valid channel name"
+            raise MorseRPCInvokationError(msg)
+
+
     @service
     def get_rotations(self):
         """
@@ -218,4 +285,15 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
         Main function of this component.
         Is called every tick of the clock.
         """
-        pass
+        for channel, t in list(self.active_translations.items()):
+
+            distance = math.sqrt(sum([(i-j)**2 for i,j in zip(t[0], channel.location)]))
+
+            if distance < self._distance_tolerance:
+                self.completed(status.SUCCESS, None)
+                del self.active_translations[channel]
+            else:
+                channel.location = [i+j for i,j in zip(channel.location, t[1])]
+                self.blender_obj.update()
+
+
