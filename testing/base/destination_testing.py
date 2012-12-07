@@ -39,7 +39,7 @@ class DestinationTest(MorseTestCase):
         destination.configure_mw('socket')
         destination.properties(Speed=2.0, Tolerance=0.3)
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test(self):

@@ -39,7 +39,7 @@ class VictimTest(MorseTestCase):
         robot.append(motion)
         motion.configure_mw('socket')
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.properties(Temperature='25.0')
         env.configure_service('socket')
 

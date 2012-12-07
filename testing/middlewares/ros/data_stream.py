@@ -49,7 +49,7 @@ class DataStreamTest(RosTestCase):
         robot.append(motion)
         motion.configure_mw('ros')
         
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def pose_callback(self, data):

@@ -35,7 +35,7 @@ class ArmatureActuatorTest(MorseTestCase):
         robot.append(kuka_posture)
         kuka_posture.configure_mw('socket')
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_armature_actuator(self):

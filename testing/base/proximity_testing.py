@@ -59,7 +59,7 @@ class ProximityTest(MorseTestCase):
         target3.properties(Catch_me = True)
         target3.translate(x=-4.0, y = 0.0)
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_proximity(self):

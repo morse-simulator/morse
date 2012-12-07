@@ -226,9 +226,14 @@ simulator behaviour, cf :doc:`supervision services
 
 .. code-block:: python
 
-    env = Environement('indoors-1/indoor-1')
+    env = Environement('indoors-1/indoor-1', fastmode = True)
     # Set the simulation management services to be available from ROS:
     env.configure_service("ros")
+
+.. note::
+  As seen above, the `Environment` constructor takes an optional parameter `fastmode`: if set to true,
+  the simulation is run in wireframe mode, for improved performances. Note that it may be not desirable
+  when using video cameras!
 
 Detailed explanations of class functions
 ----------------------------------------

@@ -36,7 +36,7 @@ class RosActionsTest(RosTestCase):
         
         waypoint.configure_overlay('ros', 'morse.middleware.ros.overlays.actuator.WayPoint')
         
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('ros')
 
     def test_no_action(self):

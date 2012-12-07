@@ -23,7 +23,7 @@ class BaseTest(MorseTestCase):
         robot1 = Robot('jido')        
         robot2 = Robot('atrv')
         
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
 
     def test_list_robots(self):
         """ Tests the simulator can return the list of robots

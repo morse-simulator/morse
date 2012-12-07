@@ -29,7 +29,7 @@ class BatteryTest(MorseTestCase):
         battery.properties(DischargingRate = 10.0)
         robot.append(battery)
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_read_battery(self):

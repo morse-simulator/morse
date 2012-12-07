@@ -58,7 +58,7 @@ class YARP_MW_Test(MorseTestCase):
         robot.append(motion)
         motion.configure_mw('yarp')
         
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_vw_controller(self):

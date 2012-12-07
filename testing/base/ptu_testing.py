@@ -50,7 +50,7 @@ class PTUTest(MorseTestCase):
         chair = PassiveObject('props/objects.blend','RollingChair')
         chair.translate(x=ptu_x, y=3, z=0.01)
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_datastream(self):

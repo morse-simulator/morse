@@ -40,7 +40,7 @@ class TeleportTest(MorseTestCase):
         pose.configure_mw('socket')
         robot.append(pose)
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def _test_one_pose(self, x, y, z, yaw, pitch, roll):

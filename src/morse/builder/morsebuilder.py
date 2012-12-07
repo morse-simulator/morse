@@ -462,8 +462,16 @@ class Environment(Component):
     """
     multinode_distribution = dict()
 
-    def __init__(self, name):
+    def __init__(self, name, fastmode = False):
+        """
+        :param fastmode: (default: False) if True, disable most visual effects (like lights...) to
+        get the fastest running simulation. Useful for unit-tests for instance, or in simulations
+        where realistic environment texturing is not required (eg, no video camera)
+        """
         Component.__init__(self, 'environments', name)
+
+        self.fastmode = fastmode
+
         self._created = False
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]
@@ -557,9 +565,14 @@ class Environment(Component):
         camera_fp.location = self._camera_location
         camera_fp.rotation_euler = self._camera_rotation
 
-        # make sure OpenGL shading language shaders (GLSL) is the
-        # material mode to use for rendering
-        bpy.context.scene.game_settings.material_mode = 'GLSL'
+        if not self.fastmode:
+            # make sure OpenGL shading language shaders (GLSL) is the
+            # material mode to use for rendering
+            bpy.context.scene.game_settings.material_mode = 'GLSL'
+        else:
+            bpy.context.scene.game_settings.material_mode = 'SINGLETEXTURE'
+            self.set_viewport("WIREFRAME")
+
         # Set the unit system to use for button display (in edit mode) to metric
         bpy.context.scene.unit_settings.system = 'METRIC'
         # Select the type of Framing to Extend,

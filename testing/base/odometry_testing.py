@@ -44,7 +44,7 @@ class OdometryTest(MorseTestCase):
         robot.append(odo)
         odo.configure_mw('socket')
         
-        #env = Environment('indoors-1/indoor-1')
+        #env = Environment('empty', fastmode = True)
         env = Environment('land-1/rosace_1')
         env.configure_service('socket')
 

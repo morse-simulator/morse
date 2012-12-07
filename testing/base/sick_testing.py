@@ -39,8 +39,8 @@ class Sick_Test(MorseTestCase):
         robot.append(motion)
         motion.configure_mw('socket')
 
-        #env = Environment('indoors-1/indoor-1')
-        env = Environment('indoors-1/boxes')
+        #env = Environment('empty', fastmode = True)
+        env = Environment('indoors-1/boxes', fastmode = True)
         env.configure_service('socket')
 
 

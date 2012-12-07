@@ -36,7 +36,7 @@ class NedTest(MorseTestCase):
         pose2.configure_mw('socket')
 
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
 
