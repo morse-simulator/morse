@@ -27,6 +27,7 @@ add_morse_test(stabilized_quadrirotor_testing)
 add_morse_test(teleport_testing)
 add_morse_test(vw_testing)
 add_morse_test(waypoint_testing)
+add_morse_test(xyw_testing)
 
 # Sensor + Actuator 
 
