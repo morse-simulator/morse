@@ -38,7 +38,7 @@ class SteerForceTest(MorseTestCase):
         robot.append(steer_force)
         steer_force.configure_mw('socket')
 
-        env = Environment('land-1/rosace_1')
+        env = Environment('land-1/rosace_1', fastmode = True)
         env.configure_service('socket')
 
     def test(self):

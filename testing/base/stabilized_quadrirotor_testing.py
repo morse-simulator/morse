@@ -38,7 +38,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
         robot.append(motion)
         motion.configure_mw('socket')
 
-        env = Environment('land-1/rosace_1')
+        env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
     def test_theta_c_control(self):
