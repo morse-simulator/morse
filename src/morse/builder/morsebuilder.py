@@ -250,13 +250,13 @@ class Component(AbstractComponent):
         # add default class to this component
         if calling_module == 'calling.robot_action':
             self.properties(Robot_Tag = True, Path = 'morse/core/robot', \
-                Class = 'MorseRobotClass')
+                Class = 'Robot')
         elif calling_module == 'calling.sensor_action':
             self.properties(Component_Tag = True, Path = 'morse/core/sensor', \
-                Class = 'MorseSensorClass')
+                Class = 'Sensor')
         elif calling_module == 'calling.actuator_action':
             self.properties(Component_Tag = True, Path = 'morse/core/actuator',\
-                Class = 'MorseActuatorClass')
+                Class = 'Actuator')
         else:
             logger.warning(self.name + ": unknown category: " + calling_module)
 

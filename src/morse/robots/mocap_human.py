@@ -5,7 +5,7 @@ from morse.core.services import service
 
 logger.setLevel(logging.DEBUG)
 
-class MocapHumanClass(morse.core.robot.MorseRobotClass):
+class MocapHumanClass(morse.core.robot.Robot):
     """ Class definition for the human avatar as a robot entity
     Sub class of Morse_Object.
     This human is set to be controlled using data from an Xtion/Kinect sensor

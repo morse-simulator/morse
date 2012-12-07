@@ -12,7 +12,7 @@ Important note:
     the 'default_action' method.
 """
 
-class ImuClass(morse.core.sensor.MorseSensorClass):
+class ImuClass(morse.core.sensor.Sensor):
     """ IMU sensor """
 
     def __init__(self, obj, parent=None):

@@ -3,7 +3,7 @@ from abc import ABCMeta
 import morse.core.object
 from morse.core.services import service
 
-class MorseSensorClass(morse.core.object.MorseObjectClass):
+class Sensor(morse.core.object.Object):
     """ Basic Class for all sensors
 
     Inherits from the base object class.
@@ -15,7 +15,7 @@ class MorseSensorClass(morse.core.object.MorseObjectClass):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(MorseSensorClass, self).__init__(obj, parent)
+        super(Sensor, self).__init__(obj, parent)
         #super(self.__class__, self).__init__(obj, parent)
 
         # Define lists of dynamically added functions

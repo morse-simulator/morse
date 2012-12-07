@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.core.actuator
 
-class SteerForceActuatorClass(morse.core.actuator.MorseActuatorClass):
+class SteerForceActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller using engine force and steer angle speeds
 
     This class will read engine force and steer angle (steer, force)

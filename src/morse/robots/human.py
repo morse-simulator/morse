@@ -3,7 +3,7 @@ from morse.core import blenderapi
 import morse.core.robot
 from morse.core.services import service
 
-class HumanClass(morse.core.robot.MorseRobotClass):
+class HumanClass(morse.core.robot.Robot):
     """ Class definition for the human as a robot entity
         Sub class of Morse_Object. """
 

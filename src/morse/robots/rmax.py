@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class RmaxClass(morse.core.robot.MorseRobotClass):
+class RmaxClass(morse.core.robot.Robot):
     """ Class definition for the Yamaha RMAX helicopter.
         Sub class of Morse_Object. """
 

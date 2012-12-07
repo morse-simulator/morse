@@ -3,7 +3,7 @@ import bge
 import math
 import morse.core.sensor
 
-class PoseClass(morse.core.sensor.MorseSensorClass):
+class PoseClass(morse.core.sensor.Sensor):
     """ Robot pose sensor, including position and orientation """
 
     def __init__(self, obj, parent=None):

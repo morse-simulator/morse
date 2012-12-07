@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 from morse.core.exceptions import MorseRPCInvokationError, MorseServiceAlreadyRunningError
 
-class MorseAbstractObject(object):
+class AbstractObject(object):
     """ An abstract object. All components in MORSE (either physical components
     like actuators or sensors or pseudo components like component overlays) 
     inherit from AbstractObject.

@@ -2,8 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 import morse.core.object
 
-class MorseActuatorClass(morse.core.object.MorseObjectClass):
-    """ Basic Class for all actuator ovjects.
+class Actuator(morse.core.object.Object):
+    """ Basic Class for all actuator objects.
 
     Provides common attributes. """
 
@@ -13,7 +13,7 @@ class MorseActuatorClass(morse.core.object.MorseObjectClass):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(MorseActuatorClass, self).__init__(obj, parent)
+        super(Actuator, self).__init__(obj, parent)
         #super(self.__class__, self).__init__(obj, parent)
 
         # Define lists of dynamically added functions

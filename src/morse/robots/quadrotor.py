@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class QuadrotorClass(morse.core.robot.MorseRobotClass):
+class QuadrotorClass(morse.core.robot.Robot):
     """ Class definition for the Quad2012 (Club Micro Drone
         ISAE-Toulouse FRANCE).  Sub class of Morse_Object.
     """

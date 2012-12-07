@@ -22,7 +22,7 @@ import morse.core.actuator
 from morse.core.services import service, async_service, interruptible
 from morse.helpers.components import add_data, add_property
 
-class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+class WaypointActuatorClass(morse.core.actuator.Actuator):
     """
     This actuator reads the coordinates of a destination point, and moves the robot
     towards the given point, with the robot restricted to moving only forward,
@@ -30,7 +30,7 @@ class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
     This controller is meant to be used mainly by non-holonomic robots.
     
     While a robot is moving towards a given waypoint, a property of the
-    **MorseRobotClass** will be changed in indicate the status of the robot.
+    **Robot** will be changed in indicate the status of the robot.
     The ``movement_status`` property will take one of these values: **Stop**,
     **Transit** or **Arrived**.
     

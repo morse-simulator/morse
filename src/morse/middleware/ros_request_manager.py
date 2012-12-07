@@ -371,7 +371,7 @@ def ros_action(fn = None, type = None, name = None):
     type `type`.
     
     This decorator can only be used on methods in classes inheriting from 
-    :py:class:`morse.core.object.MorseObjectClass`.
+    :py:class:`morse.core.object.Object`.
     
     :param callable fn: [automatically set by Python to point to the
       decorated function] 
@@ -403,7 +403,7 @@ def ros_service(fn = None, type = None, component = None, name = None):
 
     This decorator works both with free function and for methods in
     classes inheriting from
-    :py:class:`morse.core.object.MorseObjectClass`. In the former case,
+    :py:class:`morse.core.object.Object`. In the former case,
     you must specify a component (your service will belong to this
     namespace), in the later case, it is automatically set to the name
     of the corresponding MORSE component.

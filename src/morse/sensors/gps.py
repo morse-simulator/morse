@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.core.sensor
 
-class GPSClass(morse.core.sensor.MorseSensorClass):
+class GPSClass(morse.core.sensor.Sensor):
     """ Class definition for the gyroscope sensor.
         Sub class of Morse_Object. """
 

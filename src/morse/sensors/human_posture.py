@@ -3,7 +3,7 @@ import math
 import bge
 import morse.core.sensor
 
-class HumanPostureClass(morse.core.sensor.MorseSensorClass):
+class HumanPostureClass(morse.core.sensor.Sensor):
     """ Class definition for the human posture exporter.
         This sensor exports the posture of a human model moving in the simulator.
         

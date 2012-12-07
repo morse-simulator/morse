@@ -4,10 +4,24 @@ import morse.core.sensor
 from morse.helpers.components import add_property
 
 
-class CameraClass(morse.core.sensor.MorseSensorClass):
+class CameraClass(morse.core.sensor.Sensor):
     """
-    This class implements the configuration of the Blender's bge.texture
-    module required by the different cameras, such as video or semantic.
+    This sensor emulates a single video camera. It generates a series of RGBA images.
+    Images are encoded as binary char arrays, with 4 bytes per pixel.
+
+    The cameras make use of Blender's **bge.texture** module, which requires
+    a graphic card capable of GLSL shading.
+    Also, the 3D view window in Blender must be set to draw **Textured** objects.
+
+    .. note::
+        The streaming of data from this sensor can be toggled off and on by
+        pressing the SPACE key during the simulation. This will affect all the
+        video cameras on the scene.
+
+        Toggling off the cameras can help make the simulation run faster,
+        specially when there are several cameras. However, the lack of
+        data on the stream may cause problems to some middlewares.
+
     """
 
     _name = "Generic Camera"

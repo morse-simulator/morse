@@ -3,7 +3,7 @@ import morse.core.robot
 from morse.core.services import service
 
 
-class PR2Class(morse.core.robot.MorseRobotClass):
+class PR2Class(morse.core.robot.Robot):
     """ 
     Class definition for the PR2.
     Sub class of Morse_Object.

@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class EnvironmentClass(morse.core.robot.MorseRobotClass):
+class EnvironmentClass(morse.core.robot.Robot):
     """ Class definition for a "virtual" robot.
 
     This robot class does not have a graphical representation,

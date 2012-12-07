@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
 
-class MorseRobotClass(morse.core.object.MorseObjectClass):
+class Robot(morse.core.object.Object):
     """ Basic Class for all robots
 
     Inherits from the base object class.
@@ -14,7 +14,7 @@ class MorseRobotClass(morse.core.object.MorseObjectClass):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(MorseRobotClass, self).__init__(obj, parent)
+        super(Robot, self).__init__(obj, parent)
         
         # Add the variable move_status to the object
         self.move_status = "Stop"

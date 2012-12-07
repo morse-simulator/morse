@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import mathutils
 import morse.core.actuator
 
-class TeleportActuatorClass(morse.core.actuator.MorseActuatorClass):
+class TeleportActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller changing the robot pose (position and orientation)
 
     This class will read a position vector and orientation quaternion as input

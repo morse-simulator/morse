@@ -6,7 +6,7 @@ from morse.core.mathutils import Vector
 from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_data, add_property
 
-class RotorcraftAttitudeActuatorClass(morse.core.actuator.MorseActuatorClass):
+class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
     """
     This class will read desired attitude and thrust as input
     from an external middleware.

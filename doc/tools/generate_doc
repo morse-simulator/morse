@@ -17,8 +17,8 @@ from morse.sensors import odometry, camera, battery, proximity
 import sys, os
 import fnmatch
 
-from morse.core.actuator import MorseActuatorClass
-from morse.core.sensor import MorseSensorClass
+from morse.core.actuator import Actuator
+from morse.core.sensor import Sensor
 
 
 PREFIX = "."
@@ -94,11 +94,11 @@ for module in [getattr(m, fn) for fn in dir(m)]:
             name = component.__name__
             ctype = None
 
-            if MorseActuatorClass in component.mro() and name != 'MorseActuatorClass':
+            if Actuator in component.mro() and name != 'Actuator':
                 print("Found actuator " + name)
                 ctype = 'actuator'
                 
-            if MorseSensorClass in component.mro() and name != 'MorseSensorClass':
+            if Sensor in component.mro() and name != 'Sensor':
                 print("Found sensor " + name)
                 ctype = 'sensor'
 

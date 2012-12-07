@@ -3,7 +3,7 @@ import morse.core.robot
 import PhysicsConstraints
 
 
-class HummerClass(morse.core.robot.MorseRobotClass):
+class HummerClass(morse.core.robot.Robot):
     """ Class definition for the Hummer.
         Sub class of Morse_Object. """
 

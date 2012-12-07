@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 
-from morse.core.modifier import MorseModifierClass
+from morse.core.modifier import Modifier
 
-class MorseUTMClass(MorseModifierClass):
+class MorseUTMClass(Modifier):
     """ Convert between Blender and UTM coordinates. """
     
     def initialize(self):

@@ -10,7 +10,7 @@ Important note:
     the 'default_action' method.
 """
 
-class SICKClass(morse.core.sensor.MorseSensorClass):
+class SICKClass(morse.core.sensor.Sensor):
     """ SICK laser range sensor """
 
     def __init__(self, obj, parent=None):

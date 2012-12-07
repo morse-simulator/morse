@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import random
 
-from morse.core.modifier import MorseModifierClass
+from morse.core.modifier import Modifier
 
-class MorseIMUNoiseClass(MorseModifierClass):
+class MorseIMUNoiseClass(Modifier):
 
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """

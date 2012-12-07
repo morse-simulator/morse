@@ -4,7 +4,7 @@ import morse.core.sensor
 import copy
 from morse.helpers.components import add_data
 
-class OdometryClass(morse.core.sensor.MorseSensorClass):
+class OdometryClass(morse.core.sensor.Sensor):
     """
     This sensor produces relative displacement with respect to the position and
     rotation in the previous Blender tick. It can compute too the position of the
@@ -23,7 +23,7 @@ class OdometryClass(morse.core.sensor.MorseSensorClass):
     _name = "Odometry"
     _short_desc = "An odometry sensor that returns raw, partially integrated or fully integrated displacement information."
 
-    #MorseSensorClass.add_property('Speed', 1.0, 'speed of each joint, in rad/s')
+    #Sensor.add_property('Speed', 1.0, 'speed of each joint, in rad/s')
 
     add_data('dS', 0.0, "float","curvilign distance since last tick")
     add_data('dx', 0.0, "float","delta of X coordinate of the sensor")

@@ -7,7 +7,7 @@ import types
 
 from abc import ABCMeta, abstractmethod
 
-class MorseModifierClass(object):
+class Modifier(object):
     """ Basic Class for all modifiers
 
     Provides common attributes. """

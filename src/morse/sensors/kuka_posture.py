@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 import bge
 
-class KukaPostureClass(morse.core.sensor.MorseSensorClass):
+class KukaPostureClass(morse.core.sensor.Sensor):
     """ KUKA posture sensor
         
     Reads the position of the KUKA LWR arm with respect to the robot,

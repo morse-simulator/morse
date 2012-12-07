@@ -17,8 +17,8 @@ digraph G {
 		color="black"
 	]
 
-	MorseAbstractObject [
-		label = "{MorseAbstractObject |+on_completion : fonction\l+ local_data : OrderedDict\l+ del_function : array\l|+ name()\l+ interrupt()\l+ completed()\l+ register_service()\l }"
+	AbstractObject [
+		label = "{AbstractObject |+on_completion : fonction\l+ local_data : OrderedDict\l+ del_function : array\l|+ name()\l+ interrupt()\l+ completed()\l+ register_service()\l }"
 	]
 
 	MorseOverlay [
@@ -53,8 +53,8 @@ digraph G {
 		label = "{DestinationActuator | + tolerance : float\l+ speed : float\l+ destination : point\l | }"
 	]
 
-	MorseObject -> MorseAbstractObject
-	MorseOverlay -> MorseAbstractObject
+	MorseObject -> AbstractObject
+	MorseOverlay -> AbstractObject
 	MorseRobot -> MorseObject
 	MorseSensor -> MorseObject
 	MorseActuator -> MorseObject

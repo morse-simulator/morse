@@ -16,7 +16,7 @@ from morse.core.services import service
 from morse.core.exceptions import MorseRPCInvokationError
 
 
-class GripperActuatorClass(morse.core.actuator.MorseActuatorClass):
+class GripperActuatorClass(morse.core.actuator.Actuator):
     """
     Basic gripper with two moving pieces
 

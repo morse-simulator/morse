@@ -3,7 +3,7 @@ import bge
 import math
 import morse.core.sensor
 
-class AccelerometerClass(morse.core.sensor.MorseSensorClass):
+class AccelerometerClass(morse.core.sensor.Sensor):
     """ Accelerometer sensor """
 
     def __init__(self, obj, parent=None):

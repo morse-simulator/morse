@@ -5,11 +5,11 @@ from morse.core.services import service
 from morse.core.exceptions import MorseRPCInvokationError
 
 
-class ArmatureActuatorClass(morse.core.actuator.MorseActuatorClass):
+class ArmatureActuatorClass(morse.core.actuator.Actuator):
     """
     Class to represent an actuator to actuate on blender armatures in MORSE.
 
-    Sub class of MorseActuatorClass.
+    Sub class of Actuator.
     This class has many MORSE Services that you can access via sockets/telnet.
     """
 

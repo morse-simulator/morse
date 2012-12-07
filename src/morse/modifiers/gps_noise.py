@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.modifiers.gaussian
 
-from morse.core.modifier import MorseModifierClass
+from morse.core.modifier import Modifier
 
-class MorseGPSNoiseClass(MorseModifierClass):
+class MorseGPSNoiseClass(Modifier):
 
     dev = 0
 

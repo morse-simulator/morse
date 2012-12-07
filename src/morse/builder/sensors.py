@@ -119,5 +119,5 @@ class Battery(morse.builder.creator.SensorCreator):
 class Clock(morse.builder.creator.SensorCreator):
     def __init__(self, name="Clock"):
         morse.builder.creator.SensorCreator.__init__(self, name, 
-            "morse/core/sensor", "MorseSensorClass", "clock")
+            "morse/core/sensor", "Sensor", "clock")
 

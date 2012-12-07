@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 
-class PR2PostureClass(morse.core.sensor.MorseSensorClass):
+class PR2PostureClass(morse.core.sensor.Sensor):
     """ PR2 posture sensor
 
         Exports the joint state of the PR2 robot, using the official joint

@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 
-class GyroscopeClass(morse.core.sensor.MorseSensorClass):
+class GyroscopeClass(morse.core.sensor.Sensor):
     """ Gyroscope sensor """
 
     def __init__(self, obj, parent=None):

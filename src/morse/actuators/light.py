@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.core.actuator
 
-class LightActuatorClass(morse.core.actuator.MorseActuatorClass):
+class LightActuatorClass(morse.core.actuator.Actuator):
     """ Point light actuator
 
     http://www.blender.org/documentation/blender_python_api_2_57_release/bge.logic.html

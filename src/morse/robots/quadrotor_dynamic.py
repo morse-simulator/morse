@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class QuadrotorClass(morse.core.robot.MorseRobotClass):
+class QuadrotorClass(morse.core.robot.Robot):
     """ Class definition for a simple quadrotor.
         Sub class of Morse_Object. """
 

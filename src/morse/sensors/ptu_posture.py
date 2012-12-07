@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import morse.core.sensor
 
-class PTUPostureClass(morse.core.sensor.MorseSensorClass):
+class PTUPostureClass(morse.core.sensor.Sensor):
     """ Reader for the PTU posture sensor """
 
     def __init__(self, obj, parent=None):

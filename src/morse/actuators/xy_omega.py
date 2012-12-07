@@ -3,7 +3,7 @@ import bge
 import math
 import morse.core.actuator
 
-class XYWActuatorClass(morse.core.actuator.MorseActuatorClass):
+class XYWActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller using linear and angular speeds
 
     This class will read two linear and one angular speeds (Vx, Vy, W)

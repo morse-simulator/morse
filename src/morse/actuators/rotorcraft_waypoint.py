@@ -11,7 +11,7 @@ from morse.core.services import service, async_service, interruptible
 from morse.core import status
 
 
-class RotorcraftWaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
     """ 
     This controller will receive a 3D destination point and heading
     and make the robot move to that location by changing attitude.

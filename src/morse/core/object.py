@@ -1,13 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
-from morse.core.abstractobject import MorseAbstractObject
+from morse.core.abstractobject import AbstractObject
 
 import morse.helpers.transformation
 from morse.core.services import service
 
 from morse.core import blenderapi
 
-class MorseObjectClass(MorseAbstractObject):
+class Object(AbstractObject):
     """ Basic Class for all 3D objects (components) used in the simulation.
         Provides common attributes.
     """
@@ -17,7 +17,7 @@ class MorseObjectClass(MorseAbstractObject):
 
     def __init__ (self, obj, parent=None):
 
-        super(MorseObjectClass, self).__init__()
+        super(Object, self).__init__()
 
         # Fill in the data sent as parameters
         self.blender_obj = obj

@@ -3,7 +3,7 @@ import bge
 import mathutils
 import morse.core.actuator
 
-class OrientationActuatorClass(morse.core.actuator.MorseActuatorClass):
+class OrientationActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller changing the robot orientation
 
     This class will read angles as input from an external middleware,

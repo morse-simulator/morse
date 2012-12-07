@@ -3,7 +3,7 @@ from morse.core import mathutils
 import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
-class ForceTorqueActuatorClass(morse.core.actuator.MorseActuatorClass):
+class ForceTorqueActuatorClass(morse.core.actuator.Actuator):
     """
     This class will read force and torque as input 
     from an external middleware.

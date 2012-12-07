@@ -3,7 +3,7 @@ import morse.core.sensor
 import time
 from morse.helpers.components import add_data, add_property
 
-class BatteryClass(morse.core.sensor.MorseSensorClass):
+class BatteryClass(morse.core.sensor.Sensor):
     """
     This sensor emulates the remaining charge of a battery on the robot.
     It is meant to be used only as an informative measure, to be taken in

@@ -3,9 +3,9 @@ import random
 from math import radians, degrees, cos
 import mathutils
 
-from morse.core.modifier import MorseModifierClass
+from morse.core.modifier import Modifier
 
-class MorsePoseNoiseClass(MorseModifierClass):
+class MorsePoseNoiseClass(Modifier):
 
     def register_component(self, component_name, component_instance, mod_data):
         """ Add the corresponding function to a component. """

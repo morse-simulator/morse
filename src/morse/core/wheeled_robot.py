@@ -5,7 +5,7 @@ import bge
 import bpy
 import mathutils
 
-class PhysicsWheelRobotClass(morse.core.robot.MorseRobotClass):
+class PhysicsWheelRobotClass(morse.core.robot.Robot):
     """ Abstract base class for robots with wheels that turn as
         the robot moves.
         The wheels must be children of the robot in the Blender file.
@@ -21,7 +21,7 @@ class PhysicsWheelRobotClass(morse.core.robot.MorseRobotClass):
     _wheel_joints = {}
 
     def action(self):
-        """ Overload the 'action' method of the MorseRobotClass
+        """ Overload the 'action' method of the Robot
             This one will compute the transformations considering the different
             axis orientation used by this kind of robots """
         # Update the component's position in the world

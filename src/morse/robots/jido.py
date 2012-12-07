@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class JidoClass(morse.core.robot.MorseRobotClass):
+class JidoClass(morse.core.robot.Robot):
     """ Class definition for the Jido robot.
 
         Sub class of Morse_Object. """

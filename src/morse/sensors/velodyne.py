@@ -5,7 +5,7 @@ import math
 import morse.core.sensor
 import morse.helpers.morse_math
 
-class VelodyneClass(morse.core.sensor.MorseSensorClass):
+class VelodyneClass(morse.core.sensor.Sensor):
     """ Velodyne laser range sensor """
 
     def __init__(self, obj, parent=None):

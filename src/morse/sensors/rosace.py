@@ -24,7 +24,7 @@ from collections import OrderedDict
 from morse.helpers.components import add_data, add_property
 
 
-class RosaceSensorClass(morse.core.sensor.MorseSensorClass):
+class RosaceSensorClass(morse.core.sensor.Sensor):
     """ Multi function sensor/actuator for Rosace scenario
 
     This is a multi functional component specific for the ROSACE

@@ -75,8 +75,8 @@ And set it to identity again if needed:
 The Python part
 ---------------
 
-You need to implement a sub-class of ``morse.core.sensor.MorseSensorClass``, 
-respectively of ``morse.core.actuator.MorseActuatorClass``
+You need to implement a sub-class of ``morse.core.sensor.Sensor``, 
+respectively of ``morse.core.actuator.Actuator``
 
 Important things to do :
 

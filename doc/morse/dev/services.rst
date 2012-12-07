@@ -38,7 +38,7 @@ a human character in the simulation.
     import morse.core.robot
     from morse.core.services import service
 
-    class HumanClass(morse.core.robot.MorseRobotClass):
+    class HumanClass(morse.core.robot.Robot):
 
         def __init__(self, obj, parent=None):
             [...]
@@ -99,7 +99,7 @@ If the service call fails, you are expected to raise a
     from morse.core.exceptions import MorseRPCInvokationError
     from morse.core.services import service
 
-    class HumanClass(morse.core.robot.MorseRobotClass):
+    class HumanClass(morse.core.robot.Robot):
 
         def __init__(self, obj, parent=None):
             [...]
@@ -167,7 +167,7 @@ services. For instance, the *waypoint* actuator defines an asynchronous
     import morse.core.actuator
     from morse.core.services import async_service
 
-    class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+    class WaypointActuatorClass(morse.core.actuator.Actuator):
 
         def __init__(self, obj, parent=None):
             [...]
@@ -191,7 +191,7 @@ initialization method returns).
 
 The execution of the task itself takes place at each simulation step in
 the component
-:py:meth:`morse.core.object.MorseObjectClass.default_action` method.
+:py:meth:`morse.core.object.Object.default_action` method.
 Each execution step should remain short since the simulator blocks on
 the ``default_action`` as well.
 
@@ -211,7 +211,7 @@ object.
 
   Asynchronous services can normally only exist inside components (*i.e.*,
   they must be declared within a class inheriting from
-  :py:class:`morse.core.abstractobject.MorseAbstractObject`).
+  :py:class:`morse.core.abstractobject.AbstractObject`).
   The section `Manually registering services`_ explains how to overcome
   this constraint.
 
@@ -242,7 +242,7 @@ below).
 
     import morse.core.actuator
 
-    class WaypointActuatorClass(morse.core.actuator.MorseActuatorClass):
+    class WaypointActuatorClass(morse.core.actuator.Actuator):
 
          def interrupt(self):
              self.local_data['x'] = self.blender_obj.worldPosition[0]
@@ -306,10 +306,10 @@ At start up, :py:func:`morse.blender.main.init`...
 2. Instantiates classes associated to each component, 
 3. Registers the mappings (with 
    :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`),
-4. Calls :py:meth:`morse.core.object.MorseObjectClass.register_services`
+4. Calls :py:meth:`morse.core.object.Object.register_services`
    on each component instance.
 
-:py:meth:`morse.core.MorseObjectClass.register_services` iterates over
+:py:meth:`morse.core.Object.register_services` iterates over
 every methods marked as MORSE service within the class, and call
 :py:func:`morse.core.services.do_service_registration`.
 
@@ -347,7 +347,7 @@ services. The ``@async_service`` decorator simply calls the ``@service``
 decorator with the ``async`` parameter set to ``True``, which leads to
 wrap the original method in a new method that takes one more parameter
 (a callback) and calls
-:py:meth:`morse.core.object.MorseObjectClass.set_service_callback`.
+:py:meth:`morse.core.object.Object.set_service_callback`.
 
 Simplified version of the ``@service`` decorator:
 
@@ -373,7 +373,7 @@ in:
 * :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
   creates a new callback function for this service,
 * It invokes the original method with this callback,
-* When :py:meth:`morse.core.object.MorseObjectClass.completed`
+* When :py:meth:`morse.core.object.Object.completed`
   is invoked (i.e., when the service is completed), the callback 
   is executed.
 * This causes in turn the 

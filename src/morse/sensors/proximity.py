@@ -5,7 +5,7 @@ import morse.core.sensor
 from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
-class ProximitySensorClass(morse.core.sensor.MorseSensorClass):
+class ProximitySensorClass(morse.core.sensor.Sensor):
     """
     This sensor can be used to determine which other objects are within a
     certain radius of the sensor. It performs its test based only on distance.

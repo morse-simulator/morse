@@ -6,7 +6,7 @@ import mathutils
 
 #logger.setLevel(logging.DEBUG)
 
-class MocapControlClass(morse.core.actuator.MorseActuatorClass):
+class MocapControlClass(morse.core.actuator.Actuator):
     """ Controller for the motion of the human avatar, using the ASUS Xtion
 
     Should read the positions of the joints at:

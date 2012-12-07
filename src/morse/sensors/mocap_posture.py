@@ -5,7 +5,7 @@ import morse.core.sensor
 
 #logger.setLevel(logging.DEBUG)
 
-class HumanPostureClass(morse.core.sensor.MorseSensorClass):
+class HumanPostureClass(morse.core.sensor.Sensor):
     """ Class definition for the human posture exporter.
         This sensor exports the posture of a human model moving in the simulator.
 

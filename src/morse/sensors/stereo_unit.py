@@ -4,7 +4,7 @@ import morse.core.sensor
 import bge
 from functools import partial
 
-class StereoUnitClass(morse.core.sensor.MorseSensorClass):
+class StereoUnitClass(morse.core.sensor.Sensor):
     """ Base for stereo pairs
 
     It is used to link two camera objects, and export the images

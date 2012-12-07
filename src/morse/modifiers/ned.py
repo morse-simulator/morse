@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import bge
 import math
 
-from morse.core.modifier import MorseModifierClass
+from morse.core.modifier import Modifier
 
-class MorseNEDClass(MorseModifierClass):
+class MorseNEDClass(Modifier):
     """ Convert between ENU and NED coordinates. """
     
     def register_component(self, component_name, component_instance, mod_data):

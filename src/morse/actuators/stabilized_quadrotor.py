@@ -4,7 +4,7 @@ import morse.core.actuator
 import mathutils
 from morse.helpers.filt2 import Filt2
 
-class StabilizedQuadrotorActuatorClass(morse.core.actuator.MorseActuatorClass):
+class StabilizedQuadrotorActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller using linear model of a stabilized quadrotor
 
     This class will read Angular and height input (phi, theta, psi, h)

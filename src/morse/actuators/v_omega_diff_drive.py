@@ -3,7 +3,7 @@ from morse.core.services import service
 import morse.core.actuator
 import math
 
-class VWDiffDriveActuatorClass(morse.core.actuator.MorseActuatorClass):
+class VWDiffDriveActuatorClass(morse.core.actuator.Actuator):
     """ Motion controller using linear and angular speeds
 
     This class will read linear and angular speeds (V, W)

@@ -2,10 +2,10 @@ import logging; logger = logging.getLogger("morse." + __name__)
 logger.setLevel(logging.DEBUG)
 from abc import ABCMeta, abstractmethod
 from functools import partial
-from morse.core.abstractobject import MorseAbstractObject
+from morse.core.abstractobject import AbstractObject
 from morse.core.exceptions import MorseRPCInvokationError
 
-class MorseOverlay(MorseAbstractObject):
+class MorseOverlay(AbstractObject):
     """ This class allows to define 'overlay'. An 'overlay' is a pseudo component
     that masks a MORSE default component behind a custom facet (with for instance
     custom signatures for services, ports, etc.).
