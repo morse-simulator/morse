@@ -95,8 +95,7 @@ class VictimTest(MorseTestCase):
                 morse.call_server('Rosace_Sensor', 'heal')
 
             # Move close enough to be able to heal it
-            # XXX why does we need to teleport on y axis
-            send_dest(teleport_client, 9.2, -1.2, 0.0)
+            send_dest(teleport_client, 9.2, 0.0, 0.0)
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
