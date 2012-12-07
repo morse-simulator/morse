@@ -224,10 +224,14 @@ class SocketRequestManager(RequestManager):
         
         else:
             component, service, params = tokens
+            
+            params = params.strip()
 
-            try:
-                p =  json.loads(params)
-            except (NameError, SyntaxError, ValueError) as e:
-                raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
-
+            if params:
+                try:
+                    p =  json.loads(params)
+                except (NameError, SyntaxError, ValueError) as e:
+                    raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters: <%s>. %s" % (params, str(e)))
+            else:
+                p = None
         return (component, service, p)
