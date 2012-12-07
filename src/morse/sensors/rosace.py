@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #

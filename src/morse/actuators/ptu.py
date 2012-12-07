@@ -21,7 +21,7 @@ class PTUActuatorClass(Actuator):
     These meshes will rotate to produce the effect of a real Pan-Tilt unit.
 
     .. note:: When mounting a camera or stereo unit on top of the Pan-Tilt unit,
-        make sure to parent the camera to the **PTU** object.
+      make sure to parent the camera to the **PTU** object.
 
     This component can be configured to be operated manually as well as through data
     from a middleware. When using manual mode, the pan and tilt segments can be rotated

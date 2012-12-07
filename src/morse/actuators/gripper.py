@@ -77,6 +77,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
 
         :returns: if successful (or if an object is already in hand), the
         name of the object, else None
+
         """
         # Check that no other object is being carried
         if not self._grabbed_object:

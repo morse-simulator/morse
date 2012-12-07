@@ -13,6 +13,7 @@ Morse Builder API
 To test this module you can c/p the following code in Blender Python console::
 
 .. code-block:: python
+
     import sys
     sys.path.append("/usr/local/lib/python3/dist-packages")
     from morse.builder import *
@@ -115,6 +116,7 @@ class Human(AbstractComponent):
     Usage example:
 
     .. code-block:: python
+
        #! /usr/bin/env morseexec
 
        from morse.builder import *

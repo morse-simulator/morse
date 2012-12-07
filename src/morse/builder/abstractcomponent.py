@@ -120,6 +120,7 @@ class AbstractComponent(object):
         Usage example:
 
         .. code-block:: python
+
             self.properties(Component_Tag = True, Class='XXXClass', speed = 5.0)
 
         will create and/or set the 3 game properties Component_Tag, Class, and
@@ -130,6 +131,7 @@ class AbstractComponent(object):
         For the TIMER type, see the class timer(float) defined in this module:
 
         .. code-block:: python
+
             self.properties(My_Clock = timer(5.0), My_Speed = int(5/2))
 
         """
