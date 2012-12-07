@@ -39,7 +39,7 @@ class Configuration(object):
         self.modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, component,  manager, overlay_cfg):
-        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg 
+        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg
 
     def write_config(self):
         """ Write the 'component_config.py' file with the supplied settings """
@@ -95,19 +95,19 @@ class AbstractComponent(object):
     def rotation_euler(self, xyz):
         self._blendobj.rotation_euler = xyz
     def translate(self, x=0.0, y=0.0, z=0.0):
-        """ Location of the object, float array of 3 items in [-inf, inf], 
+        """ Location of the object, float array of 3 items in [-inf, inf],
         default (0.0, 0.0, 0.0)
 
-        cf. `bpy.types.Object.location 
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
+        cf. `bpy.types.Object.location
+        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_
         """
         old = self._blendobj.location
         self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
     def rotate(self, x=0.0, y=0.0, z=0.0):
-        """ Rotation in Eulers, float array of 3 items in [-inf, inf], 
+        """ Rotation in Eulers, float array of 3 items in [-inf, inf],
         default (0.0, 0.0, 0.0)
 
-        cf. `bpy.types.Object.rotation_euler 
+        cf. `bpy.types.Object.rotation_euler
         <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
         """
         old = self._blendobj.rotation_euler
@@ -122,7 +122,7 @@ class AbstractComponent(object):
         .. code-block:: python
             self.properties(Component_Tag = True, Class='XXXClass', speed = 5.0)
 
-        will create and/or set the 3 game properties Component_Tag, Class, and 
+        will create and/or set the 3 game properties Component_Tag, Class, and
         speed at the value True (boolean), XXXClass (string), 5.0 (float).
         In Python the type of numeric value is 'int', if you want to force it to
         float, use the following: float(5) or 5.0
@@ -134,19 +134,19 @@ class AbstractComponent(object):
 
         """
         prop = self._blendobj.game.properties
-        for k in kwargs.keys():
-            if k in prop.keys():
-                self._property_set(k, kwargs[k])
+        for key in kwargs.keys():
+            if key in prop.keys():
+                self._property_set(key, kwargs[key])
             else:
-                self._property_new(k, kwargs[k])
+                self._property_new(key, kwargs[key])
 
-    def _property_new(self, n, v, t=None):
+    def _property_new(self, name, value, ptype=None):
         """ Add a new game property for the Blender object
 
-        :param n: property name (string)
-        :param v: property value
-        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
-                optional, auto-detect, default=None)
+        :param name: property name (string)
+        :param value: property value
+        :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
+                      optional, auto-detect, default=None)
         """
         bpy.ops.object.select_all(action = 'DESELECT')
         self._blendobj.select = True
@@ -154,34 +154,35 @@ class AbstractComponent(object):
         bpy.ops.object.game_property_new()
         prop = self._blendobj.game.properties
         # select the last property in the list (which is the one we just added)
-        prop[-1].name = n
-        self._property_set(-1, v, t)
+        prop[-1].name = name
+        return self._property_set(-1, value, ptype)
 
-    def _property_set(self, idx, v, t=None):
-        """ Really set the property for the property referenced by idx
+    def _property_set(self, pid, value, ptype=None):
+        """ Really set the property for the property referenced by pid
 
-        :param idx: the index of property
-        :param   v:  the property value
-        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
-                optional, auto-detect, default=None)
+        :param pid: the index of property
+        :param value: the property value
+        :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
+                      optional, auto-detect, default=None)
         """
         prop = self._blendobj.game.properties
-        if t == None:
+        if ptype == None:
             # Detect the type (class name upper case)
-            t = v.__class__.__name__.upper()
-        if t == 'STR':
+            ptype = value.__class__.__name__.upper()
+        if ptype == 'STR':
             # Blender property string are called 'STRING' (and not 'str' as in Python)
-            t = 'STRING'
-        prop[idx].type = t
-        prop[idx].value = v
+            ptype = 'STRING'
+        prop[pid].type = ptype
+        prop[pid].value = value
+        return prop[pid]
 
     def _get_selected(self, name):
-        """ get_selected returns the object with the name ``name`` from the 
+        """ get_selected returns the object with the name ``name`` from the
         selected objects list (usefull after appending)
         ie. importing a second object will be named "`name`.001" etc.
 
         :param name: name of the object
-        :return: the first Blender object for which his name strats with the 
+        :return: the first Blender object for which his name strats with the
         param `name` from those selected (imported object are selected)
         """
         for obj in bpy.context.selected_objects:
@@ -205,7 +206,7 @@ class AbstractComponent(object):
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
         """
 
-        :param component: if set, force to use the configuration of the given 
+        :param component: if set, force to use the configuration of the given
         component, instead of our own (default=None).
         """
         if not component:
@@ -251,7 +252,7 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         Configuration().link_modifier(self, config)
-        
+
     def configure_overlay(self, mw, overlay, config=None):
         if not config:
             config = MORSE_SERVICE_DICT[mw]

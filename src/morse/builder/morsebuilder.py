@@ -320,9 +320,10 @@ class WheeledRobot(Robot):
         """ Make the wheels orphans, but keep the transormation applied to
             the parent robot """
         # Force Blender to update the transformation matrices of objects
-        bpy.data.scenes['Scene'].update()
+        bpy.context.scene.update()
         children = self._blendobj.children
-        self._wheels = [child for child in children if "wheel" in child.name.lower()]
+        self._wheels = [child for child in children if "wheel" in \
+                        child.name.lower()]
         import mathutils
         for wheel in self._wheels:
             # Make a copy of the current transformation matrix
@@ -601,19 +602,19 @@ class Environment(Component):
 
     def show_debug_properties(self, value=True):
         if isinstance(value, bool):
-            bpy.data.scenes[0].game_settings.show_debug_properties = value
+            bpy.context.scene.game_settings.show_debug_properties = value
 
     def show_framerate(self, value=True):
         if isinstance(value, bool):
-            bpy.data.scenes[0].game_settings.show_framerate_profile = value
+            bpy.context.scene.game_settings.show_framerate_profile = value
 
     def show_physics(self, value=True):
         if isinstance(value, bool):
-            bpy.data.scenes[0].game_settings.show_physics_visualization = value
+            bpy.context.scene.game_settings.show_physics_visualization = value
 
     def set_gravity(self, gravity=9.81):
         if isinstance(gravity, float):
-            bpy.data.scenes[0].game_settings.physics_gravity = gravity
+            bpy.context.scene.game_settings.physics_gravity = gravity
 
     def set_viewport(self, viewport_shade='WIREFRAME'):
         """ set_viewport
@@ -690,6 +691,14 @@ class Environment(Component):
 
         # Change the text with the name of the camera being displayed
         caption.game.properties['Text'].value = self._display_camera.name
+
+    def profile(self, component):
+        """ Watch the average time used by the :param component: during the
+        simulation, in percent.
+        """
+        prop = self._property_new(component.name, "0 %")
+        prop.show_debug = True
+        self.show_debug_properties()
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

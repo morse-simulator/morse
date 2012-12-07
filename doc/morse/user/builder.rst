@@ -187,6 +187,8 @@ The ``Environment`` class provides these functions:
    (F-Curves) so you can render it later. See the tutorial: `Recording Game
    Physics to Keyframes <http://cgcookie.com/blender/2011/05/10/tip-recording-game-physics-to-keyframes/>`_
    for more information about this particular setting.
+ * **profile**: Watch the average time used by the component (parameter) during
+   the simulation, in percent.
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    The items accepted in as parameters are:

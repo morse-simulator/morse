@@ -84,8 +84,12 @@ def persistantstorage():
 
 def version():
     if not fake:
-        return bge.logic.blenderVersion 
+        return bge.logic.blenderVersion
     else:
         return (0,0,0)
 
-
+def getssr():
+    if not fake:
+        return bge.logic.getCurrentScene().objects["Scene_Script_Holder"]
+    else:
+        return None
