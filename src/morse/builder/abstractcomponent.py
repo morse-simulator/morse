@@ -60,6 +60,8 @@ class Configuration(object):
 class AbstractComponent(object):
     def __init__(self, obj=None, name=None):
         self._blendobj = obj
+        if obj:
+            self._blendobj.matrix_parent_inverse.identity()
         self._blendname = name # for mw config
     def append(self, obj):
         """ Add a child to the current object,
