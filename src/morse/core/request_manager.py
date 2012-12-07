@@ -219,6 +219,7 @@ class RequestManager(object):
             raise MorseMethodNotFoundError("The request " + service + " has not been registered in " + str(self))
 
         if is_async:
+
             # Creates a result setter functor: this functor is used as
             # callback for the asynchronous service.
             self._completed_requests[request_id] = None
@@ -239,9 +240,11 @@ class RequestManager(object):
                 # Check if the type error comes from a wrong # of args.
                 # We perform this check only after an exception is
                 # thrown to avoid loading the inspect module by default.
-                # TODO: Does it make sense?
-                import inspect
-                if len(params) != (len(inspect.getargspec(method)[0]) - 2): # -2 because of self and callback
+                import inspect, traceback
+                traceback.print_exc()
+                if not params:
+                    raise MorseRPCNbArgsError(str(self) + ": parameters expected for service " + service + "! " + str(e))
+                elif len(params) != (len(inspect.getargspec(method)[0]) - 2): # -2 because of self and callback
                     raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
                 else:
                     raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
@@ -261,7 +264,10 @@ class RequestManager(object):
                 # We perform this check only after an exception is
                 # thrown to avoid loading the inspect module by default.
                 # TODO: Does it make sense?
-                import inspect
+                import inspect, traceback
+                traceback.print_exc()
+                if not params:
+                    raise MorseRPCNbArgsError(str(self) + ": parameters expected for service " + service + "! " + str(e))
                 if len(params) != (len(inspect.getargspec(method)[0]) - 1): # -1 because of 'self'
                     raise MorseRPCNbArgsError(str(self) + ": wrong # of parameters for service " + service + ". " + str(e))
                 else:
