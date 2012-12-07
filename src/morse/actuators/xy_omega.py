@@ -1,24 +1,29 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
-import math
 import morse.core.actuator
+from morse.helpers.components import add_data
 
 class XYWActuatorClass(morse.core.actuator.Actuator):
-    """ Motion controller using linear and angular speeds
-
-    This class will read two linear and one angular speeds (Vx, Vy, W)
-    as input from an external middleware, and then apply them
-    to the parent robot.
     """
+    This actuator reads the values of forwards movement x, sidewards
+    movement y and angular speed w and applies them to the robot as
+    direct translation. This controller is supposed to be used with
+    robots that allow for sidewards movements.
+    """
+
+    _name = 'Linear and angular speed (Vx, Vy, W) actuator'
+
+    _short_desc = 'Motion controller using linear and angular speeds'
+
+    add_data('x', 0.0, 'float',
+             'linear velocity in x direction (forward movement) (m/s)')
+    add_data('y', 0.0, 'float',
+             'linear velocity in y direction (sidewards movement) (m/s)')
+    add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
-
-        self.local_data['x'] = 0.0
-        self.local_data['y'] = 0.0
-        self.local_data['w'] = 0.0
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 
