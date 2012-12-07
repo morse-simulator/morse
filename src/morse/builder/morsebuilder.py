@@ -296,6 +296,11 @@ class Robot(Component):
     def __init__(self, name):
         Component.__init__(self, 'robots', name)
 
+    def add_default_interface(self, stream):
+        for child in self._blendobj.children:
+            if child.is_morseable():
+                child.add_interface(stream)
+
     def make_external(self):
         self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
 #    def remove_wheels(self):
