@@ -1,23 +1,25 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
-import bge
 import morse.core.actuator
+from morse.helpers.components import add_data
 
 class VWActuatorClass(morse.core.actuator.Actuator):
-    """ Motion controller using linear and angular speeds
-
-    This class will read linear and angular speeds (V, W)
-    as input from an external middleware, and then apply them
-    to the parent robot.
+    """ 
+    This actuator reads the values of linear and angular speed and
+    applies them to the robot as direct translation. The speeds provided
+    are internally adjusted to the Blender time measure.
     """
+    _name = 'Linear and angular speed (V, W) actuator'
+    _short_desc = 'Motion controller using linear and angular speeds'
+
+    add_data('x', 0.0, 'float',
+             'linear velocity in x direction (forward movement) (m/s)')
+    add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
-
-        self.local_data['v'] = 0.0
-        self.local_data['w'] = 0.0
 
         # Choose the type of function to move the object
         #self._type = 'Velocity'
@@ -28,11 +30,19 @@ class VWActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def set_speed(self, v, w):
+        """
+        Modifies v and w according to the parameters
+        """
         self.local_data['v'] = v
         self.local_data['w'] = w
 
     @service
     def stop(self):
+        """
+        Stop the robot
+
+        Internally, it sets (v, w) to (0.0, 0.0)
+        """
         self.local_data['v'] = 0.0
         self.local_data['w'] = 0.0
 
