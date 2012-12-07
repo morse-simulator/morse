@@ -134,7 +134,7 @@ class AbstractComponent(object):
         prop = self._blendobj.game.properties
         for k in kwargs.keys():
             if k in prop.keys():
-                prop[k].value = kwargs[k]
+                self._property_set(k, kwargs[k])
             else:
                 self._property_new(k, kwargs[k])
 
@@ -153,14 +153,25 @@ class AbstractComponent(object):
         prop = self._blendobj.game.properties
         # select the last property in the list (which is the one we just added)
         prop[-1].name = n
+        self._property_set(-1, v, t)
+
+    def _property_set(self, idx, v, t=None):
+        """ Really set the property for the property referenced by idx
+
+        :param idx: the index of property
+        :param   v:  the property value
+        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
+                optional, auto-detect, default=None)
+        """
+        prop = self._blendobj.game.properties
         if t == None:
             # Detect the type (class name upper case)
             t = v.__class__.__name__.upper()
         if t == 'STR':
             # Blender property string are called 'STRING' (and not 'str' as in Python)
             t = 'STRING'
-        prop[-1].type = t
-        prop[-1].value = v
+        prop[idx].type = t
+        prop[idx].value = v
 
     def _get_selected(self, name):
         """ get_selected returns the object with the name ``name`` from the 
