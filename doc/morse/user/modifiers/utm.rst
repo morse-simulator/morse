@@ -7,6 +7,16 @@ origin with respect to the UTM reference. The offset is stored as three
 properties of the ``Scene_Script_Holder`` object of the scene: ``UTMXOffset``,
 ``UTMYOffset`` and ``UTMZOffset``.
 
+.. note:: Due to limitation in Blender, to pass offset outside of range
+  [-10000.0, 10000.0], you need to pass the offset value as a string.
+
+.. code-block:: python
+
+	from morse.builder import *
+
+	env = Environment('indoors-1/indoor-1')
+	env.configure_service('socket')
+	env.properties(UTMXOffset='123456789.0', UTMYOffset=-4242.0, UTMZOffset=421.0)
 
 Files
 -----
