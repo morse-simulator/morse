@@ -80,7 +80,7 @@ def read_points(cloud, field_names=None, skip_nans=False, uvs=[]):
                     yield unpack_from(data, offset)
                     offset += point_step
 
-def create_cloud(header, fields, points):
+def create_cloud(header, fields, points, width=None):
     """
     Create a L{sensor_msgs.msg.PointCloud2} message.
 
@@ -95,6 +95,17 @@ def create_cloud(header, fields, points):
     @return: The point cloud.
     @rtype:  L{sensor_msgs.msg.PointCloud2}
     """
+
+    if width: # we pass a memorywiev of points
+        return PointCloud2(header=header,
+                           height=1,
+                           width=width,
+                           is_dense=False,
+                           is_bigendian=False,
+                           fields=fields,
+                           point_step=int(len(points) / width),
+                           row_step=len(points),
+                           data=bytes(points)) # should call memoryview.tobytes
 
     cloud_struct = struct.Struct(_get_struct_fmt(False, fields))
 
@@ -116,7 +127,7 @@ def create_cloud(header, fields, points):
                        row_step=cloud_struct.size * len(points),
                        data=buff.raw)
 
-def create_cloud_xyz32(header, points):
+def create_cloud_xyz32(header, points, width=None):
     """
     Create a L{sensor_msgs.msg.PointCloud2} message with 3 float32 fields (x, y, z).
 
@@ -130,7 +141,7 @@ def create_cloud_xyz32(header, points):
     fields = [PointField('x', 0, PointField.FLOAT32, 1),
               PointField('y', 4, PointField.FLOAT32, 1),
               PointField('z', 8, PointField.FLOAT32, 1)]
-    return create_cloud(header, fields, points)
+    return create_cloud(header, fields, points, width)
 
 def _get_struct_fmt(is_bigendian, fields, field_names=None):
     fmt = '>' if is_bigendian else '<'
