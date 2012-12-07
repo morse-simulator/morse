@@ -83,19 +83,19 @@ specifying a full path.
 Append a component
 ++++++++++++++++++
 
-This task is very similar to the previous one, except that we can make a 
+This task is very similar to the previous one, except that we can make a
 parent relationship with the robot (lines 7 to 9). *ie.*::
 
     motion = Actuator('v_omega')
     atrv.append(motion)
 
-Once again, this implies that ``v_omega.blend`` exists in 
+Once again, this implies that ``v_omega.blend`` exists in
 ``$MORSE_ROOT/share/morse/data/actuators/``.
 
 .. note::
     In this example, the motion controller in your simulation will be named
     ``motion``.
-    
+
     The name is used by MORSE to refer to the component in the
     simulator
     interface. Each middleware has it's own naming convention, but for
@@ -113,10 +113,10 @@ Position a component
 
 There are 2 transformations you can give to a component: ``translate(x,y,z)`` and ``rotate(x,y,z)``.
 
-* The translation will add (x,y,z) to the current object location 
+* The translation will add (x,y,z) to the current object location
   (default: x=0, y=0, z=0, unit: meter).
-* The rotation is an `euler rotation 
-  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ 
+* The rotation is an `euler rotation
+  <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_
   relative to the object's center (default: x=0, y=0, z=0, unit: radian).
 
 .. code-block:: python
@@ -138,7 +138,7 @@ You can modify the *game properties* of any components within Python (line
     You can also add properties this way: if you refer to a property that does
     not exist, the property is created, and become available in other MORSE
     scripts.
-  
+
 
 Middleware configuration
 ++++++++++++++++++++++++
@@ -160,7 +160,7 @@ the :doc:`compatibility matrix <integration>`.
     Sometimes, you will need to use a specific serialization method.
     This can be achieved by passing more parameters to ``configure_mw``::
 
-        motion.configure_mw(['morse.middleware.ros_datastream.ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
+        motion.configure_mw('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
 
     In that case, we instruct MORSE to use ROS with the ``read_twist`` method
     defined in the ``morse.middleware.ros.read_vw_twist`` module.
@@ -170,7 +170,7 @@ the :doc:`compatibility matrix <integration>`.
     particular the section configuring middleware) for details.
 
 .. note::
-    Configuration for standard sensors and actuators are defined in 
+    Configuration for standard sensors and actuators are defined in
     the file ``src/morse/builder/data.py``.
 
 

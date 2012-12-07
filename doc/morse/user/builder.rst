@@ -355,7 +355,7 @@ would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
-    motion.configure_mw(['morse.middleware.ros_datastream.ROS', 'read_twist', 'morse/middleware/ros/read_vw_twist'])
+    motion.configure_mw('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
 
 cf. :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually building a scene
 <../user/advanced_tutorials/editing_in_blender>` (in particular the section configuring middleware) for details.

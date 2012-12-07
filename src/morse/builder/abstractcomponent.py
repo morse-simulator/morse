@@ -234,49 +234,68 @@ class AbstractComponent(object):
 
         return None
 
-    def configure_mw(self, mw, config=None, method=None, path=None, component=None):
-        """
+    def configure_mw(self, datastream, method=None, path=None, component=None):
+        logger.warning("configure_mw is deprecated, use add_stream instead")
+        return self.add_stream(datastream, method, path, component)
+
+    def add_stream(self, datastream, method=None, path=None, component=None, **kwargs):
+        """ add a data stream interface to the component
 
         :param component: if set, force to use the configuration of the given
         component, instead of our own (default=None).
+
+        You can pass other argument to this method, they will be added as a map
+        to the configuration.
+        component.add_stream('ros', topic='/myrobots/data')
         """
         if not component:
             component = self._blendname
+        config = []
         # Configure the datastream for this component
-        if not config:
-            if not method:
+        if not method:
+            try:
+                config = MORSE_DATASTREAM_DICT[datastream][component]
+                # TODO self._blendobj.game.properties["Class"].value ?
+                #      as map-key (in data, instead of blender-filename)
+            except KeyError:
+                logger.warning("%s: default datastream method"%self.name)
+                # set the default method either it is an Actuator or a Sensor
+                method = 'XXX_message'
+                prop = self._blendobj.game.properties
+                if 'Path' in prop:
+                    if prop['Path'].value.startswith('morse/sensors/'):
+                        method = 'post_message'
+                    elif prop['Path'].value.startswith('morse/actuators/'):
+                        method = 'read_message'
+                config = [method]
+        else:
+            if not path:
                 try:
-                    config = MORSE_DATASTREAM_DICT[mw][component]
-                    # TODO self._blendobj.game.properties["Class"].value ?
-                    #      as map-key (in data, instead of blender-filename)
+                    path = MORSE_DATASTREAM_DICT[datastream][component][1]
+                    config = [method, path]
                 except KeyError:
-                    logger.warning("%s: default datastream method"%self.name)
-                    # set the default method either it is an Actuator or a Sensor
-                    method = 'XXX_message'
-                    prop = self._blendobj.game.properties
-                    if 'Path' in prop:
-                        if prop['Path'].value.startswith('morse/sensors/'):
-                            method = 'post_message'
-                        elif prop['Path'].value.startswith('morse/actuators/'):
-                            method = 'read_message'
-                    config = [MORSE_DATASTREAM_MODULE[mw], method]
+                    config = [method]
             else:
-                if not path:
-                    try:
-                        path = MORSE_DATASTREAM_DICT[mw][component][2]
-                        config = [MORSE_DATASTREAM_MODULE[mw], method, path]
-                    except KeyError:
-                        config = [MORSE_DATASTREAM_MODULE[mw], method]
-                else:
-                    config = [MORSE_DATASTREAM_MODULE[mw], method, path]
+                config = [method, path]
+
+        config.insert(0, MORSE_DATASTREAM_MODULE[datastream])
+        config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
-    def configure_service(self, mw, component = None, config=None):
+    def configure_service(self, datastream, component=None, config=None):
+        logger.warning("configure_service is deprecated, use add_service instead")
+        return self.add_service(datastream, component, config)
+
+    def add_service(self, datastream, component=None, config=None):
         if not component:
             component = self
         if not config:
-            config = MORSE_SERVICE_DICT[mw]
+            config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_service(component, config)
+
+    def add_interface(self, datastream):
+        self.add_service(datastream)
+        self.add_stream(datastream)
 
     def configure_modifier(self, mod, config=None):
         # Configure the modifier for this component
@@ -284,9 +303,9 @@ class AbstractComponent(object):
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         Configuration.link_modifier(self, config)
 
-    def configure_overlay(self, mw, overlay, config=None):
+    def configure_overlay(self, datastream, overlay, config=None):
         if not config:
-            config = MORSE_SERVICE_DICT[mw]
+            config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay)
 
     def frequency(self, frequency=None, delay=0):
