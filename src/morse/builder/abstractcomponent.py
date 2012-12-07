@@ -39,7 +39,7 @@ class Configuration(object):
         self.modifier.setdefault(component.name, []).append(modifier_cfg)
 
     def link_overlay(self, component,  manager, overlay_cfg):
-        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg 
+        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg
 
     def write_config(self):
         """ Write the 'component_config.py' file with the supplied settings """
@@ -93,19 +93,19 @@ class AbstractComponent(object):
     def rotation_euler(self, xyz):
         self._blendobj.rotation_euler = xyz
     def translate(self, x=0.0, y=0.0, z=0.0):
-        """ Location of the object, float array of 3 items in [-inf, inf], 
+        """ Location of the object, float array of 3 items in [-inf, inf],
         default (0.0, 0.0, 0.0)
 
-        cf. `bpy.types.Object.location 
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_ 
+        cf. `bpy.types.Object.location
+        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_
         """
         old = self._blendobj.location
         self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
     def rotate(self, x=0.0, y=0.0, z=0.0):
-        """ Rotation in Eulers, float array of 3 items in [-inf, inf], 
+        """ Rotation in Eulers, float array of 3 items in [-inf, inf],
         default (0.0, 0.0, 0.0)
 
-        cf. `bpy.types.Object.rotation_euler 
+        cf. `bpy.types.Object.rotation_euler
         <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
         """
         old = self._blendobj.rotation_euler
@@ -120,7 +120,7 @@ class AbstractComponent(object):
         .. code-block:: python
             self.properties(Component_Tag = True, Class='XXXClass', speed = 5.0)
 
-        will create and/or set the 3 game properties Component_Tag, Class, and 
+        will create and/or set the 3 game properties Component_Tag, Class, and
         speed at the value True (boolean), XXXClass (string), 5.0 (float).
         In Python the type of numeric value is 'int', if you want to force it to
         float, use the following: float(5) or 5.0
@@ -143,7 +143,7 @@ class AbstractComponent(object):
 
         :param n: property name (string)
         :param v: property value
-        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'], 
+        :param t: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
                 optional, auto-detect, default=None)
         """
         bpy.ops.object.select_all(action = 'DESELECT')
@@ -163,12 +163,12 @@ class AbstractComponent(object):
         prop[-1].value = v
 
     def _get_selected(self, name):
-        """ get_selected returns the object with the name ``name`` from the 
+        """ get_selected returns the object with the name ``name`` from the
         selected objects list (usefull after appending)
         ie. importing a second object will be named "`name`.001" etc.
 
         :param name: name of the object
-        :return: the first Blender object for which his name strats with the 
+        :return: the first Blender object for which his name strats with the
         param `name` from those selected (imported object are selected)
         """
         for obj in bpy.context.selected_objects:
@@ -192,7 +192,7 @@ class AbstractComponent(object):
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
         """
 
-        :param component: if set, force to use the configuration of the given 
+        :param component: if set, force to use the configuration of the given
         component, instead of our own (default=None).
         """
         if not component:
@@ -201,7 +201,8 @@ class AbstractComponent(object):
         if not config:
             if not method:
                 try:
-                    config = MORSE_DATASTREAM_DICT[mw][component]
+                    config = [MORSE_DATASTREAM_MODULE[mw]]
+                    config.extend(MORSE_DATASTREAM_DICT[mw][component])
                     # TODO self._blendobj.game.properties["Class"].value ?
                     #      as map-key (in data, instead of blender-filename)
                 except KeyError:
@@ -238,7 +239,7 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
         Configuration().link_modifier(self, config)
-        
+
     def configure_overlay(self, mw, overlay, config=None):
         if not config:
             config = MORSE_SERVICE_DICT[mw]
