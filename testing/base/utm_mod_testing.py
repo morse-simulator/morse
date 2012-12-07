@@ -37,7 +37,8 @@ class UTMModifierTest(MorseTestCase):
 
         env = Environment('indoors-1/indoor-1')
         env.configure_service('socket')
-        env.properties(UTMXOffset=1337.0, UTMYOffset=-4242.0, UTMZOffset=421.0)
+        # Need to put float greater than 10000 in string
+        env.properties(UTMXOffset='123456789.0', UTMYOffset=-4242.0, UTMZOffset=421.0)
 
 
     def test_read_gps(self):
@@ -56,7 +57,7 @@ class UTMModifierTest(MorseTestCase):
             self.assertAlmostEqual(pos['y'], 8.0, delta=precision)
             self.assertAlmostEqual(pos['z'], 0.0, delta=precision)
 
-            self.assertAlmostEqual(pos_mod['x'], 10.0 + 1337.0, delta=precision)
+            self.assertAlmostEqual(pos_mod['x'], 10.0 + 123456789.0, delta=precision)
             self.assertAlmostEqual(pos_mod['y'], 8.0 + -4242.0, delta=precision)
             self.assertAlmostEqual(pos_mod['z'], 421.0, delta=precision)
 
