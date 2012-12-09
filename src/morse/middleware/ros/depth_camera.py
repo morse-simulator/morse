@@ -1,53 +1,39 @@
-import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('sensor_msgs')
-import rospy
+import roslib; roslib.load_manifest('sensor_msgs')
 from std_msgs.msg import Header
-from sensor_msgs.msg import PointCloud2
-
-from morse.middleware.ros import point_cloud2
+from sensor_msgs.msg import PointCloud2, PointField
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
-
-    # Add the new method to the component
-    component_instance.output_functions.append(function)
-
-    # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    self._topics.append(rospy.Publisher('/' + parent_name + '/' + component_name, PointCloud2))
-    self._seq = 0
-
-    logger.info('ROS publisher for depth camera initialized')
+    self.register_publisher(component_instance, function, PointCloud2)
 
 def post_pointcloud2(self, component_instance):
-    """ Publish the data of the Depth Camera as a ROS-PointCloud2 message.
+    """ Publish the data of the Depth Camera as a ROS PointCloud2 message.
 
     """
     if not component_instance.capturing:
         return # press [Space] key to enable capturing
 
-    parent_name = component_instance.robot_parent.blender_obj.name
-    component_name = component_instance.blender_obj.name
-
-    header = Header()
-    header.stamp = rospy.Time.now()
-    header.seq = self._seq
-    # http://www.ros.org/wiki/geometry/CoordinateFrameConventions#Multi_Robot_Support
-    header.frame_id = "/" + parent_name + "/" + component_name
-
     points = component_instance.local_data['3D_points']
-    pc2 = point_cloud2.create_cloud_xyz32(header, points,
-                                          component_instance.image_width *
-                                          component_instance.image_height)
+    width = component_instance.image_width * component_instance.image_height
+    size = len(points)
 
-    for topic in self._topics:
-        # publish the message on the correct topic
-        if str(topic.name) == str('/' + parent_name + '/' + component_name):
-            topic.publish(pc2)
+    pc2 = PointCloud2()
+    pc2.header = self.get_ros_header(component_instance)
+    pc2.height = 1
+    pc2.width = width
+    pc2.is_dense = False
+    pc2.is_bigendian = False
+    pc2.fields = [PointField('x', 0, PointField.FLOAT32, 1),
+                  PointField('y', 4, PointField.FLOAT32, 1),
+                  PointField('z', 8, PointField.FLOAT32, 1)]
+    pc2.point_step = int(size / width)
+    pc2.row_step = size
+    if self.ros_memoryview_patched():
+        pc2.data = points
+    else:
+        pc2.data = bytes(points)
 
-    self._seq += 1
+    self.publish(pc2, component_instance)
