@@ -41,7 +41,9 @@ def post_pointcloud2(self, component_instance):
     header.frame_id = "/" + parent_name + "/" + component_name
 
     points = component_instance.local_data['3D_points']
-    pc2 = point_cloud2.create_cloud_xyz32(header, points)
+    pc2 = point_cloud2.create_cloud_xyz32(header, points,
+                                          component_instance.image_width *
+                                          component_instance.image_height)
 
     for topic in self._topics:
         # publish the message on the correct topic

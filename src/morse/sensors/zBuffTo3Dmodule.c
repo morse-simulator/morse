@@ -7,11 +7,9 @@ static float far = 20.0;
 static int width = 0;
 static int height = 0;
 static int u_0, v_0;
-
-
-// The list to return values
-static PyObject* point_list;
-
+// The buffer to return values
+static float * points;
+static int points_size;
 
 static PyObject* init_image_parameters(PyObject* self, PyObject* args)
 {
@@ -27,6 +25,10 @@ static PyObject* init_image_parameters(PyObject* self, PyObject* args)
     v_0 = height / 2;
     printf("u_0 = %d, v_0 = %d\n", u_0, v_0);
 
+    // Allocate the buffer to store the points
+    points_size = width * height * 3 * sizeof(float);
+    points = malloc(points_size);
+
     return Py_BuildValue("i", 1);
 }
 
@@ -37,24 +39,21 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
 
     int i;
     int pixel;
-    unsigned int z_int;
     double z_b;
     float z_n, z_e;
     float x, y;
     int u, v;
+    float * fbuffer;
 
     // Read the incomming data as a buffer. It is originally an bgl.Buffer object
     if (!PyArg_ParseTuple(args, "w*", &img_buffer))
         return NULL;
 
-    float * fbuffer = (float *) img_buffer.buf;
-
     // check that there is no division by 0
     if (width == 0)
         return NULL;
 
-    // Create a new list to return with the 3D data
-    point_list = PyList_New(width*height);
+    fbuffer = (float *) img_buffer.buf;
 
     for (i=0; i<img_buffer.len; i+=4)
     {
@@ -82,20 +81,23 @@ static PyObject* recover_3d_point(PyObject* self, PyObject* args)
         //printf("\tz_b = %f | z_n = %f | z_e = %f\n", z_b, z_n, z_e);
         //printf("\tu, v (%d, %d) = x, y (%f, %f)\n", u, v, x, y);
 
-        // Store the x, y, z coordinates in the list
-        PyList_SetItem(point_list, pixel, Py_BuildValue("[f,f,f]", x, y, z_e));
+        // Store the x, y, z coordinates in the buffer
+        points[3*pixel]   = x;
+        points[3*pixel+1] = y;
+        points[3*pixel+2] = z_e;
     }
 
     // release the Python buffers
     PyBuffer_Release(&img_buffer);
 
-    return point_list;
+    return PyMemoryView_FromMemory(points, points_size, PyBUF_READ);
 }
 
 
 static PyObject* release_memory(PyObject* self, PyObject* args)
 {
-
+    free(points);
+    points = NULL;
     return Py_BuildValue("i", 1);
 }
 
