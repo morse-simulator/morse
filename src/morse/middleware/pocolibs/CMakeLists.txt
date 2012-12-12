@@ -6,7 +6,7 @@
 ## It generates _ors_<module_name>_poster.so, ors_<module_name>_poster.py, and
 ## we wait for <module_name>.py in the (sensor|actuator) directory)
 
-include_directories(${PYTHON3_INCLUDE_DIR})
+include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${POCOLIBS_INCLUDE_DIRS})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
@@ -101,7 +101,7 @@ foreach(directory ${directories_list})
 			add_library(${target_name} SHARED ${source} ${CMAKE_CURRENT_BINARY_DIR}/${target_name}PYTHON_wrap.c)
 			set_target_properties(${target_name} PROPERTIES PREFIX "_")
 			set_target_properties(${target_name} PROPERTIES SUFFIX ".so")
-			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON3_LIBRARIES})
+			target_link_libraries(${target_name} ${POCOLIBS_LIBRARIES} ${PYTHON_LIBRARIES})
 			install (FILES ${MODULE_SOURCE_DIR}/__init__.py 
 				${CMAKE_CURRENT_BINARY_DIR}/_${target_name}.so 
 				${CMAKE_CURRENT_BINARY_DIR}/${target_name}.py

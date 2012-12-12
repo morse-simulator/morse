@@ -1,4 +1,4 @@
-#! @PYTHON3_EXECUTABLE@
+#! @PYTHON_EXECUTABLE@
 # Based on an example from:
 #  http://ilab.cs.byu.edu/python/threadingmodule.html
 

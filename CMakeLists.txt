@@ -18,16 +18,15 @@ option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." OFF)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
-find_package(Python32Interp REQUIRED)
+set(PythonInterp_FIND_VERSION 3.2)
+find_package(PythonInterp REQUIRED)
 
-if (NOT PYTHON3INTERP_FOUND)
-	MESSAGE(FATAL_ERROR "Can't find python 3.2 on your system")
-endif(NOT PYTHON3INTERP_FOUND)
-
-find_package(Python32Libs REQUIRED)
+set(PythonLibs_FIND_VERSION "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+set(PythonLibs_FIND_VERSION_EXACT "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+find_package(PythonLibs REQUIRED)
 
 EXECUTE_PROCESS(COMMAND
-					${PYTHON3_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(1,0,\"\"))"
+					${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(1,0,\"\"))"
 					OUTPUT_VARIABLE PYTHON_INSTALL
 					ERROR_VARIABLE PYTHON_STDERR
 					RESULT_VARIABLE PYTHON_ERR
@@ -52,11 +51,11 @@ endif(BUILD_CORE_SUPPORT)
 
 if (BUILD_YARP2_SUPPORT)
 	EXECUTE_PROCESS(COMMAND 
-					${PYTHON3_EXECUTABLE} -c "import yarp;"
+					${PYTHON_EXECUTABLE} -c "import yarp;"
 					RESULT_VARIABLE YARP_PY_ERR
 				   )
 	if (YARP_PY_ERR)
-		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find yarp python binding")
+		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find yarp python binding")
 	endif (YARP_PY_ERR)
 endif(BUILD_YARP2_SUPPORT)
 
@@ -64,12 +63,12 @@ endif(BUILD_YARP2_SUPPORT)
 # check to make sure pymoos is installed
 if (BUILD_MOOS_SUPPORT)
 	EXECUTE_PROCESS(COMMAND 
-					${PYTHON3_EXECUTABLE} -c "import pymoos.MOOSCommClient;"
+					${PYTHON_EXECUTABLE} -c "import pymoos.MOOSCommClient;"
 					RESULT_VARIABLE MOOS_PY_ERR
 				   )
 	if (MOOS_PY_ERR)
 		#message(${MOOS_PY_ERR})
-		#MESSAGE(FATAL_ERROR "BUILD_MOOS_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find MOOS python binding")
+		#MESSAGE(FATAL_ERROR "BUILD_MOOS_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find MOOS python binding")
 	endif (MOOS_PY_ERR)
 endif(BUILD_MOOS_SUPPORT)
 
@@ -81,11 +80,11 @@ endif(BUILD_POCOLIBS_SUPPORT)
 
 if (BUILD_HLA_SUPPORT)
 	EXECUTE_PROCESS(COMMAND 
-					${PYTHON3_EXECUTABLE} -c "import hla;"
+					${PYTHON_EXECUTABLE} -c "import hla;"
 					RESULT_VARIABLE HLA_PY_ERR
 				   )
 	if (HLA_PY_ERR)
-		MESSAGE(FATAL_ERROR "BUILD_HLA_SUPPORT is required, but '${PYTHON3_EXECUTABLE}' can't find 'hla' python binding")
+		MESSAGE(FATAL_ERROR "BUILD_HLA_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find 'hla' python binding")
 	endif (HLA_PY_ERR)
 endif(BUILD_HLA_SUPPORT)
 
