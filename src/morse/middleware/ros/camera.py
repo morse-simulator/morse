@@ -32,10 +32,15 @@ def post_image(self, component_instance):
     image.width = component_instance.image_width
     image.encoding = 'rgba8'
     image.step = image.width * 4
+
     if self.ros_memoryview_patched():
+        # see patch in patches/ros_memoryview.diff
+        # add at the end of your builder script:
+        #   env.properties(ros_memoryview_patched=True)
         image.data = memoryview(image_local)
     else:
-        image.data = bytes(image_local.image)
+        # VideoTexture.ImageRender implements the buffer interface
+        image.data = bytes(image_local)
 
     # sensor_msgs/CameraInfo [ http://ros.org/wiki/rviz/DisplayTypes/Camera ]
     # fill this 3 parameters to get correcty image with stereo camera

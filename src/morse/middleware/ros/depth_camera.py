@@ -31,9 +31,15 @@ def post_pointcloud2(self, component_instance):
                   PointField('z', 8, PointField.FLOAT32, 1)]
     pc2.point_step = int(size / width)
     pc2.row_step = size
+
     if self.ros_memoryview_patched():
+        # see patch in patches/ros_memoryview.diff
+        # add at the end of your builder script:
+        #   env.properties(ros_memoryview_patched=True)
         pc2.data = points
     else:
+        # memoryview from PyMemoryView_FromMemory()
+        # implements the buffer interface
         pc2.data = bytes(points)
 
     self.publish(pc2, component_instance)
