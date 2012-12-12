@@ -1,14 +1,4 @@
-# build and install C modifiers
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
-
-ADD_LIBRARY (gaussian SHARED gaussian.c)
-SET_TARGET_PROPERTIES (gaussian PROPERTIES PREFIX "")
-if (WIN32)
-    ADD_DEFINITIONS(-D_WIN32)
-else (WIN32)
-    SET_TARGET_PROPERTIES (gaussian PROPERTIES SUFFIX ".so")
-endif (WIN32)
-TARGET_LINK_LIBRARIES (gaussian ${PYTHON_LIBRARIES})
+PYTHON_ADD_MODULE(gaussian gaussian.c)
 INSTALL(TARGETS gaussian
 		DESTINATION ${PYTHON_INSTDIR}/morse/modifiers)
 
