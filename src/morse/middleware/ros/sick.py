@@ -25,17 +25,17 @@ def post_2DLaserScan(self, component_instance):
     laserscan.header.frame_id = '/base_laser_link'
 
     # Note: Scan time and laser frequency are chosen as standard values
-    laser_frequency = 40
-    laser_maxrange =  component_instance.blender_obj['laser_range']
-    num_readings = component_instance.blender_obj['scan_window'] / component_instance.blender_obj['resolution']
+    laser_frequency = 40 # TODO ? component_instance.frequency()
+    scan_window = component_instance.blender_obj['scan_window']
+    num_readings = scan_window / component_instance.blender_obj['resolution']
 
-    laserscan.angle_max = component_instance.blender_obj['scan_window'] * ( math.pi / 360 )
-    laserscan.angle_min = max_angle * (-1)
-    laserscan.angle_increment = ((component_instance.blender_obj['scan_window'] / num_readings) * (math.pi / 180))
-    laserscan.time_increment = ((1 / laser_frequency) / (num_readings))
+    laserscan.angle_max = scan_window * math.pi / 360
+    laserscan.angle_min = laserscan.angle_max * -1
+    laserscan.angle_increment = scan_window / num_readings * math.pi / 180
+    laserscan.time_increment = 1 / laser_frequency / num_readings
     laserscan.scan_time = 1.0
     laserscan.range_min = 0.3
-    laserscan.range_max = laser_maxrange
+    laserscan.range_max = component_instance.blender_obj['laser_range']
     laserscan.ranges = component_instance.local_data['range_list']
 
     self.publish(laserscan, component_instance)
