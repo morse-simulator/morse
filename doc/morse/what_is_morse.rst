@@ -244,14 +244,14 @@ when assessing simulation solutions:
 - MORSE was never meant to be a physically accurate simulator: while we rely on
   a state-of-the-art physics engine (Bullet), do not expect to accurately
   simulate robot arm dynamics or fine grasping. Other projects are doing that
-  much better (like `Gazebo <http://playerstage.sourceforge.net/doc/Gazebo-manual-svn-html/>`_ or `OpenGrasp <http://opengrasp.sourceforge.net/>`_).
+  much better (like `OpenGrasp <http://opengrasp.sourceforge.net/>`_ for grasping).
 - While on-going efforts try to tackle this issue, we do not consider MORSE to have a
   good enough temporal accuracy and time synchronization capabilities for
   application like hybrid simulation (where some robots are simulated while
   others are physically operated).
 - MORSE is mostly developed and supported on Linux. MORSE is known to also run
-  on MacOSX, but it has never been tested on Microsoft Windows (it should be
-  however fairly easy to port it).
+  on MacOSX and Microsoft Windows, but only limited support can be provided for
+  these platforms.
 - As a not-for-profit, academic project, we do not offer any professional
   support beyond the documentation and the public mailing-lists. However,
   nothing is stopping third party companies to start providing commercial
