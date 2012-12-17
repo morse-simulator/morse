@@ -1,4 +1,4 @@
-from bge import logic
+from morse.core import blenderapi
 from mathutils import Vector
 
 def move(cont):
@@ -11,10 +11,10 @@ def move(cont):
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
     
-    dest = logic.getCurrentScene().objects['IK_Pose_Empty.R' + suffix]
-    hips = logic.getCurrentScene().objects['Hips_Empty' + suffix]
-    left_hand = logic.getCurrentScene().objects['IK_Target_Empty.L' + suffix]
-    human = logic.getCurrentScene().objects['Human' + suffix]
+    dest = blenderapi.scene().objects['IK_Pose_Empty.R' + suffix]
+    hips = blenderapi.scene().objects['Hips_Empty' + suffix]
+    left_hand = blenderapi.scene().objects['IK_Target_Empty.L' + suffix]
+    human = blenderapi.scene().objects['Human' + suffix]
 
     
     # get the Vector to the right position

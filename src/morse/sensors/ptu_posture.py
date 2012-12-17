@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
+from morse.core import blenderapi
 import morse.core.sensor
 
 class PTUPostureClass(morse.core.sensor.Sensor):
@@ -29,7 +29,7 @@ class PTUPostureClass(morse.core.sensor.Sensor):
                 logger.debug("Found a PTU called: %s" % child.name)
                 #self._ptu_obj = child
                 try:
-                    self._ptu_obj = bge.logic.componentDict[child.name]
+                    self._ptu_obj = blenderapi.persistantstorage().componentDict[child.name]
                     self._ptu_found = True
                 except:
                     return

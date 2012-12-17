@@ -1,5 +1,4 @@
-import bge
-import bpy
+from morse.core import blenderapi
 
 def RGBtoHue(rgbList):
     """ Convert an RGB color to Hue """
@@ -39,7 +38,7 @@ def retrieveHue(obj):
         return None
 
     if mesh != None:
-        bMat = bpy.data.materials[mesh.getMaterialName(0)[2:]]
+        bMat = blenderapi.materialdata(mesh.getMaterialName(0)[2:])
         return (RGBtoHue(bMat.diffuse_color))
     
     return None

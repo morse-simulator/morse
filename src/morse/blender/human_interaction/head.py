@@ -1,4 +1,4 @@
-from bge import logic
+from morse.core import blenderapi
 
 def set_body_position(co):
     """
@@ -9,8 +9,8 @@ def set_body_position(co):
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
 
-    head = logic.getCurrentScene().objects['Head' + suffix]
-    human = logic.getCurrentScene().objects['Human' + suffix]
+    head = blenderapi.scene().objects['Head' + suffix]
+    human = blenderapi.scene().objects['Human' + suffix]
 
 
     if human['Manipulate']:

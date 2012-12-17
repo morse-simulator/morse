@@ -1,18 +1,19 @@
-from bge import logic
+from morse.core import blenderapi
+
 from mathutils import Vector, Matrix
 
 def init():
     """
     Sets the camera on load
     """
-    co =  logic.getCurrentController()
+    co =  blenderapi.controller()
     ow = co.owner
 
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
     
     camAct = co.actuators['Set_Camera']
-    sobList =  logic.getCurrentScene().objects
+    sobList =  blenderapi.scene().objects
 
     human = sobList['Human' + suffix]
 
@@ -32,7 +33,7 @@ def init():
         camAct.camera = worldCam
     else:
         camAct.camera = humCam
-        logic.mouse.visible = False
+        blenderapi.mousepointer(visible = False)
     # set Camera following the human or displaying the world
     
     
@@ -42,7 +43,7 @@ def collision():
     """
     Detect camera collision and place the camera accordingly
     """
-    co =  logic.getCurrentController()
+    co =  blenderapi.controller()
     ow = co.owner
 
     # get the suffix of the human to reference the right objects
@@ -51,13 +52,13 @@ def collision():
     ray = co.sensors['collision']
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
-    human =   logic.getCurrentScene().objects['Human' + suffix]
+    human =   blenderapi.scene().objects['Human' + suffix]
 
     # if the Human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
         return
     
-    Orig_Pos = logic.getCurrentScene().objects['POS_3P_Cam_Orig' + suffix]
+    Orig_Pos = blenderapi.scene().objects['POS_3P_Cam_Orig' + suffix]
     distance = 0.05     # the distance the camera keeps to Objects
 
     # if near an object, place the camera slightly in front of it
@@ -106,14 +107,14 @@ def change():
     """
     Changes camera position to 1st person while in Manipulation-Mode
     """
-    co = logic.getCurrentController()
+    co = blenderapi.controller()
     ow = co.owner
 
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
     
     track = co.actuators['TrackCamera']
-    sobList = logic.getCurrentScene().objects
+    sobList = blenderapi.scene().objects
     human = sobList['Human' + suffix]
 
     # if the Human is external, do nothing
@@ -183,7 +184,7 @@ def raylength():
     Set the ray's length ,
     so that it hits objects in a certain radius around the human's z-axis
     """
-    co = logic.getCurrentController()
+    co = blenderapi.controller()
     cam = co.owner
     ray = co.sensors['Ray']
 

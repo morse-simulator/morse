@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 import morse.core.sensor
-import bge
+from morse.core import blenderapi
 from functools import partial
 
 class StereoUnitClass(morse.core.sensor.Sensor):
@@ -34,7 +34,7 @@ class StereoUnitClass(morse.core.sensor.Sensor):
             camera_name = child.name
             # Store only the name of the camera
             # All data from the camera can be accessed later
-            #  by using bge.logic.componentDict[camera_name],
+            #  by using blenderapi.persistantstorage().componentDict[camera_name],
             #  which will return the instance of the camera object
             self.camera_list.append(camera_name)
             self.num_cameras += 1
@@ -51,14 +51,14 @@ class StereoUnitClass(morse.core.sensor.Sensor):
 
     def interrupt(self):
         for camera in self.camera_list:
-            camera_instance = bge.logic.componentDict[camera]
+            camera_instance = blenderapi.persistantstorage().componentDict[camera]
             camera_instance.interrupt()
 
     @async_service
     def capture(self, n):
         self._expected_answer = self.num_cameras
         for camera in self.camera_list:
-            camera_instance = bge.logic.componentDict[camera]
+            camera_instance = blenderapi.persistantstorage().componentDict[camera]
             camera_instance.capture(partial(self.capture_completion), n)
 
     def default_action(self):

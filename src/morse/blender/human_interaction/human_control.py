@@ -12,40 +12,40 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-from bge import logic, events, render
+from morse.core import blenderapi
 import math
 from mathutils import Matrix
 
 AZERTY = False
 
 # use different keys for QWERTZ/QWERTY or AZERTY keyboards
-RIGHT  = events.DKEY
-TURN_RIGHT = events.EKEY
-BACKWARDS = events.SKEY
+RIGHT  = blenderapi.DKEY
+TURN_RIGHT = blenderapi.EKEY
+BACKWARDS = blenderapi.SKEY
 
 if AZERTY:
-    FORWARDS = events.ZKEY
-    LEFT = events.QKEY
-    TURN_LEFT = events.AKEY
+    FORWARDS = blenderapi.ZKEY
+    LEFT = blenderapi.QKEY
+    TURN_LEFT = blenderapi.AKEY
 else:
-    FORWARDS = events.WKEY
-    LEFT = events.AKEY
-    TURN_LEFT = events.QKEY
+    FORWARDS = blenderapi.WKEY
+    LEFT = blenderapi.AKEY
+    TURN_LEFT = blenderapi.QKEY
 
 def lock_movement(contr):
     human = contr.owner
     keyboard = contr.sensors['All_Keys']
 
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
 
     if scene.active_camera.name != 'CameraFP':
         return
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == events.keycode, key[1] = status
-        if key[1] == logic.KX_INPUT_JUST_ACTIVATED:
-            if key[0] == events.F5KEY:
+        # key[0] == blenderapi.keycode, key[1] = status
+        if key[1] == blenderapi.input_just_activated():
+            if key[0] == blenderapi.F5KEY:
                 human['move_cameraFP'] = not human['move_cameraFP']
                 if human['move_cameraFP']:
                     logger.info("Moving CameraFP")
@@ -58,7 +58,7 @@ def move(contr):
         that will make the camera move in 3D space. """
     
     # Get the currently active camera to adapt control method
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     active_camera = scene.active_camera
     
     # get the object this script is attached to
@@ -88,8 +88,8 @@ def move(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == events.keycode, key[1] = status
-        if key[1] == logic.KX_INPUT_ACTIVE:
+        # key[0] == blenderapi.keycode, key[1] = status
+        if key[1] == blenderapi.input_active():
             if human['Manipulate']:
                 if key[0] == FORWARDS:
                     move_speed[0] = speed
@@ -122,27 +122,27 @@ def move(contr):
             human.applyRotation( rotation_speed, True )
 
             """
-            if key[0] == events.UPARROWKEY:
+            if key[0] == blenderapi.UPARROWKEY:
                 move_speed[0] = speed
-            elif key[0] == events.DOWNARROWKEY:
+            elif key[0] == blenderapi.DOWNARROWKEY:
                 move_speed[0] = -speed
-            elif key[0] == events.LEFTARROWKEY:
+            elif key[0] == blenderapi.LEFTARROWKEY:
                 rotation_speed[2] = speed
-            elif key[0] == events.RIGHTARROWKEY:
+            elif key[0] == blenderapi.RIGHTARROWKEY:
                 rotation_speed[2] = -speed
-            elif key[0] == events.AKEY:
+            elif key[0] == blenderapi.AKEY:
                 move_speed[2] = speed
-            elif key[0] == events.EKEY:
+            elif key[0] == blenderapi.EKEY:
                 move_speed[2] = -speed
             """
 
-        elif key[1] == logic.KX_INPUT_JUST_ACTIVATED:
+        elif key[1] == blenderapi.input_just_activated():
             # Other actions activated with the keyboard
             # Reset camera to center
-            if key[0] == events.NKEY and keyboard.positive:
+            if key[0] == blenderapi.NKEY and keyboard.positive:
                 reset_view(contr)
             # Switch between look and manipulate
-            elif key[0] == events.XKEY:
+            elif key[0] == blenderapi.XKEY:
                 toggle_manipulate(contr)
 
 def read_status(contr):
@@ -152,7 +152,7 @@ def read_status(contr):
     is controlled via a motion actuator
     """
     human = contr.owner
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
@@ -184,7 +184,7 @@ def set_human_animation(contr):
     # get the suffix of the human to reference the right objects
     suffix = armature.name[-4:] if armature.name[-4] == "." else ""
 
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     active_camera = scene.active_camera
     human = scene.objects['Human' + suffix]
 
@@ -197,29 +197,29 @@ def set_human_animation(contr):
     keylist = keyboard.events
     pressed = []      #all keys that are currently pressed
     for key in keylist:
-        # key[0] == events.keycode, key[1] = status
-        if key[1] == logic.KX_INPUT_JUST_ACTIVATED:
+        # key[0] == blenderapi.keycode, key[1] = status
+        if key[1] == blenderapi.input_just_activated():
             pressed.append(key[0])
             # Keys for moving forward or turning
             """
-            if key[0] == events.WKEY or key[0] == events.ZKEY:
+            if key[0] == blenderapi.WKEY or key[0] == blenderapi.ZKEY:
                 armature['movingForward'] = True
-            elif key[0] == events.SKEY:
+            elif key[0] == blenderapi.SKEY:
                 armature['movingBackward'] = True
             """
             # TEST: Read the rotation of the bones in the armature
-            if key[0] == events.BKEY:
+            if key[0] == blenderapi.BKEY:
                 read_pose(contr)
-            #elif key[0] == events.VKEY:
+            #elif key[0] == blenderapi.VKEY:
                 #reset_pose(contr)
-        #elif key[1] == logic.KX_INPUT_JUST_RELEASED:
+        #elif key[1] == blenderapi.input_just_released():
             """            
-            if key[0] == events.WKEY or key[0] == events.ZKEY:
+            if key[0] == blenderapi.WKEY or key[0] == blenderapi.ZKEY:
                 armature['movingForward'] = False
-            elif key[0] == events.SKEY:
+            elif key[0] == blenderapi.SKEY:
                 armature['movingBackward'] = False
         """
-        elif key[1] == logic.KX_INPUT_ACTIVE:
+        elif key[1] == blenderapi.input_active():
             pressed.append(key[0])
 
     
@@ -248,7 +248,7 @@ def head_control(contr):
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
 
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     target = scene.objects['Target_Empty' + suffix]
     POS_EMPTY = scene.objects['POS_EMPTY' + suffix]
     Head_Empty = scene.objects['Head_Empty' + suffix]
@@ -257,7 +257,7 @@ def head_control(contr):
     mmb = contr.sensors['MMB']
 
     # Do not move the camera if the current view is using another camera
-    if camera != logic.getCurrentScene().active_camera:
+    if camera != blenderapi.scene().active_camera:
         return
 
     # If the manipulation mode is active, an object is grabbed
@@ -274,8 +274,8 @@ def head_control(contr):
 
     if mouse.positive:
         # get width and height of game window
-        width = render.getWindowWidth()
-        height = render.getWindowHeight()
+        width = blenderapi.render().getWindowWidth()
+        height = blenderapi.render().getWindowHeight()
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
@@ -303,7 +303,7 @@ def head_control(contr):
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
-        render.setMousePosition(width//2, height//2)
+        blenderapi.render().setMousePosition(width//2, height//2)
 
 
 def hand_control(contr):
@@ -324,7 +324,7 @@ def hand_control(contr):
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
     
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     target = scene.objects['IK_Target_Empty.R' + suffix]
     right_hand = scene.objects['Hand_Grab.R' + suffix]
     mmb = human.sensors['MMB']
@@ -343,8 +343,7 @@ def hand_control(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == events.keycode, key[1] = status
-        if key[1] == logic.KX_INPUT_NONE and key[0] == events.LEFTCTRLKEY:
+        if key[1] == blenderapi.input_none() and key[0] == blenderapi.LEFTCTRLKEY:
             if wheel_up.positive:
                 front = 50.0 * sensitivity
                 target.applyMovement([front, 0.0, 0.0], True)
@@ -365,8 +364,8 @@ def hand_control(contr):
 
     if mouse.positive:
         # get width and height of game window
-        width = render.getWindowWidth()
-        height = render.getWindowHeight()
+        width = blenderapi.render().getWindowWidth()
+        height = blenderapi.render().getWindowHeight()
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
@@ -381,7 +380,7 @@ def hand_control(contr):
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
-        render.setMousePosition(width//2, height//2)
+        blenderapi.render().setMousePosition(width//2, height//2)
 
 
 def read_pose(contr):
@@ -418,7 +417,7 @@ def reset_view(contr):
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
     
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     target = scene.objects['Target_Empty' + suffix]
     # Reset the Empty object to its original position
     target.localPosition = [1.3, 0.0, 1.7]
@@ -435,13 +434,13 @@ def toggle_manipulate(contr):
     # get the suffix of the human to reference the right objects
     suffix = human.name[-4:] if human.name[-4] == "." else ""
     
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     hand_target = scene.objects['IK_Target_Empty.R' + suffix]
     head_target = scene.objects['Target_Empty' + suffix]
     right_hand = scene.objects['Hand_Grab.R' + suffix]
 
     if human['Manipulate']:
-        #render.showMouse(False)
+        #blenderapi.render().showMouse(False)
         human['Manipulate'] = False
         # Place the hand beside the body
         if right_hand['selected'] == 'None' or right_hand['selected'] == '' or right_hand['selected'] == None:
@@ -449,7 +448,7 @@ def toggle_manipulate(contr):
             head_target.setParent(human)
             head_target.localPosition = [1.3, 0.0, 1.7]
     else:
-        #render.showMouse(True)
+        #blenderapi.render().showMouse(True)
         human['Manipulate'] = True
         head_target.setParent(hand_target)
         # Place the hand in a nice position
@@ -545,7 +544,7 @@ def rotate(co):
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
     
     keyboard = co.sensors['All_Keys']
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     pos =  scene.objects['POS_EMPTY' + suffix]
     human_pos = scene.objects['Human' + suffix]
     active_camera = scene.active_camera
@@ -561,13 +560,13 @@ def rotate(co):
 
     k = []    #initiate a list with all currently pressed keys
     for key in keylist:
-        if key[1] ==  logic.KX_INPUT_ACTIVE:
+        if key[1] ==  blenderapi.input_active():
             k.append(key[0])        # add all pressed keys to a list - as ASCII CODES
 
     pos.worldPosition = ow.worldPosition
 
     # Get active camera
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     active_camera = scene.active_camera
     
     if ow['Manipulate']:

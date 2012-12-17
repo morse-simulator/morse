@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 import mathutils
 import morse.core.actuator
 

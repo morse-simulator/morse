@@ -1,9 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
-
-import bpy
-# Import the ontology server proxy
-#import oro
+from morse.core import blenderapi
 
 import morse.sensors.camera
 import morse.helpers.colors
@@ -56,17 +52,17 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         # TrackedObject is a dictionary containing the list of tracked objects 
         # (->meshes with a class property set up) as keys
         #  and the bounding boxes of these objects as value.
-        if not hasattr(bge.logic, 'trackedObjects'):
+        if not 'trackedObjects' in blenderapi.persistantstorage():
             logger.info('Initialization of tracked objects:')
-            scene = bge.logic.getCurrentScene()
-            bge.logic.trackedObjects = dict.fromkeys(passive_objects.active_objects())
+            scene = blenderapi.scene()
+            blenderapi.persistantstorage().trackedObjects = dict.fromkeys(passive_objects.active_objects())
 
             # Store the bounding box of the marked objects
-            for obj in bge.logic.trackedObjects.keys():
+            for obj in blenderapi.persistantstorage().trackedObjects.keys():
 
                 # bound_box returns the bounding box in local space
                 #  instead of world space.
-                bge.logic.trackedObjects[obj] = bpy.data.objects[obj.name].bound_box
+                blenderapi.persistantstorage().trackedObjects[obj] = blenderapi.objectdata(obj.name).bound_box
 
                 details = passive_objects.details(obj)
                 logger.info('    - {0} (type:{1})'.format(details['label'], details['type']))
@@ -100,7 +96,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         visibles = self.visibles
 
         # check which objects are visible
-        for obj in bge.logic.trackedObjects.keys():
+        for obj in blenderapi.persistantstorage().trackedObjects.keys():
             label = passive_objects.label(obj)
             visible = self._check_visible(obj)
             obj_dict = dict([('name', label), ('position', obj.worldPosition)]) 
@@ -122,7 +118,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         
         # Create dictionaries
         self.local_data['visible_objects'] = []
-        for obj in bge.logic.trackedObjects.keys():
+        for obj in blenderapi.persistantstorage().trackedObjects.keys():
             label = passive_objects.label(obj)
             if label in visibles:
                 # Create dictionary to contain object name, type, description, position and orientation
@@ -157,7 +153,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         """ Check if an object lies inside of the camera frustrum. """
         # TrackedObjects was filled at initialization
         #  with the object's bounding boxes
-        bb = bge.logic.trackedObjects[obj]
+        bb = blenderapi.persistantstorage().trackedObjects[obj]
         pos = obj.position
 
         logger.debug("\n--- NEW TEST ---")

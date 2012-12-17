@@ -1,9 +1,9 @@
-from bge import logic
+from morse.core import blenderapi
 
-co = logic.getCurrentController()
+co = blenderapi.controller()
 ow = co.owner
 
-scene = logic.getCurrentScene()
+scene = blenderapi.scene()
 scriptHolder = scene.objects['TUT_Script_Holder']
 
 def test():

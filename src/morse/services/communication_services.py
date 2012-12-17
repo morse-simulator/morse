@@ -1,19 +1,18 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 logger.setLevel(logging.DEBUG)
-import bge
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.services import service
-from morse.core import status
+from morse.core import status, blenderapi
 import morse.helpers.transformation 
 
 def _robot_exists(robot):
     try:
-        for obj, robot_instance in bge.logic.robotDict.items():
+        for obj, robot_instance in blenderapi.persistantstorage().robotDict.items():
             if obj.name == robot:
                 return robot_instance
     except KeyError:
         try:
-            for obj, robot_instance in bge.logic.externalRobotDict.items():
+            for obj, robot_instance in blenderapi.persistantstorage().externalRobotDict.items():
                 if obj.name == robot:
                     return robot_instance
         except KeyError:

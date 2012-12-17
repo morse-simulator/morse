@@ -128,7 +128,7 @@ class Socket(morse.core.datastream.Datastream):
 
         # TODO To use a new special component instead of 'simulation',
         # uncomment the line :-)
-        # bge.logic.morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
+        # blenderapi.persistantstorage().morse_services.register_request_manager_mapping("streams", "SocketRequestManager")
         services.do_service_registration(self.list_streams, 'simulation')
         services.do_service_registration(self.get_stream_port, 'simulation')
         services.do_service_registration(self.get_all_stream_ports, 'simulation')

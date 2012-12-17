@@ -3,12 +3,11 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import os
 import sys
 import uuid
-import bge
 from functools import partial
 from abc import ABCMeta, abstractmethod
 
 from morse.core.exceptions import *
-from morse.core import status
+from morse.core import status, blenderapi
 
 class RequestManager(object):
     """ Basic Class for all request dispatchers, i.e., classes that
@@ -285,14 +284,14 @@ class RequestManager(object):
         """
         component_name, service_name = self._pending_requests[request_id]
 
-        for component in bge.logic.componentDict.values():
+        for component in blenderapi.persistantstorage().componentDict.values():
             if component.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(component))
                 component.interrupt()
                 return
 
         # if not found, search in the overlay dictionnary
-        for overlay in bge.logic.overlayDict.values():
+        for overlay in blenderapi.persistantstorage().overlayDict.values():
             if overlay.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(overlay))
                 overlay.interrupt()

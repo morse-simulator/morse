@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
-import bge
+from morse.core import blenderapi
 
 class KukaPostureClass(morse.core.sensor.Sensor):
     """ KUKA posture sensor
@@ -34,7 +34,7 @@ class KukaPostureClass(morse.core.sensor.Sensor):
             return
 
         # Get the reference to the class instance of the kuka actuator
-        self._kuka_actuator_instance = bge.logic.componentDict[self._kuka_armature.name]
+        self._kuka_actuator_instance = blenderapi.persistantstorage().componentDict[self._kuka_armature.name]
 
         # Define the variables in 'local_data'
         self.local_data['x'] = 0.0

@@ -1,4 +1,4 @@
-from bge import logic
+from morse.core import blenderapi
 import math
 
 
@@ -12,7 +12,7 @@ def limit(cont):
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
 
     limitY = cont.actuators['LimitLocY']
-    sobList =  logic.getCurrentScene().objects
+    sobList =  blenderapi.scene().objects
     shoulder = sobList['Shoulder_Empty.R' + suffix]
     human = sobList['Human' + suffix]
     

@@ -1,29 +1,18 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
+from morse.core import blenderapi
 
 
 def active_objects():
     """ Returns all active objects in current scene, ie objects that have their
     'Object' property set to True.
     """
-
-    if not bge.logic.passiveObjectsDict:
-        logger.error("Initialization error! the passive objects dictionary has not been built!")
-        return {}
-        #return None
-
-    return bge.logic.passiveObjectsDict.keys()
+    return blenderapi.persistantstorage().passiveObjectsDict.keys()
 
 def graspable_objects():
     """ Returns all objects in current scene that have the
     'Graspable' property set to True, amongst active objects.
     """
-
-    if not bge.logic.passiveObjectsDict:
-        logger.error("Initialization error! the passive objects dictionary has not been built!")
-        return None
-
-    return [obj for (obj, details) in bge.logic.passiveObjectsDict.items() if details['graspable']]
+    return [obj for (obj, details) in blenderapi.persistantstorage().passiveObjectsDict.items() if details['graspable']]
 
 def details(obj):
     """ Returns a dictionary containing the differents properties for a given
@@ -41,15 +30,10 @@ def details(obj):
     :return: a dictionary {'label':string, 'description':string, 'type':string, 'graspable':bool}
 
     """
-
-    if not bge.logic.passiveObjectsDict:
-        logger.error("Initialization error! the passive objects dictionary has not been built!")
-        return None
-
-    if not obj in bge.logic.passiveObjectsDict.keys():
+    if not obj in blenderapi.persistantstorage().passiveObjectsDict.keys():
         return None
     else:
-        return bge.logic.passiveObjectsDict[obj]
+        return blenderapi.persistantstorage().passiveObjectsDict[obj]
 
 def label(obj):
     """ Returns the label of a given active object.
@@ -79,11 +63,6 @@ def obj_from_label(label):
     :return: the label
 
     """
-
-    if not bge.logic.passiveObjectsDict:
-        logger.error("Initialization error! the passive objects dictionary has not been built!")
-        return None
-
-    for obj, det in bge.logic.passiveObjectsDict.items():
+    for obj, det in blenderapi.persistantstorage().passiveObjectsDict.items():
         if det['label'] == label:
             return obj

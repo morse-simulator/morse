@@ -9,9 +9,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import bge
 import math
 import morse.core.actuator
+from morse.core import blenderapi
 from morse.core.services import service
 from morse.core.exceptions import MorseRPCInvokationError
 
@@ -57,7 +57,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
         'Graspable' property in front of this component
         """
         # Get reference to the Radar Blender sensor
-        contr = bge.logic.getCurrentController()
+        contr = blenderapi.controller()
         radar = contr.sensors['Radar']
 
         self._near_object = None

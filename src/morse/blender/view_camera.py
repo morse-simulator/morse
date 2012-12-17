@@ -12,8 +12,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import bge
 import mathutils
+from morse.core import blenderapi
 
 start_position = []
 start_orientation = []
@@ -42,7 +42,7 @@ def move(contr):
     # get the object this script is attached to
     camera = contr.owner
 
-    scene = bge.logic.getCurrentScene()
+    scene = blenderapi.scene()
 
     # Do not move the camera if the current view is using another camera
     if camera != scene.active_camera:
@@ -64,21 +64,20 @@ def move(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == bge.events.keycode, key[1] = status
-        if key[1] == bge.logic.KX_INPUT_ACTIVE:
+        if key[1] == blenderapi.input_active():
             # Also add the corresponding key for an AZERTY keyboard
-            if key[0] == bge.events.WKEY or key[0] == bge.events.ZKEY:
+            if key[0] == blenderapi.WKEY or key[0] == blenderapi.ZKEY:
                 move_speed[2] = -speed
-            elif key[0] == bge.events.SKEY:
+            elif key[0] == blenderapi.SKEY:
                 move_speed[2] = speed
             # Also add the corresponding key for an AZERTY keyboard
-            elif key[0] == bge.events.AKEY or key[0] == bge.events.QKEY:
+            elif key[0] == blenderapi.AKEY or key[0] == blenderapi.QKEY:
                 move_speed[0] = -speed
-            elif key[0] == bge.events.DKEY:
+            elif key[0] == blenderapi.DKEY:
                 move_speed[0] = speed
-            elif key[0] == bge.events.RKEY:
+            elif key[0] == blenderapi.RKEY:
                 move_speed[1] = speed
-            elif key[0] == bge.events.FKEY:
+            elif key[0] == blenderapi.FKEY:
                 move_speed[1] = -speed
             else:
                 move_speed[0] = 0
@@ -90,10 +89,10 @@ def move(contr):
             #  coordinate system
             camera.applyMovement( move_speed, True )
 
-        elif key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
+        elif key[1] == blenderapi.input_just_activated():
             # Other actions activated with the keyboard
             # Reset camera to center
-            if key[0] == bge.events.F8KEY and keyboard.positive:
+            if key[0] == blenderapi.F8KEY and keyboard.positive:
                 reset_position(contr)
 
 
@@ -104,7 +103,7 @@ def rotate(contr):
     camera = contr.owner
 
     # Do not move the camera if the current view is using another camera
-    if camera != bge.logic.getCurrentScene().active_camera:
+    if camera != blenderapi.scene().active_camera:
         return
 
     # Get sensor named Mouse
@@ -117,16 +116,15 @@ def rotate(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == bge.events.keycode, key[1] = status
-        if key[1] == bge.logic.KX_INPUT_ACTIVE:
+        if key[1] == blenderapi.input_active():
             # Left CTRL key allow to rotate the camera
-            if key[0] == bge.events.LEFTCTRLKEY:
+            if key[0] == blenderapi.LEFTCTRLKEY:
                 # Hide the cursor while we control the camera
                 mouse_visible = False
                 if mouse.positive:
                     # get width and height of game window
-                    width = bge.render.getWindowWidth()
-                    height = bge.render.getWindowHeight()
+                    width = blenderapi.render().getWindowWidth()
+                    height = blenderapi.render().getWindowHeight()
 
                     # get mouse movement from function
                     move = mouse_move(camera, mouse, width, height)
@@ -144,10 +142,10 @@ def rotate(contr):
 
                     # Center mouse in game window
                     # Using the '//' operator (floor division) to produce an integer result
-                    bge.render.setMousePosition(width//2, height//2)
+                    blenderapi.render().setMousePosition(width//2, height//2)
 
     # Set the cursor visibility
-    bge.logic.mouse.visible = mouse_visible
+    blenderapi.mousepointer(visible = mouse_visible)
 
 def mouse_move(camera, mouse, width, height):
     """ Get the movement of the mouse as an X, Y coordinate. """

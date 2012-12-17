@@ -12,8 +12,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import bge
 import math
+from morse.core import blenderapi
 
 def move(contr):
     """ Read the keys for specific combinations
@@ -33,19 +33,18 @@ def move(contr):
 
     keylist = keyboard.events
     for key in keylist:
-        # key[0] == bge.events.keycode, key[1] = status
-        if key[1] == bge.logic.KX_INPUT_ACTIVE:
-            if key[0] == bge.events.IKEY:
+        if key[1] == blenderapi.input_active():
+            if key[0] == blenderapi.IKEY:
                 move_speed[0] = speed
-            elif key[0] == bge.events.KKEY:
+            elif key[0] == blenderapi.KKEY:
                 move_speed[0] = -speed
-            elif key[0] == bge.events.JKEY:
+            elif key[0] == blenderapi.JKEY:
                 rotation_speed[2] = speed
-            elif key[0] == bge.events.LKEY:
+            elif key[0] == blenderapi.LKEY:
                 rotation_speed[2] = -speed
-            elif key[0] == bge.events.UKEY:
+            elif key[0] == blenderapi.UKEY:
                 move_speed[1] = speed
-            elif key[0] == bge.events.OKEY:
+            elif key[0] == blenderapi.OKEY:
                 move_speed[1] = -speed
 
             # The second parameter of 'applyMovement' determines
@@ -55,10 +54,10 @@ def move(contr):
             human.applyRotation( rotation_speed, True )
 
         """
-        elif key[1] == bge.logic.KX_INPUT_JUST_ACTIVATED:
+        elif key[1] == blenderapi.input_just_activated():
             # Other actions activated with the keyboard
             # Reset camera to center
-            if key[0] == bge.events.NKEY and keyboard.positive:
+            if key[0] == blenderapi.NKEY and keyboard.positive:
                 reset_view(contr)
         """
 
@@ -70,7 +69,7 @@ def head_control(contr):
     for the human head and camera. """
     # get the object this script is attached to
     human = contr.owner
-    scene = bge.logic.getCurrentScene()
+    scene = blenderapi.scene()
     target = scene.objects['Head_Empty']
     # get the camera on the human head
     camera = scene.objects['Human_Camera']
@@ -79,7 +78,7 @@ def head_control(contr):
     sensitivity = human['Sensitivity']
 
     # Do not move the camera if the current view is using another camera
-    if camera != bge.logic.getCurrentScene().active_camera:
+    if camera != blenderapi.scene().active_camera:
         return
 
     # Get sensor named Mouse
@@ -87,8 +86,8 @@ def head_control(contr):
 
     if mouse.positive:
         # get width and height of game window
-        width = bge.render.getWindowWidth()
-        height = bge.render.getWindowHeight()
+        width = blenderapi.render().getWindowWidth()
+        height = blenderapi.render().getWindowHeight()
 
         # get mouse movement from function
         move = mouse_move(human, mouse, width, height)
@@ -102,7 +101,7 @@ def head_control(contr):
 
         # Reset mouse position to the centre of the screen
         # Using the '//' operator (floor division) to produce an integer result
-        bge.render.setMousePosition(width//2, height//2)
+        blenderapi.render().setMousePosition(width//2, height//2)
 
 
 def read_pose(contr):
@@ -119,7 +118,7 @@ def read_pose(contr):
 def reset_view(contr):
     """ Make the human model look forward """
     human = contr.owner
-    scene = bge.logic.getCurrentScene()
+    scene = blenderapi.scene()
     target = scene.objects['Head_Empty']
     # Reset the Empty object to its original position
     target.localPosition = [0.5, 0.0, 1.6]
@@ -130,7 +129,7 @@ def near_object(contr):
     
     This script is called from the logic bricks of Hand_Grab.R
     """
-    scene = bge.logic.getCurrentScene()
+    scene = blenderapi.scene()
     hand_empty = scene.objects['Hand_Grab.R']
     near_sensor = hand_empty.sensors['Near']
 
@@ -144,7 +143,7 @@ def near_object(contr):
 
 def grabbing(contr):
     """ Mark an object as selected by the user """
-    scene = bge.logic.getCurrentScene()
+    scene = blenderapi.scene()
     human = contr.owner
     hand_empty = scene.objects['Hand_Grab.R']
     #sphere = scene.objects['SelectionSphere']
@@ -152,7 +151,7 @@ def grabbing(contr):
     selected_object = hand_empty['Near_Object']
 
     # Check that a button was pressed
-    if lmb.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+    if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_JUST_ACTIVATED:
         # Check that no other object is being carried
         if contr.owner['DraggedObject'] == None or contr.owner['DraggedObject'] == '':
             # If the object is draggable
@@ -165,8 +164,8 @@ def grabbing(contr):
                 selected_object.setParent (hand_empty)
 
     # Drop the object when the left mouse button is released
-    if lmb.getButtonStatus(bge.events.LEFTMOUSE) == bge.logic.KX_INPUT_JUST_RELEASED:
-    #if lmb.getButtonStatus(bge.events.RIGHTMOUSE) == bge.logic.KX_INPUT_JUST_ACTIVATED:
+    if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_just_released:
+    #if lmb.getButtonStatus(blenderapi.RIGHTMOUSE) == blenderapi.input_just_activated:
         # Clear the previously selected object, if any
         if contr.owner['DraggedObject'] != None and contr.owner['DraggedObject'] != '':
             previous_object = contr.owner["DraggedObject"]

@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import bge
+from morse.core import blenderapi
 import morse.core.sensor
 
 #logger.setLevel(logging.DEBUG)
@@ -164,7 +164,7 @@ class HumanPostureClass(morse.core.sensor.Sensor):
         #self.local_data['roll'] = float(self.position_3d.roll)
 
         # Give the position of the Torso_Empty object as the position of the human
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         torso = scene.objects['Torso_Empty']
         self.local_data['x'] = torso.worldPosition[0]
         self.local_data['y'] = torso.worldPosition[1]

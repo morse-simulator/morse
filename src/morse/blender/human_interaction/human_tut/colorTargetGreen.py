@@ -1,10 +1,10 @@
-from bge import logic
+from morse.core import blenderapi
 
-objects = logic.getCurrentScene().objects
+objects = blenderapi.scene().objects
 cube = objects['CubeSelect']
 door = objects['Shelf_UpperDoor.R']
 
-co = logic.getCurrentController()
+co = blenderapi.controller()
 grab = co.sensors['GrabState']
 layDown = co.sensors['OpenDoorState']
 

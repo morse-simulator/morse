@@ -1,4 +1,4 @@
-import bge
+from morse.core import blenderapi
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('rosgraph_msgs');
 import rospy
@@ -11,7 +11,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     """
     self._sim_time = 0.0
     # LogicTicRate default value: 60 Hz
-    self._sim_step = 1.0 / bge.logic.getLogicTicRate()
+    self._sim_step = 1.0 / blenderapi.getfrequency()
 
     self.register_publisher(component_instance, function, Clock)
 

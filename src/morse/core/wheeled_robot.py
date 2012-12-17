@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.robot
-import bge
-import bpy
+from morse.core import blenderapi
 import mathutils
 
 class PhysicsWheelRobotClass(morse.core.robot.Robot):
@@ -35,7 +34,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
         # get wheel pointers - needed by wheel speed sensors and to
         # set up constraints
         # bullet vehicles always have 4 wheels
-        scene=bge.logic.getCurrentScene()
+        scene=blenderapi.scene()
 
         #  inherited from the parent robot
         for index in self._wheel_index:
@@ -100,7 +99,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
         return posL[1]-posR[1]
 
     def GetWheelRadius(self, wheelName):
-        dims=bpy.data.objects[wheelName].dimensions
+        dims=blenderapi.objectdata(wheelName).dimensions
         # average the x and y dimension to get diameter - divide by 2 for radius
         return (dims[0]+dims[1])/4
 
@@ -126,7 +125,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
     def build_vehicle(self):
         """ Apply the constraints to the vehicle parts. """
 
-        # get a link to the blender scene to look for wheel and suspension objectsscene = bge.logic.getCurrentScene()
+        # get a link to the blender scene to look for wheel and suspension objectsscene = blenderapi.scene()
         # get needed parameters from the blender object
         self.ReadGenericParameters()
 
@@ -146,7 +145,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
 #    def BuildModelWithSuspension(self):
 #        """ Add all the constraints to attach the wheels to
 #        the a-arms and then the a-arms to the body """
-#        scene = bge.logic.getCurrentScene()
+#        scene = blenderapi.scene()
 #        # get suspension arm ID's
 #        # front left A-arm
 #        try:
@@ -212,7 +211,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
         # create constraint to allow wheel to spin
         # For an explanation on the parameters, see:
         # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
-        joint = bge.constraints.createConstraint(
+        joint = blenderapi.constraints().createConstraint(
                 parent.getPhysicsId(),  # get physics ID of the parent object
                 wheel.getPhysicsId(),   # get physics ID of the wheel object
                 12,                     # 6dof constraint
@@ -235,7 +234,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
         logger.debug("Added caster wheel '%s' at ('%f','%f','%f')" %(wheel.name, wheelPos[0], wheelPos[1], wheelPos[2]))
 
         # create constraint to allow wheel to spin
-        joint = bge.constraints.createConstraint(
+        joint = blenderapi.constraints().createConstraint(
                 parent.getPhysicsId(),  # get physics ID of the parent object
                 wheel.getPhysicsId(),   # get physics ID of the wheel object
                 12,                     # 6dof constraint

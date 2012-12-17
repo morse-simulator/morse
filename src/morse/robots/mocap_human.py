@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 import morse.core.robot
 from morse.core.services import service
+from morse.core import blenderapi
 
 logger.setLevel(logging.DEBUG)
 
@@ -32,7 +32,7 @@ class MocapHumanClass(morse.core.robot.Robot):
             human.applyMovement( [speed,0,0], True )
             human.applyRotation( [0,0,rotation], True )
         else :
-            scene = bge.logic.getCurrentScene()
+            scene = blenderapi.scene()
             target = scene.objects['IK_Target_Empty.R']
 
             target.applyMovement([0.0, rotation, 0.0], True)
@@ -44,7 +44,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         """ Move the human head.
         """
         human = self.blender_obj
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         target = scene.objects['IK_Target_Empty.Head']
 
         if human['Manipulate']:
@@ -57,7 +57,7 @@ class MocapHumanClass(morse.core.robot.Robot):
     def grasp_(self, seq):
         """ Grasp object.
         """
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         hand_empty = scene.objects['Hand_Grab.R']
         selected_object = hand_empty['Near_Object']
         human = self.blender_obj
@@ -100,7 +100,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         """
         human = self.blender_obj
         if human['Manipulate']:
-            scene = bge.logic.getCurrentScene()
+            scene = blenderapi.scene()
             target = scene.objects['IK_Target_Empty.R']
             target.applyMovement([diff, 0.0, 0.0], True)
 
@@ -110,7 +110,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         Done for wiimote remote control.
         """
         human = self.blender_obj
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         hand_target = scene.objects['IK_Target_Empty.R']
         head_target = scene.objects['IK_Target_Empty.Head']
         torso = scene.objects['Torso_Reference_Empty']
@@ -148,19 +148,19 @@ class MocapHumanClass(morse.core.robot.Robot):
     @service
     def switch_cameras(self):
         """ Change between the main camera view in MORSE and the first person camera """
-        scene = bge.logic.getCurrentScene()
-        index = bge.logic.current_camera_index
+        scene = blenderapi.scene()
+        index = blenderapi.persistantstorage().current_camera_index
         next_camera = scene.cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
         # Disable mouse cursor for Human camera
         if next_camera.name == "Human_Camera":
-            bge.logic.mouse.visible = False
+            blenderapi.mousepointer(visible = False)
         else:
-            bge.logic.mouse.visible = True
+            blenderapi.mousepointer(visible = True)
         # Update the index for the next call
         index = (index + 1) % len(scene.cameras)
-        bge.logic.current_camera_index = index
+        blenderapi.persistantstorage().current_camera_index = index
 
 
 

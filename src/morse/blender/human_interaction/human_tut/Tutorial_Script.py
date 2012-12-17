@@ -1,20 +1,20 @@
-from bge import logic, render
+from morse.core import blenderapi
 import bgl
 import blf
 import parse_file
 
 
-co = logic.getCurrentController()
+co = blenderapi.controller()
 ow = co.owner
 
-mainScene = logic.getCurrentScene()
+mainScene = blenderapi.scene()
 
 font_id = 0
 
 def write():
     """write on screen"""
-    width = render.getWindowWidth()
-    height = render.getWindowHeight()
+    width = blenderapi.render().getWindowWidth()
+    height = blenderapi.render().getWindowHeight()
 
     # OpenGL setup
     bgl.glMatrixMode(bgl.GL_PROJECTION)

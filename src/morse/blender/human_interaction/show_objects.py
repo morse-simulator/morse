@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-from bge import logic, events, render
+from morse.core import blenderapi
 import bgl
 import blf
 
@@ -8,13 +8,13 @@ from morse.helpers import passive_objects
 
 font_id =0
 
-co = logic.getCurrentController()
+co = blenderapi.controller()
 keyboard = co.sensors['All_Keys']
 
-scene = logic.getCurrentScene()
+scene = blenderapi.scene()
 
-windowWidth = render.getWindowWidth()
-windowHeight = render.getWindowHeight()
+windowWidth = blenderapi.render().getWindowWidth()
+windowHeight = blenderapi.render().getWindowHeight()
 
 def write():
     """
@@ -49,12 +49,12 @@ def test(contr):
     keylist = keyboard.events
 
     for key in keylist:
-        if key[0] == events.LEFTALTKEY:
-            if key[1] == logic.KX_INPUT_JUST_ACTIVATED:
+        if key[0] == blenderapi.LEFTALTKEY:
+            if key[1] == blenderapi.input_just_activated():
                 #show text over all objects
                 scene.post_draw.append(write)
                 
-            elif key[1] == logic.KX_INPUT_JUST_RELEASED:
+            elif key[1] == blenderapi.input_just_released():
                 #hide text of all objects
                 scene.post_draw.remove(write)
                 

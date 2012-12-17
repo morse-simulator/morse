@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import bge
 import morse.core.sensor
 
 class HumanPostureClass(morse.core.sensor.Sensor):

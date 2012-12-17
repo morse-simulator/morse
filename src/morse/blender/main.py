@@ -4,15 +4,11 @@ import sys
 import os
 import re
 import time
-import bpy
-import bge
-
-import morse
-morse.running_in_blender = True
 
 # Force the full import of blenderapi so python computes correctly all
 # values in its  namespace
 import morse.core.blenderapi
+persistantstorage = morse.core.blenderapi.persistantstorage()
 
 # The service management
 from morse.core.services import MorseServices
@@ -54,13 +50,13 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         except KeyError:
             continue
 
-        robot_instance.components.append (child)
+        robot_instance.components.append(child)
 
         # Create an instance of the component class
-        #  and add it to the component list of bge.logic
-        instance = create_instance (child, robot_instance)
+        #  and add it to the component list of persistantstorage()
+        instance = create_instance(child, robot_instance)
         if instance != None:
-            bge.logic.componentDict[child.name] = instance
+            persistantstorage.componentDict[child.name] = instance
         else:
             logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -86,44 +82,40 @@ def create_dictionaries ():
 
     # Create a dictionary that stores initial positions of all objects
     # in the simulation, used to reset the simulation.
-    if not hasattr(bge.logic, 'blender_objects'):
-        bge.logic.blender_objects = {}
+    if not 'blender_objects' in persistantstorage:
+        persistantstorage.blender_objects = {}
 
     # Create a dictionary of the components in the scene
-    if not hasattr(bge.logic, 'componentDict'):
-        bge.logic.componentDict = {}
+    if not 'componentDict' in persistantstorage:
+        persistantstorage.componentDict = {}
 
     # Create a dictionary of the robots in the scene
-    if not hasattr(bge.logic, 'robotDict'):
-        bge.logic.robotDict = {}
+    if not 'robotDict' in persistantstorage:
+        persistantstorage.robotDict = {}
 
     # Create a dictionary of the external robots in the scene
     # Used for the multi-node simulation
-    if not hasattr(bge.logic, 'externalRobotDict'):
-        bge.logic.externalRobotDict = {}
+    if not 'externalRobotDict' in persistantstorage:
+        persistantstorage.externalRobotDict = {}
 
     # Create a dictionnary with the passive, but interactive (ie, with an
     # 'Object' property) objects in the scene.
-    if not hasattr(bge.logic, 'passiveObjectsDict'):
-        bge.logic.passiveObjectsDict = {}
+    if not 'passiveObjectsDict' in persistantstorage:
+        persistantstorage.passiveObjectsDict = {}
 
     # Create a dictionary with the modifiers
-    if not hasattr(bge.logic, 'modifierDict'):
-        bge.logic.modifierDict = {}
+    if not 'modifierDict' in persistantstorage:
+        persistantstorage.modifierDict = {}
 
     # Create a dictionary with the datastream interfaces used
-    if not hasattr(bge.logic, 'datastreamDict'):
-        bge.logic.datastreamDict = {}
-
-    # Create a dictionary with the service used
-    if not hasattr(bge.logic, 'serviceDict'):
-        bge.logic.serviceDict = {}
+    if not 'datastreamDict' in persistantstorage:
+        persistantstorage.datastreamDict = {}
 
     # Create a dictionnary with the overlaid used
-    if not hasattr(bge.logic, 'overlayDict'):
-        bge.logic.overlayDict = {}
+    if not 'overlayDict' in persistantstorage:
+        persistantstorage.overlayDict = {}
 
-    scene = bge.logic.getCurrentScene()
+    scene = morse.core.blenderapi.scene()
 
     # Store the position and orientation of all objects
     for obj in scene.objects:
@@ -131,7 +123,7 @@ def create_dictionaries ():
             import mathutils
             pos = mathutils.Vector(obj.worldPosition)
             ori = mathutils.Matrix(obj.worldOrientation)
-            bge.logic.blender_objects[obj] = [pos, ori]
+            persistantstorage.blender_objects[obj] = [pos, ori]
 
     # Get the list of passive interactive objects.
 
@@ -148,12 +140,12 @@ def create_dictionaries ():
                        'type': obj['Type'] if 'Type' in obj else "Object",
                        'graspable': obj['Graspable'] if 'Graspable' in obj else False
                       }
-            bge.logic.passiveObjectsDict[obj] = details
+            persistantstorage.passiveObjectsDict[obj] = details
             logger.info("Added {name} as a {graspable}active object".format(
                                  name = details['label'],
                                  graspable = "graspable " if details['graspable'] else ""))
 
-    if not bge.logic.passiveObjectsDict:
+    if not persistantstorage.passiveObjectsDict:
         logger.info("No passive objects in the scene.")
 
     # Get the robots
@@ -163,7 +155,7 @@ def create_dictionaries ():
             # Create an object instance and store it
             instance = create_instance (obj)
             if instance != None:
-                bge.logic.robotDict[obj] = instance
+                persistantstorage.robotDict[obj] = instance
             else:
                 return False
         except KeyError as detail:
@@ -173,13 +165,13 @@ def create_dictionaries ():
             # Create an object instance and store it
             instance = create_instance (obj)
             if instance != None:
-                bge.logic.externalRobotDict[obj] = instance
+                persistantstorage.externalRobotDict[obj] = instance
             else:
                 return False
         except KeyError as detail:
             pass
     
-    if not (bge.logic.robotDict or bge.logic.externalRobotDict): # No robot!
+    if not (persistantstorage.robotDict or persistantstorage.externalRobotDict): # No robot!
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     INITIALIZATION ERROR: no robot in your simulation!
@@ -192,12 +184,12 @@ def create_dictionaries ():
 
     
     # Get the robot and its instance
-    for obj, robot_instance in bge.logic.robotDict.items():
+    for obj, robot_instance in persistantstorage.robotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, False):
             return False
     
     # Get the external robot and its instance
-    for obj, robot_instance in bge.logic.externalRobotDict.items():
+    for obj, robot_instance in persistantstorage.externalRobotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, True):
             return False
   
@@ -205,7 +197,7 @@ def create_dictionaries ():
     for obj in scene.objects:
         try:
             obj['Component_Tag']
-            if obj.name not in bge.logic.componentDict.keys():
+            if obj.name not in persistantstorage.componentDict.keys():
                 logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     INITIALIZATION ERROR: the component '""" + obj.name + """' does not
@@ -223,36 +215,49 @@ def create_dictionaries ():
 
 def check_dictionaries():
     """ Print the contents of the robot and component dictionaries."""
+    logger.info ("")
     logger.info("------------------------------------")
-    logger.info("bge.logic has the following robots:")
-    for obj, robot_instance in bge.logic.robotDict.items():
+    logger.info("-        SIMULATION SUMMARY        -")
+    logger.info("------------------------------------")
+    logger.info("Robots in the simulation:")
+    for obj, robot_instance in persistantstorage.robotDict.items():
         logger.info("\tROBOT: '{0}'".format(obj))
         for component in robot_instance.components:
             logger.info ("\t\t- Component: '{0}'".format(component))
 
-    logger.info ("bge.logic has the following external robots:")
-    for obj, robot_position in bge.logic.externalRobotDict.items():
-        logger.info ("\tROBOT: '{0}'".format(obj))
+    if MULTINODE_SUPPORT:
+        logger.info ("External robots (from other simulation nodes):")
+        for obj, robot_position in persistantstorage.externalRobotDict.items():
+            logger.info ("\tROBOT: '{0}'".format(obj))
 
-    logger.info ("bge.logic has the following components:")
-    for obj, component_variables in bge.logic.componentDict.items():
-        logger.info ("\tCOMPONENT: '{0}'".format(obj))
+    logger.info ("Available services:")
 
-    logger.info ("bge.logic has the following modifiers:")
-    for obj, modifier_variables in bge.logic.modifierDict.items():
-        logger.info ("\tMODIFIER: '{0}'".format(obj))
-        
-    logger.info ("bge.logic has the following datastream interfaces:")
-    for obj, datastream_variables in bge.logic.datastreamDict.items():
-        logger.info ("\tDATASTREAM: '{0}'".format(obj))
-        
-    logger.info ("bge.logic has the following request managers:")
-    for rqst_manager in bge.logic.morse_services._request_managers.keys():
-        logger.info ("\tREQUEST MANAGER: '{0}'".format(rqst_manager))
-        
-    logger.info ("bge.logic has the following services:")
-    for obj, service_variables in bge.logic.serviceDict.items():
-        logger.info ("\tSERVICE: '{0}'".format(obj))
+    if persistantstorage.morse_services.request_managers():
+        for name, instance in persistantstorage.morse_services.request_managers().items():
+            logger.info ("\t- Interface {0}".format(name))
+            for c, s in instance.services().items():
+                logger.info ("\t\t- %s: %s" % (c,s))
+
+    else:
+        logger.info ("\tNone")
+
+    logger.info ("Modifiers in use:")
+    if persistantstorage.modifierDict:
+        for obj, modifier_variables in persistantstorage.modifierDict.items():
+            logger.info ("\t- '{0}'".format(obj))
+    else:
+        logger.info ("\tNone")
+
+
+    logger.info ("")
+
+    if persistantstorage.datastreamDict:
+        logger.info ("Datastream interfaces configured:")
+        for obj, datastream_variables in persistantstorage.datastreamDict.items():
+            logger.info ("\t- '{0}'".format(obj))
+
+    logger.info("------------------------------------")
+    logger.info ("")
 
 def get_class(module_name, class_name):
     """ Dynamically creates an instance of a Python class.
@@ -304,7 +309,7 @@ def create_datastream(datastream):
 
 def get_components_of_type(classname):
     components = []
-    for component in bge.logic.componentDict.values():
+    for component in persistantstorage.componentDict.values():
         logger.debug("Get component for class " + component.name() + ": " + component.__class__.__name__)
         if component.__class__.__name__ == classname:
             components.append(component)
@@ -313,7 +318,7 @@ def get_components_of_type(classname):
 
 
 def get_datastream_of_type(classname):
-    for datastream_instance in bge.logic.datastreamDict.values():
+    for datastream_instance in persistantstorage.datastreamDict.values():
         if datastream_instance.__class__.__name__ == classname:
             return datastream_instance
     return None
@@ -333,7 +338,7 @@ def link_datastreams():
     for component_name, datastream_list in component_list.items():
         # Get the instance of the object
         try:
-            instance = bge.logic.componentDict[component_name]
+            instance = persistantstorage.componentDict[component_name]
         except KeyError as detail:
             logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
             logger.error("""
@@ -370,7 +375,7 @@ def link_datastreams():
             missing_component = False
             
             # Look for the listed datastream in the dictionary of active datastream's
-            for datastream_obj, datastream_instance in bge.logic.datastreamDict.items():
+            for datastream_obj, datastream_instance in persistantstorage.datastreamDict.items():
                 logger.debug("Looking for '%s' in '%s'" % (datastream_name, datastream_obj))
                 if datastream_name in datastream_obj:
                     found = True
@@ -380,7 +385,7 @@ def link_datastreams():
             if not found:
                 datastream_instance = create_datastream (datastream_name)
                 if datastream_instance != None:
-                    bge.logic.datastreamDict[datastream_name] = datastream_instance
+                    persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
                 else:
                     logger.error("""
@@ -419,12 +424,12 @@ def link_services():
             continue
 
         try:
-            instance = bge.logic.componentDict[component_name]
+            instance = persistantstorage.componentDict[component_name]
         except KeyError as detail:
             try:
-                scene = bge.logic.getCurrentScene()
+                scene = morse.core.blenderapi.scene()
                 robot_obj = scene.objects[component_name]
-                instance = bge.logic.robotDict[robot_obj]
+                instance = persistantstorage.robotDict[robot_obj]
 
             except KeyError as detail:
                 logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
@@ -447,10 +452,10 @@ def link_services():
                 return False
             
             # Load required request managers
-            if not bge.logic.morse_services.add_request_manager(request_manager):
+            if not persistantstorage.morse_services.add_request_manager(request_manager):
                 return False
             
-            bge.logic.morse_services.register_request_manager_mapping(component_name, classname)
+            persistantstorage.morse_services.register_request_manager_mapping(component_name, classname)
             instance.register_services()
             logger.info("Component: '%s' using middleware '%s' for services" % (component_name, classname))
     
@@ -492,7 +497,7 @@ def load_overlays():
                 return False
 
             try:
-                overlaid_object = bge.logic.componentDict[overlaid_name]
+                overlaid_object = persistantstorage.componentDict[overlaid_name]
             except KeyError:
                 logger.error("Could not find the object to overlay: %s." % overlaid_name)
                 return False
@@ -500,9 +505,9 @@ def load_overlays():
             # Instanciate the overlay, passing the overlaid object to
             # the constructor
             instance = klass(overlaid_object)
-            bge.logic.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+            persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
-            bge.logic.overlayDict[overlay_name] = instance
+            persistantstorage.overlayDict[overlay_name] = instance
             logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
     
     return True
@@ -521,7 +526,7 @@ def add_modifiers():
     for component_name, mod_list in component_list.items():
         # Get the instance of the object
         try:
-            instance = bge.logic.componentDict[component_name]
+            instance = persistantstorage.componentDict[component_name]
         except KeyError as detail:
             logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
             continue
@@ -531,7 +536,7 @@ def add_modifiers():
             logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
             found = False
             # Look for the listed modifier in the dictionary of active modifier's
-            for modifier_obj, modifier_instance in bge.logic.modifierDict.items():
+            for modifier_obj, modifier_instance in persistantstorage.modifierDict.items():
                 if modifier_name in modifier_obj:
                     found = True
                     break
@@ -539,7 +544,7 @@ def add_modifiers():
             if not found:
                 modifier_instance = create_datastream(modifier_name)
                 if modifier_instance != None:
-                    bge.logic.modifierDict[modifier_name] = modifier_instance
+                    persistantstorage.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
                 else:
                     logger.error("""
@@ -592,8 +597,8 @@ def init_multinode():
 
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
-    bge.logic.node_instance = klass(node_name, server_address, server_port,
-            bge.logic)
+    persistantstorage.node_instance = klass(node_name, server_address, server_port,
+            persistantstorage)
 
 def init(contr):
     """ General initialization of MORSE
@@ -606,17 +611,16 @@ def init(contr):
     logger.log(SECTION, 'PRE-INITIALIZATION')
     # Get the version of Python used
     # This is used to determine also the version of Blender
-    bge.logic.pythonVersion = sys.version_info
-    bge.logic.blenderVersion = bpy.app.version
-    logger.info ("Python Version: %s.%s.%s" % bge.logic.pythonVersion[:3])
-    logger.info ("Blender Version: %s.%s.%s" % bge.logic.blenderVersion)
+    persistantstorage.pythonVersion = sys.version_info
+    logger.info ("Python Version: %s.%s.%s" % persistantstorage.pythonVersion[:3])
+    logger.info ("Blender Version: %s.%s.%s" % morse.core.blenderapi.version())
     logger.info ("PID: %d" % os.getpid())
 
-    bge.logic.morse_initialised = False
-    bge.logic.base_clock = time.clock()
-    bge.logic.current_time = 0.0
+    persistantstorage.morse_initialised = False
+    persistantstorage.base_clock = time.clock()
+    persistantstorage.current_time = 0.0
     # Variable to keep trac of the camera being used
-    bge.logic.current_camera_index = 0
+    persistantstorage.current_camera_index = 0
     init_ok = True
 
 
@@ -632,12 +636,12 @@ def init(contr):
 
     if init_ok:
         check_dictionaries()
-        bge.logic.morse_initialised = True
+        persistantstorage.morse_initialised = True
         logger.log(ENDSECTION, 'SCENE INITIALIZED')
     else:
         logger.critical('INITIALIZATION FAILED!')
         logger.info("Exiting now.")
-        contr = bge.logic.getCurrentController()
+        contr = morse.core.blenderapi.controller()
         close_all(contr)
         quit(contr)
 
@@ -687,17 +691,17 @@ def init_supervision_services():
     simulation management services declared in
     :py:module:`morse.core.supervision_services` 
     """
-    bge.logic.morse_services = MorseServices()
+    persistantstorage.morse_services = MorseServices()
 
     ###
     # First, load and map the socket request manager to the pseudo
     # 'simulation' component:
     try:
-        if not bge.logic.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
+        if not persistantstorage.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
             return False
         # The simulation mangement services always uses at least sockets for requests.
-        bge.logic.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
-        bge.logic.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
+        persistantstorage.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
+        persistantstorage.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
 
     except MorseServiceError as e:
         #...no request manager :-(
@@ -722,10 +726,10 @@ def init_supervision_services():
 
             try:
                 # Load required request managers
-                if not bge.logic.morse_services.add_request_manager(request_manager):
+                if not persistantstorage.morse_services.add_request_manager(request_manager):
                     return False
 
-                bge.logic.morse_services.register_request_manager_mapping("simulation", classname)
+                persistantstorage.morse_services.register_request_manager_mapping("simulation", classname)
                 logger.info("Adding '{}' to the middlewares for simulation control".format(classname))
             except MorseServiceError as e:
                 #...no request manager :-(
@@ -739,7 +743,7 @@ def init_supervision_services():
 
 
     ###
-    # Services can be imported *only* after bge.logic.morse_services
+    # Services can be imported *only* after persistantstorage.morse_services
     # has been created. Else @service won't know where to register the RPC
     # callbacks.
     import morse.services.supervision_services
@@ -756,7 +760,7 @@ def simulation_main(contr):
     """
     # Update the time variable
     try:
-        bge.logic.current_time = time.clock() - bge.logic.base_clock
+        persistantstorage.current_time = time.clock() - persistantstorage.base_clock
     except AttributeError as detail:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.
@@ -771,13 +775,13 @@ def simulation_main(contr):
         """)
         quit(contr)
 
-    if hasattr(bge.logic, "morse_services"):
+    if "morse_services" in persistantstorage:
         # let the service managers process their inputs/outputs
-        bge.logic.morse_services.process()
+        persistantstorage.morse_services.process()
     
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
-        bge.logic.node_instance.synchronize()
+        persistantstorage.node_instance.synchronize()
 
 
 def switch_camera(contr):
@@ -786,19 +790,19 @@ def switch_camera(contr):
     sensor = contr.sensors['F9_KEY']
     # Activate only once for each key press
     if sensor.positive and sensor.triggered:
-        scene = bge.logic.getCurrentScene()
-        index = bge.logic.current_camera_index
+        scene = morse.core.blenderapi.scene()
+        index = persistantstorage.current_camera_index
         next_camera = scene.cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
         # Disable mouse cursor for Human camera
         if next_camera.name == "Human_Camera":
-            bge.logic.mouse.visible = False
+            blenderapi.mousepointer(visible = False)
         else:
-            bge.logic.mouse.visible = True
+            blenderapi.mousepointer(visible = True)
         # Update the index for the next call
         index = (index + 1) % len(scene.cameras)
-        bge.logic.current_camera_index = index
+        persistantstorage.current_camera_index = index
 
 
 def close_all(contr):
@@ -808,22 +812,22 @@ def close_all(contr):
     """
     logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
-    if hasattr(bge.logic, 'componentDict'):
-        for obj, component_instance in bge.logic.componentDict.items():
+    if 'componentDict' in persistantstorage:
+        for obj, component_instance in persistantstorage.componentDict.items():
             del obj
 
     # Force the deletion of the robot objects
-    if hasattr(bge.logic, 'robotDict'):
-        for obj, robot_instance in bge.logic.robotDict.items():
+    if 'robotDict' in persistantstorage:
+        for obj, robot_instance in persistantstorage.robotDict.items():
             del obj
 
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
-    del bge.logic.morse_services
+    del persistantstorage.morse_services
 
     logger.log(ENDSECTION, 'CLOSING DATASTREAMS...')
     # Force the deletion of the datastream objects
-    if hasattr(bge.logic, 'datastreamDict'):
-        for obj, datastream_instance in bge.logic.datastreamDict.items():
+    if 'datastreamDict' in persistantstorage:
+        for obj, datastream_instance in persistantstorage.datastreamDict.items():
             if datastream_instance:
                 datastream_instance.cleanup()
                 import gc # Garbage Collector
@@ -832,7 +836,7 @@ def close_all(contr):
 
     if MULTINODE_SUPPORT:
         logger.log(ENDSECTION, 'CLOSING MULTINODE...')
-        bge.logic.node_instance.finalize()
+        persistantstorage.node_instance.finalize()
 
 
 def finish(contr):
@@ -873,7 +877,7 @@ def reset_objects(contr):
     Restore the position and rotation of objects and robots
     to their original state, during the simulation.
     """
-    for b_obj, state in bge.logic.blender_objects.items():
+    for b_obj, state in persistantstorage.blender_objects.items():
         # Stop physics simulation
         b_obj.suspendDynamics()
         b_obj.setLinearVelocity([0.0, 0.0, 0.0], True)

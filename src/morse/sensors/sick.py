@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core import blenderapi
 import morse.core.sensor
-import bpy
 
 """
 Important note:
@@ -42,7 +42,7 @@ class SICKClass(morse.core.sensor.Sensor):
         self.local_data['range_list'] = []
 
         # Get the datablock of the arc, to extract its vertices
-        ray_object = bpy.data.objects[self._ray_arc.name]
+        ray_object = blenderapi.objectdata(self._ray_arc.name)
         for vertex in ray_object.data.vertices:
             logger.debug ("Vertex %d = %s" % (vertex.index, vertex.co))
 
@@ -76,7 +76,6 @@ class SICKClass(morse.core.sensor.Sensor):
         Also deforms the geometry of the arc associated to the SICK,
         as a way to display the results obtained.
         """
-        #logger.debug("=== NEW SCAN at time %s ===" % bge.logic.current_time)
         #logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
 
         # Get the inverse of the transformation matrix

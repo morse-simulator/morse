@@ -3,13 +3,15 @@ for all the cases we need to run MORSE code outside Blender (mostly for
 documentation generation purposes).
 """
 
-import morse
+import sys
 
 fake = False
 
-if morse.running_in_blender:
+# running in Blender?
+if sys.executable.endswith('blender'):
     import mathutils
 else:
+    print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True
 
 def Matrix(matrix):

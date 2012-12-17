@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
+from morse.core import blenderapi
 import morse.core.actuator
 
 class LightActuatorClass(morse.core.actuator.Actuator):
@@ -22,7 +22,7 @@ class LightActuatorClass(morse.core.actuator.Actuator):
     def default_action(self):
         """ Apply (v, w) to the parent robot. """
         # get the Blender Logic Controller
-        co = bge.logic.getCurrentController()
+        co = blenderapi.controller()
         # get the Empty object parent of this Controller
         lightAct = co.owner
         # get the light which is a child of the Empty object

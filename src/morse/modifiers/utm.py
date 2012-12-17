@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 
+from morse.core import blenderapi
 from morse.core.modifier import Modifier
 
 class MorseUTMClass(Modifier):
@@ -13,7 +13,7 @@ class MorseUTMClass(Modifier):
         self._global_z = 0.0
 
         # Get the global coordinates if defined in the scene
-        scene = bge.logic.getCurrentScene()
+        scene = blenderapi.scene()
         script_empty_name = 'Scene_Script_Holder'
 
         script_empty = scene.objects[script_empty_name]

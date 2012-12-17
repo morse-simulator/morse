@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 from morse.middleware.pocolibs.sensors.Velodyne_Poster import ors_velodyne_poster
 
 def init_extra_module(self, component_instance, function, mw_data):

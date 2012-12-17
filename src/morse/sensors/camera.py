@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.sensor
-from morse.helpers.components import add_property
+from morse.helpers.components import add_property, add_data
 
 
 class CameraClass(morse.core.sensor.Sensor):
@@ -35,6 +35,14 @@ class CameraClass(morse.core.sensor.Sensor):
     add_property('near_clipping', 0.1, 'cam_near')
     add_property('far_clipping', 100.0, 'cam_far')
     add_property('vertical_flip', False, 'Vertical_Flip')
+
+    add_data('image', 'none', 'buffer', "The data captured by the camera, stored "
+            "as a Python Buffer class  object. The data is of size "
+            "``(cam_width X cam_height * 4)`` bytes. The image is stored as "
+            "RGBA.")
+    add_data('intrinsic_matrix', 'none', 'mat3<float>',  "The intrinsic "
+            "calibration matrix, stored as a 3x3 row major Matrix.")
+
 
 
     def __init__(self, obj, parent=None):
@@ -160,8 +168,4 @@ class CameraClass(morse.core.sensor.Sensor):
             logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
 
         blenderapi.cameras()[self.name()] = vt_camera
-#
-#        import inspect
-#        logger.error("CAMERA SOURCE '%s':" % self.name())
-#        for name, thing in inspect.getmembers(bge.logic.cameras[self.name()].source):
-#            logger.error("\t%s = %s" % (name, thing))
+

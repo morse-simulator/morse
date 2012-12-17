@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import bge
 from morse.middleware.pocolibs.sensors.Human_posture_Poster import ors_human_posture_poster
 
 def init_extra_module(self, component_instance, function, mw_data):

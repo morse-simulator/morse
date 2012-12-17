@@ -2,19 +2,20 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 import os
 
-from bge import logic, render, texture, events
+from bge import logic, texture
 import bgl, blf
 from mathutils import Matrix, Vector
 
 from bpy import data
 
+from morse.core import blenderapi
 from morse.helpers import passive_objects
 
 font_id = 0
 
-windowWidth = render.getWindowWidth()
-windowHeight = render.getWindowHeight()
-scene= logic.getCurrentScene()
+windowWidth = blenderapi.render().getWindowWidth()
+windowHeight = blenderapi.render().getWindowHeight()
+scene= blenderapi.scene()
 objects = scene.objects
 
 texco=[(0,0), (1,0), (1,1), (0,1)]
@@ -227,7 +228,7 @@ def interact(cont):
         ow['grabbing'] = None
         focused_object = lay_down_ray.hitObject
         if focused_object != None:
-            actor_focused = data.objects[focused_object.name].game.use_actor
+            actor_focused = blenderapi.objectdata(focused_object.name).game.use_actor
         # accurate placing of objects under certain conditions
         if human['Manipulate'] and lay_down_ray.positive \
            and focused_object != ow['selected'] \
@@ -313,7 +314,7 @@ def roll_hand_r(cont):
     keylist = keyboard.events
     for key in keylist:
         # key[0] == events.keycode, key[1] = status
-        if key[1] == logic.KX_INPUT_ACTIVE and key[0] == events.LEFTCTRLKEY:
+        if key[1] == blenderapi.input_active() and key[0] == blenderapi.LEFTCTRLKEY:
             if wheel_down.positive:
                 roll_speed = -roll_speed
             hand_r.rotation_quaternion += Vector((0.0, 0.0, roll_speed, 0.0))
@@ -330,7 +331,7 @@ def lay_down(cont):
     # get the suffix of the human to reference the right objects
     suffix = pos.name[-4:] if pos.name[-4] == "." else ""
     
-    objects = logic.getCurrentScene().objects
+    objects = blenderapi.scene().objects
     hand = objects['Hand_Grab.R' + suffix]
     
     obj = hand['selected']
@@ -359,7 +360,7 @@ def lay_down_visualize(cont):
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
     
-    scene = logic.getCurrentScene()
+    scene = blenderapi.scene()
     objects = scene.objects
     human = objects['Human' + suffix]
     hand = objects['Hand_Grab.R' + suffix]
@@ -440,7 +441,7 @@ def write_interaction_status():
     Write the interaction status on Screen
     The status is stored in a property
     """
-    cam = logic.getCurrentScene().active_camera
+    cam = blenderapi.scene().active_camera
 
     # get the suffix of the human to reference the right objects
     suffix = cam.name[-4:] if cam.name[-4] == "." else ""
@@ -473,7 +474,7 @@ def status_image():
     
     gl_position = [[x, y],[x+imageWidth, y],[x+imageWidth, y+imageHeight],[x, y+imageHeight]]
 
-    cam = logic.getCurrentScene().active_camera
+    cam = blenderapi.scene().active_camera
 
     # get the suffix of the human to reference the right objects
     suffix = cam.name[-4:] if cam.name[-4] == "." else ""
