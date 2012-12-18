@@ -9,7 +9,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 #
 ######################################################
 
-import math
 import morse.core.actuator
 from morse.core import blenderapi
 from morse.core.services import service
