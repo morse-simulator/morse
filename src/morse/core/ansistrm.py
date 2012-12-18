@@ -44,6 +44,16 @@ class ColorizingStreamHandler(logging.StreamHandler):
         ENDSECTION: (None, 'green', False, False),
     }
 
+    mono_scheme = {
+        logging.DEBUG: (None, None, False, False),
+        logging.INFO: (None, None, False, False),
+        logging.WARNING: (None, None, False, False),
+        logging.ERROR: (None, None, False, False),
+        logging.CRITICAL: (None, None, False, False),
+        SECTION: (None, None, False, False),
+        ENDSECTION: (None, None, False, False),
+    }
+
     xmas_scheme = {
         logging.DEBUG: ('red', 'yellow', False, True),
         logging.INFO: ('red', 'white', False, True),
@@ -63,6 +73,8 @@ class ColorizingStreamHandler(logging.StreamHandler):
             self.level_map = self.xmas_scheme
         elif scheme == "dark":
             self.level_map = self.dark_scheme
+        elif scheme == "mono":
+            self.level_map = self.mono_scheme
         else:
             self.level_map = self.bright_scheme
     

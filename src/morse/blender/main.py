@@ -653,9 +653,9 @@ def init(contr):
     #bge.logic.setPhysicsTicRate(60.0)
 
 def init_logging():
+    from morse.core.ansistrm import ColorizingStreamHandler
     
     if "with-colors" in sys.argv:
-        from morse.core.ansistrm import ColorizingStreamHandler
         if "with-xmas-colors" in sys.argv:
             ch = ColorizingStreamHandler(scheme = "xmas")
         elif "with-reverse-colors" in sys.argv:
@@ -664,7 +664,7 @@ def init_logging():
             ch = ColorizingStreamHandler()
         
     else:
-        ch = logging.StreamHandler()
+        ch = ColorizingStreamHandler(scheme = "mono")
     
     from morse.helpers.morse_logging import MorseFormatter
     # create logger
