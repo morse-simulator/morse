@@ -20,6 +20,7 @@ add_morse_test(video_camera_testing)
 
 add_morse_test(armature_actuator_testing)
 add_morse_test(destination_testing)
+add_morse_test(gripper_testing)
 add_morse_test(orientation_testing)
 add_morse_test(rotorcraft_waypoint_testing)
 add_morse_test(steer_force_testing)
