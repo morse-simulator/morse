@@ -76,7 +76,7 @@ def is_mouse_visible(side):
     socket_name = "semantic_%s" % side
     semantic_data = _read_socket_message(socket_name)
     if semantic_data:
-        for item in semantic_data:
+        for item in semantic_data['visible_objects']:
             if item['name'] == "MOUSE":
                 return True
     return False

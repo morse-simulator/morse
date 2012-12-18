@@ -130,7 +130,7 @@ Normally they should be:
   - Left camera: ``60002``
 
 Try connecting to these ports using the ``telnet`` program on another terminal,
-and you should see the data of object visibility comming from the cameras::
+and you should see the data of object visibility coming from the cameras::
 
   $ telnet localhost 60001
 
@@ -156,7 +156,7 @@ Here we'll explain the main parts of it:
         socket_name = "semantic_%s" % side
         semantic_data = _read_socket_message(socket_name)
         if semantic_data:
-            for item in semantic_data:
+            for item in semantic_data['visible_objects']:
                 if item['name'] == "MOUSE":
                     return True
         return False
