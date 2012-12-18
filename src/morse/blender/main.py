@@ -12,6 +12,12 @@ persistantstorage = morse.core.blenderapi.persistantstorage()
 
 # The service management
 from morse.core.services import MorseServices
+from morse.core.sensor import Sensor
+from morse.core.actuator import Actuator
+
+# Constants for stream directions
+IN = 'IN'
+OUT = 'OUT'
 
 # The file component_config.py is at the moment included
 #  in the .blend file of the scene
@@ -82,38 +88,40 @@ def create_dictionaries ():
 
     # Create a dictionary that stores initial positions of all objects
     # in the simulation, used to reset the simulation.
-    if not 'blender_objects' in persistantstorage:
-        persistantstorage.blender_objects = {}
+    persistantstorage.blender_objects = {}
 
     # Create a dictionary of the components in the scene
-    if not 'componentDict' in persistantstorage:
-        persistantstorage.componentDict = {}
+    persistantstorage.componentDict = {}
 
     # Create a dictionary of the robots in the scene
-    if not 'robotDict' in persistantstorage:
-        persistantstorage.robotDict = {}
+    persistantstorage.robotDict = {}
 
     # Create a dictionary of the external robots in the scene
     # Used for the multi-node simulation
-    if not 'externalRobotDict' in persistantstorage:
-        persistantstorage.externalRobotDict = {}
+    persistantstorage.externalRobotDict = {}
 
     # Create a dictionnary with the passive, but interactive (ie, with an
     # 'Object' property) objects in the scene.
-    if not 'passiveObjectsDict' in persistantstorage:
-        persistantstorage.passiveObjectsDict = {}
+    persistantstorage.passiveObjectsDict = {}
 
     # Create a dictionary with the modifiers
-    if not 'modifierDict' in persistantstorage:
-        persistantstorage.modifierDict = {}
+    persistantstorage.modifierDict = {}
 
     # Create a dictionary with the datastream interfaces used
-    if not 'datastreamDict' in persistantstorage:
-        persistantstorage.datastreamDict = {}
+    persistantstorage.datastreamDict = {}
+
+    # this dictionary stores, for each components, the direction and the
+    # configured datastream interfaces. Direction is 'IN' for streams
+    # that are read by MORSE (typically, for actuators), and 'OUT' 
+    # for streams published by MORSE (typically, for sensors)
+    persistantstorage.datastreams = {}
 
     # Create a dictionnary with the overlaid used
-    if not 'overlayDict' in persistantstorage:
-        persistantstorage.overlayDict = {}
+    persistantstorage.overlayDict = {}
+
+    # Create the 'request managers' manager
+    persistantstorage.morse_services = MorseServices()
+
 
     scene = morse.core.blenderapi.scene()
 
@@ -235,8 +243,8 @@ def check_dictionaries():
     if persistantstorage.morse_services.request_managers():
         for name, instance in persistantstorage.morse_services.request_managers().items():
             logger.info ("\t- Interface {0}".format(name))
-            for c, s in instance.services().items():
-                logger.info ("\t\t- %s: %s" % (c,s))
+            for component, service in instance.services().items():
+                logger.info ("\t\t- %s: %s" % (component,service))
 
     else:
         logger.info ("\tNone")
@@ -365,6 +373,19 @@ def link_datastreams():
         #  syntax that allowed only one middleware per component
         if isinstance (datastream_list[0], str):
             datastream_list = [datastream_list]
+
+        # What is the direction of our stream?
+        # -> for Sensors, they *publish*,
+        # -> for Actuator, they *read*
+        if isinstance(instance, Sensor):
+            direction = OUT
+        elif isinstance(instance, Actuator):
+            direction = IN
+        else:
+            assert(False)
+
+        persistantstorage.datastreams[component_name] = (direction, 
+                                     [d[0] for d in datastream_list])
 
         # Register all datastream's in the list
         for datastream_data in datastream_list:
@@ -621,14 +642,15 @@ def init(contr):
     persistantstorage.current_time = 0.0
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0
-    init_ok = True
 
+    init_ok = True
+    init_ok = init_ok and create_dictionaries()
 
     logger.log(SECTION, 'SUPERVISION SERVICES INITIALIZATION')
-    init_ok = init_supervision_services()
-    
+    init_ok = init_ok and init_supervision_services()
+
+
     logger.log(SECTION, 'SCENE INITIALIZATION')
-    init_ok = init_ok and create_dictionaries()
     init_ok = init_ok and link_services()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_datastreams()
@@ -691,7 +713,6 @@ def init_supervision_services():
     simulation management services declared in
     :py:module:`morse.core.supervision_services` 
     """
-    persistantstorage.morse_services = MorseServices()
 
     ###
     # First, load and map the socket request manager to the pseudo

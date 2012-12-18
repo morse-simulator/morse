@@ -79,3 +79,54 @@ def restore_dynamics():
         object.restoreDynamics()
     
     return "Physics is resumed"
+
+@service(component = "simulation")
+def details():
+    """Returns a structure containing all possible details
+    about the simulation currently running, including
+    the list of robots, the list of services and datastreams,
+    the list of middleware in use, etc.
+    """
+
+    simu = blenderapi.persistantstorage()
+    details = {}
+
+
+    # Retrieves the list of services and associated middlewares
+    services = {}
+    services_iface = {}
+    for n, i in simu.morse_services.request_managers().items():
+        services.update(i.services())
+        for cmpt in i.services():
+            services_iface.setdefault(cmpt, []).append(n)
+
+    def cmptdetails(c):
+        c = simu.componentDict[c.name]
+        cmpt = {"name": c.name(),
+                "type": type(c).__name__,
+                }
+        if c.name() in services:
+            cmpt["services"] = services[c.name()]
+            cmpt["service_interfaces"] = services_iface[c.name()]
+
+        if c.name() in simu.datastreams:
+            stream = simu.datastreams[c.name()]
+            cmpt["stream"] = stream[0]
+            cmpt["stream_interfaces"] = stream[1]
+
+        return cmpt
+
+    def robotdetails(r):
+        robot = {"name": r.name(),
+                "type": type(r).__name__,
+                "components": [cmptdetails(c) for c in r.components]
+                }
+        return robot
+    
+    for n, i in simu.datastreamDict.items():
+        pass
+
+
+    details['robots'] = [robotdetails(r) for n, r in simu.robotDict.items()]
+    return details
+

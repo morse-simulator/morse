@@ -21,7 +21,7 @@ class Datastream(object):
 
     def __del__(self):
         """ Destructor method. """
-        logger.info("%s: Middleware finishing" % self.__class__.__name__)
+        logger.info("Closing datastream interface <%s>." % self.__class__.__name__)
 
 
     @abstractmethod
