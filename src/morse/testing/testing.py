@@ -238,6 +238,9 @@ class MorseTestCase(unittest.TestCase):
         # environment.
         with tempfile.NamedTemporaryFile(delete = False) as tmp:
             tmp.write(b"from morse.builder import *\n")
+            tmp.write(b"from morse.builder.actuators import *\n")
+            tmp.write(b"from morse.builder.sensors import *\n")
+            tmp.write(b"from morse.builder.blenderobjects import *\n")
             tmp.write(b"class MyEnv():\n")
             tmp.write(inspect.getsource(test_case.setUpEnv).encode())
             tmp.write(b"MyEnv().setUpEnv()\n")
