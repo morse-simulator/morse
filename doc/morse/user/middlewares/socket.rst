@@ -20,7 +20,7 @@ For example, when using telnet to connect to a
 like the following::
 
   $ telnet localhost 6000
-  {'x':3.0, 'y':5.0, 'z':0.0, 'tolerance':0.5, 'speed':2.0}
+  {"x":3.0, "y":5.0, "z":0.0, "tolerance":0.5, "speed":2.0}
 
 The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_datastream`.
 
