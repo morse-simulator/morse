@@ -104,6 +104,13 @@ class MorseServices:
         
         return self._service_mappings[component]
 
+    def request_managers(self):
+        """ Returns the list of active request managers.
+
+        :returns: a dictionary of active request managers {class name: instance}
+        """
+        return self._request_managers
+
     def process(self):
         """ Calls the *process()* method of each registered request manager.
         """
