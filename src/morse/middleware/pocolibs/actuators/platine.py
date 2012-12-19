@@ -1,57 +1,44 @@
-from morse.middleware.pocolibs_datastream import init_extra_actuator
-from morse.middleware.pocolibs.actuators.Platine_Poster import ors_platine_poster
+from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput, poster_name
+from pom.struct import *
+from platine.struct import *
 
-def init_extra_module(self, component_instance, function, mw_data):
+class PlatinePoster(PocolibsDataStreamInput):
+    def __init__(self, name, delay):
+        super(self.__class__, self).__init__(name, delay, POM_SE_POSTER)
+
+    def read(self, component):
+        pos = super(self.__class__, self).read()
+        if pos:
+            euler = pos.seConfig.euler
+            component.local_data['pan'] = euler.yaw
+            component.local_data['tilt'] = euler.pitch
+
+class PlatineAxisPoster(PocolibsDataStreamInput):
+    def __init__(self, name, delay):
+        super(self.__class__, self).__init__(name, delay, PLATINE_AXIS_STR)
+
+    def read(self, component):
+        pos = super(self.__class__, self).read()
+        if pos:
+            component.local_data['pan'] = pos.pan
+            component.local_data['tilt'] = pos.tilt
+
+def init_extra_module(self, component, function, mw_data):
     """ Setup the middleware connection with this data
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    init_extra_actuator(self, component_instance, function, mw_data, ors_platine_poster)
 
-def read_platine_(poster_id, component_instance):
-    platine_data, ok = ors_platine_poster.read_platine_data(poster_id)
-
-    if ok != 0:
-        component_instance.local_data['pan'] = platine_data.yaw
-        component_instance.local_data['tilt'] = platine_data.pitch
-
-        # Return true to indicate that a command has been received
-        return True
+    if mw_data[1] == "read_platine":
+        poster = PlatinePoster(poster_name(component, mw_data), True)
+    elif mw_data[1] == "read_platine_axis":
+        poster = PlatineAxisPoster(poster_name(component, mw_data), True)
     else:
-        return False
+        poster = None
+    component.input_functions.append(poster.read)
 
-def read_platine(self, component_instance):
-    """ Read pan,tilt from a platine poster """
-    # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.bge_object.name]
-    read_platine_(poster_id, component_instance)
+def read_platine():
+    pass
 
-def read_platine_axis(self, component_instance):
-    poster_id = self._poster_in_dict[component_instance.bge_object.name]
-    platine_data, ok = ors_platine_poster.read_platine_axis(poster_id)
-    if ok != 0:
-        component_instance.local_data['pan'] = platine_data.pan
-        component_instance.local_data['tilt'] = platine_data.tilt
-
-        # Return true to indicate that a command has been received
-        return True
-    else:
-        return False
-
-class PosterNotFound(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class PlatinePoster:
-    def __init__(self, poster_name):
-        self.poster_id = ors_platine_poster.createPosterHandler(poster_name)
-        if not self.poster_id.found:
-            raise PosterNotFound(poster_name)
-
-    def read(self,  component_instance):
-        read_platine_(self.poster_id, component_instance)
-
-    def __del__(self):
-        pass
+def read_platine_axis():
+    pass

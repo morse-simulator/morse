@@ -5,7 +5,8 @@ from morse.core.overlay import MorseOverlay
 from morse.core import status
 from functools import partial
 
-from morse.middleware.pocolibs.actuators.platine import PlatinePoster, PosterNotFound
+from morse.middleware.pocolibs.actuators.platine import PlatinePoster
+from morse.middleware.pocolibs_datastream import PosterNotFound
 from morse.middleware.pocolibs.sensors.General_Poster.ors_poster import new_poster
 
 import math
@@ -95,7 +96,7 @@ class PlatineModule(MorseOverlay):
     @async_service
     def TrackPos(self, poster_name):
         try:
-            poster = PlatinePoster(poster_name)
+            poster = PlatinePoster(poster_name, False)
         except PosterNotFound:
             return self.completed(status.FAILED, ["POSTER_NOT_FOUND"])
 
