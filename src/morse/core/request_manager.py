@@ -222,26 +222,26 @@ class RequestManager(object):
 
             # Creates a result setter functor: this functor is used as
             # callback for the asynchronous service.
-            self._completed_requests[request_id] = None
             result_setter = partial(self._completed_requests.__setitem__, request_id)
-
-            # Store the component and service associated to this service
-            # (for instance, for later interruption)
-            self._pending_requests[request_id] = (component, service)
-
             try:
                 # Invoke the method with unpacked parameters
                 # This method may throw MorseRPCInvokationError if the
                 # service initialization fails.
                 method(result_setter, *params) if params else method(result_setter)
+
+                # Store the component and service associated to this service
+                # (for instance, for later interruption)
+                self._pending_requests[request_id] = (component, service)
+
             except AttributeError as e:
                 raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
             except TypeError as e:
+
                 # Check if the type error comes from a wrong # of args.
                 # We perform this check only after an exception is
                 # thrown to avoid loading the inspect module by default.
                 import inspect, traceback
-                traceback.print_exc()
+                logger.debug(traceback.format_exc())
                 if not params:
                     raise MorseRPCNbArgsError(str(self) + ": parameters expected for service " + service + "! " + str(e))
                 elif len(params) != (len(inspect.getargspec(method)[0]) - 2): # -2 because of self and callback
@@ -265,7 +265,7 @@ class RequestManager(object):
                 # thrown to avoid loading the inspect module by default.
                 # TODO: Does it make sense?
                 import inspect, traceback
-                traceback.print_exc()
+                logger.debug(traceback.format_exc())
                 if not params:
                     raise MorseRPCNbArgsError(str(self) + ": parameters expected for service " + service + "! " + str(e))
                 if len(params) != (len(inspect.getargspec(method)[0]) - 1): # -1 because of 'self'

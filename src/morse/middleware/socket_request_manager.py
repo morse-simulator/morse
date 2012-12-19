@@ -94,7 +94,7 @@ class SocketRequestManager(RequestManager):
         try:
             s, id = self._pending_sockets[request_id]
         except KeyError:
-            logger.info(str(self) + ": ERROR: I can not find the socket which requested " + request_id)
+            logger.info(str(self) + ": ERROR: I can not find the socket which requested " + str(request_id))
             return
 
         if s in self._results_to_output:
