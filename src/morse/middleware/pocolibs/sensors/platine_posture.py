@@ -1,48 +1,28 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.middleware.pocolibs.sensors.Platine_posture_Poster import ors_platine_posture_poster
+from morse.middleware.pocolibs_datastream import *
+from platine.struct import *
+from math import degrees
+
+class PlatinePoster(PocolibsDataStreamOutput):
+    def __init__(self, component, mw_data):
+        super(self.__class__, self).__init__(poster_name(component, mw_data),
+                                             PLATINE_STATES)
+        self.obj = PLATINE_STATES()
+
+    def write(self, component):
+        self.obj.stateRad.pos.pan = component.local_data['pan']
+        self.obj.stateRad.pos.tilt = component.local_data['tilt']
+        self.obj.stateDeg.pos.pan = degrees(component.local_data['pan'])
+        self.obj.stateDeg.pos.tilt = degrees(component.local_data['tilt'])
+        super(self.__class__, self).write(self.obj)
 
 def init_extra_module(self, component_instance, function, mw_data):
     """ Setup the middleware connection with this data
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.bge_object.name
-    parent_name = component_instance.robot_parent.bge_object.name
-    # Check if the name of the poster has been given in mw_data
-    try:
-        # It should be the 4th parameter
-        poster_name = mw_data[3]
-    except IndexError as detail:
-        # Compose the name of the poster, based on the parent and module names
-        poster_name = 'platine_posture_{0}_{1}'.format(parent_name, component_name)
-
-    poster_id = init_platine_posture_poster(self, component_instance, poster_name)
-    if poster_id != None:
-        logger.info("Pocolibs created poster '%s' of type platine_posture" % poster_id)
-        component_instance.output_functions.append(function)
-        # Store the name of the port
-        self._poster_dict[component_name] = poster_id
-
-
-def init_platine_posture_poster(self, component_instance, poster_name):
-    """ Prepare the data for a platine_posture poster """
-    # Measure the amount of coordinates that will be stored in a single array
-    poster_id, ok = ors_platine_posture_poster.init_data(poster_name)
-    if ok == 0:
-        logger.error("Creating poster. The platine_posture Pocolib export module may not work")
-        return None
-
-    logger.info("platine_posture Poster '%s' created (ID: %d)" % (poster_name, poster_id))
-
-    return poster_id
-
+    poster = PlatinePoster(component_instance, mw_data)
+    component_instance.output_functions.append(poster.write)
 
 def write_platine_posture(self, component_instance):
-    """ Write the platine_posture data to a Pocolibs poster.
-    """
-    poster_id = self._poster_dict[component_instance.bge_object.name]
-
-    ors_platine_posture_poster.post_platine_posture(poster_id, \
-            component_instance.local_data['pan'], \
-            component_instance.local_data['tilt'])
-
+    pass
