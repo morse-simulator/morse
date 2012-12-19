@@ -1,9 +1,88 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import datetime
+from ctypes import *
 
 import morse.core.datastream
 
 from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
+
+P = CDLL("libposterLib.so")
+
+class PosterNotFound(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class InvalidRead(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+def poster_name(component, mw_data):
+    # Check if the name of the poster has been given in mw_data
+    poster_name = ''
+    try:
+        # It should be the 4th parameter
+        poster_name = mw_data[3]
+    except IndexError:
+        # Compose the name of the poster, based on the parent and module names
+        component_name = component.bge_obj.name
+        parent_name = component.robot_parent.bge_obj.name
+        poster_name = '{0}_{1}'.format(parent_name, component_name)
+
+    return poster_name
+
+class PocolibsDataStreamOutput(object):
+
+    def __init__(self, name, kind):
+        self.poster_id = c_void_p()
+        o = kind()
+        r = P.posterCreate(name, sizeof(o), byref(self.poster_id))
+
+    def write(self, obj):
+        r = P.posterWrite(self.poster_id, 0, byref(obj), sizeof(obj))
+        if (r != sizeof(obj)):
+            raise "too bad : write failed"
+
+    def __del__(self):
+        P.posterDelete(self.poster_id)
+        self.poster_id = None
+
+class PocolibsDataStreamInput(object):
+    def __init__(self, name, delay, kind):
+        self.poster_id = c_void_p()
+        self.name = name
+        self.c_name = create_string_buffer(bytes(name, 'utf-8'))
+
+        self.o = kind()
+        self.found = False
+        self._find()
+        if (not self.found and not delay):
+            raise PosterNotFound(self.name)
+
+    def _find(self):
+        logger.info("Searching to read %s" % self.name)
+        r = P.posterFind(self.c_name, byref(self.poster_id))
+        if (r == 0):
+            self.found = True
+
+    def read(self):
+        if (not self.found):
+            self._find()
+
+        if (self.found):
+            r = P.posterRead(self.poster_id, 0, byref(self.o), sizeof(self.o))
+            if (r != sizeof(self.o)):
+                raise InvalidRead(self.name)
+            return self.o
+        else:
+            return None
+
+    def __del__(self):
+        if (self.found):
+            P.posterForget(self.poster_id)
 
 
 class Pocolibs(morse.core.datastream.Datastream):
@@ -54,17 +133,9 @@ def init_extra_actuator(self, component_instance, function, mw_data, kind):
     """ Setup the middleware connection with this data
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.bge_object.name
-    parent_name = component_instance.robot_parent.bge_object.name
-    # Check if the name of the poster has been given in mw_data
-    try:
-        # It should be the 4th parameter
-        poster_name = mw_data[3]
-    except IndexError as detail:
-        # Compose the name of the poster, based on the parent and module names
-        poster_name = '{0}_{1}'.format(parent_name, component_name)
+    name = poster_name(component_instance, mw_data)
 
-    logger.debug("Creating poster_name %s" % poster_name)
-    poster_id = kind.createPosterHandler(poster_name)
-    self._poster_in_dict[component_name] = poster_id
+    logger.debug("Creating poster_name %s" % name)
+    poster_id = kind.createPosterHandler(name)
+    self._poster_in_dict[component_instance.blender_obj.name] = poster_id
     component_instance.input_functions.append(function)

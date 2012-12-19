@@ -2,7 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service, async_service, interruptible
 from morse.core.overlay import MorseOverlay
 from morse.core import status
-from morse.middleware.pocolibs.actuators.genpos import GenPosPoster, PosterNotFound
+from morse.middleware.pocolibs.actuators.genpos import GenPosPoster
+from morse.middleware.pocolibs_datastream import PosterNotFound
 from morse.middleware.pocolibs.sensors.General_Poster.ors_poster import new_poster
 
 class RflexModule(MorseOverlay):
@@ -77,7 +78,7 @@ class RflexModule(MorseOverlay):
     @async_service
     def TrackSpeedStart(self, poster_name):
         try:
-            poster = GenPosPoster(poster_name)
+            poster = GenPosPoster(poster_name, False)
         except PosterNotFound:
             return self.completed(status.FAILED, ["POSTER_NOT_FOUND"])
 
