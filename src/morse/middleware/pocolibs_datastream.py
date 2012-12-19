@@ -4,8 +4,6 @@ from ctypes import *
 
 import morse.core.datastream
 
-from morse.middleware.pocolibs.sensors.General_Poster import ors_poster
-
 P = CDLL("libposterLib.so")
 
 class PosterNotFound(Exception):
@@ -108,7 +106,6 @@ class Pocolibs(morse.core.datastream.Datastream):
         for component_name, poster_id in self._poster_dict.items():
             logger.info("Killing poster %d for component %s" % (poster_id, component_name))
             # Call the method to close a poster
-            ors_poster.finalize(poster_id)
 
 
     def register_component(self, component_name, component_instance, mw_data):
