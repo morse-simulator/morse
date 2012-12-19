@@ -39,7 +39,11 @@ class PocolibsDataStreamOutput(object):
     def __init__(self, name, kind):
         self.poster_id = c_void_p()
         o = kind()
-        r = P.posterCreate(name, sizeof(o), byref(self.poster_id))
+        c_name = create_string_buffer(bytes(name, 'utf-8'))
+        logger.info("Create poster %s of size %d\n" % (name, sizeof(o)))
+        r = P.posterCreate(c_name, sizeof(o), byref(self.poster_id))
+        if r != 0:
+            P.posterFind(c_name, byref(self.poster_id))
 
     def write(self, obj):
         r = P.posterWrite(self.poster_id, 0, byref(obj), sizeof(obj))
