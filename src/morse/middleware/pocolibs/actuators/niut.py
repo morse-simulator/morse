@@ -1,89 +1,37 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.middleware.pocolibs_datastream import init_extra_actuator
-from morse.middleware.pocolibs.actuators.Niut_Poster import ors_niut_poster
+from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput, poster_name
+from niut.struct import *
 import mathutils
-
-# Assign constant variables to identify the joints of interest
-# From niut/niutStruct.h
-NIUT_HEAD = 1
-NIUT_NECK = 2
-NIUT_TORSO = 3
-NIUT_WAIST = 4
-
-NIUT_LEFT_COLLAR = 5
-NIUT_LEFT_SHOULDER = 6
-NIUT_LEFT_ELBOW = 7
-NIUT_LEFT_WRIST = 8
-NIUT_LEFT_HAND = 9
-NIUT_LEFT_FINGERTIP = 10
-
-NIUT_RIGHT_COLLAR = 11
-NIUT_RIGHT_SHOULDER = 12
-NIUT_RIGHT_ELBOW = 13
-NIUT_RIGHT_WRIST = 14
-NIUT_RIGHT_HAND = 15
-NIUT_RIGHT_FINGERTIP = 16
-
-NIUT_LEFT_HIP = 17
-NIUT_LEFT_KNEE = 18
-NIUT_LEFT_ANKLE = 19
-NIUT_LEFT_FOOT = 20
-
-NIUT_RIGHT_HIP = 21
-NIUT_RIGHT_KNEE = 22
-NIUT_RIGHT_ANKLE = 23
-NIUT_RIGHT_FOOT = 24
-
 
 # Define a transformation matrix for the position of the Kinect/Xtion sensor
 transformation_matrix = mathutils.Matrix()
 transformation_matrix.identity()
 
+couples = [('head_position', NIUT_HEAD),
+           ('neck_position', NIUT_NECK),
+           ('torso_position', NIUT_TORSO),
+           ('left_hand_position', NIUT_LEFT_HAND),
+           ('right_hand_position', NIUT_RIGHT_HAND),
+           ('left_elbow_position', NIUT_LEFT_ELBOW),
+           ('right_elbow_position', NIUT_RIGHT_ELBOW),
+           ('left_shoulder_position', NIUT_LEFT_SHOULDER),
+           ('right_shoulder_position', NIUT_RIGHT_SHOULDER),
+           ('left_hip_position', NIUT_LEFT_HIP),
+           ('right_hip_position', NIUT_RIGHT_HIP),
+           ('left_knee_position', NIUT_LEFT_KNEE),
+           ('right_knee_position', NIUT_RIGHT_KNEE),
+           ('left_foot_position', NIUT_LEFT_FOOT),
+           ('right_foot_position', NIUT_RIGHT_FOOT)]
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class NiutPoster(PocolibsDataStreamInput):
+    def __init__(self, name, delay):
+        super(self.__class__, self).__init__(name, delay, NIUT_HUMAN_LIST)
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    init_extra_actuator(self, component_instance, function, mw_data, ors_niut_poster)
-    logger.setLevel(logging.DEBUG)
+        _create_transform_matrix()
 
-    _create_transform_matrix()
+    def _store_joint_position(self, component, joints, ik_target, joint_index):
 
-
-
-def read_niut_ik_positions(self, component_instance):
-    """ Read the positions of the joints in the niut poster """
-    # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.bge_object.name]
-
-    result = True
-    # Get the positions of the joints and multiply them by the matrix
-    result = result and _store_joint_position(component_instance, poster_id, 'head_position', NIUT_HEAD, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'neck_position', NIUT_NECK, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'torso_position', NIUT_TORSO, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_hand_position', NIUT_LEFT_HAND, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_hand_position', NIUT_RIGHT_HAND, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_elbow_position', NIUT_LEFT_ELBOW, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_elbow_position', NIUT_RIGHT_ELBOW, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_shoulder_position', NIUT_LEFT_SHOULDER, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_shoulder_position', NIUT_RIGHT_SHOULDER, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_hip_position', NIUT_LEFT_HIP, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_hip_position', NIUT_RIGHT_HIP, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_knee_position', NIUT_LEFT_KNEE, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_knee_position', NIUT_RIGHT_KNEE, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'left_foot_position', NIUT_LEFT_FOOT, transformation_matrix)
-    result = result and _store_joint_position(component_instance, poster_id, 'right_foot_position', NIUT_RIGHT_FOOT, transformation_matrix)
-
-    # Return true to indicate that a command has been received
-    return result
-
-
-def _store_joint_position(component_instance, poster_id, ik_target, joint_index, transformation_matrix):
-    """ Read the position of the pecified joint """
-    joint_position, ok = ors_niut_poster.read_niut_joint_position(poster_id, joint_index)
-
-    if ok != 0:
+        joint_position = joints[ik_target].position
         # Convert the GEN_POINT_3D into a Blender vector
         position_vector = mathutils.Vector([joint_position.x, joint_position.y, joint_position.z])
         if transformation_matrix:
@@ -91,20 +39,29 @@ def _store_joint_position(component_instance, poster_id, ik_target, joint_index,
         else:
             new_position = position_vector
 
-        component_instance.local_data[ik_target] = new_position
+        component.local_data[ik_target] = new_position
 
-        #if ik_target == 'neck_position' or ik_target == 'torso_position':
-        #    logger.debug("Joint '%s' (index=%d)" % (ik_target, joint_index))
-        #    logger.debug("\toriginal : [%.4f, %.4f, %.4f] " % (position_vector[0], position_vector[1], position_vector[2]))
-        #    logger.debug("\ttransform: [%.4f, %.4f, %.4f] " % ( \
-        #        component_instance.local_data[ik_target][0],
-        #        component_instance.local_data[ik_target][1],
-        #        component_instance.local_data[ik_target][2]))
 
-        return True
-    else:
-        return False
+    def read(self, component):
+        human_list = super(self.__class__, self).read()
+        if human_list:
+            for i in range(0, 16):
+                if human_list.users[i].state == NIUT_TRACKING:
+                    joints = human_list.users[i].skeleton.joint
+                    for target, idx in couples:
+                        self._store_joint_position(component, joints, target, idx)
+                    return
 
+
+def init_extra_module(self, component, function, mw_data):
+    """ Setup the middleware connection with this data
+
+    Prepare the middleware to handle the serialised data as necessary.
+    """
+    poster = NiutPoster(poster_name(component, mw_data), True)
+    component.input_functions.append(poster.read)
+
+    _create_transform_matrix()
 
 def _create_transform_matrix():
     """ Construct the transformation matrix
