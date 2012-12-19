@@ -192,7 +192,14 @@ def service(fn = None, component = None, name = None, async = False):
                     # service.
                     callback.service = decorated_fn
                     self.set_service_callback(callback)
-                    fn(self, *param)
+                    try:
+                        fn(self, *param)
+                    except BaseException as e:
+                        # Failure during service invokation? remove the
+                        # callback and re-raise
+                        self.on_completion = None
+                        raise e
+
                 dfn = decorated_fn
                 dfn.__name__ = fn.__name__
 
