@@ -635,11 +635,17 @@ class Environment(Component):
     def set_debug(self, debug=True):
         bpy.app.debug = debug
 
-    def set_stereo(self, stereo='STEREO'):
+    def set_stereo(self, mode='ANAGLYPH', eye_separation=0.1, stereo='STEREO'):
         """ set_stereo
+        :param mode: Stereographic techniques. enum in ['QUADBUFFERED',
+                     'ABOVEBELOW', 'INTERLACED', 'ANAGLYPH', 'SIDEBYSIDE',
+                     'VINTERLACE'], default 'ANAGLYPH'
+        :param eye_separation: Distance between the eyes. float in [0.01, 5], default 0.1
         :param stereo: enum in ['NONE', 'STEREO', 'DOME'], default 'STEREO'
         """
         bpy.context.scene.game_settings.stereo = stereo
+        bpy.context.scene.game_settings.stereo_mode = mode
+        bpy.context.scene.game_settings.stereo_eye_separation = eye_separation
 
     def set_animation_record(self, record=True):
         """ Record animation to F-Curves, so you can render it later

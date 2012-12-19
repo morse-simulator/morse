@@ -173,8 +173,14 @@ The ``Environment`` class provides these functions:
    'WIREFRAME', 'SOLID' or 'TEXTURED'
  * **set_debug**: Set the debug bit in blender
  * **set_stereo**: Configure to renderer to render image in 'STEREO' using
-   anaglyphs, allowing to see them in 3d with special red-cyan glasses.
-   Allowed argument is one of 'NONE' (normal 2d mode), 'STEREO' or 'DOME'
+   anaglyphs, allowing to see them in 3d with special red-cyan glasses. Allowed
+   arguments are:
+
+   - `mode`: Stereographic techniques, enum in ['QUADBUFFERED', 'ABOVEBELOW',
+     'INTERLACED', 'ANAGLYPH' (default), 'SIDEBYSIDE', 'VINTERLACE']
+   - `eye_separation`: Distance between the eyes. float in [0.01, 5], default 0.1
+   - `stereo`: enum in ['NONE' (normal 2D mode), 'STEREO' (default), 'DOME']
+
  * **select_display_camera**: Indicate to MORSE which camera to display in the
    HUD screen. This method receives as parameter the name of the Builder instance
    of a camera sensor. It will do nothing if the parameter is not a camera.
