@@ -24,11 +24,15 @@ class Sensor(morse.core.object.Object):
         self.output_functions = []
         self.output_modifiers = []
 
-        self.time_actions = 0.0
-        self.time_default_actions = 0.0
-        self.time_modifiers = 0.0
-        self.time_datastreams = 0.0
-        self.time_start = time.time()
+        self.profile = False
+        if self.name() in blenderapi.getssr():
+            self.profile = True
+            self.ssr = blenderapi.getssr()
+            self.time_actions = 0.0
+            self.time_default_actions = 0.0
+            self.time_modifiers = 0.0
+            self.time_datastreams = 0.0
+            self.time_start = time.time()
 
     def sensor_to_robot_position_3d(self):
         """
@@ -49,39 +53,40 @@ class Sensor(morse.core.object.Object):
         self.position_3d.update(self.blender_obj)
 
         # record the time before performing the default action for profiling
-        time_before_action = time.time()
+        if self.profile:
+            time_before_action = time.time()
 
         # Call the regular action function of the component
         self.default_action()
 
         # record the time before calling modifiers for profiling
-        time_before_modifiers = time.time()
+        if self.profile:
+            time_before_modifiers = time.time()
 
         # Data modification functions
         for function in self.output_modifiers:
             function(self)
 
         # record the time before calling datastreams for profiling
-        time_before_datastreams = time.time()
+        if self.profile:
+            time_before_datastreams = time.time()
 
         # Lastly output functions
         for function in self.output_functions:
             function(self)
 
         # profiling
-        if self.name() in blenderapi.getssr():
+        if self.profile:
             time_now = time.time()
-            ssr = blenderapi.getssr()
-            name = self.name()
             self.time_actions += time_now - time_before_action
             self.time_default_actions += time_before_modifiers - time_before_action
             self.time_modifiers += time_before_datastreams - time_before_modifiers
             self.time_datastreams += time_now - time_before_datastreams
             morse_time = time_now - self.time_start
-            ssr[name] = "%6.2f %%"%(100.0 * self.time_actions / morse_time)
-            ssr[name+"::action"] = "%6.2f %%"%(100.0 * self.time_default_actions / morse_time)
-            ssr[name+"::modifiers"] = "%6.2f %%"%(100.0 * self.time_modifiers / morse_time)
-            ssr[name+"::datastreams"] = "%6.2f %%"%(100.0 * self.time_datastreams / morse_time)
+            self.ssr[self.name()] = "%6.2f %%"%(100.0 * self.time_actions / morse_time)
+            self.ssr[self.name()+"::action"] = "%6.2f %%"%(100.0 * self.time_default_actions / morse_time)
+            self.ssr[self.name()+"::modifiers"] = "%6.2f %%"%(100.0 * self.time_modifiers / morse_time)
+            self.ssr[self.name()+"::datastreams"] = "%6.2f %%"%(100.0 * self.time_datastreams / morse_time)
             if morse_time > 1: # re-init mean every sec
                 self.time_actions = 0.0
                 self.time_default_actions = 0.0
