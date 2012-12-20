@@ -27,14 +27,14 @@ class DestinationTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('rmax')
+        robot = RMax()
         robot.translate(0.0, 0.0, 20.0)
         
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
 
-        destination = Actuator('destination')
+        destination = Destination()
         robot.append(destination)
         destination.configure_mw('socket')
         destination.properties(Speed=2.0, Tolerance=0.3)
@@ -112,7 +112,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['x'], x, delta=precision)
             self.assertAlmostEqual(pose['y'], y, delta=precision)
-            self.assertAlmostEqual(pose['z'], 30.0, delta=0.2)
+            self.assertAlmostEqual(pose['z'], 30.0, delta=0.3)
 
             send_goal(dest_client, 0, 0, 20)
             time.sleep(10.0)

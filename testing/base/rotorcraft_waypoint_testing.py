@@ -22,19 +22,18 @@ class RotorcraftWaypoints_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Robot('quadrotor_dynamic')
+        robot = Quadrotor()
         robot.translate(x = -1.24, y=1.70, z=1.81)
 
-        pose = Sensor('pose')
+        pose = Pose()
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('rotorcraft_waypoint')
+        motion = RotorcraftWaypoint()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
 
-        
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 

@@ -27,15 +27,18 @@ class Sick_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Robot('atrv')
+        robot = ATRV()
 
+        #sick = Sick() # TODO bug pose? line 92, in test_sick
+        #self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
+        #AssertionError: 2.9966225624084473 != 6.0 within 0.05 delta
         sick = Sensor('sick')
         sick.translate(z=0.9)
-        sick.properties(laser_range = 10.0)
+        sick.properties(laser_range = 10.0, Visible_arc = False)
         robot.append(sick)
         sick.configure_mw('socket')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW()
         robot.append(motion)
         motion.configure_mw('socket')
 

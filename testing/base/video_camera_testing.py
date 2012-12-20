@@ -26,10 +26,13 @@ class CameraTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        atrv = Robot('atrv')
+        atrv = ATRV()
         atrv.rotate(0.0, 0.0, math.pi)
 
-        cam = Sensor('video_camera')
+        cam = Sensor('video_camera') # TODO bug pose relative (ATRV Z=+0.1)
+        #cam = CameraVideo() # TODO bug pymorse socket port ?
+        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
+        # OverflowError: getsockaddrarg: port must be 0-65535.
         cam.properties(capturing = True)
         cam.properties(cam_width = 320)
         cam.properties(cam_height = 240)
@@ -80,6 +83,7 @@ class CameraTest(MorseTestCase):
                 if (o['r'] > 155 and o['g'] < 50 and o['b'] < 50):
                     res.append(i)
 
+            # TODO redo those test
             self.assertTrue(len(res) > 140)
             for i in range(33742, 33747):
                 self.assertTrue(i in res)
@@ -109,6 +113,7 @@ class CameraTest(MorseTestCase):
                 if (o['r'] > 155 and o['g'] < 50 and o['b'] < 50):
                     res.append(i)
 
+            # TODO redo those test
             self.assertTrue(len(res) > 190)
             for i in range(32335, 32342):
                 self.assertTrue(i in res)

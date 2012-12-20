@@ -26,9 +26,9 @@ class ProximityTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        proximity = Sensor('proximity')
+        proximity = Proximity()
         proximity.translate(z=0.5)
         proximity.properties(Track = "Catch_me")
         proximity.properties(Range = 2.0)
@@ -36,26 +36,24 @@ class ProximityTest(MorseTestCase):
         proximity.configure_mw('socket')
         proximity.configure_service('socket')
 
-        pose = Sensor('pose')
+        pose = Pose()
         robot.append(pose)
         pose.configure_mw('socket')
 
         motion = Actuator('teleport')
+        #motion = Teleport() # TODO bug line 90: 'Target3' NOT in prox['near_objects']
         robot.append(motion)
         motion.configure_mw('socket')
 
-        target1 = Robot('atrv')
-        target1.name = "Target1"
+        target1 = ATRV("Target1")
         target1.properties(Catch_me = True)
         target1.translate(x=10.0, y = 1.0)
 
-        target2 = Robot('atrv')
-        target2.name = "Target2"
+        target2 = ATRV("Target2")
         target2.properties(Catch_me2 = True)
         target2.translate(x=10.0, y = -1.0)
 
-        target3 = Robot('atrv')
-        target3.name = "Target3"
+        target3 = ATRV("Target3")
         target3.properties(Catch_me = True)
         target3.translate(x=-4.0, y = 0.0)
 

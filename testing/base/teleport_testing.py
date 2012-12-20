@@ -29,14 +29,14 @@ class TeleportTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('rmax')
+        robot = RMax()
         robot.translate(10.0, 8.0, 20.0)
         
-        teleport = Actuator('teleport')
+        teleport = Teleport()
         teleport.configure_mw('socket')
         robot.append(teleport)
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
 

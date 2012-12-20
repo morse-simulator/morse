@@ -22,14 +22,14 @@ def send_dest(s, x, y, yaw):
 class ThermometerTest(MorseTestCase):
 
     def setUpEnv(self):
-        robot = Robot('atrv')
+        robot = ATRV()
         robot.translate(z=0.2)
 
-        thermometer = Sensor('thermometer')
+        thermometer = Thermometer()
         robot.append(thermometer)
         thermometer.configure_mw('socket')
 
-        motion = Actuator('teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 

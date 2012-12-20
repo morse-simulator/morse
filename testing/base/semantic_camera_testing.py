@@ -26,14 +26,20 @@ class Semantic_Camera_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Robot('atrv')
+        robot = ATRV()
 
         camera = Sensor('semantic_camera')
+        #camera = CameraSemantic() # TODO bug pymorse socket port ?
+        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
+        # OverflowError: getsockaddrarg: port must be 0-65535.
+        camera.frequency(60)
         robot.append(camera)
         camera.translate(x=0.2000, z=0.9000)
+        #camera.translate(x=0.3, z=0.762)
         camera.configure_mw('socket')
 
-        motion = Actuator('teleport')
+        #motion = Actuator('teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 

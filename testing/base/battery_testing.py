@@ -22,9 +22,9 @@ class BatteryTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        battery = Sensor('battery')
+        battery = Battery()
         battery.configure_mw('socket')
         battery.properties(DischargingRate = 10.0)
         robot.append(battery)

@@ -28,13 +28,13 @@ class StabilizedQuadrirotorTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('quadrotor')
+        robot = QUAD2012()
         
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
 
-        motion = Actuator('stabilized_quadrotor')
+        motion = StabilizedQuadrotor()
         robot.append(motion)
         motion.configure_mw('socket')
 

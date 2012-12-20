@@ -19,35 +19,36 @@ except ImportError:
     pass
 
 def send_pose(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0.0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0.0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
 
 class gripperTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        kuka_lwr = Actuator('kuka_lwr')
+        kuka_lwr = KukaLWR()
         robot.append(kuka_lwr)
         kuka_lwr.translate(x=0.5, z=0.9)
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        gripper = Actuator('gripper')
+        gripper = Gripper()
         gripper.translate(z=1.28)
         kuka_lwr.append(gripper)
         gripper.configure_service('socket')
 
-        motion = Actuator('teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 
-        tape1 = PassiveObject('props/objects.blend','BlackVideotape')
+        tape1 = PassiveObject(prefix='BlackVideotape')
         tape1.properties(Object = True, Graspable = True, Label = "BlackTape")
         tape1.translate(x=5, y=5, z=0)
 
-        tape2 = PassiveObject('props/objects.blend','WhiteVideotape')
+        tape2 = PassiveObject(prefix='WhiteVideotape')
         tape2.properties(Object = True, Graspable = True, Label = "WhiteTapee")
         tape2.translate(x=5, y=-5, z=0)
 

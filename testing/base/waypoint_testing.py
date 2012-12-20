@@ -23,19 +23,18 @@ class Waypoints_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.translate(z=-0.10) # atrv body
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('waypoint')
+        motion = Waypoint()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
 
-        
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 

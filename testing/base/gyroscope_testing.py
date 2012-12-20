@@ -23,11 +23,11 @@ class GyroTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('rmax')
+        robot = RMax()
         robot.translate(0.0, 0.0, 40.0)
         robot.rotate(math.pi/16, math.pi/8, math.pi/2)
         
-        gyro = Sensor('gyroscope')
+        gyro = Gyroscope()
         gyro.configure_mw('socket')
         robot.append(gyro)
 

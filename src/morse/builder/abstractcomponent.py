@@ -1,73 +1,66 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
+import os
 import bpy
 import json
-
+from morse.core.exceptions import MorseBuilderNoComponentError
 from morse.builder.data import *
 
 class Configuration(object):
-    """ class morse.builder.Configuration
+    datastream = {}
+    modifier = {}
+    service = {}
+    overlay = {}
 
-    Singleton (one static instance shared by all components)
-    contains the configuration of the simulation.
-    """
-    _instance = None
-    def __new__(cls, *args, **kwargs):
-        if not Configuration._instance:
-            Configuration._instance = object.__new__(cls, *args, **kwargs)
-        return Configuration._instance
+    def link_datastream(component, datastream_cfg):
+        Configuration.datastream.setdefault(component.name, []).append(datastream_cfg)
 
-    def __init__(self):
-        if not "_init" in dir(self):
-            self.datastream = {}
-            self.modifier = {}
-            self.service = {}
-            self.overlay = {}
-            self._init = True
-
-    def link_datastream(self, component, mw_method_cfg):
-        self.datastream.setdefault(component.name, []).append(mw_method_cfg)
-
-    def link_service(self, component, service_cfg):
+    def link_service(component, service_cfg):
         # Special case here for the pseudo component 'simulation' that
         # covers the simulator management services.
         if component == "simulation":
-            self.service.setdefault(component, []).append(service_cfg)
+            Configuration.service.setdefault(component, []).append(service_cfg)
         else:
-            self.service.setdefault(component.name, []).append(service_cfg)
+            Configuration.service.setdefault(component.name, []).append(service_cfg)
 
-    def link_modifier(self, component, modifier_cfg):
-        self.modifier.setdefault(component.name, []).append(modifier_cfg)
+    def link_modifier(component, modifier_cfg):
+        Configuration.modifier.setdefault(component.name, []).append(modifier_cfg)
 
-    def link_overlay(self, component,  manager, overlay_cfg):
-        self.overlay.setdefault(manager, {})[component.name] = overlay_cfg
+    def link_overlay(component,  manager, overlay_cfg):
+        Configuration.overlay.setdefault(manager, {})[component.name] = overlay_cfg
 
-    def write_config(self):
+    def write_config():
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpy.data.texts.keys():
             bpy.ops.text.new()
             bpy.data.texts[-1].name = 'component_config.py'
         cfg = bpy.data.texts['component_config.py']
         cfg.clear()
-        cfg.write('component_datastream = ' + json.dumps(self.datastream, indent=1) )
+        cfg.write('component_datastream = ' + json.dumps(Configuration.datastream, indent=1) )
         cfg.write('\n')
-        cfg.write('component_modifier = ' + json.dumps(self.modifier, indent=1) )
+        cfg.write('component_modifier = ' + json.dumps(Configuration.modifier, indent=1) )
         cfg.write('\n')
-        cfg.write('component_service = ' + json.dumps(self.service, indent=1) )
+        cfg.write('component_service = ' + json.dumps(Configuration.service, indent=1) )
         cfg.write('\n')
-        cfg.write('overlays = ' + json.dumps(self.overlay, indent=1) )
+        cfg.write('overlays = ' + json.dumps(Configuration.overlay, indent=1) )
         cfg.write('\n')
 
 class AbstractComponent(object):
-    def __init__(self, obj=None, name=None):
-        self._blendobj = obj
-        if obj:
-            self._blendobj.matrix_parent_inverse.identity()
-        self._blendname = name # for mw config
+    def __init__(self, obj=None, filename='', category=''):
+        self.set_blender_object(obj)
+        self._blendname = filename # filename for datastream configuration
+        self._category = category # for morseable
+
+    def set_blender_object(self, obj):
+        if obj: # Force matrix_parent_inverse to identity #139
+            obj.matrix_parent_inverse.identity()
+        self._blendobj = obj # bpy object
+
     def append(self, obj):
-        """ Add a child to the current object,
+        """ Add a child to the current object
 
         eg: robot.append(sensor), will set the robot parent of the sensor.
         """
+        obj._blendobj.matrix_parent_inverse.identity()
         obj._blendobj.parent = self._blendobj
 
     @property
@@ -95,20 +88,16 @@ class AbstractComponent(object):
     def rotation_euler(self, xyz):
         self._blendobj.rotation_euler = xyz
     def translate(self, x=0.0, y=0.0, z=0.0):
-        """ Location of the object, float array of 3 items in [-inf, inf],
-        default (0.0, 0.0, 0.0)
+        """ Location of the object
 
-        cf. `bpy.types.Object.location
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.location>`_
+        float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
         """
         old = self._blendobj.location
         self._blendobj.location = (old[0]+x, old[1]+y, old[2]+z)
     def rotate(self, x=0.0, y=0.0, z=0.0):
-        """ Rotation in Eulers, float array of 3 items in [-inf, inf],
-        default (0.0, 0.0, 0.0)
+        """ Rotation in Eulers
 
-        cf. `bpy.types.Object.rotation_euler
-        <http://www.blender.org/documentation/blender_python_api_2_57_release/bpy.types.Object.html#bpy.types.Object.rotation_euler>`_ (x*math.pi/180)
+        float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
         """
         old = self._blendobj.rotation_euler
         self._blendobj.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
@@ -178,7 +167,7 @@ class AbstractComponent(object):
         prop[pid].value = value
         return prop[pid]
 
-    def _get_selected(self, name):
+    def get_selected(self, name, objects=None):
         """ get_selected returns the object with the name ``name`` from the
         selected objects list (usefull after appending)
         ie. importing a second object will be named "`name`.001" etc.
@@ -187,7 +176,9 @@ class AbstractComponent(object):
         :return: the first Blender object for which his name strats with the
         param `name` from those selected (imported object are selected)
         """
-        for obj in bpy.context.selected_objects:
+        if not objects:
+            objects = bpy.context.selected_objects
+        for obj in objects:
             if obj.name == name:
                 return obj
         # fix Blender shorten the name
@@ -198,7 +189,8 @@ class AbstractComponent(object):
                       obj.name.startswith(test_prefix)]
         if len(candidates) > 0:
             if len(candidates) > 1:
-                logger.warning(test_prefix + ": more than 1 candidate: " + candidate)
+                logger.warning(test_prefix + ": more than 1 candidate: " + \
+                               str(candidates))
             return candidates[0]
         else:
             logger.warning(test_prefix + ": no candidate in " + \
@@ -240,25 +232,175 @@ class AbstractComponent(object):
                         config = [MORSE_DATASTREAM_MODULE[mw], method]
                 else:
                     config = [MORSE_DATASTREAM_MODULE[mw], method, path]
-        Configuration().link_datastream(self, config)
+        Configuration.link_datastream(self, config)
 
     def configure_service(self, mw, component = None, config=None):
         if not component:
             component = self
         if not config:
             config = MORSE_SERVICE_DICT[mw]
-        Configuration().link_service(component, config)
+        Configuration.link_service(component, config)
 
     def configure_modifier(self, mod, config=None):
         # Configure the modifier for this component
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blendname]
-        Configuration().link_modifier(self, config)
+        Configuration.link_modifier(self, config)
 
     def configure_overlay(self, mw, overlay, config=None):
         if not config:
             config = MORSE_SERVICE_DICT[mw]
-        Configuration().link_overlay(self, config, overlay)
+        Configuration.link_overlay(self, config, overlay)
+
+    def frequency(self, frequency=None, delay=0):
+        """ Set the frequency delay for the call of the Python module
+
+        :param frequency: (int) Desired frequency,
+            0 < frequency < logic tics
+        :param delay: (int) Delay between repeated pulses
+            (in logic tics, 0 = no delay)
+            if frequency is set, delay is obtained by fps / frequency.
+        """
+        if frequency:
+            delay = max(0, bpy.context.scene.game_settings.fps // frequency - 1)
+        sensors = [s for s in self._blendobj.game.sensors if s.type == 'ALWAYS']
+        if len(sensors) > 1:
+            logger.warning(self.name + " has too many Game Logic sensors to "+\
+                    "tune its frequency, change it through Blender")
+        elif len(sensors) > 0:
+            sensors[0].frequency = delay
+        else:
+            logger.warning(self.name + " has no 'ALWAYS' Game Logic sensor. "+\
+                           "Unable to tune its frequency.")
+
+    def is_morseable(self):
+        return 'Class' in self._blendobj.game.properties
+
+    def morseable(self, calling_module=None):
+        """ Make this component simulable in MORSE
+
+        :param calling_module: Module called each simulation cycle.
+            enum in ['calling.sensor_action', 'calling.actuator_action',
+                    'calling.robot_action']
+        """
+        if not calling_module:
+            calling_module = 'calling.'+self._category[:-1]+'_action'
+        # add default class to this component
+        if calling_module == 'calling.robot_action':
+            self.properties(Robot_Tag = True, Path = 'morse/core/robot', \
+                Class = 'Robot')
+        elif calling_module == 'calling.sensor_action':
+            self.properties(Component_Tag = True, Path = 'morse/core/sensor', \
+                Class = 'Sensor')
+        elif calling_module == 'calling.actuator_action':
+            self.properties(Component_Tag = True, Path = 'morse/core/actuator',\
+                Class = 'Actuator')
+        else:
+            logger.warning(self.name + ": unknown category: " + calling_module)
+
+        # add Game Logic sensor and controller to simulate the component
+        bpy.ops.object.select_all(action = 'DESELECT')
+        self._blendobj.select = True
+        bpy.context.scene.objects.active = self._blendobj
+        bpy.ops.logic.sensor_add() # default is Always sensor
+        sensor = self._blendobj.game.sensors[-1]
+        sensor.use_pulse_true_level = True
+        bpy.ops.logic.controller_add(type='PYTHON')
+        controller = self._blendobj.game.controllers[-1]
+        controller.mode = 'MODULE'
+        controller.module = calling_module
+        controller.link(sensor = sensor)
+
+    def get_objects_in_blend(self, filepath):
+        objects = []
+        try:
+            with bpy.data.libraries.load(filepath) as (src, _):
+                try:
+                    objects = [obj for obj in src.objects]
+                except UnicodeDecodeError as detail:
+                    logger.error("Unable to open file '%s'. Exception: %s" % \
+                                 (filepath, detail))
+        except IOError as detail:
+            logger.error(detail)
+            raise MorseBuilderNoComponentError("Component not found")
+        return objects
+
+    def append_meshes(self, objects=None, component=None, prefix=None):
+        """ Append the objects to the scene
+
+        The `objects` are located in:
+        MORSE_COMPONENTS/`self._category`/`component`.blend/Object/
+
+        :param objects: list of the objects names to append
+        :param component: component in which the objects are located
+        :return: list of the imported (selected) Blender objects
+        """
+        if not component:
+            component = self._blendname
+
+        if component.endswith('.blend'):
+            filepath = os.path.abspath(component) # external blend file
+        else:
+            filepath = os.path.join(MORSE_COMPONENTS, self._category, \
+                                    component + '.blend')
+
+        if not os.path.exists(filepath):
+            logger.error("Blender file %s for external asset import can" \
+                         "not be found.\nEither provide an absolute path, or" \
+                         "a path relative to MORSE assets directory (typically"\
+                         "$PREFIX/share/morse/data)" % (filepath))
+            return
+
+        if not objects: # link_append all objects from blend file
+            objects = self.get_objects_in_blend(filepath)
+
+        if prefix: # filter (used by PassiveObject)
+            objects = [obj for obj in objects if obj.startswith(prefix)]
+
+        # Format the objects list for bpy.ops.wm.link_append
+        objlist = [{'name':obj} for obj in objects]
+
+        bpy.ops.object.select_all(action='DESELECT')
+        # Append the objects to the scene, and (auto)select them
+        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False,
+                               autoselect=True, files=objlist)
+
+        return bpy.context.selected_objects
+
+    def append_collada(self, component=None):
+        """ Append Collada objects to the scene
+
+        The objects are located in:
+        MORSE_COMPONENTS/`self._category`/`component`.dae
+
+        :param component: component in which the objects are located
+        :return: list of the imported Blender objects
+        """
+        if not component:
+            component = self._blendname
+
+        if component.endswith('.dae'):
+            filepath = os.path.abspath(component) # external blend file
+        else:
+            filepath = os.path.join(MORSE_COMPONENTS, self._category, \
+                                    component + '.dae')
+
+        if not os.path.exists(filepath):
+            logger.error("Collada file %s for external asset import can" \
+                         "not be found.\nEither provide an absolute path, or" \
+                         "a path relative to MORSE assets directory (typically"\
+                         "$PREFIX/share/morse/data)" % (filepath))
+            return
+
+        # Save a list of objects names before importing Collada
+        objects_names = [obj.name for obj in bpy.data.objects]
+        # Import Collada from filepath
+        bpy.ops.wm.collada_import(filepath=filepath)
+        # Get a list of the imported objects
+        imported_objects = [obj for obj in bpy.data.objects \
+                            if obj.name not in objects_names]
+
+        return imported_objects
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"

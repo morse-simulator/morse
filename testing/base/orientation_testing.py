@@ -27,18 +27,18 @@ class OrientationTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('rmax')
+        robot = RMax()
         robot.translate(10.0, 8.0, 20.0)
         
-        gyro = Sensor('gyroscope')
+        gyro = Gyroscope()
         gyro.configure_mw('socket')
         robot.append(gyro)
 
-        orientation = Actuator('orientation')
+        orientation = Orientation()
         orientation.configure_mw('socket')
         robot.append(orientation)
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
 

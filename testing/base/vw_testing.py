@@ -33,14 +33,14 @@ class VW_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.translate(z=-0.10) # atrv base is 10cm over ground
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')

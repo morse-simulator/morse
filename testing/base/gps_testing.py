@@ -23,10 +23,10 @@ class GPSTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('atrv')
+        robot = ATRV()
         robot.translate(10.0, 8.0, 0.0)
         
-        gps = Sensor('gps')
+        gps = GPS()
         gps.configure_mw('socket')
         robot.append(gps)
 
@@ -45,7 +45,8 @@ class GPSTest(MorseTestCase):
             precision = 0.02
             self.assertAlmostEqual(pos['x'], 10.0, delta=precision)
             self.assertAlmostEqual(pos['y'], 8.0, delta=precision)
-            self.assertAlmostEqual(pos['z'], 0.0, delta=precision)
+            # Z = 0.1 : pose of the ATRV's center relative to the world
+            self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

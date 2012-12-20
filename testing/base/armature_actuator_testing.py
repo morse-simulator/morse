@@ -23,15 +23,17 @@ class ArmatureActuatorTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        kuka_lwr = Actuator('kuka_lwr')
+        kuka_lwr = KukaLWR()
         robot.append(kuka_lwr)
         kuka_lwr.translate(z=0.9)
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
         kuka_posture = Sensor('kuka_posture')
+        #kuka_posture = KukaPosture() # TODO bug
+        #kuka_posture.properties(KUKAname = kuka_lwr.name)
         robot.append(kuka_posture)
         kuka_posture.configure_mw('socket')
 

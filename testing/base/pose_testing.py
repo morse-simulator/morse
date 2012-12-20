@@ -24,9 +24,9 @@ class PoseTest(MorseTestCase):
     def setUpEnv(self):
         
         print("Adding a robot...")
-        robot = Robot('atrv')
+        robot = ATRV()
         
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         pose.translate(z=-0.10) # atrv sensor is at 10cm on the groud
         robot.append(pose)

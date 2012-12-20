@@ -20,8 +20,8 @@ class BaseTest(MorseTestCase):
         """
         
         # Adding 2 robots
-        robot1 = Robot('jido')        
-        robot2 = Robot('atrv')
+        robot1 = Jido()
+        robot2 = ATRV()
         
         env = Environment('empty', fastmode = True)
 

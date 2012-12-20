@@ -25,16 +25,15 @@ class LightTest(MorseTestCase):
     def setUpEnv(self):
         atrv = Robot('atrv')
 
+        #cam = CameraVideo() # TODO bug pymorse socket port ?
+        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
+        # OverflowError: getsockaddrarg: port must be 0-65535.
         cam = Sensor('video_camera')
-        cam.properties(capturing = True)
-        cam.properties(cam_width = 320)
-        cam.properties(cam_height = 240)
-        cam.properties(cam_focal = 25.0000)
-        cam.properties(Vertical_Flip = True)
+        cam.properties(capturing = True, cam_width = 320, cam_height = 240, \
+                       cam_focal = 25.0000, Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
         atrv.append(cam)
         cam.configure_mw('socket')
-        cam.configure_mw('yarp')
 
         light = Light()
         light.translate(x=0.2, z=1.1)
@@ -42,7 +41,7 @@ class LightTest(MorseTestCase):
         atrv.append(light)
         light.configure_mw('socket')
 
-        block  = PassiveObject('environments/indoors-1/boxes.blend', 'GreenBox')
+        block  = PassiveObject('environments/indoors-1/boxes', 'GreenBox')
         block.translate(x=2, y=0, z=1)
 
         env = Environment('empty')
@@ -53,10 +52,11 @@ class LightTest(MorseTestCase):
 
 
             port = morse.get_stream_port('LightAct')
+            print("port: "+str(port))
             light_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             light_stream.connect(('localhost', port))
 
-            light_stream.send(json.dumps({"emit": False}))
+            light_stream.send(json.dumps({"emit": False}).encode())
 
             time.sleep(10.0)
 
@@ -75,7 +75,7 @@ class LightTest(MorseTestCase):
             self.assertEqual(res, [])
 
             # Now, illuminate the scene
-            light_stream.send(json.dumps({"emit": True}))
+            light_stream.send(json.dumps({"emit": True}).encode())
 
             time.sleep(10.0)
             cam = cam_stream.get()

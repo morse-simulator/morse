@@ -27,14 +27,14 @@ class XYW_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.translate(z=-0.10) # atrv base is 10cm over ground
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('xy_omega')
+        motion = MotionXYW()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')

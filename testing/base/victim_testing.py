@@ -17,16 +17,20 @@ import math
 from pymorse import Morse, MorseServerError
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
     time.sleep(0.1)
 
 class VictimTest(MorseTestCase):
 
     def setUpEnv(self):
-        robot = Robot('atrv')
+        robot = ATRV()
         robot.translate(z=0.2)
 
         victim_detector = Sensor('rosace')
+        #victim_detector = Rosace() # TODO bug pymorse socket port ?
+        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
+        # OverflowError: getsockaddrarg: port must be 0-65535.
         robot.append(victim_detector)
         victim_detector.configure_mw('socket')
         victim_detector.configure_service('socket')

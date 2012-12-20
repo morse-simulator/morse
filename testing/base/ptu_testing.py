@@ -30,24 +30,26 @@ class PTUTest(MorseTestCase):
         ptu_x = 0.2020
         ptu_z = 1.4400
        
-        robot = Robot('atrv')
+        robot = ATRV()
         
-        PTU_posture = Sensor('ptu_posture')
-        PTU_posture.translate(x=ptu_x, z=ptu_z)
-        robot.append(PTU_posture)
-        PTU_posture.configure_mw('socket')
+        ptu_posture = Sensor('ptu_posture')
+        #ptu_posture = PTUPosture() # TODO bug line 175, in test_lookat 0.12
+        ptu_posture.translate(x=ptu_x, z=ptu_z)
+        robot.append(ptu_posture)
+        ptu_posture.configure_mw('socket')
 
-        PTU = Actuator('ptu')
-        PTU.configure_mw('socket')
-        PTU.configure_service('socket')
-        PTU.properties(Speed = 0.5)
-        PTU_posture.append(PTU)
+        ptu = Actuator('ptu')
+        #ptu = PTU() # TODO bug
+        ptu.configure_mw('socket')
+        ptu.configure_service('socket')
+        ptu.properties(Speed = 0.5)
+        ptu_posture.append(ptu)
 
-        gyro = Sensor('gyroscope')
+        gyro = Gyroscope()
         gyro.configure_mw('socket')
-        PTU.append(gyro)
+        ptu.append(gyro)
         
-        chair = PassiveObject('props/objects.blend','RollingChair')
+        chair = PassiveObject(prefix='RollingChair')
         chair.translate(x=ptu_x, y=3, z=0.01)
 
         env = Environment('empty', fastmode = True)
@@ -164,7 +166,7 @@ class PTUTest(MorseTestCase):
             #TODO: Stupid duplication of SetUpEnv values. Could not find a way
             #to share the value. Class variables does not seem to work here.
             ptu_x = 0.2020
-            ptu_z = 1.4400 - 0.1 # 0.05 -> ~ height of the pan module
+            ptu_z = 1.4400 # 0.05 -> ~ height of the pan module
 
             precision = 0.02
 

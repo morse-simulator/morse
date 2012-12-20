@@ -28,13 +28,13 @@ class SteerForceTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('hummer')
+        robot = Hummer()
         
-        pose = Sensor('pose')
+        pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
 
-        steer_force = Actuator('steer_force')
+        steer_force = SteerForce()
         robot.append(steer_force)
         steer_force.configure_mw('socket')
 

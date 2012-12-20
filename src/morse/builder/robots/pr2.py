@@ -1,10 +1,13 @@
 import logging; logger = logging.getLogger("pr2." + __name__)
 
-from morse.builder import *
+from morse.builder import AbstractComponent, Robot
 
 class PR2(Robot):
     def __init__(self):
-        Component.__init__(self, 'robots', 'pr2')
+        Robot.__init__(self, 'pr2')
+        self.properties(Class = "PR2Class", \
+                        Path = "morse/robots/pr2", \
+                        COLOR = "0.0, 0.0, 1.0")
 
         self.head = None
         self.l_arm = None
@@ -12,12 +15,11 @@ class PR2(Robot):
         self.torso_lift = None
 
         try:
-            self._blendobj = bpy.context.selected_objects[0]
-            head_obj = self._get_selected("head_armature")
-            l_arm_obj = self._get_selected("l_arm_controller")
-            r_arm_obj = self._get_selected("r_arm_controller")
-            torso_lift_obj = self._get_selected("torso_lift_armature")
-            self._head_tilt_link = self._get_selected("head_tilt_link")
+            head_obj = self.get_selected("head_armature")
+            l_arm_obj = self.get_selected("l_arm_controller")
+            r_arm_obj = self.get_selected("r_arm_controller")
+            torso_lift_obj = self.get_selected("torso_lift_armature")
+            self._head_tilt_link = self.get_selected("head_tilt_link")
 
             self.head = AbstractComponent(head_obj, "head_armature")
             self.l_arm = AbstractComponent(l_arm_obj, "l_arm_controller")

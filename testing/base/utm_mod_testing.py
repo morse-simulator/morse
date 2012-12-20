@@ -23,14 +23,14 @@ class UTMModifierTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('atrv')
+        robot = ATRV()
         robot.translate(10.0, 8.0, 0.0)
         
-        gps = Sensor('gps')
+        gps = GPS()
         gps.configure_mw('socket')
         robot.append(gps)
 
-        gps_mod = Sensor('gps')
+        gps_mod = GPS()
         gps_mod.configure_mw('socket')
         gps_mod.configure_modifier('UTM')
         robot.append(gps_mod)
@@ -55,11 +55,12 @@ class UTMModifierTest(MorseTestCase):
             precision = 0.02
             self.assertAlmostEqual(pos['x'], 10.0, delta=precision)
             self.assertAlmostEqual(pos['y'], 8.0, delta=precision)
-            self.assertAlmostEqual(pos['z'], 0.0, delta=precision)
+            # Z = 0.1 : pose of the ATRV's center relative to the world
+            self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
             self.assertAlmostEqual(pos_mod['x'], 10.0 + 123456789.0, delta=precision)
             self.assertAlmostEqual(pos_mod['y'], 8.0 + -4242.0, delta=precision)
-            self.assertAlmostEqual(pos_mod['z'], 421.0, delta=precision)
+            self.assertAlmostEqual(pos_mod['z'], 421.1, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

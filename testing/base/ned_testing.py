@@ -23,14 +23,14 @@ class NedTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Robot('rmax')
+        robot = RMax()
         robot.translate(42.0, -10, 40)
 
-        pose = Sensor('pose')
+        pose = Pose()
         robot.append(pose)
         pose.configure_mw('socket')
 
-        pose2 = Sensor('pose')
+        pose2 = Pose()
         pose2.configure_modifier('NED')
         robot.append(pose2)
         pose2.configure_mw('socket')

@@ -43,7 +43,7 @@ class KeyboardActuatorClass(morse.core.actuator.Actuator):
     def default_action(self):
         """ Interpret keyboard presses and assign them to movement
             for the robot."""
-        keys_sensor = blenderapi.controller().sensors['keys_sensor']
+        keys_sensor = blenderapi.controller().sensors[0]
         #pressed_keys = keys_sensor.getPressedKeys()
         pressed_keys = keys_sensor.events
 
