@@ -698,7 +698,15 @@ class Environment(Component):
         """ Watch the average time used by the :param component: during the
         simulation, in percent.
         """
+        if not isinstance(component, Sensor):
+            logger.warning("currently supports only sensors")
         prop = self._property_new(component.name, "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::action", "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::modifiers", "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::datastreams", "0 %")
         prop.show_debug = True
         self.show_debug_properties()
 

@@ -24,8 +24,11 @@ class Sensor(morse.core.object.Object):
         self.output_functions = []
         self.output_modifiers = []
 
-        self.my_time = 0.0
-        self.start_time = time.time()
+        self.time_actions = 0.0
+        self.time_default_actions = 0.0
+        self.time_modifiers = 0.0
+        self.time_datastreams = 0.0
+        self.time_start = time.time()
 
     def sensor_to_robot_position_3d(self):
         """
@@ -51,26 +54,40 @@ class Sensor(morse.core.object.Object):
         # Call the regular action function of the component
         self.default_action()
 
-        # profiling TODO ? put this in morse.core.object.Object.action ?
-        # or move this code at the end of the method to count datastream
-        # time as well, or profile it separately +property Component.datastream
-        if self.name() in blenderapi.getssr():
-            time_now = time.time()
-            self.my_time += time_now - time_before_action
-            morse_time = time_now - self.start_time
-            ratio = 100.0 * self.my_time / morse_time
-            blenderapi.getssr()[self.name()] = "%6.2f %%"%ratio
-            if morse_time > 1: # re-init mean every sec
-                self.my_time = 0.0
-                self.start_time = time_now
+        # record the time before calling modifiers for profiling
+        time_before_modifiers = time.time()
 
         # Data modification functions
         for function in self.output_modifiers:
             function(self)
 
+        # record the time before calling datastreams for profiling
+        time_before_datastreams = time.time()
+
         # Lastly output functions
         for function in self.output_functions:
             function(self)
+
+        # profiling
+        if self.name() in blenderapi.getssr():
+            time_now = time.time()
+            ssr = blenderapi.getssr()
+            name = self.name()
+            self.time_actions += time_now - time_before_action
+            self.time_default_actions += time_before_modifiers - time_before_action
+            self.time_modifiers += time_before_datastreams - time_before_modifiers
+            self.time_datastreams += time_now - time_before_datastreams
+            morse_time = time_now - self.time_start
+            ssr[name] = "%6.2f %%"%(100.0 * self.time_actions / morse_time)
+            ssr[name+"::action"] = "%6.2f %%"%(100.0 * self.time_default_actions / morse_time)
+            ssr[name+"::modifiers"] = "%6.2f %%"%(100.0 * self.time_modifiers / morse_time)
+            ssr[name+"::datastreams"] = "%6.2f %%"%(100.0 * self.time_datastreams / morse_time)
+            if morse_time > 1: # re-init mean every sec
+                self.time_actions = 0.0
+                self.time_default_actions = 0.0
+                self.time_modifiers = 0.0
+                self.time_datastreams = 0.0
+                self.time_start = time.time()
 
     @service
     def get_local_data(self):
