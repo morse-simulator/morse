@@ -198,6 +198,13 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
 
+    def interrupt(self, cause = None):
+        self.local_data['x'] = self.position_3d.x
+        self.local_data['y'] = self.position_3d.y
+        self.local_data['z'] = self.position_3d.z
+        self.local_data['speed'] = 0
+
+        super(WaypointActuatorClass,self).interrupt(cause)
 
     @service
     #@async_service
