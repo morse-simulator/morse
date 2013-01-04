@@ -15,10 +15,8 @@ except ImportError:
 import os
 import sys
 
-import roslib; roslib.load_manifest("morsetesting")
 import rospy
 import time
-from morsetesting.msg import *
 from sensor_msgs.msg import JointState
 
 class PR2JointStateTest(RosTestCase):

@@ -37,6 +37,7 @@ except KeyError:
         "before running ROS tests.")
 
 os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros")
+os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "robots", "pr2")
 
 
 try:
