@@ -1,15 +1,18 @@
 from concurrent.futures import ThreadPoolExecutor, Future
 
 class MorseFuture():
-    def __init__(self, future):
+    def __init__(self, future, morse, rqst_id):
         self.done = future.done
         self.running = future.running
         self.result = future.result
         self.exception = future.exception
         self.add_done_callback = future.add_done_callback
 
+        self.rqst_id = rqst_id
+        self._morse = morse
+
     def cancel(self):
-        print("Cancelling future: TDB")
+        self._morse.cancel(self.rqst_id)
 
     def __lt__(self, other):
         """ Overrides the comparision operator (used by ==, !=, <, >) to
@@ -40,9 +43,16 @@ class MorseFuture():
 
 class MorseExecutor(ThreadPoolExecutor):
 
+    def __init__(self, max_workers, morse):
+        super(MorseExecutor, self).__init__(max_workers)
+        self._morse = morse
+
+
     def submit(self, fn, *args, **kwargs):
+
+        rqst_id = args[0]["id"]
         f = super(MorseExecutor, self).submit(fn, *args, **kwargs)
 
-        return MorseFuture(f)
+        return MorseFuture(f, self._morse, rqst_id)
 
 

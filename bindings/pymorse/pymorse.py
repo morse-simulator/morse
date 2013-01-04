@@ -195,6 +195,8 @@ Non-blocking call are useful for long lasting services, like in the example belo
         while goto_action.running():
             time.sleep(0.5)
 
+Use the `cancel` method on the `future` returned by the RPC call to
+abort the service.
 
 To actually wait for a result, call the `result` method on the future:
 
@@ -209,7 +211,9 @@ To actually wait for a result, call the `result` method on the future:
         if status == "Arrived":
             print("Here we are")
 
-However, for certain common cases (printing or comparing the return value), the `result()` method is automatically called. Thus, the previous code sample can be rewritten:
+However, for certain common cases (printing or comparing the return value), the
+`result()` method is automatically called. Thus, the previous code sample can
+be rewritten:
 
 .. code-block:: python
 
@@ -355,7 +359,8 @@ class Component():
     def _add_service(self, m):
         def innermethod(*args):
             pymorselogger.debug("Sending synchronous request %s with args %s." % (m, args))
-            return self._morse.executor.submit(self._morse.rpc, self.name, m, *args)
+            req = self._morse._make_request(self.name, m, *args)
+            return self._morse.executor.submit(self._morse._execute_rpc, req)
 
         innermethod.__doc__ = "This method is a proxy for the MORSE %s service." % m
         innermethod.__name__ = str(m)
@@ -421,11 +426,14 @@ class ComChannel(threading.Thread):
                         if buf is not None: # stream connection!
                             raw = json.dumps(r)
                         else: # RPC connection!
-                            if r['args']:
-                                r['args'] = ', '.join(json.dumps(a) for a in r['args'])
+                            if 'special' in r:
+                                raw = "id{id} {special}\n".format(**r)
                             else:
-                                r['args'] = ''
-                            raw = "id{id} {component} {service} [{args}]\n".format(**r)
+                                if r['args']:
+                                    r['args'] = ', '.join(json.dumps(a) for a in r['args'])
+                                else:
+                                    r['args'] = ''
+                                raw = "id{id} {component} {service} [{args}]\n".format(**r)
 
                         pymorselogger.debug("Sending " + raw)
                         sock_fd.write(raw)
@@ -560,7 +568,7 @@ class Morse():
                          self._services_in_queue,
                          self._services_out_queue)
 
-        self.executor = MorseExecutor(max_workers = 10)
+        self.executor = MorseExecutor(max_workers = 10, morse = self)
 
         self.initapi()
 
@@ -594,6 +602,18 @@ class Morse():
 
 
 
+    def cancel(self, id):
+        """ Send a cancelation request for an existing (running) service.
+
+        If the service is not running or does not exist, the request is
+        ignored.
+        """
+        req = {'id': id,
+               'special': 'cancel'}
+
+        self._services_out_queue.put(req)
+        self.com.process()
+
     def rpc(self, component, service, *args):
         """ Calls a service from the simulator.
         
@@ -603,12 +623,17 @@ class Morse():
         :param service: the name of the service
         :param args...: (variadic) each service parameter, as a separate argument
         """
+        return self._execute_rpc(self._make_request(component, service, *args))
         
+    def _make_request(self, component, service, *args):
         req = {'id': self.id,
                'component': component,
                'service': service,
                'args': args}
         self.id += 1
+        return req
+
+    def _execute_rpc(self, req):
 
         self._services_out_queue.put(req)
         self.com.process()
