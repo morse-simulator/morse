@@ -45,8 +45,7 @@ class LightTest(MorseTestCase):
 
     def test_light(self):
         with Morse() as morse:
-            cam_stream = morse.stream('VideoCamera')
-
+            cam_stream = morse.ATRV.VideoCamera
 
             port = morse.get_stream_port('LightAct')
             light_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,7 +53,7 @@ class LightTest(MorseTestCase):
 
             light_stream.send(json.dumps({"emit": False}).encode())
 
-            time.sleep(10.0)
+            time.sleep(1.0)
 
             # Light is shutdown. There is no light source on the scene,
             # so camera can't distinguish color
@@ -68,12 +67,12 @@ class LightTest(MorseTestCase):
                 if (o['r'] < 5 and o['g'] > 110 and o['b'] < 5):
                     res.append(i)
 
-            self.assertEqual(res, [])
+            self.assertEqual(len(res), 0)
 
             # Now, illuminate the scene
             light_stream.send(json.dumps({"emit": True}).encode())
 
-            time.sleep(10.0)
+            time.sleep(1.0)
             cam = cam_stream.get()
             # search the green block in the image
             for i in range(320*240):

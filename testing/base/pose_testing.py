@@ -53,7 +53,7 @@ class PoseTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.ATRV.Pose
 
             pose = pose_stream.get()
 

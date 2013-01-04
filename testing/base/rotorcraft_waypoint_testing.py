@@ -22,7 +22,7 @@ class RotorcraftWaypoints_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        robot = Quadrotor()
+        robot = Quadrotor('robot')
         robot.translate(x = -1.24, y=1.70, z=1.81)
 
         pose = Pose()
@@ -44,7 +44,7 @@ class RotorcraftWaypoints_Test(MorseTestCase):
         with Morse() as morse:
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], -1.24, delta=0.05)
             self.assertAlmostEqual(pose['y'], 1.70, delta=0.05)
@@ -72,14 +72,14 @@ class RotorcraftWaypoints_Test(MorseTestCase):
     def test_waypoint_service_controller(self):
         with Morse() as morse:
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], -1.24, delta=0.05)
             self.assertAlmostEqual(pose['y'], 1.70, delta=0.05)
             self.assertAlmostEqual(pose['z'], 1.81, delta=0.05)
             self.assertAlmostEqual(pose['yaw'], 0, delta=0.05)
 
-            morse.call_server('Motion_Controller', 'goto', 10.0, 5.0, 10.0, 1.0, 0.5)
+            morse.rpc('Motion_Controller', 'goto', 10.0, 5.0, 10.0, 1.0, 0.5)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)

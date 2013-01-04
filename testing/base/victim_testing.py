@@ -14,7 +14,7 @@ import socket
 import json
 import time
 import math
-from pymorse import Morse, MorseServerError
+from pymorse import Morse, MorseServiceFailed
 
 def send_dest(s, x, y, yaw):
     s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
@@ -49,13 +49,13 @@ class VictimTest(MorseTestCase):
 
     def test_victim_interface(self):
         with Morse() as morse:
-            victim_stream = morse.stream('Rosace')
+            victim_stream = morse.ATRV.Rosace
 
             port = morse.get_stream_port('Teleport')
             teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             teleport_client.connect(('localhost', port))
 
-            abilities = morse.call_server('Rosace', 'get_robot_abilities')
+            abilities = morse.rpc('Rosace', 'get_robot_abilities')
             self.assertEqual(abilities, [1, 2, 3, 4, 5])
 
             victim_status = victim_stream.get()
@@ -66,18 +66,18 @@ class VictimTest(MorseTestCase):
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
-            self.assertTrue(len(victim_dict) == 1)
+            self.assertEqual(len(victim_dict), 1)
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.call_server('Rosace', 'get_victim_severity')
+            severity = morse.rpc('Rosace', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.call_server('Rosace', 'get_victim_requirements')
+            requirements = morse.rpc('Rosace', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
-            with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace', 'heal')
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('Rosace', 'heal')
 
             # The victim is not detected if not in the field of view of
             # the radar
@@ -86,31 +86,31 @@ class VictimTest(MorseTestCase):
             victim_dict = victim_status['victim_dict']
             self.assertTrue(len(victim_dict) == 0)
 
-            with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace', 'get_victim_severity')
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('Rosace', 'get_victim_severity')
 
-            with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace', 'get_victim_requirements')
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('Rosace', 'get_victim_requirements')
 
-            with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace', 'heal')
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('Rosace', 'heal')
 
             # Move close enough to be able to heal it
             send_dest(teleport_client, 9.2, 0.0, 0.0)
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
-            self.assertTrue(len(victim_dict) == 1)
+            self.assertEqual(len(victim_dict), 1)
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.call_server('Rosace', 'get_victim_severity')
+            severity = morse.rpc('Rosace', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.call_server('Rosace', 'get_victim_requirements')
+            requirements = morse.rpc('Rosace', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
-            morse.call_server('Rosace', 'heal')
+            morse.rpc('Rosace', 'heal')
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']

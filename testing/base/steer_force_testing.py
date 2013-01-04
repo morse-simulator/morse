@@ -28,7 +28,7 @@ class SteerForceTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = Hummer()
+        robot = Hummer('robot')
         
         pose = Pose()
         pose.configure_mw('socket')
@@ -43,7 +43,7 @@ class SteerForceTest(MorseTestCase):
 
     def test(self):
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
 
             pose = pose_stream.get()
             # It is not really precise to control the robot in this way

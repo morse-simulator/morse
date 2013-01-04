@@ -31,7 +31,7 @@ class KUKA_LWR_Test(MorseTestCase):
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        kuka_posture = KukaPosture()
+        kuka_posture = KukaPosture("kuka_posture")
         kuka_posture.properties(KUKAname = kuka_lwr.name)
         robot.append(kuka_posture)
         kuka_posture.configure_mw('socket')
@@ -40,13 +40,13 @@ class KUKA_LWR_Test(MorseTestCase):
         env.configure_service('socket')
 
     def test_kuka_controller(self):
-        """ This test is guaranteed to be started only when the simulator
-        is ready.
+        """ Test control of the KUKA arm via a datastream.
         """
-        with Morse() as morse:
+        with Morse() as simu:
             # Read the armature position
-            posture_stream = morse.stream('kuka_posture')
+            posture_stream = simu.ATRV.kuka_posture
             posture = posture_stream.get()
+
             # Test each of the fields individually
             self.assertAlmostEqual(posture['x'], 0.0, delta=0.02)
             self.assertAlmostEqual(posture['y'], 0.0, delta=0.02)
@@ -64,17 +64,13 @@ class KUKA_LWR_Test(MorseTestCase):
 
 
             # kuka controller socket
-            port = morse.get_stream_port('kuka_armature')
-            kuka_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            kuka_client.connect(('localhost', port))
-
-            kuka_client.send(json.dumps({'kuka_1' : 1.57,
+            simu.ATRV.kuka_armature.publish({'kuka_1' : 1.57,
                                          'kuka_2' : 2.0,
                                          'kuka_3' : 1.0,
                                          'kuka_4' : 4.0,
                                          'kuka_5' : 1.0,
                                          'kuka_6' : -2.0,
-                                         'kuka_7' : 1.0}).encode())
+                                         'kuka_7' : 1.0})
             sleep(2)
 
             posture = posture_stream.get()
@@ -90,10 +86,10 @@ class KUKA_LWR_Test(MorseTestCase):
 
     def test_kuka_service_controller(self):
         # Wait a bit for the ports for the previous test to be closed
-        with Morse() as morse:
+        with Morse() as simu:
 
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            posture_stream = morse.stream('kuka_posture')
+            posture_stream = simu.ATRV.kuka_posture
             posture = posture_stream.get()
             self.assertAlmostEqual(posture['kuka_1'], 0.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_2'], 0.0, delta=0.02)
@@ -103,7 +99,7 @@ class KUKA_LWR_Test(MorseTestCase):
             self.assertAlmostEqual(posture['kuka_6'], 0.0, delta=0.02)
             self.assertAlmostEqual(posture['kuka_7'], 0.0, delta=0.02)
 
-            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
+            simu.ATRV.kuka_armature.set_rotation_array(1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
             sleep(2)
 
             posture = posture_stream.get()

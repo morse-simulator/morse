@@ -25,9 +25,9 @@ def send_speed(s, v, w, t):
     sleep(1)
 
 def send_service_speed(s, v, w, t):
-    s.call_server('MotionVWDiff', 'set_speed', v, w)
+    s.rpc('MotionVWDiff', 'set_speed', v, w)
     sleep(t)
-    s.call_server('MotionVWDiff', 'stop')
+    s.rpc('MotionVWDiff', 'stop')
     sleep(1)
 
 class Differential_VW_Test(MorseTestCase):

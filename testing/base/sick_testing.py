@@ -41,7 +41,7 @@ class Sick_Test(MorseTestCase):
         with Morse() as morse:
         
             # Read the data from the sick sensor
-            self.sick_stream = morse.stream('Sick')
+            self.sick_stream = morse.ATRV.Sick
 
             sick = self.sick_stream.get()
 

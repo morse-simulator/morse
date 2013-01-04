@@ -38,7 +38,7 @@ class GPSTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gps_stream = morse.stream('GPS')
+            gps_stream = morse.ATRV.GPS
 
             pos = gps_stream.get()
 

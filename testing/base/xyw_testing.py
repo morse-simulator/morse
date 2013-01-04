@@ -19,9 +19,9 @@ except ImportError:
     pass
 
 def send_speed(s, x, y, w, t):
-    s.send(json.dumps({'x' : x, 'y' : y, 'w' : w}).encode())
+    s.publish({'x' : x, 'y' : y, 'w' : w})
     sleep(t)
-    s.send(json.dumps({'x' : 0.0, 'y' : 0.0, 'w' : 0.0}).encode())
+    s.publish({'x' : 0.0, 'y' : 0.0, 'w' : 0.0})
 
 class XYW_Test(MorseTestCase):
     def setUpEnv(self):
@@ -34,7 +34,7 @@ class XYW_Test(MorseTestCase):
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = MotionXYW()
+        motion = MotionXYW('motion')
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -48,17 +48,15 @@ class XYW_Test(MorseTestCase):
             precision=0.06
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.ATRV.Pose
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             # v_w socket
-            port = morse.get_stream_port('Motion_Controller')
-            xyw_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            xyw_client.connect(('localhost', port))
+            xyw = morse.ATRV.motion
 
-            send_speed(xyw_client, 1.0, 0.0, 0.0, 2.0)
+            send_speed(xyw, 1.0, 0.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
@@ -68,7 +66,7 @@ class XYW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_speed(xyw_client, 0.0, -1.0, 0.0, 2.0)
+            send_speed(xyw, 0.0, -1.0, 0.0, 2.0)
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
             self.assertAlmostEqual(pose['y'], -2.0, delta=precision)
@@ -77,13 +75,13 @@ class XYW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_speed(xyw_client, -1.0, 1.0, 0.0, 2.0)
+            send_speed(xyw, -1.0, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_speed(xyw_client, 1.0, 0.0, -math.pi/4.0, 2.0)
+            send_speed(xyw, 1.0, 0.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
 
             # for non-null w, we have r = v /  w
@@ -94,13 +92,13 @@ class XYW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_speed(xyw_client, 0.5, 0.0, -math.pi/8.0, 12.0)
+            send_speed(xyw, 0.5, 0.0, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_speed(xyw_client, -2.0, 0.0, math.pi/2.0, 3.0)
+            send_speed(xyw, -2.0, 0.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)

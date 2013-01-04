@@ -80,34 +80,34 @@ class gripperTest(MorseTestCase):
                                          'kuka_6' : 0.0,
                                          'kuka_7' : 0.0}).encode())
 
-            obj = morse.call_server('Gripper', 'grab')
+            obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, None)
 
-            obj = morse.call_server('Gripper', 'release')
+            obj = morse.rpc('Gripper', 'release')
             self.assertEqual(obj, None)
 
             send_pose(teleport_stream, 3.0, 5, 0.0)
 
-            obj = morse.call_server('Gripper', 'grab')
+            obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, 'BlackVideotape')
 
             send_pose(teleport_stream, 3.0, -5.0, 0.0)
-            obj = morse.call_server('Gripper', 'grab')
+            obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, 'BlackVideotape')
 
             send_pose(teleport_stream, 3.0, 8.0, 0.0)
-            obj = morse.call_server('Gripper', 'release')
+            obj = morse.rpc('Gripper', 'release')
             self.assertEqual(obj, True)
 
             send_pose(teleport_stream, 3.0, -5.0, 0.0)
-            obj = morse.call_server('Gripper', 'grab')
+            obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, 'WhiteVideotape')
 
-            obj = morse.call_server('Gripper', 'release')
+            obj = morse.rpc('Gripper', 'release')
             self.assertEqual(obj, True)
 
             send_pose(teleport_stream, 3.0, 8.0, 0.0)
-            obj = morse.call_server('Gripper', 'grab')
+            obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, 'BlackVideotape')
 
 

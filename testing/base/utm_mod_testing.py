@@ -46,8 +46,8 @@ class UTMModifierTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gps_stream = morse.stream('GPS')
-            gps_mod_stream = morse.stream('GPS.001')
+            gps_stream = morse.ATRV.GPS
+            gps_mod_stream = morse.ATRV.GPS_001
 
             pos = gps_stream.get()
             pos_mod = gps_mod_stream.get()

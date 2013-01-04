@@ -27,7 +27,7 @@ class DestinationTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = RMax()
+        robot = RMax('robot')
         robot.translate(0.0, 0.0, 20.0)
         
         pose = Pose()
@@ -44,7 +44,7 @@ class DestinationTest(MorseTestCase):
 
     def test(self):
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
 
             pose = pose_stream.get()
             precision = 0.02

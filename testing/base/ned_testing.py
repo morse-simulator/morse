@@ -23,7 +23,7 @@ class NedTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = RMax()
+        robot = RMax('robot')
         robot.translate(42.0, -10, 40)
 
         pose = Pose()
@@ -45,8 +45,8 @@ class NedTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
-            pose_ned_stream = morse.stream('Pose.001')
+            pose_stream = morse.robot.Pose
+            pose_ned_stream = morse.robot.Pose_001
 
             pose = pose_stream.get()
             pose_ned = pose_ned_stream.get()

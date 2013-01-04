@@ -4,8 +4,6 @@ This script tests some of the base functionalities of MORSE.
 """
 
 import sys
-import socket
-import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
@@ -17,11 +15,6 @@ try:
     from morse.builder import *
 except ImportError:
     pass
-
-def send_speed(s, v, w, t):
-    s.send(json.dumps({'v' : v, 'w' : w}).encode())
-    sleep(t)
-    s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
 
 class OdometryTest(MorseTestCase):
     def setUpEnv(self):
@@ -36,7 +29,7 @@ class OdometryTest(MorseTestCase):
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = MotionVW()
+        motion = MotionVW('motion')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -69,7 +62,8 @@ class OdometryTest(MorseTestCase):
 
     def odometry_test_helper(self, v, w, t):
         self.odo_stream.subscribe(self.record_datas)
-        send_speed(self.v_w_client, v, w, t)
+        self.motion.publish({'v':v, 'w':w})
+        sleep(t)
         self.odo_stream.unsubscribe(self.record_datas)
 
     
@@ -99,14 +93,10 @@ class OdometryTest(MorseTestCase):
 
         with Morse() as morse:
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            self.pose_stream = morse.stream('Pose')
-            self.odo_stream = morse.stream('Odometry')
+            self.pose_stream = morse.ATRV.Pose
+            self.odo_stream = morse.ATRV.Odometry
+            self.motion = morse.ATRV.motion
 
-            # v_w socket
-            port = morse.get_stream_port('Motion_Controller')
-            self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.v_w_client.connect(('localhost', port))
-        
             self.clear_datas(0.0, 0.0, 0.0)
 
             self.odometry_test_helper(1.0, 0.0, 2.0)

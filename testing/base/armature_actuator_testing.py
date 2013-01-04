@@ -45,7 +45,7 @@ class ArmatureActuatorTest(MorseTestCase):
         """
         with Morse() as morse:
             # Read the armature position
-            posture_stream = morse.stream('kuka_posture')
+            posture_stream = morse.ATRV.kuka_posture
             posture = posture_stream.get()
 
             precision = 0.02

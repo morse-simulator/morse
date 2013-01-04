@@ -14,31 +14,30 @@ except ImportError:
 
 import os
 import sys
-import socket
 import math
-import json
 import time
 import random
 from pymorse import Morse
 
 def send_pose(s, x, y, z, yaw, pitch, roll):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : z, 'yaw' : yaw, 'pitch' : pitch, 'roll' : roll}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : z, 'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
 
 
 class TeleportTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = RMax()
+        robot = RMax('robot')
         robot.translate(10.0, 8.0, 20.0)
         
-        teleport = Teleport()
-        teleport.configure_mw('socket')
-        robot.append(teleport)
-
         pose = Pose()
         pose.configure_mw('socket')
         robot.append(pose)
+
+        teleport = Teleport('teleport')
+        teleport.configure_mw('socket')
+        robot.append(teleport)
+
 
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
@@ -60,11 +59,9 @@ class TeleportTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            self.pose_stream = morse.stream('Pose')
+            self.pose_stream = morse.robot.Pose
 
-            port = morse.get_stream_port('Motion_Controller')
-            self.teleport_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.teleport_stream.connect(('localhost', port))
+            self.teleport_stream = morse.robot.teleport
 
             self.precision = 0.15
 

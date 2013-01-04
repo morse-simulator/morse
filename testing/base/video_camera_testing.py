@@ -19,8 +19,8 @@ import json
 import time
 from pymorse import Morse
 
-def send_angles(s, yaw, pitch, roll):
-    s.send(json.dumps({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll}).encode())
+def send_angles(orientation, yaw, pitch, roll):
+    orientation.publish({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
 
 class CameraTest(MorseTestCase):
 
@@ -40,7 +40,6 @@ class CameraTest(MorseTestCase):
         cam.translate(x=0.2, z=0.9)
         atrv.append(cam)
         cam.configure_mw('socket')
-        cam.configure_mw('yarp')
 
         orientation = Actuator('orientation')
         orientation.configure_mw('socket')
@@ -67,13 +66,10 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.stream('VideoCamera')
-
+            cam_stream = morse.ATRV.VideoCamera
             cam = cam_stream.get()
 
-            port = morse.get_stream_port('Motion_Controller')
-            orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            orientation_stream.connect(('localhost', port))
+            orientation_stream = morse.ATRV.Orientation
 
             res = []
             # search for the red part in the image

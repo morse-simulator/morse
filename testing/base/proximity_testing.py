@@ -64,7 +64,7 @@ class ProximityTest(MorseTestCase):
     def test_proximity(self):
         with Morse() as morse:
         
-            prox_stream = morse.stream('Proximity')
+            prox_stream = morse.ATRV.Proximity
 
             port = morse.get_stream_port('Teleport')
             teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,7 +93,7 @@ class ProximityTest(MorseTestCase):
 
             # Call the set_range service and check if we can catch the
             # two objects
-            morse.call_server('Proximity', 'set_range', 20.0)
+            morse.rpc('Proximity', 'set_range', 20.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 2)
             self.assertTrue('Target1' in prox['near_objects'])
@@ -101,7 +101,7 @@ class ProximityTest(MorseTestCase):
 
             # Call the set_tracked_tag service and check if we catch
             # target2
-            morse.call_server('Proximity', 'set_tracked_tag', 'Catch_me2')
+            morse.rpc('Proximity', 'set_tracked_tag', 'Catch_me2')
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target2' in prox['near_objects'])

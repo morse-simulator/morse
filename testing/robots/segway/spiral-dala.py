@@ -25,9 +25,9 @@ def send_speed(s, v, w, t):
     sleep(1)
 
 def send_service_speed(s, v, w, t):
-    s.call_server('MotionVW', 'set_speed', v, w)
+    s.rpc('MotionVW', 'set_speed', v, w)
     sleep(t)
-    s.call_server('MotionVW', 'stop')
+    s.rpc('MotionVW', 'stop')
     sleep(1)
 
 class Spiral_Test(MorseTestCase):

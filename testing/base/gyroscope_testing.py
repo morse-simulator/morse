@@ -23,7 +23,7 @@ class GyroTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = RMax()
+        robot = RMax('robot')
         robot.translate(0.0, 0.0, 40.0)
         robot.rotate(math.pi/16, math.pi/8, math.pi/2)
         
@@ -39,7 +39,7 @@ class GyroTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.stream('Gyroscope')
+            gyro_stream = morse.robot.Gyroscope
 
             angles = gyro_stream.get()
             precision = 0.02

@@ -39,7 +39,7 @@ class ThermometerTest(MorseTestCase):
 
     def test_temperature(self):
         with Morse() as morse:
-            temp_stream = morse.stream('Thermometer')
+            temp_stream = morse.ATRV.Thermometer
 
             o = temp_stream.get()
             # destination socket

@@ -19,16 +19,15 @@ except ImportError:
     pass
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
-                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
-    sleep(0.1)
+    s.publish({'x' : x, 'y' : y, 'z' : 0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
+    sleep(0.5)
 
 class Semantic_Camera_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
-
         camera = SemanticCamera('SemanticCamera')
         robot.append(camera)
         camera.translate(x=0.3, z=0.762)
@@ -48,11 +47,12 @@ class Semantic_Camera_Test(MorseTestCase):
         """
         with Morse() as morse:
             # Read the data from the semantic camera
-            semantic_stream = morse.stream('SemanticCamera')
+            semantic_stream = morse.ATRV.SemanticCamera
 
-            port = morse.get_stream_port('Teleport')
-            teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            teleport_client.connect(('localhost', port))
+            #port = morse.get_stream_port('Teleport')
+            #teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #teleport_client.connect(('localhost', port))
+            teleport_client = morse.ATRV.Teleport
 
             o = semantic_stream.get()
             objects= o['visible_objects']

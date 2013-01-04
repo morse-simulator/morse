@@ -27,7 +27,7 @@ class OrientationTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = RMax()
+        robot = RMax('robot')
         robot.translate(10.0, 8.0, 20.0)
         
         gyro = Gyroscope()
@@ -50,8 +50,8 @@ class OrientationTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.stream('Gyroscope')
-            pose_stream = morse.stream('Pose')
+            gyro_stream = morse.robot.Gyroscope
+            pose_stream = morse.robot.Pose
 
             port = morse.get_stream_port('Motion_Controller')
             orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

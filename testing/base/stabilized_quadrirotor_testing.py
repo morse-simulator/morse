@@ -28,7 +28,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
 
     def setUpEnv(self):
         
-        robot = QUAD2012()
+        robot = QUAD2012('robot')
         
         pose = Pose()
         pose.configure_mw('socket')
@@ -43,7 +43,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
 
     def test_theta_c_control(self):
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
 
             pose = pose_stream.get()
             # destination socket
@@ -131,7 +131,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
 
     def test_phi_c_control(self):
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
 
             pose = pose_stream.get()
             # destination socket
@@ -220,7 +220,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
 
     def test_psi_c_control(self):
         with Morse() as morse:
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.robot.Pose
 
             pose = pose_stream.get()
             # destination socket
