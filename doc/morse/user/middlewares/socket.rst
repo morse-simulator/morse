@@ -19,7 +19,7 @@ For example, when using telnet to connect to a
 :doc:`waypoint actuator <../actuators/waypoint>`, you need to send a message
 like the following::
 
-  $ telnet localhost 6000
+  $ telnet localhost 60000
   {"x":3.0, "y":5.0, "z":0.0, "tolerance":0.5, "speed":2.0}
 
 The socket data-stream interface is implemented in :py:mod:`morse.middleware.socket_datastream`.
@@ -32,9 +32,13 @@ Service interface
 
 Requests to components or MORSE itself can be sent through the socket interface.
 
-The (ASCII) protocol is simple::
+The (ASCII) protocol is simple. Either::
 
   id component service [parameters]
+
+or::
+
+  id special
 
 - ``id`` is a freely chosen request id. It is mainly useful to identify answers
   from asynchronous services.  
@@ -47,6 +51,9 @@ The (ASCII) protocol is simple::
 - ``parameters`` (can be omitted if the request takes no argument): request
   arguments in JSON format. Arguments must be enclosed in a list (*i.e.*, inside
   brackets).
+- ``special``: a special command, used to manipulate already existing requests.
+  Currently, the only special command is ``cancel`` (to abort a running
+  service)
 
 MORSE answer follows this model::
 

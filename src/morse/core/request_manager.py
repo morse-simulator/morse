@@ -287,14 +287,14 @@ class RequestManager(object):
         for component in blenderapi.persistantstorage().componentDict.values():
             if component.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(component))
-                component.interrupt()
+                component.interrupt(cause = "by abort request")
                 return
 
         # if not found, search in the overlay dictionnary
         for overlay in blenderapi.persistantstorage().overlayDict.values():
             if overlay.name() == component_name:
                 logger.info("calling  interrupt on %s" % str(overlay))
-                overlay.interrupt()
+                overlay.interrupt(cause = "by abort request")
                 return
 
 

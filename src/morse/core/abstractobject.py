@@ -78,16 +78,19 @@ class AbstractObject(object):
             self.on_completion = None
             fn((status, result))
 
-    def interrupt(self):
+    def interrupt(self, cause = None):
         """ This method is automatically invoked by the component when a
         service is interrupted, basically to notify to the client that
         the task has been interrupted.
 
-        It can be override in each component to provide a true
+        It can be overriden in each component to provide a true
         interrupt, for exemple resseting the speed command to 0.0
         """
         import morse.core.status
-        self.completed(morse.core.status.PREEMPTED, ["Interrupted by incoming request"])
+
+        if not cause:
+            cause = "by incoming request"
+        self.completed(morse.core.status.PREEMPTED, [cause])
 
     def set_service_callback(self, cb):
         """ Sets the callback function that is to be invoked when the current

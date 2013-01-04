@@ -93,6 +93,7 @@ class SocketRequestManager(RequestManager):
 
         try:
             s, id = self._pending_sockets[request_id]
+            del self._pending_sockets[request_id]
         except KeyError:
             logger.info(str(self) + ": ERROR: I can not find the socket which requested " + str(request_id))
             return
@@ -151,28 +152,36 @@ class SocketRequestManager(RequestManager):
                 
                     logger.info("Got '" + req + "' (id = " + id + ") from " + str(i))
 
-                    component, service, params = self._parse_request(req)
+                    
+                    if len(req.split()) == 1 and req in ["cancel"]:
+                        # Aborting a running request!
+                        for internal_id, user_id in self._pending_sockets.items():
+                            if user_id[1] == id:
+                                self.abort_request(internal_id)
 
-                    # on_incoming_request returns either 
-                    #(True, result) if it's a synchronous
-                    # request that has been immediately executed, or
-                    # (False, request_id) if it's an asynchronous request whose
-                    # termination will be notified via
-                    # on_service_completion.
-                    is_sync, value = self.on_incoming_request(component, service, params)
-
-                    if is_sync:
-                        if i in self._results_to_output:
-                            self._results_to_output[i].append((id, value))
-                        else:
-                            self._results_to_output[i] = [(id, value)]
                     else:
-                        # Stores the mapping request/socket to notify
-                        # the right socket when the service completes.
-                        # (cf :py:meth:on_service_completion)
-                        # Here, 'value' is the internal request id while
-                        # 'id' is the id used by the socket client.
-                        self._pending_sockets[value] = (i, id)
+                        component, service, params = self._parse_request(req)
+
+                        # on_incoming_request returns either 
+                        #(True, result) if it's a synchronous
+                        # request that has been immediately executed, or
+                        # (False, request_id) if it's an asynchronous request whose
+                        # termination will be notified via
+                        # on_service_completion.
+                        is_sync, value = self.on_incoming_request(component, service, params)
+
+                        if is_sync:
+                            if i in self._results_to_output:
+                                self._results_to_output[i].append((id, value))
+                            else:
+                                self._results_to_output[i] = [(id, value)]
+                        else:
+                            # Stores the mapping request/socket to notify
+                            # the right socket when the service completes.
+                            # (cf :py:meth:on_service_completion)
+                            # Here, 'value' is the internal request id while
+                            # 'id' is the id used by the socket client.
+                            self._pending_sockets[value] = (i, id)
 
 
                 except MorseRPCInvokationError as e:
@@ -215,13 +224,13 @@ class SocketRequestManager(RequestManager):
         """
 
         tokens = req.split(None, 2)
-        if len(tokens) < 2 or len(tokens) > 3:
+
+        if len(tokens) < 1 or len(tokens) > 3:
             raise MorseRPCInvokationError("Malformed request: at least 3 values and at most 4 are expected (id, component, service, [params])")
 
         if len(tokens) == 2:
             component, service = tokens
             p = None
-        
         else:
             component, service, params = tokens
             
