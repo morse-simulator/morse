@@ -2,8 +2,8 @@
 #INSTALL(TARGETS sickc DESTINATION ${PYTHON_INSTDIR}/morse/sensors)
 		
 
-PYTHON_ADD_MODULE(zBuffTo3D zBuffTo3Dmodule.c)
-INSTALL(TARGETS zBuffTo3D DESTINATION ${PYTHON_INSTDIR}/morse/sensors)
+PYTHON_ADD_MODULE(zbufferto3d zbufferto3d.c)
+INSTALL(TARGETS zbufferto3d DESTINATION ${PYTHON_INSTDIR}/morse/sensors)
 
 # install python files
 FILE(GLOB PYTHON_FILES *.py)

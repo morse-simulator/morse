@@ -149,8 +149,6 @@ class CameraClass(morse.core.sensor.Sensor):
                 (self.name(), vt_camera.source.capsize))
 
         # Reverse the image (boolean game-property)
-        # cf. bge.logic.video.source.flip (bge.texture.ImageRender)
-        # http://wiki.blender.org/index.php/Dev:Source/GameEngine/2.49/VideoTexture#Setup_the_source
         vt_camera.source.flip = self.vertical_flip
 
         try:
@@ -158,14 +156,13 @@ class CameraClass(morse.core.sensor.Sensor):
             if 'Zbuffer' in self.blender_obj:
                 vt_camera.source.zbuff = self.blender_obj['Zbuffer']
         except AttributeError as detail:
-            logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
+            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
 
         try:
             # Use the z buffer as input with an array of depths
             if 'Depth' in self.blender_obj:
                 vt_camera.source.depth = self.blender_obj['Depth']
         except AttributeError as detail:
-            logger.warn("%s\nBlender does not support z buffer in images. You need to add a patch" % detail)
+            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
 
         blenderapi.cameras()[self.name()] = vt_camera
-
