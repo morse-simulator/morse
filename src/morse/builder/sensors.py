@@ -261,7 +261,7 @@ class Hokuyo(LaserSensorWithArc):
         mesh.color(0, 0, 0)
         self.append(mesh)
         # set components-specific properties
-        self.properties(Visible_arc = True, laser_range = 30.0,
+        self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 270.0, resolution = 0.25)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
@@ -271,7 +271,7 @@ class Sick(LaserSensorWithArc):
         LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
                                     "SICKClass", "sick")
         # set components-specific properties
-        self.properties(Visible_arc = True, laser_range = 30.0,
+        self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 180.0, resolution = 1.0)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)

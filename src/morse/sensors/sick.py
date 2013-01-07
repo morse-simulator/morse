@@ -64,7 +64,10 @@ class SICKClass(morse.core.sensor.Sensor):
 
         # Get some information to be able to deform the arcs
         if self._visible:
-            self._vertex_per_layer = len(self._ray_list) // self.blender_obj['layers']
+            layers = 1
+            if 'layers' in self.blender_obj:
+                layers = self.blender_obj['layers']
+            self._vertex_per_layer = len(self._ray_list) // layers
 
         logger.info('Component initialized')
 
