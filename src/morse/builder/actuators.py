@@ -25,6 +25,11 @@ class Gripper(Actuator):
         self.name = name
         self.properties(Class = "GripperActuatorClass", \
                         Path = "morse/actuators/gripper")
+    def cfg_radar(self, angle=180.0, distance=2.0):
+        radar = self._blendobj.game.sensors["Radar"]
+        radar.angle = angle
+        radar.distance = distance
+
 
 class Keyboard(ActuatorCreator):
     def __init__(self, name="Gripper"):

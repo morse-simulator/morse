@@ -52,8 +52,7 @@ class gripperTest(MorseTestCase):
         tape2.properties(Object = True, Graspable = True, Label = "WhiteTapee")
         tape2.translate(x=5, y=-5, z=0)
 
-        gripper._blendobj.game.sensors["Radar"].angle = 180.0
-        gripper._blendobj.game.sensors["Radar"].distance= 2.0
+        gripper.cfg_radar(angle=180.0, distance=2.0)
 
         env = Environment('empty', fastmode=True)
         env.configure_service('socket')
