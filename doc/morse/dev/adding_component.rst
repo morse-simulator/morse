@@ -72,6 +72,16 @@ You can inspect this matrix from the python console:
 And set it to identity again if needed:
     ``bpy.data.objects['your_object_name'].matrix_parent_inverse.identity()``
 
+Specific case of armatures
+++++++++++++++++++++++++++
+
+**Armatures** are the MORSE way to simulate kinematic chains made of a
+combination of revolute joints (hinge) and prismatic joints (slider).
+
+They require special care to be successfully crafted. Please refer
+to the :doc:`armature creation<armature_creation>` page for details.
+
+
 The Python part
 ---------------
 

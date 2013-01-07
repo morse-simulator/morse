@@ -4,25 +4,55 @@ import morse.core.actuator
 from morse.core import status
 from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
-from morse.helpers.components import add_data, add_property
+from morse.helpers.morse_math import normalise_angle
+from morse.helpers.components import add_property
 
 class ArmatureActuatorClass(morse.core.actuator.Actuator):
     """
-    Class to represent an actuator to actuate on blender armatures in MORSE.
+    **Armatures** are the MORSE way to simulate kinematic chains made of a
+    combination of revolute joints (hinge) and prismatic joints (slider).
 
-    Sub class of Actuator.
-    This class has many MORSE Services that you can access via sockets/telnet.
+    This component only allows to *write* armature configuration. To read the
+    armature pose, you need an :doc:`armature pose sensor <../sensors/armature_pose>`.
+
+    .. important:: 
+    
+        To be valid, special care must be given when creating armatures. If you
+        want to add new one, please carefully read the :doc:`armature creation
+        <../../dev/armature_creation>` documentation.
+
+
+    .. note::
+
+        The data structure on datastream read by the armature actuator
+        depends on the armature.  It is a dictionary of pair `(joint name,
+        joint value)`.  Joint values are either radians (for revolute joints)
+        or meters (for prismatic joints)
+
+    :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
+
+    Example of use
+    --------------
+
+    A sample python script of how to access the armature actuator via sockets
+    can be found at:
+    ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
+
     """
+    _name = "Armature Actuator"
+    _short_desc="An actuator to manipulate Blender armatures in MORSE."
 
-    add_property('_distance_tolerance', 0.01, 'DistanceTolerance', 'float', "Tolerance in meters when translating a joint")
-    add_property('_angle_tolerance', math.radians(2), 'AngleTolerance', 'float', "Tolerance in radians when rotating a joint")
+    add_property('distance_tolerance', 0.005, 'DistanceTolerance', 'float', "Tolerance in meters when translating a joint")
+    add_property('angle_tolerance', 0.01, 'AngleTolerance', 'float', "Tolerance in radians when rotating a joint")
+    add_property('radial_speed', 0.8, 'RotationSpeed', 'float', "Global rotation speed for the armature rotational joints (in rad/s)")
+    add_property('linear_speed', 0.05, 'LinearSpeed', 'float', "Global linear speed for the armature prismatic joints (in m/s)")
 
     def __init__(self, obj, parent=None):
         """
-        Constructor method.
-        Receives the reference to the Blender object.
+        Creates a new instance of ArmatureActuatorClass.
+
+        :param obj: the Blender **armature** object that is to be controlled.
         """     
-        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(ArmatureActuatorClass,self).__init__(obj, parent)
         
@@ -31,144 +61,256 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
         for channel in armature.channels:
             self.local_data[channel.name] = 0.0
 
+
         # The axis along which the different segments rotate
         # Considering the constraints defined for the armature
         #  in the Blender file
         self._dofs = self.get_dofs()
 
-        logger.info('Component initialized')
-        
+        self.joint_speed = {}
+
         self.active_translations = {}
-        self.active_rotations = {}
 
-    @service
-    def get_channels(self):
+        # Look for the armature's end effector, if any
+        self._end_effector = None
+        for child in self.blender_obj.childrenRecursive:
+            if 'end_effector' in child:
+                logger.info("Found end effector (%s) for armature %s" % (child.name, obj.name))
+                self._end_effector= child
+                break
+
+        # If we find an end effector, all armature children that do not have
+        # the property 'internal' are considered to be mounted on the 
+        # end effector
+        if self._end_effector:
+            for child in self.blender_obj.children:
+                if not 'internal' in child:
+                    child.setParent(self._end_effector)
+
+        logger.info('%s armature initialized with joints [%s].' % (obj.name, ", ".join(self.local_data.keys())))
+
+    def _is_prismatic(self, channel):
         """
-        MORSE Service that returns a list of the channels (bones) of the armature.
+        Important: The detection of prismatic joint relies solely on a
+        non-zero value for the IK parameter 'ik_stretch'.
+        """
+        return True if channel.ik_stretch else False
+
+    def _get_joint(self, joint):
+        """ Checks a given joint name exist in the armature,
+        and returns it as a tuple (Blender channel, is_prismatic?)
+
+        If the joint does not exist, throw an exception.
         """
         armature = self.blender_obj
-        channels = []
-        # add the name of each channel to the list
-        for channel in armature.channels:
-            channels.append(channel.name)
-        
-        return channels
+
+        if joint not in [c.name for c in armature.channels]:
+            msg = "Joint <%s> does not exist in armature %s" % (joint, armature.name)
+            raise MorseRPCInvokationError(msg)
+
+        channel = armature.channels[joint]
+
+        if self._is_prismatic(channel):
+            return (channel, True)
+        else:
+            return (channel, False)
+
+    def _get_prismatic(self, joint):
+        """ Checks a given prismatic joint name exist in the armature,
+        and returns it.
+        """
+        channel, is_prismatic = self._get_joint(joint)
+
+        if not is_prismatic:
+            msg = "Joint %s is not a prismatic joint! Can not set the translation" % joint
+            raise MorseRPCInvokationError(msg)
+
+        return channel
+
+    def _get_revolute(self, joint):
+        """ Checks a given revolute joint name exist in the armature,
+        and returns it.
+        """
+        channel, is_prismatic = self._get_joint(joint)
+
+        if is_prismatic:
+            msg = "Joint %s is not a revolute joint! Can not set the rotation" % joint
+            raise MorseRPCInvokationError(msg)
+
+        return channel
+
+    def _clamp_translation(self, channel, translation):
+
+        return max(0.0, min(translation, channel.ik_stretch))
+
+
+    def _clamp_rotation(self, channel, rotation):
+
+        ik_min, ik_max = self.get_IK_limits(channel.name)
+        return max(ik_min, min(rotation, ik_max))
 
     @service
-    def get_location(self, channel_name):
+    def set_translation(self, joint, translation):
         """
-        MORSE Service that returns the location corresponding to
-        the given channel 'channel_name' on the armature.
-        """
-        armature = self.blender_obj
-        channel = armature.channels[str(channel_name)]
-        # get the rotation in xyz
-        rotation = channel.location
-
-        return rotation
-
-    @service
-    def set_translation(self, channel_name, translation):
-        """
-        Method that translates the given channel by the given translation.
-        We do NOT take into account the IK limits here.
+        Translates instantaneously the given (prismatic) joint by the given
+        translation. Joint speed limit is not taken into account.
 
         :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.location
+
+        If the joint does not exist or is not a prismatic joint (slider),
+        throws a MorseServiceFailed exception.
+
+        The translation is always clamped to the joint limit.
+
+        :param joint: name of the joint to move
+        :param translation: absolute translation from the joint origin in the joint sliding axis, in meters
+        """
+
+        channel = self._get_prismatic(joint)
+
+        # Retrieve the translation axis
+        axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
+
+        translation = self._clamp_translation(channel, translation)
+
+        self.local_data[channel.name] = translation
+
+        tmp = channel.location
+        tmp[axis_index] = translation
+        channel.location = tmp
+
+    @service
+    def set_translations(self, translations):
+        """
+        Sets in one call the translations of the prismatic joints in this armature.
+
+        Has the same effect as applying `set_translation` on each of the joints
+        independantly.
+
+        Translations must be ordered from the root to the tip of the armature.
+
+        If more translations are provided than the number of joints, the remaining ones are discarded. If less translations are provided, the maximum are applied.
+
+        .. important::
+
+            If a revolute joint is encountered while applying the translations,
+            an exception is thrown, and **no** translation is applied.
+
+        :sees: `set_translation`
+        :param translations: a set of absolute translations, in meters
         """
         armature = self.blender_obj
 
-        try:
-            channel = armature.channels[str(channel_name)]
-            channel.location = translation
-            armature.update()
-            return None
-        except KeyError:
-            msg = str(channel_name) + " is not a valid channel name"
-            raise MorseRPCInvokationError(msg)
-    
+        nb_trans = min(len(translations), len(armature.channels))
+
+        channels = [c for c in armature.channels]
+        for i in range(nb_trans):
+            if not self._is_prismatic(channels[i]):
+                msg = "Joint %s is not a prismatic joint! Can not apply the translation set" % joint
+                raise MorseRPCInvokationError(msg)
+
+        for trans, channel in zip(translations[:nb_trans], channels[:nb_trans]):
+            self.set_translation(channel.name, trans)
+
+
     @interruptible
     @async_service
-    def translate(self, joint, target, speed = 0.05):
+    def translate(self, joint, translation, speed = None):
         """
         Translates a joint at a given speed (in m/s).
 
         :param joint: name of the armature's joint to translate
-        :param target: vector of 3 floats, in the bone local space. It
-        is always an *absolute* translation, relative to the joint origin.
-        :param speed: (default: 0.05) translation speed, in m/s
+        :param translation: the absolute translation, relative to the joint origin, in meters
+        :param speed: (default: value of 'linear_speed' property) translation speed, in m/s
         """
-        logger.info("Initiating translation of joint %s to %s at speed %s"%(joint, target, speed))
+
+        channel = self._get_prismatic(joint) # checks the joint exist and is prismatic
+        translation = self._clamp_rotation(channel, translation)
+        self.joint_speed[joint] = speed
+
+        logger.info("Initiating translation of joint %s to %s"%(joint, translation))
+        self.local_data[joint] = translation
+
+    @service
+    def set_rotation(self, joint, rotation):
+        """
+        Rotates instantaneously the given (revolute) joint by the given
+        rotation. Joint speed limit is not taken into account.
+
+        If the joint does not exist or is not a revolute joint (hinge),
+        throws a MorseServiceFailed exception.
+
+        The rotation is always clamped to the joint limit.
+
+        :param joint: name of the joint to rotate
+        :param rotation: absolute rotation from the joint origin along the joint rotation axis, in radians
+         """
+        channel = self._get_revolute(joint)
+
+        # Retrieve the translation axis
+        axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
+
+        rotation = self._clamp_rotation(channel, rotation)
+
+        self.local_data[channel.name] = rotation
+
+        tmp = channel.joint_rotation
+        tmp[axis_index] = rotation
+        channel.joint_rotation = tmp
+
+    @service
+    def set_rotations(self, rotations):
+        """
+        Sets in one call the rotations of the revolute joints in this armature.
+
+        Has the same effect as applying `set_rotation` on each of the joints
+        independantly.
+
+        Rotations must be ordered from the root to the tip of the armature.
+
+        If more rotations are provided than the number of joints, the remaining ones are discarded. If less rotations are provided, the maximum are applied.
+
+        .. important::
+
+            If a prismatic joint is encountered while applying the rotation,
+            an exception is thrown, and **no** rotation is applied.
+
+        :sees: `set_rotation`
+        :param rotations: a set of absolute rotations, in radians
+        """
         armature = self.blender_obj
 
-        try:
-            channel = armature.channels[str(joint)]
-        except KeyError:
-            msg = "Joint %s does not exist" % joint
-            raise MorseRPCInvokationError(msg)
+        nb_rot = min(len(rotations), len(armature.channels))
 
-        translation = [i - j for i,j in zip(target, channel.location)]
+        channels = [c for c in armature.channels]
+        for i in range(nb_rot):
+            if self._is_prismatic(channels[i]):
+                msg = "Joint %s is not a revolute joint! Can not apply the rotation set" % joint
+                raise MorseRPCInvokationError(msg)
 
-        dt = speed / self.frequency
-        dist = math.sqrt(sum([i**2 for i in translation]))
+        for rot, channel in zip(rotations[:nb_rot], channels[:nb_rot]):
+            self.set_rotation(channel.name, rot)
 
-        # v is the 3D speed vector, scaled up to ensure a uniform motion
-        # along the 3 axis
-        v = [dt * i / dist for i in translation]
 
-        self.active_translations[channel] = (target, v)
 
     @interruptible
     @async_service
-    def rotate(self, joint, rotation, speed = 0.05):
+    def rotate(self, joint, rotation, speed = None):
         """
         Rotates a joint at a given speed (in rad/s).
 
         :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.joint_rotation
 
         :param joint: name of the armature's joint to rotate
-        :param rotation: vector of 3 floats. See documentation above for the meaning.
-        :param speed: (default: 0.05) rotation speed, in rad/s
+        :param rotation: rotation around the joint axis in radians
+        :param speed: (default: value of 'radial_speed' property) rotation speed, in rad/s
         """
-        armature = self.blender_obj
+        channel = self._get_revolute(joint) # checks the joint exist and is revolute
+        rotation = self._clamp_rotation(channel, rotation)
+        self.joint_speed[joint] = speed
 
-        try:
-            channel = armature.channels[str(channel_name)]
-            return None
-        except KeyError:
-            msg = str(channel_name) + " is not a valid channel name"
-            raise MorseRPCInvokationError(msg)
-
-
-    @service
-    def get_rotations(self):
-        """
-        MORSE Service that returns a dict with keys the channel names of
-        the armature and values the rotation xyz values.
-        """
-        armature = self.blender_obj
-        rotations = {}
-        # get the rotation of each channel
-        for channel in armature.channels:
-            rotations[channel.name] = channel.joint_rotation.to_tuple()
-
-        return rotations
-
-    @service
-    def get_rotation(self, channel_name):
-        """
-        MORSE Service that returns the rotation angles corresponding to
-        the given channel 'channel_name' on the armature.
-        """
-        armature = self.blender_obj
-        try : 
-            channel = armature.channels[str(channel_name)]
-            # get the rotation in xyz
-            rotation = channel.joint_rotation.to_tuple()
-
-            return rotation
-        except KeyError:
-            msg = str(channel_name) + " is not a valid channel name"
-            raise MorseRPCInvokationError(msg)
+        logger.info("Initiating rotation of %s to pos. %f (along the joint rotation axis)"%(joint, rotation))
+        self.local_data[joint] = rotation
 
     def find_dof(self, channel):
         """
@@ -184,9 +326,8 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
     @service
     def get_dofs(self):
         """
-        MORSE Service that returns a dictionary with keys the channels
-        of the armature and as values a list [x,y,z] with a boolean corresponding
-        indication if the axis (x,y,z) is a dof.
+        Returns a dictionary with keys the channels
+        of the armature and as values the rotation axis of the joint.
         """
         armature = self.blender_obj
         dofs = {}
@@ -196,104 +337,110 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
 
         return dofs
 
-    def set_joint_rotation(self, armature, channel, rotation):
-        """
-        Method that sets the rotaion of the given channel to rotation.
-        channel.joint_rotation takes in account the limits set via IK.
-        """
-        channel.joint_rotation = rotation
-        armature.update()
-
     @service
-    def set_rotation(self, channel_name, rotation):
+    def get_IK_limits(self, joint):
         """
-        MORSE Service to set the rotation angle of the given channel_name to the angles list (x,y,z).
-        """
-        armature = self.blender_obj
-        try:
-            channel = armature.channels[str(channel_name)]
-            self.set_joint_rotation(armature, channel, rotation)
-            return None
-        except KeyError:
-            msg = str(channel_name) + " is not a valid channel name"
-            raise MorseRPCInvokationError(msg)
-
-    @service
-    def get_IK_minmax(self):
-        """
-        MORSE Service to return a dictionary with keys the channel names of the armature
-        and values the IK min and max limits in the following form:
-        [[ik_min_x,ik_max_x], [ik_min_y,ik_max_y], [ik_min_z,ik_max_z]] (list of lists of floats)
-        """
-        armature = self.blender_obj
-        minmax_dict = {}
-        for channel in armature.channels:
-            # find the min and max values for each channel
-            lst = [[0,0],[0,0],[0,0]]
-            lst[0][0] = channel.ik_min_x
-            lst[0][1] = channel.ik_max_x
-            lst[1][0] = channel.ik_min_y
-            lst[1][1] = channel.ik_max_y
-            lst[2][0] = channel.ik_min_z
-            lst[2][1] = channel.ik_max_z
-            minmax_dict[channel.name] = lst
-        return minmax_dict
+        Returns the IK limits for the given joint.
         
-    @service
-    def get_IK_limits(self):
+        - For revolute joints, returns a pair `(ik_min,ik_max)`, in radians.
+        - For prismatic joint, returns the maximum translation, in meters.
         """
-        MORSE Service to return a dict with keys the channel names of the armature
-        and values the IK limits in the following form:
-        [ik_limit_x,ik_limit_y,ik_limit_z] (list of booleans)
-        """
-        armature = self.blender_obj
-        limits_dict = {}
-        for channel in armature.channels:
-            # find if the limits are enabled on the different axes
-            limits_dict[channel.name] = [channel.ik_limit_x,
-                                         channel.ik_limit_y,
-                                         channel.ik_limit_z]
-        return limits_dict
 
-    @service
-    def get_channel_lengths(self):
-        """
-        MORSE Service to return a dict with keys the channel names of the armature
-        and values the channel's lenght.
-        """
-        armature = self.blender_obj
-        lengths_dict = {}
-        for channel in armature.channels:
-            # find the length of the current channel
-            #head = channel.pose_head
-            #tail = channel.pose_tail
-            diff = channel.pose_head - channel.pose_tail
-            length = math.sqrt(diff[0]**2 + diff[1]**2 + diff[2]**2)
-            lengths_dict[channel.name] = length
-        return lengths_dict
+        channel, is_prismatic = self._get_joint(joint)
 
-    @service
-    def get_robot_parent_name(self):
+        if is_prismatic:
+            return channel.ik_stretch
+        else:
+            # Retrieve the translation axis
+            axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
+            if axis_index == 0:
+                return (channel.ik_min_x, 
+                        channel.ik_max_x)
+            elif axis_index == 1:
+                return (channel.ik_min_y, 
+                        channel.ik_max_y)
+            elif axis_index == 2:
+                return (channel.ik_min_z, 
+                        channel.ik_max_z)
+
+            assert(False) # should not reach this point.
+
+    @async_service
+    def set_target(self,x ,y, z):
         """
-        MORSE Service to return the blender name of the robot that is the parent of this armature.
-        """
-        return self.robot_parent.blender_obj.name
+        Sets a target position for the armature's tip.
+
+        MORSE uses inverse kinematics to find the joint
+        angles/positions in order to get the armature tip as close
+        as possible to the target.
+
+        .. important::
+
+            No obstacle avoidance takes place: while moving the armature
+            may hit objects.
+
+        .. warning::
             
+            Not implemented yet! Only as a placeholder!
+
+        :param x: X coordinate of the IK target
+        :param y: Y coordinate of the IK target
+        :param z: Z coordinate of the IK target
+        """
+        raise MorseRPCInvokationError("Not implemented yet!")
 
     def default_action(self):
         """
-        Main function of this component.
-        Is called every tick of the clock.
+        Move the armature according to both the value of local_data
+
         """
-        for channel, t in list(self.active_translations.items()):
+        armature = self.blender_obj
 
-            distance = math.sqrt(sum([(i-j)**2 for i,j in zip(t[0], channel.location)]))
+        position_reached = True
+        for channel in armature.channels:
 
-            if distance < self._distance_tolerance:
-                self.completed(status.SUCCESS, None)
-                del self.active_translations[channel]
+            # we assume a joint is prismatic (translation joint) if its IK 'stretch' parameter is non-null
+            is_prismatic = self._is_prismatic(channel)
+
+            joint = channel.name
+
+            if joint in self.joint_speed and self.joint_speed[joint]:
+                speed = self.joint_speed[joint]
             else:
-                channel.location = [i+j for i,j in zip(channel.location, t[1])]
-                self.blender_obj.update()
+                speed = self.linear_speed if is_prismatic else self.radial_speed
+
+
+            # Retrieve the rotation or translation axis
+            axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
+
+            if is_prismatic:
+                dist = self.local_data[joint] - channel.pose_head[axis_index] # we take the pose of the HEAD of the bone as the absolute translation of the joint. Not 100% sure it is right...
+            else:
+                dist = self.local_data[joint] - channel.joint_rotation[axis_index]
+
+            w = math.copysign(speed / self.frequency, dist)
+
+            if is_prismatic:
+                if not abs(dist) < self.distance_tolerance:
+                    position_reached = False
+
+                    trans = channel.location
+                    trans[axis_index] += w
+                    channel.location = trans
+            else:
+                if not abs(dist) < self.angle_tolerance:
+                    position_reached = False
+
+                    rot = channel.joint_rotation
+                    rot[axis_index] += w
+                    channel.joint_rotation = rot
+
+                # Update the armature to reflect the changes with just performed
+                armature.update()
+
+
+        if position_reached: # True only when all joints match local_data
+                self.completed(status.SUCCESS, None)
+                del self.joint_speed[joint]
 
 

@@ -94,7 +94,7 @@ MORSE_DATASTREAM_DICT = {
 
         'light': [MORSE_DATASTREAM_MODULE['ros'], 'read_switch', 'morse/middleware/ros/light'],
         'ptu': [MORSE_DATASTREAM_MODULE['ros'], 'read_Vector3', 'morse/middleware/ros/platine'],
-        'kuka_lwr': [MORSE_DATASTREAM_MODULE['ros'], 'read_jointState', 'morse/middleware/ros/kuka_jointState'],
+        #'kuka_lwr': [MORSE_DATASTREAM_MODULE['ros'], 'read_jointState', 'morse/middleware/ros/kuka_jointState'],
         'v_omega': [MORSE_DATASTREAM_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
         'v_omega_diff_drive': [MORSE_DATASTREAM_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_vw_twist'],
         'xy_omega': [MORSE_DATASTREAM_MODULE['ros'], 'read_twist', 'morse/middleware/ros/read_xyw_twist'],
@@ -107,6 +107,7 @@ MORSE_DATASTREAM_DICT = {
 
     'socket': {
         'accelerometer': [MORSE_DATASTREAM_MODULE['socket'], 'post_message'],
+        'armature_actuator': [MORSE_DATASTREAM_MODULE['socket'], 'post_message'],
         'battery': [MORSE_DATASTREAM_MODULE['socket'], 'post_message'],
         'gps': [MORSE_DATASTREAM_MODULE['socket'], 'post_message'],
         'gyroscope': [MORSE_DATASTREAM_MODULE['socket'], 'post_message'],
@@ -151,7 +152,6 @@ MORSE_DATASTREAM_DICT = {
         'armature_actuator': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
         'destination': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
         'gripper': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
-        'kuka_lwr': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
         'light': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
         'orientation': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
         'ptu': [MORSE_DATASTREAM_MODULE['yarp'], 'read_message'],
@@ -174,7 +174,7 @@ MORSE_DATASTREAM_DICT = {
     'pocolibs': {
         'stereo_unit': [MORSE_DATASTREAM_MODULE['pocolibs'], 'write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'],
         'ptu': [MORSE_DATASTREAM_MODULE['pocolibs'], 'read_platine', 'morse/middleware/pocolibs/actuators/platine', 'platine_orientation'],
-        'kuka_lwr': [MORSE_DATASTREAM_MODULE['pocolibs'], 'read_lwr_config', 'morse/middleware/pocolibs/actuators/lwr', 'lwrCurrentPoseArmRight'],
+        'armature_actuator': [MORSE_DATASTREAM_MODULE['pocolibs'], 'read_lwr_config', 'morse/middleware/pocolibs/actuators/lwr', 'lwrCurrentPoseArmRight'],
         'gyroscope': [MORSE_DATASTREAM_MODULE['pocolibs'], 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseGyroscopeMEPos'],
         'odometry': [MORSE_DATASTREAM_MODULE['pocolibs'], 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseOdometryMEPos'],
         'pose': [MORSE_DATASTREAM_MODULE['pocolibs'], 'write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorsePoseMEPos'],

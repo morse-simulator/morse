@@ -50,8 +50,8 @@ class KukaLWR(Actuator):
     def __init__(self, name="kuka_armature"):
         Actuator.__init__(self, "kuka_lwr")
         self.name = name
-        self.properties(Class = "KukaActuatorClass", \
-                        Path = "morse/actuators/kuka_lwr")
+        self.properties(Class = "ArmatureActuatorClass", \
+                        Path = "morse/actuators/armature_actuator")
 
 class Mocap(ActuatorCreator):
     def __init__(self, name="Mocap_Controller"):

@@ -21,217 +21,108 @@ class ArmatureActuatorTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = ATRV()
+        robot = ATRV('robot')
 
-        kuka_lwr = KukaLWR('kuka_armature')
+        kuka_lwr = KukaLWR('arm')
         robot.append(kuka_lwr)
         kuka_lwr.translate(z=0.9)
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        kuka_posture = KukaPosture('kuka_posture')
-        kuka_posture.properties(KUKAname = kuka_lwr.name)
-        robot.append(kuka_posture)
-        kuka_posture.configure_mw('socket')
+        pose = Pose("pose")
+        pose.configure_mw('socket')
+        pose.translate(z=1.3)
+        kuka_lwr.append(pose)
+
+        arm_pose = KukaPosture('arm_pose')
+        arm_pose.properties(armature = kuka_lwr.name)
+        robot.append(arm_pose)
+        arm_pose.configure_mw('socket')
+
+        motion = Teleport('motion')
+        robot.append(motion)
+        motion.configure_service('socket')
 
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
-    def test_armature_actuator(self):
-        """ This test is guaranteed to be started only when the simulator
-        is ready.
+    def _test_object_attach(self):
+        """ Checks that attached object are indeed attached at the right place.
         """
-        with Morse() as morse:
-            # Read the armature position
-            posture_stream = morse.ATRV.kuka_posture
-            posture = posture_stream.get()
+        precision = 0.02
 
-            precision = 0.02
+        with Morse() as simu:
 
-            # Test each of the fields individually
-            self.assertAlmostEqual(posture['x'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['z'], 1.0, delta=precision)
-            self.assertAlmostEqual(posture['yaw'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['roll'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_1'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_2'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_3'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_4'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_5'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_6'], 0.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_7'], 0.0, delta=precision)
+            self.assertAlmostEqual(simu.robot.pose.get()['z'], 2.3, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['x'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['y'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], 0.0, delta = 0.01)
+            simu.robot.motion.translate(1.0)
+            sleep(0.1)
+            self.assertAlmostEqual(simu.robot.pose.get()['z'], 2.3, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['x'], 1.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['y'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], 0.0, delta = 0.01)
+            simu.robot.arm.set_rotation("kuka_2", math.radians(-90)).result()
+            sleep(0.1)
+            self.assertAlmostEqual(simu.robot.pose.get()['z'], 1.31, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['x'], 1.99, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], math.radians(90), delta = 0.01)
 
+    def test_immediate_api(self):
+        """ Tests the services that have an immediate result
+        (no speed limit taken into account)
 
-            channels = morse.rpc('kuka_armature', 'get_channels')
-            self.assertEqual(channels, ['kuka_1', 'kuka_2', 'kuka_3', 'kuka_4', 'kuka_5', 'kuka_6', 'kuka_7'])
+        """
+        # TODO: check translations!
 
-            res = morse.rpc('kuka_armature', 'get_rotations')
-            for channel in channels:
-                for i in range(3):
-                    self.assertAlmostEqual(res[channel][i], 0.0, delta=precision)
+        precision = 0.02
 
-            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
-            for i in range(3):
-                self.assertAlmostEqual(res[i], 0.0, delta=precision)
+        with Morse() as simu:
+            simu.robot.arm.set_rotation("kuka_2", 1).result() # basic rotation
+            sleep(0.1)
+            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 1.0, delta = precision)
 
-            with self.assertRaises(MorseServiceFailed):
-                res = morse.rpc('kuka_armature', 'get_rotation', 'pipo')
+            simu.robot.arm.set_rotation("kuka_2", 4000).result() # rotation clamping
+            sleep(0.1)
+            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 2.09, delta = precision)
 
-            # Not sure to understand well these values
-            # Must check they are completly correct
+            res = simu.robot.arm.set_rotation('pipo',0) # inexistant joint
+            self.assertEqual(type(res.exception(1)), MorseServiceFailed)
 
-            res = morse.rpc('kuka_armature', 'get_dofs')
-            self.assertEqual(res['kuka_1'], [0, 1, 0])
-            self.assertEqual(res['kuka_2'], [0, 0, 1])
-            self.assertEqual(res['kuka_3'], [0, 1, 0])
-            self.assertEqual(res['kuka_4'], [0, 0, 1])
-            self.assertEqual(res['kuka_5'], [0, 1, 0])
-            self.assertEqual(res['kuka_6'], [0, 0, 1])
-            self.assertEqual(res['kuka_7'], [0, 1, 0])
-
-            # get_IK_limits is a synonym of get_dofs
-            res2 = morse.rpc('kuka_armature', 'get_IK_limits')
-            self.assertEqual(res, res2)
-
-            res = morse.rpc('kuka_armature', 'get_channel_lengths')
-            self.assertAlmostEqual(res['kuka_1'], 0.31, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'], 0.20, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'], 0.20, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'], 0.20, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'], 0.19, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'], 0.08, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'], 0.13, delta=precision)
-
-            res = morse.rpc('kuka_armature', 'get_robot_parent_name')
-            self.assertEqual(res, "ATRV")
+            res = simu.robot.arm.set_translation('kuka_2',0) # non prismatic joint
+            self.assertEqual(type(res.exception(1)), MorseServiceFailed)
 
 
-            # Move the arm now, and get the measure 
-            morse.rpc('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
-            sleep(2)
+            # note that set_rotations is tested in armature_pose_testing
 
-            posture = posture_stream.get()
-            self.assertAlmostEqual(posture['kuka_1'], 1.57, delta=precision)
-            self.assertAlmostEqual(posture['kuka_2'], 2.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_3'], 1.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_4'], -1.28, delta=precision)
-            self.assertAlmostEqual(posture['kuka_5'], 1.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_6'], -2.0, delta=precision)
-            self.assertAlmostEqual(posture['kuka_7'], 1.0, delta=precision)
+    def test_motion_services(self):
+        """ Tests the services that have take some time to move
+        (joint speed limit taken into account)
+        """
+        # TODO: check translations!
 
-            res = morse.rpc('kuka_armature', 'get_rotations')
-            self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][2], 2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][2], -2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][2], 0.0, delta=precision)
+        precision = 0.02
+        with Morse() as simu:
+            simu.robot.arm.rotate("kuka_2", 0.5).result() # basic rotation
+            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 0.5, delta = precision)
+            simu.robot.arm.rotate("kuka_2", 4000).result() # rotation clamping
+            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 2.09, delta = precision)
 
+            res = simu.robot.arm.rotate('pipo',0) # inexistant joint
+            self.assertEqual(type(res.exception(1)), MorseServiceFailed)
 
-            # Injecting an angle too important is rejected. No angle is
-            # modified
-            with self.assertRaises(MorseServiceFailed):
-                morse.rpc('kuka_armature', 'set_rotation_array', 0.0, 0.0, 0.0, -2.28, 0.0, 0.0, 0.0)
+            res = simu.robot.arm.translate('kuka_2',0) # non prismatic joint
+            self.assertEqual(type(res.exception(1)), MorseServiceFailed)
 
-            res = morse.rpc('kuka_armature', 'get_rotations')
-            self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][2], 2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][2], -2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][2], 0.0, delta=precision)
-
-            # Here, in fact, we test kuka_lwr::set_rotation, not
-            # armature_actuator::set_rotation. See bug #86.
-            # Invalid channel
-            with self.assertRaises(MorseServiceFailed):
-                morse.rpc('kuka_armature', 'set_rotation', 'pipo', [2.0, 3.0, 4.0])
-
-            # Bad number of args
-            with self.assertRaises(TypeError):
-                morse.rpc('kuka_armature', 'set_rotation', 'kuka_5')
-
-            morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [0.0, math.pi/2, 0.0])
-            sleep(2)
-
-            # Only kuka_5 has changed to the value math.pi/2
-            res = morse.rpc('kuka_armature', 'get_rotations')
-            self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
-            self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_2'][2], 2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_3'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_4'][2], -1.28, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][1], math.pi/2, delta=precision)
-            self.assertAlmostEqual(res['kuka_5'][2], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][1], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_6'][2], -2.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][0], 0.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][1], 1.0, delta=precision)
-            self.assertAlmostEqual(res['kuka_7'][2], 0.0, delta=precision)
-
-            # Injecting value on angles non free has no impact
-            morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [1.0, math.pi/2, 1.0])
+            simu.robot.arm.set_rotation("kuka_2", 0).result() # back to origin
+            act = simu.robot.arm.rotate("kuka_2", 1, 0.5)
+            self.assertFalse(act.done())
             sleep(1)
-
-            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
-            self.assertAlmostEqual(res[0], 0.0, delta=precision)
-            self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
-            self.assertAlmostEqual(res[0], 0.0, delta=precision)
-
-            # Injecting value > max is rejected 
-            # See bug #87 on Morse GitHub
-            res = morse.rpc('kuka_armature', 'get_IK_minmax')
-            max = res['kuka_5'][1][1]
-            with self.assertRaises(MorseServiceFailed):
-                morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [0.0, max + 0.1, 0.0])
-                sleep(1)
-
-            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
-            self.assertAlmostEqual(res[0], 0.0, delta=precision)
-            self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
-            self.assertAlmostEqual(res[0], 0.0, delta=precision)
-
+            self.assertFalse(act.done())
+            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 0.5, delta = precision)
+            sleep(1.1)
+            self.assertTrue(act.done())
 
 
 ########################## Run these tests ##########################
