@@ -9,7 +9,7 @@ class Accelerometer(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/accelerometer", \
                                "AccelerometerClass", "accelerometer")
         mesh = Cube("AccelerometerCube")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
         self.append(mesh)
 
@@ -18,7 +18,7 @@ class Battery(SensorCreator):
         SensorCreator.__init__(self, name,"morse/sensors/battery", \
                                "BatteryClass", "battery")
         mesh = Cylinder("BatteryCylinder")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.01, .01, .04)
         mesh.color(.2, .2, .2)
         self.append(mesh)
         self.properties(DischargingRate = 0.05)
@@ -28,7 +28,7 @@ class GPS(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/gps", \
                                "GPSClass", "gps")
         mesh = Sphere("GPSSphere")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .01)
         mesh.color(.5, .5, .5)
         self.append(mesh)
 
@@ -37,7 +37,7 @@ class Gyroscope(SensorCreator):
         SensorCreator.__init__(self, name,"morse/sensors/gyroscope", \
                                "GyroscopeClass", "gyroscope")
         mesh = Sphere("GyroscopeSphere")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .01)
         mesh.color(.8, .4, .1)
         self.append(mesh)
 
@@ -46,7 +46,7 @@ class IMU(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/imu", \
                                "ImuClass", "imu")
         mesh = Cube("IMUCube")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
         self.append(mesh)
 
@@ -62,7 +62,7 @@ class KukaPosture(SensorCreator):
                                "KukaPostureClass", "kuka_posture")
         self.properties(KUKAname = "kuka_armature")
         mesh = Cube("KukaPostureCube")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .02)
         mesh.color(.6, .4, .1)
         self.append(mesh)
 
@@ -71,7 +71,7 @@ class Odometry(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/odometry", \
                                "OdometryClass", "odometry")
         mesh = Cylinder("OdometryCylinder")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.02, .02, .02)
         mesh.color(.5, .5, .5)
         self.append(mesh)
 
@@ -80,7 +80,7 @@ class Pose(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/pose", \
                                "PoseClass", "pose")
         mesh = Cube("PoseCube")
-        mesh.scale = (.1, .1, .2)
+        mesh.scale = (.04, .04, .02)
         mesh.color(.8, .3, .1)
         self.append(mesh)
 
@@ -94,7 +94,7 @@ class Proximity(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/proximity", \
                                "ProximitySensorClass", "proximity")
         mesh = Cylinder("ProximityCylinder")
-        mesh.scale = (.1, .1, .2)
+        mesh.scale = (.02, .02, .02)
         mesh.color(.5, .5, .5)
         self.append(mesh)
         self.properties(Range = 30.0, Track = "Robot_Tag")
@@ -111,7 +111,7 @@ class Rosace(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/rosace", \
                                "RosaceSensorClass", "rosace")
         mesh = Cylinder("RosaceCylinder")
-        mesh.scale = (.1, .1, .2)
+        mesh.scale = (.15, .04, .04)
         mesh.color(.2, .8, .6)
         mesh.rotate(y = math.pi / 2)
         self.append(mesh)
@@ -143,7 +143,7 @@ class Thermometer(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/thermometer", \
                                "ThermometerClass", "thermometer")
         mesh = Cylinder("ThermometerCylinder")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.02, .02, .04)
         mesh.color(0, .6, .5)
         self.append(mesh)
 
@@ -257,7 +257,7 @@ class Hokuyo(LaserSensorWithArc):
         LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
                                     "SICKClass", "hokuyo")
         mesh = Cylinder("HokuyoCylinder")
-        mesh.scale = (.1, .1, .05)
+        mesh.scale = (.04, .04, .08)
         mesh.color(0, 0, 0)
         self.append(mesh)
         # set components-specific properties
@@ -296,7 +296,7 @@ class Infrared(LaserSensorWithArc):
         LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
                                     "SICKClass", "infrared")
         mesh = Cube("InfraredCube")
-        mesh.scale = (.025, .24, .01)
+        mesh.scale = (.02, .02, .02)
         mesh.color(.8, .8, .8)
         self.append(mesh)
         # set components-specific properties
