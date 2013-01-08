@@ -34,9 +34,7 @@ class SocketRequestManager(RequestManager):
 
     def initialization(self):
         global SERVER_PORT
-        #Hold for each client socket a mapping to the socket file interface (as returned
-        # by socket.makefile()
-        self._client_sockets = {}
+        self._client_sockets = []
         
         # For asynchronous request, this holds the mapping between a
         # request_id and the socket which requested it.
@@ -73,8 +71,7 @@ class SocketRequestManager(RequestManager):
         """ Terminate the ports used to accept requests """
         if self._client_sockets:
             logger.info("Closing client sockets...")
-            for s, f in self._client_sockets.items():
-                f.close()
+            for s in self._client_sockets:
                 s.close()
 
         if self._server:
@@ -108,7 +105,7 @@ class SocketRequestManager(RequestManager):
 
     def main(self):
         
-        sockets = list(self._client_sockets.keys()) + [self._server]
+        sockets = self._client_sockets + [self._server]
 
         try:
             inputready, outputready, exceptready = select.select(sockets, sockets, [], 0) #timeout = 0 : Never block, just poll
@@ -121,75 +118,73 @@ class SocketRequestManager(RequestManager):
             if i == self._server:
                 sock, addr = self._server.accept()
 
-                self._client_sockets[sock] = sock.makefile("rw") #convert the socket into a file interface to ease reading
                 logger.info("Accepted new service connection from " + str(addr))
+                self._client_sockets.append(sock)
 
             else:
-                req = self._client_sockets[i].readline()
-                # an empty read means that the remote host has
-                # disconnected itself
-                if req == '':
-                    try: # close the socket if it gives an error
-                         # (this can spawn an other error!)
-                        self._client_sockets[i].close()
-                    except socket.error as error_info:
-                        logger.warning("Socket error catched while closing: " \
-                                       + str(error_info))
-                    del self._client_sockets[i]
+                raw = i.recv(4096)
+                if not raw:
+                    # an empty read means that the remote host has
+                    # disconnected itself
+                    logger.debug("Socket closed by client! Closing it on my side.")
+                    i.close()
+                    self._client_sockets.remove(i)
                     continue
-                req = req.strip()
+                raw = raw.decode()
+                assert(raw[-1] == '\n')
+                for req in raw[:-1].split('\n'):
+                    req = req.strip()
 
-                component = service = "undefined"
+                    component = service = "undefined"
 
-                try:
                     try:
-                        id, req = req.split(None, 1)
-                    except ValueError: # Request contains < 2 tokens.
-                        id = req
-                        raise MorseRPCInvokationError("Malformed request! ")
+                        try:
+                            id, req = req.split(None, 1)
+                        except ValueError: # Request contains < 2 tokens.
+                            id = req
+                            raise MorseRPCInvokationError("Malformed request! ")
 
-                    id = id.strip()
-                
-                    logger.info("Got '" + req + "' (id = " + id + ") from " + str(i))
+                        id = id.strip()
 
-                    
-                    if len(req.split()) == 1 and req in ["cancel"]:
-                        # Aborting a running request!
-                        for internal_id, user_id in self._pending_sockets.items():
-                            if user_id[1] == id:
-                                self.abort_request(internal_id)
+                        logger.info("Got '" + req + "' (id = " + id + ") from " + str(i))
 
-                    else:
-                        component, service, params = self._parse_request(req)
+                        if len(req.split()) == 1 and req in ["cancel"]:
+                            # Aborting a running request!
+                            for internal_id, user_id in self._pending_sockets.items():
+                                if user_id[1] == id:
+                                    self.abort_request(internal_id)
 
-                        # on_incoming_request returns either 
-                        #(True, result) if it's a synchronous
-                        # request that has been immediately executed, or
-                        # (False, request_id) if it's an asynchronous request whose
-                        # termination will be notified via
-                        # on_service_completion.
-                        is_sync, value = self.on_incoming_request(component, service, params)
-
-                        if is_sync:
-                            if i in self._results_to_output:
-                                self._results_to_output[i].append((id, value))
-                            else:
-                                self._results_to_output[i] = [(id, value)]
                         else:
-                            # Stores the mapping request/socket to notify
-                            # the right socket when the service completes.
-                            # (cf :py:meth:on_service_completion)
-                            # Here, 'value' is the internal request id while
-                            # 'id' is the id used by the socket client.
-                            self._pending_sockets[value] = (i, id)
+                            component, service, params = self._parse_request(req)
+
+                            # on_incoming_request returns either 
+                            #(True, result) if it's a synchronous
+                            # request that has been immediately executed, or
+                            # (False, request_id) if it's an asynchronous request whose
+                            # termination will be notified via
+                            # on_service_completion.
+                            is_sync, value = self.on_incoming_request(component, service, params)
+
+                            if is_sync:
+                                if i in self._results_to_output:
+                                    self._results_to_output[i].append((id, value))
+                                else:
+                                    self._results_to_output[i] = [(id, value)]
+                            else:
+                                # Stores the mapping request/socket to notify
+                                # the right socket when the service completes.
+                                # (cf :py:meth:on_service_completion)
+                                # Here, 'value' is the internal request id while
+                                # 'id' is the id used by the socket client.
+                                self._pending_sockets[value] = (i, id)
 
 
-                except MorseRPCInvokationError as e:
-                    if i in self._results_to_output:
-                        self._results_to_output[i].append((id, (status.FAILED, e.value)))
-                    else:
-                        self._results_to_output[i] = [(id, (status.FAILED, e.value))]
-        
+                    except MorseRPCInvokationError as e:
+                        if i in self._results_to_output:
+                            self._results_to_output[i].append((id, (status.FAILED, e.value)))
+                        else:
+                            self._results_to_output[i] = [(id, (status.FAILED, e.value))]
+            
         if self._results_to_output:
             for o in outputready:
                 if o in self._results_to_output:
@@ -203,18 +198,13 @@ class SocketRequestManager(RequestManager):
                                     "Details:" + te.value)
                         response = "%s %s%s" % (r[0], r[1][0], (" " + return_value) if return_value else "")
                         try:
-                            self._client_sockets[o].write(response)
-                            self._client_sockets[o].write("\n")
-                            self._client_sockets[o].flush()
+                            o.send((response + "\n").encode())
                             logger.info("Sent back " + response + " to " + str(o))
                         except socket.error:
-                            logger.warning("It seems that a socket client left. Closing the socket.")
-                            try: # close the socket if it gives an error (this can spawn an other error!)
-                                self._client_sockets[o].close()
-                            except socket.error as error_info:
-                                logger.warning("Socket error catched while closing: " + str(error_info))
-                            del self._client_sockets[o]
-                            
+                            logger.warning("It seems that a socket client left while I was sending stuff to it. Closing the socket.")
+                            o.close()
+                            self._client_sockets.remove(o)
+
                     del self._results_to_output[o]
 
 
