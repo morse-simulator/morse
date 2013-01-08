@@ -328,8 +328,22 @@ class MorseServerError(Exception):
     def __str__(self):
         return repr(self.value)
 
+class MorseServiceFailed(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class MorseServicePreempted(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
 SUCCESS='SUCCESS'
 FAILURE='FAILED'
+PREEMPTED='PREEMPTED'
 
 class Robot(dict):
     __getattr__= dict.__getitem__
@@ -360,7 +374,11 @@ class Component():
         def innermethod(*args):
             pymorselogger.debug("Sending synchronous request %s with args %s." % (m, args))
             req = self._morse._make_request(self.name, m, *args)
-            return self._morse.executor.submit(self._morse._execute_rpc, req)
+            future = self._morse.executor.submit(self._morse._execute_rpc, req)
+            #TODO: find a way to throw an execption in the main thread
+            # if the RPC request fails at invokation for stupid reasons
+            # like wrong # of params
+            return future
 
         innermethod.__doc__ = "This method is a proxy for the MORSE %s service." % m
         innermethod.__name__ = str(m)
@@ -653,8 +671,14 @@ class Morse():
             if msg and "wrong # of parameters" in msg:
                 raise TypeError(msg)
             
-            raise MorseServerError(res['result'])
-        
+            raise MorseServiceFailed(res['result'])
+
+        elif res['status'] == PREEMPTED:
+
+            msg = res['result']
+
+            raise MorseServicePreempted(res['result'])
+       
         else:
             raise MorseServerError("Got an unexpected message status from MORSE: " + \
             res['status'])
