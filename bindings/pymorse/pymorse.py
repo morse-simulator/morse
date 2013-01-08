@@ -414,7 +414,6 @@ class ComChannel(threading.Thread):
 
             with self._socks_lock:
                 for sock, value in self._socks.items():
-                    sock_fd = value["file"]
                     in_queue = value["in"]
                     out_queue = value["out"]
                     buf = value["buf"]
@@ -435,33 +434,32 @@ class ComChannel(threading.Thread):
                                     r['args'] = ''
                                 raw = "{id} {component} {service} [{args}]\n".format(**r)
 
-                        pymorselogger.debug("Sending " + raw)
-                        sock_fd.write(raw)
-                        sock_fd.flush()
+                        sock.send(raw.encode())
 
                     # Something to read from the server?
                     for i in inputready:
                         if i == sock:
 
-                            raw = sock_fd.readline().rstrip('\n')
+                            raw = sock.recv(100000).decode()
+                            if raw:
+                                assert(raw[-1] == '\n') # we are using a TCP sock -> messages MUST be complete
+                                for data in raw[:-1].split("\n"):
 
-                            if buf is not None: # it's a stream connection!
-                                res = json.loads(raw)
-                                in_queue.put(res)
-                                buf.appendleft(res)
-                                if cb:
-                                    cb(res)
-                            else: # it's a RPC connection
-                                res = self.parse_response(raw)
-                                in_queue.put(res)
-                                if cb:
-                                    cb(res)
+                                    if buf is not None: # it's a stream connection!
+                                        res = json.loads(data)
+                                        in_queue.put(res)
+                                        buf.appendleft(res)
+                                        if cb:
+                                            cb(res)
+                                    else: # it's a RPC connection
+                                        res = self.parse_response(data)
+                                        in_queue.put(res)
+                                        if cb:
+                                            cb(res)
 
         with self._socks_lock:
             pymorselogger.debug('Closing the connections to MORSE...')
             for sock, value in self._socks.items():
-                sock_fd = value["file"]
-                sock_fd.close()
                 sock.close()
 
     def parse_response(self, raw):
@@ -513,7 +511,6 @@ class ComChannel(threading.Thread):
         :param cb: (optional, default: None) a callback, invoked when content is read on the socket.
 
         """
-        sock_fd = None
 
         try:
             #create an INET, STREAMing socket
@@ -521,15 +518,13 @@ class ComChannel(threading.Thread):
 
             #now connect to the morse server
             sock.connect((self.host, port))
-            sock_fd = sock.makefile('rw')
         except socket.error:
             sock.close()
             raise MorseServerError('Unable to connect to MORSE on port %d. Check it is running, '
                                    'and the port is used by the simulation.' % port)
 
         with self._socks_lock:
-            self._socks[sock] = {"file":sock_fd,
-                                "in": read_queue,
+            self._socks[sock] = {"in": read_queue,
                                 "out": write_queue,
                                 "cb": cb,
                                 "buf": buf}
@@ -613,6 +608,7 @@ class Morse():
 
         self._services_out_queue.put(req)
         self.com.process()
+
 
     def rpc(self, component, service, *args):
         """ Calls a service from the simulator.
