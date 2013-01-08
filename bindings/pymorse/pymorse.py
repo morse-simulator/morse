@@ -427,13 +427,13 @@ class ComChannel(threading.Thread):
                             raw = json.dumps(r)
                         else: # RPC connection!
                             if 'special' in r:
-                                raw = "id{id} {special}\n".format(**r)
+                                raw = "{id} {special}\n".format(**r)
                             else:
                                 if r['args']:
                                     r['args'] = ', '.join(json.dumps(a) for a in r['args'])
                                 else:
                                     r['args'] = ''
-                                raw = "id{id} {component} {service} [{args}]\n".format(**r)
+                                raw = "{id} {component} {service} [{args}]\n".format(**r)
 
                         pymorselogger.debug("Sending " + raw)
                         sock_fd.write(raw)
@@ -626,7 +626,7 @@ class Morse():
         return self._execute_rpc(self._make_request(component, service, *args))
         
     def _make_request(self, component, service, *args):
-        req = {'id': self.id,
+        req = {'id': str(self.id),
                'component': component,
                'service': service,
                'args': args}
@@ -637,8 +637,15 @@ class Morse():
 
         self._services_out_queue.put(req)
         self.com.process()
-        res = self._services_in_queue.get() #block until we get an answer
-        
+
+        while True:
+            res = self._services_in_queue.get() #block until we get an answer
+            if res['id'] != req['id']:
+                self._services_in_queue.put(res)
+                time.sleep(0) # try to switch to another
+            else:
+                break
+
         if res['status'] == SUCCESS:
             if not res['result']:
                 return None
