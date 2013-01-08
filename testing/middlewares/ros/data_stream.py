@@ -39,13 +39,13 @@ class DataStreamTest(RosTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        pose = Sensor('pose')
+        pose = Pose()
         robot.append(pose)
         pose.configure_mw('ros')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW()
         robot.append(motion)
         motion.configure_mw('ros')
         

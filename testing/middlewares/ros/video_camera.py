@@ -32,20 +32,18 @@ class VideoCameraTest(RosTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = Robot('atrv')
+        robot = ATRV('ATRV')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW('MotionVW')
         robot.append(motion)
         motion.configure_mw('ros')
 
-        odometry = Sensor('odometry')
-        odometry.name = 'Odometry'
+        odometry = Odometry('Odometry')
         odometry.translate(z=0.73)
         robot.append(odometry)
         odometry.configure_mw('ros')
 
-        camera = Sensor('video_camera')
-        camera.name = 'Camera'
+        camera = CameraVideo('Camera')
         camera.properties(cam_width=128, cam_height=128, capturing=True, Vertical_Flip=True)
         camera.translate(x=0.3, z=0.76)
         camera.frequency(3)
@@ -93,7 +91,7 @@ class VideoCameraTest(RosTestCase):
             testlogger.error("please patch ROS, see patches/ros_python3.diff")
         self.assertTrue(tmp != None)
 
-        self.cmd_stream = rospy.Publisher('/ATRV/Motion_Controller', Twist)
+        self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
 
         testlogger.debug("init sensor OK %s"%topic)
 

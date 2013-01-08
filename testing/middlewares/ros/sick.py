@@ -32,20 +32,18 @@ class SickLaserTest(RosTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = Robot('atrv')
+        robot = ATRV('ATRV')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW('MotionVW')
         robot.append(motion)
         motion.configure_mw('ros')
 
-        odometry = Sensor('odometry')
-        odometry.name = 'Odometry'
+        odometry = Odometry('Odometry')
         odometry.translate(z=0.73)
         robot.append(odometry)
         odometry.configure_mw('ros')
 
-        sick = Sensor('sick')
-        sick.name = 'Sick'
+        sick = Sick('Sick')
         sick.translate(x = 0.18, z = 0.94)
         robot.append(sick)
         # sick.properties(scan_window = 270, resolution = .25)
@@ -87,7 +85,7 @@ class SickLaserTest(RosTestCase):
         testlogger.debug("subscribe and wait %s (%s)"%(topic, topic_type.__name__))
         self.assertTrue(self.subscribe_and_wait_for_message(topic, topic_type) != None)
 
-        self.cmd_stream = rospy.Publisher('/ATRV/Motion_Controller', Twist)
+        self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
 
         testlogger.debug("init sensor OK %s"%topic)
 

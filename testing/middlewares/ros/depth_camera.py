@@ -32,20 +32,18 @@ class DepthCameraTest(RosTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = Robot('atrv')
+        robot = ATRV('ATRV')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW('MotionVW')
         robot.append(motion)
         motion.configure_mw('ros')
 
-        odometry = Sensor('odometry')
-        odometry.name = 'Odometry'
+        odometry = Odometry('Odometry')
         odometry.translate(z=0.73)
         robot.append(odometry)
         odometry.configure_mw('ros')
 
-        camera = Sensor('depth_camera')
-        camera.name = 'CameraDepth'
+        camera = CameraDepth('CameraDepth')
         camera.properties(cam_near=1.0, cam_far=20.0, Depth=True,\
                           cam_width=128, cam_height=128, capturing=True)
         camera.translate(x=0.3, z=0.76)
@@ -94,7 +92,7 @@ class DepthCameraTest(RosTestCase):
             testlogger.error("please patch ROS, see patches/ros_python3.diff")
         self.assertTrue(tmp != None)
 
-        self.cmd_stream = rospy.Publisher('/ATRV/Motion_Controller', Twist)
+        self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
 
         testlogger.debug("init sensor OK %s"%topic)
 
