@@ -21,7 +21,7 @@ else:
     # simple controller taking RC-like roll/pitch/yaw/thrust input
     motion = Actuator('rotorcraft_attitude')
     motion.name = 'attitude'
-    motion.configure_mw('morse.middleware.ros_datastream.rosclass', ['morse.middleware.ros_datastream.ROS', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input'])
+    motion.configure_mw('ros', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input')
 
 Quadrotor.append(motion)
 
@@ -31,7 +31,6 @@ imu.name = 'imu'
 imu.rotate(x=math.pi)
 imu.configure_mw('ros')
 Quadrotor.append(imu)
-
 
 env = Environment('indoors-1/indoor-1')
 env.show_framerate(True)

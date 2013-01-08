@@ -4,7 +4,8 @@ from morse.core import status
 import mathutils
 import morse.core.blenderapi
 import morse.sensors.camera
-import morse.sensors.zBuffTo3D
+from morse.helpers.components import add_data
+from morse.sensors.zbufferto3d import ZBufferTo3D
 
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
@@ -13,6 +14,10 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
 
     Generates a sequence of images viewed from the camera perspective.
     """
+
+    add_data('points', 'none', 'memoryview', "List of 3D points from the depth "
+             "camera. memoryview of a set of float(x,y,z). The data is of size "
+             "``(cam_width * cam_height * 12)`` bytes (12=3*sizeof(float).")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -25,7 +30,7 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
         super(self.__class__, self).__init__(obj, parent)
 
         # Prepare the exportable data of this sensor
-        self.local_data['3D_points'] = []
+        self.local_data['points'] = []
 
         # Prepare the intrinsic matrix for this camera.
         # Note that the matrix is stored in row major
@@ -43,16 +48,14 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
         self._n = -1
 
         # Store the camera parameters necessary for image processing
-        morse.sensors.zBuffTo3D.init_image_parameters(alpha_u, alpha_u, self.near_clipping, self.far_clipping, self.image_width, self.image_height)
+        self.zbufferto3d = ZBufferTo3D(alpha_u, alpha_u, \
+                                       self.near_clipping, self.far_clipping, \
+                                       self.image_width, self.image_height)
 
         # Variable to indicate this is a camera
         self.camera_tag = True
 
         logger.info('Component initialized')
-
-    def __del__(self):
-        """ Clean the memory allocated in the C module """
-        morse.sensors.zBuffTo3D.release_memory()
 
     def interrupt(self):
         self._n = 0
@@ -78,10 +81,7 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
             # Fill in the exportable data
             self.capturing = True
 
-            #logger.debug ("Image: %s" % image_data.image)
-            data_3d = morse.sensors.zBuffTo3D.recover_3d_point(image_data)
-            self.local_data['3D_points'] = data_3d
-            #logger.debug ("3D DATA: %s" % data_3d)
+            self.local_data['points'] = self.zbufferto3d.recover(image_data)
 
             if (self._n > 0):
                 self._n -= 1

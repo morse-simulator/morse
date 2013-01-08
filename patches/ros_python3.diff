@@ -1,0 +1,20 @@
+--- _Image.py 2012-12-19 10:35:23.539305258 +0100
++++ /opt/ros/fuerte/lib/python2.7/dist-packages/sensor_msgs/msg/_Image.py   2012-12-19 10:36:23.247006282 +0100
+@@ -188,6 +188,3 @@
+       end += length
+-      if python3:
+-        self.data = str[start:end].decode('utf-8')
+-      else:
+-        self.data = str[start:end]
++      self.data = str[start:end]
+       return self
+--- _PointCloud2.py   2012-12-19 10:35:48.686834915 +0100
++++ /opt/ros/fuerte/lib/python2.7/dist-packages/sensor_msgs/msg/_PointCloud2.py 2012-12-19 10:36:33.331056290 +0100
+@@ -233,6 +233,3 @@
+       end += length
+-      if python3:
+-        self.data = str[start:end].decode('utf-8')
+-      else:
+-        self.data = str[start:end]
++      self.data = str[start:end]
+       start = end

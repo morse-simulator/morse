@@ -296,6 +296,11 @@ class Robot(Component):
     def __init__(self, name):
         Component.__init__(self, 'robots', name)
 
+    def add_default_interface(self, stream):
+        for child in self._blendobj.children:
+            if child.is_morseable():
+                child.add_interface(stream)
+
     def make_external(self):
         self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
 #    def remove_wheels(self):
@@ -635,11 +640,17 @@ class Environment(Component):
     def set_debug(self, debug=True):
         bpy.app.debug = debug
 
-    def set_stereo(self, stereo='STEREO'):
+    def set_stereo(self, mode='ANAGLYPH', eye_separation=0.1, stereo='STEREO'):
         """ set_stereo
+        :param mode: Stereographic techniques. enum in ['QUADBUFFERED',
+                     'ABOVEBELOW', 'INTERLACED', 'ANAGLYPH', 'SIDEBYSIDE',
+                     'VINTERLACE'], default 'ANAGLYPH'
+        :param eye_separation: Distance between the eyes. float in [0.01, 5], default 0.1
         :param stereo: enum in ['NONE', 'STEREO', 'DOME'], default 'STEREO'
         """
         bpy.context.scene.game_settings.stereo = stereo
+        bpy.context.scene.game_settings.stereo_mode = mode
+        bpy.context.scene.game_settings.stereo_eye_separation = eye_separation
 
     def set_animation_record(self, record=True):
         """ Record animation to F-Curves, so you can render it later
@@ -698,7 +709,15 @@ class Environment(Component):
         """ Watch the average time used by the :param component: during the
         simulation, in percent.
         """
+        if not isinstance(component, Sensor):
+            logger.warning("currently supports only sensors")
         prop = self._property_new(component.name, "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::action", "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::modifiers", "0 %")
+        prop.show_debug = True
+        prop = self._property_new(component.name+"::datastreams", "0 %")
         prop.show_debug = True
         self.show_debug_properties()
 

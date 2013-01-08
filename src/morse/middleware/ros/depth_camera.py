@@ -16,7 +16,7 @@ def post_pointcloud2(self, component_instance):
     if not component_instance.capturing:
         return # press [Space] key to enable capturing
 
-    points = component_instance.local_data['3D_points']
+    points = component_instance.local_data['points']
     width = component_instance.image_width * component_instance.image_height
     size = len(points)
 
