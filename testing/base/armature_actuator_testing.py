@@ -31,9 +31,8 @@ class ArmatureActuatorTest(MorseTestCase):
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        kuka_posture = Sensor('kuka_posture')
-        #kuka_posture = KukaPosture() # TODO bug
-        #kuka_posture.properties(KUKAname = kuka_lwr.name)
+        kuka_posture = KukaPosture()
+        kuka_posture.properties(KUKAname = kuka_lwr.name)
         robot.append(kuka_posture)
         kuka_posture.configure_mw('socket')
 

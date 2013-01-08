@@ -22,8 +22,11 @@ class KukaPostureClass(morse.core.sensor.Sensor):
         # Check if robot parent has a child with the name specified
         #  in this objects property 'KUKAname'.
         # By default it will look for "kuka_armature"
+        armature_name = "kuka_armature"
+        if 'KUKAname' in self.blender_obj:
+            armature_name = self.blender_obj['KUKAname']
         for child in self.robot_parent.blender_obj.children:
-            if str(child) == self.blender_obj['KUKAname']:
+            if str(child) == armature_name:
                 self._kuka_armature = child
                 break
 
@@ -33,8 +36,8 @@ class KukaPostureClass(morse.core.sensor.Sensor):
             logger.warning("Kuka arm not found. The 'kuka_posture' sensor will do nothing")
             return
 
-        # Get the reference to the class instance of the kuka actuator
-        self._kuka_actuator_instance = blenderapi.persistantstorage().componentDict[self._kuka_armature.name]
+        # The Kuka actuator might not be instantiated yet
+        self._kuka_actuator_instance = None
 
         # Define the variables in 'local_data'
         self.local_data['x'] = 0.0
@@ -48,12 +51,19 @@ class KukaPostureClass(morse.core.sensor.Sensor):
 
         logger.info('Component initialized')
 
-       
+    def get_kuka_actuator_instance(self):
+        # Get the reference to the class instance of the kuka actuator
+        component_dict = blenderapi.persistantstorage().componentDict
+        if self._kuka_armature and self._kuka_armature.name in component_dict:
+            self._kuka_actuator_instance = component_dict[self._kuka_armature.name]
+
     def default_action(self):
         """ Get the x, y, z, yaw, pitch and roll of the KUKA armature,
         and the rotation angle for each of the segments. """
         if not self._kuka_armature:
             return
+        if not self._kuka_actuator_instance:
+            self.get_kuka_actuator_instance()
 
         # Take the base position from the kuka arm actuator
         self.local_data['x'] = self._kuka_actuator_instance.position_3d.x
