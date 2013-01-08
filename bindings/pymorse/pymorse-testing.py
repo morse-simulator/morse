@@ -7,6 +7,7 @@ We test here the various features of the pymorse bindings:
 """
 
 from morse.testing.testing import MorseTestCase
+import logging;logger = logging.getLogger("morsetesting.general")
 
 try:
     # Include this import to be able to use your test file as a regular 
@@ -17,8 +18,8 @@ except ImportError:
 
 import sys
 import time
-from pymorse import Morse
-
+from pymorse import Morse, MorseServicePreempted
+from concurrent.futures._base import TimeoutError
 class PymorseTest(MorseTestCase):
 
     def setUpEnv(self):
@@ -103,43 +104,69 @@ class PymorseTest(MorseTestCase):
             motion = morse.ATRV.Motion_Controller
 
             # Should not raise any exception
-            motion.goto(1.0, 1.0, 0.0, 0.5, 1.0)
+            req = motion.goto(1.0, 1.0, 0.0, 0.5, 1.0)
+
+            self.assertFalse(req.done())
+
+            res = req.result(2)
+
+            self.assertTrue(req.done())
+
+            self.assertIsNotNone(res) # finished successfully
 
             # Inexistant service
-            #TODO: the test blocks here...???
             with self.assertRaises(AttributeError):
                 motion.toto()
 
             # One missing argument
-            with self.assertRaises(TypeError):
-                motion.goto(5.0, 1.0)
+            fut = motion.goto(5.0, 1.0)
+            self.assertEqual(type(fut.exception(1)), TypeError)
 
             # Too many arguments
-            with self.assertRaises(TypeError):
-                motion.goto(10.0, 5.0, 0.0, 0.5, 1.0, 0.0)
+            fut = motion.goto(10.0, 5.0, 0.0, 0.5, 1.0, 0.0)
+            self.assertEqual(type(fut.exception(1)), TypeError)
 
             # Wrong type
             # TODO in MORSE: type checking not yet done!
             #with self.assertRaises(ValueError):
             #    motion.goto(10.0, True, 0.0, 0.5, 1.0)
 
-    def test_async_services(self):
 
-        with Morse() as morse:
+            ## Testing service cancellation
+            logger.info("Starting new movement")
+            act = motion.goto(1.0, 2.0, 0.0, 0.1, 0.1)
+            self.assertTrue(act.running())
+            self.assertFalse(act.done())
+            logger.info("Ok")
 
-            motion = morse.ATRV.Motion_Controller
+            logger.info("Cancelling it...")
+            act.cancel()
+            self.assertEqual(type(act.exception(2)), MorseServicePreempted) # action cancelled
+            self.assertFalse(act.running())
+            self.assertTrue(act.done())
+            logger.info("Ok")
 
 
-            # Calls to MORSE services return Python's 'futures'.
-            req = motion.goto(1.0, 1.0, 0.0, 0.5, 1.0)
+            logger.info("Testing double cancellation")
+            act.cancel() # should not trigger anything
+            logger.info("Ok")
 
-            self.assertFalse(req.done())
+            ## Testing preemption
+            logger.info("Starting new movement")
+            act1 = motion.goto(2.0, 1.0, 0.0, 0.1, 0.1)
+            self.assertTrue(act1.running())
+            self.assertFalse(act1.done())
+            logger.info("Ok")
 
-            res = req.result(10)
+            logger.info("Preempting movement with another one")
+            act2 = motion.goto(0.0, 1.0, 0.0, 0.1, 0.1)
+            self.assertEqual(type(act1.exception(2)), MorseServicePreempted) # action preempted
+            self.assertFalse(act1.running())
+            self.assertTrue(act1.done())
+            self.assertTrue(act2.running())
+            logger.info("Ok")
 
-            self.assertTrue(req.done())
-
-            self.assertIsNotNone(res) # finished successfully
+            act2.cancel()
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
