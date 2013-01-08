@@ -683,19 +683,26 @@ class Morse():
             raise MorseServerError("Got an unexpected message status from MORSE: " + \
             res['status'])
 
-    def close(self):
+    def close(self, cancel_async_services = False):
 
-        self.com.close()
-
-        pymorselogger.debug('Closing async service executor...')
+        if cancel_async_services:
+            pymorselogger.info('Cancelling all running asynchronous requests...')
+            self.executor.cancel_all()
+        else:
+            pymorselogger.info('Waiting for all asynchronous requests to complete...')
         self.executor.shutdown(wait = True)
-        pymorselogger.debug('Done. Bye bye!')
+        self.com.close()
+        pymorselogger.info('Done. Bye bye!')
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
+        if not exc_type:
+            self.close()
+        else:
+            self.close(True)
+            return False # re-raise exception
 
     #####################################################################
     ###### Predefined methods to interact with the simulator

@@ -47,12 +47,20 @@ class MorseExecutor(ThreadPoolExecutor):
         super(MorseExecutor, self).__init__(max_workers)
         self._morse = morse
 
+        self.futures = []
+
 
     def submit(self, fn, *args, **kwargs):
 
         rqst_id = args[0]["id"]
         f = super(MorseExecutor, self).submit(fn, *args, **kwargs)
 
-        return MorseFuture(f, self._morse, rqst_id)
+        mf = MorseFuture(f, self._morse, rqst_id)
+        self.futures.append(mf)
+        return mf
 
 
+    def cancel_all(self):
+        for f in self.futures:
+            if not f.done():
+                f.cancel()
