@@ -25,9 +25,9 @@ def send_speed(s, v, w, t):
     sleep(1)
 
 def send_service_speed(s, v, w, t):
-    s.call_server('Motion_Controller', 'set_speed', v, w)
+    s.call_server('MotionVWDiff', 'set_speed', v, w)
     sleep(t)
-    s.call_server('Motion_Controller', 'stop')
+    s.call_server('MotionVWDiff', 'stop')
     sleep(1)
 
 class Differential_VW_Test(MorseTestCase):
@@ -35,16 +35,16 @@ class Differential_VW_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = WheeledRobot('segwayrmp400')
+        robot = SegwayRMP400()
         robot.translate(z=0.1)
         robot.unparent_wheels()
 
-        pose = Sensor('pose')
+        pose = Pose('Pose')
         robot.append(pose)
         pose.configure_mw('socket')
         pose.configure_mw('text')
 
-        motion = Actuator('v_omega_diff_drive')
+        motion = MotionVWDiff('MotionVWDiff')
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -60,12 +60,12 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.10, delta=0.03)
+                    self.assertAlmostEqual(coord, 0.20, delta=0.03)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.03)
 
             # v_w socket
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('MotionVWDiff')
             v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             v_w_client.connect(('localhost', port))
 
@@ -74,7 +74,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], -2.0, delta=0.15)
             self.assertAlmostEqual(pose['y'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 0.2, delta=0.15)
             self.assertAlmostEqual(pose['yaw'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
@@ -84,7 +84,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.10, delta=0.15)
+                    self.assertAlmostEqual(coord, 0.20, delta=0.15)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 
@@ -117,7 +117,7 @@ class Differential_VW_Test(MorseTestCase):
             # for non-null w, we have r = v /  w
             self.assertAlmostEqual(pose['x'], -4.0/ math.pi , delta=0.20)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.20)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.20)
+            self.assertAlmostEqual(pose['z'], 0.2, delta=0.20)
             self.assertAlmostEqual(pose['yaw'], math.pi/2.0, delta=0.20)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.20)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.20)
@@ -127,7 +127,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.10, delta=0.15)
+                    self.assertAlmostEqual(coord, 0.20, delta=0.15)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.20)
 
@@ -136,7 +136,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], -4.0/ math.pi , delta=0.20)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.20)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.20)
+            self.assertAlmostEqual(pose['z'], 0.2, delta=0.20)
             self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.20)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.20)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.20)
@@ -150,7 +150,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.10, delta=0.02)
+                    self.assertAlmostEqual(coord, 0.20, delta=0.02)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
@@ -159,7 +159,7 @@ class Differential_VW_Test(MorseTestCase):
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.15)
             self.assertAlmostEqual(pose['y'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 0.2, delta=0.15)
             self.assertAlmostEqual(pose['yaw'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
@@ -180,7 +180,7 @@ class Differential_VW_Test(MorseTestCase):
             # for non-null w, we have r = v /  w
             self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.15)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 0.2, delta=0.15)
             self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.15)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)

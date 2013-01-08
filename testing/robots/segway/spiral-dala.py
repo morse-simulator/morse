@@ -25,9 +25,9 @@ def send_speed(s, v, w, t):
     sleep(1)
 
 def send_service_speed(s, v, w, t):
-    s.call_server('Motion_Controller', 'set_speed', v, w)
+    s.call_server('MotionVW', 'set_speed', v, w)
     sleep(t)
-    s.call_server('Motion_Controller', 'stop')
+    s.call_server('MotionVW', 'stop')
     sleep(1)
 
 class Spiral_Test(MorseTestCase):
@@ -35,15 +35,15 @@ class Spiral_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = Robot('atrv')
+        robot = ATRV()
         robot.translate(z=0.1)
 
-        pose = Sensor('pose')
+        pose = Pose('Pose')
         robot.append(pose)
         pose.configure_mw('socket')
         pose.configure_mw('text')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW('MotionVW')
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -59,12 +59,12 @@ class Spiral_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.03)
+                    self.assertAlmostEqual(coord, 0.1, delta=0.03)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.03)
 
             # v_w socket
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('MotionVW')
             v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             v_w_client.connect(('localhost', port))
 
@@ -74,7 +74,7 @@ class Spiral_Test(MorseTestCase):
             # for non-null w, we have r = v /  w
             self.assertAlmostEqual(pose['x'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['y'], 0.0, delta=0.15)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.15)
+            self.assertAlmostEqual(pose['z'], 0.1, delta=0.15)
             self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.15)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
@@ -84,7 +84,7 @@ class Spiral_Test(MorseTestCase):
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.15)
+                    self.assertAlmostEqual(coord, 0.1, delta=0.15)
                 else:
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 

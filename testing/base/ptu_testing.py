@@ -166,7 +166,7 @@ class PTUTest(MorseTestCase):
             #TODO: Stupid duplication of SetUpEnv values. Could not find a way
             #to share the value. Class variables does not seem to work here.
             ptu_x = 0.2020
-            ptu_z = 1.4400 # 0.05 -> ~ height of the pan module
+            ptu_z = 1.4400 + .1 # 0.1 -> height of ATRV center
 
             precision = 0.02
 
@@ -207,7 +207,7 @@ class PTUTest(MorseTestCase):
             res = morse.call_server('PTU', 'look_at_object', 'RollingChair')
             res = morse.call_server('PTU', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], math.radians(90), delta=precision)
-            self.assertAlmostEqual(res[1], 0.417, delta=precision)
+            self.assertAlmostEqual(res[1], 0.466, delta=precision)
 
 
 

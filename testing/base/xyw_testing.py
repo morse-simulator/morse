@@ -45,7 +45,7 @@ class XYW_Test(MorseTestCase):
     def test_xyw_controller(self):
         with Morse() as morse:
 
-            precision=0.05
+            precision=0.06
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.stream('Pose')
