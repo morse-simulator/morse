@@ -74,7 +74,7 @@ in the scene:
 
     from morse.builder import *
 
-    table = PassiveObject('props/objects.blend','SmallTable')
+    table = PassiveObject('props/objects','SmallTable')
     table.setgraspable()
     table.translate(x=3.5, y=-3, z=0)
     table.rotate(z=0.2)
@@ -101,7 +101,7 @@ scene:
 
     # Add some randomly placed chairs
     for i in range(3):
-        chair = PassiveObject('props/objects.blend','RollingChair')
+        chair = PassiveObject('props/objects','RollingChair')
         chair.translate(x=random.uniform(1.5, 7.0), 
                         y=random.uniform(-5.0, 0.0),
                         z=0.0000)

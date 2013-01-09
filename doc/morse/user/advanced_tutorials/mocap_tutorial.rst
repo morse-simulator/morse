@@ -92,7 +92,7 @@ to the ``hri.morse.mocap`` file:
 .. code-block:: python
 
     # Import, configure and place a static object from 'kitchen_objects.blend'.
-    cornflakes = PassiveObject("props/kitchen_objects.blend", "Cornflakes")
+    cornflakes = PassiveObject("props/kitchen_objects", "Cornflakes")
     cornflakes.setgraspable()
     cornflakes.properties(Label = "My cornflakes")
     cornflakes.translate(-7, 3, 1.1)
