@@ -10,7 +10,7 @@ It generates doc for:
     - the services exported by the conmponent.
 """
 
-from morse.actuators import pa_10, ptu, destination, force_torque, waypoint, keyboard
+from morse.actuators import pa_10, ptu, destination, force_torque, waypoint, keyboard, armature_actuator
 from morse.sensors import odometry, camera, battery, proximity
 
 
@@ -56,31 +56,54 @@ def parse_docstring(doc):
     # docstring formatting. We can not simply strip leading withspaces,
     # because they may be significant for rst (like in ..note:)
     orig = doc.split('\n')
-    new = []
-    for l in orig:
-        
-        if l.startswith(" " * 4):
-            new.append(l[4:])
-        else:
-            new.append(l)
+    if (orig[0].strip()):
+        print("XXX Invalid docstring %s" % doc)
+        return (doc, None, None)
+
+    new = [""]
+    
+    # Try to determine indentation level reading number of space on the
+    # first line
+
+    trailing_space = 0
+    for i, c in enumerate(orig[1]):
+        if c != ' ':
+            trailing_space = i
+            break
+
+    for l in orig[1:]:
+        new.append(l[trailing_space:])
+
     doc = "\n".join(new)
     doc.replace(":see:", "'''\nSee also:'''")
-    r = doc.split(":param ")
+    r = doc.split(":param ", 1)
     doc = r[0]
-    
-    params = [param.split(':',1) for param in r[1:]]
+    paramsdoc = None
+
+    if len(r) == 1:
+        parts = doc.split(":return", 1)
+        if len(parts) == 2:
+            doc = parts[0]
+            returndoc = parts[1].split(':', 1)[1]
+            returndoc = returndoc.replace("\n", "")
+            return (doc, None, returndoc)
+        else:
+            return (doc, None, None)
+    else:
+        parts= r[1].split(":return", 1)
 
     returndoc = None
+    paramsdoc = parts[0].split(":param ")
 
-    if params:
-        if ':return:' in params[-1][1]:
-            params[-1][1], returndoc = params[-1][1].split(':return:')
-    else:
-        if ':return:' in doc:
-            doc, returndoc = doc.split(':return:')
+    paramsdoc = [param.replace("\n", "").split(':', 1) for param in paramsdoc]
+    paramsdoc = [[x,y.strip()] for x, y in paramsdoc]
+
+    if len(parts) == 2:
+        returndoc = parts[1].split(':', 1)[1]
+        returndoc = returndoc.replace("\n", "")
 
 
-    return (doc, params,returndoc)
+    return (doc, paramsdoc,returndoc)
 
 components = {}
 
@@ -163,7 +186,7 @@ def print_data(out, name, props):
             return
 
         for name, prop in prop.items():
-            out.write('- **' + name + '** (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ' + str(prop[0]) + '): ' + prop[2] + "\n")
+            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
 
         out.write("\n\n")
 
@@ -179,7 +202,7 @@ def print_properties(out, name, props):
 
 
         for name, prop in prop.items():
-            out.write('- **' + name + '** (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ' + str(prop[0]) + '): ' + prop[2] + "\n")
+            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
 
         out.write("\n\n")
 
@@ -190,26 +213,33 @@ def print_services(out, name, props):
         services = props['services']
 
         for name, serv in services.items():
-            out.write('- **' + name + '**')
+            out.write('- ``' + name + '(')
 
-            if serv['async']:
-                out.write(' (non blocking): ')
-            else:
-                out.write(' (blocking): ')
+            doc = params = returndoc = None
 
             if serv['doc']:
-                    doc, params, returndoc = parse_docstring(serv['doc'])
-                    out.write(doc)
-                    if params:
-                        out.write("\n\n - Parameters\n\n")
-                        for p, d in params:
-                            out.write("  - **" + p + "**: " + d + "\n")
-                    if returndoc:
-                        out.write("\n\n - Return value:")
-                        out.write(returndoc)
-                        out.write("\n")
+                doc, params, returndoc = parse_docstring(serv['doc'])
+
+            if params:
+                out.write(", ".join([p for p,d in params]))
+
+            if serv['async']:
+                out.write(')`` (non blocking): ')
             else:
-                out.write(" (no documentation yet)")
+                out.write(')`` (blocking): ')
+
+            if doc:
+                out.write(doc.replace("\n", "\n    "))
+                if params:
+                    out.write("\n    - Parameters\n")
+                    for p, d in params:
+                        out.write("         - ``" + p + "``: " + d + "\n")
+                if returndoc:
+                    out.write("\n    - Return value\n")
+                    out.write("        " + returndoc)
+                    out.write("\n")
+            else:
+                out.write("\n    (no documentation yet)")
             out.write("\n")
 
         out.write("\n\n")
