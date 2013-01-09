@@ -19,6 +19,11 @@ formatter = logging.Formatter('[%(asctime)s (%(levelname)s)]   %(message)s')
 ch.setFormatter(formatter)
 roslogger.addHandler(ch)
 
+class RosInstallationError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 import os
 import sys
@@ -27,9 +32,9 @@ import subprocess
 try:
     os.environ['MORSE_SRC_ROOT']
 except KeyError:
-    print("You must define the environment variable MORSE_SRC_ROOT"
-          " to point to the MORSE source before running ROS tests.")
-    sys.exit(1)
+    raise RosInstallationError("You must define the environment "
+        "variable MORSE_SRC_ROOT to point to the MORSE source "
+        "before running ROS tests.")
 
 os.environ['ROS_PACKAGE_PATH'] += ":" + os.path.join(os.environ['MORSE_SRC_ROOT'], "testing", "middlewares", "ros")
 
@@ -38,20 +43,18 @@ try:
     import roslib
     from rospkg.common import ResourceNotFound
 except ImportError:
-    roslogger.error("Can not import roslib. ROS is not installed?")
-    sys.exit(1)
+    raise RosInstallationError("Can not import roslib. ROS is not installed?")
 
 try:
     roslib.load_manifest("morsetesting")
 except ResourceNotFound:
-    roslogger.error("Can not automatically find the 'morsetesting' special ROS node. ROS_PACKAGE_PATH: %s" % os.environ['ROS_PACKAGE_PATH'])
-    sys.exit(1)
+    raise RosInstallationError("Can not automatically find the 'morsetesting' special ROS node. ROS_PACKAGE_PATH: %s" % os.environ['ROS_PACKAGE_PATH'])
 
 try:
     from morsetesting.msg import *
 except ImportError:
-    roslogger.error("Can not import 'morsetesting' ROS message. Have you run 'rosmake' in the 'morsetesting' ROS node?")
-    sys.exit(1)
+    raise RosInstallationError("Can not import 'morsetesting' ROS message. Have you run 'rosmake' in the 'morsetesting' ROS node?")
+    #sys.exit(1)
 
 class RosTestCase(MorseTestCase):
     def setUpMw(self):
