@@ -4,9 +4,10 @@ import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
 class KeyboardActuatorClass(morse.core.actuator.Actuator):
-    """ This actuator does not require a connection with external data. It simply
-    responds to the keyboard arrows to generate movement instructions for the robot
-    attached.
+    """
+    This actuator does not require a connection with external data. It
+    simply responds to the keyboard arrows to generate movement
+    instructions for the robot attached.
 
     When parented to a robot, the user can press the arrow keys to modify the
     linear and angular velocities (V, W) of the robot.
@@ -20,12 +21,13 @@ class KeyboardActuatorClass(morse.core.actuator.Actuator):
     _name = "Keyboard Actuator"
     _short_desc="A 'fake' actuator that allows to move a robot from the keyboard."
 
-    add_property('_speed', 1.0, 'Speed', 'float', "Movement speed of the parent robot, in m/s")
+    add_property('_speed', 1.0, 'Speed', 'float',
+                 "Movement speed of the parent robot, in m/s")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
 
         # Choose the type of function to move the object

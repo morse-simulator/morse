@@ -323,7 +323,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
                 if target_angle < robot_angle:
                     angle_diff = robot_angle - target_angle
                     rotation_direction = -1
-                else:                        
+                else:
                     angle_diff = target_angle - robot_angle
                     rotation_direction = 1
 

@@ -36,9 +36,12 @@ class PTUActuatorClass(Actuator):
     Code samples
     ------------
 
-    - `Scenario with a PTU from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L28>`_ :tag:`builder`
-    - `Datastream usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L56>`_ :tag:`pymorse` :tag:`datastre~
-    - `Service usage, from the component unit-test <https://github.com/laas/morse/blob/master/testing/base/ptu_testing.py#L121>`_ :tag:`pymorse` :tag:`service`
+    - `Scenario with a PTU from the component unit-test
+      <../../_modules/base/ptu_testing.html#PTUTest.setUpEnv>`_ :tag:`builder`
+    - `Datastream usage, from the component unit-test
+      <../../_modules/base/ptu_testing.html#PTUTest.test_datastream>`_ :tag:`pymorse` :tag:`datastream`
+    - `Service usage, from the component unit-test
+      <../../_modules/base/ptu_testing.html#PTUTest.test_set_service>`_ :tag:`pymorse` :tag:`service`
     """
 
     _name = "Pan-Tilt Unit"
@@ -94,8 +97,12 @@ class PTUActuatorClass(Actuator):
     @interruptible
     @async_service
     def set_pan_tilt(self, pan, tilt):
-        """ Asynchronous, interruptible service that moves the PTU to a given
-        target position.
+        """
+        Move the platine to a given target position, represented by an
+        angle couple.
+
+        :param pan: Target pan angle, in radian
+        :param tilt: Target tilt angle, in radian
         """
 
         logger.debug("Service 'set_pan_tilt' setting angles to %.4f, %.4f" % 
@@ -105,24 +112,33 @@ class PTUActuatorClass(Actuator):
 
     @service
     def get_pan_tilt(self):
-        """ Returns the current angles for the pan and tilt segments. """
+        """
+        Returns the current angles for the pan and tilt segments.
+
+        :return: a couple of float, representing respectively the pan
+        and the tilt of the platine, in radian.
+        """
         return self._current_pan, self._current_tilt
 
     @interruptible
     @async_service
     def look_at_point(self, x, y, z):
-        """ Interruptible, asynchronous service to make the camera look towards
-        a given point.
+        """
+        Move the platine to look towards a given point. The point is
+        expected to be given in the world reference
 
-        Coordinates must be given in the world reference.
+        :param x: x coordinate of the target point (in meter)
+        :param y: y coordinate of the target point (in meter)
+        :param z: z coordinate of the target point (in meter)
         """
         self._aim_camera_at_point(x, y, z)
 
     @interruptible
     @async_service
     def look_at_object(self, obj_name):
-        """ Look in the direction of the given object.
-        
+        """
+        Move the platine to look in the direction of the given object.
+
         :param obj_name: the (Blender) name of an object present in the scene
         """
         scene = blenderapi.scene()

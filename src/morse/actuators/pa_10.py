@@ -8,7 +8,8 @@ from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
 class PA10ActuatorClass(morse.core.actuator.Actuator):
-    """ This actuator reads a list of angles for the segments of the
+    """
+    This actuator reads a list of angles for the segments of the
     Mitsubishi PA-10 arm and applies them as local rotations.
 
     Angles are expected in radians.
@@ -29,7 +30,7 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
 
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         # The axis along which the different segments rotate
         # Considering the rotation of the arm as installed in Jido
@@ -41,7 +42,7 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
             self._segments.append(segment)
             try:
                 segment = segment.children[0]
-            except IndexError as error:
+            except IndexError:
                 break
         logger.info ("Arm segment list: ", self._segments)
 
@@ -81,7 +82,7 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
 
         # Scale the speeds to the time used by Blender
         try:
-            rotation = _speed / self.frequency
+            rotation = self._speed / self.frequency
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
@@ -103,11 +104,11 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
 
             # Use the corresponding direction for each rotation
             if self._dofs[i] == 'y':
-                ry = rotation_direction(segment_euler[1], target_angle, _tolerance, rotation)
+                ry = rotation_direction(segment_euler[1], target_angle, self._tolerance, rotation)
                 #logger.debug("PARAMETERS Y: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[1], target_angle, _tolerance, rotation, ry))
 
             elif self._dofs[i] == 'z':
-                rz = rotation_direction(segment_euler[2], target_angle, _tolerance, rotation)
+                rz = rotation_direction(segment_euler[2], target_angle, self._tolerance, rotation)
                 #logger.debug("PARAMETERS Z: %.4f, %.4f, %.4f, %.4f = %.4f" % (segment_euler[2], target_angle, _tolerance, rotation, rz))
 
             logger.debug("ry = %.4f, rz = %.4f" % (ry, rz))
