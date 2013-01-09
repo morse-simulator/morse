@@ -118,9 +118,7 @@ To run ROS tests, you need first to set the variable `MORSE_SRC_ROOT` to the
 root of your MORSE source. Moreover, you need to generate messages for the
 morsetesting helper: to do so, you must go in
 `${MORSE_SRC_ROOT}/testing/middlewares/ros/morsetesting` and then use rosmake
-to build them.
-
-ie.
+to build them::
 
     export MORSE_SRC_ROOT="$HOME/work/morse" # where you cloned MORSE sources
     MORSE_ROS_TESTING=$MORSE_SRC_ROOT/testing/middlewares/ros/morsetesting
