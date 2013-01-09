@@ -3,7 +3,6 @@ from abc import ABCMeta
 import time # profiler
 import morse.core.object
 from morse.core.services import service
-from morse.core import blenderapi
 
 class Sensor(morse.core.object.Object):
     """ Basic Class for all sensors
@@ -25,9 +24,8 @@ class Sensor(morse.core.object.Object):
         self.output_modifiers = []
 
         self.profile = False
-        if self.name() in blenderapi.getssr():
+        if "profile" in self.blender_obj:
             self.profile = True
-            self.ssr = blenderapi.getssr()
             self.time_actions = 0.0
             self.time_default_actions = 0.0
             self.time_modifiers = 0.0
@@ -83,10 +81,14 @@ class Sensor(morse.core.object.Object):
             self.time_modifiers += time_before_datastreams - time_before_modifiers
             self.time_datastreams += time_now - time_before_datastreams
             morse_time = time_now - self.time_start
-            self.ssr[self.name()] = "%6.2f %%"%(100.0 * self.time_actions / morse_time)
-            self.ssr[self.name()+"::action"] = "%6.2f %%"%(100.0 * self.time_default_actions / morse_time)
-            self.ssr[self.name()+"::modifiers"] = "%6.2f %%"%(100.0 * self.time_modifiers / morse_time)
-            self.ssr[self.name()+"::datastreams"] = "%6.2f %%"%(100.0 * self.time_datastreams / morse_time)
+            self.blender_obj["profile"] = "%6.2f %%"% \
+                            (100.0 * self.time_actions / morse_time)
+            self.blender_obj["profile::action"] = "%6.2f %%"% \
+                            (100.0 * self.time_default_actions / morse_time)
+            self.blender_obj["profile::modifiers"] = "%6.2f %%"% \
+                            (100.0 * self.time_modifiers / morse_time)
+            self.blender_obj["profile::datastreams"] = "%6.2f %%"% \
+                            (100.0 * self.time_datastreams / morse_time)
             if morse_time > 1: # re-init mean every sec
                 self.time_actions = 0.0
                 self.time_default_actions = 0.0
