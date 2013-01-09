@@ -73,7 +73,7 @@ class PA10(Actuator):
         # Sound Game Logic Actuator servo_1.mp3
 
 class PTU(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name="PTU"):
         ActuatorCreator.__init__(self, name, "morse/actuators/ptu", \
                                  "PTUActuatorClass", "ptu")
         self.properties(Speed = 1.0, Manual = False, Tolerance = 0.01)

@@ -27,10 +27,7 @@ class VictimTest(MorseTestCase):
         robot = ATRV()
         robot.translate(z=0.2)
 
-        victim_detector = Sensor('rosace')
-        #victim_detector = Rosace() # TODO bug pymorse socket port ?
-        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
-        # OverflowError: getsockaddrarg: port must be 0-65535.
+        victim_detector = Rosace('Rosace')
         robot.append(victim_detector)
         victim_detector.configure_mw('socket')
         victim_detector.configure_service('socket')
@@ -39,7 +36,7 @@ class VictimTest(MorseTestCase):
         victim_detector._blendobj.game.sensors["Radar"].angle = 90.0
         victim_detector._blendobj.game.sensors["Radar"].distance= 2.0
 
-        motion = Actuator('teleport')
+        motion = Teleport('Teleport')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -52,13 +49,13 @@ class VictimTest(MorseTestCase):
 
     def test_victim_interface(self):
         with Morse() as morse:
-            victim_stream = morse.stream('Rosace_Sensor')
+            victim_stream = morse.stream('Rosace')
 
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('Teleport')
             teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             teleport_client.connect(('localhost', port))
 
-            abilities = morse.call_server('Rosace_Sensor', 'get_robot_abilities')
+            abilities = morse.call_server('Rosace', 'get_robot_abilities')
             self.assertEqual(abilities, [1, 2, 3, 4, 5])
 
             victim_status = victim_stream.get()
@@ -73,14 +70,14 @@ class VictimTest(MorseTestCase):
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.call_server('Rosace_Sensor', 'get_victim_severity')
+            severity = morse.call_server('Rosace', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.call_server('Rosace_Sensor', 'get_victim_requirements')
+            requirements = morse.call_server('Rosace', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
             with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace_Sensor', 'heal')
+                morse.call_server('Rosace', 'heal')
 
             # The victim is not detected if not in the field of view of
             # the radar
@@ -90,13 +87,13 @@ class VictimTest(MorseTestCase):
             self.assertTrue(len(victim_dict) == 0)
 
             with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace_Sensor', 'get_victim_severity')
+                morse.call_server('Rosace', 'get_victim_severity')
 
             with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace_Sensor', 'get_victim_requirements')
+                morse.call_server('Rosace', 'get_victim_requirements')
 
             with self.assertRaises(MorseServerError):
-                morse.call_server('Rosace_Sensor', 'heal')
+                morse.call_server('Rosace', 'heal')
 
             # Move close enough to be able to heal it
             send_dest(teleport_client, 9.2, 0.0, 0.0)
@@ -107,13 +104,13 @@ class VictimTest(MorseTestCase):
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.call_server('Rosace_Sensor', 'get_victim_severity')
+            severity = morse.call_server('Rosace', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.call_server('Rosace_Sensor', 'get_victim_requirements')
+            requirements = morse.call_server('Rosace', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
-            morse.call_server('Rosace_Sensor', 'heal')
+            morse.call_server('Rosace', 'heal')
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']

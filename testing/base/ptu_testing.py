@@ -29,17 +29,15 @@ class PTUTest(MorseTestCase):
 
         ptu_x = 0.2020
         ptu_z = 1.4400
-       
+
         robot = ATRV()
-        
-        ptu_posture = Sensor('ptu_posture')
-        #ptu_posture = PTUPosture() # TODO bug line 175, in test_lookat 0.12
+
+        ptu_posture = PTUPosture('ptu_posture')
         ptu_posture.translate(x=ptu_x, z=ptu_z)
         robot.append(ptu_posture)
         ptu_posture.configure_mw('socket')
 
-        ptu = Actuator('ptu')
-        #ptu = PTU() # TODO bug
+        ptu = PTU('PTU')
         ptu.configure_mw('socket')
         ptu.configure_service('socket')
         ptu.properties(Speed = 0.5)

@@ -27,22 +27,16 @@ class CameraTest(MorseTestCase):
     def setUpEnv(self):
         
         atrv = ATRV()
-        atrv.rotate(0.0, 0.0, math.pi)
+        atrv.rotate(z=math.pi)
 
-        cam = Sensor('video_camera') # TODO bug pose relative (ATRV Z=+0.1)
-        #cam = CameraVideo() # TODO bug pymorse socket port ?
-        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
-        # OverflowError: getsockaddrarg: port must be 0-65535.
-        cam.properties(capturing = True)
-        cam.properties(cam_width = 320)
-        cam.properties(cam_height = 240)
-        cam.properties(cam_focal = 25.0000)
-        cam.properties(Vertical_Flip = True)
+        cam = CameraVideo('CameraVideo')
+        cam.properties(capturing = True, cam_width = 320, cam_height = 240, \
+                       cam_focal = 25.0000, Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
         atrv.append(cam)
         cam.configure_mw('socket')
 
-        orientation = Actuator('orientation')
+        orientation = Orientation('Orientation')
         orientation.configure_mw('socket')
         atrv.append(orientation)
 
@@ -67,11 +61,11 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.stream('CameraMain')
+            cam_stream = morse.stream('CameraVideo')
 
             cam = cam_stream.get()
 
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('Orientation')
             orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             orientation_stream.connect(('localhost', port))
 

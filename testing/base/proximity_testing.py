@@ -19,7 +19,8 @@ except ImportError:
     pass
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
     sleep(0.1)
 
 class ProximityTest(MorseTestCase):
@@ -28,7 +29,7 @@ class ProximityTest(MorseTestCase):
         """
         robot = ATRV()
 
-        proximity = Proximity()
+        proximity = Proximity('Proximity')
         proximity.translate(z=0.5)
         proximity.properties(Track = "Catch_me")
         proximity.properties(Range = 2.0)
@@ -36,12 +37,12 @@ class ProximityTest(MorseTestCase):
         proximity.configure_mw('socket')
         proximity.configure_service('socket')
 
-        pose = Pose()
+        pose = Pose('Pose')
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('teleport')
-        #motion = Teleport() # TODO bug line 90: 'Target3' NOT in prox['near_objects']
+        motion = Actuator('teleport'); motion.name = 'Teleport'
+        #motion = Teleport('Teleport') # TODO bug line 91: len(prox['near_objects']) is 0
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -65,7 +66,7 @@ class ProximityTest(MorseTestCase):
         
             prox_stream = morse.stream('Proximity')
 
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('Teleport')
             teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             teleport_client.connect(('localhost', port))
 

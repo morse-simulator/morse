@@ -19,7 +19,8 @@ except ImportError:
     pass
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
     sleep(0.1)
 
 class Semantic_Camera_Test(MorseTestCase):
@@ -28,22 +29,15 @@ class Semantic_Camera_Test(MorseTestCase):
         """
         robot = ATRV()
 
-        camera = Sensor('semantic_camera')
-        #camera = CameraSemantic() # TODO bug pymorse socket port ?
-        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
-        # OverflowError: getsockaddrarg: port must be 0-65535.
-        camera.frequency(60)
+        camera = CameraSemantic('CameraSemantic')
         robot.append(camera)
-        camera.translate(x=0.2000, z=0.9000)
-        #camera.translate(x=0.3, z=0.762)
+        camera.translate(x=0.3, z=0.762)
         camera.configure_mw('socket')
 
-        #motion = Actuator('teleport')
-        motion = Teleport()
+        motion = Teleport('Teleport')
         robot.append(motion)
         motion.configure_mw('socket')
 
-        #env = Environment('empty', fastmode = True)
         env = Environment('indoors-1/boxes')
         env.configure_service('socket')
 
@@ -54,9 +48,9 @@ class Semantic_Camera_Test(MorseTestCase):
         """
         with Morse() as morse:
             # Read the data from the semantic camera
-            semantic_stream = morse.stream('CameraMain')
+            semantic_stream = morse.stream('CameraSemantic')
 
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('Teleport')
             teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             teleport_client.connect(('localhost', port))
 

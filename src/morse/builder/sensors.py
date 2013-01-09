@@ -98,7 +98,7 @@ class Proximity(SensorCreator):
         mesh.color(.5, .5, .5)
         self.append(mesh)
         self.properties(Range = 30.0, Track = "Robot_Tag")
-        self.frequency(15)
+        self.frequency(12)
 
 class PTUPosture(SensorCreator):
     def __init__(self, name="ptu_posture"):

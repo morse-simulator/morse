@@ -25,10 +25,7 @@ class LightTest(MorseTestCase):
     def setUpEnv(self):
         atrv = Robot('atrv')
 
-        #cam = CameraVideo() # TODO bug pymorse socket port ?
-        # "pymorse.py", line 242, in run: _client.connect((self.host, self.port))
-        # OverflowError: getsockaddrarg: port must be 0-65535.
-        cam = Sensor('video_camera')
+        cam = CameraVideo('CameraVideo')
         cam.properties(capturing = True, cam_width = 320, cam_height = 240, \
                        cam_focal = 25.0000, Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
@@ -48,11 +45,10 @@ class LightTest(MorseTestCase):
 
     def test_light(self):
         with Morse() as morse:
-            cam_stream = morse.stream('CameraMain')
+            cam_stream = morse.stream('CameraVideo')
 
 
             port = morse.get_stream_port('LightAct')
-            print("port: "+str(port))
             light_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             light_stream.connect(('localhost', port))
 

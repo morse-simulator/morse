@@ -29,7 +29,7 @@ class Sick_Test(MorseTestCase):
         """
         robot = ATRV()
 
-        #sick = Sick() # TODO bug pose? line 92, in test_sick
+        #sick = Sick('Sick') # TODO bug pose? line 92, in test_sick
         #self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
         #AssertionError: 2.9966225624084473 != 6.0 within 0.05 delta
         sick = Sensor('sick')
@@ -38,7 +38,7 @@ class Sick_Test(MorseTestCase):
         robot.append(sick)
         sick.configure_mw('socket')
 
-        motion = MotionVW()
+        motion = MotionVW('MotionVW')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -56,7 +56,7 @@ class Sick_Test(MorseTestCase):
             # Read the data from the sick sensor
             self.sick_stream = morse.stream('Sick')
 
-            port = morse.get_stream_port('Motion_Controller')
+            port = morse.get_stream_port('MotionVW')
             self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.v_w_client.connect(('localhost', port))
 
