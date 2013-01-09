@@ -132,7 +132,8 @@ class Waypoint(ActuatorCreator):
         self.add_radar('Radar.L', 'Lcollision', +1)
         self.add_radar('Radar.R', 'Rcollision', -1)
     def add_radar(self, name, collision, fact):
-        bpy.ops.object.empty_add(type='ARROWS')
+        bpy.ops.object.add(type='EMPTY')
+        # bpy.ops.object.empty_add(type='ARROWS')
         bpy.context.object.name = name
         bpy.context.object.location = (0.7, fact*0.4, 0.8)
         bpy.context.object.parent = self._blendobj

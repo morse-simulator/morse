@@ -20,7 +20,8 @@ class ComponentCreator(AbstractComponent):
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
         bpy.ops.object.select_all(action='DESELECT')
-        bpy.ops.object.empty_add(type='ARROWS')
+        bpy.ops.object.add(type='EMPTY')
+        # bpy.ops.object.empty_add(type='ARROWS')
         obj = bpy.context.selected_objects[0]
         obj.name = cname
         # no collision by default for components
