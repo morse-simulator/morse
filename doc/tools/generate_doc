@@ -85,7 +85,7 @@ def parse_docstring(doc):
         if len(parts) == 2:
             doc = parts[0]
             returndoc = parts[1].split(':', 1)[1]
-            returndoc = returndoc.replace("\n", "")
+            returndoc = returndoc.replace("\n", " ")
             return (doc, None, returndoc)
         else:
             return (doc, None, None)
@@ -95,12 +95,12 @@ def parse_docstring(doc):
     returndoc = None
     paramsdoc = parts[0].split(":param ")
 
-    paramsdoc = [param.replace("\n", "").split(':', 1) for param in paramsdoc]
+    paramsdoc = [param.replace("\n", " ").split(':', 1) for param in paramsdoc]
     paramsdoc = [[x,y.strip()] for x, y in paramsdoc]
 
     if len(parts) == 2:
         returndoc = parts[1].split(':', 1)[1]
-        returndoc = returndoc.replace("\n", "")
+        returndoc = returndoc.replace("\n", " ")
 
 
     return (doc, paramsdoc,returndoc)
