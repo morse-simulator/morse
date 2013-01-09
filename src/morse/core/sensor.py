@@ -96,7 +96,8 @@ class Sensor(morse.core.object.Object):
 
     @service
     def get_local_data(self):
-        """Returns the current data stored in the sensor.
+        """
+        Returns the current data stored in the sensor.
 
         :return: a dictionary of the current sensor's data
         """

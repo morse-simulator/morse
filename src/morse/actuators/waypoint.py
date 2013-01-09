@@ -69,7 +69,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
     add_property('_target', "", 'Target', 'string', "name of a blender object in the scene. When specified,"
             "this object will be placed at the coordinates given to the actuator, to"
             "indicate the expected destination of the robot")
-    add_property('_ignore', "", 'Ignore', 'string', "List of property names. If "
+    add_property('_ignore', [], 'Ignore', 'string', "List of property names. If "
             "the object detected by the radars has any of these properties "
             "defined, it will be ignored by the obstacle avoidance, and will not "
             "make the robot change its trajectory. Useful when trying to move "
@@ -152,7 +152,8 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def setdest(self, x, y, z, tolerance=0.5, speed=1.0):
-        """ Set a new waypoint and returns.
+        """
+        Set a new waypoint and returns.
 
         The robot will try to go to this position, but the service 
         caller has no mean to know when the destination is reached
@@ -164,7 +165,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         :return: Returns always True (if the robot is already moving, the
         previous target is replaced by the new one) except if
         the destination is already reached. In this case, returns
-        False.
+        ``False``.
         """
 
         distance, gv, lv = self.blender_obj.getVectTo([x,y,z])
