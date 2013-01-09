@@ -16,13 +16,17 @@ from morse.actuators import armature_actuator, \
                             keyboard,          \
                             pa_10,             \
                             ptu,               \
+                            rotorcraft_attitude, \
                             rotorcraft_waypoint, \
-                            waypoint
+                            v_omega,           \
+                            waypoint,          \
+                            xy_omega
 
 from morse.sensors import battery,   \
                           camera,    \
                           odometry,  \
-                          proximity
+                          proximity, \
+                          thermometer
 
 import sys, os
 import fnmatch

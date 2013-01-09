@@ -32,6 +32,9 @@ class VWActuatorClass(morse.core.actuator.Actuator):
     def set_speed(self, v, w):
         """
         Modifies v and w according to the parameters
+
+        :param v: desired linear velocity (meter by second)
+        :param w: desired angular velocity (radian by second)
         """
         self.local_data['v'] = v
         self.local_data['w'] = w

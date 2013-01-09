@@ -8,8 +8,16 @@ from morse.helpers.components import add_data, add_property
 
 class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
     """
-    This class will read desired attitude and thrust as input
-    from an external middleware.
+    This actuator reads roll,pitch, yaw rate and thrust commands as e.g.
+    used to manually control a quadrotor via RC or by higher level
+    control loops. This controller is meant to be used by quadrotors and
+    similar flying robots with Rigid Body physics in blender. It is a
+    simple PD-controller which applies torques to the robot to change
+    and control the attitude. The yaw-rate input is integrated to yield
+    an absolute yaw setpoint for the controller. Thrust is directly
+    applied as force in z-direction of the robot.
+
+    .. note:: Angle are given in aerospace North East Down convention (NED)
     """
     
     _name = "Rotorcraft attitude motion controller"
@@ -20,11 +28,16 @@ class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
     add_data('yaw', 0.0, 'float', "yaw angle in radians")
     add_data('thrust', 0.0, 'float', "collective thrust: 0 .. 1 (= 0 .. 100%)")
 
-    add_property('_rp_pgain', 100.0, 'RollPitchPgain')
-    add_property('_rp_dgain', 20.0, 'RollPitchDgain')
-    add_property('_yaw_pgain', 16.0, 'YawPgain')
-    add_property('_yaw_dgain', 4.0, 'YawDgain')
-    add_property('_thrust_factor', 40.0, 'ThrustFactor')
+    add_property('_rp_pgain', 100.0, 'RollPitchPgain', 'float',
+                 'proportional gain for roll/pitch control')
+    add_property('_rp_dgain', 20.0, 'RollPitchDgain', 'float',
+                 'derivative gain for roll/pitch control')
+    add_property('_yaw_pgain', 16.0, 'YawPgain', 'float'
+                 'proportional gain for yaw control')
+    add_property('_yaw_dgain', 4.0, 'YawDgain', 'float',
+                 'derivative gain for yaw control')
+    add_property('_thrust_factor', 40.0, 'ThrustFactor', 'float',
+                 'multiplication factor for applied thrust force in N')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
