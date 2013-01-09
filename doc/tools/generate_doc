@@ -153,6 +153,7 @@ for module in [getattr(m, fn) for fn in dir(m)]:
             components[name] = {'object': component, 
                                 'type': ctype, 
                                 'desc': desc, 
+                                'module': module,
                                 'doc': component.__doc__}
 
         except TypeError: # .mro() not defined => not a class => not a component
@@ -189,6 +190,19 @@ for name, props in components.items():
 
 
 # Finally, generate doc
+def print_files(out, name, props):
+    title = "Associated files"
+    out.write(underline(title, '-') + '\n')
+
+    module_name = components[name]['module'].__name__.split('.')[-1]
+
+    out.write("    - `Source code <../../_modules/" +
+              components[name]['module'].__name__.replace('.', '/') +
+              ".html>`_\n")
+    out.write("    - `Unit-test <../../_modules/base/" +
+                module_name + "_testing.html>`_\n")
+                
+
 def print_data(out, name, props):
         title = "Exported data"
         out.write(underline(title, '-') + '\n')
@@ -281,7 +295,8 @@ for name, props in components.items():
             out.write("\n**" + props['desc'] + "**\n\n")
         
         out.write(parse_docstring(props['doc'])[0] + "\n\n")
-        
+
+        print_files(out, name, props)
         print_data(out, name, props)
         print_services(out, name, props)
         print_properties(out, name, props)
