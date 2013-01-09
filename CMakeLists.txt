@@ -153,18 +153,69 @@ FIND_PROGRAM(SPHINX_BUILD NAMES sphinx-build)
 IF (NOT SPHINX_BUILD)
 	MESSAGE(FATAL_ERROR "Can't find sphinx-build : will not build the documentation")
 ELSE()
-	SET (SPHINX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
-	SET (SPHINX_LATEX_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/tex)
-	SET (SPHINX_MAN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/man)
-	SET (SPHINX_BUILD_ENV env PYTHONPATH=$$PYTHONPATH:${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_CURRENT_SOURCE_DIR}/src ${SPHINX_BUILD})
+	SET (CMAKE_DOC_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc)
+	SET (SPHINX_OUTPUT ${CMAKE_DOC_OUT}/html)
+	SET (SPHINX_SRC ${CMAKE_DOC_OUT}/src)
+	SET (SPHINX_LATEX_OUTPUT ${CMAKE_DOC_OUT}/tex)
+	SET (SPHINX_MAN_OUTPUT ${CMAKE_DOC_OUT}/man)
+	SET (SPHINX_FALSE_PYTHON_ENV ${CMAKE_CURRENT_BINARY_DIR}/fakeenv)
+	SET (SPHINX_BUILD_ENV env PYTHONPATH=$$PYTHONPATH:${CMAKE_CURRENT_BINARY_DIR}:${SPHINX_FALSE_PYTHON_ENV}:${CMAKE_CURRENT_SOURCE_DIR}/src ${SPHINX_BUILD})
+
+	message(STATUS "echo ${SPHINX_BUILD_ENV}")
+	# Populate the false python environment
+	ADD_CUSTOM_TARGET(
+		populate_false_env ALL
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/mathutils
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/mathutils/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/bge
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bge/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/bpy
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bpy/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints/__init__.py
+	)
+
+	# Copy the documentation in builddir, so we can include the generated part too
+	ADD_CUSTOM_TARGET(
+		copy_doc ALL
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse ${SPHINX_SRC}/morse
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc/media ${SPHINX_SRC}/media
+	)
+
+	ADD_DEPENDENCIES(copy_doc revisiontag)
+
+	# Generate the documentation from the different components
+	ADD_CUSTOM_TARGET(
+		generate_doc ALL
+		COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/tools/generate_doc
+		WORKING_DIRECTORY ${SPHINX_SRC}/morse/user/
+	)
+
+	ADD_DEPENDENCIES(generate_doc copy_doc)
+	FIND_PROGRAM(SPHINX_APIDOC NAMES sphinx-apidoc)
+	IF (SPHINX_APIDOC)
+		ADD_CUSTOM_TARGET(
+			generate_api_doc ALL
+			COMMAND ${SPHINX_APIDOC} -o ${SPHINX_SRC}/morse/code ${CMAKE_CURRENT_SOURCE_DIR}/src)
+	ELSE()
+		ADD_CUSTOM_TARGET(
+			generate_api_doc ALL
+			COMMAND ${CMAKE_COMMAND} -E echo "sphinx-apidoc not found : skipping api documentation"
+		)
+	ENDIF()
+	ADD_DEPENDENCIES(generate_api_doc copy_doc populate_false_env)
+
+	# Generate API doc if we have the sphinx-api tool
+
 	ADD_CUSTOM_TARGET(
 		doc ALL
 		COMMAND ${SPHINX_BUILD_ENV} -b html
-								-c ${CMAKE_CURRENT_BINARY_DIR}/doc
-								   ${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-								   ${SPHINX_OUTPUT}
+								    -c ${CMAKE_DOC_OUT}
+									${SPHINX_SRC}/morse
+								    ${SPHINX_OUTPUT}
 	)
-	ADD_DEPENDENCIES(doc revisiontag)
+	ADD_DEPENDENCIES(doc generate_doc generate_api_doc)
 
 	FIND_PROGRAM(GZIP NAMES gzip)
 	IF (NOT GZIP)
@@ -175,7 +226,9 @@ ELSE()
 									   ${CMAKE_CURRENT_SOURCE_DIR}/doc/man
         								   ${SPHINX_MAN_OUTPUT} &&
 						  ${GZIP} -f ${SPHINX_MAN_OUTPUT}/*.1)
-		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz ${SPHINX_MAN_OUTPUT}/morseexec.1.gz ${SPHINX_MAN_OUTPUT}/multinode_server.1.gz
+		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morseexec.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/multinode_server.1.gz
 			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man/man1
 		)
 	ENDIF()
@@ -191,9 +244,9 @@ ELSE()
 	ADD_CUSTOM_TARGET(
 		latex_doc 
 		COMMAND ${SPHINX_BUILD_ENV} -b latex
-								-c ${CMAKE_CURRENT_BINARY_DIR}/doc/
-								${CMAKE_CURRENT_SOURCE_DIR}/doc/morse
-								${SPHINX_LATEX_OUTPUT}
+									-c ${CMAKE_DOC_OUT}
+									${SPHINX_SRC}/morse
+									${SPHINX_LATEX_OUTPUT}
 	)
 ENDIF()
 ENDIF()

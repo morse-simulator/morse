@@ -40,7 +40,7 @@ def insert_image(name):
         file = matches[0]
         print("Found image %s for the component %s" % (file, name))
         # take the first file found
-        return ".. image:: %s\n  :align: center\n  :width: 600\n\n" % file
+        return ".. image:: ../%s\n  :align: center\n  :width: 600\n\n" % file
 
     return ""
 
@@ -242,4 +242,4 @@ for name, props in components.items():
         print_services(out, name, props)
         print_properties(out, name, props)
 
-        out.write('\n\n*(this page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
+        out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
