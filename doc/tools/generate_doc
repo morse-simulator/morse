@@ -10,9 +10,19 @@ It generates doc for:
     - the services exported by the conmponent.
 """
 
-from morse.actuators import pa_10, ptu, destination, force_torque, waypoint, keyboard, armature_actuator
-from morse.sensors import odometry, camera, battery, proximity
+from morse.actuators import armature_actuator, \
+                            destination,       \
+                            force_torque,      \
+                            keyboard,          \
+                            pa_10,             \
+                            ptu,               \
+                            rotorcraft_waypoint, \
+                            waypoint
 
+from morse.sensors import battery,   \
+                          camera,    \
+                          odometry,  \
+                          proximity
 
 import sys, os
 import fnmatch

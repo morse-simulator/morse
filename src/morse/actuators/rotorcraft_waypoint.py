@@ -12,7 +12,7 @@ from morse.core import status
 
 
 class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
-    """ 
+    """
     This controller will receive a 3D destination point and heading
     and make the robot move to that location by changing attitude.
     This controller is meant for rotorcrafts like quadrotors.
@@ -24,19 +24,33 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
     add_data('x', 0.0, 'float', "waypoint x coordinate in meters")
     add_data('y', 0.0, 'float', "waypoint y coordinate in meters")
     add_data('z', 0.0, 'float', "waypoint z coordinate in meters")
-    add_data('yaw', 0.0, 'float', "desired yaw angle in radians")
+    add_data('yaw', 0.0, 'float', "desired heading angle in radians")
     add_data('tolerance', 0.2, 'float', "waypoint tolerance in meters")
 
-    add_property('_h_pgain', radians(6), 'HorizontalPgain')
-    add_property('_h_dgain', radians(8), 'HorizontalDgain')
-    add_property('_v_pgain', 8, 'VerticalPgain')
-    add_property('_v_dgain', 8, 'VerticalDgain')
-    add_property('_yaw_pgain', 12.0, 'YawPgain')
-    add_property('_yaw_dgain', 6.0, 'YawDgain')
-    add_property('_rp_pgain', 9.7, 'RollPitchPgain')
-    add_property('_rp_dgain', 2, 'RollPitchDgain')
-    add_property('_max_bank_angle', radians(30), 'MaxBankAngle')
-    add_property('_target', 'wp_target', 'Target')
+    add_property('_h_pgain', radians(6), 'HorizontalPgain', 'float',
+                 'proportional gain for the outer horizontal position [xy] loop')
+    add_property('_h_dgain', radians(8), 'HorizontalDgain', 'float',
+                 'derivative gain for the outer horizontal position [xy] loop')
+    add_property('_v_pgain', 8, 'VerticalPgain', 'float',
+                 'proportional gain for the altitude loop')
+    add_property('_v_dgain', 8, 'VerticalDgain', 'float',
+                 'derivative gain for the altitude loop')
+    add_property('_yaw_pgain', 12.0, 'YawPgain', 'float',
+                 'proportional gain for yaw control of the inner loop')
+    add_property('_yaw_dgain', 6.0, 'YawDgain', 'float',
+                 'derivative gain for yaw control of the inner loop')
+    add_property('_rp_pgain', 9.7, 'RollPitchPgain', 'float',
+                 'proportional gain for roll/pitch control of the inner loop')
+    add_property('_rp_dgain', 2, 'RollPitchDgain', 'float',
+                 'derivative gain for roll/pitch control of the inner loop')
+    add_property('_max_bank_angle', radians(30), 'MaxBankAngle', 'float',
+                 'limit the maximum roll/pitch angle of the robot. This \
+                  effectively limits the horizontal acceleration of the robot')
+    add_property('_target', 'wp_target', 'Target', 'string',
+                 'name of a blender object in the scene. When specified, \
+                  this object will be placed at the coordinates given to \
+                  the actuator, to indicate the expected destination of  \
+                  the robot. Make sure that this object has NO_COLLISION')
 
     def __init__(self, obj, parent=None):
 
@@ -96,19 +110,26 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def setdest(self, x, y, z, yaw, tolerance=0.2):
-        """ Set a new waypoint and returns.
+        """
+        Set a new waypoint and returns.
 
         The robot will try to go to this position, but the service 
         caller has no mean to know when the destination is reached
         or if it failed.
 
-        In most cases, the asynchronous service 'goto' should be 
+        In most cases, the asynchronous service 'goto' should be
         preferred.
 
-        Returns always True (if the robot is already moving, the
-        previous target is replaced by the new one) except if
-        the destination is already reached. In this case, returns
-        False.
+        :param x: x coordinate of the waypoint (meter)
+        :param y: y coordinate of the waypoint (meter)
+        :param z: z coordinate of the waypoint (meter)
+        :param yaw: orientation of the waypoint (radian)
+        :param tolerance: distance considered to decide that the
+        waypoint has been reached (meter)
+
+        :return: True (if the robot is already moving, the previous
+        target is replaced by the new one) except if the destination is
+        already reached. In this case, returns False.
         """
 
         distance, gv, lv = self.robot_parent.blender_obj.getVectTo([x, y, z])
@@ -129,10 +150,18 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
     @interruptible
     @async_service
     def goto(self, x, y, z, yaw, tolerance=0.2):
-        """ Go to a new destination.
+        """ 
+        Go to a new destination.
 
         The service returns when the destination is reached within
         the provided tolerance bounds.
+
+        :param x: x coordinate of the waypoint (meter)
+        :param y: y coordinate of the waypoint (meter)
+        :param z: z coordinate of the waypoint (meter)
+        :param yaw: orientation of the waypoint (radian)
+        :param tolerance: distance considered to decide that the
+        waypoint has been reached (meter)
         """
         self.local_data['x'] = x
         self.local_data['y'] = y
@@ -143,7 +172,9 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def get_status(self):
-        """ Return the current status (Transit or Arrived) """
+        """ 
+        Return the current status (Transit or Arrived)
+        """
         return self.robot_parent.move_status
 
 
