@@ -86,7 +86,7 @@ class ProximityTest(MorseTestCase):
             self.assertTrue('Target1' in prox['near_objects'])
 
             # Don't care about the direction, only check the distance
-            send_dest(teleport_client, -2.0, 0.0, 0.0)
+            send_dest(teleport_client, -3.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target3' in prox['near_objects'])
