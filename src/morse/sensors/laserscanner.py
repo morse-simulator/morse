@@ -119,20 +119,34 @@ class LaserScannerClass(morse.core.sensor.Sensor):
             the points found by the laser. The points are given with respect \
             to the location of the sensor, and stored as lists of three \
             elements. The number of points depends on the geometry of the arc \
-            parented to the sensor (see below).")
+            parented to the sensor (see below). The point (0, 0, 0) means that\
+            this ray has not it anything in its range")
     add_data('range_list', [], "list", "Array that stores the distance to the \
             first obstacle detected by each ray. The order indexing of this \
             array is the same as for point_list, so that the element in the \
             same index of both lists will correspond to the measures for the \
-            same ray.")
+            same ray. If the ray does not hit anything in its range it returns \
+            laser_range")
 
-    add_property('laser_range', 30.0, 'laser_range', "float", "The distance in meters from the center of the sensor to which it is capable of detecting other objects.")
-    add_property('resolution', 1.0, 'resolution', "float", "The angle between each laser in the sensor. Expressed in degrees in decimal format. (i. e.), half a degree is expressed as 0.5. Used when creating the arc object.")
-    add_property('scan_window', 180.0, 'scan_window', "float", "The full angle covered by the sensor. Expressed in degrees in decimal format. Used when creating the arc object.")
-    add_property('visible_arc', False, 'Visible_arc', "boolean", "if the laser arc should be displayed during the simulation")
-    add_property('layers', 1, 'layers', "integer", "Number of scanning planes used by the sensor.")
-    add_property('layer_separation', 0.8, 'layer_separation', "float", "The angular separation between the planes. Must be given in degrees.")
-    add_property('layer_offset', 0.125, 'layer_offset', "float", "The horizontal distance between the scan points in consecutive scanning layers. Must be given in degrees.")
+    add_property('laser_range', 30.0, 'laser_range', "float",
+                 "The distance in meters from the center of the sensor to which\
+                  it is capable of detecting other objects.")
+    add_property('resolution', 1.0, 'resolution', "float",
+                 "The angle between each laser in the sensor. Expressed in \
+                  degrees in decimal format. (i. e.), half a degree is     \
+                  expressed as 0.5. Used when creating the arc object.")
+    add_property('scan_window', 180.0, 'scan_window', "float",
+                 "The full angle covered by the sensor. Expressed in degrees \
+                  in decimal format. Used when creating the arc object.")
+    add_property('visible_arc', False, 'Visible_arc', "boolean",
+                 "if the laser arc should be displayed during the simulation")
+    add_property('layers', 1, 'layers', "integer",
+                  "Number of scanning planes used by the sensor.")
+    add_property('layer_separation', 0.8, 'layer_separation', "float",
+                 "The angular distance between the planes, in degrees.")
+    add_property('layer_offset', 0.125, 'layer_offset', "float",
+                 "The horizontal distance between the scan points in \
+                  consecutive scanning layers. Must be given in degrees.")
 
     def __init__(self, obj, parent=None):
         """
@@ -143,7 +157,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         arc_prefix = 'Arc_'
 
@@ -151,7 +165,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         for child in obj.children:
             if arc_prefix in child.name:
                 self._ray_arc = child
-                logger.info("Sick: Using arc object: '{0}'".format(self._ray_arc))
+                logger.info("Sick: Using arc object: '%s'" % self._ray_arc)
                 break
 
         # Set its visibility, according to the settings
@@ -181,7 +195,10 @@ class LaserScannerClass(morse.core.sensor.Sensor):
             # Insert zeros into the range list
             self.local_data['range_list'].append(0.0)
 
-            logger.debug("RAY %d = [%.4f, %.4f, %.4f]" % (vertex.index, self._ray_list[vertex.index-1][0],self._ray_list[vertex.index-1][1],self._ray_list[vertex.index-1][2]))
+            logger.debug("RAY %d = [%.4f, %.4f, %.4f]" %
+                         (vertex.index, self._ray_list[vertex.index-1][0],
+                                        self._ray_list[vertex.index-1][1],
+                                        self._ray_list[vertex.index-1][2]))
 
         # Get some information to be able to deform the arcs
         if self.visible_arc:
@@ -201,7 +218,10 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         Also deforms the geometry of the arc associated to the SICK,
         as a way to display the results obtained.
         """
-        #logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+        #logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" %
+        #                (self.blender_obj.position[0],
+        #                 self.blender_obj.position[1],
+        #                 self.blender_obj.position[2]))
 
         # Get the inverse of the transformation matrix
         inverse = self.position_3d.matrix.inverted()
@@ -213,8 +233,11 @@ class LaserScannerClass(morse.core.sensor.Sensor):
             correct_ray = self.position_3d.matrix * ray
 
             # Shoot a ray towards the target
-            target,point,normal = self.blender_obj.rayCast(correct_ray,None,self.laser_range)
-            #logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
+            target, point, normal = self.blender_obj.rayCast(correct_ray, None,
+                                                             self.laser_range)
+
+            #logger.debug("\tTarget, point, normal: %s, %s, %s" %
+            #               (target, point, normal))
 
             # Register when an intersection occurred
             if target:
@@ -230,7 +253,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
                 new_point = [0.0, 0.0, 0.0]
 
             # Save the information gathered
-            self.local_data['point_list'][index] = [new_point[0], new_point[1], new_point[2]]
+            self.local_data['point_list'][index] = new_point[:]
             self.local_data['range_list'][index] = distance
             index += 1
 
@@ -258,5 +281,6 @@ class LaserScannerClass(morse.core.sensor.Sensor):
                         #  the normals facing upwards.
                         if v_index % 3 == 2:
                             vertex = mesh.getVertex(mat, v_index)
-                            vertex.setXYZ(self.local_data['point_list'][index-1])
+                            vertex.setXYZ(
+                                    self.local_data['point_list'][index-1])
                             index += 1
