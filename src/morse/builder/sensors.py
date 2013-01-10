@@ -181,7 +181,7 @@ class LaserSensorWithArc(SensorCreator):
 
         laserscanner_obj = self._blendobj
 
-        material = get_ray_material()
+        material = self.get_ray_material()
 
         # Delete previously created arc
         for child in laserscanner_obj.children:
