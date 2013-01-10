@@ -340,12 +340,14 @@ class CameraVideo(SensorCreator):
         actuator.mode = 'TOGGLE'
         actuator.property = 'capturing'
         controller.link(sensor = sensor, actuator = actuator)
+        # looking in +x
+        self.rotate(x=math.pi/2, z=-math.pi/2)
         # append CameraMesh with its textures
         imported_objects = self.append_meshes(['CameraMesh'], "video_camera")
         # TODO fix the CameraMesh location and rotation in video_camera.blend
         camera_mesh = imported_objects[0]
-        camera_mesh.location = (-0.015, 0, 0)
-        camera_mesh.rotation_euler = (0, 0, -math.pi)
+        camera_mesh.rotation_euler = (0, -math.pi/2, 0)
+        camera_mesh.location = (0, 0, 0.015)
 
 class CameraDepth(CameraVideo):
     def __init__(self, name="CameraDepth"):
