@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse.builder." + __name__)
-import bpy
 import math
-from morse.builder.creator import SensorCreator
+from morse.builder.creator import SensorCreator, bpymorse
 from morse.builder.blenderobjects import *
 
 class Accelerometer(SensorCreator):
@@ -118,15 +117,16 @@ class Rosace(SensorCreator):
         self.properties(Heal_range = 2.0, Abilities = "1,2")
         self.frequency(6)
         # add Radar freq: 3 Hz, prop: Injured, angle: 60.0, distance: 10.0
-        bpy.ops.logic.sensor_add(type="RADAR")
-        sensor = bpy.context.object.game.sensors[-1]
+        bpymorse.add_sensor(type="RADAR")
+        obj = bpymorse.context_object()
+        sensor = obj.game.sensors[-1]
         sensor.angle = 60.0
         sensor.distance = 10.0
         sensor.use_pulse_true_level = True
         sensor.frequency = 20
         sensor.property = "Injured"
         # link it to the Python controller
-        controller = bpy.context.object.game.controllers[-1]
+        controller = obj.game.controllers[-1]
         controller.link(sensor = sensor)
 
 class StereoUnit(SensorCreator):
@@ -159,19 +159,19 @@ class LaserSensorWithArc(SensorCreator):
         'resolution and 'scan_window' are used to determine how many points
         will be added to the arc.
         """
-        scene = bpy.context.scene
+        scene = bpymorse.get_context_scene()
 
         laserscanner_obj = self._blendobj
 
         material = None
+        # Get the mesh and the "RayMat" material for the arc
+        for mat in bpymorse.get_materials():
+            if "RayMat" in mat.name:
+                material = mat.material
+                break
+
+        # Delete previously created arc
         for child in laserscanner_obj.children:
-            # Get the mesh and the "RayMat" material for the arc
-            if 'SickMesh' in child.name:
-                for mat in child.material_slots:
-                    if "RayMat" in mat.name:
-                        material = mat.material
-                        break
-            # Delete previously created arc
             if child.name.startswith("Arc_"):
                 scene.objects.unlink( child )
 
@@ -190,7 +190,7 @@ class LaserSensorWithArc(SensorCreator):
             layer_offset = 0.0
         logger.debug ("Creating %d arc(s) of %.2f degrees, resolution %.2f" % \
                       (layers, window, resolution))
-        mesh = bpy.data.meshes.new( "ArcMesh" )
+        mesh = bpymorse.new_mesh( "ArcMesh" )
         # Add the center vertex to the list of vertices
         verts = [ [0.0, 0.0, 0.0] ]
         faces = []
@@ -234,7 +234,7 @@ class LaserSensorWithArc(SensorCreator):
         mesh.update()
         # Compose the name of the arc
         arc_name = "Arc_%d" % window
-        arc = bpy.data.objects.new( arc_name, mesh )
+        arc = bpymorse.new_object( arc_name, mesh )
         arc.data = mesh
         # Remove collision detection for the object
         arc.game.physics_type = 'NO_COLLISION'
@@ -316,13 +316,14 @@ class CameraVideo(SensorCreator):
         # set the frequency to 3 (20ips for ticrate = 60Hz)
         self.frequency(3)
         # add toggle capture action (`Space` key)
-        bpy.ops.logic.sensor_add(type="KEYBOARD")
-        sensor = bpy.context.object.game.sensors[-1]
+        bpymorse.add_sensor(type="KEYBOARD")
+        obj = bpymorse.get_context_object()
+        sensor = obj.game.sensors[-1]
         sensor.key = 'SPACE'
-        bpy.ops.logic.controller_add(type='LOGIC_AND')
-        controller = bpy.context.object.game.controllers[-1]
-        bpy.ops.logic.actuator_add(type='PROPERTY')
-        actuator = bpy.context.object.game.actuators[-1]
+        bpymorse.add_controller(type='LOGIC_AND')
+        controller = obj.game.controllers[-1]
+        bpymorse.add_actuator(type='PROPERTY')
+        actuator = obj.game.actuators[-1]
         actuator.mode = 'TOGGLE'
         actuator.property = 'capturing'
         controller.link(sensor = sensor, actuator = actuator)
@@ -354,14 +355,15 @@ class Velodyne(SensorCreator):
         self.properties(Visible_arc = True, laser_range = 50.0, \
                         scan_window = 31.500, resolution = 0.5)
         # Add Always (use_true_level) - And - Motion (rotation z: 0.017453)
-        bpy.ops.logic.sensor_add() # default is Always sensor
-        sensor = bpy.context.object.game.sensors[-1]
+        bpymorse.add_sensor() # default is Always sensor
+        obj = bpymorse.context_object()
+        sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True
-        bpy.ops.logic.controller_add(type='LOGIC_AND')
-        controller = bpy.context.object.game.controllers[-1]
+        bpymorse.add_controller(type='LOGIC_AND')
+        controller = obj.game.controllers[-1]
         # Motion (rotation z: 0.017453)
-        bpy.ops.logic.actuator_add(type='MOTION')
-        actuator = bpy.context.object.game.actuators[-1]
+        bpymorse.add_actuator(type='MOTION')
+        actuator = obj.game.actuators[-1]
         actuator.offset_rotation.z = math.radians(1)
         controller.link(sensor = sensor, actuator = actuator)
         # append velodyne mesh, from MORSE_COMPONENTS/sensors/velodyne.blend

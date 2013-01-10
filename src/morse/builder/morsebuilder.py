@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
-import bpy
 import json
 import math
 from morse.builder.abstractcomponent import *
@@ -72,12 +71,12 @@ class PassiveObject(AbstractComponent):
 
         # Add collision sensor for object placement
         if not 'Collision' in obj.game.sensors:
-            bpy.ops.logic.sensor_add(type = 'NEAR')
+            bpymorse.add_sensor(type = 'NEAR')
             sens = obj.game.sensors[-1]
             sens.name = 'Collision'
             sens.distance = 0.05
             sens.reset_distance = 0.075
-            bpy.ops.logic.controller_add()
+            bpymorse.add_controller()
             contr = obj.game.controllers[-1]
             contr.link(sensor = sens)
 
@@ -117,7 +116,7 @@ class Robot(Component):
 #        wheels = [child for child in self._blendobj.children if \
 #                  child.name.lower().startswith("wheel")]
 #        for wheel in wheels:
-#            bpy.ops.object.select_all(action='DESELECT')
+#            bpymorse.deselect_all()
 #            bpy.ops.object.select_pattern(pattern=wheel.name, extend=False)
 #            bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 #    def __del__(self):
@@ -135,7 +134,7 @@ class WheeledRobot(Robot):
         """ Make the wheels orphans, but keep the transormation applied to
             the parent robot """
         # Force Blender to update the transformation matrices of objects
-        bpy.context.scene.update()
+        bpymorse.get_context_scene().update()
         wheels = [child for child in self._blendobj.children if \
                   child.name.lower().startswith("wheel")]
         import mathutils
@@ -169,6 +168,7 @@ class Sensor(Component):
     def __init__(self, filename):
         Component.__init__(self, 'sensors', filename)
 
+    # @deprecated
     def create_sick_arc(self):
         """ Create an arc for use with the SICK sensor
 
@@ -176,23 +176,24 @@ class Sensor(Component):
         'resolution and 'scan_window' are used to determine how many points
         will be added to the arc.
         """
-        scene = bpy.context.scene
+        logger.warning("DEPRECATED : Sensor.create_sick_arc is deprecated, " + \
+                       "use LaserSensorWithArc.create_laser_arc instead")
+
+        scene = bpymorse.get_context_scene()
 
         sick_obj = self._blendobj
 
+        material = None
+        # Get the mesh and the "RayMat" material for the arc
+        for mat in bpymorse.get_materials():
+            if "RayMat" in mat.name:
+                material = mat.material
+                break
+
+        # Delete previously created arc
         for child in sick_obj.children:
-            # Get the mesh and the "RayMat" material for the arc
-            if 'SickMesh' in child.name:
-                for mat in child.material_slots:
-                    if "RayMat" in mat.name:
-                        material = mat.material
-                        break
-            # TODO: Remove this code and the arc when no longer needed
-            # Find and remove the default arc included in the sick.blend file
-            # This object is kept for backwards compatibility
-            if 'Arc_180' in child.name:
-                old_arc = child
-                scene.objects.unlink( old_arc )
+            if child.name.startswith("Arc_"):
+                scene.objects.unlink( child )
 
         # Read the parameters to create the arc
         properties = sick_obj.game.properties
@@ -208,7 +209,7 @@ class Sensor(Component):
             layer_separation = 0.0
             layer_offset = 0.0
         logger.debug ("Creating %d arc(s) of %.2f degrees, resolution %.2f" % (layers, window, resolution))
-        mesh = bpy.data.meshes.new( "ArcMesh" )
+        mesh = bpymorse.new_mesh( "ArcMesh" )
         # Add the center vertex to the list of vertices
         verts = [ [0.0, 0.0, 0.0] ]
         faces = []
@@ -250,7 +251,7 @@ class Sensor(Component):
         mesh.update()
         # Compose the name of the arc
         arc_name = "Arc_%d" % window
-        arc = bpy.data.objects.new( arc_name, mesh )
+        arc = bpymorse.new_object( arc_name, mesh )
         arc.data = mesh
         # Remove collision detection for the object
         arc.game.physics_type = 'NO_COLLISION'
@@ -293,10 +294,10 @@ class Environment(Component):
         self._display_camera = None
 
         # define 'Scene_Script_Holder' as the blender object of Enrivonment
-        if not 'Scene_Script_Holder' in bpy.data.objects:
+        if not 'Scene_Script_Holder' in bpymorse.get_objects():
             # Add the necessary objects
             base = Component('props', 'basics')
-        self.set_blender_object(bpy.data.objects['Scene_Script_Holder'])
+        self.set_blender_object(bpymorse.get_object('Scene_Script_Holder'))
         # Write the name of the 'environment file'
 
     def _write_multinode(self, node_name):
@@ -309,7 +310,7 @@ class Environment(Component):
             logger.warning("Node " + node_name + " is not defined in the " + \
                 "env.multinode_distribution dict. It will manage no robot!")
             self.multinode_distribution[node_name] = []
-        for obj in bpy.data.objects:
+        for obj in bpymorse.get_objects():
             p = obj.game.properties
             # Here we check that all objects declared for this node are robots
             if obj.name in self.multinode_distribution[node_name]:
@@ -335,10 +336,10 @@ class Environment(Component):
                         'server_address': self._server_address,
                         'server_port': self._server_port,}
         # Create the config file if it does not exist
-        if not 'multinode_config.py' in bpy.data.texts.keys():
-            bpy.ops.text.new()
-            bpy.data.texts[-1].name = 'multinode_config.py'
-        cfg = bpy.data.texts['multinode_config.py']
+        if not 'multinode_config.py' in bpymorse.get_texts.keys():
+            bpymorse.new_text()
+            bpymorse.get_last_text().name = 'multinode_config.py'
+        cfg = bpymorse.get_text('multinode_config.py')
         cfg.clear()
         cfg.write('node_config = ' + json.dumps(node_config, indent=1) )
         cfg.write('\n')
@@ -374,33 +375,33 @@ class Environment(Component):
 
         self.properties(environment_file = str(self._environment_file))
         # Set the position of the camera
-        camera_fp = bpy.data.objects['CameraFP']
+        camera_fp = bpymorse.get_object('CameraFP')
         camera_fp.location = self._camera_location
         camera_fp.rotation_euler = self._camera_rotation
 
         if not self.fastmode:
             # make sure OpenGL shading language shaders (GLSL) is the
             # material mode to use for rendering
-            bpy.context.scene.game_settings.material_mode = 'GLSL'
+            bpymorse.get_context_scene().game_settings.material_mode = 'GLSL'
         else:
-            bpy.context.scene.game_settings.material_mode = 'SINGLETEXTURE'
+            bpymorse.get_context_scene().game_settings.material_mode = 'SINGLETEXTURE'
             self.set_viewport("WIREFRAME")
 
         # Set the unit system to use for button display (in edit mode) to metric
-        bpy.context.scene.unit_settings.system = 'METRIC'
+        bpymorse.get_context_scene().unit_settings.system = 'METRIC'
         # Select the type of Framing to Extend,
         # Show the entire viewport in the display window,
         # viewing more horizontally or vertically.
-        bpy.context.scene.game_settings.frame_type = 'EXTEND'
+        bpymorse.get_context_scene().game_settings.frame_type = 'EXTEND'
         # Start player with a visible mouse cursor
-        bpy.context.scene.game_settings.show_mouse = True
+        bpymorse.get_context_scene().game_settings.show_mouse = True
 
         # Make CameraFP the active camera
-        bpy.ops.object.select_all(action='DESELECT')
+        bpymorse.deselect_all()
         camera_fp.select = True
-        bpy.context.scene.objects.active = camera_fp
+        bpymorse.get_context_scene().objects.active = camera_fp
         # Set default camera
-        bpy.context.scene.camera = camera_fp
+        bpymorse.get_context_scene().camera = camera_fp
 
         self._created = True
 
@@ -410,40 +411,40 @@ class Environment(Component):
                       default: dark azure (0.05, 0.22, 0.4)
         """
         # Set the color at the horizon to dark azure
-        bpy.context.scene.world.horizon_color = color
+        bpymorse.get_context_scene().world.horizon_color = color
 
     def show_debug_properties(self, value=True):
         if isinstance(value, bool):
-            bpy.context.scene.game_settings.show_debug_properties = value
+            bpymorse.get_context_scene().game_settings.show_debug_properties = value
 
     def show_framerate(self, value=True):
         if isinstance(value, bool):
-            bpy.context.scene.game_settings.show_framerate_profile = value
+            bpymorse.get_context_scene().game_settings.show_framerate_profile = value
 
     def show_physics(self, value=True):
         if isinstance(value, bool):
-            bpy.context.scene.game_settings.show_physics_visualization = value
+            bpymorse.get_context_scene().game_settings.show_physics_visualization = value
 
     def set_gravity(self, gravity=9.81):
         if isinstance(gravity, float):
-            bpy.context.scene.game_settings.physics_gravity = gravity
+            bpymorse.get_context_scene().game_settings.physics_gravity = gravity
 
     def set_viewport(self, viewport_shade='WIREFRAME'):
         """ set_viewport
         :param viewport_shade: enum in ['BOUNDBOX', 'WIREFRAME', 'SOLID', 'TEXTURED'], default 'WIREFRAME'
         """
-        for area in bpy.context.window.screen.areas:
+        for area in bpymorse.get_context_window().screen.areas:
             if area.type == 'VIEW_3D':
                 for space in area.spaces:
                     if space.type == 'VIEW_3D':
                         space.viewport_shade = viewport_shade
 
     def set_auto_start(self, auto_start=True):
-        bpy.context.scene.render.engine = 'BLENDER_GAME'
-        bpy.context.scene.game_settings.use_auto_start = auto_start
+        bpymorse.get_context_scene().render.engine = 'BLENDER_GAME'
+        bpymorse.get_context_scene().game_settings.use_auto_start = auto_start
 
     def set_debug(self, debug=True):
-        bpy.app.debug = debug
+        bpymorse.set_debug(debug)
 
     def set_stereo(self, mode='ANAGLYPH', eye_separation=0.1, stereo='STEREO'):
         """ set_stereo
@@ -453,15 +454,15 @@ class Environment(Component):
         :param eye_separation: Distance between the eyes. float in [0.01, 5], default 0.1
         :param stereo: enum in ['NONE', 'STEREO', 'DOME'], default 'STEREO'
         """
-        bpy.context.scene.game_settings.stereo = stereo
-        bpy.context.scene.game_settings.stereo_mode = mode
-        bpy.context.scene.game_settings.stereo_eye_separation = eye_separation
+        bpymorse.get_context_scene().game_settings.stereo = stereo
+        bpymorse.get_context_scene().game_settings.stereo_mode = mode
+        bpymorse.get_context_scene().game_settings.stereo_eye_separation = eye_separation
 
     def set_animation_record(self, record=True):
         """ Record animation to F-Curves, so you can render it later
         :param record: boolean, default True
         """
-        bpy.context.scene.game_settings.use_animation_record = record
+        bpymorse.get_context_scene().game_settings.use_animation_record = record
 
     def configure_multinode(self, protocol='socket',
             server_address='localhost', server_port='65000', distribution=None):
@@ -485,8 +486,8 @@ class Environment(Component):
         """ Set the material of the Screen object to the same as the one indicated in the _display_camera variable
         """
         camera = None
-        screen = bpy.data.objects['Screen']
-        caption = bpy.data.objects['CameraID_text']
+        screen = bpymorse.get_object('Screen')
+        caption = bpymorse.get_object('CameraID_text')
         blender_component = self._display_camera._blendobj
         # Find the mesh object with a texture called 'ScreenMat'
         for child in blender_component.children:

@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 import os
-import bpy
 from morse.builder import AbstractComponent, MORSE_COMPONENTS
 
 class Human(AbstractComponent):
@@ -60,18 +59,17 @@ class Human(AbstractComponent):
         # IK human has no object called Hips_Empty, so avoid this step
         if not style:
             # fix for Blender 2.6 Animations
-            if bpy.app.version > (2,59,0):
-                if obj:
-                    hips = self.get_selected("Hips_Empty")
-                    i = 0
-                    for act in hips.game.actuators:
-                        act.layer = i
-                        i = i + 1
+            if obj:
+                hips = self.get_selected("Hips_Empty")
+                i = 0
+                for act in hips.game.actuators:
+                    act.layer = i
+                    i = i + 1
 
-                    i = 0
-                    for act in obj.game.actuators:
-                        act.layer = i
-                        i = i + 1
+                i = 0
+                for act in obj.game.actuators:
+                    act.layer = i
+                    i = i + 1
 
     def use_world_camera(self):
         self.properties(WorldCamera = True)

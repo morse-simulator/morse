@@ -36,11 +36,12 @@ class Keyboard(ActuatorCreator):
         ActuatorCreator.__init__(self, name, "morse/actuators/keyboard", \
                                  "KeyboardActuatorClass", "armature_actuator")
         self.properties(Speed = 1.0)
+        obj = bpymorse.get_context_object()
         # replace Always sensor by Keyboard sensor
-        sensor = bpy.context.object.game.sensors[-1]
+        sensor = obj.game.sensors[-1]
         sensor.type = 'KEYBOARD'
         # need to get the new Keyboard Sensor object
-        sensor = bpy.context.object.game.sensors[-1]
+        sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True
         sensor.use_all_keys = True
 
@@ -132,28 +133,30 @@ class Waypoint(ActuatorCreator):
         self.add_radar('Radar.L', 'Lcollision', +1)
         self.add_radar('Radar.R', 'Rcollision', -1)
     def add_radar(self, name, collision, fact):
-        bpy.ops.object.add(type='EMPTY')
-        # bpy.ops.object.empty_add(type='ARROWS')
-        bpy.context.object.name = name
-        bpy.context.object.location = (0.7, fact*0.4, 0.8)
-        bpy.context.object.parent = self._blendobj
-        bpy.ops.object.game_property_new(type='BOOL', name=collision)
-        prop = bpy.context.object.game.properties[-1]
+        bpymorse.deselect_all()
+        bpymorse.add_object(type='EMPTY')
+        # bpymorse.add_empty(type='ARROWS')
+        obj = bpymorse.get_context_object()
+        obj.name = name
+        obj.location = (0.7, fact*0.4, 0.8)
+        obj.parent = self._blendobj
+        bpymorse.new_game_property(type='BOOL', name=collision)
+        prop = obj.game.properties[-1]
         prop.value = False
-        bpy.ops.logic.sensor_add(type="RADAR")
-        sensor = bpy.context.object.game.sensors[-1]
+        bpymorse.add_sensor(type="RADAR")
+        sensor = obj.game.sensors[-1]
         sensor.angle = 5.0
         sensor.distance = 3.0
         sensor.axis = 'XAXIS'
         sensor.use_pulse_true_level = True
         sensor.frequency = 20
-        self.radar_set_collision(sensor, 'LOGIC_AND',  collision, True)
-        self.radar_set_collision(sensor, 'LOGIC_NAND', collision, False)
-    def radar_set_collision(self, sensor, controller_type, collision, value):
-        bpy.ops.logic.controller_add(type=controller_type)
-        controller = bpy.context.object.game.controllers[-1]
-        bpy.ops.logic.actuator_add(type='PROPERTY')
-        actuator = bpy.context.object.game.actuators[-1]
+        self.radar_set_collision(obj, sensor, 'LOGIC_AND',  collision, True)
+        self.radar_set_collision(obj, sensor, 'LOGIC_NAND', collision, False)
+    def radar_set_collision(self, obj, sensor, controller_type, collision, value):
+        bpymorse.add_controller(type=controller_type)
+        controller = obj.game.controllers[-1]
+        bpymorse.add_actuator(type='PROPERTY')
+        actuator = obj.game.actuators[-1]
         actuator.mode = 'TOGGLE'
         actuator.property = collision
         actuator.mode = 'ASSIGN'

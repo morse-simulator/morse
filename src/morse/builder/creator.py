@@ -1,6 +1,5 @@
 import os
-import bpy
-from morse.builder import AbstractComponent, MORSE_COMPONENTS
+from morse.builder import AbstractComponent, MORSE_COMPONENTS, bpymorse
 
 class ComponentCreator(AbstractComponent):
     def __init__(self, cname, category, filename=''):
@@ -19,10 +18,10 @@ class ComponentCreator(AbstractComponent):
         :return: a new AbstractComponent instance.
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
-        bpy.ops.object.select_all(action='DESELECT')
-        bpy.ops.object.add(type='EMPTY')
-        # bpy.ops.object.empty_add(type='ARROWS')
-        obj = bpy.context.selected_objects[0]
+        bpymorse.deselect_all()
+        bpymorse.add_object(type='EMPTY')
+        # bpymorse.add_empty(type='ARROWS')
+        obj = bpymorse.get_first_selected_object()
         obj.name = cname
         # no collision by default for components
         obj.game.physics_type = 'NO_COLLISION'
@@ -99,7 +98,7 @@ def get_properties_str(name):
     Visible_arc = True, Path = 'morse/sensors/sick', resolution = 0.25,
     Class = 'LaserScannerClass'
     """
-    obj = bpy.data.objects[name]
+    obj = bpymorse.get_object(name)
     properties_dictionary = get_properties(obj)
     return ", ".join(["%s = %s"%(pname, properties_dictionary[pname]) \
                       for pname in properties_dictionary])

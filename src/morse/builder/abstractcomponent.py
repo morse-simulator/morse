@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
-import bpy
 import json
-from morse.core.exceptions import MorseBuilderNoComponentError
+from morse.builder import bpymorse
 from morse.builder.data import *
 
 class Configuration(object):
@@ -30,10 +29,10 @@ class Configuration(object):
 
     def write_config():
         """ Write the 'component_config.py' file with the supplied settings """
-        if not 'component_config.py' in bpy.data.texts.keys():
-            bpy.ops.text.new()
-            bpy.data.texts[-1].name = 'component_config.py'
-        cfg = bpy.data.texts['component_config.py']
+        if not 'component_config.py' in bpymorse.get_texts().keys():
+            bpymorse.new_text()
+            bpymorse.get_last_text().name = 'component_config.py'
+        cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
         cfg.write('component_datastream = ' + json.dumps(Configuration.datastream, indent=1) )
         cfg.write('\n')
@@ -139,10 +138,8 @@ class AbstractComponent(object):
         :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
                       optional, auto-detect, default=None)
         """
-        bpy.ops.object.select_all(action = 'DESELECT')
-        self._blendobj.select = True
-        bpy.context.scene.objects.active = self._blendobj
-        bpy.ops.object.game_property_new()
+        self.select()
+        bpymorse.new_game_property()
         prop = self._blendobj.game.properties
         # select the last property in the list (which is the one we just added)
         prop[-1].name = name
@@ -167,6 +164,9 @@ class AbstractComponent(object):
         prop[pid].value = value
         return prop[pid]
 
+    def select(self):
+        bpymorse.select_only(self._blendobj)
+
     def get_selected(self, name, objects=None):
         """ get_selected returns the object with the name ``name`` from the
         selected objects list (usefull after appending)
@@ -177,7 +177,7 @@ class AbstractComponent(object):
         param `name` from those selected (imported object are selected)
         """
         if not objects:
-            objects = bpy.context.selected_objects
+            objects = bpymorse.get_selected_objects()
         for obj in objects:
             if obj.name == name:
                 return obj
@@ -185,7 +185,7 @@ class AbstractComponent(object):
         # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
         test_prefix = name[:17] + '.'
         # look for candidates
-        candidates = [obj for obj in bpy.context.selected_objects if \
+        candidates = [obj for obj in bpymorse.get_selected_objects() if \
                       obj.name.startswith(test_prefix)]
         if len(candidates) > 0:
             if len(candidates) > 1:
@@ -194,7 +194,7 @@ class AbstractComponent(object):
             return candidates[0]
         else:
             logger.warning(test_prefix + ": no candidate in " + \
-                           str(bpy.context.selected_objects))
+                           str(bpymorse.get_selected_objects()))
             return None
 
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
@@ -262,7 +262,7 @@ class AbstractComponent(object):
             if frequency is set, delay is obtained by fps / frequency.
         """
         if frequency:
-            delay = max(0, bpy.context.scene.game_settings.fps // frequency - 1)
+            delay = max(0, bpymorse.get_fps() // frequency - 1)
         sensors = [s for s in self._blendobj.game.sensors if s.type == 'ALWAYS']
         if len(sensors) > 1:
             logger.warning(self.name + " has too many Game Logic sensors to "+\
@@ -299,31 +299,15 @@ class AbstractComponent(object):
             logger.warning(self.name + ": unknown category: " + calling_module)
 
         # add Game Logic sensor and controller to simulate the component
-        bpy.ops.object.select_all(action = 'DESELECT')
-        self._blendobj.select = True
-        bpy.context.scene.objects.active = self._blendobj
-        bpy.ops.logic.sensor_add() # default is Always sensor
+        self.select()
+        bpymorse.add_sensor() # default is Always sensor
         sensor = self._blendobj.game.sensors[-1]
         sensor.use_pulse_true_level = True
-        bpy.ops.logic.controller_add(type='PYTHON')
+        bpymorse.add_controller(type='PYTHON')
         controller = self._blendobj.game.controllers[-1]
         controller.mode = 'MODULE'
         controller.module = calling_module
         controller.link(sensor = sensor)
-
-    def get_objects_in_blend(self, filepath):
-        objects = []
-        try:
-            with bpy.data.libraries.load(filepath) as (src, _):
-                try:
-                    objects = [obj for obj in src.objects]
-                except UnicodeDecodeError as detail:
-                    logger.error("Unable to open file '%s'. Exception: %s" % \
-                                 (filepath, detail))
-        except IOError as detail:
-            logger.error(detail)
-            raise MorseBuilderNoComponentError("Component not found")
-        return objects
 
     def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the objects to the scene
@@ -352,20 +336,20 @@ class AbstractComponent(object):
             return
 
         if not objects: # link_append all objects from blend file
-            objects = self.get_objects_in_blend(filepath)
+            objects = bpymorse.get_objects_in_blend(filepath)
 
         if prefix: # filter (used by PassiveObject)
             objects = [obj for obj in objects if obj.startswith(prefix)]
 
-        # Format the objects list for bpy.ops.wm.link_append
+        # Format the objects list for link_append
         objlist = [{'name':obj} for obj in objects]
 
-        bpy.ops.object.select_all(action='DESELECT')
+        bpymorse.deselect_all()
         # Append the objects to the scene, and (auto)select them
-        bpy.ops.wm.link_append(directory=filepath + '/Object/', link=False,
-                               autoselect=True, files=objlist)
+        bpymorse.link_append(directory=filepath + '/Object/', link=False,
+                             autoselect=True, files=objlist)
 
-        return bpy.context.selected_objects
+        return bpymorse.get_selected_objects()
 
     def append_collada(self, component=None):
         """ Append Collada objects to the scene
@@ -393,11 +377,11 @@ class AbstractComponent(object):
             return
 
         # Save a list of objects names before importing Collada
-        objects_names = [obj.name for obj in bpy.data.objects]
+        objects_names = [obj.name for obj in bpymorse.get_objects()]
         # Import Collada from filepath
-        bpy.ops.wm.collada_import(filepath=filepath)
+        bpymorse.collada_import(filepath=filepath)
         # Get a list of the imported objects
-        imported_objects = [obj for obj in bpy.data.objects \
+        imported_objects = [obj for obj in bpymorse.get_objects() \
                             if obj.name not in objects_names]
 
         return imported_objects
