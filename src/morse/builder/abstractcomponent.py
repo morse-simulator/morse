@@ -324,6 +324,8 @@ class AbstractComponent(object):
 
         if component.endswith('.blend'):
             filepath = os.path.abspath(component) # external blend file
+            if not os.path.exists(filepath): # former PassiveObject way
+                filepath = os.path.join(MORSE_COMPONENTS, component)
         else:
             filepath = os.path.join(MORSE_COMPONENTS, self._category, \
                                     component + '.blend')
