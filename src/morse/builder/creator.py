@@ -97,7 +97,7 @@ def get_properties_str(name):
     get_properties_str('Sick') gives
     laser_range = 30.0, Component_Tag = True, scan_window = 180.0, 
     Visible_arc = True, Path = 'morse/sensors/sick', resolution = 0.25,
-    Class = 'SICKClass'
+    Class = 'LaserScannerClass'
     """
     obj = bpy.data.objects[name]
     properties_dictionary = get_properties(obj)

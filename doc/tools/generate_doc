@@ -22,7 +22,8 @@ from morse.actuators import armature_actuator, \
                             waypoint,          \
                             xy_omega
 
-from morse.sensors import battery,   \
+from morse.sensors import laserscanner, \
+                          battery,   \
                           camera,    \
                           odometry,  \
                           proximity, \

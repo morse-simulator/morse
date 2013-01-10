@@ -153,18 +153,18 @@ class LaserSensorWithArc(SensorCreator):
         SensorCreator.__init__(self, name, cpath, cclass, bname)
 
     def create_laser_arc(self):
-        """ Create an arc for use with the SICK sensor
+        """ Create an arc for use with the laserscanner sensor
 
-        The arc is created using the parameters in the Sick Empty.
+        The arc is created using the parameters in the laserscanner Empty.
         'resolution and 'scan_window' are used to determine how many points
         will be added to the arc.
         """
         scene = bpy.context.scene
 
-        sick_obj = self._blendobj
+        laserscanner_obj = self._blendobj
 
         material = None
-        for child in sick_obj.children:
+        for child in laserscanner_obj.children:
             # Get the mesh and the "RayMat" material for the arc
             if 'SickMesh' in child.name:
                 for mat in child.material_slots:
@@ -176,7 +176,7 @@ class LaserSensorWithArc(SensorCreator):
                 scene.objects.unlink( child )
 
         # Read the parameters to create the arc
-        properties = sick_obj.game.properties
+        properties = laserscanner_obj.game.properties
         resolution = properties['resolution'].value
         window = properties['scan_window'].value
         # Parameters for multi layer sensors
@@ -243,8 +243,8 @@ class LaserSensorWithArc(SensorCreator):
             arc.active_material = material
         # Link the new object in the scene
         scene.objects.link( arc )
-        # Set the parent to be the Sick Empty
-        arc.parent = sick_obj
+        # Set the parent to be the laserscanner Empty
+        arc.parent = laserscanner_obj
 
     def __del__(self):
         arc = [child for child in self._blendobj.children
@@ -254,8 +254,8 @@ class LaserSensorWithArc(SensorCreator):
 
 class Hokuyo(LaserSensorWithArc):
     def __init__(self, name="Hokuyo"):
-        LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
-                                    "SICKClass", "hokuyo")
+        LaserSensorWithArc.__init__(self, name, "morse/sensors/laserscanner", \
+                                    "LaserScannerClass", "hokuyo")
         mesh = Cylinder("HokuyoCylinder")
         mesh.scale = (.04, .04, .08)
         mesh.color(0, 0, 0)
@@ -268,8 +268,8 @@ class Hokuyo(LaserSensorWithArc):
 
 class Sick(LaserSensorWithArc):
     def __init__(self, name="Sick"):
-        LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
-                                    "SICKClass", "sick")
+        LaserSensorWithArc.__init__(self, name, "morse/sensors/laserscanner", \
+                                    "LaserScannerClass", "sick")
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 180.0, resolution = 1.0)
@@ -280,8 +280,8 @@ class Sick(LaserSensorWithArc):
 
 class SickLDMRS(LaserSensorWithArc):
     def __init__(self, name="Sick"):
-        LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
-                                    "SICKClass", "sick-ld-mrs")
+        LaserSensorWithArc.__init__(self, name, "morse/sensors/laserscanner", \
+                                    "LaserScannerClass", "sick-ld-mrs")
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 100.0, resolution = 0.25, layers = 4,
@@ -293,8 +293,8 @@ class SickLDMRS(LaserSensorWithArc):
 
 class Infrared(LaserSensorWithArc):
     def __init__(self, name="Infrared"):
-        LaserSensorWithArc.__init__(self, name, "morse/sensors/sick", \
-                                    "SICKClass", "infrared")
+        LaserSensorWithArc.__init__(self, name, "morse/sensors/laserscanner", \
+                                    "LaserScannerClass", "infrared")
         mesh = Cube("InfraredCube")
         mesh.scale = (.02, .02, .02)
         mesh.color(.8, .8, .8)
