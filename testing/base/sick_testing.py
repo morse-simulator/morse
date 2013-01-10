@@ -4,8 +4,6 @@ This script tests the SICK laser range sensor in MORSE.
 """
 
 import sys
-import socket
-import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
@@ -18,29 +16,21 @@ try:
 except ImportError:
     pass
 
-def send_speed(s, v, w, t):
-    s.send(json.dumps({'v' : v, 'w' : w}).encode())
-    sleep(t)
-    s.send(json.dumps({'v' : 0.0, 'w' : 0.0}).encode())
-
 class Sick_Test(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
+        robot.rotate(z = math.pi)
+        robot.translate(x = -4.5)
 
-        #sick = Sick('Sick') # TODO bug pose? line 92, in test_sick
-        #self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
-        #AssertionError: 2.9966225624084473 != 6.0 within 0.05 delta
-        sick = Sensor('sick')
+        sick = Sick('Sick') 
+        #sick = Sensor('sick')
         sick.translate(z=0.9)
         sick.properties(laser_range = 10.0, Visible_arc = False)
+        #sick.create_sick_arc()
         robot.append(sick)
         sick.configure_mw('socket')
-
-        motion = MotionVW('MotionVW')
-        robot.append(motion)
-        motion.configure_mw('socket')
 
         #env = Environment('empty', fastmode = True)
         env = Environment('indoors-1/boxes', fastmode = True)
@@ -56,54 +46,64 @@ class Sick_Test(MorseTestCase):
             # Read the data from the sick sensor
             self.sick_stream = morse.stream('Sick')
 
-            port = morse.get_stream_port('MotionVW')
-            self.v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.v_w_client.connect(('localhost', port))
-
-            sleep(5)
-            # Initial test of the sensor with no visible objects
-            sick = self.sick_stream.get()
-            for ray in sick['point_list']:
-                self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
-                self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-                self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
-            for length in sick['range_list']:
-                self.assertAlmostEqual(length, 10.0, delta=0.05)
-     
-            # Change the orientation of the robot using the v_w socket
-            send_speed(self.v_w_client, 0.0, math.pi/2.0, 2.0)
-
-            # Second test for the sensor, with objects in front
             sick = self.sick_stream.get()
 
-            # First few rays should not hit anything
-            for index in range(30):
+            # On the right of the sensor, nothing to hit. So position is
+            # (0.0, 0.0, 0.0) and distance == laser_range
+            for index in range(75):
                 ray = sick['point_list'][index]
-                self.assertAlmostEqual(ray[0], 0.0, delta=0.05)
-                self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-                self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
+                self.assertAlmostEqual(ray[0], 0.0)
+                self.assertAlmostEqual(ray[1], 0.0)
+                self.assertAlmostEqual(ray[2], 0.0)
                 length = sick['range_list'][index]
-                self.assertAlmostEqual(length, 10.0, delta=0.05)
+                self.assertAlmostEqual(length, 10.0)
 
-            # Make particular tests for a few rays at locations
-            #  known to have objects
-            ray = sick['point_list'][45]
-            self.assertAlmostEqual(ray[0], 6.0, delta=0.05)
-            self.assertAlmostEqual(ray[1], -6.0, delta=0.05)
-            length = sick['range_list'][45]
-            self.assertAlmostEqual(length, 8.485, delta=0.05)
+            # In the center of the sensor, we hit the red block (situed
+            # near (-7, 0)).
+            # Distance to hit is near 2.5
+            for index in range(80, 100):
+                length = sick['range_list'][index]
+                self.assertAlmostEqual(length, 2.5, delta=0.05)
 
+            # Check some specific point. Hit 90 is the ray corresponding
+            # to angle math.pi/2 (in front of the robot). y is computed
+            # by trigonometry.
             ray = sick['point_list'][90]
-            self.assertAlmostEqual(ray[0], 7.0, delta=0.05)
+            self.assertAlmostEqual(ray[0], 2.5, delta=0.05)
             self.assertAlmostEqual(ray[1], 0.0, delta=0.05)
-            length = sick['range_list'][90]
-            self.assertAlmostEqual(length, 7.0, delta=0.05)
+            self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
 
-            ray = sick['point_list'][135]
-            self.assertAlmostEqual(ray[0], 3.0, delta=0.05)
-            self.assertAlmostEqual(ray[1], 3.0, delta=0.05)
-            length = sick['range_list'][135]
-            self.assertAlmostEqual(length, 4.243, delta=0.05)
+            ray = sick['point_list'][85]
+            self.assertAlmostEqual(ray[0], 2.5, delta=0.05)
+            self.assertAlmostEqual(ray[1], 2.5 * math.tan(math.radians(5)),
+                                   delta=0.05)
+            self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
+
+            ray = sick['point_list'][95]
+            self.assertAlmostEqual(ray[0], 2.5, delta=0.05)
+            self.assertAlmostEqual(ray[1], 2.5 * math.tan(math.radians(-5)),
+                                   delta=0.05)
+            self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
+
+
+            # Then, there is a full empty sector
+            for index in range(105, 150):
+                ray = sick['point_list'][index]
+                self.assertAlmostEqual(ray[0], 0.0)
+                self.assertAlmostEqual(ray[1], 0.0)
+                self.assertAlmostEqual(ray[2], 0.0)
+                length = sick['range_list'][index]
+                self.assertAlmostEqual(length, 10.0)
+
+            # The last ray hit the green block
+            # Distance and real position are a bit complicated to
+            # compute manually, so don't check real precision. Just
+            # verify that the distance is near 5.8
+            for index in range(159, 165):
+                length = sick['range_list'][index]
+                self.assertAlmostEqual(length, 5.8, delta=0.15)
+
+
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
