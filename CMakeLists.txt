@@ -170,8 +170,6 @@ ELSE()
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/mathutils/__init__.py
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/bge
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bge/__init__.py
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/bpy
-		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bpy/__init__.py
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints/__init__.py
 	)
