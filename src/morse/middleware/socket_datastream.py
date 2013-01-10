@@ -72,8 +72,9 @@ class MorseSocketServ:
         for i in inputready:
             if i == self._server:
                 sock, addr = self._server.accept()
+                logger.debug("New client connected to %s datastream" % self._component_name)
                 if self._client_sockets != []:
-                    logger.warning("More than one clients for an actuator!!")
+                    logger.warning("More than one client trying to write on %s datastream!!" % self._component_name)
                 self._client_sockets.append(sock)
             else:
                 try:
