@@ -437,12 +437,13 @@ class ComChannel(threading.Thread):
                     out_queue = value["out"]
                     buf = value["buf"]
                     cb = value["cb"]
+                    _buf = value["_buf"]
 
                     # Something to send to the server?
                     if not out_queue.empty():
                         r = out_queue.get()
                         if buf is not None: # stream connection!
-                            raw = json.dumps(r)
+                            raw = json.dumps(r) + "\n"
                         else: # RPC connection!
                             if 'special' in r:
                                 raw = "{id} {special}\n".format(**r)
@@ -459,10 +460,25 @@ class ComChannel(threading.Thread):
                     for i in inputready:
                         if i == sock:
 
-                            raw = sock.recv(100000).decode()
-                            if raw:
-                                assert(raw[-1] == '\n') # we are using a TCP sock -> messages MUST be complete
-                                for data in raw[:-1].split("\n"):
+                            server_dead = False
+                            raw = _buf
+                            while not '\n' in raw:
+                                # Read how many bytes are available in the socket buffer
+                                raw = sock.recv(4096).decode()
+
+                                if not raw: # socket closed?
+                                    server_dead = True
+                                    break
+
+                                _buf += raw
+
+
+                            if not server_dead:
+                                last_linefeed = _buf.rfind('\n')
+                                rqsts = _buf[:last_linefeed].split('\n') # we keep only the complete requests (we may have more than one!)
+                                self._socks[sock]["_buf"] = _buf[last_linefeed + 1:] # we keep the remaing part for next time
+
+                                for data in rqsts:
 
                                     if buf is not None: # it's a stream connection!
                                         res = json.loads(data)
@@ -546,7 +562,8 @@ class ComChannel(threading.Thread):
             self._socks[sock] = {"in": read_queue,
                                 "out": write_queue,
                                 "cb": cb,
-                                "buf": buf}
+                                "buf": buf,
+                                "_buf":""} # internal socket buffer
         # wake up select
         os.write(self._write_fd, b'1')
 
