@@ -35,7 +35,9 @@ def visit_gallery_node(self, node, wide = False):
         "position": "relative",
     }
     self.body.append(self.starttag(node, "table", style=css(style)))
-    images =  os.listdir(os.path.join(MEDIA_PATH, node["directory"]))
+    img_path = os.path.join(MEDIA_PATH, node["directory"])
+    images =  os.listdir(img_path)
+    images = [img for img in images if os.path.isfile(os.path.join(img_path, img))]
     for i in range(len(images))[::images_per_row]:
         self.body.append("<tr>\n")
         for j in range(images_per_row):
