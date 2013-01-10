@@ -118,7 +118,7 @@ class Rosace(SensorCreator):
         self.frequency(6)
         # add Radar freq: 3 Hz, prop: Injured, angle: 60.0, distance: 10.0
         bpymorse.add_sensor(type="RADAR")
-        obj = bpymorse.context_object()
+        obj = bpymorse.get_context_object()
         sensor = obj.game.sensors[-1]
         sensor.angle = 60.0
         sensor.distance = 10.0
@@ -151,6 +151,8 @@ class Thermometer(SensorCreator):
 class LaserSensorWithArc(SensorCreator):
     def __init__(self, name, cpath, cclass, bname):
         SensorCreator.__init__(self, name, cpath, cclass, bname)
+        # append sick Arc, for 'RayMat' material
+        self.append_meshes(component='sick', prefix='Arc_')
 
     def create_laser_arc(self):
         """ Create an arc for use with the laserscanner sensor
@@ -356,7 +358,7 @@ class Velodyne(SensorCreator):
                         scan_window = 31.500, resolution = 0.5)
         # Add Always (use_true_level) - And - Motion (rotation z: 0.017453)
         bpymorse.add_sensor() # default is Always sensor
-        obj = bpymorse.context_object()
+        obj = bpymorse.get_context_object()
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True
         bpymorse.add_controller(type='LOGIC_AND')

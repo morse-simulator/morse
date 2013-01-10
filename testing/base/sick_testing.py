@@ -24,15 +24,12 @@ class Sick_Test(MorseTestCase):
         robot.rotate(z = math.pi)
         robot.translate(x = -4.5)
 
-        sick = Sick('Sick') 
-        #sick = Sensor('sick')
+        sick = Sick('Sick')
         sick.translate(z=0.9)
         sick.properties(laser_range = 10.0, Visible_arc = False)
-        #sick.create_sick_arc()
         robot.append(sick)
         sick.configure_mw('socket')
 
-        #env = Environment('empty', fastmode = True)
         env = Environment('indoors-1/boxes', fastmode = True)
         env.configure_service('socket')
 

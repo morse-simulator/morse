@@ -36,7 +36,7 @@ class ComponentCreator(AbstractComponent):
                 child.matrix_parent_inverse.identity()
                 child.parent = self._blendobj
 
-    def append_meshes(self, objects=None, component=None):
+    def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the objects to this component
 
         The `objects` are located in:
@@ -47,7 +47,7 @@ class ComponentCreator(AbstractComponent):
         :return: list of the imported Blender objects
         """
         imported_objects = AbstractComponent.append_meshes(self, objects, \
-                                                           component)
+                                                           component, prefix)
         self.parent_root(imported_objects)
 
         return imported_objects
