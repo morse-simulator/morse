@@ -12,7 +12,7 @@ class MorseSocketServ:
     def __init__(self, port, component_name):
         # List of socket clients
         self._client_sockets = []
-        self._message_size = 1024
+        self._message_size = 4096
         self._component_name = component_name
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,12 +77,19 @@ class MorseSocketServ:
                 self._client_sockets.append(sock)
             else:
                 try:
-                    msg = i.recv(self._message_size)
+                    msg = i.recv(self._message_size).decode()
                     logger.debug("received msg %s" % msg)
-                    if msg == b'':
+                    if not msg: # client disconnected
                         self.close_socket(i)
                     else:
-                        component_instance.local_data = decode(msg)
+                        if not msg.endswith('\n'):
+                            logger.error("Malformed message on socket datastream " +\
+                                    "(no linefeed at the end): <%s>" % msg)
+                            continue
+                        msg = msg.rstrip("\n").split("\n")
+                        if len(msg)>1:
+                            logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
+                        component_instance.local_data = decode(msg[-1]) # keep only the last msg if we got several in row
                 except socket.error as detail:
                     self.close_socket(i)
 
@@ -192,7 +199,7 @@ class Socket(morse.core.datastream.Datastream):
         return (json.dumps(component_instance.local_data, cls=MorseEncoder) + '\n').encode()
 
     def read_message(self, msg):
-        return json.loads(msg.decode('utf-8'))
+        return json.loads(msg)
 
     def print_open_sockets(self):
         """ Display a list of all currently opened sockets."""
