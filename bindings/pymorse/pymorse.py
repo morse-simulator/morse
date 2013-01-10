@@ -603,6 +603,15 @@ class Morse():
 
         self.initapi()
 
+    def _normalize_name(self, name):
+        """
+        Normalize Blender names to get valid Python identifiers
+        """
+        new = name
+        for c in ".-~":
+            new = new.replace(c, "_")
+        return new
+
     def initapi(self):
         """ This method asks MORSE for the scene structure, and
         dynamically creates corresponding objects in 'self'.
@@ -611,9 +620,10 @@ class Morse():
 
         self.robots = []
         for r in simu["robots"]:
-            self.robots.append(r["name"])
-            setattr(self, r["name"], Robot())
-            robot = getattr(self, r["name"])
+            name = self._normalize_name(r["name"])
+            self.robots.append(name)
+            setattr(self, name, Robot())
+            robot = getattr(self, name)
 
             for c in r["components"]:
 
@@ -625,11 +635,13 @@ class Morse():
 
                 services = c.get('services', [])
 
-                robot[c["name"]] = Component(self,
-                                             c["name"],
-                                             stream,
-                                             port,
-                                             services)
+                cname = self._normalize_name(c["name"])
+
+                robot[cname] = Component(self,
+                                        cname,
+                                        stream,
+                                        port,
+                                        services)
 
 
 
