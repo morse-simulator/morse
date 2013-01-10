@@ -363,6 +363,7 @@ class Component():
             self.get = self.stream.get
             self.last = self.stream.last
             self.subscribe = self.stream.subscribe
+            self.unsubscribe = self.stream.unsubscribe
         else:
             self.stream = None
 
