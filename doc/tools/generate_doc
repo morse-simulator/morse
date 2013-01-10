@@ -201,7 +201,8 @@ def print_files(out, name, props):
               ".html>`_\n")
     out.write("    - `Unit-test <../../_modules/base/" +
                 module_name + "_testing.html>`_\n")
-                
+
+    out.write("\n\n")
 
 def print_data(out, name, props):
         title = "Exported data"
