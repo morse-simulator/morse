@@ -368,7 +368,7 @@ class Velodyne(SensorCreator):
         self.properties(Visible_arc = True, laser_range = 50.0, \
                         scan_window = 31.500, resolution = 0.5)
         # Add Always (use_true_level) - And - Motion (rotation z: 0.017453)
-        bpymorse.add_sensor() # default is Always sensor
+        bpymorse.add_sensor(type='ALWAYS')
         obj = bpymorse.get_context_object()
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True

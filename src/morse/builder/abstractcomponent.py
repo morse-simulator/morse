@@ -300,7 +300,7 @@ class AbstractComponent(object):
 
         # add Game Logic sensor and controller to simulate the component
         self.select()
-        bpymorse.add_sensor() # default is Always sensor
+        bpymorse.add_sensor(type='ALWAYS')
         sensor = self._blendobj.game.sensors[-1]
         sensor.use_pulse_true_level = True
         bpymorse.add_controller(type='PYTHON')
