@@ -151,8 +151,24 @@ class Thermometer(SensorCreator):
 class LaserSensorWithArc(SensorCreator):
     def __init__(self, name, cpath, cclass, bname):
         SensorCreator.__init__(self, name, cpath, cclass, bname)
-        # append sick Arc, for 'RayMat' material
-        self.append_meshes(component='sick', prefix='Arc_')
+
+    def get_ray_material(self):
+        if 'RayMat' in bpymorse.get_materials():
+            return bpymorse.get_material('RayMat')
+
+        bpymorse.new_material()
+        ray_material = bpymorse.get_last_material()
+        ray_material.diffuse_color = (.9, .05, .2)
+        ray_material.use_shadeless = True
+        ray_material.use_raytrace = False # ? is it needed ?
+        ray_material.use_cast_buffer_shadows = False # ? is it needed ?
+        ray_material.use_cast_approximate = False # ? is it needed ?
+        ray_material.use_transparency = True
+        ray_material.transparency_method = 'Z_TRANSPARENCY'
+        ray_material.alpha = 0.3
+        ray_material.name = 'RayMat'
+        # link material to object as: Arc_XXX.active_material = ray_material
+        return ray_material
 
     def create_laser_arc(self):
         """ Create an arc for use with the laserscanner sensor
@@ -165,12 +181,7 @@ class LaserSensorWithArc(SensorCreator):
 
         laserscanner_obj = self._blendobj
 
-        material = None
-        # Get the mesh and the "RayMat" material for the arc
-        for mat in bpymorse.get_materials():
-            if "RayMat" in mat.name:
-                material = mat.material
-                break
+        material = get_ray_material()
 
         # Delete previously created arc
         for child in laserscanner_obj.children:
@@ -241,7 +252,7 @@ class LaserSensorWithArc(SensorCreator):
         # Remove collision detection for the object
         arc.game.physics_type = 'NO_COLLISION'
         # Set the material of the arc
-        if material: # XXX TODO check if compulsory ?
+        if material: # ? check if compulsory ?
             arc.active_material = material
         # Link the new object in the scene
         scene.objects.link( arc )
