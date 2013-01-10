@@ -185,3 +185,16 @@ def get_objects_in_blend(filepath):
         logger.error(detail)
         raise MorseBuilderNoComponentError("Component not found")
     return objects
+
+def save(filepath=None, check_existing=False):
+    """ Save .blend file
+
+    :param filepath: (string, (optional, default: current file)) File Path
+    :param check_existing: (boolean, (optional, default: False))
+                           Check and warn on overwriting existing files
+    """
+    if not bpy:
+        return
+    if not filepath:
+        filepath = bpy.data.filepath
+    bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing)

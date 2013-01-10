@@ -527,6 +527,15 @@ class Environment(Component):
         prop.show_debug = True
         self.show_debug_properties()
 
+    def save(self, filepath=None, check_existing=False):
+        """ Save .blend file
+
+        :param filepath: (string, (optional, default: current file)) File Path
+        :param check_existing: (boolean, (optional, default: False))
+                               Check and warn on overwriting existing files
+        """
+        bpymorse.save(filepath=filepath, check_existing=check_existing)
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
