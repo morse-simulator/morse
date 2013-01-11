@@ -212,7 +212,7 @@ def print_data(out, name, props):
         try:
             prop = props['data_fields']
         except KeyError:
-            out.write("No exported data.\n\n")
+            out.write("No data field documented (see above for possible notes).\n\n")
             return
 
         for name, prop in prop.items():
