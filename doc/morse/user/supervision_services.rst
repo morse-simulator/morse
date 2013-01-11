@@ -29,6 +29,9 @@ Available services
   level
 - ``restore_dynamics`` (no parameter): enable again the physics at the game
   engine level
+- ``details`` (no parameter): returns a structure containing the details about
+  the simulation currently running, including the list of robots, the list of
+  services and datastreams, ...
 
 
 .. note::
