@@ -12,16 +12,12 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import math
-import json
 import time
 from pymorse import Morse
 
 def send_ctrl(s, theta, phi, psi, h):
-    s.send((json.dumps({'theta_c' : theta, 'phi_c' : phi , 'psi_c' : psi, 'h_c' : h}) + "\n").encode())
+    s.publish({'theta_c' : theta, 'phi_c' : phi , 'psi_c' : psi, 'h_c' : h})
 
 
 class StabilizedQuadrirotorTest(MorseTestCase):
@@ -34,7 +30,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
         pose.configure_mw('socket')
         robot.append(pose)
 
-        motion = StabilizedQuadrotor()
+        motion = StabilizedQuadrotor('motion')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -44,12 +40,9 @@ class StabilizedQuadrirotorTest(MorseTestCase):
     def test_theta_c_control(self):
         with Morse() as morse:
             pose_stream = morse.robot.Pose
+            cmd_client = morse.robot.motion
 
             pose = pose_stream.get()
-            # destination socket
-            port = morse.get_stream_port('quadrotor_UIMU')
-            cmd_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            cmd_client.connect(('localhost', port))
 
             send_ctrl(cmd_client, 0.0, 0.0, 0.0, 10.0)
             time.sleep(3.0)
@@ -132,12 +125,9 @@ class StabilizedQuadrirotorTest(MorseTestCase):
     def test_phi_c_control(self):
         with Morse() as morse:
             pose_stream = morse.robot.Pose
+            cmd_client = morse.robot.motion
 
             pose = pose_stream.get()
-            # destination socket
-            port = morse.get_stream_port('quadrotor_UIMU')
-            cmd_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            cmd_client.connect(('localhost', port))
 
             send_ctrl(cmd_client, 0.0, 0.0, 0.0, 10.0)
             time.sleep(3.0)
@@ -221,12 +211,9 @@ class StabilizedQuadrirotorTest(MorseTestCase):
     def test_psi_c_control(self):
         with Morse() as morse:
             pose_stream = morse.robot.Pose
+            cmd_client = morse.robot.motion
 
             pose = pose_stream.get()
-            # destination socket
-            port = morse.get_stream_port('quadrotor_UIMU')
-            cmd_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            cmd_client.connect(('localhost', port))
 
             z = 12.0
             send_ctrl(cmd_client, 0.0, 0.0, 0.0, z)

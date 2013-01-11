@@ -4,8 +4,6 @@ This script tests the SICK laser range sensor in MORSE.
 """
 
 import sys
-import socket
-import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase

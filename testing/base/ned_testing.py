@@ -14,8 +14,6 @@ except ImportError:
 
 import os
 import sys
-import socket
-import json
 from pymorse import Morse
 
 

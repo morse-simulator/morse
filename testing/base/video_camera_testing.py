@@ -12,10 +12,7 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import json
 import time
 from pymorse import Morse
 

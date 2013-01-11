@@ -12,16 +12,13 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
 import math
-import json
 import time
 from pymorse import Morse
 
 def send_angles(s, pan, tilt):
-    s.send((json.dumps({'pan' : pan, 'tilt' : tilt}) + "\n").encode())
+    s.publish({'pan' : pan, 'tilt' : tilt})
 
 class PTUTest(MorseTestCase):
 
@@ -60,10 +57,7 @@ class PTUTest(MorseTestCase):
         with Morse() as morse:
             gyro_stream = morse.ATRV.Gyroscope
             posture_stream = morse.ATRV.ptu_posture
-
-            port = morse.get_stream_port('PTU')
-            ptu_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            ptu_stream.connect(('localhost', port))
+            ptu_stream = morse.ATRV.PTU
 
             angles = gyro_stream.get()
             posture = posture_stream.get()

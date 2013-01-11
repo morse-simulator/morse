@@ -4,9 +4,6 @@ This script tests the proximity sensor in MORSE.
 """
 
 import sys
-import socket
-import json
-import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse

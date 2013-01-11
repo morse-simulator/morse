@@ -5,8 +5,6 @@ This script tests the waypoints actuator, both the data and service api
 import logging
 
 import sys
-import socket
-import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase

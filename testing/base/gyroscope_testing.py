@@ -12,10 +12,7 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import math
 from pymorse import Morse
 
 

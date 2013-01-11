@@ -4,9 +4,6 @@ This script tests the KUKA LWR arm, both the data and service api
 """
 
 import sys
-import socket
-import json
-import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse

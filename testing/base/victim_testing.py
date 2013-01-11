@@ -8,10 +8,7 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import json
 import time
 import math
 from pymorse import Morse, MorseServiceFailed
