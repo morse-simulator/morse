@@ -8,7 +8,7 @@ import sys
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
-from pymorse import Morse
+from pymorse import Morse, MorseServicePreempted
 
 logger = logging.getLogger("morsetesting.general")
 # Include this import to be able to use your test file as a regular 
@@ -39,7 +39,7 @@ class Waypoints_Test(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
-    def test_waypoint_datastream(self):
+    def _test_waypoint_datastream(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
@@ -102,11 +102,22 @@ class Waypoints_Test(MorseTestCase):
             self.assertAlmostEqual(pose['x'], 3.0, delta=0.15)
             logger.info("Ok, reached correct position")
 
+            self.assertTrue(action.running())
+            self.assertFalse(action.done())
+
             logger.info("Cancelling motion and waiting for 0.5 sec...")
             action.cancel()
+            sleep(0.1)
+
+            self.assertFalse(action.running())
+            self.assertTrue(action.done())
+
+            with self.assertRaises(MorseServicePreempted):
+                action.result()
+
             sleep(0.5)
             pose = pose_stream.get() #should not have moved
-            self.assertAlmostEqual(pose['x'], 3.0, delta=0.1)
+            self.assertAlmostEqual(pose['x'], 3.0, delta=0.15)
             logger.info("Ok, did not move")
 
             logger.info("Moving again, waiting for 2 sec, and ensuring the action terminate")
@@ -115,7 +126,57 @@ class Waypoints_Test(MorseTestCase):
             self.assertTrue(action.done())
             self.assertFalse(action.running())
 
-            #TODO: test other services (stop, resume...)
+            # Stop will stop the robot, but do not erase current goal
+            action = simu.robot.motion.goto(6.0, 0.0, 0.0, 0.1, 1.0) # do not wait for completion
+            logger.info("Moving for 1 sec...")
+            sleep(1)
+
+            self.assertFalse(action.done())
+            self.assertTrue(action.running())
+
+            status = simu.robot.motion.get_status().result()
+            self.assertEqual(status, "Transit")
+
+            simu.robot.motion.stop().result()
+
+            # Stop does not change the fact that the goto is pending,
+            # but stop the move
+            self.assertFalse(action.done())
+            self.assertTrue(action.running())
+
+            status = simu.robot.motion.get_status().result()
+            self.assertEqual(status, "Stop")
+
+            pose = pose_stream.get() #should have done 1m
+            self.assertAlmostEqual(pose['x'], 5.0, delta=0.15)
+
+            sleep(0.5)
+            pose = pose_stream.get() #should not have moved
+            self.assertAlmostEqual(pose['x'], 5.0, delta=0.15)
+            logger.info("Ok, did not move")
+
+            # now resume the move
+
+            simu.robot.motion.resume().result()
+
+            sleep(0.5)
+
+            # must move now
+            pose = pose_stream.get()
+            self.assertAlmostEqual(pose['x'], 5.5, delta=0.15)
+            status = simu.robot.motion.get_status().result()
+            self.assertEqual(status, "Transit")
+
+            # wait for the end of the move
+            sleep(1.0)
+            self.assertTrue(action.done())
+            self.assertFalse(action.running())
+
+            pose = pose_stream.get()
+            self.assertAlmostEqual(pose['x'], 6.0, delta=0.15)
+            status = simu.robot.motion.get_status().result()
+            self.assertEqual(status, "Arrived")
+
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
