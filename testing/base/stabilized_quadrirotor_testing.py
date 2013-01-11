@@ -21,7 +21,7 @@ import time
 from pymorse import Morse
 
 def send_ctrl(s, theta, phi, psi, h):
-    s.send(json.dumps({'theta_c' : theta, 'phi_c' : phi , 'psi_c' : psi, 'h_c' : h}).encode())
+    s.send((json.dumps({'theta_c' : theta, 'phi_c' : phi , 'psi_c' : psi, 'h_c' : h}) + "\n").encode())
 
 
 class StabilizedQuadrirotorTest(MorseTestCase):

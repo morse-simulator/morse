@@ -9,7 +9,7 @@ import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
-from pymorse import Morse, MorseServerError
+from pymorse import Morse, MorseServiceFailed
 
 # Include this import to be able to use your test file as a regular
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -25,13 +25,13 @@ class ArmatureActuatorTest(MorseTestCase):
 
         robot = ATRV()
 
-        kuka_lwr = KukaLWR()
+        kuka_lwr = KukaLWR('kuka_armature')
         robot.append(kuka_lwr)
         kuka_lwr.translate(z=0.9)
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        kuka_posture = KukaPosture()
+        kuka_posture = KukaPosture('kuka_posture')
         kuka_posture.properties(KUKAname = kuka_lwr.name)
         robot.append(kuka_posture)
         kuka_posture.configure_mw('socket')
@@ -66,25 +66,25 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(posture['kuka_7'], 0.0, delta=precision)
 
 
-            channels = morse.call_server('kuka_armature', 'get_channels')
+            channels = morse.rpc('kuka_armature', 'get_channels')
             self.assertEqual(channels, ['kuka_1', 'kuka_2', 'kuka_3', 'kuka_4', 'kuka_5', 'kuka_6', 'kuka_7'])
 
-            res = morse.call_server('kuka_armature', 'get_rotations')
+            res = morse.rpc('kuka_armature', 'get_rotations')
             for channel in channels:
                 for i in range(3):
                     self.assertAlmostEqual(res[channel][i], 0.0, delta=precision)
 
-            res = morse.call_server('kuka_armature', 'get_rotation', 'kuka_5')
+            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
             for i in range(3):
                 self.assertAlmostEqual(res[i], 0.0, delta=precision)
 
-            with self.assertRaises(MorseServerError):
-                res = morse.call_server('kuka_armature', 'get_rotation', 'pipo')
+            with self.assertRaises(MorseServiceFailed):
+                res = morse.rpc('kuka_armature', 'get_rotation', 'pipo')
 
             # Not sure to understand well these values
             # Must check they are completly correct
 
-            res = morse.call_server('kuka_armature', 'get_dofs')
+            res = morse.rpc('kuka_armature', 'get_dofs')
             self.assertEqual(res['kuka_1'], [0, 1, 0])
             self.assertEqual(res['kuka_2'], [0, 0, 1])
             self.assertEqual(res['kuka_3'], [0, 1, 0])
@@ -94,10 +94,10 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertEqual(res['kuka_7'], [0, 1, 0])
 
             # get_IK_limits is a synonym of get_dofs
-            res2 = morse.call_server('kuka_armature', 'get_IK_limits')
+            res2 = morse.rpc('kuka_armature', 'get_IK_limits')
             self.assertEqual(res, res2)
 
-            res = morse.call_server('kuka_armature', 'get_channel_lengths')
+            res = morse.rpc('kuka_armature', 'get_channel_lengths')
             self.assertAlmostEqual(res['kuka_1'], 0.31, delta=precision)
             self.assertAlmostEqual(res['kuka_2'], 0.20, delta=precision)
             self.assertAlmostEqual(res['kuka_3'], 0.20, delta=precision)
@@ -106,12 +106,12 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(res['kuka_6'], 0.08, delta=precision)
             self.assertAlmostEqual(res['kuka_7'], 0.13, delta=precision)
 
-            res = morse.call_server('kuka_armature', 'get_robot_parent_name')
+            res = morse.rpc('kuka_armature', 'get_robot_parent_name')
             self.assertEqual(res, "ATRV")
 
 
             # Move the arm now, and get the measure 
-            morse.call_server('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
+            morse.rpc('kuka_armature', 'set_rotation_array', 1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0)
             sleep(2)
 
             posture = posture_stream.get()
@@ -123,7 +123,7 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(posture['kuka_6'], -2.0, delta=precision)
             self.assertAlmostEqual(posture['kuka_7'], 1.0, delta=precision)
 
-            res = morse.call_server('kuka_armature', 'get_rotations')
+            res = morse.rpc('kuka_armature', 'get_rotations')
             self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
@@ -149,10 +149,10 @@ class ArmatureActuatorTest(MorseTestCase):
 
             # Injecting an angle too important is rejected. No angle is
             # modified
-            with self.assertRaises(MorseServerError):
-                morse.call_server('kuka_armature', 'set_rotation_array', 0.0, 0.0, 0.0, -2.28, 0.0, 0.0, 0.0)
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('kuka_armature', 'set_rotation_array', 0.0, 0.0, 0.0, -2.28, 0.0, 0.0, 0.0)
 
-            res = morse.call_server('kuka_armature', 'get_rotations')
+            res = morse.rpc('kuka_armature', 'get_rotations')
             self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
@@ -178,18 +178,18 @@ class ArmatureActuatorTest(MorseTestCase):
             # Here, in fact, we test kuka_lwr::set_rotation, not
             # armature_actuator::set_rotation. See bug #86.
             # Invalid channel
-            with self.assertRaises(MorseServerError):
-                morse.call_server('kuka_armature', 'set_rotation', 'pipo', [2.0, 3.0, 4.0])
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('kuka_armature', 'set_rotation', 'pipo', [2.0, 3.0, 4.0])
 
             # Bad number of args
-            with self.assertRaises(MorseServerError):
-                morse.call_server('kuka_armature', 'set_rotation', 'kuka_5')
+            with self.assertRaises(TypeError):
+                morse.rpc('kuka_armature', 'set_rotation', 'kuka_5')
 
-            morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [0.0, math.pi/2, 0.0])
+            morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [0.0, math.pi/2, 0.0])
             sleep(2)
 
             # Only kuka_5 has changed to the value math.pi/2
-            res = morse.call_server('kuka_armature', 'get_rotations')
+            res = morse.rpc('kuka_armature', 'get_rotations')
             self.assertAlmostEqual(res['kuka_1'][0], 0.0, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][1], 1.57, delta=precision)
             self.assertAlmostEqual(res['kuka_1'][2], 0.0, delta=precision)
@@ -213,23 +213,23 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertAlmostEqual(res['kuka_7'][2], 0.0, delta=precision)
 
             # Injecting value on angles non free has no impact
-            morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [1.0, math.pi/2, 1.0])
+            morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [1.0, math.pi/2, 1.0])
             sleep(1)
 
-            res = morse.call_server('kuka_armature', 'get_rotation', 'kuka_5')
+            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
             self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
 
             # Injecting value > max is rejected 
             # See bug #87 on Morse GitHub
-            res = morse.call_server('kuka_armature', 'get_IK_minmax')
+            res = morse.rpc('kuka_armature', 'get_IK_minmax')
             max = res['kuka_5'][1][1]
-            with self.assertRaises(MorseServerError):
-                morse.call_server('kuka_armature', 'set_rotation', 'kuka_5', [0.0, max + 0.1, 0.0])
+            with self.assertRaises(MorseServiceFailed):
+                morse.rpc('kuka_armature', 'set_rotation', 'kuka_5', [0.0, max + 0.1, 0.0])
                 sleep(1)
 
-            res = morse.call_server('kuka_armature', 'get_rotation', 'kuka_5')
+            res = morse.rpc('kuka_armature', 'get_rotation', 'kuka_5')
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
             self.assertAlmostEqual(res[1], math.pi/2, delta=precision)
             self.assertAlmostEqual(res[0], 0.0, delta=precision)

@@ -14,14 +14,12 @@ except ImportError:
 
 import os
 import sys
-import socket
 import math
-import json
 import time
 from pymorse import Morse
 
 def send_goal(s, x, y, z):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : z}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : z})
 
 class DestinationTest(MorseTestCase):
 
@@ -34,7 +32,7 @@ class DestinationTest(MorseTestCase):
         pose.configure_mw('socket')
         robot.append(pose)
 
-        destination = Destination()
+        destination = Destination('destination')
         robot.append(destination)
         destination.configure_mw('socket')
         destination.properties(Speed=2.0, Tolerance=0.3)
@@ -55,11 +53,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
-            # destination socket
-            port = morse.get_stream_port('Motion_Controller')
-            dest_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            dest_client.connect(('localhost', port))
-
+            dest_client = morse.robot.destination
             send_goal(dest_client, 10.0, 0.0, 20.0)
 
             time.sleep(3.0)

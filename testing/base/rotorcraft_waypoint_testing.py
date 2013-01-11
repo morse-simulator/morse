@@ -4,9 +4,6 @@ This script tests the waypoints actuator, both the data and service api
 """
 
 import sys
-import socket
-import json
-import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
@@ -29,7 +26,7 @@ class RotorcraftWaypoints_Test(MorseTestCase):
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = RotorcraftWaypoint()
+        motion = RotorcraftWaypoint('motion')
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -52,14 +49,9 @@ class RotorcraftWaypoints_Test(MorseTestCase):
             self.assertAlmostEqual(pose['yaw'], 0, delta=0.05)
 
 
-            # waypoint controller socket
-            port = morse.get_stream_port('Motion_Controller')
-            wp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            wp_client.connect(('localhost', port))
-
-            wp_client.send(json.dumps({'x' : 10.0, 'y': 5.0, 'z': 10.0, 
-                                         'tolerance' : 0.5, 
-                                         'yaw' : 1.0}).encode());
+            wp_client = morse.robot.motion
+            wp_client.publish({'x' : 10.0, 'y': 5.0, 'z': 10.0,
+                                'tolerance' : 0.5, 'yaw' : 1.0})
             sleep(10)
 
             pose = pose_stream.get()
@@ -79,7 +71,7 @@ class RotorcraftWaypoints_Test(MorseTestCase):
             self.assertAlmostEqual(pose['z'], 1.81, delta=0.05)
             self.assertAlmostEqual(pose['yaw'], 0, delta=0.05)
 
-            morse.rpc('Motion_Controller', 'goto', 10.0, 5.0, 10.0, 1.0, 0.5)
+            morse.rpc('motion', 'goto', 10.0, 5.0, 10.0, 1.0, 0.5)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)

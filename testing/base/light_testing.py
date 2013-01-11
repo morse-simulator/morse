@@ -13,10 +13,7 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import json
 import time
 from pymorse import Morse
 
@@ -32,7 +29,7 @@ class LightTest(MorseTestCase):
         atrv.append(cam)
         cam.configure_mw('socket')
 
-        light = Light()
+        light = Light('light')
         light.translate(x=0.2, z=1.1)
         light.properties(Distance = 50.0)
         atrv.append(light)
@@ -47,11 +44,8 @@ class LightTest(MorseTestCase):
         with Morse() as morse:
             cam_stream = morse.ATRV.VideoCamera
 
-            port = morse.get_stream_port('LightAct')
-            light_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            light_stream.connect(('localhost', port))
-
-            light_stream.send(json.dumps({"emit": False}).encode())
+            light_stream = morse.ATRV.light
+            light_stream.publish({"emit": False})
 
             time.sleep(1.0)
 
@@ -70,9 +64,9 @@ class LightTest(MorseTestCase):
             self.assertEqual(len(res), 0)
 
             # Now, illuminate the scene
-            light_stream.send(json.dumps({"emit": True}).encode())
+            light_stream.publish({"emit": True})
 
-            time.sleep(1.0)
+            time.sleep(2.0)
             cam = cam_stream.get()
             # search the green block in the image
             for i in range(320*240):

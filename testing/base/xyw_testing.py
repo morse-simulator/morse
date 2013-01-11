@@ -4,8 +4,6 @@ This script tests some of the base functionalities of MORSE.
 """
 
 import sys
-import socket
-import json
 import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
@@ -22,6 +20,7 @@ def send_speed(s, x, y, w, t):
     s.publish({'x' : x, 'y' : y, 'w' : w})
     sleep(t)
     s.publish({'x' : 0.0, 'y' : 0.0, 'w' : 0.0})
+    sleep(0.1)
 
 class XYW_Test(MorseTestCase):
     def setUpEnv(self):
@@ -45,7 +44,7 @@ class XYW_Test(MorseTestCase):
     def test_xyw_controller(self):
         with Morse() as morse:
 
-            precision=0.06
+            precision=0.08
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.ATRV.Pose

@@ -41,7 +41,7 @@ class CameraTest(MorseTestCase):
         atrv.append(cam)
         cam.configure_mw('socket')
 
-        orientation = Actuator('orientation')
+        orientation = Orientation('orientation')
         orientation.configure_mw('socket')
         atrv.append(orientation)
 
@@ -69,7 +69,7 @@ class CameraTest(MorseTestCase):
             cam_stream = morse.ATRV.VideoCamera
             cam = cam_stream.get()
 
-            orientation_stream = morse.ATRV.Orientation
+            orientation_stream = morse.ATRV.orientation
 
             res = []
             # search for the red part in the image

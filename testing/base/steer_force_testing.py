@@ -14,14 +14,11 @@ except ImportError:
 
 import os
 import sys
-import socket
-import math
-import json
 import time
 from pymorse import Morse
 
 def send_force(s, steer, force, brake):
-    s.send(json.dumps({'steer' : steer, 'force' : force, 'brake' : brake}).encode())
+    s.publish({'steer' : steer, 'force' : force, 'brake' : brake})
 
 
 class SteerForceTest(MorseTestCase):
@@ -34,7 +31,7 @@ class SteerForceTest(MorseTestCase):
         pose.configure_mw('socket')
         robot.append(pose)
 
-        steer_force = SteerForce()
+        steer_force = SteerForce('motion')
         robot.append(steer_force)
         steer_force.configure_mw('socket')
 
@@ -53,9 +50,7 @@ class SteerForceTest(MorseTestCase):
             y = pose['y']
 
             # destination socket
-            port = morse.get_stream_port('Motion_Controller')
-            steer_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            steer_client.connect(('localhost', port))
+            steer_client = morse.robot.motion
 
             send_force(steer_client, 0.0, -20.0, 0.0)
             time.sleep(3.0)

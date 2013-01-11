@@ -4,9 +4,6 @@ This script tests the KUKA LWR arm, both the data and service api
 """
 
 import sys
-import socket
-import json
-import math
 from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
@@ -19,8 +16,9 @@ except ImportError:
     pass
 
 def send_pose(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0.0, \
-                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : 0.0, \
+               'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
+    sleep(0.1)
 
 class gripperTest(MorseTestCase):
     def setUpEnv(self):
@@ -29,7 +27,7 @@ class gripperTest(MorseTestCase):
 
         robot = ATRV()
 
-        kuka_lwr = KukaLWR()
+        kuka_lwr = KukaLWR('kuka')
         robot.append(kuka_lwr)
         kuka_lwr.translate(x=0.5, z=0.9)
         kuka_lwr.configure_mw('socket')
@@ -40,7 +38,7 @@ class gripperTest(MorseTestCase):
         kuka_lwr.append(gripper)
         gripper.configure_service('socket')
 
-        motion = Teleport()
+        motion = Teleport('teleport')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -64,21 +62,16 @@ class gripperTest(MorseTestCase):
         """
         with Morse() as morse:
             # kuka controller socket
-            port = morse.get_stream_port('kuka_armature')
-            kuka_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            kuka_client.connect(('localhost', port))
+            kuka_client = morse.ATRV.kuka
+            teleport_stream = morse.ATRV.teleport
 
-            port = morse.get_stream_port('Motion_Controller')
-            teleport_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            teleport_stream.connect(('localhost', port))
-
-            kuka_client.send(json.dumps({'kuka_1' : 0.0,
-                                         'kuka_2' : -1.57,
-                                         'kuka_3' : 0.0,
-                                         'kuka_4' : 0.0,
-                                         'kuka_5' : 0.0,
-                                         'kuka_6' : 0.0,
-                                         'kuka_7' : 0.0}).encode())
+            kuka_client.publish({'kuka_1' : 0.0,
+                                 'kuka_2' : -1.57,
+                                 'kuka_3' : 0.0,
+                                 'kuka_4' : 0.0,
+                                 'kuka_5' : 0.0,
+                                 'kuka_6' : 0.0,
+                                 'kuka_7' : 0.0})
 
             obj = morse.rpc('Gripper', 'grab')
             self.assertEqual(obj, None)

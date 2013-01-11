@@ -17,8 +17,8 @@ import math
 from pymorse import Morse, MorseServiceFailed
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
-                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : 0, \
+                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
     time.sleep(0.1)
 
 class VictimTest(MorseTestCase):
@@ -51,9 +51,7 @@ class VictimTest(MorseTestCase):
         with Morse() as morse:
             victim_stream = morse.ATRV.Rosace
 
-            port = morse.get_stream_port('Teleport')
-            teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            teleport_client.connect(('localhost', port))
+            teleport_client = morse.ATRV.Teleport
 
             abilities = morse.rpc('Rosace', 'get_robot_abilities')
             self.assertEqual(abilities, [1, 2, 3, 4, 5])
@@ -112,6 +110,7 @@ class VictimTest(MorseTestCase):
 
             morse.rpc('Rosace', 'heal')
 
+            time.sleep(0.2)
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
             self.assertTrue(len(victim_dict) == 1)

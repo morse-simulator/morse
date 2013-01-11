@@ -3,7 +3,7 @@
 This script tests the human model with a pose sensor.
 """
 
-import sys, socket, json
+import sys
 from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
@@ -41,7 +41,7 @@ class HumanPoseTest(MorseTestCase):
         with Morse() as morse:
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.Human.Pose
             sleep(1)
             pose = pose_stream.get()
             for coord in pose.values():
@@ -56,17 +56,15 @@ class HumanPoseTest(MorseTestCase):
         with Morse() as morse:
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.stream('Pose')
+            pose_stream = morse.Human.Pose
 
             # waypoint controller socket
-            port = morse.get_stream_port('MotionWaypoint')
-            v_w_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            v_w_client.connect(('localhost', port))
+            v_w_client = morse.Human.MotionWaypoint
 
-            v_w_client.send(json.dumps({'x' : 2.0, 'y': 3.0, 'z': 0.0, 
-                                         'tolerance' : 0.3, 
-                                         'speed' : 1.0}).encode());
-            
+            v_w_client.publish({'x' : 2.0, 'y': 3.0, 'z': 0.0,
+                                'tolerance' : 0.3,
+                                'speed' : 1.0})
+
             sleep(5)
             pose = pose_stream.get()
 

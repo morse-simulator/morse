@@ -21,7 +21,7 @@ import time
 from pymorse import Morse
 
 def send_angles(s, pan, tilt):
-    s.send(json.dumps({'pan' : pan, 'tilt' : tilt}).encode())
+    s.send((json.dumps({'pan' : pan, 'tilt' : tilt}) + "\n").encode())
 
 class PTUTest(MorseTestCase):
 

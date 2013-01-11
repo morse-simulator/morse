@@ -91,7 +91,7 @@ class Waypoints_Test(MorseTestCase):
 
             simu.robot.motion.goto(2.0, 0.0, 0.0, 0.1, 1.0).result() # wait for completion
 
-            pose = pose_stream.last()
+            pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.1)
             self.assertAlmostEqual(pose['y'], 0.0, delta=0.1)
             logger.info("Ok.")
@@ -100,14 +100,14 @@ class Waypoints_Test(MorseTestCase):
             logger.info("Moving for 1 sec...")
             sleep(1)
 
-            pose = pose_stream.last() #should have done 1m
-            self.assertAlmostEqual(pose['x'], 3.0, delta=0.1)
+            pose = pose_stream.get() #should have done 1m
+            self.assertAlmostEqual(pose['x'], 3.0, delta=0.15)
             logger.info("Ok, reached correct position")
 
             logger.info("Cancelling motion and waiting for 0.5 sec...")
             action.cancel()
             sleep(0.5)
-            pose = pose_stream.last() #should not have moved
+            pose = pose_stream.get() #should not have moved
             self.assertAlmostEqual(pose['x'], 3.0, delta=0.1)
             logger.info("Ok, did not move")
 

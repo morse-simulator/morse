@@ -8,15 +8,12 @@ try:
 except ImportError:
     pass
 
-import os
 import sys
-import socket
-import json
 import time
 from pymorse import Morse
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
     time.sleep(0.1)
 
 class ThermometerTest(MorseTestCase):
@@ -29,7 +26,7 @@ class ThermometerTest(MorseTestCase):
         robot.append(thermometer)
         thermometer.configure_mw('socket')
 
-        motion = Teleport()
+        motion = Teleport('teleport')
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -42,15 +39,11 @@ class ThermometerTest(MorseTestCase):
             temp_stream = morse.ATRV.Thermometer
 
             o = temp_stream.get()
-            # destination socket
             self.assertAlmostEqual(o['temperature'], 25.0, delta=0.01)
 
-            port = morse.get_stream_port('Motion_Controller')
-            teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            teleport_client.connect(('localhost', port))
+            teleport_client = morse.ATRV.teleport
 
             send_dest(teleport_client, 40.0, 0.0, 0.0)
-            time.sleep(0.1)
 
             # We are nearer of the fire so the temperature is expected
             # to be hotter.
@@ -59,9 +52,15 @@ class ThermometerTest(MorseTestCase):
             self.assertGreater(temp, 28.0)
 
             # It must be hotter and hotter ... 
-            time.sleep(10.0)
+            time.sleep(5.0)
             o = temp_stream.get()
             self.assertGreater(o['temperature'], temp)
+            temp = o['temperature']
+
+            time.sleep(5.0)
+            o = temp_stream.get()
+            self.assertGreater(o['temperature'], temp)
+            temp = o['temperature']
 
 
 

@@ -21,7 +21,7 @@ import time
 from pymorse import Morse
 
 def send_angles(s, yaw, pitch, roll):
-    s.send(json.dumps({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll}).encode())
+    s.publish({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
 
 class OrientationTest(MorseTestCase):
 
@@ -34,7 +34,7 @@ class OrientationTest(MorseTestCase):
         gyro.configure_mw('socket')
         robot.append(gyro)
 
-        orientation = Orientation()
+        orientation = Orientation('orientation')
         orientation.configure_mw('socket')
         robot.append(orientation)
 
@@ -53,9 +53,7 @@ class OrientationTest(MorseTestCase):
             gyro_stream = morse.robot.Gyroscope
             pose_stream = morse.robot.Pose
 
-            port = morse.get_stream_port('Motion_Controller')
-            orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            orientation_stream.connect(('localhost', port))
+            orientation_stream = morse.robot.orientation
 
             precision = 0.12
 

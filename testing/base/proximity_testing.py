@@ -19,8 +19,7 @@ except ImportError:
     pass
 
 def send_dest(s, x, y, yaw):
-    s.send(json.dumps({'x' : x, 'y' : y, 'z' : 0, \
-                       'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0}).encode())
+    s.publish({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
     sleep(0.1)
 
 class ProximityTest(MorseTestCase):
@@ -67,8 +66,7 @@ class ProximityTest(MorseTestCase):
             prox_stream = morse.ATRV.Proximity
 
             port = morse.get_stream_port('Teleport')
-            teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            teleport_client.connect(('localhost', port))
+            teleport_client = morse.ATRV.Teleport
 
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 0)
