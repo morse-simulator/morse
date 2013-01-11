@@ -14,15 +14,13 @@ except ImportError:
 
 import os
 import sys
-import socket
-import json
 import time
 import struct
 import zlib
 from pymorse import Morse
 
 def send_angles(s, yaw, pitch, roll):
-    s.send(json.dumps({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll}).encode())
+    s.publish({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
 
 class CameraTest(MorseTestCase):
 
@@ -43,7 +41,7 @@ class CameraTest(MorseTestCase):
         atrv.append(cam)
         cam.configure_mw('socket')
 
-        orientation = Orientation()
+        orientation = Orientation('orientation')
         orientation.configure_mw('socket')
         atrv.append(orientation)
 
@@ -105,11 +103,8 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.stream('VideoCamera')
-
-            port = morse.get_stream_port('Motion_Controller')
-            orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            orientation_stream.connect(('localhost', port))
+            cam_stream = morse.ATRV.VideoCamera
+            orientation_stream = morse.ATRV.orientation
 
             test_path = os.path.dirname(os.path.abspath(__file__))
             imageA_path = os.path.join(test_path, 'video_camera_diffimgA.data')
