@@ -9,6 +9,10 @@ partially supported by **ROS Fuerte** from patch release 1.8.15,
 which was rolled out on 20/07/2012. Any ROS Fuerte installation 
 from that day on works fine with MORSE.
 
+First, install MORSE using the 
+:doc:`installation instructions  <../../installation>`.
+Make sure to set the **BUILD_ROS_SUPPORT** parameter to **ON** when
+calling cmake!
 
 #. Install ROS Fuerte if needed: http://www.ros.org/wiki/ROS/Installation
 
@@ -16,10 +20,20 @@ from that day on works fine with MORSE.
    11.04) or manually from the sources, and make sure your ``$PYTHONPATH``
    variable includes the Python3.2 libraries.
 
+   ``sudo apt-get install python3.2-dev``
+
 #. Install ``PyYAML`` with Python3 support (package ``python3-yaml`` on
-   Debian/Ubuntu, or you can get the sources from http://pyyaml.org/. Install
-   the source by running ``python3.2 setup.py install`` to be sure to have the
-   Python 3 libraries.
+   Debian/Ubuntu, or you can get the sources from http://pyyaml.org/ ) and
+   build it using python3.2:
+
+   ``wget http://pyyaml.org/download/pyyaml/PyYAML-3.10.tar.gz``
+
+   ``tar xvf PyYAML-3.10.tar.gz``
+
+   ``cd PyYAML-3.10``
+
+   ``sudo python3.2 setup.py``
+
 
 #. Install rospkg using Python3.2:
 
@@ -29,7 +43,17 @@ from that day on works fine with MORSE.
    
    ``sudo python3.2 setup.py install``
 
-#. Done. You can start having fun with MORSE!
+#. Open a terminal and check if everything is correctly set. Therefore, open
+   a terminal and type:
+
+   ``morse check``
+
+   If successful, the following line will be printed after some other information 
+   about your configuration:
+
+   ``* Your environment is correctly setup to run MORSE.``
+
+#. Done. You can start having fun with MORSE and ROS!
 
 
 ROS Electric and Diamondback

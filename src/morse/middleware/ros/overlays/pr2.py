@@ -19,12 +19,12 @@ class PR2(MorseOverlay):
     @ros_service(type = GetTorso)
     def get_torso(self):
         # NOTE: We do NOT care about the IK limits here!
-        return self.overlaid_object.get_translation("torso_lift")[1]
+        return self.overlaid_object.get_location("torso_lift")[1]
         
     @ros_service(type = SetTorso)
     def set_torso(self, height):
         if height >= 0 and height <= 0.311:
-            self.overlaid_object.set_location("torso_lift", [0, height, 0])
+            self.overlaid_object.set_translation("torso_lift", [0, height, 0])
             return True
         else: 
             print("Received invalid value: %s for PR2 torso. Torso height must be betweeen 0 and 0.31"%height)
