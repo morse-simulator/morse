@@ -3,6 +3,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import bgl
 import blf
+import bge
 
 from morse.helpers import passive_objects
 
@@ -49,7 +50,7 @@ def test(contr):
     keylist = keyboard.events
 
     for key in keylist:
-        if key[0] == blenderapi.LEFTALTKEY:
+        if key[0] == bge.events.LEFTALTKEY:
             if key[1] == blenderapi.input_just_activated():
                 #show text over all objects
                 scene.post_draw.append(write)
