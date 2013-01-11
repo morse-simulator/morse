@@ -15,7 +15,7 @@ roslib.load_manifest('nav_msgs')
 roslib.load_manifest('sensor_msgs')
 roslib.load_manifest('geometry_msgs')
 import rospy
-from nav_msgs.msg import Odometry
+import nav_msgs.msg # do not conflict with morse builder
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
@@ -96,7 +96,7 @@ class SickLaserTest(RosTestCase):
         testlogger.debug("cleanup sensor")
 
     def test_sick_laser(self):
-        msg = self.init_sensor_test('/ATRV/Odometry', Odometry)
+        msg = self.init_sensor_test('/ATRV/Odometry', nav_msgs.msg.Odometry)
         precision = 0.15 # we start at the origine
         self.assertAlmostEqual(msg.pose.pose.position.x, 0.0, delta=precision)
         self.assertAlmostEqual(msg.pose.pose.position.y, 0.0, delta=precision)
