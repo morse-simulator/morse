@@ -43,7 +43,7 @@ class DepthCameraTest(RosTestCase):
         robot.append(odometry)
         odometry.configure_mw('ros')
 
-        camera = CameraDepth('CameraDepth')
+        camera = DepthCamera('DepthCamera')
         camera.properties(cam_near=1.0, cam_far=20.0, Depth=True,\
                           cam_width=128, cam_height=128, capturing=True)
         camera.translate(x=0.3, z=0.76)
@@ -110,7 +110,7 @@ class DepthCameraTest(RosTestCase):
         self.assertAlmostEqual(msg.pose.pose.position.z, 0.0, delta=precision)
         # see http://ros.org/doc/api/nav_msgs/html/msg/Odometry.html
 
-        msg = self.init_sensor_test('/ATRV/CameraDepth', PointCloud2)
+        msg = self.init_sensor_test('/ATRV/DepthCamera', PointCloud2)
 
         self.assertEqual(len(msg.data), 128*128*3*4) # H*W*XYZ*sizeof(float)
 

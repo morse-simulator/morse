@@ -32,8 +32,8 @@ class CameraTest(MorseTestCase):
         atrv.rotate(0.0, 0.0, math.pi)
 
         cam = Sensor('video_camera')
-        cam.name = 'CameraVideo'
-        #cam = CameraVideo('CameraVideo') # TODO bug look +Z
+        cam.name = 'VideoCamera'
+        #cam = VideoCamera('VideoCamera') # TODO bug look +Z
         cam.properties(capturing = True)
         cam.properties(cam_width = 320)
         cam.properties(cam_height = 240)
@@ -105,7 +105,7 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.stream('CameraVideo')
+            cam_stream = morse.stream('VideoCamera')
 
             port = morse.get_stream_port('Motion_Controller')
             orientation_stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

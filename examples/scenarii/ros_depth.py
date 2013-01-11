@@ -19,7 +19,7 @@ odometry.configure_mw('ros')
 
 # Append a camera
 camera = Sensor('depth_camera')
-camera.name = 'CameraDepth'
+camera.name = 'DepthCamera'
 camera.translate(x = 0.3, z = 0.76)
 camera.properties(cam_width = 640, cam_height = 480,
                   cam_near = 1.0, cam_far = 20.0,

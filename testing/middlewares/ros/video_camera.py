@@ -43,7 +43,7 @@ class VideoCameraTest(RosTestCase):
         robot.append(odometry)
         odometry.configure_mw('ros')
 
-        camera = CameraVideo('Camera')
+        camera = VideoCamera('Camera')
         camera.properties(cam_width=128, cam_height=128, capturing=True, Vertical_Flip=True)
         camera.translate(x=0.3, z=0.76)
         camera.frequency(3)

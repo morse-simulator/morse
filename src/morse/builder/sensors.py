@@ -318,8 +318,8 @@ class Infrared(LaserSensorWithArc):
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
 
-class CameraVideo(SensorCreator):
-    def __init__(self, name="CameraVideo", cclass="VideoCameraClass", \
+class VideoCamera(SensorCreator):
+    def __init__(self, name="VideoCamera", cclass="VideoCameraClass", \
                  cpath="morse/sensors/video_camera", bname = "video_camera"):
         SensorCreator.__init__(self, name, cpath, cclass, bname)
         camera = Camera("CameraRobot")
@@ -349,16 +349,16 @@ class CameraVideo(SensorCreator):
         camera_mesh.rotation_euler = (0, -math.pi/2, 0)
         camera_mesh.location = (0, 0, 0.015)
 
-class CameraDepth(CameraVideo):
-    def __init__(self, name="CameraDepth"):
-        CameraVideo.__init__(self, name, "DepthCameraClass", \
+class DepthCamera(VideoCamera):
+    def __init__(self, name="DepthCamera"):
+        VideoCamera.__init__(self, name, "DepthCameraClass", \
                              "morse/sensors/depth_camera", "depth_camera")
         self.properties(cam_width = 128, cam_height = 128, \
                         cam_near=1.0, cam_far=20.0, Depth=True)
 
-class CameraSemantic(CameraVideo):
-    def __init__(self, name="CameraSemantic"):
-        CameraVideo.__init__(self, name, "SemanticCameraClass", \
+class SemanticCamera(VideoCamera):
+    def __init__(self, name="SemanticCamera"):
+        VideoCamera.__init__(self, name, "SemanticCameraClass", \
                              "morse/sensors/semantic_camera", "semantic_camera")
         self.properties(cam_width = 512, cam_height = 512)
 
