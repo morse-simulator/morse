@@ -19,6 +19,7 @@ DOWNARROWKEY = None
 RIGHTARROWKEY = None
 LEFTARROWKEY = None
 LEFTCTRLKEY = None
+LEFTALTKEY = None
 
 AKEY = None
 BKEY = None
@@ -53,6 +54,7 @@ if not fake:
     RIGHTARROWKEY = bge.events.RIGHTARROWKEY
     LEFTARROWKEY = bge.events.LEFTARROWKEY
     LEFTCTRLKEY = bge.events.LEFTCTRLKEY
+    LEFTALTKEY = bge.events.LEFTALTKEY
     AKEY = bge.events.AKEY
     BKEY = bge.events.AKEY
     DKEY = bge.events.DKEY
