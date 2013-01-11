@@ -8,6 +8,9 @@ path to the Morse components
 MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'), \
                                 'share', 'morse', 'data')
 
+MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS, \
+                                os.getenv('MORSE_RESOURCE_PATH', '')])
+
 """
 MORSE_MODIFIERS:
 path to the modifiers modules

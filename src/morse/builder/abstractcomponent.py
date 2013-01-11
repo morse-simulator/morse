@@ -324,18 +324,26 @@ class AbstractComponent(object):
 
         if component.endswith('.blend'):
             filepath = os.path.abspath(component) # external blend file
-            if not os.path.exists(filepath): # former PassiveObject way
-                filepath = os.path.join(MORSE_COMPONENTS, component)
         else:
             filepath = os.path.join(MORSE_COMPONENTS, self._category, \
                                     component + '.blend')
 
         if not os.path.exists(filepath):
-            logger.error("Blender file %s for external asset import can" \
-                         "not be found.\nEither provide an absolute path, or" \
-                         "a path relative to MORSE assets directory (typically"\
-                         "$PREFIX/share/morse/data)" % (filepath))
-            return
+            # Search for some blend file in different paths
+            filepath = None
+            resource_path = MORSE_RESOURCE_PATH.split(':')
+            for path in resource_path:
+                tmp = os.path.join(path, component)
+                if os.path.exists(tmp):
+                    filepath = tmp
+                    break
+            # Check if we got a match
+            if not filepath:
+                logger.error("Blender file '%s' for external asset import can" \
+                             "not be found.\nEither provide an absolute path," \
+                             " or a path relative to MORSE assets directory\n" \
+                             "(typically $PREFIX/share/morse/data)"%component)
+                return
 
         if not objects: # link_append all objects from blend file
             objects = bpymorse.get_objects_in_blend(filepath)
