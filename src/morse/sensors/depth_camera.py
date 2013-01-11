@@ -2,24 +2,23 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status, mathutils
 import morse.core.blenderapi
-import morse.sensors.camera
+from morse.sensors.camera import CameraClass
+from morse.sensors.video_camera import VideoCameraClass
 from morse.helpers.components import add_data
 from morse.sensors.zbufferto3d import ZBufferTo3D
+from morse.sensors.zbuffertodepth import ZBufferToDepth
 
-BLENDER_HORIZONTAL_APERTURE = 32.0
 
-class DepthCameraClass(morse.sensors.camera.CameraClass):
+class DepthCameraClass(VideoCameraClass):
     """
     This sensor generates a 3D point cloud from the camera perspective.
     """
 
-    _name = "Depth camera"
+    _name = "Depth (XYZ) camera"
 
     add_data('points', 'none', 'memoryview', "List of 3D points from the depth "
              "camera. memoryview of a set of float(x,y,z). The data is of size "
              "``(cam_width * cam_height * 12)`` bytes (12=3*sizeof(float).")
-    add_data('intrinsic_matrix', 'none', 'mat3<float>',
-        "The intrinsic calibration matrix, stored as a 3x3 row major Matrix.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -27,67 +26,84 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        logger.info('%s initialization' % obj.name)
-        # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
-
-        # Prepare the exportable data of this sensor
-        self.local_data['points'] = []
-
-        # Prepare the intrinsic matrix for this camera.
-        # Note that the matrix is stored in row major
-        intrinsic = mathutils.Matrix()
-        intrinsic.identity()
-        alpha_u = self.image_width  * \
-                  self.image_focal / BLENDER_HORIZONTAL_APERTURE
-        intrinsic[0][0] = alpha_u
-        intrinsic[1][1] = alpha_u
-        intrinsic[0][2] = self.image_width / 2.0
-        intrinsic[1][2] = self.image_height / 2.0
-        self.local_data['intrinsic_matrix'] = intrinsic
-
-        self.capturing = False
-        self._n = -1
+        # Call the constructor of the VideoCameraClass class
+        VideoCameraClass.__init__(self, obj, parent)
 
         # Store the camera parameters necessary for image processing
-        self.zbufferto3d = ZBufferTo3D(alpha_u, alpha_u, \
-                                       self.near_clipping, self.far_clipping, \
-                                       self.image_width, self.image_height)
-
-        # Variable to indicate this is a camera
-        self.camera_tag = True
-
-        logger.info('Component initialized')
-
-    def interrupt(self):
-        self._n = 0
-        super(DepthCameraClass, self).interrupt()
-
-    @async_service
-    def capture(self, n):
-        """
-        Capture **n** images
-
-        :param n: the number of images to take. A negative number means
-        take image indefinitely
-        """
-        self._n = n
+        self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],\
+                                     self.local_data['intrinsic_matrix'][1][1],\
+                                     self.near_clipping, self.far_clipping, \
+                                     self.image_width, self.image_height)
 
     def default_action(self):
-        """ Update the texture image and compute a list of 3D points
-        based on the zBuffer. """
+        """ Update the texture image. """
+        # Grab an image from the texture
+        if self.bge_object['capturing'] and (self._n != 0) :
+
+            # Call the action of the CameraClass class
+            CameraClass.default_action(self)
+
+            image_data = morse.core.blenderapi.cameras()[self.name()].source
+
+            # Convert the Z-Buffer
+            self.local_data['points'] = self.converter.recover(image_data)
+            self.capturing = True
+
+            if (self._n > 0):
+                self._n -= 1
+                if (self._n == 0):
+                    self.completed(status.SUCCESS)
+        else:
+            self.capturing = False
+
+
+class DepthVideoCameraClass(VideoCameraClass):
+    """
+    This sensor generates a Depth 'image' from the camera perspective.
+
+    "Depth images are published as sensor_msgs/Image encoded as 32-bit float.
+    Each pixel is a depth (along the camera Z axis) in meters."
+    [ROS Enhancement Proposal 118](http://ros.org/reps/rep-0118.html) on Depth
+    Images.
+
+    If you are looking for PointCloud data, you can use external tools like
+    [depth_image_proc](http://ros.org/wiki/depth_image_proc) which will use the
+    ``intrinsic_matrix`` and the ``image`` to generate it, or eventually the
+    ``XYZCameraClass`` in this module.
+    """
+
+    _name = "Depth camera"
+
+    add_data('image', 'none', 'buffer', "Z-Buffer captured by the camera, "
+             "converted in meters. memoryview of float of size "
+             "``(cam_width * cam_height * sizeof(float))`` bytes.")
+
+    def __init__(self, obj, parent=None):
+        """ Constructor method.
+
+        Receives the reference to the Blender object.
+        The second parameter should be the name of the object's parent.
+        """
+        # Call the constructor of the parent class
+        VideoCameraClass.__init__(self, obj, parent)
+
+        # Store the camera parameters necessary for image processing
+        self.converter = ZBufferToDepth(self.near_clipping, self.far_clipping, \
+                                        self.image_width, self.image_height)
+
+    def default_action(self):
+        """ Update the texture image. """
         # Grab an image from the texture
         if self.bge_object['capturing'] and (self._n != 0) :
 
             # Call the action of the parent class
-            super(self.__class__, self).default_action()
+            CameraClass.default_action(self)
 
             image_data = morse.core.blenderapi.cameras()[self.name()].source
 
-            # Fill in the exportable data
+            # Convert the Z-Buffer
+            self.local_data['image'] = self.converter.recover(image_data)
             self.capturing = True
-
-            self.local_data['points'] = self.zbufferto3d.recover(image_data)
 
             if (self._n > 0):
                 self._n -= 1

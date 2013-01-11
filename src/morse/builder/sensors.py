@@ -355,7 +355,7 @@ class DepthCamera(VideoCamera):
         VideoCamera.__init__(self, name, "DepthCameraClass", \
                              "morse/sensors/depth_camera", "depth_camera")
         self.properties(cam_width = 128, cam_height = 128, \
-                        cam_near=1.0, cam_far=20.0, Depth=True)
+                        cam_near=1.0, cam_far=20.0, retrieve_depth=True)
 
 class SemanticCamera(VideoCamera):
     def __init__(self, name=None):
@@ -389,3 +389,30 @@ class Clock(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse/core/sensor", \
                                "Sensor", "clock")
+
+class Kinect(SensorCreator):
+    def __init__(self, name="Kinect"):
+        SensorCreator.__init__(self, name, "morse/sensors/kinect", \
+                               "KinectClass", "kinect")
+        mesh = Cube("KinectMesh")
+        mesh.scale = (.02, .1, .02)
+        mesh.color(.8, .8, .8)
+        self.append(mesh)
+        self.video_camera = VideoCamera('rgb')
+        self.video_camera.properties(cam_width = 128, cam_height=128)
+        self.depth_camera = DepthCamera('depth')
+        #self.depth_camera.properties(Class='DepthVideoCameraClass')
+        self.depth_camera.properties(cam_width = 128, cam_height=128)
+        self.append(self.video_camera)
+        self.append(self.depth_camera)
+        # TODO find Kinect spec for cameras positions
+        self.video_camera.location = (.06, +.08, .04)
+        self.depth_camera.location = (.06, -.08, .04)
+    #def add_stream(self, *args, **kwargs):
+    #    # Override AbstractComponent method
+    #    self.video_camera.add_stream(*args, **kwargs)
+    #    self.depth_camera.add_stream(*args, **kwargs)
+    def profile(self):
+        # Override AbstractComponent method
+        self.video_camera.profile()
+        self.depth_camera.profile()

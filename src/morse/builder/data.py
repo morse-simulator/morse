@@ -93,6 +93,7 @@ MORSE_DATASTREAM_DICT = {
         'semantic_camera': ['morse.middleware.ros.semantic_camera.SemanticCameraPublisher'],
         'video_camera': ['morse.middleware.ros.video_camera.VideoCameraPublisher'],
         'depth_camera': ['morse.middleware.ros.depth_camera.DepthCameraPublisher'],
+        'kinect': ['morse.middleware.ros.kinect.XYZRGBPublisher'],
 
         'light': ['morse.middleware.ros.light.BoolReader'],
         'ptu': ['morse.middleware.ros.platine.Vector3Reader'],

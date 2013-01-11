@@ -83,19 +83,19 @@ The Empty object corresponding to this sensor has the following parameters:
   default value is `20.0` (meter).
 - **Vertical_Flip**: (Boolean) flag that determines whether the image should be 
   flipped. Default value is `False`.
-- **Depth**: (Boolean) flag that determines whether the sensor generates
+- **retrieve_depth**: (Boolean) flag that determines whether the sensor generates
   z-buffer images or plain images. It should be set to `True` for this sensor
   to work properly. In this case, the images generated will not be really
   ``Visible``, since the pixels stored in the image will correspond to a single
   unsigned integer of 4 bytes instead of the usual 4 values of RGBA. Default
   value is `True`.
-- **Zbuffer**: (Boolean) flag that determines whether the sensor generates a
-  grayscale image for the z-buffer, to be exported as an image. In this case,
-  the objects closer to the camera are shown in black, while those beyond the
-  `far_clipping` plane are shown in white. Depth information is stored in a
-  single byte, and copied for each of the R, G and B values, so the resolution
-  is only of 256 different depth values. This option should only be used to
-  show off.
+- **retrieve_zbuffer**: (Boolean) flag that determines whether the sensor
+  generates a grayscale image for the z-buffer, to be exported as an image. In
+  this case, the objects closer to the camera are shown in black, while those
+  beyond the `far_clipping` plane are shown in white. Depth information is
+  stored in a single byte, and copied for each of the R, G and B values, so the
+  resolution is only of 256 different depth values. This option should only be
+  used to show off.
 
 Camera calibration matrix
 -------------------------
@@ -139,7 +139,7 @@ An example for creating a properly configured dept_camera is given below:
     d_camera = Sensor('depth_camera')
     d_camera.properties(cam_near = 2)
     d_camera.properties(cam_far = 15)
-    d_camera.properties(Depth = True)
+    d_camera.properties(retrieve_depth = True)
 
 
 Applicable modifiers
