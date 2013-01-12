@@ -22,7 +22,9 @@ class ComponentCreator(AbstractComponent):
         bpymorse.add_object(type='EMPTY')
         # bpymorse.add_empty(type='ARROWS')
         obj = bpymorse.get_first_selected_object()
-        obj.name = cname
+        if cname:
+            obj.name = cname
+            self.basename = cname
         # no collision by default for components
         obj.game.physics_type = 'NO_COLLISION'
         self.set_blender_object(obj)

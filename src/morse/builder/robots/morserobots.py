@@ -4,14 +4,14 @@ from morse.builder.creator import RobotCreator
 from morse.builder import Robot, WheeledRobot
 
 class ATRV(Robot):
-    def __init__(self, name="ATRV"):
+    def __init__(self, name=None):
         Robot.__init__(self, "atrv")
         self.name = name
         self.properties(Class = "ATRVClass", \
                         Path = "morse/robots/atrv")
 
 class B21(Robot):
-    def __init__(self, name="B21"):
+    def __init__(self, name=None):
         Robot.__init__(self, "b21")
         self.name = name
         self.properties(Class = "B21Class", \
@@ -19,12 +19,12 @@ class B21(Robot):
 
 # see data/robots/environment.blend and src/morse/robots/environment.py
 class FakeRobot(RobotCreator):
-    def __init__(self, name="FakeRobot"):
+    def __init__(self, name=None):
         RobotCreator.__init__(self, name,
             "morse/robots/environment", "EnvironmentClass", "environment")
 
 class Hummer(Robot):
-    def __init__(self, name="Hummer"):
+    def __init__(self, name=None):
         Robot.__init__(self, "hummer")
         self.name = name
         self.properties(Class = "HummerClass", \
@@ -33,7 +33,7 @@ class Hummer(Robot):
                         steer = 0.0, init = 0, cid = 0)
 
 class Jido(Robot):
-    def __init__(self, name="Jido"):
+    def __init__(self, name=None):
         Robot.__init__(self, "jido")
         self.name = name
         self.properties(Class = "JidoClass", \
@@ -51,7 +51,7 @@ class Jido(Robot):
 #        # Mouse Game Logic
 
 class Pioneer3DX(Robot): # XXX TODO WheeledRobot ?
-    def __init__(self, name="Pioneer3DX"):
+    def __init__(self, name=None):
         Robot.__init__(self, "pioneer3dx")
         self.name = name
         self.properties(Class = "Pioneer3DXClass", \
@@ -63,7 +63,7 @@ class Pioneer3DX(Robot): # XXX TODO WheeledRobot ?
                         CasterWheelName = "CasterWheel")
 
 class QUAD2012(Robot):
-    def __init__(self, name="QUAD2012"):
+    def __init__(self, name=None):
         Robot.__init__(self, "quadrotor")
         self.name = name
         self.properties(Class = "QuadrotorClass", \
@@ -71,21 +71,21 @@ class QUAD2012(Robot):
         # Collision - Motion Game Logic
 
 class Quadrotor(Robot):
-    def __init__(self, name="Quadrotor"):
+    def __init__(self, name=None):
         Robot.__init__(self, "quadrotor_dynamic")
         self.name = name
         self.properties(Class = "QuadrotorClass", \
                         Path = "morse/robots/quadrotor")
 
 class RMax(Robot):
-    def __init__(self, name="RMax"):
+    def __init__(self, name=None):
         Robot.__init__(self, "rmax")
         self.name = name
         self.properties(Class = "RmaxClass", \
                         Path = "morse/robots/rmax")
 
 class SegwayRMP400(WheeledRobot):
-    def __init__(self, name="segwayrmp400"):
+    def __init__(self, name=None):
         Robot.__init__(self, "segwayrmp400")
         self.name = name
         self.properties(Class = "SegwayRMP400PhysicsClass", \
@@ -96,7 +96,7 @@ class SegwayRMP400(WheeledRobot):
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
 
 class Submarine(Robot):
-    def __init__(self, name="Submarine"):
+    def __init__(self, name=None):
         Robot.__init__(self, "submarine")
         self.name = name
         self.properties(Class = "SubmarineClass", \
@@ -104,7 +104,7 @@ class Submarine(Robot):
         # Keys Game Logic
 
 class Victim(Robot):
-    def __init__(self, name="Victim"):
+    def __init__(self, name=None):
         Robot.__init__(self, "victim")
         self.name = name
         self.properties(Class = "VictimClass", \

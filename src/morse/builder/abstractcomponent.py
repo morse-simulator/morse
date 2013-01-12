@@ -103,8 +103,9 @@ class AbstractComponent(object):
         return self._blendobj.name
     @name.setter
     def name(self, value):
-        self.basename = value
-        self._blendobj.name = value
+        if value:
+            self.basename = value
+            self._blendobj.name = value
     @property
     def location(self):
         return self._blendobj.location

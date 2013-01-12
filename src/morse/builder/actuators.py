@@ -3,24 +3,24 @@ from morse.builder.blenderobjects import *
 from morse.builder import Actuator
 
 class Armature(ActuatorCreator):
-    def __init__(self, name="Armature_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/armature", "Armature",
             "armature")
 
 class Destination(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/destination", \
                                  "DestinationActuatorClass", "destination")
 
 class ForceTorque(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/force_torque", \
                                  "ForceTorqueActuatorClass", "force_torque")
 
 # Gripper uses Actuator from morse.builder
 class Gripper(Actuator):
-    def __init__(self, name="Gripper"):
+    def __init__(self, name=None):
         Actuator.__init__(self, "gripper")
         self.name = name
         self.properties(Class = "GripperActuatorClass", \
@@ -32,7 +32,7 @@ class Gripper(Actuator):
 
 
 class Keyboard(ActuatorCreator):
-    def __init__(self, name="Gripper"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/keyboard", \
                                  "KeyboardActuatorClass", "armature_actuator")
         self.properties(Speed = 1.0)
@@ -47,25 +47,25 @@ class Keyboard(ActuatorCreator):
 
 # kuka_lwr uses Actuator from morse.builder
 class KukaLWR(Actuator):
-    def __init__(self, name="kuka_armature"):
+    def __init__(self, name=None):
         Actuator.__init__(self, "kuka_lwr")
         self.name = name
         self.properties(Class = "Armature", \
                         Path = "morse/actuators/armature")
 
 class Mocap(ActuatorCreator):
-    def __init__(self, name="Mocap_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/mocap_control", \
                                  "MocapControlClass", "mocap_control")
 
 class Orientation(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/orientation", \
                                  "OrientationActuatorClass", "orientation")
 
 # pa_10 uses Actuator from morse.builder
 class PA10(Actuator):
-    def __init__(self, name="PA10"):
+    def __init__(self, name=None):
         Actuator.__init__(self, "pa_10")
         self.name = name
         self.properties(Class = "PA10ActuatorClass", \
@@ -74,7 +74,7 @@ class PA10(Actuator):
         # Sound Game Logic Actuator servo_1.mp3
 
 class PTU(ActuatorCreator):
-    def __init__(self, name="PTU"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/ptu", \
                                  "PTUActuatorClass", "ptu")
         self.properties(Speed = 1.0, Manual = False, Tolerance = 0.01)
@@ -82,46 +82,46 @@ class PTU(ActuatorCreator):
         self.append_meshes(['PanBase', 'TiltBase'])
 
 class RotorcraftAttitude(ActuatorCreator):
-    def __init__(self, name="attitude_controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/rotorcraft_attitude",
             "RotorcraftAttitudeActuatorClass", "rotorcraft_attitude")
 
 class RotorcraftWaypoint(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/rotorcraft_waypoint",
             "RotorcraftWaypointActuatorClass", "rotorcraft_waypoint")
 
 class StabilizedQuadrotor(ActuatorCreator):
-    def __init__(self, name="quadrotor_UIMU"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/stabilized_quadrotor",
             "StabilizedQuadrotorActuatorClass", "stabilized_quadrotor")
 
 class SteerForce(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/steer_force", \
                                  "SteerForceActuatorClass", "steer_force")
 
 class Teleport(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/teleport", \
                                  "TeleportActuatorClass", "teleport")
 
 class MotionVW(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/v_omega", \
                                  "VWActuatorClass", "v_omega")
 
 class MotionVWDiff(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/v_omega_diff_drive", "VWDiffDriveActuatorClass",
             "v_omega_diff_drive")
 
 class Waypoint(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
             "morse/actuators/waypoint",
             "WaypointActuatorClass", "waypoint")
@@ -164,12 +164,12 @@ class Waypoint(ActuatorCreator):
         controller.link(sensor = sensor, actuator = actuator)
 
 class MotionXYW(ActuatorCreator):
-    def __init__(self, name="Motion_Controller"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/xy_omega", \
                                  "XYWActuatorClass", "xy_omega")
 
 class Light(ActuatorCreator):
-    def __init__(self, name="LightAct"):
+    def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/light", \
                                  "LightActuatorClass", "light")
         light = Spot("LightSpot")
