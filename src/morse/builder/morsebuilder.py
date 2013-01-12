@@ -356,30 +356,31 @@ class Environment(Component):
         """
 
         import inspect
-        frame = inspect.currentframe()
-        builderscript_frame = inspect.getouterframes(frame)[2][0] # parent frame
+        try:
+            frame = inspect.currentframe()
+            builderscript_frame = inspect.getouterframes(frame)[2][0] # parent frame
 
-        for name, component in builderscript_frame.f_locals.items():
-            if isinstance(component, AbstractComponent):
+            for name, component in builderscript_frame.f_locals.items():
+                if isinstance(component, AbstractComponent):
 
-                if hasattr(component, "parent"):
-                    continue
+                    if hasattr(component, "parent"):
+                        continue
 
-                if not component.basename: # do automatic renaming only if a name is not already manually set
-                    component.basename = name
+                    if not component.basename: # do automatic renaming only if a name is not already manually set
+                        component.basename = name
 
-                def renametree(cmpt, fqn):
-                    fqn.append(cmpt.basename)
-                    new_name = '.'.join(fqn)
-                    Configuration.update_name(cmpt.name, new_name)
-                    cmpt._blendobj.name = '.'.join(fqn)
-                    for child in cmpt.children:
-                        renametree(child, fqn[:])
+                    def renametree(cmpt, fqn):
+                        fqn.append(cmpt.basename)
+                        new_name = '.'.join(fqn)
+                        Configuration.update_name(cmpt.name, new_name)
+                        cmpt._blendobj.name = '.'.join(fqn)
+                        for child in cmpt.children:
+                            renametree(child, fqn[:])
 
-                renametree(component, [])
-
-
-
+                    renametree(component, [])
+        finally:
+            del builderscript_frame
+            del frame
 
     def place_camera(self, location):
         """ Store the position that will be givent to the default camera

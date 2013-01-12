@@ -85,18 +85,22 @@ class AbstractComponent(object):
 
         #TODO: replace by sys._getframes() ??
         import inspect
-        frame = inspect.currentframe()
-        builderscript_frame = inspect.getouterframes(frame)[1][0] # parent frame
-        cmpts = builderscript_frame.f_locals
-        if "self" in  cmpts: #some silly guy decided to write a class to describe a silly robot
-            tmp = copy.copy(cmpts["self"].__dict__)
-            tmp.update(cmpts)
-            cmpts = tmp
+        try:
+            frame = inspect.currentframe()
+            builderscript_frame = inspect.getouterframes(frame)[1][0] # parent frame
+            cmpts = builderscript_frame.f_locals
+            if "self" in  cmpts: #some silly guy decided to write a class to describe a silly robot
+                tmp = copy.copy(cmpts["self"].__dict__)
+                tmp.update(cmpts)
+                cmpts = tmp
 
-        for name, component in cmpts.items():
-            if component == obj:
-                if not component.basename: # do automatic renaming only if a name is not already manually set
-                    component.basename = name
+            for name, component in cmpts.items():
+                if component == obj:
+                    if not component.basename: # do automatic renaming only if a name is not already manually set
+                        component.basename = name
+        finally:
+            del builderscript_frame
+            del frame
 
     @property
     def name(self):
