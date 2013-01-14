@@ -55,15 +55,10 @@ class JidoPosture(SensorCreator):
                                "JidoPostureClass", "jido_posture")
         self.properties(KUKAname = "KUKA_LWR", PTUname = "PTU")
 
-class KukaPosture(SensorCreator):
-    def __init__(self, name="kuka_posture"):
+class ArmaturePose(SensorCreator):
+    def __init__(self, name="armature_pose"):
         SensorCreator.__init__(self, name, "morse/sensors/armature_pose", \
                                "ArmaturePose", "armature_pose")
-        self.properties(armature = "armature")
-        mesh = Cube("KukaPostureCube")
-        mesh.scale = (.04, .04, .02)
-        mesh.color(.6, .4, .1)
-        self.append(mesh)
 
 class Odometry(SensorCreator):
     def __init__(self, name="Odometry"):

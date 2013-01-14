@@ -28,9 +28,8 @@ class ArmaturePoseTest(MorseTestCase):
         kuka_lwr.translate(z=0.9)
         kuka_lwr.configure_service('socket')
 
-        kuka_posture = KukaPosture('arm_pose')
-        kuka_posture.properties(armature = kuka_lwr.name)
-        robot.append(kuka_posture)
+        kuka_posture = ArmaturePose('arm_pose')
+        kuka_lwr.append(kuka_posture)
         kuka_posture.configure_mw('socket')
         kuka_posture.configure_service('socket')
 

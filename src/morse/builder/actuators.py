@@ -5,8 +5,8 @@ from morse.builder import Actuator
 class Armature(ActuatorCreator):
     def __init__(self, name="Armature_Controller"):
         ActuatorCreator.__init__(self, name,
-            "morse/actuators/armature_actuator", "ArmatureActuatorClass",
-            "armature_actuator")
+            "morse/actuators/armature", "Armature",
+            "armature")
 
 class Destination(ActuatorCreator):
     def __init__(self, name="Motion_Controller"):
@@ -50,8 +50,8 @@ class KukaLWR(Actuator):
     def __init__(self, name="kuka_armature"):
         Actuator.__init__(self, "kuka_lwr")
         self.name = name
-        self.properties(Class = "ArmatureActuatorClass", \
-                        Path = "morse/actuators/armature_actuator")
+        self.properties(Class = "Armature", \
+                        Path = "morse/actuators/armature")
 
 class Mocap(ActuatorCreator):
     def __init__(self, name="Mocap_Controller"):

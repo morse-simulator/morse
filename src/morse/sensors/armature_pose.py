@@ -8,11 +8,11 @@ from morse.helpers.components import add_property
 class ArmaturePose(morse.core.sensor.Sensor):
     """
     The sensor streams the joint state (ie, the rotation or translation value
-    of each joint belonging to the armature) of an armature.
+    of each joint belonging to the armature) of its parent armature.
 
     .. note::
 
-        When adding this sensor, you need to specify the name of the armature
+        This sensor **must** be added as the direct child of the armature
         you want to sense, like in the example below:
 
         .. code-block:: python
@@ -21,14 +21,13 @@ class ArmaturePose(morse.core.sensor.Sensor):
 
             arm = KukaLWR('arm')
             robot.append(arm)
-            kuka_lwr.translate(z=0.9)
+            arm.translate(z=0.9)
 
-            arm_pose = KukaPosture('arm_pose')
-            arm_pose.properties(armature = arm.name)
-            robot.append(arm_pose)
+            arm_pose = ArmaturePose('arm_pose')
+            arm.append(arm_pose)
 
     This component only allows to *read* armature configuration. To change the
-    armature pose, you need an :doc:`armature actuator <../sensors/armature_actuator>`.
+    armature pose, you need an :doc:`armature actuator <../sensors/armature>`.
 
     .. important:: 
     
@@ -45,12 +44,10 @@ class ArmaturePose(morse.core.sensor.Sensor):
         or meters (for prismatic joints)
 
 
-    :sees: :doc:`armature actuator <../actuators/armature_actuator>`
+    :sees: :doc:`armature actuator <../actuators/armature>`
     """
     _name = "Armature Pose Sensor"
     _short_desc = "Returns the joint state of a MORSE armature"
-
-    add_property('armature_name', 'armature', 'armature', 'string', "Name of the armature the sensor monitors.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -62,18 +59,14 @@ class ArmaturePose(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        for child in self.robot_parent.blender_obj.children:
-            if child.name == self.armature_name:
-                self.armature = child
-                break
-
-        if self.armature:
-            logger.debug("Found armature <%s>" % self.armature_name)
-        else:
-            logger.error("Armature <%s> not found. I won't do anything." % self.armature_name)
+        self.armature = self._get_armature(self.blender_obj)
+        if not self.armature:
+            logger.error("The armature pose sensor has not been parented to an armature! " + \
+                    "This sensor must be a direct child of an armature. Check you scene.")
             return
 
-        # The Kuka actuator might not be instantiated yet
+        logger.debug("Found armature <%s>" % self.armature.name)
+
         self._armature_actuator = None
 
         # Define the variables in 'local_data'
@@ -81,6 +74,14 @@ class ArmaturePose(morse.core.sensor.Sensor):
             self.local_data[channel.name] = 0.0
 
         logger.info('Component <%s> initialized' % self.blender_obj.name)
+
+    def _get_armature(self, obj):
+        if hasattr(obj, "channels"):
+            return obj
+        elif not obj.parent:
+            return None
+        else:
+            return self._get_armature(obj.parent)
 
     def _get_armature_actuator(self):
         # Get the reference to the class instance of the armature actuator

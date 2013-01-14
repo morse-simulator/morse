@@ -7,16 +7,22 @@ from morse.core.exceptions import MorseRPCInvokationError
 from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_property
 
-class ArmatureActuatorClass(morse.core.actuator.Actuator):
+class Armature(morse.core.actuator.Actuator):
     """
     **Armatures** are the MORSE way to simulate kinematic chains made of a
     combination of revolute joints (hinge) and prismatic joints (slider).
+
+    .. important::
+
+        This component is abstract. You can not use it directly: it needs to be
+        associated to a Blender armature.  Check specializations like the
+        :doc:`KUKA LWR arm <../actuators/kuka_lwr>`.
 
     This component only allows to *write* armature configuration. To read the
     armature pose, you need an :doc:`armature pose sensor <../sensors/armature_pose>`.
 
     .. important:: 
-    
+
         To be valid, special care must be given when creating armatures. If you
         want to add new one, please carefully read the :doc:`armature creation
         <../../dev/armature_creation>` documentation.
@@ -49,12 +55,12 @@ class ArmatureActuatorClass(morse.core.actuator.Actuator):
 
     def __init__(self, obj, parent=None):
         """
-        Creates a new instance of ArmatureActuatorClass.
+        Creates a new instance of Armature.
 
         :param obj: the Blender **armature** object that is to be controlled.
         """     
         # Call the constructor of the parent class
-        super(ArmatureActuatorClass,self).__init__(obj, parent)
+        super(Armature,self).__init__(obj, parent)
         
         # Initialize the values in local_data for each segment
         armature = self.blender_obj

@@ -34,9 +34,8 @@ class ArmatureActuatorTest(MorseTestCase):
         pose.translate(z=1.3)
         kuka_lwr.append(pose)
 
-        arm_pose = KukaPosture('arm_pose')
-        arm_pose.properties(armature = kuka_lwr.name)
-        robot.append(arm_pose)
+        arm_pose = ArmaturePose('arm_pose')
+        kuka_lwr.append(arm_pose)
         arm_pose.configure_mw('socket')
 
         motion = Teleport('motion')
@@ -46,7 +45,7 @@ class ArmatureActuatorTest(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
-    def _test_object_attach(self):
+    def test_object_attach(self):
         """ Checks that attached object are indeed attached at the right place.
         """
         precision = 0.02

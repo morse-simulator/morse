@@ -25,7 +25,7 @@ class gripperTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = ATRV()
+        robot = ATRV('robot')
 
         kuka_lwr = KukaLWR('kuka')
         robot.append(kuka_lwr)
@@ -33,7 +33,7 @@ class gripperTest(MorseTestCase):
         kuka_lwr.configure_mw('socket')
         kuka_lwr.configure_service('socket')
 
-        gripper = Gripper()
+        gripper = Gripper('gripper')
         gripper.translate(z=1.28)
         kuka_lwr.append(gripper)
         gripper.configure_service('socket')
@@ -56,51 +56,51 @@ class gripperTest(MorseTestCase):
         env.configure_service('socket')
 
 
-    def test_kuka_controller(self):
+    def test_gripper(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
         with Morse() as morse:
             # kuka controller socket
-            kuka_client = morse.ATRV.kuka
-            teleport_stream = morse.ATRV.teleport
+            kuka_client = morse.robot.kuka
+            teleport_stream = morse.robot.teleport
 
-            kuka_client.publish({'kuka_1' : 0.0,
-                                 'kuka_2' : -1.57,
-                                 'kuka_3' : 0.0,
-                                 'kuka_4' : 0.0,
-                                 'kuka_5' : 0.0,
-                                 'kuka_6' : 0.0,
-                                 'kuka_7' : 0.0})
+            kuka_client.set_rotation('kuka_2', -1.57)
+            sleep(0.1)
 
-            obj = morse.rpc('Gripper', 'grab')
+            obj = morse.robot.gripper.grab().result()
             self.assertEqual(obj, None)
 
-            obj = morse.rpc('Gripper', 'release')
+            obj = morse.robot.gripper.release().result()
             self.assertEqual(obj, None)
 
             send_pose(teleport_stream, 3.0, 5, 0.0)
+            sleep(0.1)
 
-            obj = morse.rpc('Gripper', 'grab')
+            obj = morse.robot.gripper.grab().result()
             self.assertEqual(obj, 'BlackVideotape')
 
             send_pose(teleport_stream, 3.0, -5.0, 0.0)
-            obj = morse.rpc('Gripper', 'grab')
+            sleep(0.1)
+            obj = morse.robot.gripper.grab().result()
             self.assertEqual(obj, 'BlackVideotape')
 
             send_pose(teleport_stream, 3.0, 8.0, 0.0)
-            obj = morse.rpc('Gripper', 'release')
+            sleep(0.1)
+            obj = morse.robot.gripper.release().result()
             self.assertEqual(obj, True)
 
             send_pose(teleport_stream, 3.0, -5.0, 0.0)
-            obj = morse.rpc('Gripper', 'grab')
+            sleep(0.1)
+            obj = morse.robot.gripper.grab().result()
             self.assertEqual(obj, 'WhiteVideotape')
 
-            obj = morse.rpc('Gripper', 'release')
+            obj = morse.robot.gripper.release().result()
             self.assertEqual(obj, True)
 
             send_pose(teleport_stream, 3.0, 8.0, 0.0)
-            obj = morse.rpc('Gripper', 'grab')
+            sleep(0.1)
+            obj = morse.robot.gripper.grab().result()
             self.assertEqual(obj, 'BlackVideotape')
 
 
