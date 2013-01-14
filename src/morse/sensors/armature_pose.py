@@ -12,14 +12,14 @@ class ArmaturePose(morse.core.sensor.Sensor):
 
     .. note::
 
-        This sensor **must** be added as the direct child of the armature
+        This sensor **must** be added as a child of the armature
         you want to sense, like in the example below:
 
         .. code-block:: python
 
             robot = ATRV()
 
-            arm = KukaLWR('arm')
+            arm = KukaLWR()
             robot.append(arm)
             arm.translate(z=0.9)
 
@@ -62,7 +62,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         self.armature = self._get_armature(self.blender_obj)
         if not self.armature:
             logger.error("The armature pose sensor has not been parented to an armature! " + \
-                    "This sensor must be a direct child of an armature. Check you scene.")
+                    "This sensor must be a child of an armature. Check you scene.")
             return
 
         logger.debug("Found armature <%s>" % self.armature.name)
