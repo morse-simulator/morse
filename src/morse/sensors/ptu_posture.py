@@ -1,10 +1,40 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.sensor
+from morse.helpers.components import add_data
 
-class PTUPostureClass(morse.core.sensor.Sensor):
-    """ Reader for the PTU posture sensor """
+class PTUPosture(morse.core.sensor.Sensor):
+    """
+    Simple sensor that provides the current rotation angles of the *pan* and *tilt*
+    segments of the :doc:`PTU actuator <../actuators/ptu>`.
+    The angles returned are in radians in the range (-pi, pi).
 
+    .. note::
+
+        This sensor **must** be added as a child of the PTU
+        you want to sense, like in the example below:
+
+        .. code-block:: python
+
+            robot = ATRV()
+
+            ptu = PTU()
+            robot.append(ptu)
+            ptu.translate(z=0.9)
+
+            ptu = PTUPosture('ptu_pose')
+            ptu.append(ptu_pose)
+
+    .. note:: The angles are given with respect to the orientation of the robot
+    
+    :sees: :doc:`PTU actuator <../actuators/ptu>`.
+    """
+    _name = "PTU Pose Sensor"
+    _short_desc = "Returns the pan/tilt values of a pan-tilt unit"
+
+    add_data('pan', 0.0, "float","pan value, in radians")
+    add_data('tilt', 0.0, "float","tilt value, in radians")
+ 
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -15,31 +45,31 @@ class PTUPostureClass(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
         
-        self._ptu_found = False
+        ptu = self._get_ptu(self.blender_obj)
+        if not ptu:
+            logger.error("The PTU pose sensor has not been parented to a PTU! " + \
+                    "This sensor must be a child of a PTU. Check you scene.")
+            return
+
+        self._ptu_obj = blenderapi.persistantstorage().componentDict[ptu.name]
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        logger.info('Component initialized')
+        logger.info('Component <%s> initialized' % self.blender_obj.name)
 
+    def _get_ptu(self, obj):
+        if "PanBase" in [c.name for c in obj.children]:
+            return obj
+        elif not obj.parent:
+            return None
+        else:
+            return self._get_ptu(obj.parent)
 
-    def find_ptu(self):
-        # Check if I have a child called 'PTU'
-        for child in self.blender_obj.childrenRecursive:
-            if self.blender_obj['PTUname'] in str(child):
-                logger.debug("Found a PTU called: %s" % child.name)
-                #self._ptu_obj = child
-                try:
-                    self._ptu_obj = blenderapi.persistantstorage().componentDict[child.name]
-                    self._ptu_found = True
-                except:
-                    return
- 
 
     def default_action(self):
         """ Read the rotation of the platine unit """
         # Find the actual PTU unit as my child
-        if self._ptu_found == False:
-            self.find_ptu()
+        if not self._ptu_obj:
             return
 
         # Update the postition of the base platforms

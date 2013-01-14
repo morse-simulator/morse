@@ -28,6 +28,7 @@ from morse.sensors import armature_pose, \
                           camera,    \
                           odometry,  \
                           proximity, \
+                          ptu_posture, \
                           thermometer
 
 import sys, os

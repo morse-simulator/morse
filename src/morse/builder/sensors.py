@@ -97,8 +97,7 @@ class Proximity(SensorCreator):
 class PTUPosture(SensorCreator):
     def __init__(self, name="ptu_posture"):
         SensorCreator.__init__(self, name, "morse/sensors/ptu_posture", \
-                               "PTUPostureClass", "ptu_posture")
-        self.properties(PTUname = "PTU")
+                               "PTUPosture", "ptu_posture")
 
 class Rosace(SensorCreator):
     def __init__(self, name="rosace"):

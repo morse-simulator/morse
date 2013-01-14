@@ -29,16 +29,18 @@ class PTUTest(MorseTestCase):
 
         robot = ATRV()
 
-        ptu_posture = PTUPosture('ptu_posture')
-        ptu_posture.translate(x=ptu_x, z=ptu_z)
-        robot.append(ptu_posture)
-        ptu_posture.configure_mw('socket')
-
         ptu = PTU('PTU')
         ptu.configure_mw('socket')
+        ptu.translate(x=ptu_x, z=ptu_z)
         ptu.configure_service('socket')
         ptu.properties(Speed = 0.5)
-        ptu_posture.append(ptu)
+        robot.append(ptu)
+
+
+        ptu_posture = PTUPosture('ptu_posture')
+        robot.append(ptu_posture)
+        ptu_posture.configure_mw('socket')
+        ptu.append(ptu_posture)
 
         gyro = Gyroscope()
         gyro.configure_mw('socket')
