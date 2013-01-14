@@ -347,9 +347,10 @@ class Robot(dict):
     __delattr__= dict.__delitem__
 
 class Component():
-    def __init__(self, morse, name, stream = None, port = None, services = []):
+    def __init__(self, morse, name, fqn, stream = None, port = None, services = []):
         self._morse = morse
         self.name = name
+        self.fqn = fqn # fully qualified name
 
         if stream == 'IN':
             self.stream = Stream(self._morse.com, port)
@@ -369,8 +370,8 @@ class Component():
 
     def _add_service(self, m):
         def innermethod(*args):
-            pymorselogger.debug("Sending synchronous request %s with args %s." % (m, args))
-            req = self._morse._make_request(self.name, m, *args)
+            pymorselogger.debug("Sending asynchronous request %s with args %s." % (m, args))
+            req = self._morse._make_request(self.fqn, m, *args)
             future = self._morse.executor.submit(self._morse._execute_rpc, req)
             #TODO: find a way to throw an execption in the main thread
             # if the RPC request fails at invokation for stupid reasons
@@ -621,24 +622,37 @@ class Morse():
             setattr(self, name, Robot())
             robot = getattr(self, name)
 
-            for c in r["components"]:
+            for c in sorted(r["components"].keys()): # important to sort the list of components to ensure parents are created before children
+                self._add_component(robot, c, r["components"][c])
 
-                stream = c.get('stream', None)
-                if stream:
-                    port = self.get_stream_port(c["name"])
-                else:
-                    port = None
+    def _add_component(self, robot, fqn, details):
+        stream = details.get('stream', None)
+        if stream:
+            port = self.get_stream_port(fqn)
+        else:
+            port = None
 
-                services = c.get('services', [])
+        services = details.get('services', [])
 
-                cname = self._normalize_name(c["name"])
+        name = fqn.split('.')[1:] # the first token is always the robot name. Remove it
 
-                robot[cname] = Component(self,
-                                        cname,
-                                        stream,
-                                        port,
-                                        services)
+        cmpt = Component(self,
+                        name[-1],
+                        fqn,
+                        stream,
+                        port,
+                        services)
 
+        if len(name) == 1: # this component belongs to the robot directly.
+            robot[name[0]] = cmpt
+        else:
+            subcmpt = robot[name[0]]
+            for sub in name[1:-1]:
+                subcmpt = getattr(subcmpt, sub)
+
+            if hasattr(subcmpt, name[-1]): # pathologic cmpt name!
+                raise RuntimeError("Sub-component name <%s> conflicts with <%s.%s> member. To use pymorse with this scenario, please change the name of the sub-component." % (name[-1], subcmpt.name, name[-1]))
+            setattr(subcmpt, name[-1], cmpt)
 
 
     def cancel(self, id):

@@ -102,9 +102,7 @@ def details():
 
     def cmptdetails(c):
         c = simu.componentDict[c.name]
-        cmpt = {"name": c.name(),
-                "type": type(c).__name__,
-                }
+        cmpt = {"type": type(c).__name__,}
         if c.name() in services:
             cmpt["services"] = services[c.name()]
             cmpt["service_interfaces"] = services_iface[c.name()]
@@ -119,7 +117,7 @@ def details():
     def robotdetails(r):
         robot = {"name": r.name(),
                 "type": type(r).__name__,
-                "components": [cmptdetails(c) for c in r.components]
+                "components": {c.name:cmptdetails(c) for c in r.components}
                 }
         return robot
     
