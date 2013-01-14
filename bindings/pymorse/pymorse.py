@@ -294,11 +294,7 @@ import socket
 import select
 import threading
 
-try:
-    from queue import Queue
-except ImportError:
-    # Python 2.x
-    from Queue import Queue
+from queue import Queue
 
 from future import MorseExecutor
 
