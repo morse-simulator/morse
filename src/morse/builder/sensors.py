@@ -14,7 +14,7 @@ class Accelerometer(SensorCreator):
 
 class Battery(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name,"morse/sensors/battery", \
+        SensorCreator.__init__(self, name, "morse/sensors/battery", \
                                "BatteryClass", "battery")
         mesh = Cylinder("BatteryCylinder")
         mesh.scale = (.01, .01, .04)

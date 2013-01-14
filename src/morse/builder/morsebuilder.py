@@ -370,6 +370,9 @@ class Environment(Component):
                         component.basename = name
 
                     def renametree(cmpt, fqn):
+                        if not cmpt.basename:
+                            raise SyntaxError("You need to assign the component of type %s to a variable" %
+                                             cmpt)
                         fqn.append(cmpt.basename)
                         new_name = '.'.join(fqn)
                         Configuration.update_name(cmpt.name, new_name)
@@ -397,51 +400,54 @@ class Environment(Component):
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
         """
-        # Default node name
-        if name == None:
-            try:
-                name = os.environ["MORSE_NODE"]
-            except KeyError:
-                name = os.uname()[1]
-        # Write the configuration of the datastreams, and node configuration
-        Configuration.write_config()
-        self._write_multinode(name)
+        try:
+            # Default node name
+            if name == None:
+                try:
+                    name = os.environ["MORSE_NODE"]
+                except KeyError:
+                    name = os.uname()[1]
+            # Write the configuration of the datastreams, and node configuration
+            Configuration.write_config()
+            self._write_multinode(name)
 
-        # Change the Screen material
-        if self._display_camera:
-            self._set_scren_mat()
+            # Change the Screen material
+            if self._display_camera:
+                self._set_scren_mat()
 
-        self.properties(environment_file = str(self._environment_file))
-        # Set the position of the camera
-        camera_fp = bpymorse.get_object('CameraFP')
-        camera_fp.location = self._camera_location
-        camera_fp.rotation_euler = self._camera_rotation
+            self.properties(environment_file = str(self._environment_file))
+            # Set the position of the camera
+            camera_fp = bpymorse.get_object('CameraFP')
+            camera_fp.location = self._camera_location
+            camera_fp.rotation_euler = self._camera_rotation
 
-        if not self.fastmode:
-            # make sure OpenGL shading language shaders (GLSL) is the
-            # material mode to use for rendering
-            bpymorse.get_context_scene().game_settings.material_mode = 'GLSL'
-        else:
-            bpymorse.get_context_scene().game_settings.material_mode = 'SINGLETEXTURE'
-            self.set_viewport("WIREFRAME")
+            if not self.fastmode:
+                # make sure OpenGL shading language shaders (GLSL) is the
+                # material mode to use for rendering
+                bpymorse.get_context_scene().game_settings.material_mode = 'GLSL'
+            else:
+                bpymorse.get_context_scene().game_settings.material_mode = 'SINGLETEXTURE'
+                self.set_viewport("WIREFRAME")
 
-        # Set the unit system to use for button display (in edit mode) to metric
-        bpymorse.get_context_scene().unit_settings.system = 'METRIC'
-        # Select the type of Framing to Extend,
-        # Show the entire viewport in the display window,
-        # viewing more horizontally or vertically.
-        bpymorse.get_context_scene().game_settings.frame_type = 'EXTEND'
-        # Start player with a visible mouse cursor
-        bpymorse.get_context_scene().game_settings.show_mouse = True
+            # Set the unit system to use for button display (in edit mode) to metric
+            bpymorse.get_context_scene().unit_settings.system = 'METRIC'
+            # Select the type of Framing to Extend,
+            # Show the entire viewport in the display window,
+            # viewing more horizontally or vertically.
+            bpymorse.get_context_scene().game_settings.frame_type = 'EXTEND'
+            # Start player with a visible mouse cursor
+            bpymorse.get_context_scene().game_settings.show_mouse = True
 
-        # Make CameraFP the active camera
-        bpymorse.deselect_all()
-        camera_fp.select = True
-        bpymorse.get_context_scene().objects.active = camera_fp
-        # Set default camera
-        bpymorse.get_context_scene().camera = camera_fp
+            # Make CameraFP the active camera
+            bpymorse.deselect_all()
+            camera_fp.select = True
+            bpymorse.get_context_scene().objects.active = camera_fp
+            # Set default camera
+            bpymorse.get_context_scene().camera = camera_fp
 
-        self._created = True
+            self._created = True
+        except BaseException:
+            os._exit(-1)
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color

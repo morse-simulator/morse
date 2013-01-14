@@ -108,6 +108,8 @@ class AbstractComponent(object):
     @name.setter
     def name(self, value):
         if value:
+            if '.' in value:
+                raise SyntaxError("Invalid variable name : %s : must not contains " % value)
             self.basename = value
             self._blendobj.name = value
     @property
