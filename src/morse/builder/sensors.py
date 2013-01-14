@@ -317,6 +317,7 @@ class VideoCamera(SensorCreator):
                  cpath="morse/sensors/video_camera", bname = "video_camera"):
         SensorCreator.__init__(self, name, cpath, cclass, bname)
         camera = Camera("CameraRobot")
+        camera.name = "CameraRobot"
         self.append(camera)
         self.properties(cam_width = 256, cam_height = 256, cam_focal = 35.0, \
                         capturing = True, Vertical_Flip = True)
