@@ -18,7 +18,7 @@ add_morse_test(video_camera_testing)
 
 # Actuator
 
-add_morse_test(armature_actuator_testing)
+add_morse_test(armature_testing)
 add_morse_test(destination_testing)
 add_morse_test(gripper_testing)
 add_morse_test(light_testing)
@@ -33,7 +33,6 @@ add_morse_test(xyw_testing)
 
 # Sensor + Actuator 
 
-add_morse_test(kuka_lwr_testing) 
 add_morse_test(ptu_testing)
 
 # Modifier

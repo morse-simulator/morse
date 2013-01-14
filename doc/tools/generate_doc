@@ -10,7 +10,7 @@ It generates doc for:
     - the services exported by the conmponent.
 """
 
-from morse.actuators import armature_actuator, \
+from morse.actuators import armature, \
                             destination,       \
                             force_torque,      \
                             keyboard,          \
