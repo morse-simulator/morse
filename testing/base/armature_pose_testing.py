@@ -42,7 +42,7 @@ class ArmaturePoseTest(MorseTestCase):
         JOINTS = ['kuka_1', 'kuka_2', 'kuka_3', 'kuka_4', 'kuka_5', 'kuka_6', 'kuka_7']
 
         with Morse() as simu:
-            self.assertEqual(simu.robot.arm_pose.get_joints(), JOINTS)
+            self.assertEqual(simu.robot.arm.arm_pose.get_joints(), JOINTS)
 
             #res = simu.robot.arm.get_rotations()
             #for joint in joints:
@@ -56,7 +56,7 @@ class ArmaturePoseTest(MorseTestCase):
             #res = simu.robot.arm.get_rotation('pipo')
             #self.assertEqual(type(res.exception(2)), MorseServiceFailed)
 
-            res = simu.robot.arm_pose.get_joints_length().result()
+            res = simu.robot.arm.arm_pose.get_joints_length().result()
             self.assertAlmostEqual(res['kuka_1'], 0.31, delta=precision)
             self.assertAlmostEqual(res['kuka_2'], 0.20, delta=precision)
             self.assertAlmostEqual(res['kuka_3'], 0.20, delta=precision)
@@ -70,7 +70,7 @@ class ArmaturePoseTest(MorseTestCase):
             simu.robot.arm.set_rotations(angles)
             sleep(0.1)
 
-            pose = simu.robot.arm_pose.get_state().result()
+            pose = simu.robot.arm.arm_pose.get_state().result()
 
             target = dict(zip(JOINTS, angles))
             
@@ -84,7 +84,7 @@ class ArmaturePoseTest(MorseTestCase):
 
         with Morse() as simu:
 
-            pose = simu.robot.arm_pose.get()
+            pose = simu.robot.arm.arm_pose.get()
 
             self.assertEqual(len(pose), 7)
 
@@ -95,9 +95,9 @@ class ArmaturePoseTest(MorseTestCase):
 
 
             simu.robot.arm.set_rotation("kuka_2", 1).result()
-            pose = simu.robot.arm_pose.get()
+            pose = simu.robot.arm.arm_pose.get()
 
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 1.0, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 1.0, delta = precision)
 
             for j,v in pose.items():
                 if j != "kuka_2":
@@ -110,7 +110,7 @@ class ArmaturePoseTest(MorseTestCase):
             sleep(0.1)
 
             target = dict(zip(JOINTS, angles))
-            pose = simu.robot.arm_pose.get()
+            pose = simu.robot.arm.arm_pose.get()
             for j, v in pose.items():
                 self.assertAlmostEqual(v, target[j], delta=precision)
 
@@ -120,7 +120,7 @@ class ArmaturePoseTest(MorseTestCase):
             sleep(0.1)
 
             target = dict(zip(JOINTS, angles))
-            pose = simu.robot.arm_pose.get()
+            pose = simu.robot.arm.arm_pose.get()
             for j, v in pose.items():
                 self.assertAlmostEqual(v, target[j], delta=precision)
 

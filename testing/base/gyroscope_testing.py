@@ -36,7 +36,7 @@ class GyroTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.robot.Gyroscope
+            gyro_stream = morse.robot.gyro
 
             angles = gyro_stream.get()
             precision = 0.02

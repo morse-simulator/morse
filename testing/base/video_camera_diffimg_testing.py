@@ -123,8 +123,8 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.ATRV.VideoCamera
-            orientation_stream = morse.ATRV.orientation
+            cam_stream = morse.robot.VideoCamera
+            orientation_stream = morse.robot.orientation
 
             test_path = os.path.dirname(os.path.abspath(__file__))
             imageA_path = os.path.join(test_path, 'video_camera_diffimgA.data')

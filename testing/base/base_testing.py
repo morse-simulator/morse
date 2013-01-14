@@ -19,9 +19,19 @@ class BaseTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        # Adding 2 robots
-        robot1 = Jido()
-        robot2 = ATRV()
+        # Adding 4 robots
+        # no name provided, use the name of the associated variable
+        jido = Jido()
+
+        # use explicitly name provided
+        robot2 = ATRV('mana')
+
+        # setup the name using explicitly robot3.name
+        robot3 = ATRV()
+        robot3.name = 'dala'
+
+        # no name provided, use variable name, old school style
+        atrv = Robot('atrv')
         
         env = Environment('empty', fastmode = True)
 
@@ -47,7 +57,7 @@ class BaseTest(MorseTestCase):
         
         import ast
         robotsset = set(ast.literal_eval(robots))
-        self.assertEquals(robotsset, {'Jido', 'ATRV'})
+        self.assertEquals(robotsset, {'jido', 'mana', 'dala', 'atrv'})
         sockf.close()
         s.close()
 

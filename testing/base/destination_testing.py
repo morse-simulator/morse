@@ -42,7 +42,7 @@ class DestinationTest(MorseTestCase):
 
     def test(self):
         with Morse() as morse:
-            pose_stream = morse.robot.Pose
+            pose_stream = morse.robot.pose
 
             pose = pose_stream.get()
             precision = 0.02

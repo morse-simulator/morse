@@ -36,7 +36,7 @@ class BatteryTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            bat_stream = morse.ATRV.Battery
+            bat_stream = morse.robot.battery
 
             bat = bat_stream.get()
             cur_bat = bat['charge']

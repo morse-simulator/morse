@@ -24,7 +24,7 @@ class VictimTest(MorseTestCase):
         robot = ATRV()
         robot.translate(z=0.2)
 
-        victim_detector = Rosace('Rosace')
+        victim_detector = Rosace()
         robot.append(victim_detector)
         victim_detector.configure_mw('socket')
         victim_detector.configure_service('socket')
@@ -33,7 +33,7 @@ class VictimTest(MorseTestCase):
         victim_detector._blendobj.game.sensors["Radar"].angle = 90.0
         victim_detector._blendobj.game.sensors["Radar"].distance= 2.0
 
-        motion = Teleport('Teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -46,11 +46,10 @@ class VictimTest(MorseTestCase):
 
     def test_victim_interface(self):
         with Morse() as morse:
-            victim_stream = morse.ATRV.Rosace
+            victim_stream = morse.robot.victim_detector
+            teleport_client = morse.robot.motion
 
-            teleport_client = morse.ATRV.Teleport
-
-            abilities = morse.rpc('Rosace', 'get_robot_abilities')
+            abilities = morse.rpc('robot.victim_detector', 'get_robot_abilities')
             self.assertEqual(abilities, [1, 2, 3, 4, 5])
 
             victim_status = victim_stream.get()
@@ -65,14 +64,14 @@ class VictimTest(MorseTestCase):
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.rpc('Rosace', 'get_victim_severity')
+            severity = morse.rpc('robot.victim_detector', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.rpc('Rosace', 'get_victim_requirements')
+            requirements = morse.rpc('robot.victim_detector', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
             with self.assertRaises(MorseServiceFailed):
-                morse.rpc('Rosace', 'heal')
+                morse.rpc('robot.victim_detector', 'heal')
 
             # The victim is not detected if not in the field of view of
             # the radar
@@ -82,13 +81,13 @@ class VictimTest(MorseTestCase):
             self.assertTrue(len(victim_dict) == 0)
 
             with self.assertRaises(MorseServiceFailed):
-                morse.rpc('Rosace', 'get_victim_severity')
+                morse.rpc('robot.victim_detector', 'get_victim_severity')
 
             with self.assertRaises(MorseServiceFailed):
-                morse.rpc('Rosace', 'get_victim_requirements')
+                morse.rpc('robot.victim_detector', 'get_victim_requirements')
 
             with self.assertRaises(MorseServiceFailed):
-                morse.rpc('Rosace', 'heal')
+                morse.rpc('robot.victim_detector', 'heal')
 
             # Move close enough to be able to heal it
             send_dest(teleport_client, 9.2, 0.0, 0.0)
@@ -99,13 +98,13 @@ class VictimTest(MorseTestCase):
             self.assertEqual(victim_dict['Victim']['requirements'], [1, 2, 3])
             self.assertEqual(victim_dict['Victim']['severity'], 10)
 
-            severity = morse.rpc('Rosace', 'get_victim_severity')
+            severity = morse.rpc('robot.victim_detector', 'get_victim_severity')
             self.assertEqual(severity, 10.0)
 
-            requirements = morse.rpc('Rosace', 'get_victim_requirements')
+            requirements = morse.rpc('robot.victim_detector', 'get_victim_requirements')
             self.assertEqual(requirements, [1, 2, 3])
 
-            morse.rpc('Rosace', 'heal')
+            morse.rpc('robot.victim_detector', 'heal')
 
             time.sleep(0.2)
             victim_status = victim_stream.get()

@@ -59,8 +59,7 @@ class TeleportTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            self.pose_stream = morse.robot.Pose
-
+            self.pose_stream = morse.robot.pose
             self.teleport_stream = morse.robot.teleport
 
             self.precision = 0.15

@@ -63,10 +63,10 @@ class CameraTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            cam_stream = morse.ATRV.VideoCamera
+            cam_stream = morse.atrv.VideoCamera
             cam = cam_stream.get()
 
-            orientation_stream = morse.ATRV.orientation
+            orientation_stream = morse.atrv.orientation
 
             res = []
             # search for the red part in the image

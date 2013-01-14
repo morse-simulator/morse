@@ -29,18 +29,17 @@ class PTUTest(MorseTestCase):
 
         robot = ATRV()
 
-        ptu = PTU('PTU')
+        ptu = PTU()
         ptu.configure_mw('socket')
         ptu.translate(x=ptu_x, z=ptu_z)
         ptu.configure_service('socket')
         ptu.properties(Speed = 0.5)
         robot.append(ptu)
 
-
-        ptu_posture = PTUPosture('ptu_posture')
-        robot.append(ptu_posture)
-        ptu_posture.configure_mw('socket')
-        ptu.append(ptu_posture)
+        posture = PTUPosture()
+        robot.append(posture)
+        posture.configure_mw('socket')
+        ptu.append(posture)
 
         gyro = Gyroscope()
         gyro.configure_mw('socket')
@@ -57,9 +56,9 @@ class PTUTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.ATRV.Gyroscope
-            posture_stream = morse.ATRV.ptu_posture
-            ptu_stream = morse.ATRV.PTU
+            gyro_stream = morse.robot.ptu.gyro
+            posture_stream = morse.robot.ptu.posture
+            ptu_stream = morse.robot.ptu
 
             angles = gyro_stream.get()
             posture = posture_stream.get()
@@ -119,8 +118,9 @@ class PTUTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.ATRV.Gyroscope
-            posture_stream = morse.ATRV.ptu_posture
+            gyro_stream = morse.robot.ptu.gyro
+            posture_stream = morse.robot.ptu.posture
+            ptu_stream = morse.robot.ptu
 
             angles = gyro_stream.get()
             posture = posture_stream.get()
@@ -133,11 +133,11 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['yaw'], 0.0, delta=precision)
             self.assertAlmostEqual(angles['pitch'], 0.0, delta=precision)
 
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
-            morse.rpc('PTU', 'set_pan_tilt', 1.0, 0.0)
+            morse.rpc('robot.ptu', 'set_pan_tilt', 1.0, 0.0)
 
             angles = gyro_stream.get()
             posture = posture_stream.get()
@@ -146,7 +146,7 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['yaw'], 1.0, delta=moving_precision)
             self.assertAlmostEqual(angles['pitch'], 0.0, delta=moving_precision)
 
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], 1.0, delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
@@ -164,42 +164,42 @@ class PTUTest(MorseTestCase):
 
             precision = 0.02
 
-            res = morse.rpc('PTU', 'look_at_point', 1 ,0 ,ptu_z)
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_point', 1 ,0 ,ptu_z)
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], 0.0, delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
 
 
-            res = morse.rpc('PTU', 'look_at_point', -1 ,0 ,ptu_z)
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_point', -1 ,0 ,ptu_z)
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
 #            self.assertAlmostEqual(res[0], math.radians(180.0), delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
 
 
-            res = morse.rpc('PTU', 'look_at_point', ptu_x,1,ptu_z)
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_point', ptu_x,1,ptu_z)
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], math.radians(90), delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
 
 
-            res = morse.rpc('PTU', 'look_at_point', ptu_x, -1, ptu_z)
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_point', ptu_x, -1, ptu_z)
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], math.radians(-90), delta=precision)
             self.assertAlmostEqual(res[1], 0.0, delta=precision)
 
             
             
-            res = morse.rpc('PTU', 'look_at_point', ptu_x,0,10)
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_point', ptu_x,0,10)
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[1], math.radians(-90), delta=precision)
             # Reset position
-            morse.rpc('PTU', 'set_pan_tilt', 0.0, 0.0)
+            morse.rpc('robot.ptu', 'set_pan_tilt', 0.0, 0.0)
 
-            res = morse.rpc('PTU', 'look_at_object', 'RollingChair')
-            res = morse.rpc('PTU', 'get_pan_tilt')
+            res = morse.rpc('robot.ptu', 'look_at_object', 'RollingChair')
+            res = morse.rpc('robot.ptu', 'get_pan_tilt')
             self.assertAlmostEqual(res[0], math.radians(90), delta=precision)
             self.assertAlmostEqual(res[1], 0.466, delta=precision)
 

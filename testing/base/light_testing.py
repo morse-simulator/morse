@@ -42,9 +42,9 @@ class LightTest(MorseTestCase):
 
     def test_light(self):
         with Morse() as morse:
-            cam_stream = morse.ATRV.VideoCamera
+            cam_stream = morse.robot.cam
 
-            light_stream = morse.ATRV.light
+            light_stream = morse.robot.light
             light_stream.publish({"emit": False})
 
             time.sleep(1.0)

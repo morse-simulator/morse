@@ -47,8 +47,8 @@ class OrientationTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            gyro_stream = morse.robot.Gyroscope
-            pose_stream = morse.robot.Pose
+            gyro_stream = morse.robot.gyro
+            pose_stream = morse.robot.pose
 
             orientation_stream = morse.robot.orientation
 

@@ -43,8 +43,8 @@ class NedTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            pose_stream = morse.robot.Pose
-            pose_ned_stream = morse.robot.Pose_001
+            pose_stream = morse.robot.pose
+            pose_ned_stream = morse.robot.pose2
 
             pose = pose_stream.get()
             pose_ned = pose_ned_stream.get()

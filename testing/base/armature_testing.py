@@ -52,21 +52,21 @@ class ArmatureActuatorTest(MorseTestCase):
 
         with Morse() as simu:
 
-            self.assertAlmostEqual(simu.robot.pose.get()['z'], 2.3, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['x'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['y'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 2.3, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
             simu.robot.motion.translate(1.0)
             sleep(0.1)
-            self.assertAlmostEqual(simu.robot.pose.get()['z'], 2.3, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['x'], 1.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['y'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 2.3, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
             simu.robot.arm.set_rotation("kuka_2", math.radians(-90)).result()
             sleep(0.1)
-            self.assertAlmostEqual(simu.robot.pose.get()['z'], 1.31, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['x'], 1.99, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.pose.get()['pitch'], math.radians(90), delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 1.31, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.99, delta = 0.01)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], math.radians(90), delta = 0.01)
 
     def test_immediate_api(self):
         """ Tests the services that have an immediate result
@@ -80,11 +80,11 @@ class ArmatureActuatorTest(MorseTestCase):
         with Morse() as simu:
             simu.robot.arm.set_rotation("kuka_2", 1).result() # basic rotation
             sleep(0.1)
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 1.0, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 1.0, delta = precision)
 
             simu.robot.arm.set_rotation("kuka_2", 4000).result() # rotation clamping
             sleep(0.1)
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 2.09, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 2.09, delta = precision)
 
             res = simu.robot.arm.set_rotation('pipo',0) # inexistant joint
             self.assertEqual(type(res.exception(1)), MorseServiceFailed)
@@ -104,9 +104,9 @@ class ArmatureActuatorTest(MorseTestCase):
         precision = 0.02
         with Morse() as simu:
             simu.robot.arm.rotate("kuka_2", 0.5).result() # basic rotation
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 0.5, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 0.5, delta = precision)
             simu.robot.arm.rotate("kuka_2", 4000).result() # rotation clamping
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 2.09, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 2.09, delta = precision)
 
             res = simu.robot.arm.rotate('pipo',0) # inexistant joint
             self.assertEqual(type(res.exception(1)), MorseServiceFailed)
@@ -119,7 +119,7 @@ class ArmatureActuatorTest(MorseTestCase):
             self.assertFalse(act.done())
             sleep(1)
             self.assertFalse(act.done())
-            self.assertAlmostEqual(simu.robot.arm_pose.get()["kuka_2"], 0.5, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 0.5, delta = precision)
             sleep(1.1)
             self.assertTrue(act.done())
 

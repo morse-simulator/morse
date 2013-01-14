@@ -42,7 +42,7 @@ class PoseTest(MorseTestCase):
         """ Tests if we can retrieve the list of published data streams.
         """
         morse = Morse()
-        self.assertEquals(set(morse.streams()), set(["Pose"]))
+        self.assertEquals(set(morse.streams()), set(["robot.pose"]))
         morse.close()
 
     def test_read_pose(self):
@@ -50,7 +50,7 @@ class PoseTest(MorseTestCase):
         """
 
         with Morse() as morse:
-            pose_stream = morse.ATRV.Pose
+            pose_stream = morse.robot.pose
 
             pose = pose_stream.get()
 

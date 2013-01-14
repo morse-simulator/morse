@@ -49,18 +49,18 @@ class Differential_VW_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = SegwayRMP400('robot')
+        robot = SegwayRMP400()
         robot.properties(FixTurningSpeed=1.23)
         robot.translate(z=0.1)
         robot.unparent_wheels()
 
-        pose = Pose('Pose')
+        pose = Pose()
         robot.append(pose)
         pose.translate(z=-0.1)
         pose.configure_mw('socket')
         pose.configure_mw('text')
 
-        motion = MotionVWDiff('motion')
+        motion = MotionVWDiff()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -72,7 +72,7 @@ class Differential_VW_Test(MorseTestCase):
         with Morse() as morse:
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.robot.Pose
+            pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for key,coord in pose.items():
                 if key == 'z':

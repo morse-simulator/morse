@@ -93,9 +93,9 @@ class OdometryTest(MorseTestCase):
 
         with Morse() as morse:
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            self.pose_stream = morse.ATRV.Pose
-            self.odo_stream = morse.ATRV.Odometry
-            self.motion = morse.ATRV.motion
+            self.pose_stream = morse.robot.pose
+            self.odo_stream = morse.robot.odo
+            self.motion = morse.robot.motion
 
             self.clear_datas(0.0, 0.0, 0.0)
 

@@ -31,7 +31,7 @@ class SteerForceTest(MorseTestCase):
         pose.configure_mw('socket')
         robot.append(pose)
 
-        steer_force = SteerForce('motion')
+        steer_force = SteerForce()
         robot.append(steer_force)
         steer_force.configure_mw('socket')
 
@@ -40,7 +40,7 @@ class SteerForceTest(MorseTestCase):
 
     def test(self):
         with Morse() as morse:
-            pose_stream = morse.robot.Pose
+            pose_stream = morse.robot.pose
 
             pose = pose_stream.get()
             # It is not really precise to control the robot in this way
@@ -50,7 +50,7 @@ class SteerForceTest(MorseTestCase):
             y = pose['y']
 
             # destination socket
-            steer_client = morse.robot.motion
+            steer_client = morse.robot.steer_force
 
             send_force(steer_client, 0.0, -20.0, 0.0)
             time.sleep(3.0)

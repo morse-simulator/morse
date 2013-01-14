@@ -25,7 +25,7 @@ class ProximityTest(MorseTestCase):
         """
         robot = ATRV()
 
-        proximity = Proximity('Proximity')
+        proximity = Proximity()
         proximity.translate(z=0.5)
         proximity.properties(Track = "Catch_me")
         proximity.properties(Range = 2.0)
@@ -33,12 +33,11 @@ class ProximityTest(MorseTestCase):
         proximity.configure_mw('socket')
         proximity.configure_service('socket')
 
-        pose = Pose('Pose')
+        pose = Pose()
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = Actuator('teleport'); motion.name = 'Teleport'
-        #motion = Teleport('Teleport') # TODO bug line 91: len(prox['near_objects']) is 0
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -60,10 +59,8 @@ class ProximityTest(MorseTestCase):
     def test_proximity(self):
         with Morse() as morse:
         
-            prox_stream = morse.ATRV.Proximity
-
-            port = morse.get_stream_port('Teleport')
-            teleport_client = morse.ATRV.Teleport
+            prox_stream = morse.robot.proximity
+            teleport_client = morse.robot.motion
 
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 0)
@@ -88,7 +85,7 @@ class ProximityTest(MorseTestCase):
 
             # Call the set_range service and check if we can catch the
             # two objects
-            morse.rpc('Proximity', 'set_range', 20.0)
+            prox_stream.set_range(20.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 2)
             self.assertTrue('Target1' in prox['near_objects'])
@@ -96,7 +93,7 @@ class ProximityTest(MorseTestCase):
 
             # Call the set_tracked_tag service and check if we catch
             # target2
-            morse.rpc('Proximity', 'set_tracked_tag', 'Catch_me2')
+            prox_stream.set_tracked_tag('Catch_me2')
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target2' in prox['near_objects'])

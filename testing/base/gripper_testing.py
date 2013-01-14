@@ -62,7 +62,7 @@ class gripperTest(MorseTestCase):
         """
         with Morse() as morse:
             # kuka controller socket
-            kuka_client = morse.robot.kuka
+            kuka_client = morse.robot.arm
             teleport_stream = morse.robot.teleport
 
             kuka_client.set_rotation('kuka_2', -1.57)

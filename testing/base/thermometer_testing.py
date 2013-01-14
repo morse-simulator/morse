@@ -26,7 +26,7 @@ class ThermometerTest(MorseTestCase):
         robot.append(thermometer)
         thermometer.configure_mw('socket')
 
-        motion = Teleport('teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -36,12 +36,12 @@ class ThermometerTest(MorseTestCase):
 
     def test_temperature(self):
         with Morse() as morse:
-            temp_stream = morse.ATRV.Thermometer
+            temp_stream = morse.robot.thermometer
+            teleport_client = morse.robot.motion
 
             o = temp_stream.get()
             self.assertAlmostEqual(o['temperature'], 25.0, delta=0.01)
 
-            teleport_client = morse.ATRV.teleport
 
             send_dest(teleport_client, 40.0, 0.0, 0.0)
 

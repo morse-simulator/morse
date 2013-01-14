@@ -47,13 +47,13 @@ class XYW_Test(MorseTestCase):
             precision=0.08
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.ATRV.Pose
+            pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             # v_w socket
-            xyw = morse.ATRV.motion
+            xyw = morse.robot.motion
 
             send_speed(xyw, 1.0, 0.0, 0.0, 2.0)
 

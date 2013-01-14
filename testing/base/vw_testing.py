@@ -38,7 +38,7 @@ class VW_Test(MorseTestCase):
         robot.append(pose)
         pose.configure_mw('socket')
 
-        motion = MotionVW('motion')
+        motion = MotionVW()
         robot.append(motion)
         motion.configure_mw('socket')
         motion.configure_service('socket')
@@ -52,12 +52,12 @@ class VW_Test(MorseTestCase):
             precision=0.05
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = simu.ATRV.Pose
+            pose_stream = simu.robot.pose
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            v_w = simu.ATRV.motion
+            v_w = simu.robot.motion
 
             send_speed(v_w, 1.0, 0.0, 2.0)
 
@@ -106,12 +106,12 @@ class VW_Test(MorseTestCase):
             precision=0.15
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = simu.ATRV.Pose
+            pose_stream = simu.robot.pose
             pose = pose_stream.get()
             for coord in pose.values():
                 self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            v_w = simu.ATRV.motion
+            v_w = simu.robot.motion
 
             send_service_speed(v_w, 1.0, 0.0, 2.0)
 

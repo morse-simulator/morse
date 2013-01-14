@@ -26,12 +26,12 @@ class Semantic_Camera_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
-        camera = SemanticCamera('SemanticCamera')
+        camera = SemanticCamera()
         robot.append(camera)
         camera.translate(x=0.3, z=0.762)
         camera.configure_mw('socket')
 
-        motion = Teleport('Teleport')
+        motion = Teleport()
         robot.append(motion)
         motion.configure_mw('socket')
 
@@ -44,13 +44,8 @@ class Semantic_Camera_Test(MorseTestCase):
         is ready.
         """
         with Morse() as morse:
-            # Read the data from the semantic camera
-            semantic_stream = morse.ATRV.SemanticCamera
-
-            #port = morse.get_stream_port('Teleport')
-            #teleport_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            #teleport_client.connect(('localhost', port))
-            teleport_client = morse.ATRV.Teleport
+            semantic_stream = morse.robot.camera
+            teleport_client = morse.robot.motion
 
             o = semantic_stream.get()
             objects= o['visible_objects']
