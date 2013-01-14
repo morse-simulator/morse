@@ -12,7 +12,7 @@ class VWActuatorClass(morse.core.actuator.Actuator):
     _name = 'Linear and angular speed (V, W) actuator'
     _short_desc = 'Motion controller using linear and angular speeds'
 
-    add_data('x', 0.0, 'float',
+    add_data('v', 0.0, 'float',
              'linear velocity in x direction (forward movement) (m/s)')
     add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
