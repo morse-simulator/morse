@@ -4,6 +4,7 @@ add_morse_test(base_testing)
 
 # Sensor
 
+add_morse_test(armature_pose_testing)
 add_morse_test(battery_testing)
 add_morse_test(gps_testing)
 add_morse_test(gyroscope_testing)
