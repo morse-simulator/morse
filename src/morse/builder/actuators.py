@@ -2,12 +2,6 @@ from morse.builder.creator import ActuatorCreator
 from morse.builder.blenderobjects import *
 from morse.builder import Actuator
 
-class Armature(ActuatorCreator):
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-            "morse/actuators/armature", "Armature",
-            "armature")
-
 class Destination(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, "morse/actuators/destination", \
