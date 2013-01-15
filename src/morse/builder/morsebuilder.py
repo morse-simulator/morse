@@ -534,8 +534,13 @@ class Environment(Component):
             self.multinode_distribution = distribution
         self._multinode_configured = True
 
-    def configure_service(self, mw):
-        AbstractComponent.configure_service(self, mw, "simulation")
+    def configure_service(self, datastream):
+        logger.warning("configure_service is deprecated, use add_service instead")
+        return self.add_service(datastream)
+
+    def add_service(self, datastream):
+        """ override AbstractComponent method """
+        AbstractComponent.add_service(self, datastream, "simulation")
 
     def select_display_camera(self, robot_camera):
         """ Select the camera that will be displayed on the Screen object

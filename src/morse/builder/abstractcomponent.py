@@ -27,9 +27,6 @@ class Configuration(object):
         Configuration._update_name(old_name, new_name, Configuration.service)
         Configuration._update_name(old_name, new_name, Configuration.overlay)
 
-    def link_mw(component, mw_method_cfg):
-        Configuration.datastream.setdefault(component.name, []).append(mw_method_cfg)
-
     def link_service(component, service_cfg):
         # Special case here for the pseudo component 'simulation' that
         # covers the simulator management services.
