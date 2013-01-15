@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+import re
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 import morse.core.datastream
@@ -103,8 +104,9 @@ class ROS(morse.core.datastream.Datastream):
 
     def get_topic_name(self, component_instance):
         component_name = component_instance.blender_obj.name
-        parent_name = component_instance.robot_parent.blender_obj.name
-        return "/" + parent_name + "/" + component_name
+        # robot.001.sensor.001 = robot001.sensor001
+        topic = re.sub(r'\.([0-9]+)', r'\1', component_name)
+        return '/' + topic.replace('.', '/')
 
     def get_property(self, component_instance, name):
         component_name = component_instance.blender_obj.name
