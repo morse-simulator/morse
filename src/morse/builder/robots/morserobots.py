@@ -86,7 +86,7 @@ class RMax(Robot):
 
 class SegwayRMP400(WheeledRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "segwayrmp400")
+        WheeledRobot.__init__(self, "segwayrmp400")
         self.name = name
         self.properties(Class = "SegwayRMP400PhysicsClass", \
                         Path = "morse/robots/segwayrmp400", \
