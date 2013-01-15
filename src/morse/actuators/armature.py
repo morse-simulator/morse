@@ -1,5 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
+import time
+from collections import OrderedDict
 import morse.core.actuator
 from morse.core import status
 from morse.core.services import service, async_service, interruptible
@@ -75,8 +77,6 @@ class Armature(morse.core.actuator.Actuator):
 
         self.joint_speed = {}
 
-        self.active_translations = {}
-
         # Look for the armature's end effector, if any
         self._end_effector = None
         for child in self.blender_obj.childrenRecursive:
@@ -92,6 +92,11 @@ class Armature(morse.core.actuator.Actuator):
             for child in self.blender_obj.children:
                 if not 'internal' in child:
                     child.setParent(self._end_effector)
+
+        ####
+        # Trajectory specific variables
+        self._active_trajectory = None
+
 
         logger.info('%s armature initialized with joints [%s].' % (obj.name, ", ".join(self.local_data.keys())))
 
@@ -120,6 +125,26 @@ class Armature(morse.core.actuator.Actuator):
             return (channel, True)
         else:
             return (channel, False)
+
+    def _get_joint_value(self, joint):
+        """
+        Returns the *value* of a given joint, either:
+        - its absolute rotation in radian along its rotation axis, or
+        - it absolute translation in meters along its translation axis.
+
+        Throws an exception if the joint does not exist.
+
+        :param joint: the name of the joint in the armature.
+        """
+        channel, is_prismatic = self._get_joint(joint)
+
+        # Retrieve the motion axis
+        axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
+
+        if is_prismatic:
+            return channel.head_pose[axis_index]
+        else: # revolute joint
+            return channel.joint_rotation[axis_index]
 
     def _get_prismatic(self, joint):
         """ Checks a given prismatic joint name exist in the armature,
@@ -372,6 +397,112 @@ class Armature(morse.core.actuator.Actuator):
             assert(False) # should not reach this point.
 
     @async_service
+    def trajectory(self, trajectory):
+        """
+        Executes a joint trajectory to the armature.
+
+        The `trajectory` parameter should have the following structure:
+
+        .. code-block:: python
+
+            trajectory = {
+                'starttime': <timestamp in second>,
+                'points': [
+                    {'positions': [...],
+                     'velocities': [...],
+                     'accelerations' [...],
+                     'time_from_start': <seconds>}
+                    {...},
+                    ...
+                    ]
+                }
+
+        .. warning::
+            
+            Currently, both `velocities` and `accelerations` are ignored.
+
+        The trajectory execution starts after `starttime` timestamp passed
+        (if omitted, the trajectory execution starts right away).
+        
+        `points` is the list of trajectory waypoints. It is assumed that the
+        values in the waypoints are ordered the same way as in the set of
+        joint of the armature (ie, from the root to the tip of the armature).
+        `velocities` and `accelerations` are optional.
+
+        The component attempts to achieve each waypoint at the time obtained
+        by adding that waypoint's `time_from_start` value to `starttime`.
+
+        :param trajectory: the trajectory to execute, as describe above.
+        """
+
+        #TODO: support velocities and accelerations via cubic/quintic spline interpolation
+        starttime = time.time() # by default, start now
+        if 'starttime' in trajectory:
+            trajectory["starttime"] = max(starttime, trajectory["starttime"])
+        else:
+            trajectory["starttime"] = starttime
+
+        self._active_trajectory = trajectory
+
+    def _exec_traj(self):
+
+        t = time.time()
+        trajectory = self._active_trajectory
+
+        try:
+            if t < trajectory["starttime"]:
+                return
+            
+            if trajectory["starttime"] + trajectory["points"][-1]["time_from_start"] < t:
+                #trajectory execution is over!
+                self._active_trajectory = None
+                # TODO: check here the final pose match the last point pose
+                self.completed(status.SUCCESS, None)
+
+            for p in trajectory["points"]:
+                end = trajectory["starttime"] + p["time_from_start"]
+                if "started" in p and t < end:
+                    # currently going to this waypoint: fine!
+                    break
+
+                elif "started" not in p and t < end:
+                    # start the new waypoint
+                    allocated_time = end - t
+                    assert(allocated_time > 0)
+
+                    target = OrderedDict(zip(self.local_data.keys(),
+                                    p["positions"]))
+
+                    for joint in target.keys():
+                        # compute the distance based on actual current joint pose
+                        dist = target[joint] - self._get_joint_value(joint)
+                        self.joint_speed[joint] = dist/allocated_time
+
+                    self.local_data = target
+
+                    p["started"] = True
+                    break
+
+                elif "started" not in p and t > end:
+                    logger.warning("Skipped a waypoint on armature <%s>. Wrong 'time_from_start'?" % self.name())
+
+                # case: "started" and t > end: do nothing, go to next point
+        except KeyError as ke:
+            self._active_trajectory = None
+            self.completed(status.FAILED, "Error: invalid trajectory: key %s was expected." % ke)
+
+    def interrupt(self, cause = None):
+    
+        for joint in self.local_data.keys():
+            self.local_data[joint] = self._get_joint_value(joint)
+            if joint in self.joint_speed:
+                del self.joint_speed[joint]
+
+        self._active_trajectory = None
+
+        super(Armature,self).interrupt(cause)
+
+    @async_service
     def set_target(self,x ,y, z):
         """
         Sets a target position for the armature's tip.
@@ -400,6 +531,11 @@ class Armature(morse.core.actuator.Actuator):
         Move the armature according to both the value of local_data
 
         """
+
+        if self._active_trajectory:
+            self._exec_traj()
+
+
         armature = self.blender_obj
 
         position_reached = True
@@ -446,7 +582,8 @@ class Armature(morse.core.actuator.Actuator):
 
 
         if position_reached: # True only when all joints match local_data
+            if not self._active_trajectory: # _exec_traj() manage completion for trajectories
                 self.completed(status.SUCCESS, None)
-                del self.joint_speed[joint]
+            del self.joint_speed[joint]
 
 

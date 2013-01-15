@@ -124,17 +124,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         if not self._armature_actuator:
             self._get_armature_actuator()
 
-        armature_actuator = self._armature_actuator
-
-        channel, is_prismatic = armature_actuator._get_joint(joint) # reuse helper functions from armature actuator
-
-        # Retrieve the motion axis
-        axis_index = next(i for i, j in enumerate(armature_actuator.find_dof(channel)) if j)
-
-        if is_prismatic:
-            return channel.head_pose[axis_index]
-        else: # revolute joint
-            return channel.joint_rotation[axis_index]
+        return self._armature_actuator._get_joint_value(joint) # reuse helper functions from armature actuator
 
     @service
     def get_joints_length(self):
