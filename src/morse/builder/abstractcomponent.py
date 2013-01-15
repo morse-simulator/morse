@@ -73,7 +73,7 @@ class AbstractComponent(object):
             obj.matrix_parent_inverse.identity()
         self._blendobj = obj # bpy object
 
-    def append(self, obj):
+    def append(self, obj, level=1):
         """ Add a child to the current object
 
         eg: robot.append(sensor), will set the robot parent of the sensor.
@@ -87,7 +87,7 @@ class AbstractComponent(object):
         import inspect
         try:
             frame = inspect.currentframe()
-            builderscript_frame = inspect.getouterframes(frame)[1][0] # parent frame
+            builderscript_frame = inspect.getouterframes(frame)[level][0] # parent frame
             cmpts = builderscript_frame.f_locals
             if "self" in  cmpts: #some silly guy decided to write a class to describe a silly robot
                 tmp = copy.copy(cmpts["self"].__dict__)

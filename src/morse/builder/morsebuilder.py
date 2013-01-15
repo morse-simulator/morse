@@ -161,7 +161,7 @@ class WheeledRobot(Robot):
         obj._blendobj.location[0] = -obj._blendobj.location[1]
         obj._blendobj.location[1] = tmp_x
 
-        obj._blendobj.parent = self._blendobj
+        Robot.append(self, obj, 2)
 
 
 class Sensor(Component):
