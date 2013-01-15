@@ -42,7 +42,8 @@ class Human(Robot):
         self.armature = None
 
         try:
-            self.armature = Armature("HumanArmature", self, "human_posture")
+            self.armature = Armature("HumanArmature", "human_posture")
+            self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
                          "for an object called 'HumanArmature' in the 'Human'" +\

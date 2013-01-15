@@ -108,19 +108,14 @@ class Component(AbstractComponent):
 
 
 class Armature(AbstractComponent):
-    def __init__(self, objectname, parent, filename=None):
+    def __init__(self, objectname, filename='armature'):
         """ Initialize an Armature
 
         :param objectname: Armature name
-        :param parent: parent's Component
-        :param filename: for datastream configuration
+        :param filename: for datastream configuration, default 'armature'
         """
-        AbstractComponent.__init__(self)
+        AbstractComponent.__init__(self, filename=filename)
         self.set_blender_object(bpymorse.get_object(objectname))
-        if not filename:
-            filename = objectname
-        self._blender_filename = filename
-        parent.append(self)
 
 
 class Robot(Component):

@@ -15,10 +15,14 @@ class PR2(Robot):
         self.torso_lift = None
 
         try:
-            self.head = Armature("head_armature", self)
-            self.l_arm = Armature("l_arm_controller", self)
-            self.r_arm = Armature("r_arm_controller", self)
-            self.torso_lift = Armature("torso_lift_armature", self)
+            self.head = Armature("head_armature")
+            self.append(self.head)
+            self.l_arm = Armature("l_arm_controller")
+            self.append(self.l_arm)
+            self.r_arm = Armature("r_arm_controller")
+            self.append(self.r_arm)
+            self.torso_lift = Armature("torso_lift_armature")
+            self.append(self.torso_lift)
         except KeyError:
             logger.error("Could not find the PR2 head armature! (I was " +\
                          "looking for an object called 'head_armature' in " +\

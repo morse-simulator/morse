@@ -107,6 +107,7 @@ MORSE_DATASTREAM_DICT = {
 
     'socket': {
         'accelerometer': ['post_message'],
+        'armature_pose': ['post_message'],
         'battery': ['post_message'],
         'gps': ['post_message'],
         'gyroscope': ['post_message'],
@@ -120,6 +121,7 @@ MORSE_DATASTREAM_DICT = {
         'semantic_camera' : ['post_message'],
         'video_camera' : ['post_video_camera', 'morse/middleware/sockets/video_camera'],
 
+        'armature': ['read_message'],
         'destination': ['read_message'],
         'gripper': ['read_message'],
         'light': ['read_message'],
@@ -134,7 +136,7 @@ MORSE_DATASTREAM_DICT = {
 
     'yarp': {
         'accelerometer': ['post_message'],
-        'armature_actuator': ['post_message'],
+        'armature_pose': ['post_message'],
         'battery': ['post_message'],
         'gps': ['post_message'],
         'gyroscope': ['post_message'],
@@ -149,7 +151,7 @@ MORSE_DATASTREAM_DICT = {
         'thermometer': ['post_message'],
         'video_camera': ['post_image_RGBA'],
 
-        'armature_actuator': ['read_message'],
+        'armature': ['read_message'],
         'destination': ['read_message'],
         'gripper': ['read_message'],
         'light': ['read_message'],
@@ -174,7 +176,7 @@ MORSE_DATASTREAM_DICT = {
     'pocolibs': {
         'stereo_unit': ['write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench'],
         'ptu': ['read_platine', 'morse/middleware/pocolibs/actuators/platine', 'platine_orientation'],
-        'armature_actuator': ['read_lwr_config', 'morse/middleware/pocolibs/actuators/lwr', 'lwrCurrentPoseArmRight'],
+        'armature': ['read_lwr_config', 'morse/middleware/pocolibs/actuators/lwr', 'lwrCurrentPoseArmRight'],
         'gyroscope': ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseGyroscopeMEPos'],
         'odometry': ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseOdometryMEPos'],
         'pose': ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorsePoseMEPos'],
