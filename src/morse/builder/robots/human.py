@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 import os
-from morse.builder import AbstractComponent, MORSE_COMPONENTS
+from morse.builder import AbstractComponent, Robot, MORSE_COMPONENTS
 
-class Human(AbstractComponent):
+class Human(Robot):
     """ Append a human model to the scene.
 
     The human model currently available in MORSE comes with its
@@ -31,45 +31,34 @@ class Human(AbstractComponent):
 
     Currently, only one human per simulation is supported.
     """
-    def __init__(self, style=None):
-        """ The 'style' parameter is only to switch to the mocap_human file. """
-        AbstractComponent.__init__(self, category='robots')
-        if style == 'ik_human':
-            self._blendname = 'mocap_human'
-        elif style == 'mocap_human':
-            self._blendname = 'mocap_human'
-        else:
-            self._blendname = 'human'
+    def __init__(self, filename='human'):
+        """ The 'style' parameter is only to switch to the mocap_human file.
 
-        self.append_meshes()
-
-        self.set_blender_object(self.get_selected("Human"))
+        :param filename: 'human' (default) or 'mocap_human'
+        """
+        Robot.__init__(self, filename)
 
         self.armature = None
 
         try:
-            obj = self.get_selected("HumanArmature")
-            self.armature = AbstractComponent(obj, "human_posture")
+            armature_object = self.get_selected("HumanArmature")
+            self.armature = AbstractComponent(armature_object, "human_posture")
+            # self.append(self.armature) # force parent ?
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
                          "for an object called 'HumanArmature' in the 'Human'" +\
                          " children). I won't be able to export the human pose" +\
                          " to any middleware.")
 
-        # IK human has no object called Hips_Empty, so avoid this step
-        if not style:
-            # fix for Blender 2.6 Animations
-            if obj:
-                hips = self.get_selected("Hips_Empty")
-                i = 0
-                for act in hips.game.actuators:
-                    act.layer = i
-                    i = i + 1
-
-                i = 0
-                for act in obj.game.actuators:
-                    act.layer = i
-                    i = i + 1
+        # fix for Blender 2.6 Animations
+        if armature_object:
+            hips = self.get_selected("Hips_Empty")
+            # IK human has no object called Hips_Empty, so avoid this step
+            if hips:
+                for i, actuator in enumerate(hips.game.actuators):
+                    actuator.layer = i
+                for i, actuator in enumerate(armature_object.game.actuators):
+                    actuator.layer = i
 
     def use_world_camera(self):
         self.properties(WorldCamera = True)
