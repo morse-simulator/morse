@@ -106,6 +106,23 @@ class Component(AbstractComponent):
                 and not self.is_morseable():
             self.morseable()
 
+
+class Armature(AbstractComponent):
+    def __init__(self, objectname, parent, filename=None):
+        """ Initialize an Armature
+
+        :param objectname: Armature name
+        :param parent: parent's Component
+        :param filename: for datastream configuration
+        """
+        AbstractComponent.__init__(self)
+        self.set_blender_object(bpymorse.get_object(objectname))
+        if not filename:
+            filename = objectname
+        self._blendname = filename
+        parent.append(self)
+
+
 class Robot(Component):
     def __init__(self, filename):
         Component.__init__(self, 'robots', filename)

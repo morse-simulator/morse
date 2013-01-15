@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 import os
-from morse.builder import AbstractComponent, Robot, MORSE_COMPONENTS
+from morse.builder import Armature, Robot, MORSE_COMPONENTS
 
 class Human(Robot):
     """ Append a human model to the scene.
@@ -42,9 +42,7 @@ class Human(Robot):
         self.armature = None
 
         try:
-            armature_object = self.get_selected("HumanArmature")
-            self.armature = AbstractComponent(armature_object, "human_posture")
-            self.append(self.armature)
+            self.armature = Armature("HumanArmature", self, "human_posture")
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
                          "for an object called 'HumanArmature' in the 'Human'" +\
@@ -52,8 +50,9 @@ class Human(Robot):
                          " to any middleware.")
 
         # fix for Blender 2.6 Animations
+        armature_object = self.get_child(self.armature.name)
         if armature_object:
-            hips = self.get_selected("Hips_Empty")
+            hips = self.get_child("Hips_Empty")
             # IK human has no object called Hips_Empty, so avoid this step
             if hips:
                 for i, actuator in enumerate(hips.game.actuators):

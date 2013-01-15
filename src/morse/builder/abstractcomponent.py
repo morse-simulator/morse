@@ -211,17 +211,10 @@ class AbstractComponent(object):
     def select(self):
         bpymorse.select_only(self._blendobj)
 
-    def get_selected(self, name, objects=None):
-        """ get_selected returns the object with the name ``name`` from the
-        selected objects list (usefull after appending)
-        ie. importing a second object will be named "`name`.001" etc.
-
-        :param name: name of the object
-        :return: the first Blender object for which his name strats with the
-        param `name` from those selected (imported object are selected)
-        """
+    def get_child(self, name, objects=None):
+        """ get_child returns the child named :param name: """
         if not objects:
-            objects = bpymorse.get_selected_objects()
+            objects = self._blendobj.children
         for obj in objects:
             if obj.name == name:
                 return obj
@@ -229,17 +222,17 @@ class AbstractComponent(object):
         # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
         test_prefix = name[:17] + '.'
         # look for candidates
-        candidates = [obj for obj in bpymorse.get_selected_objects() if \
-                      obj.name.startswith(test_prefix)]
+        candidates = [obj for obj in objects \
+                      if obj.name.startswith(test_prefix)]
         if len(candidates) > 0:
             if len(candidates) > 1:
                 logger.warning(test_prefix + ": more than 1 candidate: " + \
                                str(candidates))
             return candidates[0]
         else:
-            logger.warning(test_prefix + ": no candidate in " + \
-                           str(bpymorse.get_selected_objects()))
-            return None
+            logger.warning(test_prefix + ": no candidate in " + str(objects))
+
+        return None
 
     def configure_mw(self, mw, config=None, method=None, path=None, component=None):
         """
