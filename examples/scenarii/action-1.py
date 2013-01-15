@@ -66,16 +66,16 @@ RMax.append(Motion_Controller)
 
 
 # Scene configuration
-GPS_001.configure_mw('yarp')
-CameraMain_002.configure_mw('yarp')
-Motion_Controller.configure_mw('yarp')
-Gyroscope_001.configure_mw('yarp')
+GPS_001.add_stream('yarp')
+CameraMain_002.add_stream('yarp')
+Motion_Controller.add_stream('yarp')
+Gyroscope_001.add_stream('yarp')
 
-Platine.configure_mw('yarp')
+Platine.add_stream('yarp')
 
-Motion_Controller_001.configure_mw('pocolibs')
-Stereo.configure_mw('pocolibs')
-Gyroscope.configure_mw('pocolibs')
+Motion_Controller_001.add_stream('pocolibs')
+Stereo.add_stream('pocolibs')
+Gyroscope.add_stream('pocolibs')
 
 GPS_001.configure_modifier('NED')
 Motion_Controller.configure_modifier('NED')

@@ -18,9 +18,9 @@ Semantic_R.translate(x=0.2, y=-0.3, z=0.9)
 Semantic_R.name = "Camera_R"
 Cat.append(Semantic_R)
 
-V_W.configure_mw('socket')
-Semantic_L.configure_mw('socket')
-Semantic_R.configure_mw('socket')
+V_W.add_stream('socket')
+Semantic_L.add_stream('socket')
+Semantic_R.add_stream('socket')
 
 
 Mouse = Robot('atrv')

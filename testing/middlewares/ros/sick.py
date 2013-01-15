@@ -36,19 +36,19 @@ class SickLaserTest(RosTestCase):
 
         motion = MotionVW('MotionVW')
         robot.append(motion)
-        motion.configure_mw('ros')
+        motion.add_stream('ros')
 
         odometry = Odometry('Odometry')
         odometry.translate(z=0.73)
         robot.append(odometry)
-        odometry.configure_mw('ros')
+        odometry.add_stream('ros')
 
         sick = Sick('Sick')
         sick.translate(x = 0.18, z = 0.94)
         robot.append(sick)
         # sick.properties(scan_window = 270, resolution = .25)
         sick.properties(scan_window = 180, resolution = 1)
-        sick.configure_mw('ros')
+        sick.add_stream('ros')
         # test does not call sick.__del__() so create laser arc manually
         sick.create_laser_arc()
 

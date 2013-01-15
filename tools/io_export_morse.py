@@ -170,14 +170,14 @@ def scan_config(file_out):
         if isinstance (value[0], str):
             mw = value[0]
             mw = mw.lower()
-            file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, value))
+            file_out.write("%s.add_stream('%s', %s)\n" % (component, mw, value))
         # If using the new syntax that allows more than one middleware
         #  per component
         else:
             for item in value:
                 mw = item[0]
                 mw = mw.lower()
-                file_out.write("%s.configure_mw('%s', %s)\n" % (component, mw, item))
+                file_out.write("%s.add_stream('%s', %s)\n" % (component, mw, item))
 
     try:
         component_config.component_service

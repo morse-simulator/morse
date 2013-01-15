@@ -30,18 +30,18 @@ class PTUTest(MorseTestCase):
         robot = ATRV()
 
         ptu = PTU()
-        ptu.configure_mw('socket')
+        ptu.add_stream('socket')
         ptu.translate(x=ptu_x, z=ptu_z)
         ptu.configure_service('socket')
         ptu.properties(Speed = 0.5)
         robot.append(ptu)
 
         posture = PTUPosture()
-        posture.configure_mw('socket')
+        posture.add_stream('socket')
         ptu.append(posture)
 
         gyro = Gyroscope()
-        gyro.configure_mw('socket')
+        gyro.add_stream('socket')
         ptu.append(gyro)
         
         chair = PassiveObject(prefix='RollingChair')

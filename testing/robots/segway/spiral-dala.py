@@ -40,12 +40,12 @@ class Spiral_Test(MorseTestCase):
 
         pose = Pose('Pose')
         robot.append(pose)
-        pose.configure_mw('socket')
-        pose.configure_mw('text')
+        pose.add_stream('socket')
+        pose.add_stream('text')
 
         motion = MotionVW('MotionVW')
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
         motion.configure_service('socket')
         
         env = Environment('empty', fastmode = True)

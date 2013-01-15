@@ -29,7 +29,7 @@ class Sick_Test(MorseTestCase):
         sick.properties(laser_range = 10.0, Visible_arc = False)
         sick.create_laser_arc()
         robot.append(sick)
-        sick.configure_mw('socket')
+        sick.add_stream('socket')
 
         env = Environment('indoors-1/boxes', fastmode = True)
         env.configure_service('socket')

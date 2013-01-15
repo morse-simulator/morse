@@ -36,10 +36,10 @@ class CameraTest(MorseTestCase):
         cam.properties(Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
         atrv.append(cam)
-        cam.configure_mw('socket')
+        cam.add_stream('socket')
 
         orientation = Orientation('orientation')
-        orientation.configure_mw('socket')
+        orientation.add_stream('socket')
         atrv.append(orientation)
 
         env = Environment('indoors-1/boxes')

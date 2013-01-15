@@ -25,7 +25,7 @@ class GyroTest(MorseTestCase):
         robot.rotate(math.pi/16, math.pi/8, math.pi/2)
         
         gyro = Gyroscope()
-        gyro.configure_mw('socket')
+        gyro.add_stream('socket')
         robot.append(gyro)
 
         env = Environment('empty', fastmode = True)

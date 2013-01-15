@@ -27,9 +27,9 @@ def equipped_robot(mw='yarp'):
     cam.properties(cam_width = 128, cam_height = 128)
 
     # Configure the middlewares
-    motion.configure_mw(mw)
-    pose.configure_mw(mw)
-    sick.configure_mw(mw)
-    cam.configure_mw(mw)
+    motion.add_stream(mw)
+    pose.add_stream(mw)
+    sick.add_stream(mw)
+    cam.add_stream(mw)
 
     return (atrv)

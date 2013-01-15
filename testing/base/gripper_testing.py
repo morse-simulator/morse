@@ -30,7 +30,7 @@ class gripperTest(MorseTestCase):
         arm = KukaLWR()
         robot.append(arm)
         arm.translate(x=0.5, z=0.9)
-        arm.configure_mw('socket')
+        arm.add_stream('socket')
         arm.configure_service('socket')
 
         gripper = Gripper('gripper')
@@ -40,7 +40,7 @@ class gripperTest(MorseTestCase):
 
         teleport = Teleport()
         robot.append(teleport)
-        teleport.configure_mw('socket')
+        teleport.add_stream('socket')
 
         tape1 = PassiveObject(prefix='BlackVideotape')
         tape1.properties(Object = True, Graspable = True, Label = "BlackTape")

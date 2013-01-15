@@ -57,12 +57,12 @@ class Differential_VW_Test(MorseTestCase):
         pose = Pose()
         robot.append(pose)
         pose.translate(z=-0.1)
-        pose.configure_mw('socket')
-        pose.configure_mw('text')
+        pose.add_stream('socket')
+        pose.add_stream('text')
 
         motion = MotionVWDiff()
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
         motion.configure_service('socket')
         
         env = Environment('empty', fastmode = True)

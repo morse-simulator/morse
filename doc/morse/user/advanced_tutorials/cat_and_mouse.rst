@@ -90,9 +90,9 @@ actuator to follow it.
 
   .. code-block:: python
 
-    V_W.configure_mw('socket')
-    Semantic_L.configure_mw('socket')
-    Semantic_R.configure_mw('socket')
+    V_W.add_stream('socket')
+    Semantic_L.add_stream('socket')
+    Semantic_R.add_stream('socket')
 
 And finally we complete the scene configuration:
 

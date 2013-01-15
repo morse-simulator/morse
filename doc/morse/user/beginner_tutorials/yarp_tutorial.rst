@@ -53,9 +53,9 @@ This is done with these lines:
 
 .. code-block:: python
 
-  Motion_Controller.configure_mw('yarp')
-  Pose.configure_mw('yarp')
-  Camera.configure_mw('yarp')
+  Motion_Controller.add_stream('yarp')
+  Pose.add_stream('yarp')
+  Camera.add_stream('yarp')
 
 This will fill up the necessary information into the ``component_config.py`` file
 inside the newly created Blender scenario.

@@ -43,12 +43,12 @@ Let's have a look to a typical ``Builder`` script, and explain it, step by step:
     cam.properties(cam_width = 128, cam_height = 128)
 
     # Configure the middlewares
-    motion.configure_mw('ros')
-    odometry.configure_mw('ros')
-    proximity.configure_mw('ros')
-    pose.configure_mw('ros')
-    sick.configure_mw('ros')
-    cam.configure_mw('ros')
+    motion.add_stream('ros')
+    odometry.add_stream('ros')
+    proximity.add_stream('ros')
+    pose.add_stream('ros')
+    sick.add_stream('ros')
+    cam.add_stream('ros')
 
     env = Environment('land-1/trees')
     env.place_camera([-5.0, 5.0, 3.0])
@@ -146,21 +146,21 @@ Middleware configuration
 For usual sensors and actuators, configuring a middleware to access the
 component is as easy as::
 
-    motion.configure_mw('ros')
+    motion.add_stream('ros')
 
 One component can be made accessible through several middleware by simply
-calling again ``configure_mw``::
+calling again ``add_stream``::
 
-    motion.configure_mw('yarp')
+    motion.add_stream('yarp')
 
 You can check which sensors and actuators are supported by which middleware in
 the :doc:`compatibility matrix <integration>`.
 
 .. note::
     Sometimes, you will need to use a specific serialization method.
-    This can be achieved by passing more parameters to ``configure_mw``::
+    This can be achieved by passing more parameters to ``add_stream``::
 
-        motion.configure_mw('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
+        motion.add_stream('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
 
     In that case, we instruct MORSE to use ROS with the ``read_twist`` method
     defined in the ``morse.middleware.ros.read_vw_twist`` module.

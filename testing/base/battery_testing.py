@@ -24,7 +24,7 @@ class BatteryTest(MorseTestCase):
         robot = ATRV()
 
         battery = Battery()
-        battery.configure_mw('socket')
+        battery.add_stream('socket')
         battery.properties(DischargingRate = 10.0)
         robot.append(battery)
 

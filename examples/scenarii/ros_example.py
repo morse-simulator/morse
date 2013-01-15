@@ -16,8 +16,8 @@ gyroscope.translate(z=0.83)
 atrv.append(gyroscope)
 
 # Configuring the middlewares
-gyroscope.configure_mw('ros')
-motion.configure_mw('ros')
+gyroscope.add_stream('ros')
+motion.add_stream('ros')
 
 env = Environment('indoors-1/indoor-1')
 env.aim_camera([1.0470, 0, 0.7854])

@@ -126,7 +126,7 @@ In this tutorial, we will use sockets to stream the pose out of MORSE:
 
     # Set the pose sensor to use the socket interface to communicate 
     # with modules outside of MORSE.
-    pose.configure_mw('socket')
+    pose.add_stream('socket')
 
     # [...]
 

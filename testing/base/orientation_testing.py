@@ -28,15 +28,15 @@ class OrientationTest(MorseTestCase):
         robot.translate(10.0, 8.0, 20.0)
         
         gyro = Gyroscope()
-        gyro.configure_mw('socket')
+        gyro.add_stream('socket')
         robot.append(gyro)
 
         orientation = Orientation('orientation')
-        orientation.configure_mw('socket')
+        orientation.add_stream('socket')
         robot.append(orientation)
 
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         robot.append(pose)
 
         env = Environment('empty', fastmode = True)

@@ -24,7 +24,7 @@ class PoseTest(MorseTestCase):
         robot = ATRV()
         
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         pose.translate(z=-0.10) # atrv sensor is at 10cm on the groud
         robot.append(pose)
 

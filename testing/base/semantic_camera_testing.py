@@ -29,11 +29,11 @@ class Semantic_Camera_Test(MorseTestCase):
         camera = SemanticCamera()
         robot.append(camera)
         camera.translate(x=0.3, z=0.762)
-        camera.configure_mw('socket')
+        camera.add_stream('socket')
 
         motion = Teleport()
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
 
         env = Environment('indoors-1/boxes')
         env.configure_service('socket')

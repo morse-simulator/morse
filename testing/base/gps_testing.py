@@ -24,7 +24,7 @@ class GPSTest(MorseTestCase):
         robot.translate(10.0, 8.0, 0.0)
         
         gps = GPS()
-        gps.configure_mw('socket')
+        gps.add_stream('socket')
         robot.append(gps)
 
         env = Environment('empty', fastmode = True)

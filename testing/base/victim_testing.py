@@ -26,7 +26,7 @@ class VictimTest(MorseTestCase):
 
         victim_detector = Rosace()
         robot.append(victim_detector)
-        victim_detector.configure_mw('socket')
+        victim_detector.add_stream('socket')
         victim_detector.configure_service('socket')
         victim_detector.properties( Heal_range=1.0, Abilities="1,2,3,4,5")
 
@@ -35,7 +35,7 @@ class VictimTest(MorseTestCase):
 
         motion = Teleport()
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
 
         env = Environment('empty', fastmode = True)
         env.properties(Temperature='25.0')

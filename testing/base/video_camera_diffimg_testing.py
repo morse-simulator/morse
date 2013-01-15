@@ -149,14 +149,14 @@ class CameraTest(MorseTestCase):
         camera.properties(Vertical_Flip = True)
         camera.translate(x=0.2, z=0.9)
         atrv.append(camera)
-        camera.configure_mw('socket')
+        camera.add_stream('socket')
 
         orientation = Orientation('orientation')
-        orientation.configure_mw('socket')
+        orientation.add_stream('socket')
         atrv.append(orientation)
 
         gyroscope = Gyroscope('gyroscope')
-        gyroscope.configure_mw('socket')
+        gyroscope.add_stream('socket')
         atrv.append(gyroscope)
 
         env = Environment('indoors-1/boxes')

@@ -27,12 +27,12 @@ class StabilizedQuadrirotorTest(MorseTestCase):
         robot = QUAD2012('robot')
         
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         robot.append(pose)
 
         motion = StabilizedQuadrotor('motion')
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
 
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')

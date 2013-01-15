@@ -65,7 +65,7 @@ The Component classes
 The class ``Component`` inherits directly from ``AbstractComponent`` and adds
 more functions:
 
- * **configure_mw**: Do the binding between a component and the method to
+ * **add_stream**: Do the binding between a component and the method to
    export/import its data. This must be used in general by sensors and
    actuators. A single component can make several calls to this function to add
    bindings with more than one middleware. The parameter can be either the name
@@ -336,18 +336,18 @@ added to the scene when the builder script is parsed.
 
 In order to set a component-middleware-method, we have two options, the first
 one is simple for the user, but requires some pre-configuration (a dictionary
-defined in the file ``src/morse/builder/data.py``). The argument of the 'configure_mw'
+defined in the file ``src/morse/builder/data.py``). The argument of the 'add_stream'
 method is a string with the name of the middleware.
 
 .. code-block:: python
 
-    motion.configure_mw('ros')
-    motion.configure_mw('yarp')
+    motion.add_stream('ros')
+    motion.add_stream('yarp')
 
 cf. ``morse.builder.data.MORSE_DATASTREAM_DICT``
 
 More than one middleware can be configured for the same component, by using
-several calls to the component.configure_mw method.
+several calls to the component.add_stream method.
 
 The second one is a bit less simple for the end-user.
 It consists of including the description of the middleware binding just as it
@@ -355,7 +355,7 @@ would be done by hand in the ``component_config.py`` script:
 
 .. code-block:: python
 
-    motion.configure_mw('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
+    motion.add_stream('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
 
 cf. :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually building a scene
 <../user/advanced_tutorials/editing_in_blender>` (in particular the section configuring middleware) for details.

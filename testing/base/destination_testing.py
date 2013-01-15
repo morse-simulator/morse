@@ -29,12 +29,12 @@ class DestinationTest(MorseTestCase):
         robot.translate(0.0, 0.0, 20.0)
         
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         robot.append(pose)
 
         destination = Destination('destination')
         robot.append(destination)
-        destination.configure_mw('socket')
+        destination.add_stream('socket')
         destination.properties(Speed=2.0, Tolerance=0.3)
 
         env = Environment('empty', fastmode = True)

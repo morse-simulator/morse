@@ -28,11 +28,11 @@ class Waypoints_Test(MorseTestCase):
         pose = Pose('pose')
         pose.translate(z=-0.10) # atrv body
         robot.append(pose)
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
 
         motion = Waypoint('motion')
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
         motion.configure_service('socket')
 
         

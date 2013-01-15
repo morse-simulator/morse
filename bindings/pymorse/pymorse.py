@@ -48,12 +48,12 @@ Let consider MORSE has been started with the following simulation script:
 
     pose = Sensor('pose')
     pose.name = "pose"
-    pose.configure_mw('socket')
+    pose.add_stream('socket')
     r2d2.append(pose)
 
     motion = Actuator('waypoint')
     motion.name = "motion"
-    motion.configure_mw('socket')
+    motion.add_stream('socket')
     motion.configure_service('socket')
     r2d2.append(motion)
 

@@ -27,15 +27,15 @@ class OdometryTest(MorseTestCase):
 
         pose = Pose()
         robot.append(pose)
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
 
         motion = MotionVW('motion')
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
 
         odo = Odometry()
         robot.append(odo)
-        odo.configure_mw('socket')
+        odo.add_stream('socket')
         
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')

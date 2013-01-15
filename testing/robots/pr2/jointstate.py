@@ -30,7 +30,7 @@ class PR2JointStateTest(RosTestCase):
         pr2 = PR2()
         pr2_posture = PR2Posture()
         pr2.append(pr2_posture)
-        pr2_posture.configure_mw('ros')
+        pr2_posture.add_stream('ros')
 
         env = Environment('indoors-1/indoor-1')
         env.aim_camera([1.0470, 0, 0.7854])

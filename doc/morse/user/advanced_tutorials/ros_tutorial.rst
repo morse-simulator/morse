@@ -67,7 +67,7 @@ get some odometry feedback.
     # An odometry sensor to get odometry information
     odometry = Sensor('odometry')
     james.append(odometry)
-    odometry.configure_mw('ros')
+    odometry.add_stream('ros')
 
     # Keyboard control
     keyboard = Actuator('keyboard')
@@ -110,7 +110,7 @@ First complete the ``scenario.py`` script by adding a posture sensor:
 
     pr2_posture = Sensor('pr2_posture')
     james.append(pr2_posture)
-    pr2_posture.configure_mw('ros')
+    pr2_posture.add_stream('ros')
 
     [...]
 
@@ -186,7 +186,7 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
     sick.properties(laser_range = 30.0)
     sick.properties(resolution = 1.0)
     sick.properties(scan_window = 180.0)
-    sick.configure_mw('ros')
+    sick.add_stream('ros')
 
 We can now build a first map of our environment. Restart the simulation with
 ``morse run scenario.py``.
@@ -260,7 +260,7 @@ Then, we need to add a motion controller to our robot. Open your ``scenario.py``
 
     motion_controller = Actuator('xy_omega')
     james.append(motion_controller)
-    motion_controller.configure_mw('ros')
+    motion_controller.add_stream('ros')
 
 For the navigation, we will use the high-level ``move_base`` ROS module. The
 *2D Nav Goal* button in RVIZ interface will allow us to easily send navigation

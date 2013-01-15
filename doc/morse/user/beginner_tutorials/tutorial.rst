@@ -103,7 +103,7 @@ with the outside world. This is done with these instructions:
 
 .. code-block:: python
 
-    pose.configure_mw('socket')
+    pose.add_stream('socket')
     pose.configure_service('socket')
     motion.configure_service('socket')
 

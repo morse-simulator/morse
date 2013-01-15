@@ -27,13 +27,13 @@ class LightTest(MorseTestCase):
                        cam_focal = 25.0000, Vertical_Flip = True)
         cam.translate(x=0.2, z=0.9)
         atrv.append(cam)
-        cam.configure_mw('socket')
+        cam.add_stream('socket')
 
         light = Light('light')
         light.translate(x=0.2, z=1.1)
         light.properties(Distance = 50.0)
         atrv.append(light)
-        light.configure_mw('socket')
+        light.add_stream('socket')
 
         block  = PassiveObject('environments/indoors-1/boxes', 'GreenBox')
         block.translate(x=2, y=0, z=1)

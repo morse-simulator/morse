@@ -16,12 +16,12 @@ Quadrotor.name = 'mav'
 if waypoint_controller:
     motion = Actuator('rotorcraft_waypoint')
     motion.name = 'waypoint'
-    motion.configure_mw('ros')
+    motion.add_stream('ros')
 else:
     # simple controller taking RC-like roll/pitch/yaw/thrust input
     motion = Actuator('rotorcraft_attitude')
     motion.name = 'attitude'
-    motion.configure_mw('ros', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input')
+    motion.add_stream('ros', 'read_ctrl_input', 'morse/middleware/ros/read_asctec_ctrl_input')
 
 Quadrotor.append(motion)
 
@@ -29,7 +29,7 @@ imu = Sensor('imu')
 imu.name = 'imu'
 # IMU with z-axis down (NED)
 imu.rotate(x=math.pi)
-imu.configure_mw('ros')
+imu.add_stream('ros')
 Quadrotor.append(imu)
 
 env = Environment('indoors-1/indoor-1')

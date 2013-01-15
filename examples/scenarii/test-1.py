@@ -37,16 +37,16 @@ atrv.append(cam)
 cam.properties(cam_width = 128, cam_height = 128)
 
 # Configure the middlewares
-motion.configure_mw('yarp')
-odometry.configure_mw('yarp')
-proximity.configure_mw('yarp')
-pose.configure_mw('yarp')
-sick.configure_mw('yarp')
-cam.configure_mw('yarp')
+motion.add_stream('yarp')
+odometry.add_stream('yarp')
+proximity.add_stream('yarp')
+pose.add_stream('yarp')
+sick.add_stream('yarp')
+cam.add_stream('yarp')
 
 # Configure the middlewares
-motion.configure_mw('socket')
-pose.configure_mw('socket')
+motion.add_stream('socket')
+pose.add_stream('socket')
 
 env = Environment('laas/grande_salle')
 env.aim_camera([1.0470, 0, 0.7854])

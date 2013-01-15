@@ -43,11 +43,11 @@ class DataStreamTest(RosTestCase):
 
         pose = Pose()
         robot.append(pose)
-        pose.configure_mw('ros')
+        pose.add_stream('ros')
 
         motion = MotionVW()
         robot.append(motion)
-        motion.configure_mw('ros')
+        motion.add_stream('ros')
         
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')

@@ -27,17 +27,17 @@ class ArmatureTest(MorseTestCase):
         arm = KukaLWR()
         robot.append(arm)
         arm.translate(z=0.9)
-        arm.configure_mw('socket')
+        arm.add_stream('socket')
         arm.configure_service('socket')
 
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         pose.translate(z=1.3)
         arm.append(pose)
 
         arm_pose = ArmaturePose()
         arm.append(arm_pose)
-        arm_pose.configure_mw('socket')
+        arm_pose.add_stream('socket')
 
         motion = Teleport()
         robot.append(motion)

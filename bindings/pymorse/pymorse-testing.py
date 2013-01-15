@@ -31,11 +31,11 @@ class PymorseTest(MorseTestCase):
         robot1.translate(0.0,1.0,0.0)
 
         battery = Sensor('battery')
-        battery.configure_mw('socket')
+        battery.add_stream('socket')
         robot1.append(battery)
 
         motion = Actuator('waypoint')
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
         motion.configure_service('socket')
         robot1.append(motion)
 
@@ -46,7 +46,7 @@ class PymorseTest(MorseTestCase):
 
         pose = Sensor('pose')
         pose.name = "MyPose"
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         robot2.append(pose)
 
         # Environment

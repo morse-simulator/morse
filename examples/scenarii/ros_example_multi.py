@@ -17,8 +17,8 @@ def import_atrv(mw):
     atrv.append(gyroscope)
 
     # Configuring the middlewares
-    gyroscope.configure_mw(mw)
-    motion.configure_mw(mw)
+    gyroscope.add_stream(mw)
+    motion.add_stream(mw)
     return atrv
 
 atrv1 = import_atrv('ros')

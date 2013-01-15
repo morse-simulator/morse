@@ -52,11 +52,11 @@ class YARP_MW_Test(MorseTestCase):
         pose = Sensor('pose')
         pose.translate(z=-0.10)
         robot.append(pose)
-        pose.configure_mw('yarp')
+        pose.add_stream('yarp')
 
         motion = Actuator('v_omega')
         robot.append(motion)
-        motion.configure_mw('yarp')
+        motion.add_stream('yarp')
         
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')

@@ -72,7 +72,7 @@ Usage example:
    human.translate(x=5.5, y=-3.2, z=0.0)
    human.rotate(z=-3.0)
 
-   human.armature.configure_mw('pocolibs',
+   human.armature.add_stream('pocolibs',
                     ['morse.middleware.pocolibs_datastream.Pocolibs',
                      'export_posture',
                      'morse/middleware/pocolibs/sensors/human_posture',

@@ -31,11 +31,11 @@ class TeleportTest(MorseTestCase):
         robot.translate(10.0, 8.0, 20.0)
         
         pose = Pose()
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         robot.append(pose)
 
         teleport = Teleport('teleport')
-        teleport.configure_mw('socket')
+        teleport.add_stream('socket')
         robot.append(teleport)
 
 

@@ -30,7 +30,7 @@ class ArmaturePoseTest(MorseTestCase):
 
         kuka_posture = ArmaturePose('arm_pose')
         kuka_lwr.append(kuka_posture)
-        kuka_posture.configure_mw('socket')
+        kuka_posture.add_stream('socket')
         kuka_posture.configure_service('socket')
 
         env = Environment('empty', fastmode = True)

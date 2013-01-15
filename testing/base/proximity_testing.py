@@ -30,16 +30,16 @@ class ProximityTest(MorseTestCase):
         proximity.properties(Track = "Catch_me")
         proximity.properties(Range = 2.0)
         robot.append(proximity)
-        proximity.configure_mw('socket')
+        proximity.add_stream('socket')
         proximity.configure_service('socket')
 
         pose = Pose()
         robot.append(pose)
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
 
         motion = Teleport()
         robot.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
 
         target1 = ATRV("Target1")
         target1.properties(Catch_me = True)

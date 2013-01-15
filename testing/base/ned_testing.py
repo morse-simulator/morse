@@ -26,12 +26,12 @@ class NedTest(MorseTestCase):
 
         pose = Pose()
         robot.append(pose)
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
 
         pose2 = Pose()
         pose2.configure_modifier('NED')
         robot.append(pose2)
-        pose2.configure_mw('socket')
+        pose2.add_stream('socket')
 
 
         env = Environment('empty', fastmode = True)

@@ -16,9 +16,9 @@ ATRV.append(Motion_Controller)
 
 
 # Scene configuration
-Motion_Controller.configure_mw('yarp')
-Pose.configure_mw('yarp')
-Camera.configure_mw('yarp')
+Motion_Controller.add_stream('yarp')
+Pose.add_stream('yarp')
+Camera.add_stream('yarp')
 
 env = Environment('indoors-1/indoor-1')
 env.aim_camera([1.0470, 0, 0.7854])

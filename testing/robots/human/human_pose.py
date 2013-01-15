@@ -24,11 +24,11 @@ class HumanPoseTest(MorseTestCase):
 
         pose = Pose()
         human.append(pose)
-        pose.configure_mw('socket')
+        pose.add_stream('socket')
         
         motion = Waypoint()
         human.append(motion)
-        motion.configure_mw('socket')
+        motion.add_stream('socket')
         motion.configure_service('socket')
 
         env = Environment('empty', fastmode = True)

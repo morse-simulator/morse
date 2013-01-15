@@ -47,11 +47,11 @@ keyboard.name = 'keyboard_control'
 james.append(keyboard)
 
 # Configuring the middlewares
-Pose_sensor.configure_mw('ros')
-Sick.configure_mw('ros')
-Motion_Controller.configure_mw('ros')
-IMU.configure_mw('ros')
-pr2_posture.configure_mw('ros', 'post_jointState', 'morse/middleware/ros/pr2_posture')
+Pose_sensor.add_stream('ros')
+Sick.add_stream('ros')
+Motion_Controller.add_stream('ros')
+IMU.add_stream('ros')
+pr2_posture.add_stream('ros', 'post_jointState', 'morse/middleware/ros/pr2_posture')
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects', 'Cornflakes')

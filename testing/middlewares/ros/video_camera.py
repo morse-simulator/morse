@@ -36,19 +36,19 @@ class VideoCameraTest(RosTestCase):
 
         motion = MotionVW('MotionVW')
         robot.append(motion)
-        motion.configure_mw('ros')
+        motion.add_stream('ros')
 
         odometry = Odometry('Odometry')
         odometry.translate(z=0.73)
         robot.append(odometry)
-        odometry.configure_mw('ros')
+        odometry.add_stream('ros')
 
         camera = VideoCamera('Camera')
         camera.properties(cam_width=128, cam_height=128, capturing=True, Vertical_Flip=True)
         camera.translate(x=0.3, z=0.76)
         camera.frequency(3)
         robot.append(camera)
-        camera.configure_mw('ros')
+        camera.add_stream('ros')
 
         env = Environment('indoors-1/boxes')
         # No fastmode here, no MaterialIndex in WIREFRAME mode: AttributeError:
