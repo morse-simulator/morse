@@ -37,13 +37,14 @@ class Human(Robot):
         :param filename: 'human' (default) or 'mocap_human'
         """
         Robot.__init__(self, filename)
+        self.name = 'Human' # XXX BUG #237
 
         self.armature = None
 
         try:
             armature_object = self.get_selected("HumanArmature")
             self.armature = AbstractComponent(armature_object, "human_posture")
-            # self.append(self.armature) # force parent ?
+            self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
                          "for an object called 'HumanArmature' in the 'Human'" +\
