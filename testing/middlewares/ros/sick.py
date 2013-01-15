@@ -49,6 +49,8 @@ class SickLaserTest(RosTestCase):
         # sick.properties(scan_window = 270, resolution = .25)
         sick.properties(scan_window = 180, resolution = 1)
         sick.configure_mw('ros')
+        # test does not call sick.__del__() so create laser arc manually
+        sick.create_laser_arc()
 
         env = Environment('indoors-1/boxes', fastmode=True)
         env.configure_service('socket')
