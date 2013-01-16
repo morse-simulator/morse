@@ -102,15 +102,15 @@ class AbstractObject(object):
 
         if self.on_completion: # A callback is already registered -> a service is running
             old_cb = self.on_completion
-            try:
-                interruptible = old_cb.service._morse_service_interruptible
-            except AttributeError:
+            if not hasattr(old_cb.service, "_morse_service_interruptible"):
                 # No policy (interruptible/noninterruptible) set for
                 # the service currently running. We throw an exception 
                 # to be caught by the middleware. Up to it to define 
                 # the default policy.
                 raise MorseServiceAlreadyRunningError(old_cb.service, "A service (" + \
                         old_cb.service.__name__ + ") is already running. I do not know what to do.")
+
+            interruptible = old_cb.service._morse_service_interruptible
 
             if interruptible:
                 self.interrupt()
