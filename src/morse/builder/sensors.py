@@ -12,6 +12,11 @@ class Accelerometer(SensorCreator):
         mesh.color(.3, .9, .6)
         self.append(mesh)
 
+class ArmaturePose(SensorCreator):
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name, "morse/sensors/armature_pose", \
+                               "ArmaturePose", "armature_pose")
+
 class Battery(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse/sensors/battery", \
@@ -54,11 +59,6 @@ class JidoPosture(SensorCreator):
         SensorCreator.__init__(self, name, "morse/sensors/jido_posture", \
                                "JidoPostureClass", "jido_posture")
         self.properties(KUKAname = "KUKA_LWR", PTUname = "PTU")
-
-class ArmaturePose(SensorCreator):
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse/sensors/armature_pose", \
-                               "ArmaturePose", "armature_pose")
 
 class Odometry(SensorCreator):
     def __init__(self, name=None):
