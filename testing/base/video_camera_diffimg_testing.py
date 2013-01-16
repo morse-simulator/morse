@@ -72,7 +72,7 @@ def save_image(filepath, image8u):
         # Write binary image (Bytes)
         f.write(zlib.compress(struct.pack('%iB'%len(image8u), *image8u)))
 
-def save_pgm(filepath, image8u, width, height):
+def save_pgm_ascii(filepath, image8u, width, height):
     assert(len(image8u) == width * height)
     with open(filepath, 'w') as f:
         # Write PGM P2 image (ASCII)
@@ -104,7 +104,7 @@ def capture8u(cam_stream, image_path=None):
     image8u = rgb2gray8u(capture['image'])
     # save the image (for debug)
     if image_path:
-        save_image(image_path, image8u)
+        save_pgm_ascii(image_path, image8u, IMAGE_WIDTH, IMAGE_HEIGHT)
 
     return image8u
 
@@ -116,7 +116,7 @@ def diff_image(imageA, imageB, debug=None):
     if debug:
         pgm_path = '%s.%i.%s.pgm'%(os.path.abspath(__file__), \
                                    int(time.time()*1000), debug)
-        save_pgm(pgm_path, diff, IMAGE_WIDTH, IMAGE_HEIGHT)
+        save_pgm_ascii(pgm_path, diff, IMAGE_WIDTH, IMAGE_HEIGHT)
         print("debug: %8i -> %5.3f %% %s"% \
               (sum_diff, sum_diff/(len(diff)*2.55), pgm_path))
 
@@ -139,9 +139,7 @@ class CameraTest(MorseTestCase):
         atrv = ATRV('atrv')
         atrv.rotate(0.0, 0.0, math.pi)
 
-        camera = Sensor('video_camera')
-        camera.name = 'camera'
-        #camera = VideoCamera('camera') # TODO bug look +Z
+        camera = VideoCamera('camera')
         camera.properties(capturing = True)
         camera.properties(cam_width = 320)
         camera.properties(cam_height = 240)
@@ -163,7 +161,7 @@ class CameraTest(MorseTestCase):
         env.profile(camera)
 
     def assert_image_file_diff_less(self, filepath, image8u, delta):
-        image_from_file = load_image(filepath, len(image8u))
+        image_from_file = read_pgm_ascii(filepath)
         self.assert_images_diff_less(image8u, image_from_file, delta)
 
     def assert_images_diff_less(self, imageA, imageB, delta):
@@ -213,9 +211,8 @@ class CameraTest(MorseTestCase):
             orientation_stream = morse.atrv.orientation
             gyroscope_stream = morse.atrv.gyroscope
 
-            test_path = os.path.dirname(os.path.abspath(__file__))
-            imageA_path = os.path.join(test_path, 'video_camera_diffimgA.data')
-            imageB_path = os.path.join(test_path, 'video_camera_diffimgB.data')
+            imageA_path = '%s.A.pgm'%os.path.abspath(__file__)
+            imageB_path = '%s.B.pgm'%os.path.abspath(__file__)
 
             precision = 0.01
             # assert robot orienation is correct
@@ -223,9 +220,9 @@ class CameraTest(MorseTestCase):
                                     precision)
 
             # get a new image from the camera in gray
-            imageA = capture8u(camera_stream)
-            # assert that the camera image differ < .5 percent from the expected
-            self.assert_image_file_diff_less(imageA_path, imageA, 0.5)
+            imageA = capture8u(camera_stream)#, imageA_path)
+            # assert that the camera image differ < .1 percent from the expected
+            self.assert_image_file_diff_less(imageA_path, imageA, 0.1)
 
             # command the robot to rotate and wait that he does for 5 seconds max
             in_time = rotate_robot_and_wait(orientation_stream, \
@@ -240,13 +237,12 @@ class CameraTest(MorseTestCase):
             self.assert_orientation(gyroscope_stream, 2.70, 0.0, 0.0, precision)
 
             # get a new image from the camera in gray
-            imageB = capture8u(camera_stream)
-            # assert that the camera image differ < 2 percent from the expected
-            # delta is choosen as 2 percent because physics engine tilt
-            self.assert_image_file_diff_less(imageB_path, imageB, 2)
+            imageB = capture8u(camera_stream)#, imageB_path)
+            # assert that the camera image differ < .1 percent from the expected
+            self.assert_image_file_diff_less(imageB_path, imageB, 0.1)
 
-            # assert that the second image differ > 5 percent from the first
-            self.assert_images_diff_greater(imageA, imageB, 5)
+            # assert that the second image differ > 7 percent from the first
+            self.assert_images_diff_greater(imageA, imageB, 7)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
