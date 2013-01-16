@@ -36,7 +36,7 @@ class ComponentCreator(AbstractComponent):
         for child in objects:
             if not child.parent:
                 child.matrix_parent_inverse.identity()
-                child.parent = self._blendobj
+                child.parent = self._bpy_object
 
     def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the objects to this component

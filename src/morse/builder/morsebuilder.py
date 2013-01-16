@@ -62,7 +62,7 @@ class PassiveObject(AbstractComponent):
         'Object' set to true), and set the object label to the Blender object
         name (if not already set).
         """
-        obj = self._blendobj
+        obj = self._bpy_object
 
         if not "Label" in obj.game.properties:
             self.properties(Object = True, Graspable = True, Label = obj.name)
@@ -119,7 +119,7 @@ class Armature(AbstractComponent):
         self.set_blender_object(bpymorse.get_object(objectname))
         if not filename:
             filename = objectname
-        self._blendname = filename
+        self._blender_filename = filename
         parent.append(self)
 
 
@@ -133,9 +133,9 @@ class Robot(Component):
                 child.add_interface(stream)
 
     def make_external(self):
-        self._blendobj.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
+        self._bpy_object.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
 #    def remove_wheels(self):
-#        wheels = [child for child in self._blendobj.children if \
+#        wheels = [child for child in self._bpy_object.children if \
 #                  child.name.lower().startswith("wheel")]
 #        for wheel in wheels:
 #            bpymorse.deselect_all()
@@ -144,7 +144,7 @@ class Robot(Component):
 #    def __del__(self):
 #        """ Call the remove_wheels method if the robot is a Bullet Vehicle """
 #        # HasSuspension game property is used for Bullet Vehicle
-#        if "HasSuspension" in self._blendobj.game.properties:
+#        if "HasSuspension" in self._bpy_object.game.properties:
 #            self.remove_wheels()
 
 
@@ -157,7 +157,7 @@ class WheeledRobot(Robot):
             the parent robot """
         # Force Blender to update the transformation matrices of objects
         bpymorse.get_context_scene().update()
-        wheels = [child for child in self._blendobj.children if \
+        wheels = [child for child in self._bpy_object.children if \
                   child.name.lower().startswith("wheel")]
         import mathutils
         for wheel in wheels:
@@ -175,13 +175,13 @@ class WheeledRobot(Robot):
         eg: robot.append(sensor), will set the robot parent of the sensor.
         """
         # Correct the rotation of the object
-        old = obj._blendobj.rotation_euler
-        obj._blendobj.rotation_euler = (old[0], old[1], old[2]+math.pi/2)
+        old = obj._bpy_object.rotation_euler
+        obj._bpy_object.rotation_euler = (old[0], old[1], old[2]+math.pi/2)
 
         # Switch the values of X and Y location
-        tmp_x = obj._blendobj.location[0]
-        obj._blendobj.location[0] = -obj._blendobj.location[1]
-        obj._blendobj.location[1] = tmp_x
+        tmp_x = obj._bpy_object.location[0]
+        obj._bpy_object.location[0] = -obj._bpy_object.location[1]
+        obj._bpy_object.location[1] = tmp_x
 
         Robot.append(self, obj, 2)
 
@@ -203,7 +203,7 @@ class Sensor(Component):
 
         scene = bpymorse.get_context_scene()
 
-        sick_obj = self._blendobj
+        sick_obj = self._bpy_object
 
         material = None
         # Get the mesh and the "RayMat" material for the arc
@@ -398,7 +398,7 @@ class Environment(Component):
                         fqn.append(cmpt.basename)
                         new_name = '.'.join(fqn)
                         Configuration.update_name(cmpt.name, new_name)
-                        cmpt._blendobj.name = '.'.join(fqn)
+                        cmpt._bpy_object.name = '.'.join(fqn)
                         for child in cmpt.children:
                             renametree(child, fqn[:])
 
@@ -554,7 +554,7 @@ class Environment(Component):
         camera = None
         screen = bpymorse.get_object('Screen')
         caption = bpymorse.get_object('CameraID_text')
-        blender_component = self._display_camera._blendobj
+        blender_component = self._display_camera._bpy_object
         # Find the mesh object with a texture called 'ScreenMat'
         for child in blender_component.children:
             if 'CameraMesh' in child.name:

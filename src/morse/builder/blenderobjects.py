@@ -14,11 +14,11 @@ class Mesh(AbstractComponent):
         self.set_blender_object(obj)
 
     def color(self, r=0.1, g=0.1, b=0.1):
-        if not self._blendobj.active_material:
+        if not self._bpy_object.active_material:
             bpymorse.new_material()
             # link material to object
-            self._blendobj.active_material = bpymorse.get_last_material()
-        self._blendobj.active_material.diffuse_color = (r, g, b)
+            self._bpy_object.active_material = bpymorse.get_last_material()
+        self._bpy_object.active_material.diffuse_color = (r, g, b)
 
 class Plane(Mesh):
     mesh_primitive_add = bpymorse.add_mesh_plane

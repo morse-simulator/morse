@@ -26,7 +26,7 @@ class Gripper(Actuator):
         self.properties(Class = "GripperActuatorClass", \
                         Path = "morse/actuators/gripper")
     def cfg_radar(self, angle=180.0, distance=2.0):
-        radar = self._blendobj.game.sensors["Radar"]
+        radar = self._bpy_object.game.sensors["Radar"]
         radar.angle = angle
         radar.distance = distance
 
@@ -139,7 +139,7 @@ class Waypoint(ActuatorCreator):
         obj = bpymorse.get_context_object()
         obj.name = name
         obj.location = (0.7, fact*0.4, 0.8)
-        obj.parent = self._blendobj
+        obj.parent = self._bpy_object
         bpymorse.new_game_property(type='BOOL', name=collision)
         prop = obj.game.properties[-1]
         prop.value = False

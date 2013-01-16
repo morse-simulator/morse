@@ -173,7 +173,7 @@ class LaserSensorWithArc(SensorCreator):
         """
         scene = bpymorse.get_context_scene()
 
-        laserscanner_obj = self._blendobj
+        laserscanner_obj = self._bpy_object
 
         material = self.get_ray_material()
 
@@ -254,7 +254,7 @@ class LaserSensorWithArc(SensorCreator):
         arc.parent = laserscanner_obj
 
     def __del__(self):
-        arc = [child for child in self._blendobj.children
+        arc = [child for child in self._bpy_object.children
                if child.name.startswith("Arc_")]
         if not arc:
             self.create_laser_arc()
