@@ -17,33 +17,34 @@ class PR2(Robot):
 
         # Armatures and armature pose sensors
         # The armatures are already present in the PR2 blender model.
-        
+
+         # torso
+        self.torso = Armature("torso_armature")
+        self.torso_pose = ArmaturePose()
+        self.torso_pose.name = "pose"
+        self.torso.append(self.torso_pose)
+        self.append(self.torso)
+
+       
         # head
         self.head = Armature("head_armature")
         self.head_pose = ArmaturePose()
         self.head_pose.name = "pose"
         self.head.append(self.head_pose)
-        self.append(self.head)
+        self.torso.append(self.head)
 
         # arms
         self.l_arm = Armature("l_arm_armature")
         self.l_arm_pose = ArmaturePose()
         self.l_arm_pose.name = "pose"
         self.l_arm.append(self.l_arm_pose)
-        self.append(self.l_arm)
+        self.torso.append(self.l_arm)
 
         self.r_arm = Armature("r_arm_armature")
         self.r_arm_pose = ArmaturePose()
         self.r_arm_pose.name = "pose"
         self.r_arm.append(self.r_arm_pose)
-        self.append(self.r_arm)
-
-        # torso
-        self.torso = Armature("torso_armature")
-        self.torso_pose = ArmaturePose()
-        self.torso_pose.name = "pose"
-        self.torso.append(self.torso_pose)
-        self.append(self.torso)
+        self.torso.append(self.r_arm)
 
         # Motion controller
         self.motion = MotionXYW()
