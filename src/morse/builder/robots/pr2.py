@@ -4,6 +4,7 @@ from morse.builder import *
 from morse.builder.sensors import *
 from morse.builder.actuators import *
 
+
 class PR2(Robot):
     def __init__(self, with_keyboard = True, show_laser = False):
         Robot.__init__(self, 'pr2')
@@ -25,7 +26,9 @@ class PR2(Robot):
         self.torso.append(self.torso_pose)
         self.append(self.torso)
 
-       
+        self.torso.configure_overlay('ros',
+                                     'morse.middleware.ros.overlays.armatures.ArmatureController')
+
         # head
         self.head = Armature("head_armature")
         self.head_pose = ArmaturePose()
@@ -81,29 +84,8 @@ class PR2(Robot):
         ###################################
         ###################################
 
-        self._components = [self.head, 
-                            self.head_pose, 
-                            self.l_arm, 
-                            self.l_arm_pose, 
-                            self.r_arm, 
-                            self.r_arm_pose, 
-                            self.torso,
-                            self.torso_pose,
-                            self.motion,
-                            self.odometry,
-                            self.posture,
-                            self.base_scan]
+        logger.info("PR2 created.")
 
-
-        logger.info("PR2 created with the following components:")
-        for c in self._components:
-            logger.info("\t%s" % c)
-
-    def configure_mw(self, interface):
-        for cmpt in self._components:
-            if cmpt:
-                cmpt.configure_mw(interface)
-                cmpt.configure_service(interface)
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color
         self.get_child("head_tilt_link").material_slots['HeadTilt'].material.node_tree.nodes['Material'].material.diffuse_color = color

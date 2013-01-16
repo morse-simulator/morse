@@ -53,7 +53,7 @@ class MorseOverlay(AbstractObject):
         For instance, assume a ``Dummy`` component and an overlay
         ``MyDummy``:
 
-        .. code-block:python
+        .. code-block:: python
 
             class Dummy(MorseObject):
                 @async_service
@@ -81,7 +81,7 @@ class MorseOverlay(AbstractObject):
         The functor *must* take one single parameter (a tuple ``(status, result)``)
         and must as well return a tuple ``(status, result)``.
 
-        .. code-block:python
+        .. code-block:: python
 
             class MyDummy(MorseAbstractobject):
 
