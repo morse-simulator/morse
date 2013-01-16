@@ -60,13 +60,20 @@ class TeleportActuatorClass(morse.core.actuator.Actuator):
         """ Change the parent robot pose. """
         # Get the Blender object of the parent robot
         parent = self.robot_parent.blender_obj
-        # Change the parent position
-        parent.worldPosition = mathutils.Vector((self.local_data['x'],
-                                                 self.local_data['y'],
-                                                 self.local_data['z']))
-        # Change the parent orientation
-        rot = mathutils.Euler([self.local_data['roll'], 
-                               self.local_data['pitch'], 
-                               self.local_data['yaw']])
-        parent.worldOrientation = rot.to_matrix()
 
+        # New parent position
+        position = mathutils.Vector((self.local_data['x'], \
+                                     self.local_data['y'], \
+                                     self.local_data['z']))
+
+        # New parent orientation
+        orientation = mathutils.Euler([self.local_data['roll'], \
+                                       self.local_data['pitch'], \
+                                       self.local_data['yaw']])
+
+        # Suspend Bullet physics engine, which doesnt like teleport
+        # or instant rotation done by the Orientation actuator (avoid tilt)
+        parent.suspendDynamics()
+        parent.worldPosition = position
+        parent.worldOrientation = orientation.to_matrix()
+        parent.restoreDynamics()

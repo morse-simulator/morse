@@ -26,9 +26,14 @@ class OrientationActuatorClass(morse.core.actuator.Actuator):
         """ Change the parent robot orientation. """
         # Get the Blender object of the parent robot
         parent = self.robot_parent.blender_obj
-        # Change the parent orientation
-        rot = mathutils.Euler([self.local_data['roll'], 
-                              self.local_data['pitch'], 
-                              self.local_data['yaw']])
-        parent.orientation = rot.to_matrix()
 
+        # New parent orientation
+        orientation = mathutils.Euler([self.local_data['roll'], \
+                                       self.local_data['pitch'], \
+                                       self.local_data['yaw']])
+
+        # Suspend Bullet physics engine, which doesnt like teleport
+        # or instant rotation done by the Orientation actuator (avoid tilt)
+        parent.suspendDynamics()
+        parent.worldOrientation = orientation.to_matrix()
+        parent.restoreDynamics()
