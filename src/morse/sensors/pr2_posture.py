@@ -18,7 +18,7 @@ class PR2PostureClass(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        # joints of PTU-unit
+        # joints of head
         self.local_data['head_pan'] = 0.0
         self.local_data['head_tilt'] = 0.0
         
@@ -95,23 +95,20 @@ class PR2PostureClass(morse.core.sensor.Sensor):
         self.local_data['l_gripper_r_finger_tip_joint'] = 0.0
         self.local_data['l_gripper_l_finger_tip_joint'] = 0.0
 
-        # Get names of armatures (for ptu and arm joints)
-        self.ptu_armature_name = self.robot_parent.armatures[3]
+        # Get names of armatures (for head, torso and arm joints)
+        self.head_armature_name = self.robot_parent.armatures[3]
         self.l_arm_armature_name = self.robot_parent.armatures[2]
         self.r_arm_armature_name = self.robot_parent.armatures[1]
-        self.torso_lift_armature_name = self.robot_parent.armatures[0]
-        logger.info("Found PTU: %s"%self.ptu_armature_name)
+        self.torso_armature_name = self.robot_parent.armatures[0]
+        logger.info("Found Head: %s"%self.head_armature_name)
         logger.info("Found Left arm: %s"%self.l_arm_armature_name)
         logger.info("Found Right arm: %s"%self.r_arm_armature_name)
-        self.ptu_rotations = {}
+        logger.info("Found torso: %s"%self.torso_armature_name)
+        self.head_rotations = {}
         self.l_arm_rotations = {}
         self.r_arm_rotations = {}
         
         # constant that holds the original height of the torso from the ground
-        # These values come from the pr2 urdf file
-        self.TORSO_BASE_HEIGHT = (0.739675 + 0.051)
-        self.TORSO_LOWER = 0.0  # lower limit on the torso z-translantion
-        self.TORSO_UPPER = 0.31  # upper limit on the torso z-translation
         logger.info('Component initialized')
         
     def default_action(self):
@@ -120,20 +117,20 @@ class PR2PostureClass(morse.core.sensor.Sensor):
         update accordingly the local_data dictionary.
         """
 
-        # Retrieves the reference to the Blender armatures for the PTU, the arms and the torso
-        for child in self.robot_parent.bge_object.childrenRecursive:
-            if child.name == self.ptu_armature_name:
-                self.ptu_armature_object = child
+        # Retrieves the reference to the Blender armatures for the head, the arms and the torso
+        for child in self.robot_parent.blender_obj.childrenRecursive:
+            if child.name == self.head_armature_name:
+                self.head_armature_object = child
             elif child.name == self.l_arm_armature_name:
                 self.l_arm_armature_object = child
             elif child.name == self.r_arm_armature_name :
                 self.r_arm_armature_object = child
-            elif child.name == 'torso_lift_joint':
+            elif child.name == self.torso_armature_name:
                 self.torso_object = child
         
         # Channel names in the armatures are defined in the Blender file directly
-        for channel in self.ptu_armature_object.channels:
-            self.ptu_rotations[channel.name] = channel.joint_rotation.to_tuple()
+        for channel in self.head_armature_object.channels:
+            self.head_rotations[channel.name] = channel.joint_rotation.to_tuple()
         
         for channel in self.l_arm_armature_object.channels:
             self.l_arm_rotations[channel.name] = channel.joint_rotation.to_tuple()
@@ -141,20 +138,20 @@ class PR2PostureClass(morse.core.sensor.Sensor):
         for channel in self.r_arm_armature_object.channels:
             self.r_arm_rotations[channel.name] = channel.joint_rotation.to_tuple()
         
-        self.torso = self.torso_object.localPosition[2] - self.TORSO_BASE_HEIGHT
+        self.torso = self.torso_object.channels["torso_lift_joint"].pose_head[2]
         
         self.local_data['torso_lift_joint'] = self.torso
         
-        logger.debug("PTU Rotations are: %s"%self.ptu_rotations)
+        logger.debug("head Rotations are: %s"%self.head_rotations)
         logger.debug("L arm Rotations are: %s"%self.l_arm_rotations)
         logger.debug("R arm Rotations are: %s"%self.r_arm_rotations)
         logger.debug("Torso joint: %s"%self.torso)
         
         ############################# Hand data over to middleware ##############################
 
-        # joints of PTU-unit
-        self.local_data['head_pan_joint'] = self.ptu_rotations['head_pan'][1]
-        self.local_data['head_tilt_joint'] = self.ptu_rotations['head_tilt'][2]
+        # joints of head
+        self.local_data['head_pan_joint'] = self.head_rotations['head_pan'][1]
+        self.local_data['head_tilt_joint'] = self.head_rotations['head_tilt'][2]
 
         # joints of left-arm
         self.local_data['l_shoulder_pan_joint'] = self.l_arm_rotations['l_shoulder_pan'][2]
