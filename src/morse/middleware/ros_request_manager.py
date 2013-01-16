@@ -145,9 +145,9 @@ class RosAction:
             return
 
         if current_status == actionlib_msgs.msg.GoalStatus.PENDING:
-            self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.RECALLING)
+            self.setstatus(goal_id.id, actionlib_msgs.msg.GoalStatus.RECALLING)
         else: #current status = ACTIVE (or smth else...)
-            self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.PREEMPTING)
+            self.setstatus(goal_id.id, actionlib_msgs.msg.GoalStatus.PREEMPTING)
 
     def on_result(self, morse_id, state, result):
 
