@@ -464,6 +464,9 @@ class Environment(Component):
 
             self._created = True
         except BaseException:
+            logger.error("Your MORSE Builder script is invalid!")
+            import traceback
+            traceback.print_exc()
             os._exit(-1)
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
