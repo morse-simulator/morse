@@ -10,7 +10,7 @@ def init_extra_module(self, component_instance, function, mw_data):
     """
     component_instance.output_functions.append(partial(MorseSocketServ.main_export, mw_data[-1], function))
 
-def _fill_missing_pr2_joints(joints):
+def fill_missing_pr2_joints(joints):
 
     pr2_joints = {'head_pan':0.0, 
                 'head_tilt':0.0, 
@@ -93,6 +93,6 @@ def post_jointstate(self, component_instance):
 
 def post_pr2_jointstate(self, component_instance):
 
-    joints =  _fill_missing_pr2_joints(component_instance.local_data)
+    joints =  fill_missing_pr2_joints(component_instance.local_data)
 
     return (json.dumps(joints) + '\n').encode()

@@ -26,11 +26,9 @@ class PR2JointStateTest(RosTestCase):
     def setUpEnv(self):
         print("Adding a PR2 robot...")
         pr2 = PR2()
-        pr2_posture = PR2Posture()
-        pr2.append(pr2_posture)
-        pr2_posture.add_stream('ros')
+        pr2.add_interface("ros")
 
-        env = Environment('indoors-1/indoor-1')
+        env = Environment('empty', fastmode = True)
         env.aim_camera([1.0470, 0, 0.7854])
 
 
@@ -38,7 +36,7 @@ class PR2JointStateTest(RosTestCase):
         rospy.loginfo("Creating listener node to check if posture of PR2 is published.")
         rospy.init_node('pr2_jointstate_listener', log_level = rospy.DEBUG, disable_signals=True)
         rospy.loginfo("Subscribing to pr2_posture topic.")
-        jointstate_msg = rospy.client.wait_for_message("pr2/pr2_posture", JointState)
+        jointstate_msg = rospy.client.wait_for_message("pr2/joint_state", JointState)
         name_len = len(jointstate_msg.name)
         pos_len = len(jointstate_msg.position)
         rospy.loginfo("Checking if number of jointstate names equals number of jointstate positions.")

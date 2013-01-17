@@ -82,6 +82,7 @@ MORSE_DATASTREAM_DICT = {
         'gyroscope': ['post_message'],
         'infrared': ['post_range', 'morse/middleware/ros/infrared'],
         'imu': ['post_imu', 'morse/middleware/ros/imu'],
+        'jointstate' : ['post_jointstate', 'morse/middleware/ros/jointstate'],
         'light': ['read_switch', 'morse/middleware/ros/light'],
         'odometry': ['post_odometry', 'morse/middleware/ros/odometry'],
         'pose': ['post_odometry', 'morse/middleware/ros/pose'],

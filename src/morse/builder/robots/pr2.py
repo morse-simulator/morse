@@ -48,9 +48,7 @@ class PR2(Robot):
 
         # joint state
         self.joint_state = CompoundSensor([self.torso_pose, self.head_pose, self.l_arm_pose, self.r_arm_pose])
-        self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
         self.append(self.joint_state)
-        
 
         # Motion controller
         self.motion = MotionXYW()
@@ -88,6 +86,12 @@ class PR2(Robot):
         ###################################
 
         logger.info("PR2 created.")
+
+    def add_interface(self, interface):
+        if interface == "socket":
+            self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
+        elif interface == "ros":
+            self.joint_state.add_stream("ros", "post_pr2_jointstate", "morse/middleware/ros/jointstate")
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color

@@ -23,6 +23,7 @@ class PR2TorsoTest(MorseTestCase):
     def setUpEnv(self):
         from morse.builder.robots import PR2
         pr2 = PR2()
+        pr2.add_interface("socket")
 
         env = Environment('empty', fastmode=True)
         env.aim_camera([1.0470, 0, 0.7854])
