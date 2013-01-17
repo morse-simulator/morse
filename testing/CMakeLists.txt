@@ -8,11 +8,11 @@ if (BUILD_CORE_SUPPORT)
 	add_subdirectory(base)
 	add_subdirectory(robots/human)
 	add_subdirectory(robots/segway)
+	add_subdirectory(robots/pr2)
 endif()
 
 if (BUILD_ROS_SUPPORT)
 	add_subdirectory(middlewares/ros)
-	add_subdirectory(robots/pr2)
 endif()
 
 if (BUILD_YARP2_SUPPORT)

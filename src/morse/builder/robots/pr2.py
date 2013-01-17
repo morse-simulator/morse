@@ -26,9 +26,6 @@ class PR2(Robot):
         self.torso.append(self.torso_pose)
         self.append(self.torso)
 
-        self.torso.configure_overlay('ros',
-                                     'morse.middleware.ros.overlays.armatures.ArmatureController')
-
         # head
         self.head = Armature("head_armature")
         self.head_pose = ArmaturePose()
@@ -48,6 +45,12 @@ class PR2(Robot):
         self.r_arm_pose.name = "pose"
         self.r_arm.append(self.r_arm_pose)
         self.torso.append(self.r_arm)
+
+        # joint state
+        self.joint_state = CompoundSensor([self.torso_pose, self.head_pose, self.l_arm_pose, self.r_arm_pose])
+        self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
+        self.append(self.joint_state)
+        
 
         # Motion controller
         self.motion = MotionXYW()

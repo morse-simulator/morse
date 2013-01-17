@@ -23,7 +23,6 @@ class PR2TorsoTest(MorseTestCase):
     def setUpEnv(self):
         from morse.builder.robots import PR2
         pr2 = PR2()
-        pr2.add_default_interface('socket')
 
         env = Environment('empty', fastmode=True)
         env.aim_camera([1.0470, 0, 0.7854])
@@ -31,8 +30,9 @@ class PR2TorsoTest(MorseTestCase):
     def test_joints(self):
 
         with Morse() as simu:
-            joints = simu.pr2.posture.get()
+            joints = simu.pr2.joint_state.get()
 
+            self.assertEqual(len(set(joints.keys())), len(joints.keys()), 'Some joints are duplicated!' )
             self.assertEqual(set(joints.keys()), PR2_JOINTS, 'Could not find all joints of the PR2. Please check if you named the joints correctly in your pr2_posture sensor and middleware!' )
 
 ########################## Run these tests ##########################

@@ -112,6 +112,7 @@ MORSE_DATASTREAM_DICT = {
         'gps': ['post_message'],
         'gyroscope': ['post_message'],
         'imu': ['post_message'],
+        'jointstate' : ['post_jointstate', 'morse/middleware/sockets/jointstate'],
         'odometry': ['post_message'],
         'pose': ['post_message'],
         'proximity': ['post_message'],
