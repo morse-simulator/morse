@@ -361,7 +361,7 @@ def link_datastreams():
         # Do not configure middlewares for components that are external,
         #  that is, they are handled by another node.
         try:
-            instance.robot_parent.blender_obj['Robot_Tag']
+            instance.robot_parent.bge_object['Robot_Tag']
             # If the robot is external, it will have the 'External_Robot_Tag'
             #  instead, and this test will fail
         except KeyError as detail:

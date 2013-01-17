@@ -39,7 +39,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
         super(self.__class__,self).__init__(obj, parent)
 
         # Locate the Blender camera object associated with this sensor
-        main_obj = self.blender_obj
+        main_obj = self.bge_object
         for obj in main_obj.children:
             if hasattr(obj, 'lens'):
                 self.blender_cam = obj
@@ -106,7 +106,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 self.visibles.append(label)
                 # Scale the object to show it is visible
                 #obj.localScale = [1.2, 1.2, 1.2]
-                logger.debug("Semantic %s: %s just appeared" % (self.blender_obj.name, label))
+                logger.debug("Semantic %s: %s just appeared" % (self.bge_object.name, label))
             
             # Object is not visible and was in the visible_objects list...
             if not visible and label in visibles:
@@ -114,7 +114,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
                 # Return the object to normal size
                 #  when it is no longer visible
                 #obj.localScale = [1.0, 1.0, 1.0]
-                logger.debug("Semantic %s: %s just disappeared" % (self.blender_obj.name, label))
+                logger.debug("Semantic %s: %s just disappeared" % (self.bge_object.name, label))
         
         # Create dictionaries
         self.local_data['visible_objects'] = []
@@ -170,7 +170,7 @@ class SemanticCameraClass(morse.sensors.camera.CameraClass):
             # NOTE: This is a very simple test. Hiding only the 'center'
             #  of an object will make it invisible, even if the rest is still
             #  seen from the camera
-            closest_obj = self.blender_obj.rayCastTo(obj)
+            closest_obj = self.bge_object.rayCastTo(obj)
             if closest_obj in [obj] + list(obj.children):
                 return True
 

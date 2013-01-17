@@ -6,8 +6,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Check if the name of the poster has been given in mw_data
     try:
         # It should be the 4th parameter
@@ -27,8 +27,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 def init_pom_poster(self, component_instance, poster_name):
     """ Prepare the data for a pom poster """
 
-    reference_frame = component_instance.blender_obj['reference_frame']
-    confidence = component_instance.blender_obj['confidence']
+    reference_frame = component_instance.bge_object['reference_frame']
+    confidence = component_instance.bge_object['confidence']
     poster_id, ok = ors_pom_poster.init_data(poster_name, reference_frame, confidence)
     if ok == 0:
         logger.error("Ceating poster. This module may not work")
@@ -44,7 +44,7 @@ def write_pom(self, component_instance):
     The argument must be the instance to a morse gyroscope class. """
 
     # Get the id of the poster already created
-    poster_id = self._poster_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_dict[component_instance.bge_object.name]
     ors_pom_poster.post_data(poster_id,
             component_instance.local_data.get('x', 0.0),
             component_instance.local_data.get('y', 0.0),

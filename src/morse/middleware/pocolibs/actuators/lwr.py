@@ -12,7 +12,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 def read_lwr_config(self, component_instance):
     """ Read the angles for the segments of the Kuka arm """
     # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_in_dict[component_instance.bge_object.name]
     gbm_conf, ok = ors_lwr_poster.read_lwr_data(poster_id)
 
     logger.debug("LWR READ DATA OK: %s" % ok)

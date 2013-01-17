@@ -20,8 +20,8 @@ def init_extra_module(self, component_instance, function, mw_data):
     Prepare the middleware to handle the serialised data as necessary.
     """
 
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Check if the name of the poster has been given in mw_data
     try:
         # It should be the 4th parameter
@@ -80,7 +80,7 @@ def init_viman_poster(self, component_instance, poster_name):
 def write_viman(self, component_instance):
     """ Write the objects list to a poster """
     # Get the id of the poster already created
-    poster_id = self._poster_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_dict[component_instance.bge_object.name]
     parent = component_instance.robot_parent
 
     scene = blenderapi.scene()

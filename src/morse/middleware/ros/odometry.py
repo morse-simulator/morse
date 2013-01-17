@@ -29,9 +29,9 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     # store the initial pose
     self.set_property(component_instance, 'inital_translation',
-                      component_instance.robot_parent.blender_obj.worldPosition)
+                      component_instance.robot_parent.bge_object.worldPosition)
     self.set_property(component_instance, 'inital_rotation',
-                      component_instance.robot_parent.blender_obj.worldOrientation.to_quaternion())
+                      component_instance.robot_parent.bge_object.worldOrientation.to_quaternion())
 
     if mw_data[1] == "post_odometry":
         self.register_publisher(component_instance, function, Odometry)

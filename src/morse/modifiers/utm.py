@@ -50,7 +50,7 @@ class MorseUTMClass(Modifier):
             component_instance.local_data['y'] += self._global_y
             component_instance.local_data['z'] += self._global_z
         except KeyError as detail:
-            logger.warning("Unable to use 'blender_to_utm' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'blender_to_utm' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.bge_object.name, detail))
 
     def utm_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
@@ -59,4 +59,4 @@ class MorseUTMClass(Modifier):
             component_instance.local_data['y'] -= self._global_y
             component_instance.local_data['z'] -= self._global_z
         except KeyError as detail:
-            logger.warning("Unable to use 'utm_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'utm_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.bge_object.name, detail))

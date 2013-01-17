@@ -25,7 +25,7 @@ class Text(morse.core.datastream.Datastream):
         The name of the file is composed of the robot and sensor names.
         Only useful for sensors.
         """
-        parent_name = component_instance.robot_parent.blender_obj.name
+        parent_name = component_instance.robot_parent.bge_object.name
 
         # Open the file
         file_name = '{0}_{1}.txt'.format(parent_name, component_name)
@@ -95,9 +95,9 @@ class Text(morse.core.datastream.Datastream):
         The argument is a copy of the component instance.
         """
         parent_position = component_instance.robot_parent.position_3d
-        FILE = self._file_list[component_instance.blender_obj.name]
-        line = "==> Data at X,Y,Z: [%.6f %.6f %.6f] yaw,pitch,roll: [%.6f %.6f %.6f] | index %d | time %.2f\n" % (parent_position.x, parent_position.y, parent_position.z, parent_position.yaw, parent_position.pitch, parent_position.roll, self._index_list[component_instance.blender_obj.name], blenderapi.persistantstorage().current_time)
-        self._index_list[component_instance.blender_obj.name] += 1
+        FILE = self._file_list[component_instance.bge_object.name]
+        line = "==> Data at X,Y,Z: [%.6f %.6f %.6f] yaw,pitch,roll: [%.6f %.6f %.6f] | index %d | time %.2f\n" % (parent_position.x, parent_position.y, parent_position.z, parent_position.yaw, parent_position.pitch, parent_position.roll, self._index_list[component_instance.bge_object.name], blenderapi.persistantstorage().current_time)
+        self._index_list[component_instance.bge_object.name] += 1
         FILE.write(line.encode())
         for variable, data in component_instance.local_data.items():
             if isinstance(data, float):

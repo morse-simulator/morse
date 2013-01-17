@@ -47,10 +47,10 @@ class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
         #logger.setLevel(logging.DEBUG)
 
         # Make new reference to the robot velocities (mathutils.Vector)
-        self.robot_w = self.robot_parent.blender_obj.localAngularVelocity
+        self.robot_w = self.robot_parent.bge_object.localAngularVelocity
 
         # get the robot inertia (list [ix, iy, iz])
-        robot_inertia = self.robot_parent.blender_obj.localInertia
+        robot_inertia = self.robot_parent.bge_object.localInertia
         self.inertia = Vector(tuple(robot_inertia))
         logger.debug("robot inertia: (%.3f %.3f %.3f)" % tuple(self.inertia))
 
@@ -115,5 +115,5 @@ class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
             torque = Vector((0.0, 0.0, 0.0))
 
         # directly apply local forces and torques to the blender object of the parent robot
-        robot.blender_obj.applyForce(force, True)
-        robot.blender_obj.applyTorque(torque, True)
+        robot.bge_object.applyForce(force, True)
+        robot.bge_object.applyTorque(torque, True)

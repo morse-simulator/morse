@@ -28,7 +28,7 @@ class ImuClass(morse.core.sensor.Sensor):
 
         # The robot needs a physics controller!
         # Since the imu does not have physics,
-        self.has_physics = bool(self.robot_parent.blender_obj.getPhysicsId())
+        self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
 
         if not self.has_physics:
             logger.warning("The robot doesn't have a physics controller," \
@@ -36,11 +36,11 @@ class ImuClass(morse.core.sensor.Sensor):
 
         if self.has_physics:
             # make new references to the robot velocities and use those.
-            self.robot_w = self.robot_parent.blender_obj.localAngularVelocity
-            self.robot_vel = self.robot_parent.blender_obj.worldLinearVelocity
+            self.robot_w = self.robot_parent.bge_object.localAngularVelocity
+            self.robot_vel = self.robot_parent.bge_object.worldLinearVelocity
         else:
             # reference to sensor position
-            self.pos = self.blender_obj.worldPosition
+            self.pos = self.bge_object.worldPosition
             # previous position
             self.pp = self.pos.copy()
             # previous attitude euler angles as vector
@@ -70,7 +70,7 @@ class ImuClass(morse.core.sensor.Sensor):
             self.compute_offset_acceleration = False
 
         # reference for rotating world frame to imu frame
-        self.rot_w2i = self.blender_obj.worldOrientation
+        self.rot_w2i = self.bge_object.worldOrientation
 
         self.local_data['angular_velocity'] = [0.0, 0.0, 0.0]
         self.local_data['linear_acceleration'] = [0.0, 0.0, 0.0]

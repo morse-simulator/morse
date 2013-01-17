@@ -39,8 +39,8 @@ class JidoPostureClass(morse.core.sensor.Sensor):
         ##################### PTU joints ##################
 
         # Check if robot parent has a child named "PTUname"
-        for child in self.robot_parent.blender_obj.children:
-            if str(child) == self.blender_obj['PTUname']:
+        for child in self.robot_parent.bge_object.children:
+            if str(child) == self.bge_object['PTUname']:
                 self._ptu_obj = child
         
         # Get the references to the childen object and
@@ -67,8 +67,8 @@ class JidoPostureClass(morse.core.sensor.Sensor):
 
         self.kuka_obj = 0
         # Check if robot parent has a child named "kuka_base"
-        for child in self.robot_parent.blender_obj.children:
-            if str(child) == self.blender_obj['KUKAname']:
+        for child in self.robot_parent.bge_object.children:
+            if str(child) == self.bge_object['KUKAname']:
                 self.kuka_obj = child
 
         try:

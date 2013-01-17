@@ -1,6 +1,6 @@
 import math
 
-def object_is_moving(blender_obj):
+def object_is_moving(bge_object):
     """ Check if an object is currently in motion
         
     Will work only for 'dynamic' or 'rigid body' objects in Blender.
@@ -10,7 +10,7 @@ def object_is_moving(blender_obj):
     """
     # Minimum speed that will trigger the motion "sensor"
     motion_tolerance = 0.01
-    speed = blender_obj.getLinearVelocity()
+    speed = bge_object.getLinearVelocity()
     moving = False
     for i in range(3):
         # Test that the local speed is larger than a predefined limit

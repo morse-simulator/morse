@@ -56,7 +56,7 @@ class VWDiffDriveActuatorClass(morse.core.actuator.Actuator):
             # this is need to "wake up" the physic objects if they have gone to sleep
 			# apply a tiny impulse straight down on the object
             if (self._stopped==True):
-                self.robot_parent.blender_obj.applyImpulse(self.robot_parent.blender_obj.position,(0.0,0.1,-0.000001))
+                self.robot_parent.bge_object.applyImpulse(self.robot_parent.bge_object.position,(0.0,0.1,-0.000001))
 
 			# no longer stopped
             self._stopped=False

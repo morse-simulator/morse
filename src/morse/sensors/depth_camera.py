@@ -69,7 +69,7 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
         """ Update the texture image and compute a list of 3D points
         based on the zBuffer. """
         # Grab an image from the texture
-        if self.blender_obj['capturing'] and (self._n != 0) :
+        if self.bge_object['capturing'] and (self._n != 0) :
 
             # Call the action of the parent class
             super(self.__class__, self).default_action()

@@ -23,11 +23,11 @@ def read_platine_(poster_id, component_instance):
 def read_platine(self, component_instance):
     """ Read pan,tilt from a platine poster """
     # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_in_dict[component_instance.bge_object.name]
     read_platine_(poster_id, component_instance)
 
 def read_platine_axis(self, component_instance):
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_in_dict[component_instance.bge_object.name]
     platine_data, ok = ors_platine_poster.read_platine_axis(poster_id)
     if ok != 0:
         component_instance.local_data['pan'] = platine_data.pan

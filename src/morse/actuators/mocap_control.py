@@ -21,10 +21,10 @@ class MocapControlClass(morse.core.actuator.Actuator):
 
         parent = self.robot_parent
 
-        self.human_position = parent.blender_obj.worldPosition
+        self.human_position = parent.bge_object.worldPosition
 
         # Find the IK target empties
-        for obj in parent.blender_obj.childrenRecursive:
+        for obj in parent.bge_object.childrenRecursive:
             #if obj.name == "Head_Empty":# in obj.name:
             if "Head_Empty" in obj.name:
                 self._head_empty = obj

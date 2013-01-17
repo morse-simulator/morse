@@ -94,8 +94,8 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         self.world_Y_vector = mathutils.Vector([0,1,0])
         self.world_Z_vector = mathutils.Vector([0,0,1])
 
-        self._destination = self.blender_obj.position
-        self._projection = self.blender_obj.position
+        self._destination = self.bge_object.position
+        self._projection = self.bge_object.position
         self._wp_object = None
         self._collisions = False
         
@@ -115,7 +115,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
 
         # Identify an object as the target of the motion
         try:
-            wp_name = self.blender_obj['Target']
+            wp_name = self.bge_object['Target']
             if wp_name != '':
                 scene = blenderapi.scene()
                 self._wp_object = scene.objects[wp_name]
@@ -125,7 +125,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
 
         # Identify the collision detectors for the sides
         if self._obstacle_avoidance:
-            for child in self.blender_obj.children:
+            for child in self.bge_object.children:
                 if "Radar.R" in child.name:
                     self._radar_r = child
                 if "Radar.L" in child.name:
@@ -141,10 +141,10 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
             # Objects with any of these properties will be ignored
             #  when doing obstacle avoidance
             try:
-                props = self.blender_obj['Ignore'].split(',')
-                self.blender_obj['Ignore'] = props
+                props = self.bge_object['Ignore'].split(',')
+                self.bge_object['Ignore'] = props
             except KeyError as detail:
-                self.blender_obj['Ignore'] = []
+                self.bge_object['Ignore'] = []
 
 
         logger.info('Component initialized')
@@ -168,7 +168,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         ``False``.
         """
 
-        distance, gv, lv = self.blender_obj.getVectTo([x,y,z])
+        distance, gv, lv = self.bge_object.getVectTo([x,y,z])
         if distance - tolerance <= 0:
             logger.info("Robot already at destination (distance = {})."
                     " I do not set a new destination.".format(distance))
@@ -215,9 +215,9 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         its speed to 0.0, and reply immediately. If a **goto** request is ongoing, it
         will remain "pending", as the current destination is not changed.
         """
-        #self.local_data['x'] = self.blender_obj.worldPosition[0]
-        #self.local_data['y'] = self.blender_obj.worldPosition[1]
-        #self.local_data['z'] = self.blender_obj.worldPosition[2]
+        #self.local_data['x'] = self.bge_object.worldPosition[0]
+        #self.local_data['y'] = self.bge_object.worldPosition[1]
+        #self.local_data['z'] = self.bge_object.worldPosition[2]
         #self.local_data['tolerance'] = 0.5
         self._previous_speed = self.local_data['speed']
         self.local_data['speed'] = 0
@@ -261,16 +261,16 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         rz = 0
 
         self._destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
-        self._projection = [ self.local_data['x'], self.local_data['y'], self.blender_obj.worldPosition[2] ]
+        self._projection = [ self.local_data['x'], self.local_data['y'], self.bge_object.worldPosition[2] ]
         
-        logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+        logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
         # Place the target marker where the robot should go
         if self._wp_object:
             self._wp_object.position = self._destination
 
         # Vectors returned are already normalized
-        projection_distance, projection_vector, local_vector = self.blender_obj.getVectTo(self._projection)
-        true_distance, global_vector, local_vector = self.blender_obj.getVectTo(self._destination)
+        projection_distance, projection_vector, local_vector = self.bge_object.getVectTo(self._projection)
+        true_distance, global_vector, local_vector = self.bge_object.getVectTo(self._destination)
         # Convert to the Blender Vector object
         global_vector = mathutils.Vector(global_vector)
         projection_vector = mathutils.Vector(projection_vector)
@@ -293,7 +293,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
             self.completed(status.SUCCESS, parent.move_status)
 
             logger.debug("TARGET REACHED")
-            logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+            logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         else:
             # Do nothing if the speed is zero
@@ -359,7 +359,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
                 if distance+self.local_data['tolerance'] > self._radar_r.sensors["Radar"].distance:
                     # Ignore obstacles with the properties specified
                     ignore = False
-                    for prop in self.blender_obj['Ignore']:
+                    for prop in self.bge_object['Ignore']:
                         if prop in self._radar_r.sensors["Radar"].hitObject:
                             ignore = True
                             logger.debug("Ignoring object '%s' with property '%s'" % (self._radar_r.sensors["Radar"].hitObject, prop))
@@ -372,7 +372,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
                 if distance+self.local_data['tolerance'] > self._radar_l.sensors["Radar"].distance:
                     # Ignore obstacles with the properties specified
                     ignore = False
-                    for prop in self.blender_obj['Ignore']:
+                    for prop in self.bge_object['Ignore']:
                         if prop in self._radar_l.sensors["Radar"].hitObject:
                             ignore = True
                             logger.debug("Ignoring object '%s' with property '%s'" % (self._radar_l.sensors["Radar"].hitObject, prop))
@@ -398,8 +398,8 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
             # Give the movement instructions directly to the parent
             # The second parameter specifies a "local" movement
             if self._type == 'Position':
-                parent.blender_obj.applyMovement([vx, 0, vz], True)
-                parent.blender_obj.applyRotation([0, 0, rz], True)
+                parent.bge_object.applyMovement([vx, 0, vz], True)
+                parent.bge_object.applyRotation([0, 0, rz], True)
             elif self._type == 'Velocity':
-                parent.blender_obj.setLinearVelocity([vx, 0, vz], True)
-                parent.blender_obj.setAngularVelocity([0, 0, rz], True)
+                parent.bge_object.setLinearVelocity([vx, 0, vz], True)
+                parent.bge_object.setAngularVelocity([0, 0, rz], True)

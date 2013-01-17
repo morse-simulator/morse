@@ -37,7 +37,7 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
         self._dofs = ['z', 'y', 'y', 'z', 'y', 'z']
 
         self._segments = []
-        segment = self.blender_obj.children[0]
+        segment = self.bge_object.children[0]
         for i in range(6):
             self._segments.append(segment)
             try:
@@ -47,14 +47,14 @@ class PA10ActuatorClass(morse.core.actuator.Actuator):
         logger.info ("Arm segment list: ", self._segments)
 
         # Get the references to the segment at the tip of the arm
-        for child in self.blender_obj.childrenRecursive:
+        for child in self.bge_object.childrenRecursive:
             if 'PA10-6' in child.name:
                 self._arm_tip = child
                 break
 
         # Any other objects children of the Kuka arm are assumed
         #  to be mounted on the tip of the arm
-        for child in self.blender_obj.children:
+        for child in self.bge_object.children:
             if not 'PA10' in child.name:
                 child.setParent(self._arm_tip)
 

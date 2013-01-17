@@ -20,7 +20,7 @@ class Object(AbstractObject):
         super(Object, self).__init__()
 
         # Fill in the data sent as parameters
-        self.blender_obj = obj
+        self.bge_object = obj
         self.robot_parent = parent
 
         # Variable to indicate the activation status of the component
@@ -30,7 +30,7 @@ class Object(AbstractObject):
         #  to their robot parent
         # TODO: implement this using morse.helpers.transformation
         if parent:
-            self.relative_position = obj.getVectTo(parent.blender_obj)
+            self.relative_position = obj.getVectTo(parent.bge_object)
 
         # Create an instance of the 3d transformation class
         self.position_3d = morse.helpers.transformation.Transformation3d(obj)
@@ -76,13 +76,13 @@ class Object(AbstractObject):
                 val = default_value
 
                 try:
-                    val = self.blender_obj[name]
+                    val = self.bge_object[name]
                 except KeyError:
                     pass
                 setattr(self, python_name, val)
 
     def name(self):
-        return self.blender_obj.name
+        return self.bge_object.name
 
     def action(self):
         """ Call the regular action function of the component.

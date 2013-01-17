@@ -6,8 +6,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Check if the name of the poster has been given in mw_data
     try:
         # It should be the 4th parameter
@@ -40,7 +40,7 @@ def init_platine_posture_poster(self, component_instance, poster_name):
 def write_platine_posture(self, component_instance):
     """ Write the platine_posture data to a Pocolibs poster.
     """
-    poster_id = self._poster_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_dict[component_instance.bge_object.name]
 
     ors_platine_posture_poster.post_platine_posture(poster_id, \
             component_instance.local_data['pan'], \

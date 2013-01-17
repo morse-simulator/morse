@@ -68,7 +68,7 @@ class ProximitySensorClass(morse.core.sensor.Sensor):
         self.local_data['near_objects'] = {}
         self.local_data['near_robots'] = self.local_data['near_objects']
 
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # Get the tracked sources
         for obj in blenderapi.scene().objects:

@@ -59,7 +59,7 @@ class MorseNEDClass(Modifier):
             component_instance.local_data['pitch'] = -component_instance.local_data['pitch']
             component_instance.local_data['roll'] = roll
         except KeyError as detail:
-            logger.warning("Unable to use 'blender_to_ned_angle component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'blender_to_ned_angle component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.bge_object.name, detail))
 
     def ned_angle_to_blender(self, component_instance):
         """ Convert the coordinates from UTM to Blender reference. """
@@ -69,4 +69,4 @@ class MorseNEDClass(Modifier):
             component_instance.local_data['roll'] = component_instance.local_data['yaw']
             component_instance.local_data['yaw'] = yaw
         except KeyError as detail:
-            logger.warning("Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.blender_obj.name, detail))
+            logger.warning("Unable to use 'ned_angle_to_blender' on component %s. It does not contain the item %s in its 'local_data' dictionary" % (component_instance.bge_object.name, detail))

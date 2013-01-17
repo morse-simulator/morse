@@ -228,7 +228,7 @@ class RosaceSensorClass(morse.core.sensor.Sensor):
                     self.local_data['victim_dict'][victim_obj.name] = victim_d
 
                     # Find the closest victim and its distance
-                    new_distance = self.blender_obj.getDistanceTo(victim_obj)
+                    new_distance = self.bge_object.getDistanceTo(victim_obj)
                     if new_distance < self._nearest_distance:
                         self._nearest_victim = victim_obj
                         self._nearest_distance = new_distance

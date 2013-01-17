@@ -47,7 +47,7 @@ class XYWActuatorClass(morse.core.actuator.Actuator):
         except ZeroDivisionError:
             pass
         # Get the Blender object of the parent robot
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement

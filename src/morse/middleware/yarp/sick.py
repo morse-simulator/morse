@@ -6,8 +6,8 @@ def init_extra_module(self, component_instance, function, mw_data):
     Prepare the middleware to handle the serialised data as necessary.
     """
     # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     port_name = 'robots/{0}/{1}/out'.format(parent_name, component_name)
 
     # Create the YARP port
@@ -24,7 +24,7 @@ def post_sick_message(self, component_instance):
     The argument is a copy of the component instance.
     This method will serialise the lists of points in the SICK data structure into a YARP bottle.
     """
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     try:
         yarp_port = self.getPort(port_name)
@@ -50,7 +50,7 @@ def post_sick_distances(self, component_instance):
     The argument is a copy of the component instance.
     Send the contents of the 'range_list' component of local_data
     """
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     try:
         yarp_port = self.getPort(port_name)

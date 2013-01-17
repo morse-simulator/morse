@@ -59,7 +59,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.armature = self._get_armature(self.blender_obj)
+        self.armature = self._get_armature(self.bge_object)
         if not self.armature:
             logger.error("The armature pose sensor has not been parented to an armature! " + \
                     "This sensor must be a child of an armature. Check you scene.")
@@ -73,7 +73,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         for channel in self.armature.channels:
             self.local_data[channel.name] = 0.0
 
-        logger.info('Component <%s> initialized' % self.blender_obj.name)
+        logger.info('Component <%s> initialized' % self.bge_object.name)
 
     def _get_armature(self, obj):
         if hasattr(obj, "channels"):

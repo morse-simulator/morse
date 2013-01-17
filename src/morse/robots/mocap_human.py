@@ -26,7 +26,7 @@ class MocapHumanClass(morse.core.robot.Robot):
     def move(self, speed, rotation):
         """ Move the human.
         """
-        human = self.blender_obj
+        human = self.bge_object
 
         if not human['Manipulate']:
             human.applyMovement( [speed,0,0], True )
@@ -43,7 +43,7 @@ class MocapHumanClass(morse.core.robot.Robot):
     def move_head(self, pan, tilt):
         """ Move the human head.
         """
-        human = self.blender_obj
+        human = self.bge_object
         scene = blenderapi.scene()
         target = scene.objects['IK_Target_Empty.Head']
 
@@ -60,7 +60,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         scene = blenderapi.scene()
         hand_empty = scene.objects['Hand_Grab.R']
         selected_object = hand_empty['Near_Object']
-        human = self.blender_obj
+        human = self.bge_object
 
         #if human['Manipulate']:
         if seq == "t":
@@ -98,7 +98,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         """ move the human hand (wheel). a request to use by a socket.
         Done for wiimote remote control.
         """
-        human = self.blender_obj
+        human = self.bge_object
         if human['Manipulate']:
             scene = blenderapi.scene()
             target = scene.objects['IK_Target_Empty.R']
@@ -109,7 +109,7 @@ class MocapHumanClass(morse.core.robot.Robot):
         """ Switch manipulation mode on and off. a request to use by a socket.
         Done for wiimote remote control.
         """
-        human = self.blender_obj
+        human = self.bge_object
         scene = blenderapi.scene()
         hand_target = scene.objects['IK_Target_Empty.R']
         head_target = scene.objects['IK_Target_Empty.Head']

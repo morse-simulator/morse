@@ -19,8 +19,8 @@ def post_range(self, component_instance):
     msg.radiation_type = Range.INFRARED
     msg.field_of_view = 20
     msg.min_range = 0
-    msg.max_range = component_instance.blender_obj['laser_range']
-    tmp = component_instance.blender_obj['laser_range']
+    msg.max_range = component_instance.bge_object['laser_range']
+    tmp = component_instance.bge_object['laser_range']
     for r in component_instance.local_data['range_list']:
         if tmp > r:
             tmp = r

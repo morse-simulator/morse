@@ -45,7 +45,7 @@ class PTUPosture(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
         
-        ptu = self._get_ptu(self.blender_obj)
+        ptu = self._get_ptu(self.bge_object)
         if not ptu:
             logger.error("The PTU pose sensor has not been parented to a PTU! " + \
                     "This sensor must be a child of a PTU. Check you scene.")
@@ -55,7 +55,7 @@ class PTUPosture(morse.core.sensor.Sensor):
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        logger.info('Component <%s> initialized' % self.blender_obj.name)
+        logger.info('Component <%s> initialized' % self.bge_object.name)
 
     def _get_ptu(self, obj):
         if "PanBase" in [c.name for c in obj.children]:

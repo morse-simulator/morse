@@ -65,7 +65,7 @@ class Armature(morse.core.actuator.Actuator):
         super(Armature,self).__init__(obj, parent)
         
         # Initialize the values in local_data for each segment
-        armature = self.blender_obj
+        armature = self.bge_object
         for channel in armature.channels:
             self.local_data[channel.name] = 0.0
 
@@ -79,7 +79,7 @@ class Armature(morse.core.actuator.Actuator):
 
         # Look for the armature's end effector, if any
         self._end_effector = None
-        for child in self.blender_obj.childrenRecursive:
+        for child in self.bge_object.childrenRecursive:
             if 'end_effector' in child:
                 logger.info("Found end effector (%s) for armature %s" % (child.name, obj.name))
                 self._end_effector= child
@@ -89,7 +89,7 @@ class Armature(morse.core.actuator.Actuator):
         # the property 'internal' are considered to be mounted on the 
         # end effector
         if self._end_effector:
-            for child in self.blender_obj.children:
+            for child in self.bge_object.children:
                 if not 'internal' in child:
                     child.setParent(self._end_effector)
 
@@ -113,7 +113,7 @@ class Armature(morse.core.actuator.Actuator):
 
         If the joint does not exist, throw an exception.
         """
-        armature = self.blender_obj
+        armature = self.bge_object
 
         if joint not in [c.name for c in armature.channels]:
             msg = "Joint <%s> does not exist in armature %s" % (joint, armature.name)
@@ -230,7 +230,7 @@ class Armature(morse.core.actuator.Actuator):
         :sees: `set_translation`
         :param translations: a set of absolute translations, in meters
         """
-        armature = self.blender_obj
+        armature = self.bge_object
 
         nb_trans = min(len(translations), len(armature.channels))
 
@@ -309,7 +309,7 @@ class Armature(morse.core.actuator.Actuator):
         :sees: `set_rotation`
         :param rotations: a set of absolute rotations, in radians
         """
-        armature = self.blender_obj
+        armature = self.bge_object
 
         nb_rot = min(len(rotations), len(armature.channels))
 
@@ -360,7 +360,7 @@ class Armature(morse.core.actuator.Actuator):
         Returns a dictionary with keys the channels
         of the armature and as values the rotation axis of the joint.
         """
-        armature = self.blender_obj
+        armature = self.bge_object
         dofs = {}
         # find the dof of each channel
         for channel in armature.channels:
@@ -536,7 +536,7 @@ class Armature(morse.core.actuator.Actuator):
             self._exec_traj()
 
 
-        armature = self.blender_obj
+        armature = self.bge_object
 
         position_reached = True
         for channel in armature.channels:

@@ -165,12 +165,12 @@ ____
 
 In Yarp, the different port_name are stored in a dictionary
 ``_component_ports``, indexed by the name of the component
-(``component.blender_obj.name``). You can retrieve the associated port with the
+(``component.bge_object.name``). You can retrieve the associated port with the
 method ``getPort(port_name)``
 
 Example: ::
 
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     try:
 	    yarp_port = self.getPort(port_name)
@@ -184,11 +184,11 @@ ________
 
 In Pocolibs, the different poster_id are stored in a dictionary
 ``_poster_dict``, indexed by the name of the component
-(``component.blender_obj.name``)
+(``component.bge_object.name``)
 
 Text
 ____
 
 In Text, the different files are stored in a dictionary
 ``_file_list``, indexed by the name of the component
-(``component.blender_obj.name``)
+(``component.bge_object.name``)

@@ -23,7 +23,7 @@ class HumanClass(morse.core.robot.Robot):
         """ Move the human.
         """
         
-        human = self.blender_obj
+        human = self.bge_object
         
         if not human['Manipulate']:
             human.applyMovement( [speed,0,0], True )
@@ -41,7 +41,7 @@ class HumanClass(morse.core.robot.Robot):
         """ Move the human head.
         """
         
-        human = self.blender_obj
+        human = self.bge_object
         scene = blenderapi.scene()
         target = scene.objects['Target_Empty']
         
@@ -55,7 +55,7 @@ class HumanClass(morse.core.robot.Robot):
     def grasp_(self, seq):
         """ Grasp object.
         """
-        human = self.blender_obj
+        human = self.bge_object
         if human['Manipulate']:
             scene = blenderapi.scene()
             hand_empty = scene.objects['Hand_Grab.R']
@@ -94,7 +94,7 @@ class HumanClass(morse.core.robot.Robot):
         Done for wiimote remote control.
         """
         
-        human = self.blender_obj
+        human = self.bge_object
         if human['Manipulate']:
             scene = blenderapi.scene()
             target = scene.objects['IK_Target_Empty.R']
@@ -106,7 +106,7 @@ class HumanClass(morse.core.robot.Robot):
         Done for wiimote remote control.
         """
         
-        human = self.blender_obj
+        human = self.bge_object
         scene = blenderapi.scene()
         hand_target = scene.objects['IK_Target_Empty.R']
         head_target = scene.objects['Target_Empty']

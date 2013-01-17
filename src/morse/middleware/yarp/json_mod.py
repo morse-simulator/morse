@@ -8,8 +8,8 @@ def init_extra_module(self, component_instance, function, mw_data):
     Prepare the middleware to handle the serialised data as necessary.
     """
     # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Get the function name being inserted form the mw_data array
     function_name = mw_data[1]
     if function_name == 'post_json_message':
@@ -36,7 +36,7 @@ def post_json_message(self, component_instance):
     The argument is a copy of the component instance.
     This method will encode the 'local_data' dictionary as JSON.
     """
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     json_string = json.dumps(component_instance.local_data)
 
@@ -60,7 +60,7 @@ def read_json_message(self, component_instance):
     This method will read a JSON string from the middleware,
     decode it and put the contents in the local_data array.
     """
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     try:
         yarp_port = self.getPort(port_name)
@@ -96,7 +96,7 @@ def read_json_waypoint(self, component_instance):
     point: structure with 'x', 'y', 'z'
     radius: the tolerance around those points
     """
-    port_name = self._component_ports[component_instance.blender_obj.name]
+    port_name = self._component_ports[component_instance.bge_object.name]
 
     try:
         yarp_port = self.getPort(port_name)

@@ -153,6 +153,6 @@ class HumanPostureClass(morse.core.sensor.Sensor):
         self.local_data['pitch'] = float(self.position_3d.pitch)
         self.local_data['roll'] = float(self.position_3d.roll)
 
-        self._read_pose(self.blender_obj)
+        self._read_pose(self.bge_object)
 
         logger.debug("LOCAL_DATA: ", self.local_data)

@@ -60,7 +60,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
 
         logger.setLevel(logging.INFO)
 
-        self._destination = self.robot_parent.blender_obj.worldPosition
+        self._destination = self.robot_parent.bge_object.worldPosition
         self._wp_object = None
 
         # set desired position to current position
@@ -73,14 +73,14 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
         self._pos_initalized = False
 
         # Make new reference to the robot velocities (mathutils.Vector)
-        self.robot_w = self.robot_parent.blender_obj.localAngularVelocity
+        self.robot_w = self.robot_parent.bge_object.localAngularVelocity
 
         # get the robot inertia (list [ix, iy, iz])
-        robot_inertia = self.robot_parent.blender_obj.localInertia
+        robot_inertia = self.robot_parent.bge_object.localInertia
         self.inertia = Vector(tuple(robot_inertia))
         logger.info("robot inertia: (%.3f %.3f %.3f)" % tuple(self.inertia))
 
-        self.nominal_thrust = self.robot_parent.blender_obj.mass * 9.81
+        self.nominal_thrust = self.robot_parent.bge_object.mass * 9.81
         logger.info("nominal thrust: %.3f", self.nominal_thrust)
         self._attitude_compensation_limit = cos(self._max_bank_angle) ** 2
 
@@ -132,7 +132,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
         already reached. In this case, returns False.
         """
 
-        distance, gv, lv = self.robot_parent.blender_obj.getVectTo([x, y, z])
+        distance, gv, lv = self.robot_parent.bge_object.getVectTo([x, y, z])
         if distance - tolerance <= 0:
             logger.info("Robot already at destination (distance = {})."
                     " I do not set a new destination.".format(distance))
@@ -185,14 +185,14 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
         if self._pos_initalized:
             self._destination = Vector((self.local_data['x'], self.local_data['y'], self.local_data['z']))
         else:
-            self._destination = self.robot_parent.blender_obj.worldPosition
+            self._destination = self.robot_parent.bge_object.worldPosition
             self.local_data['x'] = self._destination[0]
             self.local_data['y'] = self._destination[1]
             self.local_data['z'] = self._destination[2]
             self.local_data['yaw'] = self.robot_parent.position_3d.yaw
             self._pos_initalized = True
 
-        #logger.debug("Robot %s move status: '%s'", robot.blender_obj.name, robot.move_status)
+        #logger.debug("Robot %s move status: '%s'", robot.bge_object.name, robot.move_status)
         # Place the target marker where the robot should go
         if self._wp_object:
             self._wp_object.worldPosition = self._destination
@@ -204,8 +204,8 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
         yaw = self.position_3d.yaw
 
         # current position and velocity of robot 
-        pos_blender = robot.blender_obj.worldPosition
-        vel_blender = robot.blender_obj.worldLinearVelocity
+        pos_blender = robot.bge_object.worldPosition
+        vel_blender = robot.bge_object.worldLinearVelocity
 
         pos_error = self._destination - pos_blender
         # zero velocity setpoint for now
@@ -282,12 +282,12 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
         self.prev_err = err.copy()
 
         # directly apply local forces and torques to the blender object of the parent robot
-        robot.blender_obj.applyForce(force, True)
-        robot.blender_obj.applyTorque(torque, True)
+        robot.bge_object.applyForce(force, True)
+        robot.bge_object.applyTorque(torque, True)
 
 
         # Vectors returned are already normalized
-        wp_distance, global_vector, local_vector = self.blender_obj.getVectTo(self._destination)
+        wp_distance, global_vector, local_vector = self.bge_object.getVectTo(self._destination)
 
         #logger.debug("GOT DISTANCE: xyz: %.4f", wp_distance)
 
@@ -299,7 +299,7 @@ class RotorcraftWaypointActuatorClass(morse.core.actuator.Actuator):
             self.completed(status.SUCCESS, robot.move_status)
 
             #logger.debug("TARGET REACHED")
-            #logger.debug("Robot %s move status: '%s'", robot.blender_obj.name, robot.move_status)
+            #logger.debug("Robot %s move status: '%s'", robot.bge_object.name, robot.move_status)
 
         else:
             robot.move_status = "Transit"

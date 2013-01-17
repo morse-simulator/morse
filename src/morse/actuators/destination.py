@@ -28,7 +28,7 @@ class DestinationActuatorClass(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.destination = self.blender_obj.position
+        self.destination = self.bge_object.position
 
         #self.local_data['speed'] = 0.0
         self.local_data['x'] = self.destination[0]
@@ -45,12 +45,12 @@ class DestinationActuatorClass(morse.core.actuator.Actuator):
         self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
 
         logger.debug("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
-        logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+        logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         # Vectors returned are already normalised
-        distance, global_vector, local_vector = self.blender_obj.getVectTo(self.destination)
+        distance, global_vector, local_vector = self.bge_object.getVectTo(self.destination)
 
-        logger.debug("My position: {0}".format(self.blender_obj.position))
+        logger.debug("My position: {0}".format(self.bge_object.position))
         logger.debug("GOT DISTANCE: {0}".format(distance))
         logger.debug("Global vector: {0}".format(global_vector))
         logger.debug("Local  vector: {0}".format(local_vector))
@@ -77,9 +77,9 @@ class DestinationActuatorClass(morse.core.actuator.Actuator):
 
             parent.move_status = "Stop"
             logger.debug("TARGET REACHED")
-            logger.debug("Robot {0} move status: '{1}'".format(parent.blender_obj.name, parent.move_status))
+            logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
-        parent.blender_obj.applyMovement([vx, vy, vz], False)
-        #parent.blender_obj.applyRotation([rx, ry, rz], False)
+        parent.bge_object.applyMovement([vx, vy, vz], False)
+        #parent.bge_object.applyRotation([rx, ry, rz], False)

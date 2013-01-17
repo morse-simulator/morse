@@ -24,7 +24,7 @@ class AccelerometerClass(morse.core.sensor.Sensor):
         self.pvy = 0.0
         self.pvz = 0.0
         # Make a new reference to the sensor position
-        self.p = self.blender_obj.position
+        self.p = self.bge_object.position
         self.v = [0.0, 0.0, 0.0]            # Velocity
         self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
         self.a = [0.0, 0.0, 0.0]            # Acceleration

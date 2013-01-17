@@ -15,8 +15,8 @@ class TeleportActuatorClass(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
-        orientation = self.blender_obj.worldOrientation.to_euler('XYZ')
-        position = self.blender_obj.worldPosition
+        orientation = self.bge_object.worldOrientation.to_euler('XYZ')
+        position = self.bge_object.worldPosition
 
         self.local_data['x'] = position.x
         self.local_data['y'] = position.y
@@ -59,7 +59,7 @@ class TeleportActuatorClass(morse.core.actuator.Actuator):
     def default_action(self):
         """ Change the parent robot pose. """
         # Get the Blender object of the parent robot
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # New parent position
         position = mathutils.Vector((self.local_data['x'], \

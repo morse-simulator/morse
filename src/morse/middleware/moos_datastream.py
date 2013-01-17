@@ -40,7 +40,7 @@ class MOOS(morse.core.datastream.Datastream):
         self.m.Register("cYawRate")
 		
         logger.info("========== Registering component =================")
-        parent_name = component_instance.robot_parent.blender_obj.name
+        parent_name = component_instance.robot_parent.bge_object.name
 
         # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
@@ -89,14 +89,14 @@ class MOOS(morse.core.datastream.Datastream):
         """ Publish the data to the MOOS database
         """
         logger.debug("Posting message to the MOOS database.")
-        parent_name = component_instance.robot_parent.blender_obj.name
+        parent_name = component_instance.robot_parent.bge_object.name
 
         #iterate through all objects of the component_instance and post the data
         for variable, data in component_instance.local_data.items():
-            logger.debug(parent_name+"_"+component_instance.blender_obj.name+"_"+variable)
+            logger.debug(parent_name+"_"+component_instance.bge_object.name+"_"+variable)
             logger.debug(str(data))
             logger.debug(type(data))
-            self.m.Notify(parent_name+"_"+component_instance.blender_obj.name+"_"+variable,str(data),blenderapi.persistantstorage().current_time)
+            self.m.Notify(parent_name+"_"+component_instance.bge_object.name+"_"+variable,str(data),blenderapi.persistantstorage().current_time)
 
                             
     # NOTE: This is a dummy function that is executed for every actuator. Since ROS uses the concept of callbacks, it does nothing ...    

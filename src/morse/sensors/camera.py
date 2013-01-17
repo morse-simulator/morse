@@ -90,7 +90,7 @@ class CameraClass(morse.core.sensor.Sensor):
         Extract the references to the Blender camera and material where
         the images will be rendered.
         """
-        for child in self.blender_obj.children:
+        for child in self.bge_object.children:
             # The camera object that will produce the image in Blender
             if 'CameraRobot' in child.name:
                 camera = child
@@ -153,15 +153,15 @@ class CameraClass(morse.core.sensor.Sensor):
 
         try:
             # Use the z buffer as an image texture for the camera
-            if 'Zbuffer' in self.blender_obj:
-                vt_camera.source.zbuff = self.blender_obj['Zbuffer']
+            if 'Zbuffer' in self.bge_object:
+                vt_camera.source.zbuff = self.bge_object['Zbuffer']
         except AttributeError as detail:
             logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
 
         try:
             # Use the z buffer as input with an array of depths
-            if 'Depth' in self.blender_obj:
-                vt_camera.source.depth = self.blender_obj['Depth']
+            if 'Depth' in self.bge_object:
+                vt_camera.source.depth = self.bge_object['Depth']
         except AttributeError as detail:
             logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
 

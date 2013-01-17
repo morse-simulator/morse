@@ -46,7 +46,7 @@ a human character in the simulation.
         @service
         def move(self, speed, rotation):
             
-            human = self.blender_obj
+            human = self.bge_object
             
             human.applyMovement( [float(speed), 0, 0], True )
             human.applyRotation( [0, 0 , float(rotation)], True )
@@ -110,7 +110,7 @@ If the service call fails, you are expected to raise a
             if float(speed) < 0:
                 raise MorseRPCInvokationError("Our human can not walk backward!")
 
-            human = self.blender_obj
+            human = self.bge_object
             
             human.applyMovement( [float(speed), 0, 0], True )
             human.applyRotation( [0, 0, float(rotation)], True )
@@ -245,9 +245,9 @@ below).
     class WaypointActuatorClass(morse.core.actuator.Actuator):
 
          def interrupt(self):
-             self.local_data['x'] = self.blender_obj.worldPosition[0]
-             self.local_data['y'] = self.blender_obj.worldPosition[1]
-             self.local_data['z'] = self.blender_obj.worldPosition[2]
+             self.local_data['x'] = self.bge_object.worldPosition[0]
+             self.local_data['y'] = self.bge_object.worldPosition[1]
+             self.local_data['z'] = self.bge_object.worldPosition[2]
              super(WaypointActuatorClass, self).interrupt()
 
 .. note::

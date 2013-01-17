@@ -37,7 +37,7 @@ class ROS(morse.core.datastream.Datastream):
         """
 
         logger.info("========== Registering component =================")
-        parent_name = component_instance.robot_parent.blender_obj.name
+        parent_name = component_instance.robot_parent.bge_object.name
 
         # Extract the information for this datastream interface
         # This will be tailored for each middleware according to its needs
@@ -103,20 +103,20 @@ class ROS(morse.core.datastream.Datastream):
         logger.info('ROS subscriber for %s initialized'%component_instance.name())
 
     def get_topic_name(self, component_instance):
-        component_name = component_instance.blender_obj.name
+        component_name = component_instance.bge_object.name
         # robot.001.sensor.001 = robot001.sensor001
         topic = re.sub(r'\.([0-9]+)', r'\1', component_name)
         return '/' + topic.replace('.', '/')
 
     def get_property(self, component_instance, name):
-        component_name = component_instance.blender_obj.name
+        component_name = component_instance.bge_object.name
         if component_name in self._properties:
-            return self._properties[component_instance.blender_obj.name][name]
+            return self._properties[component_instance.bge_object.name][name]
         else:
             return None
 
     def set_property(self, component_instance, name, value):
-        component_name = component_instance.blender_obj.name
+        component_name = component_instance.bge_object.name
         if component_name not in self._properties:
             self._properties[component_name] = {}
         self._properties[component_name][name] = value

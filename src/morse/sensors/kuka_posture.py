@@ -23,9 +23,9 @@ class KukaPostureClass(morse.core.sensor.Sensor):
         #  in this objects property 'KUKAname'.
         # By default it will look for "kuka_armature"
         armature_name = "kuka_armature"
-        if 'KUKAname' in self.blender_obj:
-            armature_name = self.blender_obj['KUKAname']
-        for child in self.robot_parent.blender_obj.children:
+        if 'KUKAname' in self.bge_object:
+            armature_name = self.bge_object['KUKAname']
+        for child in self.robot_parent.bge_object.children:
             if str(child) == armature_name:
                 self._kuka_armature = child
                 break

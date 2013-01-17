@@ -8,8 +8,8 @@ def init_extra_module(self, component_instance, function, mw_data):
     Prepare the middleware to handle the serialised data as necessary.
     """
     # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
 
      # Add the new method to the component
     component_instance.output_functions.append(function)

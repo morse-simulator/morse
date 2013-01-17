@@ -28,7 +28,7 @@ class Actuator(morse.core.object.Object):
             return
 
         # Update the component's position in the world
-        self.position_3d.update(self.blender_obj)
+        self.position_3d.update(self.bge_object)
 
         received = False
         status = False

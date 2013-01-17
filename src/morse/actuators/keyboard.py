@@ -68,7 +68,7 @@ class KeyboardActuatorClass(morse.core.actuator.Actuator):
                 rz = -self._speed / 2.0
 
         # Get the Blender object of the parent robot
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement

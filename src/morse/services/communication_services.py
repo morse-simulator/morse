@@ -34,7 +34,7 @@ def distance_and_view(robot1, robot2):
 
     dist = r1.position_3d.distance(r2.position_3d)
 
-    closest_obj = r1.blender_obj.rayCastTo(r2.blender_obj)
+    closest_obj = r1.bge_object.rayCastTo(r2.bge_object)
 
-    return (dist, closest_obj == r2.blender_obj)
+    return (dist, closest_obj == r2.bge_object)
 

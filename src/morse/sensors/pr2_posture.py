@@ -121,7 +121,7 @@ class PR2PostureClass(morse.core.sensor.Sensor):
         """
 
         # Retrieves the reference to the Blender armatures for the PTU, the arms and the torso
-        for child in self.robot_parent.blender_obj.childrenRecursive:
+        for child in self.robot_parent.bge_object.childrenRecursive:
             if child.name == self.ptu_armature_name:
                 self.ptu_armature_object = child
             elif child.name == self.l_arm_armature_name:

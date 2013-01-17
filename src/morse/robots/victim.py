@@ -17,7 +17,7 @@ class VictimClass(morse.core.robot.Robot):
         logger.info('%s initialization' % obj.name)
         super(self.__class__,self).__init__(obj, parent)
 
-        if self.blender_obj['Injured'] == True:
+        if self.bge_object['Injured'] == True:
             #  Set the mesh color to red
             obj.color = [1.0, 0.5, 0.5, 1.0]
         else:
@@ -38,16 +38,16 @@ class VictimClass(morse.core.robot.Robot):
         Change the material to a green color,
         and the status to healed.
         """
-        if self.blender_obj['Severity'] > 0:
-            self.blender_obj['Severity'] = self.blender_obj['Severity'] - 1
+        if self.bge_object['Severity'] > 0:
+            self.bge_object['Severity'] = self.bge_object['Severity'] - 1
             # Set the colors depending on the severity of the injuries
-            red = 1 - self.blender_obj['Severity'] * 0.05
+            red = 1 - self.bge_object['Severity'] * 0.05
             green = 0.5 + red
-            self.blender_obj.color = [red, green, 0.5, 1.0]
+            self.bge_object.color = [red, green, 0.5, 1.0]
 
         # When fully healed, mark as not injured
-        if self.blender_obj['Severity'] == 0:
-            self.blender_obj['Injured'] = False
+        if self.bge_object['Severity'] == 0:
+            self.bge_object['Injured'] = False
 
 
     def default_action(self):

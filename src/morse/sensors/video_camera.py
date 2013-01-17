@@ -57,7 +57,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
     def default_action(self):
         """ Update the texture image. """
         # Grab an image from the texture
-        if self.blender_obj['capturing'] and (self._n != 0) :
+        if self.bge_object['capturing'] and (self._n != 0) :
 
             # Call the action of the parent class
             super(self.__class__, self).default_action()

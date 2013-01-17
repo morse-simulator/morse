@@ -42,7 +42,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
         self._animation = ''
 
         # Get references to the Logic Bricks to play animations
-        self._contr = self.blender_obj.controllers[0]
+        self._contr = self.bge_object.controllers[0]
         self._close_anim = self._contr.actuators['Close_anim']
         self._open_anim = self._contr.actuators['Open_anim']
 
@@ -64,7 +64,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
             min_distance = 100
             for test_obj in radar.hitObjectList:
                 # Find the closest object and its distance
-                new_distance = self.blender_obj.getDistanceTo(test_obj)
+                new_distance = self.bge_object.getDistanceTo(test_obj)
                 if new_distance < min_distance:
                     self._near_object = test_obj
                     min_distance = new_distance
@@ -87,7 +87,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
                 #self._near_object.suspendDynamics()
                 # Parent the selected object to the gripper
                 self._grabbed_object = self._near_object
-                self._grabbed_object.setParent (self.blender_obj)
+                self._grabbed_object.setParent (self.bge_object)
                 logger.debug("New parent: %s" % self._grabbed_object.parent)
                 self._near_object = None
 

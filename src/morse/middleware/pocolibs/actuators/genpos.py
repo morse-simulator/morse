@@ -24,7 +24,7 @@ def read_genpos_(poster_id, component_instance):
 def read_genpos(self, component_instance):
     """ Read v,w from a genPos poster """
     # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_in_dict[component_instance.bge_object.name]
     return read_genpos_(poster_id, component_instance)
 
 class PosterNotFound(Exception):

@@ -55,7 +55,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 def read_niut_ik_positions(self, component_instance):
     """ Read the positions of the joints in the niut poster """
     # Read from the poster specified
-    poster_id = self._poster_in_dict[component_instance.blender_obj.name]
+    poster_id = self._poster_in_dict[component_instance.bge_object.name]
 
     result = True
     # Get the positions of the joints and multiply them by the matrix

@@ -203,8 +203,8 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         # Get some information to be able to deform the arcs
         if self.visible_arc:
             layers = 1
-            if 'layers' in self.blender_obj:
-                layers = self.blender_obj['layers']
+            if 'layers' in self.bge_object:
+                layers = self.bge_object['layers']
             self._vertex_per_layer = len(self._ray_list) // layers
 
         logger.info('Component initialized')
@@ -219,9 +219,9 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         as a way to display the results obtained.
         """
         #logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" %
-        #                (self.blender_obj.position[0],
-        #                 self.blender_obj.position[1],
-        #                 self.blender_obj.position[2]))
+        #                (self.bge_object.position[0],
+        #                 self.bge_object.position[1],
+        #                 self.bge_object.position[2]))
 
         # Get the inverse of the transformation matrix
         inverse = self.position_3d.matrix.inverted()
@@ -233,7 +233,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
             correct_ray = self.position_3d.matrix * ray
 
             # Shoot a ray towards the target
-            target, point, normal = self.blender_obj.rayCast(correct_ray, None,
+            target, point, normal = self.bge_object.rayCast(correct_ray, None,
                                                              self.laser_range)
 
             #logger.debug("\tTarget, point, normal: %s, %s, %s" %
@@ -241,7 +241,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
 
             # Register when an intersection occurred
             if target:
-                distance = self.blender_obj.getDistanceTo(point)
+                distance = self.bge_object.getDistanceTo(point)
                 # Return the point to the reference of the sensor
                 new_point = inverse * point
 

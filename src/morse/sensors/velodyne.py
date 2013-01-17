@@ -28,7 +28,7 @@ class VelodyneClass(morse.core.sensor.Sensor):
                 break
 
         # Set its visibility, according to the settings
-        self._ray_arc.setVisible(self.blender_obj['Visible_arc'])
+        self._ray_arc.setVisible(self.bge_object['Visible_arc'])
         self._ray_list = []
 
         # Create an empty list to store the intersection points
@@ -79,14 +79,14 @@ class VelodyneClass(morse.core.sensor.Sensor):
         as a way to display the results obtained.
         """
         # Obtain the rotation matrix of the sensor.
-        robot_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.robot_parent.blender_obj)
-        sensor_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.blender_obj)
+        robot_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.robot_parent.bge_object)
+        sensor_inverted_matrix = morse.helpers.morse_math.invert_rotation_matrix(self.bge_object)
 
         # Create a vector for the mathutils operations
         vector_point = mathutils.Vector()
 
         logger.debug("=== NEW SCAN at time %s ===" % blenderapi.persistantstorage().current_time)
-        logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.blender_obj.position[0], self.blender_obj.position[1], self.blender_obj.position[2]))
+        logger.debug("ARC POSITION: [%.4f, %.4f, %.4f]" % (self.bge_object.position[0], self.bge_object.position[1], self.bge_object.position[2]))
         # Get the mesh for the semicircle
         for mesh in self._ray_arc.meshes:
             for mat in range(mesh.numMaterials):
@@ -107,17 +107,17 @@ class VelodyneClass(morse.core.sensor.Sensor):
                     base_ray = self._ray_list[index]
                     # Adjust the vector coordinates to the rotation
                     #  of the robot
-                    corrected_ray = self.blender_obj.getAxisVect(base_ray)
+                    corrected_ray = self.bge_object.getAxisVect(base_ray)
 
                     ray = [0, 0, 0]
                     # Displace according to the arc vertices
                     for i in range(3):
-                        ray[i] = self.blender_obj.position[i] + corrected_ray[i]
+                        ray[i] = self.bge_object.position[i] + corrected_ray[i]
 
                     logger.debug("\t%d: base_ray: [%.2f, %.2f, %.2f]\tray: [%.2f, %.2f, %.2f]" % (index, base_ray[0], base_ray[1], base_ray[2], ray[0], ray[1], ray[2]))
 
                     # Shoot a ray towards the target
-                    target,point,normal = self.blender_obj.rayCast(ray,None,self.blender_obj['laser_range'])
+                    target,point,normal = self.bge_object.rayCast(ray,None,self.bge_object['laser_range'])
                     logger.debug("\tTarget, point, normal: {0}, {1}, {2}".format(target, point, normal))
 
                     # If there was an intersection,
@@ -129,7 +129,7 @@ class VelodyneClass(morse.core.sensor.Sensor):
                         # Substract the sensor coordinates
                         #  from the intersection point
                         for i in range(3):
-                            point[i] = point[i] - self.blender_obj.position[i]
+                            point[i] = point[i] - self.bge_object.position[i]
                         logger.debug("\t\tARC POINT: [%.4f, %.4f, %.4f]" % (point[0], point[1], point[2]))
 
                         # Create a vector object
@@ -158,7 +158,7 @@ class VelodyneClass(morse.core.sensor.Sensor):
                         morse.helpers.morse_math.fill_vector (vector_point, base_ray)
                         # Give it the correct size
                         vector_point.normalize()
-                        vector_point = vector_point * self.blender_obj['laser_range']
+                        vector_point = vector_point * self.bge_object['laser_range']
 
                         # Move the vertex to the computed position
                         vertex.setXYZ(vector_point)
@@ -170,8 +170,8 @@ class VelodyneClass(morse.core.sensor.Sensor):
 
                     
                     #calculate ranges of the laserscanner based on Blender_object pose and points
-                    xx = arc_point[0] - self.blender_obj.position[0]
-                    yy = arc_point[1] - self.blender_obj.position[1]
+                    xx = arc_point[0] - self.bge_object.position[0]
+                    yy = arc_point[1] - self.bge_object.position[1]
                     self.local_data['range_list'][index] = math.sqrt(pow(xx,2)+pow(yy,2))
                     self.local_data['point_list'][index] = arc_point
                     index = index + 1

@@ -24,7 +24,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
             This one will compute the transformations considering the different
             axis orientation used by this kind of robots """
         # Update the component's position in the world
-        self.position_3d.update_Y_forward(self.blender_obj)
+        self.position_3d.update_Y_forward(self.bge_object)
 
         self.default_action()
 
@@ -42,7 +42,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
             # Get the actual name of the object from the properties
             #  of the parent robot
             try:
-                wheel = scene.objects[self.blender_obj[name]]
+                wheel = scene.objects[self.bge_object[name]]
             except:
                 #import traceback
                 #traceback.print_exc()
@@ -60,20 +60,20 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
                 #wheel.worldOrientation = self._wheel_orientations[index]
 
         # get wheel radius
-        self._wheelRadius=self.GetWheelRadius(self.blender_obj['WheelFLName'])
+        self._wheelRadius=self.GetWheelRadius(self.bge_object['WheelFLName'])
 
         # Add a free rotating wheel if indicated in the robot
-        if 'CasterWheelName' in self.blender_obj:
-            wheel = scene.objects[self.blender_obj['CasterWheelName']]
+        if 'CasterWheelName' in self.bge_object:
+            wheel = scene.objects[self.bge_object['CasterWheelName']]
             wheel_position = mathutils.Vector(wheel.worldPosition)
-            self.AttachCasterWheelToBody(wheel, self.blender_obj, wheel_position)
+            self.AttachCasterWheelToBody(wheel, self.bge_object, wheel_position)
 
 
     def ReadGenericParameters(self):
         # get needed parameters from the blender object
         # determines if vehicle has suspension or just wheels
         try:
-            self._HasSuspension=self.blender_obj['HasSuspension']
+            self._HasSuspension=self.bge_object['HasSuspension']
         except KeyError as e:
             self._HasSuspension=True
             logger.info('HasSuspension property not present and defaulted to True')
@@ -83,7 +83,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
 
         # determines if vehicle has steerable front wheels or not
         try:
-            self._HasSteering=self.blender_obj['HasSteering']
+            self._HasSteering=self.bge_object['HasSteering']
         except KeyError as e:
             self._HasSteering=True
             logger.info('HasSteering property not present and defaulted to True')
@@ -130,7 +130,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
         self.ReadGenericParameters()
 
         # chassis ID - main object should be chassis model
-        self._chassis_ID = self.blender_obj.getPhysicsId()
+        self._chassis_ID = self.bge_object.getPhysicsId()
 
         # get track width
         self._trackWidth=self.GetTrackWidth();
@@ -149,48 +149,48 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
 #        # get suspension arm ID's
 #        # front left A-arm
 #        try:
-#            if self.blender_obj['ArmFLName']:
-#                self._armFL=scene.objects[self.blender_obj['ArmFLName']]
+#            if self.bge_object['ArmFLName']:
+#                self._armFL=scene.objects[self.bge_object['ArmFLName']]
 #        except:
 #            import traceback
 #            traceback.print_exc()
 #
 #        # front right A-arm
 #        try:
-#            if self.blender_obj['ArmFRName']:
-#                self._armFR=scene.objects[self.blender_obj['ArmFRName']]
+#            if self.bge_object['ArmFRName']:
+#                self._armFR=scene.objects[self.bge_object['ArmFRName']]
 #        except:
 #            import traceback
 #            traceback.print_exc()
 #
 #        # rear left arm
 #        try:
-#            if self.blender_obj['ArmRLName']:
-#                self._armRL=self.blender_obj['ArmRLName']
+#            if self.bge_object['ArmRLName']:
+#                self._armRL=self.bge_object['ArmRLName']
 #        except:
 #            import traceback
 #            traceback.print_exc()
 #
 #        # rear right arm
 #        try:
-#            if self.blender_obj['ArmRRName']:
-#                self._armRR=self.blender_obj['ArmRRName']
+#            if self.bge_object['ArmRRName']:
+#                self._armRR=self.bge_object['ArmRRName']
 #        except:
 #            import traceback
 #            traceback.print_exc()
 #
 #        # put together front wheels and suspension
-#        self._wheelFLJoint=self.AttachWheelWithSuspension(self._wheelFL,self.blender_obj,self._armFL)
-#        self._wheelFRJoint=self.AttachWheelWithSuspension(self._wheelFR,self.blender_obj,self._armFR)
+#        self._wheelFLJoint=self.AttachWheelWithSuspension(self._wheelFL,self.bge_object,self._armFL)
+#        self._wheelFRJoint=self.AttachWheelWithSuspension(self._wheelFR,self.bge_object,self._armFR)
 #
-#        self._wheelRLJoint=self.AttachWheelWithSuspension(self._wheelRL,self.blender_obj,self._armRL)
-#        self._wheelRRJoint=self.AttachWheelWithSuspension(self._wheelRR,self.blender_obj,self._armRR)
+#        self._wheelRLJoint=self.AttachWheelWithSuspension(self._wheelRL,self.bge_object,self._armRL)
+#        self._wheelRRJoint=self.AttachWheelWithSuspension(self._wheelRR,self.bge_object,self._armRR)
 
     def BuildModelWithoutSuspension(self):
         """ Add all the constraints to attach the wheels to the body """
         for index in self._wheel_index:
             if self._wheels[index] != None:
-                self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.blender_obj, self._wheel_positions[index])
+                self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.bge_object, self._wheel_positions[index])
 
     def AttachWheelToBody(self, wheel, parent, wheelPos):
         """ Attaches the wheel to the given parent using a 6DOF constraint """

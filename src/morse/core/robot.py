@@ -23,6 +23,6 @@ class Robot(morse.core.object.Object):
     def action(self):
         """ Call the regular action function of the component. """
         # Update the component's position in the world
-        self.position_3d.update(self.blender_obj)
+        self.position_3d.update(self.bge_object)
 
         self.default_action()

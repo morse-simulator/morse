@@ -59,7 +59,7 @@ class ThermometerClass(morse.core.sensor.Sensor):
                 fire_radius = obj['Fire_Radius']
                 # If the direction of the fire is also important,
                 #  we can use getVectTo instead of getDistanceTo
-                distance = self.blender_obj.getDistanceTo(obj)
+                distance = self.bge_object.getDistanceTo(obj)
                 if distance < min_distance:
                     min_distance = distance
                     fires = True

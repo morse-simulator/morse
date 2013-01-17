@@ -37,7 +37,7 @@ class Yarp(morse.core.datastream.Datastream):
         The name of the port is postfixed with in/out, according to
         the direction of the communication. """
         # Compose the name of the port
-        parent_name = component_instance.robot_parent.blender_obj.name
+        parent_name = component_instance.robot_parent.bge_object.name
         # Check if the component_name is a full qualified name or not
         # For that, check the number of . in its name. If it is more
         # than 2, we are sure it is a qualified name. If it is 0, it is
@@ -134,7 +134,7 @@ class Yarp(morse.core.datastream.Datastream):
         Return 'True' is information could be read from the port, and
         'False' is there was any problem with the communication.
         """
-        port_name = self._component_ports[component_instance.blender_obj.name]
+        port_name = self._component_ports[component_instance.bge_object.name]
 
         try:
             yarp_port = self.getPort(port_name)
@@ -161,7 +161,7 @@ class Yarp(morse.core.datastream.Datastream):
                     component_instance.local_data[variable] = msg_data
                     logger.debug("read %s as %s" % (variable, msg_data))
                 else:
-                    logger.error("Unknown data type at 'read_message', with component '%s'" % component_instance.blender_obj.name)
+                    logger.error("Unknown data type at 'read_message', with component '%s'" % component_instance.bge_object.name)
                     logger.info("DATA: ", data, " | TYPE: ", type(data))
                 i = i + 1
             return True
@@ -194,7 +194,7 @@ class Yarp(morse.core.datastream.Datastream):
 
         The argument is a copy of the component instance.
         """
-        port_name = self._component_ports[component_instance.blender_obj.name]
+        port_name = self._component_ports[component_instance.bge_object.name]
 
         try:
             yarp_port = self.getPort(port_name)
@@ -206,7 +206,7 @@ class Yarp(morse.core.datastream.Datastream):
         bottle.clear()
         # Sort the data accodring to its type
         for variable, data in component_instance.local_data.items():
-            self._post_message(bottle, data, component_instance.blender_obj.name)
+            self._post_message(bottle, data, component_instance.bge_object.name)
 
         #yarp_port.writeStrict()
         yarp_port.write()
@@ -214,7 +214,7 @@ class Yarp(morse.core.datastream.Datastream):
 
     def post_image_RGBA(self, component_instance):
         """ Send an RGBA image through the given named port."""
-        port_name = self._component_ports[component_instance.blender_obj.name]
+        port_name = self._component_ports[component_instance.bge_object.name]
 
         try:
             yarp_port = self.getPort(port_name)

@@ -22,7 +22,7 @@ class PR2Class(morse.core.robot.Robot):
 
         self.armatures = []
         # Search armatures and torso in all objects parented to the pr2 empty
-        for obj in self.blender_obj.childrenRecursive:
+        for obj in self.bge_object.childrenRecursive:
             # Check if obj is an armature
             if type(obj).__name__ == 'BL_ArmatureObject':
                 self.armatures.append(obj.name)

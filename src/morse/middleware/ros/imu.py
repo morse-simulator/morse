@@ -9,9 +9,9 @@ def init_extra_module(self, component_instance, function, mw_data):
     # get the IMU orientation to post in the ROS message
     # TODO XXX either store to_quaternion() directly, or don't use set_property
     self.set_property(component_instance, 'orientation',
-                      component_instance.blender_obj.worldOrientation)
+                      component_instance.bge_object.worldOrientation)
 
-    parent_name = component_instance.robot_parent.blender_obj.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Extract the Middleware parameters. additional parameter should be a dict
     try:
         frame_id = mw_data[3].get('frame_id', '/' + parent_name + '/imu')

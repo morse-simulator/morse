@@ -14,7 +14,7 @@ class OrientationActuatorClass(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(obj, parent)
 
-        self.orientation = self.blender_obj.orientation.to_euler('XYZ')
+        self.orientation = self.bge_object.orientation.to_euler('XYZ')
 
         self.local_data['yaw'] = self.orientation.z
         self.local_data['pitch'] = self.orientation.y
@@ -25,7 +25,7 @@ class OrientationActuatorClass(morse.core.actuator.Actuator):
     def default_action(self):
         """ Change the parent robot orientation. """
         # Get the Blender object of the parent robot
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # New parent orientation
         orientation = mathutils.Euler([self.local_data['roll'], \

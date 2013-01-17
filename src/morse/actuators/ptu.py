@@ -63,7 +63,7 @@ class PTUActuatorClass(Actuator):
 
         # Get the references (based on their name) to the childen object and
         # store a transformation3d structure for their position
-        for child in self.blender_obj.childrenRecursive:
+        for child in self.bge_object.childrenRecursive:
             if 'PanBase' in child.name:
                 self._pan_base = child
                 self._pan_orientation = child.localOrientation
@@ -73,7 +73,7 @@ class PTUActuatorClass(Actuator):
 
         # Any other objects children of the PTU are assumed
         #  to be mounted on top of it
-        for child in self.blender_obj.children:
+        for child in self.bge_object.children:
             if not 'PanBase' in child.name:
                 child.setParent(self._tilt_base)
 

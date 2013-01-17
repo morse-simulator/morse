@@ -9,8 +9,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Check if the name of the poster has been given in mw_data
     try:
         # It should be the 4th parameter
@@ -41,7 +41,7 @@ def init_viam_poster(component_instance, poster_name):
         image_init.width = camera_instance.image_width
         image_init.height = camera_instance.image_height
         image_init.focal = camera_instance.image_focal
-        pos_cam.append(camera_instance.blender_obj.position)
+        pos_cam.append(camera_instance.bge_object.position)
         cameras.append(image_init)
 
     baseline = 0
@@ -75,7 +75,7 @@ def write_viam(self, component_instance):
     """ Write an image and all its data to a poster """
     # Get the id of the poster already created
     try:
-        poster_id = self._poster_dict[component_instance.blender_obj.name]
+        poster_id = self._poster_dict[component_instance.bge_object.name]
     except AttributeError as detail:
         logger.error("Something BAD happened at viam poster: %s" % detail)
         sys.exit()
@@ -116,7 +116,7 @@ def write_viam(self, component_instance):
         # Don't create a poster if the camera is disabled
         if image_data == None or not camera_instance.capturing:
             logger.debug("Camera '%s' not capturing. Exiting viam poster" % \
-                    camera_instance.blender_obj.name)
+                    camera_instance.bge_object.name)
             return
 
         # Fill in the structure with the image information

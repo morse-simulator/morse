@@ -6,8 +6,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
-    component_name = component_instance.blender_obj.name
-    parent_name = component_instance.robot_parent.blender_obj.name
+    component_name = component_instance.bge_object.name
+    parent_name = component_instance.robot_parent.bge_object.name
     # Check if the name of the poster has been given in mw_data
     try:
         # It should be the 4th parameter
@@ -82,7 +82,7 @@ def write_velodyne(self, component_instance):
     if self._packets >= self._PACKETS_PER_TURN:
         # Get the id of the poster already created
         try:
-            poster_id = self._poster_dict[component_instance.blender_obj.name]
+            poster_id = self._poster_dict[component_instance.bge_object.name]
         except AttributeError as detail:
             logger.error("Something BAD happened at velodyne poster: %s" % detail)
             sys.exit()

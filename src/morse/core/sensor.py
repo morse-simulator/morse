@@ -24,7 +24,7 @@ class Sensor(morse.core.object.Object):
         self.output_modifiers = []
 
         self.profile = False
-        if "profile" in self.blender_obj:
+        if "profile" in self.bge_object:
             self.profile = True
             self.time_actions = 0.0
             self.time_default_actions = 0.0
@@ -48,7 +48,7 @@ class Sensor(morse.core.object.Object):
             return
 
         # Update the component's position in the world
-        self.position_3d.update(self.blender_obj)
+        self.position_3d.update(self.bge_object)
 
         # record the time before performing the default action for profiling
         if self.profile:
@@ -81,13 +81,13 @@ class Sensor(morse.core.object.Object):
             self.time_modifiers += time_before_datastreams - time_before_modifiers
             self.time_datastreams += time_now - time_before_datastreams
             morse_time = time_now - self.time_start
-            self.blender_obj["profile"] = "%6.2f %%"% \
+            self.bge_object["profile"] = "%6.2f %%"% \
                             (100.0 * self.time_actions / morse_time)
-            self.blender_obj["profile::action"] = "%6.2f %%"% \
+            self.bge_object["profile::action"] = "%6.2f %%"% \
                             (100.0 * self.time_default_actions / morse_time)
-            self.blender_obj["profile::modifiers"] = "%6.2f %%"% \
+            self.bge_object["profile::modifiers"] = "%6.2f %%"% \
                             (100.0 * self.time_modifiers / morse_time)
-            self.blender_obj["profile::datastreams"] = "%6.2f %%"% \
+            self.bge_object["profile::datastreams"] = "%6.2f %%"% \
                             (100.0 * self.time_datastreams / morse_time)
             if morse_time > 1: # re-init mean every sec
                 self.time_actions = 0.0

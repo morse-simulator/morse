@@ -177,6 +177,6 @@ class HumanPostureClass(morse.core.sensor.Sensor):
         self.local_data['roll'] = torso.worldOrientation.to_euler().x
         logger.debug("\tTorso_Empty orientation: (%.4f, %.4f, %.4f)" % (self.local_data['roll'], self.local_data['pitch'], self.local_data['yaw']))
 
-        self._read_pose(self.blender_obj)
+        self._read_pose(self.bge_object)
 
         logger.debug("LOCAL_DATA: %s" % self.local_data)

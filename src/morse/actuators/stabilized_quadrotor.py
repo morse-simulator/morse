@@ -61,7 +61,7 @@ class StabilizedQuadrotorActuatorClass(morse.core.actuator.Actuator):
                                                 self.f_psi.x[0]])
 
         # Get the parent
-        parent = self.robot_parent.blender_obj
+        parent = self.robot_parent.bge_object
 
         # Compute acceleration
         # get previous height and vert. velocity
