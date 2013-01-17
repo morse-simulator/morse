@@ -15,9 +15,12 @@ class Mesh(AbstractComponent):
 
     def color(self, r=0.1, g=0.1, b=0.1):
         if not self._bpy_object.active_material:
+            all_materials = bpymorse.get_materials().keys()
             bpymorse.new_material()
+            material_name = [name for name in bpymorse.get_materials().keys() \
+                             if name not in all_materials].pop()
             # link material to object
-            self._bpy_object.active_material = bpymorse.get_last_material()
+            self._bpy_object.active_material = bpymorse.get_material(material_name)
         self._bpy_object.active_material.diffuse_color = (r, g, b)
 
 class Plane(Mesh):
