@@ -58,12 +58,17 @@ class Configuration(object):
         cfg.write('\n')
 
 class AbstractComponent(object):
+
+    components = [] # set of all created components
+
     def __init__(self, obj=None, filename='', category=''):
         self.set_blender_object(obj)
         self._blender_filename = filename # filename for datastream configuration
         self._category = category # for morseable
         self.basename = None
         self.children = []
+
+        AbstractComponent.components.append(self)
 
     def set_blender_object(self, obj):
         if obj: # Force matrix_parent_inverse to identity #139
@@ -280,20 +285,20 @@ class AbstractComponent(object):
         config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
-    def configure_service(self, datastream, component=None, config=None):
+    def configure_service(self, interface, component=None, config=None):
         logger.warning("configure_service is deprecated, use add_service instead")
-        return self.add_service(datastream, component, config)
+        return self.add_service(interface, component, config)
 
-    def add_service(self, datastream, component=None, config=None):
+    def add_service(self, interface, component=None, config=None):
         if not component:
             component = self
         if not config:
-            config = MORSE_SERVICE_DICT[datastream]
+            config = MORSE_SERVICE_DICT[interface]
         Configuration.link_service(component, config)
 
-    def add_interface(self, datastream):
-        self.add_service(datastream)
-        self.add_stream(datastream)
+    def add_interface(self, interface):
+        self.add_service(interface)
+        self.add_stream(interface)
 
     def configure_modifier(self, mod, config=None):
         # Configure the modifier for this component
@@ -449,6 +454,9 @@ class AbstractComponent(object):
                             if obj.name not in objects_names]
 
         return imported_objects
+
+    def __str__(self):
+        return self.name
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"

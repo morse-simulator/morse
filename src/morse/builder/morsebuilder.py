@@ -300,6 +300,10 @@ class Environment(Component):
         where realistic environment texturing is not required (eg, no video camera)
         """
         Component.__init__(self, 'environments', filename)
+        AbstractComponent.components.remove(self) # remove myself from the list of components to ensure my destructor is called
+
+        # Rename the components according to their variable names
+        self._rename_components()
 
         self.fastmode = fastmode
 
@@ -309,10 +313,6 @@ class Environment(Component):
         self._environment_file = filename
         self._multinode_configured = False
         self._display_camera = None
-
-        # Rename the components according to their variable names
-        self._rename_components()
-
 
         # define 'Scene_Script_Holder' as the blender object of Enrivonment
         if not 'Scene_Script_Holder' in bpymorse.get_objects():
@@ -418,6 +418,13 @@ class Environment(Component):
         """ Generate the scene configuration and insert necessary objects
         """
         try:
+            # Invoke special methods of component that must take place *after* renaming
+            for component in AbstractComponent.components:
+                if hasattr(component, "after_renaming"):
+                    component.after_renaming()
+
+
+
             # Default node name
             if name == None:
                 try:
