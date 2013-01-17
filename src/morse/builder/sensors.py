@@ -27,6 +27,17 @@ class Battery(SensorCreator):
         self.append(mesh)
         self.properties(DischargingRate = 0.05)
 
+class CompoundSensor(SensorCreator):
+    def __init__(self, sensors, name=None, type = ""):
+        SensorCreator.__init__(self, name, "morse/sensors/compound", \
+                               "CompoundSensor", type)
+
+        self.sensors = sensors
+
+    def after_renaming(self):
+        # Ensures this is called only when all components have been (automatically) renamed.
+        self.properties(sensors = ",".join([str(s) for s in self.sensors]))
+
 class GPS(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse/sensors/gps", \
