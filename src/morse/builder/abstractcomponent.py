@@ -111,7 +111,7 @@ class AbstractComponent(object):
     def name(self, value):
         if value:
             if '.' in value:
-                raise SyntaxError("Invalid variable name : %s : must not contains " % value)
+                raise SyntaxError("Invalid component name: <%s>. Dots are not allowed." % value)
             self.basename = value
             self._bpy_object.name = value
     @property
