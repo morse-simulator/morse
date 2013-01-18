@@ -89,11 +89,6 @@ class Pose(SensorCreator):
         mesh.color(.8, .3, .1)
         self.append(mesh)
 
-class PR2Posture(SensorCreator):
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse/sensors/pr2_posture", \
-                               "PR2PostureClass", "pr2_posture")
-
 class Proximity(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse/sensors/proximity", \
