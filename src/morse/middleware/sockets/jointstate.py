@@ -81,16 +81,6 @@ def fill_missing_pr2_joints(joints):
     return pr2_joints
 
 
-def post_jointstate(self, component_instance):
-
-    joints = {}
-
-    for k,v in component_instance.local_data.items():
-        for name, value in v.items():
-            joints[name] = value
-
-    return (json.dumps(joints) + '\n').encode()
-
 def post_pr2_jointstate(self, component_instance):
 
     joints =  fill_missing_pr2_joints(component_instance.local_data)

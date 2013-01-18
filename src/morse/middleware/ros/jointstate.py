@@ -16,9 +16,8 @@ def _fill_jointstate(js, data):
     js.position = []
 
     # collect name and positions of jointstates from sensor
-    for k,v in data.items():
-        js.name += v.keys()
-        js.position += v.values()
+    js.name += data.keys()
+    js.position += data.values()
 
     
     # for now leaving out velocity and effort
@@ -46,6 +45,6 @@ def post_pr2_jointstate(self, component_instance):
 
     joints =  fill_missing_pr2_joints(component_instance.local_data)
 
-    _fill_jointstate(js, {'joints': joints})
+    _fill_jointstate(js, joints)
 
     self.publish(js, component_instance)
