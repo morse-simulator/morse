@@ -67,10 +67,6 @@ class PR2(Robot):
         self.odometry = Odometry()
         self.append(self.odometry)
 
-        # Posture (joint state)
-        self.posture = Sensor('pr2_posture') # exports the joint state
-        self.append(self.posture)
-
         # Base laser scanner
         self.base_scan = Hokuyo()
         self.base_scan.translate(x=0.275, z=0.252)
@@ -91,7 +87,18 @@ class PR2(Robot):
         if interface == "socket":
             self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
         elif interface == "ros":
-            self.joint_state.add_stream("ros", "post_pr2_jointstate", "morse/middleware/ros/jointstate")
+            self.joint_state.add_stream("ros", "post_pr2_jointstate", "morse/middleware/ros/jointstate", topic = "/joint_state")
+            #self.torso.add_stream("ros", topic="/torso_controller/command")
+            self.torso_pose.add_stream("ros", topic="/torso_controller/state")
+
+            #self.head.add_stream("ros", topic="/head_controller/command")
+            self.head_pose.add_stream("ros", topic="/head_controller/state")
+            
+            #self.l_arm.add_stream("ros", topic="/l_arm_controller/command")
+            self.l_arm_pose.add_stream("ros", topic="/l_arm_controller/state")
+            
+            #self.r_arm.add_stream("ros", topic="/r_arm_controller/command")
+            self.r_arm_pose.add_stream("ros", topic="/r_arm_controller/state")
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color

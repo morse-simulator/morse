@@ -79,6 +79,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         if hasattr(obj, "channels"):
             return obj
         elif not obj.parent:
+            logger.error("Could not find parent armature from armature sensor <%s>!" % self.name())
             return None
         else:
             return self._get_armature(obj.parent)
@@ -88,6 +89,8 @@ class ArmaturePose(morse.core.sensor.Sensor):
         component_dict = blenderapi.persistantstorage().componentDict
         if self.armature and self.armature.name in component_dict:
             self._armature_actuator = component_dict[self.armature.name]
+        else:
+            logger.error("Could not find armature actuator <%s> from armature sensor <%s>!" % (self.armature.name, self.name()))
 
     @service
     def get_joints(self):
