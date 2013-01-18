@@ -251,7 +251,8 @@ class AbstractComponent(object):
         # Configure the datastream for this component
         if not method:
             try:
-                config = MORSE_DATASTREAM_DICT[datastream][component]
+                import copy
+                config = copy.copy(MORSE_DATASTREAM_DICT[datastream][component])
                 # TODO self._bpy_object.game.properties["Class"].value ?
                 #      as map-key (in data, instead of blender-filename)
             except KeyError:
