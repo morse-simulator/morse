@@ -41,9 +41,9 @@ class RosAction:
         self.goal_lock = threading.Lock()
 
         self.component = component
-        self.action = action
+        self._action = action
 
-        self.name = component + "/" + action
+        self.name = component.replace(".", "/") + "/" + action
 
         # Retrieves the types of the goal msg, feedback msg and result
         # msg (check roslib.message.Message for details)
@@ -118,7 +118,7 @@ class RosAction:
 
         self.setstatus(id.id, actionlib_msgs.msg.GoalStatus.PENDING)
 
-        is_sync, morse_id = self.manager.on_incoming_request(self.component, self.action, [goal.goal])
+        is_sync, morse_id = self.manager.on_incoming_request(self.component, self._action, [goal.goal])
 
         # is_sync should be always True for ROS services!
         if is_sync:
@@ -200,8 +200,8 @@ class RosRequestManager(RequestManager):
     def __init__(self):
         RequestManager.__init__(self)
 
-        self.services = []
-        self.actions = []
+        self._services = {}
+        self._actions = []
 
     def __str__(self):
         return "ROS Request Manager"
@@ -229,7 +229,7 @@ class RosRequestManager(RequestManager):
             logger.info(component_name + "." + service_name + " has no ROS-specific action type. Skipping it.")
             return False
 
-        self.actions.append(RosAction(self, component_name, service_name, rostype))
+        self._actions.append(RosAction(self, component_name, service_name, rostype))
 
         logger.info("Created new ROS action server for {}.{}".format(
                                                     component_name,
@@ -251,7 +251,7 @@ class RosRequestManager(RequestManager):
         
         cb = self.add_ros_handler(component_name, service_name)
 
-        s = rospy.Service(component_name + "/" + service_name, rostype, cb)
+        s = rospy.Service(component_name.replace(".", "/") + "/" + service_name, rostype, cb)
         logger.debug("Created new ROS service for {}.{}".format(
                                                     component_name,
                                                     service_name))
@@ -340,7 +340,7 @@ class RosRequestManager(RequestManager):
         # First, figure out which 'ROSAction' manages this request id:
         manager = None
 
-        for action in self.actions:
+        for action in self._actions:
             if action.manage_internal_id(request_id):
                 manager = action
                 break
