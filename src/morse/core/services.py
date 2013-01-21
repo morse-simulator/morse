@@ -190,7 +190,11 @@ def service(fn = None, component = None, name = None, async = False):
                 def decorated_fn(self, callback, *param):
                     # Stores in the callback the original calling
                     # service.
-                    callback.service = decorated_fn
+                    try:
+                        callback.service = decorated_fn
+                    except AttributeError:
+                        raise MorseServiceError("Invalid callback for async service. Did you forget to pass the chain callback from an overlay?")
+
                     self.set_service_callback(callback)
                     try:
                         fn(self, *param)
