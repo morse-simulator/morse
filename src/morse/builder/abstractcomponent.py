@@ -16,6 +16,11 @@ class Configuration(object):
         Configuration.datastream.setdefault(component.name, []).append(datastream_cfg)
 
     def _update_name(old_name, new_name, dict):
+        """ Updated components name after renaming.
+
+        TODO: since we update the dict 'inplace' we will run into
+        trouble if an 'old' name matches a 'new' name...
+        """
         try:
             dict[new_name] = dict.pop(old_name)
         except KeyError:
@@ -25,7 +30,8 @@ class Configuration(object):
         Configuration._update_name(old_name, new_name, Configuration.datastream)
         Configuration._update_name(old_name, new_name, Configuration.modifier)
         Configuration._update_name(old_name, new_name, Configuration.service)
-        Configuration._update_name(old_name, new_name, Configuration.overlay)
+        for k,v in Configuration.overlay.items():
+            Configuration._update_name(old_name, new_name, v)
 
     def link_service(component, service_cfg):
         # Special case here for the pseudo component 'simulation' that
