@@ -4,7 +4,6 @@ from morse.builder import *
 from morse.builder.sensors import *
 from morse.builder.actuators import *
 
-
 class PR2(Robot):
     def __init__(self, with_keyboard = True, show_laser = False):
         Robot.__init__(self, 'pr2')
@@ -87,22 +86,54 @@ class PR2(Robot):
         if interface == "socket":
             self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
         elif interface == "ros":
-            self.joint_state.add_stream("ros", "post_pr2_jointstate", "morse/middleware/ros/jointstate", topic = "/joint_state")
+            self.joint_state.add_stream("ros", 
+                                        "post_pr2_jointstate", 
+                                        "morse/middleware/ros/jointstate", 
+                                        topic = "/joint_states")
             self.joint_state.add_service("ros")
+
+
+
             #self.torso.add_stream("ros", topic="/torso_controller/command")
             self.torso_pose.add_stream("ros", topic="/torso_controller/state")
+            self.torso.configure_overlay("ros",
+                                         "morse.middleware.ros.overlays.armatures.ArmatureController",
+                                         namespace = "/torso_lift_controller")
+
+
 
             #self.head.add_stream("ros", topic="/head_controller/command")
             self.head_pose.add_stream("ros", topic="/head_controller/state")
-            
-            #self.l_arm.add_stream("ros", topic="/l_arm_controller/command")
-            self.l_arm_pose.add_stream("ros", topic="/l_arm_controller/state")
-            
-            #self.r_arm.add_stream("ros", topic="/r_arm_controller/command")
-            self.r_arm_pose.add_stream("ros", topic="/r_arm_controller/state")
-            self.r_arm.configure_overlay("ros",
-                                         "morse.middleware.ros.overlays.armatures.ArmatureController")
+            self.head.configure_overlay("ros",
+                                         "morse.middleware.ros.overlays.armatures.ArmatureController",
+                                         namespace = "/head_controller")
 
+            
+
+            #self.l_arm.add_stream("ros", topic="/l_arm_controller/command")
+            self.l_arm_pose.add_stream("ros",
+                                       "post_controller_state",
+                                       "morse/middleware/ros/jointtrajectorycontrollers",
+                                       topic="/l_arm_controller/state")
+            self.l_arm.configure_overlay("ros",
+                                         "morse.middleware.ros.overlays.armatures.ArmatureController",
+                                         namespace = "/l_arm_controller")
+            self.l_arm.add_service("socket")
+
+
+            #self.r_arm.add_stream("ros", topic="/r_arm_controller/command")
+            self.r_arm_pose.add_stream("ros", 
+                                       "post_controller_state",
+                                       "morse/middleware/ros/jointtrajectorycontrollers",
+                                       topic="/r_arm_controller/state")
+            self.r_arm.configure_overlay("ros",
+                                         "morse.middleware.ros.overlays.armatures.ArmatureController",
+                                         namespace = "/r_arm_controller")
+            self.r_arm.add_service("socket")
+
+
+            self.base_scan.add_stream("ros", topic="/scan")
+            self.odometry.add_stream("ros", topic="/odom")
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color
