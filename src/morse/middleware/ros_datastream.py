@@ -15,6 +15,7 @@ class ROS(morse.core.datastream.Datastream):
         """ Initialize the network and generate a ROS node."""
         logger.info("ROS datastream interface initialization")
         super(self.__class__, self).__init__()
+        self._topic_names = {}
         self._topics = {}
         self._properties = {}
         self._sequence = 0
@@ -102,11 +103,19 @@ class ROS(morse.core.datastream.Datastream):
         self._topics[topic_name] = rospy.Subscriber(topic_name, ros_class, callback, component_instance)
         logger.info('ROS subscriber for %s initialized'%component_instance.name())
 
+    def set_topic_name(self, component_instance, name):
+        self._topic_names[component_instance] = name
+
     def get_topic_name(self, component_instance):
+        if component_instance in self._topic_names:
+            return self._topic_names[component_instance]
+
         component_name = component_instance.bge_object.name
         # robot.001.sensor.001 = robot001.sensor001
         topic = re.sub(r'\.([0-9]+)', r'\1', component_name)
-        return '/' + topic.replace('.', '/')
+        topic = '/' + topic.replace('.', '/')
+        self._topic_names[component_instance] = topic
+        return topic
 
     def get_property(self, component_instance, name):
         component_name = component_instance.bge_object.name
@@ -149,7 +158,7 @@ class ROS(morse.core.datastream.Datastream):
         """
         # XXX ugly, is this used somewhere ? Kept for compatibility
         data_dump = ", ".join([str(data) for data in component_instance.local_data.values()])
-        self.publish(data_dump)
+        self.publish(data_dump, component_instance)
         # TODO self.publish(json.dumps(component_instance.local_data))
 
     # Callback function for reading String messages
