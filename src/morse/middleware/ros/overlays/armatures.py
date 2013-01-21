@@ -13,6 +13,12 @@ class ArmatureController(MorseOverlay):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(overlaid_object)
 
+    def _stamp_to_secs(self, stamp):
+        return stamp.secs + stamp.nsecs / 1e9
+
+    def joint_trajectory_action_result(self, result):
+        return result
+
     @interruptible
     @ros_action(type = JointTrajectoryAction)
     def joint_trajectory_action(self, req):
@@ -20,18 +26,22 @@ class ArmatureController(MorseOverlay):
         # Fill a MORSE trajectory structure from ROS JointTrajectory
         traj = {}
 
-        traj["starttime"] = req.header.time
+        req = req.trajectory
+        traj["starttime"] = self._stamp_to_secs(req.header.stamp)
+
         points = []
         for p in req.points:
             point = {}
             point["positions"] = p.positions
             point["velocities"] = p.velocities
             point["accelerations"] = p.accelerations
-            point["time_from_start"] = p.time_from_start
+            point["time_from_start"] = self._stamp_to_secs(p.time_from_start)
             points.append(point)
 
         traj["points"] = points
         logger.info(traj)
         
-        self.overlaid_object.trajectory(traj)
+        self.overlaid_object.trajectory(
+                self.chain_callback(self.joint_trajectory_action_result),
+                traj)
 

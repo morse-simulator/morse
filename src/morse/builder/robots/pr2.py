@@ -88,6 +88,7 @@ class PR2(Robot):
             self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
         elif interface == "ros":
             self.joint_state.add_stream("ros", "post_pr2_jointstate", "morse/middleware/ros/jointstate", topic = "/joint_state")
+            self.joint_state.add_service("ros")
             #self.torso.add_stream("ros", topic="/torso_controller/command")
             self.torso_pose.add_stream("ros", topic="/torso_controller/state")
 
@@ -99,6 +100,9 @@ class PR2(Robot):
             
             #self.r_arm.add_stream("ros", topic="/r_arm_controller/command")
             self.r_arm_pose.add_stream("ros", topic="/r_arm_controller/state")
+            self.r_arm.configure_overlay("ros",
+                                         "morse.middleware.ros.overlays.armatures.ArmatureController")
+
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         #set the head color
