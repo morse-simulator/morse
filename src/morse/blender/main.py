@@ -500,7 +500,8 @@ def load_overlays():
         # provided, keep only the class name
         request_manager_name = request_manager_name.split('.')[-1]
         
-        for overlaid_name, overlay_name in overlays.items():
+        for overlaid_name, overlay_details in overlays.items():
+            overlay_name, kwargs = overlay_details
             modulename, classname = overlay_name.rsplit('.', 1)
             
             try:
@@ -524,8 +525,8 @@ def load_overlays():
                 return False
 
             # Instanciate the overlay, passing the overlaid object to
-            # the constructor
-            instance = klass(overlaid_object)
+            # the constructor + any optional arguments
+            instance = klass(overlaid_object, **kwargs)
             persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
             persistantstorage.overlayDict[overlay_name] = instance

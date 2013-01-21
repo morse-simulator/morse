@@ -44,8 +44,8 @@ class Configuration(object):
     def link_modifier(component, modifier_cfg):
         Configuration.modifier.setdefault(component.name, []).append(modifier_cfg)
 
-    def link_overlay(component,  manager, overlay_cfg):
-        Configuration.overlay.setdefault(manager, {})[component.name] = overlay_cfg
+    def link_overlay(component,  manager, overlay_cfg, kwargs):
+        Configuration.overlay.setdefault(manager, {})[component.name] = [overlay_cfg, kwargs]
 
     def write_config():
         """ Write the 'component_config.py' file with the supplied settings """
@@ -312,10 +312,10 @@ class AbstractComponent(object):
             config = MORSE_MODIFIER_DICT[mod][self._blender_filename]
         Configuration.link_modifier(self, config)
 
-    def configure_overlay(self, datastream, overlay, config=None):
+    def configure_overlay(self, datastream, overlay, config=None, **kwargs):
         if not config:
             config = MORSE_SERVICE_DICT[datastream]
-        Configuration.link_overlay(self, config, overlay)
+        Configuration.link_overlay(self, config, overlay, kwargs)
 
     def frequency(self, frequency=None, delay=0):
         """ Set the frequency delay for the call of the Python module
