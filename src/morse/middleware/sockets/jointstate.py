@@ -12,23 +12,7 @@ def init_extra_module(self, component_instance, function, mw_data):
 
 def fill_missing_pr2_joints(joints):
 
-    pr2_joints = {'head_pan':0.0, 
-                'head_tilt':0.0, 
-                'l_shoulder_pan':0.0, 
-                'l_shoulder_lift':0.0, 
-                'l_upper_arm':0.0, 
-                'l_elbow':0.0, 
-                'l_forearm':0.0, 
-                'l_wrist_flex':0.0, 
-                'l_wrist_roll':0.0, 
-                'r_shoulder_pan':0.0, 
-                'r_shoulder_lift':0.0, 
-                'r_upper_arm':0.0, 
-                'r_elbow':0.0, 
-                'r_forearm':0.0, 
-                'r_wrist_flex':0.0, 
-                'r_wrist_roll':0.0, 
-                'torso_lift_joint':0.0, 
+    pr2_joints = {
                 'laser_tilt_mount_joint':0.0, 
                 'fl_caster_rotation_joint':0.0, 
                 'fl_caster_l_wheel_joint':0.0, 
@@ -56,6 +40,7 @@ def fill_missing_pr2_joints(joints):
                 'l_gripper_l_finger_tip_joint':0.0, 
                 'l_gripper_r_finger_tip_joint':0.0, 
                 'l_gripper_joint':0.0, 
+                'torso_lift_joint':0.0, 
                 'torso_lift_motor_screw_joint':0.0, 
                 'head_pan_joint':0.0, 
                 'head_tilt_joint':0.0, 
