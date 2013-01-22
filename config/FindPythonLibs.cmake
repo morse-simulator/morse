@@ -155,6 +155,7 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
       ${PYTHON_FRAMEWORK_INCLUDES}
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
       [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
+	  ${PYTHON_INCLUDE_DIR}
     PATH_SUFFIXES
       python${_CURRENT_VERSION}mu
       python${_CURRENT_VERSION}m
