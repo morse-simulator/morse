@@ -28,18 +28,18 @@ middleware  <./tutorial_builder_ros>` tutorial.
 Environment setup
 -----------------
 
-You need to have a working installation of ROS Electric or Diamonback and also
-have the python3-compatible stacks for MORSE-ROS installed. You can find
-information about this in the :doc:`installation notes <../installation/mw/ros>`
+You need to have a working installation of ROS and also have the
+python3-compatible stacks for MORSE-ROS installed. You can find information
+about this in the :doc:`installation notes <../installation/mw/ros>`
 
 .. note::
-    We base the tutorial on ROS Electric. The tutorial should however also be
-    compatible with ROS Diamondback.
+    We base the tutorial on ROS Fuerte. The tutorial should however also be
+    compatible with ROS Diamondback, ROS Electric and ROS Groovy.
 
 If you are running Ubuntu, you can simply install the packages
-``ros-electric-pr2-navigation`` and ``ros-electric-visualization``. They will
-install all required dependencies (but you still need the ROS Python 3 overlay,
-see the installation notes linked above).
+``ros-fuerte-pr2-navigation`` and ``ros-fuerte-visualization``. They will
+install all required dependencies (but you still need to install ``rospkg``
+for Python 3, see the installation notes linked above).
 
 You also need MORSE installed with ROS support: check that the
 ``BUILD_ROS_SUPPORT`` CMake option is enabled when building MORSE.
@@ -51,38 +51,54 @@ Our first step is to get a robot to show up in RVIZ. In this tutorial, we
 will use the PR2 robot, but any robot (with an URDF file to describe it
 to RVIZ) would do.
 
-Let's create a first simple scenario script (``scenario.py``): a PR2 in a kitchen
-environment, a keyboard actuator to move it around, and an Odometry sensor to
-get some odometry feedback.
+Let's create a first simple scenario script (``scenario.py``): a PR2 in a
+kitchen environment, a keyboard actuator to move it around, and an
+:doc:`Odometry sensor <../sensors/odometry>` to get some odometry feedback.
 
 .. code-block:: python
 
     from morse.builder import *
-    from morse.builder.robots.pr2 import PR2
 
     # A 'naked' PR2 robot to the scene
-    james = PR2()
+    james = BarePR2()
     james.translate(x=2.5, y=3.2, z=0.0)
 
     # An odometry sensor to get odometry information
     odometry = Odometry()
     james.append(odometry)
-    odometry.add_stream('ros')
+    odometry.add_interface('ros', topic="/odom")
 
     # Keyboard control
     keyboard = Keyboard()
-    keyboard.name = 'keyboard_control'
     james.append(keyboard)
 
     # Set the environment
     env = Environment('tum_kitchen/tum_kitchen')
     env.aim_camera([1.0470, 0, 0.7854])
 
+.. note::
+
+    ``odometry.add_interface('ros', topic='/odom')`` tells MORSE to stream the
+    odometry information on the ``/odom`` topic, using the default
+    serialization method for the pair (odometry, ROS), as defined in `Builder
+    data.py
+    <http://www.openrobots.org/morse/doc/latest/_modules/morse/builder/data.html>`_.
+    If you do not specify a topic name, one is created automatically (here,
+    it would be ``/james/odometry``).
+
+    If you like, you can also add a ``odometry.add_interface('socket')`` to add
+    another output on a socket.
+
 
 Run it by first starting a ROS core (``roscore``) and then ``morse run
 scenario.py``.
 
-The Odometry sensor automatically publishes the TF transformation between the
+.. note::
+
+    You can move the camera around with WASD + RF (up-down). To rotate it,
+    press Ctrl while moving the mouse.
+
+The odometry sensor automatically publishes the TF transformation between the
 ``/odom`` and ``/base_footprint`` frames, so you actually do not need anything
 more to display than the ``/base_footprint`` of your robot in RVIZ. Launch RVIZ
 (``rosrun rviz rviz``), select ``/odom`` as *Fixed frame*, and add a TF
@@ -94,10 +110,11 @@ full robot TF tree (it is needed by the ROS localization stack to know where
 the laser scanner is).
 
 To do that, we need to publish the TF tree with the ``robot_state_publisher``
-module. This module takes the robot joint state (exported by a
-``pr2_posture`` sensor in our case) and the URDF file of our robot as input.
+module. This module takes the robot joint state (exported by the
+:doc:`armature_pose sensors <../sensors/armature_pose>` of the arms, head and
+torso in our case) and the URDF file of our robot as input.
 
-First complete the ``scenario.py`` script by adding a posture sensor:
+First complete the ``scenario.py`` script by replacing the ``BarePR2`` by the ``BasePR2``:
 
 .. code-block:: python
 
@@ -105,14 +122,21 @@ First complete the ``scenario.py`` script by adding a posture sensor:
     from morse.builder.robots.pr2 import PR2
 
     # A PR2 robot to the scene
-    james = PR2()
+    james = BasePR2()
+    james.add_interface('ros')
     james.translate(x=2.5, y=3.2, z=0.0)
 
-    pr2_posture = PR2Posture()
-    james.append(pr2_posture)
-    pr2_posture.add_stream('ros')
-
     [...]
+
+
+.. note::
+
+    The ``BasePR2`` PR2 model has predefined actuators and sensors for the
+    arms, torso and head. These are needed to export the full robot joint
+    state. Check the `PR2 Builder script source
+    <http://www.openrobots.org/morse/doc/latest/_modules/morse/builder/robots/pr2.html>`_
+    to know how it is done, or read the :doc:`PR2 documentation
+    <../robots/pr2>` to know which other PR2 models are available.
 
 
 Then, to make our lives easier, we create a new ROS package and a launch file that will
@@ -147,9 +171,7 @@ Edit ``nav.launch`` and copy-paste this code:
 
     <launch>
         <param name="robot_description" command="cat $(find morse_2dnav)/pr2.urdf"/>
-        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
-            <remap from="joint_states" to="/pr2/pr2_posture" />
-        </node>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
     </launch>
 
 Lastly, build the ``pr2.urdf`` file in your node by running::
@@ -179,14 +201,16 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
 
 .. code-block:: python
 
-    sick = Sick()
-    sick.translate(x=0.275, z=0.252)
-    james.append(sick)
-    sick.properties(Visible_arc = False)
-    sick.properties(laser_range = 30.0)
-    sick.properties(resolution = 1.0)
-    sick.properties(scan_window = 180.0)
-    sick.add_stream('ros')
+    scan = Hokuyo()
+    scan.translate(x=0.275, z=0.252)
+    james.append(scan)
+    scan.properties(Visible_arc = False)
+    scan.properties(laser_range = 30.0)
+    scan.properties(resolution = 1.0)
+    scan.properties(scan_window = 180.0)
+    scan.create_laser_arc()
+
+    scan.add_interface('ros', topic='/scan')
 
 We can now build a first map of our environment. Restart the simulation with
 ``morse run scenario.py``.
@@ -195,7 +219,7 @@ Start your launch file: ``roslaunch morse_2dnav nav.launch``.
 
 You can now run the ROS GMapping stack:
 
-``rosrun gmapping slam_gmapping scan:=pr2/Sick _odom_frame:=/odom``
+``rosrun gmapping slam_gmapping scan:=/scan _odom_frame:=/odom``
 
 Move around the robot in the simulation using the keyboard to fill the map
 (displayed in RVIZ).
@@ -216,7 +240,7 @@ following line to your launch file to start a map server with your map:
 
     <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/>
 
-You do not need the ``gmapping`` node anymore; you should kill it.
+You do not need the ``gmapping`` node anymore; you can kill it.
 
 Using ROS localization
 ----------------------
@@ -230,10 +254,10 @@ Restart the simulation with the map server enabled.
 
 Start the AMCL estimator, passing the laser scans topic as paramter::
 
-  $> rosrun amcl amcl scan:=/pr2/Sick
+  $> rosrun amcl amcl scan:=/scan
 
 Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
-display (topic name is ``pr2/Sick``) to see the simulated laser scans and set
+display (topic name is ``/scan``) to see the simulated laser scans and set
 an initial pose estimate (*ie* an estimate of the pose of the robot in MORSE)
 by clicking on the *2D Pose Estimate* button in RVIZ interface.
 
@@ -250,17 +274,15 @@ First, add AMCL to the launch file:
 
 .. code-block:: xml
 
-    <node name="amcl" pkg="amcl" type="amcl">
-        <remap to="/pr2/Sick" from="/scan" />
-    </node>
+    <node name="amcl" pkg="amcl" type="amcl" />
 
 Then, we need to add a motion controller to our robot. Open your ``scenario.py`` and add:
 
 .. code-block:: python
 
-    motion_controller = MotionXYW()
-    james.append(motion_controller)
-    motion_controller.add_stream('ros')
+    motion = MotionXYW()
+    james.append(motion)
+    motion.add_interface('ros', topic='/cmd_vel')
 
 For the navigation, we will use the high-level ``move_base`` ROS module. The
 *2D Nav Goal* button in RVIZ interface will allow us to easily send navigation
