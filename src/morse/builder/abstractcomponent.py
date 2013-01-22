@@ -302,9 +302,9 @@ class AbstractComponent(object):
             config = MORSE_SERVICE_DICT[interface]
         Configuration.link_service(component, config)
 
-    def add_interface(self, interface):
+    def add_interface(self, interface, **kwargs):
         self.add_service(interface)
-        self.add_stream(interface)
+        self.add_stream(interface, **kwargs)
 
     def configure_modifier(self, mod, config=None):
         # Configure the modifier for this component
