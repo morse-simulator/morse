@@ -1,50 +1,67 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
+from morse.helpers.components import add_data
 
 class SteerForceActuatorClass(morse.core.actuator.Actuator):
-    """ Motion controller using engine force and steer angle speeds
+    """ 
+    This actuator reads the values of the steering angle, the engine
+    power and the braking force to drive a car like vehicle.  It is
+    meant to work with robots implementing the `Blender Vehicle Wrapper
+    <http://www.tutorialsforblender3d.com/Game_Engine/Vehicle/Vehicle_1.html>`_,
+    such as the :doc:`Hummer robot <../robots/hummer>`.
 
-    This class will read engine force and steer angle (steer, force)
-    as input from an external middleware, and then apply them
-    to the parent robot.
+    .. note:: 
+        Robots implementing the Vehicle Wrapper must be pointing towards
+        their local Y axis.  This means the robots will be oriented
+        differently with respect to all other MORSE components.
     """
+
+    _name = "Steer/Force Actuator"
+    _short_desc = "Motion controller using engine force and steer angle speeds"
+
+    add_data('steer', 0.0, "float",
+                    'Angle of the wheels with respect to the vehicle \
+                     (in radian)')
+    add_data('force', 0.0, "float",
+                      'The force applied to the traction wheels. \
+                       A negative force will make the vehicle move forward. \
+                       A positive force will make it go backwards.')
+    add_data('brake', 0.0, "float",
+                      'The force applied to the brake. \
+                      It opposes to the force.')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
-        self.local_data['steer'] = 0.0
-        self.local_data['force'] = 0.0
-        self.local_data['brake'] = 0.0
-        
         logger.info('Component initialized')
 
 
     def default_action(self):
         """ Apply (steer, force) to the parent robot. """
         # Get the Blender object of the parent robot
-        parent = self.robot_parent
-        
+        vehicle = self.robot_parent.vehicle
+
         # Update the steering value for these wheels:
         # The number at the end represents the wheel 'number' in the 
-        #  order they were created when initializing the robot.
+        # order they were created when initializing the robot.
         # Front wheels #0 and #1.
         # Rear wheels #2 and #3.
-        parent.vehicle.setSteeringValue(self.local_data['steer'],0)
-        parent.vehicle.setSteeringValue(self.local_data['steer'],1)
+        vehicle.setSteeringValue(self.local_data['steer'], 0)
+        vehicle.setSteeringValue(self.local_data['steer'], 1)
 
         # Update the Force (speed) for these wheels:
-        parent.vehicle.applyEngineForce(self.local_data['force']*.4,0)
-        parent.vehicle.applyEngineForce(self.local_data['force']*.4,1)
-        parent.vehicle.applyEngineForce(self.local_data['force']*.4,2)
-        parent.vehicle.applyEngineForce(self.local_data['force'] *.4,3)
+        vehicle.applyEngineForce(self.local_data['force'] * .4, 0)
+        vehicle.applyEngineForce(self.local_data['force'] * .4, 1)
+        vehicle.applyEngineForce(self.local_data['force'] * .4, 2)
+        vehicle.applyEngineForce(self.local_data['force'] * .4, 3)
 
         # Brakes:
         # Applies the braking force to each wheel listed:
         # ['brakes'] = the game property value for the car labeled 'brakes'
         # Default value is 0:
-        parent.vehicle.applyBraking(self.local_data['brake']*.1,0)
-        parent.vehicle.applyBraking(self.local_data['brake']*.1,1)
-        parent.vehicle.applyBraking(self.local_data['brake']*1.3,2)
-        parent.vehicle.applyBraking(self.local_data['brake']*1.3,3)
+        vehicle.applyBraking(self.local_data['brake'] * .1,  0)
+        vehicle.applyBraking(self.local_data['brake'] * .1,  1)
+        vehicle.applyBraking(self.local_data['brake'] * 1.3, 2)
+        vehicle.applyBraking(self.local_data['brake'] * 1.3, 3)

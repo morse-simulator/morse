@@ -20,6 +20,7 @@ from morse.actuators import armature, \
                             rotorcraft_attitude, \
                             rotorcraft_waypoint, \
                             stabilized_quadrotor,\
+                            steer_force,        \
                             v_omega,           \
                             waypoint,          \
                             xy_omega
