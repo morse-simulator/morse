@@ -1,3 +1,3 @@
 from .morserobots import *
 from .human import Human
-from .pr2 import PR2
+from .pr2 import *
