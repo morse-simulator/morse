@@ -1,27 +1,48 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
 import morse.core.actuator
-import mathutils
+from morse.core import mathutils
 from morse.helpers.filt2 import Filt2
+from morse.helpers.components import add_data
 
 class StabilizedQuadrotorActuatorClass(morse.core.actuator.Actuator):
-    """ Motion controller using linear model of a stabilized quadrotor
+    """ 
 
-    This class will read Angular and height input (phi, theta, psi, h)
-    and then apply the computed velocity and angular speeds to the 
-    parent robot.
+    This actuator controls a stabilized quadrotor using a linear model.
+    Basically, it reads a command (phi, theta, psi, h), and computes,
+    using a second order filter the speed and the position of the robot.
+    The quadrotor must not have Rigid Body physics.
+
+    .. note::
+        Coordinates are given with respect to the origin of Blender's
+        coordinate axis.
+
+    .. note::
+        The actuator does not consider friction force. Setting theta_c
+        or phi_c to 0 leads to a constant speed on axis x or y.
     """
+
+    _name = "Stabilized Flight for quadrotor"
+    _short_desc = "Motion controller using linear model of a stabilized \
+                   quadrotor"
+
+    add_data('theta_c', 0.0, "float",
+                    'Commands the pitch of the quadrotor. It is directly \
+                     related to the quadrotor acceleration on the x axis.')
+    add_data('phi_c', 0.0, "float",
+                    'Commands the roll of the quadrotor. It is directly \
+                     related to the quadrotor acceleration on the y axis.')
+    add_data('psi_c', 0.0, "float",
+                    'Commands the yaw of the quadrotor.')
+    add_data('h_c', 0.0, "float",
+            'Commands the z of the quadrotor.')
+
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' %obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
-        # Commands
-        self.local_data['phi_c'] = 0.0
-        self.local_data['theta_c'] = 0.0
-        self.local_data['psi_c'] = 0.0
-        self.local_data['h_c'] = 0.0
-        self._type = 'Position'
+
         # Env Variables
         self.v = [0.0, 0.0, 0.0]
         self.acc = [0.0, 0.0, 0.0]
@@ -29,19 +50,31 @@ class StabilizedQuadrotorActuatorClass(morse.core.actuator.Actuator):
         self.f_theta = Filt2(10.0, 0.7)
         self.f_psi = Filt2(10.0, 0.7)
         self.f_h = Filt2(3.0, 0.5)
-        # Local Variables
 
         logger.info('Component initialized')
 
     @service
     def set_cons(self, phi, theta, psi, h):
+        """
+        Specify a consign for the robot. It has the same effect that
+        writing the corresponding constraint in the datastream.
+
+        :param phi: commands the roll of the quadrotor
+        :param theta: command the pitch of the quadrotor
+        :param psi: command the yaw of the quadrotor
+        :param h: the expected height for the quadrotor.
+        """
         self.local_data['phi_c'] = phi
         self.local_data['theta_c'] = theta
-        self.local_data['psi_c'] = self.local_data['psi_c']+ psi
+        self.local_data['psi_c'] = self.local_data['psi_c'] + psi
         self.local_data['h_c'] = h
 
     @service
     def stop(self):
+        """
+        Stop the robot. It basically means that speed on the different
+        axis is set to 0. Moreover, the different filters are reset.
+        """
         self.v = [0.0, 0.0, 0.0]
         self.f_phi.init()
         self.f_theta.init()
