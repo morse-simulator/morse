@@ -8,6 +8,10 @@ import logging; logger = logging.getLogger("morse."+ __name__)
 
 import rospy # to set the parameters
 
+# pr2_controllers_msgs is not catkinized in fuerte
+from morse.middleware.ros.helpers import ros_add_to_syspath
+ros_add_to_syspath("pr2_controllers_msgs")
+
 from pr2_controllers_msgs.msg import *
 
 class ArmatureController(MorseOverlay):

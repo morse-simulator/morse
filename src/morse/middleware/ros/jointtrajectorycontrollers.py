@@ -1,6 +1,9 @@
 from morse.middleware.sockets.jointstate import fill_missing_pr2_joints
 
 # ROS imports
+# pr2_controllers_msgs is not catkinized in fuerte
+from morse.middleware.ros.helpers import ros_add_to_syspath
+ros_add_to_syspath("pr2_controllers_msgs")
 from pr2_controllers_msgs.msg import JointTrajectoryControllerState
 
 def init_extra_module(self, component_instance, function, mw_data):
