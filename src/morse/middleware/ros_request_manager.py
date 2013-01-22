@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
+import re
 import threading
 from functools import partial
 
@@ -43,7 +44,10 @@ class RosAction:
         self.component = component
         self._action = action
 
-        self.name = component.replace(".", "/") + "/" + action
+        # robot.001.sensor.001 = robot001.sensor001
+        name = re.sub(r'\.([0-9]+)', r'\1', component)
+        self.name = name.replace(".", "/") + "/" + action
+
 
         # Retrieves the types of the goal msg, feedback msg and result
         # msg (check roslib.message.Message for details)
@@ -251,7 +255,10 @@ class RosRequestManager(RequestManager):
         
         cb = self.add_ros_handler(component_name, service_name)
 
-        s = rospy.Service(component_name.replace(".", "/") + "/" + service_name, rostype, cb)
+        # robot.001.sensor.001 = robot001.sensor001
+        name = re.sub(r'\.([0-9]+)', r'\1', component_name)
+
+        s = rospy.Service(name.replace(".", "/") + "/" + service_name, rostype, cb)
         logger.debug("Created new ROS service for {}.{}".format(
                                                     component_name,
                                                     service_name))
