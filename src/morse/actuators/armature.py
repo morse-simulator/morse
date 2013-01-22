@@ -142,7 +142,7 @@ class Armature(morse.core.actuator.Actuator):
         axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
         if is_prismatic:
-            return channel.head_pose[axis_index]
+            return channel.pose_head[axis_index]
         else: # revolute joint
             return channel.joint_rotation[axis_index]
 

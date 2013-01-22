@@ -104,7 +104,10 @@ class ArmaturePose(morse.core.sensor.Sensor):
     @service
     def get_state(self):
         """
-        Returns the joint state of the armature, ie a dictionnary with joint names as key and the corresponding rotation or translation as value (respectively in radian or meters).
+        Returns the joint state of the armature, ie a dictionnary with joint
+        names as key and the corresponding rotation or translation as value
+        (respectively in radian or meters).
+
         """
         joints = {}
         # get the rotation of each channel
@@ -154,13 +157,6 @@ class ArmaturePose(morse.core.sensor.Sensor):
         if not self._armature_actuator:
             self._get_armature_actuator()
 
-        # Check all the segments of the armature
-        for channel in self.armature.channels:
-            segment_angle = channel.joint_rotation
-
-            # Use the corresponding direction for each rotation
-            #  taken directly from the armature instance
-            if self._armature_actuator._dofs[channel.name][1] == 1:
-                self.local_data[channel.name] = segment_angle[1]
-            elif self._armature_actuator._dofs[channel.name][2] == 1:
-                self.local_data[channel.name] = segment_angle[2]
+        joints = self.get_state()
+        for k,v in joints.items():
+            self.local_data[k] = v
