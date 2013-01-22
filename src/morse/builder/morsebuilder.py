@@ -384,6 +384,9 @@ class Environment(Component):
                     if hasattr(component, "parent"):
                         continue
 
+                    if not component.basename: # do automatic renaming only if a name is not already manually set
+                        component.basename = name
+
                     def renametree(cmpt, fqn):
                         if not cmpt.basename:
                             raise SyntaxError("You need to assign the component of type %s to a variable" %
@@ -391,13 +394,11 @@ class Environment(Component):
                         fqn.append(cmpt.basename)
                         new_name = '.'.join(fqn)
                         Configuration.update_name(cmpt.name, new_name)
-                        cmpt._bpy_object.name = new_name
+                        cmpt._bpy_object.name = '.'.join(fqn)
                         for child in cmpt.children:
                             renametree(child, fqn[:])
 
-                    if not component.basename: # do automatic renaming only if a name is not already manually set
-                        component.basename = name
-                        renametree(component, [])
+                    renametree(component, [])
         finally:
             del builderscript_frame
             del frame
