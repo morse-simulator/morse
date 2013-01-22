@@ -7,6 +7,8 @@ def init_extra_module(self, component_instance, function, mw_data):
 
     Prepare the middleware to handle the serialised data as necessary.
     """
+    topic = mw_data[3].get("topic", self.get_topic_name(component_instance))
+    self.set_topic_name(component_instance, topic)
     self.register_subscriber(component_instance, function, Twist, callback_twist)
 
 def callback_twist(data, component_instance):

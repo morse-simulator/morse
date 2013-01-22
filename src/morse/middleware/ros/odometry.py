@@ -34,9 +34,14 @@ def init_extra_module(self, component_instance, function, mw_data):
                       component_instance.robot_parent.bge_object.worldOrientation.to_quaternion())
 
     if mw_data[1] == "post_odometry":
-        self.register_publisher(component_instance, function, Odometry)
+        component_instance.output_functions.append(function)
+        topic = mw_data[3].get("topic", self.get_topic_name(component_instance))
+        self.set_topic_name(component_instance, topic)
+        self.register_publisher_name_class(topic, Odometry)
+        logger.info("Posting Odometry information via TF and <%s> topic"%topic)
+
     elif mw_data[1] == "post_tf":
-        logger.info("posting Odometry information via TF")
+        logger.info("Posting Odometry information via TF only")
         component_instance.output_functions.append(function)
 
     self.register_publisher_tf()
