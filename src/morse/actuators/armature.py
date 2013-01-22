@@ -584,6 +584,7 @@ class Armature(morse.core.actuator.Actuator):
         if position_reached: # True only when all joints match local_data
             if not self._active_trajectory: # _exec_traj() manage completion for trajectories
                 self.completed(status.SUCCESS, None)
-            del self.joint_speed[joint]
+            if joint in self.joint_speed:
+                del self.joint_speed[joint]
 
 
