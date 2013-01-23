@@ -1,9 +1,27 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
+from morse.helpers.components import add_data
 
 class AccelerometerClass(morse.core.sensor.Sensor):
-    """ Accelerometer sensor """
+    """ 
+    This sensor emulates an Accelerometer/Podometer, measuring the
+    distance that a robot has moved, the current speed and current
+    acceleration. Measurements are done for the 3 axes (X, Y, Z) for
+    velocity and acceleration. The values for velocity and acceleration
+    are measured at each tic of the Game Engine, measuring the
+    difference in distance from the previous tic, and the estimated time
+    between tics (60 tics per second is the default in Blender).
+    """
+
+    _name = "Accelerometer"
+
+    add_data('distance', 0.0, "float", 
+             'distance travelled since the last tick, in meter')
+    add_data('velocity', [0.0, 0.0, 0.0], "vec3<float>", 
+             'Instantaneous speed in X, Y, Z, in meter sec^-1')
+    add_data('acceleration', [0.0, 0.0, 0.0], "vec3<float>", 
+             'Instantaneous acceleration in X, Y, Z, in meter sec^-2')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -13,7 +31,7 @@ class AccelerometerClass(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         # Variables to store the previous position
         self.ppx = 0.0
@@ -28,10 +46,6 @@ class AccelerometerClass(morse.core.sensor.Sensor):
         self.v = [0.0, 0.0, 0.0]            # Velocity
         self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
         self.a = [0.0, 0.0, 0.0]            # Acceleration
-
-        self.local_data['distance'] = 0.0
-        self.local_data['velocity'] = [0.0, 0.0, 0.0]
-        self.local_data['acceleration'] = [0.0, 0.0, 0.0]
 
         logger.info('Component initialized')
 
@@ -62,12 +76,14 @@ class AccelerometerClass(morse.core.sensor.Sensor):
         self.v[0] = dx * self.frequency
         self.v[1] = dy * self.frequency
         self.v[2] = dz * self.frequency
-        logger.debug("SPEED: (%.4f, %.4f, %.4f)" % (self.v[0], self.v[1], self.v[2]))
+        logger.debug("SPEED: (%.4f, %.4f, %.4f)" %
+                    (self.v[0], self.v[1], self.v[2]))
 
         self.a[0] = (self.v[0] - self.pvx) * self.frequency
         self.a[1] = (self.v[1] - self.pvy) * self.frequency
         self.a[2] = (self.v[2] - self.pvz) * self.frequency
-        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" % (self.a[0], self.a[1], self.a[2]))
+        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" %
+                     (self.a[0], self.a[1], self.a[2]))
 
         # Update the data for the velocity
         self.pvx = self.v[0]

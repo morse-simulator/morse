@@ -30,7 +30,8 @@ from morse.actuators import armature, \
                             waypoint,          \
                             xy_omega
 
-from morse.sensors import armature_pose, \
+from morse.sensors import accelerometer, \
+                          armature_pose, \
                           laserscanner, \
                           battery,   \
                           camera,    \
