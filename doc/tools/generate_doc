@@ -16,6 +16,7 @@ from morse.actuators import armature, \
                             gripper,           \
                             light,             \
                             keyboard,          \
+                            mocap_control,     \
                             orientation,       \
                             pa_10,             \
                             ptu,               \
