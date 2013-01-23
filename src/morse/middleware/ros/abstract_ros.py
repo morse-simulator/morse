@@ -9,23 +9,19 @@ from geometry_msgs.msg import TransformStamped
 from morse.middleware.ros.tfMessage import tfMessage
 from morse.middleware import AbstractDatastream
 
-class ROS(AbstractDatastream):
-    topic_tf = None
+class AbstractROS(AbstractDatastream):
 
     def initalize(self):
         # Initialize MORSE-ROS-node. If already initialized, does nothing
         rospy.init_node('morse', log_level=rospy.DEBUG, disable_signals=True)
 
         logger.info("ROS datastream initalize %s"%self)
-        self.sequence = 0 # for ROS msg Header
         self.topic = None
 
         if 'topic' in self.kwargs:
             self.topic_name = self.kwargs['topic']
         else:
             self.topic_name = self.get_topic_name()
-
-        self.frame_id = self.kwargs.get('frame_id', self.topic_name)
 
     def get_topic_name(self):
         # robot.001.sensor.001 = robot001.sensor001
@@ -37,20 +33,21 @@ class ROS(AbstractDatastream):
         """ Shutdown the MORSE-ROS-node."""
         # Unregister the topic
         self.topic.unregister()
-        ROS.topic_tf.unregister()
         rospy.signal_shutdown("MORSE Shutdown")
         logger.info("ROS datastream finalize %s"%self)
 
 
-class ROSPublisher(ROS):
+class ROSPublisher(AbstractROS):
 
     def initalize(self, ros_class):
-        ROS.initalize(self)
+        AbstractROS.initalize(self)
         topic_name = self.topic_name
         if 'topic_suffix' in self.kwargs: # used for /robot/camera/image
             topic_name += self.kwargs['topic_suffix']
         # Generate a publisher for the component
         self.topic = rospy.Publisher(topic_name, ros_class)
+        self.frame_id = self.kwargs.get('frame_id', self.topic_name)
+        self.sequence = 0 # for ROS msg Header
         logger.info('ROS publisher initialized for %s'%self)
 
     def get_ros_header(self):
@@ -70,18 +67,22 @@ class ROSPublisher(ROS):
 
 
 class ROSPublisherTF(ROSPublisher):
+    topic_tf = None
 
     def initalize(self, ros_class):
         ROSPublisher.initalize(self, ros_class)
+        if not ROSPublisherTF.topic_tf:
+            ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage)
 
-        if not ROS.topic_tf:
-            ROS.topic_tf = rospy.Publisher("/tf", tfMessage)
+    def finalize(self):
+        ROSPublisher.finalize(self)
+        ROSPublisherTF.topic_tf.unregister()
 
     # TF publish method
     def publish_tf(self, message):
         """ Publish the TF data on the rostopic
         """
-        ROS.topic_tf.publish(message)
+        ROSPublisherTF.topic_tf.publish(message)
 
     def sendTransform(self, translation, rotation, time, child, parent):
         """
@@ -106,10 +107,10 @@ class ROSPublisherTF(ROSPublisher):
         self.publish_tf(tfm)
 
 
-class ROSReader(ROS):
+class ROSReader(AbstractROS):
 
     def initalize(self, ros_class):
-        ROS.initalize(self)
+        AbstractROS.initalize(self)
         self.message = None
         # Generate a subscriber for the component
         self.topic = rospy.Subscriber(self.topic_name, ros_class, self.callback)
