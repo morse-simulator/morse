@@ -1,6 +1,6 @@
 
 if (BUILD_CORE_SUPPORT)
-INSTALL(FILES __init__.py socket_datastream.py text_datastream.py socket_request_manager.py 
+INSTALL(FILES __init__.py abstract_datastream.py socket_datastream.py text_datastream.py socket_request_manager.py 
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 
