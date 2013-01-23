@@ -1,23 +1,22 @@
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Twist
+from morse.middleware.ros import ROSPublisher
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class TwistPublisher(ROSPublisher):
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    self.register_publisher(component_instance, function, Twist)
+    def initalize(self):
+        ROSPublisher.initalize(self, Twist)
 
-def post_twist(self, component_instance):
-    """ Publish the data of the acceleromter sensor as a ROS Twist message
+    def default(self, ci='unused'):
+        """ Publish the data of the acceleromter sensor as a ROS Twist message
 
-    Only the velocity part is exported.
-    """
-    twist = Twist()
+        Only the velocity part is exported.
+        """
+        twist = Twist()
 
-    # Fill twist-msg with the values from the sensor
-    twist.linear.x = component_instance.local_data['velocity'][0]
-    twist.linear.y = component_instance.local_data['velocity'][1]
-    twist.linear.z = component_instance.local_data['velocity'][2]
+        # Fill twist-msg with the values from the sensor
+        twist.linear.x = self.data['velocity'][0]
+        twist.linear.y = self.data['velocity'][1]
+        twist.linear.z = self.data['velocity'][2]
 
-    self.publish(twist, component_instance)
+        self.publish(twist)

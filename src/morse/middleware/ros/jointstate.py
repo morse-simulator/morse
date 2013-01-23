@@ -1,53 +1,39 @@
-from morse.middleware.sockets.jointstate import fill_missing_pr2_joints
-
-# ROS imports
 from sensor_msgs.msg import JointState
+from morse.middleware.sockets.jointstate import fill_missing_pr2_joints
+from morse.middleware.ros import ROSPublisher
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class JointStatePublisher(ROSPublisher):
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    component_instance.output_functions.append(function)
-    topic = mw_data[3].get("topic", self.get_topic_name(component_instance))
-    self.set_topic_name(component_instance, topic)
-    self.register_publisher_name_class(topic, JointState)
+    def initalize(self):
+        ROSPublisher.initalize(self, JointState)
 
-def _fill_jointstate(js, data):
+    def default(self, ci='unused'):
+        """ Publish the data of the posture sensor as a ROS JointState message """
+        js = JointState()
+        js.header = self.get_ros_header()
 
-    js.name = []
-    js.position = []
+        # collect name and positions of jointstates from sensor
+        js.name = self.data.keys()
+        js.position = self.data.values()
+        # for now leaving out velocity and effort
+        #js.velocity = [1, 1, 1, 1, 1, 1, 1]
+        #js.effort = [50, 50, 50, 50, 50, 50, 50]
 
-    # collect name and positions of jointstates from sensor
-    js.name += data.keys()
-    js.position += data.values()
+        self.publish(js)
 
-    
-    # for now leaving out velocity and effort
-    #js.velocity = [1, 1, 1, 1, 1, 1, 1]
-    #js.effort = [50, 50, 50, 50, 50, 50, 50]
 
-def post_jointstate(self, component_instance):
-    """
-    Publish the data of an armature joint state as a ROS JointState
-    """
+class JointStatePR2Publisher(ROSPublisher):
 
-    js = JointState()
-    js.header = self.get_ros_header(component_instance)
+    def initalize(self):
+        ROSPublisher.initalize(self, JointState)
 
-    _fill_jointstate(js, component_instance.local_data)
+    def default(self, ci='unused'):
+        """ Publish the data of the posture sensor as a ROS JointState message """
+        js = JointState()
+        js.header = self.get_ros_header()
 
-    self.publish(js, component_instance)
+        joints =  fill_missing_pr2_joints(self.data)
+        js.name = joints.keys()
+        js.position = joints.values()
 
-def post_pr2_jointstate(self, component_instance):
-    """
-    Publish the data of an armature joint state as a ROS JointState
-    """
-    js = JointState()
-    js.header = self.get_ros_header(component_instance)
-
-    joints =  fill_missing_pr2_joints(component_instance.local_data)
-
-    _fill_jointstate(js, joints)
-
-    self.publish(js, component_instance)
+        self.publish(js)

@@ -1,29 +1,23 @@
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('sensor_msgs')
-import rospy
+import roslib; roslib.load_manifest('sensor_msgs')
 from sensor_msgs.msg import Range
+from morse.middleware.ros import ROSPublisher
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class RangePublisher(ROSPublisher):
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    self.register_publisher(component_instance, function, Range)
+    def initalize(self):
+        ROSPublisher.initalize(self, Range)
 
-def post_range(self, component_instance):
-    """ Publish the data on the rostopic
+    def default(self, ci='unused'):
+        """ Publish the data of the infrared sensor as a ROS Range message """
+        msg = Range()
+        msg.radiation_type = Range.INFRARED
+        msg.field_of_view = 20
+        msg.min_range = 0
+        msg.max_range = self.component_instance.bge_object['laser_range']
+        tmp = msg.max_range
+        for ray in self.data['range_list']:
+            if tmp > ray:
+                tmp = ray
+        msg.range = tmp
 
-    http://www.ros.org/doc/api/sensor_msgs/html/msg/Range.html
-    """
-    msg = Range()
-    #msg.header.frame_id = 'infrared'
-    msg.radiation_type = Range.INFRARED
-    msg.field_of_view = 20
-    msg.min_range = 0
-    msg.max_range = component_instance.bge_object['laser_range']
-    tmp = component_instance.bge_object['laser_range']
-    for r in component_instance.local_data['range_list']:
-        if tmp > r:
-            tmp = r
-    msg.range = tmp
-
-    self.publish(msg, component_instance)
+        self.publish(msg)
