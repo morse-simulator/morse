@@ -13,6 +13,7 @@ It generates doc for:
 from morse.actuators import armature, \
                             destination,       \
                             force_torque,      \
+                            gripper,           \
                             keyboard,          \
                             orientation,       \
                             pa_10,             \

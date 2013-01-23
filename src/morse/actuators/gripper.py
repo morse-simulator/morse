@@ -12,16 +12,53 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.core import blenderapi
 from morse.core.services import service
-from morse.core.exceptions import MorseRPCInvokationError
+from morse.helpers.components import add_data
 
 
 class GripperActuatorClass(morse.core.actuator.Actuator):
     """
-    Basic gripper with two moving pieces
+    Actuator capable of grabbing objects marked with the ``Graspable``
+    Game Property.  Currently it only works using services: **grab** and
+    **release**.  When instructed to grab an object, it will check if it
+    is within range, and if so, will parent the grabbed object to
+    itself.
 
-    It is capable of picking up objects marked with a predefined Game Property,
-    currently they should be 'Graspable'
+    .. note::
+
+        For objects to be detected and grabbed by the gripper, they must
+        have the following settings in the **Physics Properties** panel:
+
+            - **Actor** must be checked
+            - **Collision Bounds** must be checked
+            - **Physics Type** must be ``Rigid Body``
+
+        This will work even for Static objects
+
+    .. warning::
+
+        This actuator does not simulate the physical interaction of the
+        gripper fingers with the objects it grabs. Its purpose is to
+        abstract the action of taking an object, for human-robot
+        interaction experiments.
+
+    Configurable parameters
+    -----------------------
+
+    The following parameters can be adjusted within the **Logic Bricks**
+    of the ``Gripper`` object in Blender, in the properties of the
+    ``Radar`` sensor.
+
+        - **Angle**: (float) aperture angle of the radar capable of
+          detecting the graspable objects.
+        - **Distance**: (float) detection distance of the radar.
+          Graspable objects further away from the gripper than this
+          distance can not be held
     """
+
+    _name = "Gripper"
+    _short_desc = "Instruct the robot to move towards a given target"
+
+    add_data('grab', False, "bool", "Currently not used")
 
     def __init__(self, obj, parent=None):
         """
@@ -30,9 +67,7 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
-
-        self.local_data['grab'] = False
+        super(self.__class__, self).__init__(obj, parent)
 
         self._near_object = None
         self._grabbed_object = None
@@ -51,9 +86,10 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
 
 
     def find_object(self):
-        """ Store the object that is within reach of the gripper
-        Uses a Blender Radar Sensor to detect objects with the
-        'Graspable' property in front of this component
+        """
+        Store the object that is within reach of the gripper Uses a
+        Blender Radar Sensor to detect objects with the 'Graspable'
+        property in front of this component
         """
         # Get reference to the Radar Blender sensor
         contr = blenderapi.controller()
@@ -72,11 +108,11 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def grab(self):
-        """ Tries to grab an object close to the gripper.
+        """
+        Tries to grab an object close to the gripper.
 
         :returns: if successful (or if an object is already in hand), the
-        name of the object, else None
-
+        name of the object, else None.
         """
         # Check that no other object is being carried
         if not self._grabbed_object:
@@ -104,10 +140,10 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def release(self):
-        """ Free the grabbed object
+        """
+        Free the grabbed object.
 
         Let it fall down after resetting its rotation.
-
         Does nothing if no object is held.
 
         :returns: True if an object has been released, else False (if
