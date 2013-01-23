@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('sensor_msgs'); roslib.load_manifest('rospy')
 import rospy
-from sensor_msgs.msg import Image
-from sensor_msgs.msg import CameraInfo
+from sensor_msgs.msg import Image, CameraInfo
 from morse.middleware.ros import ROSPublisher
 
 class VideoCameraPublisher(ROSPublisher):
@@ -19,12 +18,11 @@ class VideoCameraPublisher(ROSPublisher):
         self.topic_camera_info.unregister()
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS Image message.
-        """
+        """ Publish the data of the Camera as a ROS Image message. """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
 
-        image_local = self.component_instance.local_data['image']
+        image_local = self.data['image']
 
         image = Image()
         image.header = self.get_ros_header()
@@ -43,7 +41,7 @@ class VideoCameraPublisher(ROSPublisher):
         Ty = 0
         R = [1, 0, 0, 0, 1, 0, 0, 0, 1]
 
-        intrinsic = self.component_instance.local_data['intrinsic_matrix']
+        intrinsic = self.data['intrinsic_matrix']
 
         camera_info = CameraInfo()
         camera_info.header = image.header

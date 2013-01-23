@@ -1,32 +1,23 @@
-from morse.middleware.sockets.jointstate import fill_missing_pr2_joints
-
-# ROS imports
-# pr2_controllers_msgs is not catkinized in fuerte
+# ROS imports: pr2_controllers_msgs is not catkinized in fuerte
 from morse.middleware.ros.helpers import ros_add_to_syspath
 ros_add_to_syspath("pr2_controllers_msgs")
 from pr2_controllers_msgs.msg import JointTrajectoryControllerState
+from morse.middleware.ros import ROSPublisher
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class JointTrajectoryControllerStatePublisher(ROSPublisher):
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    component_instance.output_functions.append(function)
-    topic = mw_data[3].get("topic", self.get_topic_name(component_instance))
-    self.set_topic_name(component_instance, topic)
-    self.register_publisher_name_class(topic, JointTrajectoryControllerState)
+    def initalize(self):
+        ROSPublisher.initalize(self, JointTrajectoryControllerStatePublisher)
 
-def post_controller_state(self, component_instance):
+    def default(self, ci='unused'):
+        """ Publish the data of the posture sensor as a ROS JointTrajectoryControllerStatePublisher message """
+        js = JointTrajectoryControllerStatePublisher()
+        js.header = self.get_ros_header()
 
-    data = component_instance.local_data
+        js.joint_names = self.data.keys()
+        js.actual.positions = self.data.values()
 
-    js = JointTrajectoryControllerState()
-    js.header = self.get_ros_header(component_instance)
+        js.actual.velocities = [0.0] * len(self.data)
+        js.actual.accelerations = [0.0] * len(self.data)
 
-    js.joint_names = data.keys()
-    js.actual.positions = data.values()
-
-    js.actual.velocities = [0.0] * len(data)
-    js.actual.accelerations = [0.0] * len(data)
-
-    self.publish(js, component_instance)
+        self.publish(js)

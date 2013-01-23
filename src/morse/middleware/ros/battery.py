@@ -1,18 +1,15 @@
 import roslib; roslib.load_manifest('std_msgs')
 from std_msgs.msg import Float32
+from morse.middleware.ros import ROSPublisher
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class Float32Publisher(ROSPublisher):
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    self.register_publisher(component_instance, function, Float32)
+    def initalize(self):
+        ROSPublisher.initalize(self, Float32)
 
-def post_float32(self, component_instance):
-    """ Publish the data of the battery sensor as a single float32 message.
+    def default(self, ci='unused'):
+        """ Publish the data of the battery sensor as a single Float32 message """
+        msg = Float32()
+        msg.data = self.data['charge']
 
-    """
-    msg = Float32()
-    msg.data = component_instance.local_data['charge']
-
-    self.publish(msg, component_instance)
+        self.publish(msg)

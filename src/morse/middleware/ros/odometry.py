@@ -18,8 +18,7 @@ class OdometryPublisher(ROSPublisherTF):
                     "and child_frame_id '%s'", self.frame_id, self.child_frame_id)
 
     def default(self, ci='unused'):
-        """ Publish the data of the Odometry sensor as a ROS Odometry message
-        """
+        """ Publish the data of the Odometry sensor as a ROS Odometry message """
         odometry = Odometry()
         odometry.header = self.get_ros_header()
         odometry.child_frame_id = self.child_frame_id
@@ -40,18 +39,18 @@ class OdometryPublisher(ROSPublisherTF):
 
     def get_orientation(self):
         """ Get the orientation from the local_data and return a quaternion """
-        euler = mathutils.Euler((self.component_instance.local_data['roll'],
-                                 self.component_instance.local_data['pitch'],
-                                 self.component_instance.local_data['yaw']))
+        euler = mathutils.Euler((self.data['roll'],
+                                 self.data['pitch'],
+                                 self.data['yaw']))
         quaternion = euler.to_quaternion()
         return quaternion
 
     def get_position(self):
         """ Get the position from the local_data and return a ROS Vector3 """
         position = Vector3()
-        position.x = self.component_instance.local_data['x']
-        position.y = self.component_instance.local_data['y']
-        position.z = self.component_instance.local_data['z']
+        position.x = self.data['x']
+        position.y = self.data['y']
+        position.z = self.data['z']
         return position
 
     def get_pose(self):
@@ -64,10 +63,10 @@ class OdometryPublisher(ROSPublisherTF):
     def get_twist(self):
         """ Get the twist from the local_data and return a ROS Twist """
         twist = Twist()
-        twist.linear.x = self.component_instance.local_data['vx']
-        twist.linear.y = self.component_instance.local_data['vy']
-        twist.linear.z = self.component_instance.local_data['vz']
-        twist.angular.x = self.component_instance.local_data['wx']
-        twist.angular.y = self.component_instance.local_data['wy']
-        twist.angular.z = self.component_instance.local_data['wz']
+        twist.linear.x = self.data['vx']
+        twist.linear.y = self.data['vy']
+        twist.linear.z = self.data['vz']
+        twist.angular.x = self.data['wx']
+        twist.angular.y = self.data['wy']
+        twist.angular.z = self.data['wz']
         return twist

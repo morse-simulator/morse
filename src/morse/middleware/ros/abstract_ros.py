@@ -153,7 +153,7 @@ class StringPublisher(ROSPublisher):
     def default(self, ci='unused'):
         """ Publish the `local_data` on the topic
         """
-        self.publish(repr(self.component_instance.local_data))
+        self.publish(repr(self.data))
 
 
 class StringReader(ROSReader):
