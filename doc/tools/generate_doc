@@ -23,6 +23,7 @@ from morse.actuators import armature, \
                             steer_force,        \
                             teleport,           \
                             v_omega,           \
+                            v_omega_diff_drive,\
                             waypoint,          \
                             xy_omega
 
