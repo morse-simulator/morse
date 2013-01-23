@@ -46,12 +46,12 @@ class RosServicesTest(RosTestCase):
     def test_set_destination(self):
 
         try:
-            rospy.wait_for_service('Motion_Controller/set_destination', timeout = 2)
+            rospy.wait_for_service('/robot/waypoint/set_destination', timeout = 2)
         except rospy.ROSException:
             self.fail("The set_destination service never showed up!")
 
         try:
-            set_dest = rospy.ServiceProxy('Motion_Controller/set_destination', MoveBase)
+            set_dest = rospy.ServiceProxy('/robot/waypoint/set_destination', MoveBase)
 
             
             # Send a destination target at the robot current position ->
