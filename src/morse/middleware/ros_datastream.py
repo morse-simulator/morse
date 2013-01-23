@@ -1,180 +1,73 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import re
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
-import rospy
-import morse.core.datastream
-from morse.core import blenderapi
+import sys # sys.modules for get_class
+from morse.core.sensor import Sensor
+from morse.core.actuator import Actuator
+from morse.core.datastream import Datastream
+from morse.middleware import AbstractDatastream
 
-from std_msgs.msg import String, Header
-from morse.middleware.ros.tfMessage import tfMessage
+def get_class(module_name, class_name):
+    """ Dynamically import a Python class.
+    """
+    try:
+        __import__(module_name)
+    except ImportError as detail:
+        logger.error("Module not found: %s" % detail)
+        return None
+    module = sys.modules[module_name]
+    # Create an instance of the object class
+    try:
+        klass = getattr(module, class_name)
+    except AttributeError as detail:
+        logger.error("Module attribute not found: %s" % detail)
+        return None
+    return klass
 
-class ROS(morse.core.datastream.Datastream):
+def create_instance(classpath, *args, **kwargs):
+    """ Creates an instances of a class.
+    """
+    module_name, class_name = classpath.rsplit('.', 1)
+    klass = get_class(module_name, class_name)
+    if klass:
+        return klass(*args, **kwargs)
+    else:
+        logger.error("Could not create an instance of %s"%str(classpath))
+    return None
+
+def register_datastream(classpath, component, args):
+    datastream = create_instance(classpath, component, args)
+    # Check that datastream implements AbstractDatastream
+    if not isinstance(datastream, AbstractDatastream):
+        logger.error("%s must implements morse.middleware.AbstractDatastream"%classpath)
+    # Check weither to store the function in input or output list
+    # What is the direction of our stream?
+    if isinstance(component, Sensor):
+        # -> for Sensors, they *publish*,
+        component.output_functions.append(datastream.default)
+    elif isinstance(component, Actuator):
+        # -> for Actuator, they *read*
+        component.input_functions.append(datastream.default)
+    else:
+        logger.error("The component is not an instance of Sensor or Actuator")
+        return
+    # from morse.core.abstractobject.AbstractObject
+    component.del_functions.append(datastream.finalize)
+
+
+class ROS(Datastream):
     """ Handle communication between Blender and ROS."""
 
-    def __init__(self):
-        """ Initialize the network and generate a ROS node."""
-        logger.info("ROS datastream interface initialization")
-        super(self.__class__, self).__init__()
-        self._topic_names = {}
-        self._topics = {}
-        self._properties = {}
-        self._sequence = 0
-        logger.info("ROS datastream interface initialized")
-
-    def __del__(self):
-        """ Close all open ROS connections. """
-        logger.info("Shutting down ROSNode...")
-
-    def finalize(self):
-        """ Kill the morse rosnode."""
-        rospy.signal_shutdown("MORSE Shutdown")
-        logger.info("ROS datastream: MORSE ROSNode has been killed.")
-
     def register_component(self, component_name, component_instance, mw_data):
-        """ Generate a new topic to publish the data
+        """ Generate a new instance of a datastream
 
-        The name of the topic is composed of the robot and sensor names.
-        Only useful for sensors.
+        and register it to the component callbacks list
         """
 
-        logger.info("========== Registering component =================")
-        parent_name = component_instance.robot_parent.bge_object.name
-
-        # Extract the information for this datastream interface
-        # This will be tailored for each middleware according to its needs
-        # This is specified in the component_config.py in Blender: [mw_data[0], mw_data[1]]
-        function_name = mw_data[1]
-        logger.info(" ######################## %s" % parent_name)
-        logger.info(" ######################## %s" % component_name)
-
-        # Init MORSE ROSNode
-        rospy.init_node('morse', log_level=rospy.DEBUG, disable_signals=True)
-        function = self._check_function_exists(function_name)
-
-        # The function exists within this class,
-        #  so it can be directly assigned to the instance
-        if function != None:
-
-            # Add data publish functions to output_functions
-            if function_name == "post_message":
-                # Generate one publisher and one topic for each component that is a sensor and uses post_message
-                self.register_publisher(component_instance, function, String)
-
-            # Read Strings from a rostopic
-            elif function_name == "read_message":
-                self.register_subscriber(component_instance, function, String, self.callback)
-
-            else:
-                #Add external module
-                self._add_method(mw_data, component_instance)
-
+        datastream_classpath = mw_data[1] # aka. function name
+        # Check for new configuration
+        if datastream_classpath.startswith('morse.middleware.ros.'):
+            datastream_args = None
+            if len(mw_data) > 2:
+                datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
+            register_datastream(datastream_classpath, component_instance, datastream_args)
         else:
-            # If there is no such function in this module,
-            #  try importing from another one
-            try:
-                # Insert the method in this class
-                function = self._add_method(mw_data, component_instance)
-            except IndexError as detail:
-                logger.error("Method '%s' is not known, and no external module"\
-                             "has been specified. Check the 'component_config.py'"\
-                             " file for typos" % function_name)
-                return
-
-        logger.info("Component registered")
-
-    def register_publisher_tf(self):
-        if "tf" not in self._topics:
-            self.register_publisher_name_class("/tf", tfMessage)
-
-    def register_publisher_name_class(self, topic_name, ros_class):
-        self._topics[topic_name] = rospy.Publisher(topic_name, ros_class)
-
-    def register_publisher(self, component_instance, function, ros_class):
-        component_instance.output_functions.append(function)
-        topic_name = self.get_topic_name(component_instance)
-        # Generate a publisher for the component
-        self.register_publisher_name_class(topic_name, ros_class)
-        logger.info('ROS publisher for %s initialized'%component_instance.name())
-
-    def register_subscriber(self, component_instance, function, ros_class, callback):
-        component_instance.input_functions.append(function)
-        topic_name = self.get_topic_name(component_instance)
-        # Generate a publisher for the component
-        self._topics[topic_name] = rospy.Subscriber(topic_name, ros_class, callback, component_instance)
-        logger.info('ROS subscriber for %s initialized'%component_instance.name())
-
-    def set_topic_name(self, component_instance, name):
-        self._topic_names[component_instance] = name
-
-    def get_topic_name(self, component_instance):
-        if component_instance in self._topic_names:
-            return self._topic_names[component_instance]
-
-        component_name = component_instance.bge_object.name
-        # robot.001.sensor.001 = robot001.sensor001
-        topic = re.sub(r'\.([0-9]+)', r'\1', component_name)
-        topic = '/' + topic.replace('.', '/')
-        self._topic_names[component_instance] = topic
-        return topic
-
-    def get_property(self, component_instance, name):
-        component_name = component_instance.bge_object.name
-        if component_name in self._properties:
-            return self._properties[component_instance.bge_object.name][name]
-        else:
-            return None
-
-    def set_property(self, component_instance, name, value):
-        component_name = component_instance.bge_object.name
-        if component_name not in self._properties:
-            self._properties[component_name] = {}
-        self._properties[component_name][name] = value
-
-    # Generic publish method
-    def publish(self, message, component_instance):
-        """ Publish the data on the rostopic
-        """
-        topic_name = self.get_topic_name(component_instance)
-        self.publish_topic(message, topic_name)
-
-    # Generic publish method
-    def publish_topic(self, message, topic_name):
-        """ Publish the data on the rostopic
-        """
-        self._topics[topic_name].publish(message)
-        self._sequence += 1
-
-    def get_ros_header(self, component_instance):
-        header = Header()
-        header.stamp = rospy.Time.now()
-        header.seq = self._sequence
-        # http://www.ros.org/wiki/geometry/CoordinateFrameConventions#Multi_Robot_Support
-        header.frame_id = self.get_topic_name(component_instance)
-        return header
-
-    # Post string messages
-    def post_message(self, component_instance):
-        """ Publish the data on the rostopic
-        """
-        # XXX ugly, is this used somewhere ? Kept for compatibility
-        data_dump = ", ".join([str(data) for data in component_instance.local_data.values()])
-        self.publish(data_dump, component_instance)
-        # TODO self.publish(json.dumps(component_instance.local_data))
-
-    # Callback function for reading String messages
-    def callback(self, data, component_instance):
-        """ Called as soon as messages are published on the specific topic
-        """
-        logger.info("Received String message %s on topic %s" % \
-                    (data.data.decode("utf-8"), # String message decode
-                     self.get_topic_name(component_instance)))
-
-    # NOTE: This is a dummy function that is executed for every actuator.
-    #       Since ROS uses the concept of callbacks, it does nothing ...
-    def read_message(self, component_instance):
-        """ dummy function for String-messages (could maybe be removed later)
-        """
-
-    def ros_memoryview_patched(self):
-        ssr = blenderapi.getssr()
-        return "ros_memoryview_patched" in ssr and ssr["ros_memoryview_patched"]
+            logger.error("%s must starts with 'morse.middleware.ros.'"%datastream_classpath)
