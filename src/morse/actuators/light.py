@@ -1,19 +1,31 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.actuator
+from morse.helpers.components import add_data
 
 class LightActuatorClass(morse.core.actuator.Actuator):
-    """ Point light actuator
-
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bge.logic.html
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bge.types.html#bge.types.KX_LightObject
-    http://www.blender.org/documentation/blender_python_api_2_57_release/bge.types.html#bge.types.KX_GameObject.children
     """
+    This actuator is a simple On/Off light. Based on `SPOT
+    <http://wiki.blender.org/index.php/Doc:2.6/Manual/Lighting/Lamps/Spot>`_ light.
+
+    Properties
+    ----------
+
+    -  Emit in +X
+    -  Spot size = 90°
+    -  Distance = 10m
+    -  Energy: On = 1.0; Off = 0.0
+
+    """
+    _name = "Light"
+    _short_desc = "A simple point light"
+
+    add_data('emit', True, 'bool', 'On/Off light switch')
 
     def __init__(self, obj, parent=None):
         logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         self.local_data['emit'] = obj['emit']
 
@@ -22,11 +34,11 @@ class LightActuatorClass(morse.core.actuator.Actuator):
     def default_action(self):
         """ Apply (v, w) to the parent robot. """
         # get the Blender Logic Controller
-        co = blenderapi.controller()
+        contr = blenderapi.controller()
         # get the Empty object parent of this Controller
-        lightAct = co.owner
+        light_act = contr.owner
         # get the light which is a child of the Empty object
-        light = lightAct.children[0]
+        light = light_act.children[0]
 
         # switch on/off the light
         if self.local_data['emit']:
