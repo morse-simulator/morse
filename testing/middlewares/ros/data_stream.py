@@ -12,7 +12,7 @@ import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); ro
 roslib.load_manifest('geometry_msgs')
 import rospy
 import std_msgs
-from nav_msgs.msg import Odometry
+import nav_msgs.msg # do not conflict with morse builder
 from geometry_msgs.msg import Twist
 from time import sleep
 
@@ -41,9 +41,9 @@ class DataStreamTest(RosTestCase):
         
         robot = ATRV()
 
-        pose = Pose()
-        robot.append(pose)
-        pose.add_stream('ros')
+        odometry = Odometry()
+        robot.append(odometry)
+        odometry.add_stream('ros')
 
         motion = MotionVW()
         robot.append(motion)
@@ -61,12 +61,12 @@ class DataStreamTest(RosTestCase):
         # tf, and don't want to add too much dependency for test
 
         rospy.init_node('morse_ros_data_stream_test')
-        rospy.Subscriber('ATRV/Pose', Odometry, self.pose_callback)
+        rospy.Subscriber('/robot/odometry', nav_msgs.msg.Odometry, self.pose_callback)
 
-        msg = rospy.client.wait_for_message('ATRV/Pose', Odometry, timeout = 10)
+        msg = rospy.client.wait_for_message('/robot/odometry', nav_msgs.msg.Odometry, timeout = 10)
         self.assertTrue(msg != None)
 
-        cmd_stream = rospy.Publisher('ATRV/Motion_Controller', Twist)
+        cmd_stream = rospy.Publisher('/robot/motion', Twist)
        
         self.assertTrue(hasattr(self, "pos"))
         precision=0.15
@@ -76,9 +76,10 @@ class DataStreamTest(RosTestCase):
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
  
         # sleep to make sure that the other peer can read it ...
-        sleep(5)
+        sleep(1)
 
         send_speed(cmd_stream, 1.0, 0.0, 2.0)
+        sleep(1)
 
         self.assertAlmostEqual(self.pos.pose.pose.position.x, 2.0, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
@@ -91,6 +92,7 @@ class DataStreamTest(RosTestCase):
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
         send_speed(cmd_stream, 1.0, -math.pi/4.0, 2.0)
+        sleep(1)
 
         self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=precision)
@@ -104,6 +106,7 @@ class DataStreamTest(RosTestCase):
        # self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
         send_speed(cmd_stream, 0.5, -math.pi/8.0, 12.0)
+        sleep(1)
 
         self.assertAlmostEqual(self.pos.pose.pose.position.x, 0.0, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
