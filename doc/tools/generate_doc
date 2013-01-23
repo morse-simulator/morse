@@ -32,9 +32,10 @@ from morse.actuators import armature, \
 
 from morse.sensors import accelerometer, \
                           armature_pose, \
-                          laserscanner, \
                           battery,   \
                           camera,    \
+                          gps,       \
+                          laserscanner, \
                           odometry,  \
                           proximity, \
                           ptu_posture, \

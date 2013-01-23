@@ -1,9 +1,22 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
+from morse.helpers.components import add_data
 
 class GPSClass(morse.core.sensor.Sensor):
-    """ Class definition for the gyroscope sensor.
-        Sub class of Morse_Object. """
+    """
+    This sensor emulates a GPS, providing the exact coordinates in the
+    Blender scene. The coordinates provided by the GPS are with respect
+    to the origin of the Blender coordinate reference.
+    """
+
+    _name = "GPS"
+
+    add_data('x', 0.0, "float", \
+             'x coordinate of the sensor, in world coordinate, in meter')
+    add_data('y', 0.0, "float", \
+             'y coordinate of the sensor, in world coordinate, in meter')
+    add_data('z', 0.0, "float", \
+             'z coordinate of the sensor, in world coordinate, in meter')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -11,11 +24,7 @@ class GPSClass(morse.core.sensor.Sensor):
             The second parameter should be the name of the object's parent. """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
-
-        self.local_data['x'] = 0.0
-        self.local_data['y'] = 0.0
-        self.local_data['z'] = 0.0
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 
