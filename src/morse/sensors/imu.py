@@ -1,7 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import mathutils
 import morse.core.sensor
+from morse.core import mathutils
+from morse.helpers.components import add_data
 
 """
 Important note:
@@ -12,7 +13,26 @@ Important note:
 """
 
 class ImuClass(morse.core.sensor.Sensor):
-    """ IMU sensor """
+    """ 
+    This sensor emulates an Inertial Measurement Unit (IMU), measuring
+    the angular velocity and linear acceleration including acceleration
+    due to gravity.
+
+    If the robot has a physics controller, the velocities are directly
+    read from it’s properties ``localAngularVelocity`` and
+    ``worldLinearVelocity``. Otherwise the velocities are calculated by
+    simple differentiation. Linear acceleration is always computed by
+    differentiation of the linear velocity. The measurements are given
+    in the IMU coordinate system, so the location and rotation of the
+    IMU with respect to the robot is taken into account.
+    """
+
+    _name = "Inertial measurement unit"
+
+    add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
+             'rates in IMU x, y, z axes (in radian . sec ^ -1)')
+    add_data('linear_acceleration', [0.0, 0.0, 0.0], "vec3<float>", \
+             'acceleration in IMU x, y, z axes (in m . sec ^ -2)')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -23,8 +43,6 @@ class ImuClass(morse.core.sensor.Sensor):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
-
-        #logger.setLevel(logging.DEBUG)
 
         # The robot needs a physics controller!
         # Since the imu does not have physics,
@@ -72,11 +90,8 @@ class ImuClass(morse.core.sensor.Sensor):
         # reference for rotating world frame to imu frame
         self.rot_w2i = self.bge_object.worldOrientation
 
-        self.local_data['angular_velocity'] = [0.0, 0.0, 0.0]
-        self.local_data['linear_acceleration'] = [0.0, 0.0, 0.0]
-
         logger.info("IMU Component initialized, runs at %.2f Hz ", self.frequency)
-        
+
     def sim_imu_simple(self):
         """
         Simulate angular velocity and linear acceleration measurements via simple differences.
