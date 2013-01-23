@@ -2,17 +2,14 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import mathutils
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('geometry_msgs')
 import rospy
-from geometry_msgs.msg import Vector3, Quaternion, Pose, Twist, TransformStamped
+from geometry_msgs.msg import Vector3, Quaternion, Pose, Twist
 from nav_msgs.msg import Odometry
-from morse.middleware.ros.tfMessage import tfMessage
-from morse.middleware.ros import ROSPublisher
+from morse.middleware.ros import ROSPublisherTF
 
-class OdometryPublisher(ROSPublisher):
+class OdometryPublisher(ROSPublisherTF):
 
     def initalize(self):
-        ROSPublisher.initalize(self, Odometry)
-        self.register_tf()
-
+        ROSPublisherTF.initalize(self, Odometry)
         # store the frame ids
         self.frame_id = self.kwargs.get("frame_id", "/odom")
         self.child_frame_id = self.kwargs.get("child_frame_id", "/base_footprint")
@@ -20,7 +17,7 @@ class OdometryPublisher(ROSPublisher):
         logger.info("Initialized the ROS odometry sensor with frame_id '%s' " +\
                     "and child_frame_id '%s'", self.frame_id, self.child_frame_id)
 
-    def default(self, ci=None):
+    def default(self, ci='unused'):
         """ Publish the data of the Odometry sensor as a ROS Odometry message
         """
         odometry = Odometry()
@@ -34,34 +31,12 @@ class OdometryPublisher(ROSPublisher):
         self.publish(odometry)
 
         # send current odometry transform
-        self.sendTransform(self.get_translation(),
+        self.sendTransform(self.get_position(),
                            self.get_orientation(),
                            odometry.header.stamp,
                            odometry.child_frame_id,
                            odometry.header.frame_id)
 
-
-    def sendTransform(self, translation, rotation, time, child, parent):
-        """
-        :param translation: the translation of the transformtion as geometry_msgs/Vector3
-        :param rotation: the rotation of the transformation as a geometry_msgs/Quaternion
-        :param time: the time of the transformation, as a rospy.Time()
-        :param child: child frame in tf, string
-        :param parent: parent frame in tf, string
-
-        Broadcast the transformation from tf frame child to parent on ROS topic ``"/tf"``.
-        """
-
-        t = TransformStamped()
-        t.header.frame_id = parent
-        t.header.stamp = time
-        t.child_frame_id = child
-        t.transform.translation = translation
-        t.transform.rotation = rotation
-
-        tfm = tfMessage([t])
-
-        self.publish_tf(tfm)
 
     def get_orientation(self):
         """ Get the orientation from the local_data and return a quaternion """
@@ -71,18 +46,18 @@ class OdometryPublisher(ROSPublisher):
         quaternion = euler.to_quaternion()
         return quaternion
 
-    def get_translation(self):
+    def get_position(self):
         """ Get the position from the local_data and return a ROS Vector3 """
-        translation = Vector3()
-        translation.x = self.component_instance.local_data['x']
-        translation.y = self.component_instance.local_data['y']
-        translation.z = self.component_instance.local_data['z']
-        return translation
+        position = Vector3()
+        position.x = self.component_instance.local_data['x']
+        position.y = self.component_instance.local_data['y']
+        position.z = self.component_instance.local_data['z']
+        return position
 
     def get_pose(self):
         """ Get the pose from the local_data and return a ROS Pose """
         pose = Pose()
-        pose.position = self.get_translation()
+        pose.position = self.get_position()
         pose.orientation = self.get_orientation()
         return pose
 
