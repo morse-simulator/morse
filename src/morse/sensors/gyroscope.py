@@ -1,9 +1,24 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
 import morse.core.sensor
+from morse.helpers.components import add_data
 
 class GyroscopeClass(morse.core.sensor.Sensor):
-    """ Gyroscope sensor """
+    """
+    This sensor emulates a Gyroscope, providing the yaw, pitch and roll
+    angles of the sensor object with respect to the Blender world
+    reference axes.
+
+    Angles are given in radians.
+    """
+
+    _name = "Gyroscope"
+
+    add_data('yaw', 0.0, "float", \
+             'rotation around the Z axis of the sensor, in radian')
+    add_data('pitch', 0.0, "float", \
+             'rotation around the Y axis of the sensor, in radian')
+    add_data('roll', 0.0, "float", \
+             'rotation around the X axis of the sensor, in radian')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -13,11 +28,7 @@ class GyroscopeClass(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
-
-        self.local_data['yaw'] = 0.0
-        self.local_data['pitch'] = 0.0
-        self.local_data['roll'] = 0.0
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 

@@ -35,6 +35,7 @@ from morse.sensors import accelerometer, \
                           battery,   \
                           camera,    \
                           gps,       \
+                          gyroscope, \
                           laserscanner, \
                           odometry,  \
                           proximity, \
