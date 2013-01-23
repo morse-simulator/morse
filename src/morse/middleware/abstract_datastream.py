@@ -12,6 +12,10 @@ class AbstractDatastream(object):
     def component_name(self):
         return self.component_instance.bge_object.name
 
+    @property
+    def data(self):
+        return self.component_instance.local_data
+
     def __str__(self):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)
 

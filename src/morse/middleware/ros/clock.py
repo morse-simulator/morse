@@ -1,26 +1,21 @@
-from morse.core import blenderapi
-import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('rosgraph_msgs');
 import rospy
 from rosgraph_msgs.msg import Clock
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+from morse.core import blenderapi
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    self._sim_time = 0.0
-    # LogicTicRate default value: 60 Hz
-    self._sim_step = 1.0 / blenderapi.getfrequency()
+class ClockPublisher(ROSPublisher):
 
-    self.register_publisher(component_instance, function, Clock)
+    def initalize(self):
+        ROSPublisher.initalize(self, Clock)
+        self._sim_time = 0.0
+        # LogicTicRate default value: 60 Hz
+        self._sim_step = 1.0 / blenderapi.getfrequency()
 
-def post_clock(self, component_instance):
-    """ Publish the simulator clock as a Clock ROS msg
+    def default(self, ci='unused'):
+        """ Publish the simulator clock as a Clock ROS message """
+        msg = Clock()
+        msg.clock = rospy.Time.from_sec(self._sim_time)
+        self._sim_time += self._sim_step
 
-    """
-    msg = Clock()
-    msg.clock = rospy.Time.from_sec(self._sim_time)
-    self._sim_time += self._sim_step
-
-    self.publish(msg, component_instance)
+        self.publish(msg)
