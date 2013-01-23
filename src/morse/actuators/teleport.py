@@ -1,14 +1,36 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import mathutils
 import morse.core.actuator
 from morse.core.services import service
+from morse.core import mathutils
+from morse.helpers.components import add_data
 
 class TeleportActuatorClass(morse.core.actuator.Actuator):
-    """ Motion controller changing the robot pose (position and orientation)
+    """ 
+    This actuator teleports the robot to the absolute position and
+    orientation with respect to the origin of the Blender coordinate
+    reference. Angles are expected in radians.
 
-    This class will read a position vector and orientation quaternion as input
-    from an external middleware, and then change the robot pose accordingly.
+    .. note::
+        Coordinates are given with respect to the origin of
+        Blender's coordinate axis.
     """
+
+    _name = "teleport"
+    _short_desc = "Motion controller which changes instantly robot pose \
+                   (position and orientation)"
+
+    add_data('x', 'initial robot X position', "float",
+              "X coordinate of the destination, in meter")
+    add_data('y', 'initial robot Y position', "float",
+              "Y coordinate of the destination, in meter")
+    add_data('z', 'initial robot Z position', "float",
+             "Z coordinate of the destination, in meter")
+    add_data('yaw', 'Initial robot yaw', "float",
+             'Rotation of the robot around Z axis, in radian')
+    add_data('pitch', 'Initial robot pitch', "float",
+             'Rotation of the robot around Y axis, in radian')
+    add_data('roll', 'Initial robot roll', "float",
+             'Rotation of the robot around X axis, in radian')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -28,14 +50,15 @@ class TeleportActuatorClass(morse.core.actuator.Actuator):
         logger.info('Component initialized')
 
     @service
-    def translate(self, x, y = 0.0, z=0.0):
-        """ Translate the actuator owner by the given (x,y,z) vector.
+    def translate(self, x, y = 0.0, z = 0.0):
+        """
+        Translate the actuator owner by the given (x,y,z) vector.
 
         This is a **relative** displacement.
 
-        :param x: X translation, in meters
-        :param y: (default: 0.0) Y translation, in meters
-        :param z: (default: 0.0) Z translation, in meters
+        :param x: X translation, in meter
+        :param y: (default: 0.0) Y translation, in meter
+        :param z: (default: 0.0) Z translation, in meter
         """
         self.local_data['x'] += x
         self.local_data['y'] += y
@@ -43,7 +66,8 @@ class TeleportActuatorClass(morse.core.actuator.Actuator):
 
     @service
     def rotate(self, roll, pitch = 0.0, yaw=0.0):
-        """ Rotates the actuator owner by the given (roll,pitch,yaw).
+        """
+        Rotates the actuator owner by the given (roll,pitch,yaw).
 
         This is a **relative** rotation.
 
