@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
-from morse.core import status
-import mathutils
+from morse.core import status, mathutils
 import morse.core.blenderapi
 import morse.sensors.camera
 from morse.helpers.components import add_data
@@ -10,14 +9,17 @@ from morse.sensors.zbufferto3d import ZBufferTo3D
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
 class DepthCameraClass(morse.sensors.camera.CameraClass):
-    """ Video capture camera
-
-    Generates a sequence of images viewed from the camera perspective.
     """
+    This sensor generates a 3D point cloud from the camera perspective.
+    """
+
+    _name = "Depth camera"
 
     add_data('points', 'none', 'memoryview', "List of 3D points from the depth "
              "camera. memoryview of a set of float(x,y,z). The data is of size "
              "``(cam_width * cam_height * 12)`` bytes (12=3*sizeof(float).")
+    add_data('intrinsic_matrix', 'none', 'mat3<float>',
+        "The intrinsic calibration matrix, stored as a 3x3 row major Matrix.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -59,10 +61,16 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
 
     def interrupt(self):
         self._n = 0
-        super(VideoCameraClass, self).interrupt()
+        super(DepthCameraClass, self).interrupt()
 
     @async_service
     def capture(self, n):
+        """
+        Capture **n** images
+
+        :param n: the number of images to take. A negative number means
+        take image indefinitely
+        """
         self._n = n
 
     def default_action(self):
@@ -74,8 +82,6 @@ class DepthCameraClass(morse.sensors.camera.CameraClass):
             # Call the action of the parent class
             super(self.__class__, self).default_action()
 
-            # NOTE: Blender returns the image as a binary string
-            #  encoded as RGBA
             image_data = morse.core.blenderapi.cameras()[self.name()].source
 
             # Fill in the exportable data

@@ -1,17 +1,15 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.sensor
-from morse.helpers.components import add_property, add_data
-
+from morse.helpers.components import add_property
 
 class CameraClass(morse.core.sensor.Sensor):
     """
-    This sensor emulates a single video camera. It generates a series of RGBA images.
-    Images are encoded as binary char arrays, with 4 bytes per pixel.
-
-    The cameras make use of Blender's **bge.texture** module, which requires
-    a graphic card capable of GLSL shading.
-    Also, the 3D view window in Blender must be set to draw **Textured** objects.
+    A generic camera class, which is expected to be used as a base class
+    for real camera. Concrete instanciation are currently:
+        - :doc:`video_camera <video_camera>`
+        - :doc:`depth_camera <depth_camera>`
+        - :doc:`semantic_camera <semantic_camera>`
 
     .. note::
         The streaming of data from this sensor can be toggled off and on by
@@ -21,7 +19,6 @@ class CameraClass(morse.core.sensor.Sensor):
         Toggling off the cameras can help make the simulation run faster,
         specially when there are several cameras. However, the lack of
         data on the stream may cause problems to some middlewares.
-
     """
 
     _name = "Generic Camera"
@@ -36,15 +33,6 @@ class CameraClass(morse.core.sensor.Sensor):
     add_property('far_clipping', 100.0, 'cam_far')
     add_property('vertical_flip', False, 'Vertical_Flip')
 
-    add_data('image', 'none', 'buffer', "The data captured by the camera, stored "
-            "as a Python Buffer class  object. The data is of size "
-            "``(cam_width X cam_height * 4)`` bytes. The image is stored as "
-            "RGBA.")
-    add_data('intrinsic_matrix', 'none', 'mat3<float>',  "The intrinsic "
-            "calibration matrix, stored as a 3x3 row major Matrix.")
-
-
-
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -57,14 +45,10 @@ class CameraClass(morse.core.sensor.Sensor):
 
         # Set the background color of the scene
         self.bg_color = [143, 143, 143, 255]
-    
-        self.image_size = 4 * self.image_width * self.image_height
 
         self._texture_ok = False
 
         logger.info('Component initialized')
-
-
 
     def default_action(self):
         """ Update the texture image. """

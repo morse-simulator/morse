@@ -2,16 +2,55 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status
 import morse.core.blenderapi
-import mathutils
+from morse.core import mathutils
 import morse.sensors.camera
+from morse.helpers.components import add_data
 
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
 class VideoCameraClass(morse.sensors.camera.CameraClass):
-    """ Video capture camera
-
-    Generates a sequence of images viewed from the camera perspective.
     """
+    This sensor emulates a single video camera. It generates a series of
+    RGBA images.  Images are encoded as binary char arrays, with 4 bytes
+    per pixel.
+
+    The cameras make use of Blender's **bge.texture** module, which
+    requires a graphic card capable of GLSL shading.  Also, the 3D view
+    window in Blender must be set to draw **Textured** objects.
+
+    Camera calibration matrix
+    -------------------------
+
+    The camera configuration parameters implicitly define a geometric camera in
+    blender units. Knowing that the **cam_focal** attribute is a value that
+    represents the distance in Blender unit at which the largest image dimension is
+    32.0 Blender units, the camera intrinsic calibration matrix is defined as
+
+      +--------------+-------------+---------+
+      | **alpha_u**  |      0      | **u_0** |
+      +--------------+-------------+---------+
+      |       0      | **alpha_v** | **v_0** |
+      +--------------+-------------+---------+
+      |       0      |      0      |    1    |
+      +--------------+-------------+---------+
+
+    where:
+
+    - **alpha_u** == **alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose
+      here that **cam_width** > **cam_height**. If not, then use **cam_height** in
+      the formula)
+    - **u_0** = **cam_height** / 2
+    - **v_0** = **cam_width** / 2
+    """
+
+    _name = "Video camera"
+
+    add_data('image', 'none', 'buffer',
+           "The data captured by the camera, stored as a Python Buffer \
+            class  object. The data is of size ``(cam_width * cam_height * 4)``\
+            bytes. The image is stored as RGBA.")
+    add_data('intrinsic_matrix', 'none', 'mat3<float>',
+        "The intrinsic calibration matrix, stored as a 3x3 row major Matrix.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -52,6 +91,12 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
 
     @async_service
     def capture(self, n):
+        """
+        Capture **n** images
+
+        :param n: the number of images to take. A negative number means
+        take image indefinitely
+        """
         self._n = n
 
     def default_action(self):

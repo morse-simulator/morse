@@ -41,7 +41,8 @@ from morse.sensors import accelerometer, \
                           odometry,  \
                           proximity, \
                           ptu_posture, \
-                          thermometer
+                          thermometer, \
+                          video_camera
 
 import sys, os
 import fnmatch
