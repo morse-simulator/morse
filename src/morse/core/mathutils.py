@@ -14,9 +14,12 @@ else:
     print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True
 
-def Matrix(matrix):
+def Matrix(matrix=None):
     if not fake:
-        return mathutils.Matrix(matrix)
+        if matrix:
+            return mathutils.Matrix(matrix)
+        else:
+            return mathutils.Matrix()
     else:
         return None
 
