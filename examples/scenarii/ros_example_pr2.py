@@ -51,7 +51,7 @@ Pose_sensor.add_stream('ros')
 Sick.add_stream('ros')
 Motion_Controller.add_stream('ros')
 IMU.add_stream('ros')
-pr2_posture.add_stream('ros', 'post_jointState', 'morse/middleware/ros/pr2_posture')
+pr2_posture.add_stream('ros', 'morse.middleware.ros.jointstate.JointStatePR2Publisher')
 
 # Add passive objects
 cornflakes = PassiveObject('props/kitchen_objects', 'Cornflakes')
