@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class Float32Publisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, Float32)
+    def initialize(self):
+        ROSPublisher.initialize(self, Float32)
 
     def default(self, ci='unused'):
         """ Publish the data of the battery sensor as a single Float32 message """

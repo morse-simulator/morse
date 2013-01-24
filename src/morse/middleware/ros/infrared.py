@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class RangePublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, Range)
+    def initialize(self):
+        ROSPublisher.initialize(self, Range)
 
     def default(self, ci='unused'):
         """ Publish the data of the infrared sensor as a ROS Range message """

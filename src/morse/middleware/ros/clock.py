@@ -6,8 +6,8 @@ from morse.core import blenderapi
 
 class ClockPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, Clock)
+    def initialize(self):
+        ROSPublisher.initialize(self, Clock)
         self._sim_time = 0.0
         # LogicTicRate default value: 60 Hz
         self._sim_step = 1.0 / blenderapi.getfrequency()

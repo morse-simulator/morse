@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class ImuPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, Imu)
+    def initialize(self):
+        ROSPublisher.initialize(self, Imu)
         self.frame_id = self.kwargs.get("frame_id", "/imu")
         # get the IMU orientation to post in the ROS message
         self.orientation = self.component_instance.bge_object.worldOrientation.to_quaternion()

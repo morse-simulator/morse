@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class TwistPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, Twist)
+    def initialize(self):
+        ROSPublisher.initialize(self, Twist)
 
     def default(self, ci='unused'):
         """ Publish the data of the acceleromter sensor as a ROS Twist message

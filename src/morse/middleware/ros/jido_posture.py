@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class JointStatePublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, JointState)
+    def initialize(self):
+        ROSPublisher.initialize(self, JointState)
 
     def default(self, ci='unused'):
         """ Publish the data of the posture sensor as a ROS JointState message """

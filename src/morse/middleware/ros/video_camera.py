@@ -6,9 +6,9 @@ from morse.middleware.ros import ROSPublisher
 
 class VideoCameraPublisher(ROSPublisher):
 
-    def initalize(self):
+    def initialize(self):
         self.kwargs['topic_suffix'] = '/image'
-        ROSPublisher.initalize(self, Image)
+        ROSPublisher.initialize(self, Image)
         # Generate a publisher for the CameraInfo
         self.topic_camera_info = rospy.Publisher(self.topic_name+'/camera_info', CameraInfo)
 

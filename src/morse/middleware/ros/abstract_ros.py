@@ -11,11 +11,11 @@ from morse.middleware import AbstractDatastream
 
 class AbstractROS(AbstractDatastream):
 
-    def initalize(self):
+    def initialize(self):
         # Initialize MORSE-ROS-node. If already initialized, does nothing
         rospy.init_node('morse', log_level=rospy.DEBUG, disable_signals=True)
 
-        logger.info("ROS datastream initalize %s"%self)
+        logger.info("ROS datastream initialize %s"%self)
         self.topic = None
 
         if 'topic' in self.kwargs:
@@ -39,8 +39,8 @@ class AbstractROS(AbstractDatastream):
 
 class ROSPublisher(AbstractROS):
 
-    def initalize(self, ros_class):
-        AbstractROS.initalize(self)
+    def initialize(self, ros_class):
+        AbstractROS.initialize(self)
         topic_name = self.topic_name
         if 'topic_suffix' in self.kwargs: # used for /robot/camera/image
             topic_name += self.kwargs['topic_suffix']
@@ -69,8 +69,8 @@ class ROSPublisher(AbstractROS):
 class ROSPublisherTF(ROSPublisher):
     topic_tf = None
 
-    def initalize(self, ros_class):
-        ROSPublisher.initalize(self, ros_class)
+    def initialize(self, ros_class):
+        ROSPublisher.initialize(self, ros_class)
         if not ROSPublisherTF.topic_tf:
             ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage)
 
@@ -109,8 +109,8 @@ class ROSPublisherTF(ROSPublisher):
 
 class ROSReader(AbstractROS):
 
-    def initalize(self, ros_class):
-        AbstractROS.initalize(self)
+    def initialize(self, ros_class):
+        AbstractROS.initialize(self)
         self.message = None
         # Generate a subscriber for the component
         self.topic = rospy.Subscriber(self.topic_name, ros_class, self.callback)
@@ -146,8 +146,8 @@ class ROSReader(AbstractROS):
 
 class StringPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, String)
+    def initialize(self):
+        ROSPublisher.initialize(self, String)
 
     # Post string messages
     def default(self, ci='unused'):
@@ -158,8 +158,8 @@ class StringPublisher(ROSPublisher):
 
 class StringReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, String)
+    def initialize(self):
+        ROSReader.initialize(self, String)
 
     def update(self, message):
         logger.info("Received String message %s on topic %s" % \

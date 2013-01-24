@@ -6,8 +6,8 @@ from morse.middleware.ros import ROSReader
 
 class PoseReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Pose)
+    def initialize(self):
+        ROSReader.initialize(self, Pose)
 
     def update(self, message):
         """ Method called as soon as Pose messages are published on the specific topic """

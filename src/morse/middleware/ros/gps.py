@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class NavSatFixPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, NavSatFix)
+    def initialize(self):
+        ROSPublisher.initialize(self, NavSatFix)
 
     def default(self, ci='unused'):
         """ Publish the data of the gps sensor as a custom ROS NavSatFix message """

@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSReader
 
 class PointReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Point)
+    def initialize(self):
+        ROSReader.initialize(self, Point)
 
     def update(self, message):
         """ Method called as soon as Point messages are published on the specific topic """

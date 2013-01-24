@@ -7,8 +7,8 @@ from morse.middleware.ros import ROSReader
 
 class QuaternionReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Quaternion)
+    def initialize(self):
+        ROSReader.initialize(self, Quaternion)
 
     def update(self, message):
         """ Method called as soon as Quaternion messages are published on the specific topic """

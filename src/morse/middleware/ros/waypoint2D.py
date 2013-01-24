@@ -5,8 +5,8 @@ from morse.middleware.ros import ROSReader
 
 class Pose2DReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Pose2D)
+    def initialize(self):
+        ROSReader.initialize(self, Pose2D)
 
     def update(self, message):
         """ Method called as soon as Pose2D messages are published on the specific topic """

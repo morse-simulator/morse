@@ -6,8 +6,8 @@ from morse.middleware.ros import ROSPublisher
 
 class JointTrajectoryControllerStatePublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, JointTrajectoryControllerStatePublisher)
+    def initialize(self):
+        ROSPublisher.initialize(self, JointTrajectoryControllerStatePublisher)
 
     def default(self, ci='unused'):
         """ Publish the data of the posture sensor as a ROS JointTrajectoryControllerStatePublisher message """

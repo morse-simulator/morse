@@ -5,8 +5,8 @@ from morse.middleware.ros import ROSReader
 
 class JointStateReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, JointState)
+    def initialize(self):
+        ROSReader.initialize(self, JointState)
 
     def update(self, message):
         """ Method called as soon as JointState messages are published on the specific topic """

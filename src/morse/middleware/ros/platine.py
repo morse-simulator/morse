@@ -4,8 +4,8 @@ from morse.middleware.ros import ROSReader
 
 class Vector3Reader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Vector3)
+    def initialize(self):
+        ROSReader.initialize(self, Vector3)
 
     def update(self, message):
         """ Method called as soon as Vector3 messages are published on the specific topic """

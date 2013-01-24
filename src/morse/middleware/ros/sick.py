@@ -6,8 +6,8 @@ from morse.middleware.ros import ROSPublisher
 
 class LaserScanPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, LaserScan)
+    def initialize(self):
+        ROSPublisher.initialize(self, LaserScan)
         self.frame_id = self.kwargs.get('frame_id', '/base_laser_link')
 
     def default(self, ci='unused'):

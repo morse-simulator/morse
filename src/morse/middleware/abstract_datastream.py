@@ -6,7 +6,7 @@ class AbstractDatastream(object):
     def __init__(self, component_instance, kwargs):
         self.component_instance = component_instance
         self.kwargs = kwargs
-        self.initalize()
+        self.initialize()
 
     @property
     def component_name(self):
@@ -19,8 +19,8 @@ class AbstractDatastream(object):
     def __str__(self):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)
 
-    def initalize(self):
-        """ initalize the specific datastream
+    def initialize(self):
+        """ initialize the specific datastream
 
         Can be overriden if needed
         """

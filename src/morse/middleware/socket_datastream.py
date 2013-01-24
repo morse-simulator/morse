@@ -29,7 +29,7 @@ class MorseEncoder(json.JSONEncoder):
 
 class SocketServ(AbstractDatastream):
 
-    def initalize(self):
+    def initialize(self):
         # List of socket clients
         self._client_sockets = []
         self._message_size = 4096

@@ -8,8 +8,8 @@ from morse.middleware.ros import ROSPublisherTF
 
 class OdometryPublisher(ROSPublisherTF):
 
-    def initalize(self):
-        ROSPublisherTF.initalize(self, Odometry)
+    def initialize(self):
+        ROSPublisherTF.initialize(self, Odometry)
         # store the frame ids
         self.frame_id = self.kwargs.get("frame_id", "/odom")
         self.child_frame_id = self.kwargs.get("child_frame_id", "/base_footprint")

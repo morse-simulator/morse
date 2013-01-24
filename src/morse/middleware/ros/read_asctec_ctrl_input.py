@@ -6,8 +6,8 @@ from morse.middleware.ros import ROSReader
 
 class CtrlInputReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, CtrlInput)
+    def initialize(self):
+        ROSReader.initialize(self, CtrlInput)
 
     def update(self, message):
         """ Method called as soon as CtrlInput messages are published on the specific topic """

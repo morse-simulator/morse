@@ -5,8 +5,8 @@ from morse.middleware.ros import ROSPublisher
 
 class DepthCameraPublisher(ROSPublisher):
 
-    def initalize(self):
-        ROSPublisher.initalize(self, PointCloud2)
+    def initialize(self):
+        ROSPublisher.initialize(self, PointCloud2)
 
     def default(self, ci='unused'):
         """ Publish the data of the Camera as a ROS PointCloud2 message """

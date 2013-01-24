@@ -5,8 +5,8 @@ from morse.middleware.ros import ROSReader
 
 class WrenchReader(ROSReader):
 
-    def initalize(self):
-        ROSReader.initalize(self, Wrench)
+    def initialize(self):
+        ROSReader.initialize(self, Wrench)
 
     def update(self, message):
         """ Method called as soon as Wrench messages are published on the specific topic """

@@ -5,8 +5,8 @@ from std_msgs.msg import String
 
 class SemanticCameraPublisher(ROSPublisherTF):
 
-    def initalize(self):
-        ROSPublisherTF.initalize(self, String)
+    def initialize(self):
+        ROSPublisherTF.initialize(self, String)
 
     def default(self, ci='unused'):
         """ Publish the data of the semantic camera as a ROS String message with newlines (for better visualization in console). """
@@ -29,8 +29,8 @@ class SemanticCameraPublisher(ROSPublisherTF):
 
 class SemanticCameraPublisherLisp(ROSPublisherTF):
 
-    def initalize(self):
-        ROSPublisherTF.initalize(self, String)
+    def initialize(self):
+        ROSPublisherTF.initialize(self, String)
 
     def default(self, ci='unused'):
         """ Publish the data of the semantic camera as a ROS String message that contains a lisp-list.
