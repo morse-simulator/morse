@@ -39,7 +39,7 @@ class Waypoints_Test(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
-    def _test_waypoint_datastream(self):
+    def test_waypoint_datastream(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
