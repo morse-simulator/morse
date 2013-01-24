@@ -42,6 +42,7 @@ from morse.sensors import accelerometer, \
                           pose,      \
                           proximity, \
                           ptu_posture, \
+                          semantic_camera, \
                           thermometer, \
                           video_camera
 
