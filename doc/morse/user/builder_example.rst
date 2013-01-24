@@ -160,10 +160,10 @@ the :doc:`compatibility matrix <integration>`.
     Sometimes, you will need to use a specific serialization method.
     This can be achieved by passing more parameters to ``add_stream``::
 
-        motion.add_stream('ros', 'read_twist', 'morse/middleware/ros/read_vw_twist')
+        motion.add_stream('ros', 'morse.middleware.ros.motion_vw.TwistReader')
 
-    In that case, we instruct MORSE to use ROS with the ``read_twist`` method
-    defined in the ``morse.middleware.ros.read_vw_twist`` module.
+    In that case, we instruct MORSE to use ROS with the ``TwistReader`` class
+    defined in the ``morse.middleware.ros.motion_vw`` module.
 
     Refer to :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually
     building a scene <../user/advanced_tutorials/editing_in_blender>` (in
