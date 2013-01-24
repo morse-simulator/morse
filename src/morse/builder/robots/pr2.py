@@ -70,7 +70,7 @@ class BasePR2(BarePR2):
 
     def add_interface(self, interface):
         if interface == "socket":
-            self.joint_state.add_stream("socket", "post_pr2_jointstate", "morse/middleware/sockets/jointstate")
+            self.joint_state.add_stream("socket", "morse.middleware.sockets.jointstate.PR2JointStatePublisher")
         elif interface == "ros":
 
             self.joint_state.add_stream("ros", 

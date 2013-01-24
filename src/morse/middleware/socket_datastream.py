@@ -5,101 +5,12 @@ import json
 import mathutils
 import morse.core.datastream
 from morse.helpers.transformation import Transformation3d
+from morse.middleware import AbstractDatastream
 from functools import partial
 from morse.core import services
+from morse.core.datastream import *
 
-class MorseSocketServ:
-    def __init__(self, port, component_name):
-        # List of socket clients
-        self._client_sockets = []
-        self._message_size = 4096
-        self._component_name = component_name
-
-        self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._server.bind(('', port))
-        self._server.listen(1)
-
-        logger.info("Socket Mw Server now listening on port " + str(port) + \
-                    " for component " + str(component_name) + ".")
-
-    def __del__(self):
-        """ Terminate the ports used to accept requests """
-        if self._client_sockets:
-            logger.info("Closing client sockets...")
-            for s in self._client_sockets:
-                s.close()
-
-        if self._server:
-            logger.info("Shutting down connections to server...")
-            self._server.shutdown(socket.SHUT_RDWR)
-            logger.info("Closing socket server...")
-            self._server.close()
-            del self._server
-
-
-    def main_export(self, encode, component_instance):
-        sockets = self._client_sockets + [self._server]
-
-        try:
-            inputready, outputready, exceptready = select.select(sockets, sockets, [], 0)
-        except select.error:
-            pass
-        except socket.error:
-            pass
-
-        if self._server in inputready:
-            sock, addr = self._server.accept()
-            self._client_sockets.append(sock)
-
-        if outputready != []:
-            message = encode(component_instance)
-            for o in outputready:
-                try:
-                    o.send(message)
-                except socket.error:
-                    self.close_socket(o)
-
-    def main_read(self, decode, component_instance):
-        sockets = self._client_sockets + [self._server]
-        try:
-            inputready, outputready, exceptready = select.select(sockets, [], [], 0)
-        except select.error:
-            pass
-        except socket.error:
-            pass
-
-        for i in inputready:
-            if i == self._server:
-                sock, addr = self._server.accept()
-                logger.debug("New client connected to %s datastream" % self._component_name)
-                if self._client_sockets != []:
-                    logger.warning("More than one client trying to write on %s datastream!!" % self._component_name)
-                self._client_sockets.append(sock)
-            else:
-                try:
-                    msg = i.recv(self._message_size).decode()
-                    logger.debug("received msg %s" % msg)
-                    if not msg: # client disconnected
-                        self.close_socket(i)
-                    else:
-                        if not msg.endswith('\n'):
-                            logger.error("Malformed message on socket datastream " +\
-                                    "(no linefeed at the end): <%s>" % msg)
-                            continue
-                        msg = msg.rstrip("\n").split("\n")
-                        if len(msg)>1:
-                            logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
-                        component_instance.local_data = decode(msg[-1]) # keep only the last msg if we got several in row
-                except socket.error as detail:
-                    self.close_socket(i)
-
-    def close_socket(self, sock):
-        self._client_sockets.remove(sock)
-        try:
-            sock.close()
-        except socket.error as error_info:
-            logger.warning("Socket error catched while closing: " + str(error_info))
+BASE_PORT = 60000
 
 class MorseEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -116,21 +27,123 @@ class MorseEncoder(json.JSONEncoder):
                     'yaw': obj.yaw, 'pitch': obj.pitch, 'roll': obj.roll }
         return json.JSONEncoder.default(self, obj)
 
+class SocketServ(AbstractDatastream):
+
+    def initalize(self):
+        # List of socket clients
+        self._client_sockets = []
+        self._message_size = 4096
+
+        self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._server.bind(('', BASE_PORT))
+        self._server.listen(1)
+
+        logger.info("Socket Mw Server now listening on port " + str(BASE_PORT) + \
+                    " for component " + str(self.component_name) + ".")
+
+    def finalize(self):
+        """ Terminate the ports used to accept requests """
+        if self._client_sockets:
+            logger.info("Closing client sockets...")
+            for s in self._client_sockets:
+                s.close()
+
+        if self._server:
+            logger.info("Shutting down connections to server...")
+            self._server.shutdown(socket.SHUT_RDWR)
+            logger.info("Closing socket server...")
+            self._server.close()
+
+    def close_socket(self, sock):
+        self._client_sockets.remove(sock)
+        try:
+            sock.close()
+        except socket.error as error_info:
+            logger.warning("Socket error catched while closing: " + str(error_info))
+            del self._server
+
+class SocketPublisher(SocketServ):
+
+    def default(self, ci='unused'):
+        sockets = self._client_sockets + [self._server]
+
+        try:
+            inputready, outputready, _ = select.select(sockets, sockets, [], 0)
+        except select.error:
+            pass
+        except socket.error:
+            pass
+
+        if self._server in inputready:
+            sock, _ = self._server.accept()
+            self._client_sockets.append(sock)
+
+        if outputready != []:
+            message = self.encode()
+            for o in outputready:
+                try:
+                    o.send(message)
+                except socket.error:
+                    self.close_socket(o)
+
+    def encode(self):
+        js = json.dumps(self.component_instance.local_data, cls=MorseEncoder)
+        return (js + '\n').encode()
+
+class SocketReader(SocketServ):
+
+    def default(self, ci='unused'):
+        sockets = self._client_sockets + [self._server]
+        try:
+            inputready, outputready, exceptready = select.select(sockets, [], [], 0)
+        except select.error:
+            pass
+        except socket.error:
+            pass
+
+        for i in inputready:
+            if i == self._server:
+                sock, addr = self._server.accept()
+                logger.debug("New client connected to %s datastream" % self.component_name)
+                if self._client_sockets != []:
+                    logger.warning("More than one client trying to write on %s datastream!!" % self.component_name)
+                self._client_sockets.append(sock)
+            else:
+                try:
+                    msg = i.recv(self._message_size).decode()
+                    logger.debug("received msg %s" % msg)
+                    if not msg: # client disconnected
+                        self.close_socket(i)
+                    else:
+                        if not msg.endswith('\n'):
+                            logger.error("Malformed message on socket datastream " +\
+                                    "(no linefeed at the end): <%s>" % msg)
+                            continue
+                        msg = msg.rstrip("\n").split("\n")
+                        if len(msg)>1:
+                            logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
+                        self.component_instance.local_data = self.decode(msg[-1]) # keep only the last msg if we got several in row
+                except socket.error as detail:
+                    self.close_socket(i)
+
+    def decode(self, msg):
+        return json.loads(msg)
+
+
 class Socket(morse.core.datastream.Datastream):
     """ External communication using sockets. """
 
     def __init__(self):
         """ Initialize the socket connections """
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__()
+        super(self.__class__, self).__init__()
 
         # port -> MorseSocketServ
         self._server_dict = {}
 
         # component name (string)  -> Port (int)
         self._component_nameservice = {}
-
-        self._base_port = 60000
 
         # Register two special services in the socket service manager:
 
@@ -155,7 +168,7 @@ class Socket(morse.core.datastream.Datastream):
         except KeyError:
             pass
 
-        return port        
+        return port
 
     def get_all_stream_ports(self):
         """ Get stream ports for all streams.
@@ -166,44 +179,16 @@ class Socket(morse.core.datastream.Datastream):
         """ Open the port used to communicate by the specified component.
         """
 
+        serv = None
+        datastream_classpath = mw_data[1] # aka. function name
+        datastream_args = None
+        if len(mw_data) > 2:
+            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
+
         # Create a socket server for this component
-        serv = MorseSocketServ(self._base_port, component_name)
-        self._server_dict[self._base_port] = serv
-        self._component_nameservice[component_name] = self._base_port
-        self._base_port = self._base_port + 1
+        serv = register_datastream(datastream_classpath, component_instance, datastream_args)
 
-        # Extract the information for this datastream interface
-        # This will be tailored for each middleware according to its needs
-        function_name = mw_data[1]
-        fun = self._check_function_exists(function_name)
-
-        if fun != None:
-            # Choose what to do, depending on the function being used
-            # Data read functions
-            if function_name == "read_message":
-                component_instance.input_functions.append(partial(MorseSocketServ.main_read, serv, fun))
-            # Data write functions
-            elif function_name == "post_message":
-                component_instance.output_functions.append(partial(MorseSocketServ.main_export, serv, fun))
-
-            # If the function is external and has already been loaded before
-            else:
-                # Pass by mw_data the generated server
-                mw_data.append(serv)
-                self._add_method(mw_data, component_instance)
-        else:
-            # Pass by mw_data the generated server
-            mw_data.append(serv)
-            self._add_method(mw_data, component_instance)
-
-    def post_message(self, component_instance):
-        return (json.dumps(component_instance.local_data, cls=MorseEncoder) + '\n').encode()
-
-    def read_message(self, msg):
-        return json.loads(msg)
-
-    def print_open_sockets(self):
-        """ Display a list of all currently opened sockets."""
-        logger.info("Socket Mid: Currently opened sockets:")
-        for name, socket in self._socket_dict.iteritems():
-            logger.info(" - Port name '{0}' = '{1}'".format(name, socket))
+        global BASE_PORT
+        self._server_dict[BASE_PORT] = serv
+        self._component_nameservice[component_name] = BASE_PORT
+        BASE_PORT = BASE_PORT + 1

@@ -1,14 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import json
-from morse.middleware.socket_datastream import MorseSocketServ
-from functools import partial
-
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
-
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    component_instance.output_functions.append(partial(MorseSocketServ.main_export, mw_data[-1], function))
+from morse.middleware.socket_datastream import SocketPublisher
 
 def fill_missing_pr2_joints(joints):
 
@@ -65,9 +57,7 @@ def fill_missing_pr2_joints(joints):
 
     return pr2_joints
 
-
-def post_pr2_jointstate(self, component_instance):
-
-    joints =  fill_missing_pr2_joints(component_instance.local_data)
-
-    return (json.dumps(joints) + '\n').encode()
+class PR2JointStatePublisher(SocketPublisher):
+    def encode(self):
+        joints =  fill_missing_pr2_joints(self.component_instance.local_data)
+        return (json.dumps(joints) + '\n').encode()

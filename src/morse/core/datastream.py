@@ -58,9 +58,11 @@ def register_datastream(classpath, component, args):
         component.input_functions.append(datastream.default)
     else:
         logger.error("The component is not an instance of Sensor or Actuator")
-        return
+        return None
     # from morse.core.abstractobject.AbstractObject
     component.del_functions.append(datastream.finalize)
+
+    return datastream
 
 
 class Datastream(object):
