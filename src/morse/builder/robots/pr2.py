@@ -74,16 +74,14 @@ class BasePR2(BarePR2):
         elif interface == "ros":
 
             self.joint_state.add_stream("ros", 
-                                        "post_pr2_jointstate", 
-                                        "morse/middleware/ros/jointstate", 
+                                        "morse.middleware.ros.jointstate.JointStatePR2Publisher",
                                         topic = "/joint_states")
             self.joint_state.add_service("ros")
 
 
 
             self.torso_pose.add_stream("ros",
-                        "post_controller_state",
-                        "morse/middleware/ros/jointtrajectorycontrollers",
+                        "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                         topic="/torso_lift_controller/state")
             self.torso.configure_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
@@ -92,8 +90,7 @@ class BasePR2(BarePR2):
 
 
             self.head_pose.add_stream("ros",
-                       "post_controller_state",
-                       "morse/middleware/ros/jointtrajectorycontrollers",
+                       "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                        topic="/head_controller/state")
             self.head.configure_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
@@ -101,8 +98,7 @@ class BasePR2(BarePR2):
 
 
             self.l_arm_pose.add_stream("ros",
-                      "post_controller_state",
-                      "morse/middleware/ros/jointtrajectorycontrollers",
+                      "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                       topic="/l_arm_controller/state")
             self.l_arm.configure_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
@@ -110,8 +106,7 @@ class BasePR2(BarePR2):
 
 
             self.r_arm_pose.add_stream("ros", 
-                 "post_controller_state",
-                 "morse/middleware/ros/jointtrajectorycontrollers",
+                 "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                  topic="/r_arm_controller/state")
             self.r_arm.configure_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
