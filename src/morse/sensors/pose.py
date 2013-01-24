@@ -1,9 +1,26 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import math
 import morse.core.sensor
+from morse.helpers.components import add_data
 
 class PoseClass(morse.core.sensor.Sensor):
-    """ Robot pose sensor, including position and orientation """
+    """ 
+    This sensor returns the full pose of the sensor, i.e. both
+    translation and rotation with respect to the Blender world frame.
+    """
+    _name = "pose"
+
+    add_data('x', 0.0, "float", \
+             'x coordinate of the sensor, in world coordinate, in meter')
+    add_data('y', 0.0, "float", \
+             'y coordinate of the sensor, in world coordinate, in meter')
+    add_data('z', 0.0, "float", \
+             'z coordinate of the sensor, in world coordinate, in meter')
+    add_data('yaw', 0.0, "float", \
+             'rotation around the Z axis of the sensor, in radian')
+    add_data('pitch', 0.0, "float", \
+             'rotation around the Y axis of the sensor, in radian')
+    add_data('roll', 0.0, "float", \
+             'rotation around the X axis of the sensor, in radian')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -13,40 +30,16 @@ class PoseClass(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
-
-        self.local_data['x'] = 0.0
-        self.local_data['y'] = 0.0
-        self.local_data['z'] = 0.0
-        self.local_data['yaw'] = 0.0
-        self.local_data['pitch'] = 0.0
-        self.local_data['roll'] = 0.0
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 
 
     def default_action(self):
         """ Get the x, y, z, yaw, pitch and roll of the blender object. """
-        x = self.position_3d.x
-        y = self.position_3d.y
-        z = self.position_3d.z
-
-        yaw = self.position_3d.yaw
-        pitch = self.position_3d.pitch
-        roll = self.position_3d.roll
-
-        # Store the orientation values in the robot's object
-        self.robot_parent.yaw = yaw
-        self.robot_parent.pitch = pitch
-        self.robot_parent.roll = roll
-
-        # Store the data acquired by this sensor that could be sent
-        #  via a middleware.
-        self.local_data['x'] = float(x)
-        self.local_data['y'] = float(y)
-        self.local_data['z'] = float(z)
-        # Store the data acquired by this sensor that could be sent
-        #  via a middleware.
-        self.local_data['yaw'] = float(yaw)
-        self.local_data['pitch'] = float(pitch)
-        self.local_data['roll'] = float(roll)
+        self.local_data['x'] = self.position_3d.x
+        self.local_data['y'] = self.position_3d.y
+        self.local_data['z'] = self.position_3d.z
+        self.local_data['yaw'] = self.position_3d.yaw
+        self.local_data['pitch'] = self.position_3d.pitch
+        self.local_data['roll'] = self.position_3d.roll

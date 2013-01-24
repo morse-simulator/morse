@@ -39,6 +39,7 @@ from morse.sensors import accelerometer, \
                           imu,       \
                           laserscanner, \
                           odometry,  \
+                          pose,      \
                           proximity, \
                           ptu_posture, \
                           thermometer, \
