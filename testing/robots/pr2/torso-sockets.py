@@ -28,8 +28,8 @@ def getjoint(name):
 class PR2TorsoTest(MorseTestCase):
 
     def setUpEnv(self):
-        from morse.builder.robots import PR2
-        pr2 = PR2()
+        from morse.builder.robots import BasePR2
+        pr2 = BasePR2()
         pr2.configure_mw('socket')
 
         env = Environment('empty', fastmode=True)

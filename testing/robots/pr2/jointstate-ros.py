@@ -26,7 +26,7 @@ class PR2JointStateTest(RosTestCase):
 
     def setUpEnv(self):
         print("Adding a PR2 robot...")
-        pr2 = PR2()
+        pr2 = BasePR2()
         pr2.add_interface("ros")
 
         env = Environment('empty', fastmode = True)

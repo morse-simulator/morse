@@ -22,8 +22,8 @@ PR2_JOINTS = {'fl_caster_rotation_joint', 'fl_caster_l_wheel_joint', 'fl_caster_
 class PR2TorsoTest(MorseTestCase):
 
     def setUpEnv(self):
-        from morse.builder.robots import PR2
-        pr2 = PR2()
+        from morse.builder.robots import BasePR2
+        pr2 = BasePR2()
         pr2.add_interface("socket")
 
         env = Environment('empty', fastmode=True)
