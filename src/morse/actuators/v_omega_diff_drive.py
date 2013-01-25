@@ -77,7 +77,7 @@ class VWDiffDriveActuatorClass(morse.core.actuator.Actuator):
         if (abs(self.local_data['v']) < 0.001) and \
            (abs(self.local_data['w']) < 0.001):
             # stop the wheel when velocity is below a given threshold
-            for index in self.robot_parent._wheel_index:
+            for index in self.robot_parent._wheels.keys():
                 self.robot_parent._wheel_joints[index].setParam(9, 0, 100.0)
 
             self._stopped = True
@@ -107,11 +107,11 @@ class VWDiffDriveActuatorClass(morse.core.actuator.Actuator):
             # set wheel speeds - front and rear wheels have the same speed
             # Left side wheels
             self.robot_parent._wheel_joints['FL'].setParam(9, w_ws_l, 100.0)
-            if self.robot_parent._wheels['RL'] != None:
+            if 'RL' in self.robot_parent._wheels:
                 self.robot_parent._wheel_joints['RL'].setParam(9, w_ws_l, 100.0)
             # Right side wheels
             self.robot_parent._wheel_joints['FR'].setParam(9, w_ws_r, 100.0)
-            if self.robot_parent._wheels['RR'] != None:
+            if 'RR' in self.robot_parent._wheels:
                 self.robot_parent._wheel_joints['RR'].setParam(9, w_ws_r, 100.0)
 
             logger.debug("New speeds set: left=%.4f, right=%.4f" %

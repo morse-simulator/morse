@@ -48,8 +48,8 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
                 #traceback.print_exc()
                 wheel = None
 
-            self._wheels[index] = wheel
-            if self._wheels[index] != None:
+            if wheel:
+                self._wheels[index] = wheel
                 logger.info("\tWheel %s: %s" % (index, wheel.name))
                 self._wheel_positions[index] = mathutils.Vector(wheel.worldPosition)
                 self._wheel_orientations[index] = mathutils.Matrix(wheel.worldOrientation)
@@ -58,6 +58,8 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
                 # Keep their transformations
                 #wheel.worldPosition = self._wheel_positions[index]
                 #wheel.worldOrientation = self._wheel_orientations[index]
+
+        logger.debug("GetWheels %s" % self._wheels)
 
         # get wheel radius
         self._wheelRadius=self.GetWheelRadius(self.bge_object['WheelFLName'])
@@ -188,9 +190,8 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
 
     def BuildModelWithoutSuspension(self):
         """ Add all the constraints to attach the wheels to the body """
-        for index in self._wheel_index:
-            if self._wheels[index] != None:
-                self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.bge_object, self._wheel_positions[index])
+        for index in self._wheels.keys():
+            self._wheel_joints[index] = self.AttachWheelToBody(self._wheels[index], self.bge_object, self._wheel_positions[index])
 
     def AttachWheelToBody(self, wheel, parent, wheelPos):
         """ Attaches the wheel to the given parent using a 6DOF constraint """
