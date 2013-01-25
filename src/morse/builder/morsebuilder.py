@@ -153,7 +153,7 @@ class WheeledRobot(Robot):
         # Force Blender to update the transformation matrices of objects
         bpymorse.get_context_scene().update()
         wheels = [child for child in self._bpy_object.children if \
-                  child.name.lower().startswith("wheel")]
+                  "wheel" in child.name.lower()]
         import mathutils
         for wheel in wheels:
             # Make a copy of the current transformation matrix
