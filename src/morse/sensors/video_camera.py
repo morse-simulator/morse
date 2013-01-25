@@ -60,7 +60,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        super(VideoCameraClass, self).__init__(obj, parent)
 
         # Prepare the exportable data of this sensor
         self.local_data['image'] = ''
