@@ -50,9 +50,9 @@ class Jido(Robot):
 #                        DraggedObject = "", move_cameraFP = True)
 #        # Mouse Game Logic
 
-class Pioneer3DX(Robot): # XXX TODO WheeledRobot ?
+class Pioneer3DX(WheeledRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "pioneer3dx")
+        WheeledRobot.__init__(self, "pioneer3dx")
         self.name = name
         self.properties(Class = "Pioneer3DXClass", \
                         Path = "morse/robots/pioneer3dx", \
