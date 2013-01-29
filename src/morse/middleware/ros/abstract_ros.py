@@ -78,6 +78,35 @@ class ROSPublisherTF(ROSPublisher):
         ROSPublisher.finalize(self)
         ROSPublisherTF.topic_tf.unregister()
 
+    def get_local_transform(self):
+        """ Get the transformation relative to the robot origin
+
+        Return the local position, orientation and scale of this components
+        """
+        obj = self.component_instance.bge_object
+        # XXX not same as return obj.localTransform.decompose()
+        return (obj.localPosition, obj.localOrientation.to_quaternion(), obj.localScale)
+
+    def send_transform_robot(self, time=None, child=None, parent=None):
+        """ Send the transformation relative to the robot
+
+        :param time: default now
+        :param child: default topic_name or 'frame_id' in kwargs
+        :param parent: default 'base_link' or 'parent_frame_id' in kwargs
+        """
+        translation, rotation, _ = self.get_local_transform()
+        if not time:
+            time = rospy.Time.now()
+        if not child:
+            # our frame_id (component frame)
+            child = self.frame_id
+        if not parent:
+            # get parent frame_id (aka. the robot)
+            parent = self.kwargs.get('parent_frame_id', 'base_link')
+        #rospy.loginfo("t:%s,r:%s"%(str(translation), str(rotation)))
+        # send the transformation
+        self.sendTransform(translation, rotation, time, child, parent)
+
     # TF publish method
     def publish_tf(self, message):
         """ Publish the TF data on the rostopic

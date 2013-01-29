@@ -1,12 +1,12 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('sensor_msgs')
 from sensor_msgs.msg import PointCloud2, PointField
-from morse.middleware.ros import ROSPublisher
+from morse.middleware.ros import ROSPublisherTF
 
-class DepthCameraPublisher(ROSPublisher):
+class DepthCameraPublisher(ROSPublisherTF):
 
     def initialize(self):
-        ROSPublisher.initialize(self, PointCloud2)
+        ROSPublisherTF.initialize(self, PointCloud2)
 
     def default(self, ci='unused'):
         """ Publish the data of the Camera as a ROS PointCloud2 message """
@@ -33,3 +33,4 @@ class DepthCameraPublisher(ROSPublisher):
         pc2.data = bytes(points)
 
         self.publish(pc2)
+        self.send_transform_robot()
