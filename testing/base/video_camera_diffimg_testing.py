@@ -158,7 +158,7 @@ class CameraTest(MorseTestCase):
         atrv.append(gyroscope)
 
         env = Environment('indoors-1/boxes')
-        env.profile(camera)
+        camera.profile()
 
     def assert_image_file_diff_less(self, filepath, image8u, delta):
         image_from_file = read_pgm_ascii(filepath)

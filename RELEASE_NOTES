@@ -1,3 +1,40 @@
+MORSE 1.0
+=========
+
+General
+-------
+
+- MORSE is mature! stable release !
+
+Components
+----------
+
+Sensors
++++++++
+
+- Depth camera ! (Thanks to Gilberto's patch in Blender 2.65)
+
+Builder API
+-----------
+
+- One class per component, Robot('atrv') becomes ATRV()
+- New FakeRobot() for clock and other static publishing
+- Renaming using variable names
+- Sensor profiling with sensor.profile()
+
+Middlewares
+-----------
+
+ROS
++++
+
+- One class per stream, no more hacky dynamic method appending
+- GPS : cleaned, to be validated
+- Odometry now publish both Odometry and TF
+- Pose publish only Pose (no more Odometry)
+- New PointCloud2 publisher for depth camera, Kinect in progress
+
+
 MORSE 0.6
 =========
 

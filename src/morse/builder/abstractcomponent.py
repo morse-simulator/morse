@@ -461,6 +461,20 @@ class AbstractComponent(object):
 
         return imported_objects
 
+    def profile(self):
+        """ Watch the average time used during the simulation, in percent. """
+        if self._category is not 'sensors':
+            logger.warning("profile currently supports only sensors")
+        prop = self._property_new("profile", "0 %")
+        prop.show_debug = True
+        prop = self._property_new("profile::action", "0 %")
+        prop.show_debug = True
+        prop = self._property_new("profile::modifiers", "0 %")
+        prop.show_debug = True
+        prop = self._property_new("profile::datastreams", "0 %")
+        prop.show_debug = True
+        bpymorse.get_context_scene().game_settings.show_debug_properties = True
+
     def __str__(self):
         return self.name
 

@@ -588,22 +588,6 @@ class Environment(Component):
         # Change the text with the name of the camera being displayed
         caption.game.properties['Text'].value = self._display_camera.name
 
-    def profile(self, component):
-        """ Watch the average time used by the :param component: during the
-        simulation, in percent.
-        """
-        if component._category is not 'sensors':
-            logger.warning("currently supports only sensors")
-        prop = component._property_new("profile", "0 %")
-        prop.show_debug = True
-        prop = component._property_new("profile::action", "0 %")
-        prop.show_debug = True
-        prop = component._property_new("profile::modifiers", "0 %")
-        prop.show_debug = True
-        prop = component._property_new("profile::datastreams", "0 %")
-        prop.show_debug = True
-        self.show_debug_properties()
-
     def save(self, filepath=None, check_existing=False):
         """ Save .blend file
 

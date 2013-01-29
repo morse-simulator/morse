@@ -77,6 +77,8 @@ more functions:
    the current object
  * **configure_overlay**: Add a service overlay for a specific service manager
    (as defined for configure_service) to the current object.
+ * **profile**: Watch the average time used by the component during the
+   simulation, in percent.
 
 These configuration functions make use of a dictionary defined in the file:
 ``$MORSE_ROOT/src/morse/builder/data.py``. In these dictionaries, the keys are
@@ -193,8 +195,6 @@ The ``Environment`` class provides these functions:
    (F-Curves) so you can render it later. See the tutorial: `Recording Game
    Physics to Keyframes <http://cgcookie.com/blender/2011/05/10/tip-recording-game-physics-to-keyframes/>`_
    for more information about this particular setting.
- * **profile**: Watch the average time used by the component (parameter) during
-   the simulation, in percent.
  * **configure_multinode**: Provide the information necessary for the node to
    connect to a multi-node server. The parameter is a list of named items.
    The items accepted in as parameters are:
