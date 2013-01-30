@@ -129,19 +129,6 @@ class Robot(Component):
 
     def make_external(self):
         self._bpy_object.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
-#    def remove_wheels(self):
-#        wheels = [child for child in self._bpy_object.children if \
-#                  child.name.lower().startswith("wheel")]
-#        for wheel in wheels:
-#            bpymorse.deselect_all()
-#            bpy.ops.object.select_pattern(pattern=wheel.name, extend=False)
-#            bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
-#    def __del__(self):
-#        """ Call the remove_wheels method if the robot is a Bullet Vehicle """
-#        # HasSuspension game property is used for Bullet Vehicle
-#        if "HasSuspension" in self._bpy_object.game.properties:
-#            self.remove_wheels()
-
 
 class WheeledRobot(Robot):
     def __init__(self, filename):
@@ -184,101 +171,6 @@ class WheeledRobot(Robot):
 class Sensor(Component):
     def __init__(self, filename):
         Component.__init__(self, 'sensors', filename)
-
-    # @deprecated
-    def create_sick_arc(self):
-        """ Create an arc for use with the SICK sensor
-
-        The arc is created using the parameters in the Sick Empty.
-        'resolution and 'scan_window' are used to determine how many points
-        will be added to the arc.
-        """
-        logger.warning("DEPRECATED : Sensor.create_sick_arc is deprecated, " + \
-                       "use LaserSensorWithArc.create_laser_arc instead")
-
-        scene = bpymorse.get_context_scene()
-
-        sick_obj = self._bpy_object
-
-        material = None
-        # Get the mesh and the "RayMat" material for the arc
-        for mat in bpymorse.get_materials():
-            if "RayMat" in mat.name:
-                material = mat.material
-                break
-
-        # Delete previously created arc
-        for child in sick_obj.children:
-            if child.name.startswith("Arc_"):
-                scene.objects.unlink( child )
-
-        # Read the parameters to create the arc
-        properties = sick_obj.game.properties
-        resolution = properties['resolution'].value
-        window = properties['scan_window'].value
-        # Parameters for multi layer sensors
-        try:
-            layers = properties['layers'].value
-            layer_separation = properties['layer_separation'].value
-            layer_offset = properties['layer_offset'].value
-        except KeyError as detail:
-            layers = 1
-            layer_separation = 0.0
-            layer_offset = 0.0
-        logger.debug ("Creating %d arc(s) of %.2f degrees, resolution %.2f" % (layers, window, resolution))
-        mesh = bpymorse.new_mesh( "ArcMesh" )
-        # Add the center vertex to the list of vertices
-        verts = [ [0.0, 0.0, 0.0] ]
-        faces = []
-        vertex_index = 0
-
-        # Set the vertical angle, in case of multiple layers
-        if layers > 1:
-            v_angle = layer_separation * (layers-1) / 2.0
-        else:
-            v_angle = 0.0
-
-        # Initialise the parameters for every layer
-        for layer_index in range(layers):
-            start_angle = window / 2.0
-            end_angle = -window / 2.0
-            # Offset the consecutive layers
-            if (layer_index % 2) == 0:
-                start_angle += layer_offset
-                end_angle += layer_offset
-            logger.debug ("Arc from %.2f to %.2f" % (start_angle, end_angle))
-            logger.debug ("Vertical angle: %.2f" % v_angle)
-            arc_angle = start_angle
-
-            # Create all the vertices and faces in a layer
-            while arc_angle >= end_angle:
-                # Compute the coordinates of the new vertex
-                new_vertex = [ math.cos(math.radians(arc_angle)), math.sin(math.radians(arc_angle)), math.sin(math.radians(v_angle)) ]
-                verts.append(new_vertex)
-                vertex_index = vertex_index + 1
-                # Add the faces after inserting the 2nd vertex
-                if arc_angle < start_angle:
-                    faces.append([0, vertex_index-1, vertex_index])
-                # Increment the angle by the resolution
-                arc_angle = arc_angle - resolution
-
-            v_angle -= layer_separation
-
-        mesh.from_pydata( verts, [], faces )
-        mesh.update()
-        # Compose the name of the arc
-        arc_name = "Arc_%d" % window
-        arc = bpymorse.new_object( arc_name, mesh )
-        arc.data = mesh
-        # Remove collision detection for the object
-        arc.game.physics_type = 'NO_COLLISION'
-        # Set the material of the arc
-        arc.active_material = material
-        # Link the new object in the scene
-        scene.objects.link( arc )
-        # Set the parent to be the Sick Empty
-        arc.parent = sick_obj
-
 
 class Actuator(Component):
     def __init__(self, filename):
