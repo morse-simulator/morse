@@ -87,6 +87,9 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         additionally call ``sick.create_sick_arc()`` after setting your
         scanner properties.
 
+        The ray will be created from (-window/2) to (+window/2). So the
+        ``range_list`` will contain the range clockwise.
+
 
     Another example for the SICK LD-MRS:
 

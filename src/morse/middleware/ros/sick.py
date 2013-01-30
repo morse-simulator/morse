@@ -27,6 +27,9 @@ class LaserScanPublisher(ROSPublisher):
         laserscan.scan_time = 1.0
         laserscan.range_min = 0.3
         laserscan.range_max = self.component_instance.bge_object['laser_range']
+        # ROS expect the ranges to be sorted clockwise.
+        # see morse.builder.sensor.LaserSensorWithArc.create_laser_arc
+        # where we create the ray from -window / 2.0 to +window / 2.0
         laserscan.ranges = self.data['range_list']
 
         self.publish(laserscan)

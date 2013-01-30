@@ -48,7 +48,7 @@ class Sick_Test(MorseTestCase):
 
             # On the right of the sensor, nothing to hit. So position is
             # (0.0, 0.0, 0.0) and distance == laser_range
-            for index in range(75):
+            for index in range(105, 180):
                 ray = sick['point_list'][index]
                 self.assertAlmostEqual(ray[0], 0.0)
                 self.assertAlmostEqual(ray[1], 0.0)
@@ -73,13 +73,13 @@ class Sick_Test(MorseTestCase):
 
             ray = sick['point_list'][85]
             self.assertAlmostEqual(ray[0], 2.5, delta=0.05)
-            self.assertAlmostEqual(ray[1], 2.5 * math.tan(math.radians(5)),
+            self.assertAlmostEqual(ray[1], -2.5 * math.tan(math.radians(5)),
                                    delta=0.05)
             self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
 
             ray = sick['point_list'][95]
             self.assertAlmostEqual(ray[0], 2.5, delta=0.05)
-            self.assertAlmostEqual(ray[1], 2.5 * math.tan(math.radians(-5)),
+            self.assertAlmostEqual(ray[1], -2.5 * math.tan(math.radians(-5)),
                                    delta=0.05)
             self.assertAlmostEqual(ray[2], 0.0, delta=0.05)
 
@@ -97,7 +97,8 @@ class Sick_Test(MorseTestCase):
             # Distance and real position are a bit complicated to
             # compute manually, so don't check real precision. Just
             # verify that the distance is near 5.8
-            for index in range(159, 165):
+            #print([i for i,r in enumerate(sick['range_list']) if 5<r<6])
+            for index in range(16, 22):
                 length = sick['range_list'][index]
                 self.assertAlmostEqual(length, 5.8, delta=0.15)
 
