@@ -1,8 +1,10 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('sensor_msgs')
 import math
-from sensor_msgs.msg import LaserScan
-from morse.middleware.ros import ROSPublisher
+import struct
+import itertools
+from sensor_msgs.msg import LaserScan, PointCloud2, PointField
+from morse.middleware.ros import ROSPublisher, ROSPublisherTF
 
 class LaserScanPublisher(ROSPublisher):
 
@@ -11,7 +13,7 @@ class LaserScanPublisher(ROSPublisher):
         self.frame_id = self.kwargs.get('frame_id', '/base_laser_link')
 
     def default(self, ci='unused'):
-        """ Publish the data of the sick sensor as a ROS LaserScan message """
+        """ Publish the data of the laser scanner sensor as a ROS LaserScan message """
         laserscan = LaserScan()
         laserscan.header = self.get_ros_header()
 
@@ -33,3 +35,35 @@ class LaserScanPublisher(ROSPublisher):
         laserscan.ranges = self.data['range_list']
 
         self.publish(laserscan)
+
+class PointCloud2Publisher(ROSPublisherTF):
+
+    def initialize(self):
+        ROSPublisherTF.initialize(self, PointCloud2)
+
+    def default(self, ci='unused'):
+        """ Publish the data of the laser scanner sensor as a ROS PointCloud2 message """
+
+        points = self.data['point_list']
+        size = len(points)
+
+        pc2 = PointCloud2()
+        pc2.header = self.get_ros_header()
+        pc2.height = 1
+        pc2.width = size
+        pc2.is_dense = False
+        pc2.is_bigendian = False
+        pc2.fields = [PointField('x', 0, PointField.FLOAT32, 1),
+                      PointField('y', 4, PointField.FLOAT32, 1),
+                      PointField('z', 8, PointField.FLOAT32, 1)]
+        pc2.point_step = 12
+        pc2.row_step = size * 12
+
+        pc2.data = pack_xyz_float32(points)
+
+        self.publish(pc2)
+        self.send_transform_robot()
+
+def pack_xyz_float32(points):
+    flatten = itertools.chain.from_iterable(points)
+    return struct.pack('%if'%len(points)*3, *flatten)
