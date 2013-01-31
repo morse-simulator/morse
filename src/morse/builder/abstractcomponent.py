@@ -262,30 +262,15 @@ class AbstractComponent(object):
         # Configure the datastream for this component
         if not method:
             try:
-                import copy
-                config = copy.copy(MORSE_DATASTREAM_DICT[datastream][component])
-                # TODO self._bpy_object.game.properties["Class"].value ?
-                #      as map-key (in data, instead of blender-filename)
+                config = MORSE_DATASTREAM_DICT[datastream][component][:]
             except KeyError:
-                logger.warning("%s: default datastream method"%self.name)
-                # set the default method either it is an Actuator or a Sensor
-                method = 'XXX_message'
-                prop = self._bpy_object.game.properties
-                if 'Path' in prop:
-                    if prop['Path'].value.startswith('morse/sensors/'):
-                        method = 'post_message'
-                    elif prop['Path'].value.startswith('morse/actuators/'):
-                        method = 'read_message'
-                config = [method]
+                logger.error("%s: no default datastream method [%s][%s]" % \
+                             (self.name, datastream, component))
+                return
+        elif not path:
+            config = [method]
         else:
-            if not path:
-                try:
-                    path = MORSE_DATASTREAM_DICT[datastream][component][1]
-                    config = [method, path]
-                except KeyError:
-                    config = [method]
-            else:
-                config = [method, path]
+            config = [method, path]
 
         config.insert(0, MORSE_DATASTREAM_MODULE[datastream])
         config.append(kwargs) # append additional configuration (eg. topic name)
