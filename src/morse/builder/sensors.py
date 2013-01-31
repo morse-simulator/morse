@@ -383,7 +383,10 @@ class Velodyne(SensorCreator):
         actuator.offset_rotation.z = math.radians(1)
         controller.link(sensor = sensor, actuator = actuator)
         # append velodyne mesh, from MORSE_COMPONENTS/sensors/velodyne.blend
-        self.append_meshes(['VelodyneMesh', 'Arc_31'])
+        imported_objects = self.append_meshes(['VelodyneMesh', 'Arc_31'])
+        # TODO fix the VelodyneMesh location in velodyne.blend (z=1.2m!)
+        velodyne_mesh = self.get_child('VelodyneMesh', imported_objects)
+        velodyne_mesh.location.z = 0
 
 class Clock(SensorCreator):
     def __init__(self, name=None):
