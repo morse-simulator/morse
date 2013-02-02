@@ -370,6 +370,7 @@ class Velodyne(SensorCreator):
         # set components-specific properties
         self.properties(Visible_arc = True, laser_range = 50.0, \
                         scan_window = 31.500, resolution = 0.5)
+        """ # do it in `morse.sensors.velodyne`
         # Add Always (use_true_level) - And - Motion (rotation z: 0.017453)
         bpymorse.add_sensor(type='ALWAYS')
         obj = bpymorse.get_context_object()
@@ -382,6 +383,7 @@ class Velodyne(SensorCreator):
         actuator = obj.game.actuators[-1]
         actuator.offset_rotation.z = math.radians(1)
         controller.link(sensor = sensor, actuator = actuator)
+        """
         # append velodyne mesh, from MORSE_COMPONENTS/sensors/velodyne.blend
         imported_objects = self.append_meshes(['VelodyneMesh', 'Arc_31'])
         # TODO fix the VelodyneMesh location in velodyne.blend (z=1.2m!)
