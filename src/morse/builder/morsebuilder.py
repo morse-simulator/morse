@@ -116,6 +116,8 @@ class Armature(AbstractComponent):
         """
         AbstractComponent.__init__(self, filename=filename)
         self.set_blender_object(bpymorse.get_object(objectname))
+        # default classpath for Armature (can be modified)
+        self.properties(classpath="morse.actuators.armature.Armature")
 
 
 class Robot(Component):
