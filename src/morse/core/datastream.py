@@ -10,38 +10,8 @@ from abc import ABCMeta, abstractmethod
 from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.middleware import AbstractDatastream
+from morse.helpers.loading import create_instance
 
-#
-# helpers for datastream 'classpath' configuration
-#
-
-def get_class(module_name, class_name):
-    """ Dynamically import a Python class.
-    """
-    try:
-        __import__(module_name)
-    except ImportError as detail:
-        logger.error("Module not found: %s" % detail)
-        return None
-    module = sys.modules[module_name]
-    # Create an instance of the object class
-    try:
-        klass = getattr(module, class_name)
-    except AttributeError as detail:
-        logger.error("Module attribute not found: %s" % detail)
-        return None
-    return klass
-
-def create_instance(classpath, *args, **kwargs):
-    """ Creates an instances of a class.
-    """
-    module_name, class_name = classpath.rsplit('.', 1)
-    klass = get_class(module_name, class_name)
-    if klass:
-        return klass(*args, **kwargs)
-    else:
-        logger.error("Could not create an instance of %s"%str(classpath))
-    return None
 
 def register_datastream(classpath, component, args):
     datastream = create_instance(classpath, component, args)
