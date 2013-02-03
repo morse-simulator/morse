@@ -1,13 +1,27 @@
 #!/bin/bash
-(wget -q http://download.blender.org/release/Blender2.64/blender-2.64a-linux-glibc27-i686.tar.bz2
-tar jxf blender-2.64a-linux-glibc27-i686.tar.bz2 )& blenderpid=$!
-sudo apt-get install cmake python3.2-dev libsdl-sge python3-sphinx
-export MORSE_BLENDER=$(pwd)/blender-2.64a-linux-glibc27-i686/blender
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3/dist-packages:/usr/local/lib/python3.2/site-packages
+echo "MORSE installation and builder test"
+echo "========================================"
+lsb_release -a; uname -a; file $(which ls)
+BLENDER="blender-2.65a-linux-glibc211-i686"
+echo "Download Blender ${BLENDER}"
+(wget -q http://download.blender.org/release/Blender2.65/${BLENDER}.tar.bz2
+tar jxf ${BLENDER}.tar.bz2 )& blenderpid=$!
+echo "Download CMake Python3 libSDL"
+sudo apt-get update -q
+sudo apt-get install -mq cmake python3.2-dev libsdl1.2debian
+echo "========================================"
+echo "Check if libSDL was installed"
+ls -l /usr/lib/i386-linux-gnu/libSDL*
+echo "Setup MORSE env"
+export MORSE_BLENDER=$(pwd)/${BLENDER}/blender
+export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.2/site-packages
 export MORSE_ROOT=/usr/local
-# Build and install MORSE
+echo "Build and install MORSE"
 mkdir build && cd build && cmake -DPYMORSE_SUPPORT=ON .. && make && sudo make install
 wait $blenderpid # Blender should be ready now
-# Run Blender in background mode (travis=headless). Test the builder.
-$MORSE_BLENDER -setaudio NULL -noglsl -noaudio -nojoystick -b /usr/local/share/morse/data/morse_default.blend -P /usr/local/share/morse/examples/tutorials/tutorial-1-sockets.py
-echo "Bravo ! MORSE installation completed."
+echo "Run Blender in background mode (travis=headless). Test the builder."
+echo "========================================"
+morselib=${MORSE_ROOT}/share/morse
+$MORSE_BLENDER -setaudio NULL -b ${morselib}/data/morse_default.blend -P ${morselib}/examples/scenarii/travis-save.py
+echo "========================================"
+ls -l travis-succeed.blend && echo "Bravo ! MORSE installation completed."
