@@ -47,7 +47,7 @@ def register_datastream(classpath, component, args):
     datastream = create_instance(classpath, component, args)
     # Check that datastream implements AbstractDatastream
     if not isinstance(datastream, AbstractDatastream):
-        logger.error("%s must implements morse.middleware.AbstractDatastream"%classpath)
+        logger.warning("%s should implement morse.middleware.AbstractDatastream"%classpath)
     # Determine weither to store the function in input or output list,
     #   what is the direction of our stream?
     if isinstance(component, Sensor):
