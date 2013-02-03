@@ -31,7 +31,7 @@ class BaseTest(MorseTestCase):
         robot3.name = 'dala'
 
         # no name provided, use variable name, old school style
-        atrv = Robot('atrv')
+        atrv = ATRV()
         
         env = Environment('empty', fastmode = True)
 

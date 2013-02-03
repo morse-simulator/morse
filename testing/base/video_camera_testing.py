@@ -26,9 +26,7 @@ class CameraTest(MorseTestCase):
         atrv = ATRV()
         atrv.rotate(0.0, 0.0, math.pi)
 
-        cam = Sensor('video_camera') 
-        cam.name = 'VideoCamera'
-        #cam = VideoCamera('VideoCamera')
+        cam = VideoCamera('VideoCamera')
         cam.properties(capturing = True)
         cam.properties(cam_width = 320)
         cam.properties(cam_height = 240)

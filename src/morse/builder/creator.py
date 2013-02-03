@@ -69,25 +69,22 @@ class ComponentCreator(AbstractComponent):
         return imported_objects
 
 class SensorCreator(ComponentCreator):
-    def __init__(self, name="SensorCreator", class_path="morse/core/sensor", \
-                 class_name="Sensor", blendname=None):
+    def __init__(self, name="SensorCreator", classpath="morse.core.sensor.Sensor",\
+                 blendname=None):
         ComponentCreator.__init__(self, name, 'sensors', blendname)
-        self.properties(Component_Tag = True, Class = class_name, \
-                        Path = class_path)
+        self.properties(Component_Tag = True, classpath = classpath)
 
 class ActuatorCreator(ComponentCreator):
-    def __init__(self, name="ActuatorCreator", class_path="morse/core/actuator", \
-                 class_name="Actuator", blendname=None):
+    def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",\
+                 blendname=None):
         ComponentCreator.__init__(self, name, 'actuators', blendname)
-        self.properties(Component_Tag = True, Class = class_name, \
-                        Path = class_path)
+        self.properties(Component_Tag = True, classpath = classpath)
 
 class RobotCreator(ComponentCreator):
-    def __init__(self, name="RobotCreator", class_path="morse/core/robot", \
-                 class_name="Robot", blendname=None):
+    def __init__(self, name="RobotCreator", classpath="morse.core.robot.Robot",\
+                 blendname=None):
         ComponentCreator.__init__(self, name, 'robots', blendname)
-        self.properties(Robot_Tag = True, Class = class_name, \
-                        Path = class_path)
+        self.properties(Robot_Tag = True, classpath = classpath)
 
 
 # helpers
@@ -97,8 +94,8 @@ def get_properties_str(name):
 
     get_properties_str('Sick') gives
     laser_range = 30.0, Component_Tag = True, scan_window = 180.0, 
-    Visible_arc = True, Path = 'morse/sensors/sick', resolution = 0.25,
-    Class = 'LaserScannerClass'
+    Visible_arc = True, resolution = 0.25,
+    classpath = 'morse.sensors.sick.LaserScannerClass'
     """
     obj = bpymorse.get_object(name)
     properties_dictionary = get_properties(obj)

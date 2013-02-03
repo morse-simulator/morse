@@ -10,8 +10,7 @@ class BarePR2(Robot):
     """
     def __init__(self):
         Robot.__init__(self, 'pr2')
-        self.properties(Class = "PR2Class", \
-                        Path = "morse/robots/pr2", \
+        self.properties(classpath = "morse.robots.pr2.PR2Class", \
                         COLOR = "0.0, 0.0, 1.0")
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
