@@ -43,6 +43,8 @@ class Human(Robot):
 
         try:
             self.armature = Armature("HumanArmature", "human_posture")
+            # new way of loading class (drop 'Class' and 'Path' properties)
+            self.armature.properties(classpath="morse.sensors.human_posture.HumanPostureClass")
             self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\

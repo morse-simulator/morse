@@ -161,10 +161,10 @@ class AbstractComponent(object):
 
         .. code-block:: python
 
-            self.properties(Component_Tag = True, Class='XXXClass', speed = 5.0)
+            self.properties(Component_Tag = True, classpath='module.Class', speed = 5.0)
 
-        will create and/or set the 3 game properties Component_Tag, Class, and
-        speed at the value True (boolean), XXXClass (string), 5.0 (float).
+        will create and/or set the 3 game properties Component_Tag, classpath, and
+        speed at the value True (boolean), 'module.Class' (string), 5.0 (float).
         In Python the type of numeric value is 'int', if you want to force it to
         float, use the following: float(5) or 5.0
         Same if you want to force to integer, use: int(a/b)
@@ -324,7 +324,14 @@ class AbstractComponent(object):
                            "Unable to tune its frequency.")
 
     def is_morseable(self):
-        return 'Class' in self._bpy_object.game.properties
+        for sensor in self._bpy_object.game.sensors:
+            if sensor.type == 'ALWAYS':
+                for controller in sensor.controllers:
+                    if controller.type == 'PYTHON' and \
+                       controller.module.startswith("calling."):
+                        return True
+
+        return False
 
     def morseable(self, calling_module=None):
         """ Make this component simulable in MORSE
@@ -337,14 +344,11 @@ class AbstractComponent(object):
             calling_module = 'calling.'+self._category[:-1]+'_action'
         # add default class to this component
         if calling_module == 'calling.robot_action':
-            self.properties(Robot_Tag = True, Path = 'morse/core/robot', \
-                Class = 'Robot')
+            self.properties(Robot_Tag = True, classpath = 'morse.core.robot.Robot')
         elif calling_module == 'calling.sensor_action':
-            self.properties(Component_Tag = True, Path = 'morse/core/sensor', \
-                Class = 'Sensor')
+            self.properties(Component_Tag = True, classpath = 'morse.core.sensor.Sensor')
         elif calling_module == 'calling.actuator_action':
-            self.properties(Component_Tag = True, Path = 'morse/core/actuator',\
-                Class = 'Actuator')
+            self.properties(Component_Tag = True, classpath = 'morse.core.actuator.Actuator')
         else:
             logger.warning(self.name + ": unknown category: " + calling_module)
 

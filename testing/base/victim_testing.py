@@ -41,7 +41,7 @@ class VictimTest(MorseTestCase):
         env.properties(Temperature='25.0')
         env.configure_service('socket')
 
-        victim = Robot('victim')
+        victim = Victim()
         victim.translate(x=10.0, y=0.0)
 
     def test_victim_interface(self):

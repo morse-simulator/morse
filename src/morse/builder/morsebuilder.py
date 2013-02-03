@@ -171,10 +171,12 @@ class WheeledRobot(Robot):
 class Sensor(Component):
     def __init__(self, filename):
         Component.__init__(self, 'sensors', filename)
+        self.properties(Component_Tag = True)
 
 class Actuator(Component):
     def __init__(self, filename):
         Component.__init__(self, 'actuators', filename)
+        self.properties(Component_Tag = True)
 
 
 class Environment(Component):

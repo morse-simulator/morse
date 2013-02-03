@@ -27,9 +27,9 @@ class RosActionsTest(RosTestCase):
         # Identical to ROS service testing
         
         print("Adding a robot...")
-        robot = Robot('atrv')
+        robot = ATRV()
         
-        waypoint = Actuator('waypoint')
+        waypoint = Waypoint()
         robot.append(waypoint)
         
         waypoint.configure_service('ros')
