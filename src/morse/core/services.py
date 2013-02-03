@@ -6,6 +6,7 @@ from functools import partial
 
 from morse.core import blenderapi
 from morse.core.exceptions import MorseServiceError
+from morse.helpers.loading import create_instance
 
 class MorseServices:
     def __init__(self, impls = []):
@@ -21,44 +22,30 @@ class MorseServices:
         for impl in impls:
             self.add_request_manager(impl)
 
-    def add_request_manager(self, impl):
-        """ Initializes and adds a new request manager from
-        its name.
+    def add_request_manager(self, classpath):
+        """ Initializes and adds a new request manager from its name.
 
-        :param string impl: the name (and path) of the Python class that
-                implements the RequestManager interface (eg: 'SocketRequestManager',
-                'YarpRequestManager',...).
+        :param string classpath: the name (and path) of the Python class that
+                implements the RequestManager interface (eg:
+                'morse.middleware.socket_request_manager.SocketRequestManager',
+                'morse.middleware.yarp_request_manager.YarpRequestManager',...).
         :return: True if the request manager has been successfully loaded.
         """
-        # Import the module containing the class
-        modulename, classname = impl.rsplit('.', 1)
-
-        if not classname in self._request_managers: # Check if the request manager do not already exist
-
-            try:
-                __import__(modulename)
-            except ImportError as detail:
-                logger.error("Error while importing " + modulename + \
-                             "\nError details:\n" + str(detail))
-                return False
-            module = sys.modules[modulename]
-
-            # Create an instance of the object class
-            try:
-                klass = getattr(module, classname)
-            except AttributeError as detail:
-                logger.error("Request Manager " + classname + " not found in " + modulename + ". Check for typos in the configuration file!")
+        # Check if the request manager do not already exist
+        if not classpath in self._request_managers:
+            instance = create_instance(classpath)
+            if not instance:
+                logger.error("Request Manager %s not found. Check for typos in the configuration file!"%classpath)
                 return False
 
-            instance = klass() # In case of instantiation failure, this may raise a MorseServiceError exception
-
-            self._request_managers[classname] = instance
-            logger.info("Successfully initialized the %s request manager." % classname)
+            # In case of instantiation failure, this may raise a MorseServiceError exception
+            self._request_managers[classpath] = instance
+            logger.info("Successfully initialized the %s request manager." % classpath)
         
         return True
 
 
-    def register_request_manager_mapping(self,component, request_manager):
+    def register_request_manager_mapping(self, component, request_manager):
         """Adds a mapping between a component and a request manager: all
         services exposed by this component are handled by this request manager.
 
@@ -67,9 +54,9 @@ class MorseServices:
         
         :param string component: the name of the component that use *request_manager*
                 as request manager.
-        :param string request_manager: the name of the request manager (eg: 
-                'SocketRequestManager', 'YarpRequestManager',...)
-        
+        :param string request_manager: the classpath of the request manager (eg:
+                'morse.middleware.socket_request_manager.SocketRequestManager',
+                'morse.middleware.yarp_request_manager.YarpRequestManager',...).
         """
 
         if not request_manager in self._request_managers:

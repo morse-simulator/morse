@@ -10,7 +10,7 @@ from abc import ABCMeta, abstractmethod
 from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.middleware import AbstractDatastream
-from morse.helpers.loading import create_instance
+from morse.helpers.loading import create_instance, load_module_attribute
 
 
 def register_datastream(classpath, component, args):
@@ -98,18 +98,9 @@ class Datastream(object):
 
         module_name = re.sub('/', '.', source_file)
         # Import the module containing the class
-        try:
-            __import__(module_name)
-        except ImportError as detail:
-            logger.error("%s. Check the 'component_config.py' file for typos" % (detail))
-            return
-        module = sys.modules[module_name]
-
-        try:
-            # Get the reference to the new method
-            func = getattr(module, function_name)
-        except AttributeError as detail:
-            logger.error("%s, in extra module '%s'. Check the 'component_config.py' file for typos" % (detail, module_name))
+        func = load_module_attribute(module_name, function_name)
+        if not func:
+            logger.error("Check the 'component_config.py' file for typos.")
             return
 
         # Insert the function and get a reference to it
