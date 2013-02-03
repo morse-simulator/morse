@@ -79,6 +79,9 @@ class AbstractComponent(object):
     def set_blender_object(self, obj):
         if obj: # Force matrix_parent_inverse to identity #139
             obj.matrix_parent_inverse.identity()
+            # make sure the object is visible in the viewport
+            # otherwise it can prevent from updating its properties
+            obj.hide = False
         self._bpy_object = obj # bpy object
 
     def append(self, obj, level=1):
