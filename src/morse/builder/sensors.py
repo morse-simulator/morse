@@ -284,10 +284,12 @@ class SickLDMRS(LaserSensorWithArc):
         self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 100.0, resolution = 0.25, layers = 4,
                 layer_separation = 0.8, layer_offset = 0.125)
+        mesh = Cube("SickMesh")
+        mesh.scale = (.05, .0825, .044)
+        mesh.color(1., 1., .9)
+        self.append(mesh)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(4)
-        # append sick mesh, from MORSE_COMPONENTS/sensors/sick-ld-mrs.blend
-        self.append_meshes(['SickMesh'])
 
 class Infrared(LaserSensorWithArc):
     def __init__(self, name=None):
