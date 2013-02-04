@@ -19,8 +19,7 @@ class ComponentCreator(AbstractComponent):
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
         bpymorse.deselect_all()
-        bpymorse.add_object(type='EMPTY')
-        # bpymorse.add_empty(type='ARROWS')
+        bpymorse.add_morse_empty()
         obj = bpymorse.get_first_selected_object()
         if cname:
             obj.name = cname
