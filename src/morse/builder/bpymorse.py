@@ -64,6 +64,12 @@ if bpy:
     new_mesh = bpy.data.meshes.new
     new_object = bpy.data.objects.new
 
+def add_morse_empty():
+    """Add MORSE Component Empty object which hlods MORSE logic"""
+    if bpy.app.version >= (2, 65, 0):
+        add_empty(type='ARROWS')
+    else:
+        add_object(type='EMPTY')
 
 def deselect_all():
     select_all(action='DESELECT')

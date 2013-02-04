@@ -356,6 +356,7 @@ class AbstractComponent(object):
             logger.warning(self.name + ": unknown category: " + calling_module)
 
         # add Game Logic sensor and controller to simulate the component
+        # Sensor: Always --- Controller: Python: module = 'calling.XXX_action'
         self.select()
         bpymorse.add_sensor(type='ALWAYS')
         sensor = self._bpy_object.game.sensors[-1]
