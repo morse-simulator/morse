@@ -6,19 +6,19 @@ james = PR2()
 james.translate(x=2.5, y=3.2, z=0.0)
 
 # Sensors and Actuators for navigation stack
-pr2_posture = Sensor('pr2_posture')
+pr2_posture = PR2Posture()
 james.append(pr2_posture)
 pr2_posture.add_stream('ros')
 
-motion_controller = Actuator('xy_omega')
+motion_controller = MotionXYW()
 james.append(motion_controller)
 motion_controller.add_stream('ros')
 
-odometry = Sensor('odometry')
+odometry = Odometry()
 james.append(odometry)
 odometry.add_stream('ros')
 
-Sick = Sensor('sick')
+Sick = Sick()
 Sick.translate(x=0.275, z=0.252)
 james.append(Sick)
 Sick.properties(Visible_arc=False)
@@ -28,7 +28,7 @@ Sick.properties(scan_window=180.0000)
 Sick.add_stream('ros')
 
 # Keyboard control
-keyboard = Actuator('keyboard')
+keyboard = Keyboard()
 keyboard.name = 'keyboard_control'
 james.append(keyboard)
 

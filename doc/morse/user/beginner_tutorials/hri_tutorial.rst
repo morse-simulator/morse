@@ -108,7 +108,7 @@ Appending a pose sensor to the human is easy:
     human = Human()
 
     # Import the pose sensor and attach it to the human.
-    pose = Sensor("pose")
+    pose = Pose()
     human.append(pose)
 
     # [...]
@@ -121,7 +121,7 @@ In this tutorial, we will use sockets to stream the pose out of MORSE:
 
     human = Human()
 
-    pose = Sensor("pose")
+    pose = Pose()
     human.append(pose)
 
     # Set the pose sensor to use the socket interface to communicate 

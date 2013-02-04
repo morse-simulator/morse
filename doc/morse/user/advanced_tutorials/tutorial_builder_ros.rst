@@ -33,13 +33,13 @@ Add a robot to the scene
 ++++++++++++++++++++++++
 .. code-block:: python
 
-    atrv = Robot('atrv')
+    atrv = ATRV()
 
 Append an actuator
 ++++++++++++++++++
 .. code-block:: python
 
-    motion = Actuator('v_omega')
+    motion = MotionVW()
     motion.translate(z=0.3)
     atrv.append(motion)
 
@@ -47,7 +47,7 @@ Append a Gyroscope sensor
 +++++++++++++++++++++++++
 .. code-block:: python
 
-    gyroscope = Sensor('gyroscope')
+    gyroscope = Gyroscope()
     gyroscope.translate(z=0.83)
     atrv.append(gyroscope)
 

@@ -9,35 +9,35 @@ Let's have a look to a typical ``Builder`` script, and explain it, step by step:
     from morse.builder import *
 
     # Append ATRV robot to the scene
-    atrv = Robot('atrv')
+    atrv = ATRV()
 
     # Append an actuator
-    motion = Actuator('v_omega')
+    motion = MotionVW()
     motion.translate(z=0.3)
     atrv.append(motion)
 
     # Append an odometry sensor
-    odometry = Sensor('odometry')
+    odometry = Odometry()
     odometry.translate(x=-0.1, z=0.83)
     atrv.append(odometry)
 
     # Append a proximity sensor
-    proximity = Sensor('proximity')
+    proximity = Proximity()
     proximity.translate(x=-0.2, z=0.83)
     atrv.append(proximity)
 
     # Append a Pose sensor (GPS + Gyroscope)
-    pose = Sensor('pose')
+    pose = Pose()
     pose.translate(x=0.2,z=0.83)
     atrv.append(pose)
 
     # Append a sick laser
-    sick = Sensor('sick')
+    sick = Sick()
     sick.translate(x=0.18,z=0.94)
     atrv.append(sick)
 
     # Append a camera
-    cam = Sensor('video_camera')
+    cam = VideoCamera()
     cam.translate(x=0.3,z=1.1)
     atrv.append(cam)
     cam.properties(cam_width = 128, cam_height = 128)
@@ -72,7 +72,7 @@ Append a robot
 
 To append a robot on the scene (line 4), we just need to write::
 
-    atrv = Robot('atrv')
+    atrv = ATRV()
 
 In order for this work, there must be a Blender file named ``atrv.blend`` in
 the folder ``$MORSE_ROOT/share/morse/data/robots/``. Since ``atrv`` is a
@@ -86,7 +86,7 @@ Append a component
 This task is very similar to the previous one, except that we can make a
 parent relationship with the robot (lines 7 to 9). *ie.*::
 
-    motion = Actuator('v_omega')
+    motion = MotionVW()
     atrv.append(motion)
 
 Once again, this implies that ``v_omega.blend`` exists in
@@ -130,8 +130,8 @@ Component properties
 You can modify the *game properties* of any components within Python (line
 35)::
 
-    sick = Sensor('sick')
-    cam = Sensor('video_camera')
+    sick = Sick()
+    cam = VideoCamera()
     cam.properties(cam_width = 128, cam_height = 128)
 
 .. note::

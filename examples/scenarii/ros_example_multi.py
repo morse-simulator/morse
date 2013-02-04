@@ -4,15 +4,15 @@ from morse.builder import *
 
 def import_atrv(mw):
     # Append ATRV robot to the scene
-    atrv = Robot('atrv')
+    atrv = ATRV()
 
     # Append an actuator
-    motion = Actuator('v_omega')
+    motion = MotionVW()
     motion.translate(z=0.3)
     atrv.append(motion)
 
     # Append a Gyroscope sensor
-    gyroscope = Sensor('gyroscope')
+    gyroscope = Gyroscope()
     gyroscope.translate(z=0.83)
     atrv.append(gyroscope)
 

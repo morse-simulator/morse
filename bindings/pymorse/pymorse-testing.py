@@ -27,24 +27,24 @@ class PymorseTest(MorseTestCase):
         ##### Robot1
         # Names come from the variable name
 
-        robot1 = Robot('atrv')
+        robot1 = ATRV()
         robot1.translate(0.0,1.0,0.0)
 
-        battery = Sensor('battery')
+        battery = Battery()
         battery.add_stream('socket')
         robot1.append(battery)
 
-        motion = Actuator('waypoint')
+        motion = Waypoint()
         motion.add_stream('socket')
         motion.configure_service('socket')
         robot1.append(motion)
 
         ##### Robot2
         # Here, we set explicitely the names via the 'name' property
-        robot2 = Robot('atrv')
+        robot2 = ATRV()
         robot2.name = "Robi"
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.name = "MyPose"
         pose.add_stream('socket')
         robot2.append(pose)

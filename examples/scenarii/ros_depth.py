@@ -1,24 +1,24 @@
 from morse.builder import *
 
 # Append ATRV robot to the scene
-atrv = Robot('atrv')
+atrv = ATRV()
 
 # Append an actuator
-motion = Actuator('v_omega')
+motion = MotionVW()
 motion.translate(z=0.3)
 motion.name = 'Motion'
 atrv.append(motion)
 motion.add_stream('ros')
 
 # Append an Odometry sensor
-odometry = Sensor('odometry')
+odometry = Odometry()
 odometry.name = 'Odometry'
 odometry.translate(z=0.73)
 atrv.append(odometry)
 odometry.add_stream('ros')
 
 # Append a camera
-camera = Sensor('depth_camera')
+camera = DepthCamera()
 camera.name = 'DepthCamera'
 camera.translate(x = 0.3, z = 0.76)
 camera.properties(cam_width = 640, cam_height = 480,

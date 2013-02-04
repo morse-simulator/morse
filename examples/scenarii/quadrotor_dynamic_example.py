@@ -9,23 +9,23 @@ bpy.context.scene.game_settings.physics_step_max = 5
 waypoint_controller = True
 
 # Simple quadrotor with rigid body physics
-Quadrotor = Robot('quadrotor_dynamic')
+Quadrotor = Quadrotor()
 Quadrotor.translate(x= -1.2483, y=1.7043, z=1.8106)
 Quadrotor.name = 'mav'
 
 if waypoint_controller:
-    motion = Actuator('rotorcraft_waypoint')
+    motion = RotorcraftWaypoint()
     motion.name = 'waypoint'
     motion.add_stream('ros')
 else:
     # simple controller taking RC-like roll/pitch/yaw/thrust input
-    motion = Actuator('rotorcraft_attitude')
+    motion = RotorcraftAttitude()
     motion.name = 'attitude'
     motion.add_stream('ros', 'morse.middleware.ros.read_asctec_ctrl_input.CtrlInputReader')
 
 Quadrotor.append(motion)
 
-imu = Sensor('imu')
+imu = IMU()
 imu.name = 'imu'
 # IMU with z-axis down (NED)
 imu.rotate(x=math.pi)

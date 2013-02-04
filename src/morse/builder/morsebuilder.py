@@ -14,10 +14,10 @@ To test this module you can c/p the following code in Blender Python console::
     import sys
     sys.path.append("/usr/local/lib/python3/dist-packages")
     from morse.builder import *
-    atrv=Robot("atrv")
+    atrv=ATRV()
 
 The string passed to the differents Components Classes must be an existing
-.blend file-name, ie. for ``Robot("atrv")`` the file ``atrv.blend`` must exists
+.blend file-name, ie. for ``ATRV()`` the file ``atrv.blend`` must exists
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
 

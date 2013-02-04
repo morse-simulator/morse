@@ -1,13 +1,13 @@
 from morse.builder import *
 
 # Land robot
-ATRV = Robot('atrv')
+ATRV = ATRV()
 
-Pose = Sensor('pose')
+Pose = Pose()
 Pose.translate(x=-0.2000, z=0.9000)
 ATRV.append(Pose)
 
-Motion_Controller = Actuator('v_omega')
+Motion_Controller = MotionVW()
 ATRV.append(Motion_Controller)
 
 
