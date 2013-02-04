@@ -130,7 +130,7 @@ class. For example:
   import morse.builder.sensors
   import morse.builder.actuators
 
-  atrv = Robot('atrv')
+  atrv = ATRV()
 
   infrared = morse.builder.sensors.Infrared("MyInfrared")
   atrv.append(infrared)
@@ -210,8 +210,8 @@ The ``Environment`` class provides these functions:
 
    .. code-block:: python
 
-        dala1 = Robot('atrv')
-        dala2 = Robot('atrv')
+        dala1 = ATRV()
+        dala2 = ATRV()
 
         env = Environment('land-1/trees')
         env.configure_multinode(  protocol='socket',
@@ -248,7 +248,7 @@ Naming of components
 
 You can set the name of a component through the setter ``name``::
 
-    mouse = Robot('atrv')
+    mouse = ATRV()
     mouse.name = "jerry"
 
 
@@ -262,19 +262,19 @@ parents**, to prevent name collision.
 
 Let take an example. Consider this script, with two robots::
 
-    tom = Robot('atrv')
-    lefteye = Sensor('camera')
-    ptu = Actuator('ptu')
-    righteye = Sensor('camera')
+    tom = ATRV()
+    lefteye = VideoCamera()
+    ptu = PTU()
+    righteye = VideoCamera()
     righteye.name = "blindeye"
     
     tom.append(lefteye)
     ptu.append(righteye)
     tom.append(ptu)
     
-    mouse = Robot('atrv')
+    mouse = ATRV()
     mouse.name = "jerry"
-    cam = Sensor('camera')
+    cam = VideoCamera()
     jerry.append(cam)
 
 If you open it in MORSE for edition (with ``morse edit``) and you look at the
@@ -319,7 +319,7 @@ video camera sensor, modify its properties like this:
 
 .. code-block:: python
 
-    camera = Sensor('video_camera')
+    camera = VideoCamera()
     camera.properties(cam_width = 128, cam_height = 128)
 
 

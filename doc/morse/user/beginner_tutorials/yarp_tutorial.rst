@@ -29,7 +29,7 @@ you can add the camera like this:
 
 .. code-block:: python
 
-  Camera = Sensor('video_camera')
+  Camera = VideoCamera()
   Camera.translate(x=0.2, z=0.9)
   ATRV.append(Camera)
 
@@ -41,7 +41,7 @@ which takes as input the coordinates of the destination for the robot.
 
 .. code-block:: python
 
-    Motion_Controller = Actuator('waypoint')
+    Motion_Controller = Waypoint()
     ATRV.append(Motion_Controller)
 
 

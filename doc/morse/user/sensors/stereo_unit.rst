@@ -43,21 +43,21 @@ appended to each other, as this is important to get the desired functionality:
     from morse.builder import *
 
     # Add a robot
-    ATRV = Robot('atrv')
+    ATRV = ATRV()
     ATRV.translate(z=0.1000)
     
     # A pan-tilt unit to be able to orient the cameras
-    Platine = Actuator('ptu')
+    Platine = PTU()
     Platine.translate(x=0.2000, z=0.9000)
     ATRV.append(Platine)
     
     # The STEREO UNIT, where the two cameras will be fixed
-    Stereo = Sensor('stereo_unit')
+    Stereo = StereoUnit()
     Stereo.translate(z=0.0400)
     Platine.append(Stereo)
     
     # Left camera
-    CameraL = Sensor('video_camera')
+    CameraL = VideoCamera()
     CameraL.translate(x=0.1000, y=0.2000, z=0.0700)
     Stereo.append(CameraL)
     CameraL.properties(capturing = True)
@@ -66,7 +66,7 @@ appended to each other, as this is important to get the desired functionality:
     CameraL.properties(cam_focal = 25.0000)
     
     # Right camera
-    CameraR = Sensor('video_camera')
+    CameraR = VideoCamera()
     CameraR.translate(x=0.1000, y=-0.2000, z=0.0700)
     Stereo.append(CameraR)
     CameraR.properties(capturing = True)

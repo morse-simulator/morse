@@ -69,9 +69,9 @@ This kind of actuator should only be added to a robot created from the
     from morse.builder import *
 
     # Append Segway robot to the scene
-    robot = WheeledRobot('segwayrmp400')
+    robot = SegwayRMP400()
     robot.unparent_wheels()
 
     # Add the actuator
-    motion = Actuator('v_omega_diff_drive')
+    motion = MotionVWDiff()
     robot.append(motion)

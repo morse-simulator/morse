@@ -11,7 +11,7 @@ if cmd_folder not in sys.path:
 
 from morse.builder import *
 
-atrv = Robot('atrv')
+atrv = ATRV()
 
 env = Environment('laas/grande_salle')
 env.show_framerate(True)

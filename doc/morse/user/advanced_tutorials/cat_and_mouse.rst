@@ -30,7 +30,7 @@ First we will configure the *Mouse* robot, which is a lot simpler.
 
     from morse.builder import *
 
-    Mouse = Robot('atrv')
+    Mouse = ATRV()
     Mouse.name = "MOUSE"
     Mouse.translate (x=1.0, z=0.2)
 
@@ -46,7 +46,7 @@ First we will configure the *Mouse* robot, which is a lot simpler.
 
   .. code-block:: python
 
-    Keyb = Actuator('keyboard')
+    Keyb = Keyboard()
     Keyb.properties(Speed=3.0)
     Mouse.append(Keyb)
 
@@ -58,7 +58,7 @@ actuator to follow it.
 
   .. code-block:: python
 
-    Cat = Robot('atrv')
+    Cat = ATRV()
     Cat.name = "CAT"
     Cat.translate(x=-6.0, z=0.2)
 
@@ -68,12 +68,12 @@ actuator to follow it.
 
   .. code-block:: python
 
-    Semantic_L = Sensor('semantic_camera')
+    Semantic_L = SemanticCamera()
     Semantic_L.translate(x=0.2, y=0.3, z=0.9)
     Semantic_L.name = 'Camera_L'
     Cat.append(Semantic_L)
 
-    Semantic_R = Sensor('semantic_camera')
+    Semantic_R = SemanticCamera()
     Semantic_R.translate(x=0.2, y=-0.3, z=0.9)
     Semantic_R.name = 'Camera_R'
     Cat.append(Semantic_R)
@@ -83,7 +83,7 @@ actuator to follow it.
 
   .. code-block:: python
 
-    V_W = Actuator('v_omega')
+    V_W = MotionVW()
     Cat.append(V_W)
 
 - We configure these two components to use the :doc:`sockets middleware <../middlewares/socket>`:

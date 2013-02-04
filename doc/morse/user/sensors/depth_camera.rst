@@ -136,7 +136,7 @@ An example for creating a properly configured dept_camera is given below:
 
     from morse.builder import *
 
-    d_camera = Sensor('depth_camera')
+    d_camera = DepthCamera()
     d_camera.properties(cam_near = 2)
     d_camera.properties(cam_far = 15)
     d_camera.properties(retrieve_depth = True)

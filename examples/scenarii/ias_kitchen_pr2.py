@@ -15,31 +15,31 @@ james.translate(x=0.1, y=2.7, z=0.0)
 human = Human()
 human.rotate(z=-3.0)
 
-human_pose = Sensor('pose')
+human_pose = Pose()
 human.append(human_pose)
 
 # Sensors and Actuators for navigation stack
-pr2_posture = Sensor('pr2_posture')
+pr2_posture = PR2Posture()
 james.append(pr2_posture)
 
-#semantic_camera = Sensor('semantic_camera')
+#semantic_camera = SemanticCamera()
 #semantic_camera.translate(x=0.086, y=0, z=1.265)
 #james.append(semantic_camera)
 
-Motion_Controller = Actuator('xy_omega')
+Motion_Controller = MotionXYW()
 james.append(Motion_Controller)
 
-Odometry = Sensor('odometry')
+Odometry = Odometry()
 james.append(Odometry)
 
-Pose_sensor = Sensor('pose')
+Pose_sensor = Pose()
 Pose_sensor.name = 'Pose_sensor'
 james.append(Pose_sensor)
 
-IMU = Sensor('imu')
+IMU = IMU()
 james.append(IMU)
 
-Sick = Sensor('sick')
+Sick = Sick()
 Sick.translate(x=0.275, z=0.252)
 james.append(Sick)
 Sick.properties(Visible_arc = False)
@@ -48,7 +48,7 @@ Sick.properties(resolution = 1.0000)
 Sick.properties(scan_window = 180.0000)
 
 # Keyboard control
-keyboard = Actuator('keyboard')
+keyboard = Keyboard()
 keyboard.name = 'keyboard_control'
 james.append(keyboard)
 

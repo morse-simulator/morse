@@ -65,12 +65,12 @@ get some odometry feedback.
     james.translate(x=2.5, y=3.2, z=0.0)
 
     # An odometry sensor to get odometry information
-    odometry = Sensor('odometry')
+    odometry = Odometry()
     james.append(odometry)
     odometry.add_stream('ros')
 
     # Keyboard control
-    keyboard = Actuator('keyboard')
+    keyboard = Keyboard()
     keyboard.name = 'keyboard_control'
     james.append(keyboard)
 
@@ -108,7 +108,7 @@ First complete the ``scenario.py`` script by adding a posture sensor:
     james = PR2()
     james.translate(x=2.5, y=3.2, z=0.0)
 
-    pr2_posture = Sensor('pr2_posture')
+    pr2_posture = PR2Posture()
     james.append(pr2_posture)
     pr2_posture.add_stream('ros')
 
@@ -179,7 +179,7 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
 
 .. code-block:: python
 
-    sick = Sensor('sick')
+    sick = Sick()
     sick.translate(x=0.275, z=0.252)
     james.append(sick)
     sick.properties(Visible_arc = False)
@@ -258,7 +258,7 @@ Then, we need to add a motion controller to our robot. Open your ``scenario.py``
 
 .. code-block:: python
 
-    motion_controller = Actuator('xy_omega')
+    motion_controller = MotionXYW()
     james.append(motion_controller)
     motion_controller.add_stream('ros')
 

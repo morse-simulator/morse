@@ -66,7 +66,7 @@ following example:
     from math import radians
 
     # Create a waypoint controller
-    waypoint = Actuator('rotorcraft_waypoint')
+    waypoint = RotorcraftWaypoint()
     waypoint.properties(Target='myTargetObject')
     waypoint.properties(MaxBankAngle=radians(20))
 

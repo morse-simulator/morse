@@ -43,15 +43,15 @@ Let consider MORSE has been started with the following simulation script:
     from morse.builder import *
 
     # Add a robot with a position sensor and a motion controller
-    r2d2 = Robot('atrv')
+    r2d2 = ATRV()
     r2d2.name = "r2d2"
 
-    pose = Sensor('pose')
+    pose = Pose()
     pose.name = "pose"
     pose.add_stream('socket')
     r2d2.append(pose)
 
-    motion = Actuator('waypoint')
+    motion = Waypoint()
     motion.name = "motion"
     motion.add_stream('socket')
     motion.configure_service('socket')

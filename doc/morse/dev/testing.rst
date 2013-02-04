@@ -48,8 +48,8 @@ checks that MORSE `list_robots` control service actually returns both robots.
             """
 
             # Adding 2 robots
-            robot1 = Robot('jido')
-            robot2 = Robot('atrv')
+            robot1 = Jido()
+            robot2 = ATRV()
 
             env = Environment('indoors-1/indoor-1')
 
