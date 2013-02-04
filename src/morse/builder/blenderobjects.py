@@ -71,6 +71,5 @@ class Camera(AbstractComponent):
         # no collision by default for components
         obj.game.physics_type = 'NO_COLLISION'
         self.set_blender_object(obj)
-        # looking in +x
-        # EDIT: not here but in parent component
-        #self.rotate(x=math.pi/2, z=-math.pi/2)
+        # Camera look in +Z
+        self.rotate(y=math.pi)
