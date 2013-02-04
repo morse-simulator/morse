@@ -22,6 +22,7 @@ from pymorse import Morse
 
 IMAGE_WIDTH=320
 IMAGE_HEIGHT=240
+DEBUG_PGM=False # turn this to True to save difference images
 
 def send_angles(orientation_stream, yaw, pitch, roll):
     orientation_stream.publish({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
@@ -165,13 +166,15 @@ class CameraTest(MorseTestCase):
         self.assert_images_diff_less(image8u, image_from_file, delta)
 
     def assert_images_diff_less(self, imageA, imageB, delta):
-        diff = diff_image(imageA, imageB, debug="less")
+        debug = "less" if DEBUG_PGM else None
+        diff = diff_image(imageA, imageB, debug=debug)
         # Diff max is: width * height * 255
         # delta in percent (of the maximum difference)
         self.assertLess(diff, delta * 2.55 * len(imageA))
 
     def assert_images_diff_greater(self, imageA, imageB, delta):
-        diff = diff_image(imageA, imageB, debug="greater")
+        debug = "greater" if DEBUG_PGM else None
+        diff = diff_image(imageA, imageB, debug=debug)
         # Diff max is: width * height * 255
         # delta in percent (of the maximum difference)
         self.assertGreater(diff, delta * 2.55 * len(imageA))
@@ -229,7 +232,8 @@ class CameraTest(MorseTestCase):
                                             gyroscope_stream, 2.70, 5, precision)
             # XXX robot might have not graphically turned yet! happens randomly!
             # gyroscope can give its new orientation while the physics didnt update yet.
-            print("debug: rotate in time: %s (False = timeout)"%str(in_time))
+            if DEBUG_PGM:
+                print("debug: rotate in time: %s (False = timeout)"%str(in_time))
             # "flush" the camera stream for 1 second
             flush_camera(camera_stream, 1.0)
 
