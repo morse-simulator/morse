@@ -261,6 +261,8 @@ class Hokuyo(LaserSensorWithArc):
                 scan_window = 270.0, resolution = 0.25)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
+        # create default Arc_
+        self.create_laser_arc()
 
 class Sick(LaserSensorWithArc):
     def __init__(self, name=None):
@@ -274,6 +276,8 @@ class Sick(LaserSensorWithArc):
         self.frequency(10)
         # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
         self.append_meshes(['SickMesh'])
+        # create default Arc_
+        self.create_laser_arc()
 
 class SickLDMRS(LaserSensorWithArc):
     def __init__(self, name=None):
@@ -290,6 +294,8 @@ class SickLDMRS(LaserSensorWithArc):
         self.append(mesh)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(4)
+        # create default Arc_
+        self.create_laser_arc()
 
 class Infrared(LaserSensorWithArc):
     def __init__(self, name=None):
@@ -305,6 +311,8 @@ class Infrared(LaserSensorWithArc):
                 scan_window = 20.0, resolution = 1.0)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
+        # create default Arc_
+        self.create_laser_arc()
 
 class VideoCamera(SensorCreator):
     def __init__(self, name=None, \
@@ -333,11 +341,7 @@ class VideoCamera(SensorCreator):
         # looking in +X
         self.rotate(x=math.pi/2, z=math.pi/2)
         # append CameraMesh with its textures
-        imported_objects = self.append_meshes(['CameraMesh'], "video_camera")
-        # TODO fix the CameraMesh location and rotation in video_camera.blend
-        camera_mesh = imported_objects[0]
-        camera_mesh.rotation_euler = (0, math.pi/2, math.pi/2)
-        camera_mesh.location = (0, 0, 0.015)
+        self.append_meshes(['CameraMesh'], "camera")
 
 class DepthCamera(VideoCamera):
     def __init__(self, name=None):
