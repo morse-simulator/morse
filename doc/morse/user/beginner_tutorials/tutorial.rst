@@ -53,7 +53,7 @@ The robot is the base where we will install other sensors and actuators.
 
 .. code-block:: python
 
-    atrv = Robot('atrv')
+    atrv = ATRV()
 
 Here, we simply import a standard ATRV 4-wheeled outdoor robot.
 
@@ -69,7 +69,7 @@ controls the robot by changing the linear and angular velocity of the movement.
 
 .. code-block:: python
 
-    motion = Actuator('v_omega')
+    motion = MotionVW()
     motion.translate(z=0.3)
     atrv.append(motion)
 
@@ -87,7 +87,7 @@ documentation page of the component: :doc:`Pose <../sensors/pose>`
 
 .. code-block:: python
 
-    pose = Sensor('pose')
+    pose = Pose()
     pose.translate(z=0.83)
     atrv.append(pose)
 

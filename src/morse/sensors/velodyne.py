@@ -176,6 +176,12 @@ class VelodyneClass(morse.core.sensor.Sensor):
                     self.local_data['point_list'][index] = arc_point
                     index = index + 1
 
+        self.applyRotationZ()
+
+    def applyRotationZ(self, rz=.01745):
+        # The second parameter specifies a "local" movement
+        self.bge_object.applyRotation([0, 0, rz], True)
+
 
 def valid_range(point_vector, radius):
     """ Determine if a ray is longer than radius

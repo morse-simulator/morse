@@ -59,8 +59,8 @@ In this example we show part of a builder script for a multi-node scene:
 
 .. code-block:: python
 
-    dala1 = Robot('atrv')
-    dala2 = Robot('atrv')
+    dala1 = ATRV()
+    dala2 = ATRV()
 
     env = Environment('land-1/trees')
     env.configure_multinode(    protocol='socket',

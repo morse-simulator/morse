@@ -42,8 +42,8 @@ Sensors
     Include the sensors in your simulation by using the identifier below the pictures::
 
         from morse.builder import *
-        myrobot = Robot('atrv')
-        cam = Sensor('video_camera')
+        myrobot = ATRV()
+        cam = VideoCamera()
         myrobot.append(cam)
     
     For sensors not pictured, check their specific page.
@@ -63,8 +63,8 @@ Actuators
     Include the actuators in your simulation by using the identifier below the pictures::
 
         from morse.builder import *
-        myrobot = Robot('atrv')
-        arm = Sensor('kuka_lwr')
+        myrobot = ATRV()
+        arm = KukaLWR()
         myrobot.append(arm)
 
     For actuators not pictured, check their specific page.

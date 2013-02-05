@@ -21,12 +21,12 @@ To install the gripper on a robotic arm using the Morse Builder API,
 it is necessary to make the gripper a child of the arm, and to place the gripper
 in the correct position with respect to the arm. Example::
 
-    kuka_arm = Actuator('kuka_lwr')
+    kuka_arm = KukaLWR()
     kuka_arm.translate(x=0.1850, y=0.2000, z=0.9070)
     kuka_arm.rotate(x=1.5708, y=1.5708)
     Jido.append(kuka_arm)
 
-    gripper = Actuator('gripper')
+    gripper = Gripper()
     gripper.translate(z=1.2800)
     kuka_arm.append(gripper)
 

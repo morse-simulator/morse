@@ -1,17 +1,17 @@
 from morse.builder import *
 
 # Land robot
-ATRV = Robot('atrv')
+ATRV = ATRV()
 
-Pose = Sensor('pose')
+Pose = Pose()
 Pose.translate(x=-0.2000, z=0.9000)
 ATRV.append(Pose)
 
-Camera = Sensor('video_camera')
+Camera = VideoCamera()
 Camera.translate(x=0.2000, z=0.9000)
 ATRV.append(Camera)
 
-Motion_Controller = Actuator('waypoint')
+Motion_Controller = Waypoint()
 ATRV.append(Motion_Controller)
 
 

@@ -14,6 +14,7 @@ persistantstorage = morse.core.blenderapi.persistantstorage()
 from morse.core.services import MorseServices
 from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
+from morse.helpers.loading import create_instance
 
 # Constants for stream directions
 IN = 'IN'
@@ -58,9 +59,12 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
 
         robot_instance.components.append(child)
 
+        if not 'classpath' in child:
+            logger.error("No 'classpath' in child %s"%str(child.name))
+            return False
         # Create an instance of the component class
         #  and add it to the component list of persistantstorage()
-        instance = create_instance(child, robot_instance)
+        instance = create_instance(child['classpath'], child, robot_instance)
         if instance != None:
             persistantstorage.componentDict[child.name] = instance
         else:
@@ -158,27 +162,21 @@ def create_dictionaries ():
 
     # Get the robots
     for obj in scene.objects:
-        try:
-            obj['Robot_Tag']
+        if 'Robot_Tag' in obj or 'External_Robot_Tag' in obj:
+            if not 'classpath' in obj:
+                logger.error("No 'classpath' in %s"%str(obj.name))
+                return False
             # Create an object instance and store it
-            instance = create_instance (obj)
-            if instance != None:
+            instance = create_instance(obj['classpath'], obj)
+            if not instance:
+                logger.error("Could not create %s"%str(obj['classpath']))
+                return False
+            # store instance in persistant storage dictionary
+            if 'Robot_Tag' in obj:
                 persistantstorage.robotDict[obj] = instance
             else:
-                return False
-        except KeyError as detail:
-            pass
-        try:
-            obj['External_Robot_Tag']
-            # Create an object instance and store it
-            instance = create_instance (obj)
-            if instance != None:
                 persistantstorage.externalRobotDict[obj] = instance
-            else:
-                return False
-        except KeyError as detail:
-            pass
-    
+
     if not (persistantstorage.robotDict or persistantstorage.externalRobotDict): # No robot!
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -267,53 +265,6 @@ def check_dictionaries():
     logger.info("------------------------------------")
     logger.info ("")
 
-def get_class(module_name, class_name):
-    """ Dynamically creates an instance of a Python class.
-    """
-    try:
-        __import__(module_name)
-    except ImportError as detail:
-        logger.error ("Module not found: %s" % detail)
-        return None
-    module = sys.modules[module_name]
-    # Create an instance of the object class
-    try:
-        klass = getattr(module, class_name)
-    except AttributeError as detail:
-        logger.error ("Module attribute not found: %s" % detail)
-        return None
-    return klass
-
-def create_instance(obj, parent=None):
-    """ Dynamically load a Python module and create an instance object
-        of the class defined within. """
-    # Read the path and class of the object from the Logic Properties
-    source_file = obj['Path']
-    module_name = re.sub('/', '.', source_file)
-    logger.debug("Path to Component Class: %s" % module_name)
-    klass = get_class(module_name, obj['Class'])
-    if klass != None:
-        return klass(obj, parent)
-    else:
-        return None
-
-def create_datastream(datastream):
-    """ Creates an instances of a datastream class.
-    """
-    modulename, classname = datastream.rsplit('.', 1)
-    klass = get_class(modulename, classname)
-    if klass != None:
-        return klass()
-    else:
-        logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Datastream '""" + modulename + """'
-    module could not be found!
-    
-    Make sure the required middleware has been selected
-    for installation from the cmake configuration.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        """)
 
 def get_components_of_type(classname):
     components = []
@@ -404,7 +355,7 @@ def link_datastreams():
                     break
 
             if not found:
-                datastream_instance = create_datastream (datastream_name)
+                datastream_instance = create_instance(datastream_name)
                 if datastream_instance != None:
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
@@ -464,21 +415,13 @@ def link_services():
                 return False
 
         for request_manager in request_manager_data:
-            try:
-                modulename, classname = request_manager.rsplit('.', 1)
-            except ValueError:
-                logger.error("You must specify the fully qualified name " + \
-                             "of the request manager (eg: " + \
-                             "morse.middleware.socket_request_manager.SocketRequestManager)")
-                return False
-            
             # Load required request managers
             if not persistantstorage.morse_services.add_request_manager(request_manager):
                 return False
             
-            persistantstorage.morse_services.register_request_manager_mapping(component_name, classname)
+            persistantstorage.morse_services.register_request_manager_mapping(component_name, request_manager)
             instance.register_services()
-            logger.info("Component: '%s' using middleware '%s' for services" % (component_name, classname))
+            logger.info("Component: '%s' using middleware '%s' for services" % (component_name, request_manager))
     
     return True
 
@@ -495,28 +438,8 @@ def load_overlays():
         return True
 
     for request_manager_name, overlays in overlays_list.items():
-        
-        # In case the fully-qualified name of the request manager has been 
-        # provided, keep only the class name
-        request_manager_name = request_manager_name.split('.')[-1]
-        
         for overlaid_name, overlay_details in overlays.items():
             overlay_name, kwargs = overlay_details
-            modulename, classname = overlay_name.rsplit('.', 1)
-            
-            try:
-                __import__(modulename)
-            except ImportError as detail:
-                logger.error("Module for overlay %s not found: %s." % (classname, detail))
-                return False
-
-            module = sys.modules[modulename]
-            # Create an instance of the object class
-            try:
-                klass = getattr(module, classname)
-            except AttributeError as detail:
-                logger.error("Overlay not found: %s." % detail)
-                return False
 
             try:
                 overlaid_object = persistantstorage.componentDict[overlaid_name]
@@ -526,7 +449,7 @@ def load_overlays():
 
             # Instanciate the overlay, passing the overlaid object to
             # the constructor + any optional arguments
-            instance = klass(overlaid_object, **kwargs)
+            instance = create_instance(overlay_name, overlaid_object, **kwargs)
             persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
             persistantstorage.overlayDict[overlay_name] = instance
@@ -564,7 +487,7 @@ def add_modifiers():
                     break
                     
             if not found:
-                modifier_instance = create_datastream(modifier_name)
+                modifier_instance = create_instance(modifier_name)
                 if modifier_instance != None:
                     persistantstorage.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
@@ -599,9 +522,9 @@ def init_multinode():
 
     # Get the correct class reference according to the chosen protocol
     if protocol == "socket":
-        klass = get_class("morse.multinode.socket", "SocketNode")
+        classpath = "morse.multinode.socket.SocketNode"
     elif protocol == "hla":
-        klass = get_class("morse.multinode.hla", "HLANode")
+        classpath = "morse.multinode.hla.HLANode"
 
     try:
         server_address = multinode_config.node_config["server_address"]
@@ -619,8 +542,9 @@ def init_multinode():
 
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
-    persistantstorage.node_instance = klass(node_name, server_address, server_port,
-            persistantstorage)
+
+    persistantstorage.node_instance = create_instance(classpath, \
+            node_name, server_address, server_port, persistantstorage)
 
 def init(contr):
     """ General initialization of MORSE
@@ -719,11 +643,12 @@ def init_supervision_services():
     # First, load and map the socket request manager to the pseudo
     # 'simulation' component:
     try:
-        if not persistantstorage.morse_services.add_request_manager("morse.middleware.socket_request_manager.SocketRequestManager"):
+        request_manager = "morse.middleware.socket_request_manager.SocketRequestManager"
+        if not persistantstorage.morse_services.add_request_manager(request_manager):
             return False
         # The simulation mangement services always uses at least sockets for requests.
-        persistantstorage.morse_services.register_request_manager_mapping("simulation", "SocketRequestManager")
-        persistantstorage.morse_services.register_request_manager_mapping("communication", "SocketRequestManager")
+        persistantstorage.morse_services.register_request_manager_mapping("simulation", request_manager)
+        persistantstorage.morse_services.register_request_manager_mapping("communication", request_manager)
 
     except MorseServiceError as e:
         #...no request manager :-(
@@ -739,20 +664,12 @@ def init_supervision_services():
 
         for request_manager in request_managers:
             try:
-                modulename, classname = request_manager.rsplit('.', 1)
-            except ValueError:
-                logger.error("You must specify the fully qualified name " + \
-                             "of the request manager (eg: " + \
-                             "morse.middleware.socket_request_manager.SocketRequestManager)")
-                return False
-
-            try:
                 # Load required request managers
                 if not persistantstorage.morse_services.add_request_manager(request_manager):
                     return False
 
-                persistantstorage.morse_services.register_request_manager_mapping("simulation", classname)
-                logger.info("Adding '{}' to the middlewares for simulation control".format(classname))
+                persistantstorage.morse_services.register_request_manager_mapping("simulation", request_manager)
+                logger.info("Adding '{}' to the middlewares for simulation control".format(request_manager))
             except MorseServiceError as e:
                 #...no request manager :-(
                 logger.critical(str(e))

@@ -1,19 +1,19 @@
 from morse.builder import *
 
-Cat = Robot('atrv')
+Cat = ATRV()
 Cat.name = "CAT"
 Cat.translate(x=-6.0, z=0.2)
 #Cat.rotate(z=-1.5708)
 
-V_W = Actuator('v_omega')
+V_W = MotionVW()
 Cat.append(V_W)
 
-Semantic_L = Sensor('semantic_camera')
+Semantic_L = SemanticCamera()
 Semantic_L.translate(x=0.2, y=0.3, z=0.9)
 Semantic_L.name = "Camera_L"
 Cat.append(Semantic_L)
 
-Semantic_R = Sensor('semantic_camera')
+Semantic_R = SemanticCamera()
 Semantic_R.translate(x=0.2, y=-0.3, z=0.9)
 Semantic_R.name = "Camera_R"
 Cat.append(Semantic_R)
@@ -23,12 +23,12 @@ Semantic_L.add_stream('socket')
 Semantic_R.add_stream('socket')
 
 
-Mouse = Robot('atrv')
+Mouse = ATRV()
 Mouse.name = "MOUSE"
 Mouse.properties(Object = True, Graspable = False, Label = "MOUSE")
 Mouse.translate (x=1.0, z=0.2)
 
-Keyb = Actuator('keyboard')
+Keyb = Keyboard()
 Keyb.properties(Speed=3.0)
 Mouse.append(Keyb)
 

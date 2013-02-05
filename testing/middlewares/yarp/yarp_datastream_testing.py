@@ -47,14 +47,14 @@ class YARP_MW_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         
-        robot = Robot('atrv')
+        robot = ATRV()
 
-        pose = Sensor('pose')
+        pose = Pose()
         pose.translate(z=-0.10)
         robot.append(pose)
         pose.add_stream('yarp')
 
-        motion = Actuator('v_omega')
+        motion = MotionVW()
         robot.append(motion)
         motion.add_stream('yarp')
         

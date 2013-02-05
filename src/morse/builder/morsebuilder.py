@@ -14,10 +14,10 @@ To test this module you can c/p the following code in Blender Python console::
     import sys
     sys.path.append("/usr/local/lib/python3/dist-packages")
     from morse.builder import *
-    atrv=Robot("atrv")
+    atrv=ATRV()
 
 The string passed to the differents Components Classes must be an existing
-.blend file-name, ie. for ``Robot("atrv")`` the file ``atrv.blend`` must exists
+.blend file-name, ie. for ``ATRV()`` the file ``atrv.blend`` must exists
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
 
@@ -116,11 +116,14 @@ class Armature(AbstractComponent):
         """
         AbstractComponent.__init__(self, filename=filename)
         self.set_blender_object(bpymorse.get_object(objectname))
+        # default classpath for Armature (can be modified)
+        self.properties(classpath="morse.actuators.armature.Armature")
 
 
 class Robot(Component):
     def __init__(self, filename):
         Component.__init__(self, 'robots', filename)
+        self.properties(Robot_Tag = True)
 
     def add_default_interface(self, stream):
         for child in self.children:
@@ -171,10 +174,12 @@ class WheeledRobot(Robot):
 class Sensor(Component):
     def __init__(self, filename):
         Component.__init__(self, 'sensors', filename)
+        self.properties(Component_Tag = True)
 
 class Actuator(Component):
     def __init__(self, filename):
         Component.__init__(self, 'actuators', filename)
+        self.properties(Component_Tag = True)
 
 
 class Environment(Component):

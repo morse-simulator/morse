@@ -29,7 +29,7 @@ in the "grande-salle" scene:
 .. code-block:: python
 
 	from morse.builder import *
-	atrv = Robot('atrv')
+	atrv = ATRV()
 	env = Environment('laas/grande_salle')
 	env.show_framerate(True)
 	env.show_physics(False)

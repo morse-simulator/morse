@@ -56,7 +56,7 @@ instance. Otherwise the robot will not move.
     from morse.builder import *
 
     # Append Segway robot to the scene
-    robot = WheeledRobot('segwayrmp400')
+    robot = SegwayRMP400()
     robot.rotate(z=0.73)
     robot.translate(x=-2.0, z=0.2)
     robot.unparent_wheels()
@@ -69,7 +69,7 @@ parenting them to the robot.
 
 .. code-block:: python
 
-    pose = Sensor('pose')
+    pose = Pose()
     robot.append(pose)
     pose.translate(x=0.5, y=0.1, z=0.4)
     pose.rotate(x=1.57)
@@ -78,7 +78,7 @@ parenting them to the robot.
 
 .. code-block:: python
 
-    pose = Sensor('pose')
+    pose = Pose()
     pose.translate(x=0.5, y=0.1, z=0.4)
     pose.rotate(x=1.57)
     robot.append(pose)

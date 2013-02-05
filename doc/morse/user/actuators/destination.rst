@@ -34,8 +34,8 @@ Properties
 
 	.. code-block:: python
 
-		atrv = Robot('atrv')
-		dest = Actuator('destination')
+		atrv = ATRV()
+		dest = Destination()
 		atrv.append(dest)
 		dest.properties(Speed=2.5, Tolerance=0.5)
 

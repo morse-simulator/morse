@@ -20,7 +20,7 @@ from pymorse import Morse
 class LightTest(MorseTestCase):
 
     def setUpEnv(self):
-        atrv = Robot('atrv')
+        atrv = ATRV()
 
         cam = VideoCamera()
         cam.properties(capturing = True, cam_width = 320, cam_height = 240, \

@@ -129,9 +129,9 @@ The following example is taken from one of the ROS unit-tests:
 
    from morse.builder import *
 
-   robot = Robot('atrv')
+   robot = ATRV()
     
-   waypoint = Actuator('waypoint')
+   waypoint = Waypoint()
    robot.append(waypoint)
     
    waypoint.configure_overlay('ros',

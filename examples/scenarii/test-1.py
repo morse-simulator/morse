@@ -1,37 +1,37 @@
 from morse.builder import *
 
 # Append ATRV robot to the scene
-atrv = Robot('atrv')
+atrv = ATRV()
 
 # Append an actuator
-motion = Actuator('v_omega')
+motion = MotionVW()
 motion.translate(z=0.3)
 atrv.append(motion)
 
 # Append an odometry sensor
-odometry = Sensor('odometry')
+odometry = Odometry()
 odometry.translate(x=-0.1, z=0.83)
 atrv.append(odometry)
 
 # Append a proximity sensor
-proximity = Sensor('proximity')
+proximity = Proximity()
 proximity.translate(x=-0.2, z=0.83)
 atrv.append(proximity)
 
 # Append a Pose sensor (GPS + Gyroscope)
-pose = Sensor('pose')
+pose = Pose()
 pose.translate(x=0.2,z=0.83)
 atrv.append(pose)
 
 # Append a sick laser
-sick = Sensor('sick')
+sick = Sick()
 sick.translate(x=0.18,z=0.94)
 atrv.append(sick)
 sick.properties(resolution = 1)
 sick.properties(laser_range = 5.0)
 
 # Append a camera
-cam = Sensor('video_camera')
+cam = VideoCamera()
 cam.translate(x=0.3,z=1.1)
 atrv.append(cam)
 cam.properties(cam_width = 128, cam_height = 128)
