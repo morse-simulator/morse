@@ -39,6 +39,7 @@ from morse.sensors import accelerometer, \
                           human_posture, \
                           imu,       \
                           laserscanner, \
+                          mocap_posture, \
                           odometry,  \
                           pose,      \
                           proximity, \
