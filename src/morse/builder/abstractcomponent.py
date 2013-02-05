@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
-from morse.builder import bpymorse
 import copy
 
+from morse.builder import bpymorse
 from morse.builder.data import *
 
 class Configuration(object):
