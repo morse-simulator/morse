@@ -123,6 +123,7 @@ class Armature(AbstractComponent):
 class Robot(Component):
     def __init__(self, filename):
         Component.__init__(self, 'robots', filename)
+        self.properties(Robot_Tag = True)
 
     def add_default_interface(self, stream):
         for child in self.children:
