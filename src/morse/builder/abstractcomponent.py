@@ -317,7 +317,15 @@ class AbstractComponent(object):
         if frequency:
             delay = max(0, bpymorse.get_fps() // frequency - 1)
         sensors = [s for s in self._bpy_object.game.sensors if s.type == 'ALWAYS']
-        if len(sensors) > 1:
+        # New MORSE_LOGIC sensor, see AbstractComponent.morseable() bellow
+        morselogic = [s for s in sensors if s.name.startswith('MORSE_LOGIC')]
+        if len(morselogic) > 1:
+            logger.warning(self.name + " has too many MORSE_LOGIC sensors to "+\
+                    "tune its frequency, change it through Blender")
+        elif len(morselogic) > 0:
+            morselogic[0].frequency = delay
+        # Backward compatible (some actuators got special logic)
+        elif len(sensors) > 1:
             logger.warning(self.name + " has too many Game Logic sensors to "+\
                     "tune its frequency, change it through Blender")
         elif len(sensors) > 0:
@@ -358,7 +366,7 @@ class AbstractComponent(object):
         # add Game Logic sensor and controller to simulate the component
         # Sensor: Always --- Controller: Python: module = 'calling.XXX_action'
         self.select()
-        bpymorse.add_sensor(type='ALWAYS')
+        bpymorse.add_sensor(type='ALWAYS', name='MORSE_LOGIC')
         sensor = self._bpy_object.game.sensors[-1]
         sensor.use_pulse_true_level = True
         bpymorse.add_controller(type='PYTHON')
