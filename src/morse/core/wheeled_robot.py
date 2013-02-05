@@ -244,6 +244,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
                 128)    # flag, 128=disable collision between wheel and parent
         # no parameters are set on x and z axis to allow full rotation about it
         joint.setParam(4,0.0,0.0) # no rotation about Y axis - min=0, max=0
+        joint.setParam(5,0.0,0.0) # no rotation about Z axis - min=0, max=0
         return joint # return a reference to the constraint
 
 
