@@ -36,6 +36,7 @@ from morse.sensors import accelerometer, \
                           camera,    \
                           gps,       \
                           gyroscope, \
+                          human_posture, \
                           imu,       \
                           laserscanner, \
                           odometry,  \
