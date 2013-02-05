@@ -9,6 +9,7 @@ if (BUILD_CORE_SUPPORT)
 	add_subdirectory(robots/human)
 	add_subdirectory(robots/segway)
 	add_subdirectory(robots/pr2)
+	add_subdirectory(robots/pionner3dx)
 endif()
 
 if (BUILD_ROS_SUPPORT)
