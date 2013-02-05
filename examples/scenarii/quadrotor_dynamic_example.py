@@ -1,5 +1,5 @@
-from morse.builder.morsebuilder import *
-
+from morse.builder import *
+import bpy
 import math
 
 bpy.context.scene.game_settings.fps = 120
@@ -9,9 +9,9 @@ bpy.context.scene.game_settings.physics_step_max = 5
 waypoint_controller = True
 
 # Simple quadrotor with rigid body physics
-Quadrotor = Quadrotor()
-Quadrotor.translate(x= -1.2483, y=1.7043, z=1.8106)
-Quadrotor.name = 'mav'
+quadrotor = Quadrotor()
+quadrotor.translate(x= -1.2483, y=1.7043, z=1.8106)
+quadrotor.name = 'mav'
 
 if waypoint_controller:
     motion = RotorcraftWaypoint()
@@ -23,14 +23,14 @@ else:
     motion.name = 'attitude'
     motion.add_stream('ros', 'morse.middleware.ros.read_asctec_ctrl_input.CtrlInputReader')
 
-Quadrotor.append(motion)
+quadrotor.append(motion)
 
 imu = IMU()
 imu.name = 'imu'
 # IMU with z-axis down (NED)
 imu.rotate(x=math.pi)
 imu.add_stream('ros')
-Quadrotor.append(imu)
+quadrotor.append(imu)
 
 env = Environment('indoors-1/indoor-1')
 env.show_framerate(True)

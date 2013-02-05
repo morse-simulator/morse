@@ -1,24 +1,23 @@
 from morse.builder import *
 
 # Land robot
-ATRV = ATRV()
+atrv = ATRV()
 
-Pose = Pose()
-Pose.translate(x=-0.2000, z=0.9000)
-ATRV.append(Pose)
+pose = Pose()
+pose.translate(x=-0.2000, z=0.9000)
+atrv.append(pose)
 
-Camera = VideoCamera()
-Camera.translate(x=0.2000, z=0.9000)
-ATRV.append(Camera)
+camera = VideoCamera()
+camera.translate(x=0.2000, z=0.9000)
+atrv.append(camera)
 
-Motion_Controller = Waypoint()
-ATRV.append(Motion_Controller)
-
+motion = Waypoint()
+atrv.append(motion)
 
 # Scene configuration
-Motion_Controller.add_stream('yarp')
-Pose.add_stream('yarp')
-Camera.add_stream('yarp')
+motion.add_stream('yarp')
+pose.add_stream('yarp')
+camera.add_stream('yarp')
 
 env = Environment('indoors-1/indoor-1')
 env.aim_camera([1.0470, 0, 0.7854])

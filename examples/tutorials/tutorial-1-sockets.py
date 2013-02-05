@@ -1,19 +1,19 @@
 from morse.builder import *
 
 # Land robot
-ATRV = ATRV()
+atrv = ATRV()
 
-Pose = Pose()
-Pose.translate(x=-0.2000, z=0.9000)
-ATRV.append(Pose)
+pose = Pose()
+pose.translate(x=-0.2000, z=0.9000)
+atrv.append(pose)
 
-Motion_Controller = MotionVW()
-ATRV.append(Motion_Controller)
+motion = MotionVW()
+atrv.append(motion)
 
 
 # Scene configuration
-Motion_Controller.configure_service('socket')
-Pose.configure_service('socket')
+motion.configure_service('socket')
+pose.configure_service('socket')
 
 env = Environment('indoors-1/indoor-1')
 env.place_camera([5, -5, 6])

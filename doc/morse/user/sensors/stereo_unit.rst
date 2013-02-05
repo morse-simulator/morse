@@ -43,13 +43,13 @@ appended to each other, as this is important to get the desired functionality:
     from morse.builder import *
 
     # Add a robot
-    ATRV = ATRV()
-    ATRV.translate(z=0.1000)
+    atrv = ATRV()
+    atrv.translate(z=0.1000)
     
     # A pan-tilt unit to be able to orient the cameras
     Platine = PTU()
     Platine.translate(x=0.2000, z=0.9000)
-    ATRV.append(Platine)
+    atrv.append(Platine)
     
     # The STEREO UNIT, where the two cameras will be fixed
     Stereo = StereoUnit()

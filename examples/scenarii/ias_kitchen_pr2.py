@@ -1,15 +1,14 @@
-from morse.builder.morsebuilder import *
-from morse.builder.extensions.pr2extension import PR2
+from morse.builder import *
 
 # http://www.openrobots.org/morse/doc/latest/user/tutorial.html
 
 # Append ATRV robot to the scene
-james = PR2()
+james = BasePR2()
 james.configure_service('ros')
 james.head.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.l_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.r_arm.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
-james.torso_lift.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
+james.torso.configure_overlay('ros', 'morse.middleware.ros.overlays.pr2.PR2')
 james.translate(x=0.1, y=2.7, z=0.0)
 
 human = Human()
@@ -19,8 +18,8 @@ human_pose = Pose()
 human.append(human_pose)
 
 # Sensors and Actuators for navigation stack
-pr2_posture = PR2Posture()
-james.append(pr2_posture)
+#pr2_posture = PR2Posture()
+#james.append(pr2_posture)
 
 #semantic_camera = SemanticCamera()
 #semantic_camera.translate(x=0.086, y=0, z=1.265)
@@ -29,23 +28,23 @@ james.append(pr2_posture)
 Motion_Controller = MotionXYW()
 james.append(Motion_Controller)
 
-Odometry = Odometry()
-james.append(Odometry)
+odometry = Odometry()
+james.append(odometry)
 
 Pose_sensor = Pose()
 Pose_sensor.name = 'Pose_sensor'
 james.append(Pose_sensor)
 
-IMU = IMU()
-james.append(IMU)
+imu = IMU()
+james.append(imu)
 
-Sick = Sick()
-Sick.translate(x=0.275, z=0.252)
-james.append(Sick)
-Sick.properties(Visible_arc = False)
-Sick.properties(laser_range = 30.0000)
-Sick.properties(resolution = 1.0000)
-Sick.properties(scan_window = 180.0000)
+sick = Sick()
+sick.translate(x=0.275, z=0.252)
+james.append(sick)
+sick.properties(Visible_arc = False)
+sick.properties(laser_range = 30.0000)
+sick.properties(resolution = 1.0000)
+sick.properties(scan_window = 180.0000)
 
 # Keyboard control
 keyboard = Keyboard()
@@ -55,10 +54,10 @@ james.append(keyboard)
 # Configuring the middlewares
 Pose_sensor.configure_mw('ros')
 human_pose.configure_mw('ros')
-Sick.configure_mw('ros')
+sick.configure_mw('ros')
 Motion_Controller.configure_mw('ros')
-IMU.configure_mw('ros')
-pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
+imu.configure_mw('ros')
+#pr2_posture.configure_mw('ros', ['ROS', 'post_jointState', 'morse/middleware/ros/pr2_posture'])
 #semantic_camera.configure_mw('ros', ['morse.middleware.ros_mw.ROSClass', 'post_lisp_code', 'morse/middleware/ros/semantic_camera'])
 #semantic_camera.configure_mw('ros')
 
