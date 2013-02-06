@@ -58,9 +58,8 @@ def _fill_robot_matrix(obj, robot, obj_3dpose):
 
 
 class VimanPoster(PocolibsDataStreamOutput):
-    def __init__(self, component, mw_data):
-        super(self.__class__, self).__init__(poster_name(component, mw_data),
-                                             VimanObjectPublicArray)
+    def initialize(self):
+        super(self.__class__, self).initialize(VimanObjectPublicArray)
 
         # Initialise the object
         self.obj = VimanObjectPublicArray()
@@ -111,9 +110,9 @@ class VimanPoster(PocolibsDataStreamOutput):
 
         return scene_object_list
 
-    def write(self, component):
-        seen_objects = [obj['name'] for obj in component.local_data['visible_objects']]
-        parent = component.robot_parent
+    def default(self, ci):
+        seen_objects = [obj['name'] for obj in self.data['visible_objects']]
+        parent = self.component_instance.robot_parent
 
         i = 0
         for object_id in self.scene_object_list:
@@ -138,14 +137,6 @@ class VimanPoster(PocolibsDataStreamOutput):
             except KeyError as detail:
                 logger.debug("WARNING: Object %s not found in the scene" % detail)
             i = i + 1
-        super(self.__class__, self).write(self.obj)
-
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
-
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    poster = VimanPoster(component_instance, mw_data)
-    component_instance.output_functions.append(poster.write)
+        self.write(self.obj)
 
 

@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput, poster_name
+from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput
 from niut.struct import *
 import mathutils
 
@@ -23,9 +23,9 @@ couples = [('head_position', NIUT_HEAD),
            ('left_foot_position', NIUT_LEFT_FOOT),
            ('right_foot_position', NIUT_RIGHT_FOOT)]
 
-class NiutPoster(PocolibsDataStreamInput):
-    def __init__(self, name, delay):
-        super(self.__class__, self).__init__(name, delay, NIUT_HUMAN_LIST)
+class NiutBasePoster(PocolibsDataStreamInput):
+    def initialize(self):
+        PocolibsDataStreamInput.initialize(self, NIUT_HUMAN_LIST)
 
         _create_transform_matrix()
 
@@ -39,11 +39,11 @@ class NiutPoster(PocolibsDataStreamInput):
         else:
             new_position = position_vector
 
-        component.local_data[ik_target] = new_position
+        self.data[ik_target] = new_position
 
 
-    def read(self, component):
-        human_list = super(self.__class__, self).read()
+    def default(self, ci = ''):
+        human_list = self.read()
         if human_list:
             for i in range(0, 16):
                 if human_list.users[i].state == NIUT_TRACKING:
@@ -51,17 +51,6 @@ class NiutPoster(PocolibsDataStreamInput):
                     for target, idx in couples:
                         self._store_joint_position(component, joints, target, idx)
                     return
-
-
-def init_extra_module(self, component, function, mw_data):
-    """ Setup the middleware connection with this data
-
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    poster = NiutPoster(poster_name(component, mw_data), True)
-    component.input_functions.append(poster.read)
-
-    _create_transform_matrix()
 
 def _create_transform_matrix():
     """ Construct the transformation matrix

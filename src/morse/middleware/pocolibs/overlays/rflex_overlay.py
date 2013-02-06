@@ -62,6 +62,7 @@ class RflexModule(MorseOverlay):
     @async_service
     def Stop(self, *args):
         self.overlaid_object.stop()
+        self.overlaid_object.input_functions.clear()
         self.completed(status.SUCCESS)
 
     @async_service
@@ -78,12 +79,13 @@ class RflexModule(MorseOverlay):
     @async_service
     def TrackSpeedStart(self, poster_name):
         try:
-            poster = GenPosPoster(poster_name, False)
+            poster = GenPosPoster(self.overlaid_object, 
+                    { 'poster' : poster_name, 'delay' : False })
         except PosterNotFound:
             return self.completed(status.FAILED, ["POSTER_NOT_FOUND"])
 
         self._clean_track = True
-        self.overlaid_object.input_functions.append(poster.read)
+        self.overlaid_object.input_functions.append(poster.default)
 
 
     @service

@@ -2,39 +2,52 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs_datastream import *
 from pom.struct import *
 
-class PomPoster(PocolibsDataStreamOutput):
-    def __init__(self, component, mw_data):
-        super(self.__class__, self).__init__(poster_name(component, mw_data),
-                                             POM_ME_POS)
+class PomSensorPosPoster(PocolibsDataStreamInput):
+    def initialize(self):
+        PocolibsDataStreamInput.initialize(self, POM_SENSOR_POS)
+
+class PomSensorPoster(PocolibsDataStreamOutput):
+    def initialize(self):
+        super(self.__class__, self).initialize(POM_ME_POS)
 
         # Initialise the object
         self.obj = POM_ME_POS()
         self.obj.kind = POM_ME_ABSOLUTE
-        self.obj.confidence = float(component.bge_obj['confidence'])
+        self.obj.confidence = float(self.component_instance.bge_object['confidence'])
 
         # search for the reference poster
-        ref_frame = component.bge_obj['reference_frame']
-        self.ref_poster = PocolibsDataStreamInput(ref_frame, True, POM_SENSOR_POS)
+        ref_frame = self.component_instance.bge_object['reference_frame']
+        self.ref_poster = PomSensorPosPoster(self.component_instance, { 'poster': ref_frame })
 
-    def write(self, component):
+    def default(self, ci):
         ref = self.ref_poster.read()
         if ref:
-            self.obj.main.euler.x = component.local_data.get('x', 0.0)
-            self.obj.main.euler.y = component.local_data.get('y', 0.0)
-            self.obj.main.euler.z = component.local_data.get('z', 0.0)
-            self.obj.main.euler.yaw = component.local_data.get('yaw', 0.0)
-            self.obj.main.euler.pitch = component.local_data.get('pitch', 0.0)
-            self.obj.main.euler.roll = component.local_data.get('roll', 0.0)
+            self.obj.main.euler.x = self.data.get('x', 0.0)
+            self.obj.main.euler.y = self.data.get('y', 0.0)
+            self.obj.main.euler.z = self.data.get('z', 0.0)
+            self.obj.main.euler.yaw = self.data.get('yaw', 0.0)
+            self.obj.main.euler.pitch = self.data.get('pitch', 0.0)
+            self.obj.main.euler.roll = self.data.get('roll', 0.0)
             self.obj.date1 = ref.date
-            super(self.__class__, self).write(self.obj)
+            self.write(self.obj)
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class PomPoster(PocolibsDataStreamOutput):
+    def initialize(self):
+        super(self.__class__, self).initialize(POM_POS)
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    poster = PomPoster(component_instance, mw_data)
-    component_instance.output_functions.append(poster.write)
+        # Initialise the object
+        self.obj = POM_POS()
+        self.obj.date = 0
+        self.obj.pomTickDate = 0
 
-def write_pom(self, component_instance):
-    pass
+    def default(self, ci):
+        self.obj.mainToOrigin.euler.x = self.data.get('x', 0.0)
+        self.obj.mainToOrigin.euler.y = self.data.get('y', 0.0)
+        self.obj.mainToOrigin.euler.z = self.data.get('z', 0.0)
+        self.obj.mainToOrigin.euler.yaw = self.data.get('yaw', 0.0)
+        self.obj.mainToOrigin.euler.pitch = self.data.get('pitch', 0.0)
+        self.obj.mainToOrigin.euler.roll = self.data.get('roll', 0.0)
+        self.obj.date = self.obj.date + 1
+        self.obj.pomTickDate = self.obj.date
+        self.write(self.obj)
+

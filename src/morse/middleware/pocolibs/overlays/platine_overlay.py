@@ -96,7 +96,8 @@ class PlatineModule(MorseOverlay):
     @async_service
     def TrackPos(self, poster_name):
         try:
-            poster = PlatinePoster(poster_name, False)
+            poster = PlatinePoster(self.overlaid_object, 
+                    {'poster': poster_name, 'delay': False })
         except PosterNotFound:
             return self.completed(status.FAILED, ["POSTER_NOT_FOUND"])
 
