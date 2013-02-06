@@ -27,9 +27,8 @@ from morse.helpers.components import add_data, add_property
 
 
 class RosaceSensorClass(morse.core.sensor.Sensor):
-    """ Multi function sensor/actuator for Rosace scenario
-
-    This is a multi functional component specific for the ROSACE
+    """ 
+    This is a multi functional component specific for Search and Rescue
     scenario, where the robot must be able to aid human victims. The
     sensor is capable of detecting any victim located within a cone in
     front of the robot, with a range delimited in the properties of the
@@ -53,6 +52,8 @@ class RosaceSensorClass(morse.core.sensor.Sensor):
     to heal the victim, it will change the Game Properties of the object
     to reduce its injured value.
     """
+    _name = "Rosace sensor"
+    _short_desc = "High level sensor for search and rescue scenario"
 
     add_data('victim_dict', {}, "dict", \
              'A list of entries for each victim detected inside the cone \

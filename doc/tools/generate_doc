@@ -38,12 +38,14 @@ from morse.sensors import accelerometer, \
                           gyroscope, \
                           human_posture, \
                           imu,       \
+                          kinect,     \
                           laserscanner, \
                           mocap_posture, \
                           odometry,  \
                           pose,      \
                           proximity, \
                           ptu_posture, \
+                          rosace, \
                           semantic_camera, \
                           thermometer, \
                           video_camera

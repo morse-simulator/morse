@@ -4,15 +4,18 @@ from morse.core.sensor import Sensor
 from morse.helpers.components import add_data
 
 class KinectClass(Sensor):
-    """ Kinect sensor
-
-    Depth and video data
+    """ 
+    This sensor emulates the kinect output, ie both a depth image and an rgba image.
     """
 
-    add_data('depth', 'none', 'memoryview', "See ``morse.sensors.depth_camera.DepthCamera``"
-             "documentation for ``image``")
-    add_data('video', 'none', 'buffer', "See ``morse.sensors.video_camera.VideoCamera``"
-             "documentation for ``image``")
+    _name = "Kinect"
+
+    add_data('depth', 'none', 'memoryview', 
+              "See doc:`depth camera documentation <../sensors/depth_camera>` \
+              for field **image**")
+    add_data('video', 'none', 'buffer', 
+             "See :doc:`video camera documentation <../sensors/video_camera>` \
+              for field **image**")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -44,6 +47,10 @@ class KinectClass(Sensor):
 
     @property
     def capturing(self):
+        """
+        Returns a boolean which indicates if the sensor actually captures
+        some data
+        """
         return self.depth_camera and self.depth_camera.capturing and \
                self.video_camera and self.video_camera.capturing
 
