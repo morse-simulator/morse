@@ -36,6 +36,7 @@ class gripperTest(MorseTestCase):
         gripper = Gripper('gripper')
         gripper.translate(z=1.28)
         arm.append(gripper)
+        gripper.properties(Angle = 180.0, Distance=2.0)
         gripper.configure_service('socket')
 
         teleport = Teleport()
@@ -49,8 +50,6 @@ class gripperTest(MorseTestCase):
         tape2 = PassiveObject(prefix='WhiteVideotape')
         tape2.properties(Object = True, Graspable = True, Label = "WhiteTapee")
         tape2.translate(x=5, y=-5, z=0)
-
-        gripper.cfg_radar(angle=180.0, distance=2.0)
 
         env = Environment('empty', fastmode=True)
         env.configure_service('socket')

@@ -20,10 +20,14 @@ class Gripper(Actuator):
         Actuator.__init__(self, "gripper")
         self.name = name
         self.properties(classpath = "morse.actuators.gripper.GripperActuatorClass")
-    def cfg_radar(self, angle=180.0, distance=2.0):
+        self.properties(Angle = 60.0, Distance = 0.5)
+    def properties(self, **kwargs):
         radar = self._bpy_object.game.sensors["Radar"]
-        radar.angle = angle
-        radar.distance = distance
+        if 'Angle' in kwargs:
+            radar.angle = kwargs['Angle']
+        if 'Distance' in kwargs:
+            radar.distance = kwargs['Distance']
+        Actuator.properties(self, **kwargs)
 
 
 class Keyboard(ActuatorCreator):

@@ -12,8 +12,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.core import blenderapi
 from morse.core.services import service
-from morse.helpers.components import add_data
-
+from morse.helpers.components import add_data, add_property
 
 class GripperActuatorClass(morse.core.actuator.Actuator):
     """
@@ -40,25 +39,23 @@ class GripperActuatorClass(morse.core.actuator.Actuator):
         gripper fingers with the objects it grabs. Its purpose is to
         abstract the action of taking an object, for human-robot
         interaction experiments.
-
-    Configurable parameters
-    -----------------------
-
-    The following parameters can be adjusted within the **Logic Bricks**
-    of the ``Gripper`` object in Blender, in the properties of the
-    ``Radar`` sensor.
-
-        - **Angle**: (float) aperture angle of the radar capable of
-          detecting the graspable objects.
-        - **Distance**: (float) detection distance of the radar.
-          Graspable objects further away from the gripper than this
-          distance can not be held
     """
 
     _name = "Gripper"
     _short_desc = "Instruct the robot to move towards a given target"
 
     add_data('grab', False, "bool", "Currently not used")
+
+    # These properties are not used directly in the logic, but are used
+    # in the builder to create the radar properly.
+    # These value cannot be changed dynamically in bge.
+    add_property('_angle', 60.0, 'Angle', 'float',
+                 'Aperture angle of the radar capable to detecting the \
+                  graspable objects (in degree)')
+    add_property('_distance', 0.5, 'Distance', 'float',
+                 'Detection distance in meter. Graspable objects further \
+                 way from the gripper than this distance cannot be  \
+                 held')
 
     def __init__(self, obj, parent=None):
         """
