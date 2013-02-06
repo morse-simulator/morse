@@ -37,6 +37,7 @@ add_object = empty_method
 add_empty = empty_method
 new_mesh = empty_method
 new_object = empty_method
+apply_transform = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -63,6 +64,14 @@ if bpy:
         add_empty = bpy.ops.object.empty_add
     new_mesh = bpy.data.meshes.new
     new_object = bpy.data.objects.new
+    apply_transform = bpy.ops.object.transform_apply
+
+def create_new_material():
+    all_materials = get_materials().keys()
+    new_material()
+    material_name = [name for name in get_materials().keys() \
+                     if name not in all_materials].pop()
+    return get_material(material_name)
 
 def add_morse_empty():
     """Add MORSE Component Empty object which hlods MORSE logic"""

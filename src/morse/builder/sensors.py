@@ -155,8 +155,7 @@ class LaserSensorWithArc(SensorCreator):
         if 'RayMat' in bpymorse.get_materials():
             return bpymorse.get_material('RayMat')
 
-        bpymorse.new_material()
-        ray_material = bpymorse.get_last_material()
+        ray_material = bpymorse.create_new_material()
         ray_material.diffuse_color = (.9, .05, .2)
         ray_material.use_shadeless = True
         ray_material.use_raytrace = False # ? is it needed ?
@@ -177,10 +176,7 @@ class LaserSensorWithArc(SensorCreator):
         will be added to the arc.
         """
         scene = bpymorse.get_context_scene()
-
         laserscanner_obj = self._bpy_object
-
-        material = self.get_ray_material()
 
         # Delete previously created arc
         for child in laserscanner_obj.children:
@@ -250,13 +246,13 @@ class LaserSensorWithArc(SensorCreator):
         arc.data = mesh
         # Remove collision detection for the object
         arc.game.physics_type = 'NO_COLLISION'
-        # Set the material of the arc
-        if material: # ? check if compulsory ?
-            arc.active_material = material
         # Link the new object in the scene
         scene.objects.link( arc )
         # Set the parent to be the laserscanner Empty
         arc.parent = laserscanner_obj
+        # Set the material of the arc
+        arc.active_material = self.get_ray_material()
+        return arc
 
     def __del__(self):
         arc = [child for child in self._bpy_object.children
@@ -375,33 +371,21 @@ class SemanticCamera(VideoCamera):
                              "semantic_camera")
         self.properties(cam_width = 512, cam_height = 512)
 
-class Velodyne(SensorCreator):
+class Velodyne(LaserSensorWithArc):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, \
-                               "morse.sensors.laserscanner.LaserScannerRotationZ",\
-                               "velodyne")
+        LaserSensorWithArc.__init__(self, name, \
+                "morse.sensors.laserscanner.LaserScannerRotationZ", "velodyne")
         # set components-specific properties
         self.properties(Visible_arc = True, laser_range = 50.0, \
                         scan_window = 31.500, resolution = 0.5)
-        """ # do it in `morse.sensors.velodyne`
-        # Add Always (use_true_level) - And - Motion (rotation z: 0.017453)
-        bpymorse.add_sensor(type='ALWAYS')
-        obj = bpymorse.get_context_object()
-        sensor = obj.game.sensors[-1]
-        sensor.use_pulse_true_level = True
-        bpymorse.add_controller(type='LOGIC_AND')
-        controller = obj.game.controllers[-1]
-        # Motion (rotation z: 0.017453)
-        bpymorse.add_actuator(type='MOTION')
-        actuator = obj.game.actuators[-1]
-        actuator.offset_rotation.z = math.radians(1)
-        controller.link(sensor = sensor, actuator = actuator)
-        """
         # append velodyne mesh, from MORSE_COMPONENTS/sensors/velodyne.blend
-        imported_objects = self.append_meshes(['VelodyneMesh', 'Arc_31'])
-        # TODO fix the VelodyneMesh location in velodyne.blend (z=1.2m!)
-        velodyne_mesh = self.get_child('VelodyneMesh', imported_objects)
-        velodyne_mesh.location.z = 0
+        arc = self.create_laser_arc()
+        # Select only arc (active)
+        bpymorse.select_only(arc)
+        # Rotate Arc to scan vertically
+        arc.rotation_euler = (math.radians(90), math.radians(12), 0)
+        bpymorse.apply_transform(rotation=True)
+        self.append_meshes(['VelodyneMesh'])
 
 class Clock(SensorCreator):
     def __init__(self, name=None):
