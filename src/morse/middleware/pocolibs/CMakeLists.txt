@@ -110,6 +110,11 @@ foreach(directory ${directories_list})
 			 )
 			
 endforeach(directory)
+
+PYTHON_ADD_MODULE(viam sensors/viam.c)
+target_link_libraries(viam ${POCOLIBS_LIBRARIES})
+INSTALL(TARGETS viam DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs)
+
 install (FILES __init__.py
 		DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs
 		)

@@ -121,7 +121,7 @@ class Pocolibs(Datastream):
 
 
 
-    def _compute_date(self):
+    def compute_date():
         """ Compute the current time
 
         ( we only require that the date
