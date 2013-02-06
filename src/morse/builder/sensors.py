@@ -93,9 +93,9 @@ class PTUPosture(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse.sensors.ptu_posture.PTUPosture", "ptu_posture")
 
-class Rosace(SensorCreator):
+class SearchAndRescue(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.rosace.RosaceSensorClass", "rosace")
+        SensorCreator.__init__(self, name, "morse.sensors.search_and_rescue.SearchAndRescue")
         mesh = Cylinder("RosaceCylinder")
         mesh.scale = (.15, .04, .04)
         mesh.color(.2, .8, .6)

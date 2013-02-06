@@ -18,13 +18,13 @@ def send_dest(s, x, y, yaw):
                        'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
     time.sleep(0.1)
 
-class VictimTest(MorseTestCase):
+class SearchAndRescueTest(MorseTestCase):
 
     def setUpEnv(self):
         robot = ATRV()
         robot.translate(z=0.2)
 
-        victim_detector = Rosace()
+        victim_detector = SearchAndRescue()
         robot.append(victim_detector)
         victim_detector.add_stream('socket')
         victim_detector.configure_service('socket')
@@ -115,6 +115,6 @@ class VictimTest(MorseTestCase):
 if __name__ == "__main__":
     import unittest
     from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(VictimTest)
+    suite = unittest.TestLoader().loadTestsFromTestCase(SearchAndRescueTest)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 

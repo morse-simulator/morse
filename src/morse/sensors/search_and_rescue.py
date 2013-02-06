@@ -3,7 +3,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 ######################################################
 #
-#    rosace.py        Blender 2.5x
+#    search_and_rescue.py        Blender 2.5x
 #
 #    Multiple sensor capable of detectin victims
 #    and helping them, according to the requirements
@@ -26,7 +26,7 @@ from collections import OrderedDict
 from morse.helpers.components import add_data, add_property
 
 
-class RosaceSensorClass(morse.core.sensor.Sensor):
+class SearchAndRescue(morse.core.sensor.Sensor):
     """ 
     This is a multi functional component specific for Search and Rescue
     scenario, where the robot must be able to aid human victims. The
@@ -52,7 +52,7 @@ class RosaceSensorClass(morse.core.sensor.Sensor):
     to heal the victim, it will change the Game Properties of the object
     to reduce its injured value.
     """
-    _name = "Rosace sensor"
+    _name = "Search And Rescue sensor"
     _short_desc = "High level sensor for search and rescue scenario"
 
     add_data('victim_dict', {}, "dict", \
