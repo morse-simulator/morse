@@ -101,10 +101,10 @@ class Rosace(SensorCreator):
         mesh.color(.2, .8, .6)
         mesh.rotate(y = math.pi / 2)
         self.append(mesh)
-        self.properties(Heal_range = 2.0, Abilities = "1,2")
         self.frequency(6)
+        self.properties(Heal_range = 2.0, Abilities = "1,2")
         # add Radar freq: 3 Hz, prop: Injured, angle: 60.0, distance: 10.0
-        bpymorse.add_sensor(type="RADAR")
+        bpymorse.add_sensor(type="RADAR", name="Radar")
         obj = bpymorse.get_context_object()
         sensor = obj.game.sensors[-1]
         sensor.angle = 60.0
@@ -115,6 +115,23 @@ class Rosace(SensorCreator):
         # link it to the Python controller
         controller = obj.game.controllers[-1]
         controller.link(sensor = sensor)
+
+    def properties(self, **kwargs):
+        self.select()
+        # We may be use it before the definition of radar
+        # But angle and distance can only be defined by user, in case
+        # where we are sure that Radar is well defined
+        try:
+            radar = self._bpy_object.game.sensors["Radar"]
+            if 'Angle' in kwargs:
+                radar.angle = kwargs['Angle']
+            if 'Distance' in kwargs:
+                radar.distance = kwargs['Distance']
+            if 'Freq' in kwargs:
+                radar.freq = kwargs['Freq']
+        except KeyError:
+            pass
+        SensorCreator.properties(self, **kwargs)
 
 class StereoUnit(SensorCreator):
     def __init__(self, name=None):

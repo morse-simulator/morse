@@ -73,6 +73,22 @@ class RosaceSensorClass(morse.core.sensor.Sensor):
                  to determine if it is capable of helping a victim or \
                  not.')
 
+    # These properties are not used directly in the logic, but are used
+    # in the builder to create the radar properly.
+    # These value cannot be changed dynamically in bge.
+    add_property('_angle', 60.0, 'Angle', 'float',
+                 'Aperture angle of the radar capable of detecting the \
+                  victims (in degree)')
+    add_property('_distance', 10.0, 'Distance', 'float',
+                 'Detection distance in meter. Victims further \
+                 way from the gripper than this distance will not be  \
+                 detected')
+    add_property('_freq', 3.0, 'Freq', 'float',
+                 'change the delay required to heal a victim. This \
+                 number is expressed as the number of tics that are \
+                 ignored before taking action. A lower number will \
+                 produce a lower delay')
+
     def __init__(self, obj, parent=None):
 
         logger.info('%s initialization' % obj.name)

@@ -28,10 +28,8 @@ class VictimTest(MorseTestCase):
         robot.append(victim_detector)
         victim_detector.add_stream('socket')
         victim_detector.configure_service('socket')
-        victim_detector.properties( Heal_range=1.0, Abilities="1,2,3,4,5")
-
-        victim_detector._bpy_object.game.sensors["Radar"].angle = 90.0
-        victim_detector._bpy_object.game.sensors["Radar"].distance= 2.0
+        victim_detector.properties( Heal_range=1.0, Abilities="1,2,3,4,5",
+                                    Angle = 90.0, Distance = 2.0)
 
         motion = Teleport()
         robot.append(motion)
