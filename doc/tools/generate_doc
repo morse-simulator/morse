@@ -48,6 +48,7 @@ from morse.sensors import accelerometer, \
                           rosace, \
                           semantic_camera, \
                           thermometer, \
+                          stereo_unit, \
                           video_camera
 
 import sys, os
