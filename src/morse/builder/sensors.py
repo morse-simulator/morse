@@ -378,7 +378,7 @@ class SemanticCamera(VideoCamera):
 class Velodyne(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, \
-                               "morse.sensors.velodyne.VelodyneClass",\
+                               "morse.sensors.laserscanner.LaserScannerRotationZ",\
                                "velodyne")
         # set components-specific properties
         self.properties(Visible_arc = True, laser_range = 50.0, \

@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
-import morse.core.sensor
+from morse.core.sensor import Sensor
 from morse.helpers.components import add_data, add_property
 
 """
@@ -11,7 +11,7 @@ Important note:
     the 'default_action' method.
 """
 
-class LaserScannerClass(morse.core.sensor.Sensor):
+class LaserScannerClass(Sensor):
     """
     This is a generic sensor class used to emulate laser range scanners,
     including a variety of SICK and Hokuyo sensors.
@@ -160,7 +160,7 @@ class LaserScannerClass(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        Sensor.__init__(self, obj, parent)
 
         arc_prefix = 'Arc_'
 
@@ -287,3 +287,12 @@ class LaserScannerClass(morse.core.sensor.Sensor):
                             vertex.setXYZ(
                                     self.local_data['point_list'][index-1])
                             index += 1
+
+class LaserScannerRotationZ(LaserScannerClass):
+    """Used for Velodyne sensor"""
+    def default_action(self):
+        LaserScannerClass.default_action(self)
+        self.applyRotationZ()
+    def applyRotationZ(self, rz=.01745):
+        # The second parameter specifies a "local" movement
+        self.bge_object.applyRotation([0, 0, rz], True)
