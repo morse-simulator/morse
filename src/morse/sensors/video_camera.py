@@ -8,7 +8,7 @@ from morse.helpers.components import add_data
 
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
-class VideoCameraClass(morse.sensors.camera.CameraClass):
+class VideoCamera(morse.sensors.camera.Camera):
     """
     This sensor emulates a single video camera. It generates a series of
     RGBA images.  Images are encoded as binary char arrays, with 4 bytes
@@ -60,7 +60,7 @@ class VideoCameraClass(morse.sensors.camera.CameraClass):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(VideoCameraClass, self).__init__(obj, parent)
+        super(VideoCamera, self).__init__(obj, parent)
 
         # Prepare the exportable data of this sensor
         self.local_data['image'] = ''

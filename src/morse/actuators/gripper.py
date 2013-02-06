@@ -14,7 +14,7 @@ from morse.core import blenderapi
 from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
-class GripperActuatorClass(morse.core.actuator.Actuator):
+class Gripper(morse.core.actuator.Actuator):
     """
     Actuator capable of grabbing objects marked with the ``Graspable``
     Game Property.  Currently it only works using services: **grab** and

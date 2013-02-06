@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.helpers.components import add_data
 
-class SteerForceActuatorClass(morse.core.actuator.Actuator):
+class SteerForce(morse.core.actuator.Actuator):
     """ 
     This actuator reads the values of the steering angle, the engine
     power and the braking force to drive a car like vehicle.  It is

@@ -9,7 +9,7 @@ from morse.core.services import interruptible
 from morse.helpers.morse_math import normalise_angle, rotation_direction
 from morse.helpers.components import add_data, add_property
 
-class PTUActuatorClass(Actuator):
+class PTU(Actuator):
     """
     This actuator reads the rotation values for pan and tilt, and applies
     them to the pan-tilt unit that must be set as children of this actuator.

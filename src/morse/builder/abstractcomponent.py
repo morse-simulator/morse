@@ -155,8 +155,13 @@ class AbstractComponent(object):
         """
         old = self._bpy_object.rotation_euler
         self._bpy_object.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
-    def property_value(name):
-        return self._bpy_object.game.properties[name].value
+
+    def property_value(self, name):
+        try:
+            return self._bpy_object.game.properties[name].value
+        except KeyError:
+            return None
+
     def properties(self, **kwargs):
         """ Add/modify the game properties of the Blender object
 
@@ -249,27 +254,47 @@ class AbstractComponent(object):
         logger.warning("configure_mw is deprecated, use add_stream instead")
         return self.add_stream(datastream, method, path, component)
 
-    def add_stream(self, datastream, method=None, path=None, component=None, **kwargs):
+    def add_stream(self, datastream, method=None, path=None, classpath=None, **kwargs):
         """ add a data stream interface to the component
 
-        :param component: if set, force to use the configuration of the given
+        :param classpath: if set, force to use the configuration of the given
         component, instead of our own (default=None).
 
         You can pass other argument to this method, they will be added as a map
         to the configuration.
         component.add_stream('ros', topic='/myrobots/data')
         """
-        if not component:
-            component = self._blender_filename
+        if not classpath:
+            classpath = self.property_value("classpath")
+
+        level = self.property_value("abstraction_level") or "default"
+
         config = []
         # Configure the datastream for this component
         if not method:
-            try:
-                config = MORSE_DATASTREAM_DICT[datastream][component][:]
-            except KeyError:
-                logger.error("%s: no default datastream method [%s][%s]" % \
-                             (self.name, datastream, component))
+            if not classpath in MORSE_DATASTREAM_DICT:
+                logger.error("%s: no interfaces available for this component! Check builder/data.py." % classpath)
                 return
+
+            interfaces = MORSE_DATASTREAM_DICT[classpath]
+            if not level in interfaces:
+                logger.error("%s: no interfaces available for this component for abstraction level <%s>! Check builder/data.py." % (classpath, level))
+                return
+
+            interfaces = interfaces[level]
+            if not datastream in interfaces:
+                logger.error("%s: no %s interface defined for this component for abstraction level <%s>! Check builder/data.py." % (classpath, datastream, level))
+                return
+
+            config = interfaces[datastream]
+
+            if config == INTERFACE_DEFAULT_OUT:
+                config = INTERFACE_DEFAULT_OUT[datastream]
+            if config == INTERFACE_DEFAULT_IN:
+                config = INTERFACE_DEFAULT_IN[datastream]
+            if isinstance(config, str):
+                config = [config]
+
         elif not path:
             config = [method]
         else:

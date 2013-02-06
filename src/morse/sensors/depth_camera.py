@@ -8,7 +8,7 @@ from morse.helpers.components import add_data
 from morse.sensors.zbufferto3d import ZBufferTo3D
 from morse.sensors.zbuffertodepth import ZBufferToDepth
 
-class AbstractCamera(VideoCameraClass):
+class DepthCamera(VideoCamera):
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -49,7 +49,7 @@ class AbstractCamera(VideoCameraClass):
 
 
 
-class DepthCameraClass(AbstractCamera):
+class DepthCameraBase(DepthCamera):
     """
     This sensor generates a 3D point cloud from the camera perspective.
     """
@@ -71,7 +71,7 @@ class DepthCameraClass(AbstractCamera):
         self.local_data['points'] = self.converter.recover(image)
 
 
-class DepthVideoCameraClass(AbstractCamera):
+class DepthVideoCamera(DepthCamera):
     """
     This sensor generates a Depth 'image' from the camera perspective.
 
@@ -102,7 +102,7 @@ class DepthVideoCameraClass(AbstractCamera):
         self.local_data['image'] = self.converter.recover(image)
 
 
-class RawImage(AbstractCamera):
+class RawImage(DepthCamera):
     """
     This sensor gets raw Z-Buffer from the camera perspective.
     """

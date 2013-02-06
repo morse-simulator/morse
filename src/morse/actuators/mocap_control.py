@@ -5,7 +5,7 @@ from math import pi
 from morse.core import mathutils
 from morse.helpers.components import add_data
 
-class MocapControlClass(morse.core.actuator.Actuator):
+class MocapControl(morse.core.actuator.Actuator):
     """ 
     Read the positions of the different joints at:
     head, neck, shoulders, torso, elbows, hands, hips, knees and feet

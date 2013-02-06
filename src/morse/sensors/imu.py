@@ -12,7 +12,7 @@ Important note:
     the 'default_action' method.
 """
 
-class ImuClass(morse.core.sensor.Sensor):
+class IMU(morse.core.sensor.Sensor):
     """ 
     This sensor emulates an Inertial Measurement Unit (IMU), measuring
     the angular velocity and linear acceleration including acceleration

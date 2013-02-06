@@ -3,7 +3,7 @@ import morse.core.actuator
 from morse.helpers.components import add_data
 from morse.core import mathutils
 
-class OrientationActuatorClass(morse.core.actuator.Actuator):
+class Orientation(morse.core.actuator.Actuator):
     """
     Motion controller changing immediately the robot orientation.
 

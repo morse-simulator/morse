@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
-class DestinationActuatorClass(morse.core.actuator.Actuator):
+class Destination(morse.core.actuator.Actuator):
     """
     This actuator reads the coordinates of a destination point, and moves the robot
     in a straight line towards the given point, without turning.  It provides a

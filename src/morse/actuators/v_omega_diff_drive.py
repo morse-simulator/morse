@@ -3,7 +3,7 @@ from morse.core.services import service
 import morse.core.actuator
 from morse.helpers.components import add_data
 
-class VWDiffDriveActuatorClass(morse.core.actuator.Actuator):
+class MotionVWDiff(morse.core.actuator.Actuator):
     """
     This actuator reads the values of linear and angular speed and
     applies them to the robot as speeds for the wheels. It only works

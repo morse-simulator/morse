@@ -6,7 +6,7 @@ from morse.core.mathutils import Vector
 from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_data, add_property
 
-class RotorcraftAttitudeActuatorClass(morse.core.actuator.Actuator):
+class RotorcraftAttitude(morse.core.actuator.Actuator):
     """
     This actuator reads roll,pitch, yaw rate and thrust commands as e.g.
     used to manually control a quadrotor via RC or by higher level

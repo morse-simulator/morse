@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.helpers.components import add_data
 
-class XYWActuatorClass(morse.core.actuator.Actuator):
+class MotionXYW(morse.core.actuator.Actuator):
     """
     This actuator reads the values of forwards movement x, sidewards
     movement y and angular speed w and applies them to the robot as

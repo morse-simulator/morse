@@ -3,7 +3,7 @@ import math
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class AccelerometerClass(morse.core.sensor.Sensor):
+class Accelerometer(morse.core.sensor.Sensor):
     """ 
     This sensor emulates an Accelerometer/Podometer, measuring the
     distance that a robot has moved, the current speed and current

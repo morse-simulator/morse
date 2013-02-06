@@ -7,7 +7,7 @@ import morse.helpers.colors
 from morse.helpers import passive_objects
 from morse.helpers.components import add_data
 
-class SemanticCameraClass(morse.sensors.camera.CameraClass):
+class SemanticCamera(morse.sensors.camera.Camera):
     """
     This sensor emulates a hight level camera that outputs the names of
     the objects that are located within the field of view of the camera.

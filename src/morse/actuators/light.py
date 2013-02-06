@@ -3,7 +3,7 @@ from morse.core import blenderapi
 import morse.core.actuator
 from morse.helpers.components import add_data
 
-class LightActuatorClass(morse.core.actuator.Actuator):
+class Light(morse.core.actuator.Actuator):
     """
     This actuator is a simple On/Off light. Based on `SPOT
     <http://wiki.blender.org/index.php/Doc:2.6/Manual/Lighting/Lamps/Spot>`_ light.

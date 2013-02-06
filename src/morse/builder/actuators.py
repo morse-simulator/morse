@@ -5,13 +5,13 @@ from morse.builder import Actuator
 class Destination(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.destination.DestinationActuatorClass",\
+                                 "morse.actuators.destination.Destination",\
                                  "destination")
 
 class ForceTorque(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.force_torque.ForceTorqueActuatorClass",\
+                                 "morse.actuators.force_torque.ForceTorque",\
                                  "force_torque")
 
 # Gripper uses Actuator from morse.builder
@@ -19,7 +19,7 @@ class Gripper(Actuator):
     def __init__(self, name=None):
         Actuator.__init__(self, "gripper")
         self.name = name
-        self.properties(classpath = "morse.actuators.gripper.GripperActuatorClass")
+        self.properties(classpath = "morse.actuators.gripper.Gripper")
         self.properties(Angle = 60.0, Distance = 0.5)
     def properties(self, **kwargs):
         radar = self._bpy_object.game.sensors["Radar"]
@@ -33,7 +33,7 @@ class Gripper(Actuator):
 class Keyboard(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.keyboard.KeyboardActuatorClass",\
+                                 "morse.actuators.keyboard.Keyboard",\
                                  "armature_actuator")
         self.properties(Speed = 1.0)
         obj = bpymorse.get_context_object()
@@ -55,13 +55,13 @@ class KukaLWR(Actuator):
 class Mocap(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.mocap_control.MocapControlClass",\
+                                 "morse.actuators.mocap_control.MocapControl",\
                                  "mocap_control")
 
 class Orientation(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.orientation.OrientationActuatorClass",\
+                                 "morse.actuators.orientation.Orientation",\
                                  "orientation")
 
 # pa_10 uses Actuator from morse.builder
@@ -69,14 +69,14 @@ class PA10(Actuator):
     def __init__(self, name=None):
         Actuator.__init__(self, "pa_10")
         self.name = name
-        self.properties(classpath = "morse.actuators.pa_10.PA10ActuatorClass", \
+        self.properties(classpath = "morse.actuators.pa_10.PA10Actuator", \
                         Speed = 1.0)
         # Sound Game Logic Actuator servo_1.mp3
 
 class PTU(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.ptu.PTUActuatorClass", "ptu")
+                                 "morse.actuators.ptu.PTU", "ptu")
         self.properties(Speed = 1.0, Manual = False, Tolerance = 0.01)
         # append PanBase with its logic
         self.append_meshes(['PanBase', 'TiltBase'])
@@ -84,49 +84,49 @@ class PTU(ActuatorCreator):
 class RotorcraftAttitude(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_attitude.RotorcraftAttitudeActuatorClass",\
+            "morse.actuators.rotorcraft_attitude.RotorcraftAttitude",\
             "rotorcraft_attitude")
 
 class RotorcraftWaypoint(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_waypoint.RotorcraftWaypointActuatorClass",\
+            "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint",\
             "rotorcraft_waypoint")
 
 class StabilizedQuadrotor(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.stabilized_quadrotor.StabilizedQuadrotorActuatorClass",\
+            "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor",\
             "stabilized_quadrotor")
 
 class SteerForce(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.steer_force.SteerForceActuatorClass",\
+                                 "morse.actuators.steer_force.SteerForce",\
                                  "steer_force")
 
 class Teleport(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.teleport.TeleportActuatorClass",\
+                                 "morse.actuators.teleport.Teleport",\
                                  "teleport")
 
 class MotionVW(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.v_omega.VWActuatorClass",\
+                                 "morse.actuators.v_omega.MotionVW",\
                                  "v_omega")
 
 class MotionVWDiff(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.v_omega_diff_drive.VWDiffDriveActuatorClass",
+            "morse.actuators.v_omega_diff_drive.MotionVWDiff",
             "v_omega_diff_drive")
 
 class Waypoint(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-            "morse.actuators.waypoint.WaypointActuatorClass", "waypoint")
+            "morse.actuators.waypoint.Waypoint", "waypoint")
         self.properties(Target = "")
         # append 2 Radar with logic
         self.add_lr_radars()
@@ -168,13 +168,13 @@ class Waypoint(ActuatorCreator):
 class MotionXYW(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.xy_omega.XYWActuatorClass",\
+                                 "morse.actuators.xy_omega.MotionXYW",\
                                  "xy_omega")
 
 class Light(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.light.LightActuatorClass",\
+                                 "morse.actuators.light.Light",\
                                  "light")
         light = Spot("LightSpot")
         self.append(light)

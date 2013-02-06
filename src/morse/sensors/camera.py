@@ -3,7 +3,7 @@ from morse.core import blenderapi
 import morse.core.sensor
 from morse.helpers.components import add_property
 
-class CameraClass(morse.core.sensor.Sensor):
+class Camera(morse.core.sensor.Sensor):
     """
     A generic camera class, which is expected to be used as a base class
     for real camera. Concrete instanciation are currently:
@@ -41,7 +41,7 @@ class CameraClass(morse.core.sensor.Sensor):
         """
         logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
-        super(CameraClass, self).__init__(obj, parent)
+        super(Camera, self).__init__(obj, parent)
 
         # Set the background color of the scene
         self.bg_color = [143, 143, 143, 255]

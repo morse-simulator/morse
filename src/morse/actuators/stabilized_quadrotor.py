@@ -5,7 +5,7 @@ from morse.core import mathutils
 from morse.helpers.filt2 import Filt2
 from morse.helpers.components import add_data
 
-class StabilizedQuadrotorActuatorClass(morse.core.actuator.Actuator):
+class StabilizedQuadrotor(morse.core.actuator.Actuator):
     """ 
 
     This actuator controls a stabilized quadrotor using a linear model.

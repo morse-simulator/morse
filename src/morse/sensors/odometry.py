@@ -4,7 +4,7 @@ import morse.core.sensor
 import copy
 from morse.helpers.components import add_data
 
-class OdometryClass(morse.core.sensor.Sensor):
+class Odometry(morse.core.sensor.Sensor):
     """
     This sensor produces relative displacement with respect to the position and
     rotation in the previous Blender tick. It can compute too the position of the

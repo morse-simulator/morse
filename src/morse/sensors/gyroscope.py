@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class GyroscopeClass(morse.core.sensor.Sensor):
+class Gyroscope(morse.core.sensor.Sensor):
     """
     This sensor emulates a Gyroscope, providing the yaw, pitch and roll
     angles of the sensor object with respect to the Blender world

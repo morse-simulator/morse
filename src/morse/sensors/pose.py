@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class PoseClass(morse.core.sensor.Sensor):
+class Pose(morse.core.sensor.Sensor):
     """ 
     This sensor returns the full pose of the sensor, i.e. both
     translation and rotation with respect to the Blender world frame.

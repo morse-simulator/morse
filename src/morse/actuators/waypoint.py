@@ -22,7 +22,7 @@ import morse.core.actuator
 from morse.core.services import service, async_service, interruptible
 from morse.helpers.components import add_data, add_property
 
-class WaypointActuatorClass(morse.core.actuator.Actuator):
+class Waypoint(morse.core.actuator.Actuator):
     """
     This actuator reads the coordinates of a destination point, and moves the robot
     towards the given point, with the robot restricted to moving only forward,
@@ -227,7 +227,7 @@ class WaypointActuatorClass(morse.core.actuator.Actuator):
         self.local_data['z'] = self.position_3d.z
         self.local_data['speed'] = 0
 
-        super(WaypointActuatorClass, self).interrupt(cause)
+        super(Waypoint, self).interrupt(cause)
 
     @service
     #@async_service

@@ -4,7 +4,7 @@ from morse.core.services import service
 from morse.core import mathutils
 from morse.helpers.components import add_data
 
-class TeleportActuatorClass(morse.core.actuator.Actuator):
+class Teleport(morse.core.actuator.Actuator):
     """ 
     This actuator teleports the robot to the absolute position and
     orientation with respect to the origin of the Blender coordinate

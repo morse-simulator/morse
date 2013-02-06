@@ -11,7 +11,7 @@ Important note:
     the 'default_action' method.
 """
 
-class LaserScannerClass(Sensor):
+class LaserScanner(Sensor):
     """
     This is a generic sensor class used to emulate laser range scanners,
     including a variety of SICK and Hokuyo sensors.
@@ -288,10 +288,10 @@ class LaserScannerClass(Sensor):
                                     self.local_data['point_list'][index-1])
                             index += 1
 
-class LaserScannerRotationZ(LaserScannerClass):
+class LaserScannerRotationZ(LaserScanner):
     """Used for Velodyne sensor"""
     def default_action(self):
-        LaserScannerClass.default_action(self)
+        LaserScanner.default_action(self)
         self.applyRotationZ()
     def applyRotationZ(self, rz=.01745):
         # The second parameter specifies a "local" movement

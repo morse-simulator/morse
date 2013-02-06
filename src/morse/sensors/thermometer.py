@@ -4,7 +4,7 @@ from morse.core import blenderapi
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class ThermometerClass(morse.core.sensor.Sensor):
+class Thermometer(morse.core.sensor.Sensor):
     """
     This sensor emulates a Thermometer, measuring the temperature with respect
     to the distance to heat sources. It defines a default temperature throughout

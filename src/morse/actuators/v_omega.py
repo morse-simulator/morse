@@ -3,7 +3,7 @@ from morse.core.services import service
 import morse.core.actuator
 from morse.helpers.components import add_data
 
-class VWActuatorClass(morse.core.actuator.Actuator):
+class MotionVW(morse.core.actuator.Actuator):
     """ 
     This actuator reads the values of linear and angular speed and
     applies them to the robot as direct translation. The speeds provided

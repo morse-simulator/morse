@@ -3,7 +3,7 @@ from morse.core import blenderapi
 from morse.core.sensor import Sensor
 from morse.helpers.components import add_data
 
-class KinectClass(Sensor):
+class Kinect(Sensor):
     """ 
     This sensor emulates the kinect output, ie both a depth image and an rgba image.
     """

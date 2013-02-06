@@ -5,7 +5,7 @@ from morse.builder.blenderobjects import *
 
 class Accelerometer(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.accelerometer.AccelerometerClass", "accelerometer")
+        SensorCreator.__init__(self, name, "morse.sensors.accelerometer.Accelerometer", "accelerometer")
         mesh = Cube("AccelerometerCube")
         mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
@@ -17,7 +17,7 @@ class ArmaturePose(SensorCreator):
 
 class Battery(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.battery.BatteryClass", "battery")
+        SensorCreator.__init__(self, name, "morse.sensors.battery.Battery", "battery")
         mesh = Cylinder("BatteryCylinder")
         mesh.scale = (.01, .01, .04)
         mesh.color(.2, .2, .2)
@@ -36,7 +36,7 @@ class CompoundSensor(SensorCreator):
 
 class GPS(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.gps.GPSClass", "gps")
+        SensorCreator.__init__(self, name, "morse.sensors.gps.GPS", "gps")
         mesh = Sphere("GPSSphere")
         mesh.scale = (.04, .04, .01)
         mesh.color(.5, .5, .5)
@@ -44,7 +44,7 @@ class GPS(SensorCreator):
 
 class Gyroscope(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name,"morse.sensors.gyroscope.GyroscopeClass", "gyroscope")
+        SensorCreator.__init__(self, name,"morse.sensors.gyroscope.Gyroscope", "gyroscope")
         mesh = Sphere("GyroscopeSphere")
         mesh.scale = (.04, .04, .01)
         mesh.color(.8, .4, .1)
@@ -52,7 +52,7 @@ class Gyroscope(SensorCreator):
 
 class IMU(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.imu.ImuClass", "imu")
+        SensorCreator.__init__(self, name, "morse.sensors.imu.IMU", "imu")
         mesh = Cube("IMUCube")
         mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
@@ -60,12 +60,12 @@ class IMU(SensorCreator):
 
 class JidoPosture(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.jido_posture.JidoPostureClass", "jido_posture")
+        SensorCreator.__init__(self, name, "morse.sensors.jido_posture.JidoPosture", "jido_posture")
         self.properties(KUKAname = "KUKA_LWR", PTUname = "PTU")
 
 class Odometry(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.odometry.OdometryClass", "odometry")
+        SensorCreator.__init__(self, name, "morse.sensors.odometry.Odometry", "odometry")
         mesh = Cylinder("OdometryCylinder")
         mesh.scale = (.02, .02, .02)
         mesh.color(.5, .5, .5)
@@ -73,7 +73,7 @@ class Odometry(SensorCreator):
 
 class Pose(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.pose.PoseClass", "pose")
+        SensorCreator.__init__(self, name, "morse.sensors.pose.Pose", "pose")
         mesh = Cube("PoseCube")
         mesh.scale = (.04, .04, .02)
         mesh.color(.8, .3, .1)
@@ -81,7 +81,7 @@ class Pose(SensorCreator):
 
 class Proximity(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.proximity.ProximitySensorClass", "proximity")
+        SensorCreator.__init__(self, name, "morse.sensors.proximity.Proximity", "proximity")
         mesh = Cylinder("ProximityCylinder")
         mesh.scale = (.02, .02, .02)
         mesh.color(.5, .5, .5)
@@ -96,7 +96,7 @@ class PTUPosture(SensorCreator):
 class SearchAndRescue(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name, "morse.sensors.search_and_rescue.SearchAndRescue")
-        mesh = Cylinder("RosaceCylinder")
+        mesh = Cylinder("SearchAndRescueCylinder")
         mesh.scale = (.15, .04, .04)
         mesh.color(.2, .8, .6)
         mesh.rotate(y = math.pi / 2)
@@ -135,7 +135,7 @@ class SearchAndRescue(SensorCreator):
 
 class StereoUnit(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.stereo_unit.StereoUnitClass", "stereo_unit")
+        SensorCreator.__init__(self, name, "morse.sensors.stereo_unit.StereoUnit", "stereo_unit")
         mesh = Cube("StereoUnitCube")
         mesh.scale = (.025, .24, .01)
         mesh.color(.8, .8, .8)
@@ -143,7 +143,7 @@ class StereoUnit(SensorCreator):
 
 class Thermometer(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.sensors.thermometer.ThermometerClass", "thermometer")
+        SensorCreator.__init__(self, name, "morse.sensors.thermometer.Thermometer", "thermometer")
         mesh = Cylinder("ThermometerCylinder")
         mesh.scale = (.02, .02, .04)
         mesh.color(0, .6, .5)
@@ -263,7 +263,7 @@ class LaserSensorWithArc(SensorCreator):
 class Hokuyo(LaserSensorWithArc):
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name, \
-                                    "morse.sensors.laserscanner.LaserScannerClass",\
+                                    "morse.sensors.laserscanner.LaserScanner",\
                                     "hokuyo")
         mesh = Cylinder("HokuyoCylinder")
         mesh.scale = (.04, .04, .08)
@@ -280,7 +280,7 @@ class Hokuyo(LaserSensorWithArc):
 class Sick(LaserSensorWithArc):
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name, \
-                                    "morse.sensors.laserscanner.LaserScannerClass",\
+                                    "morse.sensors.laserscanner.LaserScanner",\
                                     "sick")
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
@@ -295,7 +295,7 @@ class Sick(LaserSensorWithArc):
 class SickLDMRS(LaserSensorWithArc):
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name, \
-                                    "morse.sensors.laserscanner.LaserScannerClass",\
+                                    "morse.sensors.laserscanner.LaserScanner",\
                                     "sick-ld-mrs")
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
@@ -313,13 +313,13 @@ class SickLDMRS(LaserSensorWithArc):
 class Infrared(LaserSensorWithArc):
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name, \
-                                    "morse.sensors.laserscanner.LaserScannerClass",\
-                                    "infrared")
+                                    "morse.sensors.laserscanner.LaserScanner")
         mesh = Cube("InfraredCube")
         mesh.scale = (.02, .02, .02)
         mesh.color(.8, .8, .8)
         self.append(mesh)
         # set components-specific properties
+        self.level("range")
         self.properties(Visible_arc = True, laser_range = 2.0,
                 scan_window = 20.0, resolution = 1.0)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
@@ -329,7 +329,7 @@ class Infrared(LaserSensorWithArc):
 
 class VideoCamera(SensorCreator):
     def __init__(self, name=None, \
-                 classpath="morse.sensors.video_camera.VideoCameraClass", \
+                 classpath="morse.sensors.video_camera.VideoCamera", \
                  filename="video_camera"):
         SensorCreator.__init__(self, name, classpath, filename)
         camera = Camera("CameraRobot")
@@ -359,7 +359,7 @@ class VideoCamera(SensorCreator):
 class DepthCamera(VideoCamera):
     def __init__(self, name=None):
         VideoCamera.__init__(self, name, \
-                             "morse.sensors.depth_camera.DepthCameraClass",\
+                             "morse.sensors.depth_camera.DepthCamera",\
                              "depth_camera")
         self.properties(cam_width = 128, cam_height = 128, \
                         cam_near=1.0, cam_far=20.0, retrieve_depth=True)
@@ -367,7 +367,7 @@ class DepthCamera(VideoCamera):
 class SemanticCamera(VideoCamera):
     def __init__(self, name=None):
         VideoCamera.__init__(self, name, \
-                             "morse.sensors.semantic_camera.SemanticCameraClass",\
+                             "morse.sensors.semantic_camera.SemanticCamera",\
                              "semantic_camera")
         self.properties(cam_width = 512, cam_height = 512)
 
@@ -393,7 +393,7 @@ class Clock(SensorCreator):
 
 class Kinect(SensorCreator):
     def __init__(self, name="Kinect"):
-        SensorCreator.__init__(self, name, "morse.sensors.kinect.KinectClass", "kinect")
+        SensorCreator.__init__(self, name, "morse.sensors.kinect.Kinect", "kinect")
         mesh = Cube("KinectMesh")
         mesh.scale = (.02, .1, .02)
         mesh.color(.8, .8, .8)
@@ -401,7 +401,7 @@ class Kinect(SensorCreator):
         self.video_camera = VideoCamera('rgb')
         self.video_camera.properties(cam_width = 128, cam_height=128)
         self.depth_camera = DepthCamera('depth')
-        #self.depth_camera.properties(Class='DepthVideoCameraClass')
+        #self.depth_camera.properties(Class='DepthVideoCamera')
         self.depth_camera.properties(cam_width = 128, cam_height=128)
         self.append(self.video_camera)
         self.append(self.depth_camera)

@@ -4,7 +4,7 @@ import morse.core.sensor
 from morse.core import blenderapi
 from functools import partial
 
-class StereoUnitClass(morse.core.sensor.Sensor):
+class StereoUnit(morse.core.sensor.Sensor):
     """
     The purpose of this component is to link together one or more
     cameras, and provide them with the possibility to move together as a

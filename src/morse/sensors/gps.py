@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class GPSClass(morse.core.sensor.Sensor):
+class GPS(morse.core.sensor.Sensor):
     """
     This sensor emulates a GPS, providing the exact coordinates in the
     Blender scene. The coordinates provided by the GPS are with respect

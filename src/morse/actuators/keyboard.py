@@ -3,7 +3,7 @@ from morse.core import blenderapi
 import morse.core.actuator
 from morse.helpers.components import add_data, add_property
 
-class KeyboardActuatorClass(morse.core.actuator.Actuator):
+class Keyboard(morse.core.actuator.Actuator):
     """
     This actuator does not require a connection with external data. It
     simply responds to the keyboard arrows to generate movement
