@@ -491,7 +491,7 @@ class Armature(morse.core.actuator.Actuator):
             self._active_trajectory = None
             self.completed(status.FAILED, "Error: invalid trajectory: key %s was expected." % ke)
 
-    def interrupt(self, cause = None):
+    def interrupt(self):
     
         for joint in self.local_data.keys():
             self.local_data[joint] = self._get_joint_value(joint)
@@ -500,7 +500,7 @@ class Armature(morse.core.actuator.Actuator):
 
         self._active_trajectory = None
 
-        super(Armature,self).interrupt(cause)
+        super(Armature,self).interrupt()
 
     @async_service
     def set_target(self,x ,y, z):
