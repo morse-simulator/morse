@@ -164,12 +164,16 @@ class Environment(Component):
             camera_fp.location = self._camera_location
             camera_fp.rotation_euler = self._camera_rotation
 
-            if not self.fastmode:
+            if str(self.fastmode) in ['SINGLETEXTURE', 'MULTITEXTURE', 'GLSL']:
+                # MULTITEXTURE mode used for camera testing
+                # can't use SOLID viewport, no image in bge.texture
+                self.set_material_mode(self.fastmode)
+            elif not self.fastmode:
                 # make sure OpenGL shading language shaders (GLSL) is the
                 # material mode to use for rendering
-                bpymorse.get_context_scene().game_settings.material_mode = 'GLSL'
-            else:
-                bpymorse.get_context_scene().game_settings.material_mode = 'SINGLETEXTURE'
+                self.set_material_mode('GLSL')
+            else: # fastmode=True
+                self.set_material_mode('SINGLETEXTURE')
                 self.set_viewport("WIREFRAME")
 
             # Set the unit system to use for button display (in edit mode) to metric
@@ -218,6 +222,16 @@ class Environment(Component):
     def set_gravity(self, gravity=9.81):
         if isinstance(gravity, float):
             bpymorse.get_context_scene().game_settings.physics_gravity = gravity
+
+    def set_material_mode(self, material_mode='GLSL'):
+        """Material mode to use for rendering
+
+        - ``SINGLETEXTURE`` Singletexture, Singletexture face materials.
+        - ``MULTITEXTURE`` Multitexture, Multitexture materials.
+        - ``GLSL`` GLSL, OpenGL shading language shaders.
+        :param material_mode: enum in ['SINGLETEXTURE', 'MULTITEXTURE', 'GLSL']
+        """
+        bpymorse.get_context_scene().game_settings.material_mode = material_mode
 
     def set_viewport(self, viewport_shade='WIREFRAME'):
         """ set_viewport

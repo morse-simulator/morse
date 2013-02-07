@@ -78,7 +78,7 @@ def save_pgm_ascii(filepath, image8u, width, height):
     with open(filepath, 'w') as f:
         # Write PGM P2 image (ASCII)
         f.write('P2\n%i %i\n255\n'%(width, height))
-        f.write('\n'.join(['%i'%px for px in image8u]))
+        f.write(' '.join(['%i'%px for px in image8u]))
 
 # http://stackoverflow.com/questions/7368739/numpy-and-16-bit-pgm
 def read_pgm_ascii(filepath):
@@ -158,7 +158,7 @@ class CameraTest(MorseTestCase):
         gyroscope.add_stream('socket')
         atrv.append(gyroscope)
 
-        env = Environment('indoors-1/boxes')
+        env = Environment('indoors-1/boxes', fastmode='MULTITEXTURE')
         camera.profile()
 
     def assert_image_file_diff_less(self, filepath, image8u, delta):
@@ -245,8 +245,8 @@ class CameraTest(MorseTestCase):
             # assert that the camera image differ < .1 percent from the expected
             self.assert_image_file_diff_less(imageB_path, imageB, 0.1)
 
-            # assert that the second image differ > 7 percent from the first
-            self.assert_images_diff_greater(imageA, imageB, 7)
+            # assert that the second image differ > 4 percent from the first
+            self.assert_images_diff_greater(imageA, imageB, 4)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
