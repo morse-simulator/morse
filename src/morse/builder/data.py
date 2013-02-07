@@ -170,7 +170,7 @@ MORSE_DATASTREAM_DICT = {
             }
         },
     "morse.sensors.odometry.Odometry": {
-        "default": {
+        "differential": {
             "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,

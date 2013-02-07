@@ -36,7 +36,17 @@ class OdometryTest(MorseTestCase):
         odo = Odometry()
         robot.append(odo)
         odo.add_stream('socket')
-        
+
+        raw_odo = Odometry()
+        raw_odo.level("raw")
+        robot.append(raw_odo)
+        raw_odo.add_stream('socket')
+
+        integ_odo = Odometry()
+        integ_odo.level("integrated")
+        robot.append(integ_odo)
+        integ_odo.add_stream("socket")
+
         env = Environment('empty', fastmode = True)
         env.configure_service('socket')
 
@@ -74,27 +84,28 @@ class OdometryTest(MorseTestCase):
 
         pose = self.pose_stream.get()
         odo = self.odo_stream.get()
+        integ_odo = self.integ_odo_stream.get()
         self.assertAlmostEqual(self.x, expected_x, delta=precision)
         self.assertAlmostEqual(self.y, expected_y, delta=precision)
         self.assertAlmostEqual(self.yaw, expected_yaw, delta=precision)
         self.assertAlmostEqual(pose['x'], 5.0 - expected_y, delta=precision)
         self.assertAlmostEqual(pose['y'], 2.0 + expected_x, delta=precision)
         self.assertAlmostEqual(pose['yaw'], expected_yaw + math.pi/2, delta=precision)
-        self.assertAlmostEqual(odo['x'], expected_x, delta=precision)
-        self.assertAlmostEqual(odo['y'], expected_y, delta=precision)
-        self.assertAlmostEqual(odo['yaw'], expected_yaw, delta=precision)
+        self.assertAlmostEqual(integ_odo['x'], expected_x, delta=precision)
+        self.assertAlmostEqual(integ_odo['y'], expected_y, delta=precision)
+        self.assertAlmostEqual(integ_odo['yaw'], expected_yaw, delta=precision)
         self.clear_datas(expected_x, expected_y, expected_yaw)
 
     def test_odometry(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
-        pass
 
         with Morse() as morse:
             # Read the start position, it must be (0.0, 0.0, 0.0)
             self.pose_stream = morse.robot.pose
             self.odo_stream = morse.robot.odo
+            self.integ_odo_stream = morse.robot.integ_odo
             self.motion = morse.robot.motion
 
             self.clear_datas(0.0, 0.0, 0.0)
@@ -114,7 +125,6 @@ class OdometryTest(MorseTestCase):
             # XXX fail Y with 0.11 delta
             #self.odometry_test_helper(-2.0, math.pi/2.0, 3.0)
             #self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
-
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
