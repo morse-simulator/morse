@@ -202,7 +202,7 @@ MORSE_DATASTREAM_DICT = {
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
-    "morse.sensor.ptu_posture.PTUPosture": {
+    "morse.sensors.ptu_posture.PTUPosture": {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
@@ -210,12 +210,12 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": ['write_platine_posture', 'morse/middleware/pocolibs/sensors/platine_posture', 'platineState']
             }
         },
-    "morse.sensor.stereo_unit.StereoUnit": {
+    "morse.sensors.stereo_unit.StereoUnit": {
         "default": {
             "pocolibs": ['write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench']
             }
         },
-    "morse.sensor.search_and_rescue.SearchAndRescue": {
+    "morse.sensors.search_and_rescue.SearchAndRescue": {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
@@ -333,7 +333,7 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": ['read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef']
             }
         },
-    "morse.actuators.v_omega.MotionVWDiff": {
+    "morse.actuators.v_omega_diff_drive.MotionVWDiff": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
