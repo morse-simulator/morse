@@ -3,15 +3,14 @@ from morse.core.services import service, async_service, interruptible
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 from morse.middleware.pocolibs.actuators.genpos import GenPosPoster
-from morse.middleware.pocolibs_datastream import PosterNotFound
-from morse.middleware.pocolibs.sensors.General_Poster.ors_poster import new_poster
+from morse.middleware.pocolibs_datastream import PosterNotFound, DummyPoster
 
 class RflexModule(MorseOverlay):
     def __init__(self, overlaid_object):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(overlaid_object)
         self._clean_track = False
-        new_poster("rflexCntrl", 4)
+        self._cntrl = DummyPoster("rflexCntrl")
 
     def interrupt(self):
         self.overlaid_object.stop()

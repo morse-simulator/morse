@@ -29,6 +29,16 @@ def poster_name(component_name, mw_data):
 
     return poster_name
 
+class DummyPoster:
+    def __init__(self, name):
+        self.poster_id = c_void_p()
+        c_name = create_string_buffer(bytes(name, 'utf-8'))
+        P.posterCreate(c_name, 8, byref(self.poster_id))
+
+    def __del__(self):
+        P.posterDelete(self.poster_id)
+        self.poster_id = None
+
 class PocolibsDataStreamOutput(AbstractDatastream):
 
     def initialize(self, kind):

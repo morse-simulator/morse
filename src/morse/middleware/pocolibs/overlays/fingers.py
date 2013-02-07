@@ -3,14 +3,14 @@ logger.setLevel(logging.DEBUG)
 
 from morse.core.services import service
 from morse.core.overlay import MorseOverlay
+from morse.middleware.pocolibs_datastream import DummyPoster
 
-from morse.middleware.pocolibs.sensors.General_Poster.ors_poster import new_poster
 
 class Fingers(MorseOverlay):
     def __init__(self, overlaid_object):
         # Call the constructor of the parent class
         super(self.__class__,self).__init__(overlaid_object)
-        new_poster("fingerCntrl", 4)
+        self.ctrl = DummyPoster('fingerCntrl')
 
     def name(self):
         return "fingers"
