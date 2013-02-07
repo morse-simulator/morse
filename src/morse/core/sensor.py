@@ -17,7 +17,6 @@ class Sensor(morse.core.object.Object):
         """ Constructor method. """
         # Call the constructor of the parent class
         super(Sensor, self).__init__(obj, parent)
-        #super(self.__class__, self).__init__(obj, parent)
 
         # Define lists of dynamically added functions
         self.output_functions = []

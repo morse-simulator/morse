@@ -23,8 +23,12 @@ class Object(AbstractObject):
         self.bge_object = obj
         self.robot_parent = parent
 
+        self.level = self.bge_object.get("abstraction_level", "default")
+
         # Variable to indicate the activation status of the component
         self._active = True
+
+        self.check_level()
 
         # Define the position of sensors with respect
         #  to their robot parent
@@ -62,12 +66,30 @@ class Object(AbstractObject):
         """ Destructor method. """
         logger.info("%s: I'm dying!!" % self.name())
 
+    def check_level(self):
+
+        if self.level == "default":
+            return # fine
+
+        if hasattr(self, '_levels') and self.level in self._levels:
+            return #fine
+
+        msg = "Component <%s> has no abstraction level <%s>. Please check your scene." % (self.name(), self.level)
+        logger.error(msg)
+        raise ValueError(msg)
+
+
     def initialize_local_data(self):
+        """
+        Creates and initializes 'local data' fields, according to the
+        current component 'realism level', if defined.
+        """
 
         if hasattr(self, '_data_fields'):
             for name, details in self._data_fields.items():
-                default_value, type, doc = details
-                self.local_data[name] = default_value
+                default_value, type, doc, level = details
+                if level == self.level:
+                    self.local_data[name] = default_value
 
     def update_properties(self):
         """

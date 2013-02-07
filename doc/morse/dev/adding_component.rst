@@ -1,6 +1,11 @@
 Adding a new component
 ======================
 
+.. warning::
+
+    This page is completely outdated. Do not rely on it when developing for MORSE >= 1.0.
+
+
 Components in MORSE are either **robots**, **sensors** or **actuators**.
 
 **robots** are mainly containers for **sensors** and **actuators**.
@@ -13,15 +18,134 @@ General overview
 Each component is basically represented by two files, which *must* be created
 when adding a new sensor or actuator:
 
+  - A Python script: contains the
+    logic of the component
   - A Blender file: has the representation of the sensor on blender, and
     associate the script with the blender object. This file is mandatory, even
     if it contains a single 'Empty' object.
-  - A Python script: contains the
-    logic of the component
 
 As a starting point, you can :doc:`browse the component
 gallery<../components_library>` and look for a component similar to the one you
 want to build. You can then use it as a template for our own sensor/actuator.
+
+The Python part
+---------------
+
+
+You need to implement a sub-class of ``morse.core.sensor.Sensor``, 
+respectively of ``morse.core.actuator.Actuator``
+
+Important things to do :
+
+  - in the constructor of the object (``__init__``), initialize each variable
+    you want to expose to the world (for sensors) or read (for actuators) into
+    ``local_data``. Have a look for example to the `PR2_posture sensor
+    <https://github.com/laas/morse/blob/master/src/morse/sensors/pr2_posture.py#L15>`_
+    source.
+
+  - override ``default_action`` : it must contains the logic of our component.
+    Avoid to do some big computation here : the function is called often, and
+    it will slow down the whole processing of the Game Engine.
+
+      - For a sensor, you want to **create** there data to be exported by the
+        simulator. See for instance the ``default_action`` method of the
+        `PR2_posture sensor
+        <https://github.com/laas/morse/blob/master/src/morse/sensors/pr2_posture.py#L121>`_.
+      - For an actuator, you want to **modify** the simulated scene based on
+        the values stored in the ``local_data`` dictionary. Have a look to the
+        `Pan Tilt Unit actuator
+        <https://github.com/laas/morse/blob/master/src/morse/actuators/ptu.py#L143>`_,
+        for instance.
+
+.. note::
+    Note that you never directly discuss with a middleware inside a component.
+    Everything goes through the ``local_data`` structure. This lets your code
+    be largely middleware independant.
+
+    To put it another way: your component **must not** have any middleware
+    specific code.
+
+Defining exported data fields
++++++++++++++++++++++++++++++
+
+TODO
+
+Defining abstraction levels
++++++++++++++++++++++++++++
+
+A component can define several levels of abstraction, also called levels of *realism*.
+
+These levels consist in:
+
+  - a custom set of data fields,
+  - and/or a custom component class implementation.
+
+Levels are defined with the helper function `add_level`. The example below illustrates its usage, with an imaginary image sensor:
+
+.. code-block::
+
+    from morse.core.sensor import Sensor
+    from morse.helpers.components import add_level, add_data
+
+    class MyImageSensor(Sensor):
+        """ This imaginary image sensor can either provide 'raw' images,
+        or denoised images.
+        """
+
+        # We define 2 levels for this sensor:
+        add_level("raw", None, "provides raw data")
+        add_level("processed", "path.to.my.MyProcessedImageSensor", "provides cleaned images")
+
+        add_data("image", None, "rgba", "raw image", level = "raw")
+        add_data("image", None, "rgba", "denoised image", level = "processed")
+        add_data("noise_level", None, "float", "level of removed noise", level = "processed")
+
+        #add a constructor...
+
+        def get_raw_image(self):
+            #...
+
+        def default_action(self):
+            raise NotImplementedError
+
+     class MyRawImageSensor(MyImageSensor):
+
+        #add a constructor...
+
+        def default_action(self):
+            self.local_data["image"] = self.get_raw_image()
+
+     class MyProcessedImageSensor(MyImageSensor):
+
+        #add a constructor...
+
+        def clean_image(self, image):
+            # ...
+
+        def default_action(self):
+            image = self.get_raw_image
+            cleaned, level = self.clean_image(image)
+
+            self.local_data["image"] = cleaned
+            self.local_data["noise_level"] = level
+
+
+An user could configure this sensor in a script that way:
+
+
+.. code-block::
+
+    from morse.builder import *
+
+    robot = ATRV()
+
+    image = MyImageSensor()
+    image.level("processed")
+    robot.append(image)
+
+    ...
+
+
 
 The 'Blender' part
 ------------------
@@ -82,41 +206,6 @@ They require special care to be successfully crafted. Please refer
 to the :doc:`armature creation<armature_creation>` page for details.
 
 
-The Python part
----------------
-
-You need to implement a sub-class of ``morse.core.sensor.Sensor``, 
-respectively of ``morse.core.actuator.Actuator``
-
-Important things to do :
-
-  - in the constructor of the object (``__init__``), initialize each variable
-    you want to expose to the world (for sensors) or read (for actuators) into
-    ``local_data``. Have a look for example to the `PR2_posture sensor
-    <https://github.com/laas/morse/blob/master/src/morse/sensors/pr2_posture.py#L15>`_
-    source.
-
-  - override ``default_action`` : it must contains the logic of our component.
-    Avoid to do some big computation here : the function is called often, and
-    it will slow down the whole processing of the Game Engine.
-
-      - For a sensor, you want to **create** there data to be exported by the
-        simulator. See for instance the ``default_action`` method of the
-        `PR2_posture sensor
-        <https://github.com/laas/morse/blob/master/src/morse/sensors/pr2_posture.py#L121>`_.
-      - For an actuator, you want to **modify** the simulated scene based on
-        the values stored in the ``local_data`` dictionary. Have a look to the
-        `Pan Tilt Unit actuator
-        <https://github.com/laas/morse/blob/master/src/morse/actuators/ptu.py#L143>`_,
-        for instance.
-
-.. note::
-    Note that you never directly discuss with a middleware inside a component.
-    Everything goes through the ``local_data`` structure. This lets your code
-    be largely middleware independant.
-
-    To put it another way: your component **must not** have any middleware
-    specific code.
 
 Getting data or exporting data
 ------------------------------

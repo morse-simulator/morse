@@ -64,8 +64,10 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
             return False
         # Create an instance of the component class
         #  and add it to the component list of persistantstorage()
-        instance = create_instance(child['classpath'], child, robot_instance)
-        if instance != None:
+        instance = create_instance(child['classpath'],
+                                   child.get('abstraction_level'),
+                                   child, robot_instance)
+        if instance:
             persistantstorage.componentDict[child.name] = instance
         else:
             logger.error("""
@@ -82,6 +84,12 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
             instance.default_action = no_op
             logger.info("Component " + child.name + " disabled: parent "  \
                                      + obj.name + " is an External robot.")
+        else:
+            logger.info("Component %s %s added to %s" % 
+                                (child.name, 
+                                    "(level: %s)" % child.get("abstraction_level") if child.get("abstraction_level") else "",
+                                 obj.name)
+                       )
 
     return True
 
@@ -167,7 +175,10 @@ def create_dictionaries ():
                 logger.error("No 'classpath' in %s"%str(obj.name))
                 return False
             # Create an object instance and store it
-            instance = create_instance(obj['classpath'], obj)
+            instance = create_instance(obj['classpath'], 
+                                       obj.get('abstraction_level'),
+                                       obj)
+
             if not instance:
                 logger.error("Could not create %s"%str(obj['classpath']))
                 return False
@@ -355,7 +366,7 @@ def link_datastreams():
                     break
 
             if not found:
-                datastream_instance = create_instance(datastream_name)
+                datastream_instance = create_instance(datastream_name, None)
                 if datastream_instance != None:
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
@@ -449,7 +460,7 @@ def load_overlays():
 
             # Instanciate the overlay, passing the overlaid object to
             # the constructor + any optional arguments
-            instance = create_instance(overlay_name, overlaid_object, **kwargs)
+            instance = create_instance(overlay_name, None, overlaid_object, **kwargs)
             persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
             persistantstorage.overlayDict[overlay_name] = instance
@@ -487,7 +498,7 @@ def add_modifiers():
                     break
                     
             if not found:
-                modifier_instance = create_instance(modifier_name)
+                modifier_instance = create_instance(modifier_name, None)
                 if modifier_instance != None:
                     persistantstorage.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
@@ -543,7 +554,7 @@ def init_multinode():
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
 
-    persistantstorage.node_instance = create_instance(classpath, \
+    persistantstorage.node_instance = create_instance(classpath, None, \
             node_name, server_address, server_port, persistantstorage)
 
 def init(contr):

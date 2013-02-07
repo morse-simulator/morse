@@ -20,11 +20,27 @@ def load_module_attribute(module_name, attribute_name):
         return None
     return attribute
 
-def create_instance(classpath, *args, **kwargs):
+def create_instance(classpath, level, *args, **kwargs):
     """Creates an instances of a class."""
+
     module_name, class_name = classpath.rsplit('.', 1)
     klass = load_module_attribute(module_name, class_name)
+
+    if level and not level == "default":
+        if not hasattr(klass, "_levels"):
+            logger.error("Class <%s> does not define abstraction levels. You can not use them here." % str(classpath))
+            return None
+
+        if level not in klass._levels:
+            logger.error("Class <%s> does not define the abstraction level <%s>. Check your scene." % (classpath, level))
+            return None
+
+        return create_instance(klass._levels[level][0], None, *args, **kwargs)
+
     if not klass:
         logger.error("Could not create an instance of %s"%str(classpath))
         return None
-    return klass(*args, **kwargs)
+    try:
+        return klass(*args, **kwargs)
+    except ValueError:
+        return None

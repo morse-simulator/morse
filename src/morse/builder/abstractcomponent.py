@@ -330,6 +330,16 @@ class AbstractComponent(object):
             config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay, kwargs)
 
+    def level(self, level):
+        """ Set the 'realism level' of the component.
+
+        Some components define several abstraction level that impact what data
+        are exported.
+
+        See each component documentation for the list of available levels.
+        """
+        self.properties(abstraction_level = level)
+
     def frequency(self, frequency=None, delay=0):
         """ Set the frequency delay for the call of the Python module
 

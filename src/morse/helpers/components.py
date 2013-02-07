@@ -1,8 +1,32 @@
 from collections import OrderedDict
 import inspect
 
+def add_level(name, classname, doc = "(no documentation available yet)"):
+    """ Defines an abstraction level for a component.
 
-def add_data(name, default_value, type = "", doc = "(no documentation available yet)"):
+    Abstraction levels are predefined subsets of the component output or
+    input, defining a particular functional level for your component.
+
+    :param name: name of the level
+    :param classpath: classpath (ie, module path + classname) that implements
+    the level, or None to use the current class.
+    :param doc: short description of the level.
+    """
+    curframe = inspect.currentframe()
+    try:
+        calframe = inspect.getouterframes(curframe, 2)
+        try:
+            cls_locals =  calframe[1][0].f_locals
+            if not "_levels" in cls_locals:
+               cls_locals["_levels"] = OrderedDict()
+            cls_locals["_levels"][name] = (classname, doc)
+        finally:
+            del calframe
+    finally:
+        del curframe
+
+
+def add_data(name, default_value, type = "", doc = "(no documentation available yet)", level = "default"):
 
     curframe = inspect.currentframe()
     try:
@@ -11,7 +35,7 @@ def add_data(name, default_value, type = "", doc = "(no documentation available 
             cls_locals =  calframe[1][0].f_locals
             if not "_data_fields" in cls_locals:
                cls_locals["_data_fields"] = OrderedDict()
-            cls_locals["_data_fields"][name] = (default_value, type, doc)
+            cls_locals["_data_fields"][name] = (default_value, type, doc, level)
         finally:
             del calframe
     finally:
