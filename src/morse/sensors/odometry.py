@@ -12,7 +12,7 @@ class Odometry(morse.core.sensor.Sensor):
 
     The angles for yaw, pitch and roll are given in radians.
 
-    ..note:
+    .. note::
       This sensor always provides perfect data.
       To obtain more realistic readings, it is recommended to add modifiers.
         

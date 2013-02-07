@@ -82,7 +82,7 @@ These levels consist in:
 
 Levels are defined with the helper function `add_level`. The example below illustrates its usage, with an imaginary image sensor:
 
-.. code-block::
+.. code-block:: python
 
     from morse.core.sensor import Sensor
     from morse.helpers.components import add_level, add_data
@@ -139,7 +139,7 @@ To select which data fiels belongs to which levels, an optional parameter `level
 
 An user would configure this sensor in a script that way:
 
-.. code-block::
+.. code-block:: python
 
     from morse.builder import *
 

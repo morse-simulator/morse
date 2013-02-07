@@ -45,7 +45,7 @@ from morse.sensors import accelerometer, \
                           pose,      \
                           proximity, \
                           ptu_posture, \
-                          rosace, \
+                          search_and_rescue, \
                           semantic_camera, \
                           thermometer, \
                           stereo_unit, \
@@ -57,6 +57,7 @@ import fnmatch
 from morse.core.actuator import Actuator
 from morse.core.sensor import Sensor
 
+from morse.builder.data import MORSE_DATASTREAM_DICT
 
 PREFIX = "."
 MEDIA_PATH = "../../media"
@@ -66,6 +67,10 @@ special_doc = {}
 
 def underline(text, char = '='):
     return text + '\n' + (char * len(text) + '\n')
+
+def insert_code(code):
+
+    return ".. code-block:: python\n\n%s\n\n" % code
 
 def insert_image(name):
     matches = []
@@ -166,7 +171,18 @@ for module in [getattr(m, fn) for fn in dir(m)]:
                 continue
 
             if hasattr(component, '_name'):
-                name = getattr(component, '_name')
+                name = component._name
+
+                try:
+                    parent_name = component.mro()[1]._name
+                    if name == parent_name:
+                        print("Component %s does not declare its own _name (name identical to parent <%s>). Skipping it." % (component.__name__, name))
+                        continue
+                except AttributeError:
+                    pass
+            else:
+                print("Component %s does not declare a _name. Skipping it." % name)
+                continue
 
             if hasattr(component, '_short_desc'):
                 desc = getattr(component, '_short_desc')
@@ -183,6 +199,14 @@ for module in [getattr(m, fn) for fn in dir(m)]:
             pass
         except AttributeError: # .mro() not defined => not a class => not a component
             pass
+
+# Extract abstraction levels
+for name, props in components.items():
+    c = props['object'] # component class
+    if hasattr(c, "_levels"):
+            print("Found abstraction levels '" + str(c._levels) + "' in component " + name)
+            components[name]['levels'] = c._levels
+
 
 # Extract data fields
 for name, props in components.items():
@@ -213,9 +237,49 @@ for name, props in components.items():
 
 
 # Finally, generate doc
-def print_files(out, name, props):
-    title = "Associated files"
+
+def print_code_snippet(out, name, props):
+
+    title = "Examples"
     out.write(underline(title, '-') + '\n')
+
+    out.write("\nThe following example shows how to use this component in a *Builder* script:\n\n")
+
+    args = {'var': name.replace(" ", "_").lower(), 'name':props["object"].__name__, 'type': props['type']}
+
+    code = """
+    from morse.builder import *
+
+    robot = ATRV()
+
+    # creates a new instance of the %(type)s
+    %(var)s = %(name)s()
+
+    # place your component at the correct location
+    %(var)s.translate(<x>, <y>, <z>)
+    %(var)s.rotate(<rx>, <ry>, <rz>)
+    """ % args
+
+    if "levels" in props:
+        code += """
+    # select a specific abstraction level (cf below), or skip it to use default level
+    %(var)s.level(<level>)
+    """ % args
+
+    code += """
+    robot.append(%(var)s)
+
+    # define one or several communication interface, like 'socket'
+    %(var)s.add_interface(<interface>)
+
+    env = Environment('empty')
+    """ % args
+
+    out.write(insert_code(code))
+
+def print_files(out, name, props):
+    title = "Other sources of examples"
+    out.write(underline(title, '+') + '\n')
 
     module_name = components[name]['module'].__name__.split('.')[-1]
 
@@ -227,12 +291,55 @@ def print_files(out, name, props):
 
     out.write("\n\n")
 
+def supported_interfaces(cmpt, level = "default"):
+
+    if not cmpt in MORSE_DATASTREAM_DICT:
+        return "(attention, no interface support!)"
+    if not level in MORSE_DATASTREAM_DICT[cmpt]:
+        return "(attention, no interface support!)"
+
+    interfaces = ""
+    for interface in MORSE_DATASTREAM_DICT[cmpt][level].keys():
+        interfaces += ":tag:`%s` " % interface
+
+    return interfaces
+
+
+
+def print_levels(out, name, props):
+        try:
+            levels = props['levels']
+            title = "Available functional levels"
+            out.write(underline(title, '-') + '\n')
+            out.write("\n*Functional levels* are predefined 'abstraction' or 'realism' level for the %s.\n\n" % props["type"])
+
+
+        except KeyError:
+            return False
+
+        for name, level in levels.items():
+            out.write('\n- ``' + name + '``' + (' (default)' if level[2] else '' ) + ': ' + level[1] + "\n")
+
+            out.write("\t*At this level, the %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
+
+            for fieldname, prop in props["data_fields"].items():
+                if prop[3] == name:
+                    out.write('\t- ``' + fieldname + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
+
+            out.write("\t*Interface support:* %s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name))
+
+        out.write("\n\n")
+        return True
+
 def print_data(out, name, props):
-        title = "Exported data"
+        title = "Data fields"
         out.write(underline(title, '-') + '\n')
 
         try:
             prop = props['data_fields']
+            out.write("\n*This %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
+            out.write("Interface support: %s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__))
+
         except KeyError:
             out.write("No data field documented (see above for possible notes).\n\n")
             return
@@ -317,12 +424,15 @@ for name, props in components.items():
 
         if props['desc']:
             out.write("\n**" + props['desc'] + "**\n\n")
-        
+
         out.write(parse_docstring(props['doc'])[0] + "\n\n")
 
-        print_files(out, name, props)
-        print_data(out, name, props)
-        print_services(out, name, props)
         print_properties(out, name, props)
+        if not print_levels(out, name, props):
+            print_data(out, name, props)
+
+        print_services(out, name, props)
+        print_code_snippet(out, name, props)
+        print_files(out, name, props)
 
         out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )

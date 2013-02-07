@@ -19,7 +19,7 @@ class IMU(morse.core.sensor.Sensor):
     due to gravity.
 
     If the robot has a physics controller, the velocities are directly
-    read from it’s properties ``localAngularVelocity`` and
+    read from it's properties ``localAngularVelocity`` and
     ``worldLinearVelocity``. Otherwise the velocities are calculated by
     simple differentiation. Linear acceleration is always computed by
     differentiation of the linear velocity. The measurements are given
