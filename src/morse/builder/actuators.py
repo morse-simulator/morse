@@ -34,7 +34,7 @@ class Keyboard(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name, \
                                  "morse.actuators.keyboard.Keyboard",\
-                                 "armature_actuator")
+                                 "keyboard")
         self.properties(Speed = 1.0)
         obj = bpymorse.get_context_object()
         # replace Always sensor by Keyboard sensor
@@ -69,8 +69,7 @@ class PA10(Actuator):
     def __init__(self, name=None):
         Actuator.__init__(self, "pa_10")
         self.name = name
-        self.properties(classpath = "morse.actuators.pa_10.PA10Actuator", \
-                        Speed = 1.0)
+        self.properties(classpath = "morse.actuators.pa_10.PA10", Speed = 1.0)
         # Sound Game Logic Actuator servo_1.mp3
 
 class PTU(ActuatorCreator):

@@ -7,7 +7,7 @@ from morse.helpers.morse_math import normalise_angle, rotation_direction
 from morse.core.services import service
 from morse.helpers.components import add_data, add_property
 
-class PA10Actuator(morse.core.actuator.Actuator):
+class PA10(morse.core.actuator.Actuator):
     """
     This actuator reads a list of angles for the segments of the
     Mitsubishi PA-10 arm and applies them as local rotations.
