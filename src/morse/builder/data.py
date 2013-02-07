@@ -128,7 +128,7 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseGPSMEPos']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
@@ -137,12 +137,12 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseGyroscopeMEPos']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
             }
         },
     "morse.sensors.human_posture.HumanPosture": {
         "default": {
-            "pocolibs": ['export_posture', 'morse/middleware/pocolibs/sensors/human_posture', 'human_posture']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.human_posture.HumanPoster'
             }
         },
     "morse.sensors.imu.IMU": {
@@ -175,7 +175,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorseOdometryMEPos']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
             },
         "raw": {
             "socket": INTERFACE_DEFAULT_OUT,
@@ -190,7 +190,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_pom', 'morse/middleware/pocolibs/sensors/pom', 'MorsePoseMEPos']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
             }
         },
     "morse.sensors.proximity.Proximity": {
@@ -207,12 +207,12 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_platine_posture', 'morse/middleware/pocolibs/sensors/platine_posture', 'platineState']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.platine_posture.PlatinePoster'
             }
         },
     "morse.sensors.stereo_unit.StereoUnit": {
         "default": {
-            "pocolibs": ['write_viam', 'morse/middleware/pocolibs/sensors/viam', 'viamMorseBench']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }
         },
     "morse.sensors.search_and_rescue.SearchAndRescue": {
@@ -221,7 +221,7 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_target', 'morse/middleware/pocolibs/sensors/target', 'targetPos']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.target.TargetPoster'
             }
         },
     "morse.sensors.semantic_camera.SemanticCamera": {
@@ -229,7 +229,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.semantic_camera.SemanticCameraPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
-            "pocolibs": ['write_viman', 'morse/middleware/pocolibs/sensors/viman', 'morse_viman']
+            "pocolibs": 'morse.middleware.pocolibs.sensors.viman.VimanPoster'
             }
         },
     "morse.sensors.thermometer.Thermometer": {
@@ -247,15 +247,12 @@ MORSE_DATASTREAM_DICT = {
             }
         },
 
-
-
-
     "morse.actuators.armature.Armature": {
         "default": {
             "ros": 'morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": ['read_lwr_config', 'morse/middleware/pocolibs/actuators/lwr', 'lwrCurrentPoseArmRight']
+            "pocolibs": 'morse.middleware.pocolibs.actuators.lwr.LwrPoster'
             }
         },
     "morse.actuators.destination.Destination": {
@@ -285,7 +282,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.actuators.mocap_control.MocapControl": {
         "default": {
-            "pocolibs": ['read_niut_ik_positions', 'morse/middleware/pocolibs/actuators/niut', 'niutHuman']
+            "pocolibs": 'morse.middleware.pocolibs.actuators.niut.NiutPoster'
             }
         },
     "morse.actuators.orientation.Orientation": {
@@ -300,7 +297,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.platine.Vector3Reader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": ['read_platine', 'morse/middleware/pocolibs/actuators/platine', 'platine_orientation']
+            "pocolibs": 'morse.middleware.pocolibs.actuators.platine.PlatinePoster'
             }
         },
     "morse.actuators.rotorcraft_waypoint.RotorcraftAttittude": {
@@ -330,14 +327,14 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.motion_vw.TwistReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": ['read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef']
+            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster'
             }
         },
     "morse.actuators.v_omega_diff_drive.MotionVWDiff": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": ['read_genpos', 'morse/middleware/pocolibs/actuators/genpos', 'simu_locoSpeedRef']
+            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster'
             }
         },
     "morse.actuators.xy_omega.MotionXYW": {
