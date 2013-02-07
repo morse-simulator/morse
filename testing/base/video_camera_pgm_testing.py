@@ -243,7 +243,7 @@ class CameraTest(MorseTestCase):
             # get a new image from the camera in gray
             imageB = capture8u(camera_stream)#, imageB_path)
             # assert that the camera image differ < .1 percent from the expected
-            self.assert_image_file_diff_less(imageB_path, imageB, 0.1)
+            self.assert_image_file_diff_less(imageB_path, imageB, 0.2)
 
             # assert that the second image differ > 4 percent from the first
             self.assert_images_diff_greater(imageA, imageB, 4)
