@@ -26,20 +26,39 @@ def create_instance(classpath, level, *args, **kwargs):
     module_name, class_name = classpath.rsplit('.', 1)
     klass = load_module_attribute(module_name, class_name)
 
-    if level and not level == "default":
+    if not klass:
+        logger.error("Could not create an instance of %s"%str(classpath))
+        return None
+
+    # Component abstration levels
+    if level:
+
         if not hasattr(klass, "_levels"):
-            logger.error("Class <%s> does not define abstraction levels. You can not use them here." % str(classpath))
-            return None
+            if level != "default":
+                logger.error("Class <%s> does not define abstraction levels. You can not use them here." % str(classpath))
+                return None
+
+        if level == "default":
+            # iterate over levels to find the one with the default flag
+            for key, value in klass._levels.items():
+                if value[2] == True:
+                    level = key
+                    logger.info("Using default level <%s> for component <%s>" % (level, classpath))
+                    break
+
+            if level == "default":
+                logger.error("Class <%s> does not define a default abstraction level. You must explicitely set one with <cmpt>.level(<level>). Check the component documentation." % classpath)
+                return None
 
         if level not in klass._levels:
             logger.error("Class <%s> does not define the abstraction level <%s>. Check your scene." % (classpath, level))
             return None
 
-        return create_instance(klass._levels[level][0], None, *args, **kwargs)
+        # The level may define a custom classpath to implement the component
+        # behaviour, or 'None' if the parent class is to be used.
+        if klass._levels[level][0]:
+            return create_instance(klass._levels[level][0], None, *args, **kwargs)
 
-    if not klass:
-        logger.error("Could not create an instance of %s"%str(classpath))
-        return None
     try:
         return klass(*args, **kwargs)
     except ValueError:

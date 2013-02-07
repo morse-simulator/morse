@@ -6,6 +6,8 @@ import copy
 from morse.builder import bpymorse
 from morse.builder.data import *
 
+from morse.helpers.loading import load_module_attribute
+
 class Configuration(object):
     datastream = {}
     modifier = {}
@@ -278,8 +280,33 @@ class AbstractComponent(object):
 
             interfaces = MORSE_DATASTREAM_DICT[classpath]
             if not level in interfaces:
-                logger.error("%s: no interfaces available for this component for abstraction level <%s>! Check builder/data.py." % (classpath, level))
-                return
+
+                if level == "default": # we need to look for the default level
+                    module_name, class_name = classpath.rsplit('.', 1)
+                    klass = load_module_attribute(module_name, class_name)
+
+                    if not hasattr(klass, "_levels"):
+                        logger.error("Component <%s> does not declare any default interface. You must call `add_stream` with an explicit method and Python module." % str(classpath))
+                        return
+
+                    # iterate over levels to find the one with the default flag
+                    for key, value in klass._levels.items():
+                        if value[2] == True:
+                            level = key
+                            self.properties(abstraction_level = level) # set the right default level
+                            logger.info("Using default level <%s> for component <%s>" % (level, classpath))
+                            break
+
+                    if level == "default":
+                        logger.error("Component <%s> does not declare any default interface, and none of its abstraction levels is marked as the default one. You must call `add_stream` with an explicit method and Python module." % str(classpath))
+                        return
+
+                    if not level in interfaces:
+                        logger.error("%s: no interfaces defined for this component for abstraction level <%s>! Check builder/data.py." % (classpath, datastream, level))
+                        return
+
+                else:
+                    logger.error("%s: no interfaces defined for this component for abstraction level <%s>! Check builder/data.py." % (classpath, datastream, level))
 
             interfaces = interfaces[level]
             if not datastream in interfaces:

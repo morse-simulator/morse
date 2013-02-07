@@ -1,6 +1,7 @@
 # Base concept 
 
 add_morse_test(base_testing)
+add_morse_test(levels)
 
 # Sensor
 

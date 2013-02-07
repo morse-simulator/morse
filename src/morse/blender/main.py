@@ -4,10 +4,12 @@ import sys
 import os
 import re
 import time
+import imp
 
 # Force the full import of blenderapi so python computes correctly all
 # values in its  namespace
 import morse.core.blenderapi
+imp.reload(morse.core.blenderapi) # force a reload, since 'blenderapi' may have been already loaded *outside* the GameEngine
 persistantstorage = morse.core.blenderapi.persistantstorage()
 
 # The service management

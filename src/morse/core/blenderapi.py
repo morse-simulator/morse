@@ -9,7 +9,13 @@ fake = False
 
 # running in Blender?
 if sys.executable.endswith('blender'):
-    import bge, bpy
+    import bpy
+    try:
+        import bge
+    except ImportError:
+        # Can fail if we are in Blender but not yet in the GameEngine,
+        # typically at 'Builder' stage.
+        fake = True
 else:
     print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True

@@ -1,0 +1,70 @@
+#! /usr/bin/env python
+"""
+This script tests some of the base functionalities of MORSE.
+"""
+
+import sys
+import math
+from time import sleep
+from morse.testing.testing import MorseTestCase
+from pymorse import Morse
+
+# Include this import to be able to use your test file as a regular 
+# builder script, ie, usable with: 'morse [run|exec] base_testing.py
+try:
+    from morse.builder import *
+except ImportError:
+    pass
+
+class LevelsTest(MorseTestCase):
+    def setUpEnv(self):
+        """ Defines the test scenario, using the Builder API.
+        """
+        
+        robot = ATRV()
+
+        odo = Odometry() # odometry level default to 'differential'
+        robot.append(odo)
+        odo.add_stream('socket')
+
+        diff_odo = Odometry()
+        diff_odo.level("differential")
+        robot.append(diff_odo)
+        diff_odo.add_stream('socket')
+
+
+        raw_odo = Odometry()
+        raw_odo.level("raw")
+        robot.append(raw_odo)
+        raw_odo.add_stream('socket')
+
+        integ_odo = Odometry()
+        integ_odo.level("integrated")
+        robot.append(integ_odo)
+        integ_odo.add_stream("socket")
+
+        env = Environment('empty', fastmode = True)
+        env.configure_service('socket')
+
+    def test_levels(self):
+
+        with Morse() as morse:
+
+            odo = morse.robot.odo.get()
+            diff_odo = morse.robot.diff_odo.get()
+            raw_odo = morse.robot.raw_odo.get()
+            integ_odo = morse.robot.integ_odo.get()
+
+            self.assertEquals(set(['dS']), set(raw_odo.keys()))
+            self.assertEquals(set(['x', 'y', 'z', 'yaw', 'pitch', 'roll']), set(integ_odo.keys()))
+            self.assertEquals(set(['dx', 'dy', 'dz', 'dyaw', 'dpitch', 'droll', 'vx', 'vy', 'vz', 'wz', 'wy', 'wx']), set(odo.keys()))
+            self.assertEquals(set(diff_odo.keys()), set(odo.keys()))
+
+
+########################## Run these tests ##########################
+if __name__ == "__main__":
+    import unittest
+    from morse.testing.testing import MorseTestRunner
+    suite = unittest.TestLoader().loadTestsFromTestCase(LevelsTest)
+    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
+

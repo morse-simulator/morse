@@ -82,13 +82,13 @@ class Object(AbstractObject):
     def initialize_local_data(self):
         """
         Creates and initializes 'local data' fields, according to the
-        current component 'realism level', if defined.
+        current component abstraction level.
         """
 
         if hasattr(self, '_data_fields'):
             for name, details in self._data_fields.items():
                 default_value, type, doc, level = details
-                if level == self.level:
+                if level == "all" or level == self.level:
                     self.local_data[name] = default_value
 
     def update_properties(self):

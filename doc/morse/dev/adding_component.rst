@@ -68,7 +68,7 @@ Important things to do :
 Defining exported data fields
 +++++++++++++++++++++++++++++
 
-TODO
+Components import (for actuators) or export (for sensors) data. These data are declared as a set of *data field* specific to the component.
 
 Defining abstraction levels
 +++++++++++++++++++++++++++
@@ -94,7 +94,7 @@ Levels are defined with the helper function `add_level`. The example below illus
 
         # We define 2 levels for this sensor:
         add_level("raw", None, "provides raw data")
-        add_level("processed", "path.to.my.MyProcessedImageSensor", "provides cleaned images")
+        add_level("processed", "path.to.my.MyProcessedImageSensor", "provides cleaned images", default=True)
 
         add_data("image", None, "rgba", "raw image", level = "raw")
         add_data("image", None, "rgba", "denoised image", level = "processed")
@@ -104,13 +104,6 @@ Levels are defined with the helper function `add_level`. The example below illus
 
         def get_raw_image(self):
             #...
-
-        def default_action(self):
-            raise NotImplementedError
-
-     class MyRawImageSensor(MyImageSensor):
-
-        #add a constructor...
 
         def default_action(self):
             self.local_data["image"] = self.get_raw_image()
@@ -130,8 +123,21 @@ Levels are defined with the helper function `add_level`. The example below illus
             self.local_data["noise_level"] = level
 
 
-An user could configure this sensor in a script that way:
+We see in the example how `add_level` works: its first parameter is the level
+name. The second is a *classpath* to a class that define the implementation of
+the component at this level, or `None` if the current class is to be used.  In
+the example above, at level `raw`, we rely on the component behaviour
+implemented by `default_action` in class `MyImageSensor`, while at level
+`processed`, we override `MyImageSensor.default_action` with
+`MyProcessedImageSensor.default_action`.
 
+We may observe that the `processed` level as a flag `default=True`. While not
+mandatory, it is recommended to define a default level to allow the usage of
+your component with minimal configuration.
+
+To select which data fiels belongs to which levels, an optional parameter `level` can be passed to each `add_data` statements. If the parameter is omitted, the data field is assumed to be present at all levels.
+
+An user would configure this sensor in a script that way:
 
 .. code-block::
 
