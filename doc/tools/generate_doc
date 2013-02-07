@@ -335,17 +335,17 @@ def print_data(out, name, props):
         title = "Data fields"
         out.write(underline(title, '-') + '\n')
 
-        try:
-            prop = props['data_fields']
-            out.write("\n*This %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
-            out.write("Interface support: %s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__))
-
-        except KeyError:
+        if not "data_fields" in props:
             out.write("No data field documented (see above for possible notes).\n\n")
             return
 
+        prop = props['data_fields']
+        out.write("\n*This %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
+
         for name, prop in prop.items():
             out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
+
+        out.write("\n*Interface support:* %s" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__))
 
         out.write("\n\n")
 
