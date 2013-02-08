@@ -10,6 +10,7 @@ from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
 class ViamPoster(AbstractDatastream):
     def initialize(self):
         name = poster_name(self.component_name, self.kwargs)
+        self.camera_order = []
 
         """ Prepare the data for a viam poster """
         cameras = []
@@ -25,8 +26,9 @@ class ViamPoster(AbstractDatastream):
                            'focal': float(camera_instance.image_focal)
                          }
 
-            pos_cam.append(camera_instance.bge_object.position)
+            pos_cam.append(camera_instance.bge_object.localPosition)
             cameras.append(image_init)
+            self.camera_order.append(camera_name)
 
         baseline = 0
         # This is the case for a stereo camera
@@ -34,6 +36,12 @@ class ViamPoster(AbstractDatastream):
             baseline = math.sqrt( math.pow(pos_cam[0][0] - pos_cam[1][0], 2) +
                                   math.pow(pos_cam[0][1] - pos_cam[1][1], 2) +
                                   math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
+
+            # viam expects first the left camera, then the right camera
+            # Check the y difference between the two cameras
+            if (pos_cam[0][1] < pos_cam[1][1]):
+                cameras.reverse()
+                self.camera_order.reverse()
 
             # Create the actual poster
             self.obj = Viam(name, 'stereo_bank', baseline, cameras)
@@ -60,7 +68,7 @@ class ViamPoster(AbstractDatastream):
 
         # Cycle throught the cameras on the base
         # In normal circumstances, there will be two for stereo
-        for camera_name in self.component_instance.camera_list:
+        for camera_name in self.camera_order:
             camera_instance = blenderapi.persistantstorage().componentDict[camera_name]
 
             main_to_sensor = camera_instance.sensor_to_robot_position_3d()
