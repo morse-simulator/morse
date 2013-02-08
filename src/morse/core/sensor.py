@@ -31,6 +31,11 @@ class Sensor(morse.core.object.Object):
             self.time_datastreams = 0.0
             self.time_start = time.time()
 
+    def __del__ (self):
+        super(Sensor, self).__del__()
+        del self.output_functions[:]
+        del self.output_modifiers[:]
+
     def sensor_to_robot_position_3d(self):
         """
         Compute the transformation between the sensor and the

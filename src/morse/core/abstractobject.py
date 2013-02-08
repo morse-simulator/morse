@@ -41,9 +41,10 @@ class AbstractObject(object):
 
     def __del__(self):
         """ Destructor method. """
+        logger.info("%s: I'm dying!!" % self.name())
         # Call specific functions added to this object
         for function in self.del_functions:
-            function(self)
+            function()
     
     def register_services(self):
         """

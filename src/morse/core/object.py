@@ -62,10 +62,6 @@ class Object(AbstractObject):
             logger.warning(self.name() + " has too many Game Logic sensors to get " + \
                     "an unambiguous frequency for the action.")
 
-    def __del__(self):
-        """ Destructor method. """
-        logger.info("%s: I'm dying!!" % self.name())
-
     def check_level(self):
 
         if self.level == "default":

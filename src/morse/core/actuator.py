@@ -19,6 +19,11 @@ class Actuator(morse.core.object.Object):
         self.input_functions = []
         self.input_modifiers = []
 
+    def __del__ (self):
+        super(Actuator, self).__del__()
+        del self.input_functions[:]
+        del self.input_modifiers[:]
+
 
     def action(self):
         """ Call the action functions that have been added to the list. """
