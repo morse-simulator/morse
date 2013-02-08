@@ -106,3 +106,7 @@ class ViamPoster(AbstractDatastream):
             ors_images.append(image_data)
 
         self.obj.post(pom_robot_position, ors_cameras, ors_images)
+
+    def finalize(self):
+        self.obj.finalize()
+        AbstractDatastream.finalize(self)

@@ -338,6 +338,16 @@ Viam_post(Viam* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
+static PyObject*
+Viam_finalize(Viam* self)
+{
+	free(self->args.imgs);
+	self->args.imgs = NULL;
+	posterDelete(self->args.id);
+
+	Py_RETURN_NONE;
+}
+
 static PyMemberDef Viam_members[] = {
 /*
     {"first", T_OBJECT_EX, offsetof(Viam, first), 0,
@@ -355,6 +365,8 @@ static PyMethodDef Viam_methods[] = {
     {"post", (PyCFunction)Viam_post, METH_VARARGS,
      "Post an image in the poster"
     },
+	{"finalize", (PyCFunction)Viam_finalize, METH_NOARGS,
+	 "Cleanup ressource for viam poster"},
     {NULL}  /* Sentinel */
 };
 
