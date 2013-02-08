@@ -1,9 +1,8 @@
 
 if (PYMORSE_SUPPORT)
-	install(DIRECTORY pymorse/
-        DESTINATION ${PYTHON_INSTDIR}
+	install(DIRECTORY pymorse/src/pymorse
+        DESTINATION ${PYTHON_INSTDIR}/pymorse
         REGEX .*py.$ EXCLUDE
-        REGEX setup.py EXCLUDE
         )
 endif()
 
