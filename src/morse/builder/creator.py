@@ -40,8 +40,7 @@ class ComponentCreator(AbstractComponent):
     def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the objects to this component
 
-        The `objects` are located in:
-        MORSE_COMPONENTS/`self._category`/`component`.blend/Object/
+        Overloads :py:meth:`morse.builder.abstractcomponent.AbstractComponent.append_meshes`
 
         :param objects: list of the objects names to append
         :param component: component in which the objects are located
@@ -56,8 +55,7 @@ class ComponentCreator(AbstractComponent):
     def append_collada(self, component=None):
         """ Append Collada objects to this component
 
-        The objects are located in:
-        MORSE_COMPONENTS/`self._category`/`component`.dae
+        Overloads :py:meth:`morse.builder.abstractcomponent.AbstractComponent.append_collada`
 
         :param component: component in which the objects are located
         :return: list of the imported Blender objects

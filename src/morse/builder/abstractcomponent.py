@@ -89,7 +89,10 @@ class AbstractComponent(object):
     def append(self, obj, level=1):
         """ Add a child to the current object
 
-        eg: robot.append(sensor), will set the robot parent of the sensor.
+        Add the object given as an argument as a child of this object. The
+        argument is an instance to another component. This method is generally
+        used to add components to a robot.
+        *e.g.*, : robot.append(sensor), will set the robot parent of the sensor.
         """
         obj._bpy_object.matrix_parent_inverse.identity()
         obj._bpy_object.parent = self._bpy_object
@@ -144,16 +147,18 @@ class AbstractComponent(object):
     def rotation_euler(self, xyz):
         self._bpy_object.rotation_euler = xyz
     def translate(self, x=0.0, y=0.0, z=0.0):
-        """ Location of the object
+        """ Translate the current object
 
-        float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+        The translation will add (x, y, z) to the current object location.
+        default: x=0, y=0, z=0, unit: meter
         """
         old = self._bpy_object.location
         self._bpy_object.location = (old[0]+x, old[1]+y, old[2]+z)
     def rotate(self, x=0.0, y=0.0, z=0.0):
-        """ Rotation in Eulers
+        """ Rotate the current object
 
-        float array of 3 items in [-inf, inf], default (0.0, 0.0, 0.0)
+        The rotation is an euler rotation relative to the object's center.
+        default: x=0, y=0, z=0, unit: radian
         """
         old = self._bpy_object.rotation_euler
         self._bpy_object.rotation_euler = (old[0]+x, old[1]+y, old[2]+z)
@@ -257,14 +262,24 @@ class AbstractComponent(object):
         return self.add_stream(datastream, method, path, component)
 
     def add_stream(self, datastream, method=None, path=None, classpath=None, **kwargs):
-        """ add a data stream interface to the component
+        """ Add a data stream interface to the component
 
+        Do the binding between a component and the method to export/import its
+        data. This must be used in general by sensors and actuators. A single
+        component can make several calls to this function to add bindings with
+        more than one middleware.
+
+        :param datastream: enum in ['ros', 'socket', 'yarp', 'text']
         :param classpath: if set, force to use the configuration of the given
         component, instead of our own (default=None).
 
         You can pass other argument to this method, they will be added as a map
         to the configuration.
-        component.add_stream('ros', topic='/myrobots/data')
+
+        .. code-block:: python
+
+            component.add_stream('ros', topic='/myrobots/data')
+
         """
         if not classpath:
             classpath = self.property_value("classpath")
@@ -336,6 +351,11 @@ class AbstractComponent(object):
         return self.add_service(interface, component, config)
 
     def add_service(self, interface, component=None, config=None):
+        """ Add a service interface to the component
+
+        Similar to the previous function. Its argument is the name of the
+        interface to be used.
+        """
         if not component:
             component = self
         if not config:
@@ -347,12 +367,18 @@ class AbstractComponent(object):
         self.add_stream(interface, **kwargs)
 
     def configure_modifier(self, mod, config=None):
+        """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blender_filename]
         Configuration.link_modifier(self, config)
 
     def configure_overlay(self, datastream, overlay, config=None, **kwargs):
+        """ Add a service overlay for a specific service manager to the component
+
+        Similar to the add_stream function. Its argument is the name of the
+        datastream to be used.
+        """
         if not config:
             config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay, kwargs)
@@ -440,11 +466,13 @@ class AbstractComponent(object):
     def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the objects to the scene
 
-        The `objects` are located in:
-        MORSE_COMPONENTS/`self._category`/`component`.blend/Object/
+        The ``objects`` are located either in:
+        MORSE_COMPONENTS/``self._category``/``component``.blend/Object/
+        or in: MORSE_RESOURCE_PATH/``component``/Object/
 
         :param objects: list of the objects names to append
         :param component: component in which the objects are located
+        :param prefix: filter the objects names to append (used by PassiveObject)
         :return: list of the imported (selected) Blender objects
         """
         if not component:
@@ -492,9 +520,6 @@ class AbstractComponent(object):
     def append_collada(self, component=None):
         """ Append Collada objects to the scene
 
-        The objects are located in:
-        MORSE_COMPONENTS/`self._category`/`component`.dae
-
         :param component: component in which the objects are located
         :return: list of the imported Blender objects
         """
@@ -525,7 +550,11 @@ class AbstractComponent(object):
         return imported_objects
 
     def profile(self):
-        """ Watch the average time used during the simulation, in percent. """
+        """ Watch the average time used during the simulation.
+
+        Display the profile of the component on the viewport in percent.
+        As Blender would for framerate and other debug-properties.
+        """
         if self._category is not 'sensors':
             logger.warning("profile currently supports only sensors")
         prop = self._property_new("profile", "0 %")

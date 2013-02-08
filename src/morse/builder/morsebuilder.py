@@ -24,7 +24,8 @@ class PassiveObject(AbstractComponent):
     """
 
     def __init__(self, filename="props/objects", prefix=None, keep_pose=False):
-        """
+        """ Initialize a PassiveObject
+
         :param filename: The Blender file to load. Path can be absolute
                          or if no extension relative to MORSE assets'
                          installation path (typically, $PREFIX/share/morse/data)
@@ -153,9 +154,10 @@ class WheeledRobot(Robot):
             #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
     def append(self, obj):
-        """ Add a child to the current object,
-        Overload the append method of AbstractObject
-        eg: robot.append(sensor), will set the robot parent of the sensor.
+        """ Add a child to the current object
+
+        Overloads :py:meth:`morse.builder.abstractcomponent.AbstractComponent.append`
+        *e.g.*, ``robot.append(sensor)`` will set the robot parent of the sensor.
         """
         # Correct the rotation of the object
         old = obj._bpy_object.rotation_euler

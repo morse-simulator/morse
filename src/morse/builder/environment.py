@@ -5,9 +5,11 @@ from morse.builder.morsebuilder import *
 
 class Environment(Component):
     """ Class to configure the general environment of the simulation
-    It handles the scenario file, general properties of the simulation,
-    the default location and orientation of the camera, the Blender GE settings
-    and also writes the 'component_config.py' file.
+
+    It handles the background environment in which your robots are simulated,
+    general properties of the simulation, the default location and orientation
+    of the camera, the Blender Game Engine settings, configure the parameters
+    for the multi-node simulation and also writes the 'component_config.py' file.
     """
     multinode_distribution = dict()
 
@@ -15,7 +17,8 @@ class Environment(Component):
         """
         :param fastmode: (default: False) if True, disable most visual effects (like lights...) to
         get the fastest running simulation. Useful for unit-tests for instance, or in simulations
-        where realistic environment texturing is not required (eg, no video camera)
+        where realistic environment texturing is not required (*e.g.*, no video camera)
+
         """
         Component.__init__(self, 'environments', filename)
         AbstractComponent.components.remove(self) # remove myself from the list of components to ensure my destructor is called
@@ -123,19 +126,34 @@ class Environment(Component):
             del frame
 
     def place_camera(self, location):
-        """ Store the position that will be givent to the default camera
-        Expected argument is a list with the desired position for the camera
+        """ Set the location of the default camera.
+
+        :param location: list with the new 3D coordinates for the camera.
+
+        .. code-block:: python
+
+            env.place_camera([10.0, -10.0, 3.0])
+
         """
         self._camera_location = location
 
     def aim_camera(self, rotation):
-        """ Store the orientation that will be givent to the default camera
-        Expected argument is a list with the desired orientation for the camera
+        """ Set the orientation of the default camera
+
+        :param rotation: list with an euler rotation for the camera.
+
+        .. code-block:: python
+
+            env.aim_camera([1.3300, 0, 0.7854])
+
         """
         self._camera_rotation = rotation
 
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
+
+        Should always be called at the very end of the Builder script. It will
+        finalise the building process and write the configuration files.
         """
         try:
             # Invoke special methods of component that must take place *after* renaming
@@ -198,6 +216,11 @@ class Environment(Component):
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color
+
+        See `World/Background on the Blender Manual
+        <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Background>`_
+        for more information about this particular setting.
+
         :param color: (0.0, 0.0, 0.0) < (R, B, G) < (1.0, 1.0, 1.0)
                       default: dark azure (0.05, 0.22, 0.4)
         """
@@ -205,23 +228,39 @@ class Environment(Component):
         bpymorse.get_context_scene().world.horizon_color = color
 
     def show_debug_properties(self, value=True):
+        """ Display the value of the game-properties marked as debug
+
+        :param value: indicate whether to show or not this information
+        """
         if isinstance(value, bool):
             bpymorse.get_context_scene().game_settings.show_debug_properties = value
 
     def show_framerate(self, value=True):
+        """ Display framerate and profile information of the simulation
+
+        :param value: indicate whether to show or not this information
+        """
         if isinstance(value, bool):
             bpymorse.get_context_scene().game_settings.show_framerate_profile = value
 
     def show_physics(self, value=True):
+        """ Display of the bounding boxes of objects during the simulation
+
+        :param value: indicate whether to show or not this information
+        """
         if isinstance(value, bool):
             bpymorse.get_context_scene().game_settings.show_physics_visualization = value
 
     def set_gravity(self, gravity=9.81):
+        """ Set the gravity for the specific scene
+
+        :param gravity: float, default: 9.81
+        """
         if isinstance(gravity, float):
             bpymorse.get_context_scene().game_settings.physics_gravity = gravity
 
     def set_material_mode(self, material_mode='GLSL'):
-        """Material mode to use for rendering
+        """ Material mode to use for rendering
 
         - ``SINGLETEXTURE`` Singletexture, Singletexture face materials.
         - ``MULTITEXTURE`` Multitexture, Multitexture materials.
@@ -232,7 +271,8 @@ class Environment(Component):
         self.is_material_mode_custom = True
 
     def set_viewport(self, viewport_shade='WIREFRAME'):
-        """ set_viewport
+        """ Set the default view mode
+
         :param viewport_shade: enum in ['BOUNDBOX', 'WIREFRAME', 'SOLID', 'TEXTURED'], default 'WIREFRAME'
         """
         for area in bpymorse.get_context_window().screen.areas:
@@ -246,10 +286,14 @@ class Environment(Component):
         bpymorse.get_context_scene().game_settings.use_auto_start = auto_start
 
     def set_debug(self, debug=True):
+        """ Set the debug bit in blender """
         bpymorse.set_debug(debug)
 
     def set_stereo(self, mode='ANAGLYPH', eye_separation=0.1, stereo='STEREO'):
-        """ set_stereo
+        """ Configure to render image in stereo mode
+
+        (anaglyphs allows to see in 3d with special red-cyan glasses)
+
         :param mode: Stereographic techniques. enum in ['QUADBUFFERED',
                      'ABOVEBELOW', 'INTERLACED', 'ANAGLYPH', 'SIDEBYSIDE',
                      'VINTERLACE'], default 'ANAGLYPH'
@@ -261,13 +305,43 @@ class Environment(Component):
         bpymorse.get_context_scene().game_settings.stereo_eye_separation = eye_separation
 
     def set_animation_record(self, record=True):
-        """ Record animation to F-Curves, so you can render it later
+        """ Record the simulation as a Blender animation (F-Curves)
+
+        See the tutorial: `Recording Game Physics to Keyframes
+        <http://cgcookie.com/blender/2011/05/10/tip-recording-game-physics-to-keyframes/>`_
+        for more information about this particular setting.
+
         :param record: boolean, default True
         """
         bpymorse.get_context_scene().game_settings.use_animation_record = record
 
     def configure_multinode(self, protocol='socket',
             server_address='localhost', server_port='65000', distribution=None):
+        """ Provide the information necessary for the node to connect to a multi-node server.
+
+        :param protocol: Either 'socket' or 'hla'
+        :param server_address: IP address where the multi-node server can be found
+        :param server_port: Used only for 'socket' protocol. Currently it should always be 65000
+        :param distribution: A Python dictionary. The keys are the names of the
+                nodes, and the values are lists with the names of the robots handled by
+                each node
+
+        .. code-block:: python
+
+            dala1 = ATRV()
+            dala2 = ATRV()
+
+            env = Environment('land-1/trees')
+            env.configure_multinode(
+                    protocol='socket',
+                    server_address='localhost',
+                    server_port='65000',
+                    distribution={
+                        "nodeA": [dala1.name],
+                        "nodeB": [dala2.name],
+                    })
+
+        """
         self._protocol = protocol
         self._server_address = server_address
         self._server_port = server_port
@@ -280,11 +354,24 @@ class Environment(Component):
         return self.add_service(datastream)
 
     def add_service(self, datastream):
-        """ override AbstractComponent method """
+        """ Override AbstractComponent method
+
+        Use it to define which ``datastream`` expose the *simulator internals
+        services* (*i.e.*, the services used to remotely control the simulator
+        behaviour):
+
+        .. code-block:: python
+
+            env = Environement('indoors-1/indoor-1', fastmode = True)
+            # Set the simulation management services to be available from ROS:
+            env.configure_service('ros')
+
+        """
         AbstractComponent.add_service(self, datastream, "simulation")
 
     def select_display_camera(self, robot_camera):
-        """ Select the camera that will be displayed on the Screen object
+        """ Select the camera that will be displayed on the HUD Screen object
+
         :param robot_camera: AbstractComponent reference to the camera desired to be displayed
         """
         self._display_camera = robot_camera
