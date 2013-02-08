@@ -31,6 +31,7 @@ class Environment(Component):
         self._environment_file = filename
         self._multinode_configured = False
         self._display_camera = None
+        self.is_material_mode_custom = False
 
         # define 'Scene_Script_Holder' as the blender object of Enrivonment
         if not 'Scene_Script_Holder' in bpymorse.get_objects():
@@ -164,17 +165,13 @@ class Environment(Component):
             camera_fp.location = self._camera_location
             camera_fp.rotation_euler = self._camera_rotation
 
-            if str(self.fastmode) in ['SINGLETEXTURE', 'MULTITEXTURE', 'GLSL']:
-                # MULTITEXTURE mode used for camera testing
-                # can't use SOLID viewport, no image in bge.texture
-                self.set_material_mode(self.fastmode)
-            elif not self.fastmode:
+            if self.fastmode:
+                self.set_material_mode('SINGLETEXTURE')
+                self.set_viewport("WIREFRAME")
+            elif not self.is_material_mode_custom:
                 # make sure OpenGL shading language shaders (GLSL) is the
                 # material mode to use for rendering
                 self.set_material_mode('GLSL')
-            else: # fastmode=True
-                self.set_material_mode('SINGLETEXTURE')
-                self.set_viewport("WIREFRAME")
 
             # Set the unit system to use for button display (in edit mode) to metric
             bpymorse.get_context_scene().unit_settings.system = 'METRIC'
@@ -232,6 +229,7 @@ class Environment(Component):
         :param material_mode: enum in ['SINGLETEXTURE', 'MULTITEXTURE', 'GLSL']
         """
         bpymorse.get_context_scene().game_settings.material_mode = material_mode
+        self.is_material_mode_custom = True
 
     def set_viewport(self, viewport_shade='WIREFRAME'):
         """ set_viewport

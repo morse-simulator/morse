@@ -158,7 +158,11 @@ class CameraTest(MorseTestCase):
         gyroscope.add_stream('socket')
         atrv.append(gyroscope)
 
-        env = Environment('indoors-1/boxes', fastmode='MULTITEXTURE')
+        env = Environment('indoors-1/boxes')
+        # Shadow may vary depending on the GPU, MULTITEXTURE mode = no shadow.
+        # We can't use SOLID viewport or SINGLETEXTURE mode since they do not
+        # provide image in bge.texture
+        env.set_material_mode('MULTITEXTURE')
         camera.profile()
 
     def assert_image_file_diff_less(self, filepath, image8u, delta):
