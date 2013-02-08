@@ -1,99 +1,184 @@
-What's new in MORSE 0.6?
-========================
+What's new in MORSE 1.0-beta1?
+==============================
 
 General
 -------
 
-- Compatibility with Blender from 2.59 to 2.64a.
-- MORSE is now compatible with Windows 32 and 64 bit. Thanks to Markus Sander
-  for providing the patches and testing
-- The 'morse' executable has slightly different options now. run 'morse -h' for
-  details.
-- Added support for 'no color' and 'reverse colors' log output.
-- Added support for specifying the geometry of the simulator window.
-- Unit-tests coverage improved
-- MORSE (core, ie with only socket support) is now packaged in Debian (and 
-  Ubuntu): morse-simulator
-
-User interface
---------------
-
-- Possibility to configure and display the view from a simulated camera inside
-  the Blender screen
-- Reset the position of the global camera (CameraFP) by pressing F8
+- MORSE is mature! stable release !
+- Unit-test coverage has been substentially improved
+- Documentation of component is now partially auto-generated: this should bring
+  a better, up-to-date, complete documentation, including code examples
+- MORSE has a new logo!
 
 Components
 ----------
 
-Sensors
-+++++++
+- All components now explicitely expose their data fields and properties with
+  respectively `add_data` and `add_property`.
+- Introduced "abstraction levels" that allow to define several levels of
+  realism for a given component (#166). Many components remain to be ported to
+  use this interface, though.
+- Many component classes have been renamed to be more readable and match
+  Builder conventions
+- Creation and configuration of armatures in Blender, suitable for MORSE is now
+  properly documented.
+- Most of the component do not need a Blender file anymore (only the one with
+  complex meshes or armature are kept) (#221).
+- Blender file for components do not require any game property of logic brick
+  anymore. It is now fully created within the Builder API. This means that any
+  Blender model can be used as MORSE model, without specific configuration
+  (#241).
+- components can now be easily profiled for performance assessment from the
+  Builder API.
 
-- Major rewriting of the IMU sensor and odometry sensor, which now returns more 
-  precise datas. While here, add some modifiers to allow more realistic
-  behaviour of such sensors.
+Robot
++++++
+
+- Subsential improvement regarding the PR2 robot support. Besides 2D
+  navigation, the robot's joint state and joint control via standard tools like
+  `pr2_tuck_arm` works out-of-the-box. PR2 joint name have been updated to
+  match the latest version. Several scripts allow to create a PR2 with variable
+  level of equipement.
+- Fixed the `WheeledRobot` class of robot that had a erratic physics behaviour.
+  Make `Pioneer3DX` inherit from this robot class (#245).
 
 Actuators
 +++++++++
 
-- New differential drive actuator associated to the previously mentioned
-  robots, called 'v_omega_diff_drive'. It converts a given v, omega into left
-  and right wheel speeds
-- Waypoint actuator can be configured to give target destination also in the Z
-  axis. Useful for helicopters and submarines
+- Complete rewrite of the armature actuator. It can now track joints state
+  (interpolating joint rotation if required, and not only 'jumping' to the
+  target position) and execute trajectories with interpolation. It also
+  introduces support for prismatic joints (#231, #232).
+- `Waypoint` actuator: improve handeling of interruption (the robot motion now
+  actually stops).
 
-Robots
-++++++
+Sensors
++++++++
 
-- Several models for quadrotors, including more or less realistic controls
-  (using waypoints, stabilized fly model or directly in force). ROS support
-  rely on ASCTEC messages.
-- New more physically realistic robots: Segway RMP 400 and Pioneer 3-DX. Thanks
-  to David Hodo and Pierrick Koch for their work on the physics simulation
-- B21 robot model
-- New textured model for the Yamaha R-Max helicopter
-- Simple model of a submarine robot, along with an underwater environment
+- New sensor: depth camera (Thanks to Gilberto's patch in Blender 2.65), with
+  specialization like Kinect (#122, #123, #138). It uses Python 3.3
+  `memory_view` for fast, copy-less transfer of binary data between the OpenGL
+  buffers, the C processor, and the interface.
+- Laser sensors have been reorganized and grouped in one single category
+  (#155, #226).
+- Odometry now expose several abstraction levels (*raw*, *differential*,
+  *integrated*)
+- New sensor: armature pose. This sensor superseeds previous sensors like
+  `kuka_pose` or `pr2_posture` by proving a clean interface to armature states.
+- New sensor: Velodyne
+- New special *compound sensor* that allows to merge the output of several
+  sensors. Used for instance to merge the joints values of the different PR2
+  armature in a single joint state (#240).
+- Former `rosace` sensor has been renamed to a more approriate
+  `search_and_rescue` sensor.
+- Laser scanner ranges ordering has been reversed to match ROS conventions.
 
-Human simulation
-++++++++++++++++
-
-- Several behaviour fixes in the human control mode
-- Human avatar can now be correctly placed in the scene using the Builder API
-  scripts
-- New tutorial to learn how to control the human avatar
-- Documentation of simulation of multiple humans
-- Kinect-based control of the human in the simulator
-
-Misc
-++++
-
-- Corrections to the bounding boxes of buildings in outdoor scenarios. Also
-  added textures to the buildings
-- Dependencies on Blender Python API are now wrapped in a single file
-
-Middlewares
+Builder API
 -----------
 
-- Lots of improvements on ROS compatibility. Many new tutorials with detailed
-  explanations, including an update ROS navigation tutorial.
-- Corrections to YARP middleware, allowing it to export data stored as Python
-  lists
-- Improvements to the multi-node architecture using HLA. Including new
-  tutorials and documentation
-- Updated ROS support for fuerte compatibility
+- One class per component: for instance, `Robot('atrv')` becomes `ATRV()`. The
+  documentation page of each component gives an example.
+- New `FakeRobot()` for clock and other static components (like environment
+  cameras).
+- Former functions `configure_mw` and `configure_service` replaced by new
+  `add_interface`, `add_datastream`, `add_service` or `add_default_interface`
+  that sets an interface for a whole robot (#217).
+- Components are now automatically renamed after the variable names used in the
+  Builder script, provide much more natural naming schemes. Names can still be
+  configured explicitely with `component.name` (#133).
+- Component profiling with `component.profile()`
+- Errors in Builder scripts are now better handled, with meaningful error
+  messages.
+- The simulation can now be configured from the Builder script for 3D output
+  (split screen), including configuration of eye separation.
+- Added ability to automatically save your scene as a Blender file from the
+  Builder script.
+- Added a `fastmode` option when setting up the environment: in *fastmode*,
+  only wireframes are displayed. This improves MORSE loading time and
+  performance, but some sensors (like cameras) won't work. Most of the
+  unit-tests now use this mode.
 
-Documentation
--------------
+Assets
+------
 
-- Make table of contents of the components with images
+- Added a new `empty` environment, especially suited for tests.
+
+Interfaces
+----------
+
+- Interfaces can now implement data serialization/deserialization in explicit
+  classes: no more hacky appending of free functions (#144, #145).
+
+ROS
++++
+
+- GPS : cleaned, to be validated
+- Odometry now publish both Odometry and TF
+- Pose publish only Pose (no more Odometry)
+- Laser scanners can now export point clouds (`PointCloud2`)
+- New `PointCloud2` publisher for depth camera, Kinect in progress
+- Support for the JointTrajectory ROS action for armature control
+- Special unittest class for ROS tests that takes care of setting up an
+  appropriate ROS environment (including launching `roscore`).
+
+
+Sockets
++++++++
+
+- Support for cancelling asynchronous requests
+- Support for exporting matrices and 3D transformations
+
+pocolibs
+++++++++
+
+- Large rewrite of pocolibs interface, now using `ctypes` instead of SWIG
+  bindings. This simplies a lot the compilation and maintenance of these
+  interfaces.
+
+Text
+++++
+
+- Improved the `text` interface, to allow for instance output as `.csv` files.
+
+pymorse
++++++++
+
+The Python bindings for MORSE have been completely rewritten, now supporting a
+modern asynchronous interface (based on Python 3.2 *futures*). It is also
+deemed as feature complete: it supports discovery of the simulation components,
+synchronous/asynchronous service invokation (including service cancellation)
+and synchronous/asynchronous read/write of datastream (#216).
+
+MORSE unit-tests now use this new API.
+
+Internals
+---------
+
+- Substential changes in MORSE internals:
+  - lots of refactoring, to improve code consistency (including
+    {middleware->datastream} (#186))
+  - many files have been renamed for consistency
 
 Misc
 ----
 
-- Add methods in builder to configure UTM coordinates and temperature in the
-  scene. Previously in the Scene_Script_Holder
+- MORSE now uses the MORSE_RESOURCE_PATH environment variable to look after
+  custom location for assets: convenient to store your own model out of MORSE
+  tree (#187).
+- Added configuration file required by the Travis buildbot
+- Several large examples or tutorials have been removed (because either
+  deprecation or doubtful usefulness)
+- New CSS for documentation, based on GitHub *minimal* style.
+- Numerous bugfixes, including:
+    - the 'objects flying around' bug, that was due to the way Blender handle
+      transformation matrices (#139).
+    - a bug affecting the color of some materials
+    - bug with logging when restarting the simulation in special cases (#183)
+
 
 Previous releases
 -----------------
 
-- :doc:`0.4.x release notes <releasenotes/0.4>`
+- :doc:`0.6.x release notes <releasenotes/0.6>`
 - :doc:`0.5.x release notes <releasenotes/0.5>`
+- :doc:`0.4.x release notes <releasenotes/0.4>`
