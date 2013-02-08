@@ -765,13 +765,13 @@ def close_all(contr):
     logger.log(ENDSECTION, 'COMPONENTS FINALIZATION')
     # Force the deletion of the sensor objects
     if 'componentDict' in persistantstorage:
-        for obj, component_instance in persistantstorage.componentDict.items():
-            del obj
+        for component_instance in persistantstorage.componentDict.values():
+            component_instance.finalize()
 
     # Force the deletion of the robot objects
     if 'robotDict' in persistantstorage:
-        for obj, robot_instance in persistantstorage.robotDict.items():
-            del obj
+        for robot_instance in persistantstorage.robotDict.values():
+           robot_instance.finalize() 
 
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
     del persistantstorage.morse_services

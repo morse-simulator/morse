@@ -31,8 +31,9 @@ class Sensor(morse.core.object.Object):
             self.time_datastreams = 0.0
             self.time_start = time.time()
 
-    def __del__ (self):
-        super(Sensor, self).__del__()
+    def finalize(self):
+        self._active = False
+        super(Sensor, self).finalize()
         del self.output_functions[:]
         del self.output_modifiers[:]
 

@@ -39,7 +39,7 @@ class AbstractObject(object):
         self.del_functions = []
         
 
-    def __del__(self):
+    def finalize(self):
         """ Destructor method. """
         logger.info("%s: I'm dying!!" % self.name())
         # Call specific functions added to this object
