@@ -171,17 +171,19 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.odometry.Odometry": {
         "differential": {
-            "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
-            "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
+            "text": INTERFACE_DEFAULT_OUT
             },
         "raw": {
             "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
             },
         "integrated": {
+            "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
+            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
             }
         },
     "morse.sensors.pose.Pose": {
