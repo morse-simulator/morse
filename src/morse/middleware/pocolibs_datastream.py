@@ -44,9 +44,9 @@ class PocolibsDataStreamOutput(AbstractDatastream):
     def initialize(self, kind):
         self.poster_id = c_void_p()
         o = kind()
-        name = poster_name(self.component_name, self.kwargs)
-        c_name = create_string_buffer(bytes(name, 'utf-8'))
-        logger.info("Create poster %s of size %d\n" % (name, sizeof(o)))
+        self.name = poster_name(self.component_name, self.kwargs)
+        c_name = create_string_buffer(bytes(self.name, 'utf-8'))
+        logger.info("Create poster %s of size %d" % (self.name, sizeof(o)))
         r = P.posterCreate(c_name, sizeof(o), byref(self.poster_id))
         if r != 0:
             P.posterFind(c_name, byref(self.poster_id))
@@ -57,6 +57,7 @@ class PocolibsDataStreamOutput(AbstractDatastream):
             raise "too bad : write failed"
 
     def finalize(self):
+        logger.info("Releaase poster %s" % (self.name))
         P.posterDelete(self.poster_id)
         self.poster_id = None
 
