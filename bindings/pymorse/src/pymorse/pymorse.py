@@ -31,7 +31,7 @@ simulator (defaults to localhost:4000). In this case, you must call
 :py:meth:`pymorse.Morse.close` before leaving.
 
 - Once created, the context generates proxies for every robots in the scene,
-and every sensors and actuators for each robot.
+  and every sensors and actuators for each robot.
 
 First example
 -------------
@@ -44,23 +44,18 @@ Let consider MORSE has been started with the following simulation script:
 
     # Add a robot with a position sensor and a motion controller
     r2d2 = ATRV()
-    r2d2.name = "r2d2"
 
     pose = Pose()
-    pose.name = "pose"
-    pose.add_stream('socket')
+    pose.add_interface('socket')
     r2d2.append(pose)
 
     motion = Waypoint()
-    motion.name = "motion"
-    motion.add_stream('socket')
-    motion.configure_service('socket')
+    motion.add_interface('socket')
     r2d2.append(motion)
 
 
     # Environment
     env = Environment('land-1/trees')
-    env.configure_service('socket')
 
 The following Python program sends a destination to the robot, and prints in
 background its pose:
@@ -296,7 +291,7 @@ import threading
 
 from queue import Queue
 
-from future import MorseExecutor
+from .future import MorseExecutor
 
 import json
 
@@ -316,7 +311,7 @@ h = NullHandler()
 pymorselogger.addHandler(h)
 
 
-from stream import Stream
+from .stream import Stream
 
 class MorseServerError(Exception):
     def __init__(self, value):
@@ -532,15 +527,16 @@ class ComChannel(threading.Thread):
         """
         :param port: the socket port to connect to
         :param read_queue: the content read from the socket is pushed to this
-        queue. Must be a queue.queue.
+          queue. Must be a queue.queue.
         :param write_queue: content to be sent to the simulator should be
-        pushed to this queue. Must be a queue.queue.
+           pushed to this queue. Must be a queue.queue.
         :param buf: (optional, default: None) if provided, content
-        stored in the read_queue is copied as well in the buffer. Must support
-        'appendleft()'. Attention: if 'buf' is provided, the connection is
-        considered as a stream connection. Else as a RPC connection (using
-        MORSE RPC protocol to parse the response).
-        :param cb: (optional, default: None) a callback, invoked when content is read on the socket.
+          stored in the read_queue is copied as well in the buffer. Must support
+          'appendleft()'. Attention: if 'buf' is provided, the connection is
+          considered as a stream connection. Else as a RPC connection (using
+          MORSE RPC protocol to parse the response).
+        :param cb: (optional, default: None) a callback, invoked when content
+          is read on the socket.
 
         """
 
