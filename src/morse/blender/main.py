@@ -786,6 +786,9 @@ def close_all(contr):
                 logger.debug("At closing time, %s has %s references" % (datastream_instance, gc.get_referents(datastream_instance)))
                 del obj
 
+    logger.log(ENDSECTION, 'CLOSING OVERLAYS...')
+    del persistantstorage.overlayDict
+
     if MULTINODE_SUPPORT:
         logger.log(ENDSECTION, 'CLOSING MULTINODE...')
         persistantstorage.node_instance.finalize()
