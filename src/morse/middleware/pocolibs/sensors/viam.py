@@ -49,8 +49,9 @@ class ViamPoster(AbstractDatastream):
             logger.info("The PTU sensor does not have two cameras attached. It is being disabled!")
 
     def default(self, ci):
-        parent = self.component_instance.robot_parent
-        main_to_origin = parent.position_3d
+
+        first_cam = blenderapi.persistantstorage().componentDict[self.camera_order[0]]
+        main_to_origin = first_cam.robot_pose
 
         pom_robot_position =  ViamPos()
         pom_robot_position.x = main_to_origin.x
@@ -70,8 +71,8 @@ class ViamPoster(AbstractDatastream):
         # In normal circumstances, there will be two for stereo
         for camera_name in self.camera_order:
             camera_instance = blenderapi.persistantstorage().componentDict[camera_name]
-
-            main_to_sensor = camera_instance.sensor_to_robot_position_3d()
+            main_to_sensor = main_to_origin.transformation3d_with(
+                    camera_instance.position_3d)
             imX = camera_instance.image_width
             imY = camera_instance.image_height
             try:
@@ -98,7 +99,7 @@ class ViamPoster(AbstractDatastream):
             camera_data.y = main_to_sensor.y
             camera_data.z = main_to_sensor.z
             camera_data.yaw = main_to_sensor.yaw 
-            camera_data.pitch = main_to_sensor.pitch
+            camera_data.pitch = main_to_sensor.pitch + math.pi # XXX WTF 
             camera_data.roll = main_to_sensor.roll
             camera_data.flipped = camera_instance.vertical_flip
 

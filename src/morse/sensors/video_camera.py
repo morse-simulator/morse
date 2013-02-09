@@ -5,6 +5,7 @@ import morse.core.blenderapi
 from morse.core import mathutils
 import morse.sensors.camera
 from morse.helpers.components import add_data
+import copy
 
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
@@ -83,6 +84,9 @@ class VideoCamera(morse.sensors.camera.Camera):
         # Variable to indicate this is a camera
         self.camera_tag = True
 
+        # Position of the robot where the last shot is taken
+        self.robot_pose = copy.copy(self.robot_parent.position_3d)
+
         logger.info('Component initialized')
 
     def interrupt(self):
@@ -101,6 +105,7 @@ class VideoCamera(morse.sensors.camera.Camera):
 
     def default_action(self):
         """ Update the texture image. """
+
         # Grab an image from the texture
         if self.bge_object['capturing'] and (self._n != 0) :
 
@@ -110,6 +115,8 @@ class VideoCamera(morse.sensors.camera.Camera):
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA
             image_data = morse.core.blenderapi.cameras()[self.name()].source
+
+            self.robot_pose = copy.copy(self.robot_parent.position_3d)
 
             # Fill in the exportable data
             self.local_data['image'] = image_data
