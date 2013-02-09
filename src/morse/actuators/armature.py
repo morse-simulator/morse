@@ -374,13 +374,13 @@ class Armature(morse.core.actuator.Actuator):
         Returns the IK limits for the given joint.
         
         - For revolute joints, returns a pair `(ik_min,ik_max)`, in radians.
-        - For prismatic joint, returns the maximum translation, in meters.
+        - For prismatic joint, returns a pair `(0.0, max translation)`, in meters.
         """
 
         channel, is_prismatic = self._get_joint(joint)
 
         if is_prismatic:
-            return channel.ik_stretch
+            return (0.0, channel.ik_stretch)
         else:
             # Retrieve the translation axis
             axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
