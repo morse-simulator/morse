@@ -21,7 +21,7 @@ from pymorse import Morse
 def getjoint(name):
     
     with Morse() as simu:
-        joints = simu.pr2.posture.get()
+        joints = simu.pr2.joint_state.get()
 
         return joints[name]
 
@@ -30,7 +30,7 @@ class PR2TorsoTest(MorseTestCase):
     def setUpEnv(self):
         from morse.builder.robots import BasePR2
         pr2 = BasePR2()
-        pr2.configure_mw('socket')
+        pr2.add_interface('socket')
 
         env = Environment('empty', fastmode=True)
         env.aim_camera([1.0470, 0, 0.7854])
