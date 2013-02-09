@@ -342,7 +342,12 @@ class AbstractComponent(object):
         else:
             config = [method, path]
 
-        config.insert(0, MORSE_DATASTREAM_MODULE[datastream])
+        if datastream in MORSE_DATASTREAM_MODULE:
+            datastream_classpath = MORSE_DATASTREAM_MODULE[datastream]
+        else:
+            datastream_classpath = datastream
+
+        config.insert(0, datastream_classpath)
         config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
