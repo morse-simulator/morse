@@ -4,12 +4,11 @@ from morse.builder import *
 atrv = ATRV()
 
 pose = Pose()
-pose.translate(x=-0.2000, z=0.9000)
+pose.translate(z = 0.75)
 atrv.append(pose)
 
 motion = MotionVW()
 atrv.append(motion)
-
 
 # Scene configuration
 motion.configure_service('socket')
