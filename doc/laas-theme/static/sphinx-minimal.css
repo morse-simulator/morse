@@ -3,14 +3,13 @@
  * This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
  */
 
-@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400italic,800italic,400,800);
 
 
 body {
   padding:50px;
   font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color:#222;
-  font-weight:300;
 }
 
 h1, h2, h3, h4, h5, h6 {
