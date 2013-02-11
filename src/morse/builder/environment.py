@@ -149,6 +149,17 @@ class Environment(Component):
         """
         self._camera_rotation = rotation
 
+    def set_camera_clip(self, clip_start=0.1, clip_end=100):
+        """ Set the simulator's Camera near and far clipping distance
+
+        :param clip_start: Camera near clipping distance, float in meters (default 0.1)
+        :param clip_end: Camera far clipping distance, float in meters (default 100)
+        """
+        camera_fp = bpymorse.get_object('CameraFP')
+        # camera_fp.data holds the bpy.types.Camera instance
+        camera_fp.data.clip_start = clip_start
+        camera_fp.data.clip_end = clip_end
+
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
 
