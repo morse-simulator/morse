@@ -62,7 +62,8 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         robot_instance.components.append(child)
 
         if not 'classpath' in child:
-            logger.error("No 'classpath' in child %s"%str(child.name))
+            logger.error("No 'classpath' in child %s\n  Please make sure you "
+                         "are using the new builder classes"%str(child.name))
             return False
         # Create an instance of the component class
         #  and add it to the component list of persistantstorage()
@@ -174,7 +175,8 @@ def create_dictionaries ():
     for obj in scene.objects:
         if 'Robot_Tag' in obj or 'External_Robot_Tag' in obj:
             if not 'classpath' in obj:
-                logger.error("No 'classpath' in %s"%str(obj.name))
+                logger.error("No 'classpath' in %s\n  Please make sure you are "
+                             "using the new builder classes"%str(obj.name))
                 return False
             # Create an object instance and store it
             instance = create_instance(obj['classpath'], 
