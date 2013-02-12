@@ -43,6 +43,9 @@ def move(contr):
     camera = contr.owner
 
     scene = blenderapi.scene()
+    if not scene:
+        # not ready, main reload(blenderapi)
+        return
 
     # Do not move the camera if the current view is using another camera
     if camera != scene.active_camera:
@@ -102,8 +105,13 @@ def rotate(contr):
     # get the object this script is attached to
     camera = contr.owner
 
+    scene = blenderapi.scene()
+    if not scene:
+        # not ready, main reload(blenderapi)
+        return
+
     # Do not move the camera if the current view is using another camera
-    if camera != blenderapi.scene().active_camera:
+    if camera != scene.active_camera:
         return
 
     # Get sensor named Mouse
