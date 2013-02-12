@@ -2,8 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status, mathutils
 import morse.core.blenderapi
-from morse.sensors.camera import CameraClass
-from morse.sensors.video_camera import VideoCameraClass
+from morse.sensors.camera import Camera
+from morse.sensors.video_camera import VideoCamera
 from morse.helpers.components import add_data
 from morse.sensors.zbufferto3d import ZBufferTo3D
 from morse.sensors.zbuffertodepth import ZBufferToDepth
@@ -16,8 +16,8 @@ class AbstractDepthCamera(VideoCamera):
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent.
         """
-        # Call the constructor of the VideoCameraClass class
-        VideoCameraClass.__init__(self, obj, parent)
+        # Call the constructor of the VideoCamera class
+        VideoCamera.__init__(self, obj, parent)
         # Component specific initialize (converters)
         self.initialize()
 
@@ -33,8 +33,8 @@ class AbstractDepthCamera(VideoCamera):
         # Grab an image from the texture
         if self.bge_object['capturing'] and (self._n != 0) :
 
-            # Call the action of the CameraClass class
-            CameraClass.default_action(self)
+            # Call the action of the Camera class
+            Camera.default_action(self)
 
             self.process_image(morse.core.blenderapi.cameras()[self.name()].source)
 
