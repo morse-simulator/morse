@@ -494,10 +494,14 @@ if __name__ == '__main__':
             logger.error("Your environment is not correctly setup to run MORSE!")
             sys.exit()
         logger.info("Your environment is correctly setup to run MORSE.")
-        
     elif args.mode == "run":
         if not args.scene:
             logger.error("'run' mode requires a simulation script (.py)")
+            sys.exit()
+        try:
+            with open(args.scene['name']) as f: pass
+        except IOError as e:
+            logger.error('Cannot open %s file %s:' % (args.scene['name'], e))
             sys.exit()
         prelaunch()
         launch_simulator(
