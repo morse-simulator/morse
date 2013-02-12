@@ -29,8 +29,7 @@ class BasePR2(BarePR2):
 
     """
     def __init__(self):
-
-        super(self.__class__, self).__init__()
+        BarePR2.__init__(self)
 
         # Armatures and armature pose sensors
         # The armatures are already present in the PR2 blender model.
@@ -122,8 +121,7 @@ class NavPR2(BasePR2):
 
     """
     def __init__(self, with_keyboard = True, show_laser = False):
-
-        super(self.__class__, self).__init__()
+        BasePR2.__init__(self)
 
         ###################################
         # Actuators
