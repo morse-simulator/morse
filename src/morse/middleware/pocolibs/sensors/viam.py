@@ -13,40 +13,52 @@ class ViamPoster(AbstractDatastream):
         self.camera_order = []
 
         """ Prepare the data for a viam poster """
-        cameras = []
-        pos_cam = []
+        self.cameras = []
+        self.pos_cam = []
         # Get the names of the data for the cameras
-        for camera_name in self.component_instance.camera_list:
-            camera_instance = blenderapi.persistantstorage().componentDict[camera_name]
+        try:
+            # Stereo unit case
+            for camera_name in self.component_instance.camera_list:
+                camera_instance = blenderapi.persistantstorage().componentDict[camera_name]
 
-            # Create an image structure for each camera
-            image_init = { 'name': camera_name,
-                           'width': int(camera_instance.image_width),
-                           'height': int(camera_instance.image_height),
-                           'focal': float(camera_instance.image_focal)
-                         }
+                self.add_camera(camera_name, camera_instance)
+        except AttributeError:
+            # Video camera case
+            self.add_camera(self.component_name, self.component_instance)
 
-            pos_cam.append(camera_instance.bge_object.localPosition)
-            cameras.append(image_init)
-            self.camera_order.append(camera_name)
 
-        baseline = 0
+        if len(self.camera_order) == 1:
+            self.obj = Viam(name, 'mono_bank', 0, self.cameras)
+
         # This is the case for a stereo camera
-        if self.component_instance.num_cameras == 2:
-            baseline = math.sqrt( math.pow(pos_cam[0][0] - pos_cam[1][0], 2) +
-                                  math.pow(pos_cam[0][1] - pos_cam[1][1], 2) +
-                                  math.pow(pos_cam[0][2] - pos_cam[1][2], 2))
+        if len(self.camera_order) == 2:
+            baseline = math.sqrt( math.pow(self.pos_cam[0][0] - self.pos_cam[1][0], 2) +
+                                  math.pow(self.pos_cam[0][1] - self.pos_cam[1][1], 2) +
+                                  math.pow(self.pos_cam[0][2] - self.pos_cam[1][2], 2))
 
             # viam expects first the left camera, then the right camera
             # Check the y difference between the two cameras
-            if (pos_cam[0][1] < pos_cam[1][1]):
-                cameras.reverse()
+            if (self.pos_cam[0][1] < self.pos_cam[1][1]):
+                self.cameras.reverse()
                 self.camera_order.reverse()
 
             # Create the actual poster
-            self.obj = Viam(name, 'stereo_bank', baseline, cameras)
-        else:
-            logger.info("The PTU sensor does not have two cameras attached. It is being disabled!")
+            self.obj = Viam(name, 'stereo_bank', baseline, self.cameras)
+
+        if len(self.camera_order) > 2:
+            logger.error("ViamPoster called with more than 2 cameras")
+
+    def add_camera(self, camera_name, camera_instance):
+        # Create an image structure for each camera
+        image_init = { 'name': camera_name,
+                       'width': int(camera_instance.image_width),
+                       'height': int(camera_instance.image_height),
+                       'focal': float(camera_instance.image_focal)
+                     }
+
+        self.pos_cam.append(camera_instance.bge_object.localPosition)
+        self.cameras.append(image_init)
+        self.camera_order.append(camera_name)
 
     def default(self, ci):
 

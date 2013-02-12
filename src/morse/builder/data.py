@@ -247,6 +247,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
             "socket": 'morse.middleware.sockets.video_camera.VideoPublisher',
             "yarp": ['post_image_RGBA'],
+            "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }
         },
 
