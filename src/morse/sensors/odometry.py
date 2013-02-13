@@ -40,12 +40,12 @@ class Odometry(morse.core.sensor.Sensor):
     add_data('yaw', 0.0, "float","rotation angle with respect to the Z axis", level = "integrated")
     add_data('pitch', 0.0, "float","rotation angle with respect to the Y axis", level = "integrated")
     add_data('roll', 0.0, "float","rotation angle with respect to the X axis", level = "integrated")
-    add_data('vx', 0.0, "float","linear velocity related to the X coordinate of the sensor", level = "differential")
-    add_data('vy', 0.0, "float","linear velocity related to the Y coordinate of the sensor", level = "differential")
-    add_data('vz', 0.0, "float","linear velocity related to the Z coordinate of the sensor", level = "differential")
-    add_data('wz', 0.0, "float","angular velocity related to the Z coordinate of the sensor", level = "differential")
-    add_data('wy', 0.0, "float","angular velocity related to the Y coordinate of the sensor", level = "differential")
-    add_data('wx', 0.0, "float","angular velocity related to the X coordinate of the sensor", level = "differential")
+    add_data('vx', 0.0, "float","linear velocity related to the X coordinate of the sensor", level = "integrated")
+    add_data('vy', 0.0, "float","linear velocity related to the Y coordinate of the sensor", level = "integrated")
+    add_data('vz', 0.0, "float","linear velocity related to the Z coordinate of the sensor", level = "integrated")
+    add_data('wz', 0.0, "float","angular velocity related to the Z coordinate of the sensor", level = "integrated")
+    add_data('wy', 0.0, "float","angular velocity related to the Y coordinate of the sensor", level = "integrated")
+    add_data('wx', 0.0, "float","angular velocity related to the X coordinate of the sensor", level = "integrated")
 
 
     def __init__(self, obj, parent=None):
