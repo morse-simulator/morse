@@ -2,6 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 import re
 import yarp
+import mathutils
+from morse.helpers.transformation import Transformation3d
 import morse.core.datastream
 
 class Yarp(morse.core.datastream.Datastream):
@@ -186,6 +188,33 @@ class Yarp(morse.core.datastream.Datastream):
             m_bottle = bottle.addList()
             for m_data in data:
                 self._post_message(m_bottle, m_data, component_name)
+        elif isinstance(data, mathutils.Vector):
+            m_bottle = bottle.addList()
+            for m_data in data:
+                self._post_message(m_bottle, m_data, component_name)
+        elif isinstance(data, mathutils.Matrix):
+            m_bottle = bottle.addList()
+            for m_data in data:
+                self._post_message(m_bottle, m_data, component_name)
+        elif isinstance(data, mathutils.Quaternion):
+            m_bottle = bottle.addList()
+            m_bottle.addDouble(data.x)
+            m_bottle.addDouble(data.y)
+            m_bottle.addDouble(data.z)
+            m_bottle.addDouble(data.w)
+        elif isinstance(data, mathutils.Euler):
+            m_bottle = bottle.addList()
+            m_bottle.addDouble(data.z)
+            m_bottle.addDouble(data.y)
+            m_bottle.addDouble(data.x)
+        elif isinstance(data, Transformation3d):
+            m_bottle = bottle.addList()
+            m_bottle.addDouble(data.x)
+            m_bottle.addDouble(data.y)
+            m_bottle.addDouble(data.z)
+            m_bottle.addDouble(data.yaw)
+            m_bottle.addDouble(data.pitch)
+            m_bottle.addDouble(data.roll)
         else:
             logger.error("Unknown data type at 'post_message', with component '%s'" % component_name)
 
