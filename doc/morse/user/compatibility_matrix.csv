@@ -5,7 +5,7 @@ Communications ,
 Sensors,
 ``Accelerometer``,            ✔,               ✔,           ✔,              ✔ ``Twist``,     ✘,																	✔ 
 ``Battery``,				  ✔,			   ✔,			✔,				✔ ``Float32``,	✘,																	✔
-``GPS``,                      ✔,               ✔,           ✔,              ✔ ``PoseStamped``,✔ ``POM_ME_POS``,								✔
+``GPS``,                      ✔,               ✔,           ✔,              ✔ ``NavSatFix``,✔ ``POM_ME_POS``,								✔
 ``Gyroscope``,                ✔,               ✔,           ✔,              ✘,                ✔ ``POM_ME_POS``,												✔
 ``Human posture``,            ✔,               ✔,           ✔,              ✘,               ✔ ``SPARK_CONFIGURATION``,											✘
 ``IMU``,		              ✔,               ✔,           ✔,              ✔ ``Imu``,     ✘,																	✔
