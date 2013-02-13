@@ -7,6 +7,7 @@
 ## we wait for <module_name>.py in the (sensor|actuator) directory)
 
 option(BUILD_POCOLIBS_VIAM_SUPPORT "build viam support" OFF)
+option(BUILD_POCOLIBS_STEREOPIXEL_SUPPORT "build image3D support" OFF)
 
 if (BUILD_POCOLIBS_VIAM_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
@@ -19,6 +20,19 @@ if (BUILD_POCOLIBS_VIAM_SUPPORT)
 	python_add_module(viam sensors/viam.c)
 	target_link_libraries(viam ${POCOLIBS_LIBRARIES})
 	install(TARGETS viam DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs)
+endif()
+
+if (BUILD_POCOLIBS_STEREOPIXEL_SUPPORT)
+	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
+	include_directories(${POCOLIBS_INCLUDE_DIRS})
+	link_directories(${POCOLIBS_LIBRARY_DIRS})
+
+	pkg_check_modules(STEREOPIXELE REQUIRED stereopixel)
+	include_directories(${VIAM_INCLUDE_DIRS})
+
+	python_add_module(stereopixel sensors/stereopixel.c)
+	target_link_libraries(stereopixel ${POCOLIBS_LIBRARIES})
+	install(TARGETS stereopixel DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs)
 endif()
 
 install (FILES __init__.py
