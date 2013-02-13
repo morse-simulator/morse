@@ -17,4 +17,4 @@ class NavSatFixPublisher(ROSPublisher):
         gps.longitude = self.data['y']
         gps.altitude = self.data['z']
 
-        self.publish(pose)
+        self.publish(gps)
