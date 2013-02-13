@@ -561,15 +561,11 @@ class AbstractComponent(object):
         As Blender would for framerate and other debug-properties.
         """
         if self._category is not 'sensors':
-            logger.warning("profile currently supports only sensors")
-        prop = self._property_new("profile", "0 %")
-        prop.show_debug = True
-        prop = self._property_new("profile::action", "0 %")
-        prop.show_debug = True
-        prop = self._property_new("profile::modifiers", "0 %")
-        prop.show_debug = True
-        prop = self._property_new("profile::datastreams", "0 %")
-        prop.show_debug = True
+            logger.warning("profile currently supports only sensors (%s)"%self)
+        for key in ["profile", "profile_action", "profile_modifiers",
+                    "profile_datastreams"]:
+            prop = self._property_new(key, "0")
+            prop.show_debug = True
         bpymorse.get_context_scene().game_settings.show_debug_properties = True
 
     def __str__(self):

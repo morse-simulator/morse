@@ -22,13 +22,13 @@ class Sensor(morse.core.object.Object):
         self.output_functions = []
         self.output_modifiers = []
 
-        self.profile = False
+        self.profile = None
         if "profile" in self.bge_object:
-            self.profile = True
-            self.time_actions = 0.0
-            self.time_default_actions = 0.0
-            self.time_modifiers = 0.0
-            self.time_datastreams = 0.0
+            self.time = {}
+            self.profile = ["profile", "profile_action", "profile_modifiers",
+                            "profile_datastreams"]
+            for key in self.profile:
+                self.time[key] = 0.0
             self.time_start = time.time()
 
     def finalize(self):
@@ -81,24 +81,18 @@ class Sensor(morse.core.object.Object):
         # profiling
         if self.profile:
             time_now = time.time()
-            self.time_actions += time_now - time_before_action
-            self.time_default_actions += time_before_modifiers - time_before_action
-            self.time_modifiers += time_before_datastreams - time_before_modifiers
-            self.time_datastreams += time_now - time_before_datastreams
+            self.time["profile"] += time_now - time_before_action
+            self.time["profile_action"] += time_before_modifiers - time_before_action
+            self.time["profile_modifiers"] += time_before_datastreams - time_before_modifiers
+            self.time["profile_datastreams"] += time_now - time_before_datastreams
             morse_time = time_now - self.time_start
-            self.bge_object["profile"] = "%6.2f %%"% \
-                            (100.0 * self.time_actions / morse_time)
-            self.bge_object["profile::action"] = "%6.2f %%"% \
-                            (100.0 * self.time_default_actions / morse_time)
-            self.bge_object["profile::modifiers"] = "%6.2f %%"% \
-                            (100.0 * self.time_modifiers / morse_time)
-            self.bge_object["profile::datastreams"] = "%6.2f %%"% \
-                            (100.0 * self.time_datastreams / morse_time)
+            for key in self.profile:
+                ratio = self.time[key] / morse_time
+                # format the display
+                self.bge_object[key] = "%4.1f%% %s"% (100.0 * ratio, '█' * int(10 * ratio))
             if morse_time > 1: # re-init mean every sec
-                self.time_actions = 0.0
-                self.time_default_actions = 0.0
-                self.time_modifiers = 0.0
-                self.time_datastreams = 0.0
+                for key in self.profile:
+                    self.time[key] = 0.0
                 self.time_start = time.time()
 
     @service
