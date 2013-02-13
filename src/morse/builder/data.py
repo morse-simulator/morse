@@ -337,6 +337,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.actuators.v_omega_diff_drive.MotionVWDiff": {
         "default": {
+            "ros": 'morse.middleware.ros.motion_vw.TwistReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
             "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster'
