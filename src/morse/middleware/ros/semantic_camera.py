@@ -9,7 +9,9 @@ class SemanticCameraPublisher(ROSPublisherTF):
         ROSPublisherTF.initialize(self, String)
 
     def default(self, ci='unused'):
-        """ Publish the data of the semantic camera as a ROS String message with newlines (for better visualization in console). """
+        """ Publish the data of the semantic camera as a ROS String message,
+        each field separated by a comma, with newlines (for better visualization
+        in console). """
         string = String()
         for obj in self.data['visible_objects']:
             # if object has no description, set to '-'
@@ -33,9 +35,10 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
         ROSPublisherTF.initialize(self, String)
 
     def default(self, ci='unused'):
-        """ Publish the data of the semantic camera as a ROS String message that contains a lisp-list.
+        """ Publish the data of the semantic camera as a ROS String message,
+        that contains a lisp-list (each field are separated by a space).
 
-        This function was designed for the use with CRAM and the Adapto group
+        This function was designed for the use with CRAM and the Adapto group.
         """
         string = String()
         string.data = "("

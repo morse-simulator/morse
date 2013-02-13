@@ -8,9 +8,10 @@ class TwistPublisher(ROSPublisher):
         ROSPublisher.initialize(self, Twist)
 
     def default(self, ci='unused'):
-        """ Publish the data of the acceleromter sensor as a ROS Twist message
+        """ Publish the velocity of the acceleromter sensor as a
+        ``geometry_msgs/Twist`` message
 
-        Only the velocity part is exported.
+        No angular information, only linear ones.
         """
         twist = Twist()
 

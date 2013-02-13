@@ -8,7 +8,7 @@ class Float32Publisher(ROSPublisher):
         ROSPublisher.initialize(self, Float32)
 
     def default(self, ci='unused'):
-        """ Publish the data of the battery sensor as a single Float32 message """
+        """ Publish the charge of the battery sensor as a single ``Float32`` message """
         msg = Float32()
         msg.data = self.data['charge']
 

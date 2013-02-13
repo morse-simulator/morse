@@ -18,7 +18,10 @@ class VideoCameraPublisher(ROSPublisher):
         self.topic_camera_info.unregister()
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS Image message. """
+        """ Publish the data of the Camera as a ROS Image message.
+
+        Moreover, it exports camera information through a topic of kind
+        ``sensor_msgs/CameraInfo``. """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
 

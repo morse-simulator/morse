@@ -9,7 +9,8 @@ class JointStateReader(ROSReader):
         ROSReader.initialize(self, JointState)
 
     def update(self, message):
-        """ Method called as soon as JointState messages are published on the specific topic """
+        """ Method called as soon as JointState messages are published on the
+        specific topic, set kuka_{1-7} to the position[0-6]."""
         logger.debug("Received JointState names: %s on topic %s"%(message.name, self.topic_name))
         logger.debug("Received JointState positons: %s on topic %s"%(message.position, self.topic_name))
         logger.debug("Received JointState velocity: %s on topic %s"%(message.velocity, self.topic_name))

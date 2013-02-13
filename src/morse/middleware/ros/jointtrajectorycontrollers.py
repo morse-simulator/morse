@@ -10,7 +10,8 @@ class JointTrajectoryControllerStatePublisher(ROSPublisher):
         ROSPublisher.initialize(self, JointTrajectoryControllerStatePublisher)
 
     def default(self, ci='unused'):
-        """ Publish the data of the posture sensor as a ROS JointTrajectoryControllerStatePublisher message """
+        """ Publish the data of the posture sensor as a ROS
+        JointTrajectoryControllerStatePublisher message """
         js = JointTrajectoryControllerStatePublisher()
         js.header = self.get_ros_header()
 

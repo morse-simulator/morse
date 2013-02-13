@@ -11,7 +11,8 @@ class QuaternionReader(ROSReader):
         ROSReader.initialize(self, Quaternion)
 
     def update(self, message):
-        """ Method called as soon as Quaternion messages are published on the specific topic """
+        """ Method called as soon as Quaternion messages are published on the
+        specific topic, store ``roll``, ``pitch``, ``yaw`` in ``local_data``"""
         quaternion = mathutils.Quaternion(message)
         euler = quaternion.to_euler()
         self.data["roll"] = euler.x

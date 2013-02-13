@@ -9,7 +9,9 @@ class TwistReader(ROSReader):
         ROSReader.initialize(self, Twist)
 
     def update(self, message):
-        """ Method called as soon as Twist messages are published on the specific topic """
+        """ Method called as soon as Twist messages are published on the specific
+        topic, set ``x``, ``y`` and ``w`` local_data from Twist.linear.x,
+        Twist.linear.y and Twist.angular.z """
         self.data["x"] = message.linear.x
         self.data["y"] = message.linear.y
         self.data["w"] = message.angular.z # yaw

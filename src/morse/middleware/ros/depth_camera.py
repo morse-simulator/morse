@@ -9,7 +9,7 @@ class DepthCameraPublisher(ROSPublisherTF):
         ROSPublisherTF.initialize(self, PointCloud2)
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS PointCloud2 message """
+        """ Publish the data of the Camera as a ROS PointCloud2 message (XYZ) """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
 

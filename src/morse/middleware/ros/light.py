@@ -8,5 +8,6 @@ class BoolReader(ROSReader):
         ROSReader.initialize(self, Bool)
 
     def update(self, message):
-        """ Method called as soon as Bool messages are published on the specific topic """
+        """ Method called as soon as Bool messages are published on the specific
+        topic, control if we must or not emit light """
         self.data["emit"] = message.data

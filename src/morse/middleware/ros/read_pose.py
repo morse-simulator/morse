@@ -10,7 +10,8 @@ class PoseReader(ROSReader):
         ROSReader.initialize(self, Pose)
 
     def update(self, message):
-        """ Method called as soon as Pose messages are published on the specific topic """
+        """ Method called as soon as Pose messages are published on the specific topic,
+        store ``x``, ``y``, ``z`` and ``roll``, ``pitch``, ``yaw`` in ``local_data``"""
         self.data["x"] = message.position.x
         self.data["y"] = message.position.y
         self.data["z"] = message.position.z

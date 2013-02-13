@@ -8,6 +8,8 @@ class Vector3Reader(ROSReader):
         ROSReader.initialize(self, Vector3)
 
     def update(self, message):
-        """ Method called as soon as Vector3 messages are published on the specific topic """
+        """ Method called as soon as Vector3 messages are published on the specific
+        topic, sets the local data for "pan" and "tilt" according to the rotation
+        axis (pan: y-axis, tilt: z-axis) """
         self.data["pan"] = message.y
         self.data["tilt"] = message.z

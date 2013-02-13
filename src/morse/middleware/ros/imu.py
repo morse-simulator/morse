@@ -11,7 +11,8 @@ class ImuPublisher(ROSPublisher):
         self.orientation = self.component_instance.bge_object.worldOrientation.to_quaternion()
 
     def default(self, ci='unused'):
-        """ Publish the data of the IMU sensor as a custom ROS Imu message """
+        """ Publish the data of the IMU sensor as a custom ROS Imu message
+        (without covariance) """
         imu = Imu()
         imu.header = self.get_ros_header()
 

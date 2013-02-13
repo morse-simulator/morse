@@ -13,7 +13,8 @@ class LaserScanPublisher(ROSPublisher):
         self.frame_id = self.kwargs.get('frame_id', '/base_laser_link')
 
     def default(self, ci='unused'):
-        """ Publish the data of the laser scanner sensor as a ROS LaserScan message """
+        """ Publish the ``range_list`` of the laser scanner sensor as a ROS
+        LaserScan message """
         laserscan = LaserScan()
         laserscan.header = self.get_ros_header()
 
