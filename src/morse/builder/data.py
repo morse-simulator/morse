@@ -1,9 +1,30 @@
-import os
+""" This module holds MORSE Builder API settings
 
-"""
 MORSE_COMPONENTS:
-path to the Morse components
+Default path to Morse components.
+
+MORSE_RESOURCE_PATH:
+Path list to Morse components (like the shell PATH variable).
+
+The search path for components. It is a colon-separated list of directories in
+which MORSE looks for components. A zero-length (null) directory name in the
+value of PATH indicates the current directory. A null directory name may appear
+as two adjacent colons, or as an initial or trailing colon. The default path is
+``MORSE_COMPONENTS``, wich means this list always contains morse components path.
+You can export it before to start morse (commonly in ``~/.bashrc``) as::
+
+    export MORSE_RESOURCE_PATH="/home/user/my_own_components:/home/user/my_own_environments"
+
+MORSE_MODIFIERS:
+Path to the modifiers modules.
+
+MORSE_DATASTREAM_MODULE:
+Path to the middleware modules.
+
+MORSE_MODIFIER_DICT:
+Associate a modifier function to a component.
 """
+import os
 
 MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'), \
                                 'share', 'morse', 'data')
@@ -11,10 +32,6 @@ MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'), \
 MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS, \
                                 os.getenv('MORSE_RESOURCE_PATH', '')])
 
-"""
-MORSE_MODIFIERS:
-path to the modifiers modules
-"""
 MORSE_MODIFIERS = {
     'NED': 'morse.modifiers.ned.MorseNEDClass',
     'UTM': 'morse.modifiers.utm.MorseUTMClass',
@@ -24,10 +41,6 @@ MORSE_MODIFIERS = {
     'PoseNoise': 'morse.modifiers.pose_noise.MorsePoseNoiseClass',
 }
 
-"""
-MORSE_DATASTREAM_MODULE:
-path to the middleware modules
-"""
 MORSE_DATASTREAM_MODULE = {
     'ros': 'morse.middleware.ros_datastream.ROS',
     'socket': 'morse.middleware.socket_datastream.Socket',
@@ -36,10 +49,6 @@ MORSE_DATASTREAM_MODULE = {
     'text': 'morse.middleware.text_datastream.Text',
 }
 
-"""
-MORSE_MODIFIER_DICT:
-associate a modifier function to a component.
-"""
 MORSE_MODIFIER_DICT = {
     'NED': {
         'pose': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
@@ -65,14 +74,6 @@ MORSE_MODIFIER_DICT = {
     }
 }
 
-"""
-middleware-dictionary-convention:
-{
-    .blend-middleware: {
-        .blend-component: ['MW', 'method', 'path']
-    }
-}
-"""
 
 INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",
