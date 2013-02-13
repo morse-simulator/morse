@@ -176,7 +176,7 @@ class AbstractComponent(object):
 
         .. code-block:: python
 
-            self.properties(Component_Tag = True, classpath='module.Class', speed = 5.0)
+            self.properties(capturing = True, classpath='module.Class', speed = 5.0)
 
         will create and/or set the 3 game properties Component_Tag, classpath, and
         speed at the value True (boolean), 'module.Class' (string), 5.0 (float).
@@ -187,7 +187,7 @@ class AbstractComponent(object):
 
         .. code-block:: python
 
-            self.properties(My_Clock = timer(5.0), My_Speed = int(5/2))
+            self.properties(my_clock = timer(5.0), my_speed = int(5/2))
 
         """
         prop = self._bpy_object.game.properties

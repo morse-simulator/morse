@@ -5,7 +5,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 
 def load_module_attribute(module_name, attribute_name):
-    """Dynamically import a Python class."""
+    """Dynamically import a Python attribute."""
     try:
         __import__(module_name)
     except ImportError as detail:
