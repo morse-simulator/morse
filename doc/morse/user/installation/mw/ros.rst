@@ -1,6 +1,26 @@
 ROS Installation Notes
 ~~~~~~~~~~~~~~~~~~~~~~
 
+ROS Groovy
+----------
+
+Same as `ROS Fuerte`_ with just few more steps.
+
+Run ``sudo rosdep init`` and ``rosdep update``
+
+Install catkin for Python 3 support:
+
+   git clone https://github.com/ros-infrastructure/catkin_pkg
+   cd catkin_pkg/
+   python3 setup.py install
+   sudo python3 setup.py install
+
+   git clone https://github.com/ros/catkin
+   cd catkin/
+   python3 setup.py install
+   sudo python3 setup.py install
+
+
 ROS Fuerte
 ----------
 
@@ -108,3 +128,12 @@ MORSE, please follow the following steps:
    source the right setup.bash!), e.g.: 
 
    ``rosmake --pre-clean sensor_msgs``
+
+
+Resources
+---------
+
+- http://ros.org/wiki/diamondback
+- http://ros.org/wiki/electric
+- http://ros.org/wiki/fuerte
+- http://ros.org/wiki/groovy
