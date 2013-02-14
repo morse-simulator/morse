@@ -4,12 +4,13 @@ from geometry_msgs.msg import Wrench
 from morse.middleware.ros import ROSReader
 
 class WrenchReader(ROSReader):
+    """ Subscribe to a Wrench topic and set force and torque (x,y,z) local data. """
+    _type_name = "geometry_msgs/Wrench"
 
     def initialize(self):
         ROSReader.initialize(self, Wrench)
 
     def update(self, message):
-        """ Method called as soon as Wrench messages are published on the specific topic """
         self.data["force"][0] = message.force.x
         self.data["force"][1] = message.force.y
         self.data["force"][2] = message.force.z

@@ -5,13 +5,13 @@ from pr2_controllers_msgs.msg import JointTrajectoryControllerState
 from morse.middleware.ros import ROSPublisher
 
 class JointTrajectoryControllerStatePublisher(ROSPublisher):
+    """ Publish the data of the pr2 joint sensor. """
+    _type_name = "pr2_controllers_msgs/JointTrajectoryControllerState"
 
     def initialize(self):
         ROSPublisher.initialize(self, JointTrajectoryControllerStatePublisher)
 
     def default(self, ci='unused'):
-        """ Publish the data of the posture sensor as a ROS
-        JointTrajectoryControllerStatePublisher message """
         js = JointTrajectoryControllerStatePublisher()
         js.header = self.get_ros_header()
 

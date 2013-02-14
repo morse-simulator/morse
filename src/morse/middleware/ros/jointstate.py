@@ -3,12 +3,13 @@ from morse.middleware.sockets.jointstate import fill_missing_pr2_joints
 from morse.middleware.ros import ROSPublisher
 
 class JointStatePublisher(ROSPublisher):
+    """ Publish the data of the posture sensor. """
+    _type_name = "sensor_msgs/JointState"
 
     def initialize(self):
         ROSPublisher.initialize(self, JointState)
 
     def default(self, ci='unused'):
-        """ Publish the data of the posture sensor as a ROS JointState message """
         js = JointState()
         js.header = self.get_ros_header()
 
@@ -23,12 +24,13 @@ class JointStatePublisher(ROSPublisher):
 
 
 class JointStatePR2Publisher(ROSPublisher):
+    """ Publish the data of the posture sensor after filling missing PR2 joints. """
+    _type_name = "sensor_msgs/JointState"
 
     def initialize(self):
         ROSPublisher.initialize(self, JointState)
 
     def default(self, ci='unused'):
-        """ Publish the data of the posture sensor as a ROS JointState message """
         js = JointState()
         js.header = self.get_ros_header()
 

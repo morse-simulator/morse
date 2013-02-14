@@ -3,16 +3,15 @@ from geometry_msgs.msg import Twist
 from morse.middleware.ros import ROSPublisher
 
 class TwistPublisher(ROSPublisher):
+    """ Publish the velocity of the acceleromter sensor.
+    No angular information, only linear ones.
+    """
+    _type_name = "geometry_msgs/Twist"
 
     def initialize(self):
         ROSPublisher.initialize(self, Twist)
 
     def default(self, ci='unused'):
-        """ Publish the velocity of the acceleromter sensor as a
-        ``geometry_msgs/Twist`` message
-
-        No angular information, only linear ones.
-        """
         twist = Twist()
 
         # Fill twist-msg with the values from the sensor

@@ -7,6 +7,11 @@ from nav_msgs.msg import Odometry
 from morse.middleware.ros import ROSPublisherTF
 
 class OdometryPublisher(ROSPublisherTF):
+    """ Publish the odometry of the robot. And send the transformation between
+    ``frame_id`` and ``child_frame_id`` args, default '/odom' and
+    '/base_footprint' through TF.
+    """
+    _type_name = "nav_msgs/Odometry"
 
     def initialize(self):
         ROSPublisherTF.initialize(self, Odometry)
@@ -18,9 +23,6 @@ class OdometryPublisher(ROSPublisherTF):
                     "and child_frame_id '%s'", self.frame_id, self.child_frame_id)
 
     def default(self, ci='unused'):
-        """ Publish the data of the Odometry sensor as a ROS Odometry message,
-        and send transform (TF) between ``frame_id`` and ``child_frame_id args``,
-        default '/odom' and '/base_footprint'."""
         odometry = Odometry()
         odometry.header = self.get_ros_header()
         odometry.child_frame_id = self.child_frame_id

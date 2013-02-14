@@ -5,6 +5,8 @@ from rosgraph_msgs.msg import Clock
 from morse.core import blenderapi
 
 class ClockPublisher(ROSPublisher):
+    """ Publish the simulator clock. """
+    _type_name = "rosgraph_msgs/Clock"
 
     def initialize(self):
         ROSPublisher.initialize(self, Clock)
@@ -13,7 +15,6 @@ class ClockPublisher(ROSPublisher):
         self._sim_step = 1.0 / blenderapi.getfrequency()
 
     def default(self, ci='unused'):
-        """ Publish the simulator clock as a Clock ROS message """
         msg = Clock()
         msg.clock = rospy.Time.from_sec(self._sim_time)
         self._sim_time += self._sim_step

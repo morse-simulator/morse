@@ -10,6 +10,13 @@ from morse.middleware.ros.tfMessage import tfMessage
 from morse.middleware import AbstractDatastream
 
 class AbstractROS(AbstractDatastream):
+    """ Base class for all ROS Publishers and Subscribers """
+    _type_name = "std_msgs/Empty"
+
+    @property
+    def _type_url(self):
+        # used to generate documentation
+        return "http://ros.org/doc/api/%s/html/msg/%s.html"%tuple(_type_name.split('/'))
 
     def initialize(self):
         # Initialize MORSE-ROS-node. If already initialized, does nothing
@@ -174,6 +181,8 @@ class ROSReader(AbstractROS):
 #
 
 class StringPublisher(ROSPublisher):
+    """ Publish a string containing a printable representation of the local data. """
+    _type_name = "std_msgs/String"
 
     def initialize(self):
         ROSPublisher.initialize(self, String)
@@ -186,6 +195,8 @@ class StringPublisher(ROSPublisher):
 
 
 class StringReader(ROSReader):
+    """ Subscribe to a String topic and log its data decoded as UTF-8. """
+    _type_name = "std_msgs/String"
 
     def initialize(self):
         ROSReader.initialize(self, String)

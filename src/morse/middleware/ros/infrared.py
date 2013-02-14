@@ -3,12 +3,13 @@ from sensor_msgs.msg import Range
 from morse.middleware.ros import ROSPublisher
 
 class RangePublisher(ROSPublisher):
+    """ Publish the range of the infrared sensor. """
+    _type_name = "sensor_msgs/Range"
 
     def initialize(self):
         ROSPublisher.initialize(self, Range)
 
     def default(self, ci='unused'):
-        """ Publish the data of the infrared sensor as a ROS Range message """
         msg = Range()
         msg.radiation_type = Range.INFRARED
         msg.field_of_view = 20

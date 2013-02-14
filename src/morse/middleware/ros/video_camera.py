@@ -5,6 +5,11 @@ from sensor_msgs.msg import Image, CameraInfo
 from morse.middleware.ros import ROSPublisher
 
 class VideoCameraPublisher(ROSPublisher):
+    """ Publish the image from the Camera perspective.
+    And send the intrinsic matrix information in a separate topic of type
+    `sensor_msgs/CameraInfo <http://ros.org/wiki/rviz/DisplayTypes/Camera>`_.
+    """
+    _type_name = "sensor_msgs/Image"
 
     def initialize(self):
         self.kwargs['topic_suffix'] = '/image'
@@ -18,10 +23,6 @@ class VideoCameraPublisher(ROSPublisher):
         self.topic_camera_info.unregister()
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS Image message.
-
-        Moreover, it exports camera information through a topic of kind
-        ``sensor_msgs/CameraInfo``. """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
 
@@ -38,7 +39,6 @@ class VideoCameraPublisher(ROSPublisher):
         # VideoTexture.ImageRender implements the buffer interface
         image.data = bytes(image_local)
 
-        # sensor_msgs/CameraInfo [ http://ros.org/wiki/rviz/DisplayTypes/Camera ]
         # fill this 3 parameters to get correcty image with stereo camera
         Tx = 0
         Ty = 0
