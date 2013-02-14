@@ -4,10 +4,7 @@ from morse.middleware.ros import ROSPublisher
 
 class Float32Publisher(ROSPublisher):
     """ Publish the charge of the battery sensor. """
-    _type_name = "std_msgs/Float32"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, Float32)
+    ros_class = Float32
 
     def default(self, ci='unused'):
         msg = Float32()

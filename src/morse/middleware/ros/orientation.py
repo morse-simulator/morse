@@ -7,10 +7,7 @@ from morse.middleware.ros import ROSReader
 
 class QuaternionReader(ROSReader):
     """ Subscribe to a Quaternion topic and set roll,pitch,yaw local data. """
-    _type_name = "geometry_msgs/Quaternion"
-
-    def initialize(self):
-        ROSReader.initialize(self, Quaternion)
+    ros_class = Quaternion
 
     def update(self, message):
         quaternion = mathutils.Quaternion(message)

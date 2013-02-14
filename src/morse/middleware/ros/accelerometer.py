@@ -6,10 +6,7 @@ class TwistPublisher(ROSPublisher):
     """ Publish the velocity of the acceleromter sensor.
     No angular information, only linear ones.
     """
-    _type_name = "geometry_msgs/Twist"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, Twist)
+    ros_class = Twist
 
     def default(self, ci='unused'):
         twist = Twist()

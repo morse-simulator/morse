@@ -6,10 +6,7 @@ from morse.middleware.ros import ROSReader
 
 class CtrlInputReader(ROSReader):
     """ Subscribe to a CtrlInput topic and set pitch,roll,yaw,thrust local data. """
-    _type_name = "asctec_msgs/CtrlInput"
-
-    def initialize(self):
-        ROSReader.initialize(self, CtrlInput)
+    ros_class = CtrlInput
 
     def update(self, message):
         max_angle = math.radians(30)

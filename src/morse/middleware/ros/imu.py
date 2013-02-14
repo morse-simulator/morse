@@ -4,11 +4,8 @@ from morse.middleware.ros import ROSPublisher
 
 class ImuPublisher(ROSPublisher):
     """ Publish the data of the IMU sensor (without covariance). """
-    _type_name = "sensor_msgs/Imu"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, Imu)
-        self.frame_id = self.kwargs.get("frame_id", "/imu")
+    ros_class = Imu
+    default_frame_id = '/imu'
 
     def default(self, ci='unused'):
         imu = Imu()

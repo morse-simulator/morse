@@ -8,11 +8,8 @@ from morse.middleware.ros import ROSPublisher, ROSPublisherTF
 
 class LaserScanPublisher(ROSPublisher):
     """ Publish the ``range_list`` of the laser scanner. """
-    _type_name = "sensor_msgs/LaserScan"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, LaserScan)
-        self.frame_id = self.kwargs.get('frame_id', '/base_laser_link')
+    ros_class = LaserScan
+    default_frame_id = '/base_laser_link'
 
     def default(self, ci='unused'):
         laserscan = LaserScan()
@@ -39,10 +36,7 @@ class LaserScanPublisher(ROSPublisher):
 
 class PointCloud2Publisher(ROSPublisherTF):
     """ Publish the ``point_list`` of the laser scanner. """
-    _type_name = "sensor_msgs/PointCloud2"
-
-    def initialize(self):
-        ROSPublisherTF.initialize(self, PointCloud2)
+    ros_class = PointCloud2
 
     def default(self, ci='unused'):
         points = self.data['point_list']

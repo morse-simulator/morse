@@ -4,10 +4,7 @@ from morse.middleware.ros import ROSPublisher
 
 class NavSatFixPublisher(ROSPublisher):
     """ Publish the GPS position of the robot. """
-    _type_name = "sensor_msgs/NavSatFix"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, NavSatFix)
+    ros_class = NavSatFix
 
     def default(self, ci='unused'):
         gps = NavSatFix()

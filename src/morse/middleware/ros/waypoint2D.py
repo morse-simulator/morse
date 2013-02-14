@@ -7,10 +7,7 @@ class Pose2DReader(ROSReader):
     """ Subscribe to a Pose2D topic and set ``x``, ``y``, ``z`` local data.
     This is designed to be used with the waypoint actuator.
     """
-    _type_name = "geometry_msgs/Pose2D"
-
-    def initialize(self):
-        ROSReader.initialize(self, Pose2D)
+    ros_class = Pose2D
 
     def update(self, message):
         logger.debug("Received Pose2D: < %s, %s, %s > on topic %s"% \

@@ -5,10 +5,7 @@ from morse.middleware.ros import ROSReader
 
 class TwistReader(ROSReader):
     """ Subscribe to a motion command and set ``x``, ``y`` and ``w`` local data. """
-    _type_name = "geometry_msgs/Twist"
-
-    def initialize(self):
-        ROSReader.initialize(self, Twist)
+    ros_class = Twist
 
     def update(self, message):
         self.data["x"] = message.linear.x

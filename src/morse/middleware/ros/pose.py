@@ -6,11 +6,8 @@ from morse.middleware.ros import ROSPublisher
 
 class PoseStampedPublisher(ROSPublisher):
     """ Publish the position and orientation of the robot. """
-    _type_name = "geometry_msgs/PoseStamped"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, PoseStamped)
-        self.frame_id = self.kwargs.get("frame_id", "/map")
+    ros_class = PoseStamped
+    default_frame_id = '/map'
 
     def default(self, ci='unused'):
         pose = PoseStamped()

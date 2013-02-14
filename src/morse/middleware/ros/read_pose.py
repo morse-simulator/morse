@@ -8,10 +8,7 @@ class PoseReader(ROSReader):
     """ Subscribe to a Pose topic and set ``x``, ``y``, ``z`` and ``roll``,
     ``pitch``, ``yaw`` local data.
     """
-    _type_name = "geometry_msgs/Pose"
-
-    def initialize(self):
-        ROSReader.initialize(self, Pose)
+    ros_class = Pose
 
     def update(self, message):
         self.data["x"] = message.position.x

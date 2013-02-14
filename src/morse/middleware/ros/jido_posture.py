@@ -4,10 +4,7 @@ from morse.middleware.ros import ROSPublisher
 
 class JointStatePublisher(ROSPublisher):
     """ Publish the data of the posture sensor (for Jido). """
-    _type_name = "sensor_msgs/JointState"
-
-    def initialize(self):
-        ROSPublisher.initialize(self, JointState)
+    ros_class = JointState
 
     def default(self, ci='unused'):
         js = JointState()

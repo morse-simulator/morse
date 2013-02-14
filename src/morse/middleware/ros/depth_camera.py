@@ -7,10 +7,7 @@ class DepthCameraPublisher(ROSPublisherTF):
     """ Publish the depth field from the Camera perspective as XYZ point-cloud.
     And send the transformation between the camera and the robot through TF.
     """
-    _type_name = "sensor_msgs/PointCloud2"
-
-    def initialize(self):
-        ROSPublisherTF.initialize(self, PointCloud2)
+    ros_class = PointCloud2
 
     def default(self, ci='unused'):
         if not self.component_instance.capturing:

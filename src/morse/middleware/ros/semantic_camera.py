@@ -7,10 +7,7 @@ class SemanticCameraPublisher(ROSPublisherTF):
     """ Publish the data of the semantic camera as a ROS String message, each
     field separated by a comma, with newlines (for better visualization in console).
     """
-    _type_name = "std_msgs/String"
-
-    def initialize(self):
-        ROSPublisherTF.initialize(self, String)
+    ros_class = String
 
     def default(self, ci='unused'):
         string = String()
@@ -36,10 +33,7 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
 
     This function was designed for the use with CRAM and the Adapto group.
     """
-    _type_name = "std_msgs/String"
-
-    def initialize(self):
-        ROSPublisherTF.initialize(self, String)
+    ros_class = String
 
     def default(self, ci='unused'):
         string = String()

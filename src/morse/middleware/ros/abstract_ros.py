@@ -9,14 +9,25 @@ from geometry_msgs.msg import TransformStamped
 from morse.middleware.ros.tfMessage import tfMessage
 from morse.middleware import AbstractDatastream
 
+class classproperty(object):
+    def __init__(self, fget):
+        self.fget = fget
+    def __get__(self, owner_self, owner_cls):
+        return self.fget(owner_cls)
+
 class AbstractROS(AbstractDatastream):
     """ Base class for all ROS Publishers and Subscribers """
-    _type_name = "std_msgs/Empty"
+    ros_class = Header # default
 
-    @property
-    def _type_url(self):
+    @classproperty
+    def _type_name(cls):
+        # returns the standard ROS message name from its Python class
+        return "%s/%s"%(cls.ros_class.__module__.split('.')[0], cls.ros_class.__name__)
+
+    @classproperty
+    def _type_url(cls):
         # used to generate documentation
-        return "http://ros.org/doc/api/%s/html/msg/%s.html"%tuple(_type_name.split('/'))
+        return "http://ros.org/doc/api/%s/html/msg/%s.html"%tuple(cls._type_name.split('/'))
 
     def initialize(self):
         # Initialize MORSE-ROS-node. If already initialized, does nothing
@@ -45,15 +56,20 @@ class AbstractROS(AbstractDatastream):
 
 
 class ROSPublisher(AbstractROS):
+    """ Base class for all ROS Publishers """
+    default_frame_id = 'USE_TOPIC_NAME'
 
-    def initialize(self, ros_class):
+    def initialize(self):
         AbstractROS.initialize(self)
         topic_name = self.topic_name
         if 'topic_suffix' in self.kwargs: # used for /robot/camera/image
             topic_name += self.kwargs['topic_suffix']
         # Generate a publisher for the component
-        self.topic = rospy.Publisher(topic_name, ros_class)
-        self.frame_id = self.kwargs.get('frame_id', self.topic_name)
+        self.topic = rospy.Publisher(topic_name, self.ros_class)
+        if self.default_frame_id is 'USE_TOPIC_NAME': # morse convention
+            self.frame_id = self.kwargs.get('frame_id', self.topic_name)
+        else: # default_frame_id was overloaded in subclass
+            self.frame_id = self.kwargs.get('frame_id', self.default_frame_id)
         self.sequence = 0 # for ROS msg Header
         logger.info('ROS publisher initialized for %s'%self)
 
@@ -74,10 +90,11 @@ class ROSPublisher(AbstractROS):
 
 
 class ROSPublisherTF(ROSPublisher):
+    """ Base class for all ROS Publishers with TF support """
     topic_tf = None
 
-    def initialize(self, ros_class):
-        ROSPublisher.initialize(self, ros_class)
+    def initialize(self):
+        ROSPublisher.initialize(self)
         if not ROSPublisherTF.topic_tf:
             ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage)
 
@@ -144,12 +161,13 @@ class ROSPublisherTF(ROSPublisher):
 
 
 class ROSReader(AbstractROS):
+    """ Base class for all ROS Subscribers """
 
-    def initialize(self, ros_class):
+    def initialize(self):
         AbstractROS.initialize(self)
         self.message = None
         # Generate a subscriber for the component
-        self.topic = rospy.Subscriber(self.topic_name, ros_class, self.callback)
+        self.topic = rospy.Subscriber(self.topic_name, self.ros_class, self.callback)
         logger.info('ROS subscriber initialized for %s'%self)
 
     def callback(self, message):
@@ -182,24 +200,15 @@ class ROSReader(AbstractROS):
 
 class StringPublisher(ROSPublisher):
     """ Publish a string containing a printable representation of the local data. """
-    _type_name = "std_msgs/String"
+    ros_class = String
 
-    def initialize(self):
-        ROSPublisher.initialize(self, String)
-
-    # Post string messages
     def default(self, ci='unused'):
-        """ Publish the `local_data` on the topic
-        """
         self.publish(repr(self.data))
 
 
 class StringReader(ROSReader):
     """ Subscribe to a String topic and log its data decoded as UTF-8. """
-    _type_name = "std_msgs/String"
-
-    def initialize(self):
-        ROSReader.initialize(self, String)
+    ros_class = String
 
     def update(self, message):
         logger.info("Received String message %s on topic %s" % \

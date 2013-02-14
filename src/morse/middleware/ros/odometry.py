@@ -11,12 +11,12 @@ class OdometryPublisher(ROSPublisherTF):
     ``frame_id`` and ``child_frame_id`` args, default '/odom' and
     '/base_footprint' through TF.
     """
-    _type_name = "nav_msgs/Odometry"
+    ros_class = Odometry
+    default_frame_id = '/odom'
 
     def initialize(self):
-        ROSPublisherTF.initialize(self, Odometry)
+        ROSPublisherTF.initialize(self)
         # store the frame ids
-        self.frame_id = self.kwargs.get("frame_id", "/odom")
         self.child_frame_id = self.kwargs.get("child_frame_id", "/base_footprint")
 
         logger.info("Initialized the ROS odometry sensor with frame_id '%s' " +\

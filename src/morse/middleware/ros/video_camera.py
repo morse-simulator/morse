@@ -9,11 +9,11 @@ class VideoCameraPublisher(ROSPublisher):
     And send the intrinsic matrix information in a separate topic of type
     `sensor_msgs/CameraInfo <http://ros.org/wiki/rviz/DisplayTypes/Camera>`_.
     """
-    _type_name = "sensor_msgs/Image"
+    ros_class = Image
 
     def initialize(self):
         self.kwargs['topic_suffix'] = '/image'
-        ROSPublisher.initialize(self, Image)
+        ROSPublisher.initialize(self)
         # Generate a publisher for the CameraInfo
         self.topic_camera_info = rospy.Publisher(self.topic_name+'/camera_info', CameraInfo)
 

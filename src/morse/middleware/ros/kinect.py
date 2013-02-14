@@ -8,10 +8,10 @@ class XYZRGBPublisher(ROSPublisherTF):
     """ Publish the merged image and depth field from the Kinect perspective as XYZRGB point-cloud.
     And send the transformation between the camera and the robot through TF.
     """
-    _type_name = "sensor_msgs/PointCloud2"
+    ros_class = PointCloud2
 
     def initialize(self):
-        ROSPublisherTF.initialize(self, PointCloud2)
+        ROSPublisherTF.initialize(self)
         self.npixels = None
 
     def default(self, ci='unused'):

@@ -7,10 +7,7 @@ class JointStateReader(ROSReader):
     """ Method called as soon as JointState messages are published on the
     specific topic, set kuka_{1-7} to the position[0-6]."""
     """ Subscribe to a Point topic and set x,y,z local data. """
-    _type_name = "sensor_msgs/JointState"
-
-    def initialize(self):
-        ROSReader.initialize(self, JointState)
+    ros_class = JointState
 
     def update(self, message):
         logger.debug("Received JointState names: %s on topic %s"%(message.name, self.topic_name))
