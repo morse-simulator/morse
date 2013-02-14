@@ -4,16 +4,15 @@ from geometry_msgs.msg import Twist
 from morse.middleware.ros import ROSReader
 
 class TwistReader(ROSReader):
+    """ Subscribe to a motion command and set ``x``, ``y`` and ``w`` local data. """
+    _type_name = "geometry_msgs/Twist"
 
     def initialize(self):
         ROSReader.initialize(self, Twist)
 
     def update(self, message):
-        """ Method called as soon as Twist messages are published on the specific
-        topic, set ``x``, ``y`` and ``w`` local_data from Twist.linear.x,
-        Twist.linear.y and Twist.angular.z """
         self.data["x"] = message.linear.x
         self.data["y"] = message.linear.y
         self.data["w"] = message.angular.z # yaw
-        logger.debug("Executing v-omega-movement: linear: <%s, %s, %s>"%
+        logger.debug("Executing x,y,omega movement: <%s, %s, %s>"%
                      (message.linear.x, message.linear.y, message.angular.z))

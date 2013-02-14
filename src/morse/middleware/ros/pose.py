@@ -5,13 +5,14 @@ from geometry_msgs.msg import PoseStamped
 from morse.middleware.ros import ROSPublisher
 
 class PoseStampedPublisher(ROSPublisher):
+    """ Publish the position and orientation of the robot. """
+    _type_name = "geometry_msgs/PoseStamped"
 
     def initialize(self):
         ROSPublisher.initialize(self, PoseStamped)
         self.frame_id = self.kwargs.get("frame_id", "/map")
 
     def default(self, ci='unused'):
-        """ Publish the data of the pose sensor as a custom ROS PoseStamped message """
         pose = PoseStamped()
         pose.header = self.get_ros_header()
 

@@ -7,14 +7,14 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField
 from morse.middleware.ros import ROSPublisher, ROSPublisherTF
 
 class LaserScanPublisher(ROSPublisher):
+    """ Publish the ``range_list`` of the laser scanner. """
+    _type_name = "sensor_msgs/LaserScan"
 
     def initialize(self):
         ROSPublisher.initialize(self, LaserScan)
         self.frame_id = self.kwargs.get('frame_id', '/base_laser_link')
 
     def default(self, ci='unused'):
-        """ Publish the ``range_list`` of the laser scanner sensor as a ROS
-        LaserScan message """
         laserscan = LaserScan()
         laserscan.header = self.get_ros_header()
 
@@ -38,13 +38,13 @@ class LaserScanPublisher(ROSPublisher):
         self.publish(laserscan)
 
 class PointCloud2Publisher(ROSPublisherTF):
+    """ Publish the ``point_list`` of the laser scanner. """
+    _type_name = "sensor_msgs/PointCloud2"
 
     def initialize(self):
         ROSPublisherTF.initialize(self, PointCloud2)
 
     def default(self, ci='unused'):
-        """ Publish the data of the laser scanner sensor as a ROS PointCloud2 message """
-
         points = self.data['point_list']
         size = len(points)
 

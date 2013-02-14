@@ -5,12 +5,13 @@ from asctec_msgs.msg import CtrlInput
 from morse.middleware.ros import ROSReader
 
 class CtrlInputReader(ROSReader):
+    """ Subscribe to a CtrlInput topic and set pitch,roll,yaw,thrust local data. """
+    _type_name = "asctec_msgs/CtrlInput"
 
     def initialize(self):
         ROSReader.initialize(self, CtrlInput)
 
     def update(self, message):
-        """ Method called as soon as CtrlInput messages are published on the specific topic """
         max_angle = math.radians(30)
         max_yaw_rate = math.radians(90)
         yaw_deadband = 5

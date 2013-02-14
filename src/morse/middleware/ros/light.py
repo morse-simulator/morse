@@ -3,11 +3,11 @@ from std_msgs.msg import Bool
 from morse.middleware.ros import ROSReader
 
 class BoolReader(ROSReader):
+    """ Subscribe to a boolean topic to control if we must or not emit light. """
+    _type_name = "std_msgs/Bool"
 
     def initialize(self):
         ROSReader.initialize(self, Bool)
 
     def update(self, message):
-        """ Method called as soon as Bool messages are published on the specific
-        topic, control if we must or not emit light """
         self.data["emit"] = message.data

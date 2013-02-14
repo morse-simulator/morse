@@ -6,13 +6,13 @@ from geometry_msgs.msg import Quaternion
 from morse.middleware.ros import ROSReader
 
 class QuaternionReader(ROSReader):
+    """ Subscribe to a Quaternion topic and set roll,pitch,yaw local data. """
+    _type_name = "geometry_msgs/Quaternion"
 
     def initialize(self):
         ROSReader.initialize(self, Quaternion)
 
     def update(self, message):
-        """ Method called as soon as Quaternion messages are published on the
-        specific topic, store ``roll``, ``pitch``, ``yaw`` in ``local_data``"""
         quaternion = mathutils.Quaternion(message)
         euler = quaternion.to_euler()
         self.data["roll"] = euler.x

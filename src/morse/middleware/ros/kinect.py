@@ -5,13 +5,16 @@ from sensor_msgs.msg import PointCloud2, PointField
 from morse.middleware.ros import ROSPublisherTF
 
 class XYZRGBPublisher(ROSPublisherTF):
+    """ Publish the merged image and depth field from the Kinect perspective as XYZRGB point-cloud.
+    And send the transformation between the camera and the robot through TF.
+    """
+    _type_name = "sensor_msgs/PointCloud2"
 
     def initialize(self):
         ROSPublisherTF.initialize(self, PointCloud2)
         self.npixels = None
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS PointCloud2 message """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
         if not self.npixels:

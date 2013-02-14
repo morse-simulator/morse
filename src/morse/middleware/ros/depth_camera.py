@@ -4,12 +4,15 @@ from sensor_msgs.msg import PointCloud2, PointField
 from morse.middleware.ros import ROSPublisherTF
 
 class DepthCameraPublisher(ROSPublisherTF):
+    """ Publish the depth field from the Camera perspective as XYZ point-cloud.
+    And send the transformation between the camera and the robot through TF.
+    """
+    _type_name = "sensor_msgs/PointCloud2"
 
     def initialize(self):
         ROSPublisherTF.initialize(self, PointCloud2)
 
     def default(self, ci='unused'):
-        """ Publish the data of the Camera as a ROS PointCloud2 message (XYZ) """
         if not self.component_instance.capturing:
             return # press [Space] key to enable capturing
 

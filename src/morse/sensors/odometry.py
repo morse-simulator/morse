@@ -24,8 +24,8 @@ class Odometry(morse.core.sensor.Sensor):
     _short_desc = "An odometry sensor that returns raw, partially integrated or fully integrated displacement information."
 
     add_level("raw", "morse.sensors.odometry.RawOdometry", doc = "raw odometry: only dS is exported")
-    add_level("differential", None, doc = "differential odometry, corresponding to standard 'robot level' odometry", default=True)
-    add_level("integrated", "morse.sensors.odometry.IntegratedOdometry", doc = "integrated odometry: absolution position is exported")
+    add_level("differential", None, doc = "differential odometry, corresponding to standard 'robot level' odometry")
+    add_level("integrated", "morse.sensors.odometry.IntegratedOdometry", doc = "integrated odometry: absolution position is exported", default=True)
 
     add_data('dS', 0.0, "float","curvilign distance since last tick", level = "raw")
     add_data('dx', 0.0, "float","delta of X coordinate of the sensor", level = "differential")
