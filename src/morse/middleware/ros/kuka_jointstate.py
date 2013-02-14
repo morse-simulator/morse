@@ -4,9 +4,7 @@ from sensor_msgs.msg import JointState
 from morse.middleware.ros import ROSReader
 
 class JointStateReader(ROSReader):
-    """ Method called as soon as JointState messages are published on the
-    specific topic, set kuka_{1-7} to the position[0-6]."""
-    """ Subscribe to a Point topic and set x,y,z local data. """
+    """ Subscribe to a JointState topic and set kuka_{1-7} to the position[0-6]. """
     ros_class = JointState
 
     def update(self, message):

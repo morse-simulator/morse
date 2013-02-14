@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('geometry_msgs')
-import mathutils
 from geometry_msgs.msg import Pose
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSReader, mathutils
 
 class PoseReader(ROSReader):
     """ Subscribe to a Pose topic and set ``x``, ``y``, ``z`` and ``roll``,

@@ -1,6 +1,7 @@
 import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('rosgraph_msgs');
 import rospy
 from rosgraph_msgs.msg import Clock
+from morse.middleware.ros import ROSPublisher
 
 from morse.core import blenderapi
 

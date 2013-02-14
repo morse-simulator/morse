@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import mathutils
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import PoseStamped
-from morse.middleware.ros import ROSPublisher
+from morse.middleware.ros import ROSPublisher, mathutils
 
 class PoseStampedPublisher(ROSPublisher):
     """ Publish the position and orientation of the robot. """

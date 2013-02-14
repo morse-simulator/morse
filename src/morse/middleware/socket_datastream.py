@@ -2,13 +2,18 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 import json
-import mathutils
 import morse.core.datastream
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
 from functools import partial
 from morse.core import services
 from morse.core.datastream import *
+
+try:
+    import mathutils
+except ImportError:
+    # running outside Blender
+    mathutils = None
 
 BASE_PORT = 60000
 

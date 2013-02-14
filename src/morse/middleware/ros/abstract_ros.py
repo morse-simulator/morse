@@ -9,6 +9,12 @@ from geometry_msgs.msg import TransformStamped
 from morse.middleware.ros.tfMessage import tfMessage
 from morse.middleware import AbstractDatastream
 
+try:
+    import mathutils
+except ImportError:
+    # running outside Blender
+    mathutils = None
+
 class classproperty(object):
     def __init__(self, fget):
         self.fget = fget
