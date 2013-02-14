@@ -40,6 +40,7 @@ class Human(Robot):
         self.name = 'Human' # XXX BUG #237
 
         self.armature = None
+        self.properties(classpath="morse.robots.human.HumanClass")
 
         try:
             self.armature = Armature("HumanArmature", "human_posture")
