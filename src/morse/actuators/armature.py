@@ -577,8 +577,8 @@ class Armature(morse.core.actuator.Actuator):
                     rot[axis_index] += w
                     channel.joint_rotation = rot
 
-                # Update the armature to reflect the changes with just performed
-                armature.update()
+            # Update the armature to reflect the changes with just performed
+            armature.update()
 
 
         if position_reached: # True only when all joints match local_data
