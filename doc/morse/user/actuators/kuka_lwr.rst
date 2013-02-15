@@ -108,13 +108,6 @@ There is also an additional service specific to this armature:
 
 
 
-
-Use of the KUKA LWR
--------------------
-
-A sample python script of how to access the KUKA LWR via sockets can be found at:
-``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
-
 .. warning:: A note for developpers:
     The orientation of the bones in the 'kuka_armature' in the Blender file will
     determine the direction of the rotations.

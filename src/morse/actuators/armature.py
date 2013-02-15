@@ -39,13 +39,6 @@ class Armature(morse.core.actuator.Actuator):
 
     :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
-    Example of use
-    --------------
-
-    A sample python script of how to access the armature actuator via sockets
-    can be found at:
-    ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/armature_services_tests.py``.
-
     """
     _name = "Armature Actuator"
     _short_desc="An actuator to manipulate Blender armatures in MORSE."

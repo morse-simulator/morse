@@ -37,16 +37,6 @@ PR2 related Files
 - PR2 robot script with MORSE services: ``$MORSE_ROOT/src/morse/robots/pr2.py```
 - Armature actuator script: ``$MORSE_ROOT/src/morse/actuators/armature_actuator.py``
 
-- PR2 sample scenario: ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/pr2_services_test.blend``
-- PR2 services test: ``$MORSE_ROOT/examples/morse/scenarii/armature_samples/pr2_services_tests.py``
-
-
-Use of the PR2
---------------
-
-A sample python script of how to access the PR2 services via sockets can be found at:
-``$MORSE_ROOT/examples/morse/scenarii/armature_samples/pr2_services_tests.py``.
-
 
 Adjustable parameters
 ---------------------
