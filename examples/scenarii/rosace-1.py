@@ -39,13 +39,13 @@ proximity01.translate(y=0.2000, z=1.0000)
 atrv01.append(proximity01)
 proximity01.properties(Range = 30.0000)
 
-rosace00 = Rosace()
+rosace00 = SearchAndRescue()
 rosace00.translate(x=0.3000, z=0.9000)
 atrv00.append(rosace00)
 rosace00.properties(Heal_range = 2.0000)
 rosace00.properties(Abilities = '1,2')
 
-rosace01 = Rosace()
+rosace01 = SearchAndRescue()
 rosace01.translate(x=0.3000, z=0.9000)
 atrv01.append(rosace01)
 rosace01.properties(Heal_range = 2.0000)
@@ -70,11 +70,11 @@ waipont01.add_stream('yarp', 'read_json_waypoint', 'morse/middleware/yarp/json_m
 rosace01.add_stream('yarp', 'post_json_message', 'morse/middleware/yarp/json_mod')
 proximity01.add_stream('yarp', 'post_json_message', 'morse/middleware/yarp/json_mod')
 
-waipont00.configure_service('yarp_json')
-rosace00.configure_service('yarp_json')
+waipont00.add_service('yarp_json')
+rosace00.add_service('yarp_json')
 
-waipont01.configure_service('yarp_json')
-rosace01.configure_service('yarp_json')
+waipont01.add_service('yarp_json')
+rosace01.add_service('yarp_json')
 
 # Victims
 victim1 = Victim()
