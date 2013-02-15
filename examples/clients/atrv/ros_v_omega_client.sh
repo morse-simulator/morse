@@ -11,9 +11,9 @@ do
   a)
     read -p "Enter V speed: " SPEEDV
     read -p "Enter W speed: " SPEEDW
-    rostopic pub /ATRV/Motion_Controller geometry_msgs/Twist -1 [$SPEEDV,0,0] [0,0,$SPEEDW];;
+    rostopic pub /atrv/motion geometry_msgs/Twist -1 [$SPEEDV,0,0] [0,0,$SPEEDW];;
   b)
-    rostopic echo -n 1 /ATRV/Gyroscope;;
+    rostopic echo -n 1 /atrv/pose;;
   q)
     break;;
   *)
