@@ -254,7 +254,6 @@ MORSE_DATASTREAM_DICT = {
 
     "morse.actuators.armature.Armature": {
         "default": {
-            "ros": 'morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
             "pocolibs": 'morse.middleware.pocolibs.actuators.lwr.LwrPoster'
