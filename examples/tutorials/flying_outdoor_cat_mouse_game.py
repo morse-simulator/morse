@@ -4,51 +4,51 @@ from morse.builder import *
 
 
 """ Cat (Quadrotor) """
-Cat = Robot('quadrotor_dynamic')
+Cat = Quadrotor()
 Cat.name = "CAT"
 Cat.translate(x=-6.0, z=2.2)
 #Cat.rotate(z=-1.5708)
 
 # Waypoint controller (x,y,z, yaw and tolerance (default is 0.2))
-waypoint = Actuator('rotorcraft_waypoint')
+waypoint = RotorcraftWaypoint()
 waypoint.name = 'waypoint'
 Cat.append(waypoint)
-waypoint.configure_mw('socket')
+waypoint.add_stream('socket')
 
-SemanticC = Sensor('semantic_camera')
+SemanticC = SemanticCamera()
 SemanticC.translate(x=0.3, z=-0.05)
 SemanticC.rotate(x=-0.2)
 SemanticC.name = "Camera"
 Cat.append(SemanticC)
-SemanticC.configure_mw('socket')
+SemanticC.add_stream('socket')
 
-CatPose = Sensor('pose')
+CatPose = Pose()
 CatPose.name = "Cat_Pose"
 Cat.append(CatPose)
-CatPose.configure_mw('socket')
+CatPose.add_stream('socket')
 
-# imu = Sensor('imu')
+# imu = IMU()
 # imu.name = 'imu'
 # # IMU with z-axis down (NED)
 # imu.rotate(x=math.pi)
-# imu.configure_mw('ros')
+# imu.add_stream('ros')
 # Quadrotor.append(imu)
 
 
 """ Mouse (atrv)"""
-Mouse = Robot('atrv')
+Mouse = ATRV()
 Mouse.name = "MOUSE"
 Mouse.properties(Object = True, Graspable = False, Label = "MOUSE")
 Mouse.translate (x=1.0, z=0.2)
 
-Keyb = Actuator('keyboard')
+Keyb = Keyboard()
 Keyb.properties(Speed=4.0)
 Mouse.append(Keyb)
 
-MousePose = Sensor('pose')
+MousePose = Pose()
 MousePose.name = "Mouse_Pose"
 Mouse.append(MousePose)
-MousePose.configure_mw('socket')
+MousePose.add_stream('socket')
 
 
 """ The playground """
