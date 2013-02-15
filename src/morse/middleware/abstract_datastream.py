@@ -1,6 +1,13 @@
 from abc import ABCMeta, abstractmethod
 
 class AbstractDatastream(object):
+    """
+    The class is inherited by all serializers/deserializers.
+    Concrete classes need to implement :py:method:`default`.
+    """
+    _type_name = "(this serializer does not document its output/input type)"
+    _type_url = ""
+
     __metaclass__ = ABCMeta
 
     def __init__(self, component_instance, kwargs):

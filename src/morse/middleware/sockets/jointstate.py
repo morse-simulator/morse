@@ -58,6 +58,9 @@ def fill_missing_pr2_joints(joints):
     return pr2_joints
 
 class PR2JointStatePublisher(SocketPublisher):
+
+    _type_name = "a JSON dict containing the values of each of the Willow Garage's PR2 joints"
+
     def encode(self):
         joints =  fill_missing_pr2_joints(self.component_instance.local_data)
         return (json.dumps(joints) + '\n').encode()

@@ -28,7 +28,7 @@ sys.path.append('@CMAKE_CURRENT_SOURCE_DIR@/doc/exts')
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.viewcode', 'vimeo','gallery', 'tag']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['@CMAKE_CURRENT_SOURCE_DIR@/doc/sphinxext']
+templates_path = ['@CMAKE_CURRENT_SOURCE_DIR@/doc/laas-theme/templates', '@CMAKE_CURRENT_SOURCE_DIR@/doc/sphinxext']
 
 # The suffix of source filenames.
 source_suffix = '.rst'

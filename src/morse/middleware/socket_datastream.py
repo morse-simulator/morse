@@ -70,6 +70,8 @@ class SocketServ(AbstractDatastream):
 
 class SocketPublisher(SocketServ):
 
+    _type_name = "straight JSON serialization"
+
     def default(self, ci='unused'):
         sockets = self._client_sockets + [self._server]
 
@@ -97,6 +99,8 @@ class SocketPublisher(SocketServ):
         return (js + '\n').encode()
 
 class SocketReader(SocketServ):
+
+    _type_name = "straight JSON deserialization"
 
     def default(self, ci='unused'):
         sockets = self._client_sockets + [self._server]

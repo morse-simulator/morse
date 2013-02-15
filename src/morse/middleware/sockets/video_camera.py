@@ -4,6 +4,8 @@ from morse.middleware.socket_datastream import SocketPublisher
 
 class VideoPublisher(SocketPublisher):
 
+    _type_name = "a JSON-encoded image: the height, the width and a list of height * width points {'r':..., 'g':..., 'b':..., 'a':...}"
+
     def encode(self):
         res = {}
         res['height'] = self.component_instance.image_height

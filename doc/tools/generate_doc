@@ -7,7 +7,9 @@ It generates doc for:
     - the component itself, based on the component class docstring,
     - the data fields exposed by the components and created with add_data,
     - the configurable parameters created with add_property
-    - the services exported by the conmponent.
+    - the services exported by the conmponent
+    - the abstraction levels exposed by the component
+    - the interfaces and serialization types for each input/output
 """
 
 from morse.actuators import armature, \
@@ -235,11 +237,36 @@ for name, props in components.items():
 
     components[name]['services'] = services
 
+# Retrieve serializers documentation
+def get_interface_doc(classpath):
+
+    if not isinstance(classpath, str):
+        return None, None, None
+
+    modulename, classname = classpath.rsplit(".", 1)
+
+    try:
+        __import__(modulename)
+    except ImportError as detail:
+        print("WARNING! Interface module not found: %s. Maybe you did not install the required middleware?" % detail)
+        return classname, None, None
+
+    module = sys.modules[modulename]
+
+    try:
+        klass = getattr(module, classname)
+    except AttributeError as detail:
+        raise Exception("Serialization class not found: %s" % detail)
+        return None
+
+    return (klass._type_name, klass.__doc__, klass._type_url)
+
 
 # Finally, generate doc
 
 def print_code_snippet(out, name, props):
 
+    out.write(".. cssclass:: examples morse-section\n\n")
     title = "Examples"
     out.write(underline(title, '-') + '\n')
 
@@ -278,6 +305,7 @@ def print_code_snippet(out, name, props):
     out.write(insert_code(code))
 
 def print_files(out, name, props):
+    out.write(".. cssclass:: files morse-section\n\n")
     title = "Other sources of examples"
     out.write(underline(title, '+') + '\n')
 
@@ -291,7 +319,16 @@ def print_files(out, name, props):
 
     out.write("\n\n")
 
-def supported_interfaces(cmpt, level = "default"):
+def supported_interfaces(cmpt, level = "default", tabs = 0):
+
+    def iface_type(type_name, type_url):
+        if not type_name: 
+            return ""
+        else:
+            if type_url:
+                return " as `%s <%s>`_" % (type_name, type_url)
+            else:
+                return " as %s" % type_name
 
     if not cmpt in MORSE_DATASTREAM_DICT:
         return "(attention, no interface support!)"
@@ -299,26 +336,33 @@ def supported_interfaces(cmpt, level = "default"):
         return "(attention, no interface support!)"
 
     interfaces = ""
-    for interface in MORSE_DATASTREAM_DICT[cmpt][level].keys():
-        interfaces += ":tag:`%s` " % interface
+    for interface, values in MORSE_DATASTREAM_DICT[cmpt][level].items():
+
+        if isinstance(values, dict): # we find a dict when we fallback on default serialization
+            values = values[interface]
+
+        type_name, iface_doc, type_url = get_interface_doc(values)
+        interfaces += "\t" * tabs + "- :tag:`%s` %s\n" % (interface, iface_type(type_name, type_url))
 
     return interfaces
 
 
 
 def print_levels(out, name, props):
+
         try:
             levels = props['levels']
-            title = "Available functional levels"
-            out.write(underline(title, '-') + '\n')
-            out.write("\n*Functional levels* are predefined 'abstraction' or 'realism' level for the %s.\n\n" % props["type"])
-
-
         except KeyError:
             return False
 
+        out.write(".. cssclass:: levels morse-section\n\n")
+        title = "Available functional levels"
+        out.write(underline(title, '-') + '\n')
+        out.write("\n*Functional levels* are predefined *abstraction* or *realism* levels for the %s.\n\n" % props["type"])
+
+
         for name, level in levels.items():
-            out.write('\n- ``' + name + '``' + (' (default)' if level[2] else '' ) + ': ' + level[1] + "\n")
+            out.write('\n- ``' + name + '``' + (' (default level)' if level[2] else '' ) + ' ' + level[1] + "\n")
 
             out.write("\t*At this level, the %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
 
@@ -326,12 +370,14 @@ def print_levels(out, name, props):
                 if prop[3] == name:
                     out.write('\t- ``' + fieldname + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
 
-            out.write("\t*Interface support:* %s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name))
+            out.write("\n\t*Interface support:*\n\n%s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name, tabs = 2))
 
         out.write("\n\n")
         return True
 
 def print_data(out, name, props):
+
+        out.write(".. cssclass:: fields morse-section\n\n")
         title = "Data fields"
         out.write(underline(title, '-') + '\n')
 
@@ -343,14 +389,16 @@ def print_data(out, name, props):
         out.write("\n*This %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
 
         for name, prop in prop.items():
-            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
+            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``)\n\t' + prop[2] + "\n")
 
-        out.write("\n*Interface support:* %s" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__))
+        out.write("\n*Interface support:*\n\n%s" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__))
 
         out.write("\n\n")
 
 def print_properties(out, name, props):
-        title = "Configuration parameters for " + name
+
+        out.write(".. cssclass:: properties morse-section\n\n")
+        title = "Configuration parameters for " + name.lower()
         out.write(underline(title, '-') + '\n')
 
         try:
@@ -359,13 +407,18 @@ def print_properties(out, name, props):
             out.write("No configurable parameter.\n\n")
             return
 
+        out.write("\nYou can set these properties in your scripts with ``<component>.properties(<property1> = ..., <property2>= ...)``.\n\n")
+
+
 
         for name, prop in prop.items():
-            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
+            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + str(prop[0]) + '``)\n\t' + prop[2] + "\n")
 
         out.write("\n\n")
 
 def print_services(out, name, props):
+
+        out.write(".. cssclass:: services morse-section\n\n")
         title = "Services for " + name
         out.write(underline(title, '-') + '\n')
 
@@ -383,9 +436,9 @@ def print_services(out, name, props):
                 out.write(", ".join([p for p,d in params]))
 
             if serv['async']:
-                out.write(')`` (non blocking): ')
+                out.write(')`` (non blocking)')
             else:
-                out.write(')`` (blocking): ')
+                out.write(')`` (blocking)')
 
             if doc:
                 out.write(doc.replace("\n", "\n    "))
