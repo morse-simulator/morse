@@ -48,7 +48,7 @@ class OdometryTest(MorseTestCase):
         integ_odo.add_stream("socket")
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def clear_datas(self, x, y, yaw):
         self.x = x

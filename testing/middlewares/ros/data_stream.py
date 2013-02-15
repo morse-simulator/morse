@@ -50,7 +50,7 @@ class DataStreamTest(RosTestCase):
         motion.add_stream('ros')
         
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def pose_callback(self, data):
         self.pos = data

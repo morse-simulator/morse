@@ -40,7 +40,7 @@ class TeleportTest(MorseTestCase):
 
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def _test_one_pose(self, x, y, z, yaw, pitch, roll):
         send_pose(self.teleport_stream, x, y, z, yaw, pitch, roll)

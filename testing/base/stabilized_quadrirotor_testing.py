@@ -35,7 +35,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
         motion.add_stream('socket')
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_theta_c_control(self):
         with Morse() as morse:

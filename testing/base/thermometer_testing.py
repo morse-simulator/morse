@@ -32,7 +32,7 @@ class ThermometerTest(MorseTestCase):
 
         env = Environment('land-1/rosace_1', fastmode = True)
         env.properties(Temperature='25.0')
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_temperature(self):
         with Morse() as morse:

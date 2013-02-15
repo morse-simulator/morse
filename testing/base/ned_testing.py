@@ -29,13 +29,13 @@ class NedTest(MorseTestCase):
         pose.add_stream('socket')
 
         pose2 = Pose()
-        pose2.configure_modifier('NED')
+        pose2.add_modifier('NED')
         robot.append(pose2)
         pose2.add_stream('socket')
 
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
 
     def test_ned_pose(self):

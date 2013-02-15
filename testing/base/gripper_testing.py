@@ -31,13 +31,13 @@ class gripperTest(MorseTestCase):
         robot.append(arm)
         arm.translate(x=0.5, z=0.9)
         arm.add_stream('socket')
-        arm.configure_service('socket')
+        arm.add_service('socket')
 
         gripper = Gripper('gripper')
         gripper.translate(z=1.28)
         arm.append(gripper)
         gripper.properties(Angle = 180.0, Distance=2.0)
-        gripper.configure_service('socket')
+        gripper.add_service('socket')
 
         teleport = Teleport()
         robot.append(teleport)
@@ -52,7 +52,7 @@ class gripperTest(MorseTestCase):
         tape2.translate(x=5, y=-5, z=0)
 
         env = Environment('empty', fastmode=True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
 
     def test_gripper(self):

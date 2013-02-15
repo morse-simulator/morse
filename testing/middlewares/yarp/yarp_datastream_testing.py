@@ -59,7 +59,7 @@ class YARP_MW_Test(MorseTestCase):
         motion.add_stream('yarp')
         
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_vw_controller(self):
         """ This test is guaranteed to be started only when the simulator

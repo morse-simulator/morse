@@ -32,7 +32,7 @@ class PTUTest(MorseTestCase):
         ptu = PTU()
         ptu.add_stream('socket')
         ptu.translate(x=ptu_x, z=ptu_z)
-        ptu.configure_service('socket')
+        ptu.add_service('socket')
         ptu.properties(Speed = 0.5)
         robot.append(ptu)
 
@@ -48,7 +48,7 @@ class PTUTest(MorseTestCase):
         chair.translate(x=ptu_x, y=3, z=0.01)
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_datastream(self):
         """ Test if we can connect to the pose data stream, and read from it.

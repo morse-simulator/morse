@@ -53,7 +53,7 @@ class SickLaserTest(RosTestCase):
         sick.create_laser_arc()
 
         env = Environment('indoors-1/boxes', fastmode=True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def send_speed(self, v, w, t):
         msg = Twist()

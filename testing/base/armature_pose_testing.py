@@ -26,15 +26,15 @@ class ArmaturePoseTest(MorseTestCase):
         kuka_lwr = KukaLWR('arm')
         robot.append(kuka_lwr)
         kuka_lwr.translate(z=0.9)
-        kuka_lwr.configure_service('socket')
+        kuka_lwr.add_service('socket')
 
         kuka_posture = ArmaturePose('arm_pose')
         kuka_lwr.append(kuka_posture)
         kuka_posture.add_stream('socket')
-        kuka_posture.configure_service('socket')
+        kuka_posture.add_service('socket')
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_pose_services(self):
 

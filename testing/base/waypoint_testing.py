@@ -33,11 +33,11 @@ class Waypoints_Test(MorseTestCase):
         motion = Waypoint('motion')
         robot.append(motion)
         motion.add_stream('socket')
-        motion.configure_service('socket')
+        motion.add_service('socket')
 
         
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_waypoint_datastream(self):
         """ This test is guaranteed to be started only when the simulator

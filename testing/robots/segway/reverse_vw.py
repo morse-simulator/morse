@@ -47,10 +47,10 @@ class Differential_VW_Test(MorseTestCase):
         motion = MotionVWDiff('MotionVWDiff')
         robot.append(motion)
         motion.add_stream('socket')
-        motion.configure_service('socket')
+        motion.add_service('socket')
         
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_vw_controller(self):
         with Morse() as morse:

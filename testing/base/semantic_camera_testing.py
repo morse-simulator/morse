@@ -36,7 +36,7 @@ class Semantic_Camera_Test(MorseTestCase):
         motion.add_stream('socket')
 
         env = Environment('indoors-1/boxes')
-        env.configure_service('socket')
+        env.add_service('socket')
 
 
     def test_semantic_camera(self):

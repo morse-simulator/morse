@@ -32,7 +32,7 @@ class Sick_Test(MorseTestCase):
         sick.add_stream('socket')
 
         env = Environment('indoors-1/boxes', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
 
     def test_sick(self):

@@ -54,7 +54,7 @@ class DepthCameraTest(RosTestCase):
         env = Environment('indoors-1/boxes')
         # No fastmode here, no MaterialIndex in WIREFRAME mode: AttributeError:
         # 'KX_PolygonMaterial' object has no attribute 'getMaterialIndex'
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def send_speed(self, v, w, t):
         msg = Twist()

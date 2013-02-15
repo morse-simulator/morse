@@ -38,7 +38,7 @@ class DestinationTest(MorseTestCase):
         destination.properties(Speed=2.0, Tolerance=0.3)
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test(self):
         with Morse() as morse:

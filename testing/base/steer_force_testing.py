@@ -36,7 +36,7 @@ class SteerForceTest(MorseTestCase):
         steer_force.add_stream('socket')
 
         env = Environment('land-1/rosace_1', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test(self):
         with Morse() as morse:

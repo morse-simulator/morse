@@ -29,7 +29,7 @@ class PoseTest(MorseTestCase):
         robot.append(pose)
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_base_service_connection(self):
         """ Simply tests if the simulator is reachable by its socket interface.

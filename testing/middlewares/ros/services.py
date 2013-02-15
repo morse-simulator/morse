@@ -31,12 +31,12 @@ class RosServicesTest(RosTestCase):
         waypoint = Waypoint()
         robot.append(waypoint)
         
-        waypoint.configure_service('ros')
+        waypoint.add_service('ros')
         
         waypoint.configure_overlay('ros', 'morse.middleware.ros.overlays.actuator.WayPoint')
         
         env = Environment('empty', fastmode = True)
-        env.configure_service('ros')
+        env.add_service('ros')
 
     def test_unknow_service(self):
         

@@ -28,7 +28,7 @@ class ArmatureTest(MorseTestCase):
         robot.append(arm)
         arm.translate(z=0.9)
         arm.add_stream('socket')
-        arm.configure_service('socket')
+        arm.add_service('socket')
 
         pose = Pose()
         pose.add_stream('socket')
@@ -41,10 +41,10 @@ class ArmatureTest(MorseTestCase):
 
         motion = Teleport()
         robot.append(motion)
-        motion.configure_service('socket')
+        motion.add_service('socket')
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def checkstate(self, simu, angles, precision = 0.025):
 

@@ -29,7 +29,7 @@ class BatteryTest(MorseTestCase):
         robot.append(battery)
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_read_battery(self):
         """ Test if we can connect to the pose data stream, and read from it.

@@ -29,10 +29,10 @@ class HumanPoseTest(MorseTestCase):
         motion = Waypoint()
         human.append(motion)
         motion.add_stream('socket')
-        motion.configure_service('socket')
+        motion.add_service('socket')
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_pose(self):
         """ Tests we can load the human model, attach a pose sensor, and

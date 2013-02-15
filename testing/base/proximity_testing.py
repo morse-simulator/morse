@@ -31,7 +31,7 @@ class ProximityTest(MorseTestCase):
         proximity.properties(Range = 2.0)
         robot.append(proximity)
         proximity.add_stream('socket')
-        proximity.configure_service('socket')
+        proximity.add_service('socket')
 
         pose = Pose()
         robot.append(pose)
@@ -54,7 +54,7 @@ class ProximityTest(MorseTestCase):
         target3.translate(x=-4.0, y = 0.0)
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_proximity(self):
         with Morse() as morse:
