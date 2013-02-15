@@ -1,0 +1,155 @@
+#! /usr/bin/env python3
+"""
+This tools generates documentation in RST format based on the Python source for
+datastream modules.
+"""
+
+import sys
+import pkgutil
+import inspect
+
+#
+# helpers
+#
+
+def get_classes_from_module(module_name):
+    __import__(module_name)
+    # Predicate to make sure the classes only come from the module in question
+    def predicate(member):
+        return inspect.isclass(member) and member.__module__.startswith(module_name)
+    # fetch all members of module name matching 'pred'
+    return inspect.getmembers(sys.modules[module_name], predicate)
+
+def get_submodules(module_name):
+    """ Get a list of submodules from a module name.
+    Not recursive, don't return nor look in subpackages """
+    __import__(module_name)
+    module = sys.modules[module_name]
+    module_path = getattr(module, '__path__')
+    return [name for _, name, ispkg in pkgutil.iter_modules(module_path) if not ispkg]
+
+def get_subclasses(module_name, skip_submodules=[]):
+    subclasses = []
+    submodules = get_submodules(module_name)
+    for submodule_name in submodules:
+        if submodule_name in skip_submodules:
+            pass
+        submodule = "%s.%s"%(module_name, submodule_name)
+        try:
+            submodule_classes = get_classes_from_module(submodule)
+            for _, klass in submodule_classes:
+                subclasses.append(klass)
+        except Exception:
+            # can not import some resources
+            pass
+    return subclasses
+
+
+#
+# builder
+#
+
+data_builder = {
+    'Robots': 'morse.builder.robots',
+    'Sensors': 'morse.builder.sensors',
+    'Actuators': 'morse.builder.actuators',
+}
+
+MORSE_DOC_BUILDER_MODULES = """
+%(section)s
+%(tag)s
+
+**module** : ``%(module)s``
+
+%(doc)s
+"""
+
+MORSE_DOC_BUILDER = """
+List of classes
+===============
+
+%s
+"""
+
+def doclist_class_name(module):
+    classes = get_classes_from_module(module)
+    # getmembers returns a list of (name, value)
+    return '\n'.join(["- %s"%name for name, klass in classes])
+
+def doc_morse_builder_modules():
+    for section, module in data_builder.items():
+        yield {
+            'section': section,
+            'tag': '-' * len(section),
+            'module': module,
+            'doc': doclist_class_name(module),
+        }
+
+def doc_morse_builder():
+    return MORSE_DOC_BUILDER % '\n'.join([MORSE_DOC_BUILDER_MODULES % doc for doc in
+            doc_morse_builder_modules()])
+
+
+#
+# datastream
+#
+
+data_datastream = {
+    'ROS' : 'morse.middleware.ros',
+}
+
+MORSE_DOC_DATASTERAM_CLASS = """
+%(module_name)s.%(class_name)s
+------------------------------
+
+**type** : `%(type_name)s<%(type_url)s>`_
+
+%(class_doc)s
+"""
+
+def doc_morse_datastream_class(module_name, skip_submodules=[]):
+    subclasses = get_subclasses(module_name, skip_submodules)
+    for klass in subclasses:
+        try:
+            yield {
+                'class_name': klass.__name__,
+                'module_name': klass.__module__,
+                'class_doc': klass.__doc__,
+                'type_url': klass._type_url,
+                'type_name': klass._type_name,
+            }
+        except AttributeError:
+            # not a datastream class
+            pass
+
+def doc_morse_datastream(datastream):
+    doc = doc_morse_datastream_class(data_datastream[datastream])
+    return '\n'.join([MORSE_DOC_DATASTERAM_CLASS % cls for cls in doc])
+
+
+#
+# main
+#
+
+def main(args):
+    if 'datastream' in args:
+        echo_off = sys.stdout
+        sys.stdout = None # disable print in following
+        doc_str = doc_morse_datastream('ROS')
+        sys.stdout = echo_off # re-enable print
+        print(doc_str)
+        return 0
+    if 'builder' in args:
+        echo_off = sys.stdout
+        sys.stdout = None # disable print in following
+        doc_str = doc_morse_builder()
+        sys.stdout = echo_off # re-enable print
+        print(doc_str)
+        return 0
+    print("usage:")
+    print("%s [datastream|builder] > doc.rst"%args[0])
+    return 2 # incorrect usage
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
