@@ -35,6 +35,7 @@ class OdometryTest(MorseTestCase):
 
         odo = Odometry()
         robot.append(odo)
+        odo.level('differential')
         odo.add_stream('socket')
 
         raw_odo = Odometry()
@@ -43,7 +44,6 @@ class OdometryTest(MorseTestCase):
         raw_odo.add_stream('socket')
 
         integ_odo = Odometry()
-        integ_odo.level("integrated")
         robot.append(integ_odo)
         integ_odo.add_stream("socket")
 
@@ -83,7 +83,6 @@ class OdometryTest(MorseTestCase):
         precision = 0.07
 
         pose = self.pose_stream.get()
-        odo = self.odo_stream.get()
         integ_odo = self.integ_odo_stream.get()
         self.assertAlmostEqual(self.x, expected_x, delta=precision)
         self.assertAlmostEqual(self.y, expected_y, delta=precision)

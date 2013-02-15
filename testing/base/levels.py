@@ -44,7 +44,7 @@ class LevelsTest(MorseTestCase):
         integ_odo.add_stream("socket")
 
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def test_levels(self):
 
@@ -56,9 +56,12 @@ class LevelsTest(MorseTestCase):
             integ_odo = morse.robot.integ_odo.get()
 
             self.assertEquals(set(['dS']), set(raw_odo.keys()))
-            self.assertEquals(set(['x', 'y', 'z', 'yaw', 'pitch', 'roll']), set(integ_odo.keys()))
-            self.assertEquals(set(['dx', 'dy', 'dz', 'dyaw', 'dpitch', 'droll', 'vx', 'vy', 'vz', 'wz', 'wy', 'wx']), set(odo.keys()))
-            self.assertEquals(set(diff_odo.keys()), set(odo.keys()))
+            self.assertEquals(set(['x', 'y', 'z', 'yaw', 'pitch', 'roll',
+                                   'vx', 'vy', 'vz', 'wz', 'wy', 'wx']),
+                              set(integ_odo.keys()))
+            self.assertEquals(set(['dx', 'dy', 'dz', 'dyaw', 'dpitch', 'droll']),
+                              set(diff_odo.keys()))
+            self.assertEquals(set(integ_odo.keys()), set(odo.keys()))
 
 
 ########################## Run these tests ##########################
