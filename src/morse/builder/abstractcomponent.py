@@ -371,14 +371,18 @@ class AbstractComponent(object):
         self.add_service(interface)
         self.add_stream(interface, **kwargs)
 
-    def configure_modifier(self, mod, config=None):
+    def add_modifier(self, mod, config=None):
         """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
         if not config:
             config = MORSE_MODIFIER_DICT[mod][self._blender_filename]
         Configuration.link_modifier(self, config)
 
-    def configure_overlay(self, datastream, overlay, config=None, **kwargs):
+    def configure_modifier(self, mod, config=None):
+        logger.warning("configure_modifier is deprecated, use add_modifier instead")
+        return self.add_modifier(mod, config)
+
+    def add_overlay(self, datastream, overlay, config=None, **kwargs):
         """ Add a service overlay for a specific service manager to the component
 
         Similar to the add_stream function. Its argument is the name of the
@@ -387,6 +391,10 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay, kwargs)
+
+    def configure_overlay(self, datastream, overlay, config=None, **kwargs):
+        logger.warning("configure_overlay is deprecated, use add_overlay instead")
+        return self.add_overlay(datastream, overlay, config, **kwargs)
 
     def level(self, level):
         """ Set the 'realism level' of the component.
