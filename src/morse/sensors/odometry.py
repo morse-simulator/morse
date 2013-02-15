@@ -87,15 +87,6 @@ class Odometry(morse.core.sensor.Sensor):
         self.local_data['dpitch'] = normalise_angle(dpitch)
         self.local_data['droll'] = normalise_angle(droll)
 
-        # speed in the sensor frame, related to the robot pose
-        self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
-        self.local_data['vx'] = self.delta_pos.x * self.frequency
-        self.local_data['vy'] = self.delta_pos.y * self.frequency
-        self.local_data['vz'] = self.delta_pos.z * self.frequency
-        self.local_data['wz'] = self.delta_pos.yaw * self.frequency
-        self.local_data['wy'] = self.delta_pos.pitch * self.frequency
-        self.local_data['wx'] = self.delta_pos.roll * self.frequency
-
         # Store the 'new' previous data
         self.previous_pos = current_pos
 
@@ -133,6 +124,15 @@ class IntegratedOdometry(Odometry):
         self.local_data['yaw'] = current_pos.yaw
         self.local_data['pitch'] = current_pos.pitch
         self.local_data['roll'] = current_pos.roll
+
+        # speed in the sensor frame, related to the robot pose
+        self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
+        self.local_data['vx'] = self.delta_pos.x * self.frequency
+        self.local_data['vy'] = self.delta_pos.y * self.frequency
+        self.local_data['vz'] = self.delta_pos.z * self.frequency
+        self.local_data['wz'] = self.delta_pos.yaw * self.frequency
+        self.local_data['wy'] = self.delta_pos.pitch * self.frequency
+        self.local_data['wx'] = self.delta_pos.roll * self.frequency
 
         # Store the 'new' previous data
         self.previous_pos = current_pos
