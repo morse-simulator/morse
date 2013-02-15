@@ -20,7 +20,7 @@ class ArmatureController(MorseOverlay):
 
     It is meant to be applied on a Armature actuator.
 
-    Besides the ROS action server, it also sets a parameter with the list of
+    Besides the ROS action server, it also sets a ROS parameter with the list of
     joints.
     """
 

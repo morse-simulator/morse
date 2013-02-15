@@ -39,6 +39,13 @@ class Armature(morse.core.actuator.Actuator):
 
     :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
+    .. note::
+
+        :tag:`ros` Armatures can be controlled in ROS through the
+        `JointTrajectoryAction
+        <http://www.ros.org/wiki/pr2_controllers/Tutorials/Moving%20the%20arm%20using%20the%20Joint%20Trajectory%20Action>`_
+        interface.
+
     """
     _name = "Armature Actuator"
     _short_desc="An actuator to manipulate Blender armatures in MORSE."
