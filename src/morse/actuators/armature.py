@@ -142,7 +142,7 @@ class Armature(morse.core.actuator.Actuator):
         axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
         if is_prismatic:
-            return channel.pose_head[axis_index]
+            return channel.pose_head[2] #The 'Z' value
         else: # revolute joint
             return channel.joint_rotation[axis_index]
 
@@ -170,12 +170,7 @@ class Armature(morse.core.actuator.Actuator):
 
         return channel
 
-    def _clamp_translation(self, channel, translation):
-
-        return max(0.0, min(translation, channel.ik_stretch))
-
-
-    def _clamp_rotation(self, channel, rotation):
+    def _clamp_joint(self, channel, rotation):
 
         ik_min, ik_max = self.get_IK_limits(channel.name)
         return max(ik_min, min(rotation, ik_max))
@@ -202,7 +197,7 @@ class Armature(morse.core.actuator.Actuator):
         # Retrieve the translation axis
         axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
-        translation = self._clamp_translation(channel, translation)
+        translation = self._clamp_joint(channel, translation)
 
         self.local_data[channel.name] = translation
 
@@ -256,7 +251,7 @@ class Armature(morse.core.actuator.Actuator):
         """
 
         channel = self._get_prismatic(joint) # checks the joint exist and is prismatic
-        translation = self._clamp_rotation(channel, translation)
+        translation = self._clamp_joint(channel, translation)
         self.joint_speed[joint] = speed
 
         logger.info("Initiating translation of joint %s to %s"%(joint, translation))
@@ -281,7 +276,7 @@ class Armature(morse.core.actuator.Actuator):
         # Retrieve the translation axis
         axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
-        rotation = self._clamp_rotation(channel, rotation)
+        rotation = self._clamp_joint(channel, rotation)
 
         self.local_data[channel.name] = rotation
 
@@ -337,7 +332,7 @@ class Armature(morse.core.actuator.Actuator):
         :param speed: (default: value of 'radial_speed' property) rotation speed, in rad/s
         """
         channel = self._get_revolute(joint) # checks the joint exist and is revolute
-        rotation = self._clamp_rotation(channel, rotation)
+        rotation = self._clamp_joint(channel, rotation)
         self.joint_speed[joint] = speed
 
         logger.info("Initiating rotation of %s to pos. %f (along the joint rotation axis)"%(joint, rotation))
@@ -556,7 +551,7 @@ class Armature(morse.core.actuator.Actuator):
             axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
             if is_prismatic:
-                dist = self.local_data[joint] - channel.pose_head[axis_index] # we take the pose of the HEAD of the bone as the absolute translation of the joint. Not 100% sure it is right...
+                dist = self.local_data[joint] - channel.pose_head[2] # we take the last index ('Z') of the pose of the HEAD of the bone as the absolute translation of the joint. Not 100% sure it is right...
             else:
                 dist = self.local_data[joint] - channel.joint_rotation[axis_index]
 
