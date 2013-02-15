@@ -1,10 +1,5 @@
 from morse.builder import *
-import bpy
 import math
-
-bpy.context.scene.game_settings.fps = 120
-bpy.context.scene.game_settings.logic_step_max = 5
-bpy.context.scene.game_settings.physics_step_max = 5
 
 waypoint_controller = True
 
@@ -35,5 +30,7 @@ quadrotor.append(imu)
 env = Environment('indoors-1/indoor-1')
 env.show_framerate(True)
 #env.show_physics(True)
+
+env.set_speed(fps = 120, logic_step_max = 5, physics_step_max = 5)
 
 env.create()
