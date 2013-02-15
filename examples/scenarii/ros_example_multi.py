@@ -33,6 +33,8 @@ atrv3.translate(x=-2)
 env = Environment('indoors-1/indoor-1')
 env.aim_camera([1.0470, 0, 0.7854])
 
-# rostopic pub /ATRV/Motion_Controller geometry_msgs/Twist -1 [1,0,0] [0,0,1]
-# rostopic pub /ATRV.001/Motion_Controller.001 geometry_msgs/Twist -1 [1,0,0] [0,0,1]
-# rostopic pub /ATRV.002/Motion_Controller.002 geometry_msgs/Twist -1 [1,0,0] [0,0,1]
+del env
+
+# rostopic pub -1 /atrv1/motion geometry_msgs/Twist "{linear: {x: .1}, angular: {z: .1}}"
+# rostopic pub -1 /atrv2/motion geometry_msgs/Twist "{linear: {x: .1}, angular: {z: .1}}"
+# rostopic pub -1 /atrv3/motion geometry_msgs/Twist "{linear: {x: .1}, angular: {z: .1}}"
