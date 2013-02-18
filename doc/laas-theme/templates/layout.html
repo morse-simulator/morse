@@ -4,15 +4,15 @@
 {% extends "default/layout.html" %}
 
 {% block extrahead %}
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-                    
+             
+            //Make levels details togglable
             $(".levels dd").hide();
-            $(".services dd").hide();
 
-            $(".morse-section dl").click(function () {
-                $(this).find('dd').toggle("fast");
+            $(".levels dt tt").click(function () {
+                $(this).parent().parent().find('dd').toggle("fast");
             });
         });
     </script>

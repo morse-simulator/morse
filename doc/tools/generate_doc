@@ -272,7 +272,7 @@ def print_code_snippet(out, name, props):
 
     out.write("\nThe following example shows how to use this component in a *Builder* script:\n\n")
 
-    args = {'var': name.replace(" ", "_").lower(), 'name':props["object"].__name__, 'type': props['type']}
+    args = {'var': props["object"].__name__.lower(), 'name':props["object"].__name__, 'type': props['type']}
 
     code = """
     from morse.builder import *
@@ -364,13 +364,13 @@ def print_levels(out, name, props):
         for name, level in levels.items():
             out.write('\n- ``' + name + '``' + (' (default level)' if level[2] else '' ) + ' ' + level[1] + "\n")
 
-            out.write("\t*At this level, the %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
+            out.write("\tAt this level, the %s %s these datafields at each simulation step:\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "reads"))
 
             for fieldname, prop in props["data_fields"].items():
                 if prop[3] == name:
                     out.write('\t- ``' + fieldname + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
 
-            out.write("\n\t*Interface support:*\n\n%s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name, tabs = 2))
+            out.write("\n\t*Interface support:*\n\n%s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name, tabs = 1))
 
         out.write("\n\n")
         return True
@@ -386,7 +386,7 @@ def print_data(out, name, props):
             return
 
         prop = props['data_fields']
-        out.write("\n*This %s %s these datafields at each simulation step:*\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "imports"))
+        out.write("\nThis %s %s these datafields at each simulation step:\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "reads"))
 
         for name, prop in prop.items():
             out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``)\n\t' + prop[2] + "\n")
@@ -404,7 +404,7 @@ def print_properties(out, name, props):
         try:
             prop = props['properties']
         except KeyError:
-            out.write("No configurable parameter.\n\n")
+            out.write("*No configurable parameter.*\n\n")
             return
 
         out.write("\nYou can set these properties in your scripts with ``<component>.properties(<property1> = ..., <property2>= ...)``.\n\n")
@@ -423,6 +423,10 @@ def print_services(out, name, props):
         out.write(underline(title, '-') + '\n')
 
         services = props['services']
+
+        if not services:
+            out.write("*This component does not expose any service.*\n\n")
+            return
 
         for name, serv in services.items():
             out.write('- ``' + name + '(')
