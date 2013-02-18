@@ -1,4 +1,3 @@
-add_morse_test(services)
 add_morse_test(topics)
 add_morse_test(sick)
 add_morse_test(video_camera)
