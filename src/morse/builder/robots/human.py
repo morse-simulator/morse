@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 import os
+from morse.builder import bpymorse
 from morse.builder import Armature, Robot, MORSE_COMPONENTS
 
 class Human(Robot):
@@ -37,7 +38,8 @@ class Human(Robot):
         :param filename: 'human' (default) or 'mocap_human'
         """
         Robot.__init__(self, filename)
-        self.name = 'Human' # XXX BUG #237
+
+        self.suffix = self.name[-4:] if self.name[-4] == "." else ""
 
         self.armature = None
         self.properties(classpath="morse.robots.human.HumanClass")
@@ -49,7 +51,7 @@ class Human(Robot):
             self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
-                         "for an object called 'HumanArmature' in the 'Human'" +\
+                         "for an object called 'HumanArmature' in the human" +\
                          " children). I won't be able to export the human pose" +\
                          " to any middleware.")
 
@@ -63,6 +65,32 @@ class Human(Robot):
                     actuator.layer = i
                 for i, actuator in enumerate(armature_object.game.actuators):
                     actuator.layer = i
+
+    def after_renaming(self):
+
+        # Store the human real name (ie, after renaming) in its link 'POS_EMPTY' and 'Human_Camera' object, for later control.
+
+        pos_empty = bpymorse.get_object("POS_EMPTY" + self.suffix)
+        bpymorse.select_only(pos_empty)
+
+        bpymorse.new_game_property()
+        prop = pos_empty.game.properties
+        # select the last property in the list (which is the one we just added)
+        prop[-1].name = "human_name"
+        prop[-1].type = "STRING"
+        prop[-1].value = self.name
+
+        human_camera = bpymorse.get_object("Human_Camera" + self.suffix)
+        bpymorse.select_only(human_camera)
+
+        bpymorse.new_game_property()
+        prop = human_camera.game.properties
+        # select the last property in the list (which is the one we just added)
+        prop[-1].name = "human_name"
+        prop[-1].type = "STRING"
+        prop[-1].value = self.name
+
+
 
     def use_world_camera(self):
         self.properties(WorldCamera = True)

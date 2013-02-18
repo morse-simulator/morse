@@ -10,7 +10,8 @@ def set_body_position(co):
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
 
     head = blenderapi.scene().objects['Head' + suffix]
-    human = blenderapi.scene().objects['Human' + suffix]
+    human = blenderapi.scene().objects[ow.parent["human_name"] + suffix]
+
 
 
     if human['Manipulate']:

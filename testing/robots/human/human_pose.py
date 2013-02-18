@@ -25,7 +25,7 @@ class HumanPoseTest(MorseTestCase):
         pose = Pose()
         human.append(pose)
         pose.add_stream('socket')
-        
+
         motion = Waypoint()
         human.append(motion)
         motion.add_stream('socket')
@@ -41,7 +41,7 @@ class HumanPoseTest(MorseTestCase):
         with Morse() as morse:
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.Human.pose
+            pose_stream = morse.human.pose
             sleep(1)
             pose = pose_stream.get()
             for coord in pose.values():
@@ -56,10 +56,10 @@ class HumanPoseTest(MorseTestCase):
         with Morse() as morse:
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.Human.pose
+            pose_stream = morse.human.pose
 
             # waypoint controller socket
-            v_w_client = morse.Human.motion
+            v_w_client = morse.human.motion
 
             v_w_client.publish({'x' : 2.0, 'y': 3.0, 'z': 0.0,
                                 'tolerance' : 0.3,

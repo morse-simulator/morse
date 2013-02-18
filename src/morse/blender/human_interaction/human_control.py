@@ -545,8 +545,8 @@ def rotate(co):
     
     keyboard = co.sensors['All_Keys']
     scene = blenderapi.scene()
+    human_pos = co.owner
     pos =  scene.objects['POS_EMPTY' + suffix]
-    human_pos = scene.objects['Human' + suffix]
     active_camera = scene.active_camera
         
     # if the human is external, do nothing

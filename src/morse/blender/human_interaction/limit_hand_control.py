@@ -14,7 +14,7 @@ def limit(cont):
     limitY = cont.actuators['LimitLocY']
     sobList =  blenderapi.scene().objects
     shoulder = sobList['Shoulder_Empty.R' + suffix]
-    human = sobList['Human' + suffix]
+    human = ow.parent
     
     
     try:

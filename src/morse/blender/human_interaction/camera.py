@@ -15,7 +15,7 @@ def init():
     camAct = co.actuators['Set_Camera']
     sobList =  blenderapi.scene().objects
 
-    human = sobList['Human' + suffix]
+    human = ow
 
     # if the Human is external, do not use his camera initially
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
@@ -115,7 +115,8 @@ def change():
     
     track = co.actuators['TrackCamera']
     sobList = blenderapi.scene().objects
-    human = sobList['Human' + suffix]
+
+    human = sobList[ow["human_name"] + suffix]
 
     # if the Human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
