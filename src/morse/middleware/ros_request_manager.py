@@ -124,7 +124,7 @@ class RosAction:
 
         is_sync, morse_id = self.manager.on_incoming_request(self.component, self._action, [goal.goal])
 
-        # is_sync should be always True for ROS services!
+        # is_sync should be only True for ROS services!
         if is_sync:
             # TODO: clean terminated goals 'after a few seconds' (as
             # said by actionlib doc)
@@ -152,6 +152,7 @@ class RosAction:
             self.setstatus(goal_id.id, actionlib_msgs.msg.GoalStatus.RECALLING)
         else: #current status = ACTIVE (or smth else...)
             self.setstatus(goal_id.id, actionlib_msgs.msg.GoalStatus.PREEMPTING)
+            self.manager.abort_request(self._pending_goals[goal_id.id]['morse_id'])
 
     def on_result(self, morse_id, state, result):
 
@@ -170,7 +171,8 @@ class RosAction:
             logger.debug("The action " + self.name + " has succeeded. Reporting"
                          " it to ROS system and publishing results.")
             self.setstatus(id, actionlib_msgs.msg.GoalStatus.SUCCEEDED)
-            self.publish_result(id, result)
+
+        self.publish_result(id, result)
 
     def publish_result(self, goal_id, result):
 

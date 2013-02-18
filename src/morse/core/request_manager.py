@@ -166,8 +166,8 @@ class RequestManager(object):
                     " service '" + service_name + "' for component '" + \
                     component_name + "' successfully registered")
             else:
-                logger.error(str(self) + ": Error while registering a new service: " + \
-                        "could not complete the post-registration step.")
+                logger.info(str(self) + ": Did not register service <%s> " % service_name + \
+                        "(could not complete the post-registration step).")
 
         else:
             logger.error(str(self) + ": Error while registering a new service: " + str(callback) + \

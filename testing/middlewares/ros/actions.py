@@ -14,11 +14,16 @@ except ImportError:
 
 import os
 import sys
+import time
 
-import roslib; roslib.load_manifest("morsetesting")
 import rospy
 import actionlib
-from morsetesting.msg import *
+import nav_msgs.msg # do not conflict with morse builder
+
+from morse.middleware.ros.helpers import ros_add_to_syspath
+ros_add_to_syspath("move_base_msgs")
+from move_base_msgs.msg import *
+
 from geometry_msgs.msg import *
 
 class RosActionsTest(RosTestCase):
@@ -28,7 +33,11 @@ class RosActionsTest(RosTestCase):
         
         print("Adding a robot...")
         robot = ATRV()
-        
+
+        odometry = Odometry()
+        robot.append(odometry)
+        odometry.add_stream('ros')
+
         waypoint = Waypoint()
         robot.append(waypoint)
         
@@ -45,19 +54,83 @@ class RosActionsTest(RosTestCase):
             self.assertFalse(client.wait_for_server(rospy.Duration(5)))
 
     def test_move_base(self):
-            
+
             rospy.loginfo("Starting ROS test case for actions.")
             rospy.init_node('move_base_client')
             client = actionlib.SimpleActionClient('robot/waypoint/move_base', MoveBaseAction)
             self.assertTrue(client.wait_for_server(rospy.Duration(5)))
 
-            goal = MoveBaseGoal(Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0)))
-            
+            goal = MoveBaseGoal(PoseStamped(pose = Pose(Point(0.1,3.0,0.0), Quaternion(0.0,0.0,0.0,1.0))))
+
             print("Sending a first goal to the robot...(timeout=5sec)")
             status = client.send_goal_and_wait(goal, rospy.Duration(5))
 
             print("Got this status: " + str(status))
             self.assertEqual(status, actionlib.GoalStatus.SUCCEEDED)
+
+    def get_pose(self):
+        msg = rospy.client.wait_for_message('/robot/odometry', nav_msgs.msg.Odometry, timeout = 10)
+        return (msg.pose.pose.position.x, msg.pose.pose.position.y)
+
+    def check_not_moving(self):
+        pos1 = self.get_pose()
+        time.sleep(0.5)
+        pos2 = self.get_pose()
+        self.assertAlmostEqual(pos1[0], pos2[0], delta=0.05)
+        self.assertAlmostEqual(pos1[1], pos2[1], delta=0.05)
+
+    def cb_preempted(self, status, res):
+        self.cb_fired = True
+        self.assertEqual(status, actionlib.GoalStatus.PREEMPTED)
+
+    def cb_succeeded(self, status, res):
+        self.cb_fired = True
+        self.assertEqual(status, actionlib.GoalStatus.SUCCEEDED)
+
+
+    def test_move_advanced(self):
+            
+        rospy.loginfo("Starting ROS test case for actions (advanced behaviour).")
+        rospy.init_node('move_base_client')
+        client = actionlib.SimpleActionClient('robot/waypoint/move_base', MoveBaseAction)
+        client2 = actionlib.SimpleActionClient('robot/waypoint/move_base', MoveBaseAction)
+        self.assertTrue(client.wait_for_server(rospy.Duration(5)))
+        self.assertTrue(client2.wait_for_server(rospy.Duration(5)))
+
+        self.assertIsNotNone(self.get_pose())
+
+        goal1 = MoveBaseGoal(PoseStamped(pose = Pose(Point(0.1,10.0,0.0), Quaternion(0.0,0.0,0.0,1.0))))
+        goal2 = MoveBaseGoal(PoseStamped(pose = Pose(Point(0.1,2.0,0.0), Quaternion(0.0,0.0,0.0,1.0))))
+
+
+        # send goal with not enough time to complete -> should get a preemption and the robot actually stopping
+        status = client.send_goal_and_wait(goal1, rospy.Duration(1))
+        self.assertEqual(status, actionlib.GoalStatus.PREEMPTED)
+        self.check_not_moving()
+        ######
+
+        # sending again the goal, and ask for cancellation
+        self.cb_fired = False
+        client.send_goal(goal1, done_cb = self.cb_preempted)
+        time.sleep(1)
+        client.cancel_goal()
+        self.check_not_moving()
+        self.assertTrue(self.cb_fired)
+        ######
+
+        # sending again the goal, this time, interrupted by another one
+        self.cb_fired = False
+        client.send_goal(goal1, done_cb = self.cb_preempted)
+        time.sleep(1)
+        client2.send_goal(goal2, done_cb = self.cb_succeeded)
+        time.sleep(0.5)
+        self.assertTrue(self.cb_fired)
+        self.cb_fired = False
+        time.sleep(5)
+        self.assertTrue(self.cb_fired)
+        ######
+
+
 
 
 ########################## Run these tests ##########################

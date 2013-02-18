@@ -85,7 +85,11 @@ class AbstractObject(object):
         the task has been interrupted.
 
         It can be overriden in each component to provide a true
-        interrupt, for exemple resseting the speed command to 0.0
+        interrupt, for exemple resseting the speed command to 0.0.
+
+        If you override it, do not forget to call ``self.completed`` with
+        ``status.PREEMPTED``.
+
         """
         import morse.core.status
 
