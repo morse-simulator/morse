@@ -56,6 +56,9 @@ calling cmake! *eg.*::
 
 #. Install rospkg using Python3.2::
 
+        curl -O http://python-distribute.org/distribute_setup.py
+        python3 distribute_setup.py install
+
         git clone git://github.com/ros/rospkg.git
         cd rospkg
         sudo python3.2 setup.py install
