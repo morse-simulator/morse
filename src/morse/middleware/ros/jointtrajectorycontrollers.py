@@ -9,7 +9,7 @@ class JointTrajectoryControllerStatePublisher(ROSPublisher):
     ros_class = JointTrajectoryControllerState
 
     def default(self, ci='unused'):
-        js = JointTrajectoryControllerStatePublisher()
+        js = JointTrajectoryControllerState()
         js.header = self.get_ros_header()
 
         js.joint_names = self.data.keys()
