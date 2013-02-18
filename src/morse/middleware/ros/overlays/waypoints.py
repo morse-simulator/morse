@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
 from morse.core.services import interruptible
-from morse.middleware.ros_request_manager import ros_action, ros_service
+from morse.middleware.ros_request_manager import ros_action
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 

@@ -1,4 +1,4 @@
-from morse.middleware.ros_request_manager import ros_service, ros_action
+from morse.middleware.ros_request_manager import ros_action
 from morse.core.services import interruptible
 from morse.core.overlay import MorseOverlay
 from morse.core import status
