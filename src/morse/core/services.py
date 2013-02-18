@@ -33,7 +33,7 @@ class MorseServices:
         """
         # Check if the request manager do not already exist
         if not classpath in self._request_managers:
-            instance = create_instance(classpath, None)
+            instance = create_instance(classpath)
             if not instance:
                 logger.error("Request Manager %s not found. Check for typos in the configuration file!"%classpath)
                 return False

@@ -14,7 +14,7 @@ from morse.helpers.loading import create_instance, load_module_attribute
 
 
 def register_datastream(classpath, component, args):
-    datastream = create_instance(classpath, None, component, args)
+    datastream = create_instance(classpath, component, args)
     # Check that datastream implements AbstractDatastream
     if not isinstance(datastream, AbstractDatastream):
         logger.warning("%s should implement morse.middleware.AbstractDatastream"%classpath)

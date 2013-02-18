@@ -16,7 +16,7 @@ persistantstorage = morse.core.blenderapi.persistantstorage()
 from morse.core.services import MorseServices
 from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
-from morse.helpers.loading import create_instance
+from morse.helpers.loading import create_instance, create_instance_level
 
 # Constants for stream directions
 IN = 'IN'
@@ -67,9 +67,9 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
             return False
         # Create an instance of the component class
         #  and add it to the component list of persistantstorage()
-        instance = create_instance(child['classpath'],
-                                   child.get('abstraction_level'),
-                                   child, robot_instance)
+        instance = create_instance_level(child['classpath'],
+                                         child.get('abstraction_level'),
+                                         child, robot_instance)
         if instance:
             persistantstorage.componentDict[child.name] = instance
         else:
@@ -179,9 +179,9 @@ def create_dictionaries ():
                              "using the new builder classes"%str(obj.name))
                 return False
             # Create an object instance and store it
-            instance = create_instance(obj['classpath'], 
-                                       obj.get('abstraction_level'),
-                                       obj)
+            instance = create_instance_level(obj['classpath'], 
+                                             obj.get('abstraction_level'),
+                                             obj)
 
             if not instance:
                 logger.error("Could not create %s"%str(obj['classpath']))
@@ -370,7 +370,7 @@ def link_datastreams():
                     break
 
             if not found:
-                datastream_instance = create_instance(datastream_name, None)
+                datastream_instance = create_instance(datastream_name)
                 if datastream_instance != None:
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
@@ -464,7 +464,7 @@ def load_overlays():
 
             # Instanciate the overlay, passing the overlaid object to
             # the constructor + any optional arguments
-            instance = create_instance(overlay_name, None, overlaid_object, **kwargs)
+            instance = create_instance(overlay_name, overlaid_object, **kwargs)
             persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
             instance.register_services()
             persistantstorage.overlayDict[overlay_name] = instance
@@ -502,7 +502,7 @@ def add_modifiers():
                     break
                     
             if not found:
-                modifier_instance = create_instance(modifier_name, None)
+                modifier_instance = create_instance(modifier_name)
                 if modifier_instance != None:
                     persistantstorage.modifierDict[modifier_name] = modifier_instance
                     logger.info("\tModifier '%s' created" % modifier_name)
@@ -558,7 +558,7 @@ def init_multinode():
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
 
-    persistantstorage.node_instance = create_instance(classpath, None, \
+    persistantstorage.node_instance = create_instance(classpath, \
             node_name, server_address, server_port, persistantstorage)
 
 def init(contr):

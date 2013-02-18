@@ -20,8 +20,21 @@ def load_module_attribute(module_name, attribute_name):
         return None
     return attribute
 
-def create_instance(classpath, level, *args, **kwargs):
+def create_instance(classpath, *args, **kwargs):
     """Creates an instances of a class."""
+
+    module_name, class_name = classpath.rsplit('.', 1)
+    klass = load_module_attribute(module_name, class_name)
+
+    if not klass:
+        logger.error("Could not create an instance of %s"%str(classpath))
+        return None
+
+    return klass(*args, **kwargs)
+
+
+def create_instance_level(classpath, level, *args, **kwargs):
+    """Creates an instances of a class from a component abstration level."""
 
     module_name, class_name = classpath.rsplit('.', 1)
     klass = load_module_attribute(module_name, class_name)
@@ -57,9 +70,6 @@ def create_instance(classpath, level, *args, **kwargs):
         # The level may define a custom classpath to implement the component
         # behaviour, or 'None' if the parent class is to be used.
         if klass._levels[level][0]:
-            return create_instance(klass._levels[level][0], None, *args, **kwargs)
+            return create_instance(klass._levels[level][0], *args, **kwargs)
 
-    try:
-        return klass(*args, **kwargs)
-    except ValueError:
-        return None
+    return klass(*args, **kwargs)
