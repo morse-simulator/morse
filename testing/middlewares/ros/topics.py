@@ -8,8 +8,6 @@ import math
 from morse.testing.ros import RosTestCase
 from morse.testing.testing import testlogger
 
-import roslib; roslib.load_manifest('roscpp'); roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); 
-roslib.load_manifest('geometry_msgs')
 import rospy
 import std_msgs
 import nav_msgs.msg # do not conflict with morse builder
