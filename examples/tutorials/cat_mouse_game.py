@@ -12,12 +12,10 @@ cat.append(motion)
 semanticL = SemanticCamera()
 semanticL.translate(x=0.2, y=0.3, z=0.9)
 cat.append(semanticL)
-semanticL.properties(Vertical_Flip=False)
 
 semanticR = SemanticCamera()
 semanticR.translate(x=0.2, y=-0.3, z=0.9)
 cat.append(semanticR)
-semanticR.properties(Vertical_Flip=False)
 
 motion.add_stream('socket')
 semanticL.add_stream('socket')
@@ -28,7 +26,7 @@ semanticR.add_stream('socket')
 #
 mouse = ATRV()
 mouse.properties(Object = True, Graspable = False, Label = "MOUSE")
-mouse.translate (x=1.0, z=0.2)
+mouse.translate(x=1.0, z=0.2)
 
 keyboard = Keyboard()
 keyboard.properties(Speed=3.0)

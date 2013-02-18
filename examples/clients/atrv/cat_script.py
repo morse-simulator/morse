@@ -3,7 +3,6 @@
 This will command the CAT, using two semantic cameras, to follow
 after the MOUSE robot """
 
-import sys
 from pymorse import Morse
 
 def is_mouse_visible(semantic_camera_stream):
@@ -16,7 +15,7 @@ def is_mouse_visible(semantic_camera_stream):
             return True
     return False
 
-def main(args):
+def main():
     """ Use the semantic cameras to locate the target and follow it """
     with Morse() as morse:
         semanticL = morse.cat.semanticL
@@ -37,4 +36,4 @@ def main(args):
             motion.publish(v_w)
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    main()
