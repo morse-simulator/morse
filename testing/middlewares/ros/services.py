@@ -33,7 +33,7 @@ class RosServicesTest(RosTestCase):
         
         waypoint.add_service('ros')
         
-        waypoint.configure_overlay('ros', 'morse.middleware.ros.overlays.actuator.WayPoint')
+        waypoint.configure_overlay('ros', 'morse.middleware.ros.overlays.waypoints.WayPoint')
         
         env = Environment('empty', fastmode = True)
         env.add_service('ros')
