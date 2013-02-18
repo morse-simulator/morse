@@ -1,10 +1,13 @@
+import logging; logger = logging.getLogger("morse." + __name__)
+
+from morse.core.services import interruptible
 from morse.middleware.ros_request_manager import ros_action, ros_service
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 
-import roslib; roslib.load_manifest('morsetesting')
-from morsetesting.msg import *
-from morsetesting.srv import *
+from morse.middleware.ros.helpers import ros_add_to_syspath
+ros_add_to_syspath("move_base_msgs")
+from move_base_msgs.msg import *
 
 class WayPoint(MorseOverlay):
 
@@ -15,27 +18,18 @@ class WayPoint(MorseOverlay):
     def move_base_on_completion(self, result):
         state, value = result
 
-        print("MoveBase completed!! got value " + str(value))
+        logger.info("MoveBase completed! got value " + str(value))
 
-        if state == status.SUCCESS:
-            res = MoveBaseResult(success = True)
-        else:
-            res = None
+        return (state, MoveBaseResult())
 
-        return (state, res)
-
+    @interruptible
     @ros_action(type = MoveBaseAction)
     def move_base(self, req):
+        logger.info("Going to (%d, %d)" % (req.target_pose.pose.position.x, req.target_pose.pose.position.y))
+
         self.overlaid_object.goto(
                 self.chain_callback(self.move_base_on_completion),
-                req.target.position.x,
-                req.target.position.y,
-                req.target.position.z)
-
-    @ros_service(type = MoveBase)
-    def set_destination(self, req):
-        return self.overlaid_object.setdest(
-                            req.position.x,
-                            req.position.y,
-                            req.position.z)
+                req.target_pose.pose.position.x,
+                req.target_pose.pose.position.y,
+                req.target_pose.pose.position.z)
 
