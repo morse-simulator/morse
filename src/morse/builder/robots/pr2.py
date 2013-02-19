@@ -115,6 +115,40 @@ class BasePR2(BarePR2):
               namespace = "/r_arm_controller")
 
 
+class LocalizedPR2(BasePR2):
+    def __init__(self, with_keyboard = True, show_laser = False):
+        BasePR2.__init__(self)
+
+        ###################################
+        # Actuators
+        ###################################
+
+
+        # Motion controller
+        self.motion = MotionXYW()
+        self.append(self.motion)
+
+        # (optionally) keyboard controller
+        if with_keyboard:
+            keyboard = Keyboard()
+            self.append(keyboard)
+
+        ###################################
+        # Sensors
+        ###################################
+
+        self.pose = Pose()
+        self.append(self.pose)
+
+    def add_interface(self, interface):
+
+        super(self.__class__, self).add_interface(interface)
+
+        if interface == "ros": 
+            self.motion.add_stream("ros", topic="/cmd_vel")
+            self.pose.add_stream("ros", method="morse.middleware.ros.pose.TFPublisher")
+
+
 class NavPR2(BasePR2):
     """
     A PR2 equipped with sensors and actuators required for 2D navigation.
@@ -144,6 +178,7 @@ class NavPR2(BasePR2):
         # Odometry
         self.odometry = Odometry()
         self.append(self.odometry)
+
 
         # Base laser scanner
         self.base_scan = Hokuyo()
