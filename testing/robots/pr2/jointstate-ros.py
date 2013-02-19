@@ -37,7 +37,7 @@ class PR2JointStateTest(RosTestCase):
         rospy.loginfo("Creating listener node to check if posture of PR2 is published.")
         rospy.init_node('pr2_jointstate_listener', log_level = rospy.DEBUG, disable_signals=True)
         rospy.loginfo("Subscribing to pr2_posture topic.")
-        jointstate_msg = rospy.client.wait_for_message("pr2/joint_state", JointState)
+        jointstate_msg = rospy.client.wait_for_message("joint_states", JointState)
         name_len = len(jointstate_msg.name)
         pos_len = len(jointstate_msg.position)
         rospy.loginfo("Checking if number of jointstate names equals number of jointstate positions.")
