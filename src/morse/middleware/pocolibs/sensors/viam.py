@@ -8,6 +8,9 @@ from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
 
 
 class ViamPoster(AbstractDatastream):
+    _type_name = "ViamImageBank"
+    _type_url = "http://trac.laas.fr/git/viam-genom/tree/viamStruct.h?h=viam-genom-1#n346"
+
     def initialize(self):
         name = poster_name(self.component_name, self.kwargs)
         self.camera_order = []

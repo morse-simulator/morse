@@ -7,6 +7,9 @@ class PomSensorPosPoster(PocolibsDataStreamInput):
         PocolibsDataStreamInput.initialize(self, POM_SENSOR_POS)
 
 class PomSensorPoster(PocolibsDataStreamOutput):
+    _type_name = "POM_ME_POS"
+    _type_url = "http://trac.laas.fr/git/pom-genom/tree/pomStruct.h#n180"
+
     def initialize(self):
         super(self.__class__, self).initialize(POM_ME_POS)
 
@@ -32,6 +35,9 @@ class PomSensorPoster(PocolibsDataStreamOutput):
             self.write(self.obj)
 
 class PomPoster(PocolibsDataStreamOutput):
+    _type_name = "POM_POS"
+    _type_url = "http://trac.laas.fr/git/pom-genom/tree/pomStruct.h#n211"
+
     def initialize(self):
         super(self.__class__, self).initialize(POM_POS)
 

@@ -3,6 +3,9 @@ from morse.middleware.pocolibs_datastream import *
 from spark.struct import *
 
 class HumanPoster(PocolibsDataStreamOutput):
+    _type_name = "SPARK_CONFIGURATION"
+    _type_url = "http://trac.laas.fr/git/spark-genom/tree/sparkStruct.h#n226"
+
     def initialize(self):
         super(self.__class__, self).initialize(SPARK_CONFIGURATION)
 

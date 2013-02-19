@@ -8,6 +8,9 @@ from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
 
 
 class Spix3DImagePoster(AbstractDatastream):
+    _type_name = "Spix3DImage"
+    _type_url = "http://trac.laas.fr/git/stereopixel-genom/tree/stereopixelClient.h#n57"
+
     def initialize(self):
         name = poster_name(self.component_name, self.kwargs)
         self.obj = Stereopixel(name, self.component_instance.image_width,

@@ -24,6 +24,9 @@ couples = [('head_position', NIUT_HEAD),
            ('right_foot_position', NIUT_RIGHT_FOOT)]
 
 class NiutBasePoster(PocolibsDataStreamInput):
+    _type_name = "NIUT_HUMAN_LIST"
+
+    _type_url = "http://trac.laas.fr/git/niut-genom/tree/niutStruct.h#n82"
     def initialize(self):
         PocolibsDataStreamInput.initialize(self, NIUT_HUMAN_LIST)
 

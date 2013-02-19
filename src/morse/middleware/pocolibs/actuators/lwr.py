@@ -3,6 +3,10 @@ from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput
 from lwr.struct import *
 
 class LwrPoster(PocolibsDataStreamInput):
+    
+    _type_name = "Gb_q7"
+    _type_url = "http://trac.laas.fr/git/gbM/tree/src/gbStruct.h#n92"
+
     def initialize(self):
         PocolibsDataStreamInput.initialize(self, Gb_q7)
 

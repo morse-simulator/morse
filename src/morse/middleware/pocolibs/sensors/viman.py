@@ -58,6 +58,9 @@ def _fill_robot_matrix(obj, robot, obj_3dpose):
 
 
 class VimanPoster(PocolibsDataStreamOutput):
+    _type_name = "VimanObjectPublicArray"
+    _type_url = "http://trac.laas.fr/git/viman-genom/tree/vimanStruct.h#n139"
+
     def initialize(self):
         super(self.__class__, self).initialize(VimanObjectPublicArray)
 

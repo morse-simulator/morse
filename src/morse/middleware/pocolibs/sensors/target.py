@@ -3,6 +3,9 @@ from morse.middleware.pocolibs_datastream import *
 from genPos.struct import *
 
 class TargetPoster(PocolibsDataStreamOutput):
+    _type_name = "GENPOS_TRAJ_POINTS"
+    _type_url = "http://trac.laas.fr/git/genPos-genom/tree/genPosStruct.h#n144"
+
     def initialize(self):
         super(self.__class__, self).initialize(GENPOS_TRAJ_POINTS)
 

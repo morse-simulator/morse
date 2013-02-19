@@ -3,6 +3,9 @@ from pom.struct import *
 from platine.struct import *
 
 class PlatinePoster(PocolibsDataStreamInput):
+    _type_name = "POM_SE_POSTER"
+    _type_url = "http://trac.laas.fr/git/pom-genom/tree/pomStruct.h#n167"
+
     def initialize(self):
         PocolibsDataStreamInput.initialize(self, POM_SE_POSTER)
 
@@ -14,6 +17,9 @@ class PlatinePoster(PocolibsDataStreamInput):
             self.data['tilt'] = euler.pitch
 
 class PlatineAxisPoster(PocolibsDataStreamInput):
+    _type_name = "PLATINE_AXIS_STR"
+    _type_url = "http://trac.laas.fr/git/platine-genom/tree/platineStruct.h#n16"
+
     def initialize(self):
         PocolibsDataStreamInput.initialize(self, PLATINE_AXIS_STR)
 

@@ -4,6 +4,9 @@ from platine.struct import *
 from math import degrees
 
 class PlatinePoster(PocolibsDataStreamOutput):
+    _type_name = "PLATINE_STATES"
+    _type_url = "http://trac.laas.fr/git/platine-genom/tree/platineStruct.h#n53"
+
     def initialize(self):
         super(self.__class__, self).initialize(PLATINE_STATES)
 
