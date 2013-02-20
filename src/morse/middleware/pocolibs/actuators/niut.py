@@ -1,34 +1,35 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput
 from niut.struct import *
-import mathutils
+from morse.core import mathutils
 
 # Define a transformation matrix for the position of the Kinect/Xtion sensor
 transformation_matrix = mathutils.Matrix()
-transformation_matrix.identity()
 
-couples = [('head_position', NIUT_HEAD),
-           ('neck_position', NIUT_NECK),
-           ('torso_position', NIUT_TORSO),
-           ('left_hand_position', NIUT_LEFT_HAND),
-           ('right_hand_position', NIUT_RIGHT_HAND),
-           ('left_elbow_position', NIUT_LEFT_ELBOW),
-           ('right_elbow_position', NIUT_RIGHT_ELBOW),
-           ('left_shoulder_position', NIUT_LEFT_SHOULDER),
-           ('right_shoulder_position', NIUT_RIGHT_SHOULDER),
-           ('left_hip_position', NIUT_LEFT_HIP),
-           ('right_hip_position', NIUT_RIGHT_HIP),
-           ('left_knee_position', NIUT_LEFT_KNEE),
-           ('right_knee_position', NIUT_RIGHT_KNEE),
-           ('left_foot_position', NIUT_LEFT_FOOT),
-           ('right_foot_position', NIUT_RIGHT_FOOT)]
 
-class NiutBasePoster(PocolibsDataStreamInput):
+class NiutPoster(PocolibsDataStreamInput):
     _type_name = "NIUT_HUMAN_LIST"
 
     _type_url = "http://trac.laas.fr/git/niut-genom/tree/niutStruct.h#n82"
     def initialize(self):
         PocolibsDataStreamInput.initialize(self, NIUT_HUMAN_LIST)
+
+        self.couples = \
+                  [('head_position', NIUT_HEAD),
+                   ('neck_position', NIUT_NECK),
+                   ('torso_position', NIUT_TORSO),
+                   ('left_hand_position', NIUT_LEFT_HAND),
+                   ('right_hand_position', NIUT_RIGHT_HAND),
+                   ('left_elbow_position', NIUT_LEFT_ELBOW),
+                   ('right_elbow_position', NIUT_RIGHT_ELBOW),
+                   ('left_shoulder_position', NIUT_LEFT_SHOULDER),
+                   ('right_shoulder_position', NIUT_RIGHT_SHOULDER),
+                   ('left_hip_position', NIUT_LEFT_HIP),
+                   ('right_hip_position', NIUT_RIGHT_HIP),
+                   ('left_knee_position', NIUT_LEFT_KNEE),
+                   ('right_knee_position', NIUT_RIGHT_KNEE),
+                   ('left_foot_position', NIUT_LEFT_FOOT),
+                   ('right_foot_position', NIUT_RIGHT_FOOT)]
 
         _create_transform_matrix()
 
@@ -51,7 +52,7 @@ class NiutBasePoster(PocolibsDataStreamInput):
             for i in range(0, 16):
                 if human_list.users[i].state == NIUT_TRACKING:
                     joints = human_list.users[i].skeleton.joint
-                    for target, idx in couples:
+                    for target, idx in self.couples:
                         self._store_joint_position(component, joints, target, idx)
                     return
 
