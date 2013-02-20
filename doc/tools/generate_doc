@@ -250,6 +250,8 @@ def get_interface_doc(classpath):
     except ImportError as detail:
         print("WARNING! Interface module not found: %s. Maybe you did not install the required middleware?" % detail)
         return classname, None, None
+    except OSError:
+        return classname, None, None
 
     module = sys.modules[modulename]
 
