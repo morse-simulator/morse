@@ -6,9 +6,9 @@ combination of revolute joints (hinge) and prismatic joints (slider).
 
 They are based on Blender's *armatures*. You may want to read some
 background information about them before creating our own *rig*: `How armatures
-work?<http://www.blender.org/development/release-logs/blender-240/how-armatures-work/>`_,
+work? <http://www.blender.org/development/release-logs/blender-240/how-armatures-work/>`_,
 `Armature
-documentation<http://wiki.blender.org/index.php/Doc:2.6/Manual/Rigging/Armatures>`_.
+documentation <http://wiki.blender.org/index.php/Doc:2.6/Manual/Rigging/Armatures>`_.
 
 .. note::
 
@@ -24,7 +24,7 @@ the armature can have at most **one Degree of Freedom (DoF)**. If you need to
 model a linkage with two or more degree of freedom, add one joint per DoF.
 
 Besides, the Blender armature need some special configuration,
-detailled below.
+detailed below.
 
 Setting the IK properties
 -------------------------
@@ -51,7 +51,7 @@ stretch value must be the maximum translation allowed for this joint.
 .. important::
 
     As of Blender 2.65, Blender's armatures and inverse kinematic (IK) solvers
-    do support hinge joints (as constrainted spherical joints), but do not
+    do support hinge joints (as constrained spherical joints), but do not
     support prismatic joints. We 'cheat' by using the ``stretch`` value (as
     explained above) to identify prismatic joints, but this will cause an
     undesirable scaling ('stretching') of the joint if you use an IK solver!
