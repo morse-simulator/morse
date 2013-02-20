@@ -6,3 +6,4 @@
     *
     user/*
     dev/*
+    code/*
