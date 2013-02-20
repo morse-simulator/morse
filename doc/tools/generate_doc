@@ -414,7 +414,8 @@ def print_properties(out, name, props):
 
 
         for name, prop in prop.items():
-            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + str(prop[0]) + '``)\n\t' + prop[2] + "\n")
+            out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + 
+          ('"' + prop[0] + '"' if isinstance(prop[0], str) else str(prop[0])) + '``)\n\t' + prop[2] + "\n")
 
         out.write("\n\n")
 
