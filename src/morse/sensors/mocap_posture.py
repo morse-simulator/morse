@@ -13,7 +13,7 @@ class HumanPostureClass(morse.core.sensor.Sensor):
     It stores the position and orientation of the general armature
     object, as well as the local rotation of each individual bone. The
     rotation angles are given in radians. It exports the same interface than the
-    :doc:`human posture sensor <./human_posture>`, but some
+    :doc:`human posture sensor <../sensors/human_posture>`, but some
     joints are not reflected by the Kinect, and so they stay to their
     initial values.
 

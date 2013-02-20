@@ -9,7 +9,7 @@ class Human(Robot):
     The human model currently available in MORSE comes with its
     own subjective camera and several features for object manipulation.
 
-    It also exposes a :doc:`human posture component <morse/user/sensors/human_posture>`
+    It also exposes a :doc:`human posture component <../sensors/human_posture>`
     that can be accessed by the ``armature`` member.
 
     Usage example:

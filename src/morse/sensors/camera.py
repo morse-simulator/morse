@@ -8,9 +8,9 @@ class Camera(morse.core.sensor.Sensor):
     A generic camera class, which is expected to be used as a base class
     for real camera. Concrete instantiation are currently:
 
-        - :doc:`video_camera <video_camera>`
-        - :doc:`depth_camera <depth_camera>`
-        - :doc:`semantic_camera <semantic_camera>`
+        - :doc:`video_camera <../sensors/video_camera>`
+        - :doc:`depth_camera <../sensors/depth_camera>`
+        - :doc:`semantic_camera <../sensors/semantic_camera>`
 
     .. note::
         The streaming of data from this sensor can be toggled off and on by

@@ -6,4 +6,4 @@
     *
     user/*
     dev/*
-    code/*
+    user/code/*
