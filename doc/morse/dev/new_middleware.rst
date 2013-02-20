@@ -55,7 +55,7 @@ These files need to implement at least two different methods:
 
 As an example, look at the file ``$MORSE_SRC/src/morse/middleware/yarp/sick.py``.
 The methods implemented here convert the list of lists stored in ``local_data``
-of the :doc:`sick sensor <../user/sensors/sick>` into a yarp bottle with a
+of the :doc:`sick sensor <../user/sensors/laserscanner>` into a yarp bottle with a
 series of nested bottles for each point, each bottle containing three double
 variables, for the x, y and z coordinates.
 

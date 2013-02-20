@@ -3,7 +3,7 @@ KUKA LWR arm actuator
 
 This actuator reads a list of angles for the segments of the LWR arm
 and applies them as local rotations.
-It is a subclass of the :doc:`armature_actuator <armature_actuator>`.
+It is a subclass of the :doc:`armature_actuator <armature>`.
 Angles are expected in radians.
 
 To install additional components at the tip of the arm using the
@@ -74,7 +74,7 @@ No available modifiers
 Available services
 ------------------
 
-See the documentation for the :doc:`armature_actuator <armature_actuator>`.
+See the documentation for the :doc:`armature_actuator <armature>`.
 There is also an additional service specific to this armature:
 
 - **set_rotation_array**: (service) Receives an array indicating the angle to give

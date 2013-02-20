@@ -27,7 +27,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
             arm.append(arm_pose)
 
     This component only allows to *read* armature configuration. To change the
-    armature pose, you need an :doc:`armature actuator <../sensors/armature>`.
+    armature pose, you need an :doc:`armature actuator <../actuators/armature>`.
 
     .. important:: 
     

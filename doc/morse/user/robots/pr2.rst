@@ -3,7 +3,7 @@ PR2 Robot
 
 The MORSE model of the Willow Garage's PR2 robot.
 
-The PR2 uses the :doc:`armature_actuator <../actuators/armature_actuator>` for control of the armatures.
+The PR2 uses the :doc:`armature_actuator <../actuators/armature>` for control of the armatures.
 
 .. image:: ../../../media/robots/pr2.png 
   :align: center
@@ -18,7 +18,8 @@ The .dae file can be found at:
 The imported .blend file can be found at:
 ``$MORSE_ROOT/data/robots/pr2/pr2_25_original.blend``
 
-The URDF to Collada converter changed all the object names, so these were remapped to the orignal URDF names. A renamed version of the PR2 model can be found at:
+The URDF to Collada converter changed all the object names, so these were
+remapped to the original URDF names. A renamed version of the PR2 model can be found at:
 ``$MORSE_ROOT/data/robots/pr2/pr2_25_rename.blend``
 , this file includes the script that is used to rename all the objects.
 
@@ -35,7 +36,7 @@ PR2 related Files
 - PR2 model with MORSE integration: ``$MORSE_ROOT/data/robots/pr2/pr2_25_morse.blend``
 
 - PR2 robot script with MORSE services: ``$MORSE_ROOT/src/morse/robots/pr2.py```
-- Armature actuator script: ``$MORSE_ROOT/src/morse/actuators/armature_actuator.py``
+- Armature actuator script: ``$MORSE_ROOT/src/morse/actuators/actuator.py``
 
 
 Adjustable parameters
