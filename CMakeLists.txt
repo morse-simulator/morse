@@ -161,13 +161,22 @@ ELSE()
 	ADD_CUSTOM_TARGET(
 		populate_false_env ALL
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/mathutils
-		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/mathutils/__init__.py
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/bge
-		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bge/__init__.py
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints
-		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/mathutils.py
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/bge.py
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/PhysicsConstraints.py
+
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/hla
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/hla/__init__.py
+
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/pymoos
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymoos/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymoos/MOOSCommClient.py
+
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/yarp.py
 	)
+
+	FILE(WRITE ${SPHINX_FALSE_PYTHON_ENV}/hla/omt.py "HLAfloat32LE=0\ndef HLAfixedArray(x,y,z):\n    pass")
+	FILE(WRITE ${SPHINX_FALSE_PYTHON_ENV}/hla/rti.py "class FederateAmbassador:\n    pass")
 
 	# Copy the documentation in builddir, so we can include the generated part too
 	ADD_CUSTOM_TARGET(
@@ -176,7 +185,7 @@ ELSE()
 		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc/media ${SPHINX_SRC}/media
 	)
 
-	ADD_DEPENDENCIES(copy_doc revisiontag)
+	ADD_DEPENDENCIES(copy_doc revisiontag ${SPHINX_FALSE_PYTHON_ENV}/hla/omt.py)
 
 	# Generate the documentation from the different components
 	ADD_CUSTOM_TARGET(
