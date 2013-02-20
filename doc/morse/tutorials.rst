@@ -12,7 +12,7 @@ What is the general workflow?
 
 MORSE relies on the Blender 3D package to model and run your simulation.
 
-While it is possible to create and configure a simulation entierly from the
+While it is possible to create and configure a simulation entirely from the
 :doc:`Blender interface<user/advanced_tutorials/editing_in_blender>`, it is easier
 and ways faster to rely on the so-called **Builder** scripts: these scripts
 are simple Python scripts that describe simulations. More about that in a
@@ -26,7 +26,7 @@ a Blender file), you can run it::
 Now, instruct your :doc:`middleware (ROS, YARP,...)<user/integration>` to address
 the simulator instead of the real robot, and start your control softwares as
 you would do on a real robot. If you are not relying on an explicit middleware,
-you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`sockets`
+you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`socket`
 or the :doc:`Python API <pymorse>` :tag:`pymorse`.
 
 .. note::
@@ -42,7 +42,7 @@ First of all, :doc:`install MORSE<user/installation>` if it is not already
 done.
 
 Next step, :doc:`user/beginner_tutorials/tutorial`. :tag:`builder`
-:tag:`sockets`
+:tag:`socket`
 
 Basic MORSE user interface
 --------------------------
