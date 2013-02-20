@@ -5,7 +5,7 @@ General
 -------
 
 - MORSE is mature! stable release !
-- Unit-test coverage has been substentially improved
+- Unit-test coverage has been substantially improved
 - Documentation of component is now partially auto-generated: this should bring
   a better, up-to-date, complete documentation, including code examples
 - MORSE has a new logo!
@@ -13,7 +13,7 @@ General
 Components
 ----------
 
-- All components now explicitely expose their data fields and properties with
+- All components now explicitly expose their data fields and properties with
   respectively `add_data` and `add_property`.
 - Introduced "abstraction levels" that allow to define several levels of
   realism for a given component (#166). Many components remain to be ported to
@@ -34,11 +34,11 @@ Components
 Robot
 +++++
 
-- Subsential improvement regarding the PR2 robot support. Besides 2D
+- Substantial improvement regarding the PR2 robot support. Besides 2D
   navigation, the robot's joint state and joint control via standard tools like
   `pr2_tuck_arm` works out-of-the-box. PR2 joint name have been updated to
   match the latest version. Several scripts allow to create a PR2 with variable
-  level of equipement.
+  level of equipment.
 - Fixed the `WheeledRobot` class of robot that had a erratic physics behaviour.
   Make `Pioneer3DX` inherit from this robot class (#245).
 
@@ -49,7 +49,7 @@ Actuators
   (interpolating joint rotation if required, and not only 'jumping' to the
   target position) and execute trajectories with interpolation. It also
   introduces support for prismatic joints (#231, #232).
-- `Waypoint` actuator: improve handeling of interruption (the robot motion now
+- `Waypoint` actuator: improve handling of interruption (the robot motion now
   actually stops).
 
 Sensors
@@ -69,7 +69,7 @@ Sensors
 - New special *compound sensor* that allows to merge the output of several
   sensors. Used for instance to merge the joints values of the different PR2
   armature in a single joint state (#240).
-- Former `rosace` sensor has been renamed to a more approriate
+- Former `rosace` sensor has been renamed to a more appropriate
   `search_and_rescue` sensor.
 - Laser scanner ranges ordering has been reversed to match ROS conventions.
 
@@ -85,7 +85,7 @@ Builder API
   that sets an interface for a whole robot (#217).
 - Components are now automatically renamed after the variable names used in the
   Builder script, provide much more natural naming schemes. Names can still be
-  configured explicitely with `component.name` (#133).
+  configured explicitly with `component.name` (#133).
 - Component profiling with `component.profile()`
 - Errors in Builder scripts are now better handled, with meaningful error
   messages.
@@ -118,7 +118,7 @@ ROS
 - Laser scanners can now export point clouds (`PointCloud2`)
 - New `PointCloud2` publisher for depth camera, Kinect in progress
 - Support for the JointTrajectory ROS action for armature control
-- Special unittest class for ROS tests that takes care of setting up an
+- Special unit-test class for ROS tests that takes care of setting up an
   appropriate ROS environment (including launching `roscore`).
 
 
@@ -132,7 +132,7 @@ pocolibs
 ++++++++
 
 - Large rewrite of pocolibs interface, now using `ctypes` instead of SWIG
-  bindings. This simplies a lot the compilation and maintenance of these
+  bindings. This simplifies a lot the compilation and maintenance of these
   interfaces.
 
 Text
@@ -146,7 +146,7 @@ pymorse
 The Python bindings for MORSE have been completely rewritten, now supporting a
 modern asynchronous interface (based on Python 3.2 *futures*). It is also
 deemed as feature complete: it supports discovery of the simulation components,
-synchronous/asynchronous service invokation (including service cancellation)
+synchronous/asynchronous service invocation (including service cancellation)
 and synchronous/asynchronous read/write of datastream (#216).
 
 MORSE unit-tests now use this new API.
@@ -156,7 +156,7 @@ Internals
 
 - Substential changes in MORSE internals:
   - lots of refactoring, to improve code consistency (including
-    {middleware->datastream} (#186))
+  {middleware->datastream} (#186))
   - many files have been renamed for consistency
 
 Misc
@@ -179,6 +179,9 @@ Misc
 Previous releases
 -----------------
 
-- :doc:`0.6.x release notes <releasenotes/0.6>`
-- :doc:`0.5.x release notes <releasenotes/0.5>`
-- :doc:`0.4.x release notes <releasenotes/0.4>`
+.. toctree::
+	:maxdepth: 1	
+
+	releasenotes/0.6
+	releasenotes/0.5
+	releasenotes/0.4

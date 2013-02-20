@@ -39,7 +39,7 @@ Components
 ----------
 
 - Static objects have a redefined set of options to make them active or not,
-  graspable or not, etc. See :doc:`user/others/passive_objects`)
+  graspable or not, etc. See :doc:`../user/others/passive_objects`)
 - New components that can be created from the Builder API, such as:
 
   - Infrared sensor
