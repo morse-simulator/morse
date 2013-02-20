@@ -10,9 +10,9 @@ class Thermometer(morse.core.sensor.Sensor):
     to the distance to heat sources. It defines a default temperature throughout
     the scenario, which is affected by local fire sources. The temperature rises
     exponentially when the distance between the sensor and the heat source
-    decreases. 
+    decreases.
 
-    The default temperature is specified as a parameter ``Temperature'' of the
+    The default temperature is specified as a parameter ``Temperature`` of the
     Scene_Script_Holder Empty object in the simulation file. It is expressed in
     degrees Celsius.
     """

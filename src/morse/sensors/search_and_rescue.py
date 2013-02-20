@@ -56,39 +56,38 @@ class SearchAndRescue(morse.core.sensor.Sensor):
     _short_desc = "High level sensor for search and rescue scenario"
 
     add_data('victim_dict', {}, "dict", \
-             'A list of entries for each victim detected inside the cone \
-             of the sensor. Keys are victim name. The value is a \
-             dictionnary containing the coordinate of the victim, its \
-             requirements, and the severity of its injuries')
+             'A list of entries for each victim detected inside the cone'
+             ' of the sensor. Keys are victim name. The value is a'
+             ' dictionnary containing the coordinate of the victim, its'
+             ' requirements, and the severity of its injuries')
 
-    add_property('_heal_range', 5.0, 'Heal_range', 'float', 
-                'maximum distance from which it is possible to heal a \
-                 victim. Even if the victim can be detected by the \
-                 sensor, it can’t be healed unless its distance from the \
-                 robot is less than this value.')
+    add_property('_heal_range', 5.0, 'Heal_range', 'float',
+                'maximum distance from which it is possible to heal a'
+                ' victim. Even if the victim can be detected by the '
+                'sensor, it can’t be healed unless its distance from the '
+                'robot is less than this value.')
 
     add_property('_abilities', "", 'Abilities', 'string',
-                 'represents a list of numbers, separated by comas, that \
-                 represent the equipment capabilities of the robot. This \
-                 information should be used by the operator of the robot \
-                 to determine if it is capable of helping a victim or \
-                 not.')
+                 'represents a list of numbers, separated by comas, that '
+                 'represent the equipment capabilities of the robot. This '
+                 'information should be used by the operator of the robot '
+                 'to determine if it is capable of helping a victim or not.')
 
     # These properties are not used directly in the logic, but are used
     # in the builder to create the radar properly.
     # These value cannot be changed dynamically in bge.
     add_property('_angle', 60.0, 'Angle', 'float',
-                 'Aperture angle of the radar capable of detecting the \
-                  victims (in degree)')
+                 'Aperture angle of the radar capable of detecting the '
+                 ' victims (in degree)')
     add_property('_distance', 10.0, 'Distance', 'float',
-                 'Detection distance in meter. Victims further \
-                 way from the gripper than this distance will not be  \
-                 detected')
+                 'Detection distance in meter. Victims further '
+                 'way from the gripper than this distance will not be '
+                 'detected')
     add_property('_freq', 3.0, 'Freq', 'float',
-                 'change the delay required to heal a victim. This \
-                 number is expressed as the number of tics that are \
-                 ignored before taking action. A lower number will \
-                 produce a lower delay')
+                 'change the delay required to heal a victim. This '
+                 'number is expressed as the number of tics that are '
+                 'ignored before taking action. A lower number will '
+                 'produce a lower delay')
 
     def __init__(self, obj, parent=None):
 
