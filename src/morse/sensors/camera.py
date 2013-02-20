@@ -6,7 +6,8 @@ from morse.helpers.components import add_property
 class Camera(morse.core.sensor.Sensor):
     """
     A generic camera class, which is expected to be used as a base class
-    for real camera. Concrete instanciation are currently:
+    for real camera. Concrete instantiation are currently:
+
         - :doc:`video_camera <video_camera>`
         - :doc:`depth_camera <depth_camera>`
         - :doc:`semantic_camera <semantic_camera>`
