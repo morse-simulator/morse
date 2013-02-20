@@ -79,7 +79,7 @@ Middlewares
   lists
 - Improvements to the multi-node architecture using HLA. Including new
   tutorials and documentation
-- Updated ROS support for fuerte compatibility
+- Updated ROS support for Fuerte compatibility
 
 Documentation
 -------------
@@ -91,9 +91,3 @@ Misc
 
 - Add methods in builder to configure UTM coordinates and temperature in the
   scene. Previously in the Scene_Script_Holder
-
-Previous releases
------------------
-
-- :doc:`0.4.x release notes <releasenotes/0.4>`
-- :doc:`0.5.x release notes <releasenotes/0.5>`
