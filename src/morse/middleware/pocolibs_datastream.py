@@ -4,7 +4,14 @@ from ctypes import *
 from morse.middleware import AbstractDatastream
 from morse.core.datastream import *
 
-P = CDLL("libposterLib.so")
+try:
+    P = CDLL("libposterLib.so")
+except OSError:
+    import morse.core.blenderapi
+    if not morse.core.blenderapi.fake:
+        logger.error('Cannot find libposterLib.so : check your LD_LIBRARY_PATH')
+        raise
+
 
 class PosterNotFound(Exception):
     def __init__(self, value):
