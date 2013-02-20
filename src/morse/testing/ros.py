@@ -46,17 +46,6 @@ try:
 except ImportError:
     raise RosInstallationError("Can not import roslib. ROS is not installed?")
 
-try:
-    roslib.load_manifest("morsetesting")
-except ResourceNotFound:
-    raise RosInstallationError("Can not automatically find the 'morsetesting' special ROS node. ROS_PACKAGE_PATH: %s" % os.environ['ROS_PACKAGE_PATH'])
-
-try:
-    from morsetesting.msg import *
-except ImportError:
-    raise RosInstallationError("Can not import 'morsetesting' ROS message. Have you run 'rosmake' in the 'morsetesting' ROS node?")
-    #sys.exit(1)
-
 class RosTestCase(MorseTestCase):
     def setUpMw(self):
         try:
