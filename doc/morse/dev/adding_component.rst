@@ -256,7 +256,7 @@ Middleware specific information
 -------------------------------
 
 YARP
-____
+++++
 
 In Yarp, the different port_name are stored in a dictionary
 ``_component_ports``, indexed by the name of the component
@@ -275,14 +275,14 @@ Example: ::
 
 
 Pocolibs
-________
+++++++++
 
 In Pocolibs, the different poster_id are stored in a dictionary
 ``_poster_dict``, indexed by the name of the component
 (``component.bge_object.name``)
 
 Text
-____
+++++
 
 In Text, the different files are stored in a dictionary
 ``_file_list``, indexed by the name of the component
