@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 set(PACKAGE_NAME morse)
 set(PACKAGE_VERSION "0.6.99")
 
+cmake_policy(SET CMP0017 OLD)
+
+
 
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
 option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" OFF)
