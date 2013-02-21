@@ -11,7 +11,7 @@ Run ``sudo rosdep init`` and ``rosdep update`` as mentionned in the
 
 Install catkin for Python 3 support::
 
-    git clone git://github.com/ros-infrastructure/catkin_pkg.git
+    git clone git://github.com/ros-infrastructure/catkin_pkg.git -b 0.1.9
     cd catkin_pkg
     sudo python3 setup.py install
 
