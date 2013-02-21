@@ -36,6 +36,8 @@ from morse.sensors import accelerometer, \
                           armature_pose, \
                           battery,   \
                           camera,    \
+                          compound,  \
+                          depth_camera, \
                           gps,       \
                           gyroscope, \
                           human_posture, \
