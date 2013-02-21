@@ -319,7 +319,6 @@ class Infrared(LaserSensorWithArc):
         mesh.color(.8, .8, .8)
         self.append(mesh)
         # set components-specific properties
-        self.level("range")
         self.properties(Visible_arc = True, laser_range = 2.0,
                 scan_window = 20.0, resolution = 1.0)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
