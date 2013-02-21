@@ -5,8 +5,6 @@ import morse.core.blenderapi
 from morse.sensors.camera import Camera
 from morse.sensors.video_camera import VideoCamera
 from morse.helpers.components import add_data
-from morse.sensors.zbufferto3d import ZBufferTo3D
-from morse.sensors.zbuffertodepth import ZBufferToDepth
 
 class AbstractDepthCamera(VideoCamera):
 
@@ -61,6 +59,7 @@ class DepthCamera(AbstractDepthCamera):
              "``(cam_width * cam_height * 12)`` bytes (12=3*sizeof(float).")
 
     def initialize(self):
+        from morse.sensors.zbufferto3d import ZBufferTo3D
         # Store the camera parameters necessary for image processing
         self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],\
                                      self.local_data['intrinsic_matrix'][1][1],\
@@ -93,6 +92,7 @@ class DepthVideoCamera(AbstractDepthCamera):
              "``(cam_width * cam_height * sizeof(float))`` bytes.")
 
     def initialize(self):
+        from morse.sensors.zbuffertodepth import ZBufferToDepth
         # Store the camera parameters necessary for image processing
         self.converter = ZBufferToDepth(self.near_clipping, self.far_clipping, \
                                         self.image_width, self.image_height)
