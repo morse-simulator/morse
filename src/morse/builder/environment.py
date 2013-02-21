@@ -15,9 +15,12 @@ class Environment(Component):
 
     def __init__(self, filename, fastmode = False):
         """
-        :param fastmode: (default: False) if True, disable most visual effects (like lights...) to
-        get the fastest running simulation. Useful for unit-tests for instance, or in simulations
-        where realistic environment texturing is not required (*e.g.*, no video camera)
+        :param fastmode: (default: False) if True, disable most visual
+                         effects (like lights...) to get the fastest
+                         running simulation.  Useful for unit-tests for
+                         instance, or in simulations where realistic
+                         environment texturing is not required (*e.g.*,
+                         no video camera)
 
         """
         Component.__init__(self, 'environments', filename)
@@ -299,6 +302,7 @@ class Environment(Component):
         - ``SINGLETEXTURE`` Singletexture, Singletexture face materials.
         - ``MULTITEXTURE`` Multitexture, Multitexture materials.
         - ``GLSL`` GLSL, OpenGL shading language shaders.
+
         :param material_mode: enum in ['SINGLETEXTURE', 'MULTITEXTURE', 'GLSL']
         """
         bpymorse.get_context_scene().game_settings.material_mode = material_mode

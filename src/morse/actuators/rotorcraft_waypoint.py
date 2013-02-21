@@ -125,11 +125,12 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         :param z: z coordinate of the waypoint (meter)
         :param yaw: orientation of the waypoint (radian)
         :param tolerance: distance considered to decide that the
-        waypoint has been reached (meter)
+                          waypoint has been reached (meter)
 
         :return: True (if the robot is already moving, the previous
-        target is replaced by the new one) except if the destination is
-        already reached. In this case, returns False.
+                 target is replaced by the new one) except if the
+                 destination is already reached. In this case, returns
+                 False.
         """
 
         distance, gv, lv = self.robot_parent.bge_object.getVectTo([x, y, z])
@@ -161,7 +162,7 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         :param z: z coordinate of the waypoint (meter)
         :param yaw: orientation of the waypoint (radian)
         :param tolerance: distance considered to decide that the
-        waypoint has been reached (meter)
+                          waypoint has been reached (meter)
         """
         self.local_data['x'] = x
         self.local_data['y'] = y

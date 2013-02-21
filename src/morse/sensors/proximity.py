@@ -58,7 +58,7 @@ class Proximity(morse.core.sensor.Sensor):
         proximity sensor.
 
         :param tag: value of the *Track* property used to select detected
-        objects.
+                    objects.
         """
         self._tag = tag
 

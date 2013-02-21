@@ -651,7 +651,7 @@ def init_supervision_services():
     virtual 'simulation' component to it, loads any other request
     manager mapped to the 'simulation' component and register all
     simulation management services declared in
-    :py:module:`morse.core.supervision_services` 
+    :py:mod:`morse.core.supervision_services` 
     """
 
     ###

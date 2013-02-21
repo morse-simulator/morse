@@ -116,7 +116,7 @@ class PTU(Actuator):
         Returns the current angles for the pan and tilt segments.
 
         :return: a couple of float, representing respectively the pan
-        and the tilt of the platine, in radian.
+                 and the tilt of the platine, in radian.
         """
         return self._current_pan, self._current_tilt
 

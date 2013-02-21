@@ -125,11 +125,13 @@ def async_service(fn = None, component = None, name = None):
     Refer to the @service decorator for most of the doc.
 
     Asynchronous service specifics:
+
     - The function that is decorated is expected to simply start the
       service, and immediately return.
     - If the service can not be started, the function must throw a
       :py:class:`MorseRPCInvokationError` with a error message
       explaining why the initialization failed.  
+
       """
     return service(fn, component, name, async = True)
 

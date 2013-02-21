@@ -271,7 +271,7 @@ class AbstractComponent(object):
 
         :param datastream: enum in ['ros', 'socket', 'yarp', 'text']
         :param classpath: if set, force to use the configuration of the given
-        component, instead of our own (default=None).
+                          component, instead of our own (default=None).
 
         You can pass other argument to this method, they will be added as a map
         to the configuration.
@@ -449,8 +449,10 @@ class AbstractComponent(object):
         """ Make this component simulable in MORSE
 
         :param calling_module: Module called each simulation cycle.
-            enum in ['calling.sensor_action', 'calling.actuator_action',
-                    'calling.robot_action']
+                               enum in ['calling.sensor_action',
+                                        'calling.actuator_action',
+                                        'calling.robot_action']
+
         """
         if not calling_module:
             calling_module = 'calling.'+self._category[:-1]+'_action'

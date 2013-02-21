@@ -13,7 +13,7 @@ def add_level(name, classname, doc = "(no documentation available yet)", default
 
     :param name: name of the level
     :param classpath: classpath (ie, module path + classname) that implements
-    the level, or None to use the current class.
+                      the level, or None to use the current class.
     :param doc: short description of the level.
     """
     if name in ["all", "default"]:
@@ -47,8 +47,8 @@ def add_data(name, default_value, type = "", doc = "(no documentation available 
     :param type: indicative type value, currently only used for documentation
     :param doc: description of the field
     :param level: (default: `all`) abstraction level this field belong to.
-    Only useful when levels are defined for the component with `add_level`
-    statements.
+                  Only useful when levels are defined for the component
+                  with `add_level` statements.
 
     """
 
@@ -70,10 +70,12 @@ def add_property(python_name, default_value, name, type = "", doc = "(no documen
     """ Add a property to the current class of component
 
     :param python_name: name of the Python variable. It will be
-    dynamically added to the component Python script.
+                        dynamically added to the component Python
+                        script.
     :param default_value: the default value
     :param string name: the name of the property. If used in 
-    the Blender logic bricks, it must match the Blender name.
+                        the Blender logic bricks, it must match the
+                        Blender name.
     :param type: type of the property, for documentation
     :param doc: description of the property.
     """

@@ -109,7 +109,7 @@ class Gripper(morse.core.actuator.Actuator):
         Tries to grab an object close to the gripper.
 
         :returns: if successful (or if an object is already in hand), the
-        name of the object, else None.
+                  name of the object, else None.
         """
         # Check that no other object is being carried
         if not self._grabbed_object:
@@ -144,7 +144,7 @@ class Gripper(morse.core.actuator.Actuator):
         Does nothing if no object is held.
 
         :returns: True if an object has been released, else False (if
-        no object was held).
+                  no object was held).
         """
         # Clear the previously selected object, if any
         if self._grabbed_object != None:

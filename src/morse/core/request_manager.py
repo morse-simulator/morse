@@ -35,8 +35,9 @@ class RequestManager(object):
         - :py:meth:`main`: this method is called at each step of the
           simulation. You should read there incoming requests and write back
           results.
-          When a new request arrives, you must pass it to :py:meth:`on_incoming_request`
-          that dispatch or invoke properly the request.
+
+    When a new request arrives, you must pass it to :py:meth:`on_incoming_request`
+    that dispatch or invoke properly the request.
 
     Subclasses are also expected to overload the special :py:meth:`__str__`
     method to provide middleware specific names.

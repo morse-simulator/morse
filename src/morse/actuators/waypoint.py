@@ -176,13 +176,13 @@ class Waypoint(morse.core.actuator.Actuator):
         :param y: y coordinate of the destination, in world frame, in meter
         :param z: z coordinate of the destination, in world frame, in meter
         :param tolerance: tolerance, in meter, to consider the
-        destination as reached. Optional (default: 0.5 m).
+                          destination as reached. Optional (default: 0.5 m).
         :param speed: speed to join the goal. Optional (default 1m/s)
 
         :return: Returns always True (if the robot is already moving, the
-        previous target is replaced by the new one) except if
-        the destination is already reached. In this case, returns
-        ``False``.
+                 previous target is replaced by the new one) except if
+                 the destination is already reached. In this case,
+                 returns ``False``.
         """
 
         distance, _, _ = self.bge_object.getVectTo([x, y, z])
@@ -212,7 +212,7 @@ class Waypoint(morse.core.actuator.Actuator):
         :param y: y coordinate of the destination, in world frame, in meter
         :param z: z coordinate of the destination, in world frame, in meter
         :param tolerance: tolerance, in meter, to consider the
-        destination as reached. Optional (default: 0.5 m).
+                          destination as reached. Optional (default: 0.5 m).
         :param speed: speed to join the goal. Optional (default 1m/s)
         """
         self.local_data['x'] = x
