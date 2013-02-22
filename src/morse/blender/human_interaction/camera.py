@@ -52,7 +52,7 @@ def collision():
     ray = co.sensors['collision']
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
-    human =   blenderapi.scene().objects['Human' + suffix]
+    human =   blenderapi.scene().objects[ow.parent.parent['human_name'] + suffix]
 
     # if the Human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
