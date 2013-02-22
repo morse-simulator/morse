@@ -186,7 +186,7 @@ def set_human_animation(contr):
 
     scene = blenderapi.scene()
     active_camera = scene.active_camera
-    human = scene.objects['Human' + suffix]
+    human = scene.objects[armature.parent.name + suffix]
 
     # if the human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
