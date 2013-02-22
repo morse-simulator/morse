@@ -78,14 +78,14 @@ MORSE_MODIFIER_DICT = {
 INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",
         "yarp": "morse.middleware.yarp_datastream.YarpPublisher",
-        "yarp_json": ['post_json_message', 'morse/middleware/yarp/json_mod'],
+        "yarp_json": "morse.middleware.yarp.yarp_json.YarpJsonPublisher",
         "text": "morse.middleware.text_datastream.Publisher"
 }
 
 INTERFACE_DEFAULT_IN = {
         "socket": "morse.middleware.socket_datastream.SocketReader",
         "yarp": "morse.middleware.yarp_datastream.YarpReader",
-        "yarp_json": ['read_json_message', 'morse/middleware/yarp/json_mod'],
+        "yarp_json": "morse.middleware.yarp.yarp_json.YarpJsonReader",
 }
 
 MORSE_DATASTREAM_DICT = {
