@@ -11,14 +11,9 @@ from morse.helpers.components import add_property
 
 class Armature(morse.core.actuator.Actuator):
     """
-    **Armatures** are the MORSE way to simulate kinematic chains made of a
-    combination of revolute joints (hinge) and prismatic joints (slider).
-
-    .. important::
-
-        This component is abstract. You can not use it directly: it needs to be
-        associated to a Blender armature.  Check specializations like the
-        :doc:`KUKA LWR arm <../actuators/kuka_lwr>`.
+    **Armatures** are the MORSE generic way to simulate kinematic chains
+    made of a combination of revolute joints (hinge) and prismatic
+    joints (slider).
 
     This component only allows to *write* armature configuration. To read the
     armature pose, you need an :doc:`armature pose sensor <../sensors/armature_pose>`.
