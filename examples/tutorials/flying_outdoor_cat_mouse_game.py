@@ -1,10 +1,11 @@
 from morse.builder import *
 
+from math import pi
 
 """ Cat (Quadrotor) """
 cat = Quadrotor()
-cat.translate(x=-6.0, z=2.2)
-#Cat.rotate(z=-1.5708)
+cat.translate(x=-7.0, z=1.0)
+cat.rotate(z=pi/3)
 
 # Waypoint controller (x,y,z, yaw and tolerance (default is 0.2))
 waypoint = RotorcraftWaypoint()
@@ -15,7 +16,6 @@ semanticC = SemanticCamera()
 semanticC.translate(x=0.3, z=-0.05)
 semanticC.rotate(x=+0.2)
 cat.append(semanticC)
-semanticC.add_stream('socket')
 semanticC.properties(Vertical_Flip=False)
 
 catPose = Pose()
@@ -23,11 +23,10 @@ cat.append(catPose)
 catPose.add_stream('socket')
 
 
-
 """ mouse (atrv)"""
 mouse = ATRV()
-mouse.properties(Object = True, Graspable = False, Label = "MOUSE")
-mouse.translate (x=1.0, z=0.2)
+mouse.translate (x=-4.0,y=6.5, z=0.1)
+mouse.rotate(z=0.70*pi)
 
 keyb = Keyboard()
 keyb.properties(Speed=4.0)
@@ -36,7 +35,6 @@ mouse.append(keyb)
 mousePose = Pose()
 mouse.append(mousePose)
 mousePose.add_stream('socket')
-
 
 
 """ The playground """

@@ -9,7 +9,7 @@ from pymorse import Morse
 
 
 """ The minimal distance to maintain between the mouse and the cat. """
-minDist = 4.0
+minDist = 5.0
 
 """ The height for the flying cat. """
 # NB: this is the absolute height not the one relative to the ground...
@@ -36,9 +36,6 @@ def frighten_mouse():
             catPosition = where_is(catPose)
             mousePosition = where_is(mousePose)
 
-            # print(mousePosition)
-            # print(catPosition)
-
             if mousePosition and catPosition:
                 # go behind the mouse
                 waypoint = {    "x": mousePosition['x'] - minDist*math.cos(mousePosition['yaw']), \
@@ -55,7 +52,6 @@ def frighten_mouse():
                     waypoint['yaw']= math.atan2(mousePosition['y']-catPosition['y'],mousePosition['x']-catPosition['x'])
                 
                 # send the command through the socket
-                # print(waypoint)
                 motion.publish(waypoint)
 
 
