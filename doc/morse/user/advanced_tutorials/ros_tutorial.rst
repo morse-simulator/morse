@@ -22,8 +22,8 @@ of advantage. Tutorials on all of those topics can be found on
 http://www.ros.org/wiki/ROS/Tutorials.
 
 We also assume you know how to use the MORSE Builder API to equip your robot
-with components.  If not, please follow first the :doc:`Builder API and ROS
-middleware  <./tutorial_builder_ros>` tutorial.
+with components. If not, please follow first the :doc:`ROS and MORSE tutorial
+<./tutorial_ros>`.
 
 Environment setup
 -----------------
