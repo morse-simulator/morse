@@ -106,31 +106,6 @@ You can easily change it to display the view of the right camera.
 
 The complete script can be found at: ``$MORSE_SRC/examples/tutorials/cat_mouse_game.py``.
 
-
-Testing the output
-------------------
-
-You can check that the data from the cameras is being correctly streamed, by
-launching the simulator and connecting to the data ports via telnet.
-
-Run morse with the builder script to create the scenario::
-
-  $ cd MORSE_SRC/examples/tutorials
-  $ morse run cat_mouse_game.py
-
-Then start the simulation pressing :kbd:`p` in Blender. On the terminal you
-will get messages indicating the port numbers used by the semantic cameras.
-Normally they should be:
-
-  - Right camera: ``60001``
-  - Left camera: ``60002``
-
-Try connecting to these ports using the ``telnet`` program on another terminal,
-and you should see the data of object visibility coming from the cameras::
-
-  $ telnet localhost 60001
-
-
 Control program
 ---------------
 
@@ -187,21 +162,50 @@ Here we'll explain the main parts of it:
                     v_w = {"v": 0, "w": -1}
                 motion.publish(v_w)
 
-- The client script can be run from a terminal with the command::
-
-  $ python3 cat_script.py
-
-
 Running the game
 ----------------
 
-Run morse with the builder script to create the scenario. Then start the
-simulation pressing :kbd:`p` in Blender. You will be able to control the
-*mouse* robot with the arrow keys on the keyboard.
+Run morse with the builder script to create the scenario. You will be 
+able to control the *mouse* robot with the arrow keys on the keyboard::
 
-Run the Python control script from a terminal. The *cat* will start
-moving and using the data from its cameras to chase after the *mouse*.
+  $ cd MORSE_SRC/examples/tutorials
+  $ morse run cat_mouse_game.py
 
+On the terminal you will get messages indicating the components, the
+available services and the datastream interfaces::
+
+    [    0.171] ------------------------------------
+    [    0.172] -        SIMULATION SUMMARY        -
+    [    0.172] ------------------------------------
+    [    0.172] Robots in the simulation:
+    [    0.172]     ROBOT: 'cat'
+    [    0.172]         - Component: 'cat.semanticR'
+    [    0.172]         - Component: 'cat.semanticL'
+    [    0.172]         - Component: 'cat.motion'
+    [    0.172]     ROBOT: 'mouse'
+    [    0.172]         - Component: 'mouse.keyboard'
+    [    0.172] Available services:
+    [    0.172]     - Interface morse.middleware.socket_request_manager.SocketRequestManager
+    [    0.173]         - communication: ['distance_and_view']
+    [    0.173]         - simulation: ['terminate', 'get_all_stream_ports', 'get_stream_port', 'activate', 'details', 'restore_dynamics', 'list_streams', 'quit', 'deactivate', 'list_robots', 'reset_objects', 'suspend_dynamics']
+    [    0.173] Modifiers in use:
+    [    0.173]     None
+    [    0.173] 
+    [    0.173] Datastream interfaces configured:
+    [    0.173]     - 'morse.middleware.socket_datastream.Socket'
+
+Then run the Python control script from another terminal. The *cat* will start
+moving and using the data from the semantic cameras to chase after the *mouse*::
+
+  $ python3 cat_script.py
+
+Note: *The following consideration is deprecated but you may find it useful.* 
+As we use sockets for the introduced actuators and sensors, you can connect these
+ports using the ``telnet`` program on another terminal and you will seee the datastream 
+of object visibility coming from the cameras. 
+The socket port numbers are usually 60000+ (e.g. 60001 or 60002...)::
+
+  $ telnet localhost 60001
 
 Going further
 -------------
@@ -216,11 +220,13 @@ you could do to improve the "intelligence" of the *cat*.
   follow the mouse. You don't really need two semantic cameras, since among the
   data one provides is the location of the detected object. Using that and the
   current position of the *cat*, it will be possible to chase, but you need
-  to do some calculations to determine in which direction to turn
+  to do some calculations to determine in which direction to turn. 
+
+- Use other kinds of robots, like in the :doc:`flying cat and mouse tutorial <./flying_cat_and_mouse>` 
 
 - Use a :doc:`Laser Scanner<../sensors/laserscanner>` to make the *cat* detect and
   avoid obstacles. This is more complex, since you have to handle a lot of data
-  that is streamed by the Sick
+  that is streamed by the Sick.
 
 - The target could hide behind an obstacle, so you could implement a strategy
-  to move around the area searching for it
+  to move around the area searching for it.
