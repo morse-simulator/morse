@@ -79,7 +79,7 @@ INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",
         "yarp": "morse.middleware.yarp_datastream.YarpPublisher",
         "yarp_json": ['post_json_message', 'morse/middleware/yarp/json_mod'],
-        "text": ['write_data'],
+        "text": "morse.middleware.text_datastream.Publisher"
 }
 
 INTERFACE_DEFAULT_IN = {
