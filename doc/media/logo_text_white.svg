@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="541.51117"
+   height="731.64917"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="logo_text_dark.svg"
+   inkscape:export-filename="/home/skadge/softs-local/morse/doc/media/morse-logo.png"
+   inkscape:export-xdpi="31.85"
+   inkscape:export-ydpi="31.85">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="517.83302"
+     inkscape:cy="536.12387"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="968"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     width="0px"
+     height="0px"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid832"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="-133.01812px"
+       originy="-59.814537px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Calque"
+     sodipodi:insensitive="true"
+     style="display:none"
+     transform="translate(-133.01812,-260.89844)">
+    <image
+       width="599"
+       height="543"
+       id="image818"
+       x="75.5"
+       y="260.86218"
+       xlink:href="file:///home/skadge/Bureau/morse-logo-hires.png"
+       sodipodi:absref="/home/skadge/Bureau/morse-logo-hires.png" />
+  </g>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     transform="translate(-133.01812,-260.89844)">
+    <path
+       style="fill:#888888;fill-opacity:1;stroke:#888888;stroke-linejoin:round;stroke-opacity:1"
+       d="M 383.07399,462.80918 544.55671,577.40192 542.28417,779.65773 389.17198,655.23632 z"
+       id="path894"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#a2a2a2;fill-opacity:1;stroke:none"
+       d="m 476.0207,674.76121 0.83471,34.92392 -99.2277,39.36969 -1.60693,-34.54891 z"
+       id="path918"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#bfbfbf;fill-opacity:1;stroke:none"
+       d="M 476.05195,674.73448 369.19134,717.71976 365.97749,587.96045 z"
+       id="path916"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#505050;fill-opacity:1;stroke:none"
+       d="m 417.39913,669.11023 -22.49697,-18.88138 -34.14718,13.65887 22.09524,19.28312 z"
+       id="path914"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path911"
+       style="fill:#333333;fill-opacity:1;stroke:#333333;stroke-linejoin:round;stroke-opacity:1"
+       d="m 309.63318,538.76879 39.07063,-13.82272 1.83504,38.97406 -38.94395,14.00574 z m 2.88944,70.28003 63.28167,-25.13919 6.6442,189.24909 -23.30044,8.83809 0.18475,6.02598 -37.14406,14.86407 z"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccc" />
+    <path
+       id="path908"
+       style="fill:#505050;fill-opacity:1;stroke:#505050;stroke-linejoin:round;stroke-opacity:1"
+       d="m 350.51042,563.91015 25.15416,19.58782 -38.63313,15.33962 -25.45719,-20.91639 z m -1.80739,-39.02156 -39.53046,13.52484 -156.91629,-87.84519 -18.75639,-14.76128 18.27898,-6.47703 -2.13304,-15.8862 38.36456,-10.68155 z"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <path
+       style="fill:#888888;fill-opacity:1;stroke:#888888;stroke-linejoin:round;stroke-opacity:1"
+       d="m 153.22495,450.34865 -3.6958,-36.95057 160.16561,125.48939 1.92114,39.04975 25.79285,21.29526 8.16066,188.87914 -24.44261,-20.05393 1.10388,34.79898 -148.70659,-136.97486 -3.07688,-35.40317 -20.07353,-17.21259 -16.84662,-177.44161 z"
+       id="path902"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="M 153.18032,450.19082 311.62165,577.97006 321.15212,768.06502 170.45307,630.48468 z"
+       id="path900"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#505050;fill-opacity:1;stroke:#505050;stroke-linejoin:round;stroke-opacity:1"
+       d="M 674.01188,527.93283 544.51594,577.39495 383.05108,462.82106 508.99394,420.8401 z"
+       id="path888"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#505050;fill-opacity:1;stroke:#505050;stroke-linejoin:round;stroke-opacity:1"
+       d="m 530.0625,261.40625 -130.03125,39.03125 120.32031,74.03516 133.75,-43.87891 z M 513.15625,270 l 24.875,14.40625 0.125,37.875 -33.59375,10.21875 -24.875,-14.28125 0.125,-38.125 z"
+       id="path821"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccc" />
+    <path
+       style="fill:#129204;fill-opacity:1;stroke:#129204;stroke-linejoin:round;stroke-opacity:1"
+       d="m 504.19239,294.23552 33.84011,-9.86862 0.12627,38.34947 -33.6032,9.7981 z"
+       id="path823"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path828"
+       d="m 479.69619,318.23382 0.11455,-38.14107 24.38165,14.14995 0.371,38.27124 z"
+       style="fill:#67e73d;fill-opacity:1;stroke:#67e73d;stroke-linejoin:round;stroke-opacity:1"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#2faf17;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:0"
+       d="m 504.18585,294.2427 -24.37901,-14.15386 33.35065,-10.0898 24.87501,14.39467 z"
+       id="path830"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       id="path855"
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 493.85714,397.28119 0,36.06313 -22,-15 -0.63135,-36.06313 z M 446,366.36218 l 0,36 -22,-15 0,-34.98985 z"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#888888;fill-opacity:1;stroke:#888888;stroke-linejoin:round;stroke-opacity:1"
+       d="m 400.05492,300.42835 3.88258,143.3529 115.91827,80.68593 0.4997,-149.99843 z M 424,352.375 l 22,14 0,36 -22,-15 z m 47.21875,29.90625 22.625,15 0,36.0625 -22,-15 z"
+       id="path857"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccc" />
+    <path
+       style="fill:#333333;fill-opacity:1;stroke:#333333;stroke-linejoin:round;stroke-opacity:1"
+       d="m 520.35337,374.46384 133.74986,-43.87565 -4.46037,145.52399 -57.56359,20.93632 0.28578,9.28608 -64.73677,23.92617 0.34375,-9.01582 -8.1506,3.26011 z"
+       id="path859"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#888888;fill-opacity:1;stroke:#888888;stroke-linejoin:round;stroke-opacity:1"
+       d="m 527.96088,521.25447 -0.27462,9.02706 -7.84339,-5.83603 z"
+       id="path884"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#f75876;fill-opacity:1;stroke:none"
+       d="m 519.2381,594.58902 0,33.94632 -23.90303,-17.07359 0.60259,-33.54459 z"
+       id="path890"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path892"
+       d="m 519.2381,663.15736 0,32.66802 -23.19286,-17.21562 -0.10758,-33.40256 z"
+       style="fill:#67e73d;fill-opacity:1;stroke:none"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#333333;fill-opacity:1;stroke:#333333;stroke-linejoin:round;stroke-opacity:1"
+       d="m 544.50701,577.37349 129.48493,-49.45893 -8.7067,198.05448 -123.12044,53.68869 z"
+       id="path896"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       style="fill:#67e73d;fill-opacity:1;stroke:none"
+       d="m 311.62534,577.93728 1.98058,39.99265 -25.49783,-21.13151 -0.92019,-38.5649 z"
+       id="path898"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:156.02691649999999868px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d3d7cf;fill-opacity:1;stroke:none;font-family:GoodDog;-inkscape-font-specification:GoodDog"
+       x="135.30772"
+       y="933.05103"
+       id="text3006"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3008"
+         x="135.30772"
+         y="933.05103"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;fill:#d3d7cf">MORSE</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3010"
+       y="980.09424"
+       x="146.24994"
+       style="font-size:54.01225662000000227px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d3d7cf;fill-opacity:1;stroke:none;font-family:GoodDog;-inkscape-font-specification:GoodDog"
+       xml:space="preserve"
+       transform="scale(0.99738436,1.0026225)"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;fill:#d3d7cf"
+         y="980.09424"
+         x="146.24994"
+         id="tspan3012"
+         sodipodi:role="line">morse.openrobots.org</tspan></text>
+  </g>
+</svg>
