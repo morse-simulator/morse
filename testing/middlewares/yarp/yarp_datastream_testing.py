@@ -71,11 +71,11 @@ class YARP_MW_Test(MorseTestCase):
 
         pose_stream = yarp.BufferedPortBottle()
         pose_stream.open("/morse/test/pose/in")
-        yarp.Network.connect("/morse/robots/robot/pose/out", "/morse/test/pose/in")
+        yarp.Network.connect("/morse/robot/pose/out", "/morse/test/pose/in")
 
         cmd_stream = yarp.BufferedPortBottle()
         cmd_stream.open("/morse/test/vw/out")
-        yarp.Network.connect("/morse/test/vw/out", "/morse/robots/robot/motion/in")
+        yarp.Network.connect("/morse/test/vw/out", "/morse/robot/motion/in")
         
         # Read the start position, it must be (0.0, 0.0, 0.0)
         pose = pose_stream.read()

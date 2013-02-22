@@ -77,14 +77,14 @@ MORSE_MODIFIER_DICT = {
 
 INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",
-        "yarp": ["post_message"],
+        "yarp": "morse.middleware.yarp_datastream.YarpPublisher",
         "yarp_json": ['post_json_message', 'morse/middleware/yarp/json_mod'],
         "text": ['write_data'],
 }
 
 INTERFACE_DEFAULT_IN = {
         "socket": "morse.middleware.socket_datastream.SocketReader",
-        "yarp": ["read_message"],
+        "yarp": "morse.middleware.yarp_datastream.YarpReader",
         "yarp_json": ['read_json_message', 'morse/middleware/yarp/json_mod'],
 }
 
@@ -164,7 +164,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "ros": 'morse.middleware.ros.laserscanner.LaserScanPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
-            "yarp": ['post_sick_message', 'morse/middleware/yarp/sick'],
+            "yarp": 'morse.middleware.yarp.laserscanner.YarpLaserScannerPublisher'
             },
         "range": {
             "ros": 'morse.middleware.ros.infrared.RangePublisher',
@@ -201,7 +201,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "ros": 'morse.middleware.ros.StringPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
-            "yarp": ['post_dictionary_data', 'morse/middleware/yarp/dictionary'],
+            "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
@@ -247,7 +247,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
             "socket": 'morse.middleware.sockets.video_camera.VideoPublisher',
-            "yarp": ['post_image_RGBA'],
+            "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }
         },

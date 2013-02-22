@@ -4,176 +4,44 @@ import re
 import yarp
 import mathutils
 from morse.helpers.transformation import Transformation3d
-import morse.core.datastream
+from morse.middleware.abstract_datastream import AbstractDatastream
+from morse.core.datastream import *
 
-class Yarp(morse.core.datastream.Datastream):
-    """ Handle communication between Blender and YARP."""
+class YarpPort(AbstractDatastream):
+    def initialize(self, port_creator_fn, is_input):
+        self.is_input = is_input
+        self.port_name = self._get_port_name()
+        self.port = port_creator_fn()
+        self.port.open(self.port_name)
+        if 'topic' in self.kwargs:
+            self.connect2topic(self.kwargs['topic'])
 
-    def __init__(self):
-        """ Initialize the network and connect to the yarp server."""
-        # Call the constructor of the parent class
-        super(self.__class__,self).__init__()
-
-        self._yarpPorts = dict()
-        self._component_ports = dict()
-
-        # Get the Network attribute of yarp,
-        #  then call its init method
-        # Strange that we should do all this,
-        #  probably because this file has the same name.
-        # So this is the only way it seems to work
-        self._yarp_module = sys.modules['yarp']
-        #self._yarp_module.Network.init()
-        self.yarp_object = self._yarp_module.Network()
-        #yarp.Network.init()
-
-
-    def __del__(self):
-        """ Close all open YARP ports. """
-        self.finalize()
-
-
-    def register_component(self, component_name, component_instance, mw_data):
-        """ Open the port used to communicate the specified component.
-
-        The name of the port is postfixed with in/out, according to
-        the direction of the communication. """
-        # Compose the name of the port
-        parent_name = component_instance.robot_parent.bge_object.name
-        # Check if the component_name is a full qualified name or not
-        # For that, check the number of . in its name. If it is more
-        # than 2, we are sure it is a qualified name. If it is 0, it is
-        # definitevely not one. If it is 1, check that the end is not a
-        # string of kind 0XY.
-
-        fqn = False
-        s = component_name.split(".")
-        size = len(s)
-        if size > 3:
-            fqn = True
-        elif size == 2:
-            last = s[-1]
-            try:
-                v = int(last)
-            except ValueError:
-                fqn = True
-
-        if fqn:
-            port_name = 'robots/{0}'.format(component_name.replace('.', '/'))
+    def _get_port_name(self):
+        if 'port' in self.kwargs:
+            return self.kwargs['port']
         else:
-            port_name = 'robots/{0}/{1}'.format(parent_name, component_name)
+            port_name = re.sub(r'\.([0-9]+)', r'\1', self.component_name)
+            # '/robot001/sensor001'
+            return '/morse/' + port_name.replace('.', '/') + \
+                   ('/in' if self.is_input else '/out')
 
-        # Extract the information for this datastream interface
-        # This will be tailored for each middleware according to its needs
-        function_name = mw_data[1]
-        topic = None
-        if len(mw_data) > 3:
-            topic = mw_data[3]
-
-        function = self._check_function_exists(function_name)
-        # The function exists within this class,
-        #  so it can be directly assigned to the instance
-        if function != None:
-            # Data read functions
-            if function_name == "read_message":
-                port_name = port_name + '/in'
-                self.registerBufferedPortBottle([port_name])
-                component_instance.input_functions.append(function)
-                # Store the name of the port
-                self._component_ports[component_name] = port_name
-            # Data write functions
-            elif function_name == "post_message":
-                port_name = port_name + '/out'
-                self.registerBufferedPortBottle([port_name])
-                component_instance.output_functions.append(function)
-                # Store the name of the port
-                self._component_ports[component_name] = port_name
-            # Image write functions
-            elif function_name == "post_image_RGBA":
-                port_name = port_name + '/out'
-                self.registerBufferedPortImageRgba([port_name])
-                component_instance.output_functions.append(function)
-                # Store the name of the port
-                self._component_ports[component_name] = port_name
-            # If it is an external function that has already been added
-            else:
-                # Get the reference to the external module
-                # (should be already included)
-                source_file = mw_data[2]
-                module_name = re.sub('/', '.', source_file)
-                module = sys.modules[module_name]
-                try:
-                    # Call the init method of the new serialisation
-                    # Sends the name of the function as a means to identify
-                    #  what kind of port it should use.
-                    module.init_extra_module(self, component_instance, function, mw_data)
-                except AttributeError as detail:
-                    logger.error("%s in module '%s'" % (detail, source_file))
-
+    def connect2topic(self, topic):
+        """ Connect a yarp port to a specific yarp topic. """
+        if self.is_input:
+            yarp.Network.connect("topic://"+topic, self.port)
         else:
-            # If there is no such function in this module,
-            #  try importing from another one
-            try:
-                # Insert the method in this class
-                function = self._add_method(mw_data, component_instance)
+            yarp.Network.connect(self.port, "topic://"+topic)
 
-            except IndexError as detail:
-                logger.error("Method '%s' is not known, and no external module has been specified. Check the 'component_config.py' file for typos" % function_name)
-                return
-            
-        # Connect to topic
-        if topic:
-            logger.info("Yarp connecting port %s to topic %s" % (port_name, topic))
-            self.connect2topic(port_name, topic)
+    def finalize(self):
+        self.port.close()
 
+class YarpPublisher(YarpPort):
+    _type_name = "yarp::Bottle"
 
-    def read_message(self, component_instance):
-        """ Read incoming data from a simple port.
+    def initialize(self):
+        YarpPort.initialize(self, yarp.BufferedPortBottle, False)
 
-        The argument is a copy of the component instance.
-        Data is writen directly into the 'local_data' dictionary
-        of the component instance.
-        Return 'True' is information could be read from the port, and
-        'False' is there was any problem with the communication.
-        """
-        port_name = self._component_ports[component_instance.bge_object.name]
-
-        try:
-            yarp_port = self.getPort(port_name)
-        except KeyError as detail:
-            logger.error("Specified port does not exist: ", detail)
-            return False
-
-        message_data = yarp_port.read(False)
-
-        if message_data != None:
-            # Data elements are of type defined in data_types
-            i = 0
-            for variable, data in component_instance.local_data.items():
-                if isinstance(data, int):
-                    msg_data = message_data.get(i).asInt()
-                    component_instance.local_data[variable] = msg_data
-                    logger.debug("read %s as %d" % (variable, msg_data))
-                elif isinstance(data, float):
-                    msg_data = message_data.get(i).asDouble()
-                    component_instance.local_data[variable] = msg_data
-                    logger.debug("read %s as %f" % (variable, msg_data))
-                elif isinstance(data, str):
-                    msg_data = message_data.get(i).toString()
-                    component_instance.local_data[variable] = msg_data
-                    logger.debug("read %s as %s" % (variable, msg_data))
-                else:
-                    logger.error("Unknown data type at 'read_message', with component '%s'" % component_instance.bge_object.name)
-                    logger.info("DATA: ", data, " | TYPE: ", type(data))
-                i = i + 1
-            return True
-
-        else:
-            return False
-
-
-
-    def _post_message(self, bottle, data, component_name):
+    def encode_message(self, bottle, data, component_name):
         """ Prepare the content of the bottle 
 
         This function can be recursively called in case of list processing
@@ -187,79 +55,58 @@ class Yarp(morse.core.datastream.Datastream):
         elif isinstance(data, list):
             m_bottle = bottle.addList()
             for m_data in data:
-                self._post_message(m_bottle, m_data, component_name)
+                self.encode_message(m_bottle, m_data, component_name)
+        elif isinstance(data, dict):
+            for key, value in data.items():
+                m_bottle = bottle.addList()
+                self.encode_message(m_bottle, key, component_name)
+                self.encode_message(m_bottle, value, component_name)
+
+
         elif isinstance(data, mathutils.Vector):
-            m_bottle = bottle.addList()
-            for m_data in data:
-                self._post_message(m_bottle, m_data, component_name)
+            self.encode_message(m_bottle, data[:], component_name)
         elif isinstance(data, mathutils.Matrix):
-            m_bottle = bottle.addList()
-            for m_data in data:
-                self._post_message(m_bottle, m_data, component_name)
+            self.encode_message(m_bottle, data[:], component_name)
         elif isinstance(data, mathutils.Quaternion):
-            m_bottle = bottle.addList()
-            m_bottle.addDouble(data.x)
-            m_bottle.addDouble(data.y)
-            m_bottle.addDouble(data.z)
-            m_bottle.addDouble(data.w)
+            self.encode_message(m_bottle,
+                    [data.x , data.y, data.z, data.w], component_name)
         elif isinstance(data, mathutils.Euler):
-            m_bottle = bottle.addList()
-            m_bottle.addDouble(data.z)
-            m_bottle.addDouble(data.y)
-            m_bottle.addDouble(data.x)
+            self.encode_message(m_bottle,
+                    [data.z , data.y, data.x], component_name)
         elif isinstance(data, Transformation3d):
-            m_bottle = bottle.addList()
-            m_bottle.addDouble(data.x)
-            m_bottle.addDouble(data.y)
-            m_bottle.addDouble(data.z)
-            m_bottle.addDouble(data.yaw)
-            m_bottle.addDouble(data.pitch)
-            m_bottle.addDouble(data.roll)
+            self.encode_message(m_bottle,
+                    [data.x , data.y, data.z,
+                     data.yaw, data.pitch, data.roll], component_name)
         else:
-            logger.error("Unknown data type at 'post_message', with component '%s'" % component_name)
+            logger.error("Unknown data type in component '%s'" % component_name)
 
-    def post_message(self, component_instance):
-        """ Send the data of a component through a simple port.
-
-        The argument is a copy of the component instance.
-        """
-        port_name = self._component_ports[component_instance.bge_object.name]
-
-        try:
-            yarp_port = self.getPort(port_name)
-        except KeyError as detail:
-            logger.error("Specified port does not exist: ", detail)
-            return
-
-        bottle = yarp_port.prepare()
+    def default(self, ci):
+        bottle = self.port.prepare()
         bottle.clear()
-        # Sort the data accodring to its type
-        for variable, data in component_instance.local_data.items():
-            self._post_message(bottle, data, component_instance.bge_object.name)
+        self.encode(bottle)
+        self.port.write()
 
-        #yarp_port.writeStrict()
-        yarp_port.write()
+    def encode(self, bottle):
+        for data in self.data.values():
+            self.encode_message(bottle, data, self.component_name)
 
+class YarpImagePublisher(YarpPort):
 
-    def post_image_RGBA(self, component_instance):
-        """ Send an RGBA image through the given named port."""
-        port_name = self._component_ports[component_instance.bge_object.name]
+    _type_name = "yarp::ImageRGBA"
 
-        try:
-            yarp_port = self.getPort(port_name)
-        except KeyError as detail:
-            logger.error("Specified port does not exist: ", detail)
-            return
+    def initialize(self):
+        YarpPort.initialize(self, yarp.BufferedPortImageRgba, False)
 
+    def default(self, ci):
         # Wrap the data in a YARP image
-        img = self._yarp_module.ImageRgba()
+        img = yarp.ImageRgba()
         img.setTopIsLowIndex(0)
         img.setQuantum(1)
 
         # Get the image data from the camera instance
-        img_string = component_instance.local_data['image']
-        img_X = component_instance.image_width
-        img_Y = component_instance.image_height
+        img_string = self.data['image']
+        img_X = self.component_instance.image_width
+        img_Y = self.component_instance.image_height
 
         # Check that an image exists:
         if img_string != None and img_string != '':
@@ -273,114 +120,77 @@ class Yarp(morse.core.datastream.Datastream):
 
             # Copy to image with "regular" YARP pixel order
             # Otherwise the image is upside-down
-            img2 = yarp_port.prepare()
+            img2 = self.port.prepare()
             img2.copy(img)
 
             # Write the image
-            yarp_port.write()
+            self.port.write()
+
+class YarpReader(YarpPort):
+    _type_name = "yarp::Bottle"
+
+    def initialize(self):
+        YarpPort.initialize(self, yarp.BufferedPortBottle, True)
+
+    def default(self, ci):
+        message_data = self.port.read(False)
+
+        if message_data != None:
+            # Data elements are of type defined in data_types
+            i = 0
+            for variable, data in self.data.items():
+                if isinstance(data, int):
+                    msg_data = message_data.get(i).asInt()
+                    self.data[variable] = msg_data
+                    logger.debug("read %s as %d" % (variable, msg_data))
+                elif isinstance(data, float):
+                    msg_data = message_data.get(i).asDouble()
+                    self.data[variable] = msg_data
+                    logger.debug("read %s as %f" % (variable, msg_data))
+                elif isinstance(data, str):
+                    msg_data = message_data.get(i).toString()
+                    self.data[variable] = msg_data
+                    logger.debug("read %s as %s" % (variable, msg_data))
+                else:
+                    logger.error("Unknown data type at 'read_message', "
+                                 "with component '%s'" % self.component_name)
+                    logger.info("DATA: ", data, " | TYPE: ", type(data))
+                i = i + 1
+            return True
+
+        else:
+            return False
+
+class Yarp(Datastream):
+    """ Handle communication between Blender and YARP."""
+
+    def __init__(self):
+        """ Initialize the network and connect to the yarp server."""
+        # Call the constructor of the parent class
+        super(self.__class__,self).__init__()
+
+        yarp.Network.init()
 
 
-    def registerBufferedPortBottle(self, portList):
-        """ Create a new Buffered Port Bottle, given an identifying name. """
-        for portName in portList:
-            portName = '/morse/'+portName
-            if portName not in self._yarpPorts:
-                logger.debug('Yarp Mid: Adding ' + portName + ' buffered bottle port.')
-                port = self._yarp_module.BufferedPortBottle()
-                port.open(portName)
-                self._yarpPorts[portName] = port
-            else: raise NameError(portName + " port name already exist!")
+    def __del__(self):
+        """ Close all open YARP ports. """
+        self.finalize()
 
+    def register_component(self, component_name, component_instance, mw_data):
+        """ Generate a new instance of a datastream
 
-    ## XXX You need a special patch to export Mono Interface througth swig
-    def registerBufferedPortImageMono(self, portList):
-        """ Create a new Buffered Port Bottle, given an identifying name.
-            This is exclusively used for image data."""
-        for portName in portList:
-            portName = '/morse/'+portName
-            if portName not in self._yarpPorts:
-                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
-                port = self._yarp_module.BufferedPortImageMono()
-                port.open(portName)
-                self._yarpPorts[portName] = port
-            else: raise NameError(portName + " port name already exist!")
+        and register it to the component callbacks list
+        """
 
-
-    def registerBufferedPortImageRgb(self, portList):
-        """ Create a new Buffered Port Bottle, given an identifying name.
-            This is exclusively used for image data."""
-        for portName in portList:
-            portName = '/morse/'+portName
-            if portName not in self._yarpPorts:
-                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
-                port = self._yarp_module.BufferedPortImageRgb()
-                port.open(portName)
-                self._yarpPorts[portName] = port
-            else: raise NameError(portName + " port name already exist!")
-
-
-    def registerBufferedPortImageRgba(self, portList):
-        """ Create a new Buffered Port Bottle, given an identifying name.
-            This is exclusively used for image data."""
-        for portName in portList:
-            portName = '/morse/'+portName
-            if portName not in self._yarpPorts:
-                logger.debug('Yarp Mid: Adding ' + portName + ' buffered image port.')
-                port = self._yarp_module.BufferedPortImageRgba()
-                port.open(portName)
-                self._yarpPorts[portName] = port
-            else: raise NameError(portName + " port name already exist!")
-
-
-    def registerPort(self, portList):
-        """ Open a simple yarp port.
-            Used to send image data (Works better than a buffered port)."""
-        for portName in portList:
-            portName = '/morse/'+portName
-            if portName not in self._yarpPorts:
-                logger.debug('Yarp Mid: Adding ' + portName + ' port.')
-                port = self._yarp_module.Port()
-                port.open(portName)
-                self._yarpPorts[portName] = port
-            else: raise NameError(portName + " port name already exist!")
-
+        datastream_classpath = mw_data[1] # aka. function name
+        datastream_args = None
+        if len(mw_data) > 2:
+            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
+        register_datastream(datastream_classpath, component_instance, datastream_args)
 
     def finalize(self):
         """ Close all currently opened ports and release the network."""
-        for port in self._yarpPorts.values():
-            port.close()
-
-        #self._network.fini()
-        self._yarp_module.Network.fini()
-        #yarp.Network.fini()
+        yarp.Network.fini()
         logger.info('Yarp Mid: ports have been closed.')
 
 
-    def getPort(self, portName):
-        """ Retrieve a yarp port associated to the given name."""
-        port = '/morse/' + portName
-        return self._yarpPorts[port]
-
-
-    def printOpenPorts(self):
-        """ Return a list of all currently opened ports."""
-        logger.info("Yarp Mid: List of ports:")
-        for name, port in self._yarpPorts.items():
-            logger.info(" - Port name '{0}' = '{1}'".format(name, port))
-            
-    def connect2topic(self, port, topic):
-        """ Connect a yarp port to a specific yarp topic. """
-        if port in self._yarpPorts:
-            pass
-        else:
-            try:
-                port = self.getPort(port).getName().c_str()
-            except KeyError:
-                try:
-                    port = self.getPort(port+"/in").getName().c_str()
-                except KeyError:
-                    port = self.getPort(port+"/out").getName().c_str()
-        if port[-2:] == "in":
-            self.yarp_object.connect("topic://"+topic, port)
-        else:
-            self.yarp_object.connect(port, "topic://"+topic)
