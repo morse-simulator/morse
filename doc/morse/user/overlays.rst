@@ -15,7 +15,7 @@ Overlay example
 
 The example below present a typical use for overlays: MORSE provides a
 :doc:`pan-tilt unit <actuators/ptu>` actuator that offers a method,
-:py:meth:`morse.actuators.platine.Platine.set_pan_tilt`, to set the pan and 
+:meth:`morse.actuators.ptu.PTU.set_pan_tilt`, to set the pan and 
 tilt angles of the PTU.
 
 But in your architecture, you are using 2 different methods, ``SetTilt`` and
@@ -54,7 +54,7 @@ You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
 file, accessible from MORSE Python path.
 
 For asynchronous service, it is a bit more complex, as we need to provide a 
-callback. The :py:meth:`morse.core.MorseOverlay.chain_callback` takes care
+callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` takes care
 about this operation. You can pass an optional function to this method to
 modify the returned data, or modify the state of your object.
 
@@ -114,10 +114,10 @@ With the MORSE Builder API
 
 Components can be easily overlaid from the :doc:`MORSE Builder API
 <../user/builder>` with the method
-:py:meth:`morse.builder.abstractcomponent.configure_overlay`.
+:meth:`morse.builder.abstractcomponent.AbstractComponent.add_overlay`.
 
 This method takes two parameters, the middleware to use (cf
-:py:mod:`morse.builder.data` for the list of available options) and the
+:mod:`morse.builder.data` for the list of available options) and the
 full-qualified Python name of the overlay class (for instance,
 ``morse.my_overlays.MyPTU``)
 
@@ -134,41 +134,19 @@ The following example is taken from one of the ROS unit-tests:
    waypoint = Waypoint()
    robot.append(waypoint)
     
-   waypoint.configure_overlay('ros',
-                              'morse.middleware.ros.overlays.actuator.WayPoint')
+   waypoint.add_overlay('ros', 'morse.middleware.ros.overlays.waypoints.WayPoint')
     
    env = Environment('indoors-1/indoor-1')
 
 
 Here, the ``waypoint`` actuator get overlaid by the ``WayPoint`` class defined
-in the module ``morse.middleware.ros.overlays.actuator``.
-
-By manually editing the scene configuration file
-++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-Overlays definitions must be added to the scene ``component_config.py`` (cf 
-:doc:`../user/hooks` for details on the scene configuration file).
-
-An overlay is defined by the triple (``middleware|request manager``, ``object
-to overlay``, ``class of the overlay``)
-
-The following example shows how a PTU instance ``ptu.00`` can be
-overloaded with our ``MyPTU`` overlay, for the ``YarpRequestManager`` service manager:
-
-.. code-block:: python
-
-    overlays = {
-      "YarpRequestManager": {
-            "ptu.00": "morse.my_overlays.MyPTU"
-       }
-    }
+in the module :mod:`morse.middleware.ros.overlays.waypoints`.
 
 Name remapping
 --------------
 
 Overlays also allow to redefine the component name by overloading the 
-:py:meth:`morse.core.abstractobject.AbstractObject.name` method.
+:meth:`morse.core.abstractobject.AbstractObject.name` method.
 
 Let's complete our previous example:
 
