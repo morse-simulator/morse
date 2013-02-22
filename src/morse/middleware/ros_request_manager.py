@@ -276,7 +276,7 @@ class RosRequestManager(RequestManager):
         for each service exposed through ROS.
         
         ROS requires type for the services/actions. Those can be set with the
-        :py:method:`ros_action` and :py:method:`ros_service` decorators.
+        :py:meth:`ros_action` and :py:meth:`ros_service` decorators.
         If none is set, a default type is used (:py:class:`MorseAnyService`).
         """
         
