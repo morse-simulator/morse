@@ -11,8 +11,9 @@ may provide extended facts on a particular object, like its type.
 Creating passive objects
 ------------------------
 
-Passive objects are either plain, regular Blender objects, or a hierarchy
-of objects that all share the same prefix.
+Passive objects are either plain, regular Blender objects, or a group
+of objects.
+
 
 .. image:: ../../../media/object_grouping.png
   :align: center
@@ -32,6 +33,17 @@ of relevant objects.
   
    You can also have a look to the tips to add a :doc:`bounding box around your objects 
    <../tips/bounding_boxes>`.
+
+For complex object with non-trivial bounding-boxes, we recommend to create
+groups (it also has nice performance advantages, through *group instances*).
+To do that:
+
+#. select all the objects that you want to group
+#. **make sure they are properly centered on the Blender origin**
+#. Press :kbd:`Ctrl+G` to create a new group (they should appear in green in
+   the viewport)
+#. In the outliner, select the *Groups* view. You can double-click on the group
+   name to change it.
 
 Passive objects properties
 --------------------------

@@ -12,21 +12,24 @@ Let's consider your object is named for instance ``RollingChair``.
 .. image:: ../../../media/object_grouping.png
   :align: center
 
-#. Append a ``_mesh`` prefix to its name (for instance ``RollingChair_mesh``).
-#. In the Physics properties panel, disable the collisions for this object (``No Collision``).
+#. Append a ``_mesh`` suffix to its name (for instance ``RollingChair_mesh``).
+#. In the Physics properties panel, disable the physics for this object (``No Collision``).
 #. Create plain boxes and put them around your object to shape the bounds. Name
-   them after your object, appending a prefix (like ``RollingChair_bb_xx``, cf
+   them after your object, appending a suffix (like ``RollingChair_bb_xx``, cf
    image above).
 #. Apply scaling (:kbd:`Ctrl-a`) on each boxes.
-#. Create a new ``Empty`` and name it after your object (in our example ``RollingChair``).
-#. Parent all bounding boxes + the original object mesh to this empty.
-#. In the Physics properties, set the empty to be a ``RigidBody``, set the
-   collision bounds to be ``Convex Hull`` and check the ``Coumpound`` option
-   (hence all sub-objects are used to create the global collision box).
-#. Set the collision properties for all other boxes belonging to the bounding
-   box, not forgetting to set the radius to be smaller than the box. All the boxes
-   must have their ``Collision bounds`` set to ``Box`` and ``Compound`` must be
-   selected.
+#. Create a new ``Empty`` and name it after your object (in our example
+   ``RollingChair``). Place the empty at the origin of your object (it will
+   correspond to the position of the object in MORSE).
+#. Parent all bounding boxes + the original object mesh to this empty (select
+   all object, ending with the empty, and press :kbd:`Shift+M`).
+#. In the Physics properties, set the empty to be a ``RigidBody``. Set here as
+   well properties like the mass and the translation/rotation damping.
+#. Set the physics properties for all other boxes **belonging to the bounding
+   box** to ``RigidBody``, not forgetting to set the radius to be smaller than
+   the box. All the boxes must have their ``Collision bounds`` set to ``Box``
+   and ``Compound`` must be selected. Let other physics properties to their
+   defaults.
 #. All the bounding boxes can be set as well to ``Invisible`` in the same
    Physics panel.
 
