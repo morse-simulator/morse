@@ -50,7 +50,7 @@ stretch value must be the maximum translation allowed for this joint.
 
 .. important::
 
-    As of Blender 2.65, Blender's armatures and inverse kinematic (IK) solvers
+    As of Blender 2.66, Blender's armatures and inverse kinematic (IK) solvers
     do support hinge joints (as constrained spherical joints), but do not
     support prismatic joints. We 'cheat' by using the ``stretch`` value (as
     explained above) to identify prismatic joints, but this will cause an

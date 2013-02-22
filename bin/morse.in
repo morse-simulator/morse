@@ -44,9 +44,9 @@ except ImportError:
     sys.exit()
     
 #Blender version must be egal or bigger than...
-MIN_BLENDER_VERSION = "2.59"
+MIN_BLENDER_VERSION = "2.62"
 #Blender version must be smaller than...
-STRICT_MAX_BLENDER_VERSION = "2.66"
+STRICT_MAX_BLENDER_VERSION = "2.67"
 
 #Unix-style path to the MORSE default scene, within the prefix
 DEFAULT_SCENE_PATH = "share/morse/data/morse_default.blend"
