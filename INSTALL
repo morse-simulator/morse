@@ -8,19 +8,26 @@ All this information can be read online:
 http://www.openrobots.org/morse/doc/stable/user/installation.html
 
 
-Requirements - What you need to install before
-----------------------------------------------
+General requirements
+--------------------
 
 Hardware
 ++++++++
+
+A decent machine is required (typically, with an Intel i5 + 4GB RAM, you
+should be comfortable).
 
 To display textures correctly in the simulator, as well as to generate images
 using the simulated cameras, you will need to have a graphics card that
 supports GLSL shading. The Blender website lists these graphic cards as
 compatible with GLSL:
 
-- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
-- NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  - NVidia
+  Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+
+If you do not need cameras and OpenGL textures/shaders, you are advised to
+run your simulation in fastmode (refer to the simulation's Builder
+API) for vastly improved loading time and performances.
 
 Supported operating systems
 +++++++++++++++++++++++++++
@@ -31,52 +38,79 @@ distributions.
 
 Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
 
-MORSE does not currently support Microsoft Windows, although it may work
-(testers/maintainers for Windows are welcome!).
+MORSE does not currently officially support Microsoft Windows, although some
+users reported success. Testers/maintainers for Windows are welcome!
 
-Required software
-+++++++++++++++++
+Packaged versions
+-----------------
 
-- Python (3.2 or +) compiled with the ``--with-wide-unicode`` flag
-- Blender 2.61 or superior build with Python 3.2
-- MORSE source code
+morse-1.0 is available on Debian Wheezy/Ubuntu >= 13.04. You can install
+the package morse-simulator with your favorite software manager::
 
-.. note::
-  If you install Python by hand, it is important to specify the
-  ``--with-wide-unicode`` flag, since Blender expects this behaviour.
-  Otherwise, there will be an incompatibility of types when using additional
-  middlewares.
+  $ sudo apt-get install morse-simulator
 
-If you plan to use the simulator with raw sockets of text files as "middleware",
-you don't need anything else. Otherwise, you need to install the software for
-other middlewares. Installation details for each supported middleware is
-detailed at the end of this document.
+You can also install the Python bindings with::
+
+  $ sudo apt-get install python3-morse-simulator
+
+
+You can also easily install MORSE with:
+
+- autoproj
+- robotpkg
+
+See their associated documentation for details.
+
+
+If you plan to use the simulator with raw sockets or text files as interface
+(for instance, to integrate MORSE with MatLab or other specific
+applications), you don't need anything else. Otherwise, you need to install
+the software for the desired middlewares.
+
+If you want to distribute your simulation in a multinode infrastructure,
+MORSE provides by default a socket service for multinode synchronization. If
+you want to use HLA, you have to first install the CERTI and PyHLA packages.
+
+Manual installation
+-------------------
+
+    The directory where MORSE is installed will be referred to as $MORSE_ROOT in this document.
+
+    It is recommended to store this environment variable, as it is necessary to
+    use the Builder API scripts to generate simulation
+    scenes with custom equipped robots.
+
+Prerequisites
++++++++++++++
+
+- cmake
+- Python (3.2 or +)
+- python-dev package
+- Blender (>= 2.62) build with Python >= 3.2. You can simply get a binary from Blender website
+
+
+  If you decide to install Python by hand, the compilation must be done
+  according to your operating system, to match the Python compiled in
+  Blender:
+  
+  - On **Linux** compile with the --with-wide-unicode flag. This will
+    provide you with 4-byte Unicode characters (max size: 1114111)
+
+  - On **Mac OS** do not use the --with-wide-unicode flag. This will
+    provide you with 2-byte Unicode characters (max size: 65535)
+ 
+  It the unicode sizes between Python and Blender do not match, you will get
+  errors about undefined symbols with names starting with  PyUnicodeUCS4
 
 Installation
-------------
+++++++++++++
 
-.. note::
-    The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
-
-It is recommended to store this environment variable, as it is necessary to
-use the :doc:`scene builder script <../dev/builder>` to generate equipped
-robots.
-
-Manually
-++++++++
-
-Download the latest version of the source code. It is stored in a ``git``
+Download the latest version of the source code. It is stored in a git
 repository::
 
-  $ git clone http://github.com/laas/morse.git
-
-Once you have a copy of the repository, you can get to the last stable
-version (0.6) by using ::
-
-  $ git checkout 0.6
-
-You can get a `tarball version here <https://github.com/laas/morse/tarball/0.6>`_.
-
+  $ git clone https://github.com/laas/morse.git
+  
+You can also get a tarball version here. 
 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
@@ -84,228 +118,64 @@ Then type these commands::
   $ mkdir build && cd build
   $ cmake ..
 
-By default, MORSE will install in ``/usr/local``. You can easily change that
-by launching ``ccmake`` instead of ``cmake``.
-When using ``ccmake``, it is also possible to select the optional HLA support,
-and middleware bindings for YARP and Pocolibs.
+By default, MORSE will install in /usr/local. You can easily change the
+install directory by giving additional parameters to cmake.  You can also
+change the installation type and select the middleware bindings by using
+these additional parameters.
 
-- ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install
-  prefix directory is referred to as ``$MORSE_ROOT``.
-- ``BUILD_CORE_SUPPORT`` controls the builds and install of Morse core. It is
+- CMAKE_INSTALL_PREFIX controls where will be installed MORSE. The install
+  prefix directory is referred to as $MORSE_ROOT.
+- BUILD_CORE_SUPPORT controls the builds and install of Morse core. It is
   ON by default
-- ``BUILD_DOC_SUPPORT`` controls the build of the documentation (require
+- BUILD_DOC_SUPPORT controls the build of the documentation (require
   sphinx)
-- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support for multi-node
+- BUILD_HLA_SUPPORT controls the builds of HLA support for multi-node
   simulations in MORSE.
-- ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE.
-- ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE.
-- ``BUILD_ROS_SUPPORT`` controls the build of ROS support in MORSE.
-- ``BUILD_MOOS_SUPPORT`` controls the build of MOOS support in MORSE.
-- ``CMAKE_BUILD_TYPE`` controls the optimization stuff for C/C++ extension
-  (Release is a good choice). ::
-
-  $ sudo make install
+- BUILD_POCOLIBS_SUPPORT controls the build of pocolibs support in MORSE.
+- BUILD_YARP2_SUPPORT controls the build of YARP support in MORSE.
+- BUILD_ROS_SUPPORT controls the build of ROS support in MORSE.
+- BUILD_MOOS_SUPPORT controls the build of MOOS support in MORSE.
+- PYMORSE_SUPPORT controls the build and installation of pymorse, a
+  library to interact with Morse through the socket interface. It is needed
+  for test infrastructure.
+- CMAKE_BUILD_TYPE controls the optimization stuff for C/C++ extension
+  (Release is a good choice).
+- PYTHON_EXECUTABLE indicate where the python executable is in your system
+  (must be >= 3.2)
 
 You can set up the different variables using the command line.
-For instance, to build and install MORSE with YARP support in ``/opt``, you need something like::
+For instance, to build and install MORSE with YARP support in /opt, you need something like::
 
   $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
-The optional ``$MORSE_BLENDER`` environment variable can be set to let the
+Or to tell MORSE where to find a Python installed in a different location::
+
+  $ cmake -DPYTHON_EXECUTABLE=/usr/local/bin/python3.2 ..
+
+Alternatively, you can use ccmake .. to change all of these parameters using a
+graphical interface. You can modify many different variables by switching to
+"advanced mode" (pressing the t key).
+
+After configuring the necessary parameters, compile with::
+
+  $ sudo make install
+
+The optional $MORSE_BLENDER environment variable can be set to let the
 simulator know where to look for Blender if it is not accessible from the
 path.
-
-Packages manager
-++++++++++++++++
-
-MORSE is available through some package manager. See their associated
-documentation.
-
-.. toctree::
-    :glob:
-    :maxdepth: 1
-
-    installation/package_manager/*
 
 You can check your configuration is ok with::
 
   $ morse check
 
-.. note::
-    When updating MORSE to a more recent version, you'll simply have to do::
+When updating MORSE to a more recent version, you'll simply have to do::
 
     $ git checkout [version]
     $ cd build
     $ make install
 
-Installation of ROS support for MORSE
--------------------------------------
+Installation troubleshooting
+----------------------------
 
-MORSE is based on Blender and requires Python 3.2. Python 3 is
-partially supported by **ROS Fuerte** from patch release 1.8.15,
-which was rolled out on 20/07/2012. Any ROS Fuerte installation
-from that day on works fine with MORSE.
-
-
-#. Install ROS Fuerte if needed: http://www.ros.org/wiki/ROS/Installation
-
-#. Install Python 3.2 using your system package manager (available in Ubuntu >=
-   11.04) or manually from the sources, and make sure your ``$PYTHONPATH``
-   variable includes the Python3.2 libraries.
-
-#. Install ``PyYAML`` with Python3 support (package ``python3-yaml`` on
-   Debian/Ubuntu, or you can get the sources from http://pyyaml.org/. Install
-   the source by running ``python3.2 setup.py install`` to be sure to have the
-   Python 3 libraries.
-
-#. Install rospkg using Python3.2:
-
-   ``git clone git://github.com/ros/rospkg.git``
-
-   ``cd rospkg``
-
-   ``sudo python3.2 setup.py install``
-
-#. Done. You can start having fun with MORSE!
-
-
-To get a working setup suitable for using **ROS Electric** or **Diamondback**
-with MORSE, please follow the instructions online:
-http://www.openrobots.org/morse/doc/latest/user/installation/mw/ros.html
-
-
-Installation of YARP support for MORSE
---------------------------------------
-
-For the YARP bindings
-
-- YARP version (2.2.5 or +) (warning, there is a known issue with yarp-2.3.0,
-  don't try to use MORSE with this version. The issue has been fixed with
-  yarp-2.3.1).
-- YARP python binding
-- ACE ( 5.6.3 or +, required for YARP)
-- SWIG (2.0.4, required to compile the Python bindings)
-
-Instructions to create YARP-Python bindings are `here
-<http://eris.liralab.it/wiki/YARP_and_Python>`_.  To properly use simulated
-cameras with yarp < 2.3.2, you need to apply the patch from
-``patches/yarp.i.diff``.
-
-
-Note that the easiest way to install YARP is probably to use ``robotpkg`` (see
-`robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more
-information). Follow the instructions on installing ``robotpkg``. Then add
-the environment variable ``ROBOTPKG_BASE`` to your shell.  Then to install
-``YARP`` ::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/yarp
-  $ make update
-
-Afterwards, add the following settings in ``${ROBOTPKG_BASE}/etc/robotpkg.conf`` ::
-
-  $ echo "PKG_OPTIONS.py-yarp+= python3" >> ${ROBOTPKG_BASE}/etc/robotpkg.conf
-
-and then install the YARP python bindings bindings ::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/py-yarp
-  $ make update
-
-
-Compiling the YARP Python binding will create two files: ``yarp.py`` and
-``_yarp.so``, and install them in
-``$ROBOTPKG_BASE/lib/python3.2/site-packages/`` You'll need to set the
-environment variable ``PYTHONPATH`` to
-``$ROBOTPKG_BASE/lib/python3.2/site-packages/`` to let python find the YARP
-module.
-
-If you are not using robotpkg to install YARP, then make sure to copy the
-files ``yarp.py`` and ``_yarp.so`` to your Python lib directory
-(``/usr/lib/python3.2/site-packages/``) or at some place reachable from your
-``PYTHONPATH`` environment variable.
-
-.. warning::
-    The name of the installation directory may be different depending on
-     your Linux distribution. If you use Ubuntu or similar distributions,
-     replace the directory name of ``python3.2/site-packages`` for
-     ``python3/dist-packages``. Make sure to indicate the correct path
-     used in your computer for all Python 3 libraries.
-
-
-Installation of Pocolibs support for MORSE
-------------------------------------------
-
-To build Pocolibs bindings (the LAAS-CNRS middleware), you need to
-install Pocolibs on your system.
-
-The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage
-<http://homepages.laas.fr/mallet/robotpkg>`_ for more information).
-
-To install::
-
-  $ cd $ROBOTPKG_BASE/robotpkg/middleware/pocolibs
-  $ make update
-
-
-Installation of MOOS support for MORSE
---------------------------------------
-
-
-To build the MOOS middleware, you need to install MOOS and pymoos on your system.
-
-Additional information on MOOS and pymoos can be found at `MOOS homepage <http://www.robots.ox.ac.uk/~mobile/MOOS/wiki/pmwiki.php>`_ and `pymoos homepage <http://pymooos.sourceforge.net/>`_.
-
-To install MOOS to your home directory::
-
-    $ cd ~/
-    $ svn co svn://login2.robots.ox.ac.uk/MOOS/trunk MOOS
-    $ cd MOOS
-    $ cmake .
-    $ make
-
-Pymoos requires the Boost Python library compiled for Python 3.  The
-binaries available in most repositories are currently compiled for
-version 2.7.   The latest version of the Boost source code (currently
-1.47)  can be downloaded from `Boost <http://http://www.boost.org>`_.
-To install::
-
-    $ ./bootstrap.sh --prefix=path/to/installation/prefix --with-python-version=3.2
-    $ ./b2 install
-
-Finally pymoos can be installed by::
-
-    $ cd ~/
-    $ svn co https://pymooos.svn.sourceforge.net/svnroot/pymooos pymoos
-    $ cd pymoos
-    $ cmake .
-    $ make
-    $ sudo make install
-
-When running ``cmake`` for pymoos make sure to select the MOOS support option.
-
-
-Installation of HLA support for MORSE
--------------------------------------
-
-The High Level Architecture (HLA) is a standard framework that supports
-simulations composed of different simulation components. Some introductory
-courses about HLA are available `here <http://www.ecst.csuchico.edu/~hla/>`_.
-
-The HLA implementation on which the multi-node version of MORSE is build is
-the `CERTI <https://savannah.nongnu.org/projects/certi>`_. To install the CERTI,
-follow the `Building CERTI <http://www.nongnu.org/certi/certi_doc/Install/html/build.html>`_
-documentation.
-
-The CVS version tagged "CERTI-MORSE-0_4" is the version tested at the moment of
-the MORSE 0.4 release. If you are facing some mistakes with the head cvs version,
-try to checkout the CERTI-MORSE-0_4 version::
-
-$ cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi checkout -r CERTI-MORSE-0_4 certi
-
-You also have to create the corresponding Python binding in order to have
-MORSE able to use the CERTI. The PyHLA binding can be installed following these
-`instructions <http://www.nongnu.org/certi/PyHLA/manual/node6.html>`_.
-Depending on your system configuration, you may have to configure PyHLA to use
-the Python 3.2 executable and libraries.
-
-Then you will have to update your PYTHONPATH so that MORSE will find the PyHLA
-components.
+In case of problems installing MORSE, verify the
+list of Frequently Asked Questions.

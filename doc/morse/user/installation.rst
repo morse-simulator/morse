@@ -1,19 +1,26 @@
 MORSE installation
 ==================
 
-Requirements - What you need to install before 
-----------------------------------------------
+General requirements
+--------------------
 
 Hardware
 ++++++++
+
+A decent machine is required (typically, with an Intel i5 + 4GB RAM, you
+should be comfortable).
 
 To display textures correctly in the simulator, as well as to generate images
 using the simulated cameras, you will need to have a graphics card that
 supports GLSL shading. The Blender website lists these graphic cards as
 compatible with GLSL:
 
-- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.
-- NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  - NVidia
+  Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+
+If you do not need cameras and OpenGL textures/shaders, you are advised to
+run your simulation in ``fastmode`` (:doc:`refer to the simulation's Builder
+API <../user/builder>`) for vastly improved loading time and performances.
 
 Supported operating systems
 +++++++++++++++++++++++++++
@@ -24,20 +31,78 @@ distributions.
 
 Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
 
-MORSE does not currently support Microsoft Windows, although it may work
-(testers/maintainers for Windows are welcome!).
+MORSE does not currently officially support Microsoft Windows, although some
+users reported success. Testers/maintainers for Windows are welcome!
 
-Required software
-+++++++++++++++++
+Packaged versions
+-----------------
 
-- Python (3.2 or +) On Linux: compiled with the ``--with-wide-unicode`` flag
-- Python-dev package (if installing from a repository)
-- Blender (>= 2.61a) build with Python 3.2
-- MORSE source code
+``morse-1.0`` is available on Debian Wheezy/Ubuntu >= 13.04. You can install
+the package ``morse-simulator`` with your favorite software manager::
+
+  $ sudo apt-get install morse-simulator
+
+You can also install the Python bindings with::
+
+  $ sudo apt-get install python3-morse-simulator
+
+
+You can also easily install MORSE with:
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    installation/package_manager/*
+
+See their associated documentation for details.
+
+
+If you plan to use the simulator with raw sockets or text files as interface
+(for instance, to integrate MORSE with MatLab or other specific
+applications), you don't need anything else. Otherwise, you need to install
+the software for the desired middlewares:
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+
+    installation/mw/*
+
+If you want to distribute your simulation in a multinode infrastructure,
+MORSE provides by default a socket service for multinode synchronization. If
+you want to use HLA, you have to first install the CERTI and ``PyHLA`` packages:
+
+.. toctree::
+    :glob:
+    :maxdepth: 1
+    
+    installation/hla
+
+
+Manual installation
+-------------------
 
 .. note::
-  If you install Python by hand, the compilation must be done according to
-  your operating system, to match the Python compiled in Blender:
+    The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
+
+    It is recommended to store this environment variable, as it is necessary to
+    use the :doc:`Builder API scripts <../user/builder>` to generate simulation
+    scenes with custom equipped robots.
+
+Prerequisites
++++++++++++++
+
+- ``cmake``
+- Python (3.2 or +)
+- ``python-dev`` package
+- Blender (>= 2.62) build with Python >= 3.2. You can simply get a binary from `Blender website <http://www.blender.org/download/get-blender/>`_
+
+.. note::
+
+  If you decide to install Python by hand, the compilation must be done
+  according to your operating system, to match the Python compiled in
+  Blender:
   
   - On **Linux** compile with the ``--with-wide-unicode`` flag. This will
     provide you with 4-byte Unicode characters (max size: 1114111)
@@ -48,57 +113,16 @@ Required software
   It the unicode sizes between Python and Blender do not match, you will get
   errors about undefined symbols with names starting with  PyUnicodeUCS4
 
-If you plan to use the simulator with raw sockets of text files as "middleware",
-you don't need anything else. Otherwise, you need to install the software for
-other middlewares:
-
-.. toctree::
-    :glob:
-    :maxdepth: 1
-
-    installation/mw/*
-    
-If you want to distribute your simulation in a multinode infrastructure, MORSE
-provides by default a socket service for multinode synchronization. If you
-want to use HLA, you have to first install the CERTI and PyHLA packages:
-
-.. toctree::
-    :glob:
-    :maxdepth: 1
-    
-    installation/hla
-
-
-Installation 
-------------
-
-.. note::
-    The directory where MORSE is installed will be referred to as ``$MORSE_ROOT`` in this document.
-
-It is recommended to store this environment variable, as it is necessary to
-use the :doc:`Builder API scripts <../user/builder>` to generate simulation
-scenes with custom equipped robots.
-
-Manually
-++++++++
+Installation
+++++++++++++
 
 Download the latest version of the source code. It is stored in a ``git``
 repository::
 
   $ git clone https://github.com/laas/morse.git
   
-If you want to get only the latest stable version (0.6) of Morse, you can get
-it in the branch `0.6_STABLE`. You can get it directly using ::
- 
-  $ git clone https://github.com/laas/morse.git -b 0.6_STABLE
+You can also get a `tarball version here <https://github.com/laas/morse/tarball/master>`_. 
 
-or if you have already download the repository ::
-  
-  $ git checkout -b 0.6_STABLE -t origin/0.6_STABLE
-  
-You can get a `tarball version here <https://github.com/laas/morse/tarball/0.6>`_. 
-
- 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
 
@@ -106,9 +130,9 @@ Then type these commands::
   $ cmake ..
 
 By default, MORSE will install in ``/usr/local``. You can easily change the
-install directory by giving additional parameters to ``cmake``.
-You can also change the installation type and select the middleware bindings
-by using these additional parameters.
+install directory by giving additional parameters to ``cmake``.  You can also
+change the installation type and select the middleware bindings by using
+these additional parameters.
 
 - ``CMAKE_INSTALL_PREFIX`` controls where will be installed MORSE. The install
   prefix directory is referred to as ``$MORSE_ROOT``.
@@ -161,20 +185,6 @@ You can check your configuration is ok with::
     $ git checkout [version]
     $ cd build
     $ make install
-
-
-Packages manager
-++++++++++++++++
-
-MORSE is available through some package manager. See their associated
-documentation.
-
-.. toctree::
-    :glob:
-    :maxdepth: 1
-
-    installation/package_manager/*
-
 
 Installation troubleshooting
 ----------------------------
