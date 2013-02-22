@@ -1,5 +1,5 @@
 Flying cat and mouse game tutorial
-===========================
+==================================
 
 This tutorial is a complement of :doc:`cat and mouse tutorial <./cat_and_mouse>` 
 and provides a similar scenario, with a clear objective to accomplish 
