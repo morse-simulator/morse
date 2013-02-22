@@ -36,6 +36,8 @@ class BasePublisher(AbstractDatastream):
         return ""
 
 class Publisher(BasePublisher):
+
+    _type_name = "key = value format with timestamp and index value"
     def header(self):
         lines = []
         lines.append('ROBOT %s || SENSOR %s\n' % 
@@ -61,6 +63,8 @@ class Publisher(BasePublisher):
         return ''.join(lines)
 
 class CSVPublisher(BasePublisher):
+    _type_name = "CSV like : values separated by semi-column"
+
     def header(self):
         lines = []
         lines.append('ROBOT %s || SENSOR %s\n' % 
