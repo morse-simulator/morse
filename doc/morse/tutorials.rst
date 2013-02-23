@@ -51,6 +51,7 @@ The commands to launch the simulator and the basic controls are explained in thi
 
 
 .. toctree::
+    :maxdepth: 1
 
     user/basic_morse
     
@@ -71,10 +72,12 @@ Beginners tutorials
 -------------------
 
 .. toctree::
-    :glob:
     :maxdepth: 1
 
-    user/beginner_tutorials/*
+    user/beginner_tutorials/tutorial
+    user/beginner_tutorials/yarp_tutorial
+    user/beginner_tutorials/tutorial_builder_ros
+    user/beginner_tutorials/hri_tutorial
 
 Intermediate tutorials
 ----------------------
@@ -82,10 +85,13 @@ Intermediate tutorials
 These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
 
 .. toctree::
-    :glob:
     :maxdepth: 1
 
-    user/advanced_tutorials/*
+    user/advanced_tutorials/cat_and_mouse
+    user/advanced_tutorials/flying_cat_and_mouse
+    user/advanced_tutorials/ros_tutorial
+    user/advanced_tutorials/mocap_tutorial
+    user/advanced_tutorials/request_tutorial
     
 Multi-node tutorials
 --------------------
@@ -105,10 +111,10 @@ Blender specific instructions
 Since MORSE is completely built over Blender, it is important to know some of its functionality.
 
 .. toctree::
-    :glob:
     :maxdepth: 1
 
-    user/blender_tutorials/*
+    user/blender_tutorials/basic_blender
+    user/blender_tutorials/advanced_blender
 
 
 

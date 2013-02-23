@@ -71,6 +71,6 @@ It's an alternative to `rostopic list` showing a connexion of nodes and topics.
 etc
 ---
 
-For more, visit ROS wiki, where you will find many well writen
-`tutorials<http://ros.org/wiki/ROS/Tutorials>`_
+For more, visit ROS wiki, where you will find many well written
+`tutorials <http://ros.org/wiki/ROS/Tutorials>`_
 
