@@ -1,5 +1,5 @@
-Cat and mouse game tutorial
-===========================
+Cat and mouse game tutorial :tag:`builder` :tag:`socket`
+========================================================
 
 This tutorial will provide a more complex scenario, with a clear objective to
 accomplish for a robot, and that will show how to "close the loop" of sensors

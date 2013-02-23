@@ -1,5 +1,5 @@
-Create your first simulation
-============================
+Create your first simulation :tag:`builder` :tag:`socket`
+=========================================================
 
 This tutorial will guide you through the creation of a simple simulation where
 you can control a mobile robot and read data from its sensors.

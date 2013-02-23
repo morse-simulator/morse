@@ -1,5 +1,5 @@
-ROS navigation tutorial
-=======================
+ROS navigation tutorial :tag:`ros`
+==================================
 
 This tutorial shows how to use the ROS navigation stack to build a map and make
 your robot navigate in MORSE.

@@ -1,5 +1,5 @@
-Flying cat and mouse game tutorial
-==================================
+Flying cat and mouse game tutorial :tag:`builder` :tag:`socket` :tag:`pymorse`
+==============================================================================
 
 This tutorial is a complement of :doc:`cat and mouse tutorial <./cat_and_mouse>` 
 and provides a similar scenario, with a clear objective to accomplish 

@@ -1,5 +1,5 @@
-YARP-based simulation with cameras
-==================================
+YARP-based simulation with cameras :tag:`yarp`
+==============================================
 
 In this tutorial you can experiment with the cameras in MORSE
 and extract the images they capture.

@@ -1,5 +1,5 @@
-ROS and MORSE tutorial
-======================
+ROS and MORSE tutorial :tag:`ros`
+=================================
 
 This is an extension of the current :doc:`tutorial <../beginner_tutorials/tutorial>`
 using the ROS as our middleware (instead of raw sockets).

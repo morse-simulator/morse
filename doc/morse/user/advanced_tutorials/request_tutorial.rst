@@ -1,5 +1,5 @@
-Services tutorial
-=================
+Services tutorial :tag:`service` :tag:`socket`
+==============================================
 
 MORSE has a concept of services: services are remote procedure call commonly
 used to configure or control the behaviour of the simulation.
