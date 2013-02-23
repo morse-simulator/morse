@@ -6,12 +6,6 @@ is interactively controlled by the simulation user.
 
 In this simple scenario, the robot is ordered to follow the human.
 
-.. note::
-    You can also follow a :doc:`version of this tutorial
-    <../advanced_tutorials/hri_tutorial_blender>` that uses the Blender
-    interface to create and edit the scenario.
-    
-    However, this version, that uses the **Builder API**, is recommended.
 
 Pre-requisites
 --------------

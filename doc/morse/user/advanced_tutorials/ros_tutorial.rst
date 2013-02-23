@@ -23,7 +23,7 @@ http://www.ros.org/wiki/ROS/Tutorials.
 
 We also assume you know how to use the MORSE Builder API to equip your robot
 with components. If not, please follow first the :doc:`ROS and MORSE tutorial
-<./tutorial_ros>`.
+<../beginner_tutorials/tutorial_builder_ros>`.
 
 Environment setup
 -----------------
