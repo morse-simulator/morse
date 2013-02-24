@@ -371,16 +371,17 @@ class AbstractComponent(object):
         self.add_service(interface)
         self.add_stream(interface, **kwargs)
 
-    def alter(self, modifier_name, config=None):
+    def alter(self, modifier_name, config=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
         if not config:
             config = MORSE_MODIFIER_DICT[modifier_name][self._blender_filename]
+        config.append(kwargs)
         Configuration.link_modifier(self, config)
 
-    def configure_modifier(self, mod, config=None):
+    def configure_modifier(self, mod, config=None, **kwargs):
         logger.error("configure_modifier is deprecated, use alter instead")
-        return self.alter(mod, config)
+        return self.alter(mod, config, **kwargs)
 
     def add_overlay(self, datastream, overlay, config=None, **kwargs):
         """ Add a service overlay for a specific service manager to the component
