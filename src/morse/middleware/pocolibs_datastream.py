@@ -107,24 +107,6 @@ class PocolibsDataStreamInput(AbstractDatastream):
 class Pocolibs(Datastream):
     """ Handle communication between Blender and Pocolibs."""
 
-    def __init__(self):
-        # Call the constructor of the parent class
-        super(self.__class__,self).__init__()
-
-        # Store the id's of created posters, indexed by component name
-        self._poster_dict = dict()
-        # Dictionary for external posters
-        self._poster_in_dict = dict()
-        self._imported_modules = dict()
-
-    def __del__(self):
-        """ Close all open posters. """
-        for component_name, poster_id in self._poster_dict.items():
-            logger.info("Killing poster %d for component %s" % (poster_id, component_name))
-            # Call the method to close a poster
-
-
-
     def compute_date():
         """ Compute the current time
 
@@ -136,15 +118,3 @@ class Pocolibs(Datastream):
                 t.second * 1000 + t.microsecond / 1000)
 
         return date, t
-
-
-def init_extra_actuator(self, component_instance, function, mw_data, kind):
-    """ Setup the middleware connection with this data
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    name = poster_name(component_instance, mw_data)
-
-    logger.debug("Creating poster_name %s" % name)
-    poster_id = kind.createPosterHandler(name)
-    self._poster_in_dict[component_instance.blender_obj.name] = poster_id
-    component_instance.input_functions.append(function)
