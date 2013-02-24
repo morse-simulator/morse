@@ -3,23 +3,21 @@ Tutorials
 
 Welcome in the MORSE tutorials section!
 
-As a academic simulator for robotics, MORSE is a large piece of software which may require some time to master.
+As a academic simulator for robotics, MORSE is a large piece of software which
+may require some time to master.
 
-However, you should hopefully be able to get very quickly your first simulation running.
+However, you should hopefully be able to get very quickly your first
+simulation running.
 
 What is the general workflow?
 -----------------------------
 
-MORSE relies on the Blender 3D package to model and run your simulation.
-
-While it is possible to create and configure a simulation entirely from the
-:doc:`Blender interface<user/advanced_tutorials/editing_in_blender>`, it is easier
-and ways faster to rely on the so-called **Builder** scripts: these scripts
-are simple Python scripts that describe simulations. More about that in a
+MORSE relies on the Blender 3D package to run your simulation. To create a
+simulation scene, you need to describe it using the **Builder** python API,
+which allows you to simply describes simulation scenes. More about that in a
 second.
 
-Once you have a description of your simulation (as a Builder script or as
-a Blender file), you can run it::
+Once you have a description of your simulation, you can run it:: 
 
  $ morse run <your file>
 
@@ -27,7 +25,11 @@ Now, instruct your :doc:`middleware (ROS, YARP,...)<user/integration>` to addres
 the simulator instead of the real robot, and start your control softwares as
 you would do on a real robot. If you are not relying on an explicit middleware,
 you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`socket`
-or the :doc:`Python API <pymorse>` :tag:`pymorse`.
+or the :doc:`Python API <pymorse>` :tag:`pymorse`. MORSE supports the two
+classic interaction mechanism provided by most robotic middlewares:
+
+	1. Using **RPC**-oriented calls :tag:`service`
+	2. Using **stream**-oriented interfaces. :tag:`datastream`
 
 .. note::
 
@@ -47,7 +49,8 @@ Next step, :doc:`user/beginner_tutorials/tutorial`. :tag:`builder`
 Basic MORSE user interface
 --------------------------
 
-The commands to launch the simulator and the basic controls are explained in this section.
+The next tutorial describes precisely how to launch the MORSE simulation, and
+how to basically interact with him.
 
 
 .. toctree::
@@ -56,20 +59,10 @@ The commands to launch the simulator and the basic controls are explained in thi
     user/basic_morse
     
 
-Interacting with MORSE
-----------------------
-
-Applications have two main ways to interact with the simulator:
-
-1. Using **RPC**-oriented calls, or
-2. Using **stream**-oriented interfaces.
-
-RPC calls are typically used to remotely configure the simulator or start
-background tasks, while most of data transmissions usually rely on stream-based
-interface. Both can be used in MORSE.
-
 Beginners tutorials
 -------------------
+
+This section shows how MORSE can interact with different middlewares.
 
 .. toctree::
     :maxdepth: 1
@@ -82,7 +75,8 @@ Beginners tutorials
 Intermediate tutorials
 ----------------------
 
-These tutorials provide more in-depth explanations of how to setup simulations with specific requirements.
+These tutorials provide more in-depth explanations of how to setup simulations
+with specific requirements.
 
 .. toctree::
     :maxdepth: 1
@@ -108,7 +102,8 @@ These tutorials help setting up a multi-node simulation environment.
 Blender specific instructions
 -----------------------------
 
-Since MORSE is completely built over Blender, it is important to know some of its functionality.
+Since MORSE is completely built over Blender, it is important to know some of
+its functionality.
 
 .. toctree::
     :maxdepth: 1
