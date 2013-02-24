@@ -68,6 +68,33 @@ rxgrah
 It's an alternative to `rostopic list` showing a connexion of nodes and topics.
 
 
+rospy
+-----
+
+From a terminal, start an interactive Python session typing ``python``
+and paste the following code::
+
+    import rospy
+    from geometry_msgs.msg import PoseStamped
+    from geometry_msgs.msg import Twist
+
+    cmd = rospy.Publisher("/atrv/motion", Twist)
+    motion = Twist()
+    def callback(msg):
+        position = msg.pose.position
+            if position.x < 1:
+                motion.linear.x = +0.5
+            if position.x > 2:
+                motion.linear.x = -0.5
+        cmd.publish(motion)
+
+    rospy.init_node("rostuto1")
+    rospy.Subscriber("/atrv/pose", PoseStamped, callback)
+    rospy.spin() # this will block untill you hit Ctrl+C
+
+You should see the robot move forward then backward after 1m.
+
+
 etc
 ---
 
