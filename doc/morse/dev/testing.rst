@@ -11,8 +11,6 @@ to MORSE by creating a test class inheriting from
 We contributing code to MORSE, we recommend you to create unit-tests for the new
 features in subdirectories of `$MORSE_ROOT/testing`.
 
-Once complete, you can add your unit-test to `$MORSE_ROOT/testing/test_all.py`.
-
 Writing tests
 -------------
 
@@ -41,42 +39,54 @@ checks that MORSE `list_robots` control service actually returns both robots.
 
     from morse.testing.testing import MorseTestCase
 
+
     class BaseTest(MorseTestCase):
 
         def setUpEnv(self):
             """ Defines the test scenario, using the Builder API.
             """
+            
+            # Adding 4 robots
+            # no name provided, use the name of the associated variable
+            jido = Jido()
 
-            # Adding 2 robots
-            robot1 = Jido()
-            robot2 = ATRV()
+            # use explicitly name provided
+            robot2 = ATRV('mana')
 
-            env = Environment('indoors-1/indoor-1')
+            # setup the name using explicitly robot3.name
+            robot3 = ATRV()
+            robot3.name = 'dala'
+
+            # no name provided, use variable name, old school style
+            atrv = ATRV()
+            
+            env = Environment('empty', fastmode = True)
 
         def test_list_robots(self):
-            """ This test is guaranteed to be started only when the simulator
+            """ Tests the simulator can return the list of robots
+            
+            This test is guaranteed to be started only when the simulator
             is ready.
             """
-
+            
             # Initialize a socket connection to the simulator
             import socket
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect(("localhost", 4000))
             sockf = s.makefile()
-
+            
             # Queries for the list of robots
-            s.send("id1 simulation list_robots\n")
-
+            s.send(b"id1 simulation list_robots\n")
+            
             result = sockf.readline()
             id, success, robots = result.strip().split(' ', 2)
             self.assertEquals(success, "SUCCESS")
-
+            
             import ast
             robotsset = set(ast.literal_eval(robots))
-            self.assertEquals(robotsset, {'Jido', 'ATRV'})
+            self.assertEquals(robotsset, {'jido', 'mana', 'dala', 'atrv'})
             sockf.close()
             s.close()
-
 
 
 Compiling MORSE to allow testing
@@ -105,32 +115,17 @@ system.
 Running tests
 -------------
 
-Running all MORSE tests
-+++++++++++++++++++++++
+Running MORSE tests
++++++++++++++++++++
 
 The MORSE tests infrastructure is integrated with cmake, so you can run `make
 test` to check that all currently defined unit-tests for MORSE pass.
+Alternatively, you can use `ctest --verbose` to have a more verbose output. 
 
-ROS tests
-+++++++++
+If you want to run one specific test, you can call directly using a python3
+interpreter. For example, to run ``base_testing.py``, you can call::
 
-To run ROS tests, you need first to set the variable `MORSE_SRC_ROOT` to the
-root of your MORSE source. Moreover, you need to generate messages for the
-morsetesting helper: to do so, you must go in
-`${MORSE_SRC_ROOT}/testing/middlewares/ros/morsetesting` and then use rosmake
-to build them::
-
-    export MORSE_SRC_ROOT="$HOME/work/morse" # where you cloned MORSE sources
-    MORSE_ROS_TESTING=$MORSE_SRC_ROOT/testing/middlewares/ros/morsetesting
-    export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$MORSE_ROS_TESTING
-    cd $MORSE_ROS_TESTING
-    rosmake
-    cd $MORSE_SRC_ROOT
-    rm -rf build && mkdir build && cd build
-    cmake -DPYMORSE_SUPPORT=ON -DBUILD_ROS_SUPPORT=ON ..
-    make
-    sudo make install
-    make test
+    $ python3 ${MORSE_SRC_ROOT}/testing/base/base_testing.py
 
 
 Tests log
