@@ -29,7 +29,7 @@ class UTMModifierTest(MorseTestCase):
 
         gps_mod = GPS()
         gps_mod.add_stream('socket')
-        gps_mod.add_modifier('UTM')
+        gps_mod.alter('UTM')
         robot.append(gps_mod)
 
         env = Environment('empty', fastmode = True)

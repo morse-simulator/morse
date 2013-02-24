@@ -29,7 +29,7 @@ class NedTest(MorseTestCase):
         pose.add_stream('socket')
 
         pose2 = Pose()
-        pose2.add_modifier('NED')
+        pose2.alter('NED')
         robot.append(pose2)
         pose2.add_stream('socket')
 
