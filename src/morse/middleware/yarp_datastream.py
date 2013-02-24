@@ -176,18 +176,6 @@ class Yarp(Datastream):
         """ Close all open YARP ports. """
         self.finalize()
 
-    def register_component(self, component_name, component_instance, mw_data):
-        """ Generate a new instance of a datastream
-
-        and register it to the component callbacks list
-        """
-
-        datastream_classpath = mw_data[1] # aka. function name
-        datastream_args = None
-        if len(mw_data) > 2:
-            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
-        register_datastream(datastream_classpath, component_instance, datastream_args)
-
     def finalize(self):
         """ Close all currently opened ports and release the network."""
         yarp.Network.fini()

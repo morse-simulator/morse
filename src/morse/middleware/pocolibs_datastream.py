@@ -117,25 +117,11 @@ class Pocolibs(Datastream):
         self._poster_in_dict = dict()
         self._imported_modules = dict()
 
-
     def __del__(self):
         """ Close all open posters. """
         for component_name, poster_id in self._poster_dict.items():
             logger.info("Killing poster %d for component %s" % (poster_id, component_name))
             # Call the method to close a poster
-
-
-    def register_component(self, component_name, component_instance, mw_data):
-        """ Open the port used to communicate by the specified component.
-        """
-
-        datastream_classpath = mw_data[1] # aka. function name
-        datastream_args = None
-        if len(mw_data) > 2:
-            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
-
-        # Create a socket server for this component
-        register_datastream(datastream_classpath, component_instance, datastream_args)
 
 
 

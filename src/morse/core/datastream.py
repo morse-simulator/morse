@@ -52,15 +52,15 @@ class Datastream(object):
         logger.info("Closing datastream interface <%s>." % self.__class__.__name__)
 
 
-    @abstractmethod
-    def register_component():
-        """ Abstract model for the component binding method
+    def register_component(self, component_name, component_instance, mw_data):
+        datastream_classpath = mw_data[1] # aka. function name
+        datastream_args = None
+        if len(mw_data) > 2:
+            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
 
-        Implemented by all subclasses of Datastream.
-        """
-        
-        
-        pass
+        # Create a socket server for this component
+        return register_datastream(datastream_classpath, component_instance,
+                                                         datastream_args)
 
 
     def cleanup(self):

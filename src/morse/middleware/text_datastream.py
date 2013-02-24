@@ -86,15 +86,3 @@ class CSVPublisher(BasePublisher):
 class Text(Datastream):
     """ Produce text files as output for the components """
 
-
-    def register_component(self, component_name, component_instance, mw_data):
-        """ Open a text file to write the data
-
-        The name of the file is composed of the robot and sensor names.
-        Only useful for sensors.
-        """
-        datastream_classpath = mw_data[1] # aka. function name
-        datastream_args = None
-        if len(mw_data) > 2:
-            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
-        register_datastream(datastream_classpath, component_instance, datastream_args)

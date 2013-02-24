@@ -2,12 +2,10 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 import json
-import morse.core.datastream
+from morse.core.datastream import Datastream
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
-from functools import partial
 from morse.core import services
-from morse.core.datastream import *
 
 try:
     import mathutils
@@ -140,7 +138,7 @@ class SocketReader(SocketServ):
         return json.loads(msg)
 
 
-class Socket(morse.core.datastream.Datastream):
+class Socket(Datastream):
     """ External communication using sockets. """
 
     def __init__(self):
@@ -187,15 +185,9 @@ class Socket(morse.core.datastream.Datastream):
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
         """
-
-        serv = None
-        datastream_classpath = mw_data[1] # aka. function name
-        datastream_args = None
-        if len(mw_data) > 2:
-            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
-
         # Create a socket server for this component
-        serv = register_datastream(datastream_classpath, component_instance, datastream_args)
+        serv = Datastream.register_component(self, component_name,
+                                         component_instance, mw_data)
 
         global BASE_PORT
         self._server_dict[BASE_PORT] = serv
