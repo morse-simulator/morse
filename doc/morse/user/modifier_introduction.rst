@@ -1,10 +1,10 @@
 Modifiers 
 =========
 
-Modifiers affect directly the data employed by sensors and actuators, and are
-specific to the data used by the components. Just like middlewares, they must
-implement a method called ``register_component`` that should add the
-corresponding function to the component's action list.
+Modifier processing is a specific phase between datastream processing and real
+component processing. It allows to make some generic transformations on the data
+(for example, convert them from one frame convention to another one) or to alter 
+the ``qualities`` of data to make them more realistic. 
 
 List of existing modifiers 
 --------------------------
@@ -15,24 +15,48 @@ List of existing modifiers
 
     modifiers/*
 
-Linking a modifier to a component
----------------------------------
+Adding a modifier to a component
+--------------------------------
 
-Binding a component to use a modifier is done in the file
-``component_config.py`` that should be part of every MORSE scenario file. In
-that file, the dictionary ``component_modifier`` lists the components and the
-modifiers they will use to export/import their data. The unique names of the
-components are the keys of the dictionary, and the values are lists. Each list
-will contain as many items as modifiers associated to the component, and each
-element is also a list. In these internal lists, the first element is the fully
-qualified class name of the modifier, and the second is the modifier
-method that should be called by the component to alter its data. Here is an
-example of the ``component_modifier`` dictionary::
+Binding a component to use a modifier is done through the :doc:`MORSE Builder
+API <../../user/builder>`, using the method
+:py:meth:`morse.builder.abstractcomponent.AbstractComponent.alter`. For
+example, to transform coordinates from local Blender frame to some absolute
+UTM reference frame, you can use the :doc:`UTM conversion modifier
+<../../user/modifiers/utm>` in this way:
 
-  component_modifier = {
-    "GPS": [ ["morse.modifiers.ned.MorseNEDClass", "blender_to_ned"], ["morse.modifiers.utm.MorseUTMClass", "blender_to_utm"] ],
-    "Motion_Controller": [ ["morse.modifiers.ned.MorseNEDClass", "ned_to_blender"], ["morse.modifiers.utm.MorseUTMClass", "utm_to_blender"] ],
-  }
+.. code-block:: python
+
+    from morse.builder import *
+             
+    robot = ATRV()
+
+    gps = GPS()
+    gps.add_stream('socket')
+    gps.alter('UTM')
+    robot.append(gps)
+
+    env = Environment('empty', fastmode = True)
+    env.properties(UTMXOffset='123456789.0', UTMYOffset=-4242.0, UTMZOffset=421.0)
+
+Sometimes, you need to pass some arguments to your modifier, for example to set
+the standard deviation of your :doc:`gaussian noise
+<../../user/modifiers/pose_noise>`. In this case, you can use the following
+syntax:
+
+.. code-block:: python
+
+    from morse.builder import *
+    import math
+
+    robot = ATRV()
+
+    pose = Pose()
+    pose.add_stream('socket')
+    pose.alter('Noise', pos_std  = 0.10, rot_std = math.radians(10))
+
+    env = Environment('empty', fastmode = True)
+
 
 Creating a new modifier 
 -----------------------
