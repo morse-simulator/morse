@@ -325,14 +325,14 @@ def print_files(out, name, props):
 
 def supported_interfaces(cmpt, level = "default", tabs = 0):
 
-    def iface_type(type_name, type_url):
+    def iface_type(type_name, value, type_url):
         if not type_name: 
             return ""
         else:
             if type_url:
-                return " as `%s <%s>`_" % (type_name, type_url)
+                return " as `%s <%s>`_ (:py:mod:`%s`)" % (type_name, type_url, value)
             else:
-                return " as %s" % type_name
+                return " as %s (:py:mod:`%s`)" % (type_name, value)
 
     if not cmpt in MORSE_DATASTREAM_DICT:
         return "(attention, no interface support!)"
@@ -342,11 +342,20 @@ def supported_interfaces(cmpt, level = "default", tabs = 0):
     interfaces = ""
     for interface, values in MORSE_DATASTREAM_DICT[cmpt][level].items():
 
-        if isinstance(values, dict): # we find a dict when we fallback on default serialization
+        # we find a dict when we fallback on default serialization
+        if isinstance(values, dict): 
             values = values[interface]
 
-        type_name, iface_doc, type_url = get_interface_doc(values)
-        interfaces += "\t" * tabs + "- :tag:`%s` %s\n" % (interface, iface_type(type_name, type_url))
+        # If it is a single string, make a list, otherwise, it is
+        # already a list.
+        if isinstance(values, str):
+            values = [values]
+
+        ifaces = []
+        for value in values:
+            type_name, iface_doc, type_url = get_interface_doc(value)
+            ifaces.append(iface_type(type_name, value, type_url))
+        interfaces += "\t" * tabs + "- :tag:`%s` %s\n" % (interface, ' or'.join(ifaces))
 
     return interfaces
 

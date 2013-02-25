@@ -349,6 +349,8 @@ class AbstractComponent(object):
                 return
 
             config = interfaces[datastream]
+            if isinstance(config, list):
+                config = config[0]
 
             if config == INTERFACE_DEFAULT_OUT:
                 config = INTERFACE_DEFAULT_OUT[datastream]
@@ -380,7 +382,7 @@ class AbstractComponent(object):
 
         Similar to the previous function. Its argument is the name of the
         interface to be used.
-        """
+        """ 
         if not component:
             component = self
         if not config:
