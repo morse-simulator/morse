@@ -50,7 +50,7 @@ The friction coefficient of the robot can be adjusted in the **Properties >> Mat
 :mod:`pr2` Module
 -----------------
 
-Refer to :py:mod`morse.robots.pr2`.
+Refer to :py:mod:`morse.builder.robots.pr2`.
 
 TODO
 ----
