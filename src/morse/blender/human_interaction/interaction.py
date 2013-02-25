@@ -264,11 +264,11 @@ def grab(cont):
 
     coll = cont.sensors['Collision']
 
-    right_hand = objects['IK_Target_Empty.R' + suffix]
-    human = objects['Human' + suffix]
+    human = objects[ow.parent.parent.parent.name + suffix]
     hand = objects['Hand.R' + suffix]
     hips = objects['Hips_Empty' + suffix]
     left_hand = objects['IK_Target_Empty.L' + suffix]
+    right_hand = objects['IK_Target_Empty.R' + suffix]
 
     vect = right_hand.getVectTo(obj)
     move = vect[1]
