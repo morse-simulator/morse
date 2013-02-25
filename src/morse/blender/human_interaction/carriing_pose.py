@@ -14,8 +14,7 @@ def move(cont):
     dest = blenderapi.scene().objects['IK_Pose_Empty.R' + suffix]
     hips = blenderapi.scene().objects['Hips_Empty' + suffix]
     left_hand = blenderapi.scene().objects['IK_Target_Empty.L' + suffix]
-    human = blenderapi.scene().objects['Human' + suffix]
-
+    human = blenderapi.scene().objects[ow.parent.name + suffix]
     
     # get the Vector to the right position
     if human['Manipulate']:
