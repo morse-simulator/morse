@@ -102,6 +102,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.jointstate.JointStatePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
             }
         },
     "morse.sensors.battery.Battery": {
@@ -146,6 +147,9 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.human_posture.HumanPosture": {
         "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": 'morse.middleware.pocolibs.sensors.human_posture.HumanPoster'
             }
         },
@@ -187,6 +191,8 @@ MORSE_DATASTREAM_DICT = {
         "integrated": {
             "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
                          'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
