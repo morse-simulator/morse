@@ -130,7 +130,8 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
+            "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
@@ -139,7 +140,8 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
+            "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
         },
     "morse.sensors.human_posture.HumanPosture": {
@@ -185,7 +187,8 @@ MORSE_DATASTREAM_DICT = {
         "integrated": {
             "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
-            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
+            "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
         },
     "morse.sensors.pose.Pose": {
@@ -194,7 +197,8 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
-            "pocolibs": 'morse.middleware.pocolibs.sensors.pom.PomSensorPoster'
+            "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
         },
     "morse.sensors.proximity.Proximity": {
@@ -301,7 +305,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.platine.Vector3Reader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": 'morse.middleware.pocolibs.actuators.platine.PlatinePoster'
+            "pocolibs": ['morse.middleware.pocolibs.actuators.platine.PlatinePoster',
+                         'morse.middleware.pocolibs.actuators.platine.PlatineAxisPoster']
             }
         },
     "morse.actuators.rotorcraft_waypoint.RotorcraftAttittude": {
