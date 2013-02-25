@@ -67,3 +67,78 @@ If you feel that some sensor / actuator requires
 more information, you must add (propose a patch, or inherit and extend) it at
 the sensor level and not at the middleware level, so every potential user
 can profit from it (and not only people using this specific middleware).
+
+Getting data or exporting data
+++++++++++++++++++++++++++++++
+
+A component is not really useful if it doesn't get any input (for an actuator)
+or if you can't use the output of a sensor. You can use different middleware to
+import / export data. 
+
+In the simplest case, you can use automatic serialization, which will try to
+convert the data in ``local_data`` OrderedDict into the appropriate format to send
+through the middleware. This works only for the basic data types of integer,
+float or string.  If you want more specific behaviour for other data types, you
+need to add a method to the middleware provider of your choice (for example, if
+you want to export a new sensor through YARP, you need to add a method to
+Yarp, in ``$MORSE_ROOT/src/morse/middleware/yarp_datastream.py``). The method
+must have the following prototype :::
+
+  def your_method(self, component_instance):
+
+For instance, a specific serialization method has been defined to serialize
+RGBA images for YARP :::
+
+  def post_image_RGBA(self, component_instance):
+    """ Send an RGBA image through the given named port."""
+    #...formatting the sensor data stored in component_instance.local_data
+    yarp_port.write()
+
+(see ``$MORSE_ROOT/src/morse/middleware/yarp_datastream.py`` for the complete method)
+
+In this method, you can access / store component information through its dictionary
+``local_data``. In case of a sensor, it is not expected that you change the
+content of the sensor, but only read information in this array.
+
+After that, you need to register your new function into the middleware
+abstraction.  For that, you need to modify the method ``register_component``.
+It is basically a switch case with the different possible functions. This
+method is called when parsing the configuration file for the scene, so
+it is the right place to initialize stuff (opening Yarp ports, sockets, files
+...)
+
+Middleware specific information
+-------------------------------
+
+YARP
+++++
+
+In Yarp, the different port_name are stored in a dictionary
+``_component_ports``, indexed by the name of the component
+(``component.bge_object.name``). You can retrieve the associated port with the
+method ``getPort(port_name)``
+
+Example: ::
+
+    port_name = self._component_ports[component_instance.bge_object.name]
+
+    try:
+        yarp_port = self.getPort(port_name)
+    except KeyError as detail:
+        print ("ERROR: Specified port does not exist: ", detail)
+        return
+
+
+Pocolibs
+++++++++
+
+In Pocolibs, the different poster_id are stored in a dictionary
+``_poster_dict``, indexed by the name of the component
+(``component.bge_object.name``)
+
+Text
+++++
+
+In Text, the different files are stored in a dictionary
+``_file_list``, indexed by the name of the component
+(``component.bge_object.name``)
