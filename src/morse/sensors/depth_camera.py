@@ -114,7 +114,7 @@ class RawImage(AbstractDepthCamera):
              "``(cam_width * cam_height * sizeof(float))`` bytes.")
 
     def process_image(self, image):
-        """Same behaviour as VideoCameraClass
+        """Same behaviour as VideoCamera
 
         Let the middleware deal with image processing. For example convert and
         publish in C++, without having to re-serialize a Python object.

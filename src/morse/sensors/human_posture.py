@@ -3,7 +3,7 @@ import math
 import morse.core.sensor
 from morse.helpers.components import add_data
 
-class HumanPostureClass(morse.core.sensor.Sensor):
+class HumanPosture(morse.core.sensor.Sensor):
     """ 
     This sensor collects the positions of the bones in the human armature
     for the file ``$MORSE_ROOT/data/robots/human.blend``.
