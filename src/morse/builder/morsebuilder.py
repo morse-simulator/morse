@@ -113,9 +113,11 @@ class Armature(AbstractComponent):
         :param objectname: Armature name
         :param filename: for datastream configuration, default 'armature'
         """
-        AbstractComponent.__init__(self, filename=filename)
+        AbstractComponent.__init__(self, filename=filename, category='actuators')
         self.set_blender_object(bpymorse.get_object(objectname))
         # default classpath for Armature (can be modified)
+        if not self.is_morseable():
+            self.morseable()
         self.properties(classpath="morse.actuators.armature.Armature")
 
 
