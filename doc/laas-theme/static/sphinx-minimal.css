@@ -535,12 +535,24 @@ p.admonition-title {
 
 .tag-api {
     background: -moz-linear-gradient(center top , #02E81D, #08D901) repeat scroll 0 0 transparent !important;
+    background-color: #08D901; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(center top , #02E81D, #08D901); /* For Chrome and Safari */
+    background-image:    -moz-linear-gradient(center top , #02E81D, #08D901); /* For old Fx (3.6 to 15) */
+    background-image:     -ms-linear-gradient(center top , #02E81D, #08D901); /* For pre-releases of IE 10*/
+    background-image:      -o-linear-gradient(center top , #02E81D, #08D901); /* For old Opera (11.1 to 12.0) */
+    background-image:         linear-gradient(center top , #02E81D, #08D901); /* Standard syntax; must be last */
     color: #006605 !important;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .tag-middleware {
     background: -moz-linear-gradient(center top , #E80C02, #D90B01) repeat scroll 0 0 transparent !important;
+    background-color: #E80C02; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(center top , #E80C02, #D90B01); /* For Chrome and Safari */
+    background-image:    -moz-linear-gradient(center top , #E80C02, #D90B01); /* For old Fx (3.6 to 15) */
+    background-image:     -ms-linear-gradient(center top , #E80C02, #D90B01); /* For pre-releases of IE 10*/
+    background-image:      -o-linear-gradient(center top , #E80C02, #D90B01); /* For old Opera (11.1 to 12.0) */
+    background-image:         linear-gradient(center top , #E80C02, #D90B01); /* Standard syntax; must be last */
     color: #FFFFFF !important;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -548,6 +560,12 @@ p.admonition-title {
 
 .tag-access {
    background: -moz-linear-gradient(center top , #2D02E8, #0119D9) repeat scroll 0 0 transparent !important;
+    background-color: #2D02E8; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(center top , #2D02E8, #0119D9); /* For Chrome and Safari */
+    background-image:    -moz-linear-gradient(center top , #2D02E8, #0119D9); /* For old Fx (3.6 to 15) */
+    background-image:     -ms-linear-gradient(center top , #2D02E8, #0119D9); /* For pre-releases of IE 10*/
+    background-image:      -o-linear-gradient(center top , #2D02E8, #0119D9); /* For old Opera (11.1 to 12.0) */
+    background-image:         linear-gradient(center top , #2D02E8, #0119D9); /* Standard syntax; must be last */
     color: #FFFFFF !important;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
 }
