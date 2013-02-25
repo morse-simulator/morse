@@ -64,7 +64,7 @@ class StereoUnit(morse.core.sensor.Sensor):
 
     """
 
-    _name = "stereo_unit"
+    _name = "Stereo Camera Unit"
 
     def __init__(self, obj, parent=None):
         """ Constructor method.

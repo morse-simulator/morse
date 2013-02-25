@@ -7,7 +7,7 @@ class Pose(morse.core.sensor.Sensor):
     This sensor returns the full pose of the sensor, i.e. both
     translation and rotation with respect to the Blender world frame.
     """
-    _name = "pose"
+    _name = "Pose"
 
     add_data('x', 0.0, "float", \
              'x coordinate of the sensor, in world coordinate, in meter')

@@ -15,7 +15,7 @@ class Teleport(morse.core.actuator.Actuator):
         Blender's coordinate axis.
     """
 
-    _name = "teleport"
+    _name = "Teleport"
     _short_desc = "Motion controller which changes instantly robot pose \
                    (position and orientation)"
 
