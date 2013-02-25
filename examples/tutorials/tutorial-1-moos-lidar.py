@@ -27,11 +27,11 @@ motion = MotionVW()
 atrv.append(motion)
 
 # Add datastream for our robot's components
-gyroscope.add_stream("morse.middleware.moos_datastream.MOOS", "post_gyroscope", "morse/middleware/moos/gyroscope")
-pose.add_stream("morse.middleware.moos_datastream.MOOS", "post_pose", "morse/middleware/moos/pose")
-gps.add_stream("morse.middleware.moos_datastream.MOOS", "post_gps", "morse/middleware/moos/gps")
-imu.add_stream("morse.middleware.moos_datastream.MOOS", "post_imu", "morse/middleware/moos/imu")
-sick.add_stream("morse.middleware.moos_datastream.MOOS", "post_2DLaserScan", "morse/middleware/moos/sick")
-motion.add_stream("morse.middleware.moos_datastream.MOOS", "read_message")
+gyroscope.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.gyroscope.GyroscopeNotifier")
+motion.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.motion.MotionReader")
+pose.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.pose.PoseNotifier")
+gps.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.gps.GPSNotifier")
+imu.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.imu.IMUNotifier")
+sick.add_stream("morse.middleware.moos_datastream.MOOS", "morse.middleware.moos.sick.LIDARNotifier")
 
 env = Environment('indoors-1/indoor-1')

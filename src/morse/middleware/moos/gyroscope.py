@@ -1,27 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
-import morse.core.datastream
+from morse.middleware.moos import AbstractMOOS
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class GyroscopeNotifier(AbstractMOOS):
+    """ Notify Gyroscope """
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.bge_object.name
-    parent_name = component_instance.robot_parent.bge_object.name
-
-     # Add the new method to the component
-    component_instance.output_functions.append(function)
-
-    # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    logger.info('######## Gyroscope-SENSOR INITIALIZED ########')
-
-def post_gyroscope(self, component_instance):
-    """ Publish the data of the Odometry-sensor as a ROS-Pose message
-    """
-    curTime=pymoos.MOOSCommClient.MOOSTime()
-    
-    self.m.Notify('zYaw',component_instance.local_data['yaw'],curTime)
-    self.m.Notify('zRoll',component_instance.local_data['roll'],curTime)
-    self.m.Notify('zPitch',component_instance.local_data['pitch'],curTime)
+    def default(self, ci='unused'):
+        curTime=pymoos.MOOSCommClient.MOOSTime()
+        
+        self.m.Notify('zYaw',self.data['yaw'],curTime)
+        self.m.Notify('zRoll',self.data['roll'],curTime)
+        self.m.Notify('zPitch',self.data['pitch'],curTime)

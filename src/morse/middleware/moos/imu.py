@@ -1,37 +1,22 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import pymoos.MOOSCommClient
-import morse.core.datastream
+from morse.middleware.moos import AbstractMOOS
 
-def init_extra_module(self, component_instance, function, mw_data):
-    """ Setup the middleware connection with this data
+class IMUNotifier(AbstractMOOS):
+    """ Notify IMU """
 
-    Prepare the middleware to handle the serialised data as necessary.
-    """
-    # Compose the name of the port, based on the parent and module names
-    component_name = component_instance.bge_object.name
-    parent_name = component_instance.robot_parent.bge_object.name
+    def default(self, ci='unused'):
+        curTime=pymoos.MOOSCommClient.MOOSTime()
 
-     # Add the new method to the component
-    component_instance.output_functions.append(function)
+        vel=self.data['velocity']
+        acc=self.data['acceleration']
 
-    # Generate one publisher and one topic for each component that is a sensor and uses post_message
-    logger.info('######## IMU-SENSOR INITIALIZED ########')
+        # post angular rates
+        self.m.Notify('zGyroX',vel[3],curTime)
+        self.m.Notify('zGyroY',vel[4],curTime)
+        self.m.Notify('zGyroZ',vel[5],curTime)
 
-def post_imu(self, component_instance):
-    """ Publish the data of the Odometry-sensor as a ROS-Pose message
-    """
-    curTime=pymoos.MOOSCommClient.MOOSTime()
-
-    vel=component_instance.local_data['velocity']
-    acc=component_instance.local_data['acceleration']
-
-    # post angular rates
-    self.m.Notify('zGyroX',vel[3],curTime)
-    self.m.Notify('zGyroY',vel[4],curTime)
-    self.m.Notify('zGyroZ',vel[5],curTime)
-
-    # post accelerations
-    self.m.Notify('zAccelX',acc[0],curTime)
-    self.m.Notify('zAccelY',acc[1],curTime)
-    self.m.Notify('zAccelZ',acc[2],curTime)
-
+        # post accelerations
+        self.m.Notify('zAccelX',acc[0],curTime)
+        self.m.Notify('zAccelY',acc[1],curTime)
+        self.m.Notify('zAccelZ',acc[2],curTime)
