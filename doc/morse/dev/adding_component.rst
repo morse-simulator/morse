@@ -88,7 +88,7 @@ size of your image. To declare such properties, you need to use the
 .. warning::
 
     Contrary to ``add_data``, you must only pass basic type in
-    ``add_property`` (bool, float, int, string). Indeed, her, we rely on the
+    ``add_property`` (bool, float, int, string). Indeed, here, we rely on the
     blender game property system to pass values between the builder script and
     the code logic, and it only supports these basic types.
 
@@ -98,23 +98,23 @@ Defining the logic of your component
 Now that we have defined the interface of our component, we need to define its
 internal logic. There are two important functions that you want to override.
 
-  - the init function (``__init__``). In this function, you can create and
-    initialize private attributes (which won't be exported to other MORSE
-    layer). Do not forget to call the ``__init__`` method of your mother
-    class, to properly initialize the component.
+- the init function (``__init__``). In this function, you can create and
+  initialize private attributes (which won't be exported to other MORSE
+  layer). Do not forget to call the ``__init__`` method of your mother
+  class, to properly initialize the component.
 
-  - the ``default_action`` method contains the logic of our component.  Avoid
-    to do some big computation here: the function is called often, and it will
-    slow down the whole processing of the Game Engine.
+- the ``default_action`` method contains the logic of our component.  Avoid
+  to do some big computation here: the function is called often, and it will
+  slow down the whole processing of the Game Engine.
 
-      - For a sensor, you want to compute the values of the different elements
-        of your ``local_data`` using the current simulator step. See for
-        instance :py:meth:`morse.sensors.pose.Pose.default_action`.
+  * For a sensor, you want to compute the values of the different elements
+    of your ``local_data`` using the current simulator step. See for
+    instance :py:meth:`morse.sensors.pose.Pose.default_action`.
 
-      - For an actuator, you want to **modify** the simulated scene based on
-        the values stored in the ``local_data`` dictionary. Have a look at
-        :py:meth:`morse.actuators.v_omega.MotionVW.default_action` for
-        instance.
+  * For an actuator, you want to **modify** the simulated scene based on
+    the values stored in the ``local_data`` dictionary. Have a look at
+    :py:meth:`morse.actuators.v_omega.MotionVW.default_action` for
+    instance.
 
 .. code-block:: python
 
@@ -132,7 +132,7 @@ internal logic. There are two important functions that you want to override.
         add_property('image_width', 256, 'image_width', 'int', 'width of the image, in pixel')
         add_property('image_length', 256, 'image_length', 'int', 'width of the image, in pixel')
 
-        def init(self, obj, parent = None):
+        def __init__(self, obj, parent = None):
             # Call the constructor of the parent class
             Sensor.__init__(self, obj, parent)
 
@@ -177,8 +177,8 @@ integration.
 
 These levels consist in:
 
-  - a custom set of data fields,
-  - and/or a custom component class implementation.
+- a custom set of data fields,
+- and/or a custom component class implementation.
 
 Levels are defined with the helper function
 :py:meth:`morse.helpers.components.add_level`. The function
@@ -254,21 +254,21 @@ An user would configure this sensor in a script that way:
 The 'Blender' part
 ------------------
 
-  - First, create a nice model of your component.
+- First, create a nice model of your component.
 
-    - Center it around ``<0,0,0>``
-    - 1 Blender unit = 1 m
-    - ``x`` points forward, ``z`` points up.
-    - You can of course import meshes in Blender. Just check the scale and orientation.
-    - Do not forget that your mesh will be used in a real-time 3D engine: keep
-      the number of polygons low ( > 500 for a single model is probably already
-      too much. Check the ``decimate`` tool in Blender to simplify your model if
-      needed).
-    - Do not forget the :doc:`bounding boxes<../user/tips/bounding_boxes>`.
-    - If your sensor/actuator has a kinematic structure (not a single rigid part),
-      use Blender's armatures to model it precisely.
+  * Center it around ``<0,0,0>``
+  * 1 Blender unit = 1 m
+  * ``x`` points forward, ``z`` points up.
+  * You can of course import meshes in Blender. Just check the scale and orientation.
+  * Do not forget that your mesh will be used in a real-time 3D engine: keep
+    the number of polygons low ( > 500 for a single model is probably already
+    too much. Check the ``decimate`` tool in Blender to simplify your model if
+    needed).
+  * Do not forget the :doc:`bounding boxes<../user/tips/bounding_boxes>`.
+  * If your sensor/actuator has a kinematic structure (not a single rigid part),
+    use Blender's armatures to model it precisely.
 
-  - Save the model in ``$MORSE_ROOT/data/<sensors|actuators>/``
+- Save the model in ``$MORSE_ROOT/data/<sensors|actuators>/``
 
 Make sure that the `Parent Inverse
 <http://wiki.blender.org/index.php/User:Pepribal/Ref/Appendices/ParentInverse>`_
@@ -293,6 +293,56 @@ to the :doc:`armature creation<armature_creation>` page for details.
 The Builder Part
 ----------------
 
-.. warning::
+Now that you created the logic of your component, you need to define a builder
+class. This will allow you to create an object in the Blender interface, which
+will call your logic code every *n* frame of the simulation.
 
-    TODO : write this part :)
+- Sensors must extend :py:class:`morse.builder.creator.SensorCreator`
+  * have a look at :py:class:`morse.builder.sensors.Pose` for a simple example
+- Actuators must extend :py:class:`morse.builder.creator.ActuatorCreator`
+  * have a look at :py:class:`morse.builder.actuators.MotionVW` for a simple example
+
+.. code-block:: python
+    from morse.builder.creator import SensorCreator
+
+    class PTUPosture(SensorCreator):
+        def __init__(self, name=None):
+            SensorCreator.__init__(self, name, "morse.sensors.ptu_posture.PTUPosture")
+
+
+For basic mesh, you can use classes from :py:mod:`morse.builder.blenderobjects`
+module.
+
+.. code-block:: python
+    from morse.builder.creator import SensorCreator
+    from morse.builder.blenderobjects import Sphere
+
+    class GPS(SensorCreator):
+        def __init__(self, name=None):
+            SensorCreator.__init__(self, name, "morse.sensors.gps.GPS")
+            mesh = Sphere("GPSSphere")
+            mesh.scale = (.04, .04, .01)
+            mesh.color(.5, .5, .5)
+            self.append(mesh)
+
+If you want to add a specific mesh from an external ``.blend`` file,
+use :py:meth:`morse.builder.creator.ComponentCreator.append_meshes`.
+
+.. code-block:: python
+    from morse.builder.creator import SensorCreator
+
+    class Sick(LaserSensorWithArc):
+        def __init__(self, name=None):
+            LaserSensorWithArc.__init__(self, name, \
+                    "morse.sensors.laserscanner.LaserScanner", "sick")
+            # set components-specific properties
+            self.properties(Visible_arc = False, laser_range = 30.0,
+                    scan_window = 180.0, resolution = 1.0)
+            # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+            self.frequency(10)
+            # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
+            self.append_meshes(['SickMesh'])
+
+In this case, we append the ``SickMesh`` Blender object from the ``sick.blend``
+file in *MORSE_COMPONENTS*/*sensors* directory.
+
