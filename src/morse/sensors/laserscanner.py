@@ -205,10 +205,10 @@ class LaserScanner(Sensor):
 
         # Get some information to be able to deform the arcs
         if self.visible_arc:
-            layers = 1
+            self._layers = 1
             if 'layers' in self.bge_object:
-                layers = self.bge_object['layers']
-            self._vertex_per_layer = len(self._ray_list) // layers
+                self._layers = self.bge_object['layers']
+            self._vertex_per_layer = len(self._ray_list) // self._layers
 
         logger.info('Component initialized')
 
@@ -261,32 +261,19 @@ class LaserScanner(Sensor):
             index += 1
 
         # Change the shape of the arc to show what the sensor detects
-        if self.visible_arc:
+        # Display only for 1 layer scanner
+        # TODO rework the LDMRS (3 layers) display [code in 1.0-beta2]
+        if self.visible_arc and self._layers == 1:
             for mesh in self._ray_arc.meshes:
                 for mat in range(mesh.numMaterials):
-                    index = 0
-                    for v_index in range(mesh.getVertexArrayLength(mat)):
-                        # Switch to a new layer after a set number of vertices
-                        if index % self._vertex_per_layer == 0:
-                            index += 1
-
-                        # Skip the first vertex of a tringle. It will always
-                        #  be at the origin, and should not be changed
-                        if v_index % 3 == 0:
-                            continue
-
-                        # Place the next vertex in the triangle
-                        if v_index % 3 == 1:
-                            vertex = mesh.getVertex(mat, v_index)
-                            vertex.setXYZ(self.local_data['point_list'][index])
-
-                        # Set the final vertex, in the correct order to have
-                        #  the normals facing upwards.
-                        if v_index % 3 == 2:
-                            vertex = mesh.getVertex(mat, v_index)
-                            vertex.setXYZ(
-                                    self.local_data['point_list'][index-1])
-                            index += 1
+                    for index in range(mesh.getVertexArrayLength(mat)):
+                        point = self.local_data['point_list'][index]
+                        if point == [0.0, 0.0, 0.0]:
+                            # If there was no intersection, move the vertex
+                            # to the laser range
+                            point = self._ray_list[index] * self.laser_range
+                        vertex = mesh.getVertex(mat, index)
+                        vertex.setXYZ(point)
 
 class LaserScannerRotationZ(LaserScanner):
     """Used for Velodyne sensor"""
