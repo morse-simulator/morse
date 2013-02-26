@@ -19,13 +19,6 @@ Robots and robotic bases
 
     user/robots/*
 
-.. note::
-    Include these robots in your simulation by using the identifier below the pictures::
-
-        from morse.builder import *
-        myrobot = Robot('<identifier>') # for instance, 'atrv'
-        myrobot.append(...)
-  
 
 Sensors
 +++++++
@@ -38,16 +31,6 @@ Sensors
 
     user/sensors/*
 
-.. note::
-    Include the sensors in your simulation by using the identifier below the pictures::
-
-        from morse.builder import *
-        myrobot = ATRV()
-        cam = VideoCamera()
-        myrobot.append(cam)
-    
-    For sensors not pictured, check their specific page.
-
 Actuators
 +++++++++
 
@@ -58,16 +41,6 @@ Actuators
     :maxdepth: 1
 
     user/actuators/*
-
-.. note::
-    Include the actuators in your simulation by using the identifier below the pictures::
-
-        from morse.builder import *
-        myrobot = ATRV()
-        arm = KukaLWR()
-        myrobot.append(arm)
-
-    For actuators not pictured, check their specific page.
 
 
 Other components
