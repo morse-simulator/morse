@@ -2,9 +2,10 @@
 echo "MORSE installation and builder test"
 echo "========================================"
 lsb_release -a; uname -a; file $(which ls)
-BLENDER="blender-2.65a-linux-glibc211-i686"
+[[ -z "$(uname -p | grep 64)" ]] && arch="i686" || arch="x86_64"
+BLENDER="blender-2.66-linux-glibc211-$arch"
 echo "Download Blender ${BLENDER}"
-(wget -q http://download.blender.org/release/Blender2.65/${BLENDER}.tar.bz2
+(wget -q http://download.blender.org/release/Blender2.66/${BLENDER}.tar.bz2
 tar jxf ${BLENDER}.tar.bz2 )& blenderpid=$!
 echo "Download CMake Python3 libSDL"
 sudo apt-get update -q
