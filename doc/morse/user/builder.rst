@@ -274,10 +274,6 @@ the :doc:`compatibility matrix <integration>`.
     In that case, we instruct MORSE to use ROS with the ``TwistReader`` class
     defined in the ``morse.middleware.ros.motion_vw`` module.
 
-    Refer to :doc:`hooks <../user/hooks>` and the tutorial on :doc:`manually
-    building a scene <../user/advanced_tutorials/editing_in_blender>` (in
-    particular the section configuring middleware) for details.
-
 .. note::
     Configuration for standard sensors and actuators are defined in
     the file ``src/morse/builder/data.py``.
