@@ -29,13 +29,13 @@ Check the :doc:`Developers documentation <dev/summary>`.
 
     dev/dev_overview
     dev/dev_workflow
-    dev/testing
+    user/builder
     dev/adding_component
+    dev/adding_datastream_handler
     dev/adding_modifier
     dev/services
     dev/new_middleware
-    dev/new_pocolibs_interface
-    user/builder
+    dev/testing
 
 Code reference
 --------------

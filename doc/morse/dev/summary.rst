@@ -48,39 +48,49 @@ Overview
 --------
 An overview of code organization in MORSE
 
-:doc:`Overview for MORSE organization <dev_overview>`
+:doc:`dev_overview`
 
 Workflow
 --------
 Principle of interaction with Blender and the game engine
 
-:doc:`Overview for MORSE workflow for developers <dev_workflow>`
+:doc:`dev_workflow`
 
-Adding validation tests
------------------------
-
-New features are expected to provide unit-tests to validate them.
-
-:doc:`Unit-testing in MORSE <testing>`
 
 Creating a new component (robot, sensor or actuator)
 ----------------------------------------------------
 Create a sensor. Explain the logic
 
-:doc:`Tutorial: Adding a new component <adding_component>`
+:doc:`adding_component`
+
+Creating a datastream handler
+-----------------------------
+
+Now that you have created a sensor, you want to export it in the specific way.
+
+:doc:`adding_datastream_handler`
+
+Adding validation tests
+-----------------------
+
+Once done, you want to add some tests to verify, on the long-term, that your 
+component works as expected.
+
+:doc:`testing`
 
 Creating a modifier
 -------------------
 
-EZ if in python, a bit more complex if we call an external library (cf impact on the dependencies) 
+Introduce how to create your own modifier, to alter the data from MORSE.
 
-:doc:`Tutorial: Creating a modifier <adding_modifier>`
+:doc:`adding_modifier`
 
 Adding the support of a new middleware
 --------------------------------------
+
 Introduce how to add the support for a new middleware
 
-:doc:`Tutorial: Adding the support for a new middleware <new_middleware>`
+:doc:`new_middleware`
 
 
 Simulation supervision
