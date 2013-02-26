@@ -254,7 +254,7 @@ class LaserSensorWithArc(SensorCreator):
         arc.active_material = self.get_ray_material()
         return arc
 
-    def __del__(self):
+    def after_renaming(self):
         arc = [child for child in self._bpy_object.children
                if child.name.startswith("Arc_")]
         if not arc:
@@ -274,8 +274,6 @@ class Hokuyo(LaserSensorWithArc):
                 scan_window = 270.0, resolution = 0.25)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(10)
-        # create default Arc_
-        self.create_laser_arc()
 
 class Sick(LaserSensorWithArc):
     def __init__(self, name=None):
@@ -289,8 +287,6 @@ class Sick(LaserSensorWithArc):
         self.frequency(10)
         # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
         self.append_meshes(['SickMesh'])
-        # create default Arc_
-        self.create_laser_arc()
 
 class SickLDMRS(LaserSensorWithArc):
     def __init__(self, name=None):
@@ -307,8 +303,6 @@ class SickLDMRS(LaserSensorWithArc):
         self.append(mesh)
         # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
         self.frequency(4)
-        # create default Arc_
-        self.create_laser_arc()
 
 class Infrared(LaserSensorWithArc):
     def __init__(self, name=None):
