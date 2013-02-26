@@ -22,7 +22,7 @@ A robot and its environment are created in MORSE by building a model in
 Blender. Actuator and sensor objects are attached to robot models, and may be
 interacted with via a variety of middleware protocols. Simulations can be
 programmed via Python scripts or inside of Blender itself. Currently supported
-middleware includes YARP, MOOS, ROS, Pocoslibs, as well as a plain socket
+middleware includes YARP, MOOS, ROS, Pocolibs, as well as a plain socket
 interface.
 
 Commands
@@ -38,10 +38,10 @@ Commands
         Runs a simulation (must be a Python script) without loading 
         the Blender interface.
 :base blender_file:
-        When running in Edit mode, and assuming your passing a BuilderAPI 
+        When running in Edit mode, and assuming your passing a Builder API 
         Python script, you can optionally set a 'base' Blender file on 
         which the Python script is applied. This is convenient to quickly
-        change the simulated environment wihtout touching the Python 
+        change the simulated environment without touching the Python 
         script, for instance.
 :name node_name:
         When running in multi-node mode, sets the name of this
@@ -72,11 +72,19 @@ Environment
 			Determine which blender binary is started. If it does not exist, 
 			rely on the first blender in the PATH
 
+:MORSE_RESOURCE_PATH:
+			Determine where morse will search for blender components. It is a
+			colon-separated list of directories, similar to PATH. 
+
 :MORSE_NODE:
 			In multi-node mode, if no name has been given, look for this
 			variable to determine the name of the node. If it does not exist,
 			rely on the name of the host.
 
+Morse relying on Python to execute itself, the run of Morse is influenced by
+all Python variables, in particular **PYTHONPATH**. See :manpage:`python(1)` for
+details.
+
 See Also
 --------
-:manpage:`morseexec(1)` :manpage:`blender(1)`
+:manpage:`morseexec(1)` :manpage:`blender(1)` :manpage:`python(1)`
