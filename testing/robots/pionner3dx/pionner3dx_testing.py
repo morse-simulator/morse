@@ -49,7 +49,6 @@ class Pioneer3DXTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         robot = Pioneer3DX()
-        robot.unparent_wheels()
 
         pose = Pose()
         robot.append(pose)

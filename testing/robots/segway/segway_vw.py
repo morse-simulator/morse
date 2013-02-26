@@ -52,7 +52,6 @@ class Differential_VW_Test(MorseTestCase):
         robot = SegwayRMP400()
         robot.properties(FixTurningSpeed=1.23)
         robot.translate(z=0.1)
-        robot.unparent_wheels()
 
         pose = Pose()
         robot.append(pose)

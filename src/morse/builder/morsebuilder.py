@@ -172,6 +172,10 @@ class WheeledRobot(Robot):
 
         Robot.append(self, obj, 2)
 
+    def after_renaming(self):
+        self.unparent_wheels()
+
+
 
 class Sensor(Component):
     def __init__(self, filename):
