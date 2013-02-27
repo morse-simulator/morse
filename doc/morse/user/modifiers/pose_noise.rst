@@ -16,14 +16,14 @@ Modified data
 
 It modifies so the following variables :
 
-	- **x**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
-	- **y**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
-	- **z**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
-	- **orientation**: assumed to be a unit quaternion and multiplied with
-	  a noise quaternion with std dev ``ros_std`` (default: 5 degrees)
-	- **roll**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
-	- **pitch**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
-	- **yaw**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
+- **x**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
+- **y**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
+- **z**: add Gaussian noise with std dev ``pos_std`` (default: 0.05)
+- **orientation**: assumed to be a unit quaternion and multiplied with
+  a noise quaternion with std dev ``ros_std`` (default: 5 degrees)
+- **roll**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
+- **pitch**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
+- **yaw**: add Gaussian noise with std dev ``rot_std`` (default: 5 deg)
 
 Available methods
 -----------------

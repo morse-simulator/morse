@@ -36,9 +36,9 @@ need to call the
 your component. The process is explained in more details and with numerous
 examples in the following tutorials:
 	
-	- :doc:`beginner_tutorials/tutorial`
-	- :doc:`beginner_tutorials/yarp_tutorial`
-	- :doc:`beginner_tutorials/tutorial_builder_ros`
+- :doc:`beginner_tutorials/tutorial`
+- :doc:`beginner_tutorials/yarp_tutorial`
+- :doc:`beginner_tutorials/tutorial_builder_ros`
 
 
 Extending middleware support of MORSE

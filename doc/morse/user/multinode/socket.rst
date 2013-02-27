@@ -49,19 +49,19 @@ The whole process for launching the multi-node simulation is described below:
 
 #. On another terminal, setup the necessary environment variables for ``nodeA`` and launch MORSE:
 
-  On bash::
+- On bash::
 
-        $ cd $MORSE_ROOT/share/morse/examples/tutorials/multinode/
-        $ export PYTHONPATH=$PYTHONPATH:.
-        $ export MORSE_NODE=nodeA
-        $ morse tutorial-socket.py
+	$ cd $MORSE_ROOT/share/morse/examples/tutorials/multinode/
+	$ export PYTHONPATH=$PYTHONPATH:.
+	$ export MORSE_NODE=nodeA
+	$ morse tutorial-socket.py
 
-  On csh::
+- On csh::
 
-        $ cd $MORSE_ROOT/share/morse/examples/tutorials/multinode/
-        $ setenv PYTHONPATH $PYTHONPATH\:.
-        $ setenv MORSE_NODE nodeA
-        $ morse tutorial-socket.py
+	$ cd $MORSE_ROOT/share/morse/examples/tutorials/multinode/
+	$ setenv PYTHONPATH $PYTHONPATH\:.
+	$ setenv MORSE_NODE nodeA
+	$ morse tutorial-socket.py
 
 #. Do the same for the other node (``nodeB``), either on another terminal or another computer
 
