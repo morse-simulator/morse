@@ -148,10 +148,10 @@ Here is a simple example of using services with sockets in python (available at
   to control the human)
 
 Controlling the human with pymorse :tag:`pymorse`
-++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The previous example can be rewritten more easily using the :doc:`pymorse API
-<../pymorse>`.
+<../../pymorse>`.
 
 .. code-block:: python
 
