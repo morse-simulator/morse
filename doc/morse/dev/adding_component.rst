@@ -297,12 +297,15 @@ Now that you created the logic of your component, you need to define a builder
 class. This will allow you to create an object in the Blender interface, which
 will call your logic code every *n* frame of the simulation.
 
-- Sensors must extend :py:class:`morse.builder.creator.SensorCreator`
-  * have a look at :py:class:`morse.builder.sensors.Pose` for a simple example
-- Actuators must extend :py:class:`morse.builder.creator.ActuatorCreator`
-  * have a look at :py:class:`morse.builder.actuators.MotionVW` for a simple example
+- Sensors must extend :py:class:`morse.builder.creator.SensorCreator`. Have a
+  look at :py:class:`morse.builder.sensors.Pose` for a simple example.
+
+- Actuators must extend :py:class:`morse.builder.creator.ActuatorCreator`.
+  Have a look at :py:class:`morse.builder.actuators.MotionVW` for a simple
+  example.
 
 .. code-block:: python
+
     from morse.builder.creator import SensorCreator
 
     class PTUPosture(SensorCreator):
@@ -314,6 +317,7 @@ For basic mesh, you can use classes from :py:mod:`morse.builder.blenderobjects`
 module.
 
 .. code-block:: python
+
     from morse.builder.creator import SensorCreator
     from morse.builder.blenderobjects import Sphere
 
@@ -329,6 +333,7 @@ If you want to add a specific mesh from an external ``.blend`` file,
 use :py:meth:`morse.builder.creator.ComponentCreator.append_meshes`.
 
 .. code-block:: python
+
     from morse.builder.creator import SensorCreator
 
     class Sick(LaserSensorWithArc):
