@@ -69,7 +69,7 @@ This section shows how MORSE can interact with different middlewares.
 
     user/beginner_tutorials/tutorial
     user/beginner_tutorials/yarp_tutorial
-    user/beginner_tutorials/tutorial_builder_ros
+    user/beginner_tutorials/ros_tutorial
     user/beginner_tutorials/hri_tutorial
 
 Intermediate tutorials
@@ -83,7 +83,7 @@ with specific requirements.
 
     user/advanced_tutorials/cat_and_mouse
     user/advanced_tutorials/flying_cat_and_mouse
-    user/advanced_tutorials/ros_tutorial
+    user/advanced_tutorials/ros_nav_tutorial
     user/advanced_tutorials/mocap_tutorial
     user/advanced_tutorials/request_tutorial
     

@@ -38,7 +38,7 @@ examples in the following tutorials:
 	
 - :doc:`beginner_tutorials/tutorial`
 - :doc:`beginner_tutorials/yarp_tutorial`
-- :doc:`beginner_tutorials/tutorial_builder_ros`
+- :doc:`beginner_tutorials/ros_tutorial`
 
 
 Extending middleware support of MORSE
