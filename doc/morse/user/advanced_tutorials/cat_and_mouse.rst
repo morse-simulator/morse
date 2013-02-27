@@ -207,6 +207,10 @@ The socket port numbers are usually 60000+ (e.g. 60001 or 60002...)::
 
   $ telnet localhost 60001
 
+For more information about sockets in MORSE, see the
+`services tutorial<advanced_tutorials/request_tutorial>`.
+
+
 Going further
 -------------
 
