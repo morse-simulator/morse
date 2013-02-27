@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
-import os
 from morse.builder import bpymorse
-from morse.builder import Armature, Robot, MORSE_COMPONENTS
+from morse.builder import Armature, Robot
 
 class Human(Robot):
     """ Append a human model to the scene.
