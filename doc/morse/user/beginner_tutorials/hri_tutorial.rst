@@ -129,34 +129,21 @@ You can now re-run the simulation, as usual. The human pose is now exported.
 Reading the position outside of MORSE
 -------------------------------------
 
-We can retrieve the pose of the human from a regular Python script:
+We can retrieve the pose of the human from a regular Python script
+:tag:`pymorse`:
 
 .. code-block:: python
 
-  import time
-  import pymorse
+    import time
+    from pymorse import Morse
 
-  morse = pymorse.Morse("localhost", 4000)
+    def printer(data):
+        print("Pose=" + str(data))
 
-  # The callback function: when the human pose is updated, we print it
-  def printer(data):
-      print("Pose=" + str(data))
-
-  try:
-    pose = morse.stream("Pose")
-
-    # Asynchronous read of the pose
-    pose.subscribe(printer)
-
-    # Listen to pose updates for 10 sec
-    time.sleep(10)
-
-  except MorseServerError as ose:
-    print('Oups! An error occured!')
-    print(ose)
-
-  finally:
-    morse.close()
+    with Morse() as morse:
+        morse.human.pose.subscribe(printer)
+        # Listen to pose updates for 10 sec
+        time.sleep(10)
 
 You can run this script from any terminal, on the same machine as MORSE (or on
 a distant one, just replace ``localhost`` by the appropriate host).
