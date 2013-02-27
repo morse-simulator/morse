@@ -58,8 +58,8 @@ By adding the ``@service`` decorator to the ``move`` method, we expose
 
 During the simulation initialization, MORSE registers these services for
 each instances of the component, maps them to one (or several)
-middlewares (as specified by the user in :doc:`component_config.py <../user/hooks>`), and
-starts listening for incoming request.
+middlewares (as specified by the scene description), and starts listening for
+incoming request.
 
 Each middleware has its own naming scheme for services, but one can
 expect the services to be available as ``component_name.service_name``.
@@ -75,7 +75,7 @@ The example below shows a simple Python client that would use the
   s.send("id1 myHuman move (1.0, 1.6)\n")
 
 In this example, we assume that ``myHuman`` is the name of the Blender
-object that instanciates a ``HumanClass``.
+object that instantiates a ``HumanClass``.
 
 .. note::
   The value of the id (here ``id1``) has no importance at all: it is specific
@@ -128,7 +128,7 @@ free-functions).
 
 In this case, the decorator takes one parameter, the (pseudo) component.
 
-For instance, ``morse.core.supervision_services.py`` declares such
+For instance, :py:mod:`morse.core.supervision_services` declares such
 services. The following example shows the ``list_robots`` service that
 returns the list of robot declared in the simulation:
 
@@ -159,8 +159,8 @@ first an *initialization method* and secondly, a way to tell when the
 task is achieved.
 
 Declaring an initialization method is very similar to synchronous
-services. For instance, the *waypoint* actuator defines an asynchronous
-``goto`` service:
+services. For instance, the :doc:`waypoint <../user/actuators/waypoint>`
+actuator defines an asynchronous ``goto`` service:
 
 .. code-block:: python
 
@@ -232,7 +232,7 @@ To set a local policy, simply decorate your services with the
 
 An **interruptible** service is preempted when a new asynchronous service is
 started by calling the ``interrupt`` method. The ``interrupt`` method is
-defined in ``morse.core.AbstractObject`` to send back to the caller the status
+defined in :py:class:`morse.core.AbstractObject` to send back to the caller the status
 :data:`morse.core.status.PREEMPTED`. It is advised to overload this behaviour
 in the component class to ensure the service is actually interrupted (do not
 forget however to call overloaded ``interrupt`` method, as shown in the example
