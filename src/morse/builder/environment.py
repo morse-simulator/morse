@@ -443,14 +443,18 @@ class Environment(Component):
         # Change the text with the name of the camera being displayed
         caption.game.properties['Text'].value = self._display_camera.name
 
-    def save(self, filepath=None, check_existing=False):
+    def save(self, filepath=None, check_existing=False, compress=True):
         """ Save .blend file
 
-        :param filepath: (string, (optional, default: current file)) File Path
-        :param check_existing: (boolean, (optional, default: False))
-                               Check and warn on overwriting existing files
+        :param filepath: File Path
+        :type  filepath: string, (optional, default: current file)
+        :param check_existing: Check and warn on overwriting existing files
+        :type  check_existing: boolean, (optional, default: False)
+        :param compress: Compress, Write compressed .blend file
+        :type  compress: boolean, (optional, default: True)
         """
-        bpymorse.save(filepath=filepath, check_existing=check_existing)
+        bpymorse.save(filepath=filepath, check_existing=check_existing,
+                compress=compress)
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
