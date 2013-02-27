@@ -7,10 +7,10 @@ you can control a mobile robot and read data from its sensors.
 It makes use of MORSE :doc:`Builder API <../../../../user/builder>`: a set of
 Python functions that allow to define:
 
- - The robots to use
- - The components attached to them
- - The middleware bindings used for communication
- - The environment of the simulation
+- The robots to use
+- The components attached to them
+- The middleware bindings used for communication
+- The environment of the simulation
 
 During the tutorial, we will write such a Python script that can be executed by MORSE to
 create your simulation and start it.
