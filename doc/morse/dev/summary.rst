@@ -104,3 +104,4 @@ may be used to remotely control the global behaviour of the simulator:
 	:maxdepth: 1
 
 	../user/supervision_services
+	../user/communication_services
