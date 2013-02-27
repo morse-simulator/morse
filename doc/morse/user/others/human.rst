@@ -44,7 +44,7 @@ With the Builder API
 ++++++++++++++++++++
 
 To add a human with the :doc:`MORSE Builder API <../../user/builder>`, you just need
-to instantiate the :py:class:`morse.builder.morsebuilder.Human` class.
+to instantiate the :py:class:`morse.builder.robots.human.Human` class.
 
 .. code-block:: python
 
@@ -72,11 +72,7 @@ Usage example:
    human.translate(x=5.5, y=-3.2, z=0.0)
    human.rotate(z=-3.0)
 
-   human.armature.add_stream('pocolibs',
-                    ['morse.middleware.pocolibs_datastream.Pocolibs',
-                     'export_posture',
-                     'morse/middleware/pocolibs/sensors/human_posture',
-                     'human_posture'])
+   human.armature.add_stream('pocolibs')
 
 
 Simulation with multiple Humans
@@ -154,7 +150,7 @@ Press :kbd:`Right Mouse Button` to lay it down.
 If you want to know which objects are graspable hold :kbd:`Alt`. Their respective 
 name will appear over every active object.
 
-Futhermore the human can interact with the environment- namely doors, drawers 
+Furthermore the human can interact with the environment- namely doors, drawers 
 and mechanical and electric devices. See :doc:`Setting up a Scene with MORSE Utils <../addons/morse_utils>` 
 on how to set up the environment for the human.
 
@@ -168,7 +164,7 @@ way you can turn the device on and off.
 Sensors and actuators
 ---------------------
 
-Currently (``morse-0.6``), the human component has one sensor already
+Currently (``morse-1.0``), the human component has one sensor already
 integrated, which exports the joint state of the human: the :doc:`human posture
 sensor <../sensors/human_posture>`.  This sensor is already embedded in the
 ``human.blend`` file. You don't need to link it from a separate sensor file.
@@ -190,7 +186,7 @@ Services
     
 - **grasp_**: (Synchronous service) Grasp and release an object if in
   manipulating mode. Takes one argument: must be "t" to grasp and "f" to
-  ungrasp
+  release
     
 - **move_hand**: (Synchronous service) Move the hand in the third direction (
   Y, see above). 
