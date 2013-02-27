@@ -98,4 +98,4 @@ Adding your own components
 --------------------------
 
 To learn how to create new components (sensors, robots...), please refer to the 
-:doc:`developer documentation <dev/summary>`.
+:doc:`developer documentation <contributing>`.

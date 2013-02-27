@@ -1,5 +1,5 @@
-Creating a modifier
-===================
+Adding a new modifier
+=====================
 
 The concept of a modifier is relatively simple. Their only function is to
 change the data stored in variables in the corresponding component, by using

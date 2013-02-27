@@ -22,13 +22,13 @@ the LAAS master repository::
 Developers documentation
 ------------------------
 
-Check the :doc:`Developers documentation <dev/summary>`.
 
 .. toctree::
     :maxdepth: 1
 
     dev/dev_overview
     dev/dev_workflow
+    dev/coding_guidelines
     user/builder
     dev/adding_component
     dev/adding_datastream_handler
@@ -42,8 +42,8 @@ Code reference
 
 Automatically generated code reference is `accessible here <code/morse.html>`_
 
-Tips and how-tos 
-----------------
+Tips and how-to 
+---------------
 
 .. toctree::
     :glob:
