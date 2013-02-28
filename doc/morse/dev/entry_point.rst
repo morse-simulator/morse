@@ -1,5 +1,5 @@
 Entry points of the simulation
-=============================
+==============================
 
 The internal functioning of MORSE is based on Blender's Game Engine events.
 These are defined in the Logic buttons window, using the graphical interface
@@ -50,7 +50,7 @@ blender file anymore, but described in the builder component (see
 The finalization method
 -----------------------
 
-The method which terminates the simulation (called when you press :key:`ESC`) is the
+The method which terminates the simulation (called when you press :kbd:`ESC`) is the
 :py:meth:`morse.blender.main.finish`). However, the real cleaning logic is in
 :py:meth:`morse.blender.main.close_all`, which try to properly finalize all
 resources used by the simulator, in particular, resources used by the
