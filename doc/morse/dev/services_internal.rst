@@ -12,11 +12,11 @@ setting the attribute ``_morse_service`` to ``True`` on the function.
 Before actually registering the service, a mapping between the component
 and one or several middlewares that will manage incoming requests must
 be defined (for instance, we may want the ``goto`` service of the
-:py:class:`morse.actuators.waypoint.WaypointActuatorClass` to be managed
+:py:class:`morse.actuators.waypoint.Waypoint` to be managed
 by the YARP middleware for the component ``MainRobot``).
 
-These mapping are defined in the :doc:`component_config.py <../user/hooks>`
-script (that is simulation-dependent).
+These mapping are defined by your builder script (it is so
+simulation-dependant).
 
 At start up, :py:func:`morse.blender.main.init`...
 
@@ -24,10 +24,10 @@ At start up, :py:func:`morse.blender.main.init`...
 2. Instantiates classes associated to each component, 
 3. Registers the mappings (with 
    :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`),
-4. Calls :py:meth:`morse.core.object.Object.register_services`
+4. Calls :py:meth:`morse.core.abstractobject.AbstractObject.register_services`
    on each component instance.
 
-:py:meth:`morse.core.Object.register_services` iterates over
+:py:meth:`morse.core.abstractobject.AbstractObject.register_services` iterates over
 every methods marked as MORSE service within the class, and call
 :py:func:`morse.core.services.do_service_registration`.
 
@@ -65,7 +65,7 @@ services. The ``@async_service`` decorator simply calls the ``@service``
 decorator with the ``async`` parameter set to ``True``, which leads to
 wrap the original method in a new method that takes one more parameter
 (a callback) and calls
-:py:meth:`morse.core.object.Object.set_service_callback`.
+:py:meth:`morse.core.abstractobject.AbstractObject.set_service_callback`.
 
 Simplified version of the ``@service`` decorator:
 
@@ -91,7 +91,7 @@ in:
 * :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
   creates a new callback function for this service,
 * It invokes the original method with this callback,
-* When :py:meth:`morse.core.object.Object.completed`
+* When :py:meth:`morse.core.abstractobject.AbstractObject.completed`
   is invoked (i.e., when the service is completed), the callback 
   is executed.
 * This causes in turn the 
