@@ -2,7 +2,7 @@ Adding a new robot
 ==================
 
 Let say you have a 3D model of a robot and you want to use it in MORSE, this
-page is the what you are looking for. For more on 3D modeling, see `Resources`_.
+page is what you are looking for. For more on 3D modeling, see `Resources`_.
 
 
 Low-poly
@@ -20,10 +20,19 @@ possible.
 Physics
 -------
 
-Game properties: convex hull, mass, etc. See :doc:`Physics
-<../user/blender_tutorials/advanced_blender>`.
+Game Physics: see :doc:`Physics
+<../user/blender_tutorials/advanced_blender>` page.
 
-.. image:: ../../media/configure_display-3.3.png
+- ``Type`` = "`Rigid body
+  <http://wiki.blender.org/index.php/User:Sculptorjim/Game_Engine/Physics/Objects/Rigid_Body>`_"
+- ``Mass`` Affects the reaction due to collision between objects,
+  more massive objects have more inertia. Will also affect material force fields.
+  Will also change behaviors if you are using the suspension and steering portions
+  of Bullet physics.
+- ``Collision Bounds``: "`Convex Hull
+  <http://wiki.blender.org/index.php/Doc:2.6/Manual/Game_Engine/Physics/Collision_Bounds>`_"
+
+.. image:: ../../media/robot_game_physics_collision.png
    :width: 300
    :align: center
 
