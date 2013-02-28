@@ -18,7 +18,7 @@ digraph G {
 	]
 
 	AbstractObject [
-		label = "{AbstractObject |+on_completion : fonction\l+ local_data : OrderedDict\l+ del_function : array\l|+ name()\l+ interrupt()\l+ completed()\l+ register_service()\l }"
+		label = "{AbstractObject |+ on_completion : fonction\l+ local_data : OrderedDict\l+ del_function : array\l|+ name()\l+ interrupt()\l+ completed()\l+ register_service()\l }"
 	]
 
 	MorseOverlay [
@@ -30,7 +30,7 @@ digraph G {
 	]
 
 	MorseRobot [
-		label = "{MorseRobot | +move_status : string\l| }"
+		label = "{MorseRobot | + move_status : string\l| }"
 	]
 
 	MorseSensor [
