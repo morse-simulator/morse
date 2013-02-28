@@ -168,7 +168,8 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.laserscanner.LaserScanner": {
         "default": {
-            "ros": 'morse.middleware.ros.laserscanner.LaserScanPublisher',
+            "ros": ['morse.middleware.ros.laserscanner.LaserScanPublisher',
+                    'morse.middleware.ros.laserscanner.PointCloud2Publisher'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": 'morse.middleware.yarp.laserscanner.YarpLaserScannerPublisher'
             },
@@ -199,7 +200,8 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.pose.Pose": {
         "default": {
-            "ros": 'morse.middleware.ros.pose.PoseStampedPublisher',
+            "ros": ['morse.middleware.ros.pose.PoseStampedPublisher',
+                    'morse.middleware.ros.pose.TFPublisher'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
@@ -240,7 +242,8 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.semantic_camera.SemanticCamera": {
         "default": {
-            "ros": 'morse.middleware.ros.semantic_camera.SemanticCameraPublisher',
+            "ros": ['morse.middleware.ros.semantic_camera.SemanticCameraPublisher',
+                    'morse.middleware.ros.semantic_camera.SemanticCameraPublisherLisp'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "pocolibs": 'morse.middleware.pocolibs.sensors.viman.VimanPoster'
