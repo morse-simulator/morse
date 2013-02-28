@@ -22,20 +22,33 @@ the LAAS master repository::
 Developers documentation
 ------------------------
 
+Extending Morse
++++++++++++++++
 
 .. toctree::
     :maxdepth: 1
 
-    dev/dev_overview
-    dev/dev_workflow
+    dev/file_hierarchy
     dev/coding_guidelines
-    user/builder
     dev/adding_component
     dev/adding_datastream_handler
     dev/adding_modifier
     dev/services
     dev/new_middleware
     dev/testing
+
+Morse internals
++++++++++++++++
+
+.. toctree::
+    :maxdepth: 1
+
+    dev/component_object_model
+    dev/entry_point
+    dev/execution_loop
+    dev/arguments_passing
+    dev/time_event
+    dev/services_internal
 
 Code reference
 --------------
