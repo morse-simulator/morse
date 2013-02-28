@@ -19,8 +19,8 @@ Most of the time, adding a new service is as easy as adding ``@service``
 in front of a function declared within a component.
 
 .. note::
-	Arguments coming from remote caller are passed to service using string, so
-	be sure to convert your data in the expected type.
+    Arguments coming from remote caller are passed to service using string, so
+    be sure to convert your data in the expected type.
 
 .. warning::
     Do not use ``eval()`` to convert your data from string to expected type, as
@@ -69,15 +69,23 @@ The example below shows a simple Python client that would use the
   import socket
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.connect(("localhost", 4000))
-  s.send("id1 myHuman move (1.0, 1.6)\n")
+  s.send("id1 human move (1.0, 1.6)\n")
 
-In this example, we assume that ``myHuman`` is the name of the Blender
+In this example, we assume that ``human`` is the name of the Blender
 object that instantiates a ``HumanClass``.
 
 .. note::
   The value of the id (here ``id1``) has no importance at all: it is specific
   to the implementation of the services with sockets and used only by the
   client to track requests and responses.
+
+Using pymorse, the previous code can be rewrite as:
+
+.. code-block:: python
+    
+    from pymorse import Morse
+    with Morse() as morse:
+        morse.rpc('human', 'move', 1.0, 1.6)
 
 Returning values
 ----------------
@@ -125,18 +133,18 @@ free-functions).
 
 In this case, the decorator takes one parameter, the (pseudo) component.
 
-For instance, :py:mod:`morse.core.supervision_services` declares such
+For instance, :py:mod:`morse.services.supervision_services` declares such
 services. The following example shows the ``list_robots`` service that
 returns the list of robot declared in the simulation:
 
 .. code-block:: python
 
-    import bge
+    from morse.core import blenderapi
     from morse.core.services import service
 
     @service(component = "simulation")
     def list_robots():
-        return [obj.name for obj in bge.logic.robotDict.keys()]
+        return [obj.name for obj in blenderapi.persistantstorage().robotDict.keys()]
 
 The pseudo-component ``simulation`` is used as *namespace* for the
 service: this one is accessible as ``simulation.list_robots``.
@@ -164,7 +172,7 @@ actuator defines an asynchronous ``goto`` service:
     import morse.core.actuator
     from morse.core.services import async_service
 
-    class WaypointActuatorClass(morse.core.actuator.Actuator):
+    class Waypoint(morse.core.actuator.Actuator):
 
         def __init__(self, obj, parent=None):
             [...]
@@ -209,13 +217,13 @@ object.
   Asynchronous services can normally only exist inside components (*i.e.*,
   they must be declared within a class inheriting from
   :py:class:`morse.core.abstractobject.AbstractObject`).
-  The section `Manually registering services`_ explains how to overcome
+  The section :ref:`manually-registring-services` explains how to overcome
   this constraint.
 
 Interruption policy for asynchronous services
 ---------------------------------------------
 
-As of ``morse-0.6``, only one asynchronous service may run at a given time.
+As of ``morse-1.0``, only one asynchronous service may run at a given time.
 
 You can define the behaviour of the simulator when a second request is received
 either at the middleware level (*global policy*) or at the individual service
@@ -229,23 +237,23 @@ To set a local policy, simply decorate your services with the
 
 An **interruptible** service is preempted when a new asynchronous service is
 started by calling the ``interrupt`` method. The ``interrupt`` method is
-defined in :py:class:`morse.core.AbstractObject` to send back to the caller the status
-:data:`morse.core.status.PREEMPTED`. It is advised to overload this behaviour
-in the component class to ensure the service is actually interrupted (do not
-forget however to call overloaded ``interrupt`` method, as shown in the example
-below). 
+defined in :py:class:`morse.core.abstractobject.AbstractObject` to send back
+to the caller the status :data:`morse.core.status.PREEMPTED`. It is advised to
+overload this behaviour in the component class to ensure the service is
+actually interrupted (do not forget however to call overloaded ``interrupt``
+method, as shown in the example below). 
 
 .. code-block:: python
 
     import morse.core.actuator
 
-    class WaypointActuatorClass(morse.core.actuator.Actuator):
+    class Waypoint(morse.core.actuator.Actuator):
 
          def interrupt(self):
              self.local_data['x'] = self.bge_object.worldPosition[0]
              self.local_data['y'] = self.bge_object.worldPosition[1]
              self.local_data['z'] = self.bge_object.worldPosition[2]
-             super(WaypointActuatorClass, self).interrupt()
+             super(Waypoint, self).interrupt()
 
 .. note::
     It is recommended to always implement the ``interrupt`` method even if the
@@ -257,8 +265,8 @@ A **non-interruptible** service triggers a failure (status
 asynchronous service. 
 
 To set a global policy, you need to catch a
-:class:`morse.core.exceptions.MorseServiceAlreadyRunningException` exception
-when invoking the :meth:`morse.core.request_manager.on_incoming_request`
+:py:class:`morse.core.exceptions.MorseServiceAlreadyRunningError` exception
+when invoking the :meth:`morse.core.request_manager.RequestManager.on_incoming_request`
 method.
 
 This exception has a special member ``service`` that points to the asynchronous 
@@ -274,5 +282,5 @@ service currently running:
 .. note::
   A service with a local policy defined (*i.e.* decorated with either
   ``@interruptible`` or ``@noninterruptible``) will never trigger a
-  ``MorseServiceAlreadyRunningException`` exception, and thus, **the local
+  ``MorseServiceAlreadyRunningError`` exception, and thus, **the local
   policy always overrides the global policy**.

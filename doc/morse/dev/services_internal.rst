@@ -99,6 +99,8 @@ in:
   method to be invoked, to notify middleware-specific request 
   managers that the task is complete.
 
+.. _manually-registring-services:
+
 Manually registering services
 -----------------------------
 
