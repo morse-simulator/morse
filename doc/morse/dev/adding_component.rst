@@ -7,7 +7,7 @@ Components in MORSE are either **robots**, **sensors** or **actuators**.
 **Robots** are mainly containers for **sensors** and **actuators**.
 
 This page present how to create and add new sensors or actuators to MORSE.
-You will find another page to :doc:`add a new robot<dev/adding_robot>`.
+You will find another page to :doc:`adding_robot`.
 
 General overview
 ----------------
