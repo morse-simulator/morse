@@ -31,6 +31,7 @@ Extending Morse
     dev/file_hierarchy
     dev/coding_guidelines
     dev/adding_component
+    dev/adding_robot
     dev/adding_datastream_handler
     dev/adding_modifier
     dev/services
