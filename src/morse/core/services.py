@@ -107,6 +107,9 @@ class MorseServices:
 
 def do_service_registration(fn, component_name = None, service_name = None, async = False, request_managers = None):
 
+    if blenderapi.fake: #doc mode
+        return
+
     if not component_name:
         logger.error("A service has been registered without component: " + str(fn))
         return
