@@ -275,8 +275,8 @@ the :doc:`compatibility matrix <integration>`.
         motion.add_stream('ros', 'morse.middleware.ros.motion_vw.TwistReader')
 
     In that case, we instruct MORSE to use ROS with the ``TwistReader`` class
-    defined in the ``morse.middleware.ros.motion_vw`` module.
+    defined in the :py:mod:`morse.middleware.ros.motion_vw` module.
 
 .. note::
     Configuration for standard sensors and actuators are defined in
-    the file ``src/morse/builder/data.py``.
+    the module :py:mod:`morse.builder.data`.
