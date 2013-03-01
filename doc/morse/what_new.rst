@@ -1,5 +1,5 @@
-What's new in MORSE 1.0-beta1?
-==============================
+What's new in MORSE 1.0?
+========================
 
 General
 -------
@@ -167,9 +167,10 @@ MORSE unit-tests now use this new API.
 Internals
 ---------
 
-- Substential changes in MORSE internals:
+- Substantial changes in MORSE internals:
+
   - lots of refactoring, to improve code consistency (including
-  {middleware->datastream} (#186))
+    {middleware->datastream} (#186))
   - many files have been renamed for consistency
 
 Misc
@@ -183,10 +184,11 @@ Misc
   deprecation or doubtful usefulness)
 - New CSS for documentation, based on GitHub *minimal* style.
 - Numerous bugfixes, including:
-    - the 'objects flying around' bug, that was due to the way Blender handle
-      transformation matrices (#139).
-    - a bug affecting the color of some materials
-    - bug with logging when restarting the simulation in special cases (#183)
+
+  - the 'objects flying around' bug, that was due to the way Blender handle
+    transformation matrices (#139).
+  - a bug affecting the color of some materials
+  - bug with logging when restarting the simulation in special cases (#183)
 
 
 Previous releases
