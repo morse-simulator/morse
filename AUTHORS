@@ -1,5 +1,18 @@
 (as ordered by 'git shortlog -sn TAG1..TAG2')
 
+MORSE 1.0
+---------
+Arnaud Degroote (LAAS-CNRS)
+Pierrick Koch (LAAS-CNRS)
+Séverin Lemaignan (LAAS-CNRS)
+Cyril Robin (LAAS-CNRS)
+Michael Karg (TUM-IAS)
+David Hodo (Auburn University)
+Charles Lesire-Cabaniols (ONERA)
+Gregoire Milliez (LAAS-CNRS)
+Serge Stinckwich (IRD / CNRS)
+
+
 MORSE 0.6
 ---------
 Gilberto Echeverria (LAAS-CNRS)
