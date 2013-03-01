@@ -47,6 +47,7 @@ MORSE_DATASTREAM_MODULE = {
     'yarp': 'morse.middleware.yarp_datastream.Yarp',
     'pocolibs': 'morse.middleware.pocolibs_datastream.Pocolibs',
     'text': 'morse.middleware.text_datastream.Text',
+    'moos': 'morse.middleware.moos_datastream.MOOS'
 }
 
 MORSE_MODIFIER_DICT = {
@@ -79,7 +80,8 @@ INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",
         "yarp": "morse.middleware.yarp_datastream.YarpPublisher",
         "yarp_json": "morse.middleware.yarp.yarp_json.YarpJsonPublisher",
-        "text": "morse.middleware.text_datastream.Publisher"
+        "text": "morse.middleware.text_datastream.Publisher",
+        "moos": "morse.middleware.moos.abstract_moos.StringPublisher"
 }
 
 INTERFACE_DEFAULT_IN = {
@@ -132,7 +134,8 @@ MORSE_DATASTREAM_DICT = {
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
-                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster'],
+            "moos": 'morse.middleware.moos.gps.GPSNotifier'
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
@@ -142,7 +145,8 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
-                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster'],
+            "moos": 'morse.middleware.moos.gyroscope.GyroscopeNotifier'
             }
         },
     "morse.sensors.human_posture.HumanPosture": {
@@ -159,6 +163,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
+            "moos": 'morse.middleware.moos.imu.IMUNotifier'
             }
         },
     "morse.sensors.kinect.Kinect": {
@@ -171,7 +176,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": ['morse.middleware.ros.laserscanner.LaserScanPublisher',
                     'morse.middleware.ros.laserscanner.PointCloud2Publisher'],
             "socket": INTERFACE_DEFAULT_OUT,
-            "yarp": 'morse.middleware.yarp.laserscanner.YarpLaserScannerPublisher'
+            "yarp": 'morse.middleware.yarp.laserscanner.YarpLaserScannerPublisher',
+            'moos': 'morse.middleware.moos.sick.LIDARNotifier'
             },
         "range": {
             "ros": 'morse.middleware.ros.infrared.RangePublisher',
@@ -206,7 +212,8 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
-                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster'],
+            'moos': 'morse.middleware.moos.pose.PoseNotifier'
             }
         },
     "morse.sensors.proximity.Proximity": {
@@ -338,6 +345,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
+            'moos' : 'morse.middleware.moos.motion.MotionReader'
             }
         },
         "morse.actuators.v_omega.MotionVW": {
@@ -345,7 +353,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.motion_vw.TwistReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster'
+            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster',
+            'moos' : 'morse.middleware.moos.motion.MotionReader'
             }
         },
     "morse.actuators.v_omega_diff_drive.MotionVWDiff": {
@@ -353,7 +362,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.motion_vw.TwistReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster'
+            "pocolibs": 'morse.middleware.pocolibs.actuators.genpos.GenPosPoster',
+            'moos' : 'morse.middleware.moos.motion.MotionReader'
             }
         },
     "morse.actuators.xy_omega.MotionXYW": {
