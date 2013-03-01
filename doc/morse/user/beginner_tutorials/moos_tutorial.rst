@@ -1,5 +1,5 @@
 MOOS and MORSE tutorial :tag:`moos`
-==================================
+===================================
 
 This is an extension of the current :doc:`tutorial <../beginner_tutorials/tutorial>`
 using MOOS as our middleware (instead of raw sockets).
