@@ -1,5 +1,5 @@
-MORSE 1.0 - beta 1
-==================
+MORSE 1.0
+=========
 
 General
 -------
@@ -97,6 +97,19 @@ Builder API
   only wireframes are displayed. This improves MORSE loading time and
   performance, but some sensors (like cameras) won't work. Most of the
   unit-tests now use this mode.
+
+.. warning::
+
+  It basically means that scene are incompatible between release 0.6 and 1.0.
+  To help the conversion, you can use the tool available `here
+  <https://raw.github.com/laas/morse/master/tools/convert_0.6_to_1.0.sh>`_
+  Basically, you can use it like that::
+
+		sh convert_0.6_to_1.0.sh your_scene.py > your_scene_1.0.py
+
+  You may need to edit the resulting file manually to fix last issues. If you
+  get in trouble, feel free to send us a mail on morse-users@laas.fr with your
+  scene.
 
 Assets
 ------
