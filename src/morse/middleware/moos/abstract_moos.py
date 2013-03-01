@@ -8,7 +8,7 @@ from morse.core import blenderapi
 class AbstractMOOS(AbstractDatastream):
     """ Base class for all MOOS Publishers and Subscribers """
     # used to generate documentation, TODO fill in subclasses
-    _type_name = "default"
+    _type_name = "db entries"
     _type_url = ""
     _moosapp = None
 
