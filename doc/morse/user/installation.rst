@@ -116,12 +116,23 @@ Prerequisites
 Installation
 ++++++++++++
 
+
 Download the latest version of the source code. It is stored in a ``git``
 repository::
 
   $ git clone https://github.com/laas/morse.git
   
-You can also get a `tarball version here <https://github.com/laas/morse/tarball/master>`_. 
+If you want to get only the latest stable version (1.0) of Morse, you can get
+it in the branch `1.0_STABLE`. You can get it directly using ::
+ 
+  $ git clone https://github.com/laas/morse.git -b 1.0_STABLE
+
+or if you have already download the repository ::
+  
+  $ git checkout -b 1.0_STABLE -t origin/1.0_STABLE
+  
+You can get a `tarball version here
+<ftp://ftp.openrobots.org/pub/openrobots/morse/morse-1.0.tar.bz2>`_.
 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::

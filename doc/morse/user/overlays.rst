@@ -6,7 +6,7 @@ that overrides the default component behaviour to better fit into a
 particular architecture.
 
 .. warning::
-  As of `MORSE 0.6`, only :doc:`services <../dev/services>` can be overrided. In future
+  As of `MORSE 1.0`, only :doc:`services <../dev/services>` can be overrided. In future
   versions, the *stream-oriented* interfaces of components (like ROS topics
   or YARP port) may be overridable as well.
 
