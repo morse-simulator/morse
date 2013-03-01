@@ -12,6 +12,9 @@ LAAS-CNRS (Toulouse, France)
 - Redouane Boumghar
 - Simon Lacroix
 - Thomas Moulard
+- Cyril Robin
+- Gregoire Milliez
+- Pierrick Koch
 
 TUM (Munich, Germany)
 +++++++++++++++++++++
