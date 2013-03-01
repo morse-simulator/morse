@@ -5,9 +5,9 @@ from morse.middleware.moos import AbstractMOOS
 class GyroscopeNotifier(AbstractMOOS):
     """ Notify Gyroscope """
 
-    def default(self, ci='unused'):
-        curTime=pymoos.MOOSCommClient.MOOSTime()
+    def default(self, ci = 'unused'):
+        cur_time = pymoos.MOOSCommClient.MOOSTime()
         
-        self.m.Notify('zYaw',self.data['yaw'],curTime)
-        self.m.Notify('zRoll',self.data['roll'],curTime)
-        self.m.Notify('zPitch',self.data['pitch'],curTime)
+        self.m.Notify('zYaw', self.data['yaw'], cur_time)
+        self.m.Notify('zRoll', self.data['roll'], cur_time)
+        self.m.Notify('zPitch', self.data['pitch'], cur_time)

@@ -6,8 +6,8 @@ class GPSNotifier(AbstractMOOS):
     """ Notify GPS """
 
     def default(self, ci='unused'):
-        curTime=pymoos.MOOSCommClient.MOOSTime()
+        cur_time = pymoos.MOOSCommClient.MOOSTime()
         
-        self.m.Notify('zEast',self.data['x'],curTime)
-        self.m.Notify('zNorth',self.data['y'],curTime)
-        self.m.Notify('zHeight',self.data['z'],curTime)
+        self.m.Notify('zEast', self.data['x'], cur_time)
+        self.m.Notify('zNorth', self.data['y'], cur_time)
+        self.m.Notify('zHeight', self.data['z'], cur_time)

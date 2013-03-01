@@ -18,14 +18,14 @@ class MotionReader(AbstractMOOS):
 
         # look for command messages: cYawRate and cVelocity
         for message in messages:
-            if (message.GetKey()=="cVelocity") and (message.IsDouble()):
-                self.data['v'] =message.GetDouble() # command linear velocity [m/s]
+            if (message.GetKey() =="cVelocity") and (message.IsDouble()):
+                self.data['v'] = message.GetDouble() # command linear velocity [m/s]
             elif  (message.GetKey()=="cYawRate") and (message.IsDouble()):
-                self.data['w']=message.GetDouble() # command angular velocity [m/s]
-            elif  (message.GetKey()=="cSteer") and (message.IsDouble()):
-                self.data['steer']=message.GetDouble() # command steer angle [deg]
-            elif  (message.GetKey()=="cThrottle") and (message.IsDouble()):
-                self.data['force']=message.GetDouble() # command engine force
-            elif  (message.GetKey()=="cBrake") and (message.IsDouble()):
-                self.data['brake']=message.GetDouble() # command angular velocity [m/s]
+                self.data['w'] = message.GetDouble() # command angular velocity [m/s]
+            elif  (message.GetKey() =="cSteer") and (message.IsDouble()):
+                self.data['steer'] = message.GetDouble() # command steer angle [deg]
+            elif  (message.GetKey( )=="cThrottle") and (message.IsDouble()):
+                self.data['force'] = message.GetDouble() # command engine force
+            elif  (message.GetKey() =="cBrake") and (message.IsDouble()):
+                self.data['brake'] = message.GetDouble() # command angular velocity [m/s]
 

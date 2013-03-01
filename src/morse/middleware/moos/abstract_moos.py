@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morse.moos")
-
 import pymoos.MOOSCommClient
 
 from morse.middleware import AbstractDatastream
+from morse.core import blenderapi
 
 
 class AbstractMOOS(AbstractDatastream):
@@ -42,15 +42,17 @@ class AbstractMOOS(AbstractDatastream):
 #
 
 class StringPublisher(AbstractMOOS):
-    """ Publish a string containing a printable representation of the local data. """
+    """ Publish a string containing a printable representation of the
+    local data. """
 
     def default(self, ci='unused'):
         logger.debug("Posting message to the MOOS database.")
         current_time = blenderapi.persistantstorage().current_time
         #iterate through all objects of the component_instance and post the data
         for variable, data in self.data.items():
-            name = "%s_%s"%(self.component_name, variable)
-            logger.debug("name: %s, type: %s, data: %s"%(name, type(data), str(data)))
+            name = "%s_%s" % (self.component_name, variable)
+            logger.debug("name: %s, type: %s, data: %s"%
+                                (name, type(data), str(data)))
             self.m.Notify(name, str(data), current_time)
 
 
@@ -64,5 +66,5 @@ class StringReader(AbstractMOOS):
 
         # log messages
         for message in messages:
-            log.info("message: %s"%str(message))
+            logger.info("message: %s" % str(message))
 
