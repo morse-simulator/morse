@@ -31,6 +31,8 @@ class SemanticCamera(morse.sensors.camera.Camera):
     """
 
     _name = "Semantic camera"
+    _short_desc = "A smart camera allowing to retrieve objects in its \
+    field of view"
 
     add_data('visible_objects', [], 'list<objects>',
            "A list containing the different objects visible by the camera. \

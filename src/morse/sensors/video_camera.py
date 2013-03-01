@@ -45,6 +45,7 @@ class VideoCamera(morse.sensors.camera.Camera):
     """
 
     _name = "Video camera"
+    _short_desc = "A camera capturing RGBA image"
 
     add_data('image', 'none', 'buffer',
            "The data captured by the camera, stored as a Python Buffer \

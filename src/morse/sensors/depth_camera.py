@@ -8,6 +8,8 @@ from morse.helpers.components import add_data
 
 class AbstractDepthCamera(VideoCamera):
 
+    _short_desc = "A camera capturing 3D points cloud"
+
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -53,6 +55,7 @@ class DepthCamera(AbstractDepthCamera):
     """
 
     _name = "Depth (XYZ) camera"
+    _short_desc = "A camera capturing 3D points cloud"
 
     add_data('points', 'none', 'memoryview', "List of 3D points from the depth "
              "camera. memoryview of a set of float(x,y,z). The data is of size "
