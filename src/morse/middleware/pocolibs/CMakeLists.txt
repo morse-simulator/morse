@@ -41,6 +41,6 @@ install (FILES __init__.py
 
 install(DIRECTORY overlays sensors actuators
         DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs
-        REGEX .*py.$ EXCLUDE
+		FILES_MATCHING PATTERN "*.py"
         )
 
