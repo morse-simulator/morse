@@ -10,13 +10,22 @@ contributions are very welcome!
 You can write to the list of developers of the project, writing to this 
 address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
 
-MORSE development can be tracked online with GitHub: `MORSE on GitHub 
-<https://github.com/laas/morse>`_
+MORSE development can be tracked on the `MORSE GitHub repository
+<https://github.com/laas/morse>`_::
 
-Fork it from your own GitHub account, or get the source directly from 
-the LAAS master repository::
+    git clone git://github.com/laas/morse.git
 
-    $ git clone git://git.openrobots.org/git/robots/morse
+If you want your feature to be merged in MORSE:
+
+- First, `fork <https://help.github.com/articles/fork-a-repo>`_ ``laas/morse``
+  on GitHub.
+- Then, `send a pull request
+  <https://help.github.com/articles/using-pull-requests>`_ with your changes.
+
+You can also get the source directly from the LAAS master repository at:
+``git://git.openrobots.org/git/robots/morse``
+
+*We use GitHub as a mirror.*
 
 
 Developers documentation
