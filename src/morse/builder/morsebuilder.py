@@ -126,6 +126,17 @@ class Robot(Component):
         Component.__init__(self, 'robots', filename)
         self.properties(Robot_Tag = True)
 
+    def set_mass(self, mass):
+        """ Set component's mass
+
+        :param mass: The component's mass
+        :type  mass: float
+
+        ..note: The object must have a physics controller for the mass to be
+        applied, otherwise the mass value will be returned as 0.0.
+        """
+        self._bpy_object.game.mass = mass
+
     def add_default_interface(self, stream):
         for child in self.children:
             if child.is_morseable():
