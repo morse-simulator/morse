@@ -234,10 +234,30 @@ method, do not forget to call respectively ``read`` or ``write``.
 Moos middleware :tag:`moos`
 +++++++++++++++++++++++++++
 
-.. warning ::
+Moos middleware interface provides
+:py:class`morse.middleware.moos.abstract_moos.AbstractMOOS`. This class deals
+with some low-level details of Moos. You still need to write your specialized
+`default` implementation, calling:
 
-    TODO when David confirmed it works properly
+- ``self.m.Notify()`` to export data to the databases (sensor from the point of
+  view of Morse)
+- ``self.m.FetchRecentMail()`` to get last messages from the databases
+  (actuator from the point of view of Morse).
 
+.. code-block:: python
+
+    import pymoos.MOOSCommClient
+    from morse.middleware.moos import AbstractMOOS
+
+    class GPSNotifier(AbstractMOOS):
+        """ Notify GPS """
+
+        def default(self, ci='unused'):
+            cur_time = pymoos.MOOSCommClient.MOOSTime()
+            
+            self.m.Notify('zEast', self.data['x'], cur_time)
+            self.m.Notify('zNorth', self.data['y'], cur_time)
+            self.m.Notify('zHeight', self.data['z'], cur_time)
 
 Adding the support for a new middleware to MORSE
 ------------------------------------------------
