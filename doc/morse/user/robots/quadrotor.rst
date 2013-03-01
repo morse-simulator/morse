@@ -3,7 +3,7 @@ Quadrotor
 
 The base of a generic **quadrotor** without ``Rigid Body`` physics.
 
-.. image:: ../../../media/robots/quadrotoro.png 
+.. image:: ../../../media/robots/quadrotor.png 
   :align: center
   :width: 600
 
