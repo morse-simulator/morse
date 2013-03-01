@@ -1,6 +1,9 @@
 Build your simulations
 ======================
 
+For a quick list of builder module methods, see the
+:doc:`Builder Overview<builder_overview>`.
+
 The Builder API
 ---------------
 
