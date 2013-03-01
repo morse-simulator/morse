@@ -535,7 +535,7 @@ def supported_interfaces_csv(props, datastreams, level = "default"):
             if type_url:
                 return "`%s <%s>`_" % (type_name, type_url)
             else:
-                return "\"%s\"" % (type_name)
+                return "%s" % (type_name)
 
     cmpt = props["object"].__module__ + '.' + props["object"].__name__
     module = (props['object'].__module__.split('.'))[-1]
