@@ -1,10 +1,13 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import sys
-import math
 from morse.core import blenderapi
 from morse.middleware import AbstractDatastream
-from morse.middleware.pocolibs.stereopixel import *
 from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
+
+try:
+    from morse.middleware.pocolibs.stereopixel import *
+except ImportError:
+    if not blenderapi.fake:
+        raise
 
 
 class Spix3DImagePoster(AbstractDatastream):
