@@ -14,18 +14,12 @@ standard installation process for the `Orocos toolchain <http://www.orocos.org/t
    On other systems, it is advised to manage OS dependencies out of Autoproj
    (by answering ``ruby``).
    
-#. If Autoproj already configured your gitorious access rights, skip this step. 
-   Else, edit file ``autoproj/init.rb`` and add::
-    
-    require 'autoproj/gitorious'
-    Autoproj.gitorious_server_configuration('GITORIOUS', 'gitorious.org')
-
 #. Edit the ``autoproj/manifest`` file and add to the relevant sections::
     
     package_sets:
       - type: git
-        url: $GITORIOUS_ROOT/robotis/morse_package_set.git
-        push_url: $GITORIOUS_PUSH_ROOT/robotis/morse_package_set.git
+        url: git://gitorious.org/robotis/morse_package_set.git
+        branch: 1.0
     
     layout:
       - morse
