@@ -265,14 +265,15 @@ class LaserScanner(Sensor):
         # TODO rework the LDMRS (3 layers) display [code in 1.0-beta2]
         if self.visible_arc and self._layers == 1:
             for mesh in self._ray_arc.meshes:
-                for mat in range(mesh.numMaterials):
-                    for index in range(mesh.getVertexArrayLength(mat)):
-                        point = self.local_data['point_list'][index]
+                for m_index in range(len(mesh.materials)):
+                    # Skip the first vertex (located at the center of the sensor)
+                    for v_index in range(1, mesh.getVertexArrayLength(m_index)):
+                        vertex = mesh.getVertex(m_index, v_index)
+                        point = self.local_data['point_list'][v_index-1]
                         if point == [0.0, 0.0, 0.0]:
                             # If there was no intersection, move the vertex
                             # to the laser range
-                            point = self._ray_list[index] * self.laser_range
-                        vertex = mesh.getVertex(mat, index)
+                            point = self._ray_list[v_index-1] * self.laser_range
                         vertex.setXYZ(point)
 
 class LaserScannerRotationZ(LaserScanner):
