@@ -17,6 +17,7 @@ from morse.core import blenderapi
 
 start_position = []
 start_orientation = []
+keyboard_ctrl_objects = []
 
 def store_default(contr):
     """ Save the initial position and orientation of the camera """
@@ -28,6 +29,15 @@ def store_default(contr):
     start_position = mathutils.Vector(camera.worldPosition)
     start_orientation = mathutils.Matrix(camera.worldOrientation)
 
+    # look for objects that define the move_cameraFP property to
+    # disable keyboard control of the camera
+    scene = blenderapi.scene()
+    if not scene:
+        # not ready, main reload(blenderapi)
+        return
+    for obj in scene.objects:
+        if 'move_cameraFP' in obj.getPropertyNames():
+            keyboard_ctrl_objects.append(obj)
 
 def reset_position(contr):
     """ Put the camera in the initial position and orientation """
@@ -51,9 +61,9 @@ def move(contr):
     if camera != scene.active_camera:
         return
 
-    if 'Human'  in scene.objects:
-        human = scene.objects['Human']
-        if not human['move_cameraFP']:
+    # Do not move the camera if another object has set move_cameraFP
+    for obj in keyboard_ctrl_objects:
+        if not obj['move_cameraFP']:
             return
 
     # set the movement speed
