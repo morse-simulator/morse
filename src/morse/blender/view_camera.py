@@ -51,10 +51,11 @@ def move(contr):
     if camera != scene.active_camera:
         return
 
-    if 'Human'  in scene.objects:
-        human = scene.objects['Human']
-        if not human['move_cameraFP']:
-            return
+
+    for obj in scene.objects:
+        if 'move_cameraFP' in obj.getPropertyNames():
+            if not obj['move_cameraFP']:
+                return
 
     # set the movement speed
     speed = camera['Speed']
