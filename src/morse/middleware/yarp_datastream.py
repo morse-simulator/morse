@@ -28,9 +28,9 @@ class YarpPort(AbstractDatastream):
     def connect2topic(self, topic):
         """ Connect a yarp port to a specific yarp topic. """
         if self.is_input:
-            yarp.Network.connect("topic://"+topic, self.port)
+            yarp.Network.connect("topic://"+topic, self.port_name)
         else:
-            yarp.Network.connect(self.port, "topic://"+topic)
+            yarp.Network.connect(self.port_name, "topic://"+topic)
 
     def finalize(self):
         self.port.close()
