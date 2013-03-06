@@ -327,6 +327,15 @@ This function was designed for the use with CRAM and the Adapto group.
 
 
 
+morse.middleware.ros.velocity.TwistStampedPublisher
+-------------------------------------------------
+
+**type** : `geometry_msgs/Twist <http://ros.org/doc/api/geometry_msgs/html/msg/Twist.html>`_
+
+Publish the linear and angular velocity of the velocity sensor.
+
+
+
 morse.middleware.ros.video_camera.VideoCameraPublisher
 ------------------------------------------------------
 

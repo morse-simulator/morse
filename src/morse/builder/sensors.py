@@ -320,6 +320,14 @@ class Infrared(LaserSensorWithArc):
         # create default Arc_
         self.create_laser_arc()
 
+class Velocity(SensorCreator):
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name, "morse.sensors.velocity.Velocity", "velocity")
+        mesh = Sphere("VelocitySphere")
+        mesh.scale = (.04, .04, .01)
+        mesh.color(.5, .5, .5)
+        self.append(mesh)
+
 class VideoCamera(SensorCreator):
     def __init__(self, name=None, \
                  classpath="morse.sensors.video_camera.VideoCamera", \
