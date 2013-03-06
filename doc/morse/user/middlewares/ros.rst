@@ -78,7 +78,7 @@ morse.middleware.ros.accelerometer.TwistPublisher
 
 **type** : `geometry_msgs/Twist <http://ros.org/doc/api/geometry_msgs/html/msg/Twist.html>`_
 
-Publish the velocity of the acceleromter sensor.
+Publish the velocity of the accelerometer sensor.
 No angular information, only linear ones.
 
 
