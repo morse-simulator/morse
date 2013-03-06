@@ -263,6 +263,14 @@ MORSE_DATASTREAM_DICT = {
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
+    "morse.sensors.velocity.Velocity": {
+        "default": {
+            "ros": ['morse.middleware.ros.velocity.TwistStampedPublisher'],
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
+            }
+        },
     "morse.sensors.video_camera.VideoCamera": {
         "default": {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
