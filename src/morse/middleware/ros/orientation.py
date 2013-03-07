@@ -9,7 +9,7 @@ class QuaternionReader(ROSReader):
     ros_class = Quaternion
 
     def update(self, message):
-        quaternion = mathutils.Quaternion(message)
+        quaternion = mathutils.Quaternion((message.w, message.x, message.y, message.z))
         euler = quaternion.to_euler()
         self.data["roll"] = euler.x
         self.data["pitch"] = euler.y
