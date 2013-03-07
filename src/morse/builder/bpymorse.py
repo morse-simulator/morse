@@ -215,8 +215,7 @@ def save(filepath=None, check_existing=False, compress=True):
         return
     if not filepath:
         filepath = bpy.data.filepath
-    bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing,
-            compress=compress)
+    bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing)
 
 def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
     """ Tune the speed of the simulation
@@ -243,4 +242,3 @@ def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
     get_context_scene().game_settings.fps = fps
     get_context_scene().game_settings.logic_step_max = logic_step_max
     get_context_scene().game_settings.physics_step_max = physics_step_max
-
