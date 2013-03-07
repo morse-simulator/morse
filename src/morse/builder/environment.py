@@ -241,29 +241,6 @@ class Environment(Component):
         # Set the color at the horizon to dark azure
         bpymorse.get_context_scene().world.horizon_color = color
 
-    def set_speed(self, fps=0, logic_step_max=0, physics_step_max=0):
-        """ Tune the speed of the simulation
-
-        :param fps: Nominal number of game frames per second
-            (physics fixed timestep = 1/fps, independently of actual frame rate)
-        :type fps: int in [1, 250], default 0
-        :param logic_step_max: Maximum number of logic frame per game frame if
-            graphics slows down the game, higher value allows better
-            synchronization with physics
-        :type logic_step_max: int in [1, 5], default 0
-        :param physics_step_max: Maximum number of physics step per game frame
-            if graphics slows down the game, higher value allows physics to keep
-            up with realtime
-        :type physics_step_max: int in [1, 5], default 0
-
-        usage::
-
-            env.set_speed(120, 5, 5)
-        """
-        bpymorse.get_context_scene().game_settings.fps = fps
-        bpymorse.get_context_scene().game_settings.logic_step_max = logic_step_max
-        bpymorse.get_context_scene().game_settings.physics_step_max = physics_step_max
-
     def show_debug_properties(self, value=True):
         """ Display the value of the game-properties marked as debug
 
