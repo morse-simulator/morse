@@ -138,6 +138,12 @@ class Robot(Component):
         self._bpy_object.game.mass = mass
 
     def add_default_interface(self, stream):
+        """ Add a service and stream interface to all components of the robot
+
+        ..note: If add_stream or add_service is used explicitly for some
+          components and the specified interface is the same it will be added
+          twice.
+        """
         for child in self.children:
             if child.is_morseable():
                 child.add_interface(stream)
