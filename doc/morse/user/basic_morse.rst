@@ -41,6 +41,17 @@ Additinally, the following options can be given to the MORSE executable:
   lower left corner).
 - **-v** / **--version**: returns the current MORSE version
 
+Build your simulations
+======================
+
+The Builder API
+---------------
+
+The MORSE ``Builder API``, is a set of components and methods to build a simulation
+scene. A simulation scene is composed of an environment and one or more robots
+composed of sensors and actuators. Each of those components are connected outside
+the simulator through middlewares.
+
 
 MORSE controls
 --------------
