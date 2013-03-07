@@ -9,7 +9,7 @@ environment.
     This tutorial is currently oriented towards the experiments being carried
     out at LAAS for Human-Robot Interaction. They rely on the software packages
     of the `Openrobots suite <http://www.openrobots.org>`_, and on the scripts
-    available in the `git repository <ssh://trac.laas.fr/git/robots/hri-simulation>`_.
+    available in the `git repository <http://trac.laas.fr/git/robots/hri-simulation.git>`_.
 
 
 Pre-requisites
@@ -37,7 +37,7 @@ Setup the scene
 The scripts necessary to run this simulation can be obtaining from a git
 repository::
 
-$ git clone ssh://trac.laas.fr/git/robots/hri-simulation
+    git clone git://trac.laas.fr/git/robots/hri-simulation.git
 
 We use a Builder script to generate the scene with the Jido robot, a human
 avatar and some object that the robot can interact with. The script can be
