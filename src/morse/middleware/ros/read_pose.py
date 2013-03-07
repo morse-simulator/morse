@@ -14,7 +14,7 @@ class PoseReader(ROSReader):
         self.data["y"] = message.position.y
         self.data["z"] = message.position.z
 
-        quaternion = mathutils.Quaternion(message.orientation)
+        quaternion = mathutils.Quaternion((message.orientation.w, message.orientation.x, message.orientation.y, message.orientation.z))
         euler = quaternion.to_euler()
         self.data['roll'] = euler.x
         self.data['pitch'] = euler.y
