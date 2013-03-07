@@ -390,6 +390,10 @@ class AbstractComponent(object):
         Configuration.link_service(component, config)
 
     def add_interface(self, interface, **kwargs):
+        """ Add a service and stream interface to the component
+
+        Its argument is the name of the interface to be used.
+        """
         self.add_service(interface)
         self.add_stream(interface, **kwargs)
 
