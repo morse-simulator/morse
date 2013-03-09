@@ -3,7 +3,12 @@ cmake_minimum_required(VERSION 2.6)
 set(PACKAGE_NAME morse)
 set(PACKAGE_VERSION "1.0")
 
-cmake_policy(SET CMP0017 OLD)
+# only available from cmake-2.8.4
+if(COMMAND cmake_policy)
+	if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 3)
+		cmake_policy(SET CMP0017 OLD)
+	endif()
+endif()
 
 
 
