@@ -353,9 +353,11 @@ class VideoCamera(SensorCreator):
         actuator.property = 'capturing'
         controller.link(sensor = sensor, actuator = actuator)
         # looking in +X
-        self.rotate(x=math.pi/2, z=math.pi/2)
+        SensorCreator.rotate(self, x=math.pi/2, z=math.pi/2)
         # append CameraMesh with its textures
         self.append_meshes(['CameraMesh'], "camera")
+    def rotate(self, x=0, y=0, z=0):
+        SensorCreator.rotate(self, x=y, y=z, z=x)
 
 class DepthCamera(VideoCamera):
     def __init__(self, name=None):
