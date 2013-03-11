@@ -5,7 +5,14 @@ from morse.helpers.components import add_data
 from math import degrees
 
 class Velocity(morse.core.sensor.Sensor):
-    """ This sensor returns the linear and angular velocity of the sensor """
+    """
+    This sensor returns the linear and angular velocity of the sensor,
+    both in robot frame and in world frame. Linear velocities are
+    expressed in meter . sec ^ -1 while angular velocities are expressed
+    in radian . sec ^ -1.
+
+    The sensor expects that the associated robot has a physics controller. 
+    """
 
     _name = "Velocity"
     _short_descr = "A Velocity Sensor"
@@ -38,8 +45,10 @@ class Velocity(morse.core.sensor.Sensor):
         self.robot_world_v = self.robot_parent.bge_object.worldLinearVelocity
 
         # get the transformation from robot to sensor frame
-        (loc, rot, scale) = self.robot_parent.position_3d.transformation3d_with(self.position_3d).matrix.decompose()
-        logger.debug("body2sensor rotation RPY [% .3f % .3f % .3f]" % tuple(degrees(a) for a in rot.to_euler()))
+        b2s = self.sensor_to_robot_position_3d()
+        (_ , rot, _) = b2s.matrix.decompose()
+        logger.debug("body2sensor rotation RPY [% .3f % .3f % .3f]" %
+                     tuple(degrees(a) for a in rot.to_euler()))
         # store body to sensor rotation
         self.rot_b2s = rot
 
@@ -53,6 +62,8 @@ class Velocity(morse.core.sensor.Sensor):
         # take the inverse rotation to transform a vector from body to sensor
 
         # Store the important data
-        self.local_data['linear_velocity'] = self.rot_b2s.inverted() * self.robot_v
-        self.local_data['angular_velocity'] = self.rot_b2s.inverted() * self.robot_w
+        self.local_data['linear_velocity'] = self.rot_b2s.inverted() * \
+                                             self.robot_v
+        self.local_data['angular_velocity'] = self.rot_b2s.inverted() * \
+                                              self.robot_w
         self.local_data['world_linear_velocity'] = self.robot_world_v.copy()
