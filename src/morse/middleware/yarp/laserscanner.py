@@ -7,8 +7,8 @@ class YarpLaserScannerPublisher(YarpPublisher):
                            self.component_name)
 
 class YarpLaserScannerDistancePublisher(YarpPublisher):
-    def encode(self, ci):
-        self.encode_message(botte, self.data['range_list'],
+    def encode(self, bottle):
+        self.encode_message(bottle, self.data['range_list'],
                                    self.component_name)
 
 
