@@ -40,6 +40,12 @@ class MocapControl(morse.core.actuator.Actuator):
              "Left foot position")
     add_data('right_foot_position', [0.0, 0.0, 0.0], "vec3<float>",
              "Right foot position")
+    add_data('torso_position', [0.0, 0.0, 0.0], "vec3<float>",
+            "torso position")
+    add_data('left_knee_position', [0.0, 0.0, 0.0], "vec3<float>",
+            "left knee position")
+    add_data('right_knee_position', [0.0, 0.0, 0.0], "vec3<float>",
+            "right knee position")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)

@@ -33,9 +33,9 @@ class NiutPoster(PocolibsDataStreamInput):
 
         _create_transform_matrix()
 
-    def _store_joint_position(self, component, joints, ik_target, joint_index):
-
-        joint_position = joints[ik_target].position
+    def _store_joint_position(self, joints, ik_target, joint_index):
+        joint_position = joints[joint_index].position
+        logger.debug("%s (%f %f %f)" % (ik_target, joint_position.x, joint_position.y, joint_position.z))
         # Convert the GEN_POINT_3D into a Blender vector
         position_vector = mathutils.Vector([joint_position.x, joint_position.y, joint_position.z])
         if transformation_matrix:
@@ -53,7 +53,7 @@ class NiutPoster(PocolibsDataStreamInput):
                 if human_list.users[i].state == NIUT_TRACKING:
                     joints = human_list.users[i].skeleton.joint
                     for target, idx in self.couples:
-                        self._store_joint_position(component, joints, target, idx)
+                        self._store_joint_position(joints, target, idx)
                     return
 
 def _create_transform_matrix():
@@ -67,9 +67,9 @@ def _create_transform_matrix():
 	# KinCam  |/ ____ Z  ,   World  |/_____X
     # Transformation of the Kinect frame of reference to that of Blender
     kinect_matrix = mathutils.Matrix((
+                [0.0, 1.0, 0.0, 0.0], \
                 [0.0, 0.0, 1.0, 0.0], \
                 [1.0, 0.0, 0.0, 0.0], \
-                [0.0, 1.0, 0.0, 0.0], \
                 [0.0, 0.0, 0.0, 1.0]))
 
     # Additional rotation of the physical sensor, with respect to the Blender world
