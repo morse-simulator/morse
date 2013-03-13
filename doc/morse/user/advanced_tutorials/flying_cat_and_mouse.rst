@@ -130,6 +130,12 @@ The complete script can be found at: ``$MORSE_SRC/examples/tutorials/flying_outd
 Control program
 ---------------
 
+.. note::
+
+    This script uses ``pymorse``, you need to have built MORSE with
+    ``-DPYMORSE_SUPPORT=ON`` flag.
+
+
 As a very simple example of how to use the data from a sensor to drive the
 robot, we'll create a Python script to connect to MORSE and provide the
 "reasoning" of the *cat* robot.
@@ -234,6 +240,7 @@ moving and using the data from the pose sensors to chase after the *mouse*::
   $ python3 Cat_waypoints_pymorse_socket_script.py
 
 Note: *The following consideration is deprecated but you may find it useful.* 
+
 As we use sockets for the introduced actuators and sensors, you can connect these
 ports using the ``telnet`` program on another terminal and you will seee the datastream 
 of object visibility coming from the cameras and of poses from the pose sensors. 
