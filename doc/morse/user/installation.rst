@@ -15,8 +15,8 @@ using the simulated cameras, you will need to have a graphics card that
 supports GLSL shading. The Blender website lists these graphic cards as
 compatible with GLSL:
 
-- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  - NVidia
-  Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  
+- NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
 
 If you do not need cameras and OpenGL textures/shaders, you are advised to
 run your simulation in ``fastmode`` (:doc:`refer to the simulation's Builder
