@@ -45,7 +45,7 @@ First we will configure the *mouse* robot, which is a lot simpler.
 
   .. code-block:: python
 
-    keyboard = keyboard()
+    keyboard = Keyboard()
     keyboard.properties(Speed=3.0)
     mouse.append(keyboard)
 
