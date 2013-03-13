@@ -63,7 +63,7 @@ Morse internals
 Code reference
 --------------
 
-Automatically generated code reference is `accessible here <code/morse.html>`_
+Automatically generated code reference is :doc:`accessible here <../user/code/morse>`.
 
 Tips and how-to 
 ---------------
