@@ -55,6 +55,7 @@ class HumanClass(morse.core.robot.Robot):
     def grasp_(self, seq):
         """ Grasp object.
         """
+        logger.debug("morse grasp request received")
         human = self.bge_object
         if human['Manipulate']:
             scene = blenderapi.scene()
