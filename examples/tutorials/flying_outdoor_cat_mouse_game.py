@@ -29,7 +29,7 @@ mouse.translate (x=-4.0,y=6.5, z=0.1)
 mouse.rotate(z=0.70*pi)
 
 keyb = Keyboard()
-keyb.properties(Speed=4.0)
+keyb.properties(Speed=2.0)
 mouse.append(keyb)
 
 mousePose = Pose()
@@ -38,7 +38,7 @@ mousePose.add_stream('socket')
 
 
 """ The playground """
-env = Environment('land-1/trees')
+env = Environment('outdoors')
 env.place_camera([10.0, -10.0, 10.0])
 env.aim_camera([1.0470, 0, 0.7854])
 env.select_display_camera(semanticC)
