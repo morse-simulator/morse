@@ -37,7 +37,10 @@ class Human(Robot):
         self.suffix = self.name[-4:] if self.name[-4] == "." else ""
 
         self.armature = None
-        self.properties(classpath="morse.robots.human.HumanClass")
+        if filename == 'mocap_human':
+            self.properties(classpath="morse.robots.mocap_human.MocapHumanClass")
+        else:
+            self.properties(classpath="morse.robots.human.HumanClass")
 
         try:
             self.armature = Armature("HumanArmature", "human_posture")
