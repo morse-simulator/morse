@@ -21,7 +21,10 @@ logger.setLevel(logging.DEBUG)
 
 try:
     sys.path.append("@PYTHON_INSTDIR@")
+    os.environ["PYTHONPATH"] += os.pathsep + "@PYTHON_INSTDIR@"
     from morse.version import VERSION
+    from morse.environments import Environment
+    from morse.core.exceptions import MorseEnvironmentError
 except ImportError as detail:
     logger.error("Unable to continue: '%s'\nVerify that your PYTHONPATH variable points to the MORSE installed libraries" % detail)
     sys.exit()
@@ -31,6 +34,11 @@ import shutil
 import glob
 import re
 import tempfile
+
+try:
+    import configparser #python 3
+except ImportError:
+    import ConfigParser as configparser #python 2.x
 
 #Python version must be egal or bigger than...
 MIN_PYTHON_VERSION = "3.2"
@@ -48,9 +56,11 @@ MIN_BLENDER_VERSION = "2.62"
 #Blender version must be smaller than...
 STRICT_MAX_BLENDER_VERSION = "2.67"
 
-#Unix-style path to the MORSE default scene, within the prefix
+#Unix-style path to the MORSE default scene and templates, within the prefix
 DEFAULT_SCENE_PATH = "share/morse/data/morse_default.blend"
 DEFAULT_SCENE_AUTORUN_PATH = "share/morse/data/morse_default_autorun.blend"
+
+DEFAULT_SCENE_NAME = "default.py"
 
 #MORSE prefix (automatically detected)
 morse_prefix = ""
@@ -298,6 +308,141 @@ def check_setup():
         logger.info("Blender is using Python " + python_version + \
         ". Alright.")
 
+def get_config_file():
+    config_path = os.path.expanduser("~/.morse")
+    if not os.path.exists(config_path):
+        os.mkdir(config_path)
+
+    return os.path.join(config_path, "config")
+
+def add_site(name, path):
+    config = configparser.SafeConfigParser()
+    config.read(get_config_file())
+
+    if not config.has_section("sites"):
+        config.add_section("sites")
+
+    config.set('sites', name, path)
+
+    with open(get_config_file(), 'w') as configfile:
+        config.write(configfile)
+
+def get_site(name):
+    """ Returns the absolute path to a simulation environment specified
+    in ~/.morse/config, if it exists, None otherwise.
+    """
+    config = configparser.SafeConfigParser()
+    config.read(get_config_file())
+
+    if not config.has_option("sites", name):
+        return None
+
+    return config.get('sites', name)
+
+def delete_site(name):
+    config = configparser.SafeConfigParser()
+    config.read(get_config_file())
+
+    if config.has_option("sites", name):
+        config.remove_option("sites", name)
+
+    with open(get_config_file(), 'w') as configfile:
+        config.write(configfile)
+
+
+def set_morse_environ(site):
+
+        logger.info('Adding <%s> to PYTHONPATH and MORSE_RESOURCE_PATH.' % site)
+
+        if 'PYTHONPATH' in os.environ:
+                # pre-pend the site path to be sure we shadow existing resources
+                os.environ['PYTHONPATH'] = "%s" % os.path.join(site, 'src') + os.pathsep + os.environ['PYTHONPATH']
+        else:
+            os.environ['PYTHONPATH'] = "%s" % os.path.join(site, 'src')
+
+        if 'MORSE_RESOURCE_PATH' in os.environ:
+                # pre-pend the site path to be sure we shadow existing resources
+            os.environ['MORSE_RESOURCE_PATH'] = "%s" % os.path.join(site, 'data') + os.pathsep + os.environ['MORSE_RESOURCE_PATH']
+        else:
+            os.environ['MORSE_RESOURCE_PATH'] = "%s" % os.path.join(site, 'data')
+
+
+
+def get_scene(name, subname = ""):
+    """ Tries to figure out which Builder script the user is refering to
+    and return the absolute path to it.
+
+    If only one parameter *name* is given:
+
+    - if *name* is a configured simulation environment with prefix $ENVROOT:
+        - if '$ENVROOT/default.py' exists, launch it.
+        - else, if any file with an extension {.py|.blend} exists, launch the first
+            one (in alphanumerical order) 
+        - else if a file called *name* exists in the current directory, launch it.
+        - else, fail
+    - else check if a file called *name* exists, and launch it (note that in that
+    case, *name* can contain an absolute path or a path relative to the current 
+    directory).
+
+    If two parameters *name* and *subname* are given:
+
+    - if *name* is a configured simulation environment with prefix $ENVROOT:
+        - if *$ENVROOT/subname* exists, launch it
+        - else, add $ENVROOT to MORSE environment, and if *subname* exists, launch it (note
+          that *subname* can contain an absolute path or a path relative to the current
+          directory)
+    - else fail
+    """
+
+    if not subname:
+
+        site = get_site(name)
+        if site:
+            default = os.path.join(site, DEFAULT_SCENE_NAME)
+            set_morse_environ(site)
+
+            if os.path.exists(default):
+                logger.info('Using default scene in environment <%s>.' % name)
+                return default
+
+            logger.info('Using environment <%s>.' % name)
+
+            candidates = [os.path.join(site, f) for f in os.listdir(site) if re.match(r'.*\.(py|blend)', f)]
+            candidates = sorted([c for c in candidates if os.path.isfile(c)]) # filters out directories
+            if candidates:
+                logger.warning('No scene specified. Launching MORSE with first found '
+                               'in environment: <%s>.' % candidates[0])
+                logger.info('You can specify another scene by passing its name as'
+                            ' parameter after the simulation environment.')
+                return sortedcandidates[0]
+
+        if os.path.exists(name) and os.path.isfile(name):
+            logger.info('Loading simulation <%s>.' % os.path.abspath(name))
+            return os.path.abspath(name)
+
+        logger.error('Cannot find a MORSE environment or simulation '
+                     'scene matching <%s>!' % name)
+
+    else: #both name and subname are defined
+
+        site = get_site(name)
+        if site:
+            logger.info('Using environment <%s>.' % name)
+            set_morse_environ(site)
+
+            candidate = os.path.join(site, subname)
+            if os.path.exists(candidate) and os.path.isfile(candidate):
+                logger.info('Loading simulation <%s>.' % candidate)
+                return candidate
+            elif os.path.exists(subname) and os.path.isfile(subname):
+                logger.info('Loading simulation <%s>.' % os.path.abspath(subname))
+                return os.path.abspath(subname)
+
+
+            logger.error('Simulation <%s> not found! (I was looking for <%s> or <%s>)' % (subname, candidate, os.path.abspath(subname)))
+        else:
+            logger.error('MORSE environment <%s> does not exist!' % name)
+
 def create_copy_default_scene(filename = None):
     """
     Creates a copy of the default scene in the current path, ensuring an 
@@ -324,6 +469,78 @@ def create_copy_default_scene(filename = None):
     shutil.copy(default_scene_abspath, new_scene)
     
     return new_scene
+
+def create_environment(args):
+
+    name = args.env
+    force = args.force
+
+    set_prefixes(silent = True)
+
+    site = get_site(name)
+    if not force and site:
+        logger.error("You already have a simulation environment "
+                     "called \"%s\" (pointing to <%s>)!" % (name, site))
+        logger.error("Use 'morse create -f <env>' to overwrite it.")
+        sys.exit()
+
+
+    add_site(name, os.path.abspath(name))
+
+    env = Environment(morse_prefix, name)
+
+    env.create(force)
+
+    logger.info("A new simulation environment has been successfully "
+                "created in <%s>." % os.path.abspath(name))
+    logger.info("You can run it directly with \"morse run %s\" or you "
+                "can start editing it." % name)
+
+def delete_environment(args):
+
+    name = args.env
+    force = args.force
+
+    site = get_site(name)
+    if not site:
+        logger.error("Found no simulation environment called \"%s\"" % name)
+        sys.exit()
+
+    if force:
+        ok = 'y'
+    else:
+        ok = input("Are you sure you want to delete the environment \"%s\" [y/N]" % name)
+
+    if ok.lower() == 'y':
+        if os.path.exists(site):
+            shutil.rmtree(site)
+        delete_site(name)
+        logger.info("Environment \"%s\" successfully deleted." % name)
+
+def add_component(args):
+    
+    type = args.type
+    name = args.name
+    env = args.env
+
+    set_prefixes(silent = True)
+
+
+    site = get_site(env)
+    if not site:
+        logger.error("No simulation environment called \"%s\"!" % env)
+        logger.error("Use 'morse create %s' to create it first." % env)
+        sys.exit()
+
+    env = Environment(morse_prefix, env, site)
+
+    try:
+        env.add_component(type, name)
+    except MorseEnvironmentError as e:
+        logger.error("%s" % e)
+        sys.exit(1)
+    logger.info("A new %s called <%s> has been added to <%s>." % (type, name, args.env))
+
 
 def prelaunch():
     logger.info(version())
@@ -370,11 +587,8 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
     
     #Flush all outputs before launching Blender process
     sys.stdout.flush()
-   
-    # Redefine the PYTHONPATH to include both the user-set path plus the 
-    # default system paths (like '/usr/lib/python*')
+
     env = os.environ
-    env["PYTHONPATH"] = os.pathsep.join(sys.path)
 
     # Add the MORSE node name to env.
     if node_name:
@@ -404,7 +618,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
                 script_path = os.path.abspath(script)
                 script_path = script_path.replace ('\\', '/')
                 tmpF.write(("import sys\n").encode())
-                for element in sys.path:
+                for element in os.environ["PYTHONPATH"].split(os.pathsep):
                     element = element.replace('\\', '/')
                     tmpF.write(("sys.path.append('" + element + "')\n").encode())
                 tmpF.write(("exec(compile(open('" + script_path + "').read(), '" + script_path + "', 'exec'), globals (), locals ())\n").encode())
@@ -451,26 +665,32 @@ def process_run_edit(args):
         script_options.append("with-xmas-colors")
 
     if args.mode == "run":
-        if not args.scene:
-            logger.error("'run' mode requires a simulation script (.py)")
+        if not args.env:
+            logger.error("'run' mode requires a simulation environment and/or a simulation scene (.py or .blend)")
             sys.exit()
+
+        scene = get_scene(args.env, args.file) or sys.exit(1)
+
         prelaunch()
         launch_simulator(
                os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
-               args.scene, \
+               scene, \
                geometry=args.geom, \
                node_name=args.name, \
                script_options = script_options)
 
     else:  # args.mode == "edit":
-        if not args.scene:
-            logger.error("'edit' mode requires a simulation to edit (.blend or .py)")
+        if not args.env:
+            logger.error("'edit' mode requires a simulation environment and/or a simulation scene to edit (.blend or .py)")
             sys.exit()
+
+        scene = get_scene(args.env, args.file) or sys.exit(1)
+
         prelaunch()
 
-        if args.scene.endswith(".blend"):
+        if scene.endswith(".blend"):
             launch_simulator(
-                   args.scene, \
+                   scene, \
                    geometry=args.geom, \
                    node_name=args.name, \
                    script_options = script_options)
@@ -478,7 +698,7 @@ def process_run_edit(args):
             try:
                 launch_simulator(
                        scene = args.base, \
-                       script = args.scene, \
+                       script = scene, \
                        geometry=args.geom, \
                        node_name=args.name, \
                        script_options = script_options)
@@ -487,7 +707,7 @@ def process_run_edit(args):
                 launch_simulator(
                        scene = None, \
                        #os.path.join(morse_prefix, DEFAULT_SCENE_PATH), \
-                       script = args.scene, \
+                       script = scene, \
                        geometry=args.geom, \
                        node_name=args.name, \
                        script_options = script_options)
@@ -533,14 +753,41 @@ if __name__ == '__main__':
     
     subparsers = parser.add_subparsers(title="modes", description="type 'morse <mode> --help' for details", dest = "mode")
 
+    # create
+    create_parser = subparsers.add_parser('create', help="create a new simulation environment in the current directory.")
+    create_parser.add_argument('env', default="", help="the name of the environment to create.")
+    create_parser.add_argument('-f', '--force', action='store_true',
+                       help='forces the creation (possibly overwriting files).')
+    create_parser.set_defaults(func=create_environment)
+
+    # rm
+    rm_parser = subparsers.add_parser('rm', help="deletes an existing simulation environment.")
+    rm_parser.add_argument('env', default="", help="the environment to delete.")
+    rm_parser.add_argument('-f', '--force', action='store_true',
+                       help='silently delete.')
+    rm_parser.set_defaults(func=delete_environment)
+
+
+    # add
+    add_parser = subparsers.add_parser('add', help="add a template for a component to an environment.")
+    add_parser.add_argument('type', choices=['robot', 'sensor', 'actuator'],
+            help="the type of component you want to add.")
+    add_parser.add_argument('name', default="", help="the name of the new component.")
+    add_parser.add_argument('env', default="", help="the environment where to add.")
+    add_parser.set_defaults(func=add_component)
+
+
+
     # check
     check_parser = subparsers.add_parser('check', help="checks your environment is correctly configured.")
     check_parser.set_defaults(func=do_check)
 
     # run
     run_parser = subparsers.add_parser('run', help="starts a simulation.")
-    run_parser.add_argument('scene', default="", nargs='?',
-            help="the exact scene (.py or .blend) to run.")
+    run_parser.add_argument('env', default="", nargs='?',
+            help="the simulation environment to run.")
+    run_parser.add_argument('file', default="", nargs='?',
+            help="the exact scene (.py or .blend) to run (if 'env' is given, within this environment). Refer to manual for details.")
     run_parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
                        help="optional parameters, passed to the Blender python engine in sys.argv")
     run_parser.add_argument('--name', default=default_morse_node,
@@ -553,8 +800,10 @@ if __name__ == '__main__':
   
     # edit
     edit_parser = subparsers.add_parser('edit', help="opens an existing scene for edition.")
-    edit_parser.add_argument('scene', default="", nargs='?',
-            help="the exact scene (.py or .blend) to edit.")
+    edit_parser.add_argument('env', default="", nargs='?',
+            help="the simulation environment to edit.")
+    edit_parser.add_argument('file', default="", nargs='?',
+            help="the exact scene (.py or .blend) to edit (if 'env' is given, within this environment). Refer to manual for details.")
     edit_parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
                        help="optional parameters, passed to the Blender python engine in sys.argv")
     edit_parser.add_argument('-b', '--base', dest='BASE',
