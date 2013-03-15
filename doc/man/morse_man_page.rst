@@ -6,8 +6,8 @@ morse manual page
 Synopsis
 --------
 
-**morse** [-h] [-v] [--name NAME] [--reverse-colors] [-c] [-g GEOM]
-             {check,edit,run} [scene] ...
+**morse** [-h] [-b BASE] [--name NAME] [-c] [--reverse-color] [-g GEOM]
+          [-v] {create,check,edit,run} [env] [scene] ...
 
 
 Description
@@ -30,13 +30,23 @@ Commands
 
 :check:
         Checks the environment is correctly setup to run morse.
-:edit filename:
+:create env:
+        Creates a new simulation environment in the current directory.
+        A template simulation scene is also created.
+        The environment is added to 'sites' in ~/.morse/config
+:edit [env] [scene]:
         Open the given Blender scene or Python script in the Blender
         interface for edition. The simulation can be started by 
         pressing P.
-:run filename:
+        If only 'env' is set, open 'scene.py' (or the first .py or .blend 
+        found if 'scene.py' does not exist) in the given environment.
+        If only [scene] is set, try to open this file in the current
+        directory.
+        If both are set, open the file 'scene' in the environment 'env'.
+:run [env] [scene]:
         Runs a simulation (must be a Python script) without loading 
         the Blender interface.
+        See above for the meaning of the [env]  and [scene] parameters.
 :base blender_file:
         When running in Edit mode, and assuming your passing a Builder API 
         Python script, you can optionally set a 'base' Blender file on 
@@ -60,6 +70,17 @@ Commands
         Displays information regarding the program use.
 :version:
         Displays the version number.
+
+
+Files
+-----
+
+Configuration files are stored in each user $HOME/.morse
+
+:config:
+        General MORSE configuration.
+        Section 'sites' contains the list of simulation environments
+        MORSE will look for at startup.
 
 Environment
 -----------

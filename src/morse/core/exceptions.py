@@ -5,6 +5,13 @@ class MorseError(Exception):
     def __str__(self):
         return repr(self.value)
 
+class MorseEnvironmentError(MorseError):
+    """ Morse Error triggered while manipulating MORSE environments
+    (typically, wrong permissions on a file or inexistant environment).
+    """
+    pass
+
+
 class MorseMiddlewareError(MorseError):
     """ Morse Error caused by a Middleware.
     """
