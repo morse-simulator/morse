@@ -35,11 +35,12 @@ class NiutPoster(PocolibsDataStreamInput):
 
     def _store_joint_position(self, joints, ik_target, joint_index):
         joint_position = joints[joint_index].position
-        logger.debug("%s (%f %f %f)" % (ik_target, joint_position.x, joint_position.y, joint_position.z))
         # Convert the GEN_POINT_3D into a Blender vector
         position_vector = mathutils.Vector([joint_position.x, joint_position.y, joint_position.z])
         if transformation_matrix:
+            #logger.error("Kinect position: [%.4f, %.4f, %.4f]" % (transformation_matrix[0][3], transformation_matrix[1][3], transformation_matrix[2][3]))
             new_position = position_vector * transformation_matrix
+            new_position = new_position + mathutils.Vector([transformation_matrix[0][3], transformation_matrix[1][3], transformation_matrix[2][3]])
         else:
             new_position = position_vector
 
@@ -75,9 +76,9 @@ def _create_transform_matrix():
     # Additional rotation of the physical sensor, with respect to the Blender world
     # Currently set to 25.5 degrees around the Y axis
     kinect_rotation = mathutils.Matrix((
-                [1.0,    0.0,    0.445,  0.0], \
+                [1.0,    0.0,    -0.445, 0.0], \
                 [0.0,    1.0,    0.0,    0.0], \
-                [-0.445, 0.0,    1.0,    0.0], \
+                [0.445,  0.0,    1.0,    0.0], \
                 [0.0,    0.0,    0.0,    1.0]))
 
     # Spin the positions around the Z axis, to match with the Blender human
