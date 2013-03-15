@@ -78,7 +78,7 @@ class HumanPosture(morse.core.sensor.Sensor):
     add_data('dof_25', 0.0, 'float',
              'rotation around the Y axis for the right wrist, in radian')
     add_data('dof_26', 0.0, 'float',
-             'rotation around the Z axis for the right write, in radian')
+             'rotation around the Z axis for the right wrist, in radian')
 
     add_data('dof_27', 0.0, 'float',
             'rotation around the X axis for the left shoulder, in radian')
