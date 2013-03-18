@@ -272,8 +272,9 @@ def move_man(v, w):
     """ Give forward movement or rotation instructions to the mocap_human robot """
     global id_
 
-    msg = "id%s human move [%s, %s]\n" % (str(id_), str(v), str(w))
+    msg = "id%s mocap_human move [%s, %s]\n" % (str(id_), str(v), str(w))
     s.send(msg)
+    print("Socket move_man sent")
     id_ = id_ + 1
 
 def toggle_manip():
