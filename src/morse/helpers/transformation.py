@@ -90,6 +90,20 @@ class Transformation3d:
         """
         return self.euler.x
 
+    @property
+    def rotation(self):
+        """
+        Returns the rotation as a unit quaternion
+        """
+        return self.matrix.to_quaternion()
+
+    @property
+    def rotation_matrix(self):
+        """
+        Returns the rotation as a 3x3 matrix
+        """
+        return self.matrix.to_3x3()
+
     def transformation3d_with(self, t3d):
         """
         Compute the transformation between itself and another
