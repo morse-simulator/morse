@@ -48,7 +48,7 @@ def normalise_angle(angle):
     return ((angle+math.pi)%(2*math.pi))-math.pi
 
 
-def rotation_direction (current_angle, target_angle, tolerance, speed):
+def rotation_direction(current_angle, target_angle, tolerance, speed):
     """ Test the direction in which a rotation should be made
 
     Using the current angle of a component and the next desired angle.
@@ -65,16 +65,21 @@ def rotation_direction (current_angle, target_angle, tolerance, speed):
     return rotation
 
 
-def print_matrix_33 (matrix):
+def print_matrix_33(matrix):
     """ print_matrix_33 prints a 3x3 @matrix on stdout """
     for row in matrix:
-        line = "[%.4f %.4f %.4f]" % (row[0], row[1], row[2])
+        line = "[% .4f % .4f % .4f]" % (row[0], row[1], row[2])
         logger.info(line)
 
+def print_matrix_44(matrix):
+    """ print_matrix_44 prints a 4x4 @matrix on stdout """
+    for row in matrix:
+        line = "[% .4f % .4f % .4f % .4f]" % (row[0], row[1], row[2], row[3])
+        logger.info(line)
 
 def print_vector (vector):
     """ print a vector with 4 decimals per value """
-    line = "[%.4f %.4f %.4f]" % (vector[0], vector[1], vector[2])
+    line = "[% .4f % .4f % .4f]" % (vector[0], vector[1], vector[2])
     logger.info(line)
 
 
