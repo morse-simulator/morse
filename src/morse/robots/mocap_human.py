@@ -28,15 +28,14 @@ class MocapHumanClass(morse.core.robot.Robot):
         """
         human = self.bge_object
 
-        if not human['Manipulate']:
-            human.applyMovement( [speed,0,0], True )
-            human.applyRotation( [0,0,rotation], True )
-        else :
-            scene = blenderapi.scene()
-            target = scene.objects['IK_Target_Empty.R']
-
-            target.applyMovement([0.0, rotation, 0.0], True)
-            target.applyMovement([0.0, 0.0, -speed], True)
+        #if not human['Manipulate']:
+        human.applyMovement( [speed, 0.0, 0.0], True )
+        human.applyMovement( [0.0, rotation, 0.0], True )
+        #else :
+        #    scene = blenderapi.scene()
+        #    target = scene.objects['Hand_Grab.R']
+        #    target.applyMovement([0.0, rotation, 0.0], True)
+        #    target.applyMovement([0.0, 0.0, -speed], True)
 
 
     @service

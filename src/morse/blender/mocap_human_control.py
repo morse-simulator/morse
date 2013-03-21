@@ -151,7 +151,7 @@ def grabbing(contr):
     selected_object = hand_empty['Near_Object']
 
     # Check that a button was pressed
-    if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_JUST_ACTIVATED:
+    if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_just_activated:
         # Check that no other object is being carried
         if contr.owner['DraggedObject'] == None or contr.owner['DraggedObject'] == '':
             # If the object is draggable

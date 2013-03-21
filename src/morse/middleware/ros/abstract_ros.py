@@ -70,8 +70,10 @@ class ROSPublisher(AbstractROS):
         topic_name = self.topic_name
         if 'topic_suffix' in self.kwargs: # used for /robot/camera/image
             topic_name += self.kwargs['topic_suffix']
-        # Generate a publisher for the component
-        self.topic = rospy.Publisher(topic_name, self.ros_class)
+        # do not create a topic if no ros_class set (for TF publish only)
+        if self.ros_class != Header:
+            # Generate a publisher for the component
+            self.topic = rospy.Publisher(topic_name, self.ros_class)
         if self.default_frame_id is 'USE_TOPIC_NAME': # morse convention
             self.frame_id = self.kwargs.get('frame_id', self.topic_name)
         else: # default_frame_id was overloaded in subclass

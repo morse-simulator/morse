@@ -8,7 +8,10 @@ Blender's Game Engine is set to work at a predefined ``Tickrate``, which is the
 number of times the Logic Brick events are executed per second. In the default
 settings, it is equal to 60, so that during one real second there will be 60
 "ticks". It can be modified for a scene with the builder API using the method
-:py:meth:`morse.builder.environment.Environment.set_speed`.
+:py:meth:`morse.builder.bpymorse.set_speed`.
+
+.. warning:: This method must be called at the top of your Builder script,
+  before creating any component.
 
 While the simulation is running, the Logic Bricks of each component will make
 regular calls to their ``default_action`` method. At this point the component

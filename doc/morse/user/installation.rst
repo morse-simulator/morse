@@ -15,8 +15,8 @@ using the simulated cameras, you will need to have a graphics card that
 supports GLSL shading. The Blender website lists these graphic cards as
 compatible with GLSL:
 
-- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  - NVidia
-  Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
+- ATI Radeon 9x00, Xx00, X1x00, HD2x00 and HD3x00 series and newer.  
+- NVidia Geforce FX, 6x00, 7x00, 8x00, 9x00 and GTX 2x0 and newer.
 
 If you do not need cameras and OpenGL textures/shaders, you are advised to
 run your simulation in ``fastmode`` (:doc:`refer to the simulation's Builder
@@ -100,7 +100,7 @@ Prerequisites
 
 .. note::
 
-  If you decide to install Python by hand, the compilation must be done
+  If you decide to install Python 3.2 by hand, the compilation must be done
   according to your operating system, to match the Python compiled in
   Blender:
   
@@ -112,6 +112,8 @@ Prerequisites
  
   It the unicode sizes between Python and Blender do not match, you will get
   errors about undefined symbols with names starting with  PyUnicodeUCS4
+  
+  This is not needed for Python >= 3.3 (Blender >= 2.65) anymore.
 
 Installation
 ++++++++++++

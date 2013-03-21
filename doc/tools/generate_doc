@@ -53,6 +53,7 @@ from morse.sensors import accelerometer, \
                           semantic_camera, \
                           thermometer, \
                           stereo_unit, \
+                          velocity, \
                           video_camera
 
 import sys, os
@@ -461,12 +462,12 @@ def print_services(out, name, props):
             if doc:
                 out.write(doc.replace("\n", "\n    "))
                 if params:
-                    out.write("\n    - Parameters\n")
+                    out.write("\n  - Parameters\n\n")
                     for p, d in params:
-                        out.write("         - ``" + p + "``: " + d + "\n")
+                        out.write("    - ``" + p + "``: " + d + "\n")
                 if returndoc:
-                    out.write("\n    - Return value\n")
-                    out.write("        " + returndoc)
+                    out.write("\n  - Return value\n\n")
+                    out.write("   " + returndoc)
                     out.write("\n")
             else:
                 out.write("\n    (no documentation yet)")

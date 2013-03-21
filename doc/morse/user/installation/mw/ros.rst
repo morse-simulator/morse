@@ -48,7 +48,7 @@ calling cmake! *eg.*::
         wget http://pyyaml.org/download/pyyaml/PyYAML-3.10.tar.gz
         tar xvf PyYAML-3.10.tar.gz
         cd PyYAML-3.10
-        sudo python3 setup.py
+        sudo python3 setup.py install
 
 #. Install rospkg using Python3::
 

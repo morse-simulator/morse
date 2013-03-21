@@ -37,7 +37,10 @@ class Human(Robot):
         self.suffix = self.name[-4:] if self.name[-4] == "." else ""
 
         self.armature = None
-        self.properties(classpath="morse.robots.human.HumanClass")
+        if filename == 'mocap_human':
+            self.properties(classpath="morse.robots.mocap_human.MocapHumanClass")
+        else:
+            self.properties(classpath="morse.robots.human.HumanClass")
 
         try:
             self.armature = Armature("HumanArmature", "human_posture")
@@ -62,6 +65,9 @@ class Human(Robot):
                     actuator.layer = i
 
     def after_renaming(self):
+        if self._blender_filename == 'mocap_human':
+            # no need for mocap
+            return
 
         # Store the human real name (ie, after renaming) in its link 'POS_EMPTY' and 'Human_Camera' object, for later control.
 

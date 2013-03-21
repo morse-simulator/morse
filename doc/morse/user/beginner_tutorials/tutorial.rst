@@ -168,7 +168,7 @@ The motion controller we have added to the robot export one service,
 ``set_speed``: to make the robot move in a circle, with linear speed 2 m/s and
 angular speed -1 rad/s, type this instruction::
 
-  id1 Motion_Controller set_speed [2, -1]
+  id1 atrv.motion set_speed [2, -1]
 
 .. note::
     the first part of the request, ``id1`` is any identifier you want. It is useful
@@ -176,7 +176,7 @@ angular speed -1 rad/s, type this instruction::
     service termination.
 
 .. note::
-    the internal name of the component is (here, ``Motion_Controller``) is displayed
+    the internal name of the component is (here, ``atrv.motion``) is displayed
     in the MORSE log at the end of the simulation initialisation.
 
 In the same way, you can query the *Pose* sensor for the data it contains::
@@ -200,7 +200,7 @@ The *Pose* sensor actually permanently export its data as a stream.
 We can use ``telnet`` as well to monitor it.
 
 Since many sensors may output their data-stream on the socket interface, each
-of them is assigned a port at runtime. You can retreive this port either by
+of them is assigned a port at runtime. You can retrieve this port either by
 looking at MORSE console output, or with the **simulation services**
 ``list_streams`` and ``get_stream_port``::
 

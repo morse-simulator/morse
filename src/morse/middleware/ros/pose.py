@@ -36,7 +36,7 @@ class TFPublisher(ROSPublisherTF):
         # store the frame ids
         self.child_frame_id = self.kwargs.get("child_frame_id", "/base_link")
 
-        logger.info("Initialized the ROS odometry sensor with frame_id '%s' " +\
+        logger.info("Initialized the ROS TF publisher with frame_id '%s' " + \
                     "and child_frame_id '%s'", self.frame_id, self.child_frame_id)
 
     def default(self, ci='unused'):

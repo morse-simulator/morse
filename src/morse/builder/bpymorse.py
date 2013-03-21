@@ -201,15 +201,46 @@ def get_objects_in_blend(filepath):
         raise MorseBuilderNoComponentError("Component not found")
     return objects
 
-def save(filepath=None, check_existing=False):
+def save(filepath=None, check_existing=False, compress=True):
     """ Save .blend file
 
-    :param filepath: (string, (optional, default: current file)) File Path
-    :param check_existing: (boolean, (optional, default: False))
-                           Check and warn on overwriting existing files
+    :param filepath: File Path
+    :type  filepath: string, (optional, default: current file)
+    :param check_existing: Check and warn on overwriting existing files
+    :type  check_existing: boolean, (optional, default: False)
+    :param compress: Compress, Write compressed .blend file
+    :type  compress: boolean, (optional, default: True)
     """
     if not bpy:
         return
     if not filepath:
         filepath = bpy.data.filepath
-    bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing)
+    bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing,
+            compress=compress)
+
+def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
+    """ Tune the speed of the simulation
+
+    :param fps: Nominal number of game frames per second
+        (physics fixed timestep = 1/fps, independently of actual frame rate)
+    :type fps: int in [1, 250], default 0
+    :param logic_step_max: Maximum number of logic frame per game frame if
+        graphics slows down the game, higher value allows better
+        synchronization with physics
+    :type logic_step_max: int in [1, 5], default 0
+    :param physics_step_max: Maximum number of physics step per game frame
+        if graphics slows down the game, higher value allows physics to keep
+        up with realtime
+    :type physics_step_max: int in [1, 5], default 0
+
+    usage::
+
+        bpymorse.set_speed(120, 5, 5)
+
+    .. warning:: This method must be called at the top of your Builder script,
+      before creating any component.
+    """
+    get_context_scene().game_settings.fps = fps
+    get_context_scene().game_settings.logic_step_max = logic_step_max
+    get_context_scene().game_settings.physics_step_max = physics_step_max
+

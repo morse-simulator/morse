@@ -241,29 +241,6 @@ class Environment(Component):
         # Set the color at the horizon to dark azure
         bpymorse.get_context_scene().world.horizon_color = color
 
-    def set_speed(self, fps=0, logic_step_max=0, physics_step_max=0):
-        """ Tune the speed of the simulation
-
-        :param fps: Nominal number of game frames per second
-            (physics fixed timestep = 1/fps, independently of actual frame rate)
-        :type fps: int in [1, 250], default 0
-        :param logic_step_max: Maximum number of logic frame per game frame if
-            graphics slows down the game, higher value allows better
-            synchronization with physics
-        :type logic_step_max: int in [1, 5], default 0
-        :param physics_step_max: Maximum number of physics step per game frame
-            if graphics slows down the game, higher value allows physics to keep
-            up with realtime
-        :type physics_step_max: int in [1, 5], default 0
-
-        usage::
-
-            env.set_speed(120, 5, 5)
-        """
-        bpymorse.get_context_scene().game_settings.fps = fps
-        bpymorse.get_context_scene().game_settings.logic_step_max = logic_step_max
-        bpymorse.get_context_scene().game_settings.physics_step_max = physics_step_max
-
     def show_debug_properties(self, value=True):
         """ Display the value of the game-properties marked as debug
 
@@ -443,14 +420,18 @@ class Environment(Component):
         # Change the text with the name of the camera being displayed
         caption.game.properties['Text'].value = self._display_camera.name
 
-    def save(self, filepath=None, check_existing=False):
+    def save(self, filepath=None, check_existing=False, compress=True):
         """ Save .blend file
 
-        :param filepath: (string, (optional, default: current file)) File Path
-        :param check_existing: (boolean, (optional, default: False))
-                               Check and warn on overwriting existing files
+        :param filepath: File Path
+        :type  filepath: string, (optional, default: current file)
+        :param check_existing: Check and warn on overwriting existing files
+        :type  check_existing: boolean, (optional, default: False)
+        :param compress: Compress, Write compressed .blend file
+        :type  compress: boolean, (optional, default: True)
         """
-        bpymorse.save(filepath=filepath, check_existing=check_existing)
+        bpymorse.save(filepath=filepath, check_existing=check_existing,
+                compress=compress)
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """

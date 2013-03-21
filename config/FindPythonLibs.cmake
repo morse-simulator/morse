@@ -74,7 +74,6 @@ SET(_Python_VERSIONS
   ${_PYTHON_FIND_OTHER_VERSIONS}
   )
 
-
 UNSET(_PYTHON_FIND_OTHER_VERSIONS)
 UNSET(_PYTHON1_VERSIONS)
 UNSET(_PYTHON2_VERSIONS)
@@ -97,6 +96,12 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
       )
   ENDIF(WIN32)
 
+  IF (PYTHON_EXECUTABLE)
+    get_filename_component(_PYTHON_BIN_DIR ${PYTHON_EXECUTABLE} PATH)
+    set(_PYTHON_PREFIX_HINT ${_PYTHON_BIN_DIR}/..)
+    unset(_PYTHON_BIN_DIR)
+  ENDIF(PYTHON_EXECUTABLE)
+
   UNSET(PYTHON_LIBRARY CACHE)
   FIND_LIBRARY(PYTHON_LIBRARY
     NAMES
@@ -105,6 +110,8 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
     python${_CURRENT_VERSION}m
     python${_CURRENT_VERSION}u
     python${_CURRENT_VERSION}
+    HINTS
+      ${_PYTHON_PREFIX_HINT}/lib
     PATHS
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
       [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
@@ -114,6 +121,8 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
   # Look for the static library in the Python config directory
   FIND_LIBRARY(PYTHON_LIBRARY
     NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
+    HINTS
+      ${_PYTHON_PREFIX_HINT}/lib
     # Avoid finding the .dll in the PATH.  We want the .lib.
     NO_SYSTEM_ENVIRONMENT_PATH
     # This is where the static library is usually located
@@ -137,6 +146,8 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
 
   FIND_PATH(PYTHON_INCLUDE_DIR
     NAMES Python.h
+    HINTS
+      ${_PYTHON_PREFIX_HINT}/include
     PATHS
       ${PYTHON_FRAMEWORK_INCLUDES}
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
@@ -151,6 +162,8 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
   # Search pyconfig.h because in some distribution, it is not stored in the same place than other stuff
   FIND_PATH(PYTHON_INCLUDE_DIR2
     NAMES pyconfig.h
+    HINTS
+      ${_PYTHON_PREFIX_HINT}/include
     PATHS
       ${PYTHON_FRAMEWORK_INCLUDES}
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
@@ -173,10 +186,11 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
     STRING(REGEX REPLACE "^#define[ \t]+PY_VERSION[ \t]+\"([^\"]+)\".*" "\\1"
                          _PYTHONLIBS_VERSION_STRING "${python_version_str}")
     UNSET(python_version_str)
+
+	# erase minor version
+	STRING(SUBSTRING ${_PYTHONLIBS_VERSION_STRING} 0 3 PYTHONLIBS_VERSION_STRING)
   ENDIF(PYTHON_INCLUDE_DIR AND EXISTS "${PYTHON_INCLUDE_DIR}/patchlevel.h")
 
-  # erase minor version
-  STRING(SUBSTRING ${_PYTHONLIBS_VERSION_STRING} 0 3 PYTHONLIBS_VERSION_STRING)
 
   IF (NOT ("${PYTHON_INCLUDE_DIR}" STREQUAL "${PYTHON_INCLUDE_DIR2}"))
 	  set(PYTHON_INCLUDE_DIR_TMP ${PYTHON_INCLUDE_DIR})
@@ -194,6 +208,7 @@ MARK_AS_ADVANCED(
   PYTHON_DEBUG_LIBRARY
   PYTHON_LIBRARY
   PYTHON_INCLUDE_DIR
+  PYTHON_INCLUDE_DIR2
 )
 
 # We use PYTHON_INCLUDE_DIR, PYTHON_LIBRARY and PYTHON_DEBUG_LIBRARY for the

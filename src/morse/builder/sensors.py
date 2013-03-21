@@ -320,14 +320,22 @@ class Infrared(LaserSensorWithArc):
         # create default Arc_
         self.create_laser_arc()
 
+class Velocity(SensorCreator):
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name, "morse.sensors.velocity.Velocity", "velocity")
+        mesh = Sphere("VelocitySphere")
+        mesh.scale = (.04, .04, .01)
+        mesh.color(.5, .5, .5)
+        self.append(mesh)
+
 class VideoCamera(SensorCreator):
     def __init__(self, name=None, \
                  classpath="morse.sensors.video_camera.VideoCamera", \
                  filename="video_camera"):
         SensorCreator.__init__(self, name, classpath, filename)
-        camera = Camera("CameraRobot")
-        camera.name = "CameraRobot"
-        self.append(camera)
+        self.camera = Camera("CameraRobot")
+        self.camera.name = "CameraRobot"
+        self.append(self.camera)
         self.properties(cam_width = 256, cam_height = 256, cam_focal = 35.0, \
                         capturing = True, Vertical_Flip = True)
         # set the frequency to 3 (20ips for ticrate = 60Hz)
@@ -345,9 +353,11 @@ class VideoCamera(SensorCreator):
         actuator.property = 'capturing'
         controller.link(sensor = sensor, actuator = actuator)
         # looking in +X
-        self.rotate(x=math.pi/2, z=math.pi/2)
+        SensorCreator.rotate(self, x=math.pi/2, z=math.pi/2)
         # append CameraMesh with its textures
         self.append_meshes(['CameraMesh'], "camera")
+    def rotate(self, x=0, y=0, z=0):
+        SensorCreator.rotate(self, x=y, y=z, z=x)
 
 class DepthCamera(VideoCamera):
     def __init__(self, name=None):
@@ -355,7 +365,9 @@ class DepthCamera(VideoCamera):
                              "morse.sensors.depth_camera.DepthCamera",\
                              "depth_camera")
         self.properties(cam_width = 128, cam_height = 128, \
-                        cam_near=1.0, cam_far=20.0, retrieve_depth=True)
+                        cam_near=1.0, cam_far=20.0, retrieve_depth=True,
+                        Vertical_Flip=False)
+        self.camera.rotate(z=math.pi)
 
 class SemanticCamera(VideoCamera):
     def __init__(self, name=None):

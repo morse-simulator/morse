@@ -45,7 +45,7 @@ First we will configure the *mouse* robot, which is a lot simpler.
 
   .. code-block:: python
 
-    keyboard = keyboard()
+    keyboard = Keyboard()
     keyboard.properties(Speed=3.0)
     mouse.append(keyboard)
 
@@ -108,6 +108,12 @@ The complete script can be found at: ``$MORSE_SRC/examples/tutorials/cat_mouse_g
 
 Control program
 ---------------
+
+.. note::
+
+    This script uses ``pymorse``, you need to have built MORSE with
+    ``-DPYMORSE_SUPPORT=ON`` flag.
+
 
 As a very simple example of how to use the data from a sensor to drive the
 robot, we'll create a Python script to connect to MORSE and provide the

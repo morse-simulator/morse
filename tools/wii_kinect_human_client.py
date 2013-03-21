@@ -2,7 +2,7 @@
 
 """ Human control with wiimote
 
-You can take control of the human in morse using a wiiMote through this code.
+You can take control of the mocap_human in morse using a wiiMote through this code.
 To do that, we use cwiid library to handle the wiiMote communication and
 sockets and request mecanisms to comminicate with MORSE.
 That being said, the manipulation of the wiiMote isn't really intuitive
@@ -132,7 +132,7 @@ def acceleration(mesg,wm_cal):
     if fabs(tilt) < seuil :
         seuil = 0.0
 
-    msg = "id%s Human move [%s, %s]\n" % (str(id_), str(tilt), str(roll))
+    msg = "id%s mocap_human move [%s, %s]\n" % (str(id_), str(tilt), str(roll))
     s.send(msg)
     id_ = id_ + 1
 
@@ -254,7 +254,7 @@ def head_move(pan,tilt):
     """ Sending socket messages """
     global id_
 
-    msg = "id%s Human move_head [%s, %s]\n" % (str(id_), str(pan), str(tilt))
+    msg = "id%s mocap_human move_head [%s, %s]\n" % (str(id_), str(pan), str(tilt))
     s.send(msg)
     id_ = id_ + 1
 
@@ -262,25 +262,26 @@ def hand_move(diff):
     """ Sending socket messages """
     global id_
 
-    msg = "id%s Human move_hand [%s, 0.0]\n" % (str(id_), str(diff))
+    msg = "id%s mocap_human move_hand [%s, 0.0]\n" % (str(id_), str(diff))
     # The second argument should be removed, however,
     # the socket have a probleme with a single argument.
     s.send(msg)
     id_ = id_ + 1
 
 def move_man(v, w):
-    """ Give forward movement or rotation instructions to the human robot """
+    """ Give forward movement or rotation instructions to the mocap_human robot """
     global id_
 
-    msg = "id%s Human move [%s, %s]\n" % (str(id_), str(v), str(w))
+    msg = "id%s mocap_human move [%s, %s]\n" % (str(id_), str(v), str(w))
     s.send(msg)
+    print("Socket move_man sent")
     id_ = id_ + 1
 
 def toggle_manip():
     """ Sending socket messages """
     global id_
 
-    msg = "id%s Human toggle_manipulation []\n" % (str(id_))
+    msg = "id%s mocap_human toggle_manipulation []\n" % (str(id_))
     s.send(msg)
     id_ = id_ + 1
 
@@ -288,16 +289,18 @@ def switch_cameras():
     """ Sending socket messages """
     global id_
 
-    msg = "id%s Human switch_cameras []\n" % (str(id_))
+    msg = "id%s mocap_human switch_cameras []\n" % (str(id_))
     s.send(msg)
+    print("Socket move camera sent")
     id_ = id_ + 1
 
 def grasp(seq):
     """ Sending socket messages """
     global id_
 
-    msg = "id%s Human grasp_ [\"%s\"]\n" % (str(id_), str(seq))
+    msg = "id%s mocap_human grasp_ [\"%s\"]\n" % (str(id_), str(seq))
     s.send(msg)
+    print("Socket grasp sent")
     id_ = id_ + 1
 
 main()

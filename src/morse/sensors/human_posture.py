@@ -34,9 +34,9 @@ class HumanPosture(morse.core.sensor.Sensor):
     add_data('yaw', 0.0, "float",
              'rotation angle with respect to the Z axis, in radian')
     add_data('pitch', 0.0, "float",
-             'rotation angle with respect to the Z axis, in radian')
+             'rotation angle with respect to the Y axis, in radian')
     add_data('roll', 0.0, "float",
-             'rotation angle with respect to the Z axis, in radian')
+             'rotation angle with respect to the X axis, in radian')
     add_data('empty1', 0.0, "float")
     add_data('empty2', 0.0, "float")
     add_data('empty3', 0.0, "float")
@@ -78,7 +78,7 @@ class HumanPosture(morse.core.sensor.Sensor):
     add_data('dof_25', 0.0, 'float',
              'rotation around the Y axis for the right wrist, in radian')
     add_data('dof_26', 0.0, 'float',
-             'rotation around the Z axis for the right write, in radian')
+             'rotation around the Z axis for the right wrist, in radian')
 
     add_data('dof_27', 0.0, 'float',
             'rotation around the X axis for the left shoulder, in radian')

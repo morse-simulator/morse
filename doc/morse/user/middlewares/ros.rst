@@ -78,7 +78,7 @@ morse.middleware.ros.accelerometer.TwistPublisher
 
 **type** : `geometry_msgs/Twist <http://ros.org/doc/api/geometry_msgs/html/msg/Twist.html>`_
 
-Publish the velocity of the acceleromter sensor.
+Publish the velocity of the accelerometer sensor.
 No angular information, only linear ones.
 
 
@@ -324,6 +324,15 @@ Publish the data of the semantic camera as a ROS String message,
 that contains a lisp-list (each field are separated by a space).
 
 This function was designed for the use with CRAM and the Adapto group.
+
+
+
+morse.middleware.ros.velocity.TwistStampedPublisher
+-------------------------------------------------
+
+**type** : `geometry_msgs/Twist <http://ros.org/doc/api/geometry_msgs/html/msg/Twist.html>`_
+
+Publish the linear and angular velocity of the velocity sensor.
 
 
 

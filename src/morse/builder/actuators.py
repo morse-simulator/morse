@@ -14,6 +14,11 @@ class ForceTorque(ActuatorCreator):
                                  "morse.actuators.force_torque.ForceTorque",\
                                  "force_torque")
 
+class MocapControl(ActuatorCreator):
+    def __init__(self):
+        ActuatorCreator.__init__(self)
+        self.properties(classpath="morse.actuators.mocap_control.MocapControl")
+
 # Gripper uses Actuator from morse.builder
 class Gripper(Actuator):
     def __init__(self, name=None):

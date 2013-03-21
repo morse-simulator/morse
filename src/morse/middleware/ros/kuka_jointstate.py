@@ -12,10 +12,6 @@ class JointStateReader(ROSReader):
         logger.debug("Received JointState positons: %s on topic %s"%(message.position, self.topic_name))
         logger.debug("Received JointState velocity: %s on topic %s"%(message.velocity, self.topic_name))
 
-        self.data["kuka_1"] = message.position[0]
-        self.data["kuka_2"] = message.position[1]
-        self.data["kuka_3"] = message.position[2]
-        self.data["kuka_4"] = message.position[3]
-        self.data["kuka_5"] = message.position[4]
-        self.data["kuka_6"] = message.position[5]
-        self.data["kuka_7"] = message.position[6]
+        for i in range(7):
+            self.data["kuka_%i"%(i+1)] = message.position[i]
+
