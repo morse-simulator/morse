@@ -6,6 +6,7 @@ from morse.core.datastream import Datastream
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
 from morse.core import services
+from morse.core.exceptions import MorseRPCInvokationError
 
 try:
     import mathutils
@@ -174,7 +175,10 @@ class Socket(Datastream):
             port = self._component_nameservice[name]
         except KeyError:
             pass
-
+        
+        if port < 0:
+            raise MorseRPCInvokationError("Stream unavailable for component %s" % name)
+        
         return port
 
     def get_all_stream_ports(self):
