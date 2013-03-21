@@ -623,10 +623,13 @@ class Morse():
 
     def _add_component(self, robot, fqn, details):
         stream = details.get('stream', None)
+        port = None
         if stream:
-            port = self.get_stream_port(fqn)
-        else:
-            port = None
+            try:
+                port = self.get_stream_port(fqn)
+            except MorseServiceFailed:
+                pymorselogger.debug('Component <%s> has a non-socket stream: datastream via pymorse not supported', fqn)
+                stream = None
 
         services = details.get('services', [])
 
