@@ -61,7 +61,7 @@ class RflexModule(MorseOverlay):
     @async_service
     def Stop(self, *args):
         self.overlaid_object.stop()
-        self.overlaid_object.input_functions.clear()
+        del self.overlaid_object.input_functions[:]
         self.completed(status.SUCCESS)
 
     @async_service
