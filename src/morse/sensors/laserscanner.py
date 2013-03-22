@@ -262,6 +262,9 @@ class LaserScanner(Sensor):
 
         # Change the shape of the arc to show what the sensor detects
         # Display only for 1 layer scanner
+        if (2, 65, 0) < blenderapi.version() <= (2, 66, 3):
+            # see http://projects.blender.org/tracker/?func=detail&aid=34550
+            return # not supported in 2.66 due to BGE bug #34550
         # TODO rework the LDMRS (3 layers) display [code in 1.0-beta2]
         if self.visible_arc and self._layers == 1:
             for mesh in self._ray_arc.meshes:
