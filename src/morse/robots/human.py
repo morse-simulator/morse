@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
-import morse.core.robot
+from morse.robots.grasper import RobotGrasper
 from morse.core.services import service
 
-class HumanClass(morse.core.robot.Robot):
+class HumanClass(RobotGrasper):
     """ Class definition for the human as a robot entity
         Sub class of Morse_Object. """
 
@@ -14,7 +14,13 @@ class HumanClass(morse.core.robot.Robot):
             but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__,self).__init__(obj, parent)
+        RobotGrasper.__init__(self, obj, parent)
+
+        """
+        We define here the name of the pr2 grasping hand:
+        """
+        self.hand_name = 'Hand_Grab.R'
+
 
         logger.info('Component initialized')
 
@@ -50,44 +56,6 @@ class HumanClass(morse.core.robot.Robot):
 
         target.applyMovement([0.0, pan, 0.0], True)
         target.applyMovement([0.0, 0.0, tilt], True)
-        
-    @service
-    def grasp_(self, seq):
-        """ Grasp object.
-        """
-        logger.debug("morse grasp request received")
-        human = self.bge_object
-        if human['Manipulate']:
-            scene = blenderapi.scene()
-            hand_empty = scene.objects['Hand_Grab.R']
-
-            selected_object = hand_empty['Near_Object']
-            if seq == "t":
-                # Check that no other object is being carried
-                if (human['DraggedObject'] == None or 
-                human['DraggedObject'] == '') :
-                    # If the object is draggable
-                    if selected_object != None and selected_object != '':
-                        # Clear the previously selected object, if any
-                        human['DraggedObject'] = selected_object
-                        # Remove Physic simulation
-                        selected_object.suspendDynamics()
-                        # Parent the selected object to the hand target
-                        selected_object.setParent (hand_empty)
-                        
-        if seq == "f":
-
-            if (human['DraggedObject'] != None and 
-            human['DraggedObject'] != '') :
-                previous_object = human["DraggedObject"]
-                # Restore Physics simulation
-                previous_object.restoreDynamics()
-                previous_object.setLinearVelocity([0, 0, 0])
-                previous_object.setAngularVelocity([0, 0, 0])
-                # Remove the parent
-                previous_object.removeParent()
-                # Clear the object from dragged status
-                human['DraggedObject'] = None
         
     @service
     def move_hand(self, diff, tilt):

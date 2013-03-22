@@ -1,11 +1,11 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import morse.core.robot
+from morse.robots.grasper import RobotGrasper
 from morse.core.services import service
 from morse.core import blenderapi
 
 logger.setLevel(logging.DEBUG)
 
-class PR2Class(morse.core.robot.Robot):
+class PR2Class(RobotGrasper):
     """ 
     Class definition for the PR2.
     Sub class of Morse_Object.
@@ -20,7 +20,12 @@ class PR2Class(morse.core.robot.Robot):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(obj, parent)
+        RobotGrasper.__init__(self, obj, parent)
+
+        """
+        We define here the name of the pr2 grasping hand:
+        """
+        self.hand_name = 'Hand.Grasp.PR2'
 
         self.armatures = []
         # Search armatures and torso in all objects parented to the pr2 empty
@@ -72,52 +77,6 @@ class PR2Class(morse.core.robot.Robot):
         Returns a list [min,max]
         """
         return [self.TORSO_LOWER, self.TORSO_UPPER]
-
-
-    @service
-    def grasp_(self, seq):
-        """ Grasp object.
-        """
-        logger.debug("morse grasp request received")
-        pr2 = self.bge_object
-        scene = blenderapi.scene()
-        hand_empty = scene.objects['Hand.Grasp.PR2']
-
-        near_sensor = hand_empty.sensors['Near']
-        near_object = near_sensor.hitObject
-        hand_empty['Near_Object'] = near_object
-
-        selected_object = hand_empty['Near_Object']
-        if seq == "t":
-            logger.debug("seq t")
-            # Check that no other object is being carried
-            if (pr2['DraggedObject'] == None or
-            pr2['DraggedObject'] == '') :
-                logger.debug("Hand is free, I can grab")
-                # If the object is draggable
-                if selected_object != None and selected_object != '':
-                    # Clear the previously selected object, if any
-                    logger.debug("Object to grab is %s" % selected_object.name)
-                    pr2['DraggedObject'] = selected_object
-                    # Remove Physic simulation
-                    selected_object.suspendDynamics()
-                    # Parent the selected object to the hand target
-                    selected_object.setParent (hand_empty)
-                    logger.debug ("OBJECT %s PARENTED TO %s" % (selected_object.name, hand_empty.name))
-
-        if seq == "f":
-            if (pr2['DraggedObject'] != None and
-            pr2['DraggedObject'] != '') :
-                previous_object = pr2["DraggedObject"]
-                # Restore Physics simulation
-                previous_object.restoreDynamics()
-                previous_object.setLinearVelocity([0, 0, 0])
-                previous_object.setAngularVelocity([0, 0, 0])
-                # Remove the parent
-                previous_object.removeParent()
-                # Clear the object from dragged status
-                pr2['DraggedObject'] = None
-                logger.debug ("JUST DROPPED OBJECT %s" % (previous_object.name))
 
     def default_action(self):
         """
