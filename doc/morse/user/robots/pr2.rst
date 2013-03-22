@@ -36,7 +36,7 @@ PR2 related Files
 - PR2 model with MORSE integration: ``$MORSE_ROOT/data/robots/pr2/pr2_25_morse.blend``
 
 - PR2 robot script with MORSE services: ``$MORSE_ROOT/src/morse/robots/pr2.py```
-- Armature actuator script: ``$MORSE_ROOT/src/morse/actuators/actuator.py``
+- Armature actuator script: ``$MORSE_ROOT/src/morse/actuators/armature.py``
 
 
 Adjustable parameters

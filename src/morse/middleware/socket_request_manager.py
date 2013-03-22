@@ -184,7 +184,7 @@ class SocketRequestManager(RequestManager):
                             self._results_to_output[i].append((id, (status.FAILED, e.value)))
                         else:
                             self._results_to_output[i] = [(id, (status.FAILED, e.value))]
-            
+
         if self._results_to_output:
             for o in outputready:
                 if o in self._results_to_output:
