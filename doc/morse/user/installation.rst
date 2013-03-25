@@ -69,6 +69,11 @@ the software for the desired middlewares:
 
     installation/mw/*
 
+
+- MORSE is also known to work with `OpenRTM
+  <http://www.aisl.ics.tut.ac.jp/RTC/en/morse.html>`_.
+
+
 If you want to distribute your simulation in a multinode infrastructure,
 MORSE provides by default a socket service for multinode synchronization. If
 you want to use HLA, you have to first install the CERTI and ``PyHLA`` packages:
