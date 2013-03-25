@@ -114,6 +114,19 @@ img {
   max-width:100%;
 }
 
+.body img {
+    border: 1px solid #EAEAEA;
+    border-radius: 5px 5px 5px 5px;
+    max-width: 60%;
+    padding: 5px;
+}
+
+.align-center {
+    display: block;
+    margin: auto;
+}
+
+
 header {
   width:270px;
   float:left;
