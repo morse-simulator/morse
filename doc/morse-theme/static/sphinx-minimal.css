@@ -83,6 +83,13 @@ pre, .admonition {
   overflow-x: auto;
 }
 
+tt {
+  background-color: #FDFDFD;
+  border: 1px solid #EDEDED;
+  border-radius: 4px 4px 4px 4px;
+  padding: 1px 5px;
+}
+
 table {
   width:100%;
   border-collapse:collapse;
