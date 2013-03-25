@@ -83,6 +83,16 @@ pre, .admonition {
   overflow-x: auto;
 }
 
+.admonition {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 70%;
+}
+
+.note .first {
+    display: none;
+}
+
 tt {
   background-color: #FDFDFD;
   border: 1px solid #EDEDED;
