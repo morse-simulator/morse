@@ -297,7 +297,10 @@ footer {
   }
 }
 
-
+.linenos {
+    padding: 0;
+    width: 50px;
+}
 
 div.documentwrapper {
     float: left;
