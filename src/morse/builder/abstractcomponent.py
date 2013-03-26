@@ -6,7 +6,7 @@ import copy
 from morse.builder import bpymorse
 from morse.builder.data import *
 
-from morse.helpers.loading import load_module_attribute
+from morse.helpers.loading import get_class, load_module_attribute
 
 class Configuration(object):
     datastream = {}
@@ -261,7 +261,7 @@ class AbstractComponent(object):
         logger.warning("configure_mw is deprecated, use add_stream instead")
         return self.add_stream(datastream, method, path, component)
 
-    def add_stream(self, datastream, method=None, path=None, classpath=None, **kwargs):
+    def add_stream(self, datastream, method=None, path=None, classpath=None, direction = None, **kwargs):
         """ Add a data stream interface to the component
 
         Do the binding between a component and the method to export/import its
@@ -290,74 +290,97 @@ class AbstractComponent(object):
         # Configure the datastream for this component
         if not method:
             if not classpath in MORSE_DATASTREAM_DICT:
-                logger.error("%s: no interfaces available for this component!"
-                             "Check builder/data.py." % classpath)
-                return
 
-            interfaces = MORSE_DATASTREAM_DICT[classpath]
-            if not level in interfaces:
+                # Check if we can use default interface...
 
-                if level == "default": # we need to look for the default level
-                    module_name, class_name = classpath.rsplit('.', 1)
-                    klass = load_module_attribute(module_name, class_name)
+                from morse.core.actuator import Actuator
+                from morse.core.sensor import Sensor
+                klass = get_class(classpath)
+                if klass and \
+                   issubclass(klass, Actuator) and \
+                   datastream in INTERFACE_DEFAULT_IN:
 
-                    if not hasattr(klass, "_levels"):
-                        logger.error("Component <%s> does not declare any "
-                                     "default interface. You must call "
-                                     "`add_stream` with an explicit method "
-                                     "and Python module." % str(classpath))
-                        return
+                    logger.warning("%s: no interfaces available for this component! Trying to use default one for %s." % (classpath, datastream))
+                    config = [INTERFACE_DEFAULT_IN[datastream]]
 
-                    # iterate over levels to find the one with the default flag
-                    for key, value in klass._levels.items():
-                        if value[2] == True:
-                            level = key
-                            # set the right default level
-                            self.properties(abstraction_level = level)
-                            logger.info("Using default level <%s> for "
-                                        "component <%s>" % (level, classpath))
-                            break
+                elif klass and \
+                     issubclass(klass, Sensor) and \
+                     datastream in INTERFACE_DEFAULT_OUT:
 
-                    if level == "default":
-                        logger.error("Component <%s> does not declare any"
-                                     "default interface, and none of its "
-                                     "abstraction levels is marked as the "
-                                     "default one. You must call `add_stream`"
-                                     " with an explicit method and Python "
-                                     "module." % str(classpath))
-                        return
-
-                    if not level in interfaces:
-                        logger.error("%s: no interfaces defined for this "
-                                     "component for abstraction level <%s>!"
-                                     "Check builder/data.py." %
-                                     (classpath, level))
-                        return
+                    logger.warning("%s: no interfaces available for this component! Trying to use default one for %s." % (classpath, datastream))
+                    config = [INTERFACE_DEFAULT_OUT[datastream]]
 
                 else:
-                    logger.error("%s: no interfaces defined for this component"
-                                 "for abstraction level <%s>! Check "
-                                 "builder/data.py." %
-                                 (classpath, level))
+                    logger.error("%s: no interfaces available for this component!"
+                                " Check builder/data.py." % classpath)
+                    return
 
-            interfaces = interfaces[level]
-            if not datastream in interfaces:
-                logger.error("%s: no %s interface defined for this component "
-                             "for abstraction level <%s>! "
-                             "Check builder/data.py." %
-                             (classpath, datastream, level))
-                return
+            else:
+                interfaces = MORSE_DATASTREAM_DICT[classpath]
 
-            config = interfaces[datastream]
-            if isinstance(config, list):
-                config = config[0]
+                if not level in interfaces:
 
-            if config == INTERFACE_DEFAULT_OUT:
-                config = INTERFACE_DEFAULT_OUT[datastream]
-            if config == INTERFACE_DEFAULT_IN:
-                config = INTERFACE_DEFAULT_IN[datastream]
-            if isinstance(config, str):
-                config = [config]
+                    if level == "default": # we need to look for the default level
+                        module_name, class_name = classpath.rsplit('.', 1)
+                        klass = load_module_attribute(module_name, class_name)
+
+                        if not hasattr(klass, "_levels"):
+                            logger.error("Component <%s> does not declare any "
+                                        "default interface. You must call "
+                                        "`add_stream` with an explicit method "
+                                        "and Python module." % str(classpath))
+                            return
+
+                        # iterate over levels to find the one with the default flag
+                        for key, value in klass._levels.items():
+                            if value[2] == True:
+                                level = key
+                                # set the right default level
+                                self.properties(abstraction_level = level)
+                                logger.info("Using default level <%s> for "
+                                            "component <%s>" % (level, classpath))
+                                break
+
+                        if level == "default":
+                            logger.error("Component <%s> does not declare any"
+                                        "default interface, and none of its "
+                                        "abstraction levels is marked as the "
+                                        "default one. You must call `add_stream`"
+                                        " with an explicit method and Python "
+                                        "module." % str(classpath))
+                            return
+
+                        if not level in interfaces:
+                            logger.error("%s: no interfaces defined for this "
+                                        "component for abstraction level <%s>!"
+                                        "Check builder/data.py." %
+                                        (classpath, level))
+                            return
+
+                    else:
+                        logger.error("%s: no interfaces defined for this component"
+                                    "for abstraction level <%s>! Check "
+                                    "builder/data.py." %
+                                    (classpath, level))
+
+                interfaces = interfaces[level]
+                if not datastream in interfaces:
+                    logger.error("%s: no %s interface defined for this component "
+                                "for abstraction level <%s>! "
+                                "Check builder/data.py." %
+                                (classpath, datastream, level))
+                    return
+
+                config = interfaces[datastream]
+                if isinstance(config, list):
+                    config = config[0]
+
+                if config == INTERFACE_DEFAULT_OUT:
+                    config = INTERFACE_DEFAULT_OUT[datastream]
+                if config == INTERFACE_DEFAULT_IN:
+                    config = INTERFACE_DEFAULT_IN[datastream]
+                if isinstance(config, str):
+                    config = [config]
 
         elif not path:
             config = [method]

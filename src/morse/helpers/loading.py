@@ -4,6 +4,19 @@ Helpers for 'classpath' configuration
 import logging; logger = logging.getLogger("morse." + __name__)
 import sys
 
+def get_class(classpath):
+    """ Returns the class object from a full classpath (like toto.tata.MyTata)
+    """
+    module_name, class_name = classpath.rsplit('.', 1)
+    klass = load_module_attribute(module_name, class_name)
+
+    if not klass:
+        logger.error("Could not load the class %s in %s"% (class_name, module_name))
+        return None
+
+    return klass
+
+
 def load_module_attribute(module_name, attribute_name):
     """Dynamically import a Python attribute."""
     try:
@@ -23,8 +36,7 @@ def load_module_attribute(module_name, attribute_name):
 def create_instance(classpath, *args, **kwargs):
     """Creates an instances of a class."""
 
-    module_name, class_name = classpath.rsplit('.', 1)
-    klass = load_module_attribute(module_name, class_name)
+    klass = get_class(classpath)
 
     if not klass:
         logger.error("Could not create an instance of %s"%str(classpath))
@@ -36,8 +48,7 @@ def create_instance(classpath, *args, **kwargs):
 def create_instance_level(classpath, level, *args, **kwargs):
     """Creates an instances of a class from a component abstration level."""
 
-    module_name, class_name = classpath.rsplit('.', 1)
-    klass = load_module_attribute(module_name, class_name)
+    klass = get_class(classpath)
 
     if not klass:
         logger.error("Could not create an instance of %s"%str(classpath))
