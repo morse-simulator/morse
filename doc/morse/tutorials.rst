@@ -82,6 +82,7 @@ with specific requirements.
 .. toctree::
     :maxdepth: 1
 
+    user/advanced_tutorials/a_journey_to_a_new_simulation
     user/advanced_tutorials/cat_and_mouse
     user/advanced_tutorials/flying_cat_and_mouse
     user/advanced_tutorials/ros_nav_tutorial
