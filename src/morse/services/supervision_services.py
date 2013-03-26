@@ -117,8 +117,11 @@ def details():
     def robotdetails(r):
         robot = {"name": r.name(),
                 "type": type(r).__name__,
-                "components": {c.name:cmptdetails(c) for c in r.components}
+                "components": {c.name:cmptdetails(c) for c in r.components},
                 }
+        if r.name() in services:
+            robot["services"] = services[r.name()]
+            robot["services_interfaces"] = services_iface[r.name()]
         return robot
     
     for n, i in simu.datastreamDict.items():
