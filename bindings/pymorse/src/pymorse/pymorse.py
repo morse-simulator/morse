@@ -336,10 +336,6 @@ SUCCESS='SUCCESS'
 FAILURE='FAILED'
 PREEMPTED='PREEMPTED'
 
-class Robot(dict):
-    __getattr__= dict.__getitem__
-    __setattr__= dict.__setitem__
-    __delattr__= dict.__delitem__
 
 class Component():
     def __init__(self, morse, name, fqn, stream = None, port = None, services = []):
@@ -381,6 +377,13 @@ class Component():
         if self.stream:
             self.stream.close()
 
+class Robot(dict, Component):
+    __getattr__= dict.__getitem__
+    __setattr__= dict.__setitem__
+    __delattr__= dict.__delitem__
+
+    def __init__(self, morse, name, fqn, services = []):
+        Component.__init__(self, morse, name, fqn, None, None, services)
 
 class ComChannel(threading.Thread):
 
@@ -615,7 +618,8 @@ class Morse():
         for r in simu["robots"]:
             name = self._normalize_name(r["name"])
             self.robots.append(name)
-            setattr(self, name, Robot())
+            setattr(self, name, Robot(self, r['name'], r['name'], 
+                                      r.get('services', [])))
             robot = getattr(self, name)
 
             for c in sorted(r["components"].keys()): # important to sort the list of components to ensure parents are created before children
