@@ -46,7 +46,7 @@ class Actuator(morse.core.object.Object):
         if received:
             # Data modification functions
             for function in self.input_modifiers:
-                function(self)
+                function()
 
         # Call the regular action function of the component
         self.default_action()

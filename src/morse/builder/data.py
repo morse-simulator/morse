@@ -33,7 +33,7 @@ MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS, \
                                 os.getenv('MORSE_RESOURCE_PATH', '')])
 
 MORSE_MODIFIERS = {
-    'NED': 'morse.modifiers.ned.MorseNEDClass',
+    'NED': 'morse.modifiers.ned.NEDModifier',
     'UTM': 'morse.modifiers.utm.MorseUTMClass',
     'GPSNoise': 'morse.modifiers.gps_noise.MorseGPSNoiseClass',
     'OdometryNoise': 'morse.modifiers.odometry_noise.MorseOdometryNoiseClass',
@@ -52,8 +52,8 @@ MORSE_DATASTREAM_MODULE = {
 
 MORSE_MODIFIER_DICT = {
     'NED': {
-        'pose': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
-        'gps': [MORSE_MODIFIERS['NED'], 'blender_to_ned'],
+        'pose': "morse.modifiers.ned.NEDPositionPublisher",
+        'gps': "morse.modifiers.ned.NEDPositionPublisher",
         'gyroscope': [MORSE_MODIFIERS['NED'], 'blender_to_ned_angle'],
         'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
         'waypoint': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
