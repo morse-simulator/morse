@@ -67,16 +67,34 @@ class ComponentCreator(AbstractComponent):
 
 class SensorCreator(ComponentCreator):
     def __init__(self, name="SensorCreator", classpath="morse.core.sensor.Sensor",\
-                 blendname=None):
+                 blendname=None, klass = None):
+        """
+        :param klass: A MORSE component class. If set, used instead of ``name`` and ``classpath``.
+        """
+
+        if klass:
+            name = None
+            classpath = klass.__module__ + "." + klass.__name__
+
         ComponentCreator.__init__(self, name, 'sensors', blendname)
         self.properties(Component_Tag = True, classpath = classpath)
 
 class ActuatorCreator(ComponentCreator):
     def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",\
-                 blendname=None):
+                 blendname=None, klass = None):
+        """
+        :param klass: A MORSE component class. If set, used instead ``name`` and ``classpath``.
+        """
+
+
+        if klass:
+            name = None
+            classpath = klass.__module__ + "." + klass.__name__
+
         ComponentCreator.__init__(self, name, 'actuators', blendname)
         self.properties(Component_Tag = True, classpath = classpath)
 
+    
 class RobotCreator(ComponentCreator):
     def __init__(self, name="RobotCreator", classpath="morse.core.robot.Robot",\
                  blendname=None):
