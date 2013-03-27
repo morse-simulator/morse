@@ -17,8 +17,7 @@ class CoordinatesToNED(NEDModifier):
             self.data['y'] = tmp
             self.data['z'] = - self.data['z']
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)
 
 class CoordinatesFromNED(NEDModifier):        
     def modify(self):
@@ -29,8 +28,7 @@ class CoordinatesFromNED(NEDModifier):
             self.data['y'] = tmp
             self.data['z'] = - self.data['z']
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)
 
 class AnglesFromNED(NEDModifier):
     def modify(self):
@@ -41,8 +39,7 @@ class AnglesFromNED(NEDModifier):
             self.data['pitch'] = - self.data['pitch']
             self.data['roll'] = roll
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)
 
 class AnglesToNED(NEDModifier):
     def modify(self):
@@ -53,5 +50,4 @@ class AnglesToNED(NEDModifier):
             self.data['roll'] = self.data['yaw']
             self.data['yaw'] = yaw
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)

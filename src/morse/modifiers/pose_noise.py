@@ -3,47 +3,27 @@ import random
 from math import radians, degrees, cos
 import mathutils
 
-from morse.core.modifier import Modifier
+from morse.modifiers.abstract_modifier import AbstractModifier
 
-class MorsePoseNoiseClass(Modifier):
+class NoiseModifier(AbstractModifier):
+    def initialize(self):
+        self._pos_std_dev = float(self.parameter("pos_std", default=0.05))
+        self._rot_std_dev = float(self.parameter("rot_std", default=radians(5)))
+        logger.info("Noise modifier standard deviations: position %.4f, rotation %.4f deg"
+                    % (self._pos_std_dev, degrees(self._rot_std_dev)))
 
-    def register_component(self, component_name, component_instance, mod_data):
-        """ Add the corresponding function to a component. """
-        # Extract the information for this modifier
-        # This will be tailored for each middleware according to its needs
-        function_name = mod_data[1]
-
+class PositionNoiseModifier(NoiseModifier):
+    """ Add a gaussian noise to a position """
+    def modify(self):
         try:
-            # Get the reference to the function
-            function = getattr(self, function_name)
-        except AttributeError as detail:
-            logger.error("%s. Check the 'component_config.py' file for typos" % detail)
-            return
+            for variable in ['x', 'y', 'z']:
+                self.data[variable] = random.gauss(self.data[variable], self._pos_std_dev)
+        except KeyError as detail:
+            self.key_error(detail)
 
-        if function_name == "noisify":
-            component_instance.output_modifiers.append(function)
-        else:
-            logger.warning("Unknown function name for Pose Noise modifier. Check component_config.py file.")
-
-        self._pos_std_dev = 0.05
-        self._rot_std_dev = radians(5)
-        # Extract the Modifier parameters from the dictionary if it is given
-        try:
-            self._pos_std_dev = mod_data[2].get("pos_std", self._pos_std_dev)
-            self._rot_std_dev = mod_data[2].get("rot_std", self._rot_std_dev)
-        except:
-            pass
-
-        logger.info("Adding noise to Pose with standard deviations: position %.4f, rotation %.4f deg", \
-                    self._pos_std_dev, degrees(self._rot_std_dev))
-
-
-    def noisify(self, component_instance):
-        # add noise on position
-        for variable in ['x', 'y', 'z']:
-            component_instance.local_data[variable] = \
-                random.gauss(component_instance.local_data[variable], self._pos_std_dev)
-
+class OrientationNoiseModifier(NoiseModifier):
+    """ Add a gaussian noise to an orientation """
+    def modify(self):
         # generate a gaussian noise rotation vector
         rot_vec = mathutils.Vector((0.0, 0.0, 0.0))
         for i in range(0, 3):
@@ -57,10 +37,17 @@ class MorsePoseNoiseClass(Modifier):
             noise_quat = mathutils.Quaternion()
             noise_quat.identity()
         try:
-            component_instance.local_data['orientation'] = (noise_quat * component_instance.local_data['orientation']).normalized()
-        except:
+            self.data['orientation'] = (noise_quat * self.data['orientation']).normalized()
+        except KeyError:
             # for eulers this is a bit crude, maybe should use the noise_quat here as well...
-            for variable in ['roll', 'pitch', 'yaw']:
-                component_instance.local_data[variable] = \
-                    random.gauss(component_instance.local_data[variable], self._rot_std_dev)
+            try: 
+                for variable in ['roll', 'pitch', 'yaw']:
+                    self.data[variable] = random.gauss(self.data[variable], self._rot_std_dev)
+            except KeyError as detail:
+                self.key_error(detail)
 
+class PoseNoiseModifier(PositionNoiseModifier, OrientationNoiseModifier):
+    """ Add a gaussian noise to both position and orientation """
+    def modify(self):
+        PositionNoiseModifier.modify(self)
+        OrientationNoiseModifier.modify(self)
