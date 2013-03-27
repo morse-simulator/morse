@@ -32,15 +32,6 @@ MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'), \
 MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS, \
                                 os.getenv('MORSE_RESOURCE_PATH', '')])
 
-MORSE_MODIFIERS = {
-    'NED': 'morse.modifiers.ned.NEDModifier',
-    'UTM': 'morse.modifiers.utm.MorseUTMClass',
-    'GPSNoise': 'morse.modifiers.gps_noise.MorseGPSNoiseClass',
-    'OdometryNoise': 'morse.modifiers.odometry_noise.MorseOdometryNoiseClass',
-    'IMUNoise': 'morse.modifiers.imu_noise.MorseIMUNoiseClass',
-    'PoseNoise': 'morse.modifiers.pose_noise.MorsePoseNoiseClass',
-}
-
 MORSE_DATASTREAM_MODULE = {
     'ros': 'morse.middleware.ros_datastream.ROS',
     'socket': 'morse.middleware.socket_datastream.Socket',
@@ -52,27 +43,27 @@ MORSE_DATASTREAM_MODULE = {
 
 MORSE_MODIFIER_DICT = {
     'NED': {
-        'pose': "morse.modifiers.ned.NEDPositionPublisher",
-        'gps': "morse.modifiers.ned.NEDPositionPublisher",
-        'gyroscope': [MORSE_MODIFIERS['NED'], 'blender_to_ned_angle'],
-        'destination': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
-        'waypoint': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
-        'orientation': [MORSE_MODIFIERS['NED'], 'ned_angle_to_blender'],
-        'teleport': [MORSE_MODIFIERS['NED'], 'ned_to_blender'],
+        'pose': "morse.modifiers.ned.CoortinatesToNED",
+        'gps': "morse.modifiers.ned.CoortinatesToNED",
+        'gyroscope': "morse.modifiers.ned.AnglesToNED",
+        'destination': "morse.modifiers.ned.CoortinatesFromNED",
+        'waypoint': "morse.modifiers.ned.CoortinatesFromNED",
+        'orientation': "morse.modifiers.ned.AnglesFromNED",
+        'teleport': "morse.modifiers.ned.CoortinatesFromNED",
     },
     'UTM' : {
-        'pose': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
-        'gps': [MORSE_MODIFIERS['UTM'], 'blender_to_utm'],
-        'destination': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
-        'waypoint': [MORSE_MODIFIERS['UTM'], 'utm_to_blender'],
+        'pose': "morse.modifiers.utm.CoordinatesToUTM",
+        'gps': "morse.modifiers.utm.CoordinatesToUTM",
+        'destination': "morse.modifiers.utm.CoordinatesFromUTM",
+        'waypoint': "morse.modifiers.utm.CoordinatesFromUTM",
     },
-    'OdometryNoise' : {
-        'odometry': [MORSE_MODIFIERS['OdometryNoise'], 'noisify']
-    },
-    'Noise' : {
-        'imu': [MORSE_MODIFIERS['IMUNoise'], 'noisify'],
-        'pose': [MORSE_MODIFIERS['PoseNoise'], 'noisify'],
-    }
+#    'OdometryNoise' : {
+#        'odometry': [MORSE_MODIFIERS['OdometryNoise'], 'noisify']
+#    },
+#    'Noise' : {
+#        'imu': [MORSE_MODIFIERS['IMUNoise'], 'noisify'],
+#        'pose': [MORSE_MODIFIERS['PoseNoise'], 'noisify'],
+#    }
 }
 
 
