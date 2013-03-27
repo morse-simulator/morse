@@ -8,9 +8,9 @@ class UTMModifier(AbstractModifier):
     
     def initialize(self):
         """ Initialize the UTM coordinates reference. """
-        self._x_offset = float(self.parameter('x_offset', prop='UTMXOffset'))
-        self._y_offset = float(self.parameter('y_offset', prop='UTMYOffset'))
-        self._z_offset = float(self.parameter('z_offset', prop='UTMZOffset'))
+        self._x_offset = float(self.parameter('x_offset', prop='UTMXOffset', default=0))
+        self._y_offset = float(self.parameter('y_offset', prop='UTMYOffset', default=0))
+        self._z_offset = float(self.parameter('z_offset', prop='UTMZOffset', default=0))
         logger.info("UTM reference point is (%s,%s,%s)" 
                     % (self._x_offset, self._y_offset, self._z_offset))
 
@@ -21,8 +21,7 @@ class CoordinatesToUTM(UTMModifier):
             self.data['y'] += self._y_offset
             self.data['z'] += self._z_offset
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)
 
 class CoordinatesFromUTM(UTMModifier):
     def modify(self):
@@ -31,5 +30,4 @@ class CoordinatesFromUTM(UTMModifier):
             self.data['y'] -= self._y_offset
             self.data['z'] -= self._z_offset
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." 
-                           % (self.__class__.__name__, self.component_name, detail))
+            self.key_error(detail)

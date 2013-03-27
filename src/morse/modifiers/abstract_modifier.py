@@ -25,7 +25,7 @@ class AbstractModifier(object):
     def data(self):
         return self.component_instance.local_data
     
-    def parameter(self, arg, prop=None):
+    def parameter(self, arg, prop=None, default=None):
         """ get a modifier parameter
         
         The parameter is (by priority order):
@@ -44,10 +44,14 @@ class AbstractModifier(object):
                     x = ssr[arg]
                 return x
             except KeyError:
-                return None
+                return default
 
     def __str__(self):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)
+    
+    def key_error(self, detail):
+        logger.warning("Unable to use %s on component %s. It does not have data %s." 
+                       % (self.__class__.__name__, self.component_name, detail))
 
     def initialize(self):
         """ initialize the specific modifier
