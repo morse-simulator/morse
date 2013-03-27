@@ -413,18 +413,77 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
     else:
         os.execle(blender_exec, blender_exec, scene, *other_params)
 
+def do_check(args):
+    try:
+        logger.info("Checking up your environment...\n")
+        check_setup()
+    except MorseError as e:
+        logger.error("Your environment is not correctly setup to run MORSE!")
+        sys.exit()
+    logger.info("Your environment is correctly setup to run MORSE.")
+
+
+def process_run_edit(args):
+
+    script_options = args.pyoptions
+    if args.color:
+        script_options.append("with-colors")
+    if args.reverse_color:
+        script_options.append("with-colors")
+        script_options.append("with-reverse-colors")
+
+    # xmas mode!
+    import datetime
+    today = datetime.date.today()
+    if today > datetime.date(today.year, 12, 25):
+        script_options.append("with-xmas-colors")
+
+    if args.mode == "run":
+        if not args.scene:
+            logger.error("'run' mode requires a simulation script (.py)")
+            sys.exit()
+        prelaunch()
+        launch_simulator(
+               os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
+               args.scene, \
+               geometry=args.geom, \
+               node_name=args.name, \
+               script_options = script_options)
+
+    else:  # args.mode == "edit":
+        if not args.scene:
+            logger.error("'edit' mode requires a simulation to edit (.blend or .py)")
+            sys.exit()
+        prelaunch()
+
+        if args.scene.endswith(".blend"):
+            launch_simulator(
+                   args.scene, \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
+        else:
+            try:
+                launch_simulator(
+                       scene = args.base, \
+                       script = args.scene, \
+                       geometry=args.geom, \
+                       node_name=args.name, \
+                       script_options = script_options)
+            # Check if we got a 'base' option. If not, don't use it
+            except AttributeError:
+                launch_simulator(
+                       scene = None, \
+                       #os.path.join(morse_prefix, DEFAULT_SCENE_PATH), \
+                       script = args.scene, \
+                       geometry=args.geom, \
+                       node_name=args.name, \
+                       script_options = script_options)
+
 def version():
     return("morse " + VERSION)
 
 if __name__ == '__main__':
-
-    def validscene(string):
-        if string == "":
-           return None
-        if string.endswith(".blend"):
-           return({"type":"blend", "name":string})
-        else:
-           return({"type":"python", "name":string})
 
     def parsegeom(string):
         dx = dy = None
@@ -447,94 +506,57 @@ if __name__ == '__main__':
         pass
     
     parser = argparse.ArgumentParser(description='The Modular OpenRobots Simulation Engine')
-    parser.add_argument('mode', choices=['check', 'edit', 'run'], type=str,
-                      help="Check: checks your environment is correctly configured. "
-                           "Edit: opens an existing scene for edition. "
-                           "Run: starts a simulation.")
-    parser.add_argument('scene', type=validscene, default="", nargs='?',
-                       help="the scene to create, edit or run. Either a Blender file"
-                            " or a Python file using the MORSE BuilderAPI.")
-    parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
-                       help="optional parameters, passed to the Blender python engine in sys.argv")
-    parser.add_argument('-b', '--base', dest='BASE',
-                       help='in Edit mode, specify a Blender scene used as base to apply the Python script.')
-    parser.add_argument('--name', default=default_morse_node,
-                       help="when running in multi-node mode, sets the name of this node (defaults "
-                            "to either MORSE_NODE if defined or current hostname).")
+    
+    # First, general MORSE options
     parser.add_argument('-c', '--color', action='store_true',
                        help='uses colors for MORSE output.')
     parser.add_argument('--reverse-color', action='store_true',
                        help='uses darker colors for MORSE output.')
-    parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
-                       help="sets the simulator window geometry. Expected format: WxH or WxH+dx,dy "
-                            "to set an initial x,y delta (from lower left corner).")
     parser.add_argument('-v', '--version', action='version',
                        version=version(), help='returns the current MORSE version')
-    
-    args = parser.parse_args()
-    
-    script_options = args.pyoptions
-    if args.color:
-        script_options.append("with-colors")
-    if args.reverse_color:
-        script_options.append("with-colors")
-        script_options.append("with-reverse-colors")
 
-    # xmas mode!
-    import datetime
-    today = datetime.date.today()
-    if today > datetime.date(today.year, 12, 25):
-        script_options.append("with-xmas-colors")
-        
-    if args.mode == "check":
-        try:
-            logger.info("Checking up your environment...\n")
-            check_setup()
-        except MorseError as e:
-            logger.error("Your environment is not correctly setup to run MORSE!")
-            sys.exit()
-        logger.info("Your environment is correctly setup to run MORSE.")
-    elif args.mode == "run":
-        if not args.scene:
-            logger.error("'run' mode requires a simulation script (.py)")
-            sys.exit()
-        try:
-            with open(args.scene['name']) as f: pass
-        except IOError as e:
-            logger.error('Cannot open %s file %s:' % (args.scene['name'], e))
-            sys.exit()
-        prelaunch()
-        launch_simulator(
-               os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
-               args.scene["name"], \
-               geometry=args.geom, \
-               node_name=args.name, \
-               script_options = script_options)
-    elif args.mode == "edit":
-        if not args.scene:
-            logger.error("'edit' mode requires a simulation to edit (.blend or .py)")
-            sys.exit()
-        prelaunch()
-        if args.scene["type"] == "blend":
-            launch_simulator(
-                   args.scene["name"], \
-                   geometry=args.geom, \
-                   node_name=args.name, \
-                   script_options = script_options)
-        else:
-            try:
-                launch_simulator(
-                       scene = args.base, \
-                       script = args.scene["name"], \
-                       geometry=args.geom, \
-                       node_name=args.name, \
-                       script_options = script_options)
-            # Check if we got a 'base' option. If not, don't use it
-            except AttributeError:
-                launch_simulator(
-                       scene = None, \
-                       #os.path.join(morse_prefix, DEFAULT_SCENE_PATH), \
-                       script = args.scene["name"], \
-                       geometry=args.geom, \
-                       node_name=args.name, \
-                       script_options = script_options)
+    
+
+    ## Then, the sub-commands
+    
+    subparsers = parser.add_subparsers(title="modes", description="type 'morse <mode> --help' for details", dest = "mode")
+
+    # check
+    check_parser = subparsers.add_parser('check', help="checks your environment is correctly configured.")
+    check_parser.set_defaults(func=do_check)
+
+    # run
+    run_parser = subparsers.add_parser('run', help="starts a simulation.")
+    run_parser.add_argument('scene', default="", nargs='?',
+            help="the exact scene (.py or .blend) to run.")
+    run_parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
+                       help="optional parameters, passed to the Blender python engine in sys.argv")
+    run_parser.add_argument('--name', default=default_morse_node,
+                       help="when running in multi-node mode, sets the name of this node (defaults "
+                            "to either MORSE_NODE if defined or current hostname).")
+    run_parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
+                       help="sets the simulator window geometry. Expected format: WxH or WxH+dx,dy "
+                            "to set an initial x,y delta (from lower left corner).")
+    run_parser.set_defaults(func=process_run_edit)
+  
+    # edit
+    edit_parser = subparsers.add_parser('edit', help="opens an existing scene for edition.")
+    edit_parser.add_argument('scene', default="", nargs='?',
+            help="the exact scene (.py or .blend) to edit.")
+    edit_parser.add_argument('pyoptions', nargs=argparse.REMAINDER, 
+                       help="optional parameters, passed to the Blender python engine in sys.argv")
+    edit_parser.add_argument('-b', '--base', dest='BASE',
+                       help='specify a Blender scene used as base to apply the Python script.')
+    edit_parser.add_argument('--name', default=default_morse_node,
+                       help="when running in multi-node mode, sets the name of this node (defaults "
+                            "to either MORSE_NODE if defined or current hostname).")
+    edit_parser.add_argument('-g', '--geometry', dest='geom', type=parsegeom, action='store',
+                       help="sets the simulator window geometry. Expected format: WxH or WxH+dx,dy "
+                            "to set an initial x,y delta (from lower left corner).")
+    edit_parser.set_defaults(func=process_run_edit)
+
+
+
+    args = parser.parse_args()
+    args.func(args)
+
