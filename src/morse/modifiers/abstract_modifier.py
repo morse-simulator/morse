@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
+from morse.core import blenderapi
+
 class AbstractModifier(object):
     """
     The class is inherited by all modifiers.
@@ -22,6 +24,27 @@ class AbstractModifier(object):
     @property
     def data(self):
         return self.component_instance.local_data
+    
+    def parameter(self, arg, prop=None):
+        """ get a modifier parameter
+        
+        The parameter is (by priority order):
+        1. get from modifier kwargs
+        2. get from the scene properties
+        3. set to None 
+        """
+        ssr = blenderapi.getssr()
+        if arg in self.kwargs:
+            return self.kwargs[arg]
+        else:
+            try:
+                if prop:
+                    x = ssr[prop]
+                else:
+                    x = ssr[arg]
+                return x
+            except KeyError:
+                return None
 
     def __str__(self):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)

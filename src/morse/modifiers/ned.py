@@ -8,7 +8,7 @@ class NEDModifier(AbstractModifier):
     def modify(self):
         pass
     
-class NEDPositionPublisher(NEDModifier):
+class CoordinatesToNED(NEDModifier):
     def modify(self):
         """ Convert the coordinates from ENU to NED. """
         try:
@@ -17,9 +17,10 @@ class NEDPositionPublisher(NEDModifier):
             self.data['y'] = tmp
             self.data['z'] = - self.data['z']
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." % (__class__, self.component_name, detail))
+            logger.warning("Unable to use %s on component %s. It does not have data %s." 
+                           % (self.__class__.__name__, self.component_name, detail))
 
-class NEDPositionReader(NEDModifier):        
+class CoordinatesFromNED(NEDModifier):        
     def modify(self):
         """ Convert the coordinates from NED to ENU. """
         try:
@@ -28,9 +29,10 @@ class NEDPositionReader(NEDModifier):
             self.data['y'] = tmp
             self.data['z'] = - self.data['z']
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." % (__class__, self.component_name, detail))
+            logger.warning("Unable to use %s on component %s. It does not have data %s." 
+                           % (self.__class__.__name__, self.component_name, detail))
 
-class NEDAnglePublisher(NEDModifier):
+class AnglesFromNED(NEDModifier):
     def modify(self):
         """ Convert the angles from ENU to NED. """
         try:
@@ -39,9 +41,10 @@ class NEDAnglePublisher(NEDModifier):
             self.data['pitch'] = - self.data['pitch']
             self.data['roll'] = roll
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." % (__class__, self.component_name, detail))
+            logger.warning("Unable to use %s on component %s. It does not have data %s." 
+                           % (self.__class__.__name__, self.component_name, detail))
 
-class NEDAngleReader(NEDModifier):
+class AnglesToNED(NEDModifier):
     def modify(self):
         """ Convert the angles from NED to ENU. """
         try:
@@ -50,4 +53,5 @@ class NEDAngleReader(NEDModifier):
             self.data['roll'] = self.data['yaw']
             self.data['yaw'] = yaw
         except KeyError as detail:
-            logger.warning("Unable to use %s on component %s. It does not have data %s." % (__class__, self.component_name, detail))
+            logger.warning("Unable to use %s on component %s. It does not have data %s." 
+                           % (self.__class__.__name__, self.component_name, detail))
