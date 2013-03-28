@@ -63,6 +63,7 @@ modules = [
 specific_camera_pose_per_component = {
     # Robots
     'BasePR2': (.36, -2.25, 1.77),
+    'Morsy': (3.84, -3.12, 2.12, 1.32, 0.0, 0.86),
     'SegwayRMP400': (.36, -2.25, 1.77),
     'ATRV': (.36, -2.25, 1.77),
     'Human': (4, 0, 2.8), # 65°,0,90°
@@ -105,6 +106,9 @@ specific_camera_pose_per_component = {
 }
 
 def pose_camera(location = (.36, -1.25, .77), rotation = (1.1, 0, 0.25)):
+    if len(location) == 6:
+        rotation = location[3:]
+        location = location[:3]
     scene = bpy.context.scene
     scene.camera.rotation_euler = Euler(rotation, 'XYZ')
     scene.camera.location = location
