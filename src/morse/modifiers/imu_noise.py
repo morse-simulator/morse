@@ -1,9 +1,23 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import random
 
+from morse.helpers.components import add_property
 from morse.modifiers.abstract_modifier import AbstractModifier
 
 class IMUNoiseModifier(AbstractModifier):
+    """
+    This modifier allows to simulate Gaussian noise for accelerometer and
+    gyroscope sensors of an IMU.
+    No bias is modeled so far.
+    """
+
+    _name = "IMUNoise"
+    
+    add_property('_gyro_std_dev', 0.5, "gyro_std", type = "float", 
+                 doc = "Standard deviation for noise applied to angular velocities")
+    add_property('_accel_std_dev', 0.5, "accel_std", type = "float", 
+                 doc = "Standard deviation for noise applied to linear accelerations")
+    
     def initialize(self):
         self._gyro_std_dev = float(self.parameter("gyro_std", default=0.5))
         self._accel_std_dev = float(self.parameter("accel_std", default=0.5))

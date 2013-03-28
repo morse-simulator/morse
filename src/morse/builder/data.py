@@ -56,6 +56,15 @@ MORSE_MODIFIER_DICT = {
         'gps': "morse.modifiers.utm.CoordinatesToUTM",
         'destination': "morse.modifiers.utm.CoordinatesFromUTM",
         'waypoint': "morse.modifiers.utm.CoordinatesFromUTM",
+    },                  
+    'PoseNoise' : {
+        'odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
+        'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
+    },
+    'IMUNoise' : {
+        'imu': "morse.modifiers.imu_noise.IMUNoiseModifier",
     },
     'Noise' : {
         'imu': "morse.modifiers.imu_noise.IMUNoiseModifier",

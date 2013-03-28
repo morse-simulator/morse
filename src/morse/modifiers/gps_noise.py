@@ -4,7 +4,15 @@ import morse.modifiers.gaussian
 from morse.core.modifier import Modifier
 
 class MorseGPSNoiseClass(Modifier):
-
+    """ Deprecated.
+    
+    This modifier adds a random gaussian noise to the variables in the ``local_data``
+    of the linked component.
+    It is designed to be used with the :doc:`GPS component <../sensors/gps>`, but could be applied to other
+    components that have only numerical data values in their ``local_data``.
+    If it finds non numerical values, it will generate an error.
+    It utilises a module programmed in C. 
+    """
     dev = 0
 
     def register_component(self, component_name, component_instance, mod_data):

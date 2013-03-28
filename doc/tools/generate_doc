@@ -55,12 +55,18 @@ from morse.sensors import accelerometer, \
                           stereo_unit, \
                           velocity, \
                           video_camera
-
+                          
+from morse.modifiers import imu_noise, \
+                            pose_noise, \
+                            utm, \
+                            ned
+                                                      
 import sys, os
 import fnmatch
 
 from morse.core.actuator import Actuator
 from morse.core.sensor import Sensor
+from morse.modifiers.abstract_modifier import AbstractModifier
 
 from morse.builder.data import MORSE_DATASTREAM_DICT
 
@@ -171,6 +177,10 @@ for module in [getattr(m, fn) for fn in dir(m)]:
             if Sensor in component.mro() and name != 'Sensor':
                 print("Found sensor " + name)
                 ctype = 'sensor'
+
+            if AbstractModifier in component.mro() and name != 'AbstractModifier':
+                print("Found modifier " + name)
+                ctype = 'modifier'
 
             if not ctype:
                 continue
@@ -311,8 +321,12 @@ def print_code_snippet(out, name, props):
 
 def print_files(out, name, props):
     out.write(".. cssclass:: files morse-section\n\n")
-    title = "Other sources of examples"
-    out.write(underline(title, '+') + '\n')
+    if props['type'] == 'modifier':
+        title = "Sources of examples"
+        out.write(underline(title, '-') + '\n')
+    else:
+        title = "Other sources of examples"
+        out.write(underline(title, '+') + '\n')
 
     module_name = components[name]['module'].__name__.split('.')[-1]
 
@@ -421,9 +435,11 @@ def print_properties(out, name, props):
             out.write("*No configurable parameter.*\n\n")
             return
 
-        out.write("\nYou can set these properties in your scripts with ``<component>.properties(<property1> = ..., <property2>= ...)``.\n\n")
-
-
+        if props['type'] != 'modifier':
+            out.write("\nYou can set these properties in your scripts with ``<component>.properties(<property1>=..., <property2>=...)``.\n\n")
+        else:
+            out.write("\nYou can set these parameters in your scripts with ``<component>.alter('%s', <property1>=..., <property2>=...)``.\n\n"
+                      % name)
 
         for name, prop in prop.items():
             out.write('- ``' + name + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'default: ``' + 
@@ -484,7 +500,8 @@ if not os.path.exists(os.path.join(PREFIX, 'actuators')):
         os.makedirs(os.path.join(PREFIX, 'actuators'))
 if not os.path.exists(os.path.join(PREFIX, 'sensors')):
         os.makedirs(os.path.join(PREFIX, 'sensors'))
-
+if not os.path.exists(os.path.join(PREFIX, 'modifiers')):
+        os.makedirs(os.path.join(PREFIX, 'modifiers'))
 
 for name, props in components.items():
     module = (props['object'].__module__.split('.'))[-1]
@@ -500,11 +517,12 @@ for name, props in components.items():
         out.write(parse_docstring(props['doc'])[0] + "\n\n")
 
         print_properties(out, name, props)
-        if not print_levels(out, name, props):
+        if not print_levels(out, name, props) and props['type'] != 'modifier':
             print_data(out, name, props)
 
-        print_services(out, name, props)
-        print_code_snippet(out, name, props)
+        if props['type'] != 'modifier':
+            print_services(out, name, props)
+            print_code_snippet(out, name, props)
         print_files(out, name, props)
 
         out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
