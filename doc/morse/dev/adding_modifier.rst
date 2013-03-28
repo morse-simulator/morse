@@ -16,32 +16,63 @@ information stored in the ``local_data`` dictionary of each component.
     the modified data for a particular sensor, the recommended method is to add
     two sensors of the same type, and only bind one of them with the modifier.
 
-The python part 
----------------
+Adding a new modifier
+---------------------
 
-There is no strict class hierarchy for modifiers, we rely on python duck
-typing. We only expect than a modifier exposes a method ``register_component``,
-similarly to middleware, with the following prototype : ::
+Adding a new modifier is a matter of implementing a new class which
+derives from :py:class:`morse.modifiers.abstract_modifier.AbstractModifier`.
 
-  def register_component(self, component_name, component_instance, mod_data)
+The only mandatory method to specialize is the ``modify`` method which
+contains the actual modification of component data. In this method,
+you can use ``self.data`` to access to the ``local_data`` field of the
+associated component.
 
-The method is responsible to add the right modifier specified in ``mod_data``
-in the list of modifier of ``component_instance`` ( input_modifiers or
-output_modifiers ). 
 
-Modifier functions must have the prototype: ::
+It can be interesting too to override the ``initialize`` and ``finalize``
+methods, that contain respectively the initialization code, and the
+finalization code. Do not override ``__init__`` and ``__del__``.
 
-  def modifier_name(self, component_instance)
+If you want to add some parameters to your modifier and to get their
+value during initialization, you can use the ``parameter`` method.
 
-In your modifier function, you must only access to the array ``local_data``
-of the component.
+Let see an example with a custom modifier that switches ``x`` and ``y``
+and the puts ``z`` to a constant value (get from a parameter).
+
+.. code-block:: python
+
+    from morse.modifiers.abstract_modifier import AbstractModifier
+
+    class MyModifier(AbstractModifier):
+        def initialize(self):
+            """ initialization of parameters ... """
+            self.z = self.pamateter("z", default=0)
+
+        def modify(self):
+            """" place where occur the data modification """
+            x = self.data['x']
+            self.data['x'] = self.data['y']
+            self.data['y'] = x
+            self.data['z'] = self.z
+
+Now, you can test your new modifier directly in the builder:
+
+.. code-block:: python
+
+    from morse.builder import *
+
+    atrv = ATRV()
+
+    pose = Pose()
+    atrv.append(pose)
+    pose.alter('', 'Path.to.MyModifier')
+
+    env = Environment('empty', fastmode=True)
+
+Last, if you want to use it more easily, you can add some entries in
+:py:data:`morse.builder.data.MORSE_DATASTREAM_DICT`.
 
 Examples
 --------
 
-`NED_modifier.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/ned.py>`_ 
-shows a simple example for a modifier.
-
-`GPS_noise.py <http://trac.laas.fr/git/morse/tree/src/morse/modifiers/gps_noise.py>`_ 
-calls a C routine to add Gaussian noise to a GPS output.
+:py:mod:`morse.modifiers.ned` shows a simple example for a modifier.
 
