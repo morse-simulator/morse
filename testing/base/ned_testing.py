@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-This script tests the 'data stream' oriented feature of the socket interface.
+This script tests the NED modifier.
 """
 
 from morse.testing.testing import MorseTestCase
@@ -39,7 +39,7 @@ class NedTest(MorseTestCase):
 
 
     def test_ned_pose(self):
-        """ Test if we can connect to the pose data stream, and read from it.
+        """ Test if the NED conversion is correctly done
         """
 
         with Morse() as morse:
