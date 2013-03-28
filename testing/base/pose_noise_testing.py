@@ -45,12 +45,6 @@ class NoiseTest(MorseTestCase):
         gyroscope_noised.alter('Noise', rot_std=1)
         robot.append(gyroscope_noised)
         
-        imu = IMU()
-        robot.append(imu)
-        imu_noised = IMU()
-        imu_noised.alter('Noise', gyro_std=1, accel_std=1)
-        robot.append(imu_noised)
-        
         odomerty = Odometry()
         robot.append(odomerty)
         odomerty.level('integrated')
@@ -89,17 +83,7 @@ class NoiseTest(MorseTestCase):
             dn = morse.robot.gps_noised.get()
             for i in ['x', 'y', 'z']:
                 self.assertNotAlmostEqual(d[i], dn[i], delta=.001)
-                
-    def test_noised_imu(self):
-        """ Test if the IMU data is noised
-        """
-        with Morse() as morse:
-            d = morse.robot.imu.get()
-            dn = morse.robot.imu_noised.get()
-            for i in ['angular_velocity', 'linear_acceleration']:
-                for j in range(0,3):
-                    self.assertNotAlmostEqual(d[i][j], dn[i][j], delta=.001)
-          
+                          
     def test_noised_odometry(self):
         """ Test if the Odomerty data is noised
         """
