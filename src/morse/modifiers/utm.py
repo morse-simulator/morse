@@ -20,8 +20,8 @@ class UTMModifier(AbstractModifier):
 
     The UTM modifier provides as modifiers:
     
-     * morse.modifiers.utm.CoordinatesToUTM
-     * morse.modifiers.utm.CoordinatesFromUTM
+     * :py:class:`morse.modifiers.utm.CoordinatesToUTM`
+     * :py:class:`morse.modifiers.utm.CoordinatesFromUTM`
 
     """
     
