@@ -17,10 +17,10 @@ class NEDModifier(AbstractModifier):
 
     The NED modifier provides as modifiers:
     
-     * morse.modifiers.ned.CoordinatesToNED
-     * morse.modifiers.ned.CoordinatesFromNED
-     * morse.modifiers.ned.AnglesToNED
-     * morse.modifiers.ned.AnglesFromNED
+     * :py:class:`morse.modifiers.ned.CoordinatesToNED`
+     * :py:class:`morse.modifiers.ned.CoordinatesFromNED`
+     * :py:class:`morse.modifiers.ned.AnglesToNED`
+     * :py:class:`morse.modifiers.ned.AnglesFromNED`
 
     """
     
