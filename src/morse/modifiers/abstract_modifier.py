@@ -19,10 +19,14 @@ class AbstractModifier(object):
 
     @property
     def component_name(self):
+        """ get the component name
+        """
         return self.component_instance.bge_object.name
 
     @property
     def data(self):
+        """ get the component local data
+        """
         return self.component_instance.local_data
     
     def parameter(self, arg, prop=None, default=None):
@@ -50,12 +54,14 @@ class AbstractModifier(object):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)
     
     def key_error(self, detail):
+        """ logs a standard warning if some data has not been found in the component
+        """ 
         logger.warning("Unable to use %s on component %s. It does not have data %s." 
                        % (self.__class__.__name__, self.component_name, detail))
 
     def initialize(self):
         """ initialize the specific modifier
-
+        
         Can be overriden if needed
         """
         pass
@@ -63,12 +69,14 @@ class AbstractModifier(object):
     @abstractmethod
     def modify(self):
         """ default method called by MORSE logic
+        
+        All modifiers have to override this method.
         """
         pass
 
     def finalize(self):
         """ finalize the specific modifier
-
+        
         Can be overriden if needed
         """
         pass

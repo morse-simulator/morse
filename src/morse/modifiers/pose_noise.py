@@ -3,9 +3,34 @@ import random
 from math import radians, degrees, cos
 import mathutils
 
+from morse.helpers.components import add_property
 from morse.modifiers.abstract_modifier import AbstractModifier
 
 class NoiseModifier(AbstractModifier):
+    """ 
+    This modifier allows to simulate Gaussian noise for pose measurements.
+    If the variable ``orientation`` exists, it is taken to be a unit quaternion
+    and noise added to it. Otherwise rotational noise will be added to the roll,
+    pitch and yaw variables.
+
+    This modifier attempts to alter data ``x``, ``y`` and ``z`` for position, 
+    and either ``orientation`` or ``yaw``, ``pitch`` and ``roll`` for orientation. 
+
+    The PoseNoise modifier provides as modifiers:
+    
+     * morse.modifiers.pose_noise.PositionNoiseModifier
+     * morse.modifiers.pose_noise.OrientationNoiseModifier
+     * morse.modifiers.pose_noise.PoseNoiseModifier
+
+    """
+    
+    _name = "PoseNoise"
+    
+    add_property('_pos_std_dev', 0.05, "pos_std", type = "float", 
+                 doc = "Standard deviation for position noise")
+    add_property('_rot_std_dev', radians(5), "rot_std", type = "float", 
+                 doc = "Standard deviation for rotation noise")
+    
     def initialize(self):
         self._pos_std_dev = float(self.parameter("pos_std", default=0.05))
         self._rot_std_dev = float(self.parameter("rot_std", default=radians(5)))
@@ -13,7 +38,8 @@ class NoiseModifier(AbstractModifier):
                     % (self._pos_std_dev, degrees(self._rot_std_dev)))
 
 class PositionNoiseModifier(NoiseModifier):
-    """ Add a gaussian noise to a position """
+    """ Add a gaussian noise to a position 
+    """
     def modify(self):
         try:
             for variable in ['x', 'y', 'z']:
@@ -22,7 +48,8 @@ class PositionNoiseModifier(NoiseModifier):
             self.key_error(detail)
 
 class OrientationNoiseModifier(NoiseModifier):
-    """ Add a gaussian noise to an orientation """
+    """ Add a gaussian noise to an orientation 
+    """
     def modify(self):
         # generate a gaussian noise rotation vector
         rot_vec = mathutils.Vector((0.0, 0.0, 0.0))
@@ -47,7 +74,8 @@ class OrientationNoiseModifier(NoiseModifier):
                 self.key_error(detail)
 
 class PoseNoiseModifier(PositionNoiseModifier, OrientationNoiseModifier):
-    """ Add a gaussian noise to both position and orientation """
+    """ Add a gaussian noise to both position and orientation 
+    """
     def modify(self):
         PositionNoiseModifier.modify(self)
         OrientationNoiseModifier.modify(self)
