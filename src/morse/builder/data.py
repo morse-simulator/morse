@@ -59,7 +59,7 @@ MORSE_MODIFIER_DICT = {
     },
     'Noise' : {
         'imu': "morse.modifiers.imu_noise.IMUNoiseModifier",
-        'odometry': "morse.modifiers.odometry_noise.OdometryNoiseModifier",
+        'odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
         'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
         'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
         'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
