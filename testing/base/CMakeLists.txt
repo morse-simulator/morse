@@ -41,6 +41,7 @@ add_morse_test(ptu_testing)
 
 add_morse_test(ned_testing)
 add_morse_test(utm_mod_testing)
+add_morse_test(noise_testing)
 
 # Services
 
