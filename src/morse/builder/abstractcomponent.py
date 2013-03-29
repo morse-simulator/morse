@@ -593,6 +593,15 @@ class AbstractComponent(object):
 
         return imported_objects
 
+    def _make_transparent(self, obj, alpha):
+        obj.game.physics_type = 'NO_COLLISION'
+        for m in obj.material_slots:
+            m.material.use_transparency = True
+            m.material.alpha = alpha
+            m.material.transparency_method = 'Z_TRANSPARENCY'
+        for c in obj.children:
+            self._make_transparent(c, alpha)
+
     def profile(self):
         """ Watch the average time used during the simulation.
 
