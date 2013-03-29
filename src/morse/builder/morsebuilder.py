@@ -139,6 +139,17 @@ class Robot(Component):
 
     def make_external(self):
         self._bpy_object.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
+    
+    def make_ghost(self, alpha=0.3):
+        """ Make this robot a ghost
+        
+        The robot is made transparent, with no collision.
+        
+            ..note: A ghost robot has no influence on other simulated robots (no collision, invisible to laser sensors) except for video sensors.
+        
+        :param alpha: Transparency alpha coefficient (0 for invisible, 1 for opaque, default is 0.3)
+        """
+        self._make_transparent(self._bpy_object, alpha)
 
 class WheeledRobot(Robot):
     def __init__(self, filename):
