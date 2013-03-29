@@ -30,10 +30,13 @@ class NoiseModifier(AbstractModifier):
                  doc = "Standard deviation for position noise")
     add_property('_rot_std_dev', radians(5), "rot_std", type = "float", 
                  doc = "Standard deviation for rotation noise")
+    add_property('_2D', False, "_2D", type = "bool", 
+                 doc = "If True, noise is only applied to 2D pose attributes (i.e., x, y and yaw)")
     
     def initialize(self):
         self._pos_std_dev = float(self.parameter("pos_std", default=0.05))
         self._rot_std_dev = float(self.parameter("rot_std", default=radians(5)))
+        self._2D = bool(self.parameter("_2D", default=False))
         logger.info("Noise modifier standard deviations: position %.4f, rotation %.4f deg"
                     % (self._pos_std_dev, degrees(self._rot_std_dev)))
 
@@ -42,7 +45,10 @@ class PositionNoiseModifier(NoiseModifier):
     """
     def modify(self):
         try:
-            for variable in ['x', 'y', 'z']:
+            data_vars = ['x', 'y']
+            if not self._2D:
+                data_vars.append('z')
+            for variable in data_vars:
                 self.data[variable] = random.gauss(self.data[variable], self._pos_std_dev)
         except KeyError as detail:
             self.key_error(detail)
@@ -68,7 +74,11 @@ class OrientationNoiseModifier(NoiseModifier):
         except KeyError:
             # for eulers this is a bit crude, maybe should use the noise_quat here as well...
             try: 
-                for variable in ['roll', 'pitch', 'yaw']:
+                data_vars = ['yaw']
+                if not self._2D:
+                    data_vars.append('roll')
+                    data_vars.append('pitch')
+                for variable in data_vars:
                     self.data[variable] = random.gauss(self.data[variable], self._rot_std_dev)
             except KeyError as detail:
                 self.key_error(detail)
