@@ -62,7 +62,7 @@ class AbstractModifier(object):
     def initialize(self):
         """ initialize the specific modifier
         
-        Can be overriden if needed
+        Can be overridden if needed
         """
         pass
 
@@ -77,7 +77,7 @@ class AbstractModifier(object):
     def finalize(self):
         """ finalize the specific modifier
         
-        Can be overriden if needed
+        Can be overridden if needed
         """
         pass
 

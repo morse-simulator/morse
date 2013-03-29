@@ -28,9 +28,9 @@ you can use ``self.data`` to access to the ``local_data`` field of the
 associated component.
 
 
-It can be interesting too to overriding the ``initialize`` and ``finalize``
-method, which contains respectively the initialisation code, and the
-finalisation code. Do not override ``__init__`` and ``__del__``.
+It can be interesting too to override the ``initialize`` and ``finalize``
+methods, that contain respectively the initialization code, and the
+finalization code. Do not override ``__init__`` and ``__del__``.
 
 If you want to add some parameters to your modifier and to get their
 value during initialization, you can use the ``parameter`` method.
