@@ -280,3 +280,22 @@ the :doc:`compatibility matrix <integration>`.
 .. note::
     Configuration for standard sensors and actuators are defined in
     the module :py:mod:`morse.builder.data`.
+
+Adding modifiers
+----------------
+
+Sensors or actuators data can be modifier by assigning modifiers to them.
+Modifiers are used to either make some convenient conversions, for instance
+when you need to export data related to another frame than the Blender one 
+(see the :doc:`UTM <modifiers/utm>` or :doc:`NED <modifiers/ned>` modifiers),
+or when you want to add noise to your data.
+
+Modifiers may have parameters (like conversion frame reference, or noise
+parameters). They are described in the :doc:`modifiers <modifier_introduction>`
+documentation.
+
+To modify the data of a component, just add the following line to 
+your builder script::
+
+	pose.alter('Noise', pos_std=0.3)
+ 
