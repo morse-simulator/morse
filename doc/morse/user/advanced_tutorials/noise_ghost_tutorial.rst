@@ -2,11 +2,12 @@ Noise and ghost tutorial :tag:`builder` :tag:`pymorse`
 ======================================================
 
 This tutorial will show how to add and configure noise modifiers
-to your components, and will illustrate the use ``ghost`` robots.
+to your components, and will illustrate the use of ``ghost`` robots.
 
 .. image:: ../../../media/morse-noise-ghost-tutorial.png
-   :width: 300pt
    :align: center
+   :width: 400pt
+
 
 Pre-requisites
 --------------
@@ -78,10 +79,10 @@ external computation, without conflicting with the simulated robots.
 
 And finally we complete the scene configuration:
 
-  .. code-block:: python
+.. code-block:: python
 
-    env = Environment('land-1/trees')
-    env.create()
+  env = Environment('land-1/trees')
+  env.create()
 
 The complete script can be found at: ``$MORSE_SRC/examples/tutorials/noise_ghost_tutorial.py``.
 
@@ -135,7 +136,54 @@ or::
 The whole program can be found at: ``$MORSE_SRC/examples/clients/atrv/ghost_estimation_script.py``
 
 It differs from the previous one in the fact that the robot position
-is estimated from the measured noisy position of the robot.
+is estimated from the measured noisy position of the robot, by using an unknown input Kalman filter.
+To this end, a very simple extended autonomous state-space dynamic model of the robot has 
+been considered:
+
+.. math::
+   
+    X_{ext} &= \begin{pmatrix} x & ux & y & uy\end{pmatrix}^T \\
+    A_{ext} &= \begin{pmatrix}
+             0 & 1 & 0 & 0\\
+             0 & 0 & 0 & 0\\
+             0 & 0 & 0 & 1\\
+             0 & 0 & 0 & 0
+            \end{pmatrix}\\
+    \dot{X}_{ext} &= A_{ext} * X_{ext}
+    
+where ``x``, ``ux``, ``y``, ``uy`` are the position and control variables along the
+``x`` and ``y`` axis, respectively.            
+The x-y positions of the robot are subject to a white Gaussian noise (with zero mean). Thus,
+following the dynamic model notations, the measured vector is
+
+.. math::
+
+    Y_{meas} &= C_{ext} * X_{ext} + w \\
+    C_{ext} &= \begin{pmatrix}1 & 0 & 0 & 0\\
+                          0 & 0 & 1 & 0\end{pmatrix}
+
+where ``w`` stands for the white noise.
+Grounded on the above model, the derivation of the Kalman filer is obtained by solving 
+the following Riccati equation, using the ``solve_continuous_are`` function,
+where, the symmetric matrices ``Q`` and ``R`` are the design variables providing the confidence one
+have on the measurement and the model (typically, the trade-off is catched by tuning the ratio ``Q/R``,
+available in the script through the ``measure_confidence`` variable).
+The solution of the Riccati equation is then used to compute the Kalman gain ``L`` as follows:
+
+.. math::
+    
+    L = P * C_{ext}^T * (R / I)
+
+The discrete-time Kalman observer state-space matrices are simply obtained using a backward 
+discretization:
+
+.. math::
+
+    A &= I + (A_{ext} - L * C_{ext}) * dt\\    
+    B &= L * dt\\    
+    C &= C_{ext}
+
+where ``dt`` is the discretization period. 
 
 To run it, just launch this script instead of the previous one::
 
