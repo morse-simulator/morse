@@ -7,6 +7,8 @@ from morse.helpers import passive_objects
 from morse.middleware.pocolibs_datastream import *
 from viman.struct import *
 
+logger.setLevel(logging.DEBUG)
+
 object_config_file = "objectList_cfg"
 
 def _fill_world_matrix(obj, t3d):
@@ -71,7 +73,7 @@ class VimanPoster(PocolibsDataStreamOutput):
 
         #If provided, read the list of ARToolkit tags to fill the list of objects
         #to export.
-        self.scene_object_list += _read_object_list()
+        self.scene_object_list += self._read_object_list()
 
         #Complete the list with the objects already tracked by the semantic cam.
         if 'passiveObjectsDict' in blenderapi.persistantstorage():
@@ -87,7 +89,7 @@ class VimanPoster(PocolibsDataStreamOutput):
         i = 0
         for object in self.scene_object_list:
             logger.info("Adding " + object + " to the objects tracked by VIMAN")
-            self.obj.objects[i] = bytes(str(object), 'utf-8')
+            self.obj.objects[i].name = bytes(str(object), 'utf-8')
             i = i + 1
 
     def _read_object_list(self):
