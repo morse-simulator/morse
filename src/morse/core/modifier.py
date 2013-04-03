@@ -16,7 +16,7 @@ def register_modifier(classpath, component, args):
     if not modifier:
         logger.error("""
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Modifier '""" + modifier_name + """'
+    INITIALIZATION ERROR: Modifier '""" + classpath + """'
     module could not be found!
     
     Could not import modules necessary for the selected

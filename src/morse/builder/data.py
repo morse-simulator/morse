@@ -43,13 +43,13 @@ MORSE_DATASTREAM_MODULE = {
 
 MORSE_MODIFIER_DICT = {
     'NED': {
-        'pose': "morse.modifiers.ned.CoortinatesToNED",
-        'gps': "morse.modifiers.ned.CoortinatesToNED",
+        'pose': "morse.modifiers.ned.CoordinatesToNED",
+        'gps': "morse.modifiers.ned.CoordinatesToNED",
         'gyroscope': "morse.modifiers.ned.AnglesToNED",
-        'destination': "morse.modifiers.ned.CoortinatesFromNED",
-        'waypoint': "morse.modifiers.ned.CoortinatesFromNED",
+        'destination': "morse.modifiers.ned.CoordinatesFromNED",
+        'waypoint': "morse.modifiers.ned.CoordinatesFromNED",
         'orientation': "morse.modifiers.ned.AnglesFromNED",
-        'teleport': "morse.modifiers.ned.CoortinatesFromNED",
+        'teleport': "morse.modifiers.ned.CoordinatesFromNED",
     },
     'UTM' : {
         'pose': "morse.modifiers.utm.CoordinatesToUTM",
