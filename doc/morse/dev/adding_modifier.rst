@@ -74,6 +74,5 @@ Last, if you want to use it more easily, you can add some entries in
 Examples
 --------
 
-`ned.py <../../html/_modules/morse/modifiers/ned.html>`_
-shows a simple example for a modifier.
+:py:mod:`morse.modifiers.ned` shows a simple example for a modifier.
 
