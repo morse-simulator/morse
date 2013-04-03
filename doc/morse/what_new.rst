@@ -1,3 +1,31 @@
+What's new in MORSE 1.1?
+========================
+
+Components
+----------
+
+- Modifiers use now a class-base scheme, similarly to datastream input /
+  output (#330). 
+
+Actuators
++++++++++
+
+Robots
+++++++
+
+Sensors
++++++++
+
+- A new sensor :doc:`user/sensors/velocity` allows to retrieve properly the
+  velocities of a robot which use a physic controller.
+
+Builder API
+-----------
+
+- `make_ghost` method allows to transform the robot in ``ghost mode``
+  (transparent and with no associated physics)
+- `mass` method allows to setup the mass of any component.
+
 What's new in MORSE 1.0?
 ========================
 
