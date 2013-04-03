@@ -10,7 +10,7 @@ Videos
 |         .. vimeo:: 44505701              |            .. vimeo:: 23244699           |
 |            :width: 400                   |                :width: 400               |
 |                                          |                                          |
-|  A comilation of simulated scenarios     |  Using ROS RVIZ vizualisation tool to    |
+|  A compilation of simulated scenarios    |  Using ROS RVIZ visualisation tool to    |
 |  used in several research laboratories.  |  display the video stream of a simulated |
 |                                          |  camera                                  |
 +------------------------------------------+------------------------------------------+
