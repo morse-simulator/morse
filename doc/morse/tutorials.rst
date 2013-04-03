@@ -87,6 +87,7 @@ with specific requirements.
     user/advanced_tutorials/ros_nav_tutorial
     user/advanced_tutorials/mocap_tutorial
     user/advanced_tutorials/request_tutorial
+    user/advanced_tutorials/noise_ghost_tutorial
     
 Multi-node tutorials
 --------------------

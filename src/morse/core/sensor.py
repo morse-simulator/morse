@@ -68,7 +68,7 @@ class Sensor(morse.core.object.Object):
 
         # Data modification functions
         for function in self.output_modifiers:
-            function(self)
+            function()
 
         # record the time before calling datastreams for profiling
         if self.profile:

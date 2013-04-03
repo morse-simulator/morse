@@ -397,11 +397,13 @@ class AbstractComponent(object):
         self.add_service(interface)
         self.add_stream(interface, **kwargs)
 
-    def alter(self, modifier_name, config=None, **kwargs):
+    def alter(self, modifier_name, classpath=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
-        if not config:
-            config = MORSE_MODIFIER_DICT[modifier_name][self._blender_filename]
+        config = []
+        if not classpath:
+            classpath = MORSE_MODIFIER_DICT[modifier_name][self._blender_filename]
+        config.append(classpath)
         config.append(kwargs)
         Configuration.link_modifier(self, config)
 
@@ -590,6 +592,15 @@ class AbstractComponent(object):
                             if obj.name not in objects_names]
 
         return imported_objects
+
+    def _make_transparent(self, obj, alpha):
+        obj.game.physics_type = 'NO_COLLISION'
+        for m in obj.material_slots:
+            m.material.use_transparency = True
+            m.material.alpha = alpha
+            m.material.transparency_method = 'Z_TRANSPARENCY'
+        for c in obj.children:
+            self._make_transparent(c, alpha)
 
     def profile(self):
         """ Watch the average time used during the simulation.

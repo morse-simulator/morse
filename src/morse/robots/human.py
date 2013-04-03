@@ -58,6 +58,44 @@ class HumanClass(RobotGrasper):
         target.applyMovement([0.0, 0.0, tilt], True)
         
     @service
+    def grasp_(self, seq):
+        """ Grasp object.
+        """
+        logger.debug("morse grasp request received")
+        human = self.bge_object
+        if human['Manipulate']:
+            scene = blenderapi.scene()
+            hand_empty = scene.objects['Hand_Grab.R']
+
+            selected_object = hand_empty['Near_Object']
+            if seq == "t":
+                # Check that no other object is being carried
+                if (human['DraggedObject'] == None or 
+                human['DraggedObject'] == '') :
+                    # If the object is draggable
+                    if selected_object != None and selected_object != '':
+                        # Clear the previously selected object, if any
+                        human['DraggedObject'] = selected_object
+                        # Remove Physic simulation
+                        selected_object.suspendDynamics()
+                        # Parent the selected object to the hand target
+                        selected_object.setParent (hand_empty)
+                        
+        if seq == "f":
+
+            if (human['DraggedObject'] != None and 
+            human['DraggedObject'] != '') :
+                previous_object = human["DraggedObject"]
+                # Restore Physics simulation
+                previous_object.restoreDynamics()
+                previous_object.setLinearVelocity([0, 0, 0])
+                previous_object.setAngularVelocity([0, 0, 0])
+                # Remove the parent
+                previous_object.removeParent()
+                # Clear the object from dragged status
+                human['DraggedObject'] = None
+        
+    @service
     def move_hand(self, diff, tilt):
         """ move the human hand (wheel). a request to use by a socket.
         Done for wiimote remote control.

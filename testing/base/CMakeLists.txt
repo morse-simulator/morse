@@ -40,7 +40,9 @@ add_morse_test(ptu_testing)
 # Modifier
 
 add_morse_test(ned_testing)
-add_morse_test(utm_mod_testing)
+add_morse_test(utm_testing)
+add_morse_test(pose_noise_testing)
+add_morse_test(imu_noise_testing)
 
 # Services
 

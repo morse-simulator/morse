@@ -29,13 +29,13 @@ class UTMModifierTest(MorseTestCase):
 
         gps_mod = GPS()
         gps_mod.add_stream('socket')
-        gps_mod.alter('UTM')
+        gps_mod.alter('UTM', z_offset=421)
         robot.append(gps_mod)
 
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
         # Need to put float greater than 10000 in string
-        env.properties(UTMXOffset='123456789.0', UTMYOffset=-4242.0, UTMZOffset=421.0)
+        env.properties(UTMXOffset='123456789.0', UTMYOffset=-4242.0)
 
 
     def test_read_gps(self):
