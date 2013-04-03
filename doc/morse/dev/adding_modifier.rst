@@ -2,8 +2,9 @@ Adding a new modifier
 =====================
 
 The concept of a modifier is relatively simple. Their only function is to
-change the data stored in variables in the corresponding component, by using
-the concept of :doc:`hooks <../user/hooks>`. 
+change the data stored in variables in the corresponding component, for
+example to add noise around the information, or by applying some generic
+geometric transformation.
 
 A modifier is defined by a Python script.
 The Python script is responsible for altering the data by changing directly the
