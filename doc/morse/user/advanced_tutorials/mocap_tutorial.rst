@@ -9,8 +9,7 @@ environment.
     This tutorial is currently oriented towards the experiments being carried
     out at LAAS for Human-Robot Interaction. They rely on the software packages
     of the `Openrobots suite <http://www.openrobots.org>`_, and on the scripts
-    available in the 
-    `git repository <http://trac.laas.fr/git/robots/hri-simulation.git>`_ 
+    available in the `git repository <http://trac.laas.fr/git/robots/hri-simulation.git>`_.
 
 
 Pre-requisites
