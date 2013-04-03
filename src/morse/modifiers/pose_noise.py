@@ -18,9 +18,9 @@ class NoiseModifier(AbstractModifier):
 
     The PoseNoise modifier provides as modifiers:
     
-     * :py:class:`morse.modifiers.pose_noise.PositionNoiseModifier`
-     * :py:class:`morse.modifiers.pose_noise.OrientationNoiseModifier`
-     * :py:class:`morse.modifiers.pose_noise.PoseNoiseModifier`
+    * :py:class:`morse.modifiers.pose_noise.PositionNoiseModifier`
+    * :py:class:`morse.modifiers.pose_noise.OrientationNoiseModifier`
+    * :py:class:`morse.modifiers.pose_noise.PoseNoiseModifier`
 
     """
     
