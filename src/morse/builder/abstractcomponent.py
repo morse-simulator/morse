@@ -528,21 +528,25 @@ class AbstractComponent(object):
             filepath = os.path.join(MORSE_COMPONENTS, self._category, \
                                     component + '.blend')
 
+        looked_dirs = [filepath]
+
         if not os.path.exists(filepath):
             # Search for some blend file in different paths
             filepath = None
             resource_path = MORSE_RESOURCE_PATH.split(':')
             for path in resource_path:
                 tmp = os.path.join(path, component)
+                looked_dirs.append(tmp)
                 if os.path.exists(tmp):
                     filepath = tmp
                     break
             # Check if we got a match
             if not filepath:
-                logger.error("Blender file '%s' for external asset import can" \
-                             "not be found.\nEither provide an absolute path," \
-                             " or a path relative to MORSE assets directory\n" \
-                             "(typically $PREFIX/share/morse/data)"%component)
+                logger.error("Error while trying to load '%s': model not found.\n"
+                             "I was looking for one of these files: \n%s\n"
+                             "Either provide an absolute path, or a path relative \n"
+                             "to MORSE assets directories ($MORSE_RESOURCE_PATH \n"
+                             "or default path, typically $PREFIX/share/morse/data)."% (component, looked_dirs))
                 return
 
         if not objects: # link_append all objects from blend file
