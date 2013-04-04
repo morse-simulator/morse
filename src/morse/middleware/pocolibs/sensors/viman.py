@@ -7,8 +7,6 @@ from morse.helpers import passive_objects
 from morse.middleware.pocolibs_datastream import *
 from viman.struct import *
 
-logger.setLevel(logging.DEBUG)
-
 object_config_file = "objectList_cfg"
 
 def _fill_world_matrix(obj, t3d):
