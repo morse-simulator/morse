@@ -265,6 +265,12 @@ ELSE()
         								   ${SPHINX_MAN_OUTPUT} &&
 						  ${GZIP} -f ${SPHINX_MAN_OUTPUT}/*.1)
 		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-run.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-create.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-edit.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-check.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-add.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-rm.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morseexec.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/multinode_server.1.gz
 			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man/man1
