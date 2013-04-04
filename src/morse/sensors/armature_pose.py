@@ -73,7 +73,7 @@ class ArmaturePose(morse.core.sensor.Sensor):
         for channel in self.armature.channels:
             self.local_data[channel.name] = 0.0
 
-        logger.info('Component <%s> initialized' % self.bge_object.name)
+        logger.info('Component <%s> initialized, runs at %.2f Hz' % (self.bge_object.name, self.frequency))
 
     def _get_armature(self, obj):
         if hasattr(obj, "channels"):

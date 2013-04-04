@@ -49,7 +49,7 @@ class Camera(morse.core.sensor.Sensor):
 
         self._texture_ok = False
 
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
         """ Update the texture image. """

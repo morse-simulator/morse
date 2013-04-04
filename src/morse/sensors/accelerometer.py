@@ -47,7 +47,7 @@ class Accelerometer(morse.core.sensor.Sensor):
         self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
         self.a = [0.0, 0.0, 0.0]            # Acceleration
 
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
 
     def default_action(self):

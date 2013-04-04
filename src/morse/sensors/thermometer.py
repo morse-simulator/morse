@@ -40,7 +40,7 @@ class Thermometer(morse.core.sensor.Sensor):
         script_empty = scene.objects[script_empty_name]
         self._global_temp = float(script_empty['Temperature'])
 
-        logger.info('Component initialized')
+        logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
 
     def default_action(self):
