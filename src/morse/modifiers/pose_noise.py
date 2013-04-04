@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import random
 from math import radians, degrees, cos
 import mathutils
+from collections import defaultdict
 
 from morse.helpers.components import add_property
 from morse.modifiers.abstract_modifier import AbstractModifier
@@ -37,12 +38,12 @@ class NoiseModifier(AbstractModifier):
     def initialize(self):
         pos_std = self.parameter("pos_std", default=0.05)
         if isinstance(pos_std, dict):
-            self._pos_std_dev = pos_std
+            self._pos_std_dev = defaultdict(lambda: 0.0, pos_std)
         else:
             self._pos_std_dev = {'x': float(pos_std), 'y': float(pos_std), 'z': float(pos_std)}
         rot_std = self.parameter("rot_std", default=radians(5))
         if isinstance(rot_std, dict):
-            self._rot_std_dev = rot_std
+            self._rot_std_dev = defaultdict(lambda: 0.0, rot_std)
         else:
             self._rot_std_dev = {'roll': float(rot_std), 'pitch': float(rot_std), 'yaw': float(rot_std)}
         self._2D = bool(self.parameter("_2D", default=False))
