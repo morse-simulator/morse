@@ -113,7 +113,7 @@ class SearchAndRescue(morse.core.sensor.Sensor):
 
         self._detect_distance = 10.0
 
-        logger.info('Component initialized')
+        logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
 
     @async_service

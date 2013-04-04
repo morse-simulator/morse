@@ -26,7 +26,7 @@ class GPS(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
 
     def default_action(self):

@@ -88,7 +88,7 @@ class VideoCamera(morse.sensors.camera.Camera):
         # Position of the robot where the last shot is taken
         self.robot_pose = copy.copy(self.robot_parent.position_3d)
 
-        logger.info('Component initialized')
+        logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
     def interrupt(self):
         self._n = 0

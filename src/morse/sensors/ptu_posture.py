@@ -55,7 +55,7 @@ class PTUPosture(morse.core.sensor.Sensor):
 
         self.local_data['pan'] = 0.0
         self.local_data['tilt'] = 0.0
-        logger.info('Component <%s> initialized' % self.bge_object.name)
+        logger.info('Component <%s> initialized, runs at %.2f Hz' % (self.bge_object.name, self.frequency))
 
     def _get_ptu(self, obj):
         if "PanBase" in [c.name for c in obj.children]:

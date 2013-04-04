@@ -35,8 +35,7 @@ class Battery(morse.core.sensor.Sensor):
 
         self._time = time.time()
 
-
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
         """ Main function of this component. """

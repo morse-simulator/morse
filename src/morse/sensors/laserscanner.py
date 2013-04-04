@@ -210,7 +210,7 @@ class LaserScanner(Sensor):
                 self._layers = self.bge_object['layers']
             self._vertex_per_layer = len(self._ray_list) // self._layers
 
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
 
     def default_action(self):

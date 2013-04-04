@@ -62,7 +62,7 @@ class Odometry(morse.core.sensor.Sensor):
         self.previous_pos = self.original_pos.transformation3d_with(
                                                             self.position_3d)
 
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
 
     def default_action(self):

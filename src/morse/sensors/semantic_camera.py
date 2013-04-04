@@ -87,7 +87,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
                 logger.info('    - {%s} (type:%s)'%
                             (details['label'], details['type']))
 
-        logger.info('Component initialized')
+        logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
 
     def default_action(self):

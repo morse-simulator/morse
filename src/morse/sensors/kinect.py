@@ -33,7 +33,7 @@ class Kinect(Sensor):
         #     if child.name.startswith(self.name()+'.rgb')].pop()
         self.video_camera = None
         self.depth_camera = None
-        logger.info('Component initialized')
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def get_cameras_instance(self):
         if self.video_camera and self.depth_camera:
