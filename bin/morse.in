@@ -142,14 +142,18 @@ def check_default_scene(prefix):
     else:
         return default_scene_abspath
 
-def check_setup():
+def set_prefixes(silent = False):
     """
     Checks that the environment is correctly setup to run MORSE.
     Raises exceptions when an error is detected.
     """
     
-    global morse_prefix, blender_exec, default_scene_abspath
+    global morse_prefix
     
+    loglevel = logger.getEffectiveLevel()
+    if silent:
+        logger.setLevel(logging.WARNING)
+
     ###########################################################################
     #Check platform
     if not 'linux' in sys.platform:
@@ -216,8 +220,16 @@ def check_setup():
                     "Else, try to reinstall MORSE.")
             raise
         
+        if silent:
+            #restoring initial logger level
+            logger.setLevel(loglevel)
     
+def check_setup():
+
+    global blender_exec
     
+    set_prefixes()
+
     ###########################################################################
     #Check Blender version
     #First, look for the $MORSE_BLENDER env variable
