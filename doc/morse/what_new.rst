@@ -13,6 +13,9 @@ Actuators
 Robots
 ++++++
 
+- Introduce :doc:`Morsy <user/robots/morsy>`, the Morse mascot, now available directly
+  in the simulator.
+
 Sensors
 +++++++
 
