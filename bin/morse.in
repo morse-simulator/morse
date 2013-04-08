@@ -16,7 +16,7 @@ formatter = logging.Formatter("* %(message)s\n")
 log_handler.setFormatter(formatter)
 
 logger.addHandler(log_handler)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ##
 
 try:
@@ -539,7 +539,8 @@ def add_component(args):
     except MorseEnvironmentError as e:
         logger.error("%s" % e)
         sys.exit(1)
-    logger.info("A new %s called <%s> has been added to <%s>." % (type, name, args.env))
+
+    logger.debug("A new %s called <%s> has been added to <%s>." % (type, name, args.env))
 
 
 def prelaunch():

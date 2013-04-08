@@ -62,8 +62,8 @@ ACTUATOR = ["src/@env@/actuators/@name@.py",
 ###################
 
 NEW_ROBOT_MSG = ["""
-A template for a new robot called <{name}> has been added to the 
-<{env}> environment.
+A template for a new robot called <{name}> has been 
+added to the <{env}> environment.
 
 ----------------------------------------------------------
 To complete the equipment of your robot, edit:
@@ -91,6 +91,59 @@ lines:
 """----------------------------------------------------------
 Happy simulation!
 """]
+
+NEW_ACTUATOR_MSG = ["""
+A template for a new actuator called <{name}> has been 
+added to the <{env}> environment.
+
+----------------------------------------------------------
+Edit {prefix}/src/actuators/{name}.py to implement the
+behaviour of your actuator.
+
+----------------------------------------------------------
+To use it on your robot, edit your robot description in
+{prefix}/src/builder/robots/
+and add these lines:
+
+""", ("""from {env}.builder.actuators import {classname}
+
+# create a new {name} actuator
+{name} = {classname}()
+
+robot.append({name})
+
+""", 'python'),
+"""----------------------------------------------------------
+Happy simulation!
+"""]
+
+NEW_SENSOR_MSG = ["""
+A template for a new sensor called <{name}> has been 
+added to the <{env}> environment.
+
+----------------------------------------------------------
+Edit {prefix}/src/sensors/{name}.py to implement the
+behaviour of your sensor.
+
+----------------------------------------------------------
+To use it on your robot, edit your robot description in
+{prefix}/src/builder/robots/
+and add these lines:
+
+""", ("""from {env}.builder.sensors import {classname}
+
+# create a new {name} sensor
+{name} = {classname}()
+
+robot.append({name})
+
+""", 'python'),
+"""----------------------------------------------------------
+Happy simulation!
+"""]
+
+
+#################################################################
 
 class Environment():
 
@@ -223,7 +276,7 @@ class Environment():
 
         safename = self._make_safe_name(name)
         if safename != name:
-            logger.warning("Replace name <%s> by suitable identifier: "
+            logger.warning("Replaced name <%s> by suitable identifier: "
                            "<%s>" % (name, safename))
 
         if cmpttype == "robot":
@@ -238,8 +291,28 @@ class Environment():
                                  classname = safename.capitalize(), \
                                  env = self.env)
         elif cmpttype == "sensor":
-            self._install_files(SENSOR, name = safename)
+            desc = input("Enter a short description for sensor <%s>: " % safename)
+            self._install_files(SENSOR, \
+                                name = safename, \
+                                classname = safename.capitalize(), \
+                                env = self.env, \
+                                shortdesc = desc)
+            self._print_info_msg(NEW_SNESOR_MSG, \
+                                 prefix= self.abspath, \
+                                 name = safename, \
+                                 classname = safename.capitalize(), \
+                                 env = self.env)
         elif cmpttype == "actuator":
-            self._install_files(ACTUATOR, name = safename)
+            desc = input("Enter a short description for actuator <%s>: " % safename)
+            self._install_files(ACTUATOR, \
+                                name = safename, \
+                                classname = safename.capitalize(), \
+                                env = self.env, \
+                                shortdesc = desc)
+            self._print_info_msg(NEW_ACTUATOR_MSG, \
+                                 prefix= self.abspath, \
+                                 name = safename, \
+                                 classname = safename.capitalize(), \
+                                 env = self.env)
         else:
             raise MorseEnvironmentError("Unknown component type %s" % cmpttype)
