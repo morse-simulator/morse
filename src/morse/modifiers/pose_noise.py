@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import random
 from math import radians, degrees, cos
-from mathutils import Vector, Quaternion
+from morse.core.mathutils import Vector, Quaternion
 
 from morse.helpers.components import add_property
 from morse.modifiers.abstract_modifier import AbstractModifier

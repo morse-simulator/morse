@@ -35,3 +35,11 @@ def Euler(angle):
     else:
         return None
 
+def Quaternion(axis=None, angle=None):
+    if not fake:
+        if axis and angle:
+            return mathutils.Quaternion(axis, angle)
+        else:
+            return mathutils.Quaternion()
+    else:
+        return None
