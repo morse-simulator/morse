@@ -522,6 +522,7 @@ def add_component(args):
     type = args.type
     name = args.name
     env = args.env
+    force = args.force
 
     set_prefixes(silent = True)
 
@@ -535,7 +536,7 @@ def add_component(args):
     env = Environment(morse_prefix, env, site)
 
     try:
-        env.add_component(type, name)
+        env.add_component(type, name, force = force)
     except MorseEnvironmentError as e:
         logger.error("%s" % e)
         sys.exit(1)
@@ -775,6 +776,8 @@ if __name__ == '__main__':
             help="the type of component you want to add.")
     add_parser.add_argument('name', default="", help="the name of the new component.")
     add_parser.add_argument('env', default="", help="the environment where to add.")
+    add_parser.add_argument('-f', '--force', action='store_true',
+                       help='overwrite existing component with the same name.')
     add_parser.set_defaults(func=add_component)
 
 
