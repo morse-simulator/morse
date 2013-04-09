@@ -9,8 +9,8 @@ Except the part on the interface, which in this case is MOOS.  You can find it
 in ``examples/tutorials/tutorial-1-moos.py``.
 
 
-Configuring ROS
----------------
+Configuring MOOS
+----------------
 
 .. code-block:: python
 
