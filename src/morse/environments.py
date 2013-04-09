@@ -38,6 +38,10 @@ joinpth = os.path.join # little shortcut...
 
 ###################
 
+## Attention! the first file of each of these lists is used to check
+## if the component already exist: do not put file in "append" mode 
+## (like __init__.py) as first entry.
+
 BASIC = ["default.py", 
          "scripts/@env@_client.py",
          "src/@env@/__init__.py", 
@@ -67,14 +71,14 @@ added to the <{env}> environment.
 
 ----------------------------------------------------------
 To complete the equipment of your robot, edit:
-{prefix}/src/builder/robots/{name}.py
+{prefix}/src/{env}/builder/robots/{name}.py
 
 You can also modify its Blender mesh:
-{prefix}/data/robots/{name}.blend
+{prefix}/data/{env}/robots/{name}.blend
 
 For advanced usage, you may also edit its internal 
 definition here:
-{prefix}/src/robots/{name}.py
+{prefix}/src/{env}/robots/{name}.py
 ----------------------------------------------------------
 
 To use the robot in your simulation script, add the following
@@ -97,12 +101,12 @@ A template for a new actuator called <{name}> has been
 added to the <{env}> environment.
 
 ----------------------------------------------------------
-Edit {prefix}/src/actuators/{name}.py to implement the
+Edit {prefix}/src/{env}/actuators/{name}.py to implement the
 behaviour of your actuator.
 
 ----------------------------------------------------------
 To use it on your robot, edit your robot description in
-{prefix}/src/builder/robots/
+{prefix}/src/{env}/builder/robots/
 and add these lines:
 
 """, ("""from {env}.builder.actuators import {classname}
@@ -122,12 +126,12 @@ A template for a new sensor called <{name}> has been
 added to the <{env}> environment.
 
 ----------------------------------------------------------
-Edit {prefix}/src/sensors/{name}.py to implement the
+Edit {prefix}/src/{env}/sensors/{name}.py to implement the
 behaviour of your sensor.
 
 ----------------------------------------------------------
 To use it on your robot, edit your robot description in
-{prefix}/src/builder/robots/
+{prefix}/src/{env}/builder/robots/
 and add these lines:
 
 """, ("""from {env}.builder.sensors import {classname}
@@ -222,12 +226,14 @@ class Environment():
         if not os.access(self.path, os.F_OK):
             raise MorseEnvironmentError("<%s> (expected in \"%s\") does not "
                                         "exist! You may want to create first "
-                                        "the environment with 'morse init "
+                                        "the environment with 'morse create "
                                         "<env>'." % (self.env, self.path))
 
         self.check_writable(self.path)
 
-    def _install_files(self, files, **kwargs):
+    def _install_files(self, files, force = False, **kwargs):
+
+        firstfile = True
 
         for f in files:
             path, name = os.path.split(f)
@@ -240,6 +246,13 @@ class Environment():
             except OSError: # path already exists
                 pass
 
+            if firstfile and \
+               not force and \
+               os.path.exists(joinpth(self.path, newpath, newname)):
+                    raise MorseEnvironmentError("A component called <%s> already "
+                            "exist. Use 'morse add -f ...' to overwrite." % newname)
+
+            firstfile = False
             self._configure(joinpth(self.tpls, path, name + ".tpl"), \
                             joinpth(self.path, newpath, newname), \
                             **kwargs)
@@ -270,7 +283,7 @@ class Environment():
 
         self._install_files(BASIC, env = self.env)
 
-    def add_component(self, cmpttype, name):
+    def add_component(self, cmpttype, name, force = False):
 
         self.check_env_exists()
 
@@ -279,40 +292,46 @@ class Environment():
             logger.warning("Replaced name <%s> by suitable identifier: "
                            "<%s>" % (name, safename))
 
-        if cmpttype == "robot":
-            self._install_files(ROBOT, \
-                                name = safename, \
-                                classname = safename.capitalize(), \
-                                env = self.env)
+        try:
+            if cmpttype == "robot":
+                ok = self._install_files(ROBOT, \
+                                    force = force, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env)
 
-            self._print_info_msg(NEW_ROBOT_MSG, \
-                                 prefix= self.abspath, \
-                                 name = safename, \
-                                 classname = safename.capitalize(), \
-                                 env = self.env)
-        elif cmpttype == "sensor":
-            desc = input("Enter a short description for sensor <%s>: " % safename)
-            self._install_files(SENSOR, \
-                                name = safename, \
-                                classname = safename.capitalize(), \
-                                env = self.env, \
-                                shortdesc = desc)
-            self._print_info_msg(NEW_SNESOR_MSG, \
-                                 prefix= self.abspath, \
-                                 name = safename, \
-                                 classname = safename.capitalize(), \
-                                 env = self.env)
-        elif cmpttype == "actuator":
-            desc = input("Enter a short description for actuator <%s>: " % safename)
-            self._install_files(ACTUATOR, \
-                                name = safename, \
-                                classname = safename.capitalize(), \
-                                env = self.env, \
-                                shortdesc = desc)
-            self._print_info_msg(NEW_ACTUATOR_MSG, \
-                                 prefix= self.abspath, \
-                                 name = safename, \
-                                 classname = safename.capitalize(), \
-                                 env = self.env)
-        else:
-            raise MorseEnvironmentError("Unknown component type %s" % cmpttype)
+                self._print_info_msg(NEW_ROBOT_MSG, \
+                                    prefix= self.abspath, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env)
+            elif cmpttype == "sensor":
+                desc = input("Enter a short description for sensor <%s>: " % safename)
+                self._install_files(SENSOR, \
+                                    force = force, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env, \
+                                    shortdesc = desc)
+                self._print_info_msg(NEW_SNESOR_MSG, \
+                                    prefix= self.abspath, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env)
+            elif cmpttype == "actuator":
+                desc = input("Enter a short description for actuator <%s>: " % safename)
+                self._install_files(ACTUATOR, \
+                                    force = force, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env, \
+                                    shortdesc = desc)
+                self._print_info_msg(NEW_ACTUATOR_MSG, \
+                                    prefix= self.abspath, \
+                                    name = safename, \
+                                    classname = safename.capitalize(), \
+                                    env = self.env)
+            else:
+                raise MorseEnvironmentError("Unknown component type %s" % cmpttype)
+        except MorseEnvironmentError as mee:
+            logger.error(mee.value)
