@@ -1,6 +1,12 @@
 What's new in MORSE 1.1?
 ========================
 
+General
+-------
+
+- morse tools has now some options to easily create custom simulations: check
+  'morse {create|rm|add} --help' for more on that topic!
+
 Components
 ----------
 
