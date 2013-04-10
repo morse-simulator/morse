@@ -197,3 +197,25 @@ class Light(ActuatorCreator):
                 if "color" in kwargs.keys():
                     import re
                     spot.color = tuple(int(v) for v in re.findall("[0-9]+", kwargs['color']))
+
+class Sound(ActuatorCreator):
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+        self.properties(classpath="morse.actuators.sound.Sound")
+        self.properties(mode="play")
+        #self.select()
+        bpymorse.add_actuator(type="SOUND", name="MORSE_SOUND")
+        actuator = self._bpy_object.game.actuators[-1]
+        controller =  self._bpy_object.game.controllers[-1]
+        controller.link(actuator=actuator)
+    def open(self, filepath):
+        # just to raise a FileNotFoundError
+        open(filepath).close()
+        actuator = self._bpy_object.game.actuators[-1]
+        #if bpy.ops.sound.open.poll():
+        bpymorse.open_sound(filepath=filepath)
+        actuator.sound = bpymorse.get_last_sound()
+        actuator.use_sound_3d = True
+        actuator.distance_3d_max = 10000.0
+
+# end morse.builder.actuators

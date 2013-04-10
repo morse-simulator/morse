@@ -38,6 +38,7 @@ add_empty = empty_method
 new_mesh = empty_method
 new_object = empty_method
 apply_transform = empty_method
+open_sound = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -65,6 +66,7 @@ if bpy:
     new_mesh = bpy.data.meshes.new
     new_object = bpy.data.objects.new
     apply_transform = bpy.ops.object.transform_apply
+    open_sound = bpy.ops.sound.open
 
 def create_new_material():
     all_materials = get_materials().keys()
@@ -139,6 +141,21 @@ def get_text(name_or_id):
 
 def get_last_text():
     return get_text(-1)
+
+def get_sounds():
+    if bpy:
+        return bpy.data.sounds
+    else:
+        return []
+
+def get_sound(name_or_id):
+    if bpy and bpy.data.sounds:
+        return bpy.data.sounds[name_or_id]
+    else:
+        return None
+
+def get_last_sound():
+    return get_sound(-1)
 
 def select_only(obj):
     if bpy:
