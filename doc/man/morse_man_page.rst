@@ -6,9 +6,7 @@ morse manual page
 Synopsis
 --------
 
-**morse** [-h] [-v] [--name NAME] [--reverse-colors] [-c] [-g GEOM]
-             {check,edit,run} [scene] ...
-
+**morse** [-h] [-c] [--reverse-color] [-v] {create,rm,add,check,run,edit} ...
 
 Description
 -----------
@@ -25,41 +23,57 @@ programmed via Python scripts or inside of Blender itself. Currently supported
 middleware includes YARP, MOOS, ROS, Pocolibs, as well as a plain socket
 interface.
 
+Options
+-------
+
+These options apply to any MORSE command.
+
+:-c, --color:
+        Uses colors for MORSE output. The default color scheme is well
+        adapted to terminals with a dark background.
+:--reverse-color:
+        Uses an alternate color theme for MORSE output, well adapted to
+        terminals with a bright background.
+:-h, --help:
+        Displays information regarding the program use.
+:--version:
+        Displays the version number.
+
+
 Commands
 --------
 
+See "man morse-<command>" for a documentation of each commands.
+
+:add:
+        Adds templates for a new component (sensor, actuator, robot)
+        to an existing simulation environment.
 :check:
         Checks the environment is correctly setup to run morse.
-:edit filename:
+
+:create:
+        Creates a new simulation environment in the current directory.
+        A template simulation scene is also created.
+        The environment is added to 'sites' in ~/.morse/config
+:edit:
         Open the given Blender scene or Python script in the Blender
         interface for edition. The simulation can be started by 
         pressing P.
-:run filename:
+:rm:
+        Deletes an existing simulation environment.
+:run:
         Runs a simulation (must be a Python script) without loading 
         the Blender interface.
-:base blender_file:
-        When running in Edit mode, and assuming your passing a Builder API 
-        Python script, you can optionally set a 'base' Blender file on 
-        which the Python script is applied. This is convenient to quickly
-        change the simulated environment without touching the Python 
-        script, for instance.
-:name node_name:
-        When running in multi-node mode, sets the name of this
-        node. It defaults to current hostname.
-:color:
-        Uses colors for MORSE output. The default color scheme is well
-        adapted to terminals with a dark background.
-:reverse-color:
-        Uses an alternate color theme for MORSE output, well adapted to
-        terminals with a bright background.
-:geometry WxH+dx,dy:
-        Sets the simulator window geometry. Expected format: either WxH 
-        or WxH+dx,dy to set an initial x,y delta (from the lower left 
-        corner).
-:help:
-        Displays information regarding the program use.
-:version:
-        Displays the version number.
+
+Files
+-----
+
+Configuration files are stored in each user $HOME/.morse
+
+:config:
+        General MORSE configuration.
+        Section 'sites' contains the list of simulation environments
+        MORSE will look for at startup.
 
 Environment
 -----------

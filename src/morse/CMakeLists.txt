@@ -1,6 +1,6 @@
 
 if(BUILD_CORE_SUPPORT)
-INSTALL(FILES __init__.py #init_middleware.py
+INSTALL(FILES __init__.py environments.py
         DESTINATION ${PYTHON_INSTDIR}/morse
         )
 

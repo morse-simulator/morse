@@ -564,7 +564,7 @@ class AbstractComponent(object):
         if not os.path.exists(filepath):
             # Search for some blend file in different paths
             filepath = None
-            resource_path = MORSE_RESOURCE_PATH.split(':')
+            resource_path = MORSE_RESOURCE_PATH.split(os.pathsep)
             for path in resource_path:
                 tmp = os.path.join(path, component)
                 looked_dirs.append(tmp)
@@ -572,6 +572,7 @@ class AbstractComponent(object):
                     filepath = tmp
                     break
             # Check if we got a match
+
             if not filepath:
                 logger.error("Error while trying to load '%s': model not found.\n"
                              "I was looking for one of these files: \n%s\n"
