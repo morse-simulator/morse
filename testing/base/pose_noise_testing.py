@@ -45,13 +45,13 @@ class NoiseTest(MorseTestCase):
         gyroscope_noised.alter('Noise', rot_std=1)
         robot.append(gyroscope_noised)
         
-        odomerty = Odometry()
-        robot.append(odomerty)
-        odomerty.level('integrated')
-        odomerty_noised = Odometry()
-        odomerty_noised.alter('Noise', pos_std=1, rot_std=1)
-        robot.append(odomerty_noised)
-        odomerty_noised.level('integrated')
+        odometry = Odometry()
+        robot.append(odometry)
+        odometry.level('integrated')
+        odometry_noised = Odometry()
+        odometry_noised.alter('Noise', pos_std=1, rot_std=1)
+        robot.append(odometry_noised)
+        odometry_noised.level('integrated')
         
         robot.add_default_interface('socket')
         env = Environment('empty', fastmode = True)
@@ -85,13 +85,13 @@ class NoiseTest(MorseTestCase):
                 self.assertNotAlmostEqual(d[i], dn[i], delta=.001)
                           
     def test_noised_odometry(self):
-        """ Test if the Odomerty data is noised
+        """ Test if the odometry data is noised
         """
         with Morse() as morse:
             morse.robot.motion.publish({'v': 1, 'w':.5})
             sleep(1)
-            d = morse.robot.odomerty.get()
-            dn = morse.robot.odomerty_noised.get()
+            d = morse.robot.odometry.get()
+            dn = morse.robot.odometry_noised.get()
             for i in ['x', 'y', 'z', 'yaw', 'pitch', 'roll']:
                 #, 'vx', 'vy', 'vz', 'wz', 'wy', 'wz']:
                 self.assertNotAlmostEqual(d[i], dn[i], delta=.001)
