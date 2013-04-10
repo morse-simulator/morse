@@ -284,6 +284,11 @@ class AbstractComponent(object):
         if not classpath:
             classpath = self.property_value("classpath")
 
+        if not classpath:
+            logger.error("%s: no classpath defined for this "
+                         "component! Check component definition " % self.name)
+            return
+
         level = self.property_value("abstraction_level") or "default"
 
         config = []
@@ -292,7 +297,6 @@ class AbstractComponent(object):
             if not classpath in MORSE_DATASTREAM_DICT:
 
                 # Check if we can use default interface...
-
                 from morse.core.actuator import Actuator
                 from morse.core.sensor import Sensor
                 klass = get_class(classpath)
@@ -300,14 +304,18 @@ class AbstractComponent(object):
                    issubclass(klass, Actuator) and \
                    datastream in INTERFACE_DEFAULT_IN:
 
-                    logger.warning("%s: no interfaces available for this component! Trying to use default one for %s." % (classpath, datastream))
+                    logger.warning("%s: no interfaces available for this "
+                                   "component! Trying to use default one "
+                                   "for %s." % (classpath, datastream))
                     config = [INTERFACE_DEFAULT_IN[datastream]]
 
                 elif klass and \
                      issubclass(klass, Sensor) and \
                      datastream in INTERFACE_DEFAULT_OUT:
 
-                    logger.warning("%s: no interfaces available for this component! Trying to use default one for %s." % (classpath, datastream))
+                    logger.warning("%s: no interfaces available for this "
+                                   "component! Trying to use default one "
+                                   "for %s." % (classpath, datastream))
                     config = [INTERFACE_DEFAULT_OUT[datastream]]
 
                 else:
