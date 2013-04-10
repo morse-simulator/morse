@@ -54,6 +54,8 @@ class ProximityTest(MorseTestCase):
         target3.translate(x=-4.0, y = 0.0)
 
         env = Environment('empty', fastmode = True)
+        env.place_camera( (9.952, -14.955, 12.48) )
+        env.aim_camera( (0.867, 0, 0.428) )
         env.add_service('socket')
 
     def test_proximity(self):
@@ -78,7 +80,7 @@ class ProximityTest(MorseTestCase):
             self.assertTrue('Target1' in prox['near_objects'])
 
             # Don't care about the direction, only check the distance
-            send_dest(teleport_client, -3.0, 0.0, 0.0)
+            send_dest(teleport_client, -2.8, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target3' in prox['near_objects'])
@@ -86,6 +88,7 @@ class ProximityTest(MorseTestCase):
             # Call the set_range service and check if we can catch the
             # two objects
             prox_stream.set_range(20.0)
+            sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 2)
             self.assertTrue('Target1' in prox['near_objects'])
@@ -94,6 +97,7 @@ class ProximityTest(MorseTestCase):
             # Call the set_tracked_tag service and check if we catch
             # target2
             prox_stream.set_tracked_tag('Catch_me2')
+            sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target2' in prox['near_objects'])
