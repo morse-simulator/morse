@@ -4,21 +4,23 @@ import logging
 import re
 import shutil
 
-try:
-    # If Pygments is installed, use it to nicely render Python code.
-    from pygments import highlight
-    from pygments.lexers import PythonLexer
-    from pygments.formatters import Terminal256Formatter
+def pyprint(code):
+    print(code)
 
-    def pyprint(code):
-        print(highlight(code, PythonLexer(), Terminal256Formatter(style="monokai")))
+if "-c" in sys.argv or \
+   "--with-colors" in sys.argv or \
+   "--with-reverse-color" in sys.argv:
+    try:
+        # If Pygments is installed, use it to nicely render Python code.
+        from pygments import highlight
+        from pygments.lexers import PythonLexer
+        from pygments.formatters import Terminal256Formatter
 
-except ImportError:
+        def pyprint(code):
+            print(highlight(code, PythonLexer(), Terminal256Formatter(style="monokai")))
 
-    def pyprint(code):
-        print(code)
-
-
+    except ImportError:
+        pass
 
 
 from morse.core.exceptions import MorseEnvironmentError
