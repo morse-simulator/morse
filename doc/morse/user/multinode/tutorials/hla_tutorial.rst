@@ -45,7 +45,7 @@ Lauching the simulation
 
 To start each simulation node, just launch MORSE with the node name option and the tutorial script::
 
-  $ morse --name nodeA run tutorial-hla.py
+  $ morse run --name nodeA tutorial-hla.py
   
 Idem for nodeB.
 
