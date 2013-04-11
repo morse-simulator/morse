@@ -21,7 +21,6 @@ logger.setLevel(logging.INFO)
 
 try:
     sys.path.append("@PYTHON_INSTDIR@")
-    os.environ["PYTHONPATH"] += os.pathsep + "@PYTHON_INSTDIR@"
     from morse.version import VERSION
     from morse.environments import Environment
     from morse.core.exceptions import MorseEnvironmentError
@@ -354,11 +353,7 @@ def set_morse_environ(site):
 
         logger.info('Adding <%s> to PYTHONPATH and MORSE_RESOURCE_PATH.' % site)
 
-        if 'PYTHONPATH' in os.environ:
-                # pre-pend the site path to be sure we shadow existing resources
-                os.environ['PYTHONPATH'] = "%s" % os.path.join(site, 'src') + os.pathsep + os.environ['PYTHONPATH']
-        else:
-            os.environ['PYTHONPATH'] = "%s" % os.path.join(site, 'src')
+        sys.path.insert(0, os.path.join(site, 'src'))
 
         if 'MORSE_RESOURCE_PATH' in os.environ:
                 # pre-pend the site path to be sure we shadow existing resources
@@ -590,7 +585,10 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
     #Flush all outputs before launching Blender process
     sys.stdout.flush()
 
+    # Redefine the PYTHONPATH to include both the user-set path plus
+    # default system paths (like '/usr/lib/python*')
     env = os.environ
+    env["PYTHONPATH"] = os.pathsep.join(sys.path)
 
     # Add the MORSE node name to env.
     if node_name:
@@ -620,7 +618,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
                 script_path = os.path.abspath(script)
                 script_path = script_path.replace ('\\', '/')
                 tmpF.write(("import sys\n").encode())
-                for element in os.environ["PYTHONPATH"].split(os.pathsep):
+                for element in sys.path.split(os.pathsep):
                     element = element.replace('\\', '/')
                     tmpF.write(("sys.path.append('" + element + "')\n").encode())
                 tmpF.write(("exec(compile(open('" + script_path + "').read(), '" + script_path + "', 'exec'), globals (), locals ())\n").encode())
