@@ -11,18 +11,17 @@ class SimulationNodeClass (object):
     # Make this an abstract class
     __metaclass__ = ABCMeta
     
-    def __init__(self, name, server_address, server_port, bge_logic):
+    def __init__(self, name, server_address, server_port):
         self.node_name = name
         self.host = server_address
         self.port = server_port
-        self.gl = bge_logic
         self.initialize()
 
     def __del__(self):
         self.finalize()
 
     @abstractmethod
-    def initialize():
+    def initialize(self):
         """ 
         Initialize the MORSE node.
         """
