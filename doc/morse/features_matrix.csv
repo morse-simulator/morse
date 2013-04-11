@@ -1,0 +1,28 @@
+Features, MORSE 1.0, Gazebo 1.5, V-Rep, Webots 7.0
+General,
+License, BSD, Apache, (open source), proprietary
+Physics, Bullet, ODE/Bullet (on-going), Bullet/ODE, ODE
+Format support, all format supported by Blender, SDF collada, ?, ?
+Modeller, ✔ (Blender), ✘, ✔, ?
+GUI for simulation control, ✘ , ✔, ✔, ✔
+Extensibility, ✔ (Python), C++ plugins, plugins and embedded scripts, ?
+Headless simulation, ✘ (OpenGL context required), ✔, ?, ?
+Middleware support, ROS YARP MOOS Pocolibs, ROS, ROS, ROS
+APIs, python sockets, ?, C++ python java matlab urbi, C++ java matlab sockets
+Massive simulation, ✔ (multi-node HLA), ?, ?, ?
+Time management,
+Faster-than-realtime simulation, ✘, ?, ?, ✔
+High-level algorithms,
+Path-planning, ✘, ?, ✔, ?
+Inverse kinematics, ✔, ?, ✔, ?
+Walk dynamics, ✘, ?, ?, ✔
+Components library,
+Supported standard robots,
+PR2, ✔ (partial), ✔, ✘, ✘
+e-puck, ✘, ✘, ✘, ✔
+KUKA YouBot, ✘, ✘, ✔, ✔
+TurtleBot, ✘, ✔, ?, ?
+Other features,
+Human simulation, ✔ (avatar with Kinect support), ?, ?, ?
+
+
