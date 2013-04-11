@@ -95,6 +95,7 @@ class ArmaturePoseTest(MorseTestCase):
 
 
             simu.robot.arm.set_rotation("kuka_2", 1).result()
+            sleep(0.1)
             pose = simu.robot.arm.arm_pose.get()
 
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 1.0, delta = precision)

@@ -1,5 +1,6 @@
-#!/usr/bin/python
-"""A Python interface to control the `MORSE <http://morse.openrobots.org>`_ robotics simulator
+#!/usr/bin/env python3
+"""A Python interface to control `MORSE <http://morse.openrobots.org>`_,
+*the robotics simulator*.
 
 The ``pymorse`` library exposes MORSE services and data stream with a
 friendly Python API.
@@ -69,13 +70,13 @@ background its pose:
         print("I'm currently at %s" % pose)
 
     with pymorse.Morse() as simu:
-        
+
         # subscribes to updates from the Pose sensor by passing a callback
         simu.r2d2.pose.subscribe(print_pos)
 
         # sends a destination
-        simu.r2d2.motion.publish({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
-                                  'tolerance' : 0.5, 
+        simu.r2d2.motion.publish({'x' : 10.0, 'y': 5.0, 'z': 0.0,
+                                  'tolerance' : 0.5,
                                   'speed' : 1.0})
 
         # Leave a couple of millisec to the simulator to start the action
@@ -142,14 +143,18 @@ Writing on actuator's datastreams is achieved with the
 :py:meth:`pymorse.Stream.publish` method, as illustrated in the first example
 above.
 
-The data format is always formatted as a JSON dictionary (which means that, currently, binary data like images are not supported). The documentation page of each component specify the exact content of the dictionary.
+The data format is always formatted as a JSON dictionary (which means that,
+currently, binary data like images are not supported). The documentation page
+of each component specify the exact content of the dictionary.
 
 Services
 --------
 
-Some components export RPC services. Please refer to the components' documentation for details.
+Some components export RPC services. Please refer to the components'
+documentation for details.
 
-These services can be accessed from `pymorse`, and mostly look like regular methods:
+These services can be accessed from `pymorse`, and mostly look like regular
+methods:
 
 .. code-block:: python
 
@@ -166,7 +171,8 @@ However, these call are **asynchronous**: a call to
 <http://docs.python.org/dev/library/concurrent.futures.html>`_ to learn more
 about `futures`.
 
-Non-blocking call are useful for long lasting services, like in the example below:
+Non-blocking call are useful for long lasting services, like in the example
+below:
 
 .. code-block:: python
 
@@ -282,59 +288,37 @@ configure it to print debug messages on the console.
             print('Oups! An error occured!')
             print(mse)
 """
-import os
+import json
 import time
-import logging
 import socket
-import select
+import logging
+import asyncore
+import asynchat
 import threading
-
-from queue import Queue
+# Double-ended queue, thread-safe append/pop.
+from collections import deque
 
 from .future import MorseExecutor
 
-import json
+logger = logging.getLogger("pymorse")
+logger.setLevel(logging.WARNING)
+# logger.addHandler( logging.NullHandler() )
 
-DEBUG_LEVEL=logging.DEBUG
-
-class NullHandler(logging.Handler):
-    """Defines a NullHandler for logging, in case pymorse is used in an application
-    that doesn't use logging.
-    """
-    def emit(self, record):
-        pass
-
-pymorselogger = logging.getLogger("pymorse")
-pymorselogger.setLevel(logging.DEBUG)
-
-h = NullHandler()
-pymorselogger.addHandler(h)
-
-
-from .stream import Stream
-
-class MorseServerError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class MorseServiceFailed(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class MorseServicePreempted(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-
+MSG_SEPARATOR=b"\n"
+TIMEOUT=8
+BUFFER_SIZE=8192
 SUCCESS='SUCCESS'
 FAILURE='FAILED'
 PREEMPTED='PREEMPTED'
+
+class MorseServiceError(Exception):
+    """ Morse Service Exception thrown when unknown error """
+
+class MorseServiceFailed(Exception):
+    """ Morse Service Exception thrown when failed error """
+
+class MorseServicePreempted(Exception):
+    """ Morse Service Exception thrown when preempted error """
 
 
 class Component():
@@ -343,287 +327,143 @@ class Component():
         self.name = name
         self.fqn = fqn # fully qualified name
 
-        if stream == 'IN':
-            self.stream = Stream(self._morse.com, port)
-            self.publish = self.stream.publish
-        elif stream == 'OUT':
-            self.stream = Stream(self._morse.com, port)
-            self.get = self.stream.get
-            self.last = self.stream.last
-            self.subscribe = self.stream.subscribe
-            self.unsubscribe = self.stream.unsubscribe
-        else:
-            self.stream = None
+        if port:
+            self.stream = StreamJSON(morse.host, port)
 
-        for s in services:
-            pymorselogger.debug("Adding service %s to component %s" % (s, self.name))
-            self._add_service(s)
+            if stream == 'IN':
+                self.publish = self.stream.publish
+            elif stream == 'OUT':
+                self.get = self.stream.get
+                self.subscribe = self.stream.subscribe
+                self.unsubscribe = self.stream.unsubscribe
 
-    def _add_service(self, m):
+        for service in services:
+            logger.debug("Adding service %s to component %s" % (service, self.name))
+            self._add_service(service)
+
+    def _add_service(self, method):
         def innermethod(*args):
-            pymorselogger.debug("Sending asynchronous request %s with args %s." % (m, args))
-            req = self._morse._make_request(self.fqn, m, *args)
-            future = self._morse.executor.submit(self._morse._execute_rpc, req)
+            logger.debug("Sending asynchronous request %s with args %s." % (method, args))
+            req = self._morse._rpc_request(self.fqn, method, *args)
+            future = self._morse.executor.submit(self._morse._rpc_process, req)
             #TODO: find a way to throw an execption in the main thread
             # if the RPC request fails at invokation for stupid reasons
             # like wrong # of params
             return future
 
-        innermethod.__doc__ = "This method is a proxy for the MORSE %s service." % m
-        innermethod.__name__ = str(m)
-        setattr(self,innermethod.__name__,innermethod)
+        innermethod.__doc__ = "This method is a proxy for the MORSE %s service." % method
+        innermethod.__name__ = str(method)
+        setattr(self, innermethod.__name__, innermethod)
 
     def close(self):
         if self.stream:
             self.stream.close()
 
 class Robot(dict, Component):
-    __getattr__= dict.__getitem__
-    __setattr__= dict.__setitem__
-    __delattr__= dict.__delitem__
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
     def __init__(self, morse, name, fqn, services = []):
         Component.__init__(self, morse, name, fqn, None, None, services)
 
-class ComChannel(threading.Thread):
+def normalize_name(name):
+    """Normalize Blender names to get valid Python identifiers"""
+    normalized = name
+    for illegal in ".-~":
+        normalized = normalized.replace(illegal, "_")
+    return normalized
 
-    id = 0
-
-    def __init__(self, host):
-        threading.Thread.__init__(self)
-
-        self.host = host
-
-        self._socks_lock = threading.Lock()
-        self._socks = {}
-        self._running = True
-
-        # Creates a pair of pipe to wake up the
-        # select when we need to write.
-        self._read_fd, self._write_fd = os.pipe()
-
-        pymorselogger.debug("Starting the communication thread now.")
-        self.start()
-
-    def run(self):
-        """ This method reads and writes to/from the simulator.
-        When a new request is pushed in _morse_requests_queue, it is send to the 
-        server, when the server answer smthg, we check if it's a normal answer
-        or an event, and dispatch accordingly the answer's content.
-        """
-
-        while self._running:
-
-            try:
-                # Only select'ing on inputs
-                with self._socks_lock:
-                    inputs = list(self._socks.keys())
-                inputs.append(self._read_fd) # add the pipe to be able to wake up the select if needed
-                inputready,outputready,exceptready = select.select(inputs, [], [])
-
-            except select.error as e:
-                break
-            except socket.error as e:
-                break
-
-            with self._socks_lock:
-                for sock, value in self._socks.items():
-                    in_queue = value["in"]
-                    out_queue = value["out"]
-                    buf = value["buf"]
-                    cb = value["cb"]
-                    _buf = value["_buf"]
-
-                    # Something to send to the server?
-                    if not out_queue.empty():
-                        r = out_queue.get()
-                        if buf is not None: # stream connection!
-                            raw = json.dumps(r) + "\n"
-                        else: # RPC connection!
-                            if 'special' in r:
-                                raw = "{id} {special}\n".format(**r)
-                            else:
-                                if r['args']:
-                                    r['args'] = ', '.join(json.dumps(a) for a in r['args'])
-                                else:
-                                    r['args'] = ''
-                                raw = "{id} {component} {service} [{args}]\n".format(**r)
-
-                        sock.send(raw.encode())
-
-                    # Something to read from the server?
-                    for i in inputready:
-                        if i == sock:
-
-                            server_dead = False
-                            raw = _buf
-                            while not '\n' in raw:
-                                # Read how many bytes are available in the socket buffer
-                                raw = sock.recv(4096).decode()
-
-                                if not raw: # socket closed?
-                                    server_dead = True
-                                    break
-
-                                _buf += raw
-
-
-                            if not server_dead:
-                                last_linefeed = _buf.rfind('\n')
-                                rqsts = _buf[:last_linefeed].split('\n') # we keep only the complete requests (we may have more than one!)
-                                self._socks[sock]["_buf"] = _buf[last_linefeed + 1:] # we keep the remaing part for next time
-
-                                for data in rqsts:
-
-                                    if buf is not None: # it's a stream connection!
-                                        res = json.loads(data)
-                                        in_queue.put(res)
-                                        buf.appendleft(res)
-                                        if cb:
-                                            cb(res)
-                                    else: # it's a RPC connection
-                                        res = self.parse_response(data)
-                                        in_queue.put(res)
-                                        if cb:
-                                            cb(res)
-
-        with self._socks_lock:
-            pymorselogger.debug('Closing the connections to MORSE...')
-            for sock, value in self._socks.items():
-                sock.close()
-
-    def parse_response(self, raw):
-
-        result = None
+def parse_response(raw):
+    result = None
+    try:
+        msg_id, status, result = raw.split(' ', 2)
         try:
-            id, status, result = raw.split(' ', 2)
+            result = json.loads(result)
+        except TypeError:
+            logger.error("Could not deserialize MORSE answer! Got: <%s>" % result)
+    except ValueError:
+        # No return value
+        if ' ' in raw:
+            msg_id, status = raw.split(' ')
+        else:
+            logger.error("Could not receive a valid response from MORSE: <%s>" % raw)
+            msg_id = '???'
+            status = FAILURE
 
-            try:
-                result = json.loads(result)
-            except TypeError:
-                pymorselogger.error("Could not deserialize MORSE answer! Got: <%s>" % result)
-        except ValueError:
-            # No return value
-            if ' ' in raw:
-                id, status = raw.split(' ')
-            else:
-                pymorselogger.error("Could not receive a valid response from MORSE: <%s>" % raw)
-                id = '???'
-                status = FAILURE
+    logger.debug("Got answer: %s, %s"%(status, result))
+    return {
+        "id": msg_id,
+        "status": status,
+        "result": result,
+    }
 
-        morse_answer = {"status": status,
-                        "id": id,
-                        "result":result}
+def rpc_get_result(response):
+    result = response['result']
+    status = response['status']
 
-        pymorselogger.debug("Got answer: " + morse_answer['status'] + \
-                ", " + str(morse_answer['result']))
-
-        return morse_answer
-
-    def process(self):
-        """ make sure the write requests are processed by
-        explicitely waking up select.
-        """
-        os.write(self._write_fd, b'1')
-
-    def connect(self, port, read_queue, write_queue, buf = None, cb = None):
-        """
-        :param port: the socket port to connect to
-        :param read_queue: the content read from the socket is pushed to this
-          queue. Must be a queue.queue.
-        :param write_queue: content to be sent to the simulator should be
-           pushed to this queue. Must be a queue.queue.
-        :param buf: (optional, default: None) if provided, content
-          stored in the read_queue is copied as well in the buffer. Must support
-          'appendleft()'. Attention: if 'buf' is provided, the connection is
-          considered as a stream connection. Else as a RPC connection (using
-          MORSE RPC protocol to parse the response).
-        :param cb: (optional, default: None) a callback, invoked when content
-          is read on the socket.
-
-        """
-
-        try:
-            #create an INET, STREAMing socket
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            #now connect to the morse server
-            sock.connect((self.host, port))
-        except socket.error:
-            sock.close()
-            raise MorseServerError('Unable to connect to MORSE on port %d. Check it is running, '
-                                   'and the port is used by the simulation.' % port)
-
-        with self._socks_lock:
-            self._socks[sock] = {"in": read_queue,
-                                "out": write_queue,
-                                "cb": cb,
-                                "buf": buf,
-                                "_buf":""} # internal socket buffer
-        # wake up select
-        os.write(self._write_fd, b'1')
-
-    def close(self):
-
-        self._running = False
-        # wake up select
-        os.write(self._write_fd, b'1')
-        self.join()
-        pymorselogger.debug('Communications with MORSE are closed.')
+    if status == SUCCESS:
+        return result
+    elif status == FAILURE:
+        if result and "wrong # of parameters" in result:
+            raise TypeError(result)
+        raise MorseServiceFailed(result)
+    elif status == PREEMPTED:
+        raise MorseServicePreempted(result)
+    else:
+        raise MorseServiceError(result)
 
 
-class Morse():
-
-    id = 0
-
-    def __init__(self, host = "localhost", service_port = 4000):
+class Morse(object):
+    _asyncore_thread = None
+    def __init__(self, host = "localhost", port = 4000):
         """ Creates an instance of the MORSE simulator proxy.
-        
+
         This is the main object you need to instanciate to communicate with the simulator.
-        
+
         :param host: the simulator host (default: localhost)
         :param port: the port of the simulator socket interface (default: 4000)
         """
-
-        self._services_in_queue = Queue() # where we put the service result to read from MORSE
-        self._services_out_queue = Queue() # where we put the request to send to MORSE
-
-        self.com = ComChannel(host)
-
-        # First, connect to the service port
-        self.com.connect(service_port,
-                         self._services_in_queue,
-                         self._services_out_queue)
-
+        # TODO if asyncore.loop is running: raise Exception("asyncore.loop already running")
+        self.host = host
+        self.simulator_service = Stream(host, port)
+        self.simulator_service_id = 0
+        if not Morse._asyncore_thread:
+            Morse._asyncore_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': 0.01} )
+            Morse._asyncore_thread.start()
+            logger.debug("Morse thread started")
         self.executor = MorseExecutor(max_workers = 10, morse = self)
+        self.initialize_api()
 
-        self.initapi()
+    def is_up(self):
+        return self.simulator_service.is_up()
 
-    def _normalize_name(self, name):
-        """
-        Normalize Blender names to get valid Python identifiers
-        """
-        new = name
-        for c in ".-~":
-            new = new.replace(c, "_")
-        return new
-
-    def initapi(self):
+    def initialize_api(self):
         """ This method asks MORSE for the scene structure, and
         dynamically creates corresponding objects in 'self'.
         """
-        simu = self.rpc("simulation", "details")
-
+        details = self.rpc_t(15, 'simulation', 'details') # RPC with timeout
+        if not details:
+            if not self.is_up():
+                self.close()
+                raise ConnectionError("simulation service is down")
+            else:
+                self.close()
+                raise ValueError("simulation details not available")
+        logger.debug(details)
         self.robots = []
-        for r in simu["robots"]:
-            name = self._normalize_name(r["name"])
+        for robot_detail in details["robots"]:
+            name = normalize_name(robot_detail["name"])
             self.robots.append(name)
-            setattr(self, name, Robot(self, r['name'], r['name'], 
-                                      r.get('services', [])))
-            robot = getattr(self, name)
+            robot = Robot(self, robot_detail['name'], robot_detail['name'],
+                          services = robot_detail.get('services', []))
+            setattr(self, name, robot)
 
-            for c in sorted(r["components"].keys()): # important to sort the list of components to ensure parents are created before children
-                self._add_component(robot, c, r["components"][c])
+            components = robot_detail["components"]
+            # important to sort the list of components to ensure parents are
+            # created before children
+            for component in sorted(components.keys()):
+                self._add_component(robot, component, components[component])
 
     def _add_component(self, robot, fqn, details):
         stream = details.get('stream', None)
@@ -632,19 +472,15 @@ class Morse():
             try:
                 port = self.get_stream_port(fqn)
             except MorseServiceFailed:
-                pymorselogger.debug('Component <%s> has a non-socket stream: datastream via pymorse not supported', fqn)
+                logger.warn('Component <%s> has a non-socket stream: datastream via pymorse not supported', fqn)
                 stream = None
 
         services = details.get('services', [])
 
         name = fqn.split('.')[1:] # the first token is always the robot name. Remove it
 
-        cmpt = Component(self,
-                        name[-1],
-                        fqn,
-                        stream,
-                        port,
-                        services)
+        logger.debug("Component %s" % str((name[-1], fqn, stream, port, services)) )
+        cmpt = Component(self, name[-1], fqn, stream, port, services)
 
         if len(name) == 1: # this component belongs to the robot directly.
             robot[name[0]] = cmpt
@@ -654,98 +490,82 @@ class Morse():
                 subcmpt = getattr(subcmpt, sub)
 
             if hasattr(subcmpt, name[-1]): # pathologic cmpt name!
-                raise RuntimeError("Sub-component name <%s> conflicts with <%s.%s> member. To use pymorse with this scenario, please change the name of the sub-component." % (name[-1], subcmpt.name, name[-1]))
+                raise RuntimeError("Sub-component name <%s> conflicts with"
+                        "<%s.%s> member. To use pymorse with this scenario,"
+                        "please change the name of the sub-component." %
+                        (name[-1], subcmpt.name, name[-1]))
             setattr(subcmpt, name[-1], cmpt)
 
+    def rpc_t(self, timeout, component, service, *args):
+        req = self._rpc_request(component, service, *args)
+        return self._rpc_process(req, timeout)
 
-    def cancel(self, id):
+    def rpc(self, component, service, *args):
+        """ Calls a service from the simulator.
+
+        The call will block until a response from the simulator is received.
+
+        :param component: the component that expose the service (like a robot name)
+        :param service: the name of the service
+        :param args...: (variadic) each service parameter, as a separate argument
+        """
+        req = self._rpc_request(component, service, *args)
+        return self._rpc_process(req)
+
+    def _rpc_request(self, component, service, *args):
+        req = {
+            'id': '%i'%self.simulator_service_id,
+            'component': component,
+            'service': service,
+            'args': ', '.join(json.dumps(arg) for arg in args),
+        }
+        self.simulator_service_id += 1
+        return req
+
+    def _rpc_process(self, req, timeout=None):
+        raw = "{id} {component} {service} [{args}]".format(**req)
+        logger.debug(raw)
+        self.simulator_service.publish(raw)
+
+        timeout_t = 0
+        if timeout:
+            timeout_t = timeout + time.time()
+
+        while self.is_up():
+            raw = self.simulator_service.get()
+            if raw:
+                res = parse_response(raw)
+                if res['id'] == req['id']:
+                    return rpc_get_result(res)
+                else:
+                    self.simulator_service.push_back(raw)
+                    logger.debug("pushing back : response id != request id")
+            time.sleep(0.01)
+            if timeout_t and time.time() >= timeout_t:
+                raise TimeoutError("timeout exceeded while waiting for response")
+
+    def cancel(self, service_id):
         """ Send a cancelation request for an existing (running) service.
 
         If the service is not running or does not exist, the request is
         ignored.
         """
-        req = {'id': id,
-               'special': 'cancel'}
-
-        self._services_out_queue.put(req)
-        self.com.process()
-
-
-    def rpc(self, component, service, *args):
-        """ Calls a service from the simulator.
-        
-        The call will block until a response from the simulator is received.
-        
-        :param component: the component that expose the service (like a robot name)
-        :param service: the name of the service
-        :param args...: (variadic) each service parameter, as a separate argument
-        """
-        return self._execute_rpc(self._make_request(component, service, *args))
-        
-    def _make_request(self, component, service, *args):
-        req = {'id': str(self.id),
-               'component': component,
-               'service': service,
-               'args': args}
-        self.id += 1
-        return req
-
-    def _execute_rpc(self, req):
-
-        self._services_out_queue.put(req)
-        self.com.process()
-
-        while True:
-            res = self._services_in_queue.get() #block until we get an answer
-            if res['id'] != req['id']:
-                self._services_in_queue.put(res)
-                time.sleep(0) # try to switch to another
-            else:
-                break
-
-        if res['status'] == SUCCESS:
-            if not res['result']:
-                return None
-            return res['result']
-            
-        elif res['status'] == FAILURE:
-            msg = res['result']
-
-            if msg and "wrong # of parameters" in msg:
-                raise TypeError(msg)
-            
-            raise MorseServiceFailed(res['result'])
-
-        elif res['status'] == PREEMPTED:
-
-            msg = res['result']
-
-            raise MorseServicePreempted(res['result'])
-       
-        else:
-            raise MorseServerError("Got an unexpected message status from MORSE: " + \
-            res['status'])
+        self.simulator_service.publish("%i cancel"%int(service_id))
 
     def close(self, cancel_async_services = False):
-
         if cancel_async_services:
-            pymorselogger.info('Cancelling all running asynchronous requests...')
+            logger.info('Cancelling all running asynchronous requests...')
             self.executor.cancel_all()
         else:
-            pymorselogger.info('Waiting for all asynchronous requests to complete...')
+            logger.info('Waiting for all asynchronous requests to complete...')
         self.executor.shutdown(wait = True)
-        self.com.close()
-        pymorselogger.info('Done. Bye bye!')
+        self.simulator_service.close()
+        # Close all other asyncore sockets (StreanJSON)
+        asyncore.close_all()
+        Morse._asyncore_thread.join(TIMEOUT)
+        Morse._asyncore_thread = None # in case we want to re-create
+        logger.info('Done. Bye bye!')
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if not exc_type:
-            self.close()
-        else:
-            self.close(True)
-            return False # re-raise exception
 
     #####################################################################
     ###### Predefined methods to interact with the simulator
@@ -763,3 +583,137 @@ class Morse():
     def get_stream_port(self, stream):
        return self.rpc("simulation", "get_stream_port", stream)
 
+    #### with statement ####
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_type:
+            self.close()
+        else:
+            self.close(True)
+            return False # re-raise exception
+
+class Stream(asynchat.async_chat):
+    """ Asynchrone I/O stream handler
+
+    To start the handler, just run :meth asyncore.loop: in a new thread::
+
+    threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} ).start()
+
+    where timeout is used with select.select / select.poll.poll.
+    """
+    def __init__(self, host, port, maxlen=100):
+        self.error = False
+        asynchat.async_chat.__init__(self)
+        self.set_terminator(MSG_SEPARATOR)
+        self.create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        self.connect( (host, port) )
+        self._in_buffer  = b""
+        self._in_queue   = deque([], maxlen)
+        self._callbacks  = []
+
+    def is_up(self):
+        return self.connecting or self.connected
+
+    def subscribe(self, callback):
+        self._callbacks.append(callback)
+
+    def unsubscribe(self, callback):
+        self._callbacks.remove(callback)
+
+    def handle_error(self):
+        self.error = True
+        self.handle_close()
+
+    #### IN ####
+    def collect_incoming_data(self, data):
+        """Buffer the data"""
+        self._in_buffer += data
+
+    def found_terminator(self):
+        self.handle_msg(self._in_buffer)
+        self._in_buffer = b""
+
+    def handle_msg(self, msg):
+        """ append new raw :param msg: in the input queue
+
+        and call subscribed callback methods if any
+        """
+        self._in_queue.append(msg)
+        # handle callback(s)
+        decoded_msg = None
+        for callback in self._callbacks:
+            if not decoded_msg:
+                decoded_msg = self.decode( msg )
+            callback( decoded_msg )
+
+    def push_back(self, msg):
+        """ encode then append :param msg: at the end of the input queue
+
+        usefull when :meth get: gave a wrong RPC response to a request
+        """
+        self._in_queue.appendleft(self.encode( msg ))
+
+    def last(self):
+        """ get the last message recieved
+
+        :returns: decoded message or None in case of timeout
+        """
+        if self._in_queue:
+            return self.decode( self._in_queue.pop() )
+        logger.debug("no message in queue")
+        return None
+
+    def get(self, timeout=TIMEOUT):
+        """ get the last message recieved or wait :param timeout: for a new one
+
+        Default timeout is defined by the TIMEOUT module constant. If None,
+        will wait forever (untill the connection is down).
+
+        :returns: decoded message or None in case of timeout
+        """
+        msg = self.last()
+        if msg:
+            return msg
+        if timeout is None:
+            while self.is_up():
+                msg = self.last()
+                if msg:
+                    return msg
+                time.sleep(0.01)
+        # else: timeout is not None (must be a float or int)
+        timeout_t = time.time() + timeout
+        while self.is_up() and timeout_t > time.time():
+            msg = self.last()
+            if msg:
+                return msg
+            time.sleep(0.01)
+        # timeout or down
+        return None
+
+    #### OUT ####
+    def publish(self, msg):
+        """ encode :param msg: and append the resulting bytes to the output queue """
+        self.push(self.encode( msg ))
+
+    #### CODEC ####
+    def decode(self, msg_bytes):
+        """ decode bytes to string """
+        return msg_bytes.decode()
+
+    def encode(self, msg_str):
+        """ encode string to bytes """
+        return msg_str.encode() + MSG_SEPARATOR
+
+class StreamJSON(Stream):
+    def __init__(self, host, port, maxlen=100):
+        Stream.__init__(self, host, port, maxlen)
+
+    def decode(self, msg_bytes):
+        """ decode bytes to json object """
+        return json.loads(Stream.decode(self, msg_bytes))
+
+    def encode(self, msg_obj):
+        """ encode object to json string and then bytes """
+        return Stream.encode(self, json.dumps(msg_obj))
