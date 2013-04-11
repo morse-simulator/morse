@@ -5,28 +5,28 @@ Getting started: basic MORSE usage
 Starting MORSE
 --------------
 
-Use the ``morse`` binary program, with the corresponding option,
-to start a simulation.
+Use the ``morse`` executable program, with the corresponding option, to start
+a simulation.
 
-To veryfy that your installation and configuring of MORSE is correct, execute::
+To verify that your installation and configuring of MORSE is correct, execute::
 
   $ morse check
 
 To start the simulation right away, do::
 
-  $ morse run [Filename]
+  $ morse run <filename>
 
-Where ``Filename`` can be a Blender file or a Python script that uses the
+Where ``filename`` can be a Blender file or a Python script that uses the
 :doc:`Builder API <../user/builder>` to describe a simulation scenario.
 
 To load the simulation scenario in the Blender interface::
 
-  $ morse edit [Filename]
+  $ morse edit <filename>
 
-This will give you the canche to modify the scene before pressing :kbd:`p` to
+This will give you the chance to modify the scene before pressing :kbd:`p` to
 start the simulation.
 
-Additinally, the following options can be given to the MORSE executable:
+Additionally, the following options can be given to the MORSE executable:
 
 - **-h** / **--help**: print an explanation of the available options and exit
 - **-b BASE** / **--base BASE**: in Edit mode, specify a Blender scene
@@ -58,7 +58,7 @@ MORSE controls
 
 A simulation in MORSE is executed using the Game Engine mode of Blender. When
 in this mode, the button panels of Blender are disabled and the controls
-change.  When running ``morse edit [Filename]``, it is recommended to switch
+change.  When running ``morse edit <filename>``, it is recommended to switch
 the Blender 3D View window to full screen before starting a simulation. Press
 :kbd:`Ctrl-Up` when the mouse is over a window to toggle it to full screen and
 back.
