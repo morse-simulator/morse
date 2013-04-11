@@ -31,7 +31,6 @@ try:
 except ImportError as detail:
     logger.warning("%s.\nNo datastream/services/modifiers will be configured.\nMake sure the script 'component_config.py' is present in the .blend file." % detail)
 
-
 MULTINODE_SUPPORT = False
 # The file multinode_config.py is at the moment included
 #  in the .blend file of the scene
@@ -538,7 +537,7 @@ def init_multinode():
     # Create the instance of the node class
 
     persistantstorage.node_instance = create_instance(classpath, \
-            node_name, server_address, server_port, persistantstorage)
+            node_name, server_address, server_port)
 
 def init(contr):
     """ General initialization of MORSE

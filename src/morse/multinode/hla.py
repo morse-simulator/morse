@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import mathutils
 import os
 
+from morse.core import blenderapi
 from morse.core.exceptions import MorseMultinodeError
 from morse.core.multinode import SimulationNodeClass
 
@@ -25,7 +26,7 @@ class MorseAmbassador(rti.FederateAmbassador):
     The Federate Ambassador of the MORSE node.
     
     """
-    def __init__(self, rtia, federation, time_regulation, time, gl):
+    def __init__(self, rtia, federation, time_regulation, time):
         self.objects = []
         self.rtia_ = rtia
         self.constrained = False
@@ -34,7 +35,6 @@ class MorseAmbassador(rti.FederateAmbassador):
         self.federation = federation
         self.current_time = time
         self.lookahead = 0
-        self.gl = gl
         logger.debug("MorseAmbassador created.")
     
     def initialize(self):
@@ -51,7 +51,9 @@ class MorseAmbassador(rti.FederateAmbassador):
         
         self.rtia_.publishObjectClass(self.out_robot, 
             [self.out_position, self.out_orientation])
-        for obj, local_robot_data in self.gl.robotDict.items():
+
+        robot_dict = blenderapi.persistantstorage().robotDict
+        for obj, local_robot_data in robot_dict.items():
             self.objects.append(self.rtia_.registerObjectInstance(
                     self.out_robot, obj.name))
             logger.info(
@@ -89,7 +91,7 @@ class MorseAmbassador(rti.FederateAmbassador):
 
     def reflectAttributeValues(self, object, attributes, tag, order, transport, 
                                time=None, retraction=None):
-        scene = self.gl.getCurrentScene()
+        scene = blenderapi.scene()
         obj_name = self.rtia_.getObjectInstanceName(object)
         logger.debug("RAV %s", obj_name)
         try:
@@ -162,7 +164,7 @@ class HLANode(SimulationNodeClass):
                 return False
             logger.debug("Creating MorseAmbassador...")
             self.morse_ambassador = MorseAmbassador(self.rtia, self.federation,
-                self.time_sync, 0, self.gl)
+                self.time_sync, 0)
             try:
                 self.rtia.joinFederationExecution(self.node_name, 
                     self.federation, self.morse_ambassador)
@@ -200,7 +202,7 @@ class HLANode(SimulationNodeClass):
             
     def synchronize(self):
         self.morse_ambassador.tag = False
-        scene = self.gl.getCurrentScene()
+        scene = blenderapi.scene()
         t = self.morse_ambassador.current_time + self.morse_ambassador.lookahead
         for obj in self.morse_ambassador.objects:
             obj_name = self.rtia.getObjectInstanceName(obj)

@@ -3,6 +3,7 @@ import socket
 import pickle
 import mathutils
 
+from morse.core import blenderapi
 from morse.core.multinode import SimulationNodeClass
 
 class SocketNode(SimulationNodeClass):
@@ -45,7 +46,8 @@ class SocketNode(SimulationNodeClass):
     def synchronize(self):
         if self.connected:
             # Get the coordinates of local robots
-            for obj, local_robot_data in self.gl.robotDict.items():
+            robot_dict = blenderapi.persistantstorage().robotDict
+            for obj, local_robot_data in robot_dict.items():
                 #self.out_data[obj.name] = [obj.worldPosition.to_tuple()]
                 euler_rotation = obj.worldOrientation.to_euler()
                 self.out_data[obj.name] = [obj.worldPosition.to_tuple(), [euler_rotation.x, euler_rotation.y, euler_rotation.z]]
@@ -54,12 +56,12 @@ class SocketNode(SimulationNodeClass):
             in_data = self._exchange_data(self.out_data)
 
             if in_data != None:
-                scene = self.gl.getCurrentScene()
+                scene = blenderapi.scene()
                 # Update the positions of the external robots
                 for obj_name, robot_data in in_data.items():
                     try:
                         obj = scene.objects[obj_name]
-                        if obj not in self.gl.robotDict:
+                        if obj not in robot_dict:
                             logger.debug("Data received: ", robot_data)
                             obj.worldPosition = robot_data[0]
                             obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()
