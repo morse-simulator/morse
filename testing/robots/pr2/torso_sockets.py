@@ -18,12 +18,9 @@ import time
 
 from pymorse import Morse
 
-def getjoint(name):
-    
-    with Morse() as simu:
-        joints = simu.pr2.joint_state.get()
-
-        return joints[name]
+def getjoint(simu, name):
+    joints = simu.pr2.joint_state.get()
+    return joints[name]
 
 class PR2TorsoTest(MorseTestCase):
 
@@ -40,26 +37,26 @@ class PR2TorsoTest(MorseTestCase):
 
         joint = "torso_lift_joint"
 
-        self.assertAlmostEquals(getjoint(joint), 0.0, 3)
-
         with Morse() as simu:
             
+            self.assertAlmostEquals(getjoint(simu, joint), 0.0, 3)
+
             logger.info("Moving up torso to 0.2m...")
             action = simu.pr2.torso.translate(joint, 0.2, 0.1) # speed = 0.1 m/s
 
             time.sleep(1)
             logger.info("Should be now at 0.1m...")
-            self.assertAlmostEquals(getjoint(joint), 0.1, 1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.1, 1)
 
             time.sleep(1)
             logger.info("Should be now at 0.2m...")
-            self.assertAlmostEquals(getjoint(joint), 0.2, 1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.2, 1)
 
             # Check we do not move anymore
             logger.info("Should not move anymore...")
             time.sleep(0.5)
             self.assertFalse(action.running())
-            self.assertAlmostEquals(getjoint(joint), 0.2, 1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.2, 1)
 
             # Test limits
             #TODO: currently no way to stop the action when blocking on a joint limit since we can not retreive them from Python (blender 2.64)
@@ -67,27 +64,30 @@ class PR2TorsoTest(MorseTestCase):
             #action = simu.pr2.torso.translate(joint, [0, 1, 0], 0.2) # speed = 0.2 m/s
             #time.sleep(2)
             #self.assertFalse(action.running())
-            #self.assertAlmostEquals(getjoint(joint), 0.3, 1)
+            #self.assertAlmostEquals(getjoint(simu, joint), 0.3, 1)
 
             # Go back to initial position
             logger.info("Let's go back down...")
             action = simu.pr2.torso.translate(joint, 0, 0.2) # speed = 0.2 m/s
             time.sleep(1.6)
             self.assertFalse(action.running())
-            self.assertAlmostEquals(getjoint(joint), 0.0, 1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.0, 1)
 
             ## Testing set_translation
             logger.info("Moving up torso to 0.2m...")
             simu.pr2.torso.set_translation(joint, 0.2)
             logger.info("Should be now at 0.2m...")
-            self.assertAlmostEquals(getjoint(joint), 0.2, 3)
+            time.sleep(.1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.2, 3)
 
             # Test limits
             logger.info("Let's go as high as possible to check my limits...")
             simu.pr2.torso.set_translation(joint, 1)
-            self.assertAlmostEquals(getjoint(joint), 0.31, 3)
+            time.sleep(.1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.31, 3)
             simu.pr2.torso.set_translation(joint, -1)
-            self.assertAlmostEquals(getjoint(joint), 0.0, 3)
+            time.sleep(.1)
+            self.assertAlmostEquals(getjoint(simu, joint), 0.0, 3)
 
 
 ########################## Run these tests ##########################
