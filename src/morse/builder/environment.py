@@ -82,7 +82,7 @@ class Environment(Component):
                         'server_address': self._server_address,
                         'server_port': self._server_port,}
         # Create the config file if it does not exist
-        if not 'multinode_config.py' in bpymorse.get_texts.keys():
+        if not 'multinode_config.py' in bpymorse.get_texts().keys():
             bpymorse.new_text()
             bpymorse.get_last_text().name = 'multinode_config.py'
         cfg = bpymorse.get_text('multinode_config.py')
