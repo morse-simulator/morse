@@ -325,7 +325,7 @@ MORSE_DATASTREAM_DICT = {
                          'morse.middleware.pocolibs.actuators.platine.PlatineAxisPoster']
             }
         },
-    "morse.actuators.rotorcraft_waypoint.RotorcraftAttittude": {
+    "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
             }
