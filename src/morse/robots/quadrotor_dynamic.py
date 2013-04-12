@@ -8,6 +8,7 @@ class Quadrotor(morse.core.robot.Robot):
     It is expected to be used with actuators such as:
         - :doc:`../actuators/force_torque`
         - :doc:`../actuators/rotorcraft_attitude`
+        - :doc:`../actuators/rotorcraft_velocity`
         - :doc:`../actuators/rotorcraft_waypoint`
     """
 
