@@ -377,6 +377,12 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_IN,
             }
         },
+    "morse.actuators.rotorcraft_velocity.RotorcraftVelocity": {
+        "default": {
+            "ros": 'morse.middleware.ros.read_twist.TwistReader',
+            "socket": INTERFACE_DEFAULT_IN,
+            }
+        },
     "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint": {
         "default": {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
