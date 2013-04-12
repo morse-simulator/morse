@@ -96,7 +96,7 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
             logger.debug("yaw rate error: %.3f", we[2])
 
             kp = Vector((self._rp_pgain, self._rp_pgain, self._yaw_pgain))
-            kd = Vector((self._rp_dgain, self._rp_pgain, self._yaw_dgain))
+            kd = Vector((self._rp_dgain, self._rp_dgain, self._yaw_dgain))
 
             # torque = self.inertia * (kp * err + kd * we)
             t = []
