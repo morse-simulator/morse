@@ -117,20 +117,34 @@ def check_blender_python_version(blender_path):
     """ Creates a small Python script to execute within Blender and get the 
     current Python version bundled with Blender
     """
+    env = os.environ
+    env["PYTHONPATH"] = os.pathsep.join(sys.path)
+
+
     tmpF = tempfile.NamedTemporaryFile(delete = False)
     try:
         tmpF.write(b"import sys\n")
         tmpF.write(b"print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
+        tmpF.write(b"print('###%s' % sys.path)\n")
         tmpF.flush()
         tmpF.close()
-        version_str = subprocess.Popen(
-            [blender_path, '-b', '-P', tmpF.name], 
-            stdout=subprocess.PIPE
-        ).communicate()[0]
-        version_str = version_str.decode()
-        version = version_str.split('>>>')[1][0:3]
+        output = subprocess.Popen(
+            [blender_path, '-b', '-P', tmpF.name],
+            env = env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        ).communicate() # get only stdout
+        stdout = output[0].decode()
+        stderr = output[1].decode()
+        version = stdout.split('>>>')[1][0:3]
+        pythonpath = stdout.split('###')[1][0:-1]
         logger.info("Checking version of Python within Blender " + blender_path + \
                         "... Found v." + version)
+        logger.info("Blender's PYTHONPATH is " + pythonpath)
+
+        if stderr:
+            raise MorseError("Blender emitted errors during launch:\n" + stderr)
+
         return version
     except (OSError, IndexError):
             return None
@@ -644,6 +658,7 @@ def do_check(args):
         logger.info("Checking up your environment...\n")
         check_setup()
     except MorseError as e:
+        logger.error(e.value)
         logger.error("Your environment is not correctly setup to run MORSE!")
         sys.exit()
     logger.info("Your environment is correctly setup to run MORSE.")
