@@ -181,7 +181,7 @@ you need to override inherited ``default`` method. Don't forget to call
     class MyRosPoseExporter(ROSPublisher):
         ros_class = String
 
-        def encode(self):
+        def default(self, ci='unused'):
             my_repr = []
             my_repr.append(self.data['x'])
             my_repr.append(self.data['y'])
