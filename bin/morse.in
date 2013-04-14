@@ -35,21 +35,12 @@ import re
 import tempfile
 
 try:
-    import configparser #python 3
-except ImportError:
-    import ConfigParser as configparser #python 2.x
-
-#Python version must be egal or bigger than...
-MIN_PYTHON_VERSION = "3.2"
-#Python version must be smaller than...
-STRICT_MAX_PYTHON_VERSION = "4.0"
-
-try:
+    import configparser
     import argparse
-except ImportError:
-    logger.error("You need Python>=%s to run morse." % MIN_PYTHON_VERSION)
+except ImportError as exn:
+    logger.error("Cannot import %s" % exn)
     sys.exit()
-    
+
 #Blender version must be egal or bigger than...
 MIN_BLENDER_VERSION = "2.62"
 #Blender version must be smaller than...
@@ -117,30 +108,23 @@ def check_blender_python_version(blender_path):
     """ Creates a small Python script to execute within Blender and get the 
     current Python version bundled with Blender
     """
-    env = os.environ
-    env["PYTHONPATH"] = os.pathsep.join(sys.path)
-
-
     tmpF = tempfile.NamedTemporaryFile(delete = False)
     try:
         tmpF.write(b"import sys\n")
-        tmpF.write(b"print('>>>' + '.'.join((str(x) for x in sys.version_info[:2])))\n")
+        tmpF.write(b"print('>>>' + '.'.join((str(x) for x in sys.version_info[:3])))\n")
         tmpF.write(b"print('###%s' % sys.path)\n")
         tmpF.flush()
         tmpF.close()
         output = subprocess.Popen(
             [blender_path, '-b', '-P', tmpF.name],
-            env = env,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         ).communicate() # get only stdout
         stdout = output[0].decode()
         stderr = output[1].decode()
-        version = stdout.split('>>>')[1][0:3]
-        pythonpath = stdout.split('###')[1][0:-1]
+        version = stdout.split('>>>')[1][0:5]
         logger.info("Checking version of Python within Blender " + blender_path + \
                         "... Found v." + version)
-        logger.info("Blender's PYTHONPATH is " + pythonpath)
 
         if stderr:
             raise MorseError("Blender emitted errors during launch:\n" + stderr)
@@ -309,17 +293,19 @@ def check_setup():
     #Check Python version within Blender
     python_version = check_blender_python_version(blender_exec)
     if python_version == None:
-       logger.warn("Blender's Python version could not be determined. Crossing fingers.")        
-    elif not (python_version.split('.') >= MIN_PYTHON_VERSION.split('.') and 
-            python_version.split('.') < STRICT_MAX_PYTHON_VERSION.split('.')):
-        logger.error("Blender is using Python " + python_version + \
-        ". Python  >= " + MIN_PYTHON_VERSION + " and < " + STRICT_MAX_PYTHON_VERSION + \
-        " is required to run MORSE. Note that Blender usually provides its own " + \
-        "Python runtime that may differ from the system one.")
-        raise MorseError("Bad Python version")
+        logger.warn("Blender's Python version could not be determined. "
+                    "Crossing fingers.")
     else:
-        logger.info("Blender is using Python " + python_version + \
-        ". Alright.")
+        our_python_version = '.'.join((str(x) for x in sys.version_info[:3]))
+        if (python_version != our_python_version):
+            logger.error("Blender is compiled for Python " + python_version + \
+                   " but MORSE has been compiled for Python " + \
+                   our_python_version + "! Check your MORSE build configuration"
+                   " or the selected Blender version.")
+            raise MorseError("Bad Python version")
+        else:
+            logger.info("Blender and Morse are using Python " + \
+            python_version + ". Alright.")
 
 def get_config_file():
     config_path = os.path.expanduser("~/.morse")
