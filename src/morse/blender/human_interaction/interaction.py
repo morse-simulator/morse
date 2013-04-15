@@ -99,7 +99,7 @@ def interact(cont):
 
     right_hand=objects['IK_Target_Empty.R' + suffix]
     look = objects['Target_Empty' + suffix]
-    human = objects[ow.parent.parent.parent.name + suffix]
+    human = blenderapi.scene().objects[ow.parent.parent.parent.name]
 
     # if the human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
@@ -362,7 +362,7 @@ def lay_down_visualize(cont):
     
     scene = blenderapi.scene()
     objects = scene.objects
-    human = objects[ow['human_name'] + suffix]
+    human = objects[ow['human_name']]
 
     hand = objects['Hand_Grab.R' + suffix]
     ray = cont.sensors['LayDownRay']

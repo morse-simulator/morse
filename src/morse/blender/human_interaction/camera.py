@@ -52,7 +52,7 @@ def collision():
     ray = co.sensors['collision']
     right = co.sensors['RIGHT']
     left = co.sensors['LEFT']
-    human =   blenderapi.scene().objects[ow.parent.parent['human_name'] + suffix]
+    human =   blenderapi.scene().objects[ow.parent.parent['human_name']]
 
     # if the Human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
@@ -116,7 +116,7 @@ def change():
     track = co.actuators['TrackCamera']
     sobList = blenderapi.scene().objects
 
-    human = sobList[ow["human_name"] + suffix]
+    human = sobList[ow["human_name"]]
 
     # if the Human is external, do nothing
     if human.get('External_Robot_Tag') or human['disable_keyboard_control']:
