@@ -43,7 +43,7 @@ class Human(Robot):
             self.properties(classpath="morse.robots.human.HumanClass")
 
         try:
-            self.armature = Armature("HumanArmature", "human_posture")
+            self.armature = Armature("HumanArmature" + self.suffix, "human_posture")
             # new way of loading class (drop 'Class' and 'Path' properties)
             self.armature.properties(classpath="morse.sensors.human_posture.HumanPosture")
             self.append(self.armature)
