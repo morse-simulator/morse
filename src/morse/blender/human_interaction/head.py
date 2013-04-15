@@ -9,8 +9,8 @@ def set_body_position(co):
     # get the suffix of the human to reference the right objects
     suffix = ow.name[-4:] if ow.name[-4] == "." else ""
 
-    head = blenderapi.scene().objects['Head' + suffix]
-    human = blenderapi.scene().objects[ow.parent["human_name"] + suffix]
+    head = blenderapi.scene().objects['Head']
+    human = blenderapi.scene().objects[ow.parent["human_name"]]
 
 
 
