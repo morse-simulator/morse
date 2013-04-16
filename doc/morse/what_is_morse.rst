@@ -235,6 +235,12 @@ that many innovative requirements end up in our roadmap without much delay.
 
 Check here :doc:`MORSE related publications and workshop <media>`.
 
+Compare MORSE with other robotic simulators
+-------------------------------------------
+
+Check the :doc:`Robotic simulators features matrix <features_comparison>`.
+
+
 But even MORSE has its limitations!
 -----------------------------------
 
