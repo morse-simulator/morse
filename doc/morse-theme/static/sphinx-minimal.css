@@ -3,8 +3,18 @@
  * This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
  */
 
-@import url(https://fonts.googleapis.com/css?family=Lato:400italic,800italic,400,800);
-
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(lato-regular.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lato Italic'), local('Lato-Italic'), url(lato-italic.woff) format('woff');
+}
 
 body {
   padding:50px;
