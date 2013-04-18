@@ -220,3 +220,9 @@ def getssr():
         return bge.logic.getCurrentScene().objects["Scene_Script_Holder"]
     else:
         return None
+
+def isfastmode():
+    if not fake:
+        return (bge.render.getMaterialMode() == bge.render.KX_TEXFACE_MATERIAL)
+    else:
+        return False
