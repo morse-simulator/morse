@@ -234,16 +234,24 @@ class AbstractComponent(object):
     def select(self):
         bpymorse.select_only(self._bpy_object)
 
-    def get_child(self, name, objects=None):
-        """ get_child returns the child named :param name: """
-        if not objects:
+    def get_child(self, name, objects=None, recursive=True):
+        """ get_child returns the child named :param name: 
+        
+        If several children match the name, a warning is printed and
+        the first one is returned.
+
+        :param name: the textual name of the child
+        :param objects: if specified, look for the child in this list of bpy Objects
+        :param recursive: (default: True) if true, search for the child recursively
+        """
+        if objects is None:
             objects = self._bpy_object.children
         for obj in objects:
             if obj.name == name:
                 return obj
         # fix Blender shorten the name
         # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
-        test_prefix = name[:17] + '.'
+        test_prefix = name[:-3] + '.'
         # look for candidates
         candidates = [obj for obj in objects \
                       if obj.name.startswith(test_prefix)]
@@ -252,8 +260,12 @@ class AbstractComponent(object):
                 logger.warning(test_prefix + ": more than 1 candidate: " + \
                                str(candidates))
             return candidates[0]
-        else:
-            logger.warning(test_prefix + ": no candidate in " + str(objects))
+        
+        # nothing found yet. Start to search recursively:
+        if recursive:
+            for obj in objects:
+                found = self.get_child(name, obj.children, recursive)
+                if found: return found
 
         return None
 
