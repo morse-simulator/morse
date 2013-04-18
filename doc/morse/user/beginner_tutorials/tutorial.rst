@@ -185,10 +185,6 @@ In the same way, you can query the ``atrv.pose`` sensor for the data it contains
 
 The format of these commands is simple, they are composed of four parts:
 
-.. note::
-    Even if empty, the last parameter (the service arguments) must always be
-    present, enclosed in square brackets.
-
 Try giving the motion controller different speeds, and querying the pose sensor
 at different locations.
 
