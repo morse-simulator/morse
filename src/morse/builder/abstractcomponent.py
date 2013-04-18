@@ -251,7 +251,7 @@ class AbstractComponent(object):
                 return obj
         # fix Blender shorten the name
         # ie. 'torso_lift_armature' -> 'torso_lift_armatu.000'
-        test_prefix = name[:-3] + '.'
+        test_prefix = name.rsplit('.')[0]
         # look for candidates
         candidates = [obj for obj in objects \
                       if obj.name.startswith(test_prefix)]
