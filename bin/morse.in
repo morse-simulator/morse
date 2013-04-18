@@ -127,7 +127,7 @@ def check_blender_python_version(blender_path):
                         "... Found v." + version)
 
         if stderr:
-            raise MorseError("Blender emitted errors during launch:\n" + stderr)
+            logger.warning("Blender emitted errors during launch:\n" + stderr)
 
         return version
     except (OSError, IndexError):
