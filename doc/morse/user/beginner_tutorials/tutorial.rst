@@ -104,8 +104,8 @@ with the outside world. This is done with these instructions:
 .. code-block:: python
 
     pose.add_stream('socket')
-    pose.configure_service('socket')
-    motion.configure_service('socket')
+    pose.add_service('socket')
+    motion.add_service('socket')
 
 Each of the components can use a different middleware, enabling the use of
 MORSE in an heterogeneous environment. You can check the :doc:`full list of
@@ -179,9 +179,9 @@ angular speed -1 rad/s, type this instruction::
     the internal name of the component is (here, ``atrv.motion``) is displayed
     in the MORSE log at the end of the simulation initialisation.
 
-In the same way, you can query the *Pose* sensor for the data it contains::
+In the same way, you can query the ``atrv.pose`` sensor for the data it contains::
 
-  id2 Pose get_local_data []
+  id2 atrv.pose get_local_data 
 
 The format of these commands is simple, they are composed of four parts:
 
@@ -204,9 +204,9 @@ of them is assigned a port at runtime. You can retrieve this port either by
 looking at MORSE console output, or with the **simulation services**
 ``list_streams`` and ``get_stream_port``::
 
-  id3 simulation list_streams []
-  > id3 SUCCESS ["Pose"]
-  id4 simulation get_stream_port ["Pose"]
+  id3 simulation list_streams 
+  > id3 SUCCESS ["atrv.pose"]
+  id4 simulation get_stream_port ["atrv.pose"]
   > id4 SUCCESS 60000
 
 So we know that the pose sensor exports its datastream on the port 60000.
