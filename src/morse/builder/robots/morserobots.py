@@ -7,6 +7,12 @@ class Morsy(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "morsy")
         self.name = name
+    def set_color(self, color = (0.0, 0.0, 0.8)):
+        """
+        Allows to change Morsy's body color.
+        """
+        self.get_child('morsy_mesh').material_slots['body'].material.diffuse_color = color
+
 
 class ATRV(Robot):
     def __init__(self, name=None):
