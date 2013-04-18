@@ -11,7 +11,9 @@ class Morsy(Robot):
         """
         Allows to change Morsy's body color.
         """
-        self.get_child('morsy_mesh').material_slots['body'].material.diffuse_color = color
+        mats = self.get_child('morsy_mesh').material_slots.keys()
+        [body_mat] = [mat for mat in mats if mat.startswith('body')] # account for body.001, body.002...
+        self.get_child('morsy_mesh').material_slots[body_mat].material.diffuse_color = color
 
 
 class ATRV(Robot):
