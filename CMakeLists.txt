@@ -141,7 +141,7 @@ ENDIF()
 ADD_SUBDIRECTORY(bindings)
 
 ###### Testing ######
-enable_testing()
+include( CTest )
 ADD_SUBDIRECTORY(testing)
 
 IF (BUILD_DOC_SUPPORT)
