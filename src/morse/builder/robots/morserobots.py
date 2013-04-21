@@ -96,6 +96,7 @@ class SegwayRMP400(WheeledRobot):
                         WheelFLName = "wheel1", WheelFRName = "wheel2", \
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
 
+
 class Submarine(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "submarine")
@@ -110,3 +111,18 @@ class Victim(Robot):
         self.properties(classpath = "morse.robots.victim.VictimClass", \
                         Victim_Tag = True, Requirements = "1,2,3", \
                         Injured = True, Severity = 10)
+
+
+class PatrolBot(WheeledRobot):
+    def __init__(self, name=None):
+        WheeledRobot.__init__(self, "patrolbot")
+        self.name = name
+        self.properties(classpath = "morse.robots.patrolbot.PatrolBotClass", \
+                        HasSuspension = False, HasSteering = False, \
+                        Influence = 0.1, Friction = 0.8, \
+                        WheelFLName = "Wheel_L", WheelFRName = "Wheel_R", \
+                        WheelRLName = "None", WheelRRName = "None", \
+                        CasterWheelName = "CasterWheel")
+
+
+
