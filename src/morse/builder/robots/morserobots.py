@@ -110,3 +110,10 @@ class Victim(Robot):
         self.properties(classpath = "morse.robots.victim.VictimClass", \
                         Victim_Tag = True, Requirements = "1,2,3", \
                         Injured = True, Severity = 10)
+
+
+class PatrolBot(Robot):
+    def __init__(self, name=None):
+        Robot.__init__(self, "patrolbot")
+        self.name = name
+        self.properties(classpath = "morse.robots.patrolbot.PatrolBotClass")
