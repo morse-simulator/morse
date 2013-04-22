@@ -1,25 +1,35 @@
 from morse.builder import *
 import math
 
-waypoint_controller = True
+# choose either 'attitude', 'velocity' or 'waypoint' for control
+#control = 'attitude'
+control = 'velocity'
+#control = 'waypoint'
+
 
 # must be called before creating component
-bpymorse.set_speed(fps = 120, logic_step_max = 5, physics_step_max = 5)
+bpymorse.set_speed(fps=60, logic_step_max=5, physics_step_max=5)
 
 # Simple quadrotor with rigid body physics
 quadrotor = Quadrotor()
-quadrotor.translate(x= -1.2483, y=1.7043, z=1.8106)
+quadrotor.translate(x=-1.2483, y=1.7043, z=1.8106)
 quadrotor.name = 'mav'
 
-if waypoint_controller:
-    motion = RotorcraftWaypoint()
-    motion.name = 'waypoint'
-    motion.add_stream('ros')
-else:
+if 'attitude' in control:
     # simple controller taking RC-like roll/pitch/yaw/thrust input
     motion = RotorcraftAttitude()
     motion.name = 'attitude'
     motion.add_stream('ros', 'morse.middleware.ros.read_asctec_ctrl_input.CtrlInputReader')
+elif 'velocity' in control:
+    motion = RotorcraftVelocity()
+    motion.name = 'velocity'
+    # read a Twist message
+    motion.add_stream('ros')
+else:
+    motion = RotorcraftWaypoint()
+    motion.name = 'waypoint'
+    # read a Pose message
+    motion.add_stream('ros')
 
 quadrotor.append(motion)
 
