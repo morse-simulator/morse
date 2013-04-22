@@ -5,7 +5,7 @@ import morse.sensors.camera
 import morse.helpers.colors
 
 from morse.helpers import passive_objects
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 class SemanticCamera(morse.sensors.camera.Camera):
     """
@@ -16,7 +16,8 @@ class SemanticCamera(morse.sensors.camera.Camera):
     marked with a **Logic Property** called ``Object``, cf documentation
     on :doc:`passive objects <../others/passive_objects>` for more on
     that). If the ``Label`` property is defined, it is used as exported
-    name. Else the Blender object name is used.
+    name. Else the Blender object name is used. If the ``Type`` property
+    is set, it is exported as well.
 
     Then a test is made to identify which of these objects are inside of
     the view frustum of the camera. Finally, a single visibility test is
@@ -24,6 +25,8 @@ class SemanticCamera(morse.sensors.camera.Camera):
     center of the object. If anything other than the test object is
     found first by the ray, the object is considered to be occluded by
     something else, even if it is only the center that is being blocked.
+    This last check is a bit costly and can be deactivated by setting the
+    sensor property ``noocclusion`` to ``True``.
 
     The cameras make use of Blender's **bge.texture** module, which
     requires a graphic card capable of GLSL shading. Also, the 3D view
@@ -44,6 +47,9 @@ class SemanticCamera(morse.sensors.camera.Camera):
                 - **orientation** (quaternion): the orientation of the \
                   object, in the blender frame")
 
+    add_property('noocclusion', False, 'noocclusion', 'bool', 'Do not check for'
+                 ' objects possibly hiding each others (faster but less '
+                 'realistic behaviour)')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -87,6 +93,8 @@ class SemanticCamera(morse.sensors.camera.Camera):
                 logger.info('    - {%s} (type:%s)'%
                             (details['label'], details['type']))
 
+        if self.noocclusion:
+            logger.info("Semantic camera running in 'no occlusion' mode (fast mode).")
         logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
 
@@ -118,30 +126,41 @@ class SemanticCamera(morse.sensors.camera.Camera):
 
 
     def _check_visible(self, obj):
-        """ Check if an object lies inside of the camera frustum. """
+        """ Check if an object lies inside of the camera frustum. 
+        
+        The behaviour of this method is impacted by the sensor's 
+        property 'noocclusion': if true, only checks the object is in the
+        frustum. Does not check it is actually visible (ie, not hidden
+        away by another object).
+        """
         # TrackedObjects was filled at initialization
         #  with the object's bounding boxes
         bb = blenderapi.persistantstorage().trackedObjects[obj]
         pos = obj.position
         bbox = [[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]
 
-        logger.debug("\n--- NEW TEST ---")
-        logger.debug("OBJECT '{0}' AT {1}".format(obj, pos))
-        logger.debug("CAMERA '{0}' AT {1}".format(
-                                self.blender_cam, self.blender_cam.position))
-        logger.debug("BBOX: >{0}<".format(bbox))
-        logger.debug("BBOX: {0}".format(bb))
+        if logger.isEnabledFor(DEBUG):
+            logger.debug("\n--- NEW TEST ---")
+            logger.debug("OBJECT '{0}' AT {1}".format(obj, pos))
+            logger.debug("CAMERA '{0}' AT {1}".format(
+                                    self.blender_cam, self.blender_cam.position))
+            logger.debug("BBOX: >{0}<".format(bbox))
+            logger.debug("BBOX: {0}".format(bb))
 
         # Translate the bounding box to the current object position
         #  and check if it is in the frustum
         if self.blender_cam.boxInsideFrustum(bbox) != self.blender_cam.OUTSIDE:
-            # Check that there are no other objects between the camera
-            # and the selected object
-            # NOTE: This is a very simple test. Hiding only the 'center'
-            # of an object will make it invisible, even if the rest is
-            # still seen from the camera
-            closest_obj = self.bge_object.rayCastTo(obj)
-            if closest_obj in [obj] + list(obj.children):
+
+            if not self.noocclusion:
+                # Check that there are no other objects between the camera
+                # and the selected object
+                # NOTE: This is a very simple test. Hiding only the 'center'
+                # of an object will make it invisible, even if the rest is
+                # still seen from the camera
+                closest_obj = self.bge_object.rayCastTo(obj)
+                if closest_obj in [obj] + list(obj.children):
+                    return True
+            else:
                 return True
 
         return False
