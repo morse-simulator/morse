@@ -1,3 +1,6 @@
+The whole code of Morse is licensed under a BSD-3 clause license that you can
+find below:
+
 Copyright (c) 2009-2010, LAAS-CNRS / ONERA -- 2011-2013, LAAS-CNRS
 All rights reserved.
 
@@ -23,3 +26,10 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+at the exception of the following files:
+
+	- doc/morse-theme/static/lato-* which are under SIL OPEN FONT LICENSE 1.1
+	  (see OFL.LICENSE)
+	- doc/morse-theme/static/sphinx-minimal.css which is under Creative Commons
+	  Attribution-ShareAlike 3.0
