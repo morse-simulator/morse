@@ -117,7 +117,6 @@ class AbstractComponent(object):
         obj.parent = self
         self.children.append(obj)
 
-        #TODO: replace by sys._getframes() ??
         import inspect
         try:
             frame = inspect.currentframe()
@@ -132,9 +131,37 @@ class AbstractComponent(object):
                 if component == obj:
                     if not component.basename: # do automatic renaming only if a name is not already manually set
                         component.basename = name
+
         finally:
             del builderscript_frame
             del frame
+
+
+    @staticmethod
+    def close_context(level = 1):
+        import inspect
+        try:
+            frame = inspect.currentframe()
+            builderscript_frame = inspect.getouterframes(frame)[level][0] # parent frame
+            cmpts = builderscript_frame.f_locals
+
+            for name, component in cmpts.items():
+                if isinstance(component, AbstractComponent):
+
+                    if hasattr(component, "parent"):
+                        continue
+
+                    # do automatic renaming only if a name is not already manually set
+                    # component.name accessor set both basename and bpy.name,
+                    # which is the correct behaviour here. The bpy_name may be
+                    # rewritten by _rename_tree, to get the correct hierarcy.
+                    if not component.basename: 
+                        component.name = name
+
+        finally:
+            del builderscript_frame
+            del frame
+
 
     @property
     def name(self):

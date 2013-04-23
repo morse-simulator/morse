@@ -102,35 +102,33 @@ class Environment(Component):
         and only the hierarchy is added to the name.
         """
 
-        import inspect
-        try:
-            frame = inspect.currentframe()
-            builderscript_frame = inspect.getouterframes(frame)[2][0] # parent frame
+        AbstractComponent.close_context(3)
 
-            for name, component in builderscript_frame.f_locals.items():
-                if isinstance(component, AbstractComponent):
+        for component in AbstractComponent.components:
+            if isinstance(component, Robot):
 
-                    if hasattr(component, "parent"):
-                        continue
+                def renametree(cmpt, fqn):
+                    if not cmpt.basename:
+                        return
+#                        raise SyntaxError("You need to assign the component of type %s to a variable" %
+#                                        cmpt)
+                    list_name = [cmpt._bpy_object.name for cmpt in AbstractComponent.components if cmpt != component ]
+                    fqn.append(cmpt.basename)
+                    new_name = '.'.join(fqn)
 
-                    if not component.basename: # do automatic renaming only if a name is not already manually set
-                        component.basename = name
-
-                    def renametree(cmpt, fqn):
-                        if not cmpt.basename:
-                            raise SyntaxError("You need to assign the component of type %s to a variable" %
-                                             cmpt)
-                        fqn.append(cmpt.basename)
+                    i = 1
+                    while new_name in list_name:
+                        fqn.pop()
+                        fqn.append("%s_%03d" % (cmpt.basename, i))
                         new_name = '.'.join(fqn)
-                        Configuration.update_name(cmpt.name, new_name)
-                        cmpt._bpy_object.name = '.'.join(fqn)
-                        for child in cmpt.children:
-                            renametree(child, fqn[:])
+                        i += 1
 
-                    renametree(component, [])
-        finally:
-            del builderscript_frame
-            del frame
+                    Configuration.update_name(cmpt.name, new_name)
+                    cmpt._bpy_object.name = new_name
+                    for child in cmpt.children:
+                        renametree(child, fqn[:])
+
+                renametree(component, [])
 
     def _handle_default_interface(self):
         """

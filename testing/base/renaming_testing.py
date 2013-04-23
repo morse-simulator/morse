@@ -62,6 +62,7 @@ class RenamingTest(MorseTestCase):
             m.append(arm)
             pose = Pose()
             arm.append(pose)
+            AbstractComponent.close_context()
 
         env = Environment('empty', fastmode = True)
         env.create()
