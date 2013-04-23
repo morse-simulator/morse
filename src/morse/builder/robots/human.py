@@ -27,12 +27,12 @@ class Human(Robot):
 
     Currently, only one human per simulation is supported.
     """
-    def __init__(self, filename='human'):
+    def __init__(self, filename='human', name = None):
         """ The 'style' parameter is only to switch to the mocap_human file.
 
         :param filename: 'human' (default) or 'mocap_human'
         """
-        Robot.__init__(self, filename)
+        Robot.__init__(self, filename, name)
 
         self.suffix = self.name[-4:] if self.name[-4] == "." else ""
 

@@ -8,8 +8,8 @@ class BarePR2(Robot):
     """
     A PR2 model, without any sensor or actuator.
     """
-    def __init__(self):
-        Robot.__init__(self, 'pr2')
+    def __init__(self, name = None):
+        Robot.__init__(self, 'pr2', name)
         self.properties(classpath = "morse.robots.pr2.PR2", \
                         COLOR = "0.0, 0.0, 1.0")
 
@@ -28,8 +28,8 @@ class BasePR2(BarePR2):
     whole joint state of the robot.
 
     """
-    def __init__(self):
-        BarePR2.__init__(self)
+    def __init__(self, name = None):
+        BarePR2.__init__(self, name)
 
         # Armatures and armature pose sensors
         # The armatures are already present in the PR2 blender model.
@@ -116,8 +116,8 @@ class BasePR2(BarePR2):
 
 
 class LocalizedPR2(BasePR2):
-    def __init__(self, with_keyboard = True, show_laser = False):
-        BasePR2.__init__(self)
+    def __init__(self, name = None, with_keyboard = True, show_laser = False):
+        BasePR2.__init__(self, name)
 
         ###################################
         # Actuators
@@ -154,8 +154,8 @@ class NavPR2(BasePR2):
     A PR2 equipped with sensors and actuators required for 2D navigation.
 
     """
-    def __init__(self, with_keyboard = True, show_laser = False):
-        BasePR2.__init__(self)
+    def __init__(self, name = None, with_keyboard = True, show_laser = False):
+        BasePR2.__init__(self, name)
 
         ###################################
         # Actuators

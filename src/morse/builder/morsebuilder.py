@@ -134,10 +134,12 @@ class Armature(AbstractComponent):
 
 
 class Robot(Component):
-    def __init__(self, filename):
+    def __init__(self, filename, name):
         Component.__init__(self, 'robots', filename)
         self.properties(Robot_Tag = True)
         self.default_interface = None
+        if name:
+            self.name = name
 
     def set_mass(self, mass):
         """ Set component's mass
@@ -178,8 +180,8 @@ class Robot(Component):
         self._make_transparent(self._bpy_object, alpha)
 
 class WheeledRobot(Robot):
-    def __init__(self, filename):
-        Robot.__init__(self, filename)
+    def __init__(self, filename, name):
+        Robot.__init__(self, filename, name)
 
     def unparent_wheels(self):
         """ Make the wheels orphans, but keep the transformation applied to
