@@ -2,14 +2,16 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.helpers.morse_logging import SECTION, ENDSECTION
 import sys
 import os
-import re
 import time
 import imp
 
 # Force the full import of blenderapi so python computes correctly all
 # values in its  namespace
 import morse.core.blenderapi
-imp.reload(morse.core.blenderapi) # force a reload, since 'blenderapi' may have been already loaded *outside* the GameEngine
+
+# force a reload, since 'blenderapi' may have been already loaded
+# *outside* the GameEngine
+imp.reload(morse.core.blenderapi)
 persistantstorage = morse.core.blenderapi.persistantstorage()
 
 # The service management
@@ -27,9 +29,10 @@ OUT = 'OUT'
 #  in the .blend file of the scene
 try:
     import component_config
-    
 except ImportError as detail:
-    logger.warning("%s.\nNo datastream/services/modifiers will be configured.\nMake sure the script 'component_config.py' is present in the .blend file." % detail)
+    logger.warning("%s.\nNo datastream/services/modifiers will be configured."
+                    "\nMake sure the script 'component_config.py' is present"
+                    "in the .blend file." % detail)
 
 MULTINODE_SUPPORT = False
 # The file multinode_config.py is at the moment included
@@ -39,7 +42,8 @@ try:
     import multinode_config
     MULTINODE_SUPPORT = True
 except ImportError as detail:
-    logger.info("No multi-node scene configuration file found. Multi-node support disabled.")
+    logger.info("No multi-node scene configuration file found. "
+                "Multi-node support disabled.")
 
 from morse.core.exceptions import MorseServiceError
 
@@ -73,13 +77,9 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
         if instance:
             persistantstorage.componentDict[child.name] = instance
         else:
-            logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: the component '""" + obj.name + """' could not
-    be properly initialized.
-    There was an error when creating the class instance.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                """)
+            logger.error("INITIALIZATION ERROR: the component '%s'"
+                         " could not be properly initialized. Error when "
+                         "creating the class instance", obj.name)
             return False
 
         # Unset the default action of components of external robots
@@ -88,10 +88,11 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
             logger.info("Component " + child.name + " disabled: parent "  \
                                      + obj.name + " is an External robot.")
         else:
-            logger.info("Component %s %s added to %s" % 
-                                (child.name, 
-                                    "(level: %s)" % child.get("abstraction_level") if child.get("abstraction_level") else "",
-                                 obj.name)
+            logger.info("Component %s %s added to %s" %
+                        (child.name, 
+                         "(level: %s)" % child.get("abstraction_level") \
+                                 if child.get("abstraction_level") else "",
+                         obj.name)
                        )
 
     return True
@@ -127,7 +128,7 @@ def create_dictionaries ():
 
     # this dictionary stores, for each components, the direction and the
     # configured datastream interfaces. Direction is 'IN' for streams
-    # that are read by MORSE (typically, for actuators), and 'OUT' 
+    # that are read by MORSE (typically, for actuators), and 'OUT'
     # for streams published by MORSE (typically, for sensors)
     persistantstorage.datastreams = {}
 
@@ -192,15 +193,11 @@ def create_dictionaries ():
             else:
                 persistantstorage.externalRobotDict[obj] = instance
 
-    if not (persistantstorage.robotDict or persistantstorage.externalRobotDict): # No robot!
-        logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: no robot in your simulation!
-    
-    Do not forget that components _must_ belong to a
-    robot (you can not have free objects)
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            """)
+    if not (persistantstorage.robotDict or \
+            persistantstorage.externalRobotDict): # No robot!
+        logger.error("INITIALIZATION ERROR: no robot in your simulation!"
+                     "Do not forget that components _must_ belong to a"
+                     "robot (you can not have free objects)")
         return False
 
     
@@ -219,13 +216,9 @@ def create_dictionaries ():
         try:
             obj['Component_Tag']
             if obj.name not in persistantstorage.componentDict.keys():
-                logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: the component '""" + obj.name + """' does not
-    belong to any robot: you need to fix that by 
-    parenting it to a robot.                    
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    """)
+                logger.error("INITIALIZATION ERROR: the component '%s' "
+                             "does not belong to any robot: you need to fix "
+                             "that by parenting it to a robot." % obj.name)
                 return False
         except KeyError as detail:
             pass
@@ -314,14 +307,11 @@ def link_datastreams():
         try:
             instance = persistantstorage.componentDict[component_name]
         except KeyError as detail:
-            logger.error ("Component listed in component_config.py not found in scene: {0}".format(detail))
-            logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: your configuration file is not valid. Please
-    check the name of your components and restart the
-    simulation.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            """)
+            logger.error ("Component listed in component_config.py not found "
+                          "in scene: %s" % detail)
+            logger.error("INITIALIZATION ERROR: your configuration file is "
+                         " not valid. Please check the name of your components "
+                         " and restart the simulation.")
             return False
 
         # Do not configure middlewares for components that are external,
@@ -375,16 +365,12 @@ def link_datastreams():
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
                 else:
-                    logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: Datastream '""" + datastream_name + """'
-    module could not be found!
-    
-    Could not import modules required for the desired
-    datastream interface. Check that they can be found inside
-    your PYTHONPATH variable.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    """)
+                    logger.error("INITIALIZATION ERROR: Datastream '%s' module"
+                                 " could not be found! \n"
+                                 " Could not import modules required for the "
+                                 "desired datastream interface. Check that "
+                                 "they can be found inside your PYTHONPATH "
+                                 "variable.")
                     return False
             
             datastream_instance.register_component(component_name, instance, datastream_data)
@@ -419,14 +405,12 @@ def link_services():
                 instance = persistantstorage.robotDict[robot_obj]
 
             except KeyError as detail:
-                logger.error("Component listed in component_config.py not found in scene: {0}".format(detail))
-                logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: the component_services section of your
-    configuration file is not valid. Please check the 
-    name of your components and restart the simulation.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                """)
+                logger.error("Component listed in component_config.py "
+                             "not found in scene: %s" % detail)
+                logger.error("INITIALIZATION ERROR: the component_services "
+                             "section of your configuration file is not valid."
+                             "Please check the name of your components and "
+                             "restart the simulation.")
                 return False
 
         for request_manager in request_manager_data:
@@ -436,7 +420,8 @@ def link_services():
             
             persistantstorage.morse_services.register_request_manager_mapping(component_name, request_manager)
             instance.register_services()
-            logger.info("Component: '%s' using middleware '%s' for services" % (component_name, request_manager))
+            logger.info("Component: '%s' using middleware '%s' for services" %
+                        (component_name, request_manager))
     
     return True
 
@@ -459,17 +444,22 @@ def load_overlays():
             try:
                 overlaid_object = persistantstorage.componentDict[overlaid_name]
             except KeyError:
-                logger.error("Could not find the object to overlay: %s." % overlaid_name)
+                logger.error("Could not find the object to overlay: %s." %
+                              overlaid_name)
                 return False
 
             # Instanciate the overlay, passing the overlaid object to
             # the constructor + any optional arguments
             instance = create_instance(overlay_name, overlaid_object, **kwargs)
-            persistantstorage.morse_services.register_request_manager_mapping(instance.name(), request_manager_name)
+            persistantstorage.morse_services.register_request_manager_mapping(
+                    instance.name(), request_manager_name)
             instance.register_services()
             persistantstorage.overlayDict[overlay_name] = instance
-            logger.info("Component '%s' overlaid with '%s' using middleware '%s' for services" % (overlaid_object.name(), overlay_name, request_manager_name))
-    
+            logger.info("Component '%s' overlaid with '%s' using middleware "
+                        "'%s' for services" %
+                        (overlaid_object.name(),
+                         overlay_name,
+                         request_manager_name))
     return True
 
 
@@ -488,18 +478,21 @@ def add_modifiers():
         try:
             instance = persistantstorage.componentDict[component_name]
         except KeyError as detail:
-            logger.warning("Component listed in component_config.py not found in scene: {0}".format(detail))
+            logger.warning("Component listed in component_config.py not "
+                           "found in scene: %s" % detail)
             continue
 
         for mod_data in mod_list:
             modifier_name = mod_data[0]
-            logger.info("Component: '%s' operated by '%s'" % (component_name, modifier_name))
+            logger.info("Component: '%s' operated by '%s'" %
+                        (component_name, modifier_name))
             # Make the modifier object take note of the component
-            modifier_instance = register_modifier(modifier_name, instance, mod_data[1])
+            modifier_instance = register_modifier(modifier_name, instance,
+                                                  mod_data[1])
             if not modifier_instance:
                 return False
             persistantstorage.modifierDict[modifier_name] = modifier_instance
-    
+
     return True
 
 def init_multinode():
@@ -523,14 +516,16 @@ def init_multinode():
         server_address = multinode_config.node_config["server_address"]
         server_port = int(multinode_config.node_config["server_port"])
     except (NameError, AttributeError) as detail:
-        logger.warning("No node configuration found. Using default values for this simulation node.\n\tException: ", detail)
+        logger.warning("No node configuration found. Using default values for "
+                       "this simulation node.\n\tException: ", detail)
         server_address = "localhost"
         server_port = 65000
 
     try:
         node_name = multinode_config.node_config["node_name"]
     except (NameError, AttributeError) as detail:
-        logger.warning("No node name defined. Using host name.\n\tException: ", detail)
+        logger.warning("No node name defined. Using host name.\n"
+                        "\tException: ", detail)
         node_name = os.uname()[1]
 
     logger.info ("This is node '%s'" % node_name)
@@ -551,7 +546,8 @@ def init(contr):
     # Get the version of Python used
     # This is used to determine also the version of Blender
     persistantstorage.pythonVersion = sys.version_info
-    logger.info ("Python Version: %s.%s.%s" % persistantstorage.pythonVersion[:3])
+    logger.info ("Python Version: %s.%s.%s" %
+                    persistantstorage.pythonVersion[:3])
     logger.info ("Blender Version: %s.%s.%s" % morse.core.blenderapi.version())
     logger.info  ("Python path: %s" % sys.path)
     logger.info ("PID: %d" % os.getpid())
@@ -641,8 +637,10 @@ def init_supervision_services():
         if not persistantstorage.morse_services.add_request_manager(request_manager):
             return False
         # The simulation mangement services always uses at least sockets for requests.
-        persistantstorage.morse_services.register_request_manager_mapping("simulation", request_manager)
-        persistantstorage.morse_services.register_request_manager_mapping("communication", request_manager)
+        persistantstorage.morse_services.register_request_manager_mapping(
+                "simulation", request_manager)
+        persistantstorage.morse_services.register_request_manager_mapping(
+                "communication", request_manager)
 
     except MorseServiceError as e:
         #...no request manager :-(
@@ -663,14 +661,15 @@ def init_supervision_services():
                     return False
 
                 persistantstorage.morse_services.register_request_manager_mapping("simulation", request_manager)
-                logger.info("Adding '{}' to the middlewares for simulation control".format(request_manager))
+                logger.info("Adding '%s' to the middlewares for simulation "
+                            "control" % request_manager)
             except MorseServiceError as e:
                 #...no request manager :-(
                 logger.critical(str(e))
                 logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
                 return False
 
-    except (AttributeError, NameError, KeyError) as detail:
+    except (AttributeError, NameError, KeyError): 
         # Nothing to declare: skip to the next step.
         pass
 
@@ -693,19 +692,15 @@ def simulation_main(contr):
     """
     # Update the time variable
     try:
-        persistantstorage.current_time = time.clock() - persistantstorage.base_clock
-    except AttributeError as detail:
+        persistantstorage.current_time = time.clock() - \
+                                         persistantstorage.base_clock
+    except AttributeError:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.
-        logger.critical("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    INITIALIZATION ERROR: failure during initialization
-    of the simulator.
-    
-    Check the terminal for error messages, and report
-    them on the morse-dev@laas.fr mailing list.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        """)
+        logger.critical("INITIALIZATION ERROR: failure during initialization "
+                        "of the simulator. Check the terminal for error "
+                        "messages, and report them on the morse-dev@laas.fr "
+                        "mailing list.")
         quit(contr)
 
     if "morse_services" in persistantstorage:
@@ -764,7 +759,9 @@ def close_all(contr):
             if datastream_instance:
                 datastream_instance.cleanup()
                 import gc # Garbage Collector
-                logger.debug("At closing time, %s has %s references" % (datastream_instance, gc.get_referents(datastream_instance)))
+                logger.debug("At closing time, %s has %s references" %
+                        (datastream_instance,
+                         gc.get_referents(datastream_instance)))
                 del obj
 
     logger.log(ENDSECTION, 'CLOSING OVERLAYS...')
@@ -802,7 +799,7 @@ def restart(contr):
 def quit(contr):
     """ Exit graciously from the simulation """
     logger.log(ENDSECTION, 'EXITING SIMULATION')
-    
+
     quitActuator = contr.actuators['Quit_sim']
     contr.activate(quitActuator)
 

@@ -62,8 +62,9 @@ class Camera(morse.core.sensor.Sensor):
 
         # Exit if the cameras could not be prepared
         if not blenderapi.hascameras():
-            logger.warning("Blender's bge.logic does not have the 'cameras' variable, \
-                    something must have failed when configuring the cameras")
+            logger.warning("Blender's bge.logic does not have the 'cameras'"
+                           "variable, something must have failed when "
+                           "configuring the cameras")
             return
 
         # Call the bge.texture method to refresh the image
@@ -83,7 +84,7 @@ class Camera(morse.core.sensor.Sensor):
             if 'CameraMesh' in child.name:
                 screen = child
                 # Considering it consists of a single mesh
-                mesh = child.meshes[0]  
+                mesh = child.meshes[0]
                 # Get the material name
                 for material in mesh.materials:
                     material_index = material.getMaterialIndex()
@@ -95,15 +96,11 @@ class Camera(morse.core.sensor.Sensor):
             logger.debug("\tCAMERA: %s" % camera.name)
             logger.debug("\tSCREEN: %s" % screen.name)
             logger.debug("\tMATERIAL: %s" % material_name)
-        except UnboundLocalError as detail:
-            logger.error("""
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ERROR: The video camera could not be properly initialized.
-    The children object could not be found.
-    Best solution is to re-link the camera.
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    """)
-            return (False)
+        except UnboundLocalError:
+            logger.error("The video camera could not be properly initialized."
+                         "The children object could not be found."
+                         "Best solution is to re-link the camera.")
+            return False
 
         # Get the reference to the scene
         scene = blenderapi.scene()
@@ -122,15 +119,17 @@ class Camera(morse.core.sensor.Sensor):
         
         # Set the clipping distances of the camera using the Game Logic Property
         camera.near = self.near_clipping
-        logger.info("\tNear clipping distance of the camera is: %s" % camera.near)
+        logger.info("\tNear clipping distance of the camera is: %s" %
+                       camera.near)
         camera.far = self.far_clipping
-        logger.info("\tFar clipping distance of the camera is: %s" % camera.far)
+        logger.info("\tFar clipping distance of the camera is: %s" %
+                       camera.far)
 
         # Set the background to be used for the render
         vt_camera.source.background = self.bg_color
         # Define an image size. It must be powers of two. Default 512 * 512
         vt_camera.source.capsize = [self.image_width, self.image_height]
-        logger.info("Camera '%s': Exporting an image of capsize: %s pixels" % \
+        logger.info("Camera '%s': Exporting an image of capsize: %s pixels" %
                 (self.name(), vt_camera.source.capsize))
 
         # Reverse the image (boolean game-property)
@@ -141,13 +140,15 @@ class Camera(morse.core.sensor.Sensor):
             if 'retrieve_zbuffer' in self.bge_object:
                 vt_camera.source.zbuff = self.bge_object['retrieve_zbuffer']
         except AttributeError as detail:
-            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
+            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" %
+                        detail)
 
         try:
             # Use the Z-Buffer as input with an array of depths
             if 'retrieve_depth' in self.bge_object:
                 vt_camera.source.depth = self.bge_object['retrieve_depth']
         except AttributeError as detail:
-            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" % detail)
+            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" %
+                        detail)
 
         blenderapi.cameras()[self.name()] = vt_camera
