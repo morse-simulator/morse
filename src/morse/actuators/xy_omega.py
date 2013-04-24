@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 class MotionXYW(morse.core.actuator.Actuator):
     """
@@ -20,6 +20,9 @@ class MotionXYW(morse.core.actuator.Actuator):
              'linear velocity in y direction (sidewards movement) (m/s)')
     add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
+    add_property('_type', 'Position', 'ControlType', 'string',
+                 "Kind of control, can be one of ['Velocity', 'Position']")
+
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
@@ -38,13 +41,18 @@ class MotionXYW(morse.core.actuator.Actuator):
 
         # Scale the speeds to the time used by Blender
         try:
-            vx = self.local_data['x'] / self.frequency
-            vy = self.local_data['y'] / self.frequency
-            rz = self.local_data['w'] / self.frequency
+            if self._type == 'Position':
+                vx = self.local_data['x'] / self.frequency
+                vy = self.local_data['y'] / self.frequency
+                rz = self.local_data['w'] / self.frequency
+            else:
+                vx = self.local_data['x']
+                vy = self.local_data['y']
+                rz = self.local_data['w']
 
         # For the moment ignoring the division by zero
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
             pass
 
-        self.apply_speed('Position', [vx, vy, vz], [rx, ry, rz])
+        self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz])

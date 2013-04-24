@@ -80,6 +80,8 @@ class Waypoint(morse.core.actuator.Actuator):
             ignored by the obstacle avoidance, and will not make the \
             robot change its trajectory. Useful when trying to move \
             close to an object of a certain kind")
+    add_property('_type', 'Position', 'ControlType', 'string',
+                 "Kind of control, can be one of ['Velocity', 'Position']")
 
     add_data('x', 0.0, "float",
               "X coordinate of the destination, in world frame, in meter")
@@ -110,10 +112,6 @@ class Waypoint(morse.core.actuator.Actuator):
 
         # Variable to store current speed. Used for the stop/resume services
         self._previous_speed = 0
-
-        # Choose the type of function to move the object
-        #self._type = 'Velocity'
-        self._type = 'Position'
 
         self.local_data['x'] = self._destination[0]
         self.local_data['y'] = self._destination[1]

@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
 import morse.core.actuator
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 class MotionVW(morse.core.actuator.Actuator):
     """ 
@@ -16,14 +16,13 @@ class MotionVW(morse.core.actuator.Actuator):
              'linear velocity in x direction (forward movement) (m/s)')
     add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
+    add_property('_type', 'Position', 'ControlType', 'string',
+                 "Kind of control, can be one of ['Velocity', 'Position']")
+
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
-
-        # Choose the type of function to move the object
-        #self._type = 'Velocity'
-        self._type = 'Position'
 
         logger.info('Component initialized')
 

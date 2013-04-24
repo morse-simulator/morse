@@ -20,6 +20,8 @@ class Destination(morse.core.actuator.Actuator):
 
     add_property('_tolerance', 0.5, 'Tolerance')
     add_property('_speed', 5.0, 'Speed')
+    add_property('_type', 'Position', 'ControlType', 'string',
+                 "Kind of control, can be one of ['Velocity', 'Position']")
 
 
     def __init__(self, obj, parent=None):
@@ -80,4 +82,4 @@ class Destination(morse.core.actuator.Actuator):
             logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         
-        self.apply_speed('Position', [vx, vy, vz], [0, 0, 0])
+        self.apply_speed(self._type, [vx, vy, vz], [0, 0, 0])
