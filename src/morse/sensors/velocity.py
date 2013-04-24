@@ -17,11 +17,11 @@ class Velocity(morse.core.sensor.Sensor):
     _name = "Velocity"
     _short_descr = "A Velocity Sensor"
 
-    add_data('linar_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
+    add_data('linear_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
              'velocity in sensor x, y, z axes (in meter . sec ^ -1)')
     add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
              'rates in sensor x, y, z axes (in radian . sec ^ -1)')
-    add_data('world_linar_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
+    add_data('world_linear_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
              'velocity in world x, y, z axes (in meter . sec ^ -1)')
 
     def __init__(self, obj, parent=None):
