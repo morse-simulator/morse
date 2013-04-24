@@ -440,11 +440,4 @@ class Waypoint(morse.core.actuator.Actuator):
             logger.debug("Applying vx = %.4f, vz = %.4f, rz = %.4f (v = %.4f)" %
                         (vx, vz, rz, v))
 
-            # Give the movement instructions directly to the parent
-            # The second parameter specifies a "local" movement
-            if self._type == 'Position':
-                parent.bge_object.applyMovement([vx, 0, vz], True)
-                parent.bge_object.applyRotation([0, 0, rz], True)
-            elif self._type == 'Velocity':
-                parent.bge_object.setLinearVelocity([vx, 0, vz], True)
-                parent.bge_object.setAngularVelocity([0, 0, rz], True)
+            self.apply_speed(self._type, [vx, 0, vz], [0, 0, rz])

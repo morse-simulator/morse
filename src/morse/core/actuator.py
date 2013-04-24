@@ -25,6 +25,26 @@ class Actuator(morse.core.object.Object):
         del self.input_functions[:]
         del self.input_modifiers[:]
 
+    def apply_speed(self, kind, linear_speed, angular_speed):
+        """
+        Apply speed parameter to the parent robot
+
+        :param string kind: the kind of control to apply. Can be one of
+        ['Position', 'Velocity'].
+        :param list linear_speed: the list of linear speed to apply, for
+        each axis, in m/s.
+        :param list angular_speed: the list of angular speed to apply,
+        for each axis, in rad/s.
+        """
+        parent = self.robot_parent.bge_object
+
+        if kind == 'Position':
+            parent.applyMovement(linear_speed, True)
+            parent.applyRotation(angular_speed, True)
+        elif kind == 'Velocity':
+            parent.setLinearVelocity(linear_speed, True)
+            parent.setAngularVelocity(angular_speed, True)
+
 
     def action(self):
         """ Call the action functions that have been added to the list. """

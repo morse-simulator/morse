@@ -69,14 +69,4 @@ class MotionVW(morse.core.actuator.Actuator):
         except ZeroDivisionError:
             pass
 
-        # Get the Blender object of the parent robot
-        parent = self.robot_parent.bge_object
-
-        # Give the movement instructions directly to the parent
-        # The second parameter specifies a "local" movement
-        if self._type == 'Position':
-            parent.applyMovement([vx, vy, vz], True)
-            parent.applyRotation([rx, ry, rz], True)
-        elif self._type == 'Velocity':
-            parent.setLinearVelocity([vx, vy, vz], True)
-            parent.setAngularVelocity([rx, ry, rz], True)
+        self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz])

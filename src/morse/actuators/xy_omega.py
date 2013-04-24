@@ -46,11 +46,5 @@ class MotionXYW(morse.core.actuator.Actuator):
         # It happens apparently when the simulation starts
         except ZeroDivisionError:
             pass
-        # Get the Blender object of the parent robot
-        parent = self.robot_parent.bge_object
 
-        # Give the movement instructions directly to the parent
-        # The second parameter specifies a "local" movement
-        parent.applyMovement([vx, vy, vz], True)
-        parent.applyRotation([rx, ry, rz], True)
-        
+        self.apply_speed('Position', [vx, vy, vz], [rx, ry, rz])
