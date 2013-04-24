@@ -757,7 +757,6 @@ def close_all(contr):
     if 'datastreamDict' in persistantstorage:
         for obj, datastream_instance in persistantstorage.datastreamDict.items():
             if datastream_instance:
-                datastream_instance.cleanup()
                 import gc # Garbage Collector
                 logger.debug("At closing time, %s has %s references" %
                         (datastream_instance,
