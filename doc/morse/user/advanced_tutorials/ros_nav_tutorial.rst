@@ -119,7 +119,6 @@ First complete the ``scenario.py`` script by replacing the ``BarePR2`` by the ``
 .. code-block:: python
 
     from morse.builder import *
-    from morse.builder.robots.pr2 import PR2
 
     # A PR2 robot to the scene
     james = BasePR2()
