@@ -32,6 +32,8 @@ Available services
 - ``details`` (no parameter): returns a structure containing the details about
   the simulation currently running, including the list of robots, the list of
   services and datastreams, ...
+- ``set_log_level`` ``cmpnt`` (string) ``level`` (string): changes the
+  level of logging for the component ``cmpnt`` to the level ``level``.
 
 
 .. note::

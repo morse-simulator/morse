@@ -131,3 +131,20 @@ def details():
     details['robots'] = [robotdetails(r) for n, r in simu.robotDict.items()]
     return details
 
+
+@service(component = "simulation")
+def set_log_level(component, level):
+    """
+    Allow to change the logger level of a specific component
+
+    :param string component: the name of the logger you want to modify
+    :param string level: the desired level of logging
+    """
+
+    my_logger = logging.getLogger('morse.' + component)
+    try:
+        my_logger.setLevel(level)
+    except ValueError as exn:
+        raise MorseRPCInvokationError(str(exn))
+
+
