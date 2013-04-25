@@ -5,50 +5,19 @@ documentation generation purposes).
 
 import sys
 
-fake = False
-
 # running in Blender?
-if sys.executable.endswith('blender'):
-    import mathutils
+if not sys.executable.endswith('blender'):
+    print("ATTENTION: MORSE is running outside Blender! "
+          "(sys.executable != blender)")
+
+    def Matrix(*args):
+        return None
+    def Vector(*args):
+        return None
+    def Euler(*args):
+        return None
+    def Quaternion(*args):
+        return None
 else:
-    print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
-    fake = True
+    from mathutils import Matrix, Vector, Euler, Quaternion
 
-
-class Matrix:
-    def __init__(self, matrix=None):
-        if not fake:
-            if matrix:
-                self = mathutils.Matrix(matrix)
-            else:
-                self = mathutils.Matrix()
-        else:
-            self = None
-
-    @staticmethod
-    def Rotation(x, y, z):
-        if not fake:
-            return mathutils.Matrix.Rotation(x, y, z)
-        else:
-            return None
-
-def Vector(vector):
-    if not fake:
-        return mathutils.Vector(vector)
-    else:
-        return None
-
-def Euler(angle):
-    if not fake:
-        return mathutils.Euler(angle)
-    else:
-        return None
-
-def Quaternion(axis=None, angle=None):
-    if not fake:
-        if axis and angle:
-            return mathutils.Quaternion(axis, angle)
-        else:
-            return mathutils.Quaternion()
-    else:
-        return None
