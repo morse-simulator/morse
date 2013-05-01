@@ -6,6 +6,7 @@ endmacro()
 
 if (BUILD_CORE_SUPPORT)
 	add_subdirectory(base)
+	add_subdirectory(failures)
 	add_subdirectory(robots/human)
 	add_subdirectory(robots/segway)
 	add_subdirectory(robots/pr2)

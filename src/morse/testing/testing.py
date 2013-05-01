@@ -157,19 +157,10 @@ class MorseTestCase(unittest.TestCase):
             return unittest.TestCase.run(self, result)
         except KeyboardInterrupt as e:
             self.tearDownMw()
-            os.kill(self.pid, signal.SIGKILL)
+            if self.morse_process:
+                os.kill(self.morse_process.pid, signal.SIGKILL)
             if result:
                 result.addError(self, sys.exc_info())
-
-    def _extract_pid(self):
-        """ Extract the pid from the log file """
-
-        with open(self.logfile_name) as log:
-            for line in log:
-                if "PID" in line:
-                    words = line.split()
-                    return int(words[-1])
-
 
     def startmorse(self, test_case):
         """ This starts MORSE in a new process, passing the script itself as parameter (to
@@ -198,17 +189,14 @@ class MorseTestCase(unittest.TestCase):
                     " place!")
             raise ose
         
-        morse_initialized = False
-
         t = threading.Thread(target=self.wait_initialization)
         t.start()
         t.join(BLENDER_INITIALIZATION_TIMEOUT)
         
         if self.morse_initialized:
-            self.pid = self._extract_pid()
-            testlogger.info("MORSE successfully initialized with PID %s" % self.pid)
+            testlogger.info("MORSE successfully initialized with PID %s" % self.morse_process.pid)
         else:
-            self.morse_process.terminate()
+            os.kill(self.morse_process.pid, signal.SIGKILL)
             raise MorseTestingError("MORSE did not start successfully! Check %s "
                                     "for details." % self.logfile_name)
     
@@ -226,7 +214,7 @@ class MorseTestCase(unittest.TestCase):
                 if "EXITING SIMULATION" in line:
                     return
 
-        os.kill(self.pid, signal.SIGKILL)
+        os.kill(self.morse_process.pid, signal.SIGKILL)
         testlogger.info("MORSE stopped")
     
     def generate_builder_script(self, test_case):
@@ -250,3 +238,35 @@ class MorseTestCase(unittest.TestCase):
         testlogger.info("Created a temporary builder file for test-case " +\
             test_case.__class__.__name__)
         return tmp_name
+
+
+class MorseBuilderFailureTestCase(MorseTestCase):
+    """ This subclass of MorseTestCase can be used to test MORSE handles
+    properly ill-constructed Builder scripts.
+
+    It will *fail* if the Blender Game Engine get started.
+    """
+
+    # Make this an abstract class
+    __metaclass__ = ABCMeta
+
+    def wait_initialization(self):
+        """ Wait until Morse is initialized """
+
+        testlogger.info("Waiting for MORSE to parse the scene... (timeout: %s sec)" % \
+                        BLENDER_INITIALIZATION_TIMEOUT)
+        # we assume we will correctly detect Builder script issue, so wait_initialization
+        # 'succeed'.
+        self.morse_initialized = True
+
+        with open(self.logfile_name) as log:
+            lines = follow(log)
+            for line in lines:
+                if "Blender Game Engine Started" in line:
+                    testlogger.error("Blender Game Engine started!"
+                                     " This is not expected."
+                                     " See %s for details." % self.logfile_name)
+                    os.kill(os.getpid(), signal.SIGINT)
+                    return
+
+
