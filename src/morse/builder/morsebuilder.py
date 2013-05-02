@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
+import sys
 import math
 from morse.builder.abstractcomponent import *
 
@@ -18,6 +19,17 @@ The string passed to the differents Components Classes must be an existing
 .blend file-name, ie. for ``ATRV()`` the file ``atrv.blend`` must exists
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
+
+def morse_excepthook(etype, evalue, etraceback):
+    logger.error("Your MORSE Builder script is invalid!")
+    import traceback
+    traceback.print_tb(etraceback)
+    logger.error("\n")
+    logger.error(str(evalue))
+    import os
+    os._exit(-1)
+# unhandled exception quit Blender
+sys.excepthook = morse_excepthook
 
 class PassiveObject(AbstractComponent):
     """ Allows to import any Blender object to the scene.

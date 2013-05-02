@@ -591,7 +591,7 @@ class AbstractComponent(object):
                              "Either provide an absolute path, or a path relative \n"
                              "to MORSE assets directories ($MORSE_RESOURCE_PATH \n"
                              "or default path, typically $PREFIX/share/morse/data)."% (component, looked_dirs))
-                return
+                raise FileNotFoundError("%s '%s' not found"%(self.__class__.__name__, component))
 
         if not objects: # link_append all objects from blend file
             objects = bpymorse.get_objects_in_blend(filepath)
