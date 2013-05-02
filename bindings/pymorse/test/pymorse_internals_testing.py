@@ -1,17 +1,13 @@
-#!/usr/bin/python
-
 import unittest
 import threading
 import time
 import socket
 import select
 import json
+import asyncore
 
-import logging; pymorselogger = logging.getLogger("pymorse")
-pymorselogger.setLevel(logging.DEBUG)
-
-from pymorse import ComChannel
-from stream import Stream
+import logging; logger = logging.getLogger("pymorse")
+from pymorse import StreamJSON, TIMEOUT
 
 class SocketWriter(threading.Thread):
     def __init__(self, port = 61000, freq = 10):
@@ -99,22 +95,16 @@ class TestPyMorseStreamSlow(unittest.TestCase):
         self.freq = 10
         self._server = SocketWriter(freq = self.freq) # First tests: producer at 10 Hz
 
-        self.com = ComChannel("localhost")
-        self.stream = Stream(self.com, 61000, maxlength = 3)
+        self.host = "localhost"
+        self.stream = StreamJSON(self.host, 61000)
+        self._asyncore_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': 0.01} )
+        self._asyncore_thread.start()
         
     def test_get(self):
 
         self.assertEqual(self.stream.get(), [0])
         self.assertEqual(self.stream.get(), [1])
         
-    def test_last(self):
-
-        self.assertIsNone(self.stream.last())
-        self.stream.get()
-        self.assertEqual(self.stream.last(), [0])
-        self.stream.get()
-        self.assertEqual(self.stream.last(), [1])
-
     def test_last_timed(self):
 
         d = 1/float(self.freq)
@@ -126,32 +116,6 @@ class TestPyMorseStreamSlow(unittest.TestCase):
         time.sleep(d)
         time.sleep(d)
         self.assertEqual(self.stream.last(), [3])
-
-    def test_last_n(self):
-
-        d = 1/float(self.freq)
-        self.assertIsNone(self.stream.last())
-        self.assertIsNone(self.stream.last(2))
-        self.assertIsNone(self.stream.last(10))
-
-        time.sleep(d + d * 0.5)
-
-        self.assertEqual(self.stream.last(1), [[0]])
-        self.assertEqual(self.stream.last(2), [[0]]) # if only one item available, should be fine to ask for two
-
-        time.sleep(d)
-
-        self.assertEqual(self.stream.last(1), [[1]]) # make sure we return the last one
-        self.assertEqual(self.stream.last(2), [[0],[1]]) # make sure the order is right (from older to most recent)
-
-        time.sleep(d)
-
-        self.assertEqual(self.stream.last(3), [[0],[1],[2]])
-
-        time.sleep(d)
-
-        self.assertEqual(self.stream.last(3), [[1], [2],[3]])
-        self.assertEqual(self.stream.last(4), [[1], [2],[3]]) # make sure the buffer lenght (here, 3) is used
 
     def test_subscribe(self):
 
@@ -191,8 +155,10 @@ class TestPyMorseStreamSlow(unittest.TestCase):
         self.i += 1
         
     def tearDown(self):
-        self.com.close()
         self._server.close()
+        asyncore.close_all()
+        self._asyncore_thread.join(TIMEOUT)
+        self._asyncore_thread = None # in case we want to re-create
 
 if __name__ == '__main__':
     
@@ -206,7 +172,7 @@ if __name__ == '__main__':
     # tell the handler to use this format
     console.setFormatter(formatter)
     # add the handler to the root logger
-    pymorselogger.setLevel(logging.DEBUG)
-    pymorselogger.addHandler(console)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(console)
 
     unittest.main()

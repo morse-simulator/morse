@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """
 We test here the various features of the pymorse bindings:
 - automatic creation of robot/components existing in the simulation
@@ -41,11 +40,9 @@ class PymorseTest(MorseTestCase):
 
         ##### Robot2
         # Here, we set explicitely the names via the 'name' property
-        robot2 = ATRV()
-        robot2.name = "Robi"
+        robot2 = ATRV("Robi")
 
-        pose = Pose()
-        pose.name = "MyPose"
+        pose = Pose("MyPose")
         pose.add_stream('socket')
         robot2.append(pose)
 
@@ -56,15 +53,15 @@ class PymorseTest(MorseTestCase):
     def _test_base(self):
         with Morse() as simu:
             self.assertIn("robots", dir(simu))
-            self.assertEquals(set(simu.robots), {'ATRV', 'Robi'})
+            self.assertEquals(set(simu.robots), {'robot1', 'Robi'})
 
             self.assertIn('Robi', dir(simu))
-            self.assertIn('ATRV', dir(simu))
+            self.assertIn('robot1', dir(simu))
 
             self.assertIn('MyPose', simu.Robi)
 
-            self.assertIn('Battery', simu.ATRV)
-            self.assertIn('Motion_Controller', simu.ATRV)
+            self.assertIn('battery', simu.robot1)
+            self.assertIn('motion', simu.robot1)
 
             with self.assertRaises(KeyError):
                 simu.Robi.ghost_compt
@@ -73,14 +70,14 @@ class PymorseTest(MorseTestCase):
                 simu.Robi.ghost_compt.get()
 
             self.assertIsNotNone(simu.Robi.MyPose)
-            self.assertIsNotNone(simu.ATRV.Battery)
-            self.assertIsNotNone(simu.ATRV.Motion_Controller)
+            self.assertIsNotNone(simu.robot1.battery)
+            self.assertIsNotNone(simu.robot1.motion)
 
     def _test_streams(self):
 
         with Morse() as morse:
 
-            s = morse.ATRV.Battery
+            s = morse.robot1.battery
 
             # Try to read it
             self.assertIsNotNone(s.get())
@@ -88,7 +85,7 @@ class PymorseTest(MorseTestCase):
             s.last()
             s.get()
 
-            motion = morse.ATRV.Motion_Controller
+            motion = morse.robot1.motion
 
             # Try to write on a stream
             motion.publish({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
@@ -101,7 +98,7 @@ class PymorseTest(MorseTestCase):
 
         with Morse() as morse:
 
-            motion = morse.ATRV.Motion_Controller
+            motion = morse.robot1.motion
 
             # Should not raise any exception
             req = motion.goto(1.0, 1.0, 0.0, 0.5, 1.0)
