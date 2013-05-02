@@ -628,12 +628,13 @@ class Stream(asynchat.async_chat):
 
     where timeout is used with select.select / select.poll.poll.
     """
-    def __init__(self, host, port, maxlen=100):
+    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
         self.error = False
-        asynchat.async_chat.__init__(self)
+        asynchat.async_chat.__init__(self, sock=sock)
+        if not sock:
+            self.create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+            self.connect( (host, port) )
         self.set_terminator(MSG_SEPARATOR)
-        self.create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-        self.connect( (host, port) )
         self._in_buffer  = b""
         self._in_queue   = deque([], maxlen)
         self._callbacks  = []
@@ -770,8 +771,8 @@ class Stream(asynchat.async_chat):
         return msg_str.encode() + MSG_SEPARATOR
 
 class StreamJSON(Stream):
-    def __init__(self, host, port, maxlen=100):
-        Stream.__init__(self, host, port, maxlen)
+    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
+        Stream.__init__(self, host, port, maxlen, sock)
 
     def decode(self, msg_bytes):
         """ decode bytes to json object """
