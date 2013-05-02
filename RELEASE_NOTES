@@ -26,6 +26,8 @@ Sensors
 
 - A new sensor `Velocity` allows to retrieve properly the velocities of a robot
   which use a physic controller.
+- The semantic camera performance has been improved. It has a new option ('noocclusion'
+  to disable occlusion testing and get even better performances.
 
 Builder API
 -----------
