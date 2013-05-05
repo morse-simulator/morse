@@ -157,10 +157,23 @@ class MorseTestCase(unittest.TestCase):
             return unittest.TestCase.run(self, result)
         except KeyboardInterrupt as e:
             self.tearDownMw()
-            if self.morse_process:
-                os.kill(self.morse_process.pid, signal.SIGKILL)
+            os.kill(self.pid, signal.SIGKILL)
             if result:
                 result.addError(self, sys.exc_info())
+
+    def _extract_pid(self):
+        """ Extract the pid from the log file.
+
+        We can not simply rely on Popen.subprocess.pid because we need the PID of the
+        Blender process itself, not the (Python) MORSE process.
+        """
+
+        with open(self.logfile_name) as log:
+            for line in log:
+                if "PID" in line:
+                    words = line.split()
+                    return int(words[-1])
+
 
     def startmorse(self, test_case):
         """ This starts MORSE in a new process, passing the script itself as parameter (to
@@ -189,14 +202,17 @@ class MorseTestCase(unittest.TestCase):
                     " place!")
             raise ose
         
+        morse_initialized = False
+
         t = threading.Thread(target=self.wait_initialization)
         t.start()
         t.join(BLENDER_INITIALIZATION_TIMEOUT)
         
         if self.morse_initialized:
-            testlogger.info("MORSE successfully initialized with PID %s" % self.morse_process.pid)
+            self.pid = self._extract_pid()
+            testlogger.info("MORSE successfully initialized with PID %s" % self.pid)
         else:
-            os.kill(self.morse_process.pid, signal.SIGKILL)
+            self.morse_process.terminate()
             raise MorseTestingError("MORSE did not start successfully! Check %s "
                                     "for details." % self.logfile_name)
     
@@ -214,7 +230,7 @@ class MorseTestCase(unittest.TestCase):
                 if "EXITING SIMULATION" in line:
                     return
 
-        os.kill(self.morse_process.pid, signal.SIGKILL)
+        os.kill(self.pid, signal.SIGKILL)
         testlogger.info("MORSE stopped")
     
     def generate_builder_script(self, test_case):
