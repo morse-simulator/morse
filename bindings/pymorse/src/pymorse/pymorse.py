@@ -532,7 +532,7 @@ class Morse(object):
             timeout_t = timeout + time.time()
 
         while self.is_up():
-            raw = self.simulator_service.get()
+            raw = self.simulator_service.pop(1)
             if raw:
                 res = parse_response(raw)
                 if res['id'] == req['id']:
@@ -565,6 +565,9 @@ class Morse(object):
         Morse._asyncore_thread.join(TIMEOUT)
         Morse._asyncore_thread = None # in case we want to re-create
         logger.info('Done. Bye bye!')
+
+    def spin(self):
+        Morse._asyncore_thread.join()
 
 
     #####################################################################
@@ -612,6 +615,7 @@ class Stream(asynchat.async_chat):
         self._in_buffer  = b""
         self._in_queue   = deque([], maxlen)
         self._callbacks  = []
+        self._cv_new_msg = threading.Condition()
 
     def is_up(self):
         return self.connecting or self.connected
@@ -640,7 +644,9 @@ class Stream(asynchat.async_chat):
 
         and call subscribed callback methods if any
         """
-        self._in_queue.append(msg)
+        with self._cv_new_msg:
+            self._in_queue.append(msg)
+            self._cv_new_msg.notify_all()
         # handle callback(s)
         decoded_msg = None
         for callback in self._callbacks:
@@ -653,43 +659,59 @@ class Stream(asynchat.async_chat):
 
         usefull when :meth get: gave a wrong RPC response to a request
         """
-        self._in_queue.appendleft(self.encode( msg ))
+        with self._cv_new_msg:
+            self._in_queue.appendleft(self.encode( msg ))
+            self._cv_new_msg.notify_all()
 
-    def last(self):
+    def _msg_available(self):
+        return bool(self._in_queue)
+
+    def _pop_last_msg(self):
+        return self.decode( self._in_queue.pop() )
+
+    def _get_last_msg(self):
+        return self.decode( self._in_queue[-1] )
+
+    # TODO implement last n msg decode and msg_queue with hash(msg) -> decoded msg
+    def last(self, n=1):
         """ get the last message recieved
 
-        :returns: decoded message or None in case of timeout
+        :returns: decoded message or None if no message available
         """
-        if self._in_queue:
-            return self.decode( self._in_queue.pop() )
-        logger.debug("no message in queue")
+        with self._cv_new_msg:
+            if self._msg_available():
+                return self._get_last_msg()
+        logger.debug("last: no message in queue")
         return None
 
-    def get(self, timeout=TIMEOUT):
-        """ get the last message recieved or wait :param timeout: for a new one
+    def pop(self, timeout=None):
+        """ pop the last message recieved or wait :param timeout: for a new one
 
-        Default timeout is defined by the TIMEOUT module constant. If None,
-        will wait forever (untill the connection is down).
+        When the timeout argument is present and not None, it should be a
+        floating point number specifying a timeout for the operation in seconds
+        (or fractions thereof).
 
         :returns: decoded message or None in case of timeout
         """
-        msg = self.last()
-        if msg:
-            return msg
-        if timeout is None:
-            while self.is_up():
-                msg = self.last()
-                if msg:
-                    return msg
-                time.sleep(0.01)
-        # else: timeout is not None (must be a float or int)
-        timeout_t = time.time() + timeout
-        while self.is_up() and timeout_t > time.time():
-            msg = self.last()
-            if msg:
-                return msg
-            time.sleep(0.01)
-        # timeout or down
+        with self._cv_new_msg:
+            if self._msg_available() or self._cv_new_msg.wait(timeout):
+                return self._pop_last_msg()
+        logger.debug("pop: timed out")
+        return None
+
+    def get(self, timeout=None):
+        """ wait :param timeout: for a new messge
+
+        When the timeout argument is present and not None, it should be a
+        floating point number specifying a timeout for the operation in seconds
+        (or fractions thereof).
+
+        :returns: decoded message or None in case of timeout
+        """
+        with self._cv_new_msg:
+            if self._cv_new_msg.wait(timeout):
+                return self._get_last_msg()
+        logger.debug("get: timed out")
         return None
 
     #### OUT ####
