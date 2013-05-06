@@ -87,14 +87,24 @@ class Object(AbstractObject):
                 if level == "all" or level == self.level:
                     self.local_data[name] = default_value
 
-    def update_properties(self):
+    def update_properties(self, properties = None):
         """
         Takes all registered properties (see add_property), and update
         their values according to the values set in Blender object.
+
+        TODO: this code will only create members each entry in the current
+        object's '_properties' dict + the one in the *direct* parent class. It
+        does not go recursively to high levels.
         """
 
-        if hasattr(self, '_properties'):
-            for name, details in self._properties.items():
+        if hasattr(self, '_properties') or properties:
+            if not properties:
+                properties = self._properties
+
+            if super(self.__class__, self)._properties != properties:
+                self.update_properties(super(self.__class__, self)._properties) # recurse with the _properties of the parent class
+
+            for name, details in properties.items():
                 default_value, type, doc, python_name = details
                 val = default_value
 
