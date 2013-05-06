@@ -221,23 +221,23 @@ for module in [getattr(m, fn) for fn in dir(m)]:
 for name, props in components.items():
     c = props['object'] # component class
     if hasattr(c, "_levels"):
-            print("Found abstraction levels '" + str(c._levels) + "' in component " + name)
-            components[name]['levels'] = c._levels
+        print("Found abstraction levels '" + str(c._levels) + "' in component " + name)
+        components[name]['levels'] = c._levels
 
 
 # Extract data fields
 for name, props in components.items():
     c = props['object'] # component class
     if hasattr(c, "_data_fields"):
-            print("Found datafields '" + str(c._data_fields) + "' in component " + name)
-            components[name]['data_fields'] = c._data_fields
+        print("Found datafields '" + str(c._data_fields) + "' in component " + name)
+        components[name]['data_fields'] = c._data_fields
 
 # Extract properties
 for name, props in components.items():
     c = props['object'] # component class
     if hasattr(c, "_properties"):
-            print("Found properties '" + str(c._properties) + "' in component " + name)
-            components[name]['properties'] = c._properties
+        print("Found properties '" + str(c._properties) + "' in component " + name)
+        components[name]['properties'] = c._properties
 
 # Then, extract services
 for name, props in components.items():
@@ -247,7 +247,7 @@ for name, props in components.items():
         if hasattr(fn, "_morse_service"):
             print("Found service '" + fn.__name__ + "' in component " + name)
 
-            services[fn.__name__] = {'async': fn._morse_service_is_async, 
+            services[fn.__name__] = {'async': fn._morse_service_is_async,
                                      'doc': fn.__doc__}
 
     components[name]['services'] = services
@@ -496,14 +496,14 @@ def print_services(out, name, props):
 
 
 if not os.path.exists(PREFIX):
-        os.makedirs(PREFIX)
+    os.makedirs(PREFIX)
 
 if not os.path.exists(os.path.join(PREFIX, 'actuators')):
-        os.makedirs(os.path.join(PREFIX, 'actuators'))
+    os.makedirs(os.path.join(PREFIX, 'actuators'))
 if not os.path.exists(os.path.join(PREFIX, 'sensors')):
-        os.makedirs(os.path.join(PREFIX, 'sensors'))
+    os.makedirs(os.path.join(PREFIX, 'sensors'))
 if not os.path.exists(os.path.join(PREFIX, 'modifiers')):
-        os.makedirs(os.path.join(PREFIX, 'modifiers'))
+    os.makedirs(os.path.join(PREFIX, 'modifiers'))
 
 for name, props in components.items():
     module = (props['object'].__module__.split('.'))[-1]
