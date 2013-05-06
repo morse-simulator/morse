@@ -121,5 +121,5 @@ class PatrolBot(Robot):
                         Influence = 0.1, Friction = 0.8, \
                         WheelFLName = "left_wheel", WheelFRName = "right_wheel", \
                         WheelRLName = "None", WheelRRName = "None", \
-                        CasterWheelName = "front_caster_wheel")
+                        CasterWheelName = "None")
 
