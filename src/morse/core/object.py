@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
 from morse.core.abstractobject import AbstractObject
 
 import morse.helpers.transformation
@@ -93,16 +94,20 @@ class Object(AbstractObject):
         their values according to the values set in Blender object.
         """
 
-        if hasattr(self, '_properties'):
-            for name, details in self._properties.items():
-                default_value, type, doc, python_name = details
-                val = default_value
+        all_properties = OrderedDict()
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
 
-                try:
-                    val = self.bge_object[name]
-                except KeyError:
-                    pass
-                setattr(self, python_name, val)
+        for name, details in all_properties.items():
+            default_value, _, _, python_name = details
+            val = default_value
+
+            try:
+                val = self.bge_object[name]
+            except KeyError:
+                pass
+            setattr(self, python_name, val)
 
     def name(self):
         return self.bge_object.name
