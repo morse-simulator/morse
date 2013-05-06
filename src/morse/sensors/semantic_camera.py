@@ -139,7 +139,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
         pos = obj.position
         bbox = [[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]
 
-        if logger.isEnabledFor(DEBUG):
+        if logger.isEnabledFor(logging.DEBUG):
             logger.debug("\n--- NEW TEST ---")
             logger.debug("OBJECT '{0}' AT {1}".format(obj, pos))
             logger.debug("CAMERA '{0}' AT {1}".format(
