@@ -169,64 +169,56 @@ class Environment(Component):
         Should always be called at the very end of the Builder script. It will
         finalise the building process and write the configuration files.
         """
-        try:
-            # Invoke special methods of component that must take place *after* renaming
-            for component in AbstractComponent.components:
-                if hasattr(component, "after_renaming"):
-                    component.after_renaming()
+        # Invoke special methods of component that must take place *after* renaming
+        for component in AbstractComponent.components:
+            if hasattr(component, "after_renaming"):
+                component.after_renaming()
 
+        # Default node name
+        if name == None:
+            try:
+                name = os.environ["MORSE_NODE"]
+            except KeyError:
+                name = os.uname()[1]
+        # Write the configuration of the datastreams, and node configuration
+        Configuration.write_config()
+        self._write_multinode(name)
 
+        # Change the Screen material
+        if self._display_camera:
+            self._set_scren_mat()
 
-            # Default node name
-            if name == None:
-                try:
-                    name = os.environ["MORSE_NODE"]
-                except KeyError:
-                    name = os.uname()[1]
-            # Write the configuration of the datastreams, and node configuration
-            Configuration.write_config()
-            self._write_multinode(name)
+        self.properties(environment_file = str(self._environment_file))
+        # Set the position of the camera
+        camera_fp = bpymorse.get_object('CameraFP')
+        camera_fp.location = self._camera_location
+        camera_fp.rotation_euler = self._camera_rotation
 
-            # Change the Screen material
-            if self._display_camera:
-                self._set_scren_mat()
+        if self.fastmode:
+            self.set_material_mode('SINGLETEXTURE')
+            self.set_viewport("WIREFRAME")
+        elif not self.is_material_mode_custom:
+            # make sure OpenGL shading language shaders (GLSL) is the
+            # material mode to use for rendering
+            self.set_material_mode('GLSL')
 
-            self.properties(environment_file = str(self._environment_file))
-            # Set the position of the camera
-            camera_fp = bpymorse.get_object('CameraFP')
-            camera_fp.location = self._camera_location
-            camera_fp.rotation_euler = self._camera_rotation
+        # Set the unit system to use for button display (in edit mode) to metric
+        bpymorse.get_context_scene().unit_settings.system = 'METRIC'
+        # Select the type of Framing to Extend,
+        # Show the entire viewport in the display window,
+        # viewing more horizontally or vertically.
+        bpymorse.get_context_scene().game_settings.frame_type = 'EXTEND'
+        # Start player with a visible mouse cursor
+        bpymorse.get_context_scene().game_settings.show_mouse = True
 
-            if self.fastmode:
-                self.set_material_mode('SINGLETEXTURE')
-                self.set_viewport("WIREFRAME")
-            elif not self.is_material_mode_custom:
-                # make sure OpenGL shading language shaders (GLSL) is the
-                # material mode to use for rendering
-                self.set_material_mode('GLSL')
+        # Make CameraFP the active camera
+        bpymorse.deselect_all()
+        camera_fp.select = True
+        bpymorse.get_context_scene().objects.active = camera_fp
+        # Set default camera
+        bpymorse.get_context_scene().camera = camera_fp
 
-            # Set the unit system to use for button display (in edit mode) to metric
-            bpymorse.get_context_scene().unit_settings.system = 'METRIC'
-            # Select the type of Framing to Extend,
-            # Show the entire viewport in the display window,
-            # viewing more horizontally or vertically.
-            bpymorse.get_context_scene().game_settings.frame_type = 'EXTEND'
-            # Start player with a visible mouse cursor
-            bpymorse.get_context_scene().game_settings.show_mouse = True
-
-            # Make CameraFP the active camera
-            bpymorse.deselect_all()
-            camera_fp.select = True
-            bpymorse.get_context_scene().objects.active = camera_fp
-            # Set default camera
-            bpymorse.get_context_scene().camera = camera_fp
-
-            self._created = True
-        except BaseException:
-            logger.error("Your MORSE Builder script is invalid!")
-            import traceback
-            traceback.print_exc()
-            os._exit(-1)
+        self._created = True
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color

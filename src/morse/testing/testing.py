@@ -40,7 +40,10 @@ class MorseTestRunner(unittest.TextTestRunner):
             
             for test in suite:
                 test.setUpEnv()
-                break
+                class Success:
+                    def wasSuccessful(self):
+                        return True
+                return Success()
             
         else:
             self.setup_logging()
@@ -81,7 +84,8 @@ class MorseTestCase(unittest.TestCase):
             lines = follow(log)
             for line in lines:
                 # Python Error Case
-                if "Python script error" in line:
+                if "[ERROR][MORSE]" in line:
+                    testlogger.error(line.strip())
                     testlogger.error("Exception detected in Morse execution : "
                                      "see %s for details."
                                      " Exiting the current test !" % self.logfile_name)
@@ -116,7 +120,9 @@ class MorseTestCase(unittest.TestCase):
     def tearDown(self):
         self.stopmorse()
         self.tearDownMw()
+        self.logfile.close() # force to flush
         self.t.join()
+
         
     @abstractmethod
     def setUpEnv(self):
@@ -137,7 +143,7 @@ class MorseTestCase(unittest.TestCase):
         with open(self.logfile_name) as log:
             lines = follow(log)
             for line in lines:
-                if  ("Python script error" in line) or ("INITIALIZATION ERROR" in line):
+                if  ("[ERROR][MORSE]" in line) or ("INITIALIZATION ERROR" in line):
                     testlogger.error("Error during MORSE initialization! Check "
                                      "the log file.")
                     return
@@ -157,7 +163,8 @@ class MorseTestCase(unittest.TestCase):
             return unittest.TestCase.run(self, result)
         except KeyboardInterrupt as e:
             self.tearDownMw()
-            os.kill(self.pid, signal.SIGKILL)
+            if self.pid:
+                os.kill(self.pid, signal.SIGKILL)
             if result:
                 result.addError(self, sys.exc_info())
 
@@ -201,8 +208,6 @@ class MorseTestCase(unittest.TestCase):
                     " and if you use the $MORSE_ROOT env variable, check it points to a correct " + \
                     " place!")
             raise ose
-        
-        morse_initialized = False
 
         t = threading.Thread(target=self.wait_initialization)
         t.start()
@@ -220,17 +225,25 @@ class MorseTestCase(unittest.TestCase):
         """ Cleanly stop MORSE
         """
         import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(("localhost", 4000))
-        s.send(b"id1 simulation quit\n")
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            sock.connect(("localhost", 4000))
+            sock.send(b"id1 simulation quit\n")
+        except (ConnectionRefusedError, KeyboardInterrupt):
+            sock.close()
+            sock = None
+            testlogger.info("MORSE crashed")
 
-        with open(self.logfile_name) as log:
-            lines = follow(log)
-            for line in lines:
-                if "EXITING SIMULATION" in line:
-                    return
+        if sock:
+            sock.close()
+            with open(self.logfile_name) as log:
+                lines = follow(log)
+                for line in lines:
+                    if "EXITING SIMULATION" in line:
+                        return
 
-        os.kill(self.pid, signal.SIGKILL)
+        if self.pid:
+            os.kill(self.pid, signal.SIGKILL)
         testlogger.info("MORSE stopped")
     
     def generate_builder_script(self, test_case):
@@ -284,5 +297,10 @@ class MorseBuilderFailureTestCase(MorseTestCase):
                                      " See %s for details." % self.logfile_name)
                     os.kill(os.getpid(), signal.SIGINT)
                     return
+                elif "[ERROR][MORSE]" in line:
+                    # use 'info' since we suppose to get this error
+                    testlogger.info("MORSE initialization error: %s"%line.strip())
+                    return
 
-
+    def _checkMorseException(self):
+        return
