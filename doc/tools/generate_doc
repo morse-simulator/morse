@@ -61,7 +61,7 @@ from morse.modifiers import imu_noise, \
                             utm, \
                             ned
                                                       
-import sys, os
+import sys, os, codecs
 import fnmatch
 
 from morse.core.actuator import Actuator
@@ -69,6 +69,8 @@ from morse.core.sensor import Sensor
 from morse.modifiers.abstract_modifier import AbstractModifier
 
 from morse.builder.data import MORSE_DATASTREAM_DICT
+
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 PREFIX = "."
 MEDIA_PATH = "../../media"
@@ -505,7 +507,8 @@ if not os.path.exists(os.path.join(PREFIX, 'modifiers')):
 
 for name, props in components.items():
     module = (props['object'].__module__.split('.'))[-1]
-    with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w') as out:
+    with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w',
+              encoding='utf-8') as out:
         out.write(underline(name) + '\n')
 
         # if an image if available, use it
@@ -591,7 +594,7 @@ def supported_interfaces_csv(props, datastreams, level = "default"):
 def generate_matrix(filename):
     datastreams = ['text', 'socket', 'yarp', 'ros', 'pocolibs', 'moos']
 
-    with open(filename, 'w') as out:
+    with open(filename, 'w', encoding='utf-8') as out:
         sensors_list = []
         actuators_list = []
         for name, props in components.items():
