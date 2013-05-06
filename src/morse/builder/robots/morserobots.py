@@ -116,4 +116,10 @@ class PatrolBot(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "patrolbot")
         self.name = name
-        self.properties(classpath = "morse.robots.patrolbot.PatrolBotClass")
+        self.properties(classpath = "morse.robots.patrolbot.PatrolBotClass", \
+                        HasSuspension = False, HasSteering = False, \
+                        Influence = 0.1, Friction = 0.8, \
+                        WheelFLName = "left_wheel", WheelFRName = "right_wheel", \
+                        WheelRLName = "None", WheelRRName = "None", \
+                        CasterWheelName = "front_caster_wheel")
+
