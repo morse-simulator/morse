@@ -28,8 +28,7 @@ class InvalidName_Test(MorseBuilderFailureTestCase):
         env.add_service('socket')
 
     def test_builder_script(self):
-        with Morse() as simu:
-            pass # we only test the parsing of the script
+        pass # we only test the parsing of the script
 
 
 class NoEnvironment_Test(MorseBuilderFailureTestCase):
@@ -43,8 +42,7 @@ class NoEnvironment_Test(MorseBuilderFailureTestCase):
         env.add_service('socket')
 
     def test_builder_script(self):
-        with Morse() as simu:
-            pass # we only test the parsing of the script
+        pass # we only test the parsing of the script
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
