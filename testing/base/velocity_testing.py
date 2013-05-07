@@ -98,7 +98,7 @@ class Velocity_Test(MorseTestCase):
             sleep(0.5)
 
             send_speed(v_w, 1.0, 0.0)
-            sleep(0.5)
+            sleep(0.1)
             self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
 
 
