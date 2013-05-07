@@ -21,7 +21,7 @@ in the folder ``MORSE_COMPONENTS/robots/``.
 """
 
 def morse_excepthook(etype, evalue, etraceback):
-    logger.error("Your MORSE Builder script is invalid!")
+    logger.error("[ERROR][MORSE] Your builder script is invalid!")
     import traceback
     traceback.print_tb(etraceback)
     logger.error("\n")

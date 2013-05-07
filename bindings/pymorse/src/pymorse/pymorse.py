@@ -413,6 +413,28 @@ def rpc_get_result(response):
     else:
         raise MorseServiceError(result)
 
+class ResponseCallback:
+    _conditions = []
+    def __init__(self, req_id):
+        self.request_id = req_id
+        self.response = None
+        self.condition = threading.Condition()
+        ResponseCallback._conditions.append(self.condition)
+
+    def callback(self, res_bytes):
+        response = parse_response(res_bytes)
+        if response['id'] == self.request_id:
+            self.response = response
+            with self.condition:
+                ResponseCallback._conditions.remove(self.condition)
+                self.condition.notify_all()
+
+    def cancel_all():
+        for condition in ResponseCallback._conditions:
+            with condition:
+                condition.notify_all()
+        del ResponseCallback._conditions[:] # clear list
+
 
 class Morse(object):
     _asyncore_thread = None
@@ -424,7 +446,6 @@ class Morse(object):
         :param host: the simulator host (default: localhost)
         :param port: the port of the simulator socket interface (default: 4000)
         """
-        # TODO if asyncore.loop is running: raise Exception("asyncore.loop already running")
         self.host = host
         self.simulator_service = Stream(host, port)
         self.simulator_service_id = 0
@@ -432,6 +453,8 @@ class Morse(object):
             Morse._asyncore_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': 0.01} )
             Morse._asyncore_thread.start()
             logger.debug("Morse thread started")
+        else:
+            logger.debug("Morse thread was already started")
         self.executor = MorseExecutor(max_workers = 10, morse = self)
         self.initialize_api()
 
@@ -444,12 +467,7 @@ class Morse(object):
         """
         details = self.rpc_t(15, 'simulation', 'details') # RPC with timeout
         if not details:
-            if not self.is_up():
-                self.close()
-                raise ConnectionError("simulation service is down")
-            else:
-                self.close()
-                raise ValueError("simulation details not available")
+            raise ValueError("simulation details not available")
         logger.debug(details)
         self.robots = []
         for robot_detail in details["robots"]:
@@ -525,24 +543,20 @@ class Morse(object):
     def _rpc_process(self, req, timeout=None):
         raw = "{id} {component} {service} [{args}]".format(**req)
         logger.debug(raw)
-        self.simulator_service.publish(raw)
+        response_callback = ResponseCallback(req['id'])
+        self.simulator_service.subscribe(response_callback.callback)
+        try:
+            self.simulator_service.publish(raw)
+            with response_callback.condition:
+                if self.is_up() and response_callback.condition.wait(timeout):
+                    return rpc_get_result(response_callback.response)
+        finally:
+            self.simulator_service.unsubscribe(response_callback.callback)
 
-        timeout_t = 0
-        if timeout:
-            timeout_t = timeout + time.time()
+        if not self.is_up():
+            raise ConnectionError("simulation service is down")
 
-        while self.is_up():
-            raw = self.simulator_service.get()
-            if raw:
-                res = parse_response(raw)
-                if res['id'] == req['id']:
-                    return rpc_get_result(res)
-                else:
-                    self.simulator_service.push_back(raw)
-                    logger.debug("pushing back : response id != request id")
-            time.sleep(0.01)
-            if timeout_t and time.time() >= timeout_t:
-                raise TimeoutError("timeout exceeded while waiting for response")
+        raise TimeoutError("timeout exceeded while waiting for response")
 
     def cancel(self, service_id):
         """ Send a cancelation request for an existing (running) service.
@@ -555,6 +569,7 @@ class Morse(object):
     def close(self, cancel_async_services = False):
         if cancel_async_services:
             logger.info('Cancelling all running asynchronous requests...')
+            ResponseCallback.cancel_all()
             self.executor.cancel_all()
         else:
             logger.info('Waiting for all asynchronous requests to complete...')
@@ -565,6 +580,9 @@ class Morse(object):
         Morse._asyncore_thread.join(TIMEOUT)
         Morse._asyncore_thread = None # in case we want to re-create
         logger.info('Done. Bye bye!')
+
+    def spin(self):
+        Morse._asyncore_thread.join()
 
 
     #####################################################################
@@ -612,6 +630,7 @@ class Stream(asynchat.async_chat):
         self._in_buffer  = b""
         self._in_queue   = deque([], maxlen)
         self._callbacks  = []
+        self._cv_new_msg = threading.Condition()
 
     def is_up(self):
         return self.connecting or self.connected
@@ -640,7 +659,9 @@ class Stream(asynchat.async_chat):
 
         and call subscribed callback methods if any
         """
-        self._in_queue.append(msg)
+        with self._cv_new_msg:
+            self._in_queue.append(msg)
+            self._cv_new_msg.notify_all()
         # handle callback(s)
         decoded_msg = None
         for callback in self._callbacks:
@@ -648,54 +669,79 @@ class Stream(asynchat.async_chat):
                 decoded_msg = self.decode( msg )
             callback( decoded_msg )
 
-    def push_back(self, msg):
-        """ encode then append :param msg: at the end of the input queue
+    def _msg_available(self):
+        return bool(self._in_queue)
 
-        usefull when :meth get: gave a wrong RPC response to a request
-        """
-        self._in_queue.appendleft(self.encode( msg ))
+    def _get_last_msg(self):
+        return self.decode( self._in_queue[-1] )
 
-    def last(self):
+    # TODO implement last n msg decode and msg_queue with hash(msg) -> decoded msg
+    def last(self, n=1):
         """ get the last message recieved
 
-        :returns: decoded message or None in case of timeout
+        :returns: decoded message or None if no message available
         """
-        if self._in_queue:
-            return self.decode( self._in_queue.pop() )
-        logger.debug("no message in queue")
+        with self._cv_new_msg:
+            if self._msg_available():
+                return self._get_last_msg()
+        logger.debug("last: no message in queue")
         return None
 
-    def get(self, timeout=TIMEOUT):
-        """ get the last message recieved or wait :param timeout: for a new one
+    def get(self, timeout=None):
+        """ wait :param timeout: for a new messge
 
-        Default timeout is defined by the TIMEOUT module constant. If None,
-        will wait forever (untill the connection is down).
+        When the timeout argument is present and not None, it should be a
+        floating point number specifying a timeout for the operation in seconds
+        (or fractions thereof).
 
         :returns: decoded message or None in case of timeout
         """
-        msg = self.last()
-        if msg:
-            return msg
-        if timeout is None:
-            while self.is_up():
-                msg = self.last()
-                if msg:
-                    return msg
-                time.sleep(0.01)
-        # else: timeout is not None (must be a float or int)
-        timeout_t = time.time() + timeout
-        while self.is_up() and timeout_t > time.time():
-            msg = self.last()
-            if msg:
-                return msg
-            time.sleep(0.01)
-        # timeout or down
+        with self._cv_new_msg:
+            if self._cv_new_msg.wait(timeout):
+                return self._get_last_msg()
+        logger.debug("get: timed out")
         return None
 
     #### OUT ####
     def publish(self, msg):
         """ encode :param msg: and append the resulting bytes to the output queue """
         self.push(self.encode( msg ))
+    #### patch code from asynchat, ``del deque[0]`` is not safe #####
+    def initiate_send(self):
+        while self.producer_fifo and self.connected:
+            first = self.producer_fifo.popleft()
+            # handle empty string/buffer or None entry
+            if not first:
+                if first is None:
+                    self.handle_close()
+                    return
+
+            # handle classic producer behavior
+            obs = self.ac_out_buffer_size
+            try:
+                data = first[:obs]
+            except TypeError:
+                data = first.more()
+                if data:
+                    self.producer_fifo.appendleft(data)
+                continue
+
+            if isinstance(data, str) and self.use_encoding:
+                data = bytes(data, self.encoding)
+
+            # send the data
+            try:
+                num_sent = self.send(data)
+            except socket.error:
+                self.handle_error()
+                return
+
+            if num_sent:
+                if num_sent < len(data) or obs < len(first):
+                    self.producer_fifo.appendleft(first[num_sent:])
+            # we tried to send some actual data
+            return
+
 
     #### CODEC ####
     def decode(self, msg_bytes):

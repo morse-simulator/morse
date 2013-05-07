@@ -98,7 +98,7 @@ class Velocity_Test(MorseTestCase):
             sleep(0.5)
 
             send_speed(v_w, 1.0, 0.0)
-            sleep(0.5)
+            sleep(0.1)
             self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
 
 
@@ -107,8 +107,6 @@ class Velocity_Test(MorseTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(Velocity_Test)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
+    from morse.testing.testing import main
+    main(Velocity_Test)
 
