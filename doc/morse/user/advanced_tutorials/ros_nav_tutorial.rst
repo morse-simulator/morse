@@ -209,7 +209,7 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
     scan.properties(scan_window = 180.0)
     scan.create_laser_arc()
 
-    scan.add_interface('ros', topic='/scan')
+    scan.add_interface('ros', topic='/base_scan')
 
 We can now build a first map of our environment. Restart the simulation with
 ``morse run scenario.py``.
@@ -218,7 +218,7 @@ Start your launch file: ``roslaunch morse_2dnav nav.launch``.
 
 You can now run the ROS GMapping stack:
 
-``rosrun gmapping slam_gmapping scan:=/scan _odom_frame:=/odom``
+``rosrun gmapping slam_gmapping scan:=/base_scan _odom_frame:=/odom``
 
 Move around the robot in the simulation using the keyboard to fill the map
 (displayed in RVIZ).
@@ -253,10 +253,10 @@ Restart the simulation with the map server enabled.
 
 Start the AMCL estimator, passing the laser scans topic as paramter::
 
-  $> rosrun amcl amcl scan:=/scan
+  $> rosrun amcl amcl scan:=/base_scan
 
 Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
-display (topic name is ``/scan``) to see the simulated laser scans and set
+display (topic name is ``/base_scan``) to see the simulated laser scans and set
 an initial pose estimate (*ie* an estimate of the pose of the robot in MORSE)
 by clicking on the *2D Pose Estimate* button in RVIZ interface.
 
@@ -297,9 +297,6 @@ and add the following new section to your ``nav.launch`` file:
 .. code-block:: xml
 
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
-        <remap from="/base_scan" to="/pr2/Sick"/>
-        <remap from="/cmd_vel" to="/pr2/Motion_Controller"/>
-        <remap from="/odom" to="/pr2/Odometry"/>
 
         <param name="footprint_padding" value="0.01" />
         <param name="controller_frequency" value="10.0" />
