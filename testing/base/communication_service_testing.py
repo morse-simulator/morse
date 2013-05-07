@@ -57,7 +57,5 @@ class Communication_Service_Testing(MorseTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(Communication_Service_Testing)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
+    from morse.testing.testing import main
+    main(Communication_Service_Testing)

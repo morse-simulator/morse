@@ -32,24 +32,8 @@ class MorseTestRunner(unittest.TextTestRunner):
         logger.addHandler(ch)
 
     def run(self, suite):
-        if sys.argv[0].endswith('blender'):
-            # If we arrive here from within MORSE, we have probably run
-            # morse [exec|run] my_test.py
-            # If this case, simply build the environment based on the
-            # setUpEnv of the first test.
-            
-            for test in suite:
-                test.setUpEnv()
-                class Success:
-                    def wasSuccessful(self):
-                        return True
-                return Success()
-            
-        else:
-            self.setup_logging()
-            
-            return unittest.TextTestRunner.run(self, suite)
-                
+        self.setup_logging()
+        return unittest.TextTestRunner.run(self, suite)
 
 def follow(file):
     """ Really emulate tail -f
@@ -304,3 +288,22 @@ class MorseBuilderFailureTestCase(MorseTestCase):
 
     def _checkMorseException(self):
         return
+
+def main(*test_cases):
+    import sys
+    if sys.argv[0].endswith('blender'):
+        # If we arrive here from within MORSE, we have probably run
+        # morse [exec|run] my_test.py
+        # If this case, simply build the environment based on the
+        # setUpEnv of the first test.
+        for test_class in test_cases:
+            test_class().setUpEnv()
+            return
+    import unittest
+    suite = unittest.TestSuite()
+    loader = unittest.TestLoader()
+    for test_class in test_cases:
+        tests = loader.loadTestsFromTestCase(test_class)
+        suite.addTests(tests)
+    sys.exit(MorseTestRunner().run(suite).wasSuccessful())
+

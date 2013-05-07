@@ -46,9 +46,5 @@ class NoEnvironment_Test(MorseBuilderFailureTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(InvalidName_Test)
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(NoEnvironment_Test))
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
-
+    from morse.testing.testing import main
+    main(InvalidName_Test, NoEnvironment_Test)

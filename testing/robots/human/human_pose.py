@@ -74,7 +74,5 @@ class HumanPoseTest(MorseTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(HumanPoseTest)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
+    from morse.testing.testing import main
+    main(HumanPoseTest)
