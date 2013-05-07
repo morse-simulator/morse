@@ -305,5 +305,5 @@ def main(*test_cases):
     for test_class in test_cases:
         tests = loader.loadTestsFromTestCase(test_class)
         suite.addTests(tests)
-    sys.exit(MorseTestRunner().run(suite).wasSuccessful())
+    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
