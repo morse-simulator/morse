@@ -413,6 +413,28 @@ def rpc_get_result(response):
     else:
         raise MorseServiceError(result)
 
+class ResponseCallback:
+    _conditions = []
+    def __init__(self, req_id):
+        self.request_id = req_id
+        self.response = None
+        self.condition = threading.Condition()
+        ResponseCallback._conditions.append(self.condition)
+
+    def callback(self, res_bytes):
+        response = parse_response(res_bytes)
+        if response['id'] == self.request_id:
+            self.response = response
+            with self.condition:
+                ResponseCallback._conditions.remove(self.condition)
+                self.condition.notify_all()
+
+    def cancel_all():
+        for condition in ResponseCallback._conditions:
+            with condition:
+                condition.notify_all()
+        del ResponseCallback._conditions[:] # clear list
+
 
 class Morse(object):
     _asyncore_thread = None
@@ -424,7 +446,6 @@ class Morse(object):
         :param host: the simulator host (default: localhost)
         :param port: the port of the simulator socket interface (default: 4000)
         """
-        # TODO if asyncore.loop is running: raise Exception("asyncore.loop already running")
         self.host = host
         self.simulator_service = Stream(host, port)
         self.simulator_service_id = 0
@@ -432,6 +453,8 @@ class Morse(object):
             Morse._asyncore_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': 0.01} )
             Morse._asyncore_thread.start()
             logger.debug("Morse thread started")
+        else:
+            logger.debug("Morse thread was already started")
         self.executor = MorseExecutor(max_workers = 10, morse = self)
         self.initialize_api()
 
@@ -444,12 +467,7 @@ class Morse(object):
         """
         details = self.rpc_t(15, 'simulation', 'details') # RPC with timeout
         if not details:
-            if not self.is_up():
-                self.close()
-                raise ConnectionError("simulation service is down")
-            else:
-                self.close()
-                raise ValueError("simulation details not available")
+            raise ValueError("simulation details not available")
         logger.debug(details)
         self.robots = []
         for robot_detail in details["robots"]:
@@ -525,24 +543,20 @@ class Morse(object):
     def _rpc_process(self, req, timeout=None):
         raw = "{id} {component} {service} [{args}]".format(**req)
         logger.debug(raw)
-        self.simulator_service.publish(raw)
+        response_callback = ResponseCallback(req['id'])
+        self.simulator_service.subscribe(response_callback.callback)
+        try:
+            self.simulator_service.publish(raw)
+            with response_callback.condition:
+                if self.is_up() and response_callback.condition.wait(timeout):
+                    return rpc_get_result(response_callback.response)
+        finally:
+            self.simulator_service.unsubscribe(response_callback.callback)
 
-        timeout_t = 0
-        if timeout:
-            timeout_t = timeout + time.time()
+        if not self.is_up():
+            raise ConnectionError("simulation service is down")
 
-        while self.is_up():
-            raw = self.simulator_service.pop(1)
-            if raw:
-                res = parse_response(raw)
-                if res['id'] == req['id']:
-                    return rpc_get_result(res)
-                else:
-                    self.simulator_service.push_back(raw)
-                    logger.debug("pushing back : response id != request id")
-            time.sleep(0.01)
-            if timeout_t and time.time() >= timeout_t:
-                raise TimeoutError("timeout exceeded while waiting for response")
+        raise TimeoutError("timeout exceeded while waiting for response")
 
     def cancel(self, service_id):
         """ Send a cancelation request for an existing (running) service.
@@ -555,6 +569,7 @@ class Morse(object):
     def close(self, cancel_async_services = False):
         if cancel_async_services:
             logger.info('Cancelling all running asynchronous requests...')
+            ResponseCallback.cancel_all()
             self.executor.cancel_all()
         else:
             logger.info('Waiting for all asynchronous requests to complete...')
@@ -654,20 +669,8 @@ class Stream(asynchat.async_chat):
                 decoded_msg = self.decode( msg )
             callback( decoded_msg )
 
-    def push_back(self, msg):
-        """ encode then append :param msg: at the end of the input queue
-
-        usefull when :meth get: gave a wrong RPC response to a request
-        """
-        with self._cv_new_msg:
-            self._in_queue.appendleft(self.encode( msg ))
-            self._cv_new_msg.notify_all()
-
     def _msg_available(self):
         return bool(self._in_queue)
-
-    def _pop_last_msg(self):
-        return self.decode( self._in_queue.pop() )
 
     def _get_last_msg(self):
         return self.decode( self._in_queue[-1] )
@@ -682,21 +685,6 @@ class Stream(asynchat.async_chat):
             if self._msg_available():
                 return self._get_last_msg()
         logger.debug("last: no message in queue")
-        return None
-
-    def pop(self, timeout=None):
-        """ pop the last message recieved or wait :param timeout: for a new one
-
-        When the timeout argument is present and not None, it should be a
-        floating point number specifying a timeout for the operation in seconds
-        (or fractions thereof).
-
-        :returns: decoded message or None in case of timeout
-        """
-        with self._cv_new_msg:
-            if self._msg_available() or self._cv_new_msg.wait(timeout):
-                return self._pop_last_msg()
-        logger.debug("pop: timed out")
         return None
 
     def get(self, timeout=None):
