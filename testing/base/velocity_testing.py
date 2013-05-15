@@ -32,6 +32,10 @@ class Velocity_Test(MorseTestCase):
         vel = Velocity()
         robot.append(vel)
         vel.add_stream('socket')
+
+        teleport = Teleport()
+        robot.append(teleport)
+        teleport.add_stream('socket')
         
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
@@ -73,6 +77,8 @@ class Velocity_Test(MorseTestCase):
             self.vel_stream = simu.robot.vel
             v_w = simu.robot.motion
 
+            simu.deactivate('robot.teleport')
+
             # wait a few sec that physics stop its fun
             sleep(0.5)
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
@@ -86,16 +92,21 @@ class Velocity_Test(MorseTestCase):
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
 
             send_speed(v_w, 0.0, math.pi / 4.0)
-            start = time()
             sleep(0.5)
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, math.pi / 4.0], [0.0, 0.0, 0.0])
-            now = time()
-            # Need to wait exactly 2 sec so the orientation of the robot
-            # is math.pi / 2
-            sleep(2.0 - (now - start))
 
             send_speed(v_w, 0.0, 0.0)
-            sleep(0.5)
+            sleep(0.1)
+
+            simu.deactivate('robot.motion')
+            simu.activate('robot.teleport')
+            simu.robot.teleport.publish({'x' : 1.0, 'y' : 0.0, 'z': 0.0,
+                                         'yaw': math.pi/2, 'pitch': 0.0,
+                                         'roll': 0.0})
+            sleep(0.1)
+            simu.deactivate('robot.teleport')
+            simu.activate('robot.motion')
+            sleep(0.1)
 
             send_speed(v_w, 1.0, 0.0)
             sleep(0.5)
