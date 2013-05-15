@@ -601,6 +601,12 @@ class Morse(object):
     def get_stream_port(self, stream):
        return self.rpc("simulation", "get_stream_port", stream)
 
+    def activate(self, cmpnt):
+        return self.rpc("simulation", "activate", cmpnt)
+
+    def deactivate(self, cmpnt):
+        return self.rpc("simulation", "deactivate", cmpnt)
+
     #### with statement ####
     def __enter__(self):
         return self
