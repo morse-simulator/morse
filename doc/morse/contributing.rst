@@ -40,6 +40,18 @@ Build status
       type="text/javascript"
       src="https://ci.clf.cit-ec.de/view/MORSE/job/MorsePublic-1.0-master-build/jswidgets/health?skipDescription=true">
     </script>
+    <script
+      type="text/javascript"
+      src="https://ci.clf.cit-ec.de/view/MORSE/job/MorsePublic-1.0-master-testing-BASE/jswidgets/health?skipDescription=true">
+    </script>
+    <script
+      type="text/javascript"
+      src="https://ci.clf.cit-ec.de/view/MORSE/job/MorsePublic-1.0-master-testing-ROBOTS/jswidgets/health?skipDescription=true">
+    </script>
+    <script
+      type="text/javascript"
+      src="https://ci.clf.cit-ec.de/view/MORSE/job/MorsePublic-1.0-master-testing-MIDDLEWARES/jswidgets/health?skipDescription=true">
+    </script>
     <style type="text/css">
     div.healthReportDetails { align: center; background-color: rgba(1,1,1,0); border: 0px; width: auto;} /* fix css integration */
     div.healthReportDetails div { display:none;} /*hide Jenkins title */
