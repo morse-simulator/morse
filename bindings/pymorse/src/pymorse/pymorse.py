@@ -639,7 +639,17 @@ class Stream(asynchat.async_chat):
         self._cv_new_msg = threading.Condition()
 
     def is_up(self):
-        return self.connecting or self.connected
+        """ 
+        self.connecting has been introduced lately in several branches
+        of python (see issue #10340 of Python). In particular, it is not
+        present in the python 3.2.3 interpreter delivered in Ubuntu 12.04.
+        On this platform, just test of self.connected. There is still
+        possibly a little race  but it mitigate the issue.
+        """
+        if hasattr(self, 'connecting'):
+            return self.connecting or self.connected
+        else:
+            return self.connected
 
     def subscribe(self, callback):
         self._callbacks.append(callback)
