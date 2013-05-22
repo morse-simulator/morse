@@ -14,19 +14,18 @@ class DepthCameraPublisher(ROSPublisherTF):
             return # press [Space] key to enable capturing
 
         points = self.data['points']
-        width = self.component_instance.image_width * self.component_instance.image_height
         size = len(points)
 
         pc2 = PointCloud2()
         pc2.header = self.get_ros_header()
         pc2.height = 1
-        pc2.width = width
+        pc2.width = int(size / 12)
         pc2.is_dense = False
         pc2.is_bigendian = False
         pc2.fields = [PointField('x', 0, PointField.FLOAT32, 1),
                       PointField('y', 4, PointField.FLOAT32, 1),
                       PointField('z', 8, PointField.FLOAT32, 1)]
-        pc2.point_step = int(size / width)
+        pc2.point_step = 12
         pc2.row_step = size
 
         # memoryview from PyMemoryView_FromMemory() implements the buffer interface
