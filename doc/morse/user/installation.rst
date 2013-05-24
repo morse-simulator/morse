@@ -30,6 +30,7 @@ developed on Fedora and Ubuntu, but we don't expect problems on other
 distributions.
 
 Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
+Limited testing has been performed on OSX 10.8 with success.  
 
 MORSE does not currently officially support Microsoft Windows, although some
 users reported success. Testers/maintainers for Windows are welcome!
