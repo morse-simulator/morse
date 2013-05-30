@@ -31,5 +31,4 @@ class DepthCameraPublisher(ROSPublisherTF):
         # memoryview from PyMemoryView_FromMemory() implements the buffer interface
         pc2.data = bytes(points)
 
-        self.publish(pc2)
-        self.send_transform_robot()
+        self.publish_with_robot_transform(pc2)

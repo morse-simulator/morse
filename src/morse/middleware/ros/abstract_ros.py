@@ -120,6 +120,10 @@ class ROSPublisherTF(ROSPublisher):
         # XXX not same as return obj.localTransform.decompose()
         return (obj.localPosition, obj.localOrientation.to_quaternion(), obj.localScale)
 
+    def publish_with_robot_transform(self, message):
+        self.publish(message)
+        self.send_transform_robot(message.header.stamp)
+
     def send_transform_robot(self, time=None, child=None, parent=None):
         """ Send the transformation relative to the robot
 
