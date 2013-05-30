@@ -381,7 +381,7 @@ class VelodyneZB(DepthCamera):
         # Motion (rotation z: 0.017453)
         bpymorse.add_actuator(type='MOTION', name='MORSE_ROTATE')
         actuator = self._bpy_object.game.actuators[-1]
-        actuator.offset_rotation.y = math.radians(1)
+        actuator.offset_rotation.y = self.camera._bpy_object.data.angle # FOV
         controller.link(sensor = sensor, actuator = actuator)
     def set_rotation(self, rotation):
         """set rotation per tic (in radian, relative to component frequency)"""
