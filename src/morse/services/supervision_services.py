@@ -3,6 +3,7 @@ from morse.core.services import service
 from morse.core import status, blenderapi
 from morse.blender.main import reset_objects as main_reset, close_all as main_close, quit as main_terminate
 from morse.core.exceptions import *
+import json
 
 @service(component = "simulation")
 def list_robots():
@@ -197,11 +198,13 @@ def get_scene_objects():
     for obj in top_levelers:
         objects.update(get_structured_children_of(obj))
 
-    return repr(objects)
+    return json.dumps(objects)
 
 @service(component="simulation")
 def set_object_visibility(object_name, visible, do_children):
     """ Set the visibility of an object in the simulation.
+    
+    Note: The object will still have physics and dynamics despite being invisible.
     
     :param string object_name: The name of the object to change visibility of.
     :param visible boolean: Make the object visible(True) or invisible(False)
@@ -209,7 +212,30 @@ def set_object_visibility(object_name, visible, do_children):
     object_name is also set."""
     
     scene = blenderapi.scene()
+    if object_name not in scene.objects:
+        raise MorseRPCInvokationError("Object '%s' does not appear in the scene." % object_name)
     blender_object = scene.objects[object_name]
     blender_object.setVisible(visible, do_children)
     return str(visible)
+
+@service(component="simulation")
+def set_object_dynamics(object_name, state):
+    """ Enable or disable the dynamics for an individual object.
+    
+    Note: When turning on dynamics, the object will continue with the velocities
+    it had when it was turned off.
+        
+    :param string object_name: The name of the object to change.
+    :param state boolean: Turn on dynamics(True), or off (False)
+    """
+    
+    scene = blenderapi.scene()
+    if object_name not in scene.objects:
+        raise MorseRPCInvokationError("Object '%s' does not appear in the scene." % object_name)
+    blender_object = scene.objects[object_name]
+    if state:
+        blender_object.restoreDynamics()
+    else:
+        blender_object.suspendDynamics()
+    return str(state)
 
