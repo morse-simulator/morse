@@ -162,6 +162,7 @@ class ROSPublisherTF(ROSPublisher):
         t = TransformStamped()
         t.header.frame_id = parent
         t.header.stamp = time
+        t.header.seq = self.sequence # test: same sequence number for msg and tf
         t.child_frame_id = child
         t.transform.translation = translation
         t.transform.rotation = rotation
