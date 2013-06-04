@@ -51,7 +51,7 @@ class CoordinatesFromNED(NEDModifier):
         except KeyError as detail:
             self.key_error(detail)
 
-class AnglesFromNED(NEDModifier):
+class AnglesToNED(NEDModifier):
     """ Convert the angles from ENU to NED. """
     def modify(self):
         try:
@@ -62,7 +62,7 @@ class AnglesFromNED(NEDModifier):
         except KeyError as detail:
             self.key_error(detail)
 
-class AnglesToNED(NEDModifier):
+class AnglesFromNED(NEDModifier):
     """ Convert the angles from NED to ENU. """
     def modify(self):
         try:
