@@ -10,6 +10,11 @@ class StereopixelModule(MorseOverlay):
         MorseOverlay.__init__(self, overlaid_object)
         self._cntrl = DummyPoster("stereopixelCntrl")
 
+    def Acquire_cb(self, answer):
+        status, res = answer
+        nb_pts = self.overlaid_object.local_data['nb_points']
+        return (status, [nb_pts, 0, 0, nb_pts])
+
     @service
     def Init(self, *args):
         pass
@@ -61,7 +66,7 @@ class StereopixelModule(MorseOverlay):
     @interruptible
     @async_service
     def Compute(self):
-        self.overlaid_object.capture(self.chain_callback(), 1)
+        self.overlaid_object.capture(self.chain_callback(self.Acquire_cb), 1)
 
     def name(self):
         return "stereopixel"
