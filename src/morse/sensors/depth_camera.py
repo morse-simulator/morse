@@ -59,7 +59,9 @@ class DepthCamera(AbstractDepthCamera):
 
     add_data('points', 'none', 'memoryview', "List of 3D points from the depth "
              "camera. memoryview of a set of float(x,y,z). The data is of size "
-             "``(cam_width * cam_height * 12)`` bytes (12=3*sizeof(float).")
+             "``(nb_points * 12)`` bytes (12=3*sizeof(float).")
+    add_data('nb_points', 0, 'int', "the number of points found in the "
+             "points list. It must be inferior to cam_width * cam_height")
 
     def initialize(self):
         from morse.sensors.zbufferto3d import ZBufferTo3D
@@ -70,7 +72,9 @@ class DepthCamera(AbstractDepthCamera):
                                      self.image_width, self.image_height)
 
     def process_image(self, image):
-        self.local_data['points'] = self.converter.recover(image)
+        pts = self.converter.recover(image)
+        self.local_data['points'] = pts
+        self.local_data['nb_points'] = int(len(pts) / 12)
 
 
 class DepthVideoCamera(AbstractDepthCamera):
