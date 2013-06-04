@@ -17,13 +17,13 @@
 
 typedef struct {
     PyObject_HEAD
-	size_t height, width;
+	size_t height, width, size;
 	POSTER_ID id;
 } Stereopixel;
 
 typedef struct {
 	PyObject_HEAD
-	size_t width, height;
+	size_t nb_pts;
 	int pom_tag;
 	double x_rob, y_rob, z_rob, yaw_rob, pitch_rob, roll_rob;
 	double x_cam, y_cam, z_cam, yaw_cam, pitch_cam, roll_cam;
@@ -60,6 +60,7 @@ Stereopixel_init(Stereopixel *self, PyObject *args, PyObject *kwds)
 
 	img->width = self->width;
 	img->height = self->height;
+	self->size = self->width * self->height;
 
 	// dummy matrix
 	memset(img->intrinseque_rectified, 0, sizeof(img->intrinseque_rectified));
@@ -81,9 +82,7 @@ Stereopixel_post(Stereopixel* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "OO", &info, &data))
         return NULL;
 
-	assert(info->height == self->height);
-	assert(info->width ==  self->width);
-
+	assert(info->nb_pts < self->size);
 
 	Spix3DImage* im3d  = posterAddr(self->id);
 	Spix3DPixel* pixels = im3d->pixel;
@@ -120,7 +119,7 @@ Stereopixel_post(Stereopixel* self, PyObject* args)
 
 	float* p = (float*)buf.buf;
 
-	for (i = 0; i < self->width * self->height; i++) 
+	for (i = 0; i < info->nb_pts; i++) 
 	{
 		pixels->x = *p;
 		pixels->y = *(p+1);
@@ -136,6 +135,9 @@ Stereopixel_post(Stereopixel* self, PyObject* args)
 		pixels++;
 		p += 3;
 	}
+
+	for (;i < self->size; i++, pixels++) 
+		pixels->good = 0;
 
 	PyBuffer_Release(&buf);
 	posterGive(self->id);
@@ -215,8 +217,7 @@ static PyMemberDef StereopixelSimu_members[] = {
 	{"yaw_cam", T_DOUBLE, offsetof(StereopixelSimu, yaw_cam), 0, "yaw_cam"},
 	{"pitch_cam", T_DOUBLE, offsetof(StereopixelSimu, pitch_cam), 0, "pitch_cam"},
 	{"roll_cam", T_DOUBLE, offsetof(StereopixelSimu, roll_cam), 0, "roll_cam"},
-	{"width", T_PYSSIZET, offsetof(StereopixelSimu, width), 0, "width"},
-	{"height", T_PYSSIZET, offsetof(StereopixelSimu, height), 0, "height"},
+	{"nb_pts", T_PYSSIZET, offsetof(StereopixelSimu, nb_pts), 0, "nb_pts"},
 	{"pom_tag", T_INT, offsetof(StereopixelSimu, pom_tag), 0, "pom_tag"},
     {NULL}  /* Sentinel */
 };

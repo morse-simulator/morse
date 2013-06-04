@@ -20,6 +20,8 @@ class Spix3DImagePoster(AbstractDatastream):
                                      self.component_instance.image_height)
 
     def default(self, ci):
+        if not self.component_instance.capturing:
+            return
 
         main_to_origin = self.component_instance.robot_parent.position_3d
         pom_date, t = Pocolibs.compute_date()
@@ -27,8 +29,7 @@ class Spix3DImagePoster(AbstractDatastream):
                     self.component_instance.position_3d)
 
         info = StereopixelSimu()
-        info.width = self.component_instance.image_width
-        info.height = self.component_instance.image_height
+        info.nb_pts = self.data['nb_points']
 
         info.x_rob = main_to_origin.x
         info.y_rob = main_to_origin.y
