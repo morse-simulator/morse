@@ -54,11 +54,10 @@ class AbstractROS(AbstractDatastream):
         return '/' + topic_name.replace('.', '/')
 
     def finalize(self):
-        """ Shutdown the MORSE-ROS-node."""
+        """ Cleaning """
         # Unregister the topic if one exists
         if self.topic:
             self.topic.unregister()
-        rospy.signal_shutdown("MORSE Shutdown")
         logger.info("ROS datastream finalize %s"%self)
 
 

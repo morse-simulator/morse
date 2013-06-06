@@ -221,8 +221,7 @@ class RosRequestManager(RequestManager):
         return True
 
     def finalization(self):
-        logger.info("Shutting down ROS node...")
-        rospy.signal_shutdown("User exited MORSE simulation")
+        # do not shutdown ros since we cant restart it later on (see rospy).
         return True
 
     def register_ros_action(self, method, component_name, service_name):
