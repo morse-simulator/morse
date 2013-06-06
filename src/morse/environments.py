@@ -315,7 +315,7 @@ class Environment():
                                     classname = safename.capitalize(), \
                                     env = self.env, \
                                     shortdesc = desc)
-                self._print_info_msg(NEW_SNESOR_MSG, \
+                self._print_info_msg(NEW_SENSOR_MSG, \
                                     prefix= self.abspath, \
                                     name = safename, \
                                     classname = safename.capitalize(), \
