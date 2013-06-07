@@ -110,14 +110,13 @@ class ROSPublisherTF(ROSPublisher):
         ROSPublisher.finalize(self)
         ROSPublisherTF.topic_tf.unregister()
 
-    def get_local_transform(self):
+    def get_robot_transform(self):
         """ Get the transformation relative to the robot origin
 
         Return the local position, orientation and scale of this components
         """
-        obj = self.component_instance.bge_object
-        # XXX not same as return obj.localTransform.decompose()
-        return (obj.localPosition, obj.localOrientation.to_quaternion(), obj.localScale)
+        rel_pos = self.component_instance.sensor_to_robot_position_3d()
+        return (rel_pos.translation, rel_pos.rotation)
 
     def publish_with_robot_transform(self, message):
         self.publish(message)
@@ -130,7 +129,7 @@ class ROSPublisherTF(ROSPublisher):
         :param child: default topic_name or 'frame_id' in kwargs
         :param parent: default 'base_link' or 'parent_frame_id' in kwargs
         """
-        translation, rotation, _ = self.get_local_transform()
+        translation, rotation = self.get_robot_transform()
         if not time:
             time = rospy.Time.now()
         if not child:

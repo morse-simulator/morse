@@ -104,6 +104,10 @@ class Transformation3d:
         """
         return self.matrix.to_3x3()
 
+    @property
+    def translation(self):
+        return mathutils.Vector((self.x, self.y, self.z))
+
     def transformation3d_with(self, t3d):
         """
         Compute the transformation between itself and another
