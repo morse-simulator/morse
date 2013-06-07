@@ -334,6 +334,7 @@ class Component():
                 self.publish = self.stream.publish
             elif stream == 'OUT':
                 self.get = self.stream.get
+                self.last = self.stream.last
                 self.subscribe = self.stream.subscribe
                 self.unsubscribe = self.stream.unsubscribe
 
