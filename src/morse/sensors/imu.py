@@ -13,7 +13,7 @@ Important note:
 """
 
 class IMU(morse.core.sensor.Sensor):
-    """ 
+    """
     This sensor emulates an Inertial Measurement Unit (IMU), measuring
     the angular velocity and linear acceleration including acceleration
     due to gravity.
@@ -74,21 +74,20 @@ class IMU(morse.core.sensor.Sensor):
         g = 9.81
         self.gravity = mathutils.Vector((0.0, 0.0, g))
 
-        # get the transformation from robot to sensor frame
-        (loc, rot, scale) = self.robot_parent.position_3d.transformation3d_with(self.position_3d).matrix.decompose()
-        logger.debug("body2imu rotation RPY [% .3f % .3f % .3f]" % tuple(math.degrees(a) for a in rot.to_euler()))
-        logger.debug("body2imu translation [% .3f % .3f % .3f]" % tuple(loc))
-        # store body to imu rotation and translation
-        self.rot_b2i = rot
-        self.trans_b2i = loc
+        # imu2body will transform a vector from imu frame to body frame
+        self.imu2body = self.sensor_to_robot_position_3d()
+        # rotate vector from body to imu frame
+        self.rot_b2i = self.imu2body.rotation.conjugated()
+        logger.debug("imu2body rotation RPY [% .3f % .3f % .3f]" % tuple(math.degrees(a) for a in self.imu2body.euler))
+        logger.debug("imu2body translation [% .3f % .3f % .3f]" % tuple(self.imu2body.translation))
 
-        if (loc.length > 0.01):
+        if (self.imu2body.translation.length > 0.01):
             self.compute_offset_acceleration = True
         else:
             self.compute_offset_acceleration = False
 
-        # reference for rotating world frame to imu frame
-        self.rot_w2i = self.bge_object.worldOrientation
+        # reference for rotating a vector from imu frame to world frame
+        self.rot_i2w = self.bge_object.worldOrientation
 
         logger.info("IMU Component initialized, runs at %.2f Hz ", self.frequency)
 
@@ -96,7 +95,7 @@ class IMU(morse.core.sensor.Sensor):
         """
         Simulate angular velocity and linear acceleration measurements via simple differences.
         """
-        
+
         # Compute the differences with the previous loop
         #dp = self.pos - self.pp
         #deuler = mathutils.Vector(self.position_3d.euler - self.peuler)
@@ -107,10 +106,10 @@ class IMU(morse.core.sensor.Sensor):
         ang_vel = (att - self.patt) * self.frequency
 
         # linear acceleration in imu frame
-        dv_imu = self.rot_w2i.transposed() * (lin_vel - self.plv) * self.frequency
+        dv_imu = self.rot_i2w.transposed() * (lin_vel - self.plv) * self.frequency
 
-        # measurement includes gravity and acceleration 
-        accel_meas = dv_imu + self.rot_w2i.transposed() * self.gravity
+        # measurement includes gravity and acceleration
+        accel_meas = dv_imu + self.rot_i2w.transposed() * self.gravity
 
         # save current position and attitude for next step
         self.pp = self.pos.copy()
@@ -126,31 +125,30 @@ class IMU(morse.core.sensor.Sensor):
         Simulate angular velocity and linear acceleration measurements using the physics of the robot.
         """
 
-        # rot_b2i rotates body frame to imu frame
-        # take the inverse rotation to transform a vector from body to imu
-        rates = self.rot_b2i.conjugated() * self.robot_w
+        # rotate the angular rates from the robot frame into the imu frame
+        rates = self.rot_b2i * self.robot_w
         #logger.debug("rates in robot frame (% .4f, % .4f, % .4f)", self.robot_w[0], self.robot_w[1], self.robot_w[2])
         #logger.debug("rates in imu frame   (% .4f, % .4f, % .4f)", rates[0], rates[1], rates[2])
 
         # differentiate linear velocity in world (inertial) frame
         # and rotate to imu frame
-        dv_imu = self.rot_w2i.transposed() * (self.robot_vel - self.plv) * self.frequency
+        dv_imu = self.rot_i2w.transposed() * (self.robot_vel - self.plv) * self.frequency
         #logger.debug("velocity_dot in imu frame (% .4f, % .4f, % .4f)", dv_imu[0], dv_imu[1], dv_imu[2])
 
         # rotate acceleration due to gravity into imu frame
-        g_imu = self.rot_w2i.transposed() * self.gravity
+        g_imu = self.rot_i2w.transposed() * self.gravity
 
-        # measurement includes gravity and acceleration 
+        # measurement includes gravity and acceleration
         accel_meas = dv_imu + g_imu
 
         if self.compute_offset_acceleration:
             # acceleration due to rotation (centripetal)
             # is zero if imu is mounted in robot center (assumed axis of rotation)
-            a_centripetal = self.rot_b2i.conjugated() * rates.cross(rates.cross(self.trans_b2i))
+            a_centripetal = self.rot_b2i * rates.cross(rates.cross(self.imu2body.translation))
             #logger.debug("centripetal acceleration (% .4f, % .4f, % .4f)", a_rot[0], a_rot[1], a_rot[2])
 
             # linear acceleration due to angular acceleration
-            a_alpha = self.rot_b2i.conjugated() * (self.robot_w - self.pav).cross(self.trans_b2i) * self.frequency
+            a_alpha = self.rot_b2i * (self.robot_w - self.pav).cross(self.imu2body.translation) * self.frequency
 
             # final measurement includes acceleration due to rotation center not in IMU
             accel_meas += a_centripetal + a_alpha
