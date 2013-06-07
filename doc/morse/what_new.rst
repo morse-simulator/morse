@@ -21,6 +21,8 @@ Robots
 
 - Introduce :doc:`Morsy <user/robots/morsy>`, the Morse mascot, now available directly
   in the simulator.
+- Introduce :doc:`PatrolBot </user/robots/PatrolBot>`, a differential robot
+  developed by MobileRobots.
 
 Sensors
 +++++++
@@ -34,6 +36,13 @@ Builder API
 - `make_ghost` method allows to transform the robot in ``ghost mode``
   (transparent and with no associated physics)
 - `mass` method allows to setup the mass of any component.
+
+Pymorse
+-------
+
+The Python bindings for MORSE have been completely rewritten and is now much
+more efficient (based on *asynchat* API). However, it is mostly an internal
+rewrite, and the interface does not change.
 
 What's new in MORSE 1.0?
 ========================
