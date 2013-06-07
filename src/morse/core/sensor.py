@@ -39,8 +39,8 @@ class Sensor(morse.core.object.Object):
 
     def sensor_to_robot_position_3d(self):
         """
-        Compute the transformation between the sensor and the
-        associated robot
+        Compute the transformation which will transform a vector from
+        the sensor coordinate-frame to the associated robot frame
         """
         main_to_origin = self.robot_parent.position_3d
         main_to_sensor = main_to_origin.transformation3d_with(self.position_3d)
