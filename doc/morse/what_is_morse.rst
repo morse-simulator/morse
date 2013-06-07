@@ -196,7 +196,7 @@ MORSE itself is licensed under a permissive BSD license: you can use it for any
 purposes, without having to share your modifications back.
 
 This also means that MORSE follows a open development process: you can fork
-MORSE source code on `GitHub <http://github.com/laas/morse>`_ and everybody is
+MORSE source code on `GitHub <http://github.com/morse-simulator/morse>`_ and everybody is
 invited to propose new features, report bugs and submit patches.
 
 MORSE is driven by an active community

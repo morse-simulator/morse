@@ -11,9 +11,9 @@ You can write to the list of developers of the project, writing to this
 address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
 
 MORSE development can be tracked on the `MORSE GitHub repository
-<https://github.com/laas/morse>`_::
+<https://github.com/morse-simulator/morse>`_::
 
-    git clone git://github.com/laas/morse.git
+    git clone git://github.com/morse-simulator/morse.git
 
 If you want your feature to be merged in MORSE:
 
