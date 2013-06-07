@@ -102,7 +102,7 @@ Builder API
 
   It basically means that scene are incompatible between release 0.6 and 1.0.
   To help the conversion, you can use the tool available `here
-  <https://raw.github.com/laas/morse/master/tools/convert_0.6_to_1.0.sh>`_
+  <https://raw.github.com/morse-simulator/morse/master/tools/convert_0.6_to_1.0.sh>`_
   Basically, you can use it like that::
 
 		sh convert_0.6_to_1.0.sh your_scene.py > your_scene_1.0.py

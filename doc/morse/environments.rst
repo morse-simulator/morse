@@ -20,6 +20,6 @@ Blender file in the ``Environment`` object of your :doc:`Builder script
         env = Environment('<path>/<identifier>')
 
     Check `the source
-    <https://github.com/laas/morse/tree/master/data/environments>`_ to know the
+    <https://github.com/morse-simulator/morse/tree/master/data/environments>`_ to know the
     right path (*eg*, ``land-1/tree``).
 
