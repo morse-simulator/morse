@@ -66,41 +66,41 @@ def move(contr):
         if not obj['move_cameraFP']:
             return
 
-    # set the movement speed
-    speed = camera['Speed']
+    # set camera position increment from the movement speed
+    pos_inc = camera['Speed'] / blenderapi.getfrequency()
 
     # Get Blender keyboard sensor
     keyboard = contr.sensors['All_Keys']
 
-    # Default movement speed
-    move_speed = [0.0, 0.0, 0.0]
+    # Default movement
+    move_translation = [0.0, 0.0, 0.0]
 
     keylist = keyboard.events
     for key in keylist:
         if key[1] == blenderapi.input_active():
             # Also add the corresponding key for an AZERTY keyboard
             if key[0] == blenderapi.WKEY or key[0] == blenderapi.ZKEY:
-                move_speed[2] = -speed
+                move_translation[2] = -pos_inc
             elif key[0] == blenderapi.SKEY:
-                move_speed[2] = speed
+                move_translation[2] = pos_inc
             # Also add the corresponding key for an AZERTY keyboard
             elif key[0] == blenderapi.AKEY or key[0] == blenderapi.QKEY:
-                move_speed[0] = -speed
+                move_translation[0] = -pos_inc
             elif key[0] == blenderapi.DKEY:
-                move_speed[0] = speed
+                move_translation[0] = pos_inc
             elif key[0] == blenderapi.RKEY:
-                move_speed[1] = speed
+                move_translation[1] = pos_inc
             elif key[0] == blenderapi.FKEY:
-                move_speed[1] = -speed
+                move_translation[1] = -pos_inc
             else:
-                move_speed[0] = 0
-                move_speed[1] = 0
-                move_speed[2] = 0
+                move_translation[0] = 0
+                move_translation[1] = 0
+                move_translation[2] = 0
 
             # The second parameter of 'applyMovement' determines
             #  a movement with respect to the object's local
             #  coordinate system
-            camera.applyMovement( move_speed, True )
+            camera.applyMovement( move_translation, True )
 
         elif key[1] == blenderapi.input_just_activated():
             # Other actions activated with the keyboard
