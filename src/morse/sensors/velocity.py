@@ -11,7 +11,7 @@ class Velocity(morse.core.sensor.Sensor):
     expressed in meter . sec ^ -1 while angular velocities are expressed
     in radian . sec ^ -1.
 
-    The sensor expects that the associated robot has a physics controller. 
+    The sensor expects that the associated robot has a physics controller.
     """
 
     _name = "Velocity"
@@ -44,13 +44,10 @@ class Velocity(morse.core.sensor.Sensor):
         self.robot_v = self.robot_parent.bge_object.localLinearVelocity
         self.robot_world_v = self.robot_parent.bge_object.worldLinearVelocity
 
-        # get the transformation from robot to sensor frame
-        b2s = self.sensor_to_robot_position_3d()
-        (_ , rot, _) = b2s.matrix.decompose()
+        # get the quaternion which will rotate a vector from body to sensor frame
+        self.rot_b2s = self.sensor_to_robot_position_3d().rotation.conjugated()
         logger.debug("body2sensor rotation RPY [% .3f % .3f % .3f]" %
-                     tuple(degrees(a) for a in rot.to_euler()))
-        # store body to sensor rotation
-        self.rot_b2s = rot
+                     tuple(degrees(a) for a in self.rot_b2s.to_euler()))
 
         logger.info("Component initialized, runs at %.2f Hz", self.frequency)
 
@@ -58,12 +55,7 @@ class Velocity(morse.core.sensor.Sensor):
     def default_action(self):
         """ Get the linear and angular velocity of the blender object. """
 
-        # rot_b2s rotates body frame to sensor frame
-        # take the inverse rotation to transform a vector from body to sensor
-
         # Store the important data
-        self.local_data['linear_velocity'] = self.rot_b2s.inverted() * \
-                                             self.robot_v
-        self.local_data['angular_velocity'] = self.rot_b2s.inverted() * \
-                                              self.robot_w
+        self.local_data['linear_velocity'] = self.rot_b2s * self.robot_v
+        self.local_data['angular_velocity'] = self.rot_b2s * self.robot_w
         self.local_data['world_linear_velocity'] = self.robot_world_v.copy()
