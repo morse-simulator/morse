@@ -200,6 +200,17 @@ def get_scene_objects():
 
     return json.dumps(objects)
 
+def get_obj_by_name(name):
+    """
+    Return object in the scene associated to :param name:
+    If it does not exists, throw a MorseRPCInvokationError
+    """
+    scene = blenderapi.scene()
+    if name not in scene.objects:
+        raise MorseRPCInvokationError(
+                "Object '%s' does not appear in the scene." % name)
+    return scene.objects[name]
+
 @service(component="simulation")
 def set_object_visibility(object_name, visible, do_children):
     """ Set the visibility of an object in the simulation.
@@ -211,10 +222,7 @@ def set_object_visibility(object_name, visible, do_children):
     :param do_children boolean: If True then the visibility of all children of
     object_name is also set."""
 
-    scene = blenderapi.scene()
-    if object_name not in scene.objects:
-        raise MorseRPCInvokationError("Object '%s' does not appear in the scene." % object_name)
-    blender_object = scene.objects[object_name]
+    blender_object = get_obj_by_name(object_name)
     blender_object.setVisible(visible, do_children)
     return str(visible)
 
@@ -229,10 +237,7 @@ def set_object_dynamics(object_name, state):
     :param state boolean: Turn on dynamics(True), or off (False)
     """
 
-    scene = blenderapi.scene()
-    if object_name not in scene.objects:
-        raise MorseRPCInvokationError("Object '%s' does not appear in the scene." % object_name)
-    blender_object = scene.objects[object_name]
+    blender_object = get_obj_by_name(object_name)
     if state:
         blender_object.restoreDynamics()
     else:
