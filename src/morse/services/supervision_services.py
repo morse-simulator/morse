@@ -4,6 +4,7 @@ from morse.core import status, blenderapi
 from morse.blender.main import reset_objects as main_reset, close_all as main_close, quit as main_terminate
 from morse.core.exceptions import *
 import json
+import mathutils
 
 @service(component = "simulation")
 def list_robots():
@@ -238,4 +239,77 @@ def set_object_dynamics(object_name, state):
     else:
         blender_object.suspendDynamics()
     return str(state)
+    
+@service(component="simulation")
+def set_object_pose(object_name, position, orientation):
+    """ Sets the pose of the object.
 
+    :param string object_name: The name of the object.
+    :param string position: new position of the object [x, y, z]
+    :param string position: new orientation of the object [qx, qy, qz, qw]
+    """
+    scene = blenderapi.scene()
+
+    # Get blender object for object_name
+    lst = [o for o in scene.objects
+           if o.parent is None and
+           o.name == object_name]
+
+    if len(lst) == 0: 
+        raise MorseRPCInvokationError( \
+            "Object '%s' does not appear in the scene." % object_name)
+    
+    b_obj = lst[0]
+    pos = mathutils.Vector(eval(position))
+    ori = mathutils.Quaternion(eval(orientation)).to_matrix()
+     
+    # Suspend Physics of that object
+    b_obj.suspendDynamics()
+    b_obj.setLinearVelocity([0.0, 0.0, 0.0], True)
+    b_obj.setAngularVelocity([0.0, 0.0, 0.0], True)
+    b_obj.applyForce([0.0, 0.0, 0.0], True)
+    b_obj.applyTorque([0.0, 0.0, 0.0], True)
+    
+    logger.debug("%s goes to %s" % (b_obj, pos))
+    b_obj.worldPosition = pos
+    b_obj.worldOrientation = ori
+    # Reset physics simulation
+    b_obj.restoreDynamics()
+    
+@service(component="simulation")
+def get_object_bbox(object_name):
+    """ Returns the local bounding box of an object as list encapsulated as
+    string: "[[x0, y0, z0 ], ... ,[x7, y7, z7]]".
+
+    :param string object_name: The name of the object.
+    """
+    scene = blenderapi.scene()
+    if object_name not in scene.objects:
+        raise MorseRPCInvokationError( \
+            "Object '%s' does not appear in the scene." % object_name)
+
+    # Get bounding box of object
+    bb = blenderapi.objectdata(object_name).bound_box
+    # Group x,y,z-coordinates as lists 
+    bbox_local = [[bb_corner[i] for i in range(3)] for bb_corner in bb]
+    return str(bbox_local)
+
+@service(component="simulation")
+def transform_to_obj_frame(object_name, point):
+    """ Transforms a 3D point with respect to the origin into the coordinate
+    frame of an object and returns the global coordinates.
+
+    :param string object_name: The name of the object.
+    :param string point: coordinates as a list "[x, y, z]"
+    """
+    scene = blenderapi.scene()
+    if object_name not in scene.objects:
+        raise MorseRPCInvokationError( \
+            "Object '%s' does not appear in the scene." % object_name)
+
+    world_pos = scene.objects[object_name].worldPosition
+    world_ori = scene.objects[object_name].worldOrientation.to_3x3()
+
+    pos =  world_ori * mathutils.Vector(eval(point)) + mathutils.Vector(world_pos)
+
+    return str([pos.x,pos.y,pos.z])
