@@ -60,12 +60,14 @@ class SocketServ(AbstractDatastream):
             self._server.close()
 
     def close_socket(self, sock):
-        self._client_sockets.remove(sock)
         try:
+            self._client_sockets.remove(sock)
             sock.close()
         except socket.error as error_info:
             logger.warning("Socket error catched while closing: " + str(error_info))
             del self._server
+        except:
+            pass
 
 class SocketPublisher(SocketServ):
 
@@ -119,19 +121,26 @@ class SocketReader(SocketServ):
                 self._client_sockets.append(sock)
             else:
                 try:
-                    msg = i.recv(self._message_size).decode()
+                    buf = []
+                    msg = ""
+                    full_msg = False
+                    while not full_msg:
+                        msg = i.recv(self._message_size).decode()
+                        logger.debug("received msg %s" % msg)
+                        if not msg: # client disconnected
+                            self.close_socket(i)
+                        else:
+                            buf.append(msg)
+                            full_msg = (len(msg) != self._message_size)
+                    if not msg.endswith('\n'):
+                        logger.error("Malformed message on socket datastream "+\
+                                "(no linefeed at the end): <%s>" % msg)
+                        continue
+                    msg = ''.join(buf).rstrip("\n").split("\n")
                     logger.debug("received msg %s" % msg)
-                    if not msg: # client disconnected
-                        self.close_socket(i)
-                    else:
-                        if not msg.endswith('\n'):
-                            logger.error("Malformed message on socket datastream " +\
-                                    "(no linefeed at the end): <%s>" % msg)
-                            continue
-                        msg = msg.rstrip("\n").split("\n")
-                        if len(msg)>1:
-                            logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
-                        self.component_instance.local_data = self.decode(msg[-1]) # keep only the last msg if we got several in row
+                    if len(msg)>1:
+                        logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
+                    self.component_instance.local_data = self.decode(msg[-1]) # keep only the last msg if we got several in row
                 except socket.error as detail:
                     self.close_socket(i)
 
