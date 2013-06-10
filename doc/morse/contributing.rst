@@ -25,8 +25,6 @@ If you want your feature to be merged in MORSE:
 You can also get the source directly from the LAAS mirror repository at:
 ``git://git.openrobots.org/git/robots/morse``
 
-*We use GitHub as a mirror.*
-
 
 Developers documentation
 ------------------------
