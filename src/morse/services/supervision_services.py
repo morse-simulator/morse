@@ -198,7 +198,7 @@ def get_scene_objects():
     for obj in top_levelers:
         objects.update(get_structured_children_of(obj))
 
-    return json.dumps(objects)
+    return objects
 
 def get_obj_by_name(name):
     """
@@ -224,7 +224,7 @@ def set_object_visibility(object_name, visible, do_children):
 
     blender_object = get_obj_by_name(object_name)
     blender_object.setVisible(visible, do_children)
-    return str(visible)
+    return visible
 
 @service(component="simulation")
 def set_object_dynamics(object_name, state):
@@ -242,5 +242,5 @@ def set_object_dynamics(object_name, state):
         blender_object.restoreDynamics()
     else:
         blender_object.suspendDynamics()
-    return str(state)
+    return state
 
