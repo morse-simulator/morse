@@ -17,12 +17,12 @@ MORSE development can be tracked on the `MORSE GitHub repository
 
 If you want your feature to be merged in MORSE:
 
-- First, `fork <https://help.github.com/articles/fork-a-repo>`_ ``laas/morse``
+- First, `fork <https://help.github.com/articles/fork-a-repo>`_ ``morse-simulator/morse``
   on GitHub.
 - Then, `send a pull request
   <https://help.github.com/articles/using-pull-requests>`_ with your changes.
 
-You can also get the source directly from the LAAS master repository at:
+You can also get the source directly from the LAAS mirror repository at:
 ``git://git.openrobots.org/git/robots/morse``
 
 *We use GitHub as a mirror.*
