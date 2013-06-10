@@ -21,7 +21,7 @@ class MainWindow(Gtk.Window):
         self.morse = morse
 
         # Get the scene objects from morse. Note that this eval could be bad...
-        scene_objects = json.loads(morse.rpc('simulation','get_scene_objects'))
+        scene_objects = morse.rpc('simulation','get_scene_objects')
         self.populate_tree(scene_objects)
 
         self.show_all()
