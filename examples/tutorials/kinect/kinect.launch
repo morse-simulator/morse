@@ -1,0 +1,62 @@
+<!-- Register a depth camera with an RGB camera -->
+<!-- TODO: Should be able to remap namespaces in nodelet load with current roscpp -->
+<launch>
+  <arg name="camera" default="camera" />
+
+  <arg name="pi/2" value="1.5707963267948966" />
+  <arg name="optical_rotate" value="0 0 0 -$(arg pi/2) 0 -$(arg pi/2)" />
+
+  <node pkg="tf" type="static_transform_publisher" name="base_link"
+        args="0 -0.02  0 0 0 0  /base_link /depth_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link1"
+        args="0 -0.045 0 0 0 0  /base_link /rgb_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2"
+        args="$(arg optical_rotate) /depth_frame /depth_optical_frame  100" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link3"
+        args="$(arg optical_rotate) /rgb_frame /rgb_optical_frame 100" />
+
+  <!-- Nodelet manager -->
+  <node pkg="nodelet" type="nodelet" name="manager" args="manager"
+        output="screen" launch-prefix="" />
+
+  <arg name="manager" default="manager" />
+
+  <arg name="respawn" default="false" />
+  <arg     if="$(arg respawn)" name="bond" value="" />
+  <arg unless="$(arg respawn)" name="bond" value="--no-bond" />
+
+  <!-- robot/sensor (MORSE convention) -->
+  <arg name="robot_sensor"     default="robot/Kinect" />
+
+  <!-- TODO: Instead "rgb", "depth" and "depth_registered" should be remapped as
+       necessary by top-level launch file -->
+  <arg name="rgb"              default="$(arg robot_sensor)/rgb" />
+  <arg name="depth"            default="$(arg robot_sensor)/depth" />
+  <arg name="depth_registered" default="$(arg robot_sensor)/depth_registered" />
+  <!-- For distinguishing multiple register/XYZRGB nodelets. Default fails if rgb
+       or depth contains a namespace. -->
+  <arg name="suffix" default="depth_rgb" />
+
+  <!-- Registration nodelet, projecting depth to RGB camera -->
+  <node pkg="nodelet" type="nodelet" name="register_$(arg suffix)"
+        args="load depth_image_proc/register $(arg manager) $(arg bond)"
+        respawn="$(arg respawn)">
+    <!-- Explicit topic remappings, shouldn't need all of these -->
+    <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info" />
+    <remap from="depth/camera_info"           to="$(arg depth)/camera_info" />
+    <remap from="depth/image_rect"            to="$(arg depth)/image" />
+    <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_rect" />
+  </node>
+
+  <!-- Instead publish registered XYZRGB point cloud -->
+  <node pkg="nodelet" type="nodelet" name="points_xyzrgb_$(arg suffix)"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager) $(arg bond)"
+        respawn="$(arg respawn)">
+    <!-- Explicit topic remappings, shouldn't need all of these -->
+    <remap from="rgb/image_rect_color"        to="$(arg rgb)/image" />
+    <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info" />
+    <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_rect" />
+    <remap from="depth_registered/points"     to="$(arg depth_registered)/points" />
+  </node>
+
+</launch>
