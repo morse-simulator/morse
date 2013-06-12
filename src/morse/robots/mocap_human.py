@@ -3,9 +3,7 @@ from morse.robots.grasper import RobotGrasper
 from morse.core.services import service
 from morse.core import blenderapi
 
-logger.setLevel(logging.DEBUG)
-
-class MocapHumanClass(RobotGrasper):
+class MocapHuman(RobotGrasper):
     """ Class definition for the human avatar as a robot entity
     Sub class of Morse_Object.
     This human is set to be controlled using data from an Xtion/Kinect sensor

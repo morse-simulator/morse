@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class ATRVClass(morse.core.robot.Robot):
+class ATRV(morse.core.robot.Robot):
     """ Class definition for the ATRV (DALA).
         Sub class of Morse_Object. """
 

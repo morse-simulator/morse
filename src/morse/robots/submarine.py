@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class SubmarineClass(morse.core.robot.Robot):
+class Submarine(morse.core.robot.Robot):
     """ Class definition for the Submarine.
         Sub class of Morse_Object. """
 

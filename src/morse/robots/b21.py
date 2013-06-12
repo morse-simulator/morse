@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
 
-class B21Class(morse.core.robot.Robot):
+class B21(morse.core.robot.Robot):
     """ Class definition for the RWI B21.
         Sub class of Morse_Object. """
 

@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
-class SegwayRMP400PhysicsClass(morse.core.wheeled_robot.MorsePhysicsRobotClass):
+class SegwayRMP400(morse.core.wheeled_robot.MorsePhysicsRobot):
     """ Class definition for the Segway RMP400 base.
         Sub class of Morse_Object. """
               

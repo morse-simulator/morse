@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
 
-class PatrolBotClass(morse.core.wheeled_robot.MorsePhysicsRobotClass):
+class PatrolBot(morse.core.wheeled_robot.MorsePhysicsRobot):
     """ Class definition for the PatrolBot.
         Sub class of Morse_Object. """
 

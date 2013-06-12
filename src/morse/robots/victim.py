@@ -3,7 +3,7 @@ import morse.core.robot
 from morse.core.services import service
 
 
-class VictimClass(morse.core.robot.Robot):
+class Victim(morse.core.robot.Robot):
     """ Class definition for the pseudo-robot that represents
         a human victim. Mainly used for the ROSACE rescue scenario.
         Sub class of Morse_Object. """
@@ -32,7 +32,7 @@ class VictimClass(morse.core.robot.Robot):
 
 
     @service
-    def heal():
+    def heal(self):
         """ Change the status of the victim
         
         Change the material to a green color,

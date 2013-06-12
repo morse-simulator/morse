@@ -38,9 +38,9 @@ class Human(Robot):
 
         self.armature = None
         if filename == 'mocap_human':
-            self.properties(classpath="morse.robots.mocap_human.MocapHumanClass")
+            self.properties(classpath="morse.robots.mocap_human.MocapHuman")
         else:
-            self.properties(classpath="morse.robots.human.HumanClass")
+            self.properties(classpath="morse.robots.human.Human")
 
         try:
             self.armature = Armature("HumanArmature" + self.suffix, "human_posture")

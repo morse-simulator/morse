@@ -4,7 +4,7 @@ import morse.core.robot
 from morse.core import blenderapi
 import mathutils
 
-class PhysicsWheelRobotClass(morse.core.robot.Robot):
+class PhysicsWheelRobot(morse.core.robot.Robot):
     """ Abstract base class for robots with wheels that turn as
         the robot moves.
         The wheels must be children of the robot in the Blender file.
@@ -106,7 +106,7 @@ class PhysicsWheelRobotClass(morse.core.robot.Robot):
         return (dims[0]+dims[1])/4
 
 
-class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
+class MorsePhysicsRobot(PhysicsWheelRobot):
     """ Basic Class for robots using individual physics constraints
 
     Inherits from the base robot class.
@@ -115,7 +115,7 @@ class MorsePhysicsRobotClass(PhysicsWheelRobotClass):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(MorsePhysicsRobotClass, self).__init__(obj, parent)
+        super(MorsePhysicsRobot, self).__init__(obj, parent)
 
         # get wheel references and ID's
         self.GetWheels()

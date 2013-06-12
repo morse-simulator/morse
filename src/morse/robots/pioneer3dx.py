@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
-class Pioneer3DXClass(morse.core.wheeled_robot.MorsePhysicsRobotClass):
+class Pioneer3DX(morse.core.wheeled_robot.MorsePhysicsRobot):
     """ Class definition for the Pioneer 3DX base.
         Sub class of Morse_Object. """
               

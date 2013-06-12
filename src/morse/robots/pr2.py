@@ -3,9 +3,7 @@ from morse.robots.grasper import RobotGrasper
 from morse.core.services import service
 from morse.core import blenderapi
 
-logger.setLevel(logging.DEBUG)
-
-class PR2Class(RobotGrasper):
+class PR2(RobotGrasper):
     """ 
     Class definition for the PR2.
     Sub class of Morse_Object.
