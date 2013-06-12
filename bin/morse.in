@@ -438,33 +438,6 @@ def get_scene(name, subname = ""):
         else:
             logger.error('MORSE environment <%s> does not exist!' % name)
 
-def create_copy_default_scene(filename = None):
-    """
-    Creates a copy of the default scene in the current path, ensuring an 
-    unique name.
-    """
-    
-    global default_scene_abspath
-    
-    if not filename:
-        previous_scenes = glob.glob("scene.*.blend")
-        num_list = [0]
-        for scene in previous_scenes:
-            try:
-                num = re.findall('[0-9]+', scene)[0]
-                num_list.append(int(num))
-            except IndexError:
-                pass
-        num_list = sorted(num_list)
-        new_num = num_list[-1]+1
-        new_scene = os.path.join(os.curdir, 'scene.%02d.blend' % new_num)
-    else:
-        new_scene = os.path.normpath(filename)
-
-    shutil.copy(default_scene_abspath, new_scene)
-    
-    return new_scene
-
 def create_environment(args):
 
     name = args.env
@@ -563,24 +536,15 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
             sys.argv)
     """
 
-    global morse_prefix, blender_exec, default_scene_abspath
-    
     logger.info("*** Launching MORSE ***\n")
     logger.info("PREFIX= " + morse_prefix)
     
-    if not scene:
-        if not script: # in case of no argument, execute a default script
-            script = default_scene_abspath[:-5]+'py'
-        scene = create_copy_default_scene()
-        logger.info("Creating new scene " + scene)
-        
-    elif not os.path.exists(scene):
+    if not os.path.exists(scene):
         logger.error(scene + " does not exist!\nIf you want to create a new scene " + \
         "called " + scene + ",\nplease create a Python script using the Builder API, run 'morse edit [script_filename]' and save as a .blend file.")
         sys.exit(1)
         
     logger.info("Executing: " + blender_exec + " " + scene + "\n\n")
-    
     
     #Flush all outputs before launching Blender process
     sys.stdout.flush()
@@ -703,22 +667,13 @@ def process_run_edit(args):
                    node_name=args.name, \
                    script_options = script_options)
         else:
-            try:
-                launch_simulator(
-                       scene = args.base, \
-                       script = scene, \
-                       geometry=args.geom, \
-                       node_name=args.name, \
-                       script_options = script_options)
-            # Check if we got a 'base' option. If not, don't use it
-            except AttributeError:
-                launch_simulator(
-                       scene = None, \
-                       #os.path.join(morse_prefix, DEFAULT_SCENE_PATH), \
-                       script = scene, \
-                       geometry=args.geom, \
-                       node_name=args.name, \
-                       script_options = script_options)
+            base_scene = args.base if 'base' in vars(args) else default_scene_abspath
+            launch_simulator(
+                   scene = base_scene, \
+                   script = scene, \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
 
 def version():
     return("morse " + VERSION)
