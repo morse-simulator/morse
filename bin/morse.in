@@ -673,12 +673,19 @@ def process_run_edit(args):
         scene = get_scene(args.env, args.file) or sys.exit(1)
 
         prelaunch()
-        launch_simulator(
-               os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
-               scene, \
-               geometry=args.geom, \
-               node_name=args.name, \
-               script_options = script_options)
+        if scene.endswith(".blend"):
+            launch_simulator(
+                   scene, \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
+        else:
+            launch_simulator(
+                   os.path.join(morse_prefix, DEFAULT_SCENE_AUTORUN_PATH), \
+                   scene, \
+                   geometry=args.geom, \
+                   node_name=args.name, \
+                   script_options = script_options)
 
     else:  # args.mode == "edit":
         if not args.env:
