@@ -336,17 +336,20 @@ MORSE_DATASTREAM_DICT = {
     "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
             }
         },
     "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint": {
         "default": {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
             "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
             }
         },
     "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
             }
         },
         "morse.actuators.steer_force.SteerForce": {
@@ -378,6 +381,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "ros": 'morse.middleware.ros.motion_xyw.TwistReader',
             "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
             }
         },
     "morse.actuators.teleport.Teleport": {
