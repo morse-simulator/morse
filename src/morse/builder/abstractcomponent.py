@@ -650,6 +650,21 @@ class AbstractComponent(object):
         for c in obj.children:
             self._make_transparent(c, alpha)
 
+    def _set_color(self, obj, rgb):
+        if len(obj.material_slots) > 0:
+            obj.active_material.diffuse_color = rgb
+        for c in obj.children:
+            self._set_color(c, rgb)
+
+    def set_color(self, r, g, b):
+        """ Set the color of the component.
+        
+        Will try to apply the RGB color to the active material
+        of all the meshes that are children of this component.
+        """
+        if self._bpy_object:
+            self._set_color(self._bpy_object, (r,g,b))
+
     def profile(self):
         """ Watch the average time used during the simulation.
 
