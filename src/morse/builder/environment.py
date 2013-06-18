@@ -45,6 +45,7 @@ class Environment(Component):
             base = Component('props', 'basics')
         self.set_blender_object(bpymorse.get_object('Scene_Script_Holder'))
         # Write the name of the 'environment file'
+        self.set_camera_speed(2.0)
 
     def _write_multinode(self, node_name):
         """ Configure this node according to its name
@@ -162,6 +163,14 @@ class Environment(Component):
         # camera_fp.data holds the bpy.types.Camera instance
         camera_fp.data.clip_start = clip_start
         camera_fp.data.clip_end = clip_end
+
+    def set_camera_speed(self, speed):
+        """ Set the simulator's Camera speed
+
+        :param speed: desired speed of the camera, in meter by second.
+        """
+        camera_fp = bpymorse.get_object('CameraFP')
+        camera_fp.game.properties['Speed'].value = speed
 
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
