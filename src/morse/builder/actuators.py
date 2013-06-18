@@ -177,9 +177,23 @@ class MotionXYW(ActuatorCreator):
 
 class Light(ActuatorCreator):
     def __init__(self, name=None):
+        self.light = None
         ActuatorCreator.__init__(self, name, \
                                  "morse.actuators.light.Light",\
                                  "light")
-        light = Spot("LightSpot")
-        self.append(light)
-        self.properties(emit = True)
+        self.light = Spot("LightSpot")
+        self.append(self.light)
+        self.properties(Emit=True)
+        
+    def properties(self, **kwargs):
+        ActuatorCreator.properties(self, **kwargs)
+        if (self.light):
+            spot = self.light._bpy_object.data
+            if (spot.type == 'SPOT'):
+                if "size" in kwargs.keys():
+                    spot.spot_size = kwargs['size']
+                if "distance" in kwargs.keys():
+                    spot.distance = kwargs['distance']
+                if "color" in kwargs.keys():
+                    import re
+                    spot.color = tuple(int(v) for v in re.findall("[0-9]+", kwargs['color']))
