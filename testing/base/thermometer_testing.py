@@ -24,14 +24,14 @@ class ThermometerTest(MorseTestCase):
 
         thermometer = Thermometer()
         robot.append(thermometer)
-        thermometer.add_stream('socket')
+        thermometer.properties(DefaultTemperature='25.0')
+        thermometer.add_interface('socket')
 
         motion = Teleport()
         robot.append(motion)
-        motion.add_stream('socket')
+        motion.add_interface('socket')
 
         env = Environment('land-1/rosace_1', fastmode = True)
-        env.properties(Temperature='25.0')
         env.add_service('socket')
 
     def test_temperature(self):

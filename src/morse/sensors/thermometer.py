@@ -1,8 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
+from sys import maxsize
 from morse.core import blenderapi
 import morse.core.sensor
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 class Thermometer(morse.core.sensor.Sensor):
     """
@@ -10,17 +11,30 @@ class Thermometer(morse.core.sensor.Sensor):
     to the distance to heat sources. It defines a default temperature throughout
     the scenario, which is affected by local fire sources. The temperature rises
     exponentially when the distance between the sensor and the heat source
-    decreases.
+    decreases. Its equation is given by:
+    
+    .. math::
 
-    The default temperature is specified as a parameter ``Temperature`` of the
-    Scene_Script_Holder Empty object in the simulation file. It is expressed in
-    degrees Celsius.
+     temperature = DefaultTemperature + \\Sigma_{s} FireTemperature(s) * \\exp ( - \\alpha * distance(s) )
+     
+    Each fire source must define a property named as the FireTag (default is 'Fire').
+    If this property is an int or a float, its value is used as the source fire temperature. 
     """
 
-    _name = "Thermomether Sensor"
-    _short_desc = "Thermomether sensor to detect nearby objects."
+    _name = "Thermometer Sensor"
 
-    add_data('temperature', 0.0, "float", "temperature in Celsius")
+    add_property('_tag', "Fire", "FireTag", "string",
+                 "Tag indicating that an object is a fire source")
+    add_property('_zero', 15.0, "DefaultTemperature", "float", 
+                 "Default temperature: returned by the sensor when no source is detected")
+    add_property('_fire', 200.0, "FireTemperature", "float",
+                 "Temperature of fire sources. Can be overriden by objects using the FireTag property")
+    add_property('_range', maxsize, "Range", "float",
+                 "Maximum distance to which fire sources are detected")
+    add_property('_alpha', .2, "Alpha", "float",
+                 "Attenuation coefficient alpha")
+
+    add_data('temperature', 0.0, "float", "Temperature in Celsius")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -30,48 +44,32 @@ class Thermometer(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
-        self._global_temp = 15.0
-        self._fire_temp = 200.0
-
-        # Get the global coordinates of defined in the scene
-        scene = blenderapi.scene()
-        script_empty_name = 'Scene_Script_Holder'
-
-        script_empty = scene.objects[script_empty_name]
-        self._global_temp = float(script_empty['Temperature'])
-
         logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
-
 
     def default_action(self):
         """ Compute the local temperature
 
-        Temperature is measured dependent on the closest fire source.
+        Temperature is measured dependent on the closest fire sources.
         """
-        min_distance = 100000.0
-        fires = False
+        
+        temp = float(self._zero)
 
         scene = blenderapi.scene()
         # Look for the fire sources marked so
         for obj in scene.objects:
             try:
-                obj['Fire']
-                fire_radius = obj['Fire_Radius']
-                # If the direction of the fire is also important,
-                #  we can use getVectTo instead of getDistanceTo
-                distance = self.bge_object.getDistanceTo(obj)
-                if distance < min_distance:
-                    min_distance = distance
-                    fires = True
+                f = obj[self._tag]
+                if type(f) == int or type(f) == float:
+                    fire_intensity = float(f)
+                else:
+                    fire_intensity = self._fire
+                    
+                distance, gvect, lvect = self.bge_object.getVectTo(obj)
+                if distance < self._range:
+                    t = fire_intensity * math.exp(- self._alpha * distance)
+                    temp += t
+                    
             except KeyError as detail:
                 logger.debug("Exception: " + str(detail))
 
-        temperature = self._global_temp
-        # Trial and error formula to get a temperature dependant on
-        #  distance to the nearest fire source. 
-        if fires:
-            temperature += self._fire_temp * math.e ** (-0.2 * min_distance)
-
-        # Store the data acquired by this sensor that could be sent
-        #  via a middleware.
-        self.local_data['temperature'] = float(temperature)
+        self.local_data['temperature'] = float(temp)
