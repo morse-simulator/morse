@@ -21,8 +21,7 @@ class Thermometer(morse.core.sensor.Sensor):
     If this property is an int or a float, its value is used as the source fire temperature. 
     """
 
-    _name = "Thermomether Sensor"
-    _short_desc = "Thermomether sensor to detect nearby objects."
+    _name = "Thermometer Sensor"
 
     add_property('_tag', "Fire", "FireTag", "string",
                  "Tag indicating that an object is a fire source")
