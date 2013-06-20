@@ -38,6 +38,21 @@ class Cone(Mesh):
 
 class Torus(Mesh):
     mesh_primitive_add = bpymorse.add_mesh_torus
+    
+class Empty(Mesh):
+    mesh_primitive_add = bpymorse.add_object
+    
+class Coordsys(AbstractComponent):
+    mesh_primitive_add = bpymorse.add_object
+    def __init__(self, name):
+        AbstractComponent.__init__(self)
+        bpymorse.deselect_all()
+        self.mesh_primitive_add()
+        obj = bpymorse.get_first_selected_object()
+        obj.name = name
+        obj.empty_draw_type = 'ARROWS'
+        obj.empty_draw_size = 0.1
+        self.set_blender_object(obj)
 
 class Spot(AbstractComponent):
     def __init__(self, name, lamp_type='SPOT'):
