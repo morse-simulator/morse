@@ -13,7 +13,7 @@ class Environment(Component):
     """
     multinode_distribution = dict()
 
-    def __init__(self, filename, fastmode = False):
+    def __init__(self, filename, fastmode = False, component_renaming = True):
         """
         :param fastmode: (default: False) if True, disable most visual
                          effects (like lights...) to get the fastest
@@ -27,7 +27,8 @@ class Environment(Component):
         AbstractComponent.components.remove(self) # remove myself from the list of components to ensure my destructor is called
 
         # Rename the components according to their variable names
-        self._rename_components()
+        if component_renaming:
+            self._rename_components()
 
         self.fastmode = fastmode
 
