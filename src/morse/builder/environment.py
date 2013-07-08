@@ -458,6 +458,20 @@ class Environment(Component):
         bpymorse.save(filepath=filepath, check_existing=check_existing,
                 compress=compress)
 
+    def set_log_level(self, component, level):
+        """ 
+        Set the debug level of the component to the level level.
+
+        :param component: the class name of the component
+        :param level: a string representing the level of debug to set
+
+        XXX not persistent (if you save the scene and reload it directly
+        from blender, the logger is not set at the right level.
+        """
+
+        my_logger = logging.getLogger('morse.' + component)
+        my_logger.setLevel(level.upper())
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
