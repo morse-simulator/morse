@@ -39,7 +39,7 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
                 description = '-'
 
             # send tf-frame for every object
-            self.sendTransform(self, obj['position'], obj['orientation'], \
+            self.sendTransform(obj['position'], obj['orientation'], \
                                rospy.Time.now(), str(obj['name']), "/map")
 
             # Build string from name, description, location and orientation in the global world frame
