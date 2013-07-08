@@ -26,6 +26,8 @@ class Environment(Component):
         Component.__init__(self, 'environments', filename)
         AbstractComponent.components.remove(self) # remove myself from the list of components to ensure my destructor is called
 
+        self._handle_default_interface()
+
         # Rename the components according to their variable names
         if component_renaming:
             self._rename_components()
@@ -129,6 +131,27 @@ class Environment(Component):
         finally:
             del builderscript_frame
             del frame
+
+    def _handle_default_interface(self):
+        """
+        Handle the semantic of default interface.
+
+        For each robot, for each of this children, if the child has no
+        specific configuration for its 'default_interface', the function
+        adds it automatically.
+        """
+        for component in AbstractComponent.components:
+            if isinstance(component, Robot) and component.default_interface:
+                for child in component.children:
+                    if child.is_morseable():
+                        if not Configuration.has_datastream_configuration(
+                                child, component.default_interface):
+                            child.add_stream(component.default_interface)
+                        if not Configuration.has_service_configuration(
+                                child, component.default_interface):
+                            child.add_service(component.default_interface)
+
+
 
     def place_camera(self, location):
         """ Set the location of the default camera.

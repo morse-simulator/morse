@@ -137,6 +137,7 @@ class Robot(Component):
     def __init__(self, filename):
         Component.__init__(self, 'robots', filename)
         self.properties(Robot_Tag = True)
+        self.default_interface = None
 
     def set_mass(self, mass):
         """ Set component's mass
@@ -158,9 +159,7 @@ class Robot(Component):
             components and the specified interface is the same it will be
             added twice.
         """
-        for child in self.children:
-            if child.is_morseable():
-                child.add_interface(stream)
+        self.default_interface = stream
 
     def make_external(self):
         self._bpy_object.game.properties['Robot_Tag'].name = 'External_Robot_Tag'

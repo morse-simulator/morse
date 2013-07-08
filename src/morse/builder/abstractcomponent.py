@@ -49,6 +49,24 @@ class Configuration(object):
     def link_overlay(component,  manager, overlay_cfg, kwargs):
         Configuration.overlay.setdefault(manager, {})[component.name] = [overlay_cfg, kwargs]
 
+    def has_datastream_configuration(component, stream):
+        try:
+            confs = Configuration.datastream[component.name]
+            for conf in confs:
+                if conf[0] == MORSE_DATASTREAM_MODULE[stream]:
+                    return True
+        except KeyError:
+            return False
+
+    def has_service_configuration(component, stream):
+        try:
+            confs = Configuration.service[component.name]
+            for conf in confs:
+                if conf[0] == MORSE_SERVICE_DICT[stream]:
+                    return True
+        except KeyError:
+            return False
+
     def write_config():
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpymorse.get_texts().keys():
