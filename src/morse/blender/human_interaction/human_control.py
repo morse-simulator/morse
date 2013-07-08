@@ -14,7 +14,10 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from morse.core import blenderapi
 import math
+import imp
 from mathutils import Matrix
+
+imp.reload(blenderapi)
 
 AZERTY = False
 
