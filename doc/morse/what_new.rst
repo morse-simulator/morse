@@ -16,12 +16,16 @@ Components
 Actuators
 +++++++++
 
+- Improve the :doc:`user/actuators/light` actuator, including more
+  configurable parameters (in particular, the color of light and its energy).
+  A new service 'toggle' allows to control it.
+
 Robots
 ++++++
 
 - Introduce :doc:`Morsy <user/robots/morsy>`, the Morse mascot, now available directly
   in the simulator.
-- Introduce :doc:`PatrolBot </user/robots/PatrolBot>`, a differential robot
+- Introduce :doc:`PatrolBot </user/robots/patrolbot>`, a differential robot
   developed by MobileRobots.
 
 Sensors
@@ -29,6 +33,9 @@ Sensors
 
 - A new sensor :doc:`user/sensors/velocity` allows to retrieve properly the
   velocities of a robot which use a physic controller.
+- The :doc:`user/sensors/semantic_camera` performance has been improved. It
+  has a new option 'noocclusion' to disable occlusion testing and get even
+  better performances.
 
 Builder API
 -----------
@@ -36,6 +43,10 @@ Builder API
 - `make_ghost` method allows to transform the robot in ``ghost mode``
   (transparent and with no associated physics)
 - `mass` method allows to setup the mass of any component.
+- `set_log_level` allows to configure easily the level of log of each
+  component. A service with similar name allows to do that at runtime too.
+  (#337).
+- `set_speed_camera` allows to change the speed of the viewport camera.
 
 Pymorse
 -------
