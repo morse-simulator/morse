@@ -85,7 +85,7 @@ class BasePR2(BarePR2):
             self.torso_pose.add_stream("ros",
                         "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                         topic="/torso_lift_controller/state")
-            self.torso.configure_overlay("ros",
+            self.torso.add_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
               namespace = "/torso_lift_controller")
 
@@ -94,7 +94,7 @@ class BasePR2(BarePR2):
             self.head_pose.add_stream("ros",
                        "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                        topic="/head_controller/state")
-            self.head.configure_overlay("ros",
+            self.head.add_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
               namespace = "/head_controller")
 
@@ -102,7 +102,7 @@ class BasePR2(BarePR2):
             self.l_arm_pose.add_stream("ros",
                       "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                       topic="/l_arm_controller/state")
-            self.l_arm.configure_overlay("ros",
+            self.l_arm.add_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
               namespace = "/l_arm_controller")
 
@@ -110,7 +110,7 @@ class BasePR2(BarePR2):
             self.r_arm_pose.add_stream("ros", 
                  "morse.middleware.ros.jointtrajectorycontrollers.JointTrajectoryControllerStatePublisher",
                  topic="/r_arm_controller/state")
-            self.r_arm.configure_overlay("ros",
+            self.r_arm.add_overlay("ros",
               "morse.middleware.ros.overlays.armatures.ArmatureController",
               namespace = "/r_arm_controller")
 
