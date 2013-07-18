@@ -272,3 +272,74 @@ def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
     get_context_scene().game_settings.logic_step_max = logic_step_max
     get_context_scene().game_settings.physics_step_max = physics_step_max
 
+
+def properties(obj, **kwargs):
+    """ Add/modify the game properties of the Blender object
+
+    Usage example:
+
+    .. code-block:: python
+
+        properties(obj, capturing = True, classpath='module.Class', speed = 5.0)
+
+    will create and/or set the 3 game properties Component_Tag, classpath, and
+    speed at the value True (boolean), 'module.Class' (string), 5.0 (float).
+    In Python the type of numeric value is 'int', if you want to force it to
+    float, use the following: float(5) or 5.0
+    Same if you want to force to integer, use: int(a/b)
+    For the TIMER type, see the class timer(float) defined in this module:
+
+    .. code-block:: python
+
+        properties(obj, my_clock = timer(5.0), my_speed = int(5/2))
+
+    """
+    for key in kwargs.keys():
+        if key in obj.game.properties.keys():
+            _property_set(obj, key, kwargs[key])
+        else:
+            _property_new(obj, key, kwargs[key])
+
+def _property_new(obj, name, value, ptype=None):
+    """ Add a new game property for the Blender object
+
+    :param name: property name (string)
+    :param value: property value
+    :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
+                  optional, auto-detect, default=None)
+    """
+    select_only(obj)
+    new_game_property()
+    # select the last property in the list (which is the one we just added)
+    obj.game.properties[-1].name = name
+    return _property_set(obj, -1, value, ptype)
+
+def _property_set(obj, name_or_id, value, ptype=None):
+    """ Really set the property for the property referenced by name_or_id
+
+    :param name_or_id: the index or name of property (OrderedDict)
+    :param value: the property value
+    :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
+                  optional, auto-detect, default=None)
+    """
+    if ptype == None:
+        # Detect the type (class name upper case)
+        ptype = value.__class__.__name__.upper()
+    if ptype == 'STR':
+        # Blender property string are called 'STRING' (and not 'str' as in Python)
+        ptype = 'STRING'
+    obj.game.properties[name_or_id].type = ptype
+    obj.game.properties[name_or_id].value = value
+    return obj.game.properties[name_or_id]
+
+def set_viewport(viewport_shade='WIREFRAME', clip_end=1000):
+    """ Set the default view mode
+
+    :param viewport_shade: enum in ['BOUNDBOX', 'WIREFRAME', 'SOLID', 'TEXTURED'], default 'WIREFRAME'
+    """
+    for area in bpy.context.window.screen.areas:
+        if area.type == 'VIEW_3D':
+            for space in area.spaces:
+                if space.type == 'VIEW_3D':
+                    space.viewport_shade = viewport_shade
+                    space.clip_end = clip_end

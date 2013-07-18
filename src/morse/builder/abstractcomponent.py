@@ -235,46 +235,7 @@ class AbstractComponent(object):
             self.properties(my_clock = timer(5.0), my_speed = int(5/2))
 
         """
-        prop = self._bpy_object.game.properties
-        for key in kwargs.keys():
-            if key in prop.keys():
-                self._property_set(key, kwargs[key])
-            else:
-                self._property_new(key, kwargs[key])
-
-    def _property_new(self, name, value, ptype=None):
-        """ Add a new game property for the Blender object
-
-        :param name: property name (string)
-        :param value: property value
-        :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
-                      optional, auto-detect, default=None)
-        """
-        self.select()
-        bpymorse.new_game_property()
-        prop = self._bpy_object.game.properties
-        # select the last property in the list (which is the one we just added)
-        prop[-1].name = name
-        return self._property_set(-1, value, ptype)
-
-    def _property_set(self, pid, value, ptype=None):
-        """ Really set the property for the property referenced by pid
-
-        :param pid: the index of property
-        :param value: the property value
-        :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
-                      optional, auto-detect, default=None)
-        """
-        prop = self._bpy_object.game.properties
-        if ptype == None:
-            # Detect the type (class name upper case)
-            ptype = value.__class__.__name__.upper()
-        if ptype == 'STR':
-            # Blender property string are called 'STRING' (and not 'str' as in Python)
-            ptype = 'STRING'
-        prop[pid].type = ptype
-        prop[pid].value = value
-        return prop[pid]
+        bpymorse.properties(self._bpy_object, **kwargs)
 
     def select(self):
         bpymorse.select_only(self._bpy_object)
@@ -720,7 +681,7 @@ class AbstractComponent(object):
             logger.warning("profile currently supports only sensors (%s)"%self)
         for key in ["profile", "profile_action", "profile_modifiers",
                     "profile_datastreams"]:
-            prop = self._property_new(key, "0")
+            prop = bpymorse._property_new(self._bpy_object, key, "0")
             prop.show_debug = True
         bpymorse.get_context_scene().game_settings.show_debug_properties = True
 

@@ -308,16 +308,12 @@ class Environment(Component):
         bpymorse.get_context_scene().game_settings.material_mode = material_mode
         self.is_material_mode_custom = True
 
-    def set_viewport(self, viewport_shade='WIREFRAME'):
+    def set_viewport(self, viewport_shade='WIREFRAME', clip_end=1000):
         """ Set the default view mode
 
         :param viewport_shade: enum in ['BOUNDBOX', 'WIREFRAME', 'SOLID', 'TEXTURED'], default 'WIREFRAME'
         """
-        for area in bpymorse.get_context_window().screen.areas:
-            if area.type == 'VIEW_3D':
-                for space in area.spaces:
-                    if space.type == 'VIEW_3D':
-                        space.viewport_shade = viewport_shade
+        bpymorse.set_viewport(viewport_shade, clip_end)
 
     def set_auto_start(self, auto_start=True):
         bpymorse.get_context_scene().render.engine = 'BLENDER_GAME'
