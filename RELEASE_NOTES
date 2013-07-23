@@ -53,6 +53,12 @@ The Python bindings for MORSE have been completely rewritten and is now much
 more efficient (based on *asynchat* API). However, it is mostly an internal
 rewrite, and the interface does not change.
 
+Tools
+-----
+
+- Remove old Blender 2.4 geolandloader code
+- Add tools/terrain/blend_dtm.py to build map from a DEM and an Orthoimage
+
 MORSE 1.0
 =========
 
