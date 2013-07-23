@@ -1,7 +1,10 @@
 Build your simulations
 ======================
 
-For a quick list of builder module methods, see the
+If you did not check it, we recommend you to first go over the
+:doc:`Quickstart<../quickstart>` page.
+
+For a practical reference of the Builder API module methods, see the
 :doc:`Builder Overview<builder_overview>`.
 
 The Builder API

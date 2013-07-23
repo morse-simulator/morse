@@ -9,6 +9,10 @@ may require some time to master.
 However, you should hopefully be able to get very quickly your first
 simulation running.
 
+If you did not check it, we recommend you to first go over the
+:doc:`Quickstart<quickstart>` page and come back here afterwards.
+
+
 What is the general workflow?
 -----------------------------
 
