@@ -256,6 +256,7 @@ ELSE()
 		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-run.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-create.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse-import.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-edit.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-check.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-add.1.gz 
