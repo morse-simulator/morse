@@ -32,6 +32,7 @@ class Sound(Actuator):
         if self.local_data['mode'] == self._last_mode:
             return
         act = contr.actuators[-1]
+        contr.activate(act) # enables 3D effect (!)
         if self.local_data['mode'] == 'play':
             act.startSound()
         elif self.local_data['mode'] == 'pause':
