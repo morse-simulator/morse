@@ -1,5 +1,5 @@
 language: python
 python: "3.2"
-script: "time . .travis.bash"
+script: "time ./.travis.bash"
 notifications:
   irc: "irc.freenode.org#morse"
