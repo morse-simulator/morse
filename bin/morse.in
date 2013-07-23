@@ -464,6 +464,32 @@ def create_environment(args):
     logger.info("You can run it directly with \"morse run %s\" or you "
                 "can start editing it." % name)
 
+def import_environment(args):
+
+
+    path = os.path.abspath(args.path)
+    name = args.name
+    if not name:
+        name = os.path.basename(path)
+
+    force = args.force
+
+    site = get_site(name)
+    if not force and site:
+        logger.error("You already have a simulation environment "
+                     "called \"%s\" (pointing to <%s>)!" % (name, site))
+        logger.error("Use 'morse import -f <path>' to overwrite it.")
+        sys.exit()
+
+
+    add_site(name, path)
+
+    logger.info("The simulation environment <%s> has been successfully "
+                "imported." % name)
+    logger.info("You can run it directly with \"morse run %s\" or you "
+                "can start editing it." % name)
+
+
 def delete_environment(args):
 
     name = args.env
@@ -717,11 +743,20 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(title="modes", description="type 'morse <mode> --help' for details", dest = "mode")
 
     # create
-    create_parser = subparsers.add_parser('create', help="create a new simulation environment in the current directory.")
+    create_parser = subparsers.add_parser('create', help="creates a new simulation environment in the current directory.")
     create_parser.add_argument('env', default="", help="the name of the environment to create.")
     create_parser.add_argument('-f', '--force', action='store_true',
                        help='forces the creation (possibly overwriting files).')
     create_parser.set_defaults(func=create_environment)
+
+    # import
+    import_parser = subparsers.add_parser('import', help="imports a pre-existing simulation environment.")
+    import_parser.add_argument('path', default="", help="the relative or absolute path to the environment. For instance './lab_sim_checkout'.")
+    import_parser.add_argument('name', default="", nargs='?', help="the name of the environment (extracted from path if not specified).")
+    import_parser.add_argument('-f', '--force', action='store_true',
+                       help='forces the import (possibly overwriting existing environment).')
+    import_parser.set_defaults(func=import_environment)
+
 
     # rm
     rm_parser = subparsers.add_parser('rm', help="deletes an existing simulation environment.")
@@ -732,7 +767,7 @@ if __name__ == '__main__':
 
 
     # add
-    add_parser = subparsers.add_parser('add', help="add a template for a component to an environment.")
+    add_parser = subparsers.add_parser('add', help="adds a template for a component to an environment.")
     add_parser.add_argument('type', choices=['robot', 'sensor', 'actuator'],
             help="the type of component you want to add.")
     add_parser.add_argument('name', default="", help="the name of the new component.")

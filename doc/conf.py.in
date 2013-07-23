@@ -211,6 +211,7 @@ man_pages = [("morse_man_page", "morse", "A robotics simulator based upon the Bl
              ("morse-run_man_page", "morse-run", "Runs a MORSE simulation", "", 1),
              ("morse-edit_man_page", "morse-edit", "Loads a MORSE simulation for further edition", "", 1),
              ("morse-create_man_page", "morse-create", "Creates a MORSE simulation environment", "", 1),
+             ("morse-import_man_page", "morse-import", "Imports a MORSE simulation environment", "", 1),
              ("morse-check_man_page", "morse-check", "Checks the MORSE configuration", "", 1),
              ("morse-add_man_page", "morse-add", "Adds a component to a MORSE simulation environment", "", 1),
              ("morse-rm_man_page", "morse-rm", "Removes a MORSE simulation environment", "", 1),

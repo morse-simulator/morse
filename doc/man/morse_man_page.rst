@@ -50,7 +50,6 @@ See "man morse-<command>" for a documentation of each commands.
         to an existing simulation environment.
 :check:
         Checks the environment is correctly setup to run morse.
-
 :create:
         Creates a new simulation environment in the current directory.
         A template simulation scene is also created.
@@ -59,6 +58,8 @@ See "man morse-<command>" for a documentation of each commands.
         Open the given Blender scene or Python script in the Blender
         interface for edition. The simulation can be started by 
         pressing P.
+:import:
+        Imports a pre-existing simulation as a new simulation environment.
 :rm:
         Deletes an existing simulation environment.
 :run:
