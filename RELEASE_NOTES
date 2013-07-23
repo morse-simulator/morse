@@ -19,6 +19,7 @@ Actuators
 - Improve the Light actuator, including more configurable parameters (in
   particular, the color of light and its energy).  A new service 'toggle'
   allows to control it.
+- New 3D sound actuator {play,pause,stop} from local mp3 file.
 
 Robots
 ++++++
