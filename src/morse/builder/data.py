@@ -227,6 +227,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.ptu_posture.PTUPosture": {
         "default": {
+            "ros": 'morse.middleware.ros.jointstate.JointStatePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
