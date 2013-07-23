@@ -60,9 +60,10 @@ See their associated documentation for details.
 
 
 If you plan to use the simulator with raw sockets or text files as interface
-(for instance, to integrate MORSE with MatLab or other specific
-applications), you don't need anything else. Otherwise, you need to install
-the software for the desired middlewares:
+(for instance, to integrate MORSE with MatLab or other specific applications),
+you don't need anything else, and you can jump to MORSE's
+:doc:`Quickstart<../quickstart>`. Otherwise, you need to install the software
+for the desired middlewares:
 
 .. toctree::
     :glob:
@@ -204,6 +205,9 @@ You can check your configuration is ok with::
     $ git checkout [version]
     $ cd build
     $ make install
+
+Time to jump to MORSE's :doc:`Quickstart<../quickstart>` tutorial!
+
 
 Installation troubleshooting
 ----------------------------
