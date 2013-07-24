@@ -32,6 +32,10 @@ def robot_action(contr):
 def component_action(contr):
     """ Call the 'action' method of the correct component. """
     try:
+        scene = blenderapi.scene()
+        # if current scene is not the main MORSE logic scene, pass
+        if not scene or scene.name != 'S.MORSE_LOGIC':
+            return
         simu = blenderapi.persistantstorage()
         if "morse_initialised" not in simu or not simu.morse_initialised:
             return

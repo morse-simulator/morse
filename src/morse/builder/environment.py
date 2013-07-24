@@ -41,14 +41,20 @@ class Environment(Component):
         self._multinode_configured = False
         self._display_camera = None
         self.is_material_mode_custom = False
+        # Add empty object holdings MORSE Environment's properties
+        # for UTM modifier configutation ( uses env.properties(...) )
+        bpymorse.deselect_all()
+        bpymorse.add_morse_empty()
+        obj = bpymorse.get_context_object()
+        obj.name = 'MORSE.Properties'
+        self.set_blender_object(obj)
+        # Init. camera's properties
+        self.set_camera_speed()
+        self.set_camera_clip()
 
-        # define 'Scene_Script_Holder' as the blender object of Enrivonment
-        if not 'Scene_Script_Holder' in bpymorse.get_objects():
-            # Add the necessary objects
-            base = Component('props', 'basics')
-        self.set_blender_object(bpymorse.get_object('Scene_Script_Holder'))
-        # Write the name of the 'environment file'
-        self.set_camera_speed(2.0)
+    def is_internal_camera(self, camera):
+        return not self._multinode_configured or \
+            camera._bpy_object.parent.name in self.multinode_distribution[node_name]
 
     def _write_multinode(self, node_name):
         """ Configure this node according to its name
@@ -181,18 +187,41 @@ class Environment(Component):
         :param clip_start: Camera near clipping distance, float in meters (default 0.1)
         :param clip_end: Camera far clipping distance, float in meters (default 100)
         """
-        camera_fp = bpymorse.get_object('CameraFP')
-        # camera_fp.data holds the bpy.types.Camera instance
-        camera_fp.data.clip_start = clip_start
-        camera_fp.data.clip_end = clip_end
+        self._camera_clip_start = clip_start
+        self._camera_clip_end   = clip_end
 
-    def set_camera_speed(self, speed):
+    def set_camera_speed(self, speed=2.0):
         """ Set the simulator's Camera speed
 
         :param speed: desired speed of the camera, in meter by second.
         """
-        camera_fp = bpymorse.get_object('CameraFP')
-        camera_fp.game.properties['Speed'].value = speed
+        self._camera_speed = speed
+
+    def _cfg_camera_scene(self):
+        scene = bpymorse.get_context_scene()
+        scene.name = 'S.MORSE_ENV'
+        from morse.builder.sensors import VideoCamera
+        cfg_camera_scene = {}
+        for component in AbstractComponent.components:
+            # do not create scene for external camera
+            if isinstance(component, VideoCamera) and \
+                    self.is_internal_camera(component):
+                # Create a new scene for the Camera
+                bpymorse.new_scene(type='LINK_OBJECTS')
+                scene = bpymorse.get_context_scene()
+                scene.name = 'S.%s'%component.name
+                scene.render.resolution_x = component.property_value('cam_width')
+                scene.render.resolution_y = component.property_value('cam_height')
+                # TODO disable logic and physic in this created scene
+                cfg_camera_scene[component.name] = scene.name
+
+        # Create 'camera_scene.py' configuration file (like 'component_config.py')
+        # mapping Camera -> Scene for the bge.texture.ImageRender(scene, camera)
+        bpymorse.new_text()
+        bpymorse.get_last_text().name = 'camera_scene.py'
+        cfg = bpymorse.get_text('camera_scene.py')
+        cfg.write('camera_scene = ' + json.dumps(cfg_camera_scene, indent=1) )
+        cfg.write('\n')
 
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
@@ -204,6 +233,27 @@ class Environment(Component):
         for component in AbstractComponent.components:
             if hasattr(component, "after_renaming"):
                 component.after_renaming()
+
+        # Create a new scene for each camera, with specific render resolution
+        # Must be done at the end of the builder script, after renaming
+        # and before adding 'Scene_Script_Holder'
+        self._cfg_camera_scene()
+
+        # Create a new scene for the MORSE_LOGIC (Scene_Script_Holder, CameraFP)
+        bpymorse.new_scene(type='LINK_OBJECTS')
+        scene = bpymorse.get_context_scene()
+        scene.name = 'S.MORSE_LOGIC'
+
+        # define 'Scene_Script_Holder' as the blender object of Enrivonment
+        if not 'Scene_Script_Holder' in bpymorse.get_objects():
+            # Add the necessary objects
+            base = Component('props', 'basics')
+
+        # Set Scene_Script_Holder as core Environment object
+        self.set_blender_object(bpymorse.get_object('Scene_Script_Holder'))
+        # Copy properties (for UTM modifier configuration)
+        _properties = bpymorse.get_properties(bpymorse.get_object('MORSE.Properties'))
+        self.properties(**_properties)
 
         # Default node name
         if name == None:
@@ -219,11 +269,8 @@ class Environment(Component):
         if self._display_camera:
             self._set_scren_mat()
 
+        # Write the name of the 'environment file'
         self.properties(environment_file = str(self._environment_file))
-        # Set the position of the camera
-        camera_fp = bpymorse.get_object('CameraFP')
-        camera_fp.location = self._camera_location
-        camera_fp.rotation_euler = self._camera_rotation
 
         if self.fastmode:
             self.set_material_mode('SINGLETEXTURE')
@@ -242,12 +289,21 @@ class Environment(Component):
         # Start player with a visible mouse cursor
         bpymorse.get_context_scene().game_settings.show_mouse = True
 
+        # Set the position of the camera
+        camera_fp = bpymorse.get_object('CameraFP')
+        camera_fp.location = self._camera_location
+        camera_fp.rotation_euler = self._camera_rotation
+        camera_fp.game.properties['Speed'].value = self._camera_speed
+        camera_fp.data.clip_start = self._camera_clip_start
+        camera_fp.data.clip_end   = self._camera_clip_end
         # Make CameraFP the active camera
         bpymorse.deselect_all()
         camera_fp.select = True
         bpymorse.get_context_scene().objects.active = camera_fp
         # Set default camera
         bpymorse.get_context_scene().camera = camera_fp
+        # Set viewport to Camera
+        bpymorse.set_viewport_perspective()
 
         self._created = True
 

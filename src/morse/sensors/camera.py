@@ -3,6 +3,10 @@ from morse.core import blenderapi
 import morse.core.sensor
 from morse.helpers.components import add_property
 
+def copy_pose(obj_from, obj_to):
+    obj_to.worldPosition = obj_from.worldPosition
+    obj_to.worldOrientation = obj_from.worldOrientation
+
 class Camera(morse.core.sensor.Sensor):
     """
     A generic camera class, which is expected to be used as a base class
@@ -50,6 +54,10 @@ class Camera(morse.core.sensor.Sensor):
         self._texture_ok = False
         self._camera_running = False
 
+        import camera_scene # file like 'component_config.py' in the .blend
+        self.scene_name = camera_scene.camera_scene[self.bge_object.name]
+        blenderapi.add_scene(self.scene_name, overlay=0)
+
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
@@ -72,9 +80,21 @@ class Camera(morse.core.sensor.Sensor):
 
 
         if self._camera_running:
+            # Update all objects pose/orientation before to refresh the image
+            self._update_scene()
             # Call the bge.texture method to refresh the image
             blenderapi.cameras()[self.name()].refresh(True)
 
+    def _update_pose(self, obj):
+        copy_pose(self._morse_scene.objects[obj.name], obj)
+
+    def _update_scene(self):
+        for obj in self._scene.objects:
+            if obj.name != '__default__cam__':
+                try:
+                    self._update_pose(obj)
+                except Exception as e:
+                    logger.warning(str(e))
 
     def _setup_video_texture(self):
         """ Prepare this camera to use the bge.texture module.
@@ -108,7 +128,10 @@ class Camera(morse.core.sensor.Sensor):
             return False
 
         # Get the reference to the scene
-        scene = blenderapi.scene()
+        scene_map = blenderapi.get_scene_map()
+        logger.info("Scene %s from %s"% (self.scene_name, repr(scene_map.keys()) ) )
+        self._scene = scene_map[self.scene_name]
+        self._morse_scene = scene_map['S.MORSE_LOGIC']
 
         # Link the objects using bge.texture
         if not blenderapi.hascameras():
@@ -116,7 +139,7 @@ class Camera(morse.core.sensor.Sensor):
 
         mat_id = blenderapi.texture().materialID(screen, material_name)
         vt_camera = blenderapi.texture().Texture(screen, mat_id)
-        vt_camera.source = blenderapi.texture().ImageRender(scene, camera)
+        vt_camera.source = blenderapi.texture().ImageRender(self._scene, camera)
 
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
