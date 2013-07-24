@@ -7,6 +7,9 @@ from morse.core import status
 from morse.helpers.components import add_data, add_property
 
 class @classname@(morse.core.actuator.Actuator):
+    """Write here the general documentation of your actuator.
+    It will appear in the generated online documentation.
+    """
     _name = "@classname@"
     _short_desc = "@shortdesc@"
 
