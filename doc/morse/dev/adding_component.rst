@@ -7,19 +7,50 @@ Components in MORSE are either **robots**, **sensors** or **actuators**.
 **Robots** are mainly containers for **sensors** and **actuators**.
 
 This page present how to create and add new sensors or actuators to MORSE.
-You will find another page to :doc:`adding_robot`.
+Check :doc:`adding_robot` to learn about robots.
 
 General overview
 ----------------
 
-A component is mainly described by a Python script, which contains its logic.
-It may also have a related Blender file, which contains its appearance, and in
-some case, some specific logic. In general, it is not needed. Last, you may
-want to add some entries in builder to facilitate the use of your component.
+A component is described by a Python script, which defines its inputs/outputs
+and implements its logic.
 
-As a starting point, you can :doc:`browse the component
+It may also have a related Blender file, which contains its appearance, and in
+special cases, some specific logic. It is however not needed in general.
+
+Depending on your sensors/actuators, you may need to write serialization code
+for various middlewares. It is only required if your new component
+export/import data structures that are not already supported by existing
+sensors/actuators.
+
+Finally, you may want to add your component to the :doc:`Builder
+API<../user/builder>` to make it easy for other user to use your component.
+
+This four steps may look intimidating, but most of the boring parts are
+automatically generated from templates. We will see an example in a second.
+
+As a starting point, it is also useful to :doc:`browse the component
 gallery<../components_library>` and look for a component similar to the one you
-want to build. You can then use it as a template for our own sensor/actuator.
+want to build. You can then use it as a reference for our own sensor/actuator.
+
+Creating a new component
+------------------------
+
+MORSE offers a convient command-line tool to create and setup a new component.
+
+Assuming you already have an :doc:`initial simulation
+environment<../user/builder>` called ``mysim``, you can create a new sensor
+with::
+
+ $ morse add sensor <name> mysim
+
+or, for actuators::
+
+ $ morse add actuator <name> mysim
+
+MORSE asks for a short description, and then create the initial template for
+your component.
+
 
 The Python part
 ---------------
