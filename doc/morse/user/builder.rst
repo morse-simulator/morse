@@ -7,23 +7,54 @@ If you did not check it, we recommend you to first go over the
 For a practical reference of the Builder API module methods, see the
 :doc:`Builder Overview<builder_overview>`.
 
-The Builder API
+Creating a new simulation
+-------------------------
+
+In MORSE, we call a *simulation environment* a main *simulation scenario* (a
+Python script that describe the environment, the static objects, the robots,
+the sensors and/or actuators, etc.) and a set of optional resources, that
+may comprise models (as Blender ``.blend`` files) and implementation of custom
+components.
+
+These files are usually stored in a single self-contained folder (which ease
+sharing), but since regular Python's ``import`` mechanism works as expected,
+you can also organize your files differently (for instance, to share a
+complex robot description between several simulation scenarios).
+
+To get you started quickly, MORSE provides a special command::
+
+ $ morse create <simulation name>
+
+For instance::
+
+ $ morse create my_project
+
+creates a new folder called ``my_project`` in the current directory, and also
+add an entry to the MORSE configuration file (usually located in
+``$HOME/.morse/config``) that allows you to run your simulation from anywhere,
+with a simple ``morse run my_project``.
+
+``my_project`` is your new **simulation environment**. The ``my_project/``
+folder contains one important file, ``default.py``. This is a sample
+**simulation scenario** (also called **Builder script**). Open it to see how
+it works.
+
+``my_project/scripts`` contains a sample *client* script that shows how to
+connect to MORSE through Python. You can safely delete it if you do not need
+it.
+
+How to build a simulation scenario suitable to your need? The remaining of this
+page details MORSE's ``Builder API``. It is a set of components and methods
+that let you build a simulation scene.
+
+Builder scripts
 ---------------
 
-The MORSE ``Builder API``, is a set of components and methods to build a simulation
-scene. A simulation scene is composed of an environment and one or more robots
-composed of sensors and actuators. Each of those components are connected outside
-the simulator through middlewares.
-
-
-A Builder script
-----------------
-
-``Builder`` scripts rely on the **Builder API** to define the
-components, environments and middlewares that are going to be used in the
-simulation. When running MORSE, the simulator interprets the scripts to build
-the complete simulation as a Blender scene, configures the components, and starts
-the Blender 3D Engine.
+Simulation scenarios (or ``Builder`` scripts) rely on the **Builder API** to
+define the components, environments and middlewares that are going to be
+used in the simulation. When running MORSE, the simulator interprets the
+scripts to build the complete simulation as a Blender scene, configures the
+components, and starts the Blender 3D Engine.
 
 Since these scripts are regular Python scripts, you can easily create one
 function or class for each of your robots. This way, you can quickly reuse them
@@ -64,7 +95,7 @@ You can also set a ``MORSE_RESOURCE_PATH`` environment variable with::
     export MORSE_RESOURCE_PATH="/path/number/one:/path/number/two"
 
 where MORSE will be looking for components. The default place it looks in is
-``$MORSE_ROOT/share/morse/data`` (usually '/usr/local/share/morse/data')
+``$MORSE_ROOT/share/morse/data`` (typically ``/usr/local/share/morse/data``)
 
 An additional option is to place and aim the default camera, by using the methods
 :py:meth:`morse.builder.environment.Environment.aim_camera` and
@@ -77,9 +108,10 @@ An additional option is to place and aim the default camera, by using the method
     env.aim_camera([1.0470, 0, -0.7854])
 
 .. note::
-    To edit a builder script in MORSE, you must run the following command in a
-    terminal: ``morse edit my_builder_script.py``
-
+    You can also edit a builder script directly in MORSE, by calling ``morse edit my_builder_script.py``.
+    This let you build your environment with Blender's GUI. Save it as a regular Blender file, and 
+    run it directly: ``morse run my_sim.blend``. Be aware that MORSE does not support converting such a Blender
+    simulation back to a Python Builder script.
 
 Adding a robot
 ++++++++++++++
