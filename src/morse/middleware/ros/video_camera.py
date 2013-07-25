@@ -51,6 +51,7 @@ class VideoCameraPublisher(ROSPublisher):
         camera_info.height = image.height
         camera_info.width = image.width
         camera_info.distortion_model = 'plumb_bob'
+        camera_info.D = [0]
         camera_info.K = [intrinsic[0][0], intrinsic[0][1], intrinsic[0][2],
                          intrinsic[1][0], intrinsic[1][1], intrinsic[1][2],
                          intrinsic[2][0], intrinsic[2][1], intrinsic[2][2]]
