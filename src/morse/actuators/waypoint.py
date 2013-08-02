@@ -155,6 +155,7 @@ class Waypoint(morse.core.actuator.Actuator):
             except KeyError:
                 self.bge_object['Ignore'] = []
 
+        self._active = False
         logger.info('Component initialized')
 
 
@@ -194,6 +195,7 @@ class Waypoint(morse.core.actuator.Actuator):
         self.local_data['z'] = z
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
+        self._active = True
 
         return True
 
@@ -218,12 +220,14 @@ class Waypoint(morse.core.actuator.Actuator):
         self.local_data['z'] = z
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
+        self._active = True
 
     def interrupt(self):
         self.local_data['x'] = self.position_3d.x
         self.local_data['y'] = self.position_3d.y
         self.local_data['z'] = self.position_3d.z
         self.local_data['speed'] = 0
+        self._active = False
 
         super(Waypoint, self).interrupt()
 
@@ -244,6 +248,7 @@ class Waypoint(morse.core.actuator.Actuator):
 
         # Set the status of the robot
         self.robot_parent.move_status = "Stop"
+        self._active = False
 
         return self.robot_parent.move_status
 
@@ -259,6 +264,7 @@ class Waypoint(morse.core.actuator.Actuator):
 
         # Set the status of the robot
         self.robot_parent.move_status = "Transit"
+        self._active = True
 
         return self.robot_parent.move_status
 
@@ -275,6 +281,9 @@ class Waypoint(morse.core.actuator.Actuator):
 
     def default_action(self):
         """ Move the object towards the destination. """
+        if not self._active:
+            return # no new goal
+
         parent = self.robot_parent
         speed = self.local_data['speed']
         v = 0
@@ -326,6 +335,8 @@ class Waypoint(morse.core.actuator.Actuator):
             logger.debug("TARGET REACHED")
             logger.debug("Robot {0} move status: '{1}'".format(
                           parent.bge_object.name, parent.move_status))
+
+            self._active = False
 
         else:
             # Do nothing if the speed is zero
