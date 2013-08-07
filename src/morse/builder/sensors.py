@@ -356,6 +356,7 @@ class VideoCamera(SensorCreator):
         SensorCreator.rotate(self, x=math.pi/2, z=math.pi/2)
         # append CameraMesh with its textures
         self.append_meshes(['CameraMesh'], "camera")
+        self.rotate(z=math.pi)
     def rotate(self, x=0, y=0, z=0):
         SensorCreator.rotate(self, x=y, y=z, z=x)
 
@@ -367,7 +368,6 @@ class DepthCamera(VideoCamera):
         self.properties(cam_width = 128, cam_height = 128, \
                         cam_near=1.0, cam_far=20.0, retrieve_depth=True,
                         Vertical_Flip=False)
-        self.camera.rotate(z=math.pi)
 
 class VelodyneZB(DepthCamera):
     def __init__(self, name=None):
