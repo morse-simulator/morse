@@ -135,6 +135,28 @@ Let's add a robot to our scene:
 
 You should see the ``ATRV`` at the center of the scene.
 
+.. warning::
+
+    Handling of loop in builder script is a bit complex. There is two possible
+    solution to handle properly loop at the builder level. The first one is
+    to name explictly your robot such as:
+
+    .. code-block:: python
+
+        for i in range(1, 5): 
+            robot = ATRV('robot')
+
+    The second solution is to use the special method ``close_context`` such
+    as:
+
+    .. code-block:: python
+
+        for i in range(1, 5): 
+            robot = ATRV()
+            AbstractComponent.close_context()
+
+
+
 
 Adding sensors and actuators
 ++++++++++++++++++++++++++++
