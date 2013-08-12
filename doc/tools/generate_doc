@@ -57,12 +57,14 @@ modules = [
     "morse.actuators",
     "morse.sensors",
     "morse.modifiers",
+    "morse.robots",
 ]
 
 import sys, os, codecs
 import fnmatch
 
 from morse.core.actuator import Actuator
+from morse.core.robot import Robot
 from morse.core.sensor import Sensor
 from morse.modifiers.abstract_modifier import AbstractModifier
 
@@ -171,6 +173,8 @@ for module in modules:
             ctype = 'sensor'
         elif issubclass(klass, AbstractModifier):
             ctype = 'modifier'
+        elif issubclass(klass, Robot):
+            ctype = 'robot'
         else:
             print('not subclass %s'%str(klass))
             continue
@@ -279,9 +283,14 @@ def print_code_snippet(out, name, props):
 
     code = """
     from morse.builder import *
+    """
 
+    if props['type'] != 'robot':
+        code += """
     robot = ATRV()
+    """
 
+    code += """
     # creates a new instance of the %(type)s
     %(var)s = %(name)s()
 
@@ -296,9 +305,12 @@ def print_code_snippet(out, name, props):
     %(var)s.level(<level>)
     """ % args
 
-    code += """
+    if props['type'] != 'robot':
+        code += """
     robot.append(%(var)s)
+    """
 
+    code += """
     # define one or several communication interface, like 'socket'
     %(var)s.add_interface(<interface>)
 
@@ -484,12 +496,10 @@ def print_services(out, name, props):
 if not os.path.exists(PREFIX):
     os.makedirs(PREFIX)
 
-if not os.path.exists(os.path.join(PREFIX, 'actuators')):
-    os.makedirs(os.path.join(PREFIX, 'actuators'))
-if not os.path.exists(os.path.join(PREFIX, 'sensors')):
-    os.makedirs(os.path.join(PREFIX, 'sensors'))
-if not os.path.exists(os.path.join(PREFIX, 'modifiers')):
-    os.makedirs(os.path.join(PREFIX, 'modifiers'))
+for directory in ['actuators', 'sensors', 'modifiers', 'robots']:
+    path = os.path.join(PREFIX, directory)
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 for name, props in components.items():
     module = (props['object'].__module__.split('.'))[-1]
