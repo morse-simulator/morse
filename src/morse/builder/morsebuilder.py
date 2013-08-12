@@ -190,10 +190,16 @@ class WheeledRobot(Robot):
         bpymorse.get_context_scene().update()
         wheels = [child for child in self._bpy_object.children if \
                   "wheel" in child.name.lower()]
-        import mathutils
+        # fix #421 - multi WheeledRobot - wheels must be ordered as:
+        # front-right, front-left, rear-right, rear-left
+        wnames = [w.name for w in wheels]
+        wnames.sort()
+        wnames.extend(['None'] * 4) # in case of < 4 wheels
+        self.properties(WheelFLName = wnames[0], WheelFRName = wnames[1],
+                        WheelRLName = wnames[2], WheelRRName = wnames[3])
         for wheel in wheels:
             # Make a copy of the current transformation matrix
-            transformation = mathutils.Matrix(wheel.matrix_world)
+            transformation = wheel.matrix_world.copy()
             wheel.parent = None
             wheel.matrix_world = transformation
             # This method should be easier, but does not seem to work
