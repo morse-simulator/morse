@@ -24,6 +24,7 @@ from morse.actuators import armature, \
                             ptu,               \
                             rotorcraft_attitude, \
                             rotorcraft_waypoint, \
+                            sound,               \
                             stabilized_quadrotor,\
                             steer_force,        \
                             teleport,           \
