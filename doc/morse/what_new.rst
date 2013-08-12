@@ -5,7 +5,8 @@ General
 -------
 
 - morse tools has now some options to easily create custom simulations: check
-  'morse {create|rm|add} --help' for more on that topic!
+  'morse {create|rm|add} --help' for more on that topic! Or have a look to the
+  new :doc:`quickstart` tutorial.
 
 Components
 ----------
@@ -19,6 +20,7 @@ Actuators
 - Improve the :doc:`user/actuators/light` actuator, including more
   configurable parameters (in particular, the color of light and its energy).
   A new service 'toggle' allows to control it.
+- New 3D :doc:`user/actuators/sound` actuator {play,pause,stop} from local mp3 file.
 
 Robots
 ++++++
@@ -54,6 +56,12 @@ Pymorse
 The Python bindings for MORSE have been completely rewritten and is now much
 more efficient (based on *asynchat* API). However, it is mostly an internal
 rewrite, and the interface does not change.
+
+Tools
+-----
+
+- Remove old Blender 2.4 geolandloader code
+- Add tools/terrain/blend_dtm.py to build map from a DEM and an Orthoimage
 
 What's new in MORSE 1.0?
 ========================

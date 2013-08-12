@@ -5,7 +5,8 @@ General
 -------
 
 - morse tools has now some options to easily create custom simulations: check
-  'morse {create|rm|add} --help' for more on that topic!
+  'morse {create|rm|add|...} --help' for more on that topic! (commit
+  71fc8a81121b, issue #396)
 
 Components
 ----------
