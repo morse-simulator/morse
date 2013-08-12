@@ -2,6 +2,7 @@ import os
 import sys
 import pkgutil
 import inspect
+import subprocess
 
 try:
     import bpy # Blender
@@ -11,6 +12,16 @@ except ImportError:
     sys.exit(-1)
 from mathutils import Euler
 
+def ext_exec(cmd, python=None):
+    if not python:
+        python = 'python%i.%i'%(sys.version_info.major, sys.version_info.minor)
+    return subprocess.getoutput('%s -c"%s"' % (python, cmd) )
+
+def fix_python_path(python=None):
+    pythonpath = ext_exec("import os,sys;print(os.pathsep.join(sys.path))")
+    sys.path.extend(pythonpath.split(os.pathsep))
+
+fix_python_path()
 try:
     import morse # MORSE
 except ImportError:
@@ -113,22 +124,22 @@ def pose_camera(location = (.36, -1.25, .77), rotation = (1.1, 0, 0.25)):
     scene.camera.rotation_euler = Euler(rotation, 'XYZ')
     scene.camera.location = location
 
-def delete(obj):
-    bpymorse.select_only(obj)
-    bpy.ops.object.delete()
-
 def setup_scene():
     scene = bpy.context.scene
     if 'Cube' in bpy.data.objects:
-        delete(bpy.data.objects['Cube'])
+        bpymorse.delete('Cube')
     # Set the scene's camera
     scene.camera = bpy.data.objects['Camera']
     # Set the scene's output file format
     scene.render.image_settings.file_format = 'PNG'
     # RGBA, Images are saved with RGB and Alpha data (if supported).
     scene.render.image_settings.color_mode = 'RGBA'
-    # Premultiplied, Transparent RGB pixels are multiplied by the alpha channel.
-    scene.render.alpha_mode = 'PREMUL'
+    if bpy.app.version < (2, 66, 0):
+        # Premultiplied, Transparent RGB pixels are multiplied by the alpha channel.
+        scene.render.alpha_mode = 'PREMUL'
+    else:
+        # Transparent, World background is transparent with premultiplied alpha.
+        scene.render.alpha_mode = 'TRANSPARENT'
     # Move the default Lamp
     bpy.data.objects['Lamp'].location = (-2, 3, 6)
     if len(bpy.data.lamps) < 3:
@@ -149,21 +160,21 @@ def render_component(klass, save_path):
         print("#### class not in dict: %s"%str(class_name))
         pose_camera()
     origin_objects = [obj.name for obj in bpy.data.objects]
-    # load class
-    component = klass()
-    # Refresh the view
-    bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
-    # Render the scene
-    scene.render.filepath = os.path.join(save_path, klass.__name__ + ".png")
-    bpy.ops.render.render(write_still=True)
-    # Remove imported objects
-    component.select() # select only the compoenent
-    # Select new component (its children)
-    for obj in bpy.data.objects:
-        if obj.name not in origin_objects:
-            obj.select = True
-    # Remove the inserted objects
-    bpy.ops.object.delete()
+    try:
+        # load class
+        component = klass()
+        # Refresh the view
+        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
+        # Render the scene
+        scene.render.filepath = os.path.join(save_path, klass.__name__ + ".png")
+        bpy.ops.render.render(write_still=True)
+    except Exception as e:
+        print("[ERROR] Could not load %s.\nSet MORSE_ROOT to the prefix " \
+              "used to install MORSE.\n%s"% (str(klass), str(e) ) )
+    finally:
+        # Remove the inserted objects
+        bpymorse.delete([obj for obj in bpy.data.objects \
+                         if obj.name not in origin_objects])
 
 def main():
     """ Generate "studio" image of MORSE components
@@ -190,9 +201,9 @@ def main():
                 try:
                     render_component(klass, save_path)
                 except Exception as e:
-                    print("ERROR : Could not render %s : %s"%(str(klass), str(e)))
+                    print("[ERROR] Could not render %s : %s"%(str(klass), str(e)))
             else:
-                print("ERROR: Not a Component : %s"%str(klass))
+                print("[ERROR] Not a Component : %s"%str(klass))
 
             print("\n\n")
 

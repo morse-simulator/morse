@@ -163,6 +163,17 @@ def select_only(obj):
         obj.select = True
         bpy.context.scene.objects.active = obj
 
+def delete(objects):
+    if not bpy:
+        return
+    if not isinstance(objects, list):
+        objects = [objects]
+    for obj in objects:
+        if isinstance(obj, str):
+            obj = bpy.data.objects[obj]
+        select_only(obj)
+        bpy.ops.object.delete()
+
 def get_objects():
     if bpy:
         return bpy.data.objects
