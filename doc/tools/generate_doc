@@ -12,56 +12,53 @@ It generates doc for:
     - the interfaces and serialization types for each input/output
 """
 
-from morse.actuators import armature, \
-                            destination,       \
-                            force_torque,      \
-                            gripper,           \
-                            light,             \
-                            keyboard,          \
-                            mocap_control,     \
-                            orientation,       \
-                            pa_10,             \
-                            ptu,               \
-                            rotorcraft_attitude, \
-                            rotorcraft_waypoint, \
-                            sound,               \
-                            stabilized_quadrotor,\
-                            steer_force,        \
-                            teleport,           \
-                            v_omega,           \
-                            v_omega_diff_drive,\
-                            waypoint,          \
-                            xy_omega
+import os
+import sys
+import pkgutil
+import inspect
 
-from morse.sensors import accelerometer, \
-                          armature_pose, \
-                          battery,   \
-                          camera,    \
-                          compound,  \
-                          depth_camera, \
-                          gps,       \
-                          gyroscope, \
-                          human_posture, \
-                          imu,       \
-                          kinect,     \
-                          laserscanner, \
-                          mocap_posture, \
-                          odometry,  \
-                          pose,      \
-                          proximity, \
-                          ptu_posture, \
-                          search_and_rescue, \
-                          semantic_camera, \
-                          thermometer, \
-                          stereo_unit, \
-                          velocity, \
-                          video_camera
-                          
-from morse.modifiers import imu_noise, \
-                            pose_noise, \
-                            utm, \
-                            ned
-                                                      
+#
+# helpers
+#
+
+def get_classes_from_module(module_name):
+    __import__(module_name)
+    # Predicate to make sure the classes only come from the module in question
+    def predicate(member):
+        return inspect.isclass(member) and member.__module__.startswith(module_name)
+    # fetch all members of module name matching 'pred'
+    return inspect.getmembers(sys.modules[module_name], predicate)
+
+def get_submodules(module_name):
+    """ Get a list of submodules from a module name.
+    Not recursive, don't return nor look in subpackages """
+    __import__(module_name)
+    module = sys.modules[module_name]
+    module_path = getattr(module, '__path__')
+    return [name for _, name, ispkg in pkgutil.iter_modules(module_path) if not ispkg]
+
+def get_subclasses(module_name, skip_submodules=[]):
+    subclasses = []
+    submodules = get_submodules(module_name)
+    for submodule_name in submodules:
+        if submodule_name in skip_submodules:
+            pass
+        submodule = "%s.%s"%(module_name, submodule_name)
+        try:
+            submodule_classes = get_classes_from_module(submodule)
+            for _, klass in submodule_classes:
+                subclasses.append(klass)
+        except Exception:
+            # can not import some resources
+            pass
+    return subclasses
+
+modules = [
+    "morse.actuators",
+    "morse.sensors",
+    "morse.modifiers",
+]
+
 import sys, os, codecs
 import fnmatch
 
@@ -163,60 +160,48 @@ def parse_docstring(doc):
 
 components = {}
 
-m = sys.modules[__name__]
+# browse morse components modules
+for module in modules:
+    print("browse %s classes"%module)
+    for klass in get_subclasses(module):
+        print("process %s"%str(klass))
+        if issubclass(klass, Actuator):
+            ctype = 'actuator'
+        elif issubclass(klass, Sensor):
+            ctype = 'sensor'
+        elif issubclass(klass, AbstractModifier):
+            ctype = 'modifier'
+        else:
+            print('not subclass %s'%str(klass))
+            continue
+        
+        component = klass
+        if hasattr(component, '_name'):
+            name = component._name
+            
+            try:
+                parent_name = component.mro()[1]._name
+                if name == parent_name:
+                    print("Component %s does not declare its own _name (name identical to parent <%s>). Skipping it." % (component.__name__, name))
+                    continue
+            except AttributeError:
+                pass
+        else:
+            print("Component %s does not declare a _name. Skipping it." % component.__name__)
+            continue
+        
+        if hasattr(component, '_short_desc'):
+            desc = getattr(component, '_short_desc')
+        else:
+            desc = ""
+        
+        components[name] = {'object': component,
+                            'type': ctype,
+                            'desc': desc,
+                            'module': sys.modules[klass.__module__],
+                            'doc': component.__doc__}
 
-# First, retreive components classes
-for module in [getattr(m, fn) for fn in dir(m)]:
-    for component in [getattr(module, fn) for fn in dir(module)]:
 
-        try:
-            name = component.__name__
-            ctype = None
-
-            if Actuator in component.mro() and name != 'Actuator':
-                print("Found actuator " + name)
-                ctype = 'actuator'
-                
-            if Sensor in component.mro() and name != 'Sensor':
-                print("Found sensor " + name)
-                ctype = 'sensor'
-
-            if AbstractModifier in component.mro() and name != 'AbstractModifier':
-                print("Found modifier " + name)
-                ctype = 'modifier'
-
-            if not ctype:
-                continue
-
-            if hasattr(component, '_name'):
-                name = component._name
-
-                try:
-                    parent_name = component.mro()[1]._name
-                    if name == parent_name:
-                        print("Component %s does not declare its own _name (name identical to parent <%s>). Skipping it." % (component.__name__, name))
-                        continue
-                except AttributeError:
-                    pass
-            else:
-                print("Component %s does not declare a _name. Skipping it." % name)
-                continue
-
-            if hasattr(component, '_short_desc'):
-                desc = getattr(component, '_short_desc')
-            else:
-                desc = ""
-
-            components[name] = {'object': component, 
-                                'type': ctype, 
-                                'desc': desc, 
-                                'module': module,
-                                'doc': component.__doc__}
-
-        except TypeError: # .mro() not defined => not a class => not a component
-            pass
-        except AttributeError: # .mro() not defined => not a class => not a component
-            pass
 
 # Extract abstraction levels
 for name, props in components.items():
