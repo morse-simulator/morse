@@ -5,11 +5,45 @@ from morse.core import blenderapi
 
 class PR2(RobotGrasper):
     """ 
-    Class definition for the PR2.
-    Sub class of Morse_Object.
+    The MORSE model of the Willow Garage's PR2 robot.
 
-    This class has many MORSE Services that you can access via sockets/telnet.
+    The PR2 uses the :doc:`armature_actuator <../actuators/armature>`
+    for control of the armatures.
+
+    Model Info
+    ----------
+
+    The model is imported from a Collada file that is generated from the
+    `PR2 URDF file  <http://www.ros.org/wiki/pr2_description>`_.
+    The .dae file can be found at:
+    ``$MORSE_ROOT/data/robots/pr2/pr2.dae``
+    The imported .blend file can be found at:
+    ``$MORSE_ROOT/data/robots/pr2/pr2_25_original.blend``
+
+    The URDF to Collada converter changed all the object names, so these
+    were remapped to the original URDF names. A renamed version of the
+    PR2 model can be found at:
+    ``$MORSE_ROOT/data/robots/pr2/pr2_25_rename.blend`` , this file
+    includes the script that is used to rename all the objects.
+
+    A model with MORSE integration for the armature can be found at
+    (**This is the model that you probably want to use in MORSE**):
+    ``$MORSE_ROOT/data/robots/pr2/pr2_25_morse.blend``.
+
+    TODO
+    ----
+
+    - Create sensors and actuators to control the PR2 armature. `A
+      SensorActuator class would be handy for this
+      <https://sympa.laas.fr/sympa/arc/morse-users/2011-07/msg00099.html>`_.
+    - Expand the armature to include the hands.
+    - Add an actuator to control the movement of the PR2 base.
+    - ROS integration.
+    - ...
+
     """
+
+    _name = 'PR2 robot'
 
     def __init__(self, obj, parent=None):
         """ 
@@ -46,7 +80,7 @@ class PR2(RobotGrasper):
     @service
     def get_armatures(self):
         """
-        MORSE Service that returns a list of all the armatures on the PR2 robot.
+        Returns a list of all the armatures on the PR2 robot.
         """
         return self.armatures
 
@@ -64,15 +98,15 @@ class PR2(RobotGrasper):
     @service
     def get_torso(self):
         """
-        MORSE Service that returns the z-translation of the torso.
+        Returns the z-translation of the torso.
         """
         return self.torso.localPosition[2] - self.TORSO_BASE_HEIGHT
 
     @service
     def get_torso_minmax(self):
         """
-        MORSE Service that returns the minimum an maximum z-translation that the torso can make from the base.
-        Returns a list [min,max]
+        Returns the minimum an maximum z-translation that the torso can
+        make from the base.  Returns a list [min,max]
         """
         return [self.TORSO_LOWER, self.TORSO_UPPER]
 

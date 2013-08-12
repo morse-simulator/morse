@@ -6,6 +6,8 @@ from morse.builder import Robot, WheeledRobot
 class Morsy(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "morsy", name)
+        self.properties(classpath = "morse.robots.morsy.Morsy")
+
     def set_color(self, color = (0.0, 0.0, 0.8)):
         """
         Allows to change Morsy's body color.

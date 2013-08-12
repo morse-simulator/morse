@@ -1,13 +1,15 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
-class Submarine(morse.core.robot.Robot):
+class Morsy(morse.core.robot.Robot):
     """
-    A generic submarine robot. The robot has no mass and its physics is
-    set to "NoCollision".
+    Morsy is the little mascot of the MORSE project.
+
+    The model does not feature any particular behaviour. It's main
+    purpose is for teaching and examples.
     """
 
-    _name = 'Submarine robot'
+    _name = 'The MORSE Morsy mascot'
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)

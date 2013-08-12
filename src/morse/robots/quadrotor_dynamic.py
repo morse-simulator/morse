@@ -1,19 +1,21 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
-
 class Quadrotor(morse.core.robot.Robot):
-    """ Class definition for a simple quadrotor.
-        Sub class of Morse_Object. """
+    """
+    Simple definition of a quadrotor, with ``Rigid Body`` physics.
+
+    It is expected to be used with actuators such as:
+        - :doc:`../actuators/force_torque`
+        - :doc:`../actuators/rotorcraft_attitude`
+        - :doc:`../actuators/rotorcraft_waypoint`
+    """
+
+    _name = 'Quadrotor with dynamics'
 
     def __init__(self, obj, parent=None):
-        """ Constructor method.
-            Receives the reference to the Blender object.
-            Optionally it gets the name of the object's parent,
-            but that information is not currently used for a robot. """
-        # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 

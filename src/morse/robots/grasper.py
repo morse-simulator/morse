@@ -27,7 +27,8 @@ class RobotGrasper(Robot):
 
     @service
     def grasp_(self, seq):
-        """ Grasp object
+        """
+        Grasp object
         """
         logger.debug("morse grasp request received")
         robot_grasper = self.bge_object

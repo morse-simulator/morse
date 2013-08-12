@@ -8,10 +8,6 @@ class Human(RobotGrasper):
         Sub class of Morse_Object. """
 
     def __init__(self, obj, parent=None):
-        """ Constructor method.
-            Receives the reference to the Blender object.
-            Optionally it gets the name of the object's parent,
-            but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
         RobotGrasper.__init__(self, obj, parent)
@@ -20,7 +16,6 @@ class Human(RobotGrasper):
         We define here the name of the pr2 grasping hand:
         """
         self.hand_name = 'Hand_Grab.R'
-
 
         logger.info('Component initialized')
 

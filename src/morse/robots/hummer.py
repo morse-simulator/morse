@@ -2,16 +2,30 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 import PhysicsConstraints
 
+from morse.helpers.components import add_property
+
 
 class Hummer(morse.core.robot.Robot):
-    """ Class definition for the Hummer.
-        Sub class of Morse_Object. """
+    """ 
+    This is a generic car like robot. It is driven using steering, power
+    and braking as provided by the :doc:`steer/force actuator
+    <../actuators/steer_force>`.  This vehicle uses the Blender `vehicle
+    wrapper
+    <http://www.blender.org/documentation/blender_python_api_2_59_0/bge.types.html#bge.types.KX_VehicleWrapper>`_
+    constraint, to give it a realistic behaviour, including the
+    interaction of the wheels with the ground and suspension.
+    """
+
+    _name = 'Hummer car robot'
+
+    add_property('friction', 200.0, 'friction', 'double',
+                 "Wheel's friction to the ground. Determines how fast \
+                 the robot can accelerate from a standstill.  Also    \
+                 affects steering wheel's ability to turn the vehicle.\
+                 A value of ``0`` gives very low acceleration. Higher \
+                 values permit a higher acceleration.  ")
 
     def __init__(self, obj, parent=None):
-        """ Constructor method.
-            Receives the reference to the Blender object.
-            Optionally it gets the name of the object's parent,
-            but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
         super(self.__class__, self).__init__(obj, parent)
@@ -178,7 +192,6 @@ class Hummer(morse.core.robot.Robot):
         #Also affects steering wheel's ability to turn vehicle.
         #0 = Very Slow Acceleration:
         # .1 and higher = Faster Acceleration / more friction:
-        friction = obj['friction']
         self.vehicle.setTyreFriction(friction, 0)
         self.vehicle.setTyreFriction(friction, 1)
         self.vehicle.setTyreFriction(friction, 2)

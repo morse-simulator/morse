@@ -1,19 +1,23 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
-
 class RMax(morse.core.robot.Robot):
-    """ Class definition for the Yamaha RMAX helicopter.
-        Sub class of Morse_Object. """
+    """
+    Simple definition of the **Yamaha RMAX** unmanned helicopter.
+
+    .. note::
+
+        The rotation of the rotor is fixed and only for show. Its speed
+        can be adjusted in the Logic panel in Blender (shown with
+        :kbd:`F4`) when the rotor object is selected.
+    """
+
+    _name = 'Yamaha RMAX platform'
 
     def __init__(self, obj, parent=None):
-        """ Constructor method.
-            Receives the reference to the Blender object.
-            Optionally it gets the name of the object's parent,
-            but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 

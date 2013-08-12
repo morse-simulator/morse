@@ -1,19 +1,19 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
-
 class PatrolBot(morse.core.wheeled_robot.MorsePhysicsRobot):
-    """ Class definition for the PatrolBot.
-        Sub class of Morse_Object. """
+    """ 
+    The Research PatrolBot, developed by MobileRobots, is a
+    differential-drive robot to carry payloads and sensors over all
+    normal indoor surfaces in wheelchair-accessible facilities. The
+    PatrolBot is an all-purpose indoor base, it can travel at speeds up
+    to 2 m/s, and can carry up to 40kg over flat surfaces.
+    """
 
     def __init__(self, obj, parent=None):
-        """ Constructor method.
-            Receives the reference to the Blender object.
-            Optionally it gets the name of the object's parent,
-            but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__,self).__init__(obj, parent)
+        super(self.__class__, self).__init__(obj, parent)
 
         logger.info('Component initialized')
 
