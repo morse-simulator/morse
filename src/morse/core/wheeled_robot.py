@@ -3,6 +3,7 @@ from abc import ABCMeta
 import morse.core.robot
 from morse.core import blenderapi
 import mathutils
+from morse.helpers.components import add_property
 
 class PhysicsWheelRobot(morse.core.robot.Robot):
     """ Abstract base class for robots with wheels that turn as
@@ -11,6 +12,14 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         """
     # Make this an abstract class
     __metaclass__ = ABCMeta
+
+    add_property('_has_suspension', True, 'HasSuspension', 'bool', 
+                 'Determine if the underlaying robot has suspension, \
+                  i.e. wheels can move independently of the body of the \
+                  robot')
+    add_property('_has_steering', True, 'HasSteering', 'bool',
+                 'Determine if the wheels turn independently of the body \
+                  of the robot.')
 
     # Local dictionaries to store references to the wheels
     _wheel_index = ['FL', 'FR', 'RL', 'RR']
@@ -70,29 +79,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
             wheel_position = mathutils.Vector(wheel.worldPosition)
             self.AttachCasterWheelToBody(wheel, self.bge_object, wheel_position)
 
-
-    def ReadGenericParameters(self):
-        # get needed parameters from the blender object
-        # determines if vehicle has suspension or just wheels
-        try:
-            self._HasSuspension=self.bge_object['HasSuspension']
-        except KeyError as e:
-            self._HasSuspension=True
-            logger.info('HasSuspension property not present and defaulted to True')
-        except:
-            import traceback
-            traceback.print_exc()
-
-        # determines if vehicle has steerable front wheels or not
-        try:
-            self._HasSteering=self.bge_object['HasSteering']
-        except KeyError as e:
-            self._HasSteering=True
-            logger.info('HasSteering property not present and defaulted to True')
-        except:
-            import traceback
-            traceback.print_exc()
-
     def GetTrackWidth(self):
         # get lateral positions of the wheels
         posL = self._wheel_positions['FL']
@@ -127,10 +113,6 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
     def build_vehicle(self):
         """ Apply the constraints to the vehicle parts. """
 
-        # get a link to the blender scene to look for wheel and suspension objectsscene = blenderapi.scene()
-        # get needed parameters from the blender object
-        self.ReadGenericParameters()
-
         # chassis ID - main object should be chassis model
         self._chassis_ID = self.bge_object.getPhysicsId()
 
@@ -139,7 +121,7 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
 
         # set up wheel constraints
         # add wheels to either suspension arms or vehicle chassis
-        if (self._HasSuspension):
+        if self._has_suspension:
             self.BuildModelWithSuspension()
         else:
             self.BuildModelWithoutSuspension()
