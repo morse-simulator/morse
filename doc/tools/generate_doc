@@ -429,6 +429,9 @@ def print_properties(out, name, props):
         title = "Configuration parameters for " + name.lower()
         out.write(underline(title, '-') + '\n')
 
+        if props['type'] == 'robot':
+            out.write("\nYou can :\n\n- set the mass of the robot using the builder method :py:meth:`morse.builder.morsebuilder.Robot.set_mass()`\n- set the friction coefficient of the robot using the builder method :py:meth:`morse.builder.morsebuilder.Robot.set_friction()`\n\n")
+
         try:
             prop = props['properties']
         except KeyError:
