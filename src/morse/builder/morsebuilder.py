@@ -141,6 +141,15 @@ class Robot(Component):
         if name:
             self.name = name
 
+    def set_friction(self, friction=0.0):
+        """ Set  Coulomb friction coefficient
+
+        :param friction: [0, 100], default 0.0
+        :type  friction: float
+        """
+        for slot in self._bpy_object.material_slots: # ['TireMat']
+            slot.material.physics.friction = friction
+
     def set_mass(self, mass):
         """ Set component's mass
 
