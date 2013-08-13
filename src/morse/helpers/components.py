@@ -1,6 +1,21 @@
 from collections import OrderedDict
 import inspect
 
+def _set_cls_value(kind, name, value):
+    curframe = inspect.currentframe()
+    try:
+        calframe = inspect.getouterframes(curframe, 3)
+        try:
+            cls_locals =  calframe[2][0].f_locals
+            if not kind in cls_locals:
+               cls_locals[kind] = OrderedDict()
+            cls_locals[kind][name] = value
+        finally:
+            del calframe
+    finally:
+        del curframe
+
+
 def add_level(name, classname, doc = "(no documentation available yet)", default=False):
     """ Defines an abstraction level for a component.
 
@@ -19,18 +34,7 @@ def add_level(name, classname, doc = "(no documentation available yet)", default
     if name in ["all", "default"]:
         raise NameError("%s is a reserved level name. You can not use it." % name)
 
-    curframe = inspect.currentframe()
-    try:
-        calframe = inspect.getouterframes(curframe, 2)
-        try:
-            cls_locals =  calframe[1][0].f_locals
-            if not "_levels" in cls_locals:
-               cls_locals["_levels"] = OrderedDict()
-            cls_locals["_levels"][name] = (classname, doc, default)
-        finally:
-            del calframe
-    finally:
-        del curframe
+    _set_cls_value('_levels', name, (classname, doc, default))
 
 
 def add_data(name, default_value, type = "", doc = "(no documentation available yet)", level = "all"):
@@ -52,19 +56,7 @@ def add_data(name, default_value, type = "", doc = "(no documentation available 
 
     """
 
-    curframe = inspect.currentframe()
-    try:
-        calframe = inspect.getouterframes(curframe, 2)
-        try:
-            cls_locals =  calframe[1][0].f_locals
-            if not "_data_fields" in cls_locals:
-               cls_locals["_data_fields"] = OrderedDict()
-            cls_locals["_data_fields"][name] = (default_value, type, doc, level)
-        finally:
-            del calframe
-    finally:
-        del curframe
-
+    _set_cls_value('_data_fields', name, (default_value, type, doc, level))
 
 def add_property(python_name, default_value, name, type = "", doc = "(no documentation available yet)"):
     """ Add a property to the current class of component
@@ -79,16 +71,5 @@ def add_property(python_name, default_value, name, type = "", doc = "(no documen
     :param type: type of the property, for documentation
     :param doc: description of the property.
     """
-    curframe = inspect.currentframe()
-    try:
-        calframe = inspect.getouterframes(curframe, 2)
-        try:
-            cls_locals =  calframe[1][0].f_locals
-            if not "_properties" in cls_locals:
-               cls_locals["_properties"] = OrderedDict()
-            cls_locals["_properties"][name] = (default_value, type, doc, python_name)
-        finally:
-            del calframe
-    finally:
-        del curframe
 
+    _set_cls_value('_properties', name, (default_value, type, doc, python_name))
