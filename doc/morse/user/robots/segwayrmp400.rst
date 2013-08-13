@@ -13,13 +13,6 @@ always moving at the same speed. Since the wheels of this robot use the
 ``Rigid Body`` physics, it must be controlled with the :doc:`v_omega_diff_drive
 <../actuators/v_omega_diff_drive>` actuator.
 
-.. warning::
-  Because of the physics constraints used in this robot, its wheels must NOT be
-  children of the robot when the simulation is started. To properly include an
-  RMP 400 robot in a scene, it must be done using a special class of the
-  Builder API, and then calling a method to unparent the wheels from the robot.
-  See below for an example.
-
 .. image:: ../../../media/robots/segwayrmp400.png 
   :align: center
   :width: 600
@@ -41,48 +34,6 @@ modified directly in the Blender file:
   panel
 - The **Friction** coefficient of the robot can be adjusted in the
   **Properties >> Material** panel
-
-
-Example in Builder API
-----------------------
-
-To add a Segway RMP 400 robot, it is necessary to use the ``WheeledRobot``
-class. Also, after giving any transformations to the robot (translation or
-rotation), you **MUST** call the method ``unparent_wheels`` of the robot
-instance. Otherwise the robot will not move.
-
-.. code-block:: python
-
-    from morse.builder import *
-
-    # Append Segway robot to the scene
-    robot = SegwayRMP400()
-    robot.rotate(z=0.73)
-    robot.translate(x=-2.0, z=0.2)
-    robot.unparent_wheels()
-
-Another restriction with this kind of robots is that for any additional
-components added to it, translations and rotations must be applied before
-parenting them to the robot.
-
-**WRONG:**
-
-.. code-block:: python
-
-    pose = Pose()
-    robot.append(pose)
-    pose.translate(x=0.5, y=0.1, z=0.4)
-    pose.rotate(x=1.57)
-
-**RIGHT:**
-
-.. code-block:: python
-
-    pose = Pose()
-    pose.translate(x=0.5, y=0.1, z=0.4)
-    pose.rotate(x=1.57)
-    robot.append(pose)
-
 
 Configurable parameters
 -----------------------
