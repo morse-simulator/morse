@@ -20,17 +20,17 @@ class SocketNode(SimulationNodeClass):
         Create the socket that will be used to commmunicate to the server.
         """
         self.node_stream = None
-        logger.debug("Connecting to port %s:%d" % (self.host, self.port))
+        logger.debug("Connecting to %s:%d" % (self.host, self.port) )
         try:
             self.node_stream = StreamJSON(self.host, self.port)
             self.async_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} )
             self.async_thread.start()
-            if self.node_stream.is_up():
-                logger.info("Connection established to node manager (%s, %s)" % (self.host, self.port))
+            if self.node_stream.connected:
+                logger.info("Connected to %s:%s" % (self.host, self.port) )
         except Exception as e:
-            logger.warning("Multi-node simulation not available!!")
-            logger.info("\tUnable to connect to server: (%s, %s)" % (self.host, self.port))
-            logger.info("\t%s" % e)
+            logger.info("Multi-node simulation not available!")
+            logger.warning("Unable to connect to %s:%s"%(self.host, self.port) )
+            logger.info(str(e))
 
     def _exchange_data(self, out_data):
         """ Send and receive pickled data through a socket """
@@ -42,8 +42,8 @@ class SocketNode(SimulationNodeClass):
         if not self.node_stream:
             logger.debug("not self.node_stream")
             return
-        if not self.node_stream.is_up():
-            logger.debug("not self.node_stream.is_up")
+        if not self.node_stream.connected:
+            logger.debug("not self.node_stream.connected")
             return
 
         # Get the coordinates of local robots
@@ -73,7 +73,6 @@ class SocketNode(SimulationNodeClass):
                 logger.debug("%s not found in this simulation scenario, but present in another node. Ignoring it!" % obj_name)
                 continue
             if obj not in blenderapi.persistantstorage().robotDict:
-                logger.debug("Data received: ", robot_data)
                 obj.worldPosition = robot_data[0]
                 obj.worldOrientation = mathutils.Euler(robot_data[1]).to_matrix()
 
