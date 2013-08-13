@@ -75,8 +75,5 @@ class TwoRMP400Test(MorseTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(TwoRMP400Test)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
-
+    from morse.testing.testing import main
+    main(TwoRMP400Test)
