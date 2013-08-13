@@ -516,7 +516,8 @@ for name, props in components.items():
         out.write(parse_docstring(props['doc'])[0] + "\n\n")
 
         print_properties(out, name, props)
-        if not print_levels(out, name, props) and props['type'] != 'modifier':
+        if not print_levels(out, name, props) and \
+               props['type'] not in ['modifier', 'robot']:
             print_data(out, name, props)
 
         if props['type'] != 'modifier':
