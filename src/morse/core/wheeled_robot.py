@@ -23,10 +23,13 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
 
     # Local dictionaries to store references to the wheels
     _wheel_index = ['FL', 'FR', 'RL', 'RR']
-    _wheels = {}
-    _wheel_positions = {}
-    _wheel_orientations = {}
-    _wheel_joints = {}
+
+    def __init__(self, obj, parent):
+        morse.core.robot.Robot.__init__(self, obj, parent)
+        self._wheels = {}
+        self._wheel_positions = {}
+        self._wheel_orientations = {}
+        self._wheel_joints = {}
 
     def action(self):
         """ Overload the 'action' method of the Robot
