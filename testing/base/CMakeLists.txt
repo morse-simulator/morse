@@ -2,6 +2,7 @@
 
 add_morse_test(base_testing)
 add_morse_test(renaming_testing)
+add_morse_test(builder_wheeled_robot)
 add_morse_test(levels)
 
 # Sensor
