@@ -205,29 +205,17 @@ for module in modules:
                             'module': sys.modules[klass.__module__],
                             'doc': component.__doc__}
 
-
-
-# Extract abstraction levels
+# Extract levels, data_fields and properties
 for name, props in components.items():
     c = props['object'] # component class
-    if hasattr(c, "_levels"):
-        print("Found abstraction levels '" + str(c._levels) + "' in component " + name)
-        components[name]['levels'] = c._levels
-
-
-# Extract data fields
-for name, props in components.items():
-    c = props['object'] # component class
-    if hasattr(c, "_data_fields"):
-        print("Found datafields '" + str(c._data_fields) + "' in component " + name)
-        components[name]['data_fields'] = c._data_fields
-
-# Extract properties
-for name, props in components.items():
-    c = props['object'] # component class
-    if hasattr(c, "_properties"):
-        print("Found properties '" + str(c._properties) + "' in component " + name)
-        components[name]['properties'] = c._properties
+    for cls in reversed(c.__mro__):
+        for key in ['levels', 'data_fields', 'properties']:
+            attribute = '_' + key
+            if hasattr(cls, attribute):
+                if not key in components[name]:
+                    components[name][key] = getattr(cls, attribute)
+                else:
+                    components[name][key].update(getattr(cls, attribute))
 
 # Then, extract services
 for name, props in components.items():
