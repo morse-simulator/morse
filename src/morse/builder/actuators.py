@@ -50,6 +50,26 @@ class Keyboard(ActuatorCreator):
         sensor.use_pulse_true_level = True
         sensor.use_all_keys = True
 
+class Joystick(ActuatorCreator):
+    def __init__(self, name=None, index=0):
+        """ Create a new Joystick controller
+
+        :param index: Which joystick to use
+        :type index:  int in [0, 7], default 0
+        """
+        ActuatorCreator.__init__(self, name)
+        self.properties(classpath = "morse.actuators.joystick.Joystick")
+        self.properties(Speed = 1.0)
+        obj = bpymorse.get_context_object()
+        # replace Always sensor by Keyboard sensor
+        sensor = obj.game.sensors[-1]
+        sensor.type = 'JOYSTICK'
+        # need to get the new Keyboard Sensor object
+        sensor = obj.game.sensors[-1]
+        sensor.use_pulse_true_level = True
+        sensor.use_all_events = True
+        sensor.joystick_index = index
+
 # kuka_lwr uses Actuator from morse.builder
 class KukaLWR(Actuator):
     def __init__(self, name=None):

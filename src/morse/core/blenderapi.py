@@ -221,6 +221,12 @@ def getssr():
     else:
         return None
 
+def joysticks():
+    if not fake:
+        return bge.logic.joysticks
+    else:
+        return None
+
 def isfastmode():
     if not fake:
         return (bge.render.getMaterialMode() == bge.render.KX_TEXFACE_MATERIAL)
