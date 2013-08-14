@@ -192,10 +192,10 @@ class Hummer(morse.core.robot.Robot):
         #Also affects steering wheel's ability to turn vehicle.
         #0 = Very Slow Acceleration:
         # .1 and higher = Faster Acceleration / more friction:
-        self.vehicle.setTyreFriction(friction, 0)
-        self.vehicle.setTyreFriction(friction, 1)
-        self.vehicle.setTyreFriction(friction, 2)
-        self.vehicle.setTyreFriction(friction, 3)
+        self.vehicle.setTyreFriction(self.friction, 0)
+        self.vehicle.setTyreFriction(self.friction, 1)
+        self.vehicle.setTyreFriction(self.friction, 2)
+        self.vehicle.setTyreFriction(self.friction, 3)
 
         logger.info('Component initialized')
 
