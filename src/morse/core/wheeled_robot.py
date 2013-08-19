@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.robot
 from morse.core import blenderapi
+from math import sqrt
 import mathutils
 from morse.helpers.components import add_property
 
@@ -86,8 +87,11 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         # get lateral positions of the wheels
         posL = self._wheel_positions['FL']
         posR = self._wheel_positions['FR']
-        # subtract y coordinates of wheels to get width
-        return posL[1]-posR[1]
+
+        diff_x = posL[0] - posR[0]
+        diff_y = posL[1] - posR[1]
+        diff_z = posL[2] - posR[2]
+        return sqrt( diff_x ** 2 + diff_y ** 2 + diff_z ** 2)
 
     def GetWheelRadius(self, wheelName):
         dims=blenderapi.objectdata(wheelName).dimensions
@@ -120,7 +124,7 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         self._chassis_ID = self.bge_object.getPhysicsId()
 
         # get track width
-        self._trackWidth=self.GetTrackWidth();
+        self._trackWidth = self.GetTrackWidth();
 
         # set up wheel constraints
         # add wheels to either suspension arms or vehicle chassis
