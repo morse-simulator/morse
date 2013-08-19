@@ -4,6 +4,7 @@ This script tests the Segway RMP400 robot with differential drive actuator
 """
 
 import sys
+import math
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
