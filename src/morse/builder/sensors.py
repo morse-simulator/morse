@@ -440,3 +440,32 @@ class Kinect(SensorCreator):
         # Override AbstractComponent method
         self.video_camera.profile()
         self.depth_camera.profile()
+
+class Collision(SensorCreator):
+    def __init__(self, name=None, collision_property=None):
+        """ Sensor to detect objects colliding with the current object,
+        with more settings than the Touch sensor
+
+        :param collision_property: Only look for objects with this property
+        :type  collision_property: string, default None (all objects)
+        """
+        SensorCreator.__init__(self, name)
+        self.properties(classpath = "morse.sensors.collision.Collision")
+        obj = bpymorse.get_context_object()
+        # Sensor, Collision Sensor, detects static and dynamic objects but
+        # not the other collision sensor objects.
+        obj.game.physics_type = 'SENSOR'
+        # Specify a collision bounds type other than the default
+        obj.game.use_collision_bounds = True
+        # replace Always sensor by Collision sensor
+        sensor = obj.game.sensors[-1]
+        sensor.type = 'COLLISION'
+        # need to get the new Collision Sensor object
+        sensor = obj.game.sensors[-1]
+        sensor.property = collision_property
+        sensor.use_pulse_true_level = True
+        # Component mesh (eye sugar)
+        mesh = Cube("CollisionMesh")
+        mesh.scale = (.02, .02, .02)
+        mesh.color(.8, .2, .1)
+        self.append(mesh)
