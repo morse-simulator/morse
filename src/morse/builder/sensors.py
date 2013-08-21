@@ -442,12 +442,9 @@ class Kinect(SensorCreator):
         self.depth_camera.profile()
 
 class Collision(SensorCreator):
-    def __init__(self, name=None, collision_property=None):
+    def __init__(self, name=None):
         """ Sensor to detect objects colliding with the current object,
         with more settings than the Touch sensor
-
-        :param collision_property: Only look for objects with this property
-        :type  collision_property: string, default None (all objects)
         """
         SensorCreator.__init__(self, name)
         self.properties(classpath = "morse.sensors.collision.Collision")
@@ -462,10 +459,17 @@ class Collision(SensorCreator):
         sensor.type = 'COLLISION'
         # need to get the new Collision Sensor object
         sensor = obj.game.sensors[-1]
-        sensor.property = collision_property
-        sensor.use_pulse_true_level = True
+        sensor.use_pulse_true_level = True # FIXME doesnt seems to have any effect
         # Component mesh (eye sugar)
         mesh = Cube("CollisionMesh")
         mesh.scale = (.02, .02, .02)
         mesh.color(.8, .2, .1)
         self.append(mesh)
+    def properties(self, **kwargs):
+        SensorCreator.properties(self, **kwargs)
+        if 'collision_property' in kwargs:
+            try:
+                sensor = self._bpy_object.game.sensors[-1]
+                sensor.property = kwargs['collision_property']
+            except KeyError:
+                pass

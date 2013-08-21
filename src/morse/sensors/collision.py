@@ -1,15 +1,25 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.sensor import Sensor
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 from morse.core import blenderapi
 
 class Collision(Sensor):
-    """ Sensor to detect objects colliding with the current object,
-    with more settings than the Touch sensor """
+    """
+    Sensor to detect objects colliding with the current object,
+    with more settings than the Touch sensor
+    """
     _name = "Collision"
+    _short_desc = "Detect objects colliding with the current object."
 
     add_data('collision', False, "bool", "objects colliding with the current object")
     add_data('objects', "", "string", "A list of colliding objects.")
+
+    # These properties are not used directly in the logic, but are used
+    # in the builder to create the radar properly.
+    # These value cannot be changed dynamically in bge.
+    add_property('_collision_property', "", 'collision_property', 'string',
+                 'Only look for objects with this property, '
+                 'default "" (all objects)')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
