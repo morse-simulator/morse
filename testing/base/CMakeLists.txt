@@ -21,6 +21,7 @@ add_morse_test(thermometer_testing)
 add_morse_test(search_and_rescue_testing)
 add_morse_test(velocity_testing)
 add_morse_test(video_camera_testing)
+add_morse_test(collision_testing)
 
 # Actuator
 

@@ -39,7 +39,7 @@ class FrictionTest(MorseTestCase):
         collision.add_stream('socket')
         collision.translate(x = 0.7, z = 0.2)
         robot.append(collision)
-        robot.translate(x = -4.0)
+        robot.translate(x = -3.0)
 
         env = Environment('empty', fastmode = True)
 
@@ -49,7 +49,7 @@ class FrictionTest(MorseTestCase):
             collision = sim.robot.collision.get(timeout=0.1)
             self.assertEqual(collision, None)
 
-            send_speed(sim.robot.motion, 1.0, 0.0, 2.0)
+            send_speed(sim.robot.motion, 1.0, 0.0, 1.0)
 
             collision = sim.robot.collision.get(timeout=0.1)
             self.assertNotEqual(collision, None)
