@@ -29,22 +29,6 @@ class FrictionTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API. """
 
-        dala = ATRV()
-        dala.properties(obstacle=1)
-
-        robot = ATRV()
-
-        motion = MotionVW()
-        motion.add_stream('socket')
-        robot.append(motion)
-
-        collision = Collision()
-        collision.properties(collision_property="obstacle")
-        collision.add_stream('socket')
-        collision.translate(x = 0.7, z = 0.2)
-        robot.append(collision)
-        robot.translate(x = -2.0)
-
         robot1 = ATRV()
 
         pose = Pose()
