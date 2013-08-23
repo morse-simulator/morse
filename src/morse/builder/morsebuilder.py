@@ -20,15 +20,14 @@ The string passed to the differents Components Classes must be an existing
 in the folder ``MORSE_COMPONENTS/robots/``.
 """
 
-def morse_excepthook(etype, evalue, etraceback):
-    logger.error("[ERROR][MORSE] Your builder script is invalid!")
-    import traceback
-    traceback.print_tb(etraceback)
-    logger.error("\n")
-    logger.error(str(evalue))
+# Override the default Python exception handler
+sys_excepthook = sys.excepthook
+def morse_excepthook(*args, **kwargs):
+    logger.error("[ERROR][MORSE] Uncaught exception, quit Blender.")
+    sys_excepthook(*args, **kwargs)
     import os
     os._exit(-1)
-# unhandled exception quit Blender
+# Uncaught exception quit Blender
 sys.excepthook = morse_excepthook
 
 class PassiveObject(AbstractComponent):
