@@ -3,10 +3,10 @@ import morse.core.robot
 
 class @classname@(morse.core.robot.Robot):
     """ 
-	Class definition for the @name@ robot.
-	"""
+    Class definition for the @name@ robot.
+    """
 
-	_name = '@name@ robot'
+    _name = '@name@ robot'
 
     def __init__(self, obj, parent=None):
         """ Constructor method
