@@ -36,7 +36,7 @@ want to build. You can then use it as a reference for our own sensor/actuator.
 Creating a new component
 ------------------------
 
-MORSE offers a convient command-line tool to create and setup a new component.
+MORSE offers a convenient command-line tool to create and setup a new component.
 
 Assuming you already have an :doc:`initial simulation
 environment<../user/builder>` called ``mysim``, you can create a new sensor
