@@ -1,5 +1,19 @@
 (as ordered by 'git shortlog -sn TAG1..TAG2')
 
+MORSE 1.1
+---------
+Arnaud Degroote (LAAS-CNRS)
+Pierrick Koch (LAAS-CNRS)
+Séverin Lemaignan (EPFL)
+Felix Ruess (DLR-RMC)
+Charles Lesire-Cabaniols (ONERA)
+Gregoire Milliez (LAAS-CNRS)
+Michael Karg (TUM-IAS)
+David Hodo (Auburn University)
+Chris Burbridge (University of Birmingham)
+Florian Lier (Cognitive Interaction Technology, Bielefeld University)
+Matthieu Herrb (LAAS-CNRS)
+
 MORSE 1.0
 ---------
 Arnaud Degroote (LAAS-CNRS)
