@@ -21,6 +21,9 @@ Actuators
   configurable parameters (in particular, the color of light and its energy).
   A new service 'toggle' allows to control it.
 - New 3D :doc:`user/actuators/sound` actuator {play,pause,stop} from local mp3 file.
+- Add a :doc:`joystick <user/actuators/joystick>` actuator allowing to control directly
+  your robot using a joystick.
+
 
 Robots
 ++++++
@@ -38,9 +41,19 @@ Sensors
 - The :doc:`user/sensors/semantic_camera` performance has been improved. It
   has a new option 'noocclusion' to disable occlusion testing and get even
   better performances.
+- The :doc:`user/sensors/thermometer` has been reworked to handle multiple
+  fire sources, potentially of different nature
+- Introduce a new sensor :doc:`user/sensors/collision` which allows to detect
+  if the robot is in collision with some objects of the environment.
 
 Builder API
 -----------
+
+It is now possible to handle loop in builder script (#357). See
+:doc:`user/builder` for documentation about it.
+
+API addition
+++++++++++++
 
 - `make_ghost` method allows to transform the robot in ``ghost mode``
   (transparent and with no associated physics)
@@ -49,6 +62,12 @@ Builder API
   component. A service with similar name allows to do that at runtime too.
   (#337).
 - `set_speed_camera` allows to change the speed of the viewport camera.
+- `set_friction` allows to change friction parameter with the ground
+
+API changes
++++++++++++
+
+- `add_default_interface` has now a smarter behaviour (#399)
 
 Pymorse
 -------
