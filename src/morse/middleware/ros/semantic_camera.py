@@ -37,6 +37,8 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
             # if object has no description, set to '-'
             if obj['description'] == '':
                 description = '-'
+            else:
+                description = obj['description']
 
             # send tf-frame for every object
             self.sendTransform(obj['position'], obj['orientation'], \
