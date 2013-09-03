@@ -1,0 +1,21 @@
+To cite MORSE in publications, please use:
+
+Echeverria et al. Simulating Complex Robotic Scenarios with MORSE. SIMPAR 2012.
+
+For LaTeX users, you can use this BibTeX entry:
+
+@inproceedings{morse_simpar_2012,
+  author    = {Gilberto Echeverria and
+               Séverin Lemaignan and
+               Arnaud Degroote and
+               Simon Lacroix and
+               Michael Karg and
+               Pierrick Koch and
+               Charles Lesire and
+               Serge Stinckwich},
+  title     = {Simulating Complex Robotic Scenarios with MORSE},
+  booktitle = {SIMPAR},
+  year      = {2012},
+  pages     = {197-208},
+  url       = {http://morse.openrobots.org}
+}
