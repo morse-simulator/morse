@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 import json
+import errno
 from morse.core.datastream import Datastream
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
@@ -54,8 +55,12 @@ class SocketServ(AbstractDatastream):
                 s.close()
 
         if self._server:
-            logger.info("Shutting down connections to server...")
-            self._server.shutdown(socket.SHUT_RDWR)
+            try:
+                logger.info("Shutting down connections to server...")
+                self._server.shutdown(socket.SHUT_RDWR)
+            except OSError as e:
+                if e.errno != errno.ENOTCONN:  #ignore exception raised on OSX for closed sockets 
+                    raise
             logger.info("Closing socket server...")
             self._server.close()
 
