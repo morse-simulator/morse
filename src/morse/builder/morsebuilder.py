@@ -23,7 +23,8 @@ in the folder ``MORSE_COMPONENTS/robots/``.
 # Override the default Python exception handler
 sys_excepthook = sys.excepthook
 def morse_excepthook(*args, **kwargs):
-    logger.error("[ERROR][MORSE] Uncaught exception, quit Blender.")
+    exceptionInfo = (args[0], args[1], args[2])
+    logger.error("[ERROR][MORSE] Uncaught exception, quit Blender.", exc_info = exceptionInfo)
     sys_excepthook(*args, **kwargs)
     import os
     os._exit(-1)
