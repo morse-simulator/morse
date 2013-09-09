@@ -45,6 +45,8 @@ Sensors
   fire sources, potentially of different nature
 - Introduce a new sensor :doc:`user/sensors/collision` which allows to detect
   if the robot is in collision with some objects of the environment.
+- Fix Camera resolutions ratio issue #371. We now create one Blender scene for
+  each camera in the simulation, with specific render resolution.
 
 Builder API
 -----------
