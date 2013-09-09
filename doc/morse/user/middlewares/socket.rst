@@ -26,6 +26,12 @@ The socket data-stream interface is implemented in :py:mod:`morse.middleware.soc
 
 .. note:: The port numbers used for the socket datastream interface start at 60000.
 
+.. _socket_ds_configuration:
+
+Configuration specificities
+---------------------------
+
+There is no special configuration parameter for the socket middleware.
 
 Service interface
 -----------------
@@ -83,14 +89,5 @@ Files
 
 - Python (data-stream): ``$MORSE_ROOT/src/morse/middleware/socket_datastream.py``
 - Python (services): ``$MORSE_ROOT/src/morse/middleware/socket_request_manager.py``
-
-Available methods
------------------
-
-- ``read_message``: Reads data as a json dictionary into the
-  ``local_data`` associated to the component. The dictionary keys must
-  be identical to the component ``local_data`` keys.
-- ``post_message``: Dumps a json version of the component ``local_data`` on the socket.
-  It can be read on the other end with ``json.loads``.
 
 .. _json: http://docs.python.org/library/json.html

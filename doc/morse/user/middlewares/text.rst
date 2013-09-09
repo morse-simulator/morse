@@ -37,10 +37,16 @@ Files
 
 - Python: ``$MORSE_ROOT/src/morse/modifiers/text_datastream.py``
 
-Available methods
------------------
+.. _text_ds_configuration:
 
-- ``write_data``: It will print to the file the current position of the robot,
-  at the time of the sensor reading, followed by the contents (variables and
-  data) in the ``local_data`` dictionary of the associated component.
+Configuration specificities
+---------------------------
 
+When configuring a component to export its data through the "text" middleware,
+you can pass the option ``file`` to define the name of the file written by the
+component.
+
+
+.. code-block :: python
+
+    foo.add_stream('text', file = '/tmp/my_comp.log')

@@ -338,6 +338,11 @@ the :doc:`compatibility matrix <integration>`.
     Configuration for standard sensors and actuators are defined in
     the module :py:mod:`morse.builder.data`.
 
+.. note::
+    Some middleware allows to configure the behaviour of each stream. Report
+    to the documentation of your specific middleware, in the part
+    "Configuration specificities" to know more about it.
+
 Adding modifiers
 ----------------
 
