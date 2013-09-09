@@ -55,8 +55,13 @@ class SocketServ(AbstractDatastream):
                 s.close()
 
         if self._server:
-            logger.info("Shutting down connections to server...")
-            self._server.shutdown(socket.SHUT_RDWR)
+            try:
+                logger.info("Shutting down connections to server...")
+                self._server.shutdown(socket.SHUT_RDWR)
+            except socket.error as err_info:
+                # ignore exception raised on OSX for closed sockets
+                if err_info.errno != errno.ENOTCONN:
+                    raise
             logger.info("Closing socket server...")
             self._server.close()
 
