@@ -596,7 +596,8 @@ def generate_matrix(filename):
         actuators_list.sort()
         
         first_line = ['Features']
-        first_line.extend(datastreams)
+        link_datastreams = [':doc:`' + d + ' <middlewares/' + d + '>`' for d in datastreams]
+        first_line.extend(link_datastreams)
         add_csv_line(out, first_line)
         add_csv_line(out, ['Communications,'])
         add_csv_line(out, ['``Datastreams``', '✔', '✔', '✔ (ports)', '✔ (topics)',  '✔ (posters)', '✔ (database)'])
