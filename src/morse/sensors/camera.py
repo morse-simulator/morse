@@ -64,7 +64,6 @@ class Camera(morse.core.sensor.Sensor):
         """ Update the texture image. """
         # Configure the texture settings the first time the sensor is called
         if not self._texture_ok:
-            self._texture_ok = True
             if blenderapi.isfastmode():
                 logger.warning("Running in fastmode! No camera support!")
             else:
@@ -78,6 +77,7 @@ class Camera(morse.core.sensor.Sensor):
                 else:
                     self._camera_running = True
 
+            return
 
         if self._camera_running:
             # Update all objects pose/orientation before to refresh the image
@@ -130,6 +130,8 @@ class Camera(morse.core.sensor.Sensor):
         # Get the reference to the scene
         scene_map = blenderapi.get_scene_map()
         logger.info("Scene %s from %s"% (self.scene_name, repr(scene_map.keys()) ) )
+        if self.scene_name not in scene_map:
+            return
         self._scene = scene_map[self.scene_name]
         self._morse_scene = scene_map['S.MORSE_LOGIC']
 
@@ -175,3 +177,4 @@ class Camera(morse.core.sensor.Sensor):
                         detail)
 
         blenderapi.cameras()[self.name()] = vt_camera
+        self._texture_ok = True

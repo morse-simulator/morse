@@ -105,12 +105,13 @@ class VideoCamera(morse.sensors.camera.Camera):
 
     def default_action(self):
         """ Update the texture image. """
-
         # Grab an image from the texture
         if self.bge_object['capturing'] and (self._n != 0) :
 
             # Call the action of the parent class
             morse.sensors.camera.Camera.default_action(self)
+            if not self._camera_running:
+                return
 
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA
