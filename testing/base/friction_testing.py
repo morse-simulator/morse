@@ -62,7 +62,7 @@ class FrictionTest(MorseTestCase):
     def test_friction(self):
         with Morse() as simu:
 
-            precision=0.05
+            precision=0.1
 
             # Read the start position, it must be (0.0, 0.0, 0.0)
             for pose_stream in [simu.robot1.pose, simu.robot2.pose]:

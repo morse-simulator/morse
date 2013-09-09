@@ -124,6 +124,24 @@ def scene():
     else:
         return None
 
+def add_scene(name, overlay=1):
+    if not fake:
+        return bge.logic.addScene(name, overlay)
+    else:
+        return None
+
+def get_scene_list():
+    if not fake:
+        return bge.logic.getSceneList()
+    else:
+        return None
+
+def get_scene_map():
+    if not fake:
+        return {s.name: s for s in bge.logic.getSceneList()}
+    else:
+        return None
+
 def render():
     if not fake:
         return bge.render

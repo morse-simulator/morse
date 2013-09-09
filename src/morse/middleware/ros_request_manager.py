@@ -258,11 +258,14 @@ class RosRequestManager(RequestManager):
 
         # robot.001.sensor.001 = robot001.sensor001
         name = re.sub(r'\.([0-9]+)', r'\1', component_name)
+        _service_name = name.replace(".", "/") + "/" + service_name
 
-        s = rospy.Service(name.replace(".", "/") + "/" + service_name, rostype, cb)
-        logger.debug("Created new ROS service for {}.{}".format(
-                                                    component_name,
-                                                    service_name))
+        try:
+            s = rospy.Service(_service_name, rostype, cb)
+            logger.debug("Created new ROS service for %s.%s" % \
+                         (component_name, service_name))
+        except Exception as e:
+            logger.warning("Could not initiate rospy.Service\n" + str(e))
 
         return True
     

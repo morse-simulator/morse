@@ -39,6 +39,7 @@ new_mesh = empty_method
 new_object = empty_method
 apply_transform = empty_method
 open_sound = empty_method
+new_scene = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -67,6 +68,7 @@ if bpy:
     new_object = bpy.data.objects.new
     apply_transform = bpy.ops.object.transform_apply
     open_sound = bpy.ops.sound.open
+    new_scene = bpy.ops.scene.new
 
 def create_new_material():
     all_materials = get_materials().keys()
@@ -156,6 +158,21 @@ def get_sound(name_or_id):
 
 def get_last_sound():
     return get_sound(-1)
+
+def get_scenes():
+    if bpy:
+        return bpy.data.scenes
+    else:
+        return []
+
+def get_scene(name_or_id):
+    if bpy and bpy.data.scenes:
+        return bpy.data.scenes[name_or_id]
+    else:
+        return None
+
+def get_last_scene():
+    return get_scene(-1)
 
 def select_only(obj):
     if bpy:
@@ -272,6 +289,11 @@ def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
     get_context_scene().game_settings.logic_step_max = logic_step_max
     get_context_scene().game_settings.physics_step_max = physics_step_max
 
+def get_properties(obj):
+    retvalue = {}
+    for name, prop in obj.game.properties.items():
+        retvalue[name] = prop.value
+    return retvalue
 
 def properties(obj, **kwargs):
     """ Add/modify the game properties of the Blender object
@@ -343,3 +365,18 @@ def set_viewport(viewport_shade='WIREFRAME', clip_end=1000):
                 if space.type == 'VIEW_3D':
                     space.viewport_shade = viewport_shade
                     space.clip_end = clip_end
+
+def set_viewport_perspective(perspective='CAMERA'):
+    """ Set the default view view_perspective
+
+    Equivalent to ``bpy.ops.view3d.viewnumpad`` with good context.
+
+    :param perspective: View, Preset viewpoint to use
+    :type  perspective: enum in ['FRONT', 'BACK', 'LEFT', 'RIGHT', 'TOP',
+                                 'BOTTOM', 'CAMERA'], default 'CAMERA'
+    """
+    for area in bpy.context.window.screen.areas:
+        if area.type == 'VIEW_3D':
+            for space in area.spaces:
+                if space.type == 'VIEW_3D':
+                    space.region_3d.view_perspective = 'CAMERA'
