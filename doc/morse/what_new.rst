@@ -76,6 +76,12 @@ The Python bindings for MORSE have been completely rewritten and is now much
 more efficient (based on *asynchat* API). However, it is mostly an internal
 rewrite, and the interface does not change.
 
+Multi-node
+----------
+
+Rewrite the :doc:`user/multinode/socket` client/server (internal). Use JSON
+instead of unsafe `pickle`.
+
 Tools
 -----
 

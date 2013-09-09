@@ -76,7 +76,7 @@ Multi-node
 ----------
 
 Rewrite the multi-node socket client/server (internal). Use JSON instead of
-unsafe `pickle`, same API.
+unsafe `pickle`.
 
 Tools
 -----

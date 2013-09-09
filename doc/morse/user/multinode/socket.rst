@@ -14,18 +14,6 @@ robots from all the nodes, condense them in a single list, and send the new
 list to all connected clients, thus synchronising the movement of all robots
 across the multi-node simulation.
 
-The ``multinode_server`` program can take as an optional command line argument
-a floating point value indicating the time in seconds between the
-synchronisation message sent to all clients. This delay effectively slows down
-the simulation. By default the delay is set to 0 seconds, so it will run at
-the fastest possible speed. It is currently not possible to speed up the
-simulation.
-
-While the simulation is running, the ``multinode_server`` program also permits
-pausing the simulation in all nodes. The pause is toggled on and off in the
-terminal where the program is running, and typing :kbd:`p` and pressing
-:kbd:`enter`.
-
 
 Executing a socket multi-node simulation
 ----------------------------------------
@@ -45,7 +33,7 @@ The whole process for launching the multi-node simulation is described below:
 
 #. In one shell terminal, launch the multi-node server, with an optional delay::
 
-    $ multinode_server [0.01]
+    $ multinode_server
 
 #. On another terminal, setup the necessary environment variables for ``nodeA`` and launch MORSE:
 
