@@ -213,7 +213,7 @@ class MorseTestCase(unittest.TestCase):
         try:
             sock.connect(("localhost", 4000))
             sock.send(b"id1 simulation quit\n")
-        except (ConnectionRefusedError, KeyboardInterrupt):
+        except (socket.error, KeyboardInterrupt):
             sock.close()
             sock = None
             testlogger.info("MORSE crashed")
