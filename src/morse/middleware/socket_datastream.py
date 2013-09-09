@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import socket
 import select
 import json
+import errno
 from morse.core.datastream import Datastream
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
@@ -198,11 +199,22 @@ class Socket(Datastream):
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
         """
-        # Create a socket server for this component
-        serv = Datastream.register_component(self, component_name,
-                                         component_instance, mw_data)
-
         global BASE_PORT
+
+        register_success = False
+
+        while (not register_success):
+            try:
+                # Create a socket server for this component
+                serv = Datastream.register_component(self, component_name,
+                                                 component_instance, mw_data)
+                register_success = True
+            except socket.error as error_info:
+                if error_info.errno ==  errno.EADDRINUSE:
+                    BASE_PORT = BASE_PORT + 1
+                else:
+                    raise
+
         self._server_dict[BASE_PORT] = serv
         self._component_nameservice[component_name] = BASE_PORT
         BASE_PORT = BASE_PORT + 1
