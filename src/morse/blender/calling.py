@@ -10,49 +10,40 @@ from morse.core import blenderapi
 def robot_action(contr):
     """ Call the 'action' method of the correct robot. """
     # Do nothing if morse has not been properly initialised
-    try:
-        simu = blenderapi.persistantstorage()
-        if "morse_initialised" not in simu or not simu.morse_initialised:
-            return
+    simu = blenderapi.persistantstorage()
+    if "morse_initialised" not in simu or not simu.morse_initialised:
+        return
 
-        # Execute only when the sensor is really activated
-        if contr.sensors[0].positive:
-            obj = contr.owner
+    # Execute only when the sensor is really activated
+    if contr.sensors[0].positive:
+        obj = contr.owner
 
-            # Do nothing if the component was not initialised.
-            # Should be the case for external robots and components
-            robot_object = simu.robotDict.get(obj, None)
-            if robot_object:
-                robot_object.action()
-    except BaseException:
-        import traceback
-        traceback.print_exc()
-        os._exit(-1)
+        # Do nothing if the component was not initialised.
+        # Should be the case for external robots and components
+        robot_object = simu.robotDict.get(obj, None)
+        if robot_object:
+            robot_object.action()
 
 def component_action(contr):
     """ Call the 'action' method of the correct component. """
-    try:
-        scene = blenderapi.scene()
-        # if current scene is not the main MORSE logic scene, pass
-        if not scene or scene.name != 'S.MORSE_LOGIC':
-            return
-        simu = blenderapi.persistantstorage()
-        if "morse_initialised" not in simu or not simu.morse_initialised:
-            return
+    scene = blenderapi.scene()
+    # if current scene is not the main MORSE logic scene, pass
+    if not scene or scene.name != 'S.MORSE_LOGIC':
+        return
+    # Do nothing if morse has not been properly initialised
+    simu = blenderapi.persistantstorage()
+    if "morse_initialised" not in simu or not simu.morse_initialised:
+        return
 
-        # Execute only when the sensor is really activated
-        if contr.sensors[0].positive:
-            obj = contr.owner
+    # Execute only when the sensor is really activated
+    if contr.sensors[0].positive:
+        obj = contr.owner
 
-            # Do nothing if the component was not initialised.
-            # Should be the case for external robots and components
-            cmpt_object = simu.componentDict.get(obj.name, None)
-            if cmpt_object:
-                cmpt_object.action()
-    except BaseException:
-        import traceback
-        traceback.print_exc()
-        os._exit(-1)
+        # Do nothing if the component was not initialised.
+        # Should be the case for external robots and components
+        cmpt_object = simu.componentDict.get(obj.name, None)
+        if cmpt_object:
+            cmpt_object.action()
 
 def sensor_action(contr):
     """ Call the 'action' method of the correct sensor. """
@@ -61,15 +52,3 @@ def sensor_action(contr):
 def actuator_action(contr):
     """ Call the 'action' method of the correct actuator. """
     component_action(contr)
-
-
-def mw_action(contr):
-    """ Call the 'action' method of the correct middleware. """
-    # TODO: Right now there is nothing the mw should do, so just exit
-    return
-
-    #obj = contr.owner
-    
-    # Get the intance of this objects class
-    #mw_object = blenderapi.persistantstorage().componentDict[obj.name]
-    #mw_object.action()
