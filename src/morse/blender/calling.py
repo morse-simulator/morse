@@ -9,6 +9,10 @@ from morse.core import blenderapi
 
 def robot_action(contr):
     """ Call the 'action' method of the correct robot. """
+    scene = blenderapi.scene()
+    # if current scene is not the main MORSE logic scene, pass
+    if not scene or scene.name != 'S.MORSE_LOGIC':
+        return
     # Do nothing if morse has not been properly initialised
     simu = blenderapi.persistantstorage()
     if "morse_initialised" not in simu or not simu.morse_initialised:
