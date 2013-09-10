@@ -1,3 +1,13 @@
+"""
+import asyncore
+import threading
+from stream import Stream
+s = Stream('python.org', 80)
+threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} ).start()
+s.is_up()
+s.publish("GET /\r\n")
+s.get(.5) or s.last()
+"""
 import json
 import socket
 import logging
@@ -13,6 +23,7 @@ logger.setLevel(logging.WARNING)
 MSG_SEPARATOR=b"\n"
 
 class Stream(asynchat.async_chat):
+    use_encoding = 0 # Python2 compat.
     """ Asynchrone I/O stream handler
 
     To start the handler, just run :meth asyncore.loop: in a new thread::
