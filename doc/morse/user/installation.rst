@@ -202,9 +202,14 @@ You can check your configuration is ok with::
 .. note::
     When updating MORSE to a more recent version, you'll simply have to do::
 
-    $ git checkout [version]
+    $ git pull --rebase https://github.com/morse-simulator/morse.git [<refspec>]
     $ cd build
     $ make install
+
+    ``[<refspec>]`` being the branch or tag to sync with, as::
+
+    $ git pull --rebase https://github.com/morse-simulator/morse.git 1.1-beta2
+    $ git pull --rebase https://github.com/morse-simulator/morse.git master
 
 Time to jump to MORSE's :doc:`Quickstart<../quickstart>` tutorial!
 
