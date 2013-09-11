@@ -22,9 +22,8 @@ logger.setLevel(logging.WARNING)
 
 MSG_SEPARATOR=b"\n"
 
-class Stream(asynchat.async_chat):
-    use_encoding = 0 # Python2 compat.
-    """ Asynchrone I/O stream handler
+class StreamB(asynchat.async_chat):
+    """ Asynchrone I/O stream handler (raw bytes)
 
     To start the handler, just run :meth asyncore.loop: in a new thread::
 
@@ -32,6 +31,9 @@ class Stream(asynchat.async_chat):
 
     where timeout is used with select.select / select.poll.poll.
     """
+
+    use_encoding = 0 # Python2 compat.
+
     def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
         self.error = False
         asynchat.async_chat.__init__(self, sock=sock)
@@ -165,6 +167,20 @@ class Stream(asynchat.async_chat):
             # we tried to send some actual data
             return
 
+    #### CODEC ####
+    def decode(self, msg_bytes):
+        """ returns message as is (raw bytes) """
+        return msg_bytes
+
+    def encode(self, msg_bytes):
+        """ returns message as is (raw bytes) plus the MSG_SEPARATOR """
+        return msg_bytes + MSG_SEPARATOR
+
+
+class Stream(StreamB):
+    """ String Stream """
+    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
+        StreamB.__init__(self, host, port, maxlen, sock)
 
     #### CODEC ####
     def decode(self, msg_bytes):
@@ -173,11 +189,11 @@ class Stream(asynchat.async_chat):
 
     def encode(self, msg_str):
         """ encode string to bytes """
-        return msg_str.encode() + MSG_SEPARATOR
-
+        return StreamB.encode(self, msg_str.encode())
 
 
 class StreamJSON(Stream):
+    """ JSON Stream """
     def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
         Stream.__init__(self, host, port, maxlen, sock)
 
