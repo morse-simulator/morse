@@ -75,7 +75,7 @@ class Keyboard(Actuator):
         if self._type == 'Position' or self._type == 'Velocity':
             self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
         elif self._type == 'Differential':
-            self.apply_vw_wheels(vx, -rz)
+            self.apply_vw_wheels(vx, rz)
 
     # from v_omega_diff_drive
     def apply_vw_wheels(self, vx, vw):
