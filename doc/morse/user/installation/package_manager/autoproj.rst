@@ -19,7 +19,7 @@ standard installation process for the `Orocos toolchain <http://www.orocos.org/t
     package_sets:
       - type: git
         url: git://gitorious.org/robotis/morse_package_set.git
-        branch: 1.0
+        branch: 1.1
     
     layout:
       - morse
