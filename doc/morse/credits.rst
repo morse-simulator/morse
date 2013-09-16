@@ -85,6 +85,10 @@ University of Birmingham (Birmingham, England)
 
 - Chris Burbridge
 
+Boğaziçi University (Istanbul, Turkey)
+++++++++++++++++++++++++++++++++++++++
+
+- Mehmet Murat Sevim
 
 The Debian Project
 ++++++++++++++++++
