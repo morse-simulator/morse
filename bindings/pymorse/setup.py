@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='pymorse',
-      version='1.0',
+      version='1.1',
       license='BSD 3-clauses',
       description='Python bindings for the Modular OpenRobots Simulation Engine (MORSE)',
       author='Séverin Lemaignan',
