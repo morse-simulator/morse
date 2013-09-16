@@ -12,7 +12,7 @@ Components
 ----------
 
 - Modifiers use now a class-base scheme, similarly to datastream input /
-  output (#330). 
+  output (`#330 <https://github.com/morse-simulator/morse/issues/330>`_).
 
 Actuators
 +++++++++
@@ -45,13 +45,16 @@ Sensors
   fire sources, potentially of different nature
 - Introduce a new sensor :doc:`user/sensors/collision` which allows to detect
   if the robot is in collision with some objects of the environment.
-- Fix Camera resolutions ratio issue #371. We now create one Blender scene for
-  each camera in the simulation, with specific render resolution.
+- Fix Camera resolutions ratio issue `#371
+  <https://github.com/morse-simulator/morse/issues/371>`_. We now create one
+  Blender scene for each camera in the simulation, with specific render
+  resolution.
 
 Builder API
 -----------
 
-It is now possible to handle loop in builder script (#357). See
+It is now possible to handle loop in builder script (`#357
+<https://github.com/morse-simulator/morse/issues/357>`_). See
 :doc:`user/builder` for documentation about it.
 
 API addition
@@ -62,14 +65,15 @@ API addition
 - `mass` method allows to setup the mass of any component.
 - `set_log_level` allows to configure easily the level of log of each
   component. A service with similar name allows to do that at runtime too.
-  (#337).
+  (`#337 <https://github.com/morse-simulator/morse/issues/337>`_).
 - `set_speed_camera` allows to change the speed of the viewport camera.
 - `set_friction` allows to change friction parameter with the ground
 
 API changes
 +++++++++++
 
-- `add_default_interface` has now a smarter behaviour (#399)
+- `add_default_interface` has now a smarter behaviour (`#399
+  <https://github.com/morse-simulator/morse/issues/399>`_)
 
 Pymorse
 -------
