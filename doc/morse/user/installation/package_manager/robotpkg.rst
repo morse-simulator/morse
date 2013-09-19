@@ -28,3 +28,9 @@ It supports Linux, * BSD and Darwin (MacOS X).
 #. The previous package only installs middleware support for text and socket.
    If you want support for additional middlewares, repeat the operation in
    ``$ROBOTPKG/simulation/morse-yarp``, ``$ROBOTPKG/wip/morse-pocolibs``.
+
+.. Note::
+    If you get an error about ``python-sphinx`` you can skip the doc
+    installation by adding ``PKG_OPTIONS.morse += -doc`` to
+    ``$ROBOTPKG_BASE/etc/robotpkg.conf``.
+
