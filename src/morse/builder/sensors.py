@@ -272,7 +272,7 @@ class Hokuyo(LaserSensorWithArc):
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 270.0, resolution = 0.25)
-        # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+        # set the frequency to 10 Hz
         self.frequency(10)
 
 class Sick(LaserSensorWithArc):
@@ -283,7 +283,7 @@ class Sick(LaserSensorWithArc):
         # set components-specific properties
         self.properties(Visible_arc = False, laser_range = 30.0,
                 scan_window = 180.0, resolution = 1.0)
-        # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+        # set the frequency to 10 Hz
         self.frequency(10)
         # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
         self.append_meshes(['SickMesh'])
@@ -301,7 +301,7 @@ class SickLDMRS(LaserSensorWithArc):
         mesh.scale = (.05, .0825, .044)
         mesh.color(1., 1., .9)
         self.append(mesh)
-        # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+        # set the frequency to 4 Hz
         self.frequency(4)
 
 class Infrared(LaserSensorWithArc):
@@ -315,7 +315,7 @@ class Infrared(LaserSensorWithArc):
         # set components-specific properties
         self.properties(Visible_arc = True, laser_range = 2.0,
                 scan_window = 20.0, resolution = 1.0)
-        # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+        # set the frequency to 10 Hz
         self.frequency(10)
         # create default Arc_
         self.create_laser_arc()
@@ -338,8 +338,8 @@ class VideoCamera(SensorCreator):
         self.append(self.camera)
         self.properties(cam_width = 256, cam_height = 256, cam_focal = 35.0, \
                         capturing = True, Vertical_Flip = True)
-        # set the frequency to 3 (20ips for ticrate = 60Hz)
-        self.frequency(3)
+        # set the frequency to 20 Hz
+        self.frequency(20)
         # add toggle capture action (`Space` key)
         bpymorse.add_sensor(type="KEYBOARD")
         obj = bpymorse.get_context_object()

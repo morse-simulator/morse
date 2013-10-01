@@ -375,7 +375,7 @@ use :py:meth:`morse.builder.creator.ComponentCreator.append_meshes`.
             # set components-specific properties
             self.properties(Visible_arc = False, laser_range = 30.0,
                     scan_window = 180.0, resolution = 1.0)
-            # set the frequency to 10 (6 scan/s for ticrate = 60Hz)
+            # set the frequency to 10 Hz
             self.frequency(10)
             # append sick mesh, from MORSE_COMPONENTS/sensors/sick.blend
             self.append_meshes(['SickMesh'])
