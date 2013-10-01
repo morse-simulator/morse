@@ -485,7 +485,7 @@ class AbstractComponent(object):
         self.properties(abstraction_level = level)
 
     def frequency(self, frequency=None, delay=0):
-        """ Set the frequency delay for the call of the Python module
+        """ Set the frequency of the Python module
 
         :param frequency: (int) Desired frequency,
             0 < frequency < logic tics
