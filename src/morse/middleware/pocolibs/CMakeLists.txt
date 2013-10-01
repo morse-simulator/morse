@@ -27,8 +27,8 @@ if (BUILD_POCOLIBS_STEREOPIXEL_SUPPORT)
 	include_directories(${POCOLIBS_INCLUDE_DIRS})
 	link_directories(${POCOLIBS_LIBRARY_DIRS})
 
-	pkg_check_modules(STEREOPIXELE REQUIRED stereopixel)
-	include_directories(${VIAM_INCLUDE_DIRS})
+	pkg_check_modules(STEREOPIXEL REQUIRED stereopixel)
+	include_directories(${STEREOPIXEL_INCLUDE_DIRS})
 
 	python_add_module(stereopixel sensors/stereopixel.c)
 	target_link_libraries(stereopixel ${POCOLIBS_LIBRARIES})
