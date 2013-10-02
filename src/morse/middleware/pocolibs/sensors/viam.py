@@ -116,8 +116,8 @@ class ViamPoster(AbstractDatastream):
             camera_data.x = main_to_sensor.x
             camera_data.y = main_to_sensor.y
             camera_data.z = main_to_sensor.z
-            camera_data.yaw = main_to_sensor.yaw 
-            camera_data.pitch = main_to_sensor.pitch + math.pi # XXX WTF 
+            camera_data.yaw = main_to_sensor.yaw
+            camera_data.pitch = main_to_sensor.pitch
             camera_data.roll = main_to_sensor.roll
             camera_data.flipped = camera_instance.vertical_flip
 
