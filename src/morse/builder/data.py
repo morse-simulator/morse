@@ -129,7 +129,7 @@ MORSE_DATASTREAM_DICT = {
     "morse.sensors.depth_camera.DepthCameraRotationZ": {
         "default": {
             "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
-            'pocolibs': 'morse.middleware.pocolibs.sensors.stereopixel.Spix3DImagePoster'
+            'pocolibs': 'morse.middleware.pocolibs.sensors.velodyne.Velodyne3DImage'
             }
         },
     "morse.sensors.gps.GPS": {

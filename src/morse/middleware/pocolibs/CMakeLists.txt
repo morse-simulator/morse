@@ -8,6 +8,7 @@
 
 option(BUILD_POCOLIBS_VIAM_SUPPORT "build viam support" OFF)
 option(BUILD_POCOLIBS_STEREOPIXEL_SUPPORT "build image3D support" OFF)
+option(BUILD_POCOLIBS_VELODYNE_SUPPORT "build velodyne support" OFF)
 
 if (BUILD_POCOLIBS_VIAM_SUPPORT)
 	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
@@ -33,6 +34,23 @@ if (BUILD_POCOLIBS_STEREOPIXEL_SUPPORT)
 	python_add_module(stereopixel sensors/stereopixel.c)
 	target_link_libraries(stereopixel ${POCOLIBS_LIBRARIES})
 	install(TARGETS stereopixel DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs)
+endif()
+
+if (BUILD_POCOLIBS_VELODYNE_SUPPORT)
+	pkg_check_modules(POCOLIBS REQUIRED pocolibs)
+	include_directories(${POCOLIBS_INCLUDE_DIRS})
+	link_directories(${POCOLIBS_LIBRARY_DIRS})
+
+	pkg_check_modules(T3D REQUIRED t3d)
+	include_directories(${T3D_INCLUDE_DIRS})
+	link_directories(${T3D_LIBRARY_DIRS})
+
+	pkg_check_modules(VELODYNE REQUIRED velodyne)
+	include_directories(${VELODYNE_INCLUDE_DIRS})
+
+	python_add_module(velodyne sensors/velodyne.c)
+	target_link_libraries(velodyne ${POCOLIBS_LIBRARIES} ${T3D_LIBRARIES})
+	install(TARGETS velodyne DESTINATION ${PYTHON_INSTDIR}/morse/middleware/pocolibs)
 endif()
 
 install (FILES __init__.py
