@@ -4,7 +4,7 @@ from morse.core import status, mathutils
 import morse.core.blenderapi
 from morse.sensors.camera import Camera
 from morse.sensors.video_camera import VideoCamera
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 class AbstractDepthCamera(VideoCamera):
 
@@ -127,3 +127,16 @@ class RawImage(AbstractDepthCamera):
         publish in C++, without having to re-serialize a Python object.
         """
         self.local_data['image'] = image
+
+
+class DepthCameraRotationZ(DepthCamera):
+    """Used for Velodyne sensor"""
+
+    add_property('rotation', 0.01745, 'rotation')
+
+    def default_action(self):
+        DepthCamera.default_action(self)
+        self.applyRotationZ(self.rotation)
+    def applyRotationZ(self, rotation):
+        # The second parameter specifies a "local" movement
+        self.bge_object.applyRotation([0, rotation, 0], True)

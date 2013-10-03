@@ -126,6 +126,12 @@ MORSE_DATASTREAM_DICT = {
             'pocolibs': 'morse.middleware.pocolibs.sensors.stereopixel.Spix3DImagePoster'
             }
         },
+    "morse.sensors.depth_camera.DepthCameraRotationZ": {
+        "default": {
+            "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
+            'pocolibs': 'morse.middleware.pocolibs.sensors.stereopixel.Spix3DImagePoster'
+            }
+        },
     "morse.sensors.gps.GPS": {
         "default": {
             "ros": 'morse.middleware.ros.gps.NavSatFixPublisher',

@@ -372,21 +372,8 @@ class DepthCamera(VideoCamera):
 class VelodyneZB(DepthCamera):
     def __init__(self, name=None):
         DepthCamera.__init__(self, name)
-        # Always (MORSE_LOGIC) - And - Motion (rotation z: 0.017453)
-        morselogic = [sensor for sensor in self._bpy_object.game.sensors \
-                      if sensor.name.startswith('MORSE_LOGIC')]
-        sensor = morselogic[0]
-        bpymorse.add_controller(type='LOGIC_AND')
-        controller = self._bpy_object.game.controllers[-1]
-        # Motion (rotation z: 0.017453)
-        bpymorse.add_actuator(type='MOTION', name='MORSE_ROTATE')
-        actuator = self._bpy_object.game.actuators[-1]
-        actuator.offset_rotation.y = self.camera._bpy_object.data.angle # FOV
-        controller.link(sensor = sensor, actuator = actuator)
-    def set_rotation(self, rotation):
-        """set rotation per tic (in radian, relative to component frequency)"""
-        actuator = self._bpy_object.game.actuators['MORSE_ROTATE']
-        actuator.offset_rotation.y = rotation
+        self.properties(classpath="morse.sensors.depth_camera.DepthCameraRotationZ")
+        self.properties(rotation=self.camera._bpy_object.data.angle)
 
 class SemanticCamera(VideoCamera):
     def __init__(self, name=None):
