@@ -8,12 +8,17 @@ class VideoPublisher(SocketPublisher):
     _type_name = "a JSON-encoded image"
 
     def encode(self):
+        if not self.component_instance.capturing:
+            return bytes() # press [Space] key to enable capturing
+
         res = {}
         res['height'] = self.component_instance.image_height
         res['width'] = self.component_instance.image_width
         res['image'] = []
 
-        image= bytes(self.component_instance.local_data['image'].image)
+        # bge.texture.ImageRender is an image buffer, which is
+        #   faster to convert than its raw `image` attribute.
+        image = memoryview(self.component_instance.local_data['image'])
         for i in range(0, res['height'] * res['width'] * 4, 4):
             o = {}
             o ['r'] = image[i]
