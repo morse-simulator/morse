@@ -109,7 +109,7 @@ class YarpImagePublisher(YarpPort):
         img_Y = self.component_instance.image_height
 
         # Check that an image exists:
-        if img_string != None and img_string != '':
+        if img_string is not None and img_string != '':
             try:
                 data = img_string
                 # Pass the data as is, from the bge.texture module
@@ -135,7 +135,7 @@ class YarpReader(YarpPort):
     def default(self, ci):
         message_data = self.port.read(False)
 
-        if message_data != None:
+        if message_data is not None:
             # Data elements are of type defined in data_types
             i = 0
             for variable, data in self.data.items():

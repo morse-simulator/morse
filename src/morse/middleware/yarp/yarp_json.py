@@ -15,7 +15,7 @@ class YarpJsonReader(YarpReader):
     def default(self, ci):
         message_bottle = self.port.read(False)
 
-        if message_bottle != None:
+        if message_bottle is not None:
             message_data = message_bottle.get(0).toString()
 
             # Deserialise the data directly into a temporary ordered dictionary
@@ -43,7 +43,7 @@ class YarpJsonWaypointReader(YarpReader):
         radius: the tolerance around those points
         """
         message_bottle = self.port.read(False)
-        if message_bottle != None:
+        if message_bottle is not None:
             message_data = message_bottle.get(0).toString()
 
             # Deserialise the data directly into a temporary ordered dictionary

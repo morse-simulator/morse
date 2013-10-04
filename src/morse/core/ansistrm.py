@@ -87,7 +87,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
         try:
             message = self.format(record)
             # Don't do anything if the StreamHandler does not exist
-            if message == None:
+            if message is None:
                 return
             stream = self.stream
             if not self.is_tty:

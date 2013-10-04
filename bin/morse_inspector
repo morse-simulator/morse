@@ -92,7 +92,7 @@ class MainWindow(Gtk.Window):
     def on_tree_selection_changed(self, selection):
         # Update the pose labels and state of the visibility toggle buttons
         model, treeiter = selection.get_selected()
-        if treeiter != None:
+        if treeiter is not None:
             pose = json.loads(model[treeiter][3])
             visible = model[treeiter][1]
             dynamics = model[treeiter][2]
@@ -137,7 +137,7 @@ class MainWindow(Gtk.Window):
     def set_treestore_vis_tag(self, treeiter, state, siblings=False):
         """ Change the treestore to show if a item is visible. Optionally
         siblings too"""
-        while treeiter != None:
+        while treeiter is not None:
             self.tree_store[treeiter][1] = state
             if self.tree_store.iter_has_child(treeiter):
                 childiter = self.tree_store.iter_children(treeiter)
@@ -150,7 +150,7 @@ class MainWindow(Gtk.Window):
     def is_all_vis(self, treeiter, siblings=False): #
         """ Test to see if treeiter and all its children are visible"""
         state = True
-        while treeiter != None:
+        while treeiter is not None:
             state = state and self.tree_store[treeiter][1]
             if self.tree_store.iter_has_child(treeiter):
                 childiter = self.tree_store.iter_children(treeiter)

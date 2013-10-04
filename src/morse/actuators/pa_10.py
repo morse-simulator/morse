@@ -70,7 +70,7 @@ class PA10(morse.core.actuator.Actuator):
     def default_action(self):
         """ Apply rotation to the arm segments """
         # Get the reference to the Sound actuator
-        if self._sound == None:
+        if self._sound is None:
             logger.debug ("ACTIVATING THE SOUND ACTUATOR")
             contr = blenderapi.controller()
             self._sound = contr.actuators['Sound']

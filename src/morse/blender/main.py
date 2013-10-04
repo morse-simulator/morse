@@ -143,7 +143,7 @@ def create_dictionaries ():
 
     # Store the position and orientation of all objects
     for obj in scene.objects:
-        if obj.parent == None:
+        if obj.parent is None:
             import mathutils
             pos = mathutils.Vector(obj.worldPosition)
             ori = mathutils.Matrix(obj.worldOrientation)
@@ -361,7 +361,7 @@ def link_datastreams():
 
             if not found:
                 datastream_instance = create_instance(datastream_name)
-                if datastream_instance != None:
+                if datastream_instance is not None:
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
                 else:

@@ -90,7 +90,7 @@ class DepthCameraTest(RosTestCase):
         tmp = self.subscribe_and_wait_for_message(topic, topic_type)
         if not tmp: # remove once https://github.com/ros/genpy/pull/9 is merged
             testlogger.error("please patch ROS, see patches/ros_python3.diff")
-        self.assertTrue(tmp != None)
+        self.assertTrue(tmp is not None)
 
         self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
 

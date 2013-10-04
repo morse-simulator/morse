@@ -86,7 +86,7 @@ def main():
         msg = wiimote.get_mesg()
         wiimote.disable(cwiid.FLAG_NONBLOCK)
         
-        if msg != None :
+        if msg is not None :
             if msg[0][0] == cwiid.MESG_BTN :
                 button = msg[0][1]
                 t = detect_button(button)
@@ -101,7 +101,7 @@ def main():
 
         wiimote.rpt_mode = cwiid.RPT_ACC
         msg1 = wiimote.get_mesg()
-        if msg1 != None :
+        if msg1 is not None :
             if msg1[0][0] == cwiid.MESG_ACC :
                 acceleration(msg1[0][1],wm_cal)
                 

@@ -114,7 +114,7 @@ class Gripper(morse.core.actuator.Actuator):
         # Check that no other object is being carried
         if not self._grabbed_object:
             # If the object is draggable
-            if self._near_object != None:
+            if self._near_object is not None:
                 logger.debug("Grabbing object: '%s'" % self._near_object)
                 # Remove Physic simulation
                 #self._near_object.suspendDynamics()
@@ -147,7 +147,7 @@ class Gripper(morse.core.actuator.Actuator):
                   no object was held).
         """
         # Clear the previously selected object, if any
-        if self._grabbed_object != None:
+        if self._grabbed_object is not None:
             logger.debug("Releasing object: '%s'" % self._near_object)
             # Remove the parent
             self._grabbed_object.removeParent()

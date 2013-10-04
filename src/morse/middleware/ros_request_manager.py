@@ -100,7 +100,7 @@ class RosAction:
         This is used by RosRequestManager to dispatch the service
         'on completion' event.
         """
-        return self.get_id_from_internal_id(morse_id) != None
+        return self.get_id_from_internal_id(morse_id) is not None
 
     def get_id_from_internal_id(self, morse_id):
 
@@ -356,7 +356,7 @@ class RosRequestManager(RequestManager):
                 manager = action
                 break
 
-        if manager == None:
+        if manager is None:
             logger.error("A ROS action call has been lost! Nobody manage request " + request_id)
 
         # Then, dispatch the 'on completion' event.

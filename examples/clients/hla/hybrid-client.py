@@ -87,7 +87,7 @@ class MorseHLAClient():
 # main
 if __name__ == "__main__":
     m = MorseHLAClient("ATRV")
-    if m != None:
+    if m is not None:
         for k in range(10):
             x = random.randint(0, 7)
             y = random.randint(-5, 0)

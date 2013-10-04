@@ -154,7 +154,7 @@ class MorseLoadTextPath(bpy.types.Operator):
         obj.name = "Path"
 
         # Locate the path if there is a selected object
-        if self.origin_object != None:
+        if self.origin_object is not None:
             obj.location = self.origin_object.location
             obj.rotation_euler = self.origin_object.rotation_euler
 

@@ -256,7 +256,7 @@ class Environment(Component):
         self.properties(**_properties)
 
         # Default node name
-        if name == None:
+        if name is None:
             try:
                 name = os.environ["MORSE_NODE"]
             except KeyError:
@@ -447,7 +447,7 @@ class Environment(Component):
         self._protocol = protocol
         self._server_address = server_address
         self._server_port = server_port
-        if distribution != None:
+        if distribution is not None:
             self.multinode_distribution = distribution
         self._multinode_configured = True
 

@@ -37,7 +37,7 @@ def retrieveHue(obj):
         # Nothing will happen if the object has no materials
         return None
 
-    if mesh != None:
+    if mesh is not None:
         bMat = blenderapi.materialdata(mesh.getMaterialName(0)[2:])
         return (RGBtoHue(bMat.diffuse_color))
     

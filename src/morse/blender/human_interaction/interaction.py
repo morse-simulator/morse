@@ -227,7 +227,7 @@ def interact(cont):
     if rmb.positive:                #drop selected Object
         ow['grabbing'] = None
         focused_object = lay_down_ray.hitObject
-        if focused_object != None:
+        if focused_object is not None:
             actor_focused = blenderapi.objectdata(focused_object.name).game.use_actor
         # accurate placing of objects under certain conditions
         if human['Manipulate'] and lay_down_ray.positive \
@@ -335,7 +335,7 @@ def lay_down(cont):
     hand = objects['Hand_Grab.R' + suffix]
     
     obj = hand['selected']
-    if obj == None or not pos['LayDown']:
+    if obj is None or not pos['LayDown']:
         return
 
     vect = pos.getVectTo(Vector(pos['LayDown']))[1]

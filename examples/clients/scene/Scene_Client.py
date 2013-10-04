@@ -44,7 +44,7 @@ def get_robot_data():
 
 	while waiting:
 		robot_data = local_in_port.read(False)
-		if robot_data != None:
+		if robot_data is not None:
 
 			"""
 			# Reading an integer from the bottle

@@ -72,7 +72,7 @@ def command_robot():
     while waiting:
         """
         yarp_data = local_in_port.read(False)
-        if yarp_data != None:
+        if yarp_data is not None:
             # Read a string from the bottle
             json_data = yarp_data.toString()
             data = decode_message(json_data)
@@ -133,7 +133,7 @@ def command_robot():
 
             # Read the response
             yarp_data = local_Proximity_in_port.read(False)
-            if yarp_data != None:
+            if yarp_data is not None:
                 # Read a string from the bottle
                 json_data = yarp_data.toString()
                 data = decode_message(json_data)
@@ -144,7 +144,7 @@ def command_robot():
         elif command == "gps" or command == "g":
             # Read the response
             yarp_data = local_GPS_port.read(False)
-            if yarp_data != None:
+            if yarp_data is not None:
                 # Read a string from the bottle
                 json_data = yarp_data.toString()
                 data = decode_message(json_data)
@@ -155,7 +155,7 @@ def command_robot():
         elif command == "status" or command == "t":
             # Read the response
             yarp_data = local_Status_port.read(False)
-            if yarp_data != None:
+            if yarp_data is not None:
                 # Read a string from the bottle
                 json_data = yarp_data.toString()
                 data = decode_message(json_data)

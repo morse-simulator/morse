@@ -101,7 +101,7 @@ class ViamPoster(AbstractDatastream):
                         wrongly defined")
 
             # Don't create a poster if the camera is disabled
-            if image_data == None or not camera_instance.capturing:
+            if image_data is None or not camera_instance.capturing:
                 logger.debug("Camera '%s' not capturing. Exiting viam poster" % \
                         camera_instance.bge_object.name)
                 return
