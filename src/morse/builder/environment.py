@@ -41,6 +41,7 @@ class Environment(Component):
         self._multinode_configured = False
         self._display_camera = None
         self.is_material_mode_custom = False
+        self._node_name = None
         # Add empty object holdings MORSE Environment's properties
         # for UTM modifier configutation ( uses env.properties(...) )
         bpymorse.deselect_all()
@@ -54,7 +55,7 @@ class Environment(Component):
 
     def is_internal_camera(self, camera):
         return not self._multinode_configured or \
-            camera._bpy_object.parent.name in self.multinode_distribution[node_name]
+            camera._bpy_object.parent.name in self.multinode_distribution[self._node_name]
 
     def _write_multinode(self, node_name):
         """ Configure this node according to its name
@@ -234,6 +235,15 @@ class Environment(Component):
             if hasattr(component, "after_renaming"):
                 component.after_renaming()
 
+        # Compute node name
+        if name == None:
+            try:
+                self._node_name = os.environ["MORSE_NODE"]
+            except KeyError:
+                self._node_name = os.uname()[1]
+        else:
+            self._node_name = name
+
         # Create a new scene for each camera, with specific render resolution
         # Must be done at the end of the builder script, after renaming
         # and before adding 'Scene_Script_Holder'
@@ -258,15 +268,9 @@ class Environment(Component):
         _properties = bpymorse.get_properties(bpymorse.get_object('MORSE.Properties'))
         self.properties(**_properties)
 
-        # Default node name
-        if name == None:
-            try:
-                name = os.environ["MORSE_NODE"]
-            except KeyError:
-                name = os.uname()[1]
         # Write the configuration of the datastreams, and node configuration
         Configuration.write_config()
-        self._write_multinode(name)
+        self._write_multinode(self._node_name)
 
         # Change the Screen material
         if self._display_camera:
