@@ -21,9 +21,12 @@ import socket
 import logging
 import asyncore
 
+# initialize the logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger.addHandler( logging.StreamHandler() )
+handler = logging.StreamHandler()
+handler.setFormatter( logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] %(message)s') )
+logger.addHandler( handler )
+logger.setLevel(logging.INFO)
 
 from pymorse import StreamJSON
 
@@ -56,6 +59,7 @@ class MorseNode(object):
             self.handle_robots(client_robots)
         except Exception as e:
             logger.warning("error while processing data from %s" % client_name)
+        logger.debug("%s"%str(message))
 
     def handle_robots(self, client_robots):
         # Build/update the list of robots from
@@ -71,7 +75,11 @@ class MorseNode(object):
         self._stream.publish(data)
 
 def main(argv):
+    if '-d' in argv[1:]:
+        logger.setLevel(logging.DEBUG)
+
     serv = MorseMultinode()
+
     try:
         asyncore.loop(timeout=0.01)
     except KeyboardInterrupt:
@@ -79,6 +87,7 @@ def main(argv):
     finally:
         logger.info("Closing all connections")
         asyncore.close_all()
+
     logger.info("Bye!")
     return 0
 
