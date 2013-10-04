@@ -85,7 +85,7 @@ class SickLaserTest(RosTestCase):
         rospy.init_node('morse_testing', log_level=rospy.DEBUG)
 
         testlogger.debug("subscribe and wait %s (%s)"%(topic, topic_type.__name__))
-        self.assertTrue(self.subscribe_and_wait_for_message(topic, topic_type) != None)
+        self.assertTrue(self.subscribe_and_wait_for_message(topic, topic_type) is not None)
 
         self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
 

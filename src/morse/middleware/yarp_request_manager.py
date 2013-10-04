@@ -108,7 +108,7 @@ class YarpRequestManager(RequestManager):
             bottle_in = self._in_bottles[component_name] 
             bottle_reply = self._reply_bottles[component_name] 
             bottle_in = port.read(False)
-            if bottle_in != None:
+            if bottle_in is not None:
                 logger.debug("Received command from port '%s'" % (component_name))
 
                 try:

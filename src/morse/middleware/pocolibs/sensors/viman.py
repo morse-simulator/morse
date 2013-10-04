@@ -102,7 +102,7 @@ class VimanPoster(PocolibsDataStreamOutput):
             fp = open(object_config_file, "r")
             for line in fp:
                 match = re.search('object (\w+)', line)
-                if match != None:
+                if match is not None:
                     scene_object_list.append(match.group(1))
                     logger.debug("\t- %s" % match.group(1))
             fp.close()

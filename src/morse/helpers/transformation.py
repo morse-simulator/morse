@@ -30,7 +30,7 @@ class Transformation3d:
                                         [0, 0, 0, 1]))
 
         self.euler = mathutils.Euler([0, 0, 0])
-        if obj != None:
+        if obj is not None:
             self.update(obj)
 
         # For use only by robots moving along the Y axis

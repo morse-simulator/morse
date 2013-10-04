@@ -136,7 +136,7 @@ def near_object(contr):
     near_object = near_sensor.hitObject
     hand_empty['Near_Object'] = near_object
 
-    #if near_object != None:
+    #if near_object is not None:
         #hand_empty.parent.localOrientation = [math.pi/2, 0.0, 0.0]
         #logger.debug(near_object.name + " can be grasped!")
 
@@ -153,9 +153,9 @@ def grabbing(contr):
     # Check that a button was pressed
     if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_just_activated:
         # Check that no other object is being carried
-        if contr.owner['DraggedObject'] == None or contr.owner['DraggedObject'] == '':
+        if contr.owner['DraggedObject'] is None or contr.owner['DraggedObject'] == '':
             # If the object is draggable
-            if selected_object != None and selected_object != '':
+            if selected_object is not None and selected_object != '':
                 # Clear the previously selected object, if any
                 contr.owner['DraggedObject'] = selected_object
                 # Remove Physic simulation
@@ -167,7 +167,7 @@ def grabbing(contr):
     if lmb.getButtonStatus(blenderapi.LEFTMOUSE) == blenderapi.input_just_released:
     #if lmb.getButtonStatus(blenderapi.RIGHTMOUSE) == blenderapi.input_just_activated:
         # Clear the previously selected object, if any
-        if contr.owner['DraggedObject'] != None and contr.owner['DraggedObject'] != '':
+        if contr.owner['DraggedObject'] is not None and contr.owner['DraggedObject'] != '':
             previous_object = contr.owner["DraggedObject"]
             # Remove the parent
             previous_object.removeParent()

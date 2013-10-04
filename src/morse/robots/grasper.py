@@ -45,11 +45,11 @@ class RobotGrasper(Robot):
         if seq == "t":
             logger.debug("seq t")
             # Check that no other object is being carried
-            if (robot_grasper['DraggedObject'] == None or
+            if (robot_grasper['DraggedObject'] is None or
             robot_grasper['DraggedObject'] == '') :
                 logger.debug("Hand is free, I can grab")
                 # If the object is draggable
-                if selected_object != None and selected_object != '':
+                if selected_object is not None and selected_object != '':
                     # Clear the previously selected object, if any
                     logger.debug("Object to grab is %s" % selected_object.name)
                     robot_grasper['DraggedObject'] = selected_object
@@ -60,7 +60,7 @@ class RobotGrasper(Robot):
                     logger.debug ("OBJECT %s PARENTED TO %s" % (selected_object.name, hand_empty.name))
 
         if seq == "f":
-            if (robot_grasper['DraggedObject'] != None and
+            if (robot_grasper['DraggedObject'] is not None and
             robot_grasper['DraggedObject'] != '') :
                 previous_object = robot_grasper["DraggedObject"]
                 # Restore Physics simulation

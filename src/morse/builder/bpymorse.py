@@ -344,7 +344,7 @@ def _property_set(obj, name_or_id, value, ptype=None):
     :param ptype: property type (enum in ['BOOL', 'INT', 'FLOAT', 'STRING', 'TIMER'],
                   optional, auto-detect, default=None)
     """
-    if ptype == None:
+    if ptype is None:
         # Detect the type (class name upper case)
         ptype = value.__class__.__name__.upper()
     if ptype == 'STR':

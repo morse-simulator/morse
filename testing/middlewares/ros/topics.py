@@ -62,7 +62,7 @@ class DataStreamTest(RosTestCase):
         rospy.Subscriber('/robot/odometry', nav_msgs.msg.Odometry, self.pose_callback)
 
         msg = rospy.client.wait_for_message('/robot/odometry', nav_msgs.msg.Odometry, timeout = 10)
-        self.assertTrue(msg != None)
+        self.assertTrue(msg is not None)
 
         cmd_stream = rospy.Publisher('/robot/motion', Twist)
        

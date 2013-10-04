@@ -600,7 +600,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
     other_params.append(env) # must be the last option
 
     #Replace the current process by Blender
-    if script != None:
+    if script is not None:
         if os.name == 'nt':
             # need a temporary file because PYTHONPATH is disrespected
             tmpF = tempfile.NamedTemporaryFile(delete = False)

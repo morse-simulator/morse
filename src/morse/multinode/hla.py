@@ -137,7 +137,7 @@ class HLANode(SimulationNodeClass):
         
         """
         logger.info("Initializing HLA node.")
-        if os.getenv("CERTI_HTTP_PROXY") == None:
+        if os.getenv("CERTI_HTTP_PROXY") is None:
             os.environ["CERTI_HTTP_PROXY"] = ""
         os.environ["CERTI_HOST"] = str(self.host)
         os.environ["CERTI_TCP_PORT"] = str(self.port)
