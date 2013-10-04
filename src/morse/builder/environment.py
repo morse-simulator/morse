@@ -55,6 +55,7 @@ class Environment(Component):
 
     def is_internal_camera(self, camera):
         return not self._multinode_configured or \
+            self._node_name in self.multinode_distribution and \
             camera._bpy_object.parent.name in self.multinode_distribution[self._node_name]
 
     def _write_multinode(self, node_name):
