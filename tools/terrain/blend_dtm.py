@@ -5,6 +5,7 @@ Using the Displace and Decimate modifiers to generate a terrain 3D model from
 """
 import os
 import sys
+import json
 import subprocess
 import bpy # Blender Python API
 
@@ -69,6 +70,8 @@ def set_viewport(viewport_shade='WIREFRAME', clip_end=1000):
                 if space.type == 'VIEW_3D':
                     space.viewport_shade = viewport_shade
                     space.clip_end = clip_end
+                    space.grid_scale = 10
+                    space.grid_lines = 50
 
 def save(filepath=None, check_existing=False, compress=True):
     """ Save .blend file
@@ -116,14 +119,13 @@ def usage():
 def ext_exec(cmd, python=None):
     if not python:
         python = 'python%i.%i'%(sys.version_info.major, sys.version_info.minor)
-
     return subprocess.getoutput('%s -c"%s"' % (python, cmd) )
 
 def fix_python_path(python=None):
     pythonpath = ext_exec("import os,sys;print(os.pathsep.join(sys.path))")
     sys.path.extend(pythonpath.split(os.pathsep))
 
-def geotransform(filepath):
+def get_gdalinfo(filepath):
     """ Get the GeoTransform from the :param:filepath DEM using gdal
 
     In a north up image, padfTransform[1] is the pixel width,
@@ -132,15 +134,12 @@ def geotransform(filepath):
 
     The default transform is (0,1,0,0,0,1)
     """
-    try:
-        # Run externally since `gdal.Open` crashes Blender :-/
-        geot = ext_exec("import gdal,gdalconst;print(gdal.Open('%s', gdalconst.GA_ReadOnly).GetGeoTransform())"%filepath)
-        if geot:
-            print('[DEBUG] GetGeoTransform: %s'%geot)
-            return [float(value) for value in geot[1:-1].split(', ')]
-    except Exception:
-        print('[WARNING] GDAL error GetGeoTransform')
-    return (0,1,0,0,0,1)
+    # Run externally since `gdal.Open` crashes Blender :-/
+    meta = ext_exec("import json,gdal,gdalconst;"
+        "g=gdal.Open('%s',gdalconst.GA_ReadOnly);"
+        "print(json.dumps({'transform':g.GetGeoTransform(),"
+            "'meta':g.GetMetadata()}))"%filepath)
+    return json.loads(meta) # {'transform':(0,1,0,0,0,1)}
 
 def main(argv=[]):
     args = []
@@ -157,16 +156,28 @@ def main(argv=[]):
         print('[WARN] The size of the 2 image differ')
 
     fix_python_path()
-    geot = geotransform(args[0])
-    xsize = image_dem.size[0] * abs(geot[1]) / 2
-    ysize = image_dem.size[1] * abs(geot[5]) / 2
+    gdalinfo = get_gdalinfo(args[0])
+    geot = gdalinfo['transform']
+    meta = gdalinfo['meta']
+    xsize = image_dem.size[0] * abs(geot[1]) # in meters
+    ysize = image_dem.size[1] * abs(geot[5]) # in meters
 
+    translation = (0.0, 0.0, 0.0)
+    if 'CUSTOM_X_ORIGIN' in meta and 'CUSTOM_Y_ORIGIN' in meta:
+        custom_x_origin = float(meta['CUSTOM_X_ORIGIN'])
+        custom_y_origin = float(meta['CUSTOM_Y_ORIGIN'])
+        print("[gdal] got custom (%f, %f)"%(custom_x_origin, custom_y_origin))
+        center_x_utm = geot[0] + image_dem.size[0] * geot[1] / 2
+        center_y_utm = geot[3] + image_dem.size[1] * geot[5] / 2
+        translation = ( center_x_utm - custom_x_origin,
+                        center_y_utm - custom_y_origin, 0.0 )
+    # TODO find lowest Z in the heightmap for translation[2]
     setup()
 
     #########################################################################
     # Add our ground object
-    ground = new_plane('Ground', (xsize, ysize, 1))
-    subdivide(ground, max(xsize, ysize))
+    ground = new_plane('Ground', (xsize/2, ysize/2, 1))
+    subdivide(ground, max(xsize*2, ysize*2))
 
     #########################################################################
     # Add material
@@ -190,6 +201,9 @@ def main(argv=[]):
     add_displace_modifier(ground, texture_dem)
     #add_decimate_modifier(ground)
     #add_water_cube((xsize+1, ysize+1, max(image_dem.pixels)/2))
+
+    # move to: custom origin - center (utm from gdalinfo)
+    ground.location = translation
 
     bpy.ops.file.pack_all() # bpy.ops.image.pack(as_png=True)
     save('/tmp/dtm.blend')
