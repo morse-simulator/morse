@@ -188,17 +188,24 @@ def main(argv=[]):
 
     #########################################################################
     # Add texture
+    texture_img = new_image_texture(material, image_img, 'img')
+
+    material.active_texture_index += 1
+
     image_dem.colorspace_settings.name = 'Linear'
     texture_dem = new_image_texture(material, image_dem, 'dem')
     # do not show on the material (use only later for the terrain modifier)
     material.use_textures[material.active_texture_index] = False
 
-    material.active_texture_index += 1
-    texture_img = new_image_texture(material, image_img, 'img')
-
     #bpy.ops.object.shade_smooth()
-    # TODO get depth resolution from image_dem (w/gdal)
-    add_displace_modifier(ground, texture_dem)
+    # displace from image_dem (gdal)
+    add_displace_modifier(ground, texture_dem, apply=True)
+    # unlink dem after apply (reduce size)
+    material.texture_slots.clear(1)
+    image_dem.user_clear()
+    bpy.data.images.remove(image_dem)
+    texture_dem.user_clear()
+    bpy.data.textures.remove(texture_dem)
     #add_decimate_modifier(ground)
     #add_water_cube((xsize+1, ysize+1, max(image_dem.pixels)/2))
 
