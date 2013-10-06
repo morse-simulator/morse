@@ -9,6 +9,8 @@ import json
 import subprocess
 import bpy # Blender Python API
 
+TERRAIN_RESOLUTION=0.50 # in meter
+
 def new_texture():
     bpy.ops.texture.new()
     return bpy.data.textures[-1]
@@ -33,9 +35,10 @@ def new_image_texture(material, image, name='img'):
     material.active_texture.image = image
     return material.active_texture
 
-def new_plane(name='Plane', scale=(1,1,1)):
+def new_grid(name='Grid', x_subdivisions=10, y_subdivisions=10, radius=1, scale=(1,1,1)):
     bpy.ops.object.select_all(action='DESELECT')
-    bpy.ops.mesh.primitive_plane_add()
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=x_subdivisions, \
+        y_subdivisions=y_subdivisions, radius=radius)
     bpy.context.object.scale = scale
     bpy.context.object.name = name
     return bpy.context.object
@@ -114,7 +117,7 @@ def setup():
     bpy.context.scene.game_settings.show_framerate_profile = True
 
 def usage():
-    sys.stderr.write('usage: blender -P blend_dtm.py -- file_dem.tiff file_img.tiff\n')
+    sys.stderr.write('usage: blender -P blend_dtm.py -- file_dem.tiff file_img.tiff [terrain_resolution]\n')
 
 def ext_exec(cmd, python=None):
     if not python:
@@ -138,6 +141,7 @@ def get_gdalinfo(filepath):
     meta = ext_exec("import json,gdal,gdalconst;"
         "g=gdal.Open('%s',gdalconst.GA_ReadOnly);"
         "print(json.dumps({'transform':g.GetGeoTransform(),"
+            "'minmax':g.GetRasterBand(1).ComputeRasterMinMax(),"
             "'meta':g.GetMetadata()}))"%filepath)
     return json.loads(meta) # {'transform':(0,1,0,0,0,1)}
 
@@ -149,6 +153,11 @@ def main(argv=[]):
     if len(args) < 2:
         usage()
         return 1
+
+    if len(args) > 2:
+        terrain_resolution = float(args[2])
+    else:
+        terrain_resolution = TERRAIN_RESOLUTION
 
     image_dem = open_image(args[0])
     image_img = open_image(args[1])
@@ -169,15 +178,16 @@ def main(argv=[]):
         print("[gdal] got custom (%f, %f)"%(custom_x_origin, custom_y_origin))
         center_x_utm = geot[0] + image_dem.size[0] * geot[1] / 2
         center_y_utm = geot[3] + image_dem.size[1] * geot[5] / 2
-        translation = ( center_x_utm - custom_x_origin,
-                        center_y_utm - custom_y_origin, 0.0 )
-    # TODO find lowest Z in the heightmap for translation[2]
+        translation = [ center_x_utm - custom_x_origin,
+                        center_y_utm - custom_y_origin, 0.0 ]
+    if gdalinfo['minmax']:
+        translation[2] = - round(gdalinfo['minmax'][0] + 1)
     setup()
 
     #########################################################################
     # Add our ground object
-    ground = new_plane('Ground', (xsize/2, ysize/2, 1))
-    subdivide(ground, max(xsize*2, ysize*2))
+    ground = new_grid('Ground', xsize/terrain_resolution, \
+        ysize/terrain_resolution, 1, (xsize/2.0, ysize/2.0, 1))
 
     #########################################################################
     # Add material
