@@ -158,6 +158,14 @@ class Environment(Component):
 
 
     def place_camera(self, location):
+        logger.warning("`place_camera` is deprecated, use `set_camera_location` instead")
+        self.set_camera_location(location)
+
+    def aim_camera(self, rotation):
+        logger.warning("`aim_camera` is deprecated, use `set_camera_rocation` instead")
+        self.set_camera_rotation(rotation)
+
+    def set_camera_location(self, location):
         """ Set the location of the default camera.
 
         :param location: list with the new 3D coordinates for the camera.
@@ -169,7 +177,7 @@ class Environment(Component):
         """
         self._camera_location = location
 
-    def aim_camera(self, rotation):
+    def set_camera_rotation(self, rotation):
         """ Set the orientation of the default camera
 
         :param rotation: list with an euler rotation for the camera.
