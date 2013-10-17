@@ -251,6 +251,9 @@ class Environment(Component):
         bpymorse.new_scene(type='LINK_OBJECTS')
         scene = bpymorse.get_context_scene()
         scene.name = 'S.MORSE_LOGIC'
+        # set simulation view resolution (4:3)
+        scene.render.resolution_x = 800
+        scene.render.resolution_y = 600
 
         # define 'Scene_Script_Holder' as the blender object of Enrivonment
         if not 'Scene_Script_Holder' in bpymorse.get_objects():
@@ -304,6 +307,7 @@ class Environment(Component):
         camera_fp.game.properties['Speed'].value = self._camera_speed
         camera_fp.data.clip_start = self._camera_clip_start
         camera_fp.data.clip_end   = self._camera_clip_end
+        camera_fp.data.lens = 20 # set focal length in mm
         # Make CameraFP the active camera
         bpymorse.deselect_all()
         camera_fp.select = True
