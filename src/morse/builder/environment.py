@@ -202,6 +202,7 @@ class Environment(Component):
     def _cfg_camera_scene(self):
         scene = bpymorse.get_context_scene()
         scene.name = 'S.MORSE_ENV'
+        scene.game_settings.physics_engine = 'NONE'
         from morse.builder.sensors import VideoCamera
         cfg_camera_scene = {}
         for component in AbstractComponent.components:
@@ -254,6 +255,7 @@ class Environment(Component):
         bpymorse.new_scene(type='LINK_OBJECTS')
         scene = bpymorse.get_context_scene()
         scene.name = 'S.MORSE_LOGIC'
+        scene.game_settings.physics_engine = 'BULLET'
         # set simulation view resolution (4:3)
         scene.render.resolution_x = 800
         scene.render.resolution_y = 600
