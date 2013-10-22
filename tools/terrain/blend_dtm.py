@@ -2,6 +2,8 @@
 
 Using the Displace and Decimate modifiers to generate a terrain 3D model from
 (geo)images (png, tif, geotif, etc)
+
+usage: blender -b -P blend_dtm.py -- dsm.tif image.jpg 1
 """
 import os
 import sys
@@ -117,7 +119,7 @@ def setup():
     bpy.context.scene.game_settings.show_framerate_profile = True
 
 def usage():
-    sys.stderr.write('usage: blender -P blend_dtm.py -- file_dem.tiff file_img.tiff [terrain_resolution]\n')
+    sys.stderr.write('usage: blender -b -P blend_dtm.py -- dsm.tif image.jpg [terrain_resolution]\n')
 
 def ext_exec(cmd, python=None):
     if not python:
@@ -225,6 +227,7 @@ def main(argv=[]):
     bpy.ops.file.pack_all() # bpy.ops.image.pack(as_png=True)
     save('/tmp/dtm.blend')
     # bpy.ops.view3d.view_selected(use_all_regions=True) # XXX no poll()
+    print("\n----\nsaved in /tmp/dtm.blend\n----\n")
     return 0
 
 def add_water_cube(scale=(1,1,1)):
