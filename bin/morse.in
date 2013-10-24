@@ -234,6 +234,7 @@ def set_prefixes(silent = False):
 def check_setup():
 
     global blender_exec
+    global morse_prefix
     
     set_prefixes()
 
@@ -272,7 +273,7 @@ def check_setup():
         
         #Eventually, look for another Blender in the MORSE prefix
         if blender_exec == "":
-            blender_prefix = os.path.join(os.path.normpath(prefix), os.path.normpath("bin/blender"))
+            blender_prefix = os.path.join(os.path.normpath(morse_prefix), os.path.normpath("bin/blender"))
             blender_version_prefix = check_blender_version(blender_prefix)
             
             if blender_version_prefix:
