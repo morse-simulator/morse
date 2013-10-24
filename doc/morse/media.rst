@@ -71,7 +71,7 @@ Screenshots
 MORSE related academic publications
 ===================================
 
-- `Simulating Complex Robotic Scenarios with MORSE <http://homepages.laas.fr/adegroot/publis/SIMPAR_2012.pdf>`_, SIMPAR 2012::
+- `Simulating Complex Robotic Scenarios with MORSE <http://www.openrobots.org/morse/material/media/pdf/SIMPAR_2012.pdf>`_, SIMPAR 2012::
 
 	@inproceedings{morseSIMPAR2012,
 	  author    = {Gilberto Echeverria and
@@ -100,7 +100,7 @@ MORSE related academic publications
 	}
 
 
-- `Modular Open Robots Simulation Engine: MORSE <http://homepages.laas.fr/gechever/Documents/paper-icra.pdf>`_, ICRA 2011::
+- `Modular Open Robots Simulation Engine: MORSE <http://www.openrobots.org/morse/material/media/pdf/paper-icra.pdf>`_, ICRA 2011::
 
     @InProceedings{morseICRA2011,
         author = {G. Echeverria and N. Lassabe and A. Degroote and S. Lemaignan}
@@ -110,8 +110,8 @@ MORSE related academic publications
     }
 
 - Presentation of MORSE at the Blender Conference 2010:
-  `slides <http://homepages.laas.fr/gechever/BlenderConference/BC_morse.pdf>`_ and
+  `slides <http://www.openrobots.org/morse/material/media/pdf/BC_morse.pdf>`_ and
   `video <http://www.youtube.com/watch?v=BGDfbi28s14#t=20m20s>`_
 - Presentation at the `European Robotics Forum 2011 <http://www.eurobotics-project.eu/cms/index.php?idcat=40>`_:
-  `general overview of MORSE <http://homepages.laas.fr/gechever/Documents/ERF-MORSE-presentation.pdf>`_ and
-  `MORSE-ROS implementation <http://homepages.laas.fr/gechever/Documents/morse_ros.pdf>`_
+  `general overview of MORSE <http://www.openrobots.org/morse/material/media/pdf/ERF-MORSE-presentation.pdf>`_ and
+  `MORSE-ROS implementation <http://www.openrobots.org/morse/material/media/pdf/morse_ros.pdf>`_
