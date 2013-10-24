@@ -9,7 +9,7 @@ The robotpkg way
 ----------------
 
 The recommended way to do it is through ``robotpkg`` (see `robotpkg homepage
-<http://homepages.laas.fr/mallet/robotpkg>`_ for more information).
+<http://robotpkg.openrobots.org>`_ for more information).
 
 To install::
 

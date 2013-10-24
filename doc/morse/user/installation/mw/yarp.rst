@@ -36,7 +36,7 @@ Packages manager
 ++++++++++++++++
 
 Probably that the easiest way to install YARP is to use ``robotpkg`` (see
-`robotpkg homepage <http://homepages.laas.fr/mallet/robotpkg>`_ for more
+`robotpkg homepage <http://robotpkg.openrobots.org>`_ for more
 information). Follow the instructions on installing ``robotpkg``. Then add
 the environment variable ``ROBOTPKG_BASE`` to your shell.  Then to install
 YARP::

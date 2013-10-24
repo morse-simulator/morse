@@ -47,8 +47,8 @@ to install all required modules for us::
 This should install all the requested packages.
 
 The data from the Kinect/Xtion is read using the niut module in robotpkg. If
-niut is not installed yet it can be installed following the usual instructions
-in http://homepages.laas.fr/mallet/robotpkg/.
+niut is not installed yet it can be installed following the usual
+`instructions <http://robotpkg.openrobots.org>`_.
 
 The Wiimote is used only to signal the simulation when we want to *take* an
 object, while moving around in front of the Kinect/Xtion. Being wireless, it
