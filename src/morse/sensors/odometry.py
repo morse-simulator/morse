@@ -27,7 +27,7 @@ class Odometry(morse.core.sensor.Sensor):
     add_level("differential", None, doc = "differential odometry, corresponding to standard 'robot level' odometry")
     add_level("integrated", "morse.sensors.odometry.IntegratedOdometry", doc = "integrated odometry: absolution position is exported", default=True)
 
-    add_data('dS', 0.0, "float","curvilign distance since last tick", level = "raw")
+    add_data('dS', 0.0, "float","curvilinear distance since last tick", level = "raw")
     add_data('dx', 0.0, "float","delta of X coordinate of the sensor", level = "differential")
     add_data('dy', 0.0, "float","delta of Y coordinate of the sensor", level = "differential")
     add_data('dz', 0.0, "float","delta of Z coordinate of the sensor", level = "differential")
