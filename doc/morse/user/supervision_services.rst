@@ -34,7 +34,14 @@ Available services
   services and datastreams, ...
 - ``set_log_level`` ``cmpnt`` (string) ``level`` (string): changes the
   level of logging for the component ``cmpnt`` to the level ``level``.
-
+- ``get_scene_objects`` (no parameter): returns an hierarchical dictionary
+  structure of all objects in the scene along with their positions and
+  orientations (as quaternion).
+- ``set_object_visibility`` ``cmpnt`` (string) ``visible`` (bool): make the
+  object referenced by ``cmpnt`` visible or invisible (it still exists at
+  physic level)
+- ``set_object_dynamics`` ``cmpnt`` (string) ``state`` (bool): enable or
+  disable the dynamics (physics) associated to component ``cmpnt``.
 
 .. note::
   Simulation services are stored in :py:mod:`morse.core.supervision_services`.
