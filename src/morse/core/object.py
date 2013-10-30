@@ -82,11 +82,16 @@ class Object(AbstractObject):
         current component abstraction level.
         """
 
-        if hasattr(self, '_data_fields'):
-            for name, details in self._data_fields.items():
-                default_value, type, doc, level = details
-                if level == "all" or level == self.level:
-                    self.local_data[name] = default_value
+        all_data_fields = OrderedDict()
+
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_data_fields'):
+                all_data_fields.update(cls._data_fields)
+
+        for name, details in all_data_fields.items():
+            default_value, type_, doc, level = details
+            if level == "all" or level == self.level:
+                self.local_data[name] = default_value
 
     def update_properties(self):
         """
