@@ -3,12 +3,21 @@ from abc import ABCMeta
 import time # profiler
 import morse.core.object
 from morse.core.services import service
+from morse.helpers.components import add_data
+from morse.core import blenderapi
 
 class Sensor(morse.core.object.Object):
     """ Basic Class for all sensors
 
     Inherits from the base object class.
     """
+
+    add_data('timestamp', 0.0, 'float', 
+             'number of milliseconds in simulated time')
+    if logger.isEnabledFor(logging.DEBUG):
+        add_data('simulator_time', 0.0, 'float', 
+                 "number of milliseconds in real world (Only for debug)")
+
 
     # Make this an abstract class
     __metaclass__ = ABCMeta
@@ -54,6 +63,11 @@ class Sensor(morse.core.object.Object):
 
         # Update the component's position in the world
         self.position_3d.update(self.bge_object)
+
+        self.local_data['timestamp'] = \
+            blenderapi.persistantstorage().current_time * 1000.0
+        if logger.isEnabledFor(logging.DEBUG):
+            self.local_data['simulator_time'] = time.time() * 1000.0
 
         # record the time before performing the default action for profiling
         if self.profile:
