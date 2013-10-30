@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
+from morse.core import blenderapi
 
 class Robot(morse.core.object.Object):
     """ Basic Class for all robots
@@ -19,6 +20,9 @@ class Robot(morse.core.object.Object):
         # Add the variable move_status to the object
         self.move_status = "Stop"
 
+        # shift against the simulator time (in ms)
+        self.time_shift = 0.0
+
 
     def action(self):
         """ Call the regular action function of the component. """
@@ -26,3 +30,8 @@ class Robot(morse.core.object.Object):
         self.position_3d.update(self.bge_object)
 
         self.default_action()
+
+    def gettime(self):
+        return blenderapi.persistantstorage().current_time * 1000.0 +\
+               self.time_shift
+

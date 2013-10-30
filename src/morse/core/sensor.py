@@ -64,8 +64,7 @@ class Sensor(morse.core.object.Object):
         # Update the component's position in the world
         self.position_3d.update(self.bge_object)
 
-        self.local_data['timestamp'] = \
-            blenderapi.persistantstorage().current_time * 1000.0
+        self.local_data['timestamp'] = self.robot_parent.gettime()
         if logger.isEnabledFor(logging.DEBUG):
             self.local_data['simulator_time'] = time.time() * 1000.0
 
