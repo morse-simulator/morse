@@ -117,6 +117,10 @@ MORSE_DATASTREAM_DICT = {
         },
     "clock": {
         "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "ros": 'morse.middleware.ros.clock.ClockPublisher',
             }
         },

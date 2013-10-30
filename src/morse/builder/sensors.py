@@ -400,7 +400,7 @@ class Velodyne(LaserSensorWithArc):
 
 class Clock(SensorCreator):
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, "morse.core.sensor.Sensor", "clock")
+        SensorCreator.__init__(self, name, "morse.sensors.clock.Clock", "clock")
 
 class Kinect(SensorCreator):
     def __init__(self, name="Kinect"):
