@@ -83,11 +83,16 @@ class ROSPublisher(AbstractROS):
 
     def get_ros_header(self):
         header = Header()
-        header.stamp = rospy.Time.now()
+        header.stamp = self.get_time()
         header.seq = self.sequence
         # http://www.ros.org/wiki/geometry/CoordinateFrameConventions#Multi_Robot_Support
         header.frame_id = self.frame_id
         return header
+
+    def get_time(self):
+        #not yet :)
+        #return rospy.Time.from_sec(self.data['timestamp'] * 1000.0)
+        return rospy.Time.now()
 
     # Generic publish method
     def publish(self, message):
@@ -131,7 +136,7 @@ class ROSPublisherTF(ROSPublisher):
         """
         translation, rotation = self.get_robot_transform()
         if not time:
-            time = rospy.Time.now()
+            time = self.get_time()
         if not child:
             # our frame_id (component frame)
             child = self.frame_id

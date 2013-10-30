@@ -16,7 +16,7 @@ class SemanticCameraPublisher(ROSPublisherTF):
         for obj in self.data['visible_objects']:
             # send tf-frame for every object
             self.sendTransform(obj['position'], obj['orientation'], \
-                               rospy.Time.now(), str(obj['name']), "/map")
+                               self.get_time(), str(obj['name']), "/map")
         string = String()
         string.data = json.dumps(self.data['visible_objects'], cls=MorseEncoder)
         self.publish(string)
@@ -38,7 +38,7 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
 
             # send tf-frame for every object
             self.sendTransform(obj['position'], obj['orientation'], \
-                               rospy.Time.now(), str(obj['name']), "/map")
+                               self.get_time(), str(obj['name']), "/map")
 
             # Build string from name, description, location and orientation in the global world frame
             string.data += "(" + str(obj['name']) + " " + description + " " + \
