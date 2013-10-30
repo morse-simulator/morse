@@ -2,7 +2,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.helpers.morse_logging import SECTION, ENDSECTION
 import sys
 import os
-import time
 import imp
 
 # Force the full import of blenderapi so python computes correctly all
@@ -20,6 +19,7 @@ from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.core.modifier import register_modifier
 from morse.helpers.loading import create_instance, create_instance_level
+import morse.core.morse_time
 
 # Constants for stream directions
 IN = 'IN'
@@ -556,8 +556,11 @@ def init(contr):
     logger.info ("PID: %d" % os.getpid())
 
     persistantstorage.morse_initialised = False
-    persistantstorage.base_clock = time.clock()
-    persistantstorage.current_time = 0.0
+    if morse.core.blenderapi.game_settings().use_frame_rate:
+        persistantstorage.time = morse.core.morse_time.BestEffort()
+    else:
+        persistantstorage.time = morse.core.morse_time.FixedSimulationStep()
+    persistantstorage.current_time = persistantstorage.time.time
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0
 
@@ -681,8 +684,8 @@ def simulation_main(contr):
     """
     # Update the time variable
     try:
-        persistantstorage.current_time = time.clock() - \
-                                         persistantstorage.base_clock
+        persistantstorage.time.update()
+        persistantstorage.current_time = persistantstorage.time.time
     except AttributeError:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.

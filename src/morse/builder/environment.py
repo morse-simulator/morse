@@ -394,6 +394,10 @@ class Environment(Component):
         bpymorse.get_context_scene().render.engine = 'BLENDER_GAME'
         bpymorse.get_context_scene().game_settings.use_auto_start = auto_start
 
+    def set_fixed_time(self):
+        " Render all frames "
+        bpymorse.get_context_scene().game_settings.use_frame_rate = 0
+
     def fullscreen(self, fullscreen=True):
         """ Run the simulation fullscreen
 

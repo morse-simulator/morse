@@ -198,6 +198,12 @@ def materialdata(name):
     else:
         return None
 
+def game_settings():
+    if not fake:
+        return bpy.context.scene.game_settings
+    else:
+        return None
+
 
 def getalwayssensors(obj):
     if not fake:
