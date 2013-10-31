@@ -51,9 +51,10 @@ def fill_missing_pr2_joints(joints):
                 'r_wrist_flex_joint':0.0, 
                 'r_wrist_roll_joint':0.0}
 
-    for k,v in joints.items():
-        for name, value in v.items():
-            pr2_joints[name] = value
+    for k, v in joints.items():
+        if k != 'timestamp':
+            for name, value in v.items():
+                pr2_joints[name] = value
 
     return pr2_joints
 
