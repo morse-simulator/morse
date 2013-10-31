@@ -148,6 +148,13 @@ MORSE_DATASTREAM_DICT = {
             "moos": 'morse.middleware.moos.gps.GPSNotifier'
             }
         },
+    "morse.sensors.compass.Compass": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
+            }
+        },
     "morse.sensors.gyroscope.Gyroscope": {
         "default": {
             "ros": 'morse.middleware.ros.StringPublisher',

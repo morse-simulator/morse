@@ -42,6 +42,14 @@ class GPS(SensorCreator):
         mesh.color(.5, .5, .5)
         self.append(mesh)
 
+class Compass(SensorCreator):
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name, "morse.sensors.compass.Compass", "compass")
+        mesh = Sphere("CompassSphere")
+        mesh.scale = (.04, .04, .01)
+        mesh.color(.5, .5, .5)
+        self.append(mesh)
+
 class Gyroscope(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name,"morse.sensors.gyroscope.Gyroscope", "gyroscope")
