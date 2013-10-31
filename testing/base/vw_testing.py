@@ -54,8 +54,9 @@ class VW_Test(MorseTestCase):
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = simu.robot.pose
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             v_w = simu.robot.motion
 
@@ -72,8 +73,9 @@ class VW_Test(MorseTestCase):
             send_speed(v_w, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(v_w, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
@@ -89,8 +91,9 @@ class VW_Test(MorseTestCase):
             send_speed(v_w, 0.5, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(v_w, -2.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
@@ -108,8 +111,9 @@ class VW_Test(MorseTestCase):
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = simu.robot.pose
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             v_w = simu.robot.motion
 
@@ -126,8 +130,9 @@ class VW_Test(MorseTestCase):
             send_service_speed(v_w, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()

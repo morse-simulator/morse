@@ -49,8 +49,9 @@ class XYW_Test(MorseTestCase):
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.robot.pose
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             # v_w socket
             xyw = morse.robot.motion
@@ -77,8 +78,9 @@ class XYW_Test(MorseTestCase):
             send_speed(xyw, -1.0, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(xyw, 1.0, 0.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
@@ -94,8 +96,9 @@ class XYW_Test(MorseTestCase):
             send_speed(xyw, 0.5, 0.0, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(xyw, -2.0, 0.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()

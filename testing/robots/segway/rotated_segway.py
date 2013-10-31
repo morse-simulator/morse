@@ -76,7 +76,7 @@ class Rotated_Segway_Test(MorseTestCase):
                     self.assertAlmostEqual(coord, 0.10, delta=0.03)
                 elif key == 'yaw':
                     self.assertAlmostEqual(coord, math.pi/2, delta=0.03)
-                else:
+                elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.03)
 
             v_w = morse.robot.motion
