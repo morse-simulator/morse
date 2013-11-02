@@ -3,6 +3,7 @@ import morse.core.sensor
 from morse.helpers.components import add_data, add_property
 
 from math import sin, cos, asin, atan2, sqrt, degrees, radians
+from random import gauss, random
 
 earth_radius = 6371000.0
 
@@ -73,6 +74,12 @@ class GPS(morse.core.sensor.Sensor):
     add_property('origin_lat', 0, 'origin_lat', "float", 'Latitude of the GPS Lat/Lon that corresponds to x=0,y=0,z=0.')
     add_property('origin_lon', 0, 'origin_lon', "float", 'Longitude of the GPS Lat/Lon that corresponds to x=0,y=0,z=0.')
 
+    add_property('chance_of_fix', 1.0, 'chance_of_fix', 'float', 'Probability that the GPS has a fix, 1.0 means always has fix.')
+    add_property('latlon_stddev', 0, 'latlon_stddev', 'float', 'Standard deviation of GPS Lat/Lon in meters.')
+    add_property('alt_stddev', 0, 'alt_stddev', 'float', 'Standard deviation of the GPS Altitude in meters.')
+    add_property('heading_stddev', 0, 'heading_stddev', 'float', 'Standard deviation of the GPS heading in degrees.')
+    add_property('speed_stddev', 0, 'speed_stddev', 'float', 'Standard deviation of the GPS speed in meters-per-second.')
+
     def __init__(self, obj, parent=None):
         """ Constructor method.
             Receives the reference to the Blender object.
@@ -111,26 +118,31 @@ class GPS(morse.core.sensor.Sensor):
         # dfo means distance from origin.
         dfo_xy = sqrt(x**2 + y**2)
 
+        # the noise is in meters, so it is added to x,y before calculating lat/lon
+        nx = gauss(0, self.latlon_stddev)
+        ny = gauss(0, self.latlon_stddev)
+
         # when far away from the origin, calculate the lat/lon relative to the previous lat/lon
         if dfo_xy < 100:
-            lat,lon = point_from_xy(self.origin_lat, self.origin_lon, x, y)
+            lat,lon = point_from_xy(self.origin_lat, self.origin_lon, x + nx, y + ny)
         else:
-            lat,lon = point_from_xy(self.prev_lat, self.prev_lon, dx, dy)
+            lat,lon = point_from_xy(self.prev_lat, self.prev_lon, dx + nx, dy + ny)
 
         # check that the x,y and lat/lon from origin agree.
         dfo_latlon, hfo_latlon = distance_and_direction(self.origin_lat, self.origin_lon, lat, lon)
         dfo_error = abs(dfo_latlon - dfo_xy)
-        assert(dfo_error < 0.1)
+        #assert(dfo_error < 0.1)
         #logger.info("GPS dfo error: %f" % dfo_error)
 
         speed = sqrt(dx**2 + dy**2)*self.frequency
 
-        self.local_data['has_fix'] = True
-        self.local_data['lat'] = lat
-        self.local_data['lon'] = lon
-        self.local_data['alt'] = z
-        self.local_data['speed'] = speed
-        self.local_data['heading'] = -degrees(self.position_3d.yaw)
+        self.local_data['has_fix'] = random() < self.chance_of_fix
+        if self.local_data['has_fix']:
+            self.local_data['lat'] = lat
+            self.local_data['lon'] = lon
+            self.local_data['alt'] = z + gauss(0, self.alt_stddev)
+            self.local_data['speed'] = speed + gauss(0, self.speed_stddev)
+            self.local_data['heading'] = -degrees(self.position_3d.yaw) + gauss(0, self.heading_stddev)
 
         self.prev_x = x
         self.prev_y = y
