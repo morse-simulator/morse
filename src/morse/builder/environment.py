@@ -291,7 +291,13 @@ class Environment(Component):
         self.properties(environment_file = str(self._environment_file))
 
         if self.fastmode:
-            self.set_material_mode('SINGLETEXTURE')
+            # SINGLETEXTURE support has been removed between 2.69 and
+            # 2.70. Handle properly the case where it is not defined
+            # anymore.
+            try:
+                self.set_material_mode('SINGLETEXTURE')
+            except TypeError:
+                self.set_material_mode('MULTITEXTURE')
             self.set_viewport("WIREFRAME")
         elif not self.is_material_mode_custom:
             # make sure OpenGL shading language shaders (GLSL) is the
