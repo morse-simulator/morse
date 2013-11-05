@@ -52,6 +52,8 @@ class YarpPublisher(YarpPort):
             bottle.addDouble(data)
         elif isinstance(data, str):
             bottle.addString(data)
+        elif isinstance(data, tuple):
+            self.encode_message(bottle, list(data), component_name)
         elif isinstance(data, list):
             m_bottle = bottle.addList()
             for m_data in data:
@@ -61,20 +63,18 @@ class YarpPublisher(YarpPort):
                 m_bottle = bottle.addList()
                 self.encode_message(m_bottle, key, component_name)
                 self.encode_message(m_bottle, value, component_name)
-
-
         elif isinstance(data, mathutils.Vector):
-            self.encode_message(m_bottle, data[:], component_name)
+            self.encode_message(bottle, data[:], component_name)
         elif isinstance(data, mathutils.Matrix):
-            self.encode_message(m_bottle, data[:], component_name)
+            self.encode_message(bottle, data[:], component_name)
         elif isinstance(data, mathutils.Quaternion):
-            self.encode_message(m_bottle,
+            self.encode_message(bottle,
                     [data.x , data.y, data.z, data.w], component_name)
         elif isinstance(data, mathutils.Euler):
-            self.encode_message(m_bottle,
+            self.encode_message(bottle,
                     [data.z , data.y, data.x], component_name)
         elif isinstance(data, Transformation3d):
-            self.encode_message(m_bottle,
+            self.encode_message(bottle,
                     [data.x , data.y, data.z,
                      data.yaw, data.pitch, data.roll], component_name)
         else:
