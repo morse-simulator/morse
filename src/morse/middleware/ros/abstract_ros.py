@@ -9,6 +9,8 @@ from geometry_msgs.msg import TransformStamped
 from morse.middleware.ros.tfMessage import tfMessage
 from morse.middleware import AbstractDatastream
 
+from morse.core.blenderapi import persistantstorage
+
 try:
     import mathutils
 except ImportError:
@@ -37,9 +39,13 @@ class AbstractROS(AbstractDatastream):
 
     def initialize(self):
         # Initialize MORSE-ROS-node. If already initialized, does nothing
-        rospy.init_node('morse', log_level=rospy.DEBUG, disable_signals=True)
+        name = 'morse'
+        morse_ps = persistantstorage() # dict
+        if 'node_instance' in morse_ps:
+            name = 'morse_%s' % morse_ps.node_instance.node_name
+        rospy.init_node(name, log_level=rospy.DEBUG, disable_signals=True)
 
-        logger.info("ROS datastream initialize %s"%self)
+        logger.info("ROS node %s initialized %s" % (name, self) )
         self.topic = None
 
         if 'topic' in self.kwargs:

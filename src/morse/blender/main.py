@@ -566,6 +566,10 @@ def init(contr):
 
 
     logger.log(SECTION, 'SCENE INITIALIZATION')
+
+    if MULTINODE_SUPPORT:
+        init_multinode()
+
     init_ok = init_ok and link_services()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_datastreams()
@@ -581,9 +585,6 @@ def init(contr):
         contr = morse.core.blenderapi.controller()
         close_all(contr)
         quit(contr)
-
-    if MULTINODE_SUPPORT:
-        init_multinode()
     
     # Set the default value of the logic tic rate to 60
     #bge.logic.setLogicTicRate(60.0)
