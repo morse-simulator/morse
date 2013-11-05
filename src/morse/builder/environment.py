@@ -212,27 +212,23 @@ class Environment(Component):
         scene.name = 'S.MORSE_ENV'
         scene.game_settings.physics_engine = 'NONE'
         from morse.builder.sensors import VideoCamera
-        cfg_camera_scene = {}
+        cfg_camera_scene = []
         for component in AbstractComponent.components:
             # do not create scene for external camera
             if isinstance(component, VideoCamera) and \
                     self.is_internal_camera(component):
-                # Create a new scene for the Camera
-                bpymorse.new_scene(type='LINK_OBJECTS')
-                scene = bpymorse.get_context_scene()
-                scene.name = 'S.%s'%component.name
-                scene.render.resolution_x = component.property_value('cam_width')
-                scene.render.resolution_y = component.property_value('cam_height')
-                # TODO disable logic and physic in this created scene
-                cfg_camera_scene[component.name] = scene.name
-
-        # Create 'camera_scene.py' configuration file (like 'component_config.py')
-        # mapping Camera -> Scene for the bge.texture.ImageRender(scene, camera)
-        bpymorse.new_text()
-        bpymorse.get_last_text().name = 'camera_scene.py'
-        cfg = bpymorse.get_text('camera_scene.py')
-        cfg.write('camera_scene = ' + json.dumps(cfg_camera_scene, indent=1) )
-        cfg.write('\n')
+                res_x = component.property_value('cam_width')
+                res_y = component.property_value('cam_height')
+                name = 'S.%dx%d' % (res_x, res_y)
+                if not name in cfg_camera_scene:
+                    # Create a new scene for the Camera
+                    bpymorse.new_scene(type='LINK_OBJECTS')
+                    scene = bpymorse.get_context_scene()
+                    scene.name = name
+                    scene.render.resolution_x = res_x
+                    scene.render.resolution_y = res_y
+                    # TODO disable logic and physic in this created scene
+                    cfg_camera_scene.append(name)
 
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects

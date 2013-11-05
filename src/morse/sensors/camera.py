@@ -54,14 +54,9 @@ class Camera(morse.core.sensor.Sensor):
         self._texture_ok = False
         self._camera_running = False
 
-        import camera_scene # file like 'component_config.py' in the .blend
-        if self.bge_object.name in camera_scene.camera_scene:
-            self.scene_name = camera_scene.camera_scene[self.bge_object.name]
-            blenderapi.add_scene(self.scene_name, overlay=0)
-            logger.info('Component initialized, runs at %.2f Hz', self.frequency)
-        else:
-            logger.info('External camera')
-
+        self.scene_name = 'S.%dx%d' % (self.image_width, self.image_height)
+        blenderapi.add_scene(self.scene_name, overlay=0)
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
         """ Update the texture image. """
