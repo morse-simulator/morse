@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 logger.setLevel(logging.DEBUG)
+from morse.core.abstractobject import AbstractObject
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.services import service
 from morse.core import status, blenderapi
@@ -18,23 +19,32 @@ def _robot_exists(robot):
         except KeyError:
             return None
 
+class Communication(AbstractObject):
+    def __init__(self):
+        super(Communication, self).__init__()
 
-@service(component = "communication")
-def distance_and_view(robot1, robot2):
-    """ Return the distance between the two robots, and a boolean which
-    described if one can view the other. 
-    """
-    r1 = _robot_exists(robot1)
-    r2 = _robot_exists(robot2)
+    def name(self):
+        return "communication"
 
-    if (not r1):
-        raise MorseRPCInvokationError(robot1 + " does not exist in the simulation ")
-    if (not r2):
-        raise MorseRPCInvokationError(robot2 + " does not exist in the simulation ")
+    @service
+    def distance_and_view(self, robot1, robot2):
+        """ Return the distance between the two robots, and a boolean which
+        described if one can view the other. 
+        """
+        r1 = _robot_exists(robot1)
+        r2 = _robot_exists(robot2)
 
-    dist = r1.position_3d.distance(r2.position_3d)
+        if (not r1):
+            raise MorseRPCInvokationError(robot1 + " does not exist in the simulation ")
+        if (not r2):
+            raise MorseRPCInvokationError(robot2 + " does not exist in the simulation ")
 
-    closest_obj = r1.bge_object.rayCastTo(r2.bge_object)
+        dist = r1.position_3d.distance(r2.position_3d)
 
-    return (dist, closest_obj == r2.bge_object)
+        closest_obj = r1.bge_object.rayCastTo(r2.bge_object)
+
+        return (dist, closest_obj == r2.bge_object)
+
+    def action(self):
+        pass
 
