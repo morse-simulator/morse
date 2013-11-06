@@ -4,7 +4,6 @@ This script tests the Segway RMP400 robot with differential drive actuator
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -15,34 +14,34 @@ try:
 except ImportError:
     pass
 
-def gradual_speed(s, v, w, t):
+def gradual_speed(s, morse, v, w, t):
     """ Start and finish applying only half of the desired speed """
     tic = t/20.0
     s.publish({'v' : v/4, 'w' : w/4})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : v/2, 'w' : w/2})
-    sleep(tic*1)
+    morse.sleep(tic*1)
     s.publish({'v' : v, 'w' : w})
-    sleep(tic*18)
+    morse.sleep(tic*18)
     s.publish({'v' : v/2, 'w' : w/2})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : v/4, 'w' : w/4})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : 0.0, 'w' : 0.0})
 
 
-def send_speed(s, v, w, t):
+def send_speed(s, morse, v, w, t):
     #s.publish({'v' : v, 'w' : w})
-    #sleep(t)
+    #morse.sleep(t)
     #s.publish({'v' : 0.0, 'w' : 0.0})
-    gradual_speed(s, v, w, t)
-    sleep(1)
+    gradual_speed(s, morse, v, w, t)
+    morse.sleep(1)
 
-def send_service_speed(s, v, w, t):
+def send_service_speed(s, morse, v, w, t):
     s.set_speed(v, w)
-    sleep(t)
+    morse.sleep(t)
     s.stop()
-    sleep(1)
+    morse.sleep(1)
 
 class Differential_VW_Test(MorseTestCase):
     def setUpEnv(self):
@@ -81,7 +80,7 @@ class Differential_VW_Test(MorseTestCase):
 
             v_w = morse.robot.motion
 
-            send_speed(v_w, 1.0, 0.0, 2.0)
+            send_speed(v_w, morse, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.15)
@@ -91,7 +90,7 @@ class Differential_VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
 
-            send_speed(v_w, -1.0, 0.0, 2.0)
+            send_speed(v_w, morse, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for key,coord in pose.items():
@@ -101,7 +100,7 @@ class Differential_VW_Test(MorseTestCase):
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 
             """
-            send_speed(v_w, 0.0, -math.pi/4.0, 2.0)
+            send_speed(v_w, morse, 0.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             # for non-null w, we have r = v /  w
@@ -112,7 +111,7 @@ class Differential_VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
 
-            send_speed(v_w, 0.0, math.pi/4.0, 2.0)
+            send_speed(v_w, morse, 0.0, math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             for key,coord in pose.items():
@@ -123,7 +122,7 @@ class Differential_VW_Test(MorseTestCase):
             """
 
 
-            send_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_speed(v_w, morse, 1.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             # for non-null w, we have r = v /  w
@@ -134,7 +133,7 @@ class Differential_VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.20)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.20)
 
-            send_speed(v_w, 0.5, -math.pi/8.0, 12.0)
+            send_speed(v_w, morse, 0.5, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
             for key,coord in pose.items():
@@ -148,7 +147,7 @@ class Differential_VW_Test(MorseTestCase):
             # However, the behaviour seems reasonnable considering its
             # real-life behaviour. 
 
-            send_speed(v_w, -2.0, math.pi/2.0, 3.0)
+            send_speed(v_w, morse, -2.0, math.pi/2.0, 3.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.20)
@@ -173,7 +172,7 @@ class Differential_VW_Test(MorseTestCase):
 
             v_w = morse.robot.motion
 
-            send_service_speed(v_w, 1.0, 0.0, 2.0)
+            send_service_speed(v_w, morse, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.15)
@@ -183,7 +182,7 @@ class Differential_VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.15)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=0.15)
 
-            send_service_speed(v_w, -1.0, 0.0, 2.0)
+            send_service_speed(v_w, morse, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for key,coord in pose.items():
@@ -192,7 +191,7 @@ class Differential_VW_Test(MorseTestCase):
                 elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 
-            send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_service_speed(v_w, morse, 1.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             # for non-null w, we have r = v /  w

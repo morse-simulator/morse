@@ -5,7 +5,6 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -16,14 +15,14 @@ try:
 except ImportError:
     pass
 
-def send_speed(s, v, w, t):
+def send_speed(s, morse, v, w, t):
     s.publish({'v' : v, 'w' : w})
-    sleep(t)
+    morse.sleep(t)
     s.publish({'v' : 0.0, 'w' : 0.0})
 
-def send_service_speed(s, v, w, t):
+def send_service_speed(s, morse, v, w, t):
     s.set_speed(v, w)
-    sleep(t)
+    morse.sleep(t)
     s.stop()
 
 class VW_Test(MorseTestCase):
@@ -60,7 +59,7 @@ class VW_Test(MorseTestCase):
 
             v_w = simu.robot.motion
 
-            send_speed(v_w, 1.0, 0.0, 2.0)
+            send_speed(v_w, simu, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
@@ -70,14 +69,14 @@ class VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_speed(v_w, -1.0, 0.0, 2.0)
+            send_speed(v_w, simu, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_speed(v_w, simu, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
 
             # for non-null w, we have r = v /  w
@@ -88,14 +87,14 @@ class VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_speed(v_w, 0.5, -math.pi/8.0, 12.0)
+            send_speed(v_w, simu, 0.5, -math.pi/8.0, 12.0)
 
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_speed(v_w, -2.0, math.pi/2.0, 3.0)
+            send_speed(v_w, simu, -2.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
@@ -117,7 +116,7 @@ class VW_Test(MorseTestCase):
 
             v_w = simu.robot.motion
 
-            send_service_speed(v_w, 1.0, 0.0, 2.0)
+            send_service_speed(v_w, simu, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
@@ -127,14 +126,14 @@ class VW_Test(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_service_speed(v_w, -1.0, 0.0, 2.0)
+            send_service_speed(v_w, simu, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_service_speed(v_w, simu, 1.0, -math.pi/4.0, 2.0)
             pose = pose_stream.get()
 
             # for non-null w, we have r = v /  w

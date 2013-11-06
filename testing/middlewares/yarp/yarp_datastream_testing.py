@@ -7,7 +7,6 @@ import sys
 import math
 import subprocess
 import yarp
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -25,9 +24,9 @@ def send_speed_(s, v, w):
     b.addDouble(w)
     s.write(True)
 
-def send_speed(s, v, w, t):
+def send_speed(s, morse, v, w, t):
     send_speed_(s, v, w)
-    sleep(t)
+    morse.sleep(t)
     send_speed_(s, 0.0, 0.0)
 
 class YARP_MW_Test(MorseTestCase):
@@ -77,50 +76,51 @@ class YARP_MW_Test(MorseTestCase):
         cmd_stream.open("/morse/test/vw/out")
         yarp.Network.connect("/morse/test/vw/out", "/morse/robot/motion/in")
         
-        # Read the start position, it must be (0.0, 0.0, 0.0)
-        pose = pose_stream.read()
-        for i in range(1, 7):
-            self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
+        with Morse() as morse:
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            pose = pose_stream.read()
+            for i in range(1, 7):
+                self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
 
-        send_speed(cmd_stream, 1.0, 0.0, 2.0)
+            send_speed(cmd_stream, morse, 1.0, 0.0, 2.0)
 
-        pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(1).asDouble(), 2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(2).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(4).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
+            pose = pose_stream.read()
+            self.assertAlmostEqual(pose.get(1).asDouble(), 2.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(2).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(4).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
-        send_speed(cmd_stream, -1.0, 0.0, 2.0)
+            send_speed(cmd_stream, morse, -1.0, 0.0, 2.0)
 
-        pose = pose_stream.read()
-        for i in range(1, 7):
-            self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
+            pose = pose_stream.read()
+            for i in range(1, 7):
+                self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
-        send_speed(cmd_stream, 1.0, -math.pi/4.0, 2.0)
-        pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
-        self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
+            send_speed(cmd_stream, morse, 1.0, -math.pi/4.0, 2.0)
+            pose = pose_stream.read()
+            self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
+            self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
+            self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
-        send_speed(cmd_stream, 0.5, -math.pi/8.0, 12.0)
-        pose = pose_stream.read()
-        for i in range(1, 7):
-            self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
+            send_speed(cmd_stream, morse, 0.5, -math.pi/8.0, 12.0)
+            pose = pose_stream.read()
+            for i in range(1, 7):
+                self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
-        send_speed(cmd_stream, -2.0, math.pi/2.0, 3.0)
-        pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
-        self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
+            send_speed(cmd_stream, morse, -2.0, math.pi/2.0, 3.0)
+            pose = pose_stream.read()
+            self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
+            self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
+            self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+            self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
         yarp.Network.fini()
 

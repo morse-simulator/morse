@@ -14,7 +14,6 @@ except ImportError:
 
 import os
 import sys
-from time import sleep
 from pymorse import Morse
 
 
@@ -89,7 +88,7 @@ class NoiseTest(MorseTestCase):
         """
         with Morse() as morse:
             morse.robot.motion.publish({'v': 1, 'w':.5})
-            sleep(1)
+            morse.sleep(1)
             d = morse.robot.odometry.get()
             dn = morse.robot.odometry_noised.get()
             for i in ['x', 'y', 'z', 'yaw', 'pitch', 'roll']:

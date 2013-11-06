@@ -5,7 +5,6 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -70,10 +69,10 @@ class OdometryTest(MorseTestCase):
         self.x += dx
         self.y += dy
 
-    def odometry_test_helper(self, v, w, t):
+    def odometry_test_helper(self, morse, v, w, t):
         self.odo_stream.subscribe(self.record_datas)
         self.motion.publish({'v':v, 'w':w})
-        sleep(t)
+        morse.sleep(t)
         self.odo_stream.unsubscribe(self.record_datas)
 
     
@@ -109,20 +108,20 @@ class OdometryTest(MorseTestCase):
 
             self.clear_datas(0.0, 0.0, 0.0)
 
-            self.odometry_test_helper(1.0, 0.0, 2.0)
+            self.odometry_test_helper(morse, 1.0, 0.0, 2.0)
             self.verify(2.0, 0.0, 0.0)
 
-            self.odometry_test_helper(-1.0, 0.0, 2.0)
+            self.odometry_test_helper(morse, -1.0, 0.0, 2.0)
             self.verify(0.0, 0.0, 0.0)
 
-            self.odometry_test_helper(1.0, -math.pi/4.0, 2.0)
+            self.odometry_test_helper(morse, 1.0, -math.pi/4.0, 2.0)
             self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
 
-            self.odometry_test_helper(0.5, -math.pi/8.0, 12.0)
+            self.odometry_test_helper(morse, 0.5, -math.pi/8.0, 12.0)
             self.verify(0.0, 0.0, 0.0)
 
             # XXX fail Y with 0.11 delta
-            #self.odometry_test_helper(-2.0, math.pi/2.0, 3.0)
+            #self.odometry_test_helper(morse, -2.0, math.pi/2.0, 3.0)
             #self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
 
 ########################## Run these tests ##########################

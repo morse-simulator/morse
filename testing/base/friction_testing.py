@@ -17,12 +17,11 @@ except ImportError:
     pass
 
 import sys
-import time
 from pymorse import Morse
 
-def send_speed(s, v=0, w=0, t=0):
+def send_speed(s, simu, v=0, w=0, t=0):
     s.publish({'v': v, 'w': w})
-    time.sleep(t)
+    simu.sleep(t)
     s.publish({'v': 0.0, 'w': 0.0})
 
 class FrictionTest(MorseTestCase):
@@ -71,7 +70,7 @@ class FrictionTest(MorseTestCase):
 
             # Read the start position, it must be (0.0, 0.0, 0.0)
             for vw_stream in [simu.robot1.motion, simu.robot2.motion]:
-                send_speed(vw_stream, 1.0, 0.0, 2.0)
+                send_speed(vw_stream, simu, 1.0, 0.0, 2.0)
 
             pose = simu.robot1.pose.get() # friction = 0 / 100
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)

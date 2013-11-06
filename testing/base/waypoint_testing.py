@@ -6,7 +6,6 @@ import logging
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse, MorseServicePreempted
 
@@ -57,7 +56,7 @@ class Waypoints_Test(MorseTestCase):
             motion.publish({'x' : 4.0, 'y': 2.0, 'z': 0.0, 
                             'tolerance' : 0.5, 
                             'speed' : 1.0})
-            sleep(10)
+            simu.sleep(10)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 4.0, delta=0.5)
@@ -68,7 +67,7 @@ class Waypoints_Test(MorseTestCase):
             motion.publish({'x' : 0.0, 'y': 0.0, 'z': 0.0, 
                             'tolerance' : 1.0, 
                             'speed' : 1.0})
-            sleep(10)
+            simu.sleep(10)
             pose = pose_stream.get()
             distance_goal = math.sqrt( pose['x'] * pose['x'] + pose['y'] * pose['y'])
             self.assertLess(distance_goal, 1.0)
@@ -96,7 +95,7 @@ class Waypoints_Test(MorseTestCase):
 
             action = simu.robot.motion.goto(4.0, 0.0, 0.0, 0.1, 1.0) # do not wait for completion
             logger.info("Moving for 1 sec...")
-            sleep(1)
+            simu.sleep(1)
 
             pose = pose_stream.get() #should have done 1m
             self.assertAlmostEqual(pose['x'], 3.0, delta=0.15)
@@ -107,7 +106,7 @@ class Waypoints_Test(MorseTestCase):
 
             logger.info("Cancelling motion and waiting for 0.5 sec...")
             action.cancel()
-            sleep(0.1)
+            simu.sleep(0.1)
 
             self.assertFalse(action.running())
             self.assertTrue(action.done())
@@ -115,21 +114,21 @@ class Waypoints_Test(MorseTestCase):
             with self.assertRaises(MorseServicePreempted):
                 action.result()
 
-            sleep(0.5)
+            simu.sleep(0.5)
             pose = pose_stream.get() #should not have moved
             self.assertAlmostEqual(pose['x'], 3.0, delta=0.15)
             logger.info("Ok, did not move")
 
             logger.info("Moving again, waiting for 2 sec, and ensuring the action terminate")
             action = simu.robot.motion.goto(4.0, 0.0, 0.0, 0.1, 1.0) # do not wait for completion
-            sleep(2)
+            simu.sleep(2)
             self.assertTrue(action.done())
             self.assertFalse(action.running())
 
             # Stop will stop the robot, but do not erase current goal
             action = simu.robot.motion.goto(6.0, 0.0, 0.0, 0.1, 1.0) # do not wait for completion
             logger.info("Moving for 1 sec...")
-            sleep(1)
+            simu.sleep(1)
 
             self.assertFalse(action.done())
             self.assertTrue(action.running())
@@ -150,7 +149,7 @@ class Waypoints_Test(MorseTestCase):
             pose = pose_stream.get() #should have done 1m
             self.assertAlmostEqual(pose['x'], 5.0, delta=0.15)
 
-            sleep(0.5)
+            simu.sleep(0.5)
             pose = pose_stream.get() #should not have moved
             self.assertAlmostEqual(pose['x'], 5.0, delta=0.15)
             logger.info("Ok, did not move")
@@ -159,7 +158,7 @@ class Waypoints_Test(MorseTestCase):
 
             simu.robot.motion.resume().result()
 
-            sleep(0.5)
+            simu.sleep(0.5)
 
             # must move now
             pose = pose_stream.get()
@@ -168,7 +167,7 @@ class Waypoints_Test(MorseTestCase):
             self.assertEqual(status, "Transit")
 
             # wait for the end of the move
-            sleep(1.0)
+            simu.sleep(1.0)
             self.assertTrue(action.done())
             self.assertFalse(action.running())
 

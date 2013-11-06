@@ -4,7 +4,6 @@ This script tests the human model with a pose sensor.
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -42,7 +41,7 @@ class HumanPoseTest(MorseTestCase):
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.human.pose
-            sleep(1)
+            morse.sleep(1)
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
@@ -66,7 +65,7 @@ class HumanPoseTest(MorseTestCase):
                                 'tolerance' : 0.3,
                                 'speed' : 1.0})
 
-            sleep(5)
+            morse.sleep(5)
             pose = pose_stream.get()
 
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.5)

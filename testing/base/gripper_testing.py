@@ -4,7 +4,6 @@ This script tests the KUKA LWR arm, both the data and service api
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -15,10 +14,10 @@ try:
 except ImportError:
     pass
 
-def send_pose(s, x, y, yaw):
+def send_pose(s, morse, x, y, yaw):
     s.publish({'x' : x, 'y' : y, 'z' : 0.0, \
                'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
-    sleep(0.1)
+    morse.sleep(0.1)
 
 class gripperTest(MorseTestCase):
     def setUpEnv(self):
@@ -65,7 +64,7 @@ class gripperTest(MorseTestCase):
             teleport_stream = morse.robot.teleport
 
             kuka_client.set_rotation('kuka_2', -1.57)
-            sleep(0.1)
+            morse.sleep(0.1)
 
             obj = morse.robot.arm.gripper.grab().result()
             self.assertEqual(obj, None)
@@ -73,28 +72,28 @@ class gripperTest(MorseTestCase):
             obj = morse.robot.arm.gripper.release().result()
             self.assertEqual(obj, None)
 
-            send_pose(teleport_stream, 3.0, 5, 0.0)
-            sleep(0.1)
+            send_pose(teleport_stream, morse, 3.0, 5, 0.0)
+            morse.sleep(0.1)
 
             obj = morse.robot.arm.gripper.grab().result()
             self.assertEqual(obj, 'tape1')
 
-            send_pose(teleport_stream, 3.0, -5.0, 0.0)
+            send_pose(teleport_stream, morse, 3.0, -5.0, 0.0)
             obj = morse.robot.arm.gripper.grab().result()
             self.assertEqual(obj, 'tape1')
 
-            send_pose(teleport_stream, 3.0, 8.0, 0.0)
+            send_pose(teleport_stream, morse, 3.0, 8.0, 0.0)
             obj = morse.robot.arm.gripper.release().result()
             self.assertEqual(obj, True)
 
-            send_pose(teleport_stream, 3.0, -5.0, 0.0)
+            send_pose(teleport_stream, morse, 3.0, -5.0, 0.0)
             obj = morse.robot.arm.gripper.grab().result()
             self.assertEqual(obj, 'tape2')
 
             obj = morse.robot.arm.gripper.release().result()
             self.assertEqual(obj, True)
 
-            send_pose(teleport_stream, 3.0, 8.0, 0.0)
+            send_pose(teleport_stream, morse, 3.0, 8.0, 0.0)
             obj = morse.robot.arm.gripper.grab().result()
             self.assertEqual(obj, 'tape1')
 

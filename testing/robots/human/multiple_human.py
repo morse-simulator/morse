@@ -4,7 +4,6 @@ This script tests the human model with a pose sensor.
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 

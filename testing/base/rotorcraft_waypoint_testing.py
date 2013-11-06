@@ -4,7 +4,6 @@ This script tests the waypoints actuator, both the data and service api
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -53,7 +52,7 @@ class RotorcraftWaypoints_Test(MorseTestCase):
             wp_client = morse.robot.motion
             wp_client.publish({'x' : 10.0, 'y': 5.0, 'z': 10.0,
                                 'tolerance' : 0.5, 'yaw' : 1.0})
-            sleep(10)
+            morse.sleep(10)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 10.0, delta=0.5)

@@ -5,7 +5,6 @@ This script tests the KUKA LWR arm, both the data and service api
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse, MorseServiceFailed
 
@@ -68,7 +67,7 @@ class ArmaturePoseTest(MorseTestCase):
             # Move the arm now, and get the measure 
             angles = [1.57, 2.0, 1.0, -1.28, 1.1, -2.0, 1.0]
             simu.robot.arm.set_rotations(angles)
-            sleep(0.1)
+            simu.sleep(0.1)
 
             pose = simu.robot.arm.arm_pose.get_state().result()
 
@@ -96,7 +95,7 @@ class ArmaturePoseTest(MorseTestCase):
                     self.assertAlmostEqual(v, 0.0, delta=precision)
 
             simu.robot.arm.set_rotation("kuka_2", 1).result()
-            sleep(0.1)
+            simu.sleep(0.1)
             pose = simu.robot.arm.arm_pose.get()
 
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 1.0, delta = precision)
@@ -109,7 +108,7 @@ class ArmaturePoseTest(MorseTestCase):
             # Move the arm now, and get the measure 
             angles = [1.57, 2.0, 1.0, -1.28, 1.0, -2.0, 1.0]
             simu.robot.arm.set_rotations(angles)
-            sleep(0.1)
+            simu.sleep(0.1)
 
             target = dict(zip(JOINTS, angles))
             pose = simu.robot.arm.arm_pose.get()
@@ -120,7 +119,7 @@ class ArmaturePoseTest(MorseTestCase):
 
             angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             simu.robot.arm.set_rotations(angles)
-            sleep(0.1)
+            simu.sleep(0.1)
 
             target = dict(zip(JOINTS, angles))
             pose = simu.robot.arm.arm_pose.get()

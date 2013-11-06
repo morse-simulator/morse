@@ -4,7 +4,6 @@ This script tests the proximity sensor in MORSE.
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -15,9 +14,9 @@ try:
 except ImportError:
     pass
 
-def send_dest(s, x, y, yaw):
+def send_dest(s, morse, x, y, yaw):
     s.publish({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
-    sleep(0.1)
+    morse.sleep(0.1)
 
 class ProximityTest(MorseTestCase):
     def setUpEnv(self):
@@ -68,19 +67,19 @@ class ProximityTest(MorseTestCase):
             self.assertEqual(len(prox['near_objects']), 0)
 
             # still emtpy
-            send_dest(teleport_client, 8.0, 0.0, 0.0)
+            send_dest(teleport_client, morse, 8.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 0)
 
             # one more meter, must find target1. target2 is at equal
             # distance but don't have the good tag
-            send_dest(teleport_client, 9.0, 0.0, 0.0)
+            send_dest(teleport_client, morse, 9.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target1' in prox['near_objects'])
 
             # Don't care about the direction, only check the distance
-            send_dest(teleport_client, -2.8, 0.0, 0.0)
+            send_dest(teleport_client, morse, -2.8, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target3' in prox['near_objects'])
@@ -88,7 +87,7 @@ class ProximityTest(MorseTestCase):
             # Call the set_range service and check if we can catch the
             # two objects
             prox_stream.set_range(20.0)
-            sleep(0.1)
+            morse.sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 2)
             self.assertTrue('Target1' in prox['near_objects'])
@@ -97,7 +96,7 @@ class ProximityTest(MorseTestCase):
             # Call the set_tracked_tag service and check if we catch
             # target2
             prox_stream.set_tracked_tag('Catch_me2')
-            sleep(0.1)
+            morse.sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
             self.assertTrue('Target2' in prox['near_objects'])

@@ -13,7 +13,6 @@ except ImportError:
     pass
 
 import sys
-import time
 from pymorse import Morse
 
 
@@ -40,7 +39,7 @@ class BatteryTest(MorseTestCase):
 
             bat = bat_stream.get()
             cur_bat = bat['charge']
-            time.sleep(2.0)
+            morse.sleep(2.0)
 
             bat = bat_stream.get()
             # Can't be really precise as we don't have exact timestamp
@@ -49,7 +48,7 @@ class BatteryTest(MorseTestCase):
             cut_bat = bat['charge']
 
             # Now the battery must be empty
-            time.sleep(10.0)
+            morse.sleep(10.0)
             bat = bat_stream.get()
             self.assertAlmostEqual(bat['charge'], 0.0, delta=0.001)
 

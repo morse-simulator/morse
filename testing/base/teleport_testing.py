@@ -15,7 +15,6 @@ except ImportError:
 import os
 import sys
 import math
-import time
 import random
 from pymorse import Morse
 
@@ -42,9 +41,9 @@ class TeleportTest(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def _test_one_pose(self, x, y, z, yaw, pitch, roll):
+    def _test_one_pose(self, morse, x, y, z, yaw, pitch, roll):
         send_pose(self.teleport_stream, x, y, z, yaw, pitch, roll)
-        time.sleep(0.2)
+        morse.sleep(0.2)
 
         pose = self.pose_stream.get()
         self.assertAlmostEqual(pose['yaw'], yaw, delta=self.precision)
@@ -76,18 +75,21 @@ class TeleportTest(MorseTestCase):
             # complex to check that it does the good transformation
             # (without a matrix transformation library)
             for i in range(0, 5):
-                self._test_one_pose(random.uniform(-30.0, 30.0),
+                self._test_one_pose(morse,
+                                    random.uniform(-30.0, 30.0),
                                     random.uniform(-30.0, 30.0),
                                     random.uniform(10.0, 50.0),
                                     random.uniform(-math.pi, math.pi),
                                     0, 0)
-                self._test_one_pose(random.uniform(-30.0, 30.0),
+                self._test_one_pose(morse,
+                                    random.uniform(-30.0, 30.0),
                                     random.uniform(-30.0, 30.0),
                                     random.uniform(10.0, 50.0),
                                     0,
                                     random.uniform(-math.pi, math.pi),
                                     0)
-                self._test_one_pose(random.uniform(-30.0, 30.0),
+                self._test_one_pose(morse,
+                                    random.uniform(-30.0, 30.0),
                                     random.uniform(-30.0, 30.0),
                                     random.uniform(10.0, 50.0),
                                     0, 0,
