@@ -48,7 +48,10 @@ class BestEffort:
         self.time = time.time()
         self._update_statistics()
 
-    def statistics (self):
+    def name(self):
+        return 'Best Effort'
+
+    def statistics(self):
         return {
             "mean_time" : self._stat_jitter.mean,
             "variance_time": self._stat_jitter.variance,
@@ -89,6 +92,9 @@ class FixedSimulationStep:
     def update (self):
         self.time = self.time + self._incr
         self._update_statistics()
+
+    def name (self):
+        return 'Fixed Simulation Step'
 
     def statistics (self):
         return {
