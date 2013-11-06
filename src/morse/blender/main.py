@@ -638,12 +638,15 @@ def init_supervision_services():
 
     from morse.services.supervision_services import Supervision
     from morse.services.communication_services import Communication
+    from morse.services.time_services import TimeServices
 
     simulation_service = Supervision()
     communication_service = Communication()
+    time_service= TimeServices()
 
     persistantstorage.serviceObjectDict[simulation_service.name()] = simulation_service
     persistantstorage.serviceObjectDict[communication_service.name()] = communication_service
+    persistantstorage.serviceObjectDict[time_service.name()] = time_service
 
     # For each entries of serviceObjects, register the service as
     # requested by configuration + socket middleware i/o.
