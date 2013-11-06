@@ -605,6 +605,12 @@ class Morse(object):
     def deactivate(self, cmpnt):
         return self.rpc("simulation", "deactivate", cmpnt)
 
+    def sleep(self, time):
+        return self.rpc("time", "sleep", time)
+
+    def time(self):
+        return self.rpc("time", "now")
+
     #### with statement ####
     def __enter__(self):
         return self
