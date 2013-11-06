@@ -68,7 +68,7 @@ class BestEffort:
             self._time_frame = self.time
             self._nb_frame = 1
         else:
-            if self.time - self._time_frame > 1000.0:
+            if self.time - self._time_frame > 1.0:
                 self._stat_nb_frame.update(self._nb_frame)
                 self._nb_frame = 0
             else:
@@ -77,15 +77,14 @@ class BestEffort:
 class FixedSimulationStep:
     def __init__ (self):
         self.time = time.time()
-        self._incr = 1.0 / blenderapi.getfrequency() * 1000.0
+        self._incr = 1.0 / blenderapi.getfrequency()
 
         self._stat_jitter = Stats()
         self._last_time = 0.0
 
         logger.info('Morse configured in Fixed Simulation Step Mode with '
-                     'time step of %f sec ( 1.0 /  %d)' %
-                     (self._incr / 1000.0, 
-                      blenderapi.getfrequency()))
+                    'time step of %f sec ( 1.0 /  %d)' %
+                    (self._incr, blenderapi.getfrequency()))
 
     def update (self):
         self.time = self.time + self._incr
