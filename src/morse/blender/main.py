@@ -642,31 +642,12 @@ def init_supervision_services():
     persistantstorage.serviceObjectDict[simulation_service.name()] = simulation_service
     persistantstorage.serviceObjectDict[communication_service.name()] = communication_service
 
-    ###
-    # First, load and map the socket request manager to the pseudo
-    # 'simulation' component:
+    # For each entries of serviceObjects, register the service as
+    # requested by configuration + socket middleware i/o.
     try:
-        request_manager = "morse.middleware.socket_request_manager.SocketRequestManager"
-        if not persistantstorage.morse_services.add_request_manager(request_manager):
-            return False
-
-        for key in persistantstorage.serviceObjectDict.keys():
-            # The simulation mangement services always uses at least sockets for requests.
-            persistantstorage.morse_services.register_request_manager_mapping(
-                    key, request_manager)
-
-    except MorseServiceError as e:
-        #...no request manager :-(
-        logger.critical(str(e))
-        logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
-        return False
-
-    ###
-    # Then, load any other middleware request manager that was declared
-    # to also handle the 'simulation' pseudo-component:
-    try:
-        for key in persistantstorage.serviceObjectDict.keys():
-            request_managers = component_config.component_service[key]
+        for key, services in persistantstorage.serviceObjectDict.items():
+            request_managers = component_config.component_service.get(key, [])
+            request_managers.append("morse.middleware.socket_request_manager.SocketRequestManager")
 
             for request_manager in request_managers:
                 try:
@@ -683,12 +664,11 @@ def init_supervision_services():
                     logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
                     return False
 
-    except (AttributeError, NameError, KeyError): 
+            services.register_services()
+
+    except (AttributeError, NameError, KeyError):
         # Nothing to declare: skip to the next step.
         pass
-
-    for services in persistantstorage.serviceObjectDict.values():
-        services.register_services()
 
     logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     return True
