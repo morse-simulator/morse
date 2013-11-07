@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('asctec_msgs');
+import roslib; roslib.load_manifest('asctec_msgs')
 import math
 from asctec_msgs.msg import CtrlInput
 from morse.middleware.ros import ROSReader

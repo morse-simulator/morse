@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('geometry_msgs');
+import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import TwistStamped
 from morse.middleware.ros import ROSPublisher
 

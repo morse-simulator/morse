@@ -1,4 +1,4 @@
-import logging;
+import logging
 
 logger = logging.getLogger("morse." + __name__)
 from morse.middleware.pocolibs_datastream import PocolibsDataStreamInput

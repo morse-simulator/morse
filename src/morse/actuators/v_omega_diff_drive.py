@@ -1,4 +1,4 @@
-import logging;
+import logging
 
 logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service

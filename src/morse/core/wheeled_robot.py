@@ -127,7 +127,7 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         self._chassis_ID = self.bge_object.getPhysicsId()
 
         # get track width
-        self._trackWidth = self.get_track_width();
+        self._trackWidth = self.get_track_width()
 
         # set up wheel constraints
         # add wheels to either suspension arms or vehicle chassis
