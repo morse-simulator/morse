@@ -65,7 +65,7 @@ def create_instance_level(classpath, level, *args, **kwargs):
         if level == "default":
             # iterate over levels to find the one with the default flag
             for key, value in klass._levels.items():
-                if value[2] == True:
+                if value[2]:
                     level = key
                     logger.info("Using default level <%s> for component <%s>" % (level, classpath))
                     break

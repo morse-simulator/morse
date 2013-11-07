@@ -359,7 +359,7 @@ class AbstractComponent(object):
 
                         # iterate over levels to find the one with the default flag
                         for key, value in klass._levels.items():
-                            if value[2] == True:
+                            if value[2]:
                                 level = key
                                 # set the right default level
                                 self.properties(abstraction_level = level)

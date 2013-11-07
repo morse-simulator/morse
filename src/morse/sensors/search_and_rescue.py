@@ -198,7 +198,7 @@ class SearchAndRescue(morse.core.sensor.Sensor):
                 self._heal_delay = self._delay
 
                 # Mark the victim as healed
-                if victim['Requirements'] == []:
+                if not victim['Requirements']:
                     victim['Severity'] = 0
                     victim.color = [0.5, 1.0, 0.5, 1.0]
                     message = "Victim '%s' healed" % victim.name

@@ -181,7 +181,7 @@ class HLANode(SimulationNodeClass):
                 logger.error("Error when reading FED file! "+ \
                     "Please check the '.fed' file syntax.")
                 return False
-            if self.morse_ambassador.initialize() == False:
+            if not self.morse_ambassador.initialize():
                 return False
             logger.info("HLA middleware initialized.")
         except Exception as error:
