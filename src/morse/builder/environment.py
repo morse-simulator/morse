@@ -242,7 +242,7 @@ class Environment(Component):
                 component.after_renaming()
 
         # Compute node name
-        if name == None:
+        if name is None:
             try:
                 self._node_name = os.environ["MORSE_NODE"]
             except KeyError:
