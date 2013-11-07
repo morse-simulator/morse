@@ -22,10 +22,16 @@ make
 sudo make install
 wait $blenderpid # Blender should be ready now
 
-echo "Run testing/base/pose_testing.py"
-echo "========================================"
+morse_test() {
+    echo "Run $1"
+    echo "========================================"
+    touch $2
+    tail -f $2 &
+    xvfb-run --server-args="-screen 0 1x21x16" python3 ../testing/$1
+    kill % # kill tail
+}
 
-touch PoseTest.log
-tail -f PoseTest.log &
-xvfb-run --server-args="-screen 0 1x21x16" python3 ../testing/base/pose_testing.py
-kill % # kill tail
+morse_test base/gps_testing.py GPSTest.log
+morse_test base/pose_testing.py PoseTest.log
+morse_test base/sick_testing.py Sick_Test.log
+morse_test base/vw_testing.py VW_Test.log
