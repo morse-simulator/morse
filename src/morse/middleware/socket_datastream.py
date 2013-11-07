@@ -93,7 +93,7 @@ class SocketPublisher(SocketServ):
             sock, _ = self._server.accept()
             self._client_sockets.append(sock)
 
-        if outputready != []:
+        if outputready:
             message = self.encode()
             for o in outputready:
                 try:
@@ -122,7 +122,7 @@ class SocketReader(SocketServ):
             if i == self._server:
                 sock, addr = self._server.accept()
                 logger.debug("New client connected to %s datastream" % self.component_name)
-                if self._client_sockets != []:
+                if self._client_sockets:
                     logger.warning("More than one client trying to write on %s datastream!!" % self.component_name)
                 self._client_sockets.append(sock)
             else:
