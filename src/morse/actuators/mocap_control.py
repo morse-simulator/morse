@@ -114,11 +114,11 @@ class MocapControl(morse.core.actuator.Actuator):
         # angle of the shoulders
         world_x_vector = mathutils.Vector([1, 0, 0])
         shoulders_vector = mathutils.Vector([
-            (self._shoulder_empty_l.worldPosition[0] - \
+            (self._shoulder_empty_l.worldPosition[0] -
              self._shoulder_empty_r.worldPosition[0]),
-            (self._shoulder_empty_l.worldPosition[1] - \
+            (self._shoulder_empty_l.worldPosition[1] -
              self._shoulder_empty_r.worldPosition[1]),
-            (self._shoulder_empty_l.worldPosition[2] - \
+            (self._shoulder_empty_l.worldPosition[2] -
              self._shoulder_empty_r.worldPosition[2])  ])
         logger.debug ("Shoulder Vector: [%.4f, %.4f, %.4f]" % \
             (shoulders_vector[0], shoulders_vector[1], shoulders_vector[2]))

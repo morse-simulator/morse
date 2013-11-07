@@ -75,8 +75,8 @@ class PlatineModule(MorseOverlay):
     @async_service
     def CmdPosTilt(self, deg, absolute, tilt, wait, dummy):
         c_pan, c_tilt = self.overlaid_object.get_pan_tilt()
-        r_pan, r_tilt =  self._compute_real_angle(deg, absolute, \
-                         0.0, - float(tilt))
+        r_pan, r_tilt =  self._compute_real_angle(deg, absolute,
+                                                  0.0, - float(tilt))
         self._set_pan_tilt(c_pan, r_tilt, wait)
 
     @interruptible

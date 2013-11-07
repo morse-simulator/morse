@@ -35,8 +35,8 @@ class FakeRobot(RobotCreator):
 class Hummer(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "hummer", name)
-        self.properties(classpath = "morse.robots.hummer.Hummer", \
-                        brakes = 0.0, friction = 200.0, force = 0.0, \
+        self.properties(classpath = "morse.robots.hummer.Hummer",
+                        brakes = 0.0, friction = 200.0, force = 0.0,
                         steer = 0.0, init = 0, cid = 0)
 
 class Jido(Robot):
@@ -57,11 +57,11 @@ class Jido(Robot):
 class Pioneer3DX(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "pioneer3dx", name)
-        self.properties(classpath = "morse.robots.pioneer3dx.Pioneer3DX", \
-                        HasSuspension = False, HasSteering = False, \
-                        Influence = 0.1, Friction = 0.8, \
-                        WheelFLName = "Wheel_L", WheelFRName = "Wheel_R", \
-                        WheelRLName = "None", WheelRRName = "None", \
+        self.properties(classpath = "morse.robots.pioneer3dx.Pioneer3DX",
+                        HasSuspension = False, HasSteering = False,
+                        Influence = 0.1, Friction = 0.8,
+                        WheelFLName = "Wheel_L", WheelFRName = "Wheel_R",
+                        WheelRLName = "None", WheelRRName = "None",
                         CasterWheelName = "CasterWheel")
 
 class QUAD2012(Robot):
@@ -83,10 +83,10 @@ class RMax(Robot):
 class SegwayRMP400(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "segwayrmp400", name)
-        self.properties(classpath = "morse.robots.segwayrmp400.SegwayRMP400", \
-                        HasSuspension = False, HasSteering = False, \
-                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 0.0, \
-                        WheelFLName = "wheel1", WheelFRName = "wheel2", \
+        self.properties(classpath = "morse.robots.segwayrmp400.SegwayRMP400",
+                        HasSuspension = False, HasSteering = False,
+                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 0.0,
+                        WheelFLName = "wheel1", WheelFRName = "wheel2",
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
 
 
@@ -99,19 +99,19 @@ class Submarine(Robot):
 class Victim(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "victim", name)
-        self.properties(classpath = "morse.robots.victim.Victim", \
-                        Victim_Tag = True, Requirements = "1,2,3", \
+        self.properties(classpath = "morse.robots.victim.Victim",
+                        Victim_Tag = True, Requirements = "1,2,3",
                         Injured = True, Severity = 10)
 
 
 class PatrolBot(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "patrolbot", name)
-        self.properties(classpath = "morse.robots.patrolbot.PatrolBot", \
-                        HasSuspension = False, HasSteering = False, \
-                        Influence = 0.1, Friction = 0.8, \
-                        WheelFLName = "Wheel_L", WheelFRName = "Wheel_R", \
-                        WheelRLName = "None", WheelRRName = "None", \
+        self.properties(classpath = "morse.robots.patrolbot.PatrolBot",
+                        HasSuspension = False, HasSteering = False,
+                        Influence = 0.1, Friction = 0.8,
+                        WheelFLName = "Wheel_L", WheelFRName = "Wheel_R",
+                        WheelRLName = "None", WheelRRName = "None",
                         CasterWheelName = "CasterWheel")
 
 

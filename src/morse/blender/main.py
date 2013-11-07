@@ -196,7 +196,7 @@ def create_dictionaries ():
             else:
                 persistantstorage.externalRobotDict[obj] = instance
 
-    if not (persistantstorage.robotDict or \
+    if not (persistantstorage.robotDict or
             persistantstorage.externalRobotDict): # No robot!
         logger.error("INITIALIZATION ERROR: no robot in your simulation!"
                      "Do not forget that components _must_ belong to a"
@@ -534,8 +534,8 @@ def init_multinode():
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
 
-    persistantstorage.node_instance = create_instance(classpath, \
-            node_name, server_address, server_port)
+    persistantstorage.node_instance = create_instance(classpath,
+                                                      node_name, server_address, server_port)
 
 def init(contr):
     """ General initialization of MORSE

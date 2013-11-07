@@ -218,7 +218,7 @@ class PTU(Actuator):
         target_tilt = normalise_angle(self.local_data['tilt'])
         logger.debug("Targets: pan=%.4f, tilt=%.4f" % (target_pan, target_tilt))
 
-        if (abs(target_pan - self._current_pan) < self._tolerance and \
+        if (abs(target_pan - self._current_pan) < self._tolerance and
             abs(target_tilt - self._current_tilt) < self._tolerance):
             self.completed(status.SUCCESS)
 
