@@ -250,7 +250,7 @@ class RequestManager(object):
                     raise MorseRPCTypeError(str(self) + ": wrong parameter type for service " + service + ". " + str(e))
 
             logger.debug("Asynchronous request '" + str(request_id) + "' successfully started.")
-            return (False, request_id)
+            return False, request_id
 
         else: #Synchronous service.
             #Invoke the method
@@ -277,7 +277,7 @@ class RequestManager(object):
             # service, which mean the service call is successful. Good.
             values = (status.SUCCESS, values)
             logger.info("Done. Result: " + str(values))
-            return (True, values)
+            return True, values
 
     def abort_request(self, request_id):
         """ This method will interrupt a running asynchronous service,

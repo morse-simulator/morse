@@ -127,7 +127,7 @@ class ROSPublisherTF(ROSPublisher):
         Return the local position, orientation and scale of this components
         """
         rel_pos = self.component_instance.sensor_to_robot_position_3d()
-        return (rel_pos.translation, rel_pos.rotation)
+        return rel_pos.translation, rel_pos.rotation
 
     def publish_with_robot_transform(self, message):
         self.publish(message)

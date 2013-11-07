@@ -75,7 +75,7 @@ class MorseAmbassador(rti.FederateAmbassador):
             logger.debug("Initial Federate time is %s", self.current_time)
             self.rtia_.enableTimeConstrained()
             self.rtia_.enableTimeRegulation(self.current_time, self.lookahead)
-            while (not self.constrained and not self.regulator and not self.tag):
+            while not self.constrained and not self.regulator and not self.tag:
                 self.rtia_.tick(0, 1)
         logger.debug("MorseAmbassador initialized")
 
@@ -220,7 +220,7 @@ class HLANode(SimulationNodeClass):
                     t, self.rtia.queryFederateTime())
         if self.time_sync:
             self.rtia.timeAdvanceRequest(t)
-            while (not self.morse_ambassador.tag):
+            while not self.morse_ambassador.tag:
                 self.rtia.tick(0, 1)
             logger.debug("Node simulation time:" + \
                 self.morse_ambassador.current_time)

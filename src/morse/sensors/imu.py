@@ -81,7 +81,7 @@ class IMU(morse.core.sensor.Sensor):
         logger.debug("imu2body rotation RPY [% .3f % .3f % .3f]" % tuple(math.degrees(a) for a in self.imu2body.euler))
         logger.debug("imu2body translation [% .3f % .3f % .3f]" % tuple(self.imu2body.translation))
 
-        if (self.imu2body.translation.length > 0.01):
+        if self.imu2body.translation.length > 0.01:
             self.compute_offset_acceleration = True
         else:
             self.compute_offset_acceleration = False
@@ -118,7 +118,7 @@ class IMU(morse.core.sensor.Sensor):
         self.plv = lin_vel
         self.pav = ang_vel
 
-        return (ang_vel, accel_meas)
+        return ang_vel, accel_meas
 
     def sim_imu_with_physics(self):
         """
@@ -157,7 +157,7 @@ class IMU(morse.core.sensor.Sensor):
         self.plv = self.robot_vel.copy()
         self.pav = self.robot_w.copy()
 
-        return (rates, accel_meas)
+        return rates, accel_meas
 
     def default_action(self):
         """

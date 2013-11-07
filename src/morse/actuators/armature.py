@@ -117,9 +117,9 @@ class Armature(morse.core.actuator.Actuator):
         channel = armature.channels[joint]
 
         if self._is_prismatic(channel):
-            return (channel, True)
+            return channel, True
         else:
-            return (channel, False)
+            return channel, False
 
     def _get_joint_value(self, joint):
         """
@@ -370,7 +370,7 @@ class Armature(morse.core.actuator.Actuator):
         channel, is_prismatic = self._get_joint(joint)
 
         if is_prismatic:
-            return (0.0, channel.ik_stretch)
+            return 0.0, channel.ik_stretch
         else:
             # Retrieve the translation axis
             axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
@@ -384,7 +384,7 @@ class Armature(morse.core.actuator.Actuator):
                 return (channel.ik_min_z, 
                         channel.ik_max_z)
 
-            assert(False) # should not reach this point.
+            assert False # should not reach this point.
 
     @async_service
     def trajectory(self, trajectory):

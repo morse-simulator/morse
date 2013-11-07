@@ -208,7 +208,7 @@ class Socket(Datastream):
 
         register_success = False
 
-        while (not register_success):
+        while not register_success:
             try:
                 # Create a socket server for this component
                 serv = Datastream.register_component(self, component_name,

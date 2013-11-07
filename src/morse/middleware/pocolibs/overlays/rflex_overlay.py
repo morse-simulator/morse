@@ -40,7 +40,7 @@ class RflexModule(MorseOverlay):
 
     @service
     def GetMode(self):
-        return (status.SUCCESS, self._mode)
+        return status.SUCCESS, self._mode
 
     @service
     def PomTagging(self, *args):

@@ -111,7 +111,7 @@ class YarpRequestManager(RequestManager):
             bottle_reply = self._reply_bottles[component_name] 
             bottle_in = port.read(False)
             if bottle_in is not None:
-                logger.debug("Received command from port '%s'" % (component_name))
+                logger.debug("Received command from port '%s'" % component_name)
                 id = 'unknown'
 
                 try:
@@ -191,4 +191,4 @@ class YarpRequestManager(RequestManager):
         except (NameError, SyntaxError) as e:
             raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters. " + str(e))
 
-        return (id, component_name, service, p)
+        return id, component_name, service, p

@@ -60,11 +60,11 @@ class PocolibsDataStreamOutput(AbstractDatastream):
 
     def write(self, obj):
         r = P.posterWrite(self.poster_id, 0, byref(obj), sizeof(obj))
-        if (r != sizeof(obj)):
+        if r != sizeof(obj):
             raise "too bad : write failed"
 
     def finalize(self):
-        logger.info("Releaase poster %s" % (self.name))
+        logger.info("Releaase poster %s" % self.name)
         P.posterDelete(self.poster_id)
         self.poster_id = None
 
@@ -79,29 +79,29 @@ class PocolibsDataStreamInput(AbstractDatastream):
         self.o = kind()
         self.found = False
         self._find()
-        if (not self.found and not delay):
+        if not self.found and not delay:
             raise PosterNotFound(self.name)
 
     def _find(self):
         logger.debug("Searching to read %s" % self.name)
         r = P.posterFind(self.c_name, byref(self.poster_id))
-        if (r == 0):
+        if r == 0:
             self.found = True
 
     def read(self):
-        if (not self.found):
+        if not self.found:
             self._find()
 
-        if (self.found):
+        if self.found:
             r = P.posterRead(self.poster_id, 0, byref(self.o), sizeof(self.o))
-            if (r != sizeof(self.o)):
+            if r != sizeof(self.o):
                 raise InvalidRead(self.name)
             return self.o
         else:
             return None
 
     def finalize(self):
-        if (self.found):
+        if self.found:
             P.posterForget(self.poster_id)
 
 class Pocolibs(Datastream):

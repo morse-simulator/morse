@@ -39,6 +39,6 @@ def retrieveHue(obj):
 
     if mesh is not None:
         bMat = blenderapi.materialdata(mesh.getMaterialName(0)[2:])
-        return (RGBtoHue(bMat.diffuse_color))
+        return RGBtoHue(bMat.diffuse_color)
     
     return None

@@ -34,16 +34,16 @@ class Communication(AbstractObject):
         r1 = _robot_exists(robot1)
         r2 = _robot_exists(robot2)
 
-        if (not r1):
+        if not r1:
             raise MorseRPCInvokationError(robot1 + " does not exist in the simulation ")
-        if (not r2):
+        if not r2:
             raise MorseRPCInvokationError(robot2 + " does not exist in the simulation ")
 
         dist = r1.position_3d.distance(r2.position_3d)
 
         closest_obj = r1.bge_object.rayCastTo(r2.bge_object)
 
-        return (dist, closest_obj == r2.bge_object)
+        return dist, closest_obj == r2.bge_object
 
     def action(self):
         pass

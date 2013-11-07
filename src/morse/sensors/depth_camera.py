@@ -40,9 +40,9 @@ class AbstractDepthCamera(VideoCamera):
 
             self.capturing = True
 
-            if (self._n > 0):
+            if self._n > 0:
                 self._n -= 1
-                if (self._n == 0):
+                if self._n == 0:
                     self.completed(status.SUCCESS)
         else:
             self.capturing = False

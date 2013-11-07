@@ -231,7 +231,7 @@ def version():
     if not fake:
         return bpy.app.version
     else:
-        return (0,0,0)
+        return 0,0,0
 
 def getssr():
     if not fake:

@@ -20,7 +20,7 @@ class WayPoint(MorseOverlay):
 
         logger.info("MoveBase completed! got value " + str(value))
 
-        return (state, MoveBaseResult())
+        return state, MoveBaseResult()
 
     @interruptible
     @ros_action(type = MoveBaseAction)
