@@ -220,7 +220,7 @@ class PTU(Actuator):
 
         if (abs(target_pan - self._current_pan) < self._tolerance and \
             abs(target_tilt - self._current_tilt) < self._tolerance):
-            self.completed((status.SUCCESS))
+            self.completed(status.SUCCESS)
 
         # Determine the direction of the rotation, if any
         ry = rotation_direction(self._current_tilt, target_tilt,

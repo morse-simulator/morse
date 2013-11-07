@@ -71,7 +71,7 @@ class RobotGrasper(Robot):
                 previous_object.removeParent()
                 # Clear the object from dragged status
                 robot_grasper['DraggedObject'] = None
-                logger.debug ("JUST DROPPED OBJECT %s" % (previous_object.name))
+                logger.debug ("JUST DROPPED OBJECT %s" % previous_object.name)
 
 
     def default_action(self):

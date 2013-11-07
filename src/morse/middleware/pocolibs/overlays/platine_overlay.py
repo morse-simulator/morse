@@ -23,12 +23,12 @@ class PlatineModule(MorseOverlay):
         pass
 
     def _compute_real_angle(self, deg, absolute, pan, tilt):
-        if (deg == 'PLATINE_DEG' or deg == '1'):
+        if deg == 'PLATINE_DEG' or deg == '1':
             logger.debug("converting degree to radian")
             tilt = math.radians(tilt)
             pan  = math.radians(pan)
 
-        if (absolute == 'PLATINE_RELATIVE' or absolute == '0'):
+        if absolute == 'PLATINE_RELATIVE' or absolute == '0':
             logger.debug("calculing absolute coordinate")
             current_pan, current_tilt = self.overlaid_object.get_pan_tilt()
             tilt =  current_tilt + tilt
@@ -37,11 +37,11 @@ class PlatineModule(MorseOverlay):
         return (self._rot * pan), tilt
 
     def _set_pan_tilt(self, pan, tilt, wait):
-        if (wait == 'PLATINE_TRUE' or wait == '1'):
+        if wait == 'PLATINE_TRUE' or wait == '1':
             self.overlaid_object.set_pan_tilt(self.chain_callback(), pan, tilt)
         else:
             self.overlaid_object.set_pan_tilt(partial(self._dummy_completion), pan, tilt)
-            self.completed((status.SUCCESS))
+            self.completed(status.SUCCESS)
 
     def _interrupt(self):
         pan, tilt = self.overlaid_object.get_pan_tilt()
@@ -107,7 +107,7 @@ class PlatineModule(MorseOverlay):
     @async_service
     def Stop(self):
         self._interrupt()
-        self.completed((status.SUCCESS))
+        self.completed(status.SUCCESS)
 
     def name(self):
         return "platine"

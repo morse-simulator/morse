@@ -52,7 +52,7 @@ class PassiveObject(AbstractComponent):
         """
         AbstractComponent.__init__(self, filename=filename)
 
-        logger.info("Importing the following passive object(s): %s" % (prefix))
+        logger.info("Importing the following passive object(s): %s" % prefix)
 
         imported_objects = self.append_meshes(prefix=prefix)
         # Here we use the fact that after appending, Blender select the objects

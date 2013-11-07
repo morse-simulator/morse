@@ -512,7 +512,7 @@ def mouse_move(human, mouse, width, height):
         human['mouseInit'] = 1
 
     # return mouse movement
-    return (x, y)
+    return x, y
 
 def applyrotate(destOr, owner):
     """
@@ -527,13 +527,13 @@ def applyrotate(destOr, owner):
 
     # Blender allows multiples of 360 deg and negative angles
     # this is to get rid of those
-    while(dZ < math.pi):
+    while dZ < math.pi:
         dZ = dZ + 2 * math.pi
-    while(dZ > math.pi):
+    while dZ > math.pi:
         dZ = dZ - 2 * math.pi
 
     owner.worldOrientation = (owner.worldOrientation *
-                              Matrix.Rotation(-dZ/(smoothness), 3, 'Z'))
+                              Matrix.Rotation(-dZ/ smoothness, 3, 'Z'))
     # turn around a bit
 
 def rotate(co):

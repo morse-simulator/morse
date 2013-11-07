@@ -233,4 +233,4 @@ class SocketRequestManager(RequestManager):
                     raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters: <%s>. %s" % (params, str(e)))
             else:
                 p = None
-        return (component, service, p)
+        return component, service, p

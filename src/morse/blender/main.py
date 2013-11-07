@@ -341,7 +341,7 @@ def link_datastreams():
         elif isinstance(instance, Actuator):
             direction = IN
         else:
-            assert(False)
+            assert False
 
         persistantstorage.datastreams[component_name] = (direction, 
                                      [d[0] for d in datastream_list])

@@ -115,4 +115,4 @@ class Sensor(morse.core.object.Object):
 
         :return: a dictionary of the current sensor's data
         """
-        return (self.local_data)
+        return self.local_data

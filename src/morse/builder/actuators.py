@@ -208,9 +208,9 @@ class Light(ActuatorCreator):
         
     def properties(self, **kwargs):
         ActuatorCreator.properties(self, **kwargs)
-        if (self.light):
+        if self.light:
             spot = self.light._bpy_object.data
-            if (spot.type == 'SPOT'):
+            if spot.type == 'SPOT':
                 if "size" in kwargs.keys():
                     spot.spot_size = kwargs['size']
                 if "distance" in kwargs.keys():

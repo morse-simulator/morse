@@ -44,7 +44,7 @@ class ViamPoster(AbstractDatastream):
 
             # viam expects first the left camera, then the right camera
             # Check the y difference between the two cameras
-            if (self.pos_cam[0][1] < self.pos_cam[1][1]):
+            if self.pos_cam[0][1] < self.pos_cam[1][1]:
                 self.cameras.reverse()
                 self.camera_order.reverse()
 

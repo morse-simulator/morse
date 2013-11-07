@@ -634,7 +634,7 @@ class AbstractComponent(object):
             logger.error("Collada file %s for external asset import can" \
                          "not be found.\nEither provide an absolute path, or" \
                          "a path relative to MORSE assets directory (typically"\
-                         "$PREFIX/share/morse/data)" % (filepath))
+                         "$PREFIX/share/morse/data)" % filepath)
             return
 
         # Save a list of objects names before importing Collada

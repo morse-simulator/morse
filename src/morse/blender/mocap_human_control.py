@@ -202,4 +202,4 @@ def mouse_move(human, mouse, width, height):
         human['mouseInit'] = 1
 
     # return mouse movement
-    return (x, y)
+    return x, y
