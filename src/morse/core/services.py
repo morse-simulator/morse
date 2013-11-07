@@ -9,13 +9,15 @@ from morse.core.exceptions import MorseServiceError
 from morse.helpers.loading import create_instance
 
 class MorseServices:
-    def __init__(self, impls = []):
+    def __init__(self, impls = None):
         """ Initializes the different MORSE request managers from a list
         of Python classes.
 
         :param list impls: a list of Python class names (strings) with their module
                 path that implement the RequestManager interface.
         """
+        if not impls: impls = []
+        
         self._request_managers = {}
         self._service_mappings = {}
     
