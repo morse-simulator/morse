@@ -15,10 +15,14 @@ import signal
 from morse.testing.exceptions import MorseTestingError
 
 BLENDER_INITIALIZATION_TIMEOUT = 15 # seconds
+CURRENT_TIME_MODE = 'BEST_EFFORT'
+INITIALIZED_LOGGER = False
 
 class MorseTestRunner(unittest.TextTestRunner):
+
         
     def setup_logging(self):
+        global INITIALIZED_LOGGER
         logger = logging.getLogger('morsetesting')
         logger.setLevel(logging.DEBUG)
 
@@ -30,9 +34,12 @@ class MorseTestRunner(unittest.TextTestRunner):
         ch.setFormatter(formatter)
 
         logger.addHandler(ch)
+        INITIALIZED_LOGGER = True
 
     def run(self, suite):
-        self.setup_logging()
+        global INITIALIZED_LOGGER
+        if not INITIALIZED_LOGGER:
+            self.setup_logging()
         return unittest.TextTestRunner.run(self, suite)
 
 def follow(file):
@@ -82,7 +89,7 @@ class MorseTestCase(unittest.TestCase):
 
     def setUp(self):
         
-        testlogger.info("Starting test " + self.id())
+        testlogger.info("Starting test " + self.id() + " in " + CURRENT_TIME_MODE)
 
         self.logfile_name = self.__class__.__name__ + ".log"
         # Wait for a second
@@ -244,6 +251,8 @@ class MorseTestCase(unittest.TestCase):
             tmp.write(b"from morse.builder.blenderobjects import *\n")
             tmp.write(b"class MyEnv():\n")
             tmp.write(inspect.getsource(test_case.setUpEnv).encode())
+            if CURRENT_TIME_MODE == 'FIXED_SIMULATION_STEP':
+                tmp.write(b"        env.set_fixed_time()\n")
             tmp.write(b"MyEnv().setUpEnv()\n")
             tmp.flush()
             tmp_name = tmp.name
@@ -289,7 +298,7 @@ class MorseBuilderFailureTestCase(MorseTestCase):
     def _checkMorseException(self):
         return
 
-def main(*test_cases):
+def main(*test_cases, time_modes = ['BEST_EFFORT', 'FIXED_SIMULATION_STEP']):
     import sys
     if sys.argv[0].endswith('blender'):
         # If we arrive here from within MORSE, we have probably run
@@ -302,8 +311,13 @@ def main(*test_cases):
     import unittest
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
+    success = True
+    global CURRENT_TIME_MODE
     for test_class in test_cases:
         tests = loader.loadTestsFromTestCase(test_class)
         suite.addTests(tests)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
+    for time_mode in time_modes:
+        CURRENT_TIME_MODE = time_mode
+        success = success and MorseTestRunner().run(suite).wasSuccessful()
+    sys.exit(not success)
 
