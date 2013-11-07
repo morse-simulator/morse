@@ -133,4 +133,4 @@ class AbstractObject(object):
         """ Print the current data for the component instance. """
         for variable, data in self.local_data.items():
             res = variable + str(data) + " "
-        logger.info("%s" % res)
+            logger.info("%s" % res)

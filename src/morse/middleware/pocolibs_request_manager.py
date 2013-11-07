@@ -124,6 +124,8 @@ class PocolibsRequestManager(RequestManager):
 
     def main(self):
         
+        inputready, outputready, exceptready = [],[],[]
+
         try:
             inputready, outputready, exceptready = select.select(self._inputs, self._outputs, [], 0) #timeout = 0 : Never block, just poll
         except select.error:

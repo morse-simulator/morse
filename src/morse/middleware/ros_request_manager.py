@@ -15,7 +15,7 @@ except ImportError as ie:
     raise ImportError("Could not import some ROS modules."
                       " Check your ROS configuration is ok. Details:\n" + str(ie))
 
-def ros_timer(callable,frequency):
+def ros_timer(callable, frequency):
     # Shamelessly stolen from actionlib/action_server.py
 
     rate = rospy.Rate(frequency)
