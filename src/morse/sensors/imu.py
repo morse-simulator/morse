@@ -29,9 +29,9 @@ class IMU(morse.core.sensor.Sensor):
 
     _name = "Inertial measurement unit"
 
-    add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>", \
+    add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>",
              'rates in IMU x, y, z axes (in radian . sec ^ -1)')
-    add_data('linear_acceleration', [0.0, 0.0, 0.0], "vec3<float>", \
+    add_data('linear_acceleration', [0.0, 0.0, 0.0], "vec3<float>",
              'acceleration in IMU x, y, z axes (in m . sec ^ -2)')
 
     def __init__(self, obj, parent=None):
@@ -49,7 +49,7 @@ class IMU(morse.core.sensor.Sensor):
         self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
 
         if not self.has_physics:
-            logger.warning("The robot doesn't have a physics controller," \
+            logger.warning("The robot doesn't have a physics controller,"
                            "falling back to simple IMU sensor.")
 
         if self.has_physics:

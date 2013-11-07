@@ -68,24 +68,24 @@ def _create_transform_matrix():
 	# KinCam  |/ ____ Z  ,   World  |/_____X
     # Transformation of the Kinect frame of reference to that of Blender
     kinect_matrix = mathutils.Matrix((
-                [0.0, 1.0, 0.0, 0.0], \
-                [0.0, 0.0, 1.0, 0.0], \
-                [1.0, 0.0, 0.0, 0.0], \
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [1.0, 0.0, 0.0, 0.0],
                 [0.0, 0.0, 0.0, 1.0]))
 
     # Additional rotation of the physical sensor, with respect to the Blender world
     # Currently set to 25.5 degrees around the Y axis
     kinect_rotation = mathutils.Matrix((
-                [1.0,    0.0,    -0.445, 0.0], \
-                [0.0,    1.0,    0.0,    0.0], \
-                [0.445,  0.0,    1.0,    0.0], \
+                [1.0,    0.0,    -0.445, 0.0],
+                [0.0,    1.0,    0.0,    0.0],
+                [0.445,  0.0,    1.0,    0.0],
                 [0.0,    0.0,    0.0,    1.0]))
 
     # Spin the positions around the Z axis, to match with the Blender human
     rotation_matrix = mathutils.Matrix((
-                [-1.0, 0.0, 0.0, 0.0], \
-                [0.0, -1.0, 0.0, 0.0], \
-                [0.0, 0.0, 1.0, 0.0], \
+                [-1.0, 0.0, 0.0, 0.0],
+                [0.0, -1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
                 [0.0, 0.0, 0.0, 1.0]))
 
     # Position of the kinect with respect to the human.

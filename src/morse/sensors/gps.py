@@ -11,11 +11,11 @@ class GPS(morse.core.sensor.Sensor):
 
     _name = "GPS"
 
-    add_data('x', 0.0, "float", \
+    add_data('x', 0.0, "float",
              'x coordinate of the sensor, in world coordinate, in meter')
-    add_data('y', 0.0, "float", \
+    add_data('y', 0.0, "float",
              'y coordinate of the sensor, in world coordinate, in meter')
-    add_data('z', 0.0, "float", \
+    add_data('z', 0.0, "float",
              'z coordinate of the sensor, in world coordinate, in meter')
 
     def __init__(self, obj, parent=None):

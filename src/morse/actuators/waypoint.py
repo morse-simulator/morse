@@ -64,8 +64,8 @@ class Waypoint(morse.core.actuator.Actuator):
     add_property('_free_z', False, 'FreeZ', 'bool', "if false "
             "(default), the robot is only controlled on 'X' and heading; if "
             "true, 'Z' is also controlled (for aerial or submarine robots)")
-    add_property('_angle_tolerance', math.radians(10), 'AngleTolerance', \
-                 'float', \
+    add_property('_angle_tolerance', math.radians(10), 'AngleTolerance',
+                 'float',
                  "Tolerance in radian regarding the final heading of the robot")
     add_property('_speed', 1.0, 'Speed', 'float',
                  "movement speed for the robot, given in m/s")
