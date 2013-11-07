@@ -1,7 +1,10 @@
-import logging; logger = logging.getLogger("morse." + __name__)
+import logging;
+
+logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
 import morse.core.actuator
 from morse.helpers.components import add_data
+
 
 class MotionVWDiff(morse.core.actuator.Actuator):
     """
@@ -23,15 +26,15 @@ class MotionVWDiff(morse.core.actuator.Actuator):
         - **v** is the linear velocity given as parameter
         - **w** is the angular velocity given as parameter
         - **e** is half of the distance between the left and
-          right wheels
+        right wheels
         - **R** is the radius of the wheels
     """
 
     _name = 'Differential Driver Actuator: \
-             Linear and angular speed (V, W) actuator'
+            Linear and angular speed (V, W) actuator'
 
     add_data('v', 0.0, 'float',
-             'linear velocity in x direction (forward movement) (m/s)')
+            'linear velocity in x direction (forward movement) (m/s)')
     add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
     def __init__(self, obj, parent=None):
@@ -77,7 +80,7 @@ class MotionVWDiff(morse.core.actuator.Actuator):
 
         # calculate desired wheel speeds and set them
         if (abs(self.local_data['v']) < 0.001) and \
-           (abs(self.local_data['w']) < 0.001):
+                (abs(self.local_data['w']) < 0.001):
             # stop the wheel when velocity is below a given threshold
             for index in self.robot_parent._wheels.keys():
                 self.robot_parent._wheel_joints[index].setParam(9, 0, 100.0)
@@ -89,17 +92,17 @@ class MotionVWDiff(morse.core.actuator.Actuator):
             # object
             if self._stopped:
                 self.robot_parent.bge_object.applyImpulse(
-                   self.robot_parent.bge_object.position, (0.0, 0.1, -0.000001))
+                    self.robot_parent.bge_object.position, (0.0, 0.1, -0.000001))
 
-			# no longer stopped
+            # no longer stopped
             self._stopped = False
 
             # Another formula for computing left and right wheel speeds:
             # http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
             v_ws_l = self.local_data['v'] - \
-                     (self._trackWidth / 2.0) * self.local_data['w']
+                    (self._trackWidth / 2.0) * self.local_data['w']
             v_ws_r = self.local_data['v'] + \
-                     (self._trackWidth / 2.0) * self.local_data['w']
+                    (self._trackWidth / 2.0) * self.local_data['w']
 
 
             # convert to angular speeds
@@ -117,4 +120,4 @@ class MotionVWDiff(morse.core.actuator.Actuator):
                 self.robot_parent._wheel_joints['RR'].setParam(9, w_ws_r, 100.0)
 
             logger.debug("New speeds set: left=%.4f, right=%.4f" %
-                         (w_ws_l, w_ws_r))
+                        (w_ws_l, w_ws_r))
