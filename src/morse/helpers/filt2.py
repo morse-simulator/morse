@@ -17,7 +17,7 @@ class Filt2:
 
    def simulate(self,u, dt):
       self.xn[0] = self.x[0] + (self.x[3] + self.x[1])*dt/2.0
-      self.xn[1] = self.xn[1] + (self.x[2] + self.wn * self.wn * (u - self.x[0]) - 2.0 * self.ksi * self.wn * self.x[1]) * dt/2.0
+      self.xn[1] += (self.x[2] + self.wn * self.wn * (u - self.x[0]) - 2.0 * self.ksi * self.wn * self.x[1]) * dt / 2.0
 
       self.x[2] = self.wn * self.wn * (u - self.x[0]) - 2.0 * self.ksi * self.wn * self.x[1]
       self.x[3] = self.x[1]

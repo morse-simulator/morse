@@ -528,9 +528,9 @@ def applyrotate(destOr, owner):
     # Blender allows multiples of 360 deg and negative angles
     # this is to get rid of those
     while dZ < math.pi:
-        dZ = dZ + 2 * math.pi
+        dZ += 2 * math.pi
     while dZ > math.pi:
-        dZ = dZ - 2 * math.pi
+        dZ -= 2 * math.pi
 
     owner.worldOrientation = (owner.worldOrientation *
                               Matrix.Rotation(-dZ/ smoothness, 3, 'Z'))

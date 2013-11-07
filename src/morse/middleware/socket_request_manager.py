@@ -55,7 +55,7 @@ class SocketRequestManager(RequestManager):
                 port_ok = True
                 break
             except socket.error as msg:
-                SERVER_PORT = SERVER_PORT + 1
+                SERVER_PORT += 1
 
         if not port_ok:
             logger.error("Couldn't bind the socket server! Port busy?")

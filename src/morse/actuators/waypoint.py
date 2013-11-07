@@ -350,7 +350,7 @@ class Waypoint(morse.core.actuator.Actuator):
                 dot = projection_vector.dot(self.world_y_vector)
                 logger.debug("Vector dot product = %.2f" % dot)
                 if dot < 0:
-                    target_angle = target_angle * -1
+                    target_angle *= -1
 
                 ### Get the angle that the robot must turn ###
                 if target_angle < robot_angle:
@@ -363,7 +363,7 @@ class Waypoint(morse.core.actuator.Actuator):
                 # Make a correction when the angles change signs
                 if angle_diff > math.pi:
                     angle_diff = (2 * math.pi) - angle_diff
-                    rotation_direction = rotation_direction * -1
+                    rotation_direction *= -1
 
                 logger.debug("Angles: R=%.4f, T=%.4f Diff=%.4f Direction = %d" %
                     (robot_angle, target_angle, angle_diff, rotation_direction))

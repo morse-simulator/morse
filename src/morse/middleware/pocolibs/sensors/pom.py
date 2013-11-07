@@ -53,7 +53,7 @@ class PomPoster(PocolibsDataStreamOutput):
         self.obj.mainToOrigin.euler.yaw = self.data.get('yaw', 0.0)
         self.obj.mainToOrigin.euler.pitch = self.data.get('pitch', 0.0)
         self.obj.mainToOrigin.euler.roll = self.data.get('roll', 0.0)
-        self.obj.date = self.obj.date + 1
+        self.obj.date += 1
         self.obj.pomTickDate = self.obj.date
         self.write(self.obj)
 
