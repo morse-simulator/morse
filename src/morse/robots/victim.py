@@ -39,7 +39,7 @@ class Victim(morse.core.robot.Robot):
         and the status to healed.
         """
         if self.bge_object['Severity'] > 0:
-            self.bge_object['Severity'] = self.bge_object['Severity'] - 1
+            self.bge_object['Severity'] -= 1
             # Set the colors depending on the severity of the injuries
             red = 1 - self.bge_object['Severity'] * 0.05
             green = 0.5 + red

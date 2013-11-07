@@ -229,7 +229,7 @@ class LaserSensorWithArc(SensorCreator):
                                math.sin(math.radians(arc_angle)),
                                math.sin(math.radians(v_angle)) ]
                 verts.append(new_vertex)
-                vertex_index = vertex_index + 1
+                vertex_index += 1
                 # Add the faces after inserting the 2nd vertex
                 if arc_angle > start_angle:
                     faces.append([0, vertex_index-1, vertex_index])

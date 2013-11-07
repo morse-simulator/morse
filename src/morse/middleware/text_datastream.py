@@ -25,7 +25,7 @@ class BasePublisher(AbstractDatastream):
 
     def default(self, ci):
         line = self.encode_data()
-        self.index = self.index + 1
+        self.index += 1
         self.file.write(line.encode())
         self.file.flush()
 
@@ -66,7 +66,7 @@ class CSVPublisher(BasePublisher):
         lines = ['ROBOT %s || SENSOR %s\n' % (self.component_instance.robot_parent.name(), self.component_name),
                  '(distance, globalVector(3), localVector(3))\n',
                  repr(self.component_instance.relative_position) + '\n\n']
-        
+
         return ''.join(lines)
 
     def encode_data(self):

@@ -172,10 +172,10 @@ def smooth_move(goal, owner):
     dY = currLoc[1] - destLoc[1]        
     dZ = currLoc[2] - destLoc[2]
     smoothVec = currLoc
-    
-    smoothVec[0] = smoothVec[0] - dX/smoothness         
-    smoothVec[1] = smoothVec[1] - dY/smoothness         
-    smoothVec[2] = smoothVec[2] - dZ/smoothness
+
+    smoothVec[0] -= dX / smoothness
+    smoothVec[1] -= dY / smoothness
+    smoothVec[2] -= dZ / smoothness
     owner.worldPosition = smoothVec
 
 

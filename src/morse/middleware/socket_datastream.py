@@ -216,10 +216,10 @@ class Socket(Datastream):
                 register_success = True
             except socket.error as error_info:
                 if error_info.errno ==  errno.EADDRINUSE:
-                    BASE_PORT = BASE_PORT + 1
+                    BASE_PORT += 1
                 else:
                     raise
 
         self._server_dict[BASE_PORT] = serv
         self._component_nameservice[component_name] = BASE_PORT
-        BASE_PORT = BASE_PORT + 1
+        BASE_PORT += 1

@@ -155,7 +155,7 @@ class YarpReader(YarpPort):
                     logger.error("Unknown data type at 'read_message', "
                                  "with component '%s'" % self.component_name)
                     logger.info("DATA: ", data, " | TYPE: ", type(data))
-                i = i + 1
+                i += 1
             return True
 
         else:
