@@ -46,7 +46,7 @@ class ComponentCreator(AbstractComponent):
         :param component: component in which the objects are located
         :return: list of the imported Blender objects
         """
-        imported_objects = AbstractComponent.append_meshes(self, objects, \
+        imported_objects = AbstractComponent.append_meshes(self, objects,
                                                            component, prefix)
         self.parent_root(imported_objects)
 
@@ -66,19 +66,19 @@ class ComponentCreator(AbstractComponent):
         return imported_objects
 
 class SensorCreator(ComponentCreator):
-    def __init__(self, name="SensorCreator", classpath="morse.core.sensor.Sensor",\
+    def __init__(self, name="SensorCreator", classpath="morse.core.sensor.Sensor",
                  blendname=None):
         ComponentCreator.__init__(self, name, 'sensors', blendname)
         self.properties(Component_Tag = True, classpath = classpath)
 
 class ActuatorCreator(ComponentCreator):
-    def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",\
+    def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",
                  blendname=None):
         ComponentCreator.__init__(self, name, 'actuators', blendname)
         self.properties(Component_Tag = True, classpath = classpath)
 
 class RobotCreator(ComponentCreator):
-    def __init__(self, name="RobotCreator", classpath="morse.core.robot.Robot",\
+    def __init__(self, name="RobotCreator", classpath="morse.core.robot.Robot",
                  blendname=None):
         ComponentCreator.__init__(self, name, 'robots', blendname)
         self.properties(Robot_Tag = True, classpath = classpath)

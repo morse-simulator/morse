@@ -1,4 +1,4 @@
-import roslib; roslib.load_manifest('sensor_msgs');
+import roslib; roslib.load_manifest('sensor_msgs')
 from sensor_msgs.msg import NavSatFix
 from morse.middleware.ros import ROSPublisher
 

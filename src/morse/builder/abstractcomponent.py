@@ -359,7 +359,7 @@ class AbstractComponent(object):
 
                         # iterate over levels to find the one with the default flag
                         for key, value in klass._levels.items():
-                            if value[2] == True:
+                            if value[2]:
                                 level = key
                                 # set the right default level
                                 self.properties(abstraction_level = level)
@@ -574,7 +574,7 @@ class AbstractComponent(object):
         if component.endswith('.blend'):
             filepath = os.path.abspath(component) # external blend file
         else:
-            filepath = os.path.join(MORSE_COMPONENTS, self._category, \
+            filepath = os.path.join(MORSE_COMPONENTS, self._category,
                                     component + '.blend')
 
         looked_dirs = [filepath]
@@ -627,14 +627,14 @@ class AbstractComponent(object):
         if component.endswith('.dae'):
             filepath = os.path.abspath(component) # external blend file
         else:
-            filepath = os.path.join(MORSE_COMPONENTS, self._category, \
+            filepath = os.path.join(MORSE_COMPONENTS, self._category,
                                     component + '.dae')
 
         if not os.path.exists(filepath):
             logger.error("Collada file %s for external asset import can" \
                          "not be found.\nEither provide an absolute path, or" \
                          "a path relative to MORSE assets directory (typically"\
-                         "$PREFIX/share/morse/data)" % (filepath))
+                         "$PREFIX/share/morse/data)" % filepath)
             return
 
         # Save a list of objects names before importing Collada

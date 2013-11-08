@@ -12,7 +12,7 @@ class ViamModule(MorseOverlay):
 
     def Acquire_cb(self, answer):
         status, res = answer
-        return (status, [ self._bench, self._n])
+        return status, [ self._bench, self._n]
 
     @service
     def Init(self, *args):

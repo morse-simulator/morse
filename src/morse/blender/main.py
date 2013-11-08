@@ -135,6 +135,9 @@ def create_dictionaries ():
     # Create a dictionnary with the overlaid used
     persistantstorage.overlayDict = {}
 
+    # Create a dictionnary for the 'service object', such as supervision
+    persistantstorage.serviceObjectDict = {}
+
     # Create the 'request managers' manager
     persistantstorage.morse_services = MorseServices()
 
@@ -193,7 +196,7 @@ def create_dictionaries ():
             else:
                 persistantstorage.externalRobotDict[obj] = instance
 
-    if not (persistantstorage.robotDict or \
+    if not (persistantstorage.robotDict or
             persistantstorage.externalRobotDict): # No robot!
         logger.error("INITIALIZATION ERROR: no robot in your simulation!"
                      "Do not forget that components _must_ belong to a"
@@ -338,7 +341,7 @@ def link_datastreams():
         elif isinstance(instance, Actuator):
             direction = IN
         else:
-            assert(False)
+            assert False
 
         persistantstorage.datastreams[component_name] = (direction, 
                                      [d[0] for d in datastream_list])
@@ -531,8 +534,8 @@ def init_multinode():
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
 
-    persistantstorage.node_instance = create_instance(classpath, \
-            node_name, server_address, server_port)
+    persistantstorage.node_instance = create_instance(classpath,
+                                                      node_name, server_address, server_port)
 
 def init(contr):
     """ General initialization of MORSE
@@ -566,6 +569,10 @@ def init(contr):
 
 
     logger.log(SECTION, 'SCENE INITIALIZATION')
+
+    if MULTINODE_SUPPORT:
+        init_multinode()
+
     init_ok = init_ok and link_services()
     init_ok = init_ok and add_modifiers()
     init_ok = init_ok and link_datastreams()
@@ -581,9 +588,6 @@ def init(contr):
         contr = morse.core.blenderapi.controller()
         close_all(contr)
         quit(contr)
-
-    if MULTINODE_SUPPORT:
-        init_multinode()
     
     # Set the default value of the logic tic rate to 60
     #bge.logic.setLogicTicRate(60.0)
@@ -629,57 +633,42 @@ def init_supervision_services():
     :py:mod:`morse.core.supervision_services` 
     """
 
-    ###
-    # First, load and map the socket request manager to the pseudo
-    # 'simulation' component:
+    from morse.services.supervision_services import Supervision
+    from morse.services.communication_services import Communication
+
+    simulation_service = Supervision()
+    communication_service = Communication()
+
+    persistantstorage.serviceObjectDict[simulation_service.name()] = simulation_service
+    persistantstorage.serviceObjectDict[communication_service.name()] = communication_service
+
+    # For each entries of serviceObjects, register the service as
+    # requested by configuration + socket middleware i/o.
     try:
-        request_manager = "morse.middleware.socket_request_manager.SocketRequestManager"
-        if not persistantstorage.morse_services.add_request_manager(request_manager):
-            return False
-        # The simulation mangement services always uses at least sockets for requests.
-        persistantstorage.morse_services.register_request_manager_mapping(
-                "simulation", request_manager)
-        persistantstorage.morse_services.register_request_manager_mapping(
-                "communication", request_manager)
+        for key, services in persistantstorage.serviceObjectDict.items():
+            request_managers = component_config.component_service.get(key, [])
+            request_managers.append("morse.middleware.socket_request_manager.SocketRequestManager")
 
-    except MorseServiceError as e:
-        #...no request manager :-(
-        logger.critical(str(e))
-        logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
-        return False
+            for request_manager in request_managers:
+                try:
+                    # Load required request managers
+                    if not persistantstorage.morse_services.add_request_manager(request_manager):
+                        return False
 
-    ###
-    # Then, load any other middleware request manager that was declared
-    # to also handle the 'simulation' pseudo-component:
-    try:
-        request_managers = component_config.component_service["simulation"]
-
-        for request_manager in request_managers:
-            try:
-                # Load required request managers
-                if not persistantstorage.morse_services.add_request_manager(request_manager):
+                    persistantstorage.morse_services.register_request_manager_mapping(key, request_manager)
+                    logger.info("Adding '%s' to the middlewares for %s "
+                                "control" % (request_manager, key))
+                except MorseServiceError as e:
+                    #...no request manager :-(
+                    logger.critical(str(e))
+                    logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
                     return False
 
-                persistantstorage.morse_services.register_request_manager_mapping("simulation", request_manager)
-                logger.info("Adding '%s' to the middlewares for simulation "
-                            "control" % request_manager)
-            except MorseServiceError as e:
-                #...no request manager :-(
-                logger.critical(str(e))
-                logger.critical("SUPERVISION SERVICES INITIALIZATION FAILED")
-                return False
+            services.register_services()
 
-    except (AttributeError, NameError, KeyError): 
+    except (AttributeError, NameError, KeyError):
         # Nothing to declare: skip to the next step.
         pass
-
-
-    ###
-    # Services can be imported *only* after persistantstorage.morse_services
-    # has been created. Else @service won't know where to register the RPC
-    # callbacks.
-    import morse.services.supervision_services
-    import morse.services.communication_services
 
     logger.log(ENDSECTION, "SUPERVISION SERVICES INITIALIZED")
     return True
@@ -702,6 +691,10 @@ def simulation_main(contr):
                         "messages, and report them on the morse-dev@laas.fr "
                         "mailing list.")
         quit(contr)
+
+    if 'serviceObjectDict' in persistantstorage:
+        for ob in persistantstorage.serviceObjectDict.values():
+            ob.action()
 
     if "morse_services" in persistantstorage:
         # let the service managers process their inputs/outputs
@@ -751,6 +744,7 @@ def close_all(contr):
 
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
     del persistantstorage.morse_services
+    del persistantstorage.serviceObjectDict
 
     logger.log(ENDSECTION, 'CLOSING DATASTREAMS...')
     # Force the deletion of the datastream objects

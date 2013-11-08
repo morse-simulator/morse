@@ -4,14 +4,14 @@ from morse.builder import Actuator
 
 class Destination(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.destination.Destination",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.destination.Destination",
                                  "destination")
 
 class ForceTorque(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.force_torque.ForceTorque",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.force_torque.ForceTorque",
                                  "force_torque")
 
 class MocapControl(ActuatorCreator):
@@ -37,8 +37,8 @@ class Gripper(Actuator):
 
 class Keyboard(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.keyboard.Keyboard",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.keyboard.Keyboard",
                                  "keyboard")
         self.properties(Speed = 1.0)
         obj = bpymorse.get_context_object()
@@ -80,14 +80,14 @@ class KukaLWR(Actuator):
 
 class Mocap(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.mocap_control.MocapControl",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.mocap_control.MocapControl",
                                  "mocap_control")
 
 class Orientation(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.orientation.Orientation",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.orientation.Orientation",
                                  "orientation")
 
 # pa_10 uses Actuator from morse.builder
@@ -100,7 +100,7 @@ class PA10(Actuator):
 
 class PTU(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
+        ActuatorCreator.__init__(self, name,
                                  "morse.actuators.ptu.PTU", "ptu")
         self.properties(Speed = 1.0, Manual = False, Tolerance = 0.01)
         # append PanBase with its logic
@@ -109,37 +109,37 @@ class PTU(ActuatorCreator):
 class RotorcraftAttitude(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_attitude.RotorcraftAttitude",\
+            "morse.actuators.rotorcraft_attitude.RotorcraftAttitude",
             "rotorcraft_attitude")
 
 class RotorcraftWaypoint(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint",\
+            "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint",
             "rotorcraft_waypoint")
 
 class StabilizedQuadrotor(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name,
-            "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor",\
+            "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor",
             "stabilized_quadrotor")
 
 class SteerForce(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.steer_force.SteerForce",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.steer_force.SteerForce",
                                  "steer_force")
 
 class Teleport(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.teleport.Teleport",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.teleport.Teleport",
                                  "teleport")
 
 class MotionVW(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.v_omega.MotionVW",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.v_omega.MotionVW",
                                  "v_omega")
 
 class MotionVWDiff(ActuatorCreator):
@@ -150,8 +150,8 @@ class MotionVWDiff(ActuatorCreator):
 
 class Waypoint(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-            "morse.actuators.waypoint.Waypoint", "waypoint")
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.waypoint.Waypoint", "waypoint")
         self.properties(Target = "")
         # append 2 Radar with logic
         self.add_lr_radars()
@@ -192,15 +192,15 @@ class Waypoint(ActuatorCreator):
 
 class MotionXYW(ActuatorCreator):
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.xy_omega.MotionXYW",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.xy_omega.MotionXYW",
                                  "xy_omega")
 
 class Light(ActuatorCreator):
     def __init__(self, name=None):
         self.light = None
-        ActuatorCreator.__init__(self, name, \
-                                 "morse.actuators.light.Light",\
+        ActuatorCreator.__init__(self, name,
+                                 "morse.actuators.light.Light",
                                  "light")
         self.light = Spot("LightSpot")
         self.append(self.light)
@@ -208,9 +208,9 @@ class Light(ActuatorCreator):
         
     def properties(self, **kwargs):
         ActuatorCreator.properties(self, **kwargs)
-        if (self.light):
+        if self.light:
             spot = self.light._bpy_object.data
-            if (spot.type == 'SPOT'):
+            if spot.type == 'SPOT':
                 if "size" in kwargs.keys():
                     spot.spot_size = kwargs['size']
                 if "distance" in kwargs.keys():

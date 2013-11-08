@@ -15,18 +15,19 @@ except ImportError as ie:
     raise ImportError("Could not import some ROS modules."
                       " Check your ROS configuration is ok. Details:\n" + str(ie))
 
-def ros_timer(callable,frequency):
+def ros_timer(callable_obj, frequency):
     # Shamelessly stolen from actionlib/action_server.py
 
     rate = rospy.Rate(frequency)
 
-    rospy.logdebug("Starting timer");
+    rospy.logdebug("Starting timer")
     while not rospy.is_shutdown():
         try:
             rate.sleep()
-            callable()
+            callable_obj()
         except rospy.exceptions.ROSInterruptException:
-            rospy.logdebug("Sleep interrupted");
+            rospy.logdebug("Sleep interrupted")
+
 
 class RosAction:
     """ Implements a minimal action state machine.
@@ -67,13 +68,13 @@ class RosAction:
 
         # read the frequency with which to publish status from the parameter server
         # (taken from actionlib/action_server.py)
-        self.status_frequency = rospy.get_param(self.name + "/status_frequency", 5.0);
+        self.status_frequency = rospy.get_param(self.name + "/status_frequency", 5.0)
 
-        status_list_timeout = rospy.get_param(self.name + "/status_list_timeout", 5.0);
-        self.status_list_timeout = rospy.Duration(status_list_timeout);
+        status_list_timeout = rospy.get_param(self.name + "/status_list_timeout", 5.0)
+        self.status_list_timeout = rospy.Duration(status_list_timeout)
 
-        self.status_timer = threading.Thread(None, ros_timer, None, (self._publish_status,self.status_frequency) );
-        self.status_timer.start();
+        self.status_timer = threading.Thread(None, ros_timer, None, (self._publish_status,self.status_frequency) )
+        self.status_timer.start()
 
     def setstatus(self, id, status):
 
@@ -196,7 +197,7 @@ class RosAction:
         with self.goal_lock:
             for goal in self._pending_goals.values():
                 if goal['status']:
-                    status_array.status_list.append(goal['status']);
+                    status_array.status_list.append(goal['status'])
 
         status_array.header.stamp = rospy.Time.now()
         self.status_topic.publish(status_array)
@@ -329,7 +330,7 @@ class RosRequestManager(RequestManager):
                 # Here, we 'hope' that the return value of the MORSE
                 # service is a valid dataset to construct the
                 # ServiceResponse expected by ROS
-                return (result, )
+                return result,
             else:
                 # failure!
                 raise rospy.service.ServiceException(result)

@@ -48,8 +48,9 @@ class Waypoints_Test(MorseTestCase):
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = simu.robot.pose
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
             # waypoint controller
             motion = simu.robot.motion
@@ -80,10 +81,9 @@ class Waypoints_Test(MorseTestCase):
             pose_stream = simu.robot.pose
             pose = pose_stream.get()
 
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
-            logger.info("Initial pose ok")
-
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
             logger.info("Moving 2m ahead...")
 

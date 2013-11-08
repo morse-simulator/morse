@@ -212,8 +212,8 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         # zero velocity setpoint for now
         vel_error = -vel_blender
 
-        logger.debug("pos current: (% .3f % .3f % .3f) setpoint: (% .3f % .3f % .3f)", \
-                     pos_blender[0], pos_blender[1], pos_blender[2], \
+        logger.debug("pos current: (% .3f % .3f % .3f) setpoint: (% .3f % .3f % .3f)",
+                     pos_blender[0], pos_blender[1], pos_blender[2],
                      self._destination[0], self._destination[1], self._destination[2])
         logger.debug("velocity: (% .3f % .3f % .3f)", vel_blender[0], vel_blender[1], vel_blender[2])
 
@@ -235,11 +235,11 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         # wrap yaw setpoint
         self.yaw_setpoint = normalise_angle(self.yaw_setpoint)
 
-        logger.debug("roll  current: % 2.3f   setpoint: % 2.3f", \
+        logger.debug("roll  current: % 2.3f   setpoint: % 2.3f",
                      degrees(roll), degrees(self.roll_setpoint))
-        logger.debug("pitch current: % 2.3f   setpoint: % 2.3f", \
+        logger.debug("pitch current: % 2.3f   setpoint: % 2.3f",
                      degrees(pitch), degrees(self.pitch_setpoint))
-        logger.debug("yaw   current: % 2.3f   setpoint: % 2.3f", \
+        logger.debug("yaw   current: % 2.3f   setpoint: % 2.3f",
                      degrees(yaw), degrees(self.yaw_setpoint))
 
 

@@ -52,7 +52,8 @@ class ArmatureTest(MorseTestCase):
         target = dict(zip(JOINTS, angles))
 
         for j, v in pose.items():
-            self.assertAlmostEqual(v, target[j], delta=precision)
+            if j != 'timestamp':
+                self.assertAlmostEqual(v, target[j], delta=precision)
 
 
     def test_object_attach(self):

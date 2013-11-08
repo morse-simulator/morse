@@ -79,48 +79,48 @@ class YARP_MW_Test(MorseTestCase):
         
         # Read the start position, it must be (0.0, 0.0, 0.0)
         pose = pose_stream.read()
-        for i in range(6):
+        for i in range(1, 7):
             self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
 
         send_speed(cmd_stream, 1.0, 0.0, 2.0)
 
         pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(0).asDouble(), 2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(1).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(1).asDouble(), 2.0, delta=0.1)
         self.assertAlmostEqual(pose.get(2).asDouble(), 0.0, delta=0.1)
         self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
         self.assertAlmostEqual(pose.get(4).asDouble(), 0.0, delta=0.1)
         self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
         send_speed(cmd_stream, -1.0, 0.0, 2.0)
 
         pose = pose_stream.read()
-        for i in range(6):
+        for i in range(1, 7):
             self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
         send_speed(cmd_stream, 1.0, -math.pi/4.0, 2.0)
         pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(0).asDouble(), 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(pose.get(1).asDouble(), -4.0 / math.pi , delta=0.1)
-        self.assertAlmostEqual(pose.get(2).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(3).asDouble(), -math.pi/2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(4).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
+        self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
+        self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
         self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
         send_speed(cmd_stream, 0.5, -math.pi/8.0, 12.0)
         pose = pose_stream.read()
-        for i in range(6):
+        for i in range(1, 7):
             self.assertAlmostEqual(pose.get(i).asDouble(), 0.0, delta=0.1)
 
         send_speed(cmd_stream, -2.0, math.pi/2.0, 3.0)
         pose = pose_stream.read()
-        self.assertAlmostEqual(pose.get(0).asDouble(), 4.0 / math.pi, delta=0.1)
-        self.assertAlmostEqual(pose.get(1).asDouble(), -4.0 / math.pi , delta=0.1)
-        self.assertAlmostEqual(pose.get(2).asDouble(), 0.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(3).asDouble(), -math.pi/2.0, delta=0.1)
-        self.assertAlmostEqual(pose.get(4).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(1).asDouble(), 4.0 / math.pi, delta=0.1)
+        self.assertAlmostEqual(pose.get(2).asDouble(), -4.0 / math.pi , delta=0.1)
+        self.assertAlmostEqual(pose.get(3).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(4).asDouble(), -math.pi/2.0, delta=0.1)
         self.assertAlmostEqual(pose.get(5).asDouble(), 0.0, delta=0.1)
+        self.assertAlmostEqual(pose.get(6).asDouble(), 0.0, delta=0.1)
 
         yarp.Network.fini()
 

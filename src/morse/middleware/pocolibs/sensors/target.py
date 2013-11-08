@@ -15,7 +15,7 @@ class TargetPoster(PocolibsDataStreamOutput):
 
     def default(self, ci):
         target_dict = self.data['victim_dict']
-        self.obj.numRef = self.obj.numRef + 1
+        self.obj.numRef += 1
 
         if target_dict:
         # if multiple target, just take the first one

@@ -55,7 +55,7 @@ class SocketRequestManager(RequestManager):
                 port_ok = True
                 break
             except socket.error as msg:
-                SERVER_PORT = SERVER_PORT + 1
+                SERVER_PORT += 1
 
         if not port_ok:
             logger.error("Couldn't bind the socket server! Port busy?")
@@ -233,4 +233,4 @@ class SocketRequestManager(RequestManager):
                     raise MorseRPCInvokationError("Invalid request syntax: error while parsing the parameters: <%s>. %s" % (params, str(e)))
             else:
                 p = None
-        return (component, service, p)
+        return component, service, p

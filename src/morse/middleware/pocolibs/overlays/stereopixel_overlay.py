@@ -13,7 +13,7 @@ class StereopixelModule(MorseOverlay):
     def Acquire_cb(self, answer):
         status, res = answer
         nb_pts = self.overlaid_object.local_data['nb_points']
-        return (status, [nb_pts, 0, 0, nb_pts])
+        return status, [nb_pts, 0, 0, nb_pts]
 
     @service
     def Init(self, *args):

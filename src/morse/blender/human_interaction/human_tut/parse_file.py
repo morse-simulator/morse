@@ -16,4 +16,4 @@ def read_file():
     level = scriptHolder['Level']
     f = open(path + "explanations" + str(level) + ".txt", 'r')
     data=f.read()
-    return(data)
+    return data

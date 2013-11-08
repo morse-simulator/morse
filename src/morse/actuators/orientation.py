@@ -42,8 +42,8 @@ class Orientation(morse.core.actuator.Actuator):
         parent = self.robot_parent.bge_object
 
         # New parent orientation
-        orientation = mathutils.Euler([self.local_data['roll'], \
-                                       self.local_data['pitch'], \
+        orientation = mathutils.Euler([self.local_data['roll'],
+                                       self.local_data['pitch'],
                                        self.local_data['yaw']])
 
         # Suspend Bullet physics engine, which doesnt like teleport

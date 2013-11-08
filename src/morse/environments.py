@@ -167,7 +167,7 @@ class Environment():
         self.path = env_path or env_name
         self.abspath = os.path.abspath(self.path)
 
-        self.tpls = joinpth(os.path.normpath(self.morse_prefix), \
+        self.tpls = joinpth(os.path.normpath(self.morse_prefix),
                             os.path.normpath(DEFAULT_TEMPLATES_PATH))
 
     def _make_safe_name(self, name):
@@ -255,8 +255,8 @@ class Environment():
                             "exist. Use 'morse add -f ...' to overwrite." % newname)
 
             firstfile = False
-            self._configure(joinpth(self.tpls, path, name + ".tpl"), \
-                            joinpth(self.path, newpath, newname), \
+            self._configure(joinpth(self.tpls, path, name + ".tpl"),
+                            joinpth(self.path, newpath, newname),
                             **kwargs)
 
 
@@ -296,43 +296,43 @@ class Environment():
 
         try:
             if cmpttype == "robot":
-                ok = self._install_files(ROBOT, \
-                                    force = force, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env)
+                ok = self._install_files(ROBOT,
+                                         force = force,
+                                         name = safename,
+                                         classname = safename.capitalize(),
+                                         env = self.env)
 
-                self._print_info_msg(NEW_ROBOT_MSG, \
-                                    prefix= self.abspath, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env)
+                self._print_info_msg(NEW_ROBOT_MSG,
+                                     prefix= self.abspath,
+                                     name = safename,
+                                     classname = safename.capitalize(),
+                                     env = self.env)
             elif cmpttype == "sensor":
                 desc = input("Enter a short description for sensor <%s>: " % safename)
-                self._install_files(SENSOR, \
-                                    force = force, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env, \
+                self._install_files(SENSOR,
+                                    force = force,
+                                    name = safename,
+                                    classname = safename.capitalize(),
+                                    env = self.env,
                                     shortdesc = desc)
-                self._print_info_msg(NEW_SENSOR_MSG, \
-                                    prefix= self.abspath, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env)
+                self._print_info_msg(NEW_SENSOR_MSG,
+                                     prefix= self.abspath,
+                                     name = safename,
+                                     classname = safename.capitalize(),
+                                     env = self.env)
             elif cmpttype == "actuator":
                 desc = input("Enter a short description for actuator <%s>: " % safename)
-                self._install_files(ACTUATOR, \
-                                    force = force, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env, \
+                self._install_files(ACTUATOR,
+                                    force = force,
+                                    name = safename,
+                                    classname = safename.capitalize(),
+                                    env = self.env,
                                     shortdesc = desc)
-                self._print_info_msg(NEW_ACTUATOR_MSG, \
-                                    prefix= self.abspath, \
-                                    name = safename, \
-                                    classname = safename.capitalize(), \
-                                    env = self.env)
+                self._print_info_msg(NEW_ACTUATOR_MSG,
+                                     prefix= self.abspath,
+                                     name = safename,
+                                     classname = safename.capitalize(),
+                                     env = self.env)
             else:
                 raise MorseEnvironmentError("Unknown component type %s" % cmpttype)
         except MorseEnvironmentError as mee:

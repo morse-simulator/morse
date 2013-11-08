@@ -92,7 +92,7 @@ class Keyboard(Actuator):
             # this is need to "wake up" the physic objects if they have
             # gone to sleep apply a tiny impulse straight down on the
             # object
-            if (self._stopped):
+            if self._stopped:
                 self.robot_parent.bge_object.applyImpulse(
                    self.robot_parent.bge_object.position, (0.0, 0.1, -0.000001))
 

@@ -1,4 +1,9 @@
-from concurrent.futures import ThreadPoolExecutor, Future
+try:
+    from concurrent.futures import ThreadPoolExecutor, Future
+except ImportError:
+    import sys
+    sys.stderr.write("[error] install python-concurrent.futures\n")
+    sys.exit(1)
 
 class MorseFuture():
     def __init__(self, future, morse, rqst_id):

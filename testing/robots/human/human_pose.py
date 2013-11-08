@@ -44,8 +44,9 @@ class HumanPoseTest(MorseTestCase):
             pose_stream = morse.human.pose
             sleep(1)
             pose = pose_stream.get()
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, delta=0.1)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.1)
 
     def _test_movement(self):
         """ Tests the human can accept an actuator, and that it

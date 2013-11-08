@@ -185,4 +185,4 @@ def mouse_move(camera, mouse, width, height):
     logger.debug("Read displacement: %s, %s" % (x, y))
     
     # return mouse movement
-    return (x, y)
+    return x, y

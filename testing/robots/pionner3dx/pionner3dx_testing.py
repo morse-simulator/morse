@@ -70,14 +70,16 @@ class Pioneer3DXTest(MorseTestCase):
             pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for key, coord in pose.items():
-                self.assertAlmostEqual(coord, 0.0, delta=0.03)
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.04)
 
             sleep(1)
 
             # Check that it does not dance :)
             pose = pose_stream.get()
             for key, coord in pose.items():
-                self.assertAlmostEqual(coord, 0.0, delta=0.03)
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.04)
 
             v_w = morse.robot.motion
 
@@ -98,7 +100,8 @@ class Pioneer3DXTest(MorseTestCase):
 
             pose = pose_stream.get()
             for key, coord in pose.items():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_speed(v_w, 1.0, -math.pi/4.0, 2.0)
 
@@ -119,7 +122,8 @@ class Pioneer3DXTest(MorseTestCase):
             pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for key, coord in pose.items():
-                self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
             v_w = morse.robot.motion
 
@@ -138,7 +142,8 @@ class Pioneer3DXTest(MorseTestCase):
 
             pose = pose_stream.get()
             for key, coord in pose.items():
-                self.assertAlmostEqual(coord, 0.0, delta=precision)
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=precision)
 
             send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)
 

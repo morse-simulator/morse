@@ -55,7 +55,7 @@ class SearchAndRescue(morse.core.sensor.Sensor):
     _name = "Search And Rescue sensor"
     _short_desc = "High level sensor for search and rescue scenario"
 
-    add_data('victim_dict', {}, "dict", \
+    add_data('victim_dict', {}, "dict",
              'A list of entries for each victim detected inside the cone'
              ' of the sensor. Keys are victim name. The value is a'
              ' dictionnary containing the coordinate of the victim, its'
@@ -198,7 +198,7 @@ class SearchAndRescue(morse.core.sensor.Sensor):
                 self._heal_delay = self._delay
 
                 # Mark the victim as healed
-                if victim['Requirements'] == []:
+                if not victim['Requirements']:
                     victim['Severity'] = 0
                     victim.color = [0.5, 1.0, 0.5, 1.0]
                     message = "Victim '%s' healed" % victim.name

@@ -26,10 +26,10 @@ Associate a modifier function to a component.
 """
 import os
 
-MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'), \
+MORSE_COMPONENTS = os.path.join(os.getenv('MORSE_ROOT', '/usr/local'),
                                 'share', 'morse', 'data')
 
-MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS, \
+MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS,
                                 os.getenv('MORSE_RESOURCE_PATH', '')])
 
 MORSE_DATASTREAM_MODULE = {

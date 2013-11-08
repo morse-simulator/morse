@@ -212,27 +212,23 @@ class Environment(Component):
         scene.name = 'S.MORSE_ENV'
         scene.game_settings.physics_engine = 'NONE'
         from morse.builder.sensors import VideoCamera
-        cfg_camera_scene = {}
+        cfg_camera_scene = []
         for component in AbstractComponent.components:
             # do not create scene for external camera
             if isinstance(component, VideoCamera) and \
                     self.is_internal_camera(component):
-                # Create a new scene for the Camera
-                bpymorse.new_scene(type='LINK_OBJECTS')
-                scene = bpymorse.get_context_scene()
-                scene.name = 'S.%s'%component.name
-                scene.render.resolution_x = component.property_value('cam_width')
-                scene.render.resolution_y = component.property_value('cam_height')
-                # TODO disable logic and physic in this created scene
-                cfg_camera_scene[component.name] = scene.name
-
-        # Create 'camera_scene.py' configuration file (like 'component_config.py')
-        # mapping Camera -> Scene for the bge.texture.ImageRender(scene, camera)
-        bpymorse.new_text()
-        bpymorse.get_last_text().name = 'camera_scene.py'
-        cfg = bpymorse.get_text('camera_scene.py')
-        cfg.write('camera_scene = ' + json.dumps(cfg_camera_scene, indent=1) )
-        cfg.write('\n')
+                res_x = component.property_value('cam_width')
+                res_y = component.property_value('cam_height')
+                name = 'S.%dx%d' % (res_x, res_y)
+                if not name in cfg_camera_scene:
+                    # Create a new scene for the Camera
+                    bpymorse.new_scene(type='LINK_OBJECTS')
+                    scene = bpymorse.get_context_scene()
+                    scene.name = name
+                    scene.render.resolution_x = res_x
+                    scene.render.resolution_y = res_y
+                    # TODO disable logic and physic in this created scene
+                    cfg_camera_scene.append(name)
 
     def create(self, name=None):
         """ Generate the scene configuration and insert necessary objects
@@ -246,7 +242,7 @@ class Environment(Component):
                 component.after_renaming()
 
         # Compute node name
-        if name == None:
+        if name is None:
             try:
                 self._node_name = os.environ["MORSE_NODE"]
             except KeyError:
@@ -291,7 +287,13 @@ class Environment(Component):
         self.properties(environment_file = str(self._environment_file))
 
         if self.fastmode:
-            self.set_material_mode('SINGLETEXTURE')
+            # SINGLETEXTURE support has been removed between 2.69 and
+            # 2.70. Handle properly the case where it is not defined
+            # anymore.
+            try:
+                self.set_material_mode('SINGLETEXTURE')
+            except TypeError:
+                self.set_material_mode('MULTITEXTURE')
             self.set_viewport("WIREFRAME")
         elif not self.is_material_mode_custom:
             # make sure OpenGL shading language shaders (GLSL) is the

@@ -88,7 +88,7 @@ class VimanPoster(PocolibsDataStreamOutput):
         for object in self.scene_object_list:
             logger.info("Adding " + object + " to the objects tracked by VIMAN")
             self.obj.objects[i].name = bytes(str(object), 'utf-8')
-            i = i + 1
+            i += 1
 
     def _read_object_list(self):
         """ Open the file specified in the object_config_file variable
@@ -139,7 +139,7 @@ class VimanPoster(PocolibsDataStreamOutput):
                     self.obj.objects[i].found_Stereo = 0
             except KeyError as detail:
                 logger.debug("WARNING: Object %s not found in the scene" % detail)
-            i = i + 1
+            i += 1
         self.write(self.obj)
 
 

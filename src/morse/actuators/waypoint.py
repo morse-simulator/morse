@@ -64,8 +64,8 @@ class Waypoint(morse.core.actuator.Actuator):
     add_property('_free_z', False, 'FreeZ', 'bool', "if false "
             "(default), the robot is only controlled on 'X' and heading; if "
             "true, 'Z' is also controlled (for aerial or submarine robots)")
-    add_property('_angle_tolerance', math.radians(10), 'AngleTolerance', \
-                 'float', \
+    add_property('_angle_tolerance', math.radians(10), 'AngleTolerance',
+                 'float',
                  "Tolerance in radian regarding the final heading of the robot")
     add_property('_speed', 1.0, 'Speed', 'float',
                  "movement speed for the robot, given in m/s")
@@ -350,7 +350,7 @@ class Waypoint(morse.core.actuator.Actuator):
                 dot = projection_vector.dot(self.world_y_vector)
                 logger.debug("Vector dot product = %.2f" % dot)
                 if dot < 0:
-                    target_angle = target_angle * -1
+                    target_angle *= -1
 
                 ### Get the angle that the robot must turn ###
                 if target_angle < robot_angle:
@@ -363,7 +363,7 @@ class Waypoint(morse.core.actuator.Actuator):
                 # Make a correction when the angles change signs
                 if angle_diff > math.pi:
                     angle_diff = (2 * math.pi) - angle_diff
-                    rotation_direction = rotation_direction * -1
+                    rotation_direction *= -1
 
                 logger.debug("Angles: R=%.4f, T=%.4f Diff=%.4f Direction = %d" %
                     (robot_angle, target_angle, angle_diff, rotation_direction))

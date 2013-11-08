@@ -231,7 +231,7 @@ def version():
     if not fake:
         return bpy.app.version
     else:
-        return (0,0,0)
+        return 0,0,0
 
 def getssr():
     if not fake:
@@ -246,7 +246,8 @@ def joysticks():
         return None
 
 def isfastmode():
-    if not fake:
-        return (bge.render.getMaterialMode() == bge.render.KX_TEXFACE_MATERIAL)
-    else:
-        return False
+    for area in bpy.context.window.screen.areas:
+        if area.type == 'VIEW_3D':
+            for space in area.spaces:
+                if space.type == 'VIEW_3D':
+                    return space.viewport_shade == 'WIREFRAME'

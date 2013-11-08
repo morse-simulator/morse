@@ -25,7 +25,7 @@ class BasePublisher(AbstractDatastream):
 
     def default(self, ci):
         line = self.encode_data()
-        self.index = self.index + 1
+        self.index += 1
         self.file.write(line.encode())
         self.file.flush()
 
@@ -39,22 +39,19 @@ class Publisher(BasePublisher):
 
     _type_name = "key = value format with timestamp and index value"
     def header(self):
-        lines = []
-        lines.append('ROBOT %s || SENSOR %s\n' % 
-                (self.component_instance.robot_parent.name(),
-                 self.component_name))
-        lines.append('(distance, globalVector(3), localVector(3))\n')
-        lines.append(repr(self.component_instance.relative_position) + '\n\n')
+        lines = ['ROBOT %s || SENSOR %s\n' % (self.component_instance.robot_parent.name(), self.component_name),
+                 '(distance, globalVector(3), localVector(3))\n',
+                 repr(self.component_instance.relative_position) + '\n\n']
         return ''.join(lines)
 
     def encode_data(self):
         parent_position = self.component_instance.robot_parent.position_3d
-        lines = []
-        lines.append('==> Data at X,Y,Z: [%.6f %.6f %.6f]'
-                     'yaw,pitch,roll: [%.6f %.6f %.6f] | index %d | time %.2f\n'
-           % (parent_position.x, parent_position.y, parent_position.z,
-              parent_position.yaw, parent_position.pitch, parent_position.roll,
-              self.index, blenderapi.persistantstorage().current_time))
+        lines = ['==> Data at X,Y,Z: [%.6f %.6f %.6f]'
+                 'yaw,pitch,roll: [%.6f %.6f %.6f] | index %d | time %.2f\n'
+                 % (parent_position.x, parent_position.y, parent_position.z,
+                    parent_position.yaw, parent_position.pitch, parent_position.roll,
+                    self.index, blenderapi.persistantstorage().current_time)]
+
         for variable, data in self.data.items():
             if isinstance(data, float):
                 lines.append("\t%s = %.6f\n" % (variable, data))
@@ -66,12 +63,10 @@ class CSVPublisher(BasePublisher):
     _type_name = "CSV like : values separated by semi-column"
 
     def header(self):
-        lines = []
-        lines.append('ROBOT %s || SENSOR %s\n' % 
-                (self.component_instance.robot_parent.name(),
-                 self.component_name))
-        lines.append('(distance, globalVector(3), localVector(3))\n')
-        lines.append(repr(self.component_instance.relative_position) + '\n\n')
+        lines = ['ROBOT %s || SENSOR %s\n' % (self.component_instance.robot_parent.name(), self.component_name),
+                 '(distance, globalVector(3), localVector(3))\n',
+                 repr(self.component_instance.relative_position) + '\n\n']
+
         return ''.join(lines)
 
     def encode_data(self):

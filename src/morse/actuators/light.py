@@ -50,13 +50,11 @@ class Light(morse.core.actuator.Actuator):
         else:
             self.light.energy = 0.0
 
-        # workaround Blender < 2.66 did not share light energy between scenes
-        if blenderapi.version() < (2, 66, 0):
-            # for each camera's scene: update the light
-            for scene in blenderapi.get_scene_list():
-                if scene.name not in ['S.MORSE_ENV', 'S.MORSE_LOGIC'] and \
-                        self.light.name in scene.objects:
-                    scene.objects[self.light.name].energy = self.light.energy
+        # for each camera's scene: update the light
+        for scene in blenderapi.get_scene_list():
+            if scene.name not in ['S.MORSE_ENV', 'S.MORSE_LOGIC'] and \
+                    self.light.name in scene.objects:
+                scene.objects[self.light.name].energy = self.light.energy
 
         self._last = self.local_data['emit']
 

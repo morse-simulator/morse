@@ -54,8 +54,9 @@ class PoseTest(MorseTestCase):
 
             pose = pose_stream.get()
 
-            for coord in pose.values():
-                self.assertAlmostEqual(coord, 0.0, 2)
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, 2)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

@@ -74,10 +74,10 @@ class Differential_VW_Test(MorseTestCase):
             pose_stream = morse.robot.pose
             pose = pose_stream.get()
             for key,coord in pose.items():
-                if key == 'z':
-                    self.assertAlmostEqual(coord, 0.10, delta=0.03)
-                else:
-                    self.assertAlmostEqual(coord, 0.0, delta=0.03)
+                    if key == 'z':
+                        self.assertAlmostEqual(coord, 0.10, delta=0.03)
+                    elif key != 'timestamp':
+                        self.assertAlmostEqual(coord, 0.0, delta=0.03)
 
             v_w = morse.robot.motion
 
@@ -97,7 +97,7 @@ class Differential_VW_Test(MorseTestCase):
             for key,coord in pose.items():
                 if key == 'z':
                     self.assertAlmostEqual(coord, 0.10, delta=0.15)
-                else:
+                elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 
             """
@@ -140,7 +140,7 @@ class Differential_VW_Test(MorseTestCase):
             for key,coord in pose.items():
                 if key == 'z':
                     self.assertAlmostEqual(coord, 0.10, delta=0.15)
-                else:
+                elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.20)
 
             """
@@ -168,7 +168,7 @@ class Differential_VW_Test(MorseTestCase):
             for key,coord in pose.items():
                 if key == 'z':
                     self.assertAlmostEqual(coord, 0.10, delta=0.02)
-                else:
+                elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.02)
 
             v_w = morse.robot.motion
@@ -189,7 +189,7 @@ class Differential_VW_Test(MorseTestCase):
             for key,coord in pose.items():
                 if key == 'z':
                     self.assertAlmostEqual(coord, 0.10, delta=0.15)
-                else:
+                elif key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.15)
 
             send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)

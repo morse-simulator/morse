@@ -13,11 +13,11 @@ class Gyroscope(morse.core.sensor.Sensor):
 
     _name = "Gyroscope"
 
-    add_data('yaw', 0.0, "float", \
+    add_data('yaw', 0.0, "float",
              'rotation around the Z axis of the sensor, in radian')
-    add_data('pitch', 0.0, "float", \
+    add_data('pitch', 0.0, "float",
              'rotation around the Y axis of the sensor, in radian')
-    add_data('roll', 0.0, "float", \
+    add_data('roll', 0.0, "float",
              'rotation around the X axis of the sensor, in radian')
 
     def __init__(self, obj, parent=None):

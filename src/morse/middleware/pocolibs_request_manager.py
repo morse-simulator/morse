@@ -85,12 +85,12 @@ class PocolibsRequestManager(RequestManager):
         component, rqst = fqn.strip("::").split("::")
 
         res = str(rqst_id) + " " + fqn + " TERM "
-        if (state == status.SUCCESS):
+        if state == status.SUCCESS:
             res += "OK" + (" " + "  ".join([str(i) for i in value]) if value else "")
-        elif(state == status.PREEMPTED):
+        elif state == status.PREEMPTED:
             res += "S_" + component + "_stdGenoM_ACTIVITY_INTERRUPTED"
         else:
-            if (value):
+            if value:
                 res +=  "S_" + component + "_" + str(value[0])
             else:
                 res +=  "S_" + component + "_UNKNOWN_ERROR"
@@ -124,6 +124,8 @@ class PocolibsRequestManager(RequestManager):
 
     def main(self):
         
+        inputready, outputready, exceptready = [],[],[]
+
         try:
             inputready, outputready, exceptready = select.select(self._inputs, self._outputs, [], 0) #timeout = 0 : Never block, just poll
         except select.error:
@@ -246,10 +248,10 @@ class PocolibsRequestManager(RequestManager):
                     elif id == int(req[1]):
                         s_reply = s
 
-                if (s_client and s_reply):
+                if s_client and s_reply:
                     self._answer_clients[s_client] = s_reply
 
-            return (True, str(req[1]))
+            return True, str(req[1])
         
         if cmd == "RQST":
             component, rqst = req[1].strip("::").split("::")
@@ -278,37 +280,37 @@ class PocolibsRequestManager(RequestManager):
                 
             except MorseMethodNotFoundError:
                 # Request not found for module
-                return (False, "1 invalid command name \\\"" + rqst + "Send\\\"")
+                return False, "1 invalid command name \\\"" + rqst + "Send\\\""
             except MorseRPCNbArgsError:
                 logger.debug("Exception catched %s" % sys.exc_info())
                 # Wrong # of args
-                return (False, "1 wrong # args")
+                return False, "1 wrong # args"
             except MorseRPCTypeError:
                 # Wrong # of args
-                return (False, "1 wrong type in args")
+                return False, "1 wrong type in args"
 
-            return (True, str(rqst_id))
+            return True, str(rqst_id)
 
         if cmd == "ABORT":
             rqst_id = int(req[1])
             logger.debug("ABORT request %s " % str(rqst_id))
             self.abort_request(self._internal_mapping[rqst_id])
-            return (True, "")
+            return True, ""
             
         if cmd == "cs::lsmbox": # want to list available modules
-            return (True, " ".join(self.services().keys()))
+            return True, " ".join(self.services().keys())
         
         if cmd == "info":
             if req[1] == "commands":
                 # The client want to retrieve the list of available requests.
                 # Rebuild a 'TCL like' list of methods for the required module.
                 component = req[2].split("::")[0]
-                return(True, " ".join(["::" + component + "::" + method + "Send" for method in self.services()[component]]))
+                return True, " ".join(["::" + component + "::" + method + "Send" for method in self.services()[component]])
                 
         if cmd in ["LM", "cs::init", "exec", "modules::connect", "ACK", "UNLM", "KILL"]:
             # Not needed in simulation
-            return (True, "")
+            return True, ""
         
         logger.error("command " + cmd + " not implemented!")
-        return (False, "0 command " + cmd + " not implemented!")
+        return False, "0 command " + cmd + " not implemented!"
 

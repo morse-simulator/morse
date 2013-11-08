@@ -40,9 +40,9 @@ class AbstractDepthCamera(VideoCamera):
 
             self.capturing = True
 
-            if (self._n > 0):
+            if self._n > 0:
                 self._n -= 1
-                if (self._n == 0):
+                if self._n == 0:
                     self.completed(status.SUCCESS)
         else:
             self.capturing = False
@@ -66,9 +66,9 @@ class DepthCamera(AbstractDepthCamera):
     def initialize(self):
         from morse.sensors.zbufferto3d import ZBufferTo3D
         # Store the camera parameters necessary for image processing
-        self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],\
-                                     self.local_data['intrinsic_matrix'][1][1],\
-                                     self.near_clipping, self.far_clipping, \
+        self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],
+                                     self.local_data['intrinsic_matrix'][1][1],
+                                     self.near_clipping, self.far_clipping,
                                      self.image_width, self.image_height)
 
     def process_image(self, image):
@@ -101,7 +101,7 @@ class DepthVideoCamera(AbstractDepthCamera):
     def initialize(self):
         from morse.sensors.zbuffertodepth import ZBufferToDepth
         # Store the camera parameters necessary for image processing
-        self.converter = ZBufferToDepth(self.near_clipping, self.far_clipping, \
+        self.converter = ZBufferToDepth(self.near_clipping, self.far_clipping,
                                         self.image_width, self.image_height)
 
     def process_image(self, image):
