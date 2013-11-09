@@ -171,6 +171,18 @@ def get_scene(name_or_id):
     else:
         return None
 
+def set_active_scene(name_or_id):
+    if bpy:
+        scene = get_scene(name_or_id)
+        if scene:
+            bpy.data.screens['Default'].scene = scene
+            bpy.context.screen.scene = scene
+            return scene
+        else:
+            return None
+    else:
+        return None
+
 def get_last_scene():
     return get_scene(-1)
 
