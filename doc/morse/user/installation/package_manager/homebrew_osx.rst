@@ -58,7 +58,7 @@ be enabled with the following flags:
 
 E.g. to install MORSE with generated documenation and support for ROS::
 
-    brew install morse --with-doc --with-ros
+    brew install morse-simulator --with-doc --with-ros
 
 Updating
 --------
@@ -66,14 +66,14 @@ Updating
 To update to the latest version of MORSE after installation::
 
     brew update
-    brew install --upgrade morse
+    brew install --upgrade morse-simulator
 
 Uninstalling
 ------------
 
 To uninstall MORSE::
 
-    brew uninstall morse
+    brew uninstall morse-simulator
 
 
 ROS Installation Issues
