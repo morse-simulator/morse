@@ -2,8 +2,9 @@ With ``homebrew`` on OSX
 ++++++++++++++++++++++++
 
 `Homebrew <http://brew.sh>`_ is a package manager for OSX.
-It can be installed in OSX with a single Ruby command: 
-``ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"``
+It can be installed in OSX with a single Ruby command::
+
+    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 
 
 .. Note::
@@ -12,7 +13,7 @@ It can be installed in OSX with a single Ruby command:
 Installing MORSE
 ----------------
 
-#. Download Blender from <http://www.blender.org/download/get-blender/> and
+#. Download `Blender <http://www.blender.org/download/get-blender/>`_ and
    copy the apps to /Applications. Blender is not currently available
    as a recipe in Homebrew.
 
@@ -25,13 +26,14 @@ Installing MORSE
     brew tap morse-simulator/morse
     brew install morse-simulator
 
-Note: The Python3 version installed must exactly match the Python version
-used by Blender.  The latest Homebrew Python3 formula installs
-Python 3.3.1 while the latest Blender version uses 3.3.0.  To install
-3.3.0 run the following commands before installing python3::
+.. Note::
+    The Python3 version installed must exactly match the Python version
+    used by Blender.  The latest Homebrew Python3 formula installs
+    Python 3.3.1 while the latest Blender version uses 3.3.0.  To install
+    3.3.0 run the following commands before installing python3::
 
-    cd /usr/local
-    git checkout 864e9f1 /usr/local/Library/Formula/python3.rb
+        cd /usr/local
+        git checkout 864e9f1 /usr/local/Library/Formula/python3.rb
 
 The provided hash can be found by running::
 
@@ -80,8 +82,7 @@ ROS Installation Issues
 -----------------------
 
 ROS for OSX can be installed from source using Homebrew with the 
-instructions given at 
-<http://www.ros.org/wiki/groovy/Installation/OSX/Homebrew/Source>.
+`instructions <http://www.ros.org/wiki/groovy/Installation/OSX/Homebrew/Source>`_.
 
 In addition to the instructions provided on the ROS website, a Python 3
 version of rospkg must be installed for MORSE to operate properly::
