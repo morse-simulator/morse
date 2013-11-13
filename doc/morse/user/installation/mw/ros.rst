@@ -77,7 +77,10 @@ Troubleshooting
 
 - ``urandom error`` : make sure your ``python3`` version is equal to the one in
   Blender.
-- ``No module named rospkg`` : install rospkg with Python3 as in `ROS Fuerte`_ #4
+- ``No module named 'rospkg'`` : install rospkg with Python3 as in `ROS Fuerte`_ #4
+- ``No module named 'roslib'`` : ``source /opt/ros/***/setup.bash``.
+- ``No module named 'error'`` : Yaml for Python2 is running instead of Python3,
+  fix your ``PYTHONPATH``.
 
 Resources
 ---------
