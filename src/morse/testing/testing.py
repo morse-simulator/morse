@@ -13,9 +13,10 @@ import subprocess
 import signal
 
 from morse.testing.exceptions import MorseTestingError
+from morse.core.morse_time import TimeStrategies
 
 BLENDER_INITIALIZATION_TIMEOUT = 15 # seconds
-CURRENT_TIME_MODE = 'BEST_EFFORT'
+CURRENT_TIME_MODE = None
 INITIALIZED_LOGGER = False
 
 class MorseTestRunner(unittest.TextTestRunner):
@@ -89,7 +90,7 @@ class MorseTestCase(unittest.TestCase):
 
     def setUp(self):
         
-        testlogger.info("Starting test " + self.id() + " in " + CURRENT_TIME_MODE)
+        testlogger.info("Starting test " + self.id() + " in " + TimeStrategies.human_repr(CURRENT_TIME_MODE))
 
         self.logfile_name = self.__class__.__name__ + ".log"
         # Wait for a second
@@ -251,8 +252,9 @@ class MorseTestCase(unittest.TestCase):
             tmp.write(b"from morse.builder.blenderobjects import *\n")
             tmp.write(b"class MyEnv():\n")
             tmp.write(inspect.getsource(test_case.setUpEnv).encode())
-            if CURRENT_TIME_MODE == 'FIXED_SIMULATION_STEP':
-                tmp.write(b"        env.set_fixed_time()\n")
+            tmp.write(b"        env.set_time_strategy(")
+            tmp.write(TimeStrategies.python_repr(CURRENT_TIME_MODE))
+            tmp.write(b")\n")
             tmp.write(b"MyEnv().setUpEnv()\n")
             tmp.flush()
             tmp_name = tmp.name
@@ -298,7 +300,7 @@ class MorseBuilderFailureTestCase(MorseTestCase):
     def _checkMorseException(self):
         return
 
-def main(*test_cases, time_modes = ['BEST_EFFORT', 'FIXED_SIMULATION_STEP']):
+def main(*test_cases, time_modes = [TimeStrategies.BestEffort, TimeStrategies.FixedSimulationStep]):
     import sys
     if sys.argv[0].endswith('blender'):
         # If we arrive here from within MORSE, we have probably run

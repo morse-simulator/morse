@@ -19,7 +19,7 @@ from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.core.modifier import register_modifier
 from morse.helpers.loading import create_instance, create_instance_level
-import morse.core.morse_time
+from morse.core.morse_time import TimeStrategies
 
 # Constants for stream directions
 IN = 'IN'
@@ -556,10 +556,7 @@ def init(contr):
     logger.info ("PID: %d" % os.getpid())
 
     persistantstorage.morse_initialised = False
-    if morse.core.blenderapi.game_settings().use_frame_rate:
-        persistantstorage.time = morse.core.morse_time.BestEffort()
-    else:
-        persistantstorage.time = morse.core.morse_time.FixedSimulationStep()
+    persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'])
     persistantstorage.current_time = persistantstorage.time.time
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0

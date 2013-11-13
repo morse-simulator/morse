@@ -17,7 +17,7 @@ import time
 from morse.core import blenderapi
 from morse.helpers.statistics import Stats
 
-class BestEffort:
+class BestEffortStrategy:
     def __init__ (self):
         self.time = time.time()
 
@@ -62,7 +62,7 @@ class BestEffort:
             else:
                 self._nb_frame = self._nb_frame + 1
 
-class FixedSimulationStep:
+class FixedSimulationStepStrategy:
     def __init__ (self):
         self.time = time.time()
         self._incr = 1.0 / blenderapi.getfrequency()
@@ -95,3 +95,40 @@ class FixedSimulationStep:
             ds = time.time() - self._last_time
             self._last_time = time.time()
             self._stat_jitter.update(ds)
+
+class TimeStrategies:
+    (BestEffort, FixedSimulationStep) = range(2)
+
+    internal_mapping = {
+        BestEffort:
+            { "impl": BestEffortStrategy,
+              "python_repr": b"TimeStrategies.BestEffort",
+              "human_repr" : "Best Effort"
+            },
+        FixedSimulationStep:
+            { "impl": FixedSimulationStepStrategy,
+              "python_repr": b"TimeStrategies.FixedSimulationStep",
+              "human_repr": "Fixed Simulation Step"
+            }
+        }
+
+    @staticmethod
+    def make(strategy):
+        try:
+            return TimeStrategies.internal_mapping[strategy]["impl"]()
+        except KeyError:
+            return None
+    @staticmethod
+    def python_repr(strategy):
+        try:
+            return TimeStrategies.internal_mapping[strategy]["python_repr"]
+        except KeyError:
+            return None
+
+    @staticmethod
+    def human_repr(strategy):
+        try:
+            return TimeStrategies.internal_mapping[strategy]["human_repr"]
+        except KeyError:
+            return None
+
