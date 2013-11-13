@@ -1,5 +1,5 @@
-With ``homebrew`` on OSX
-++++++++++++++++++++++++
+With Homebrew on OSX
+++++++++++++++++++++
 
 `Homebrew <http://brew.sh>`_ is a package manager for OSX.
 It can be installed in OSX with a single Ruby command::
@@ -14,7 +14,7 @@ Installing MORSE
 ----------------
 
 #. Download `Blender <http://www.blender.org/download/get-blender/>`_ and
-   copy the apps to /Applications. Blender is not currently available
+   copy the apps to ``/Applications``. Blender is not currently available
    as a recipe in Homebrew.
 
 #. Install Python3 using Homebrew::
@@ -35,9 +35,9 @@ Installing MORSE
         cd /usr/local
         git checkout 864e9f1 /usr/local/Library/Formula/python3.rb
 
-The provided hash can be found by running::
+    The provided hash can be found by running::
 
-    brew versions python3
+        brew versions python3
 
 
 Formula Options
@@ -47,16 +47,16 @@ The default Homebrew formula configures and installs MORSE with support
 for only the sockets middleware.  The following formula options are
 available to enable support for other middlewares:
 
-- --with-ros
-- --with-moos
-- --with-pocolibs
-- --with-yarp2
+- ``--with-ros``
+- ``--with-moos``
+- ``--with-pocolibs``
+- ``--with-yarp2``
 
 Additionally documentation generating documenation and HLS support can
 be enabled with the following flags:
 
-- --with-doc
-- --with-hla
+- ``--with-doc``
+- ``--with-hla``
 
 E.g. to install MORSE with generated documenation and support for ROS::
 
