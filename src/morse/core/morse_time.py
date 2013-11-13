@@ -15,22 +15,7 @@ import logging
 logger = logging.getLogger("morse." + __name__)
 import time
 from morse.core import blenderapi
-
-class Stats:
-    def __init__(self):
-        self.n = 0
-        self.mean = 0.0
-        self.m2 = 0.0
-
-    def update(self, x):
-        self.n = self.n + 1
-        delta = x - self.mean
-        self.mean = self.mean + delta/self.n
-        self.m2 = self.m2 + delta * (x - self.mean)
-
-    @property
-    def variance(self):
-        return self.m2 / (self.n - 1)
+from morse.helpers.statistics import Stats
 
 class BestEffort:
     def __init__ (self):
