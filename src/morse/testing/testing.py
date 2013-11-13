@@ -16,7 +16,10 @@ from morse.testing.exceptions import MorseTestingError
 from morse.core.morse_time import TimeStrategies
 
 BLENDER_INITIALIZATION_TIMEOUT = 15 # seconds
+
+MODE_INDEX = 0
 CURRENT_TIME_MODE = None
+ALL_TIME_MODES = None
 INITIALIZED_LOGGER = False
 
 class MorseTestRunner(unittest.TextTestRunner):
@@ -55,6 +58,14 @@ def follow(file):
             sleep(0.1)    # Sleep briefly
             continue
         yield line
+
+class MorseSwitchTimeMode(unittest.TestCase):
+    def test_switch(self):
+        global ALL_TIME_MODES
+        global CURRENT_TIME_MODE
+        global MODE_INDEX
+        CURRENT_TIME_MODE = ALL_TIME_MODES[MODE_INDEX]
+        MODE_INDEX += 1
 
 class MorseTestCase(unittest.TestCase):
 
@@ -313,13 +324,14 @@ def main(*test_cases, time_modes = [TimeStrategies.BestEffort, TimeStrategies.Fi
     import unittest
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
-    success = True
-    global CURRENT_TIME_MODE
+    global ALL_TIME_MODES
+    ALL_TIME_MODES = time_modes
+
+    tests = None
+    switch = loader.loadTestsFromTestCase(MorseSwitchTimeMode)
     for test_class in test_cases:
         tests = loader.loadTestsFromTestCase(test_class)
-        suite.addTests(tests)
     for time_mode in time_modes:
-        CURRENT_TIME_MODE = time_mode
-        success = success and MorseTestRunner().run(suite).wasSuccessful()
-    sys.exit(not success)
-
+        suite.addTests(switch)
+        suite.addTests(tests)
+    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
