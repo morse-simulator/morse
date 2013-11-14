@@ -35,6 +35,10 @@ class BestEffortStrategy:
 
     def name(self):
         return 'Best Effort'
+    
+    @property
+    def mean(self):
+        return self._stat_jitter.mean
 
     def statistics(self):
         return {
@@ -80,6 +84,10 @@ class FixedSimulationStepStrategy:
 
     def name (self):
         return 'Fixed Simulation Step'
+
+    @property
+    def mean(self):
+        return self._incr
 
     def statistics (self):
         return {
@@ -132,3 +140,7 @@ class TimeStrategies:
         except KeyError:
             return None
 
+
+def time_isafter(t1, t2):
+    """ Returns true if t1 > t2 in morse_time. Returns false otherwise """
+    return t2 - t1 < blenderapi.persistantstorage().time.mean / 2
