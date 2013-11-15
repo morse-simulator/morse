@@ -57,10 +57,8 @@ class SteerForceTest(MorseTestCase):
             morse.sleep(1.0)
 
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], x + 8.0, delta = 1.0)
+            self.assertAlmostEqual(pose['x'], x + 9.5, delta = 1.0)
             self.assertAlmostEqual(pose['y'], y, delta = 1.0)
-
-
 
             # Doubling the force 
             send_force(steer_client, 0.0, -40.0, 0.0)
@@ -69,12 +67,12 @@ class SteerForceTest(MorseTestCase):
             morse.sleep(2.0)
 
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], x + 26.5, delta = 1.0)
+            self.assertAlmostEqual(pose['x'], x + 28.0, delta = 1.0)
             self.assertAlmostEqual(pose['y'], y, delta = 1.5)
 
             # Backward move
             send_force(steer_client, 0.0, 10.0, 0.0)
-            morse.sleep(10.5)
+            morse.sleep(11.0)
             send_force(steer_client, 0.0, 0.0, 10.0)
             morse.sleep(2.0)
 

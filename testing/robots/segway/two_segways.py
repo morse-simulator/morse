@@ -14,11 +14,11 @@ try:
 except ImportError:
     pass
 
-def set_speed(s, v, w, t):
+def set_speed(s, morse, v, w, t):
     s.set_speed(v, w)
-    sleep(t)
+    morse.sleep(t)
     s.stop()
-    sleep(1)
+    morse.sleep(1)
 
 class TwoRMP400Test(MorseTestCase):
     def setUpEnv(self):
@@ -63,8 +63,8 @@ class TwoRMP400Test(MorseTestCase):
             pose2_x = pose2_stream.get()['x']
             self.assertAlmostEqual(pose2_x, 0.0, delta=0.03)
 
-            set_speed(morse.robot1.motion1, 1.0, 0.0, 2.0)
-            set_speed(morse.robot2.motion2, 1.0, 0.0, 2.0)
+            set_speed(morse.robot1.motion1, morse, 1.0, 0.0, 2.0)
+            set_speed(morse.robot2.motion2, morse, 1.0, 0.0, 2.0)
 
             pose1_x = pose1_stream.get()['x']
             self.assertAlmostEqual(pose1_x, 2.0, delta=0.03)

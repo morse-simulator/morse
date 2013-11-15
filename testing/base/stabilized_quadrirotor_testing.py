@@ -79,7 +79,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
             send_ctrl(cmd_client, 0.0, 0.0, 0.0, 10.0)
             morse.sleep(1.0)
             pose3 = pose_stream.get()
-            dx3 = 2.0
+            dx3 = 2.2
             self.assertAlmostEqual(pose3['x'], dx1 + dx2 + dx3 , delta=0.2)
             self.assertAlmostEqual(pose3['y'], 0.0, delta=0.2)
             self.assertAlmostEqual(pose3['z'], 10.0, delta=0.2)
@@ -164,7 +164,7 @@ class StabilizedQuadrirotorTest(MorseTestCase):
             send_ctrl(cmd_client, 0.0, 0.0, 0.0, 10.0)
             morse.sleep(1.0)
             pose3 = pose_stream.get()
-            dy3 = -2.0
+            dy3 = -2.2
             self.assertAlmostEqual(pose3['y'], dy1 + dy2 + dy3 , delta=0.2)
             self.assertAlmostEqual(pose3['x'], 0.0, delta=0.2)
             self.assertAlmostEqual(pose3['z'], 10.0, delta=0.2)
