@@ -17,6 +17,12 @@ Installing MORSE
    copy the apps to ``/Applications``. Blender is not currently available
    as a recipe in Homebrew.
 
+   .. Note::
+        ``MORSE_BLENDER`` should point to the actual executable, not the app
+        directory::
+
+            MORSE_BLENDER=/Applications/Blender.app/Contents/MacOS/blender
+
 #. Install Python3 using Homebrew::
 
     brew install python3
