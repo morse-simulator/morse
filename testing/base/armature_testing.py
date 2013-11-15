@@ -45,7 +45,7 @@ class ArmatureTest(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def checkstate(self, simu, angles, precision = 0.025):
+    def checkstate(self, simu, angles, precision = 0.050):
 
         pose = simu.robot.arm.arm_pose.get()
         target = dict(zip(JOINTS, angles))
@@ -161,7 +161,7 @@ class ArmatureTest(MorseTestCase):
             simu.sleep(1)
             self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
             simu.sleep(3)
-            self.checkstate(simu, [0.0, 1.57, 0, -1.57,0,1.57,0])
+            self.checkstate(simu, [0.0, 1.57, 0, -1.57, 0, 1.57, 0])
             simu.sleep(2)
             self.checkstate(simu, [0.0] * 7)
             simu.sleep(1)
@@ -169,7 +169,7 @@ class ArmatureTest(MorseTestCase):
 
             # check 'starttime' parameter
             act = simu.robot.arm.set_rotations([0.0] * 7)
-            traj2 = {'starttime': time.time() + 1,
+            traj2 = {'starttime': simu.time() + 1,
                     'points': [
                         {'positions': [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         'time_from_start': 1.0}
@@ -188,7 +188,7 @@ class ArmatureTest(MorseTestCase):
             # Check action cancellation
             act = simu.robot.arm.set_rotations([0.0] * 7)
 
-            traj2['starttime'] = time.time() + 1
+            traj2['starttime'] = simu.time() + 1
             act = simu.robot.arm.trajectory(traj2)
             simu.sleep(0.5)
             act.cancel()
