@@ -209,8 +209,7 @@ class Environment(Component):
 
     def _cfg_camera_scene(self):
         scene = bpymorse.get_context_scene()
-        scene.name = 'S.MORSE_ENV'
-        scene.game_settings.physics_engine = 'NONE'
+        scene.name = 'S.MORSE_LOGIC'
         from morse.builder.sensors import VideoCamera
         cfg_camera_scene = []
         for component in AbstractComponent.components:
@@ -227,6 +226,7 @@ class Environment(Component):
                     scene.name = name
                     scene.render.resolution_x = res_x
                     scene.render.resolution_y = res_y
+                    scene.game_settings.physics_engine = 'NONE'
                     # TODO disable logic and physic in this created scene
                     cfg_camera_scene.append(name)
 
@@ -256,9 +256,7 @@ class Environment(Component):
         self._cfg_camera_scene()
 
         # Create a new scene for the MORSE_LOGIC (Scene_Script_Holder, CameraFP)
-        bpymorse.new_scene(type='LINK_OBJECTS')
-        scene = bpymorse.get_context_scene()
-        scene.name = 'S.MORSE_LOGIC'
+        scene = bpymorse.set_active_scene('S.MORSE_LOGIC')
         scene.game_settings.physics_engine = 'BULLET'
         # set simulation view resolution (4:3)
         scene.render.resolution_x = 800
