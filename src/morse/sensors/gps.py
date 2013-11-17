@@ -1,52 +1,20 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data, add_property
+import morse.helpers.geo_math as geo_math
 
-from math import sin, cos, asin, atan2, sqrt, degrees, radians
+from math import atan2, sqrt, degrees
 from random import gauss, random
 
-earth_radius = 6371000.0
-
-# from http://www.movable-type.co.uk/scripts/latlong.html
-def distance_and_direction(lat_start_degs, lon_start_degs, lat_finish_degs, lon_finish_degs):
-    if (lat_start_degs == lat_finish_degs and lon_start_degs == lon_finish_degs):
-        return 0, 0
-
-    lat_s = radians(lat_start_degs)
-    lon_s = radians(lon_start_degs)
-    lat_f = radians(lat_finish_degs)
-    lon_f = radians(lon_finish_degs)
-    lat_d = lat_f - lat_s
-    lon_d = lon_f - lon_s
-
-    R = earth_radius
-
-    t1 = sin(lat_d/2)
-    t2 = sin(lon_d/2)
-    distance = R*2*asin(sqrt(t1*t1 + cos(lat_s)*cos(lat_f)*t2*t2))
-
-    y = sin(lon_d)*cos(lat_f)
-    x = cos(lat_s)*sin(lat_f) - sin(lat_s)*cos(lat_f)*cos(lon_d)
-    heading = degrees(atan2(y, x))
-
-    return distance, heading
-
-def point_from_distance_and_heading(lat_degs, lon_degs, distance, heading_rads):
-    lat_s = radians(lat_degs)
-    lon_s = radians(lon_degs)
-    t = heading_rads
-    d = distance
-    R = earth_radius
-
-    lat_f = asin(sin(lat_s)*cos(d/R) + cos(lat_s)*sin(d/R)*cos(t))
-    lon_f = lon_s + atan2(sin(t)*sin(d/R)*cos(lat_s), cos(d/R) - sin(lat_s)*sin(lat_f))
-
-    return degrees(lat_f), degrees(lon_f)
-
 def point_from_xy(lat_degs, lon_degs, x, y):
+    """
+    Calculate a lat/lon starting from given lat/lon, and moving a given distance x,y.
+    Cartesian coordinates x,y are converted to polar coordinates and the destination
+    lat/lon is calculated using those. Positive y is north.
+    """
     distance = sqrt(x**2 + y**2)
     heading_rads = atan2(x,y) # +y is north
-    return point_from_distance_and_heading(lat_degs, lon_degs, distance, heading_rads)
+    return geo_math.point_from_distance_and_heading(lat_degs, lon_degs, distance, heading_rads)
 
 class GPS(morse.core.sensor.Sensor):
     """
@@ -74,27 +42,17 @@ class GPS(morse.core.sensor.Sensor):
     add_property('origin_lat', 0, 'origin_lat', "float", 'Latitude of the GPS Lat/Lon that corresponds to x=0,y=0,z=0.')
     add_property('origin_lon', 0, 'origin_lon', "float", 'Longitude of the GPS Lat/Lon that corresponds to x=0,y=0,z=0.')
 
-    add_property('chance_of_fix', 1.0, 'chance_of_fix', 'float', 'Probability that the GPS has a fix, 1.0 means always has fix.')
-    add_property('latlon_stddev', 0, 'latlon_stddev', 'float', 'Standard deviation of GPS Lat/Lon in meters.')
-    add_property('alt_stddev', 0, 'alt_stddev', 'float', 'Standard deviation of the GPS Altitude in meters.')
-    add_property('heading_stddev', 0, 'heading_stddev', 'float', 'Standard deviation of the GPS heading in degrees.')
-    add_property('speed_stddev', 0, 'speed_stddev', 'float', 'Standard deviation of the GPS speed in meters-per-second.')
-
     def __init__(self, obj, parent=None):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
         logger.info('%s initialization' % obj.name)
-        # Call the constructor of the parent class
+
         super(self.__class__, self).__init__(obj, parent)
 
-        self.prev_x = 0
-        self.prev_y = 0
-        self.prev_lat = None
-        self.prev_lon = None
+        self.prev_x, self.prev_y = 0,0
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
-
 
     def default_action(self):
         """ Main function of this component. """
@@ -102,49 +60,21 @@ class GPS(morse.core.sensor.Sensor):
         y = self.position_3d.y
         z = self.position_3d.z
 
-        # Store the data acquired by this sensor that could be sent
-        #  via a middleware.
         self.local_data['x'] = x
         self.local_data['y'] = y
         self.local_data['z'] = z
 
-        if self.prev_lat is None and self.prev_lon is None:
-            self.prev_lat = self.origin_lat
-            self.prev_lon = self.origin_lon
-
         dx = x - self.prev_x
         dy = y - self.prev_y
 
-        # dfo means distance from origin.
-        dfo_xy = sqrt(x**2 + y**2)
+        lat,lon = point_from_xy(self.origin_lat, self.origin_lon, x, y)
 
-        # the noise is in meters, so it is added to x,y before calculating lat/lon
-        nx = gauss(0, self.latlon_stddev)
-        ny = gauss(0, self.latlon_stddev)
+        self.local_data['has_fix'] = True
+        self.local_data['lat'] = lat
+        self.local_data['lon'] = lon
+        self.local_data['alt'] = z
+        self.local_data['speed'] = sqrt(dx**2 + dy**2)*self.frequency
+        self.local_data['heading'] = -degrees(self.position_3d.yaw)
 
-        # when far away from the origin, calculate the lat/lon relative to the previous lat/lon
-        if dfo_xy < 100:
-            lat,lon = point_from_xy(self.origin_lat, self.origin_lon, x + nx, y + ny)
-        else:
-            lat,lon = point_from_xy(self.prev_lat, self.prev_lon, dx + nx, dy + ny)
+        self.prev_x,self.prev_y = x,y
 
-        # check that the x,y and lat/lon from origin agree.
-        dfo_latlon, hfo_latlon = distance_and_direction(self.origin_lat, self.origin_lon, lat, lon)
-        dfo_error = abs(dfo_latlon - dfo_xy)
-        #assert(dfo_error < 0.1)
-        #logger.info("GPS dfo error: %f" % dfo_error)
-
-        speed = sqrt(dx**2 + dy**2)*self.frequency
-
-        self.local_data['has_fix'] = random() < self.chance_of_fix
-        if self.local_data['has_fix']:
-            self.local_data['lat'] = lat
-            self.local_data['lon'] = lon
-            self.local_data['alt'] = z + gauss(0, self.alt_stddev)
-            self.local_data['speed'] = speed + gauss(0, self.speed_stddev)
-            self.local_data['heading'] = -degrees(self.position_3d.yaw) + gauss(0, self.heading_stddev)
-
-        self.prev_x = x
-        self.prev_y = y
-        self.prev_lat = lat
-        self.prev_lon = lon

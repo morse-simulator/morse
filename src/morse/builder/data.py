@@ -72,6 +72,12 @@ MORSE_MODIFIER_DICT = {
         'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
         'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
         'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
+    },
+    'GPSNoise' : {
+        'gps': "morse.modifiers.gps_noise.GPSNoiseModifier"
+    },
+    'CompassNoise' : {
+        'compass': "morse.modifiers.compass_noise.CompassNoiseModifier"
     }
 }
 

@@ -13,9 +13,6 @@ class Compass(morse.core.sensor.Sensor):
 
     add_data('heading', 0.0, "float", 'heading of the sensor in degrees.')
 
-    add_property('heading_stddev', 0, 'heading_stddev', 'float', 'Standard deviation of the heading in degrees.')
-    add_property('heading_bias', 0, 'heading_bias', 'float', 'Bias of the compass in degrees.')
-
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -30,5 +27,5 @@ class Compass(morse.core.sensor.Sensor):
 
     def default_action(self):
         """ Get the heading from the yaw of the blender object. """
-        self.local_data['heading'] = -degrees(self.position_3d.yaw) + gauss(self.heading_bias, self.heading_stddev)
+        self.local_data['heading'] = -degrees(self.position_3d.yaw)
 
