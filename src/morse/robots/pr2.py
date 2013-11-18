@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.robots.grasper import RobotGrasper
+from morse.robots.grasping_robot import GraspingRobot
 from morse.core.services import service
 from morse.core import blenderapi
 
-class PR2(RobotGrasper):
+class PR2(GraspingRobot):
     """ 
     The MORSE model of the Willow Garage's PR2 robot.
 
@@ -52,7 +52,7 @@ class PR2(RobotGrasper):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        RobotGrasper.__init__(self, obj, parent)
+        GraspingRobot.__init__(self, obj, parent)
 
         """
         We define here the name of the pr2 grasping hand:

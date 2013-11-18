@@ -1,29 +1,27 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
-from morse.robots.grasper import RobotGrasper
+from morse.robots.grasping_robot import GraspingRobot
 from morse.core.services import service
 
-class Human(RobotGrasper):
+class Human(GraspingRobot):
     """ Class definition for the human as a robot entity
         Sub class of Morse_Object. """
 
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        RobotGrasper.__init__(self, obj, parent)
+        GraspingRobot.__init__(self, obj, parent)
 
-        """
-        We define here the name of the pr2 grasping hand:
-        """
+        # We define here the name of the human grasping hand:
         self.hand_name = 'Hand_Grab.R'
 
         logger.info('Component initialized')
 
     @service
     def move(self, speed, rotation):
-        """ Move the human.
-        """
-        
+        # Move the human.
+
+
         human = self.bge_object
         
         if not human['Manipulate']:
@@ -39,8 +37,7 @@ class Human(RobotGrasper):
         
     @service
     def move_head(self, pan, tilt):
-        """ Move the human head.
-        """
+        # Move the human head.
         
         human = self.bge_object
         scene = blenderapi.scene()
@@ -90,5 +87,5 @@ class Human(RobotGrasper):
             head_target.localPosition = [0.0, 0.0, 0.0]
         
     def default_action(self):
-        """ Main function of this component. """
+        # Main function of this component.
         pass
