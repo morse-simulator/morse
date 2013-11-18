@@ -231,10 +231,10 @@ def buttonPressAllTab(t) :
 
     ################ grasp option ##############
     if cwiid.BTN_B in t and not grasped :
-        grasp("t")
+        grasp(True)
         grasped = True
     elif cwiid.BTN_B not in t and grasped :
-        grasp("f")
+        grasp(False)
         grasped = False
 
 
@@ -298,7 +298,7 @@ def grasp(seq):
     """ Sending socket messages """
     global id_
 
-    msg = "id%s mocap_human grasp_ [\"%s\"]\n" % (str(id_), str(seq))
+    msg = "id%s mocap_human grasp [%i]\n" % (str(id_), seq)
     s.send(msg)
     print("Socket grasp sent")
     id_ = id_ + 1
