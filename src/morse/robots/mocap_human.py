@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.robots.grasper import RobotGrasper
+from morse.robots.grasping_robot import GraspingRobot
 from morse.core.services import service
 from morse.core import blenderapi
 
-class MocapHuman(RobotGrasper):
+class MocapHuman(GraspingRobot):
     """ Class definition for the human avatar as a robot entity
     Sub class of Morse_Object.
     This human is set to be controlled using data from an Xtion/Kinect sensor
@@ -16,7 +16,7 @@ class MocapHuman(RobotGrasper):
             but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        RobotGrasper.__init__(self, obj, parent)
+        GraspingRobot.__init__(self, obj, parent)
 
         """
         We define here the name of the human_mocap grasping hand.
