@@ -58,13 +58,17 @@ available to enable support for other middlewares:
 - ``--with-pocolibs``
 - ``--with-yarp2``
 
-Additionally documentation generating documenation and HLS support can
+Additionally documentation generating documentation and HLA support can
 be enabled with the following flags:
 
 - ``--with-doc``
 - ``--with-hla``
 
-E.g. to install MORSE with generated documenation and support for ROS::
+Pymorse bindings can be enabled used the flag:
+
+- ``--with-pymorse``
+
+E.g. to install MORSE with generated documentation and support for ROS::
 
     brew install morse-simulator --with-doc --with-ros
 
