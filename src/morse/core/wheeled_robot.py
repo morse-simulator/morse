@@ -134,7 +134,11 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
 
         if self._fix_turning != 0.0:
             self._trackWidth = self._fix_turning
+
         logger.warn("Using wheel separation of %.4f" % self._trackWidth)
+
+        # Force speed at 0.0 at startup
+        self.apply_vw_wheels(0.0, 0.0)
 
 
     def build_vehicle(self):
@@ -258,6 +262,49 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
         joint.setParam(5, 0.0, 0.0) # no rotation about Z axis - min=0, max=0
         return joint # return a reference to the constraint
+
+    def apply_vw_wheels(self, vx, vw):
+        """ Apply (v, w) to the parent robot. """
+
+        # calculate desired wheel speeds and set them
+        if abs(vx) < 0.001 and abs(vw) < 0.001:
+            # stop the wheel when velocity is below a given threshold
+            for index in self._wheels.keys():
+                self._wheel_joints[index].setParam(9, 0, 100.0)
+
+            self._stopped = True
+        else:
+            # this is need to "wake up" the physic objects if they have
+            # gone to sleep apply a tiny impulse straight down on the
+            # object
+            if self._stopped:
+                self.bge_object.applyImpulse(
+                   self.bge_object.position, (0.0, 0.1, -0.000001))
+
+            # no longer stopped
+            self._stopped = False
+
+            # Another formula for computing left and right wheel speeds:
+            # http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
+            v_ws_l = vx - (self._trackWidth / 2.0) * vw
+            v_ws_r = vx + (self._trackWidth / 2.0) * vw
+
+            # convert to angular speeds
+            w_ws_l = v_ws_l / self._wheel_radius
+            w_ws_r = v_ws_r / self._wheel_radius
+
+            # set wheel speeds - front and rear wheels have the same speed
+            # Left side wheels
+            self._wheel_joints['FL'].setParam(9, w_ws_l, 100.0)
+            if 'RL' in self._wheels:
+                self._wheel_joints['RL'].setParam(9, w_ws_l, 100.0)
+            # Right side wheels
+            self._wheel_joints['FR'].setParam(9, w_ws_r, 100.0)
+            if 'RR' in self._wheels:
+                self._wheel_joints['RR'].setParam(9, w_ws_r, 100.0)
+
+            logger.debug("New speeds set: left=%.4f, right=%.4f" %
+                         (w_ws_l, w_ws_r))
 
 
     def AttachWheelWithSuspension(self, wheel, parent, suspensionArm):
