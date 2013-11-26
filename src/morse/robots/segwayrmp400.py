@@ -20,16 +20,6 @@ class SegwayRMP400(morse.core.wheeled_robot.MorsePhysicsRobot):
 
     _name = 'Segway RMP 400 platform'
 
-    add_property('_fix_turning', 0.0, 'FixTurningSpeed', 'double', 
-                'Overwrite the value of the distance between wheels in '
-                'the computations of the wheel speeds. This effectively '
-                'changes the turning speed of the robot, and can be used '
-                'to compensate for the slip of the wheels while turning. '
-                'The real distance between wheels in the robot is 0.624m. '
-                'By forcing a distance of 1.23m, the robot will turn over '
-                'a smaller radius, as would a two wheeled differential '
-                'drive robot. If the value 0.0 is used, the real '
-                'distance between wheels is used.')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -40,10 +30,6 @@ class SegwayRMP400(morse.core.wheeled_robot.MorsePhysicsRobot):
 
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
-
-        if self._fix_turning != 0.0:
-            self._trackWidth = self._fix_turning
-        logger.warn("Using wheel separation of %.4f" % self._trackWidth)
 
         logger.info('Component initialized')
 

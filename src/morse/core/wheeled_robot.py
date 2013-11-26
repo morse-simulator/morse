@@ -62,7 +62,7 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
                 wheel = scene.objects[self.bge_object[name]]
             except:
                 #import traceback
-                #traceback.print_exc()
+                #traceback._exc()
                 wheel = None
 
             if wheel:
@@ -113,6 +113,14 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
     Inherits from the base robot class.
     """
 
+    add_property('_fix_turning', 0.0, 'FixTurningSpeed', 'double', 
+                'Overwrite the value of the distance between wheels in '
+                'the computations of the wheel speeds. This effectively '
+                'changes the turning speed of the robot, and can be used '
+                'to compensate for the slip of the wheels while turning. '
+                'If the value 0.0 is used, the real distance between wheels '
+                'is used.')
+
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
@@ -123,6 +131,10 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
 
         # construct the vehicle
         self.build_vehicle()
+
+        if self._fix_turning != 0.0:
+            self._trackWidth = self._fix_turning
+        logger.warn("Using wheel separation of %.4f" % self._trackWidth)
 
 
     def build_vehicle(self):
