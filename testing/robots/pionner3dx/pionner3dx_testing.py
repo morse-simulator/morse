@@ -70,7 +70,7 @@ class Pioneer3DXTest(MorseTestCase):
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.04)
+                    self.assertAlmostEqual(coord, 0.0, delta=0.05)
 
             morse.sleep(1)
 
@@ -78,7 +78,7 @@ class Pioneer3DXTest(MorseTestCase):
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.04)
+                    self.assertAlmostEqual(coord, 0.0, delta=0.05)
 
             v_w = morse.robot.motion
 
@@ -87,7 +87,6 @@ class Pioneer3DXTest(MorseTestCase):
             precision = 0.30
 
             pose = pose_stream.get()
-            print(pose)
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
@@ -105,7 +104,6 @@ class Pioneer3DXTest(MorseTestCase):
             send_speed(v_w, morse, 1.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
-            print(pose)
             # for non-null w, we have r = v /  w
             self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
             self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
@@ -114,6 +112,10 @@ class Pioneer3DXTest(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
+
+    # Desactive this test for now. With no control on acceleration, the
+    # result of service calling is often relatively too fuzzy to make a
+    # repeatable test
     def _test_vw_service_controller(self):
         with Morse() as morse:
         
@@ -122,12 +124,12 @@ class Pioneer3DXTest(MorseTestCase):
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.02)
+                    self.assertAlmostEqual(coord, 0.0, delta=0.05)
 
             v_w = morse.robot.motion
 
-            precision = 0.30
-            send_service_speed(v_w, 1.0, 0.0, 2.0)
+            precision = 0.40
+            send_service_speed(v_w, morse, 1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
@@ -137,14 +139,14 @@ class Pioneer3DXTest(MorseTestCase):
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
-            send_service_speed(v_w, -1.0, 0.0, 2.0)
+            send_service_speed(v_w, morse, -1.0, 0.0, 2.0)
 
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            send_service_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_service_speed(v_w, morse, 1.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             # for non-null w, we have r = v /  w
