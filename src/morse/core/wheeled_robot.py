@@ -49,6 +49,10 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         # bullet vehicles always have 4 wheels
         scene = blenderapi.scene()
 
+        self._wheel_radius = None
+
+        caster_wheel_name = self.bge_object.get('CasterWheelName', None)
+
         #  inherited from the parent robot
         for index in self._wheel_index:
             name = "Wheel%sName" % index
@@ -74,15 +78,15 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
                 #wheel.worldPosition = self._wheel_positions[index]
                 #wheel.worldOrientation = self._wheel_orientations[index]
 
+                # get wheel radius if not already computed
+                if wheel.name != caster_wheel_name and not self._wheel_radius:
+                    self._wheel_radius = self.get_wheel_radius(self.bge_object[name])
+
         logger.debug("get_wheels %s" % self._wheels)
 
-        # get wheel radius
-        self._wheel_radius = \
-            self.get_wheel_radius(self.bge_object['WheelFLName'])
-
         # Add a free rotating wheel if indicated in the robot
-        if 'CasterWheelName' in self.bge_object:
-            wheel = scene.objects[self.bge_object['CasterWheelName']]
+        if caster_wheel_name:
+            wheel = scene.objects[caster_wheel_name]
             wheel_position = mathutils.Vector(wheel.worldPosition)
             self.attach_caster_wheel_to_body(wheel, self.bge_object, wheel_position)
 
@@ -99,7 +103,8 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
     def get_wheel_radius(self, wheel_name):
         dims = blenderapi.objectdata(wheel_name).dimensions
         # average the x and y dimension to get diameter - divide by 2 for radius
-        return (dims[0]+dims[1])/4
+        radius = (dims[0]+dims[1])/4
+        return radius
 
 
 class MorsePhysicsRobot(PhysicsWheelRobot):
