@@ -67,10 +67,10 @@ class TwoRMP400Test(MorseTestCase):
             set_speed(morse.robot2.motion2, morse, 1.0, 0.0, 2.0)
 
             pose1_x = pose1_stream.get()['x']
-            self.assertAlmostEqual(pose1_x, 2.0, delta=0.03)
+            self.assertAlmostEqual(pose1_x, 2.0, delta=0.10)
 
             pose2_x = pose2_stream.get()['x']
-            self.assertAlmostEqual(pose2_x, 2.0, delta=0.03)
+            self.assertAlmostEqual(pose2_x, 2.0, delta=0.10)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
