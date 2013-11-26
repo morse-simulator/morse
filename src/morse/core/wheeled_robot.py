@@ -85,7 +85,7 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         logger.debug("get_wheels %s" % self._wheels)
 
         # Add a free rotating wheel if indicated in the robot
-        if caster_wheel_name:
+        if caster_wheel_name and caster_wheel_name != 'None':
             wheel = scene.objects[caster_wheel_name]
             wheel_position = mathutils.Vector(wheel.worldPosition)
             self.attach_caster_wheel_to_body(wheel, self.bge_object, wheel_position)
