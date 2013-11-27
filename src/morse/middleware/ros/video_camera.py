@@ -30,7 +30,6 @@ class VideoCameraPublisher(ROSPublisher):
 
         image = Image()
         image.header = self.get_ros_header()
-        image.header.frame_id += '/base_image'
         image.height = self.component_instance.image_height
         image.width = self.component_instance.image_width
         image.encoding = 'rgba8'
