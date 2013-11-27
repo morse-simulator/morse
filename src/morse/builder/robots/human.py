@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 from morse.builder import bpymorse
 from morse.builder import Armature, Robot
+from morse.builder.sensors import ArmaturePose
 
 class Human(Robot):
     """ Append a human model to the scene.
@@ -44,14 +45,16 @@ class Human(Robot):
 
         try:
             self.armature = Armature("HumanArmature" + self.suffix, "human_posture")
-            # new way of loading class (drop 'Class' and 'Path' properties)
-            self.armature.properties(classpath="morse.sensors.human_posture.HumanPosture")
             self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
                          "for an object called 'HumanArmature' in the human" +\
                          " children). I won't be able to export the human pose" +\
                          " to any middleware.")
+
+        # Add an armature sensor. "joint_stateS" to match standard ROS spelling.
+        self.joint_states = ArmaturePose()
+        self.armature.append(self.joint_states)
 
         # fix for Blender 2.6 Animations
         armature_object = self.get_child(self.armature.name)
@@ -91,6 +94,22 @@ class Human(Robot):
         prop[-1].type = "STRING"
         prop[-1].value = self.name
 
+    def add_interface(self, interface):
+        if interface == "socket":
+            self.joint_states.add_stream("socket")
+            self.armature.add_service('socket')
+
+        elif interface == "ros":
+
+            self.joint_states.add_stream("ros")
+
+            self.armature.add_service("ros")
+            self.armature.add_overlay("ros",
+              "morse.middleware.ros.overlays.armatures.ArmatureController")
+
+        elif interface == "pocolibs":
+            self.armature.properties(classpath="morse.sensors.human_posture.HumanPosture")
+            self.add_stream(interface)
 
 
     def use_world_camera(self):
