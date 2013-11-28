@@ -78,7 +78,13 @@ class Quadrotor(Robot):
 class RMax(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "rmax", name)
-        self.properties(classpath = "morse.robots.rmax.RMax")
+        self.properties(classpath = "morse.robots.rmax.RMax",
+                        FreeZ = True)
+
+        rotor = self.get_child('Rotor')
+        rotor.game.physics_type = 'NO_COLLISION'
+
+        self.set_rigid_body()
 
 class SegwayRMP400(WheeledRobot):
     def __init__(self, name=None):
