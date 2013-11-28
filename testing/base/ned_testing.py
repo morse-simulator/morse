@@ -24,6 +24,9 @@ class NedTest(MorseTestCase):
         robot = RMax('robot')
         robot.translate(42.0, -10, 40)
 
+        teleport = Teleport()
+        robot.append(teleport)
+
         pose = Pose()
         robot.append(pose)
         pose.add_stream('socket')
