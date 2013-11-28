@@ -591,7 +591,7 @@ class Morse(object):
         self.close()
 
     def reset(self):
-       return self.rpc("simulation", "reset")
+       return self.rpc("simulation", "reset_objects")
 
     def streams(self):
        return self.rpc("simulation", "list_streams")
