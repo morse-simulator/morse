@@ -2,12 +2,17 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
 from morse.core import blenderapi
+from morse.helpers.components import add_property
 
 class Robot(morse.core.object.Object):
     """ Basic Class for all robots
 
     Inherits from the base object class.
     """
+
+    add_property('_free_z', False, 'FreeZ', 'bool',
+                'Indicate if Z is really a freedom degree of the robot, \
+                i.e. basically if it is a flying or submarine robot')
 
     # Make this an abstract class
     __metaclass__ = ABCMeta
