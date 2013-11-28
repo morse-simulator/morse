@@ -68,3 +68,20 @@ class Robot(morse.core.object.Object):
         elif kind == 'Velocity':
             parent.setLinearVelocity(linear_speed, True)
             parent.setAngularVelocity(angular_speed, True)
+
+    def force_pose(self, position, orientation):
+        parent = self.bge_object
+
+        if self.is_dynamic:
+            parent.applyForce(-blenderapi.gravity())
+            parent.worldLinearVelocity = [0.0, 0.0, 0.0]
+            parent.suspendDynamics()
+
+        if position:
+            parent.worldPosition = position
+
+        if orientation:
+            parent.worldOrientation = orientation
+
+        if self.is_dynamic:
+            parent.restoreDynamics()
