@@ -154,8 +154,9 @@ class AbstractComponent(object):
                     # do automatic renaming only if a name is not already manually set
                     # component.name accessor set both basename and bpy.name,
                     # which is the correct behaviour here. The bpy_name may be
-                    # rewritten by _rename_tree, to get the correct hierarcy.
-                    if not component.basename: 
+                    # rewritten by _rename_tree, to get the correct hierarchy.
+                    if not component.basename:
+                        Configuration.update_name(component.name, name)
                         component.name = name
 
         finally:
