@@ -28,6 +28,7 @@ class Robot(morse.core.object.Object):
         # shift against the simulator time (in ms)
         self.time_shift = 0.0
 
+        self.is_dynamic = bool(self.bge_object.getPhysicsId())
 
     def action(self):
         """ Call the regular action function of the component. """
@@ -54,8 +55,14 @@ class Robot(morse.core.object.Object):
         """
 
         parent = self.bge_object
+        must_fight_against_gravity = self.is_dynamic and self._free_z
+
+        if must_fight_against_gravity:
+            parent.applyForce(-blenderapi.gravity())
 
         if kind == 'Position':
+            if must_fight_against_gravity:
+                parent.worldLinearVelocity = [0.0, 0.0, 0.0]
             parent.applyMovement(linear_speed, True)
             parent.applyRotation(angular_speed, True)
         elif kind == 'Velocity':
