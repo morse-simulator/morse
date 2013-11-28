@@ -68,4 +68,4 @@ class MotionVW(morse.core.actuator.Actuator):
         except ZeroDivisionError:
             pass
 
-        self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz])
+        self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz])

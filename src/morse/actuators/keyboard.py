@@ -66,7 +66,7 @@ class Keyboard(Actuator):
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
         if self._type == 'Position' or self._type == 'Velocity':
-            self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
+            self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
         elif self._type == 'Differential':
             self.robot_parent.apply_vw_wheels(vx, rz)
 

@@ -438,4 +438,4 @@ class Waypoint(morse.core.actuator.Actuator):
             logger.debug("Applying vx = %.4f, vz = %.4f, rz = %.4f (v = %.4f)" %
                         (vx, vz, rz, v))
 
-            self.apply_speed(self._type, [vx, 0, vz], [0, 0, rz])
+            self.robot_parent.apply_speed(self._type, [vx, 0, vz], [0, 0, rz])

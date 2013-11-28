@@ -41,3 +41,23 @@ class Robot(morse.core.object.Object):
         return blenderapi.persistantstorage().current_time * 1000.0 +\
                self.time_shift
 
+    def apply_speed(self, kind, linear_speed, angular_speed):
+        """
+        Apply speed parameter to the robot
+
+        :param string kind: the kind of control to apply. Can be one of
+        ['Position', 'Velocity'].
+        :param list linear_speed: the list of linear speed to apply, for
+        each axis, in m/s.
+        :param list angular_speed: the list of angular speed to apply,
+        for each axis, in rad/s.
+        """
+
+        parent = self.bge_object
+
+        if kind == 'Position':
+            parent.applyMovement(linear_speed, True)
+            parent.applyRotation(angular_speed, True)
+        elif kind == 'Velocity':
+            parent.setLinearVelocity(linear_speed, True)
+            parent.setAngularVelocity(angular_speed, True)

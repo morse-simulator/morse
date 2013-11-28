@@ -82,4 +82,4 @@ class Destination(morse.core.actuator.Actuator):
             logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         
-        self.apply_speed(self._type, [vx, vy, vz], [0, 0, 0])
+        self.robot_parent.apply_speed(self._type, [vx, vy, vz], [0, 0, 0])
