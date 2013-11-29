@@ -19,7 +19,11 @@ class VelodyneModule(MorseOverlay):
         pass
 
     @service
-    def AddLineToFOVFilter(self, *args):
+    def FOVRemoveHeadingSector(self, *args):
+        pass
+
+    @service
+    def FOVRemoveLine(self, *args):
         pass
 
     @service
@@ -27,7 +31,7 @@ class VelodyneModule(MorseOverlay):
         pass
 
     @service
-    def Stop(self, *args):
+    def StopAcquisition(self, *args):
         pass
 
     @service
