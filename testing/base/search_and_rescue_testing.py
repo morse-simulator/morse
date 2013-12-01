@@ -9,14 +9,13 @@ except ImportError:
     pass
 
 import sys
-import time
 import math
 from pymorse import Morse, MorseServiceFailed
 
-def send_dest(s, x, y, yaw):
+def send_dest(s, morse, x, y, yaw):
     s.publish({'x' : x, 'y' : y, 'z' : 0, \
                        'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
-    time.sleep(0.1)
+    morse.sleep(0.1)
 
 class SearchAndRescueTest(MorseTestCase):
 
@@ -54,7 +53,7 @@ class SearchAndRescueTest(MorseTestCase):
             self.assertTrue(len(victim_status['victim_dict']) == 0)
 
             # Move closer of the victim but not close enough to heal it
-            send_dest(teleport_client, 8.0, 0.0, 0.0)
+            send_dest(teleport_client, morse, 8.0, 0.0, 0.0)
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
@@ -73,7 +72,7 @@ class SearchAndRescueTest(MorseTestCase):
 
             # The victim is not detected if not in the field of view of
             # the radar
-            send_dest(teleport_client, 8.0, 0.0, math.pi)
+            send_dest(teleport_client, morse, 8.0, 0.0, math.pi)
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
             self.assertTrue(len(victim_dict) == 0)
@@ -88,7 +87,7 @@ class SearchAndRescueTest(MorseTestCase):
                 morse.rpc('robot.victim_detector', 'heal')
 
             # Move close enough to be able to heal it
-            send_dest(teleport_client, 9.2, 0.0, 0.0)
+            send_dest(teleport_client, morse, 9.2, 0.0, 0.0)
 
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
@@ -104,7 +103,7 @@ class SearchAndRescueTest(MorseTestCase):
 
             morse.rpc('robot.victim_detector', 'heal')
 
-            time.sleep(0.2)
+            morse.sleep(0.2)
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
             self.assertTrue(len(victim_dict) == 1)

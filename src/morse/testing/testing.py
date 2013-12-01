@@ -13,12 +13,20 @@ import subprocess
 import signal
 
 from morse.testing.exceptions import MorseTestingError
+from morse.core.morse_time import TimeStrategies
 
 BLENDER_INITIALIZATION_TIMEOUT = 15 # seconds
 
+MODE_INDEX = 0
+CURRENT_TIME_MODE = None
+ALL_TIME_MODES = None
+INITIALIZED_LOGGER = False
+
 class MorseTestRunner(unittest.TextTestRunner):
+
         
     def setup_logging(self):
+        global INITIALIZED_LOGGER
         logger = logging.getLogger('morsetesting')
         logger.setLevel(logging.DEBUG)
 
@@ -30,9 +38,12 @@ class MorseTestRunner(unittest.TextTestRunner):
         ch.setFormatter(formatter)
 
         logger.addHandler(ch)
+        INITIALIZED_LOGGER = True
 
     def run(self, suite):
-        self.setup_logging()
+        global INITIALIZED_LOGGER
+        if not INITIALIZED_LOGGER:
+            self.setup_logging()
         return unittest.TextTestRunner.run(self, suite)
 
 def follow(file):
@@ -47,6 +58,14 @@ def follow(file):
             sleep(0.1)    # Sleep briefly
             continue
         yield line
+
+class MorseSwitchTimeMode(unittest.TestCase):
+    def test_switch(self):
+        global ALL_TIME_MODES
+        global CURRENT_TIME_MODE
+        global MODE_INDEX
+        CURRENT_TIME_MODE = ALL_TIME_MODES[MODE_INDEX]
+        MODE_INDEX += 1
 
 class MorseTestCase(unittest.TestCase):
 
@@ -82,7 +101,7 @@ class MorseTestCase(unittest.TestCase):
 
     def setUp(self):
         
-        testlogger.info("Starting test " + self.id())
+        testlogger.info("Starting test " + self.id() + " in " + TimeStrategies.human_repr(CURRENT_TIME_MODE))
 
         self.logfile_name = self.__class__.__name__ + ".log"
         # Wait for a second
@@ -244,6 +263,9 @@ class MorseTestCase(unittest.TestCase):
             tmp.write(b"from morse.builder.blenderobjects import *\n")
             tmp.write(b"class MyEnv():\n")
             tmp.write(inspect.getsource(test_case.setUpEnv).encode())
+            tmp.write(b"        env.set_time_strategy(")
+            tmp.write(TimeStrategies.python_repr(CURRENT_TIME_MODE))
+            tmp.write(b")\n")
             tmp.write(b"MyEnv().setUpEnv()\n")
             tmp.flush()
             tmp_name = tmp.name
@@ -289,7 +311,7 @@ class MorseBuilderFailureTestCase(MorseTestCase):
     def _checkMorseException(self):
         return
 
-def main(*test_cases):
+def main(*test_cases, time_modes = [TimeStrategies.BestEffort, TimeStrategies.FixedSimulationStep]):
     import sys
     if sys.argv[0].endswith('blender'):
         # If we arrive here from within MORSE, we have probably run
@@ -302,8 +324,14 @@ def main(*test_cases):
     import unittest
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
+    global ALL_TIME_MODES
+    ALL_TIME_MODES = time_modes
+
+    tests = None
+    switch = loader.loadTestsFromTestCase(MorseSwitchTimeMode)
     for test_class in test_cases:
         tests = loader.loadTestsFromTestCase(test_class)
+    for time_mode in time_modes:
+        suite.addTests(switch)
         suite.addTests(tests)
     sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
-

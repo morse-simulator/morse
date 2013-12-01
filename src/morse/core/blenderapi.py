@@ -198,6 +198,12 @@ def materialdata(name):
     else:
         return None
 
+def game_settings():
+    if not fake:
+        return bpy.context.scene.game_settings
+    else:
+        return None
+
 
 def getalwayssensors(obj):
     if not fake:
@@ -251,3 +257,15 @@ def isfastmode():
             for space in area.spaces:
                 if space.type == 'VIEW_3D':
                     return space.viewport_shade == 'WIREFRAME'
+
+def gravity():
+    if not fake:
+        sce = scene()
+        # All supported version of blender do not support it, so well
+        # guess if we don't have the support
+        if hasattr(sce, 'gravity'):
+            return sce.gravity
+        else:
+            return [0.0, 0.0, -9.81]
+    else:
+        return None

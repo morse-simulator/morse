@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
-from morse.core import mathutils
+from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data
 
 """
@@ -69,10 +69,7 @@ class IMU(morse.core.sensor.Sensor):
         # previous angular velocity
         self.pav = mathutils.Vector((0.0, 0.0, 0.0))
 
-        # get gravity from scene?
-        #g = bpy.data.scenes[0].game_settings.physics_gravity
-        g = 9.81
-        self.gravity = mathutils.Vector((0.0, 0.0, g))
+        self.gravity = - blenderapi.gravity()
 
         # imu2body will transform a vector from imu frame to body frame
         self.imu2body = self.sensor_to_robot_position_3d()

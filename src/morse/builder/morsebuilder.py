@@ -196,15 +196,24 @@ class WheeledRobot(Robot):
             the parent robot """
         # Force Blender to update the transformation matrices of objects
         bpymorse.get_context_scene().update()
+
         wheels = [child for child in self._bpy_object.children if \
                   "wheel" in child.name.lower()]
-        # fix #421 - multi WheeledRobot - wheels must be ordered as:
-        # front-right, front-left, rear-right, rear-left
-        wnames = [w.name for w in wheels]
-        wnames.sort()
-        wnames.extend(['None'] * 4) # in case of < 4 wheels
+        wnames = ['None'] * 5
+        keys = ['WheelFLName', 'WheelFRName', 'WheelRLName',
+                'WheelRRName', 'CasterWheelName']
+        properties = bpymorse.get_properties(self._bpy_object)
+        for i in range(5):
+            key = keys[i]
+            expected_wheel = properties.get(key, None)
+            if expected_wheel:
+                for wheel in wheels:
+                    if wheel.name.startswith(expected_wheel):
+                        wnames[i] = wheel.name
+
         self.properties(WheelFLName = wnames[0], WheelFRName = wnames[1],
-                        WheelRLName = wnames[2], WheelRRName = wnames[3])
+                        WheelRLName = wnames[2], WheelRRName = wnames[3],
+                        CasterWheelName = wnames[4])
         for wheel in wheels:
             # Make a copy of the current transformation matrix
             transformation = wheel.matrix_world.copy()

@@ -14,7 +14,6 @@ except ImportError:
 
 import os
 import sys
-from time import sleep
 from pymorse import Morse
 
 

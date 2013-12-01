@@ -14,40 +14,22 @@ try:
 except ImportError:
     pass
 
-class HumanPoseTest(MorseTestCase):
+class HumanServiceTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
 
         human = Human()
+        human.add_service('socket')
 
         pose = Pose()
         human.append(pose)
         pose.add_stream('socket')
 
-        motion = Waypoint()
-        human.append(motion)
-        motion.add_stream('socket')
-        motion.add_service('socket')
-
         env = Environment('empty', fastmode = True)
-        env.add_service('socket')
 
-    def test_pose(self):
-        """ Tests we can load the human model, attach a pose sensor, and
-        get back the pose.
-        """
-        with Morse() as morse:
 
-            #Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.human.pose
-            morse.sleep(1)
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=0.1)
-
-    def _test_movement(self):
+    def test_movement(self):
         """ Tests the human can accept an actuator, and that it
         work as expected to move around the human.
 
@@ -55,24 +37,26 @@ class HumanPoseTest(MorseTestCase):
         """
         with Morse() as morse:
 
+            precision = 0.05
+
             #Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.human.pose
 
-            # waypoint controller socket
-            v_w_client = morse.human.motion
-
-            v_w_client.publish({'x' : 2.0, 'y': 3.0, 'z': 0.0,
-                                'tolerance' : 0.3,
-                                'speed' : 1.0})
-
-            morse.sleep(5)
             pose = pose_stream.get()
 
-            self.assertAlmostEqual(pose['x'], 2.0, delta=0.5)
-            self.assertAlmostEqual(pose['y'], 3.0, delta=0.5)
+            self.assertAlmostEquals(pose['x'], 0.0, delta=precision)
+            self.assertAlmostEquals(pose['y'], 0.0, delta=precision)
+
+            morse.human.move(1.0, 0.0)
+            morse.sleep(0.1)
+
+            pose = pose_stream.get()
+
+            self.assertAlmostEquals(pose['x'], 1.0, delta=precision)
+            self.assertAlmostEquals(pose['y'], 0.0, delta=precision)
 
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(HumanPoseTest)
+    main(HumanServiceTest)

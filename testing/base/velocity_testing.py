@@ -4,7 +4,6 @@ This script tests some of the base functionalities of MORSE.
 """
 
 import sys
-from time import sleep, time
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -80,36 +79,36 @@ class Velocity_Test(MorseTestCase):
             simu.deactivate('robot.teleport')
 
             # wait a few sec that physics stop its fun
-            sleep(0.5)
+            simu.sleep(0.5)
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
 
             send_speed(v_w, 1.0, 0.0)
-            sleep(0.5)
+            simu.sleep(0.5)
             self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 0.0, 0.0])
 
             send_speed(v_w, 0.0, 0.0)
-            sleep(0.5)
+            simu.sleep(0.5)
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
 
             send_speed(v_w, 0.0, math.pi / 4.0)
-            sleep(0.5)
+            simu.sleep(0.5)
             self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, math.pi / 4.0], [0.0, 0.0, 0.0])
 
             send_speed(v_w, 0.0, 0.0)
-            sleep(0.1)
+            simu.sleep(0.1)
 
             simu.deactivate('robot.motion')
             simu.activate('robot.teleport')
             simu.robot.teleport.publish({'x' : 1.0, 'y' : 0.0, 'z': 0.0,
                                          'yaw': math.pi/2, 'pitch': 0.0,
                                          'roll': 0.0})
-            sleep(0.1)
+            simu.sleep(0.1)
             simu.deactivate('robot.teleport')
             simu.activate('robot.motion')
-            sleep(0.1)
+            simu.sleep(0.1)
 
             send_speed(v_w, 1.0, 0.0)
-            sleep(0.5)
+            simu.sleep(0.5)
             self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
 
 

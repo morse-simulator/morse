@@ -2,7 +2,6 @@
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse, MorseServiceFailed
 

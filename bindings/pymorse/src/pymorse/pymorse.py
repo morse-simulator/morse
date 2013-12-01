@@ -591,7 +591,7 @@ class Morse(object):
         self.close()
 
     def reset(self):
-       return self.rpc("simulation", "reset")
+       return self.rpc("simulation", "reset_objects")
 
     def streams(self):
        return self.rpc("simulation", "list_streams")
@@ -604,6 +604,12 @@ class Morse(object):
 
     def deactivate(self, cmpnt):
         return self.rpc("simulation", "deactivate", cmpnt)
+
+    def sleep(self, time):
+        return self.rpc("time", "sleep", time)
+
+    def time(self):
+        return self.rpc("time", "now")
 
     #### with statement ####
     def __enter__(self):

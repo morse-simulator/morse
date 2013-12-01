@@ -14,7 +14,6 @@ except ImportError:
 
 import sys
 import math
-import time
 from pymorse import Morse
 
 def send_angles(s, yaw, pitch, roll):
@@ -68,7 +67,7 @@ class OrientationTest(MorseTestCase):
 
             # Position does not change, only yaw is modified
             send_angles(orientation_stream, math.pi/2, 0.0, 0.0)
-            time.sleep(0.1)
+            morse.sleep(0.1)
 
             
             pose = pose_stream.get()
@@ -85,7 +84,7 @@ class OrientationTest(MorseTestCase):
 
             # Complete orientation settings
             send_angles(orientation_stream, -math.pi/2, math.pi/8, 0.89)
-            time.sleep(0.1)
+            morse.sleep(0.1)
 
             pose = pose_stream.get()
             angles = gyro_stream.get()

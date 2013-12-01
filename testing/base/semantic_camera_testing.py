@@ -5,7 +5,6 @@ This script tests the SICK laser range sensor in MORSE.
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -16,10 +15,10 @@ try:
 except ImportError:
     pass
 
-def send_dest(s, x, y, yaw):
+def send_dest(s, morse, x, y, yaw):
     s.publish({'x' : x, 'y' : y, 'z' : 0, \
                        'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
-    sleep(0.5)
+    morse.sleep(0.5)
 
 class Semantic_Camera_Test(MorseTestCase):
     def setUpEnv(self):
@@ -52,7 +51,7 @@ class Semantic_Camera_Test(MorseTestCase):
             self.assertEqual(objects, [])
 
             # Change the orientation of the robot using the v_w socket
-            send_dest(teleport_client, 0.0, 0.0, 5.0/4.0 * math.pi)
+            send_dest(teleport_client, morse, 0.0, 0.0, 5.0/4.0 * math.pi)
 
             # Second test for the sensor, with objects in front
             o = semantic_stream.get()
@@ -62,7 +61,7 @@ class Semantic_Camera_Test(MorseTestCase):
             self.assertAlmostEqual(objects[0]['position'][0], -3.48, delta=0.1)
             self.assertAlmostEqual(objects[0]['position'][1], -3.0, delta=0.1)
 
-            send_dest(teleport_client, -5.0, 0.0, math.pi)
+            send_dest(teleport_client, morse, -5.0, 0.0, math.pi)
 
             o = semantic_stream.get()
             objects= o['visible_objects']

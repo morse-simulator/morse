@@ -5,7 +5,6 @@ This script tests the KUKA LWR arm, both the data and service api
 
 import sys
 import math
-import time
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse, MorseServiceFailed
 
@@ -46,7 +45,7 @@ class ArmatureTest(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def checkstate(self, simu, angles, precision = 0.025):
+    def checkstate(self, simu, angles, precision = 0.050):
 
         pose = simu.robot.arm.arm_pose.get()
         target = dict(zip(JOINTS, angles))
@@ -68,13 +67,13 @@ class ArmatureTest(MorseTestCase):
             self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
             simu.robot.motion.translate(1.0)
-            time.sleep(0.1)
+            simu.sleep(0.1)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 2.3, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.0, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
             simu.robot.arm.set_rotation("kuka_2", math.radians(-90)).result()
-            time.sleep(0.1)
+            simu.sleep(0.1)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 1.31, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.99, delta = 0.01)
             self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], math.radians(90), delta = 0.01)
@@ -90,11 +89,11 @@ class ArmatureTest(MorseTestCase):
 
         with Morse() as simu:
             simu.robot.arm.set_rotation("kuka_2", 1).result() # basic rotation
-            time.sleep(0.1)
+            simu.sleep(0.1)
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 1.0, delta = precision)
 
             simu.robot.arm.set_rotation("kuka_2", 4000).result() # rotation clamping
-            time.sleep(0.1)
+            simu.sleep(0.1)
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 2.09, delta = precision)
 
             res = simu.robot.arm.set_rotation('pipo',0) # inexistant joint
@@ -128,10 +127,10 @@ class ArmatureTest(MorseTestCase):
             simu.robot.arm.set_rotation("kuka_2", 0).result() # back to origin
             act = simu.robot.arm.rotate("kuka_2", 1, 0.5)
             self.assertFalse(act.done())
-            time.sleep(1)
+            simu.sleep(1)
             self.assertFalse(act.done())
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 0.5, delta = precision)
-            time.sleep(1.1)
+            simu.sleep(1.1)
             self.assertTrue(act.done())
 
     def test_trajectory(self):
@@ -159,18 +158,18 @@ class ArmatureTest(MorseTestCase):
             self.assertIn('positions', str(act.exception()))
 
             act = simu.robot.arm.trajectory(traj1)
-            time.sleep(1)
+            simu.sleep(1)
             self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
-            time.sleep(3)
-            self.checkstate(simu, [0.0, 1.57, 0, -1.57,0,1.57,0])
-            time.sleep(2)
+            simu.sleep(3)
+            self.checkstate(simu, [0.0, 1.57, 0, -1.57, 0, 1.57, 0])
+            simu.sleep(2)
             self.checkstate(simu, [0.0] * 7)
-            time.sleep(1)
+            simu.sleep(1)
             self.checkstate(simu, [0.0] * 7)
 
             # check 'starttime' parameter
             act = simu.robot.arm.set_rotations([0.0] * 7)
-            traj2 = {'starttime': time.time() + 1,
+            traj2 = {'starttime': simu.time() + 1,
                     'points': [
                         {'positions': [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         'time_from_start': 1.0}
@@ -178,22 +177,22 @@ class ArmatureTest(MorseTestCase):
                     }
 
             act = simu.robot.arm.trajectory(traj2)
-            time.sleep(0.5)
+            simu.sleep(0.5)
             self.checkstate(simu, [0.0] * 7)
-            time.sleep(0.5)
-            time.sleep(1)
+            simu.sleep(0.5)
+            simu.sleep(1)
             self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
-            time.sleep(1)
+            simu.sleep(1)
             self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
 
             # Check action cancellation
             act = simu.robot.arm.set_rotations([0.0] * 7)
 
-            traj2['starttime'] = time.time() + 1
+            traj2['starttime'] = simu.time() + 1
             act = simu.robot.arm.trajectory(traj2)
-            time.sleep(0.5)
+            simu.sleep(0.5)
             act.cancel()
-            time.sleep(1)
+            simu.sleep(1)
             self.checkstate(simu, [0.0] * 7)
 
 

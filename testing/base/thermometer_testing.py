@@ -9,12 +9,11 @@ except ImportError:
     pass
 
 import sys
-import time
 from pymorse import Morse
 
-def send_dest(s, x, y, yaw):
+def send_dest(s, morse, x, y, yaw):
     s.publish({'x' : x, 'y' : y, 'z' : 0, 'yaw' : yaw, 'pitch' : 0.0, 'roll' : 0.0})
-    time.sleep(0.1)
+    morse.sleep(0.1)
 
 class ThermometerTest(MorseTestCase):
 
@@ -43,7 +42,7 @@ class ThermometerTest(MorseTestCase):
             self.assertAlmostEqual(o['temperature'], 25.0, delta=0.01)
 
 
-            send_dest(teleport_client, 40.0, 0.0, 0.0)
+            send_dest(teleport_client, morse, 40.0, 0.0, 0.0)
 
             # We are nearer of the fire so the temperature is expected
             # to be hotter.
@@ -52,12 +51,12 @@ class ThermometerTest(MorseTestCase):
             self.assertGreater(temp, 28.0)
 
             # It must be hotter and hotter ... 
-            time.sleep(5.0)
+            morse.sleep(5.0)
             o = temp_stream.get()
             self.assertGreater(o['temperature'], temp)
             temp = o['temperature']
 
-            time.sleep(5.0)
+            morse.sleep(5.0)
             o = temp_stream.get()
             self.assertGreater(o['temperature'], temp)
             temp = o['temperature']

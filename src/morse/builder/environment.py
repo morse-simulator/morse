@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
 from morse.builder.morsebuilder import *
+from morse.core.morse_time import TimeStrategies
 
 class Environment(Component):
     """ Class to configure the general environment of the simulation
@@ -284,6 +285,10 @@ class Environment(Component):
         # Write the name of the 'environment file'
         self.properties(environment_file = str(self._environment_file))
 
+        # Default time management
+        if 'time_management' not in self._bpy_object.game.properties.keys():
+            self.properties(time_management = TimeStrategies.BestEffort)
+
         if self.fastmode:
             # SINGLETEXTURE support has been removed between 2.69 and
             # 2.70. Handle properly the case where it is not defined
@@ -393,6 +398,21 @@ class Environment(Component):
     def set_auto_start(self, auto_start=True):
         bpymorse.get_context_scene().render.engine = 'BLENDER_GAME'
         bpymorse.get_context_scene().game_settings.use_auto_start = auto_start
+
+    def set_time_strategy(self, strategy):
+        """ Choose the time strategy for the current simulation
+
+        :param strategy:  the strategy to choose. Must be one of value
+        of :py:class:`morse.builder.TimeStrategies`
+        """
+        if strategy == TimeStrategies.FixedSimulationStep:
+            bpymorse.get_context_scene().game_settings.use_frame_rate = 0
+        elif strategy == TimeStrategies.BestEffort:
+            bpymorse.get_context_scene().game_settings.use_frame_rate = 1
+        else:
+            raise ValueError(strategy)
+
+        self.properties(time_management = strategy)
 
     def fullscreen(self, fullscreen=True):
         """ Run the simulation fullscreen

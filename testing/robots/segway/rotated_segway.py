@@ -4,7 +4,6 @@ This script tests the Segway RMP400 robot with differential drive actuator
 """
 
 import sys
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 
@@ -15,34 +14,34 @@ try:
 except ImportError:
     pass
 
-def gradual_speed(s, v, w, t):
+def gradual_speed(s, morse, v, w, t):
     """ Start and finish applying only half of the desired speed """
     tic = t/20.0
     s.publish({'v' : v/4, 'w' : w/4})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : v/2, 'w' : w/2})
-    sleep(tic*1)
+    morse.sleep(tic*1)
     s.publish({'v' : v, 'w' : w})
-    sleep(tic*18)
+    morse.sleep(tic*18)
     s.publish({'v' : v/2, 'w' : w/2})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : v/4, 'w' : w/4})
-    sleep(tic*2)
+    morse.sleep(tic*2)
     s.publish({'v' : 0.0, 'w' : 0.0})
 
 
-def send_speed(s, v, w, t):
+def send_speed(s, morse, v, w, t):
     #s.publish({'v' : v, 'w' : w})
-    #sleep(t)
+    #morse.sleep(t)
     #s.publish({'v' : 0.0, 'w' : 0.0})
-    gradual_speed(s, v, w, t)
-    sleep(1)
+    gradual_speed(s, morse, v, w, t)
+    morse.sleep(1)
 
-def send_service_speed(s, v, w, t):
+def send_service_speed(s, morse, v, w, t):
     s.set_speed(v, w)
-    sleep(t)
+    morse.sleep(t)
     s.stop()
-    sleep(1)
+    morse.sleep(1)
 
 class Rotated_Segway_Test(MorseTestCase):
     def setUpEnv(self):
@@ -81,7 +80,7 @@ class Rotated_Segway_Test(MorseTestCase):
 
             v_w = morse.robot.motion
 
-            send_speed(v_w, 1.0, -math.pi/4.0, 2.0)
+            send_speed(v_w, morse, 1.0, -math.pi/4.0, 2.0)
 
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['x'], 0.75, delta=0.15)

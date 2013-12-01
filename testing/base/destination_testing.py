@@ -15,7 +15,6 @@ except ImportError:
 import os
 import sys
 import math
-import time
 from pymorse import Morse
 
 def send_goal(s, x, y, z):
@@ -56,7 +55,7 @@ class DestinationTest(MorseTestCase):
             dest_client = morse.robot.destination
             send_goal(dest_client, 10.0, 0.0, 20.0)
 
-            time.sleep(3.0)
+            morse.sleep(3.0)
             # Only x has changed. Check that speed is respected
 
             pose = pose_stream.get()
@@ -67,7 +66,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['z'], 20.0, delta=0.1)
 
-            time.sleep(2.0)
+            morse.sleep(2.0)
             # Only x has changed
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
@@ -79,7 +78,7 @@ class DestinationTest(MorseTestCase):
 
             x = pose['x']
             send_goal(dest_client, x, 10.0, 20.0)
-            time.sleep(5.0)
+            morse.sleep(5.0)
 
             # Only Y has changed
             pose = pose_stream.get()
@@ -96,7 +95,7 @@ class DestinationTest(MorseTestCase):
             z = pose['z']
 
             send_goal(dest_client, x, y, 30.0)
-            time.sleep(5.0)
+            morse.sleep(5.0)
 
             # Only Z has changed
             # XXX precision is not really good
@@ -109,7 +108,7 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['z'], 30.0, delta=0.3)
 
             send_goal(dest_client, 0, 0, 20)
-            time.sleep(10.0)
+            morse.sleep(10.0)
             pose = pose_stream.get()
             self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)

@@ -14,7 +14,6 @@ except ImportError:
 
 import sys
 import math
-import time
 from pymorse import Morse
 
 def send_angles(s, pan, tilt):
@@ -71,7 +70,7 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['pitch'], 0.0, delta=precision)
 
             send_angles(ptu_stream, 1.0, 0.0)
-            time.sleep(1.0)
+            morse.sleep(1.0)
 
             # here at speed of 0.5 rad / sec, we must be at the middle
             # of the trip, check it :)
@@ -82,7 +81,7 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['yaw'], 0.5, delta=moving_precision)
             self.assertAlmostEqual(angles['pitch'], 0.0, delta=moving_precision)
 
-            time.sleep(1.0)
+            morse.sleep(1.0)
             # now we must have achieve ptu rotation
             angles = gyro_stream.get()
             posture = posture_stream.get()
@@ -93,7 +92,7 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['pitch'], 0.0, delta=precision)
 
             send_angles(ptu_stream, 1.0, -1.0)
-            time.sleep(2.0)
+            morse.sleep(2.0)
             angles = gyro_stream.get()
             posture = posture_stream.get()
 
@@ -103,7 +102,7 @@ class PTUTest(MorseTestCase):
             self.assertAlmostEqual(angles['pitch'], -1.0, delta=precision)
 
             send_angles(ptu_stream, 0.0, 0.0)
-            time.sleep(2.0)
+            morse.sleep(2.0)
             angles = gyro_stream.get()
             posture = posture_stream.get()
 

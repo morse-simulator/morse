@@ -1,3 +1,29 @@
+MORSE 1.2
+=========
+
+General
+-------
+
+- Time management in Morse has been clarified (#388)
+
+Components
+----------
+
+Sensors
++++++++
+
+- Each sensor has now an additional field ``timestamp`` exporting when the
+  data has been computed, in simulated time.
+
+Middlewares
++++++++++++
+
+Pocolibs
+---------
+
+- ``pocolibs`` is now able to export velodyne sensor.
+
+
 MORSE 1.1
 =========
 

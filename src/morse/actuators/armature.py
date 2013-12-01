@@ -1,11 +1,11 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
-import time
 from collections import OrderedDict
 import morse.core.actuator
 from morse.core import status
 from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
+from morse.core.morse_time import time_isafter
 from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_property
 
@@ -426,7 +426,7 @@ class Armature(morse.core.actuator.Actuator):
         """
 
         #TODO: support velocities and accelerations via cubic/quintic spline interpolation
-        starttime = time.time() # by default, start now
+        starttime = self.robot_parent.gettime() / 1000.0
         if 'starttime' in trajectory:
             trajectory["starttime"] = max(starttime, trajectory["starttime"])
         else:
@@ -436,14 +436,14 @@ class Armature(morse.core.actuator.Actuator):
 
     def _exec_traj(self):
 
-        t = time.time()
+        t = self.robot_parent.gettime() / 1000.0
         trajectory = self._active_trajectory
 
         try:
-            if t < trajectory["starttime"]:
+            if time_isafter(trajectory["starttime"], t):
                 return
             
-            if trajectory["starttime"] + trajectory["points"][-1]["time_from_start"] < t:
+            if time_isafter(t, trajectory["starttime"] + trajectory["points"][-1]["time_from_start"]):
                 #trajectory execution is over!
                 self._active_trajectory = None
                 # TODO: check here the final pose match the last point pose
@@ -451,11 +451,11 @@ class Armature(morse.core.actuator.Actuator):
 
             for p in trajectory["points"]:
                 end = trajectory["starttime"] + p["time_from_start"]
-                if "started" in p and t < end:
+                if "started" in p and time_isafter(end, t):
                     # currently going to this waypoint: fine!
                     break
 
-                elif "started" not in p and t < end:
+                elif "started" not in p and time_isafter(end, t):
                     # start the new waypoint
                     allocated_time = end - t
                     assert(allocated_time > 0)
@@ -473,7 +473,7 @@ class Armature(morse.core.actuator.Actuator):
                     p["started"] = True
                     break
 
-                elif "started" not in p and t > end:
+                elif "started" not in p and time_isafter(t, end):
                     logger.warning("Skipped a waypoint on armature <%s>. Wrong 'time_from_start'?" % self.name())
 
                 # case: "started" and t > end: do nothing, go to next point

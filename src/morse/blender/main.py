@@ -2,7 +2,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.helpers.morse_logging import SECTION, ENDSECTION
 import sys
 import os
-import time
 import imp
 
 # Force the full import of blenderapi so python computes correctly all
@@ -20,6 +19,7 @@ from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.core.modifier import register_modifier
 from morse.helpers.loading import create_instance, create_instance_level
+from morse.core.morse_time import TimeStrategies
 
 # Constants for stream directions
 IN = 'IN'
@@ -556,8 +556,8 @@ def init(contr):
     logger.info ("PID: %d" % os.getpid())
 
     persistantstorage.morse_initialised = False
-    persistantstorage.base_clock = time.clock()
-    persistantstorage.current_time = 0.0
+    persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'])
+    persistantstorage.current_time = persistantstorage.time.time
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0
 
@@ -635,12 +635,15 @@ def init_supervision_services():
 
     from morse.services.supervision_services import Supervision
     from morse.services.communication_services import Communication
+    from morse.services.time_services import TimeServices
 
     simulation_service = Supervision()
     communication_service = Communication()
+    time_service= TimeServices()
 
     persistantstorage.serviceObjectDict[simulation_service.name()] = simulation_service
     persistantstorage.serviceObjectDict[communication_service.name()] = communication_service
+    persistantstorage.serviceObjectDict[time_service.name()] = time_service
 
     # For each entries of serviceObjects, register the service as
     # requested by configuration + socket middleware i/o.
@@ -681,8 +684,8 @@ def simulation_main(contr):
     """
     # Update the time variable
     try:
-        persistantstorage.current_time = time.clock() - \
-                                         persistantstorage.base_clock
+        persistantstorage.time.update()
+        persistantstorage.current_time = persistantstorage.time.time
     except AttributeError:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.

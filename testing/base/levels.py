@@ -5,7 +5,6 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
-from time import sleep
 from morse.testing.testing import MorseTestCase
 from pymorse import Morse
 

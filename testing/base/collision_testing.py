@@ -13,12 +13,11 @@ except ImportError:
     pass
 
 import sys
-import time
 from pymorse import Morse
 
-def send_speed(s, v=0, w=0, t=0):
+def send_speed(s, sim, v=0, w=0, t=0):
     s.publish({'v': v, 'w': w})
-    time.sleep(t)
+    sim.sleep(t)
     s.publish({'v': 0.0, 'w': 0.0})
 
 class FrictionTest(MorseTestCase):
@@ -49,7 +48,7 @@ class FrictionTest(MorseTestCase):
             collision = sim.robot.collision.get(timeout=0.1)
             self.assertEqual(collision, None)
 
-            send_speed(sim.robot.motion, 1.0, 0.0, 1.0)
+            send_speed(sim.robot.motion, sim, 1.0, 0.0, 1.0)
 
             collision = sim.robot.collision.get(timeout=0.1)
             self.assertNotEqual(collision, None)

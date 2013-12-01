@@ -14,7 +14,6 @@ except ImportError:
     pass
 
 import sys
-import time
 from pymorse import Morse
 
 class LightTest(MorseTestCase):
@@ -47,7 +46,7 @@ class LightTest(MorseTestCase):
 
             light_stream.publish({"emit": False})
 
-            time.sleep(1.0)
+            morse.sleep(1.0)
 
             # Light is shutdown. There is no light source on the scene,
             # so camera can't distinguish color
@@ -66,7 +65,7 @@ class LightTest(MorseTestCase):
             # Now, illuminate the scene
             light_stream.publish({"emit": True})
 
-            time.sleep(2.0)
+            morse.sleep(2.0)
             cam = cam_stream.get()
             # search the green block in the image
             for i in range(320*240):

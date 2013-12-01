@@ -1,3 +1,31 @@
+What's new in MORSE 1.2?
+========================
+
+General
+-------
+
+- Time management in Morse has been clarified (#388). See
+  :doc:`time management documentation <../dev/time_event>` for more details about it.
+
+Components
+----------
+
+Sensors
++++++++
+
+- Each sensor has now an additional field ``timestamp`` exporting when the
+  data has been computed, in simulated time.
+
+Middlewares
++++++++++++
+
+Pocolibs
+$$$$$$$$
+
+- ``pocolibs`` is now able to export :doc:`velodyne <user/sensors/depth_camera>`
+  sensor.
+
+
 What's new in MORSE 1.1?
 ========================
 
