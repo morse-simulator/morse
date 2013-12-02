@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Twist
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSSubscriber
 
-class TwistReader(ROSReader):
+class TwistReader(ROSSubscriber):
     """ Subscribe to a motion command and set ``x``, ``y`` and ``w`` local data. """
     ros_class = Twist
 

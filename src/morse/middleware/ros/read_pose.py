@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Pose
-from morse.middleware.ros import ROSReader, mathutils
+from morse.middleware.ros import ROSSubscriber, mathutils
 
-class PoseReader(ROSReader):
+class PoseReader(ROSSubscriber):
     """ Subscribe to a Pose topic and set ``x``, ``y``, ``z`` and ``roll``,
     ``pitch``, ``yaw`` local data.
     """

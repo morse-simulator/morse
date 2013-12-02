@@ -182,7 +182,7 @@ class ROSPublisherTF(ROSPublisher):
         self.publish_tf(tfm)
 
 
-class ROSReader(AbstractROS):
+class ROSSubscriber(AbstractROS):
     """ Base class for all ROS Subscribers """
 
     def initialize(self):
@@ -228,7 +228,7 @@ class StringPublisher(ROSPublisher):
         self.publish(repr(self.data))
 
 
-class StringReader(ROSReader):
+class StringReader(ROSSubscriber):
     """ Subscribe to a String topic and log its data decoded as UTF-8. """
     ros_class = String
 
