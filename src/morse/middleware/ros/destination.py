@@ -1,8 +1,8 @@
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Point
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSSubscriber
 
-class PointReader(ROSReader):
+class PointReader(ROSSubscriber):
     """ Subscribe to a Point topic and set x,y,z local data. """
     ros_class = Point
 

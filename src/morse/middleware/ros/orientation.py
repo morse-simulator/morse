@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('geometry_msgs')
 import math
 from geometry_msgs.msg import Quaternion
-from morse.middleware.ros import ROSReader, mathutils
+from morse.middleware.ros import ROSSubscriber, mathutils
 
-class QuaternionReader(ROSReader):
+class QuaternionReader(ROSSubscriber):
     """ Subscribe to a Quaternion topic and set roll,pitch,yaw local data. """
     ros_class = Quaternion
 

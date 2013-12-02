@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Wrench
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSSubscriber
 
-class WrenchReader(ROSReader):
+class WrenchReader(ROSSubscriber):
     """ Subscribe to a Wrench topic and set force and torque (x,y,z) local data. """
     ros_class = Wrench
 
