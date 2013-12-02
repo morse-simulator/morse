@@ -35,8 +35,9 @@ def register_datastream(classpath, component, args):
     return datastream
 
 
-class Datastream(object):
-    """ Basic Class for all middlewares
+class DatastreamManager(object):
+    """ Basic class for all middlewares that export a datastream interface (ie,
+    all of them)
 
     Provides common attributes. """
 

@@ -3,7 +3,7 @@ import socket
 import select
 import json
 import errno
-from morse.core.datastream import Datastream
+from morse.core.datastream import DatastreamManager
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
 from morse.core import services
@@ -154,7 +154,7 @@ class SocketReader(SocketServ):
         return json.loads(msg)
 
 
-class Socket(Datastream):
+class SocketDatastreamManager(DatastreamManager):
     """ External communication using sockets. """
 
     def __init__(self):
@@ -211,7 +211,7 @@ class Socket(Datastream):
         while not register_success:
             try:
                 # Create a socket server for this component
-                serv = Datastream.register_component(self, component_name,
+                serv = DatastreamManager.register_component(self, component_name,
                                                  component_instance, mw_data)
                 register_success = True
             except socket.error as error_info:
