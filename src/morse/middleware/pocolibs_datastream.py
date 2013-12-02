@@ -104,7 +104,7 @@ class PocolibsDataStreamInput(AbstractDatastream):
         if self.found:
             P.posterForget(self.poster_id)
 
-class Pocolibs(Datastream):
+class PocolibsDatastreamManager(DatastreamManager):
     """ Handle communication between Blender and Pocolibs."""
 
     def compute_date():

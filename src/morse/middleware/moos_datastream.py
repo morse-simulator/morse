@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-from morse.core.datastream import Datastream
+from morse.core.datastream import DatastreamManager
 
-class MOOS(Datastream):
+class MOOSDatastreamManager(DatastreamManager):
     """ Handle communication between Blender and MOOS."""
+

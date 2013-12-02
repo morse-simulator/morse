@@ -161,7 +161,7 @@ class YarpReader(YarpPort):
         else:
             return False
 
-class Yarp(Datastream):
+class YarpDatastreamManager(DatastreamManager):
     """ Handle communication between Blender and YARP."""
 
     def __init__(self):

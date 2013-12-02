@@ -33,12 +33,12 @@ MORSE_RESOURCE_PATH = ':'.join([MORSE_COMPONENTS,
                                 os.getenv('MORSE_RESOURCE_PATH', '')])
 
 MORSE_DATASTREAM_MODULE = {
-    'ros': 'morse.middleware.ros_datastream.ROS',
-    'socket': 'morse.middleware.socket_datastream.Socket',
-    'yarp': 'morse.middleware.yarp_datastream.Yarp',
-    'pocolibs': 'morse.middleware.pocolibs_datastream.Pocolibs',
-    'text': 'morse.middleware.text_datastream.Text',
-    'moos': 'morse.middleware.moos_datastream.MOOS'
+    'ros': 'morse.middleware.ros_datastream.ROSDatastreamManager',
+    'socket': 'morse.middleware.socket_datastream.SocketDatastreamManager',
+    'yarp': 'morse.middleware.yarp_datastream.YarpDatastreamManager',
+    'pocolibs': 'morse.middleware.pocolibs_datastream.PocolibsDatastreamManager',
+    'text': 'morse.middleware.text_datastream.TextDatastreamManager',
+    'moos': 'morse.middleware.moos_datastream.MOOSDatastreamManager'
 }
 
 MORSE_MODIFIER_DICT = {

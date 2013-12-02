@@ -78,6 +78,6 @@ class CSVPublisher(BasePublisher):
                 lines.append("%s;" % repr(data))
         return ''.join(lines) + '\n'
 
-class Text(Datastream):
+class TextDatastreamManager(DatastreamManager):
     """ Produce text files as output for the components """
 
