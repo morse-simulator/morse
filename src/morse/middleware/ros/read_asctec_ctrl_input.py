@@ -2,9 +2,9 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import roslib; roslib.load_manifest('asctec_msgs')
 import math
 from asctec_msgs.msg import CtrlInput
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSSubscriber
 
-class CtrlInputReader(ROSReader):
+class CtrlInputReader(ROSSubscriber):
     """ Subscribe to a CtrlInput topic and set pitch,roll,yaw,thrust local data. """
     ros_class = CtrlInput
 

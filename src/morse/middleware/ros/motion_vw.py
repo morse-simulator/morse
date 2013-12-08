@@ -1,8 +1,8 @@
 import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Twist
-from morse.middleware.ros import ROSReader
+from morse.middleware.ros import ROSSubscriber
 
-class TwistReader(ROSReader):
+class TwistReader(ROSSubscriber):
     """ Subscribe to a motion command and set ``v`` and ``w`` local data. """
     ros_class = Twist
 

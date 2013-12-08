@@ -245,16 +245,15 @@ class RosRequestManager(RequestManager):
 
 
     def register_ros_service(self, method, component_name, service_name):
-        
-        # Default service type
-        rostype = MorseAnyService
-        
+
+        rostype = None
         try:
             rostype = method._ros_service_type # Is it a ROS service?
-            logger.debug(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
+            logger.info(component_name + "." + service_name + " is a ROS service of type " + str(rostype))
         except AttributeError:
-            logger.debug(component_name + "." + service_name + " has no ROS-specific service type. Using default one.")
-        
+            logger.info(component_name + "." + service_name + " has no ROS-specific service type. Skipping it.")
+            return False
+
         cb = self.add_ros_handler(component_name, service_name)
 
         # robot.001.sensor.001 = robot001.sensor001
@@ -263,7 +262,7 @@ class RosRequestManager(RequestManager):
 
         try:
             s = rospy.Service(_service_name, rostype, cb)
-            logger.debug("Created new ROS service for %s.%s" % \
+            logger.info("Created new ROS service for %s.%s" % \
                          (component_name, service_name))
         except Exception as e:
             logger.warning("Could not initiate rospy.Service\n" + str(e))
@@ -280,7 +279,7 @@ class RosRequestManager(RequestManager):
         
         ROS requires type for the services/actions. Those can be set with the
         :py:meth:`ros_action` and :py:meth:`ros_service` decorators.
-        If none is set, a default type is used (:py:class:`MorseAnyService`).
+        If none is set, the action/service is discarded.
         """
         
         rostype = None
@@ -366,13 +365,6 @@ class RosRequestManager(RequestManager):
 
     def main(self):
         pass
-
-class MorseAnyService(object):
-    _type = 'morse/AnonymousService'
-    _md5sum = ''
-    _request_class = rospy.msg.AnyMsg
-    _response_class = rospy.msg.AnyMsg
-
 
 def ros_action(fn = None, type = None, name = None):
     """ The @ros_action decorator.

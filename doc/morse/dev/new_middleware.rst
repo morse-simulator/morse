@@ -5,15 +5,15 @@ Adding a datastream manager
 ---------------------------
 
 When you want to add a new middleware to MORSE, you need first to create a
-'datastream' manager. Basically, its role is to make the link between
-components and datastream handler. From an implementation point of view, it
-must be a subclass or :py:class:`morse.core.datastream.Datastream`. In addition
-to classic method ``__init__`` and ``__del__``, you may want to override the
-method :py:meth:`morse.core.datastream.Datastream.register_component` which
+'datastream' manager. Basically, its role is to make the link between components
+and datastream handler. From an implementation point of view, it must be a
+subclass or :py:class:`morse.core.datastream.DatastreamManager`. In addition to
+classic method ``__init__`` and ``__del__``, you may want to override the method
+:py:meth:`morse.core.datastream.DatastreamManager.register_component` which
 really includes the logic of registration. However, in general, the default
 implementation is enough. You can find some example of overloading in
-:py:meth:`morse.middleware.socket_datastream.Socket.register_component`
-where we store additional informations for the sake of different services.
+:py:meth:`morse.middleware.socket_datastream.Socket.register_component` where we
+store additional informations for the sake of different services.
 
 Module Organisation
 -------------------
