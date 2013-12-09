@@ -63,9 +63,14 @@ class Destination(morse.core.actuator.Actuator):
     
             # Scale the speeds to the time used by Blender
             try:
-                vx = global_vector[0] * self._speed / self.frequency
-                vy = global_vector[1] * self._speed / self.frequency
-                vz = global_vector[2] * self._speed / self.frequency
+                if self._type == 'Position':
+                    vx = global_vector[0] * self._speed / self.frequency
+                    vy = global_vector[1] * self._speed / self.frequency
+                    vz = global_vector[2] * self._speed / self.frequency
+                else:
+                    vx = global_vector[0] * self._speed
+                    vy = global_vector[1] * self._speed
+                    vz = global_vector[2] * self._speed
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
