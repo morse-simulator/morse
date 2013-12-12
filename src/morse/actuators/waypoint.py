@@ -369,13 +369,21 @@ class Waypoint(morse.core.actuator.Actuator):
                     (robot_angle, target_angle, angle_diff, rotation_direction))
 
             try:
+                dt = 1 / self.frequency
+                if projection_distance < speed * dt:
+                    v = projection_distance  / dt
+                else:
+                    v = speed
+
+                if abs(angle_diff) < speed * dt:
+                    rotation_speed = angle_diff / dt / 2.0
+                else:
+                    rotation_speed = speed / 2.0
+
                 # Compute the speeds
                 if self._type == 'Position':
-                    v = speed / self.frequency
-                    rotation_speed = (speed / self.frequency) / 2.0
-                elif self._type == 'Velocity':
-                    v = speed
-                    rotation_speed = 1.0 #speed / 2.0
+                    v /= self.frequency
+                    rotation_speed /= self.frequency
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
