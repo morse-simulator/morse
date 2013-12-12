@@ -259,6 +259,7 @@ class Environment(Component):
         # Create a new scene for the MORSE_LOGIC (Scene_Script_Holder, CameraFP)
         scene = bpymorse.set_active_scene('S.MORSE_LOGIC')
         scene.game_settings.physics_engine = 'BULLET'
+        scene.game_settings.physics_step_sub = 2
         # set simulation view resolution (4:3)
         scene.render.resolution_x = 800
         scene.render.resolution_y = 600
