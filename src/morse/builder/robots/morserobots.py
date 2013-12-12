@@ -111,10 +111,9 @@ class SegwayRMP400(WheeledRobot):
         WheeledRobot.__init__(self, "segwayrmp400", name)
         self.properties(classpath = "morse.robots.segwayrmp400.SegwayRMP400",
                         HasSuspension = False, HasSteering = False,
-                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 1.20,
+                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 1.16,
                         WheelFLName = "wheel1", WheelFRName = "wheel2",
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
-
 
 class Submarine(Robot):
     def __init__(self, name=None):
