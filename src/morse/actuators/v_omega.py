@@ -16,7 +16,7 @@ class MotionVW(morse.core.actuator.Actuator):
              'linear velocity in x direction (forward movement) (m/s)')
     add_data('w', 0.0, 'float', 'angular velocity (rad/s)')
 
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
 
     def __init__(self, obj, parent=None):

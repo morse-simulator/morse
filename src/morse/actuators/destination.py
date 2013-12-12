@@ -20,7 +20,7 @@ class Destination(morse.core.actuator.Actuator):
 
     add_property('_tolerance', 0.5, 'Tolerance')
     add_property('_speed', 5.0, 'Speed')
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
 
 

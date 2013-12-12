@@ -80,7 +80,7 @@ class Waypoint(morse.core.actuator.Actuator):
             ignored by the obstacle avoidance, and will not make the \
             robot change its trajectory. Useful when trying to move \
             close to an object of a certain kind")
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
 
     add_data('x', 0.0, "float",
