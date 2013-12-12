@@ -76,7 +76,7 @@ class FrictionTest(MorseTestCase):
             self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
 
             pose = simu.robot2.pose.get() # friction = 5 / 100
-            self.assertAlmostEqual(pose['x'], 1.1, delta=precision)
+            self.assertAlmostEqual(pose['x'], 1.4, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
