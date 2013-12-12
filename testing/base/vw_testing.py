@@ -48,7 +48,7 @@ class VW_Test(MorseTestCase):
     def test_vw_controller(self):
         with Morse() as simu:
 
-            precision=0.05
+            precision=0.07
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = simu.robot.pose
@@ -92,16 +92,16 @@ class VW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+                    self.assertAlmostEqual(coord, 0.0, delta=2*precision)
 
             send_speed(v_w, simu, -2.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.1)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.1)
+            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=2*precision)
+            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=2*precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=2*precision)
+            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=2*precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=2*precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=2*precision)
 
     def test_vw_service_controller(self):
         with Morse() as simu:

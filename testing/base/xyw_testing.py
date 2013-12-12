@@ -43,7 +43,7 @@ class XYW_Test(MorseTestCase):
     def test_xyw_controller(self):
         with Morse() as morse:
 
-            precision=0.08
+            precision=0.11
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.robot.pose
@@ -52,7 +52,7 @@ class XYW_Test(MorseTestCase):
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=precision)
 
-            # v_w socket
+            # xyw socket
             xyw = morse.robot.motion
 
             send_speed(xyw, morse, 1.0, 0.0, 0.0, 2.0)
@@ -97,16 +97,21 @@ class XYW_Test(MorseTestCase):
             pose = pose_stream.get()
             for key, coord in pose.items():
                 if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+                    self.assertAlmostEqual(coord, 0.0, delta=2*precision)
+
+            pose = pose_stream.get()
+            for key, coord in pose.items():
+                if key != 'timestamp':
+                    self.assertAlmostEqual(coord, 0.0, delta=2*precision)
 
             send_speed(xyw, morse, -2.0, 0.0, math.pi/2.0, 3.0)
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.1)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.1)
+            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=2*precision)
+            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=2*precision)
+            self.assertAlmostEqual(pose['z'], 0.0, delta=2*precision)
+            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=2*precision)
+            self.assertAlmostEqual(pose['pitch'], 0.0, delta=2*precision)
+            self.assertAlmostEqual(pose['roll'], 0.0, delta=2*precision)
 
 
 ########################## Run these tests ##########################
