@@ -43,6 +43,7 @@ class Environment(Component):
         self._display_camera = None
         self.is_material_mode_custom = False
         self._node_name = None
+        self._physics_step_sub = 2
         # Add empty object holdings MORSE Environment's properties
         # for UTM modifier configutation ( uses env.properties(...) )
         bpymorse.deselect_all()
@@ -259,7 +260,7 @@ class Environment(Component):
         # Create a new scene for the MORSE_LOGIC (Scene_Script_Holder, CameraFP)
         scene = bpymorse.set_active_scene('S.MORSE_LOGIC')
         scene.game_settings.physics_engine = 'BULLET'
-        scene.game_settings.physics_step_sub = 2
+        scene.game_settings.physics_step_sub = self._physics_step_sub
         # set simulation view resolution (4:3)
         scene.render.resolution_x = 800
         scene.render.resolution_y = 600
@@ -456,6 +457,18 @@ class Environment(Component):
         :param record: boolean, default True
         """
         bpymorse.get_context_scene().game_settings.use_animation_record = record
+
+    def set_physics_step_sub(self, step_sub):
+        """ Configure the number of physics sub step per physics step.
+
+        Basically, if you increase the step_sub value, your simulation
+        will spent more time in computing physics, but it will be more
+        precise. The default value is 2.
+
+        See also
+        http://www.blender.org/documentation/blender_python_api_2_63_0/bpy.types.SceneGameData.html#bpy.types.SceneGameData.physics_step_sub
+        """
+        self._physics_step_sub = step_sub
 
     def configure_multinode(self, protocol='socket',
             server_address='localhost', server_port='65000', distribution=None):
