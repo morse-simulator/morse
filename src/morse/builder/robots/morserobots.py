@@ -100,7 +100,7 @@ class RMax(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "rmax", name)
         self.properties(classpath = "morse.robots.rmax.RMax",
-                        FreeZ = True)
+                        NoGravity = True)
 
         self.set_rigid_body()
         rotor = self.get_child('Rotor')
@@ -119,7 +119,7 @@ class Submarine(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "submarine", name)
         self.properties(classpath = "morse.robots.submarine.Submarine",
-                        FreeZ = True)
+                        NoGravity = True)
         self.set_rigid_body()
         self.set_collision_bounds()
 

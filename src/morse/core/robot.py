@@ -9,10 +9,12 @@ class Robot(morse.core.object.Object):
 
     Inherits from the base object class.
     """
-
-    add_property('_free_z', False, 'FreeZ', 'bool',
-                'Indicate if Z is really a freedom degree of the robot, \
-                i.e. basically if it is a flying or submarine robot')
+    add_property('_no_gravity', False, 'NoGravity', 'bool',
+                'Indicate if we want to consider the gravity for this \
+                robot If true, the behaviour is less realistic as the \
+                simulator will automatically compensate it. This setting \
+                is useful for non-realistic model flying or submarine \
+                robot ')
 
     # Make this an abstract class
     __metaclass__ = ABCMeta
@@ -55,7 +57,7 @@ class Robot(morse.core.object.Object):
         """
 
         parent = self.bge_object
-        must_fight_against_gravity = self.is_dynamic and self._free_z
+        must_fight_against_gravity = self.is_dynamic and self._no_gravity
 
         if must_fight_against_gravity:
             parent.applyForce(-blenderapi.gravity())
