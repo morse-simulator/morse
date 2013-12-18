@@ -493,6 +493,11 @@ class Morse(object):
 
         name = fqn.split('.')[1:] # the first token is always the robot name. Remove it
 
+        if not name:
+            logger.error("Component <%s> of robot <%s> has an invalid name! " \
+                         "Please report this bug on morse-users@laas.fr" % (fqn, robot.name))
+            return
+
         logger.debug("Component %s" % str((name[-1], fqn, stream, port, services)) )
         cmpt = Component(self, name[-1], fqn, stream, port, services)
 
