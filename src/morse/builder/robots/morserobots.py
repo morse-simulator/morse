@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 
-from morse.builder.creator import RobotCreator
 from morse.builder import Robot, WheeledRobot
 
 class Morsy(Robot):
@@ -26,11 +25,11 @@ class B21(Robot):
         Robot.__init__(self, "b21", name)
         self.properties(classpath = "morse.robots.b21.B21")
 
-# see data/robots/environment.blend and src/morse/robots/environment.py
-class FakeRobot(RobotCreator):
+# see src/morse/robots/environment.py
+class FakeRobot(Robot):
     def __init__(self, name=None):
-        RobotCreator.__init__(self, name,
-            "morse.robots.environment.Environment", "environment")
+        Robot.__init__(self, name = name) # no Blender model -> a simple Empty will be created
+        self.properties(classpath = "morse.robots.environment.Environment")
 
 class Hummer(Robot):
     def __init__(self, name=None):

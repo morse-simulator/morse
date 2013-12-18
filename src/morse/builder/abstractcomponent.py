@@ -564,13 +564,24 @@ class AbstractComponent(object):
         MORSE_COMPONENTS/``self._category``/``component``.blend/Object/
         or in: MORSE_RESOURCE_PATH/``component``/Object/
 
+        If `component` is not set (neither as argument of `append_meshes` nor
+        through the :py:class:`AbstractComponent` constructor), a Blender
+        `Empty` is created instead.
+
         :param objects: list of the objects names to append
         :param component: component in which the objects are located
         :param prefix: filter the objects names to append (used by PassiveObject)
         :return: list of the imported (selected) Blender objects
         """
-        if not component:
-            component = self._blender_filename
+
+
+        component = component or self._blender_filename
+
+        if not component: # no Blender resource: simply create an empty
+            bpymorse.deselect_all()
+            bpymorse.add_morse_empty()
+            return [bpymorse.get_first_selected_object(),]
+
 
         if component.endswith('.blend'):
             filepath = os.path.abspath(component) # external blend file

@@ -133,7 +133,7 @@ class Armature(AbstractComponent):
 
 
 class Robot(Component):
-    def __init__(self, filename, name):
+    def __init__(self, filename = '', name = None):
         Component.__init__(self, 'robots', filename)
         self.properties(Robot_Tag = True)
         self.default_interface = None
