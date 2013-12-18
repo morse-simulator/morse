@@ -1,5 +1,5 @@
 import os
-from morse.builder import AbstractComponent, MORSE_COMPONENTS, bpymorse
+from morse.builder import Robot, AbstractComponent, MORSE_COMPONENTS, bpymorse
 
 class ComponentCreator(AbstractComponent):
     def __init__(self, cname, category, filename=''):
@@ -76,13 +76,6 @@ class ActuatorCreator(ComponentCreator):
                  blendname=None):
         ComponentCreator.__init__(self, name, 'actuators', blendname)
         self.properties(Component_Tag = True, classpath = classpath)
-
-class RobotCreator(ComponentCreator):
-    def __init__(self, name="RobotCreator", classpath="morse.core.robot.Robot",
-                 blendname=None):
-        ComponentCreator.__init__(self, name, 'robots', blendname)
-        self.properties(Robot_Tag = True, classpath = classpath)
-
 
 # helpers
 
