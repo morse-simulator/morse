@@ -78,8 +78,8 @@ class OdometryTest(MorseTestCase):
     
     def verify(self, expected_x, expected_y, expected_yaw):
         # Numerical integration is maybe not really good, so test with a
-        # precision of 0.07
-        precision = 0.07
+        # precision of 0.16
+        precision = 0.16
 
         pose = self.pose_stream.get()
         integ_odo = self.integ_odo_stream.get()

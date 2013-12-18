@@ -187,6 +187,26 @@ class Robot(Component):
         """
         self._make_transparent(self._bpy_object, alpha)
 
+    def set_rigid_body(self):
+        """ Configure this robot to use rigid_body physics """
+        self._bpy_object.game.use_actor = True
+        self._bpy_object.game.physics_type = 'RIGID_BODY'
+        self._bpy_object.game.use_sleep = True
+
+    def set_no_collision(self):
+        """ Configure this robot to not use physics at all """
+        self._bpy_object.game.physics_type = 'NO_COLLISION'
+
+    def set_dynamic(self):
+        self._bpy_object.game.physics_type = 'DYNAMIC'
+        self._bpy_object.game.use_actor = True
+        self._bpy_object.game.use_sleep = True
+
+    def set_collision_bounds(self):
+        self._bpy_object.game.use_collision_bounds = True
+        self._bpy_object.game.collision_bounds_type = 'CONVEX_HULL'
+        self._bpy_object.game.use_collision_compound = True
+
 class WheeledRobot(Robot):
     def __init__(self, filename, name):
         Robot.__init__(self, filename, name)

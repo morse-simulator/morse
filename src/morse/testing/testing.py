@@ -275,6 +275,57 @@ class MorseTestCase(unittest.TestCase):
         return tmp_name
 
 
+class MorseMoveTestCase(MorseTestCase):
+    """ This subclass of MorseTestCase can be used to check for moving
+    actuator, basically by testing a complete pose
+
+    This class assumes lot of stuff to work properly:
+        - the tested robot is called 'robot'
+        - the pose sensor is called 'robot.pose'
+        - if assertAlmostEqualPositionThenFix,  it assumes there is a
+            - a 'robot.motion' actuator (basically what we test)
+            - a 'robot.teleport' actuator (to move to a specific
+              situation)
+    """
+
+    def assertAlmostEqualPosition(self, morse, tested_pos, precision):
+        """ 
+        Test against a position, presented as an array of 6 double (x,
+        y, z, yaw, pitch, roll)
+        """
+        pose = morse.robot.pose.get()
+        self.assertAlmostEqual(pose['x'], tested_pos[0], delta=precision)
+        self.assertAlmostEqual(pose['y'], tested_pos[1], delta=precision)
+        self.assertAlmostEqual(pose['z'], tested_pos[2], delta=precision)
+        self.assertAlmostEqual(pose['yaw'], tested_pos[3], delta=precision)
+        self.assertAlmostEqual(pose['pitch'], tested_pos[4], delta=precision)
+        self.assertAlmostEqual(pose['roll'], tested_pos[5], delta=precision)
+
+    def assertAlmostEqualPositionThenFix(self, morse, tested_pos, precision):
+        """
+        Test against a position, presented as an array of 6 double (x,
+        y, z, yaw, pitch, roll). When done, move the robot to this
+        specific position. It allows to reduce the cumulated error
+        between the different part of the test
+        """
+        self.assertAlmostEqualPosition(morse, tested_pos, precision)
+
+        morse.deactivate('robot.motion')
+        morse.activate('robot.teleport')
+        # +0.01  on z to be a bit higher than the ground
+        morse.robot.teleport.publish(
+                {'x': tested_pos[0],
+                 'y': tested_pos[1],
+                 'z': tested_pos[2] + 0.01, 
+                 'yaw': tested_pos[3],
+                 'pitch': tested_pos[4],
+                 'roll': tested_pos[5]})
+        morse.sleep(0.1)
+        morse.deactivate('robot.teleport')
+        morse.activate('robot.motion')
+        morse.sleep(0.1)
+
+
 class MorseBuilderFailureTestCase(MorseTestCase):
     """ This subclass of MorseTestCase can be used to test MORSE handles
     properly ill-constructed Builder scripts.
