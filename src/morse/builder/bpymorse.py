@@ -40,6 +40,7 @@ new_object = empty_method
 apply_transform = empty_method
 open_sound = empty_method
 new_scene = empty_method
+armatures = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -69,6 +70,14 @@ if bpy:
     apply_transform = bpy.ops.object.transform_apply
     open_sound = bpy.ops.sound.open
     new_scene = bpy.ops.scene.new
+    armatures = bpy.data.armatures
+
+def version():
+    if bpy:
+        return bpy.app.version
+    else:
+        return 0,0,0
+
 
 def create_new_material():
     all_materials = get_materials().keys()
@@ -77,10 +86,10 @@ def create_new_material():
                      if name not in all_materials].pop()
     return get_material(material_name)
 
-def add_morse_empty():
+def add_morse_empty(shape = 'ARROWS'):
     """Add MORSE Component Empty object which hlods MORSE logic"""
     if bpy.app.version >= (2, 65, 0):
-        add_empty(type='ARROWS')
+        add_empty(type = shape)
     else:
         add_object(type='EMPTY')
 
