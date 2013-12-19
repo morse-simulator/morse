@@ -5,7 +5,7 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
-from morse.testing.testing import MorseTestCase
+from morse.testing.testing import MorseMoveTestCase
 from pymorse import Morse
 
 # Include this import to be able to use your test file as a regular 
@@ -19,16 +19,14 @@ def send_speed(s, morse, x, y, w, t):
     s.publish({'x' : x, 'y' : y, 'w' : w})
     morse.sleep(t)
     s.publish({'x' : 0.0, 'y' : 0.0, 'w' : 0.0})
-    morse.sleep(0.1)
 
-class XYW_Test(MorseTestCase):
+class XYW_Test(MorseMoveTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
 
         pose = Pose()
-        pose.translate(z=-0.10) # atrv base is 10cm over ground
         robot.append(pose)
         pose.add_stream('socket')
 
@@ -36,6 +34,10 @@ class XYW_Test(MorseTestCase):
         robot.append(motion)
         motion.add_stream('socket')
         motion.add_service('socket')
+
+        teleport = Teleport()
+        robot.append(teleport)
+        teleport.add_stream('socket')
         
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
@@ -43,75 +45,34 @@ class XYW_Test(MorseTestCase):
     def test_xyw_controller(self):
         with Morse() as morse:
 
-            precision=0.11
-        
-            # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = morse.robot.pose
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
-
-            # xyw socket
+            morse.deactivate('robot.teleport')
             xyw = morse.robot.motion
 
-            send_speed(xyw, morse, 1.0, 0.0, 0.0, 2.0)
+            precision = 0.10
 
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
-            self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            self.assertAlmostEqualPositionThenFix(morse, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
+
+            send_speed(xyw, morse, 1.0, 0.0, 0.0, 2.0)
+            self.assertAlmostEqualPositionThenFix(morse, [2.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(xyw, morse, 0.0, -1.0, 0.0, 2.0)
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
-            self.assertAlmostEqual(pose['y'], -2.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(morse, [2.0, -2.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(xyw, morse, -1.0, 1.0, 0.0, 2.0)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(morse, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(xyw, morse, 1.0, 0.0, -math.pi/4.0, 2.0)
-            pose = pose_stream.get()
+            self.assertAlmostEqualPositionThenFix(morse, [4.0 / math.pi, -4.0 / math.pi, 0.10,
+                                 -math.pi / 2.0, 0.0, 0.0], precision)
 
-            # for non-null w, we have r = v /  w
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
 
             send_speed(xyw, morse, 0.5, 0.0, -math.pi/8.0, 12.0)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=2*precision)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=2*precision)
+            self.assertAlmostEqualPositionThenFix(morse, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(xyw, morse, -2.0, 0.0, math.pi/2.0, 3.0)
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=2*precision)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=2*precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=2*precision)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=2*precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=2*precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=2*precision)
+            self.assertAlmostEqualPositionThenFix(morse, [4.0 / math.pi, -4.0 / math.pi, 0.10,
+                                 -math.pi / 2.0, 0.0, 0.0], precision*2)
 
 
 ########################## Run these tests ##########################
