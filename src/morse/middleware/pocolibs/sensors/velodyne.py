@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 from math import pi
 from morse.middleware import AbstractDatastream
-from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
+from morse.middleware.pocolibs_datastream import poster_name, PocolibsDatastreamManager
 
 try:
     from morse.middleware.pocolibs.velodyne import *
@@ -27,7 +27,7 @@ class Velodyne3DImage(AbstractDatastream):
             return
 
         main_to_origin = self.component_instance.robot_parent.position_3d
-        pom_date, t = Pocolibs.compute_date()
+        pom_date, t = PocolibsDatastreamManager.compute_date()
         main_to_sensor = main_to_origin.transformation3d_with(
                     self.component_instance.position_3d)
 
