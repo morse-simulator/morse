@@ -9,6 +9,21 @@ General
 Components
 ----------
 
+Robots
+++++++
+
+- Most robots are now using more realistic physical behaviour.
+
+Actuators
++++++++++
+
+- The default ``ControlType`` of several actuators (v_omega, waypoint,
+  xy_omage, keyboard, joystick) has been switched from "Position" to
+  "Velocity". It basically means it relies more on the underlaying physic
+  engine, providing a more realistic behaviour, but it may be less repeatable.
+  Th previous behaviour can be restored by setting explicitly the
+  ``ControlType`` parameter of the actuator (#117).
+
 Sensors
 +++++++
 

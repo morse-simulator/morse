@@ -10,11 +10,30 @@ General
 Components
 ----------
 
+Robots
+++++++
+
+- Most robots are now using more realistic physical behaviour.
+
+Actuators
++++++++++
+
+- The default ``ControlType`` of several actuators
+  (:doc:`user/actuators/v_omega`, :doc:`user/actuators/waypoint`,
+  :doc:`user/actuators/xy_omega`, :doc:`user/actuators/keyboard`,
+  :doc:`user/actuators/joystick`) has been switched from "Position" to
+  "Velocity". It basically means it relies more on the underlaying physic
+  engine, providing a more realistic behaviour, but it may be less repeatable.
+  The previous behaviour can be restored by setting explicitly the
+  ``ControlType`` parameter of the actuator (`#117
+  <https://github.com/morse-simulator/morse/issues/117>`_).
+
 Sensors
 +++++++
 
 - Each sensor has now an additional field ``timestamp`` exporting when the
   data has been computed, in simulated time.
+
 
 Middlewares
 +++++++++++
