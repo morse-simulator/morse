@@ -38,7 +38,7 @@ class Waypoints_Test(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def _test_waypoint_datastream(self):
+    def test_waypoint_datastream(self):
         """ This test is guaranteed to be started only when the simulator
         is ready.
         """
@@ -146,12 +146,15 @@ class Waypoints_Test(MorseTestCase):
             status = simu.robot.motion.get_status().result()
             self.assertEqual(status, "Stop")
 
-            pose = pose_stream.get() #should have done 1m
-            self.assertAlmostEqual(pose['x'], 5.2, delta=0.15)
+            simu.sleep(0.2)
+
+            pose = pose_stream.get() 
+            _x = pose['x']
+            self.assertAlmostEqual(pose['x'], 5.2, delta=0.20)
 
             simu.sleep(0.5)
             pose = pose_stream.get() #should not have moved
-            self.assertAlmostEqual(pose['x'], 5.2, delta=0.15)
+            self.assertAlmostEqual(pose['x'], _x, delta=0.03)
             logger.info("Ok, did not move")
 
             # now resume the move
@@ -162,12 +165,12 @@ class Waypoints_Test(MorseTestCase):
 
             # must move now
             pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 5.7, delta=0.15)
+            self.assertAlmostEqual(pose['x'], 5.7, delta=0.20)
             status = simu.robot.motion.get_status().result()
             self.assertEqual(status, "Transit")
 
             # wait for the end of the move
-            simu.sleep(1.0)
+            simu.sleep(1.5)
             self.assertTrue(action.done())
             self.assertFalse(action.running())
 
