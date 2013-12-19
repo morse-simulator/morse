@@ -37,15 +37,14 @@ class Teleport(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         super(self.__class__, self).__init__(obj, parent)
 
-        orientation = self.bge_object.worldOrientation.to_euler('XYZ')
-        position = self.bge_object.worldPosition
+        pose3d = self.robot_parent.position_3d
 
-        self.local_data['x'] = position.x
-        self.local_data['y'] = position.y
-        self.local_data['z'] = position.z
-        self.local_data['roll'] = orientation.x
-        self.local_data['pitch'] = orientation.y
-        self.local_data['yaw'] = orientation.z
+        self.local_data['x'] = pose3d.x
+        self.local_data['y'] = pose3d.y
+        self.local_data['z'] = pose3d.z
+        self.local_data['roll'] = pose3d.roll
+        self.local_data['pitch'] = pose3d.pitch
+        self.local_data['yaw'] = pose3d.yaw
 
         logger.info('Component initialized')
 
