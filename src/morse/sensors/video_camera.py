@@ -69,8 +69,7 @@ class VideoCamera(morse.sensors.camera.Camera):
 
         # Prepare the intrinsic matrix for this camera.
         # Note that the matrix is stored in row major
-        intrinsic = mathutils.Matrix()
-        intrinsic.identity()
+        intrinsic = mathutils.Matrix.Identity(3)
         alpha_u = self.image_width  * \
                   self.image_focal / BLENDER_HORIZONTAL_APERTURE
         intrinsic[0][0] = alpha_u
