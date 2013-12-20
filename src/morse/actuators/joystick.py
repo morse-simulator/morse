@@ -67,51 +67,6 @@ class Joystick(Actuator):
         # Give the movement instructions directly to the parent
         # The second parameter specifies a "local" movement
         if self._type == 'Position' or self._type == 'Velocity':
-            self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
+            self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
         elif self._type == 'Differential':
-            self.apply_vw_wheels(vx, -rz)
-
-    # from v_omega_diff_drive
-    def apply_vw_wheels(self, vx, vw):
-        """ Apply (v, w) to the parent robot. """
-
-        # calculate desired wheel speeds and set them
-        if abs(vx) < 0.001 and abs(vw) < 0.001:
-            # stop the wheel when velocity is below a given threshold
-            for index in self.robot_parent._wheels.keys():
-                self.robot_parent._wheel_joints[index].setParam(9, 0, 100.0)
-
-            self._stopped = True
-        else:
-            # this is need to "wake up" the physic objects if they have
-            # gone to sleep apply a tiny impulse straight down on the
-            # object
-            if self._stopped:
-                self.robot_parent.bge_object.applyImpulse(
-                   self.robot_parent.bge_object.position, (0.0, 0.1, -0.000001))
-
-            # no longer stopped
-            self._stopped = False
-
-            # Another formula for computing left and right wheel speeds:
-            # http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
-            v_ws_l = vx - (self._trackWidth / 2.0) * vw
-            v_ws_r = vx + (self._trackWidth / 2.0) * vw
-
-            # convert to angular speeds
-            w_ws_l = v_ws_l / self._radius
-            w_ws_r = v_ws_r / self._radius
-
-            # set wheel speeds - front and rear wheels have the same speed
-            # Left side wheels
-            self.robot_parent._wheel_joints['FL'].setParam(9, w_ws_l, 100.0)
-            if 'RL' in self.robot_parent._wheels:
-                self.robot_parent._wheel_joints['RL'].setParam(9, w_ws_l, 100.0)
-            # Right side wheels
-            self.robot_parent._wheel_joints['FR'].setParam(9, w_ws_r, 100.0)
-            if 'RR' in self.robot_parent._wheels:
-                self.robot_parent._wheel_joints['RR'].setParam(9, w_ws_r, 100.0)
-
-            logger.debug("New speeds set: left=%.4f, right=%.4f" %
-                         (w_ws_l, w_ws_r))
-
+            self.robot_parent.apply_vw_wheels(vx, -rz)
