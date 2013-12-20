@@ -55,6 +55,7 @@ RIGHTMOUSE = None
 F5KEY = None
 F8KEY = None
 
+CONSTRAINT_TYPE_KINEMATIC = None
 
 if not fake:
     UPARROWKEY = bge.events.UPARROWKEY
@@ -88,6 +89,8 @@ if not fake:
 
     F8KEY = bge.events.F8KEY
     F5KEY = bge.events.F5KEY
+
+    CONSTRAINT_TYPE_KINEMATIC = bge.logic.CONSTRAINT_TYPE_KINEMATIC
 
 def input_active():
     if not fake:

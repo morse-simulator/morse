@@ -16,22 +16,22 @@ except ImportError:
     pass
 
 JOINTS = ['kuka_1', 'kuka_2', 'kuka_3', 'kuka_4', 'kuka_5', 'kuka_6', 'kuka_7']
+
 class ArmatureTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
 
-        robot = ATRV()
+        robot = FakeRobot()
 
         arm = KukaLWR()
         robot.append(arm)
-        arm.translate(z=0.9)
         arm.add_stream('socket')
         arm.add_service('socket')
 
         pose = Pose()
         pose.add_stream('socket')
-        pose.translate(z=1.3)
+        pose.translate(z=1.3105)
         arm.append(pose)
 
         arm_pose = ArmaturePose()
@@ -45,7 +45,7 @@ class ArmatureTest(MorseTestCase):
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def checkstate(self, simu, angles, precision = 0.050):
+    def _check_state(self, simu, angles, precision = 0.050):
 
         pose = simu.robot.arm.arm_pose.get()
         target = dict(zip(JOINTS, angles))
@@ -54,31 +54,30 @@ class ArmatureTest(MorseTestCase):
             if j != 'timestamp':
                 self.assertAlmostEqual(v, target[j], delta=precision)
 
+    def _check_pose(self, simu, x, y, z, pitch, precision = 0.01):
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], x, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], y, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], z, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], pitch, delta = precision)
 
-    def test_object_attach(self):
+
+
+    def _test_object_attach(self):
         """ Checks that attached object are indeed attached at the right place.
         """
         precision = 0.02
 
         with Morse() as simu:
 
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 2.3, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
             simu.robot.motion.translate(1.0)
             simu.sleep(0.1)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 2.3, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['y'], 0.0, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], 0.0, delta = 0.01)
+            self._check_pose(simu, 1., 0., 1.3105, 0.)
             simu.robot.arm.set_rotation("kuka_2", math.radians(-90)).result()
             simu.sleep(0.1)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['z'], 1.31, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['x'], 1.99, delta = 0.01)
-            self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], math.radians(90), delta = 0.01)
+            self._check_pose(simu, 2., 0., 0.3105, math.radians(90))
 
-    def test_immediate_api(self):
+    def _test_immediate_api(self):
         """ Tests the services that have an immediate result
         (no speed limit taken into account)
 
@@ -105,7 +104,7 @@ class ArmatureTest(MorseTestCase):
 
             # note that set_rotations is tested in armature_pose_testing
 
-    def test_motion_services(self):
+    def _test_motion_services(self):
         """ Tests the services that have take some time to move
         (joint speed limit taken into account)
         """
@@ -133,7 +132,7 @@ class ArmatureTest(MorseTestCase):
             simu.sleep(1.1)
             self.assertTrue(act.done())
 
-    def test_trajectory(self):
+    def _test_trajectory(self):
 
         traj0 = {'points': [
                     {'position': [0.0, 1.57, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -159,13 +158,13 @@ class ArmatureTest(MorseTestCase):
 
             act = simu.robot.arm.trajectory(traj1)
             simu.sleep(1)
-            self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
+            self._check_state(simu, [0.0, 1.0, 0,0,0,0,0])
             simu.sleep(3)
-            self.checkstate(simu, [0.0, 1.57, 0, -1.57, 0, 1.57, 0])
+            self._check_state(simu, [0.0, 1.57, 0, -1.57, 0, 1.57, 0])
             simu.sleep(2)
-            self.checkstate(simu, [0.0] * 7)
+            self._check_state(simu, [0.0] * 7)
             simu.sleep(1)
-            self.checkstate(simu, [0.0] * 7)
+            self._check_state(simu, [0.0] * 7)
 
             # check 'starttime' parameter
             act = simu.robot.arm.set_rotations([0.0] * 7)
@@ -178,12 +177,12 @@ class ArmatureTest(MorseTestCase):
 
             act = simu.robot.arm.trajectory(traj2)
             simu.sleep(0.5)
-            self.checkstate(simu, [0.0] * 7)
+            self._check_state(simu, [0.0] * 7)
             simu.sleep(0.5)
             simu.sleep(1)
-            self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
+            self._check_state(simu, [0.0, 1.0, 0,0,0,0,0])
             simu.sleep(1)
-            self.checkstate(simu, [0.0, 1.0, 0,0,0,0,0])
+            self._check_state(simu, [0.0, 1.0, 0,0,0,0,0])
 
             # Check action cancellation
             act = simu.robot.arm.set_rotations([0.0] * 7)
@@ -193,10 +192,72 @@ class ArmatureTest(MorseTestCase):
             simu.sleep(0.5)
             act.cancel()
             simu.sleep(1)
-            self.checkstate(simu, [0.0] * 7)
+            self._check_state(simu, [0.0] * 7)
 
+    def test_ik_immediate(self):
+
+        IK_TARGET = "ik_target.robot.arm.kuka_7"
+
+        with Morse() as simu:
+            self.assertEqual(simu.robot.arm.list_IK_targets(), [IK_TARGET])
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.place_IK_target(IK_TARGET, [0,0,2], None, False) # absolute location
+            simu.sleep(0.1)
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.place_IK_target(IK_TARGET, [1,0,0.3105], None, False)
+            simu.sleep(1) # with iterative IK solvers like iTaSC, the IK chain does not reach the end position immediately
+            self._check_pose(simu, 0.778, 0., 0.363, 0.02)
+
+            simu.robot.arm.place_IK_target(IK_TARGET, [1,0,0.3105], [math.pi/2, -math.pi/2, -math.pi], False) # arm should be horizontal
+            simu.sleep(1) # with iterative IK solvers like iTaSC, the IK chain does not reach the end position immediately
+            self._check_pose(simu, 1.0, 0., 0.3105, math.radians(90))
+
+            # back to original position
+            simu.robot.arm.place_IK_target(IK_TARGET, [0,0,2], [math.pi/2, 0., -math.pi], False) # absolute location
+            simu.sleep(1.)
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.place_IK_target(IK_TARGET, [-1, 0, -1.6895], None) # relative position
+            simu.sleep(1) # with iterative IK solvers like iTaSC, the IK chain does not reach the end position immediately
+            self._check_pose(simu, -0.778, 0., 0.363, -0.02)
+
+            simu.robot.arm.place_IK_target(IK_TARGET, [0.,0.,0.], [0., -math.pi/2, 0.]) # relative rotation
+            simu.sleep(1) # with iterative IK solvers like iTaSC, the IK chain does not reach the end position immediately
+            self._check_pose(simu, -1.0, 0., 0.3105, -math.radians(90))
+
+
+
+
+    def test_ik_motion(self):
+
+        IK_TARGET = "ik_target.robot.arm.kuka_7"
+
+        with Morse() as simu:
+            self.assertEqual(simu.robot.arm.list_IK_targets(), [IK_TARGET])
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [0,0,2], None, False).result() # absolute location
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [1,0,0.3105], None, False).result()
+            self._check_pose(simu, 0.778, 0., 0.363, 0.02)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [1,0,0.3105], [math.pi/2, -math.pi/2, -math.pi], False).result() # arm should be horizontal
+            self._check_pose(simu, 1.0, 0., 0.3105, math.radians(90))
+
+            # back to original position
+            simu.robot.arm.move_IK_target(IK_TARGET, [0,0,2], [math.pi/2, 0., -math.pi], False).result() # absolute location
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [-1, 0, -1.6895], None).result() # relative position
+            self._check_pose(simu, -0.778, 0., 0.363, -0.02)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [0.,0.,0.], [0., -math.pi/2, 0.]).result() # relative rotation
+            self._check_pose(simu, -1.0, 0., 0.3105, -math.radians(90))
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(ArmatureTest)
+    main(ArmatureTest, time_modes = [TimeStrategies.BestEffort])
