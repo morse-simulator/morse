@@ -11,6 +11,8 @@ class Morsy(Robot):
         mesh = self.get_child('morsy_mesh')
         mesh.game.physics_type = 'NO_COLLISION'
 
+        self._bpy_object.game.radius = 0.01
+
         self.set_collision_bounds()
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
