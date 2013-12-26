@@ -68,6 +68,12 @@ class Robot(morse.core.object.Object):
             parent.applyMovement(linear_speed, True)
             parent.applyRotation(angular_speed, True)
         elif kind == 'Velocity':
+            # Workaround against 'strange behaviour' for robot with
+            # 'Dynamic' Physics Controller. [0.0, 0.0, 0.0] seems to be
+            # considered in a special way, i.e. is basically ignored.
+            # Setting it to 1e-6 instead of 0.0 seems to do the trick!
+            if angular_speed == [0.0, 0.0, 0.0]:
+                angular_speed = [0.0, 0.0, 1e-6]
             parent.setLinearVelocity(linear_speed, True)
             parent.setAngularVelocity(angular_speed, True)
 
