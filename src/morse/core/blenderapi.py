@@ -113,6 +113,11 @@ def input_none():
     else:
         return None
 
+def keyboard():
+    if not fake:
+        return bge.logic.keyboard
+    else:
+        return None
 
 def controller():
     if not fake:
