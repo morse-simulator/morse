@@ -31,6 +31,7 @@ robot.append(motion)
 # Add a keyboard controller to move the robot with arrow keys.
 keyboard = Keyboard()
 robot.append(keyboard)
+keyboard.properties(ControlType = 'Position')
 
 # Add a pose sensor that exports the current location and orientation
 # of the robot in the world frame
