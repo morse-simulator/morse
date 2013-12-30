@@ -43,7 +43,7 @@ class B21(Robot):
 class FakeRobot(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, name = name) # no Blender model -> a simple Empty will be created
-        self.properties(classpath = "morse.robots.environment.Environment")
+        self.properties(classpath = "morse.robots.fakerobot.FakeRobot")
         self.set_no_collision()
 
 class Hummer(Robot):
