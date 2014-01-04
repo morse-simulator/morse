@@ -1,12 +1,19 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 
-from morse.builder.creator import RobotCreator
 from morse.builder import Robot, WheeledRobot
 
 class Morsy(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "morsy", name)
         self.properties(classpath = "morse.robots.morsy.Morsy")
+
+        self.set_dynamic()
+        mesh = self.get_child('morsy_mesh')
+        mesh.game.physics_type = 'NO_COLLISION'
+
+        self._bpy_object.game.radius = 0.01
+
+        self.set_collision_bounds()
 
     def set_color(self, color = (0.0, 0.0, 0.8)):
         """
@@ -26,11 +33,18 @@ class B21(Robot):
         Robot.__init__(self, "b21", name)
         self.properties(classpath = "morse.robots.b21.B21")
 
-# see data/robots/environment.blend and src/morse/robots/environment.py
-class FakeRobot(RobotCreator):
+        self.set_rigid_body()
+        self.set_collision_bounds()
+
+        collision = self.get_child('b21_collision')
+        collision.game.physics_type = 'STATIC'
+
+# see src/morse/robots/environment.py
+class FakeRobot(Robot):
     def __init__(self, name=None):
-        RobotCreator.__init__(self, name,
-            "morse.robots.environment.Environment", "environment")
+        Robot.__init__(self, name = name) # no Blender model -> a simple Empty will be created
+        self.properties(classpath = "morse.robots.fakerobot.FakeRobot")
+        self.set_no_collision()
 
 class Hummer(Robot):
     def __init__(self, name=None):
@@ -43,6 +57,13 @@ class Jido(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "jido", name)
         self.properties(classpath = "morse.robots.jido.Jido")
+
+        self.set_dynamic()
+        self.set_collision_bounds()
+        self._bpy_object.game.radius = 0.01
+
+        mesh = self.get_child('JidoBase')
+        mesh.game.physics_type = 'STATIC'
 
 # see human.py
 #class MocapHuman(Robot):
@@ -70,6 +91,7 @@ class QUAD2012(Robot):
         Robot.__init__(self, "quadrotor", name)
         self.properties(classpath = "morse.robots.quadrotor.Quadrotor")
         # Collision - Motion Game Logic
+        self.set_no_collision()
 
 class Quadrotor(Robot):
     def __init__(self, name=None):
@@ -79,23 +101,29 @@ class Quadrotor(Robot):
 class RMax(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "rmax", name)
-        self.properties(classpath = "morse.robots.rmax.RMax")
+        self.properties(classpath = "morse.robots.rmax.RMax",
+                        NoGravity = True)
+
+        self.set_rigid_body()
+        rotor = self.get_child('Rotor')
+        rotor.game.physics_type = 'NO_COLLISION'
 
 class SegwayRMP400(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "segwayrmp400", name)
         self.properties(classpath = "morse.robots.segwayrmp400.SegwayRMP400",
                         HasSuspension = False, HasSteering = False,
-                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 1.20,
+                        Influence = 0.1, Friction = 0.8, FixTurningSpeed = 1.16,
                         WheelFLName = "wheel1", WheelFRName = "wheel2",
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
-
 
 class Submarine(Robot):
     def __init__(self, name=None):
         Robot.__init__(self, "submarine", name)
-        self.properties(classpath = "morse.robots.submarine.Submarine")
-        # Keys Game Logic
+        self.properties(classpath = "morse.robots.submarine.Submarine",
+                        NoGravity = True)
+        self.set_rigid_body()
+        self.set_collision_bounds()
 
 class Victim(Robot):
     def __init__(self, name=None):

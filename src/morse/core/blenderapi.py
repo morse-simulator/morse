@@ -20,6 +20,8 @@ else:
     print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True
 
+from morse.core import mathutils
+
 UPARROWKEY = None
 DOWNARROWKEY = None
 RIGHTARROWKEY = None
@@ -111,6 +113,11 @@ def input_none():
     else:
         return None
 
+def keyboard():
+    if not fake:
+        return bge.logic.keyboard
+    else:
+        return None
 
 def controller():
     if not fake:
@@ -266,6 +273,6 @@ def gravity():
         if hasattr(sce, 'gravity'):
             return sce.gravity
         else:
-            return [0.0, 0.0, -9.81]
+            return mathutils.Vector((0.0, 0.0, -9.81))
     else:
         return None

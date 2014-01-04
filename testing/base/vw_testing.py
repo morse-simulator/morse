@@ -5,7 +5,7 @@ This script tests some of the base functionalities of MORSE.
 
 import sys
 import math
-from morse.testing.testing import MorseTestCase
+from morse.testing.testing import MorseMoveTestCase
 from pymorse import Morse
 
 # Include this import to be able to use your test file as a regular 
@@ -25,7 +25,7 @@ def send_service_speed(s, morse, v, w, t):
     morse.sleep(t)
     s.stop()
 
-class VW_Test(MorseTestCase):
+class VW_Test(MorseMoveTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
@@ -33,7 +33,6 @@ class VW_Test(MorseTestCase):
         robot = ATRV()
 
         pose = Pose()
-        pose.translate(z=-0.10) # atrv base is 10cm over ground
         robot.append(pose)
         pose.add_stream('socket')
 
@@ -41,108 +40,63 @@ class VW_Test(MorseTestCase):
         robot.append(motion)
         motion.add_stream('socket')
         motion.add_service('socket')
+
+        teleport = Teleport()
+        robot.append(teleport)
+        teleport.add_stream('socket')
         
         env = Environment('empty', fastmode = True)
+        env.show_framerate(True)
         env.add_service('socket')
 
     def test_vw_controller(self):
         with Morse() as simu:
 
-            precision=0.05
+            simu.deactivate('robot.teleport')
+
+            precision = 0.10
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = simu.robot.pose
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             v_w = simu.robot.motion
 
             send_speed(v_w, simu, 1.0, 0.0, 2.0)
-
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
-            self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [2.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(v_w, simu, -1.0, 0.0, 2.0)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(v_w, simu, 1.0, -math.pi/4.0, 2.0)
-            pose = pose_stream.get()
-
-            # for non-null w, we have r = v /  w
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [4.0 / math.pi, -4.0 / math.pi, 0.10,
+                                 -math.pi / 2.0, 0.0, 0.0], precision)
 
             send_speed(v_w, simu, 0.5, -math.pi/8.0, 12.0)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_speed(v_w, simu, -2.0, math.pi/2.0, 3.0)
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.1)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.1)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.1)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=0.1)
+            self.assertAlmostEqualPositionThenFix(simu, [4.0 / math.pi, -4.0 / math.pi, 0.10,
+                                 -math.pi / 2.0, 0.0, 0.0], precision*2)
 
     def test_vw_service_controller(self):
         with Morse() as simu:
-            precision=0.15
+            precision = 0.10
+            simu.deactivate('robot.teleport')
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
-            pose_stream = simu.robot.pose
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             v_w = simu.robot.motion
 
             send_service_speed(v_w, simu, 1.0, 0.0, 2.0)
-
-            pose = pose_stream.get()
-            self.assertAlmostEqual(pose['x'], 2.0, delta=precision)
-            self.assertAlmostEqual(pose['y'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [2.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_service_speed(v_w, simu, -1.0, 0.0, 2.0)
-
-            pose = pose_stream.get()
-            for key, coord in pose.items():
-                if key != 'timestamp':
-                    self.assertAlmostEqual(coord, 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
 
             send_service_speed(v_w, simu, 1.0, -math.pi/4.0, 2.0)
-            pose = pose_stream.get()
-
-            # for non-null w, we have r = v /  w
-            self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
-            self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
-            self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-            self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+            self.assertAlmostEqualPositionThenFix(simu, [4.0 / math.pi, -4.0 / math.pi, 0.10,
+                                 -math.pi / 2.0, 0.0, 0.0], precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

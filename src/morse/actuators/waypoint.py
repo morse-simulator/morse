@@ -80,7 +80,7 @@ class Waypoint(morse.core.actuator.Actuator):
             ignored by the obstacle avoidance, and will not make the \
             robot change its trajectory. Useful when trying to move \
             close to an object of a certain kind")
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
 
     add_data('x', 0.0, "float",
@@ -369,13 +369,21 @@ class Waypoint(morse.core.actuator.Actuator):
                     (robot_angle, target_angle, angle_diff, rotation_direction))
 
             try:
+                dt = 1 / self.frequency
+                if projection_distance < speed * dt:
+                    v = projection_distance  / dt
+                else:
+                    v = speed
+
+                if abs(angle_diff) < speed * dt:
+                    rotation_speed = angle_diff / dt / 2.0
+                else:
+                    rotation_speed = speed / 2.0
+
                 # Compute the speeds
                 if self._type == 'Position':
-                    v = speed / self.frequency
-                    rotation_speed = (speed / self.frequency) / 2.0
-                elif self._type == 'Velocity':
-                    v = speed
-                    rotation_speed = 1.0 #speed / 2.0
+                    v /= self.frequency
+                    rotation_speed /= self.frequency
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
@@ -438,4 +446,4 @@ class Waypoint(morse.core.actuator.Actuator):
             logger.debug("Applying vx = %.4f, vz = %.4f, rz = %.4f (v = %.4f)" %
                         (vx, vz, rz, v))
 
-            self.apply_speed(self._type, [vx, 0, vz], [0, 0, rz])
+            self.robot_parent.apply_speed(self._type, [vx, 0, vz], [0, 0, rz])

@@ -31,6 +31,7 @@ robot.append(motion)
 # Add a keyboard controller to move the robot with arrow keys.
 keyboard = Keyboard()
 robot.append(keyboard)
+keyboard.properties(ControlType = 'Position')
 
 # Add a pose sensor that exports the current location and orientation
 # of the robot in the world frame
@@ -51,6 +52,6 @@ robot.add_default_interface('socket')
 
 # set 'fastmode' to True to switch to wireframe mode
 env = Environment('sandbox', fastmode = False)
-env.place_camera([10.0, -10.0, 10.0])
-env.aim_camera([1.05, 0, 0.78])
+env.set_camera_location([10.0, -10.0, 10.0])
+env.set_camera_rotation([1.05, 0, 0.78])
 

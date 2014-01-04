@@ -20,7 +20,7 @@ class Destination(morse.core.actuator.Actuator):
 
     add_property('_tolerance', 0.5, 'Tolerance')
     add_property('_speed', 5.0, 'Speed')
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
 
 
@@ -63,9 +63,14 @@ class Destination(morse.core.actuator.Actuator):
     
             # Scale the speeds to the time used by Blender
             try:
-                vx = global_vector[0] * self._speed / self.frequency
-                vy = global_vector[1] * self._speed / self.frequency
-                vz = global_vector[2] * self._speed / self.frequency
+                if self._type == 'Position':
+                    vx = global_vector[0] * self._speed / self.frequency
+                    vy = global_vector[1] * self._speed / self.frequency
+                    vz = global_vector[2] * self._speed / self.frequency
+                else:
+                    vx = global_vector[0] * self._speed
+                    vy = global_vector[1] * self._speed
+                    vz = global_vector[2] * self._speed
             # For the moment ignoring the division by zero
             # It happens apparently when the simulation starts
             except ZeroDivisionError:
@@ -82,4 +87,4 @@ class Destination(morse.core.actuator.Actuator):
             logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         
-        self.apply_speed(self._type, [vx, vy, vz], [0, 0, 0])
+        self.robot_parent.apply_speed(self._type, [vx, vy, vz], [0, 0, 0])

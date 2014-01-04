@@ -21,7 +21,7 @@ class Keyboard(Actuator):
     _name = "Keyboard Actuator"
     _short_desc="A 'fake' actuator that allows to move a robot from the keyboard."
 
-    add_property('_type', 'Position', 'ControlType', 'string',
+    add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control to move the parent robot, in ['Position', "
                  "'Velocity', 'Differential']")
     add_property('_speed', 1.0, 'Speed', 'float',
@@ -41,32 +41,27 @@ class Keyboard(Actuator):
     def default_action(self):
         """ Interpret keyboard presses and assign them to movement
             for the robot."""
-        keys_sensor = blenderapi.controller().sensors[0]
-        #pressed_keys = keys_sensor.getPressedKeys()
-        pressed_keys = keys_sensor.events
+        keyboard = blenderapi.keyboard()
+        is_actived = blenderapi.input_active()
 
         # Reset movement variables
         vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
-        for key, status in pressed_keys:
-            logger.debug("GOT: {0}, STATUS {1}".format(key, status))
-            if key == blenderapi.UPARROWKEY:
-                vx = self._speed
+        if keyboard.events[blenderapi.UPARROWKEY] == is_actived:
+            vx = self._speed
 
-            if key == blenderapi.DOWNARROWKEY:
-                vx = -self._speed
+        if keyboard.events[blenderapi.DOWNARROWKEY] == is_actived:
+            vx = -self._speed
 
-            if key == blenderapi.LEFTARROWKEY:
-                rz = self._speed
+        if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
+            rz = self._speed
 
-            if key == blenderapi.RIGHTARROWKEY:
-                rz = -self._speed
+        if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
+            rz = -self._speed
 
-        # Give the movement instructions directly to the parent
-        # The second parameter specifies a "local" movement
         if self._type == 'Position' or self._type == 'Velocity':
-            self.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
+            self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
         elif self._type == 'Differential':
             self.robot_parent.apply_vw_wheels(vx, rz)
 
