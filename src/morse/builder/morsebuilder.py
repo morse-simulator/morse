@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import sys
 import math
-from morse.builder.abstractcomponent import *
+from morse.builder.abstractcomponent import AbstractComponent
 
 """
 Morse Builder API

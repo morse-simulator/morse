@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
 from morse.builder.morsebuilder import *
+from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
 
 class Environment(Component):
