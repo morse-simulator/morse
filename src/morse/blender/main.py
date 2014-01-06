@@ -20,6 +20,7 @@ from morse.core.actuator import Actuator
 from morse.core.modifier import register_modifier
 from morse.helpers.loading import create_instance, create_instance_level
 from morse.core.morse_time import TimeStrategies
+from morse.core.zone import ZoneManager
 
 # Constants for stream directions
 IN = 'IN'
@@ -141,6 +142,8 @@ def create_dictionaries ():
     # Create the 'request managers' manager
     persistantstorage.morse_services = MorseServices()
 
+    # Create the zone manager
+    persistantstorage.zone_manager = ZoneManager()
 
     scene = morse.core.blenderapi.scene()
 
@@ -203,6 +206,10 @@ def create_dictionaries ():
                      "robot (you can not have free objects)")
         return False
 
+    # Get the zones
+    for obj in scene.objects:
+        if 'Zone_Tag' in obj:
+            persistantstorage.zone_manager.add(obj)
     
     # Get the robot and its instance
     for obj, robot_instance in persistantstorage.robotDict.items():
