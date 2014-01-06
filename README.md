@@ -1,7 +1,7 @@
 OpenRobots Simulator
 ====================
 
-    (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2013
+    (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2014
 
 [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
 
