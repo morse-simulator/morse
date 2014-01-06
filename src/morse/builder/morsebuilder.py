@@ -1,6 +1,8 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import sys
 import math
+from morse.builder.blenderobjects import Cube
+from morse.builder import bpymorse
 from morse.builder.abstractcomponent import AbstractComponent
 
 """
@@ -89,6 +91,24 @@ class PassiveObject(AbstractComponent):
             bpymorse.add_controller()
             contr = obj.game.controllers[-1]
             contr.link(sensor = sens)
+
+class Zone(Cube):
+    def __init__(self, type):
+        Cube.__init__(self, 'xxx')
+        # Need to create a new material before calling make_transparent
+        self._bpy_object.active_material = bpymorse.create_new_material()
+        self._make_transparent(self._bpy_object, 1e-6)
+        self.properties(Zone_Tag = True, Type = type)
+
+    @property
+    def size(self):
+        return self._bpy_object.scale
+    @size.setter
+    def size(self, value):
+        self._bpy_object.scale = value
+
+    def rotate(self, x=0.0, y=0.0, z=0.0):
+        logger.warning("rotate is not supported for Zone")
 
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
