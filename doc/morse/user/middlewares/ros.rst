@@ -29,3 +29,10 @@ component.
 .. code-block :: python
 
     foo.add_stream('ros', topic = '/robot/myTopic')
+
+
+The same way, you can set a custom ``frame_id`` and ``child_frame_id``:
+
+.. code-block :: python
+
+    foo.add_stream('ros', frame_id = '/world', child_frame_id = '/footprint')
