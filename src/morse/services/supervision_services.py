@@ -1,10 +1,48 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import service
-from morse.core import status, blenderapi
+from morse.core import status, blenderapi, mathutils
 from morse.blender.main import reset_objects as main_reset, close_all as main_close, quit as main_terminate
 from morse.core.abstractobject import AbstractObject
 from morse.core.exceptions import *
 import json
+
+def get_structured_children_of(blender_object):
+    """ Returns a nested dictionary of the given objects children, recursively.
+    The retun format is as follows:
+
+    {blender_object.name: [children_dictionary, position, orientation]}
+
+    where children_dictionary is another of the same format, but with the keys
+    being the children of blender_object. This continues down the entire tree
+    structure.
+
+    :param KX_GameObject blender_object: The Blender object to return children
+    for.
+    """
+    children = blender_object.children
+    orientation = blender_object.worldOrientation.to_quaternion()
+    position = blender_object.worldPosition
+    structure = { blender_object.name: [{},
+                                        (position.x, position.y, position.z),
+                                        (orientation.x, orientation.y,
+                                         orientation.z, orientation.w)
+                                        ]
+                }
+    for c in children:
+        structure[blender_object.name][0].update(
+            get_structured_children_of(c) )
+    return structure
+
+def get_obj_by_name(name):
+    """
+    Return object in the scene associated to :param name:
+    If it does not exists, throw a MorseRPCInvokationError
+    """
+    scene = blenderapi.scene()
+    if name not in scene.objects:
+        raise MorseRPCInvokationError(
+                "Object '%s' does not appear in the scene." % name)
+    return scene.objects[name]
 
 class Supervision(AbstractObject):
     def __init__(self):
@@ -156,33 +194,6 @@ class Supervision(AbstractObject):
             raise MorseRPCInvokationError(str(exn))
 
 
-    def get_structured_children_of(blender_object):
-        """ Returns a nested dictionary of the given objects children, recursively.
-        The retun format is as follows:
-
-        {blender_object.name: [children_dictionary, position, orientation]}
-
-        where children_dictionary is another of the same format, but with the keys
-        being the children of blender_object. This continues down the entire tree
-        structure.
-
-        :param KX_GameObject blender_object: The Blender object to return children
-        for.
-        """
-        children = blender_object.children
-        orientation = blender_object.worldOrientation.to_quaternion()
-        position = blender_object.worldPosition
-        structure = { blender_object.name: [{},
-                                            (position.x, position.y, position.z),
-                                            (orientation.x, orientation.y,
-                                             orientation.z, orientation.w)
-                                            ]
-                    }
-        for c in children:
-            structure[blender_object.name][0].update(
-                get_structured_children_of(c) )
-        return structure
-
     @service
     def get_scene_objects(self):
         """ Returns a hierarchial dictonary structure of all objects in the scene
@@ -206,17 +217,6 @@ class Supervision(AbstractObject):
             objects.update(get_structured_children_of(obj))
 
         return objects
-
-    def get_obj_by_name(name):
-        """
-        Return object in the scene associated to :param name:
-        If it does not exists, throw a MorseRPCInvokationError
-        """
-        scene = blenderapi.scene()
-        if name not in scene.objects:
-            raise MorseRPCInvokationError(
-                    "Object '%s' does not appear in the scene." % name)
-        return scene.objects[name]
 
     @service
     def set_object_visibility(self, object_name, visible, do_children):
@@ -250,6 +250,65 @@ class Supervision(AbstractObject):
         else:
             blender_object.suspendDynamics()
         return state
+
+    @service
+    def set_camarafp_far_clip(self, far_clip):
+        """ Set the CamaraFP (MORSE' environment camera) far clip distance
+
+        :param far_clip: The camera's far clip distance.
+        :type  far_clip: float
+        """
+        if far_clip > 0:
+            blender_object = get_obj_by_name('CameraFP')
+            blender_object.far = far_clip
+            return far_clip
+        return 0
+
+    @service
+    def set_camarafp_position(self, position):
+        """ Set the CamaraFP (MORSE' environment camera) world position. [x, y, z]
+
+        :param position: The camera's world position. [x, y, z].
+        :type  position: list(float)
+        """
+        blender_object = get_obj_by_name('CameraFP')
+        blender_object.worldPosition = position
+        return position
+
+    @service
+    def set_camarafp_transform(self, transform):
+        """ Set the CamaraFP (MORSE' environment camera) world space transform matrix.
+
+        :param transform: The camera's world space transform matrix.
+        :type  transform: 4x4 Matrix [[float]]
+        """
+        try:
+            blender_object = get_obj_by_name('CameraFP')
+            blender_object.worldTransform = mathutils.Matrix(transform)
+            return projection_matrix
+        except SystemError: # if the matrix is not 4x4 numpy raises a SystemError
+            raise MorseRPCInvokationError( "The Matrix must be 4x4 [[float]]" )
+
+    @service
+    def set_camarafp_projection_matrix(self, projection_matrix):
+        """ Set the CamaraFP (MORSE' environment camera) 4x4 projection matrix
+
+        :param projection_matrix: The camera's 4x4 projection matrix.
+        :type  projection_matrix: 4x4 Matrix [[float]]
+        """
+        try:
+            blender_object = get_obj_by_name('CameraFP')
+            blender_object.projection_matrix = mathutils.Matrix(projection_matrix)
+            return projection_matrix
+        except SystemError: # if the matrix is not 4x4 numpy raises a SystemError
+            raise MorseRPCInvokationError( "The Matrix must be 4x4 [[float]]" )
+
+    @service
+    def get_camarafp_projection_matrix(self):
+        """ Get the CamaraFP (MORSE' environment camera) 4x4 projection matrix
+        """
+        blender_object = get_obj_by_name('CameraFP')
+        return [list(vec) for vec in blender_object.projection_matrix]
 
     def action(self):
         pass

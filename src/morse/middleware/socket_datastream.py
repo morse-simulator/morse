@@ -22,7 +22,8 @@ class MorseEncoder(json.JSONEncoder):
         if isinstance(obj, mathutils.Vector):
             return obj[:]
         if isinstance(obj, mathutils.Matrix):
-            return obj[:][:]
+            # obj[:][:] gives list(mathutils.Vector)
+            return [list(vec) for vec in obj]
         if isinstance(obj, mathutils.Quaternion):
             return {'x' : obj.x, 'y': obj.y, 'z': obj.z, 'w': obj.w }
         if isinstance(obj, mathutils.Euler):
