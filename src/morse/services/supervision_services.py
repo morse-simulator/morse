@@ -285,7 +285,7 @@ class Supervision(AbstractObject):
         try:
             blender_object = get_obj_by_name('CameraFP')
             blender_object.worldTransform = mathutils.Matrix(transform)
-            return projection_matrix
+            return transform
         except SystemError: # if the matrix is not 4x4 numpy raises a SystemError
             raise MorseRPCInvokationError( "The Matrix must be 4x4 [[float]]" )
 
