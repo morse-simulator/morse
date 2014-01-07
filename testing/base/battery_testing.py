@@ -15,6 +15,8 @@ except ImportError:
 import sys
 from pymorse import Morse
 
+def send_pose(s, x, y):
+    s.publish({'x' : x, 'y' : y, 'z' : 0.0, 'yaw' : 0.0, 'pitch' : 0.0, 'roll' : 0.0})
 
 class BatteryTest(MorseTestCase):
 
@@ -27,6 +29,14 @@ class BatteryTest(MorseTestCase):
         battery.properties(DischargingRate = 10.0)
         robot.append(battery)
 
+        teleport = Teleport()
+        teleport.add_stream('socket')
+        robot.append(teleport)
+
+        charging_zone = Zone(type = 'Charging')
+        charging_zone.size = [5.0, 5.0, 5.0]
+        charging_zone.translate(x = 10.0, z = 2.0)
+
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
@@ -36,6 +46,7 @@ class BatteryTest(MorseTestCase):
 
         with Morse() as morse:
             bat_stream = morse.robot.battery
+            teleport_stream = morse.robot.teleport
 
             bat = bat_stream.get()
             cur_bat = bat['charge']
@@ -49,6 +60,20 @@ class BatteryTest(MorseTestCase):
 
             # Now the battery must be empty
             morse.sleep(10.0)
+            bat = bat_stream.get()
+            self.assertAlmostEqual(bat['charge'], 0.0, delta=0.001)
+
+            # Teleport in the charging zone and check the battery charge
+            # grows up
+            send_pose(teleport_stream, 7.0, 0.0)
+            morse.sleep(2.0)
+            bat = bat_stream.get()
+            self.assertAlmostEqual(bat['charge'], 20.0, delta=0.5)
+
+            # Teleport out of the charging zone, the battery charge must
+            # decrease
+            send_pose(teleport_stream, 2.0, 0.0)
+            morse.sleep(2.5)
             bat = bat_stream.get()
             self.assertAlmostEqual(bat['charge'], 0.0, delta=0.001)
 
