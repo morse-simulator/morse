@@ -365,8 +365,7 @@ class DepthCamera(VideoCamera):
         VideoCamera.__init__(self, name,
                              "morse.sensors.depth_camera.DepthCamera",
                              "depth_camera")
-        self.properties(cam_width = 128, cam_height = 128,
-                        cam_near=1.0, cam_far=20.0, retrieve_depth=True,
+        self.properties(cam_near=1.0, cam_far=20.0, retrieve_depth=True,
                         Vertical_Flip=False)
 
 class VelodyneZB(DepthCamera):
