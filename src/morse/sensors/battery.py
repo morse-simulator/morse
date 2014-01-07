@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data, add_property
+from morse.core import blenderapi
 
 class Battery(morse.core.sensor.Sensor):
     """
@@ -14,8 +15,8 @@ class Battery(morse.core.sensor.Sensor):
     This rate is independent of the actions performed by the robot, and
     only dependant on the time elapsed since the beginning of the simulation.
 
-    A planned feature is to allow for designated **Charging Zones** where
-    the battery will gradually recharge. However, this is not implemented yet.
+    If the battery enters in a **Charging zone**, the battery will
+    gradually recharge.
     """
 
     _name = "Battery Sensor"
@@ -61,8 +62,6 @@ class Battery(morse.core.sensor.Sensor):
     def isInChargingZone(self):
         # Test if the robot (parent) is in a charging zone
         pose = self.position_3d
-        # look for a charging zon in the scene
-        # TODO for 'charging_zone' in scene:
-        # if the robot is near the zone, return true
-        return False
 
+        zone_manager = blenderapi.persistantstorage().zone_manager
+        return zone_manager.is_in(self, type= 'Charging')
