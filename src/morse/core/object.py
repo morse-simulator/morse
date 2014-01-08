@@ -94,6 +94,20 @@ class Object(AbstractObject):
                 self.local_data[name] = default_value
 
 
+    def fetch_properties(self):
+        """
+        Returns the "_properties" of a component
+        :return: a dictionary of the field "_properties"
+        """
+        all_properties = OrderedDict()
+
+        #fetches '_properties'
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
+
+        return all_properties
+
     @service
     def get_properties(self):
         """     
@@ -102,13 +116,12 @@ class Object(AbstractObject):
         :return: a dictionary of the current component's properties
 
         """
-        all_properties = OrderedDict()
-        #fetches '_properties'
-        for cls in reversed(type(self).__mro__):
-            if hasattr(cls, '_properties'):
-                all_properties.update(cls._properties)
+        all_properties = self.fetch_properties()
+        res = {}
+
         #adds '_properties' as a value to the key "properties"
-        res=OrderedDict([('properties',all_properties)])
+        res['properties'] = all_properties
+
         return res
 
 
@@ -120,20 +133,18 @@ class Object(AbstractObject):
         :return: a dictionary of the current component's configurations
 
         """
-        all_properties = OrderedDict()
-        #fetches '_properties'
-        for cls in reversed(type(self).__mro__):
-            if hasattr(cls, '_properties'):
-                all_properties.update(cls._properties)
-        res = OrderedDict([('configurations',[])])
-        tmp = OrderedDict()
+        all_properties = self.fetch_properties()
+        res = {}
+        tmp = {}
+
         #parses 'all_properties' to get only "key"-"value"-pairs
         #"key" is python_name and "value" is default_value
         for item in all_properties.items():
-            tmp1 = OrderedDict([(item[0],item[1][0])])
-            tmp=OrderedDict(tmp.items()|tmp1.items())
+            tmp[item[0]] = item[1][0]
+
         #adds parsed "_properties" as a value to the key "configurations"
-        res['configurations'].append(tmp)
+        res['configurations'] = tmp
+
         return res
 
 
@@ -143,10 +154,7 @@ class Object(AbstractObject):
         their values according to the values set in Blender object.
         """
 
-        all_properties = OrderedDict()
-        for cls in reversed(type(self).__mro__):
-            if hasattr(cls, '_properties'):
-                all_properties.update(cls._properties)
+        all_properties = self.fetch_properties()
 
         for name, details in all_properties.items():
             default_value, _, _, python_name = details
