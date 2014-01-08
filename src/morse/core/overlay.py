@@ -22,7 +22,7 @@ class MorseOverlay(AbstractObject):
 
     def __init__ (self, overlaid_object):
         
-        super(MorseOverlay,self).__init__()
+        AbstractObject.__init__(self)
         
         # Fill in the data sent as parameters
         self.overlaid_object = overlaid_object
@@ -117,4 +117,4 @@ class MorseOverlay(AbstractObject):
         if self.overlaid_object.on_completion:
             self.overlaid_object.interrupt()
         else:
-            super(MorseOverlay, self).interrupt()
+            AbstractObject.interrupt(self)

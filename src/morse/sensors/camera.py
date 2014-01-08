@@ -46,7 +46,7 @@ class Camera(morse.core.sensor.Sensor):
         """
         logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
-        super(Camera, self).__init__(obj, parent)
+        morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         # Set the background color of the scene
         self.bg_color = [143, 143, 143, 255]

@@ -18,7 +18,7 @@ class Object(AbstractObject):
 
     def __init__ (self, obj, parent=None):
 
-        super(Object, self).__init__()
+        AbstractObject.__init__(self)
 
         # Fill in the data sent as parameters
         self.bge_object = obj

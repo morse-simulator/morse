@@ -8,7 +8,7 @@ from morse.middleware.pocolibs_datastream import PosterNotFound, DummyPoster
 class RflexModule(MorseOverlay):
     def __init__(self, overlaid_object):
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(overlaid_object)
+        MorseOverlay.__init__(self, overlaid_object)
         self._clean_track = False
         self._cntrl = DummyPoster("rflexCntrl")
 
@@ -16,7 +16,7 @@ class RflexModule(MorseOverlay):
         self.overlaid_object.stop()
         if self._clean_track:
             self.overlaid_object.input_functions.pop()
-        super(RflexModule, self).interrupt()
+        MorseOverlay.interrupt(self)
 
     @service
     def InitClient(self, *args):

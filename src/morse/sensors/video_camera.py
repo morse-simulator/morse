@@ -62,7 +62,7 @@ class VideoCamera(morse.sensors.camera.Camera):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(VideoCamera, self).__init__(obj, parent)
+        morse.sensors.camera.Camera.__init__(self, obj, parent)
 
         # Prepare the exportable data of this sensor
         self.local_data['image'] = ''
@@ -91,7 +91,7 @@ class VideoCamera(morse.sensors.camera.Camera):
 
     def interrupt(self):
         self._n = 0
-        super(VideoCamera, self).interrupt()
+        morse.sensors.camera.Camera.interrupt(self)
 
     @async_service
     def capture(self, n):
@@ -110,7 +110,7 @@ class VideoCamera(morse.sensors.camera.Camera):
         if self.bge_object['capturing'] and (self._n != 0) :
 
             # Call the action of the parent class
-            super(self.__class__, self).default_action()
+            morse.sensors.camera.Camera.default_action(self)
 
             # NOTE: Blender returns the image as a binary string
             #  encoded as RGBA

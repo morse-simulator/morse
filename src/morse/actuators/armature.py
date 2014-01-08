@@ -57,7 +57,7 @@ class Armature(morse.core.actuator.Actuator):
         :param obj: the Blender **armature** object that is to be controlled.
         """     
         # Call the constructor of the parent class
-        super(Armature,self).__init__(obj, parent)
+        morse.core.actuator.Actuator.__init__(self, obj, parent)
         
         # Initialize the values in local_data for each segment
         armature = self.bge_object
@@ -490,7 +490,7 @@ class Armature(morse.core.actuator.Actuator):
 
         self._active_trajectory = None
 
-        super(Armature,self).interrupt()
+        morse.core.actuator.Actuator.interrupt(self)
 
     @async_service
     def set_target(self,x ,y, z):

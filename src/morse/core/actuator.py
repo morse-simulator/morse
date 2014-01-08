@@ -13,7 +13,7 @@ class Actuator(morse.core.object.Object):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(Actuator, self).__init__(obj, parent)
+        morse.core.object.Object.__init__(self, obj, parent)
 
         # Define lists of dynamically added functions
         self.input_functions = []
@@ -21,7 +21,7 @@ class Actuator(morse.core.object.Object):
 
     def finalize(self):
         self._active = False
-        super(Actuator, self).finalize()
+        morse.core.object.Object.finalize(self)
         del self.input_functions[:]
         del self.input_modifiers[:]
 
