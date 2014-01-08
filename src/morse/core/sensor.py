@@ -25,7 +25,7 @@ class Sensor(morse.core.object.Object):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(Sensor, self).__init__(obj, parent)
+        morse.core.object.Object.__init__(self, obj, parent)
 
         # Define lists of dynamically added functions
         self.output_functions = []
@@ -42,7 +42,7 @@ class Sensor(morse.core.object.Object):
 
     def finalize(self):
         self._active = False
-        super(Sensor, self).finalize()
+        morse.core.object.Object.finalize(self)
         del self.output_functions[:]
         del self.output_modifiers[:]
 

@@ -46,7 +46,7 @@ def get_obj_by_name(name):
 
 class Supervision(AbstractObject):
     def __init__(self):
-        super(Supervision, self).__init__()
+        AbstractObject.__init__(self)
 
     def name(self):
         return "simulation"

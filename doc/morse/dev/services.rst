@@ -253,7 +253,7 @@ method, as shown in the example below).
              self.local_data['x'] = self.bge_object.worldPosition[0]
              self.local_data['y'] = self.bge_object.worldPosition[1]
              self.local_data['z'] = self.bge_object.worldPosition[2]
-             super(Waypoint, self).interrupt()
+             morse.core.actuator.Actuator.interrupt(self)
 
 .. note::
     It is recommended to always implement the ``interrupt`` method even if the

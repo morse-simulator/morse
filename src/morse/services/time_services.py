@@ -6,7 +6,7 @@ from morse.core.morse_time import time_isafter
 
 class TimeServices(AbstractObject):
     def __init__(self):
-        super(TimeServices, self).__init__()
+        AbstractObject.__init__(self)
         self.time = blenderapi.persistantstorage().time
         self._alarm_time = None
 

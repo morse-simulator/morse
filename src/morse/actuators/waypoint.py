@@ -225,7 +225,7 @@ class Waypoint(morse.core.actuator.Actuator):
         self.local_data['z'] = self.position_3d.z
         self.local_data['speed'] = 0
 
-        super(Waypoint, self).interrupt()
+        morse.core.actuator.Actuator.interrupt(self)
 
     @service
     #@async_service
