@@ -93,6 +93,50 @@ class Object(AbstractObject):
             if level == "all" or level == self.level:
                 self.local_data[name] = default_value
 
+
+    @service
+    def get_properties(self):
+        """     
+        Returns the properties of a component.
+
+        :return: a dictionary of the current component's properties
+
+        """
+        all_properties = OrderedDict()
+        #fetches '_properties'
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
+        #adds '_properties' as a value to the key "properties"
+        res=OrderedDict([('properties',all_properties)])
+        return res
+
+
+    @service
+    def get_configurations(self):
+        """     
+        Returns the configurations of a component (parsed from the properties).
+
+        :return: a dictionary of the current component's configurations
+
+        """
+        all_properties = OrderedDict()
+        #fetches '_properties'
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
+        res = OrderedDict([('configurations',[])])
+        tmp = OrderedDict()
+        #parses 'all_properties' to get only "key"-"value"-pairs
+        #"key" is python_name and "value" is default_value
+        for item in all_properties.items():
+            tmp1 = OrderedDict([(item[0],item[1][0])])
+            tmp=OrderedDict(tmp.items()|tmp1.items())
+        #adds parsed "_properties" as a value to the key "configurations"
+        res['configurations'].append(tmp)
+        return res
+
+
     def update_properties(self):
         """
         Takes all registered properties (see add_property), and update
