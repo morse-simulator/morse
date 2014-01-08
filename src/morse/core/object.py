@@ -117,12 +117,8 @@ class Object(AbstractObject):
 
         """
         all_properties = self.fetch_properties()
-        res = {}
 
-        #adds '_properties' as a value to the key "properties"
-        res['properties'] = all_properties
-
-        return res
+        return {'properties': all_properties}
 
 
     @service
@@ -134,18 +130,13 @@ class Object(AbstractObject):
 
         """
         all_properties = self.fetch_properties()
-        res = {}
         tmp = {}
-
         #parses 'all_properties' to get only "key"-"value"-pairs
         #"key" is python_name and "value" is default_value
         for item in all_properties.items():
-            tmp[item[0]] = item[1][0]
+            tmp[item[0]] = item[1][0]   
 
-        #adds parsed "_properties" as a value to the key "configurations"
-        res['configurations'] = tmp
-
-        return res
+        return {'configurations': tmp}
 
 
     def update_properties(self):
