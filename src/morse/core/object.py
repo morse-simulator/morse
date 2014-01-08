@@ -93,16 +93,59 @@ class Object(AbstractObject):
             if level == "all" or level == self.level:
                 self.local_data[name] = default_value
 
+
+    def fetch_properties(self):
+        """
+        Returns the "_properties" of a component
+        :return: a dictionary of the field "_properties"
+        """
+        all_properties = OrderedDict()
+
+        #fetches '_properties'
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
+
+        return all_properties
+
+    @service
+    def get_properties(self):
+        """     
+        Returns the properties of a component.
+
+        :return: a dictionary of the current component's properties
+
+        """
+        all_properties = self.fetch_properties()
+
+        return {'properties': all_properties}
+
+
+    @service
+    def get_configurations(self):
+        """     
+        Returns the configurations of a component (parsed from the properties).
+
+        :return: a dictionary of the current component's configurations
+
+        """
+        all_properties = self.fetch_properties()
+        tmp = {}
+        #parses 'all_properties' to get only "key"-"value"-pairs
+        #"key" is python_name and "value" is default_value
+        for item in all_properties.items():
+            tmp[item[0]] = item[1][0]   
+
+        return {'configurations': tmp}
+
+
     def update_properties(self):
         """
         Takes all registered properties (see add_property), and update
         their values according to the values set in Blender object.
         """
 
-        all_properties = OrderedDict()
-        for cls in reversed(type(self).__mro__):
-            if hasattr(cls, '_properties'):
-                all_properties.update(cls._properties)
+        all_properties = self.fetch_properties()
 
         for name, details in all_properties.items():
             default_value, _, _, python_name = details
