@@ -12,7 +12,7 @@ class B21(morse.core.robot.Robot):
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.robot.Robot.__init__(self, obj, parent)
 
         logger.info('Component initialized')
 

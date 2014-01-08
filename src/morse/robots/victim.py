@@ -15,7 +15,7 @@ class Victim(morse.core.robot.Robot):
             but that information is not currently used for a robot. """
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        super(self.__class__,self).__init__(obj, parent)
+        morse.core.robot.Robot.__init__(self, obj, parent)
 
         if self.bge_object['Injured']:
             #  Set the mesh color to red

@@ -98,7 +98,7 @@ class Waypoint(morse.core.actuator.Actuator):
 
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.actuator.Actuator.__init__(self, obj, parent)
 
         # Direction of the global vectors
         self.world_x_vector = mathutils.Vector([1, 0, 0])

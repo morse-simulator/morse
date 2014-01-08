@@ -8,7 +8,7 @@ class PlatinePoster(PocolibsDataStreamOutput):
     _type_url = "http://trac.laas.fr/git/platine-genom/tree/platineStruct.h#n53"
 
     def initialize(self):
-        super(self.__class__, self).initialize(PLATINE_STATES)
+        PocolibsDataStreamOutput.initialize(self, PLATINE_STATES)
 
         self.obj = PLATINE_STATES()
 

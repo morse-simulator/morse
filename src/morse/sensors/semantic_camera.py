@@ -59,7 +59,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.sensors.camera.Camera.__init__(self, obj, parent)
 
         # Locate the Blender camera object associated with this sensor
         main_obj = self.bge_object
@@ -107,7 +107,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
         selected)
         """
         # Call the action of the parent class
-        super(self.__class__, self).default_action()
+        morse.sensors.camera.Camera.default_action(self)
 
         # Create dictionaries
         self.local_data['visible_objects'] = []
