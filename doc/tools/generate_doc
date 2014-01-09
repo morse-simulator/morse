@@ -297,7 +297,7 @@ def print_code_snippet(out, name, props):
     if props['type'] != 'robot':
         code += """
     robot.append(%(var)s)
-    """
+    """ % args
 
     code += """
     # define one or several communication interface, like 'socket'
