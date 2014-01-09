@@ -21,7 +21,7 @@ def _robot_exists(robot):
 
 class Communication(AbstractObject):
     def __init__(self):
-        super(Communication, self).__init__()
+        AbstractObject.__init__(self)
 
     def name(self):
         return "communication"

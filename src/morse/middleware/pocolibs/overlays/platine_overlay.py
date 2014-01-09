@@ -13,7 +13,7 @@ import math
 class PlatineModule(MorseOverlay):
     def __init__(self, overlaid_object):
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(overlaid_object)
+        MorseOverlay.__init__(self, overlaid_object)
         self._clean_track = False
         self._rot = 1.0
         self.cntrl = DummyPoster("platineCntrl")
@@ -53,7 +53,7 @@ class PlatineModule(MorseOverlay):
             self.overlaid_object.input_functions.pop()
             self.completed(status.PREEMPTED)
         self._interrupt()
-        super(PlatineModule, self).interrupt()
+        MorseOverlay.interrupt(self)
 
     @service
     def InitDriver(self, serial, baud, rot):

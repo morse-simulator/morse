@@ -32,7 +32,7 @@ class Velocity(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         # The robot needs a physics controller!
         # Since the sensor does not have physics

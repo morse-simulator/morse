@@ -73,7 +73,7 @@ class StereoUnit(morse.core.sensor.Sensor):
         """
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         self.num_cameras = 0
         self.camera_list = []

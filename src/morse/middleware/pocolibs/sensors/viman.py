@@ -62,7 +62,7 @@ class VimanPoster(PocolibsDataStreamOutput):
     _type_url = "http://trac.laas.fr/git/viman-genom/tree/vimanStruct.h#n139"
 
     def initialize(self):
-        super(self.__class__, self).initialize(VimanObjectPublicArray)
+        PocolibsDataStreamOutput.initialize(self, VimanObjectPublicArray)
 
         # Initialise the object
         self.obj = VimanObjectPublicArray()
