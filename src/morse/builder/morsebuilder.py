@@ -27,6 +27,7 @@ def morse_excepthook(*args, **kwargs):
     sys_excepthook(*args, **kwargs)
     import os
     os._exit(-1)
+
 # Uncaught exception quit Blender
 sys.excepthook = morse_excepthook
 

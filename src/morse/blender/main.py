@@ -21,6 +21,17 @@ from morse.core.modifier import register_modifier
 from morse.helpers.loading import create_instance, create_instance_level
 from morse.core.morse_time import TimeStrategies
 
+# Override the default Python exception handler
+sys_excepthook = sys.excepthook
+def morse_excepthook(*args, **kwargs):
+    logger.error("[ERROR][MORSE] Uncaught exception, quit Blender.", exc_info = tuple(args))
+    sys_excepthook(*args, **kwargs)
+    import os
+    os._exit(-1)
+
+# Uncaught exception quit BGE
+sys.excepthook = morse_excepthook
+
 # Constants for stream directions
 IN = 'IN'
 OUT = 'OUT'
