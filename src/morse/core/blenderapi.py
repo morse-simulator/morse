@@ -53,6 +53,7 @@ LEFTMOUSE = None
 RIGHTMOUSE = None
 
 F5KEY = None
+F7KEY = None
 F8KEY = None
 
 
@@ -87,6 +88,7 @@ if not fake:
     RIGHTMOUSE = bge.events.RIGHTMOUSE
 
     F8KEY = bge.events.F8KEY
+    F7KEY = bge.events.F7KEY
     F5KEY = bge.events.F5KEY
 
 def input_active():
