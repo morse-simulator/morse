@@ -21,6 +21,12 @@ Here is a quick overview of what you can do with the Builder API:
 | Actuator    | - alter(modifier)                     |                                 |
 |             |                                       |                                 |
 +-------------+---------------------------------------+---------------------------------+
+|             |                                       |                                 |
+| Zone        | - translate(x, y, z)                  |                                 |
+|             | - properties()                        |                                 |
+|             | - size (read-write)                   |                                 |
+|             |                                       |                                 |
++-------------+---------------------------------------+---------------------------------+
 |             |                                                                         |
 | Environment | see :py:class:`morse.builder.environment.Environment`                   |
 |             |                                                                         |
