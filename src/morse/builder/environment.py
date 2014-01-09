@@ -332,6 +332,8 @@ class Environment(Component):
         bpymorse.set_viewport_perspective()
 
         self._created = True
+        # in case we are in edit mode, do not exit on error with CLI
+        sys.excepthook = sys_excepthook # Standard Python excepthook
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color
