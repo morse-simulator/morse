@@ -5,6 +5,8 @@ General
 -------
 
 - Time management in Morse has been clarified (#388)
+- Implement the notion of zone, i.e. a 3d space which several properties which
+  can trigger various behaviours in the simulation. 
 
 Components
 ----------
