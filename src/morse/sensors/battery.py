@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_data, add_property
-from morse.core import blenderapi
 
 class Battery(morse.core.sensor.Sensor):
     """
@@ -43,11 +42,11 @@ class Battery(morse.core.sensor.Sensor):
         charge = self.local_data['charge']
         dt = (self.robot_parent.gettime() - self._time) / 1000.0
 
-        if self.isInChargingZone() and charge < 100:
+        if self.in_zones(type = 'Charging'):
             charge = charge + dt * self._discharging_rate
             if charge > 100.0:
                 charge = 100.0
-        elif charge > 0:
+        else:
             charge = charge - dt * self._discharging_rate
             if charge < 0.0:
                 charge = 0.0
@@ -57,11 +56,3 @@ class Battery(morse.core.sensor.Sensor):
         self.local_data['charge'] = float(charge)
         # update the current time
         self._time = self.robot_parent.gettime()
-
-
-    def isInChargingZone(self):
-        # Test if the robot (parent) is in a charging zone
-        pose = self.position_3d
-
-        zone_manager = blenderapi.persistantstorage().zone_manager
-        return zone_manager.is_in(self, type= 'Charging')
