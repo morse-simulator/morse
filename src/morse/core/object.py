@@ -124,6 +124,18 @@ class Object(AbstractObject):
         """
         self.default_action()
 
+    def in_zones(self, name = None, type = None):
+        """
+        Determine which zone(s) contain(s) current object
+
+        If a :param name: is precised, check only if this specific zone
+        contains the position
+        If a :param type: is precised, only search in the zone of this
+        type.
+        """
+        zone_manager = blenderapi.persistantstorage().zone_manager
+        return zone_manager.contains(self, name = name, type = type)
+
     @abstractmethod
     def default_action(self):
         """ Base action performed by any object.
