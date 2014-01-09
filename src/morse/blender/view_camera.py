@@ -19,6 +19,15 @@ start_position = []
 start_orientation = []
 keyboard_ctrl_objects = []
 
+robots = []
+current_robot = 0
+# Matrix.Translation((-1, 0, 2)) * Euler((rad(60), 0, rad(-90)), 'XYZ').to_matrix().to_4x4()
+camera_to_robot_transform = mathutils.Matrix( (
+    ( 0.0, 0.5,  -0.866, -1.0),
+    (-1.0, 0.0,   0.0,    0.0),
+    ( 0.0, 0.866, 0.5,    2.0),
+    ( 0.0, 0.0,   0.0,    1.0) ) )
+
 def store_default(contr):
     """ Save the initial position and orientation of the camera """
     global start_position
@@ -39,11 +48,21 @@ def store_default(contr):
         if 'move_cameraFP' in obj.getPropertyNames():
             keyboard_ctrl_objects.append(obj)
 
-def reset_position(contr):
+def reset_position(camera):
     """ Put the camera in the initial position and orientation """
-    camera = contr.owner
     camera.worldPosition = start_position
     camera.worldOrientation = start_orientation
+
+def look_robot(camera):
+    """ Put the camera above a robot """
+    global robots, current_robot
+    if not robots:
+        robots = [r for r in blenderapi.persistantstorage().robotDict]
+
+    robot = robots[ current_robot ]
+    camera.worldTransform = robot.worldTransform * camera_to_robot_transform
+    # switch between robots
+    current_robot = (current_robot + 1) % len(robots)
 
 
 def move(contr):
@@ -106,7 +125,9 @@ def move(contr):
             # Other actions activated with the keyboard
             # Reset camera to center
             if key[0] == blenderapi.F8KEY and keyboard.positive:
-                reset_position(contr)
+                reset_position(camera)
+            if key[0] == blenderapi.F7KEY and keyboard.positive:
+                look_robot(camera)
 
 
 def rotate(contr):
