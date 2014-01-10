@@ -34,9 +34,15 @@ Middlewares
 +++++++++++
 
 Pocolibs
----------
+--------
 
 - ``pocolibs`` is now able to export velodyne sensor.
+
+Socket
+------
+
+- new ``DepthCamera`` publisher
+- ``VideoCamera`` now publish base64 encoded RGBA image
 
 
 MORSE 1.1

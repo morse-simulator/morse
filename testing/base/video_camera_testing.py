@@ -16,6 +16,7 @@ except ImportError:
 import os
 import sys
 import time
+import base64
 import struct
 import zlib
 from pymorse import Morse
@@ -60,10 +61,13 @@ def flush_camera(camera_stream, morse, timeout):
         camera_stream.get()
         morse.sleep(.1)
 
-def rgb2gray8u(image_rgb_data):
+def rgba2gray8u(image_rgba_base64):
     # Grayscale model used for HDTV developed by the ATSC (Wikipedia)
-    return [int(0.2126 * px['r'] + 0.7152 * px['g'] + 0.0722 * px['b']) \
-            for px in image_rgb_data ]
+    image = base64.b64decode( image_rgba_base64 )
+    return [ int(0.2126 * image[index] +
+                 0.7152 * image[index + 1] +
+                 0.0722 * image[index + 2] )
+             for index in range(0, len(image), 4) ]
 
 def load_image(filepath, size):
     image = []
@@ -104,10 +108,12 @@ def read_pgm_ascii(filepath):
     return image8u
 
 def capture8u(cam_stream, image_path=None):
-    # get new image
+    # get new RGBA image
     capture = cam_stream.get()
     # convert it to grayscale
-    image8u = rgb2gray8u(capture['image'])
+    image8u = rgba2gray8u( capture['image'] )
+    # or if we use Video8uPublisher
+    # image8u = base64.b64decode( capture['image'] )
     # save the image (for debug)
     if image_path:
         save_pgm_ascii(image_path, image8u, IMAGE_WIDTH, IMAGE_HEIGHT)
