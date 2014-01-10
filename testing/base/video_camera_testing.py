@@ -160,6 +160,7 @@ class CameraTest(MorseTestCase):
         camera.translate(x=0.2, z=0.9)
         atrv.append(camera)
         camera.add_stream('socket')
+        # camera.add_stream('socket', method='morse.middleware.sockets.video_camera.Video8uPublisher')
 
         orientation = Orientation('orientation')
         orientation.add_stream('socket')
