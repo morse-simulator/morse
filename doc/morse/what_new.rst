@@ -6,6 +6,9 @@ General
 
 - Time management in Morse has been clarified (#388). See
   :doc:`time management documentation <../dev/time_event>` for more details about it.
+- Implement the notion of zone, i.e. a 3d space which several properties which
+  can trigger various behaviours in the simulation. See :ref:`here
+  <define_new_zone>` to see how to define zone in your scenario.
 
 Components
 ----------
