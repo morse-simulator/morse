@@ -19,6 +19,10 @@ Robots
 Actuators
 +++++++++
 
+- Armatures have received some love, with support for placing and controlling
+  inverse kinematics targets to easily control the full skeleton with inverse
+  kinematics.
+
 - The default ``ControlType`` of several actuators (v_omega, waypoint,
   xy_omage, keyboard, joystick) has been switched from "Position" to
   "Velocity". It basically means it relies more on the underlaying physic

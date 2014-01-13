@@ -21,6 +21,9 @@ Robots
 Actuators
 +++++++++
 
+- :doc:`Armatures <user/actuators/armature>` have received some love, with
+  support for placing and controlling inverse kinematics targets to easily
+  control the full skeleton with inverse kinematics.
 - The default ``ControlType`` of several actuators
   (:doc:`user/actuators/v_omega`, :doc:`user/actuators/waypoint`,
   :doc:`user/actuators/xy_omega`, :doc:`user/actuators/keyboard`,
