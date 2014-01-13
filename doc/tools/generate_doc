@@ -105,7 +105,7 @@ def parse_docstring(doc):
     but with a list of params, return values and their associated doc.
 
     Also replace known keywords by hyperlinks.
-    Also replace :see: by 'See also:'
+    Also replace :see:/:sees: by 'See also:'
     """
 
     # Try to 'safely' remove leading spaces introduced by natural Python
@@ -131,7 +131,8 @@ def parse_docstring(doc):
         new.append(l[trailing_space:])
 
     doc = "\n".join(new)
-    doc.replace(":see:", "'''\nSee also:'''")
+    doc = doc.replace(":see:", "\n**See also:**")
+    doc = doc.replace(":sees:", "\n**See also:**")
     r = doc.split(":param ", 1)
     doc = r[0]
     paramsdoc = None
