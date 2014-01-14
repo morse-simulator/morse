@@ -134,7 +134,7 @@ class Object(AbstractObject):
         #parses 'all_properties' to get only "key"-"value"-pairs
         #"key" is python_name and "value" is default_value
         for item in all_properties.items():
-            tmp[item[0]] = item[1][0]   
+            tmp[item[0]] = getattr(self, item[1][3])
 
         return {'configurations': tmp}
 
