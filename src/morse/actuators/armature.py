@@ -18,7 +18,7 @@ class Armature(morse.core.actuator.Actuator):
     made of a combination of revolute joints (hinge) and prismatic
     joints (slider).
 
-    This component only allows to *write* armature configuration. To read the
+    This component only allows to *set* an armature configuration. To read the
     armature pose, you need an :doc:`armature pose sensor <../sensors/armature_pose>`.
 
     .. important:: 
@@ -28,21 +28,29 @@ class Armature(morse.core.actuator.Actuator):
         <../../dev/armature_creation>` documentation.
 
 
+    This actuator offers two main ways to control a kinematic chain: either by
+    setting the values of each joint individually (via a continuous datastream
+    or via dedicated services: :py:meth:`translate`,
+    :py:meth:`set_translation`, :py:meth:`rotate`, :py:meth:`set_rotation`) or
+    by placing the end-effector and relying on a inverse kinematic solver (via
+    the services :py:meth:`set_IK_target` and :py:meth:`move_IK_target`).
+
     .. note::
 
-        The data structure on datastream read by the armature actuator
-        depends on the armature.  It is a dictionary of pair `(joint name,
-        joint value)`.  Joint values are either radians (for revolute joints)
-        or meters (for prismatic joints)
+        When setting the joints with a datastream, the data structure that the
+        armature actuator expects depends on the armature itself.  It is a
+        dictionary of pair `(joint name, joint value)`.  Joint values are
+        either radians (for revolute joints) or meters (for prismatic joints)
 
-    :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
     .. note::
 
         :tag:`ros` Armatures can be controlled in ROS through the
         `JointTrajectoryAction
-        <http://www.ros.org/wiki/pr2_controllers/Tutorials/Moving%20the%20arm%20using%20the%20Joint%20Trajectory%20Action>`_
+        <http://wiki.ros.org/joint_trajectory_action>`_
         interface.
+
+    :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
     """
     _name = "Armature Actuator"
