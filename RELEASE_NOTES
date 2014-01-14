@@ -5,6 +5,8 @@ General
 -------
 
 - Time management in Morse has been clarified (#388)
+- Implement the notion of zone, i.e. a 3d space which several properties which
+  can trigger various behaviours in the simulation. 
 
 Components
 ----------
@@ -34,9 +36,15 @@ Middlewares
 +++++++++++
 
 Pocolibs
----------
+--------
 
 - ``pocolibs`` is now able to export velodyne sensor.
+
+Socket
+------
+
+- new ``DepthCamera`` publisher
+- ``VideoCamera`` now publish base64 encoded RGBA image
 
 
 MORSE 1.1

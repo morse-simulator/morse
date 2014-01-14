@@ -286,7 +286,7 @@ MORSE_DATASTREAM_DICT = {
     "morse.sensors.video_camera.VideoCamera": {
         "default": {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
-            "socket": 'morse.middleware.sockets.video_camera.VideoPublisher',
+            "socket": 'morse.middleware.sockets.video_camera.VideoCameraPublisher',
             "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }

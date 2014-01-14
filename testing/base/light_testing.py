@@ -14,6 +14,7 @@ except ImportError:
     pass
 
 import sys
+import base64
 from pymorse import Morse
 
 class LightTest(MorseTestCase):
@@ -54,10 +55,10 @@ class LightTest(MorseTestCase):
 
             # search the green block in the image
             cam = cam_stream.get()
-            for i in range(320*240):
-                o = cam['image'][i]
+            img = base64.b64decode( cam['image'] )
+            for i in range(0, 320*240*4, 4):
                 # Value computed with gimp help ...
-                if (o['r'] < 5 and o['g'] > 110 and o['b'] < 5):
+                if (img[i] < 5 and img[i+1] > 110 and img[i+2] < 5):
                     res.append(i)
 
             self.assertEqual(len(res), 0)
@@ -67,11 +68,11 @@ class LightTest(MorseTestCase):
 
             morse.sleep(2.0)
             cam = cam_stream.get()
+            img = base64.b64decode( cam['image'] )
             # search the green block in the image
-            for i in range(320*240):
-                o = cam['image'][i]
+            for i in range(0, 320*240*4, 4):
                 # Value computed with gimp help ...
-                if (o['r'] < 5 and o['g'] > 110 and o['b'] < 5):
+                if (img[i] < 5 and img[i+1] > 110 and img[i+2] < 5):
                     res.append(i)
 
             self.assertTrue(len(res) > 10000)

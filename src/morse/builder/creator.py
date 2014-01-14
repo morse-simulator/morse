@@ -1,5 +1,5 @@
 import os
-from morse.builder import Robot, AbstractComponent, MORSE_COMPONENTS, bpymorse
+from morse.builder import Robot, AbstractComponent, bpymorse
 
 class ComponentCreator(AbstractComponent):
     def __init__(self, cname, category, filename=''):

@@ -1,8 +1,6 @@
-#import struct
-import base64
+import sys
 import json
-#import binascii
-from collections import OrderedDict
+import base64
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.socket_datastream import SocketPublisher
 
@@ -12,28 +10,26 @@ class DepthCameraPublisher(SocketPublisher):
     """
 
     _type_name = 'a JSON-Encoded message for the DepthCamera'
+
     def encode(self):
         if not self.component_instance.capturing:
             return bytes() # press [Space] key to enable capturing
 
-        points = memoryview(self.component_instance.local_data['points'])
-        p = bytes(points)
-        data = base64.b64encode(p)
-        """
-        removes leading "b' "
-        """
-        data = str(data,'ascii')	
-        intrinsic = self.component_instance.local_data['intrinsic_matrix']
+        points = self.data['points']
 
-        intrinisc_matrix = []
-        for i in range(0, 3):
-            for j in range (0, 3):
-                intrinisc_matrix.append(intrinsic[i][j])		
-		
-        res = OrderedDict ( [('timestamp', self.data['timestamp']) ,
-		        ('height', self.component_instance.image_height),
-		        ('width', self.component_instance.image_width),
-		        ('points', data),
-		        ('intrinsic_matrix', intrinisc_matrix)
-		        ])
+        if sys.version_info < (3,4):
+            points = bytes( points )
+
+        data = base64.b64encode( points ).decode() # get string
+        intrinsic = [ list(vec) for vec in self.data['intrinsic_matrix'] ]
+
+        res = {
+            'timestamp': self.data['timestamp'],
+            'height':    self.component_instance.image_height,
+            'width':     self.component_instance.image_width,
+            'points':    data,
+            'intrinsic_matrix': intrinsic,
+        }
+
         return (json.dumps(res) + '\n').encode()
+

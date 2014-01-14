@@ -134,7 +134,7 @@ class Object(AbstractObject):
         #parses 'all_properties' to get only "key"-"value"-pairs
         #"key" is python_name and "value" is default_value
         for item in all_properties.items():
-            tmp[item[0]] = item[1][0]   
+            tmp[item[0]] = getattr(self, item[1][3])
 
         return {'configurations': tmp}
 
@@ -166,6 +166,18 @@ class Object(AbstractObject):
         Can be redefined in some of the subclases (sensor and actuator).
         """
         self.default_action()
+
+    def in_zones(self, name = None, type = None):
+        """
+        Determine which zone(s) contain(s) current object
+
+        If a :param name: is precised, check only if this specific zone
+        contains the position
+        If a :param type: is precised, only search in the zone of this
+        type.
+        """
+        zone_manager = blenderapi.persistantstorage().zone_manager
+        return zone_manager.contains(self, name = name, type = type)
 
     @abstractmethod
     def default_action(self):
