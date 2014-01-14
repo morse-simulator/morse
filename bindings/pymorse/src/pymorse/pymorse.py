@@ -536,13 +536,13 @@ class Morse(object):
             'id': '%i'%self.simulator_service_id,
             'component': component,
             'service': service,
-            'args': ', '.join(json.dumps(arg) for arg in args),
+            'args': json.dumps(args),
         }
         self.simulator_service_id += 1
         return req
 
     def _rpc_process(self, req, timeout=None):
-        raw = "{id} {component} {service} [{args}]".format(**req)
+        raw = "{id} {component} {service} {args}".format(**req)
         logger.debug(raw)
         response_callback = ResponseCallback(req['id'])
         self.simulator_service.subscribe(response_callback.callback)
