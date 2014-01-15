@@ -44,16 +44,16 @@ Sensors
 
 
 Middlewares
-+++++++++++
+-----------
 
 Pocolibs
---------
+++++++++
 
 - ``pocolibs`` is now able to export :doc:`velodyne <user/sensors/depth_camera>`
   sensor.
 
 Socket
-------
+++++++
 
 - Add a new ``DepthCamera`` publisher.
 - ``VideoCamera`` now publish base64 encoded RGBA image.
