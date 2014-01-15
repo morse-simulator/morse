@@ -9,6 +9,8 @@ General
 - Implement the notion of zone, i.e. a 3d space which several properties which
   can trigger various behaviours in the simulation. See :ref:`here
   <define_new_zone>` to see how to define zone in your scenario.
+- Add new services for the CamaraFP settings.
+- F7 moves CamaraFP above robots
 
 Components
 ----------
@@ -45,10 +47,16 @@ Middlewares
 +++++++++++
 
 Pocolibs
-$$$$$$$$
+--------
 
 - ``pocolibs`` is now able to export :doc:`velodyne <user/sensors/depth_camera>`
   sensor.
+
+Socket
+------
+
+- Add a new ``DepthCamera`` publisher.
+- ``VideoCamera`` now publish base64 encoded RGBA image.
 
 
 What's new in MORSE 1.1?
