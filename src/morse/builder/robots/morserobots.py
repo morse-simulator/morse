@@ -11,7 +11,7 @@ class Morsy(GroundRobot):
         mesh = self.get_child('morsy_mesh')
         mesh.game.physics_type = 'NO_COLLISION'
 
-        self._bpy_object.game.radius = 0.01
+        self._bpy_object.game.radius = 0.08
 
         self.set_collision_bounds()
 
