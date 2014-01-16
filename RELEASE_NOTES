@@ -39,15 +39,15 @@ Sensors
   data has been computed, in simulated time.
 
 Middlewares
-+++++++++++
+-----------
 
 Pocolibs
---------
+++++++++
 
 - ``pocolibs`` is now able to export velodyne sensor.
 
 Socket
-------
+++++++
 
 - Add a new ``DepthCamera`` publisher.
 - ``VideoCamera`` now publish base64 encoded RGBA image.
