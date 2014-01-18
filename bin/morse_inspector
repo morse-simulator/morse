@@ -14,7 +14,7 @@ import json
 
 class MainWindow(Gtk.Window):
     def __init__(self, name, morse):
-        super(MainWindow, self).__init__()
+        Gtk.Window.__init__(self)
         self.connect("delete-event", Gtk.main_quit)
         self.create_gui()
         self.set_title(name)

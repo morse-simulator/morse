@@ -7,7 +7,7 @@ class TargetPoster(PocolibsDataStreamOutput):
     _type_url = "http://trac.laas.fr/git/genPos-genom/tree/genPosStruct.h#n144"
 
     def initialize(self):
-        super(self.__class__, self).initialize(GENPOS_TRAJ_POINTS)
+        PocolibsDataStreamOutput.initialize(self, GENPOS_TRAJ_POINTS)
 
         # Initialise the object
         self.obj = GENPOS_TRAJ_POINTS()

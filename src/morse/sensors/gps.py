@@ -47,8 +47,8 @@ class GPS(morse.core.sensor.Sensor):
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
         logger.info('%s initialization' % obj.name)
-
-        super(self.__class__, self).__init__(obj, parent)
+        # Call the constructor of the parent class
+        morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         self.prev_x, self.prev_y = 0,0
 

@@ -167,7 +167,7 @@ class YarpDatastreamManager(DatastreamManager):
     def __init__(self):
         """ Initialize the network and connect to the yarp server."""
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__()
+        DatastreamManager.__init__(self)
 
         yarp.Network.init()
 

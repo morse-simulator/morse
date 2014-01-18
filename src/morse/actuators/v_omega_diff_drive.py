@@ -40,7 +40,7 @@ class MotionVWDiff(morse.core.actuator.Actuator):
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.actuator.Actuator.__init__(self, obj, parent)
 
         self.local_data['v'] = 0.0
         self.local_data['w'] = 0.0

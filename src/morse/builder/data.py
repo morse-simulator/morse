@@ -132,6 +132,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.depth_camera.DepthCamera": {
         "default": {
+            "socket": 'morse.middleware.sockets.depth_camera.DepthCameraPublisher',
             "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
             'pocolibs': 'morse.middleware.pocolibs.sensors.stereopixel.Spix3DImagePoster'
             }
@@ -187,11 +188,6 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "moos": 'morse.middleware.moos.imu.IMUNotifier'
-            }
-        },
-    "morse.sensors.kinect.Kinect": {
-        "default": {
-            "ros": 'morse.middleware.ros.kinect.XYZRGBPublisher',
             }
         },
     "morse.sensors.laserscanner.LaserScanner": {
@@ -298,7 +294,15 @@ MORSE_DATASTREAM_DICT = {
     "morse.sensors.video_camera.VideoCamera": {
         "default": {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
-            "socket": 'morse.middleware.sockets.video_camera.VideoPublisher',
+            "socket": 'morse.middleware.sockets.video_camera.VideoCameraPublisher',
+            "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
+            "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
+            }
+        },
+    "morse.sensors.depth_camera.DepthVideoCamera": {
+        "default": {
+            "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
+            "socket": 'morse.middleware.sockets.video_camera.VideoCameraPublisher',
             "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }

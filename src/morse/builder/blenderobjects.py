@@ -1,5 +1,6 @@
 import math
-from morse.builder import AbstractComponent, bpymorse
+from morse.builder.abstractcomponent import AbstractComponent
+from morse.builder import bpymorse
 
 class Mesh(AbstractComponent):
     mesh_primitive_add = bpymorse.add_mesh_monkey # you must set it in subclasses

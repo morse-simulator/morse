@@ -31,12 +31,12 @@ Videos
 |  uses it to navigate.                    |                with YARP.                |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
-|         .. vimeo:: 27862605              |                                          |
-|            :width: 400                   |                                          |
+|         .. vimeo:: 27862605              |            .. vimeo:: 80372226           |
+|            :width: 400                   |               :width: 400                |
 |                                          |                                          |
-|  MORSE can be used to test human-robot   |                                          |
-|  interaction scenarii, where a human     |                                          |
-|  is controlled as in a video game.       |                                          |
+|  MORSE can be used to test human-robot   |    MORSE simulates a Velodyne            |
+|  interaction scenarii, where a human     |    used to build a map of the            |
+|  is controlled as in a video game.       |    environment.                          |
 +------------------------------------------+------------------------------------------+
 
 More videos are available on the `Blender for Robotics Vimeo group 

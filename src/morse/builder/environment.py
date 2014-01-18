@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
 from morse.builder.morsebuilder import *
+from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
 
 class Environment(Component):
@@ -331,7 +332,12 @@ class Environment(Component):
         # Set viewport to Camera
         bpymorse.set_viewport_perspective()
 
+        hud_text = bpymorse.get_object('Keys_text')
+        hud_text.scale.y = 0.027 # to fit the HUD_plane
+
         self._created = True
+        # in case we are in edit mode, do not exit on error with CLI
+        sys.excepthook = sys_excepthook # Standard Python excepthook
 
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color

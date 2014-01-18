@@ -22,7 +22,7 @@ class Robot(morse.core.object.Object):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(Robot, self).__init__(obj, parent)
+        morse.core.object.Object.__init__(self, obj, parent)
         
         # Add the variable move_status to the object
         self.move_status = "Stop"

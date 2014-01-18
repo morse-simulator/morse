@@ -18,7 +18,7 @@ class Object(AbstractObject):
 
     def __init__ (self, obj, parent=None):
 
-        super(Object, self).__init__()
+        AbstractObject.__init__(self)
 
         # Fill in the data sent as parameters
         self.bge_object = obj
@@ -93,16 +93,59 @@ class Object(AbstractObject):
             if level == "all" or level == self.level:
                 self.local_data[name] = default_value
 
+
+    def fetch_properties(self):
+        """
+        Returns the "_properties" of a component
+        :return: a dictionary of the field "_properties"
+        """
+        all_properties = OrderedDict()
+
+        #fetches '_properties'
+        for cls in reversed(type(self).__mro__):
+            if hasattr(cls, '_properties'):
+                all_properties.update(cls._properties)
+
+        return all_properties
+
+    @service
+    def get_properties(self):
+        """     
+        Returns the properties of a component.
+
+        :return: a dictionary of the current component's properties
+
+        """
+        all_properties = self.fetch_properties()
+
+        return {'properties': all_properties}
+
+
+    @service
+    def get_configurations(self):
+        """     
+        Returns the configurations of a component (parsed from the properties).
+
+        :return: a dictionary of the current component's configurations
+
+        """
+        all_properties = self.fetch_properties()
+        tmp = {}
+        #parses 'all_properties' to get only "key"-"value"-pairs
+        #"key" is python_name and "value" is default_value
+        for item in all_properties.items():
+            tmp[item[0]] = getattr(self, item[1][3])
+
+        return {'configurations': tmp}
+
+
     def update_properties(self):
         """
         Takes all registered properties (see add_property), and update
         their values according to the values set in Blender object.
         """
 
-        all_properties = OrderedDict()
-        for cls in reversed(type(self).__mro__):
-            if hasattr(cls, '_properties'):
-                all_properties.update(cls._properties)
+        all_properties = self.fetch_properties()
 
         for name, details in all_properties.items():
             default_value, _, _, python_name = details
@@ -123,6 +166,18 @@ class Object(AbstractObject):
         Can be redefined in some of the subclases (sensor and actuator).
         """
         self.default_action()
+
+    def in_zones(self, name = None, type = None):
+        """
+        Determine which zone(s) contain(s) current object
+
+        If a :param name: is precised, check only if this specific zone
+        contains the position
+        If a :param type: is precised, only search in the zone of this
+        type.
+        """
+        zone_manager = blenderapi.persistantstorage().zone_manager
+        return zone_manager.contains(self, name = name, type = type)
 
     @abstractmethod
     def default_action(self):

@@ -124,7 +124,7 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
         # Call the constructor of the parent class
-        super(MorsePhysicsRobot, self).__init__(obj, parent)
+        PhysicsWheelRobot.__init__(self, obj, parent)
 
         # get wheel references and ID's
         self.get_wheels()

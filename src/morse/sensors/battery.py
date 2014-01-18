@@ -14,8 +14,8 @@ class Battery(morse.core.sensor.Sensor):
     This rate is independent of the actions performed by the robot, and
     only dependant on the time elapsed since the beginning of the simulation.
 
-    A planned feature is to allow for designated **Charging Zones** where
-    the battery will gradually recharge. However, this is not implemented yet.
+    If the battery enters in a **Charging zone**, the battery will
+    gradually recharge.
     """
 
     _name = "Battery Sensor"
@@ -31,7 +31,7 @@ class Battery(morse.core.sensor.Sensor):
             The second parameter should be the name of the object's parent. """
         logger.info("%s initialization" % obj.name)
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__(obj, parent)
+        morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         self._time = self.robot_parent.gettime()
 
@@ -42,11 +42,11 @@ class Battery(morse.core.sensor.Sensor):
         charge = self.local_data['charge']
         dt = (self.robot_parent.gettime() - self._time) / 1000.0
 
-        if self.isInChargingZone() and charge < 100:
+        if self.in_zones(type = 'Charging'):
             charge = charge + dt * self._discharging_rate
             if charge > 100.0:
                 charge = 100.0
-        elif charge > 0:
+        else:
             charge = charge - dt * self._discharging_rate
             if charge < 0.0:
                 charge = 0.0
@@ -56,13 +56,3 @@ class Battery(morse.core.sensor.Sensor):
         self.local_data['charge'] = float(charge)
         # update the current time
         self._time = self.robot_parent.gettime()
-
-
-    def isInChargingZone(self):
-        # Test if the robot (parent) is in a charging zone
-        pose = self.position_3d
-        # look for a charging zon in the scene
-        # TODO for 'charging_zone' in scene:
-        # if the robot is near the zone, return true
-        return False
-

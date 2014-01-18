@@ -14,6 +14,15 @@ list of robots would look like that::
   > req1 simulation list_robots
   req1 OK ['Robot1', 'Robot2']
 
+Or using ``pymorse``
+
+.. code-block:: python
+
+    import pymorse
+    with pymorse.Morse() as sim:
+        sim.rpc('simulation', 'get_camarafp_projection_matrix')
+        sim.rpc('simulation', 'set_camarafp_far_clip', 1000)
+
 
 Available services
 ------------------
@@ -42,6 +51,12 @@ Available services
   physic level)
 - ``set_object_dynamics`` ``cmpnt`` (string) ``state`` (bool): enable or
   disable the dynamics (physics) associated to component ``cmpnt``.
+- ``set_camarafp_far_clip`` Set the CamaraFP (MORSE' environment camera) far
+  clipping distance. (float)
+- ``set_camarafp_position`` Set the CamaraFP world position. [x, y, z]
+- ``set_camarafp_transform`` Set the CamaraFP world space 4x4 transform matrix.
+- ``set_camarafp_projection_matrix`` Set the CamaraFP 4x4 projection matrix.
+- ``get_camarafp_projection_matrix`` Get the CamaraFP 4x4 projection matrix.
 
 .. note::
   Simulation services are stored in :py:mod:`morse.core.supervision_services`.

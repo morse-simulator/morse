@@ -518,7 +518,7 @@ following Python script:
       def __init__(self, obj, parent=None):
           logger.info("%s initialization" % obj.name)
           # Call the constructor of the parent class
-          super(self.__class__, self).__init__(obj, parent)
+          Actuator.__init__(self, obj, parent)
   
           self.left_eye = parent.bge_object.children["left_eye"]
           self.right_eye = parent.bge_object.children["right_eye"]
@@ -564,7 +564,7 @@ The data set by the simulator clients can be later accessed through the
     def __init__(self, obj, parent=None):
           logger.info("%s initialization" % obj.name)
           # Call the constructor of the parent class
-          super(self.__class__, self).__init__(obj, parent)
+          Actuator.__init__(self, obj, parent)
   
           self.left_eye = parent.bge_object.children["left_eye"]
           self.right_eye = parent.bge_object.children["right_eye"]

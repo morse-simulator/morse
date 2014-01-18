@@ -1,7 +1,10 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import sys
 import math
-from morse.builder.abstractcomponent import *
+from morse.builder.blenderobjects import Cube
+from morse.builder import bpymorse
+from morse.builder.abstractcomponent import AbstractComponent
+from morse.core.exceptions import *
 
 """
 Morse Builder API
@@ -27,6 +30,7 @@ def morse_excepthook(*args, **kwargs):
     sys_excepthook(*args, **kwargs)
     import os
     os._exit(-1)
+
 # Uncaught exception quit Blender
 sys.excepthook = morse_excepthook
 
@@ -90,6 +94,24 @@ class PassiveObject(AbstractComponent):
             contr = obj.game.controllers[-1]
             contr.link(sensor = sens)
 
+class Zone(Cube):
+    def __init__(self, type):
+        Cube.__init__(self, 'xxx')
+        # Need to create a new material before calling make_transparent
+        self._bpy_object.active_material = bpymorse.create_new_material()
+        self._make_transparent(self._bpy_object, 1e-6)
+        self.properties(Zone_Tag = True, Type = type)
+
+    @property
+    def size(self):
+        return self._bpy_object.scale
+    @size.setter
+    def size(self, value):
+        self._bpy_object.scale = value
+
+    def rotate(self, x=0.0, y=0.0, z=0.0):
+        logger.warning("rotate is not supported for Zone")
+
 class Component(AbstractComponent):
     """ Append a morse-component to the scene
 
@@ -115,21 +137,6 @@ class Component(AbstractComponent):
         if make_morseable and category in ['sensors', 'actuators', 'robots'] \
                 and not self.is_morseable():
             self.morseable()
-
-
-class Armature(AbstractComponent):
-    def __init__(self, objectname, filename='armature'):
-        """ Initialize an Armature
-
-        :param objectname: Armature name
-        :param filename: for datastream configuration, default 'armature'
-        """
-        AbstractComponent.__init__(self, filename=filename, category='actuators')
-        self.set_blender_object(bpymorse.get_object(objectname))
-        # default classpath for Armature (can be modified)
-        if not self.is_morseable():
-            self.morseable()
-        self.properties(classpath="morse.actuators.armature.Armature")
 
 
 class Robot(Component):
@@ -262,6 +269,83 @@ class Sensor(Component):
         self.properties(Component_Tag = True)
 
 class Actuator(Component):
-    def __init__(self, filename):
+    def __init__(self, filename = None):
         Component.__init__(self, 'actuators', filename)
         self.properties(Component_Tag = True)
+
+
+class Armature(Actuator):
+    def __init__(self, armature_name = None, model_name = None):
+        """ Initialize an Armature
+
+        :param armature_name: Armature object name
+        :param model_name: Armature model name, if any
+        """
+        Actuator.__init__(self, filename = model_name)
+
+        if not armature_name and not model_name:
+            raise MorseBuilderError("You need to specify either the name of " \
+                    "an armature or a Blender model in order to create an " \
+                    "armature actuator.")
+
+        if armature_name:
+            if not model_name:
+                # no model name given -> MORSE automatically added an empty
+                # for this actuator, which we do not want since we provide
+                # our own Blender armature.
+                bpymorse.delete([self._bpy_object])
+            self.set_blender_object(bpymorse.get_object(armature_name))
+            self.properties(Component_Tag = True)
+
+        # default classpath for Armature (can be modified)
+        self.properties(classpath="morse.actuators.armature.Armature")
+
+        self.ik_targets = []
+
+    def get_posebone(self, bone_name):
+        """ Returns a given PoseBone in the armature.
+
+        If the joint does not exist, throw an exception.
+        """
+        armature = self._bpy_object
+
+        if bone_name not in [c.name for c in armature.pose.bones]:
+            msg = "Joint <%s> does not exist in model %s." % (bone_name, armature.name)
+            msg += " Did you add a skeleton to your model in MakeHuman?"
+            raise MorseBuilderError(msg)
+
+        return armature.pose.bones[bone_name]
+
+    def create_ik_targets(self, bones):
+
+        # Bug with iTaSC! cf http://developer.blender.org/T37894
+        if bpymorse.version() < (2, 70, 0):
+            if self._bpy_object.pose.ik_solver == 'ITASC':
+                logger.warn("Due to a bug in Blender (T37894), only the standard " \
+                            "IK solver can be used with IK targets. Switching " \
+                            "from iTaSC to standard IK solver.")
+                self._bpy_object.pose.ik_solver = 'LEGACY'
+
+        for target in bones:
+            posebone = self.get_posebone(target)
+            bpymorse.add_morse_empty("ARROWS")
+            empty = bpymorse.get_first_selected_object()
+            empty.scale = [0.01, 0.01, 0.01]
+
+            empty.matrix_local = posebone.bone.matrix_local
+            empty.location = posebone.bone.tail_local
+
+            ik = posebone.constraints.new("IK")
+            ik.use_rotation = True
+            ik.use_tail = True
+            ik.target = empty
+
+            self.ik_targets.append((empty, target))
+
+
+    def after_renaming(self):
+        for empty, target in self.ik_targets:
+            empty.name = "ik_target." + self.name + "." + target
+
+
+

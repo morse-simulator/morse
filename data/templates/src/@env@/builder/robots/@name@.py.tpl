@@ -24,6 +24,7 @@ class @classname@(Robot):
         # Optionally allow to move the robot with the keyboard
         if debug:
             keyboard = Keyboard()
+            keyboard.properties(ControlType = 'Position')
             self.append(keyboard)
 
         ###################################

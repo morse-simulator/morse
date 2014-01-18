@@ -49,7 +49,7 @@ class MorseFuture():
 class MorseExecutor(ThreadPoolExecutor):
 
     def __init__(self, max_workers, morse):
-        super(MorseExecutor, self).__init__(max_workers)
+        ThreadPoolExecutor.__init__(self, max_workers)
         self._morse = morse
 
         self.futures = []
@@ -58,7 +58,7 @@ class MorseExecutor(ThreadPoolExecutor):
     def submit(self, fn, *args, **kwargs):
 
         rqst_id = args[0]["id"]
-        f = super(MorseExecutor, self).submit(fn, *args, **kwargs)
+        f = ThreadPoolExecutor.submit(self, fn, *args, **kwargs)
 
         mf = MorseFuture(f, self._morse, rqst_id)
         self.futures.append(mf)

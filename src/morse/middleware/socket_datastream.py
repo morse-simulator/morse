@@ -22,7 +22,8 @@ class MorseEncoder(json.JSONEncoder):
         if isinstance(obj, mathutils.Vector):
             return obj[:]
         if isinstance(obj, mathutils.Matrix):
-            return obj[:][:]
+            # obj[:][:] gives list(mathutils.Vector)
+            return [list(vec) for vec in obj]
         if isinstance(obj, mathutils.Quaternion):
             return {'x' : obj.x, 'y': obj.y, 'z': obj.z, 'w': obj.w }
         if isinstance(obj, mathutils.Euler):
@@ -160,7 +161,7 @@ class SocketDatastreamManager(DatastreamManager):
     def __init__(self):
         """ Initialize the socket connections """
         # Call the constructor of the parent class
-        super(self.__class__, self).__init__()
+        DatastreamManager.__init__(self)
 
         # port -> MorseSocketServ
         self._server_dict = {}

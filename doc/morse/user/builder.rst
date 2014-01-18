@@ -361,3 +361,22 @@ your builder script::
 
 	pose.alter('Noise', pos_std=0.3)
  
+
+.. _define_new_zone:
+
+Adding a zone
+-------------
+
+A zone is a 3d zone, more precisely a rectangular parallelepiped. It is
+possible to attach specific properties to each zone, in particular its name
+and its type. In the simulator, different behaviours can be implemented. At
+the moment, the only Morse component using the concept of zone is the
+:doc:`battery <sensors/battery>`.
+
+To add a zone of type ``Charging`` in a scenario, just add the following lines
+to your builder script::
+
+    charging_zone_1 = Zone(type = 'Charging')
+    # Change its size and move it around (10.0, 0.0, 2.0)
+    charging_zone_1.size = [5.0, 5.0, 5.0]
+    charging_zone_1.translate(x = 10.0, z = 2.0)

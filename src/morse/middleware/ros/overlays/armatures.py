@@ -22,7 +22,7 @@ class ArmatureController(MorseOverlay):
 
     def __init__(self, overlaid_object, namespace = None):
         # Call the constructor of the parent class
-        super(self.__class__,self).__init__(overlaid_object)
+        MorseOverlay.__init__(self, overlaid_object)
 
         joints = list(overlaid_object.local_data.keys())
 
@@ -44,7 +44,7 @@ class ArmatureController(MorseOverlay):
         if self.namespace:
             return self.namespace
         else:
-            return super(self.__class__, self).name()
+            return MorseOverlay.name(self)
 
     @interruptible
     @ros_action(type = JointTrajectoryAction)

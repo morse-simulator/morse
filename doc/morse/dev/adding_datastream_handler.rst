@@ -217,7 +217,7 @@ method, do not forget to call respectively ``read`` or ``write``.
         _type_name = "POM_POS"
 
         def initialize(self):
-            super(self.__class__, self).initialize(POM_POS)
+            PocolibsDataStreamOutput.initialize(self, POM_POS)
 
             # Initialise the object
             self.obj = POM_POS()
