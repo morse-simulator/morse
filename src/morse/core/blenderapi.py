@@ -17,7 +17,7 @@ if sys.executable.endswith('blender'):
         # typically at 'Builder' stage.
         fake = True
 else:
-    print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
+    print("WARNING: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True
 
 from morse.core import mathutils

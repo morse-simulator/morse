@@ -9,7 +9,7 @@ bpy = None
 try:
     import bpy
 except ImportError:
-    print("ATTENTION: MORSE is running outside Blender! (no bpy)")
+    print("WARNING: MORSE is running outside Blender! (no bpy)")
 
 def empty_method(*args, **kwargs):
     print(args, kwargs)

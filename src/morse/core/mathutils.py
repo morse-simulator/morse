@@ -7,7 +7,7 @@ import sys
 
 # running in Blender?
 if not sys.executable.endswith('blender'):
-    print("ATTENTION: MORSE is running outside Blender! "
+    print("WARNING: MORSE is running outside Blender! "
           "(sys.executable != blender)")
 
     def Matrix(*args):
