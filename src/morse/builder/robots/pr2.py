@@ -4,12 +4,12 @@ from morse.builder import *
 from morse.builder.sensors import *
 from morse.builder.actuators import *
 
-class BarePR2(Robot):
+class BarePR2(GroundRobot):
     """
     A PR2 model, without any sensor or actuator.
     """
     def __init__(self, name = None):
-        Robot.__init__(self, 'pr2', name)
+        GroundRobot.__init__(self, 'pr2', name)
         self.properties(classpath = "morse.robots.pr2.PR2",
                         COLOR = "0.0, 0.0, 1.0")
 

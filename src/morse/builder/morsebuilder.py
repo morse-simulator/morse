@@ -214,7 +214,12 @@ class Robot(Component):
         self._bpy_object.game.collision_bounds_type = 'CONVEX_HULL'
         self._bpy_object.game.use_collision_compound = True
 
-class WheeledRobot(Robot):
+class GroundRobot(Robot):
+    def __init__(self, filename, name):
+        Robot.__init__(self, filename, name)
+        self.properties(GroundRobot = True)
+
+class WheeledRobot(GroundRobot):
     def __init__(self, filename, name):
         Robot.__init__(self, filename, name)
 
