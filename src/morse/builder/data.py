@@ -72,6 +72,12 @@ MORSE_MODIFIER_DICT = {
         'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
         'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
         'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
+    },
+    'GPSNoise' : {
+        'gps': "morse.modifiers.gps_noise.GPSNoiseModifier"
+    },
+    'CompassNoise' : {
+        'compass': "morse.modifiers.compass_noise.CompassNoiseModifier"
     }
 }
 
@@ -147,6 +153,13 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
                          'morse.middleware.pocolibs.sensors.pom.PomPoster'],
             "moos": 'morse.middleware.moos.gps.GPSNotifier'
+            }
+        },
+    "morse.sensors.compass.Compass": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
