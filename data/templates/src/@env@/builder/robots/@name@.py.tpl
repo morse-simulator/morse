@@ -1,6 +1,6 @@
 from morse.builder import *
 
-class @classname@(Robot):
+class @classname@(GroundRobot):
     """
     A template robot model for @name@, with a motion controller and a pose sensor.
     """
