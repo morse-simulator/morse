@@ -21,7 +21,7 @@ class Keyboard(Actuator):
     _name = "Keyboard Actuator"
     _short_desc="A 'fake' actuator that allows to move a robot from the keyboard."
 
-    add_property('_type', 'Velocity', 'ControlType', 'string',
+    add_property('_type', 'Position', 'ControlType', 'string',
                  "Kind of control to move the parent robot, in ['Position', "
                  "'Velocity', 'Differential']")
     add_property('_speed', 1.0, 'Speed', 'float',
