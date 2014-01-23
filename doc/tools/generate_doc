@@ -76,6 +76,9 @@ sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 PREFIX = "."
 MEDIA_PATH = "../../media"
 
+# docstring role that, if present, prevent automatic generation of a code sample
+NOAUTOEXAMPLE = ":noautoexample:"
+
 # documentation of special parameters
 special_doc = {}
 
@@ -100,6 +103,35 @@ def insert_image(name):
 
     return ""
 
+def extract_examples(doc):
+    """
+    Returns a set of examples extracted (ie, removed) from a docstring.
+    Examples must be presented in a `.. example::` block.
+
+    :returns: a tuple (examples list, input doc with examples blocks removed)
+    """
+    examples = []
+
+    remaining_doc = []
+
+    i = 0
+    while i < len(doc):
+        if doc[i].strip() == ".. example::":
+            example = []
+            while True:
+                i += 1
+                if len(doc[i]) > 0 and doc[i][0] != ' ':
+                    remaining_doc.append(doc[i])
+                    break
+                else:
+                    example.append(doc[i])
+            examples.append("\n".join(example))
+        else:
+            remaining_doc.append(doc[i])
+        i += 1
+
+    return examples, remaining_doc
+
 def parse_docstring(doc):
     """ Parses the doc string, and return the doc without :param *: or :return:
     but with a list of params, return values and their associated doc.
@@ -108,13 +140,16 @@ def parse_docstring(doc):
     Also replace :see:/:sees: by 'See also:'
     """
 
+    generate_example = True
+
     # Try to 'safely' remove leading spaces introduced by natural Python
     # docstring formatting. We can not simply strip leading withspaces,
     # because they may be significant for rst (like in ..note:)
     orig = doc.split('\n')
     if (orig[0].strip()):
-        print("XXX Invalid docstring %s" % doc)
-        return (doc, None, None)
+        print("XXX Invalid docstring (first line of MORSE docstrings " \
+              "must be empty):\n%s" % doc)
+        return (doc, None, None, None, None)
 
     new = [""]
     
@@ -130,7 +165,16 @@ def parse_docstring(doc):
     for l in orig[1:]:
         new.append(l[trailing_space:])
 
+    examples, new = extract_examples(new)
+
     doc = "\n".join(new)
+
+    # Pre-processing
+    if NOAUTOEXAMPLE in doc:
+        generate_example = False
+        doc = doc.replace(NOAUTOEXAMPLE, "")
+
+
     doc = doc.replace(":see:", "\n**See also:**")
     doc = doc.replace(":sees:", "\n**See also:**")
     r = doc.split(":param ", 1)
@@ -143,9 +187,9 @@ def parse_docstring(doc):
             doc = parts[0]
             returndoc = parts[1].split(':', 1)[1]
             returndoc = returndoc.replace("\n", " ")
-            return (doc, None, returndoc)
+            return (doc, None, returndoc, generate_example, examples)
         else:
-            return (doc, None, None)
+            return (doc, None, None, generate_example, examples)
     else:
         parts= r[1].split(":return", 1)
 
@@ -160,7 +204,7 @@ def parse_docstring(doc):
         returndoc = returndoc.replace("\n", " ")
 
 
-    return (doc, paramsdoc,returndoc)
+    return (doc, paramsdoc,returndoc, generate_example, examples)
 
 components = {}
 
@@ -267,8 +311,9 @@ def print_code_snippet(out, name, props):
     title = "Examples"
     out.write(underline(title, '-') + '\n')
 
-    out.write("\nThe following example shows how to use this component in a *Builder* script:\n\n")
+    out.write("\nThe following examples show how to use this component in a *Builder* script:\n\n")
 
+def generate_builder_example(out, name, props):
     args = {'var': props["object"].__name__.lower(), 'name':props["object"].__name__, 'type': props['type']}
 
     code = """
@@ -455,10 +500,10 @@ def print_services(out, name, props):
         for name, serv in services.items():
             out.write('- ``' + name + '(')
 
-            doc = params = returndoc = None
+            doc = params = returndoc = generate_example = examples = None
 
             if serv['doc']:
-                doc, params, returndoc = parse_docstring(serv['doc'])
+                doc, params, returndoc, generate_example, examples = parse_docstring(serv['doc'])
 
             if params:
                 out.write(", ".join([p for p,d in params]))
@@ -506,7 +551,8 @@ for name, props in components.items():
         if props['desc']:
             out.write("\n**" + props['desc'] + "**\n\n")
 
-        out.write(parse_docstring(props['doc'])[0] + "\n\n")
+        doc, params, returndoc, generate_example, examples = parse_docstring(props['doc'])
+        out.write(doc + "\n\n")
 
         print_properties(out, name, props)
         if not print_levels(out, name, props) and \
@@ -515,7 +561,13 @@ for name, props in components.items():
 
         if props['type'] != 'modifier':
             print_services(out, name, props)
-            print_code_snippet(out, name, props)
+            if generate_example or examples:
+                print_code_snippet(out, name, props)
+                if generate_example:
+                    generate_builder_example(out, name, props)
+                for example in examples:
+                    out.write(insert_code(example))
+
         print_files(out, name, props)
 
         out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
