@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.helpers.components import add_property, add_data
 import math, datetime
-from mathutils import Matrix, Vector
+from morse.core import mathutils
 
 class GPS(morse.core.sensor.Sensor):
     """
@@ -108,6 +108,7 @@ class Real_GPS(morse.core.sensor.Sensor):
             Solutions to the Cartesian to Geodetic Coordinate Transformation“, 
             Hok Sum Fok and H.   Bâki Iz,
             http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
+            (FoIz)
         """
         now = datetime.datetime.now()
         
@@ -140,9 +141,12 @@ class Real_GPS(morse.core.sensor.Sensor):
         #GPS
         ####
         
+        ####
         #constants in calculations
+        #a: WGS-84 Earth semimajor axis
+        #ecc: first eccentricity
+        ####
         a  = float(6378137)
-        #b  = 6356752.314245
         ecc = 8.181919191e-2
 
         def convert_GPS_to_ECEF(P):
@@ -174,6 +178,7 @@ class Real_GPS(morse.core.sensor.Sensor):
             """
             converts point in ECEF-r coordinates into Geodetic (GPS) via Vermeille's method     
             """
+            #"just intermediary parameters" see FoIz
             p = (xe[0]**2+xe[1]**2)/a**2
             q = (1-ecc**2)/a**2*xe[2]**2
             r = (p+q-ecc**4)/6
@@ -193,9 +198,7 @@ class Real_GPS(morse.core.sensor.Sensor):
         P = [self.longitude, self.latitude, self.altitude]
 
         #current position
-        xt = [float (self.position_3d.x),
-              float (self.position_3d.y),
-              float (self.position_3d.z)]
+        xt = self.position_3d.translation
         xt = Vector(xt)
 
         #P (in degrees) to radians  
