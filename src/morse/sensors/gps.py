@@ -8,92 +8,108 @@ class GPS(morse.core.sensor.Sensor):
     """
     A GPS sensor which returns the position either in Blender or Geodetic coordinates.
 
-    .. note::
-        This sensor always provides perfect data on the levels "raw" and "extended".
-        To obtain more realistic readings, it is recommended to add modifiers.
+    This sensor always provides perfect data on the levels "raw" and "extended".
+    To obtain more realistic readings, it is recommended to add modifiers.
 
-        - **Noise modifier**: Adds random Gaussian noise to the data
+    - **Noise modifier**: Adds random Gaussian noise to the data
 
-        coordinates in Blender: x -> east and y -> north
-        
-        The "heading" is Clockwise (mathematically negative).
+    coordinates in Blender: x -> east and y -> north
 
-
-        Conversion of Geodetic coordinates into ECEF-r, LTP into ECEF-r and vice versa
-        ==============================================================================
+    The "heading" is Clockwise (mathematically negative).
 
 
-        Conversion of Geodetic coordinates into ECEF-r
-        ______________________________________________
-        To be able to simulate a GPS-sensor P (the Blender origin) must be defined 
-        in the properties in Geodetic coordinates (longitude, latitude, altitude). 
-        For the transformation [Psas_] the coordinates must be in decimal 
-        degrees (no North, minutes, etc.). The result is a point x0 in the ECEF-r coordinates.
+    Conversion of Geodetic coordinates into ECEF-r, LTP into ECEF-r and vice versa
+    ------------------------------------------------------------------------------
+
+    Conversion of Geodetic coordinates into ECEF-r
+    ++++++++++++++++++++++++++++++++++++++++++++++
+
+    To be able to simulate a GPS-sensor P (the Blender origin) must
+    be defined in the properties in Geodetic coordinates (longitude,
+    latitude, altitude).  For the transformation [Psas_] the
+    coordinates must be in decimal degrees (no North, minutes,
+    etc.). The result is a point x0 in the ECEF-r coordinates.
 
 
-        Conversion of ECEF-r into LTP[Psas_]
-        ____________________________________
-        For this conversion x0 is the base. A point xe is given 
-        in the ECEF-r coordinates and the goal is to get xt (= xe in the LTP-coordinates).
+    Conversion of ECEF-r into LTP[Psas_]
+    ++++++++++++++++++++++++++++++++++++
+
+    For this conversion x0 is the base. A point xe is given in the
+    ECEF-r coordinates and the goal is to get xt (= xe in the
+    LTP-coordinates).
+
+    .. image:: ../../../media/conversion_coordinates.png
+
+    1. Transform P (Blender origin, geodetic coordinates
+    (stored in the properties)) into x0(geocentric (ECEF-r)
+    coordinates)
+
+    2. Calculate Rte[1] with longitude, latitude and altitude;
+    matrix is the rotation part of the transformation
+
+    3. Transform xe into xt with xt = Rte * (xe-x0)
 
 
-        .. image::..../doc/media/conversion_coordinates.png
+    Conversion of LTP into ECEF-r[Psas_]
+    ++++++++++++++++++++++++++++++++++++
 
-        Step 1: Transform P (Blender origin, geodetic coordinates (stored in the properties)) 
-        into x0(geocentric (ECEF-r) coordinates)
+    Known: P in Geodetic coordinates (→ x0 in ECEF-r) and xt in LTP-coordinates
 
-        Step 2: Calculate Rte[1] with longitude, latitude and altitude; matrix is the rotation 
-        part of the transformation
+    Goal: xe (= xt in ECEF-r coordinates)
 
-        Step 3: Transform xe into xt with xt = Rte * (xe-x0)
+    Based on the transformation described above the transformation
+    is calculated with the transposed matrix Rte: xe = x0 + (Rte)' *
+    xt
 
+    Conversion of ECEF-r into Geodetic coordinates[FoIz_]
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        Conversion of LTP into ECEF-r[Psas_]
-        ____________________________________
+    The last transformation is from ECEF-r coordinates into Geodetic
+    coordinates.  This transformation is calculated with the
+    Vermeille's method [FoIz_].  The result is the point xe in
+    „GPS-coordinates“ in radians.
 
-        Known: P in Geodetic coordinates (→ x0 in ECEF-r) and xt in LTP-coordinates
+    Sources
+    +++++++
 
-        Goal: xe (= xt in ECEF-r coordinates)
+    .. _FoIz: 
 
-        Based on the transformation described above the transformation is calculated with 
-        the transposed matrix Rte: xe = x0 + (Rte)' * xt
+     „3.4 Vermeille's Method(2002)“ in
+     „Comparative Analysis of the Performance of Iterative and
+     Non-iterative Solutions to the Cartesian to Geodetic Coordinate
+     Transformation“, Hok Sum Fok and H. Bâki Iz,
+     http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
 
+    .. _Psas:
 
-        Conversion of ECEF-r into Geodetic coordinates[FoIz_]
-        _____________________________________________________
-
-        The last transformation is from ECEF-r coordinates into Geodetic coordinates. 
-        This transformation is calculated with the Vermeille's method [FoIz_]. 
-        The result is the point xe in „GPS-coordinates“ in radians.
-
-
-        Sources
-        _______
-
-        .. _FoIz: 
-
-         „3.4 Vermeille's Method(2002)“ in 
-         „Comparative Analysis of the Performance of Iterative and Non-iterative Solutions to the Cartesian to Geodetic Coordinate Transformation“, Hok Sum Fok and H. Bâki Iz, http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
-
-        .. _Psas: 
-
-         „Conversion of Geodetic coordinates to the Local Tangent Plane“, Version 2.01, http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
+     „Conversion of Geodetic coordinates to the Local Tangent
+     Plane“, Version 2.01,
+     http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
     """
 
     _name = "GPS"
     
     _short_desc = "A GPS sensor that returns coordinates ."
 
-    add_level("simple", None, doc = "simple GPS: only current position in Blender is exported")
-    add_level("raw", "morse.sensors.gps.RawGPS", doc = "raw GPS: position in Geodetic coordinates and velocity are exported")
-    add_level("extended", "morse.sensors.gps.ExtendedGPS", doc = "extended GPS: adding information to fit a standard GPS-sentence")
+    add_level("simple", None,
+              doc = "simple GPS: only current position in Blender is exported",
+              default = True)
+    add_level("raw", "morse.sensors.gps.RawGPS",
+              doc = "raw GPS: position in Geodetic coordinates and velocity \
+                      are exported")
+    add_level("extended", "morse.sensors.gps.ExtendedGPS",
+              doc = "extended GPS: adding information to fit a standard \
+                      GPS-sentence")
 
     add_data('x', 0.0, "float",
-             'x coordinate of the sensor, in world coordinate, in meter', level = "simple")
+             'x coordinate of the sensor, in world coordinate, in meter',
+             level = "simple")
     add_data('y', 0.0, "float",
-             'y coordinate of the sensor, in world coordinate, in meter', level = "simple")
+             'y coordinate of the sensor, in world coordinate, in meter',
+             level = "simple")
     add_data('z', 0.0, "float",
-             'z coordinate of the sensor, in world coordinate, in meter', level = "simple")
+             'z coordinate of the sensor, in world coordinate, in meter',
+             level = "simple")
     add_data('longitude', 0.0, "double",
              'longitude in degree [-180°,180] or [0°,360°]', level = "raw")
     add_data('latitude', 0.0, "double",
@@ -107,10 +123,12 @@ class GPS(morse.core.sensor.Sensor):
     add_data('time', 000000, "HHMMSS",
              'current time in HHMMSS-format', level = "extended")
     add_data('heading', 0, "float",
-             'heading in degrees [0°,360°] to geographic north', level = "extended")
+             'heading in degrees [0°,360°] to geographic north',
+             level = "extended")
 
     add_property('longitude', 0.0, 'longitude', 'double',
-             'longitude in degree [-180°,180°] or [0°,360°] of the Blender origin')
+                 'longitude in degree [-180°,180°] or [0°,360°] of the \
+                  Blender origin')
     add_property('latitude', 0.0, 'latitude', 'double',
              'latitude in degree [-90°,90°] of the Blender origin')
     add_property('altitude', 0.0, 'altitude', 'double',
@@ -126,26 +144,6 @@ class GPS(morse.core.sensor.Sensor):
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
-
-    def default_action(self):
-        """ Main function of this component. """
-        x = self.position_3d.x
-        y = self.position_3d.y
-        z = self.position_3d.z
-
-        # Store the data acquired by this sensor that could be sent
-        #  via a middleware.
-        self.local_data['x'] = float(x)
-        self.local_data['y'] = float(y)
-        self.local_data['z'] = float(z)
-
-class SimpleGps(GPS):
-    """
-    Returns position in Blender coordinates
-    """
-    def __init__(self, obj, parent=None):
-        # Call the constructor of the parent class
-        GPS.__init__(self, obj, parent)    
 
     def default_action(self):
         """ Main function of this component. """
@@ -233,7 +231,7 @@ class RawGPS(GPS):
         ####
         #GPS
         ####
-        
+
         ####
         #constants in calculations
         #a: WGS-84 Earth semimajor axis
@@ -260,7 +258,8 @@ class RawGPS(GPS):
             x0 = convert_GPS_to_ECEF(P) #P->x0
             x0 = mathutils.Vector(x0)
             transform_matrix = [[-math.sin(P[0]), math.cos(P[0]), 0],
-               [-math.cos(P[0])*math.sin(P[1]), -math.sin(P[1])*math.sin(P[0]), math.cos(P[1])],
+               [-math.cos(P[0]) * math.sin(P[1]), 
+                -math.sin(P[1])*math.sin(P[0]), math.cos(P[1])],
                [math.cos(P[1])*math.cos(P[0]), math.cos(P[1])*math.sin(P[0]), math.sin(P[1])]]
             transform_matrix = mathutils.Matrix(transform_matrix)
             transform_matrix.invert()
@@ -269,7 +268,8 @@ class RawGPS(GPS):
 
         def vermeille_method(xe):
             """
-            converts point in ECEF-r coordinates into Geodetic (GPS) via Vermeille's method     
+            converts point in ECEF-r coordinates into Geodetic (GPS) via
+            Vermeille's method
             """
             #"just intermediary parameters" see FoIz
             p = (xe[0]**2+xe[1]**2)/a**2
@@ -286,7 +286,7 @@ class RawGPS(GPS):
                           2*math.atan(xe[2]/(D+math.sqrt(D**2+xe[2]**2))),
                          ((k+ecc**2-1)/k)*math.sqrt(D**2+xe[2]**2)]
             return gps_coords
-        
+
         #P -> Blender origin in Geodetic coordinates
         P = [self.longitude, self.latitude, self.altitude]
 
@@ -294,16 +294,15 @@ class RawGPS(GPS):
         xt = self.position_3d.translation
         xt = mathutils.Vector(xt)
 
-
-        #P (in degrees) to radians  
+        #P (in degrees) to radians
         for i in range(len(P)-1):
-            P[i] = math.radians(P[i]) 
+            P[i] = math.radians(P[i])
 
         ####
         #GPS -> ECEF-r
         ####
         xe = convert_LTP_to_ECEF(P)
-        
+
         ####
         #ECEF-r -> GPS
         ####
@@ -314,21 +313,20 @@ class RawGPS(GPS):
             gps_coords[i] = math.degrees(gps_coords[i])
 
 
-
         #compose message as close as possible to a GPS-standardprotocol
         self.local_data['longitude'] = gps_coords[0]
         self.local_data['latitude'] = gps_coords[1]
         self.local_data['altitude'] = gps_coords[2]
         self.local_data['velocity'] = self.v
- 
 
 class ExtendedGPS(RawGPS):
     """
     Additional information to fit a standard GPS-sentence
     """
     def __init__(self, obj, parent=None):
-        """ 
+        """
         Constructor method.
+
         Receives the reference to the Blender object.
         The second parameter should be the name of the object's parent. 
         """
@@ -337,7 +335,8 @@ class ExtendedGPS(RawGPS):
 
     def default_action(self):
         """
-        Adds additional information (date, time and heading) to the message of the RawGPS
+        Adds additional information (date, time and heading) to the
+        message of the RawGPS
         """
         # Call the default_action of the parent class
         RawGPS.default_action(self)
