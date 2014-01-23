@@ -138,7 +138,7 @@ MORSE_DATASTREAM_DICT = {
             }
         },
     "morse.sensors.gps.GPS": {
-        "default": {
+        "simple": {
             "ros": 'morse.middleware.ros.gps.NavSatFixPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
@@ -147,6 +147,18 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
                          'morse.middleware.pocolibs.sensors.pom.PomPoster'],
             "moos": 'morse.middleware.moos.gps.GPSNotifier'
+            },
+        "raw": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "yarp_json": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
+            },
+        "extended": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "yarp_json": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
