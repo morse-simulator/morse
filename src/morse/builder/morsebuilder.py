@@ -305,9 +305,17 @@ class Armature(Actuator):
         # default classpath for Armature (can be modified)
         self.properties(classpath="morse.actuators.armature.Armature")
 
+        # the user may have created IK constraints on the armature, without
+        # setting an IK target. In that case, we add such a target
+        for bone in self._bpy_object.pose.bones:
+            for c in bone.constraints:
+                if c.type == 'IK' and c.ik_type == 'DISTANCE':
+                    if not c.target:
+                        self.create_ik_targets([bone.name])
+
         self.ik_targets = []
 
-    def get_posebone(self, bone_name):
+    def _get_posebone(self, bone_name):
         """ Returns a given PoseBone in the armature.
 
         If the joint does not exist, throw an exception.
@@ -332,7 +340,7 @@ class Armature(Actuator):
                 self._bpy_object.pose.ik_solver = 'LEGACY'
 
         for target in bones:
-            posebone = self.get_posebone(target)
+            posebone = self._get_posebone(target)
             bpymorse.add_morse_empty("ARROWS")
             empty = bpymorse.get_first_selected_object()
             empty.scale = [0.01, 0.01, 0.01]
@@ -340,10 +348,20 @@ class Armature(Actuator):
             empty.matrix_local = posebone.bone.matrix_local
             empty.location = posebone.bone.tail_local
 
-            ik = posebone.constraints.new("IK")
-            ik.use_rotation = True
-            ik.use_tail = True
-            ik.target = empty
+            existing_ik = [c for c in posebone.constraints if c.type == 'IK']
+            if len(existing_ik) == 1:
+                ik_constraint = existing_ik[0]
+            elif existing_ik:
+                raise MorseBuilderError("Bone %s has several IK constraints." \
+                        "MORSE supports only one IK constraint per bone. Please " \
+                        "remove other ones.")
+            else:
+                ik_constraint = posebone.constraints.new("IK")
+
+            ik_constraint.ik_type = "DISTANCE"
+            ik_constraint.use_rotation = True
+            ik_constraint.use_tail = True
+            ik_constraint.target = empty
 
             self.ik_targets.append((empty, target))
 

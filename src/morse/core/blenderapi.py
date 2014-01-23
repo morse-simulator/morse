@@ -57,6 +57,7 @@ F7KEY = None
 F8KEY = None
 
 CONSTRAINT_TYPE_KINEMATIC = None
+CONSTRAINT_IK_DISTANCE = None
 
 if not fake:
     UPARROWKEY = bge.events.UPARROWKEY
@@ -93,6 +94,7 @@ if not fake:
     F5KEY = bge.events.F5KEY
 
     CONSTRAINT_TYPE_KINEMATIC = bge.logic.CONSTRAINT_TYPE_KINEMATIC
+    CONSTRAINT_IK_DISTANCE = bge.logic.CONSTRAINT_IK_DISTANCE
 
 def input_active():
     if not fake:
