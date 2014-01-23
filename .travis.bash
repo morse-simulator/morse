@@ -34,4 +34,3 @@ morse_test() {
 morse_test base/gps_testing.py GPSTest.log
 morse_test base/pose_testing.py PoseTest.log
 morse_test base/sick_testing.py Sick_Test.log
-morse_test base/vw_testing.py VW_Test.log

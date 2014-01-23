@@ -17,7 +17,7 @@ if sys.executable.endswith('blender'):
         # typically at 'Builder' stage.
         fake = True
 else:
-    print("ATTENTION: MORSE is running outside Blender! (sys.executable != blender)")
+    print("WARNING: MORSE is running outside Blender! (sys.executable != blender)")
     fake = True
 
 from morse.core import mathutils
@@ -56,6 +56,7 @@ F5KEY = None
 F7KEY = None
 F8KEY = None
 
+CONSTRAINT_TYPE_KINEMATIC = None
 
 if not fake:
     UPARROWKEY = bge.events.UPARROWKEY
@@ -90,6 +91,8 @@ if not fake:
     F8KEY = bge.events.F8KEY
     F7KEY = bge.events.F7KEY
     F5KEY = bge.events.F5KEY
+
+    CONSTRAINT_TYPE_KINEMATIC = bge.logic.CONSTRAINT_TYPE_KINEMATIC
 
 def input_active():
     if not fake:

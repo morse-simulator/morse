@@ -1,8 +1,11 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
+from morse.core.blenderapi import mathutils
+
 from collections import OrderedDict
 import morse.core.actuator
 from morse.core import status
+from morse.core.blenderapi import version, CONSTRAINT_TYPE_KINEMATIC
 from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.morse_time import time_isafter
@@ -15,7 +18,7 @@ class Armature(morse.core.actuator.Actuator):
     made of a combination of revolute joints (hinge) and prismatic
     joints (slider).
 
-    This component only allows to *write* armature configuration. To read the
+    This component only allows to *set* an armature configuration. To read the
     armature pose, you need an :doc:`armature pose sensor <../sensors/armature_pose>`.
 
     .. important:: 
@@ -25,21 +28,29 @@ class Armature(morse.core.actuator.Actuator):
         <../../dev/armature_creation>` documentation.
 
 
+    This actuator offers two main ways to control a kinematic chain: either by
+    setting the values of each joint individually (via a continuous datastream
+    or via dedicated services: :py:meth:`translate`,
+    :py:meth:`set_translation`, :py:meth:`rotate`, :py:meth:`set_rotation`) or
+    by placing the end-effector and relying on a inverse kinematic solver (via
+    the services :py:meth:`set_IK_target` and :py:meth:`move_IK_target`).
+
     .. note::
 
-        The data structure on datastream read by the armature actuator
-        depends on the armature.  It is a dictionary of pair `(joint name,
-        joint value)`.  Joint values are either radians (for revolute joints)
-        or meters (for prismatic joints)
+        When setting the joints with a datastream, the data structure that the
+        armature actuator expects depends on the armature itself.  It is a
+        dictionary of pair `(joint name, joint value)`.  Joint values are
+        either radians (for revolute joints) or meters (for prismatic joints)
 
-    :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
     .. note::
 
         :tag:`ros` Armatures can be controlled in ROS through the
         `JointTrajectoryAction
-        <http://www.ros.org/wiki/pr2_controllers/Tutorials/Moving%20the%20arm%20using%20the%20Joint%20Trajectory%20Action>`_
+        <http://wiki.ros.org/joint_trajectory_action>`_
         interface.
+
+    :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
     """
     _name = "Armature Actuator"
@@ -49,6 +60,8 @@ class Armature(morse.core.actuator.Actuator):
     add_property('angle_tolerance', 0.01, 'AngleTolerance', 'float', "Tolerance in radians when rotating a joint")
     add_property('radial_speed', 0.8, 'RotationSpeed', 'float', "Global rotation speed for the armature rotational joints (in rad/s)")
     add_property('linear_speed', 0.05, 'LinearSpeed', 'float', "Global linear speed for the armature prismatic joints (in m/s)")
+    add_property('ik_target_radial_speed', 0.5, 'IKRotationSpeed', 'float', "Default speed of IK target rotation (in rad/s)")
+    add_property('ik_target_linear_speed', 0.5, 'IKLinearSpeed', 'float', "Default speed of IK target motion (in m/s)")
 
     def __init__(self, obj, parent=None):
         """
@@ -61,9 +74,19 @@ class Armature(morse.core.actuator.Actuator):
         
         # Initialize the values in local_data for each segment
         armature = self.bge_object
+
         for channel in armature.channels:
             self.local_data[channel.name] = 0.0
 
+        self._ik_targets = {c.target: c for c in armature.constraints if c.type == CONSTRAINT_TYPE_KINEMATIC}
+
+        # Initially desactivate all IK constraints
+        for c in self._ik_targets.values():
+            c.active = False
+
+        # holds the destinations for the IK targets when async service
+        # `move_IK_target` is called.
+        self._ik_targets_destinations = {}
 
         # The axis along which the different segments rotate
         # Considering the constraints defined for the armature
@@ -81,8 +104,8 @@ class Armature(morse.core.actuator.Actuator):
                 break
 
         # If we find an end effector, all armature children that do not have
-        # the property 'internal' are considered to be mounted on the 
-        # end effector
+        # the property 'internal' are considered to be mounted on the end
+        # effector
         if self._end_effector:
             for child in self.bge_object.children:
                 if not 'internal' in child:
@@ -94,6 +117,35 @@ class Armature(morse.core.actuator.Actuator):
 
 
         logger.info('%s armature initialized with joints [%s].' % (obj.name, ", ".join(self.local_data.keys())))
+
+        if self._ik_targets:
+            logger.info("%d IK targets available on this armature: %s." % (len(self._ik_targets), ", ".join([t.name for t in self._ik_targets.keys()])))
+
+    def _suspend_ik_targets(self):
+        for c in self._ik_targets.values():
+            #Bug in Blender! cf http://developer.blender.org/T37892
+            if version() < (2, 70, 0):
+                if not c.active:
+                    logger.info("Stop tracking IK target <%s>" % c.target.name)
+                    c.active = False
+            else:
+                if c.active:
+                    logger.info("Stop tracking IK target <%s>" % c.target.name)
+                    c.active = False
+
+
+    def _restore_ik_targets(self):
+        for c in self._ik_targets.values():
+            #Bug in Blender! cf http://developer.blender.org/T37892
+            if version() < (2, 70, 0):
+                if c.active:
+                    c.active = True
+                    logger.info("Tracking IK target <%s>" % c.target.name)
+            else:
+                if not c.active:
+                    c.active = True
+                    logger.info("Tracking IK target <%s>" % c.target.name)
+
 
     def _is_prismatic(self, channel):
         """
@@ -142,20 +194,21 @@ class Armature(morse.core.actuator.Actuator):
             return channel.joint_rotation[axis_index]
 
     def _get_prismatic(self, joint):
-        """ Checks a given prismatic joint name exist in the armature,
-        and returns it.
+        """ Checks a given prismatic joint name exist in the armature, and
+        returns it.
         """
         channel, is_prismatic = self._get_joint(joint)
 
         if not is_prismatic:
-            msg = "Joint %s is not a prismatic joint! Can not set the translation" % joint
+            msg = "Joint %s is not a prismatic joint! " \
+                  "Can not set the translation" % joint
             raise MorseRPCInvokationError(msg)
 
         return channel
 
     def _get_revolute(self, joint):
-        """ Checks a given revolute joint name exist in the armature,
-        and returns it.
+        """ Checks a given revolute joint name exist in the armature, and
+        returns it.
         """
         channel, is_prismatic = self._get_joint(joint)
 
@@ -171,12 +224,155 @@ class Armature(morse.core.actuator.Actuator):
         return max(ik_min, min(rotation, ik_max))
 
     @service
+    def list_IK_targets(self):
+        return [ik.name for ik in self._ik_targets.keys()]
+
+    def _normalize_IK_transformation(self, 
+                                     target_name, 
+                                     translation, 
+                                     euler_rotation = None, 
+                                     relative = True):
+
+        armature = self.bge_object
+        target = [ik for ik in self._ik_targets.keys() if ik.name == target_name]
+        if not target:
+            raise MorseRPCInvokationError("IK target <%s> does not exist for armature %s" % (target_name, armature.name))
+
+        target = target[0]
+
+        if relative:
+            currentPos = target.worldPosition
+            translation = [translation[0] + currentPos[0],
+                           translation[1] + currentPos[1],
+                           translation[2] + currentPos[2]]
+
+        if euler_rotation:
+            current_orientation = target.worldOrientation.to_quaternion().normalized()
+            rotation = mathutils.Euler(euler_rotation).to_quaternion().normalized()
+
+            if relative:
+                # computes the final IK target orientation by rotating the
+                # current orientation by `rotation`
+                final_orientation = current_orientation.copy()
+                final_orientation.rotate(rotation)
+            else:
+                final_orientation = rotation
+        else:
+            final_orientation = None
+
+        return target, translation, final_orientation
+
+    @service
+    def place_IK_target(self, name, translation, euler_rotation = None, relative = True):
+        """
+        Places instantaneously a IK (inverse kinematic) target to a given
+        position and orientation.
+
+        :sees: `move_IK_target` to move the IK target over time.
+
+        :param name: name of the IK target (as returned by
+        :py:meth:`list_IK_targets`)
+        :param translation: a [x,y,z] translation vector, in the scene frame,
+        in meters.
+        :param rotation: a [rx,ry,rz] rotation, in the scene frame (ie, X,Y,Z 
+        rotation axis are the scene axis). Angles in radians.
+        :param relative: if True (default), translation and rotation are 
+        relative to the current target pose.
+
+        """
+        self._restore_ik_targets()
+
+        target, translation, rotation = self._normalize_IK_transformation(
+                                                        name, 
+                                                        translation, 
+                                                        euler_rotation, 
+                                                        relative)
+
+        target.worldPosition = translation
+        if rotation:
+            target.worldOrientation = rotation
+
+        # save the joint state computed from IK in local_data
+        self._store_current_joint_state()
+
+    @interruptible
+    @async_service
+    def move_IK_target(self, name, 
+                             translation, euler_rotation = None, 
+                             relative = True, 
+                             linear_speed = None, radial_speed = None):
+        """
+        Moves an IK (inverse kinematic) target at a given speed (in m/s for
+        translation, rad/s for rotation).
+
+        Note that moving an IK target conflicts somewhat with the original
+        purpose of the inverse kinematic solver, and overall continuity is not
+        guaranteed (the IK solver may find a solution for a given target
+        position that 'jumps' relative to the solution for the previous target
+        position).
+
+        :sees: `place_IK_target` to set instantaneously the IK target pose.
+
+        :param name: name of the IK target (as returned by :py:meth:`list_IK_targets`)
+        :param translation: a [x,y,z] translation vector, in the scene frame, 
+        in meters.
+        :param rotation: a [rx,ry,rz] rotation, in the scene frame (ie, X,Y,Z 
+        rotation axis are the scene axis). Angles in radians.
+        :param relative: if True (default), translation and rotation are 
+        relative to the current target pose.
+        :param linear_speed: (default: value of the `ik_target_linear_speed` 
+        property) translation speed (in m/s).
+        :param radial_speed: (default: value of the `ik_target_radial_speed` 
+        property) rotation speed (in rad/s).
+
+        """
+
+        self._restore_ik_targets()
+
+        target, translation, final_orientation = self._normalize_IK_transformation(
+                                                            name, 
+                                                            translation, 
+                                                            euler_rotation, 
+                                                            relative)
+
+        if not linear_speed:
+            linear_speed = self.ik_target_linear_speed
+        if not radial_speed:
+            radial_speed = self.ik_target_radial_speed
+
+        if final_orientation:
+            current_orientation = target.worldOrientation.to_quaternion().normalized()
+
+            # uses mathutils.Vector.angle to return the angle in radians
+            # between the 2 orientations
+            radian_distance = current_orientation.axis.angle(final_orientation.axis)
+
+            # we need to compute at initialization the total expected duration
+            # of the rotation since quaternion interpolation relies on
+            # Quaternion.slerp that takes a interpolation factor between 0.0
+            # and 1.0.  During the rotation execution, we compute the factor
+            # based on the current rotation duration and the total expected
+            # duration
+            initial_time_rotation = self.robot_parent.gettime() # in milliseconds
+            total_rotation_duration = (radian_distance / radial_speed) * 1000.
+        else:
+            current_orientation = final_orientation = None
+            initial_time_rotation = total_rotation_duration = None
+
+        self._ik_targets_destinations[target] = (translation, 
+                                                 linear_speed, 
+                                                 current_orientation, 
+                                                 final_orientation, 
+                                                 initial_time_rotation, 
+                                                 total_rotation_duration)
+
+    @service
     def set_translation(self, joint, translation):
         """
         Translates instantaneously the given (prismatic) joint by the given
         translation. Joint speed limit is not taken into account.
 
-        :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.location
+        :sees: `Blender documentation on joint location <http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.location>`_
 
         If the joint does not exist or is not a prismatic joint (slider),
         throws a MorseServiceFailed exception.
@@ -184,8 +380,12 @@ class Armature(morse.core.actuator.Actuator):
         The translation is always clamped to the joint limit.
 
         :param joint: name of the joint to move
-        :param translation: absolute translation from the joint origin in the joint sliding axis, in meters
+        :param translation: absolute translation from the joint origin in the
+        joint sliding axis, in meters
+
         """
+
+        self._suspend_ik_targets()
 
         channel = self._get_prismatic(joint)
 
@@ -203,14 +403,17 @@ class Armature(morse.core.actuator.Actuator):
     @service
     def set_translations(self, translations):
         """
-        Sets in one call the translations of the prismatic joints in this armature.
+        Sets in one call the translations of the prismatic joints in this
+        armature.
 
         Has the same effect as applying `set_translation` on each of the joints
         independantly.
 
         Translations must be ordered from the root to the tip of the armature.
 
-        If more translations are provided than the number of joints, the remaining ones are discarded. If less translations are provided, the maximum are applied.
+        If more translations are provided than the number of joints, the
+        remaining ones are discarded. If less translations are provided, the
+        maximum are applied.
 
         .. important::
 
@@ -227,7 +430,8 @@ class Armature(morse.core.actuator.Actuator):
         channels = [c for c in armature.channels]
         for i in range(nb_trans):
             if not self._is_prismatic(channels[i]):
-                msg = "Joint %s is not a prismatic joint! Can not apply the translation set" % joint
+                msg = "Joint %s is not a prismatic joint! " \
+                      "Can not apply the translation set" % channels[i].name
                 raise MorseRPCInvokationError(msg)
 
         for trans, channel in zip(translations[:nb_trans], channels[:nb_trans]):
@@ -241,9 +445,14 @@ class Armature(morse.core.actuator.Actuator):
         Translates a joint at a given speed (in m/s).
 
         :param joint: name of the armature's joint to translate
-        :param translation: the absolute translation, relative to the joint origin, in meters
-        :param speed: (default: value of 'linear_speed' property) translation speed, in m/s
+        :param translation: the absolute translation, relative to the joint
+        origin, in meters
+        :param speed: (default: value of 'linear_speed' property) translation
+        speed, in m/s
+
         """
+
+        self._suspend_ik_targets()
 
         channel = self._get_prismatic(joint) # checks the joint exist and is prismatic
         translation = self._clamp_joint(channel, translation)
@@ -264,8 +473,13 @@ class Armature(morse.core.actuator.Actuator):
         The rotation is always clamped to the joint limit.
 
         :param joint: name of the joint to rotate
-        :param rotation: absolute rotation from the joint origin along the joint rotation axis, in radians
-         """
+        :param rotation: absolute rotation from the joint origin along the
+        joint rotation axis, in radians
+
+        """
+
+        self._suspend_ik_targets()
+
         channel = self._get_revolute(joint)
 
         # Retrieve the translation axis
@@ -289,7 +503,9 @@ class Armature(morse.core.actuator.Actuator):
 
         Rotations must be ordered from the root to the tip of the armature.
 
-        If more rotations are provided than the number of joints, the remaining ones are discarded. If less rotations are provided, the maximum are applied.
+        If more rotations are provided than the number of joints, the remaining
+        ones are discarded. If less rotations are provided, the maximum are
+        applied.
 
         .. important::
 
@@ -320,12 +536,15 @@ class Armature(morse.core.actuator.Actuator):
         """
         Rotates a joint at a given speed (in rad/s).
 
-        :sees: http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.joint_rotation
+        :sees: `Blender documentation on joint rotation <http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.joint_rotation>`_
 
         :param joint: name of the armature's joint to rotate
         :param rotation: rotation around the joint axis in radians
         :param speed: (default: value of 'radial_speed' property) rotation speed, in rad/s
         """
+
+        self._suspend_ik_targets()
+
         channel = self._get_revolute(joint) # checks the joint exist and is revolute
         rotation = self._clamp_joint(channel, rotation)
         self.joint_speed[joint] = speed
@@ -425,7 +644,10 @@ class Armature(morse.core.actuator.Actuator):
         :param trajectory: the trajectory to execute, as describe above.
         """
 
-        #TODO: support velocities and accelerations via cubic/quintic spline interpolation
+        self._suspend_ik_targets()
+
+        # TODO: support velocities and accelerations via cubic/quintic spline
+        # interpolation
         starttime = self.robot_parent.gettime() / 1000.0
         if 'starttime' in trajectory:
             trajectory["starttime"] = max(starttime, trajectory["starttime"])
@@ -481,40 +703,76 @@ class Armature(morse.core.actuator.Actuator):
             self._active_trajectory = None
             self.completed(status.FAILED, "Error: invalid trajectory: key %s was expected." % ke)
 
-    def interrupt(self):
-    
+    def _store_current_joint_state(self):
         for joint in self.local_data.keys():
             self.local_data[joint] = self._get_joint_value(joint)
+
+    def interrupt(self):
+    
+        self._store_current_joint_state()
+
+        for joint in self.local_data.keys():
             if joint in self.joint_speed:
                 del self.joint_speed[joint]
 
         self._active_trajectory = None
 
+        self._ik_targets_destinations = {}
+
         morse.core.actuator.Actuator.interrupt(self)
 
-    @async_service
-    def set_target(self,x ,y, z):
-        """
-        Sets a target position for the armature's tip.
+    def _exec_ik_move(self, 
+                      target, 
+                      location, lspeed, 
+                      initial_orientation, final_orientation, 
+                      initial_time_rotation, total_rotation_duration):
 
-        MORSE uses inverse kinematics to find the joint
-        angles/positions in order to get the armature tip as close
-        as possible to the target.
+        armature = self.bge_object
 
-        .. important::
+        curPos = target.worldPosition
+        curOri = target.worldOrientation.to_quaternion()
 
-            No obstacle avoidance takes place: while moving the armature
-            may hit objects.
+        posReached = False
+        oriReached = False
 
-        .. warning::
-            
-            Not implemented yet! Only as a placeholder!
+        # first, translation
+        distx = location[0]-curPos[0]
+        disty = location[1]-curPos[1]
+        distz = location[2]-curPos[2]
 
-        :param x: X coordinate of the IK target
-        :param y: Y coordinate of the IK target
-        :param z: Z coordinate of the IK target
-        """
-        raise MorseRPCInvokationError("Not implemented yet!")
+        if     abs(distx) < self.distance_tolerance \
+           and abs(disty) < self.distance_tolerance \
+           and abs(distz) < self.distance_tolerance:
+               posReached = True
+        else:
+            vx = math.copysign(min(lspeed / self.frequency, abs(distx)), distx)
+            vy = math.copysign(min(lspeed / self.frequency, abs(disty)), disty)
+            vz = math.copysign(min(lspeed / self.frequency, abs(distz)), distz)
+            target.worldPosition = [curPos[0] + vx, curPos[1] + vy, curPos[2] + vz]
+
+        # then, orientation (as quaternion!)
+        oriReached = True
+        if final_orientation:
+
+            rotation_duration = self.robot_parent.gettime() - initial_time_rotation
+
+            if not rotation_duration > total_rotation_duration:
+                oriReached = False
+                target.worldOrientation = initial_orientation.slerp(
+                                                    final_orientation, 
+                                                    rotation_duration / total_rotation_duration)
+            else:
+                # make sure we eventually reach the final position
+                target.worldOrientation = final_orientation 
+
+        # Update the armature to reflect the changes we just performed
+        armature.update()
+
+        # save the joint state computed from IK in local_data
+        self._store_current_joint_state()
+
+        if posReached and oriReached:
+            self.completed(status.SUCCESS, None)
 
     def default_action(self):
         """
@@ -522,16 +780,32 @@ class Armature(morse.core.actuator.Actuator):
 
         """
 
+        #TODO: 3 type of async service can be started: joint rotate/translate, 
+        # traj execution and IK target move.
+        # We need to re-organize the code to check none run at the same time and
+        # to keep everything well organized/manageable.
+
+        if self._ik_targets_destinations:
+
+            for k,v in self._ik_targets_destinations.items():
+                self._exec_ik_move(k,*v)
+
+            # if we move IK targets, we do not want to do anything else.
+            return
+
         if self._active_trajectory:
             self._exec_traj()
 
 
         armature = self.bge_object
 
+        #TODO: we should no have to iterate over the whole armature when we do
+        # not have to move at all!
         position_reached = True
         for channel in armature.channels:
 
-            # we assume a joint is prismatic (translation joint) if its IK 'stretch' parameter is non-null
+            # we assume a joint is prismatic (translation joint) if its IK
+            # 'stretch' parameter is non-null
             is_prismatic = self._is_prismatic(channel)
 
             joint = channel.name
@@ -546,7 +820,10 @@ class Armature(morse.core.actuator.Actuator):
             axis_index = next(i for i, j in enumerate(self.find_dof(channel)) if j)
 
             if is_prismatic:
-                dist = self.local_data[joint] - channel.pose_head[2] # we take the last index ('Z') of the pose of the HEAD of the bone as the absolute translation of the joint. Not 100% sure it is right...
+                # we take the last index ('Z') of the pose of the HEAD of the
+                # bone as the absolute translation of the joint. Not 100% sure
+                # it is right...
+                dist = self.local_data[joint] - channel.pose_head[2] 
             else:
                 dist = self.local_data[joint] - channel.joint_rotation[axis_index]
 

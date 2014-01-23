@@ -1,9 +1,9 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 from morse.builder import bpymorse
-from morse.builder import Armature, Robot
+from morse.builder import Armature, GroundRobot
 from morse.builder.sensors import ArmaturePose
 
-class Human(Robot):
+class Human(GroundRobot):
     """ Append a human model to the scene.
 
     The human model currently available in MORSE comes with its
@@ -33,7 +33,7 @@ class Human(Robot):
 
         :param filename: 'human' (default) or 'mocap_human'
         """
-        Robot.__init__(self, filename, name)
+        GroundRobot.__init__(self, filename, name)
 
         self.suffix = self.name[-4:] if self.name[-4] == "." else ""
 

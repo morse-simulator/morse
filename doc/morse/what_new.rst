@@ -9,6 +9,8 @@ General
 - Implement the notion of zone, i.e. a 3d space which several properties which
   can trigger various behaviours in the simulation. See :ref:`here
   <define_new_zone>` to see how to define zone in your scenario.
+- Add new services for the CamaraFP settings.
+- F7 moves CamaraFP above robots
 
 Components
 ----------
@@ -21,6 +23,9 @@ Robots
 Actuators
 +++++++++
 
+- :doc:`Armatures <user/actuators/armature>` have received some love, with
+  support for placing and controlling inverse kinematics targets to easily
+  control the full skeleton with inverse kinematics.
 - The default ``ControlType`` of several actuators
   (:doc:`user/actuators/v_omega`, :doc:`user/actuators/waypoint`,
   :doc:`user/actuators/xy_omega`, :doc:`user/actuators/keyboard`,
@@ -39,13 +44,19 @@ Sensors
 
 
 Middlewares
-+++++++++++
+-----------
 
 Pocolibs
-$$$$$$$$
+++++++++
 
 - ``pocolibs`` is now able to export :doc:`velodyne <user/sensors/depth_camera>`
   sensor.
+
+Socket
+++++++
+
+- Add a new ``DepthCamera`` publisher.
+- ``VideoCamera`` now publish base64 encoded RGBA image.
 
 
 What's new in MORSE 1.1?

@@ -1,6 +1,10 @@
 import logging; logger = logging.getLogger("morse.ros")
 import re
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs'); roslib.load_manifest('geometry_msgs')
+try:
+    import roslib
+except ImportError as error:
+    logger.error("Could not find ROS. source setup.[ba]sh ?")
+    raise error
 import rospy
 
 from std_msgs.msg import String, Header
@@ -131,7 +135,7 @@ class ROSPublisherTF(ROSPublisher):
 
     def publish_with_robot_transform(self, message):
         self.publish(message)
-        self.send_transform_robot(message.header.stamp)
+        self.send_transform_robot(message.header.stamp, message.header.frame_id)
 
     def send_transform_robot(self, time=None, child=None, parent=None):
         """ Send the transformation relative to the robot

@@ -1,17 +1,17 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 
-from morse.builder import Robot, WheeledRobot
+from morse.builder import Robot, GroundRobot, WheeledRobot
 
-class Morsy(Robot):
+class Morsy(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "morsy", name)
+        GroundRobot.__init__(self, "morsy", name)
         self.properties(classpath = "morse.robots.morsy.Morsy")
 
         self.set_dynamic()
         mesh = self.get_child('morsy_mesh')
         mesh.game.physics_type = 'NO_COLLISION'
 
-        self._bpy_object.game.radius = 0.01
+        self._bpy_object.game.radius = 0.08
 
         self.set_collision_bounds()
 
@@ -23,14 +23,14 @@ class Morsy(Robot):
         [body_mat] = [mat for mat in mats if mat.startswith('body')] # account for body.001, body.002...
         self.get_child('morsy_mesh').material_slots[body_mat].material.diffuse_color = color
 
-class ATRV(Robot):
+class ATRV(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "atrv", name)
+        GroundRobot.__init__(self, "atrv", name)
         self.properties(classpath = "morse.robots.atrv.ATRV")
 
-class B21(Robot):
+class B21(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "b21", name)
+        GroundRobot.__init__(self, "b21", name)
         self.properties(classpath = "morse.robots.b21.B21")
 
         self.set_rigid_body()
@@ -46,16 +46,16 @@ class FakeRobot(Robot):
         self.properties(classpath = "morse.robots.fakerobot.FakeRobot")
         self.set_no_collision()
 
-class Hummer(Robot):
+class Hummer(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "hummer", name)
+        GroundRobot.__init__(self, "hummer", name)
         self.properties(classpath = "morse.robots.hummer.Hummer",
                         brakes = 0.0, friction = 200.0, force = 0.0,
                         steer = 0.0, init = 0, cid = 0)
 
-class Jido(Robot):
+class Jido(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "jido", name)
+        GroundRobot.__init__(self, "jido", name)
         self.properties(classpath = "morse.robots.jido.Jido")
 
         self.set_dynamic()
@@ -125,9 +125,9 @@ class Submarine(Robot):
         self.set_rigid_body()
         self.set_collision_bounds()
 
-class Victim(Robot):
+class Victim(GroundRobot):
     def __init__(self, name=None):
-        Robot.__init__(self, "victim", name)
+        GroundRobot.__init__(self, "victim", name)
         self.properties(classpath = "morse.robots.victim.Victim",
                         Victim_Tag = True, Requirements = "1,2,3",
                         Injured = True, Severity = 10)

@@ -37,6 +37,8 @@ class Camera(morse.core.sensor.Sensor):
     add_property('near_clipping', 0.1, 'cam_near')
     add_property('far_clipping', 100.0, 'cam_far')
     add_property('vertical_flip', False, 'Vertical_Flip')
+    add_property('retrieve_depth', False, 'retrieve_depth')
+    add_property('retrieve_zbuffer', False, 'retrieve_zbuffer')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -163,16 +165,11 @@ class Camera(morse.core.sensor.Sensor):
 
         try:
             # Use the Z-Buffer as an image texture for the camera
-            if 'retrieve_zbuffer' in self.bge_object:
-                vt_camera.source.zbuff = self.bge_object['retrieve_zbuffer']
-        except AttributeError as detail:
-            logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" %
-                        detail)
-
-        try:
+            if self.retrieve_zbuffer:
+                vt_camera.source.zbuff = True
             # Use the Z-Buffer as input with an array of depths
-            if 'retrieve_depth' in self.bge_object:
-                vt_camera.source.depth = self.bge_object['retrieve_depth']
+            if self.retrieve_depth:
+                vt_camera.source.depth = True
         except AttributeError as detail:
             logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" %
                         detail)

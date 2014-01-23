@@ -20,7 +20,7 @@ def send_speed(s, sim, v=0, w=0, t=0):
     sim.sleep(t)
     s.publish({'v': 0.0, 'w': 0.0})
 
-class FrictionTest(MorseTestCase):
+class CollisionTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API. """
 
@@ -42,7 +42,7 @@ class FrictionTest(MorseTestCase):
 
         env = Environment('empty', fastmode = True)
 
-    def test_friction(self):
+    def test_collision(self):
         with Morse() as sim:
 
             collision = sim.robot.collision.get(timeout=0.1)
@@ -57,4 +57,4 @@ class FrictionTest(MorseTestCase):
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(FrictionTest)
+    main(CollisionTest)

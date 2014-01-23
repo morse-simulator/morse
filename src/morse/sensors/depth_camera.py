@@ -8,7 +8,9 @@ from morse.helpers.components import add_data, add_property
 
 class AbstractDepthCamera(VideoCamera):
 
-    _short_desc = "A camera capturing 3D points cloud"
+    add_property('near_clipping', 1.0, 'cam_near')
+    add_property('far_clipping', 20.0, 'cam_far')
+    add_property('retrieve_depth', True, 'retrieve_depth')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.

@@ -7,6 +7,8 @@ General
 - Time management in Morse has been clarified (#388)
 - Implement the notion of zone, i.e. a 3d space which several properties which
   can trigger various behaviours in the simulation. 
+- Add new services for the CamaraFP settings.
+- F7 moves CamaraFP above robots
 
 Components
 ----------
@@ -18,6 +20,10 @@ Robots
 
 Actuators
 +++++++++
+
+- Armatures have received some love, with support for placing and controlling
+  inverse kinematics targets to easily control the full skeleton with inverse
+  kinematics.
 
 - The default ``ControlType`` of several actuators (v_omega, waypoint,
   xy_omage, keyboard, joystick) has been switched from "Position" to
@@ -33,18 +39,18 @@ Sensors
   data has been computed, in simulated time.
 
 Middlewares
-+++++++++++
+-----------
 
 Pocolibs
---------
+++++++++
 
 - ``pocolibs`` is now able to export velodyne sensor.
 
 Socket
-------
+++++++
 
-- new ``DepthCamera`` publisher
-- ``VideoCamera`` now publish base64 encoded RGBA image
+- Add a new ``DepthCamera`` publisher.
+- ``VideoCamera`` now publish base64 encoded RGBA image.
 
 
 MORSE 1.1

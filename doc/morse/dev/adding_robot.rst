@@ -18,7 +18,7 @@ Low-poly
 --------
 
 Blender is a 3D modeling software with both Photo-realistic Rendering and
-Game Engine capabilities. In the first case, users want verry detailed models
+Game Engine capabilities. In the first case, users want very detailed models
 with high definition textures. In one word, heavy models. Those are not suited
 for the Game Engine, where we want to get **real-time** rendering.
 
@@ -62,13 +62,14 @@ Builder part
 
 Let say your 3D model is in "``/home/bob/models/wallE.blend``".
 
-The best practice is to set a ``MORSE_RESOURCE_PATH`` environement variable.
-Containing a list of path to models accessible by MORSE, separeted by colon
+The best practice is to set a ``MORSE_RESOURCE_PATH`` environment variable.
+Containing a list of path to models accessible by MORSE, separated by colon
 (``:``)::
 
     export MORSE_RESOURCE_PATH="/home/bob/models:/home/bob/models2012"
 
-Your class must extend :py:class:`morse.builder.morsebuilder.Robot` as:
+Your class must extend :py:class:`morse.builder.morsebuilder.Robot` (or
+:py:class:`morse.builder.morsebuilder.GroundRobot`) as:
 
 .. code-block:: python
 
