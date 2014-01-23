@@ -5,7 +5,7 @@ from morse.core.blenderapi import mathutils
 from collections import OrderedDict
 import morse.core.actuator
 from morse.core import status
-from morse.core.blenderapi import version, CONSTRAINT_TYPE_KINEMATIC
+from morse.core.blenderapi import version, CONSTRAINT_TYPE_KINEMATIC, CONSTRAINT_IK_DISTANCE
 from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.morse_time import time_isafter
@@ -78,7 +78,9 @@ class Armature(morse.core.actuator.Actuator):
         for channel in armature.channels:
             self.local_data[channel.name] = 0.0
 
-        self._ik_targets = {c.target: c for c in armature.constraints if c.type == CONSTRAINT_TYPE_KINEMATIC}
+        self._ik_targets = {c.target: c for c in armature.constraints \
+                            if c.type == CONSTRAINT_TYPE_KINEMATIC and \
+                               c.ik_type == CONSTRAINT_IK_DISTANCE}
 
         # Initially desactivate all IK constraints
         for c in self._ik_targets.values():

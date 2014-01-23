@@ -44,7 +44,7 @@ class Human(GroundRobot):
             self.properties(classpath="morse.robots.human.Human")
 
         try:
-            self.armature = Armature("HumanArmature" + self.suffix, "human_posture")
+            self.armature = Armature("HumanArmature" + self.suffix)
             self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
