@@ -165,11 +165,11 @@ class Real_GPS(morse.core.sensor.Sensor):
             converts point in LTP(Blender) to ECEF-r coordinates
             """
             x0 = convert_GPS_to_ECEF(P) #P->x0
-            x0 = Vector(x0)
+            x0 = mathutils.Vector(x0)
             transform_matrix = [[-math.sin(P[0]), math.cos(P[0]), 0],
                [-math.cos(P[0])*math.sin(P[1]), -math.sin(P[1])*math.sin(P[0]), math.cos(P[1])],
                [math.cos(P[1])*math.cos(P[0]), math.cos(P[1])*math.sin(P[0]), math.sin(P[1])]]
-            transform_matrix = Matrix(transform_matrix)
+            transform_matrix = mathutils.Matrix(transform_matrix)
             transform_matrix.invert()
             xe = x0 + transform_matrix*xt  #transformed xt -> xe
             return xe
@@ -199,7 +199,8 @@ class Real_GPS(morse.core.sensor.Sensor):
 
         #current position
         xt = self.position_3d.translation
-        xt = Vector(xt)
+        xt = mathutils.Vector(xt)
+
 
         #P (in degrees) to radians  
         for i in range(len(P)-1):
