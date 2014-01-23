@@ -42,6 +42,11 @@ class GPS(SensorCreator):
         mesh.color(.5, .5, .5)
         self.append(mesh)
 
+class Real_GPS(SensorCreator):
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name, "morse.sensors.gps.Real_GPS", "real_gps")
+
+
 class Gyroscope(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name,"morse.sensors.gyroscope.Gyroscope", "gyroscope")
