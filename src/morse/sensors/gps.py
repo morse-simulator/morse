@@ -1,24 +1,120 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
-from morse.helpers.components import add_property, add_data
-import math, datetime
+from morse.helpers.components import add_property, add_data, add_level
+import math, time
 from morse.core import mathutils
 
 class GPS(morse.core.sensor.Sensor):
     """
-    This sensor emulates a GPS, providing the exact coordinates in the
-    Blender scene. The coordinates provided by the GPS are with respect
-    to the origin of the Blender coordinate reference.
+    A GPS sensor which returns the position either in Blender or Geodetic coordinates.
+
+    .. note::
+        This sensor always provides perfect data on the levels "raw" and "extended".
+        To obtain more realistic readings, it is recommended to add modifiers.
+
+        - **Noise modifier**: Adds random Gaussian noise to the data
+
+        coordinates in Blender: x -> east and y -> north
+        
+        The "heading" is Clockwise (mathematically negative).
+
+
+        Conversion of Geodetic coordinates into ECEF-r, LTP into ECEF-r and vice versa
+        ==============================================================================
+
+
+        Conversion of Geodetic coordinates into ECEF-r
+        ______________________________________________
+        To be able to simulate a GPS-sensor P (the Blender origin) must be defined 
+        in the properties in Geodetic coordinates (longitude, latitude, altitude). 
+        For the transformation [Psas_] the coordinates must be in decimal 
+        degrees (no North, minutes, etc.). The result is a point x0 in the ECEF-r coordinates.
+
+
+        Conversion of ECEF-r into LTP[Psas_]
+        ____________________________________
+        For this conversion x0 is the base. A point xe is given 
+        in the ECEF-r coordinates and the goal is to get xt (= xe in the LTP-coordinates).
+
+
+        .. image::..../doc/media/conversion_coordinates.png
+
+        Step 1: Transform P (Blender origin, geodetic coordinates (stored in the properties)) 
+        into x0(geocentric (ECEF-r) coordinates)
+
+        Step 2: Calculate Rte[1] with longitude, latitude and altitude; matrix is the rotation 
+        part of the transformation
+
+        Step 3: Transform xe into xt with xt = Rte * (xe-x0)
+
+
+        Conversion of LTP into ECEF-r[Psas_]
+        ____________________________________
+
+        Known: P in Geodetic coordinates (→ x0 in ECEF-r) and xt in LTP-coordinates
+
+        Goal: xe (= xt in ECEF-r coordinates)
+
+        Based on the transformation described above the transformation is calculated with 
+        the transposed matrix Rte: xe = x0 + (Rte)' * xt
+
+
+        Conversion of ECEF-r into Geodetic coordinates[FoIz_]
+        _____________________________________________________
+
+        The last transformation is from ECEF-r coordinates into Geodetic coordinates. 
+        This transformation is calculated with the Vermeille's method [FoIz_]. 
+        The result is the point xe in „GPS-coordinates“ in radians.
+
+
+        Sources
+        _______
+
+        .. _FoIz: 
+
+         „3.4 Vermeille's Method(2002)“ in 
+         „Comparative Analysis of the Performance of Iterative and Non-iterative Solutions to the Cartesian to Geodetic Coordinate Transformation“, Hok Sum Fok and H. Bâki Iz, http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
+
+        .. _Psas: 
+
+         „Conversion of Geodetic coordinates to the Local Tangent Plane“, Version 2.01, http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
     """
 
     _name = "GPS"
+    
+    _short_desc = "A GPS sensor that returns coordinates ."
+
+    add_level("simple", None, doc = "simple GPS: only current position in Blender is exported")
+    add_level("raw", "morse.sensors.gps.RawGPS", doc = "raw GPS: position in Geodetic coordinates and velocity are exported")
+    add_level("extended", "morse.sensors.gps.ExtendedGPS", doc = "extended GPS: adding information to fit a standard GPS-sentence")
 
     add_data('x', 0.0, "float",
-             'x coordinate of the sensor, in world coordinate, in meter')
+             'x coordinate of the sensor, in world coordinate, in meter', level = "simple")
     add_data('y', 0.0, "float",
-             'y coordinate of the sensor, in world coordinate, in meter')
+             'y coordinate of the sensor, in world coordinate, in meter', level = "simple")
     add_data('z', 0.0, "float",
-             'z coordinate of the sensor, in world coordinate, in meter')
+             'z coordinate of the sensor, in world coordinate, in meter', level = "simple")
+    add_data('longitude', 0.0, "double",
+             'longitude in degree [-180°,180] or [0°,360°]', level = "raw")
+    add_data('latitude', 0.0, "double",
+             'latitude in degree [-90°,90°]', level = "raw")
+    add_data('altitude', 0.0, "double",
+             'altitude in m a.s.l.', level = "raw")
+    add_data('velocity', [0.0, 0.0, 0.0], "vec3<float>",
+             'Instantaneous speed in X, Y, Z, in meter sec^-1', level = "raw")
+    add_data('date', 0000000, "DDMMYY",
+             'current date in DDMMYY-format', level = "extended")
+    add_data('time', 000000, "HHMMSS",
+             'current time in HHMMSS-format', level = "extended")
+    add_data('heading', 0, "float",
+             'heading in degrees [0°,360°] to geographic north', level = "extended")
+
+    add_property('longitude', 0.0, 'longitude', 'double',
+             'longitude in degree [-180°,180°] or [0°,360°] of the Blender origin')
+    add_property('latitude', 0.0, 'latitude', 'double',
+             'latitude in degree [-90°,90°] of the Blender origin')
+    add_property('altitude', 0.0, 'altitude', 'double',
+             'altitude in m a.s.l. of the Blender origin')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -43,40 +139,39 @@ class GPS(morse.core.sensor.Sensor):
         self.local_data['y'] = float(y)
         self.local_data['z'] = float(z)
 
-class Real_GPS(morse.core.sensor.Sensor):
+class SimpleGps(GPS):
     """
-    This sensor converts the coordinates from Blender to real GPS
-    coordinates
+    Returns position in Blender coordinates
     """
-    _name = "real GPS"
+    def __init__(self, obj, parent=None):
+        # Call the constructor of the parent class
+        GPS.__init__(self, obj, parent)    
 
-    add_data('longitude', 0.0, "double",
-             'longitude in degree [-180°,180] or [0°,360°]')
-    add_data('latitude', 0.0, "double",
-             'latitude in degree [-90°,90°]')
-    add_data('altitude', 0.0, "double",
-             'altitude in m a.s.l.')
-    add_data('velocity', [0.0, 0.0, 0.0], "vec3<float>",
-             'Instantaneous speed in X, Y, Z, in meter sec^-1')
-    add_data('date', 0000000, "DDMMYY",
-             'current date in DDMMYY-format')
-    add_data('time', 000000, "HHMMSS",
-             'current time in HHMMSS-format')
+    def default_action(self):
+        """ Main function of this component. """
+        x = self.position_3d.x
+        y = self.position_3d.y
+        z = self.position_3d.z
 
-    add_property('longitude', 0.0, 'longitude', 'double',
-             'longitude in degree [-180°,180°] or [0°,360°] of the Blender origin')
-    add_property('latitude', 0.0, 'latitude', 'double',
-             'latitude in degree [-90°,90°] of the Blender origin')
-    add_property('altitude', 0.0, 'altitude', 'double',
-             'altitude in m a.s.l. of the Blender origin')
+        # Store the data acquired by this sensor that could be sent
+        #  via a middleware.
+        self.local_data['x'] = float(x)
+        self.local_data['y'] = float(y)
+        self.local_data['z'] = float(z)
+
+class RawGPS(GPS):
+    """
+    This sensor emulates a GPS, providing the exact coordinates in the
+    Blender scene. The coordinates provided by the GPS are with respect
+    to the origin of the Blender coordinate reference.
+    """
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
             Receives the reference to the Blender object.
             The second parameter should be the name of the object's parent. """
-        logger.info('%s initialization' % obj.name)
         # Call the constructor of the parent class
-        morse.core.sensor.Sensor.__init__(self, obj, parent)
+        GPS.__init__(self, obj, parent)
         
         ##copied from accelerometer
         # Variables to store the previous position
@@ -91,7 +186,6 @@ class Real_GPS(morse.core.sensor.Sensor):
         self.p = self.bge_object.position
         self.v = [0.0, 0.0, 0.0] # Velocity
         self.pv = [0.0, 0.0, 0.0] # Previous Velocity
-        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     
     def default_action(self):
@@ -110,16 +204,15 @@ class Real_GPS(morse.core.sensor.Sensor):
             http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
             (FoIz)
         """
-        now = datetime.datetime.now()
         
         ####
         #Speed
         ####
         ##copied from accelerometer
         # Compute the difference in positions with the previous loop
-        dx = self.p[0] - self.ppx
-        dy = self.p[1] - self.ppy
-        dz = self.p[2] - self.ppz
+        self.dx = self.p[0] - self.ppx
+        self.dy = self.p[1] - self.ppy
+        self.dz = self.p[2] - self.ppz
 
         # Store the position in this instant
         self.ppx = self.p[0]
@@ -127,9 +220,9 @@ class Real_GPS(morse.core.sensor.Sensor):
         self.ppz = self.p[2]
 
         # Scale the speeds to the time used by Blender
-        self.v[0] = dx * self.frequency
-        self.v[1] = dy * self.frequency
-        self.v[2] = dz * self.frequency
+        self.v[0] = self.dx * self.frequency
+        self.v[1] = self.dy * self.frequency
+        self.v[2] = self.dz * self.frequency
 
         # Update the data for the velocity
         self.pvx = self.v[0]
@@ -220,14 +313,38 @@ class Real_GPS(morse.core.sensor.Sensor):
         for i in range(len(gps_coords)-1):
             gps_coords[i] = math.degrees(gps_coords[i])
 
-        date = now.strftime("%d%m%y")
-        time = now.strftime("%H%M%S")
+
 
         #compose message as close as possible to a GPS-standardprotocol
         self.local_data['longitude'] = gps_coords[0]
         self.local_data['latitude'] = gps_coords[1]
         self.local_data['altitude'] = gps_coords[2]
         self.local_data['velocity'] = self.v
-        self.local_data['date'] = int(date)
-        self.local_data['time'] = int(time)
-        
+ 
+
+class ExtendedGPS(RawGPS):
+    """
+    Additional information to fit a standard GPS-sentence
+    """
+    def __init__(self, obj, parent=None):
+        """ 
+        Constructor method.
+        Receives the reference to the Blender object.
+        The second parameter should be the name of the object's parent. 
+        """
+        # Call the constructor of the parent class
+        RawGPS.__init__(self, obj, parent)
+
+    def default_action(self):
+        """
+        Adds additional information (date, time and heading) to the message of the RawGPS
+        """
+        # Call the default_action of the parent class
+        RawGPS.default_action(self)
+        date = time.strftime("%d%m%y", time.gmtime(self.robot_parent.gettime()))
+        time_h_m_s = time.strftime("%H%M%S", time.gmtime(self.robot_parent.gettime()))
+        heading = (2*math.pi - math.atan2(self.dy, self.dx) + math.pi/2)%(2*math.pi)
+        self.local_data['date'] = date
+        self.local_data['time'] = time_h_m_s   
+        self.local_data['heading'] = math.degrees(heading)
+
