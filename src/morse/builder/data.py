@@ -311,6 +311,8 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.actuators.force_torque.ForceTorque": {
         "default": {
+            "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
             "ros": 'morse.middleware.ros.force_torque.WrenchReader',
             }
         },
