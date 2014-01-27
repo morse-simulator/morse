@@ -106,7 +106,7 @@ to look after the target, here we will *cheat* and also use a pose sensor
 on the mouse (which will be used by the cat!) Imagine it's a *"super-ultra
 mouse detector"*, or a cookie. 
 
-  .. code-block:: python
+.. code-block:: python
 
     mousePose = Pose()
     mouse.append(mousePose)
@@ -114,7 +114,7 @@ mouse detector"*, or a cookie.
 
 And finally we complete the scene configuration:
 
-  .. code-block:: python
+.. code-block:: python
 
     env = Environment('land-1/trees')
     env.set_camera_location([10.0, -10.0, 10.0])
@@ -173,9 +173,6 @@ Here we'll explain the main parts of it:
 
     """ The height for the flying cat. """
     height= 3.5 
-
-
-  .. code-block:: python
 
     catPosition = where_is(catPose)
     mousePosition = where_is(mousePose)
@@ -242,7 +239,7 @@ moving and using the data from the pose sensors to chase after the *mouse*::
 Note: *The following consideration is deprecated but you may find it useful.* 
 
 As we use sockets for the introduced actuators and sensors, you can connect these
-ports using the ``telnet`` program on another terminal and you will seee the datastream 
+ports using the ``telnet`` program on another terminal and you will see the datastream 
 of object visibility coming from the cameras and of poses from the pose sensors. 
 The socket port numbers are usually 60000+ (e.g. 60001 or 60002...)::
 
