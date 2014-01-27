@@ -177,7 +177,7 @@ class Environment(Component):
 
         .. code-block:: python
 
-            env.place_camera([10.0, -10.0, 3.0])
+            env.set_camera_location([10.0, -10.0, 3.0])
 
         """
         self._camera_location = location
@@ -189,7 +189,7 @@ class Environment(Component):
 
         .. code-block:: python
 
-            env.aim_camera([1.3300, 0, 0.7854])
+            env.set_camera_rotation([1.3300, 0, 0.7854])
 
         """
         self._camera_rotation = rotation
