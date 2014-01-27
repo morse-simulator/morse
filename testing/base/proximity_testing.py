@@ -53,8 +53,8 @@ class ProximityTest(MorseTestCase):
         target3.translate(x=-4.0, y = 0.0)
 
         env = Environment('empty', fastmode = True)
-        env.place_camera( (9.952, -14.955, 12.48) )
-        env.aim_camera( (0.867, 0, 0.428) )
+        env.set_camera_location( (9.952, -14.955, 12.48) )
+        env.set_camera_rotation( (0.867, 0, 0.428) )
         env.add_service('socket')
 
     def test_proximity(self):

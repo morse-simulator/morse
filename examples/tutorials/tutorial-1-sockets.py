@@ -15,5 +15,5 @@ motion.configure_service('socket')
 pose.configure_service('socket')
 
 env = Environment('indoors-1/indoor-1')
-env.place_camera([5, -5, 6])
-env.aim_camera([1.0470, 0, 0.7854])
+env.set_camera_location([5, -5, 6])
+env.set_camera_rotation([1.0470, 0, 0.7854])

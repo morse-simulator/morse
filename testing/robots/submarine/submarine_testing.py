@@ -41,8 +41,8 @@ class DestinationTest(MorseTestCase):
         water = bpymorse.get_object('Water')
         water.scale = [600.0, 600.0, 0.0]
         env.set_camera_clip(clip_end=1000)
-        env.place_camera([60,150,150])
-        env.aim_camera([.2,0,0])
+        env.set_camera_location([60,150,150])
+        env.set_camera_rotation([.2,0,0])
 
     def test(self):
         with Morse() as morse:

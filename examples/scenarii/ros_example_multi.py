@@ -31,7 +31,7 @@ atrv3 = import_atrv('ros')
 atrv3.translate(x=-2)
 
 env = Environment('indoors-1/indoor-1')
-env.aim_camera([1.0470, 0, 0.7854])
+env.set_camera_rotation([1.0470, 0, 0.7854])
 
 del env
 

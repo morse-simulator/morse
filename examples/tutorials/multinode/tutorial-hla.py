@@ -27,7 +27,7 @@ env.configure_multinode(protocol="hla", server_address="127.0.0.1", server_port=
         "nodeB": [dala2.name],
     })
 
-env.aim_camera([1.3300, 0, 0.7854])
-env.place_camera([10.0, -10.0, 3.0])
+env.set_camera_rotation([1.3300, 0, 0.7854])
+env.set_camera_location([10.0, -10.0, 3.0])
 
 env.create()

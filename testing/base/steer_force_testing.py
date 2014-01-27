@@ -36,7 +36,7 @@ class SteerForceTest(MorseTestCase):
 
         env = Environment('land-1/rosace_1', fastmode = True)
         env.set_physics_step_sub(1)
-        env.place_camera([50.0, -20.0, 50.0])
+        env.set_camera_location([50.0, -20.0, 50.0])
 
     def test(self):
         with Morse() as morse:

@@ -86,4 +86,4 @@ victim2.translate(x=8.0, y=5.0)
 victim2.properties(Requirements = "1")
 
 env = Environment('land-1/rosace_1')
-env.place_camera([9, -9, 9])
+env.set_camera_location([9, -9, 9])

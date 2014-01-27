@@ -33,4 +33,4 @@ james.append(keyboard)
 
 # Set scenario
 env = Environment('tum_kitchen/tum_kitchen')
-env.aim_camera([1.0470, 0, 0.7854])
+env.set_camera_rotation([1.0470, 0, 0.7854])

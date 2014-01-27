@@ -35,7 +35,7 @@ class PR2TorsoTest(RosTestCase):
         pr2.add_interface('ros')
 
         env = Environment('empty', fastmode=True)
-        env.aim_camera([1.0470, 0, 0.7854])
+        env.set_camera_rotation([1.0470, 0, 0.7854])
 
     def test_controller(self):
         
