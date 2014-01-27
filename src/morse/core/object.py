@@ -135,7 +135,13 @@ class Object(AbstractObject):
         #"key" is python_name and "value" is default_value
         for item in all_properties.items():
             tmp[item[0]] = getattr(self, item[1][3])
-
+        transform = self.robot_parent.position_3d.transformation3d_with(self.position_3d)
+        rotation = [ list(vec) for vec in transform.rotation_matrix ]
+        translation = list(transform.translation)
+        tmp_transform = {}
+        tmp_transform['rotation'] = rotation
+        tmp_transform['translation'] = translation
+        tmp['transformation_initial_pose'] = tmp_transform
         return {'configurations': tmp}
 
 
