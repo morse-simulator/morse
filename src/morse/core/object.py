@@ -138,10 +138,7 @@ class Object(AbstractObject):
         transform = self.robot_parent.position_3d.transformation3d_with(self.position_3d)
         rotation = [ list(vec) for vec in transform.rotation_matrix ]
         translation = list(transform.translation)
-        tmp_transform = {}
-        tmp_transform['rotation'] = rotation
-        tmp_transform['translation'] = translation
-        tmp['transformation_initial_pose'] = tmp_transform
+        tmp['object_to_robot'] = {'rotation': rotation, 'translation': translation}
         return {'configurations': tmp}
 
 
