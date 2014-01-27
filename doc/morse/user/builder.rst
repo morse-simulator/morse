@@ -98,14 +98,14 @@ where MORSE will be looking for components. The default place it looks in is
 ``$MORSE_ROOT/share/morse/data`` (typically ``/usr/local/share/morse/data``)
 
 An additional option is to place and aim the default camera, by using the methods
-:py:meth:`morse.builder.environment.Environment.aim_camera` and
-:py:meth:`morse.builder.environment.Environment.place_camera`.
+:py:meth:`morse.builder.environment.Environment.set_camera_rotation` and
+:py:meth:`morse.builder.environment.Environment.set_camera_location`.
 
 .. code-block:: python
 
     env = Environment('land-1/trees')
-    env.place_camera([-5.0, 5.0, 3.0])
-    env.aim_camera([1.0470, 0, -0.7854])
+    env.set_camera_location([-5.0, 5.0, 3.0])
+    env.set_camera_rotation([1.0470, 0, -0.7854])
 
 .. note::
     You can also edit a builder script directly in MORSE, by calling ``morse edit my_builder_script.py``.
@@ -139,7 +139,7 @@ You should see the ``ATRV`` at the center of the scene.
 
     Handling of loop in builder script is a bit complex. There is two possible
     solution to handle properly loop at the builder level. The first one is
-    to name explictly your robot such as:
+    to name explicitly your robot such as:
 
     .. code-block:: python
 
@@ -233,7 +233,7 @@ You can set the name of a component through the setter ``name``::
     mouse.name = "jerry"
 
 
-If you do not explicitely set the name of your components, MORSE name them
+If you do not explicitly set the name of your components, MORSE name them
 automatically (including the Blender objects representing your components)
 based on **the name of the variable used in your Builder script**.
 

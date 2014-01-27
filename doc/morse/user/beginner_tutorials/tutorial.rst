@@ -121,13 +121,14 @@ The parameter for the **Environment** method is the name of a Blender
 <../../environments>`.
 
 The Environment object also provides additional options to place and aim the
-default camera, by using the methods ``aim_camera`` and ``place_camera``.
+default camera, by using the methods ``set_camera_rotation`` and
+``set_camera_location``.
 
 .. code-block:: python
 
     env = Environment('indoors-1/indoor-1')
-    env.place_camera([5, -5, 6])
-    env.aim_camera([1.0470, 0, 0.7854])
+    env.set_camera_location([5, -5, 6])
+    env.set_camera_rotation([1.0470, 0, 0.7854])
 
 
 Now save your script file.

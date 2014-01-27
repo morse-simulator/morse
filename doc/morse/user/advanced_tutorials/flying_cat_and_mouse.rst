@@ -117,8 +117,8 @@ And finally we complete the scene configuration:
   .. code-block:: python
 
     env = Environment('land-1/trees')
-    env.place_camera([10.0, -10.0, 10.0])
-    env.aim_camera([1.0470, 0, 0.7854])
+    env.set_camera_location([10.0, -10.0, 10.0])
+    env.set_camera_rotation([1.0470, 0, 0.7854])
     env.select_display_camera(semanticC)
 
 The last line indicates to MORSE that you want the images seen from the cat 

@@ -62,6 +62,15 @@ Socket
 - Add a new ``DepthCamera`` publisher.
 - ``VideoCamera`` now publish base64 encoded RGBA image.
 
+Builder API
+-----------
+
+API changes
++++++++++++
+
+- ``place_camera`` and ``aim_camera`` has been deprecated in favor of
+  ``set_camera_location`` and ``set_camera_rotation``. 
+
 
 What's new in MORSE 1.1?
 ========================
