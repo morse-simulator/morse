@@ -99,6 +99,8 @@ The following are key bindings already defined in any simulation scene
 
 - :kbd:`Esc` key: stop and exit the simulation (cleaning up the connections)
 
+- :kbd:`F7` key: move the camera **CameraFP** near to the robot
+
 - :kbd:`F8` key: reset the position and orientation of the **CameraFP** to its
   initial state
 
