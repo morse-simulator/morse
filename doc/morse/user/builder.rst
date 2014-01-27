@@ -319,6 +319,9 @@ video camera sensor, modify its properties like this:
 Middleware configuration
 ------------------------
 
+Datastream handlers
++++++++++++++++++++
+
 For usual sensors and actuators, configuring a middleware to access the
 component is as easy as::
 
@@ -349,6 +352,62 @@ the :doc:`compatibility matrix <integration>`.
     Some middleware allows to configure the behaviour of each stream. Report
     to the documentation of your specific middleware, in the part
     "Configuration specificities" to know more about it.
+
+Service handlers
+++++++++++++++++
+
+To use :doc:`services <../dev/services>` of a sensor or an actuator, you
+should configure your builder script explicitly.  For example, to export the
+service of the actuator ``motion`` through the middleware ``socket``, you must
+write::
+
+    motion.add_service('socket')
+
+As for datastream handler, it is possible to configure one component to export
+its services through multiple middlewares. You simply need to call
+``add_service`` several times.
+
+.. warning::
+
+    Do the nature of some middlewares (in particular ROS or pocolibs), it is
+    sometimes not really useful to call the service directly as exposed by
+    Morse. You need to use an extra layer of adaption called :doc:`overlays
+    <overlays>` and configure it through the ``add_overlay`` method.
+
+Related methods
++++++++++++++++
+
+The method ``add_interface`` allows to configure both datastream and service
+handling for one component. So::
+
+    motion.add_stream('socket')
+    motion.add_service('socket')
+
+is equivalent to::
+
+    motion.add_inteface('socket')
+
+Last, the method ``add_default_interface`` configures the default interface
+for each sensor / actuator owned by a robot. If an interface is configured for
+one sensor, it is used, otherwise the default  one is used. In the following
+example
+
+.. code-block:: python
+
+    robot = ATRV()
+
+    pose = Pose()
+    robot.append(pose)
+    pose.add_interface('socket')
+
+    motion = MotionVW()
+    robot.append(motion)
+
+    robot.add_default_interface('ros')
+
+``robot.pose`` will be exported through the socket interface, while
+``robot.motion`` will be exported through ROS.
+
 
 Adding modifiers
 ----------------
