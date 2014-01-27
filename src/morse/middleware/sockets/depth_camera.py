@@ -32,3 +32,4 @@ class DepthCameraPublisher(SocketPublisher):
         }
 
         return (json.dumps(res) + '\n').encode()
+
