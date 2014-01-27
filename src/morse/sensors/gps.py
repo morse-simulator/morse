@@ -3,6 +3,7 @@ import morse.core.sensor
 from morse.helpers.components import add_property, add_data, add_level
 import math, time
 from morse.core import mathutils
+from morse.core import blenderapi
 
 class GPS(morse.core.sensor.Sensor):
     """
@@ -340,8 +341,9 @@ class ExtendedGPS(RawGPS):
         """
         # Call the default_action of the parent class
         RawGPS.default_action(self)
-        date = time.strftime("%d%m%y", time.gmtime(self.robot_parent.gettime()))
-        time_h_m_s = time.strftime("%H%M%S", time.gmtime(self.robot_parent.gettime()))
+        current_time = time.gmtime(blenderapi.persistantstorage().current_time)
+        date = time.strftime("%d%m%y", current_time)
+        time_h_m_s = time.strftime("%H%M%S", current_time)
         heading = (2*math.pi - math.atan2(self.dy, self.dx) + math.pi/2)%(2*math.pi)
         self.local_data['date'] = date
         self.local_data['time'] = time_h_m_s   
