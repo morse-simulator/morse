@@ -286,6 +286,13 @@ outliner, you see that the hierarchy of objects looks like that:
     If name collisions occur anyway, Blender automatically adds an incremental
     suffix like ``.001``, ``.002``, etc.
 
+.. note::
+    If, for some reason, you want to deactivate the automatic renaming
+    feature, it is possible by specifying at the environment level:
+
+    .. code-block:: python
+
+        env = Environment('indoors-1/indoor-1', component_renaming = False)
 
 Component properties
 --------------------
