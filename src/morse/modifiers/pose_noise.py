@@ -83,7 +83,7 @@ class OrientationNoiseModifier(NoiseModifier):
         data_vars.append('yaw')
         # generate a gaussian noise rotation vector
         rot_vec = Vector((0.0, 0.0, 0.0))
-        for i in range(0, 3):
+        for i in range(len(data_vars)):
             if data_vars[i] in self._rot_std_dev:
                 rot_vec[i] = random.gauss(rot_vec[i], self._rot_std_dev[data_vars[i]])
         # convert rotation vector to a quaternion representing the random rotation
