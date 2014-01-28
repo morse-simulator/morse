@@ -134,7 +134,6 @@ We can retrieve the pose of the human from a regular Python script
 
 .. code-block:: python
 
-    import time
     from pymorse import Morse
 
     def printer(data):
@@ -143,7 +142,7 @@ We can retrieve the pose of the human from a regular Python script
     with Morse() as morse:
         morse.human.pose.subscribe(printer)
         # Listen to pose updates for 10 sec
-        time.sleep(10)
+        morse.sleep(10)
 
 You can run this script from any terminal, on the same machine as MORSE (or on
 a distant one, just replace ``localhost`` by the appropriate host).

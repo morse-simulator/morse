@@ -95,13 +95,12 @@ a Python script to connect to MORSE and display the noisy position:
 .. code-block:: python
 
     import pymorse
-    import time
     
     with pymorse.Morse() as morse:
       while True:
         pose = morse.robot.pose.get()
         morse.ghost.teleport.publish(pose)
-        time.sleep(.1)
+        morse.sleep(.1)
     
 The whole program can be found at: ``$MORSE_SRC/examples/clients/atrv/ghost_noise_script.py``
 

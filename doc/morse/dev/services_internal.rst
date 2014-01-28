@@ -149,7 +149,6 @@ This second code snippet shows an example of asynchronous service:
 
 .. code-block:: python
 
-   import time
    from morse.core import status
    from morse.middleware.socket_request_manager import SocketRequestManager
    
@@ -180,7 +179,7 @@ This second code snippet shows an example of asynchronous service:
            result_cb((status.SUCCESS, "done!"))
            run_computation = False
 
-       time.sleep(1)
+       morse.sleep(1)
        return a - 1
 
    req_manager = SocketRequestManager()
