@@ -20,12 +20,12 @@ Module Organisation
 
 To match the MORSE organisation, we expect the following file hierarchy:
 
-    - in morse.middleware, a file ``<your_middleware>_datastream.py`` which
-      contains the datastream manager for your middleware.
-    - in morse.middleware.your_middleware, a set of files implementing
-      different datastream handler (see :doc:`adding_datastream_handler`) for
-      different messages. It is recommended to abstract generic handling of
-      your middleware in two base class (Publisher and Reader).
+- in morse.middleware, a file ``<your_middleware>_datastream.py`` which
+  contains the datastream manager for your middleware.
+- in morse.middleware.your_middleware, a set of files implementing
+  different datastream handler (see :doc:`adding_datastream_handler`) for
+  different messages. It is recommended to abstract generic handling of
+  your middleware in two base class (Publisher and Reader).
 
 The builder part
 ----------------

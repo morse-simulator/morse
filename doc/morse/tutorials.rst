@@ -32,8 +32,8 @@ you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`soc
 or the :doc:`Python API <pymorse>` :tag:`pymorse`. MORSE supports the two
 classic interaction mechanism provided by most robotic middlewares:
 
-    1. Using **RPC**-oriented calls :tag:`service`
-    2. Using **stream**-oriented interfaces. :tag:`datastream`
+1. Using **RPC**-oriented calls :tag:`service`
+2. Using **stream**-oriented interfaces. :tag:`datastream`
 
 .. note::
 
