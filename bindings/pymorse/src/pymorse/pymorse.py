@@ -63,7 +63,6 @@ background its pose:
 
 .. code-block:: python
 
-    import time
     import pymorse
 
     def print_pos(pose):
@@ -80,13 +79,19 @@ background its pose:
                                   'speed' : 1.0})
 
         # Leave a couple of millisec to the simulator to start the action
-        time.sleep(0.1)
+        simu.sleep(0.1)
 
         # waits until we reach the target
         while simu.r2d2.motion.get_status() != "Arrived":
-            time.sleep(0.5)
+            simu.sleep(0.5)
 
         print("Here we are!")
+
+.. note::
+
+    Note that here we use ``pymorse.Morse.sleep()`` instead of standard
+    ``time.sleep``, the former allowing to consider the simulation time
+    while the second use 'system' time.
 
 
 Data stream manipulation
@@ -114,7 +119,6 @@ These methods are demonstrated in the example below:
 
 .. code-block:: python
 
-    import time
     import pymorse
 
     def printer(data):
@@ -133,7 +137,7 @@ These methods are demonstrated in the example below:
             pose.subscribe(printer)
 
             # Read for 10 sec
-            time.sleep(10)
+            simu.sleep(10)
 
         except pymorse.MorseServerError as mse:
             print('Oups! An error occured!')
@@ -176,7 +180,6 @@ below:
 
 .. code-block:: python
 
-    import time
     import pymorse
 
     def done(evt):
@@ -194,7 +197,7 @@ below:
         print("Am I currently moving? %s" % goto_action.running())
 
         while goto_action.running():
-            time.sleep(0.5)
+            simu.sleep(0.5)
 
 Use the `cancel` method on the `future` returned by the RPC call to
 abort the service.
@@ -611,9 +614,19 @@ class Morse(object):
         return self.rpc("simulation", "deactivate", cmpnt)
 
     def sleep(self, time):
+        """ Wait for time second.
+
+        Time may be a float. Contrary to ``time.sleep``, this method
+        consider the simulated time.
+        """
         return self.rpc("time", "sleep", time)
 
     def time(self):
+        """ Return the simulated time, in seconds, since Epoch
+
+        The precision of the value depends on the underlying python
+        precision of time, and the frequency of simulator
+        """
         return self.rpc("time", "now")
 
     #### with statement ####
