@@ -71,6 +71,13 @@ API changes
 - ``place_camera`` and ``aim_camera`` has been deprecated in favor of
   ``set_camera_location`` and ``set_camera_rotation``. 
 
+API addition
+++++++++++++
+
+- Add a method ``Environment.set_physics_step_sub`` allowing to control the
+  number of substep used by the physics engine. A bigger number will make the
+  simulation slower, but more realistic. The default value in Morse is 2.
+
 Pymorse
 -------
 
