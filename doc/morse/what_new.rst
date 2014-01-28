@@ -71,6 +71,16 @@ API changes
 - ``place_camera`` and ``aim_camera`` has been deprecated in favor of
   ``set_camera_location`` and ``set_camera_rotation``. 
 
+Pymorse
+-------
+
+API addition
+++++++++++++
+
+- Add two methods ``sleep`` and ``time`` to handle time-related request. These
+  methods are equivalent to the one provided by the ``Time`` module, but
+  considers properly the simulated time. It is recommended to use these
+  methods over ``Time`` one.
 
 What's new in MORSE 1.1?
 ========================
