@@ -50,7 +50,8 @@ Sensors
   z) position, it can also returns geodesic coordinates and velocity in the
   ``raw`` level of details. Moreover, it exposes also time and heading in the
   ``extended`` level.
-
+- :doc:`Batteries <user/sensors/battery>` are now rechargeable in
+  ``ChargingZone``.
 
 Middlewares
 -----------

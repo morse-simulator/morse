@@ -42,10 +42,11 @@ Sensors
 
 - Each sensor has now an additional field ``timestamp`` exporting when the
   data has been computed, in simulated time.
-- the GPS senor  has been vastly improved. In addition to (x, y, z) position,
+- the GPS sensor has been vastly improved. In addition to (x, y, z) position,
   it can also returns geodesic coordinates and velocity in the ``raw`` level
   of details. Moreover, it exposes also time and heading in the ``extended``
   level.
+- Batteries are now rechargeable in ``ChargingZone``.
 
 Middlewares
 -----------
