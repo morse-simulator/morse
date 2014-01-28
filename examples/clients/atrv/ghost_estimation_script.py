@@ -1,5 +1,4 @@
 import pymorse
-import time
 import numpy as np
 from scipy.linalg import solve_continuous_are
 
@@ -45,4 +44,4 @@ with pymorse.Morse() as morse:
 
         xest_k = A * xest_k + B * z
         
-        time.sleep(dt)
+        morse.sleep(dt)
