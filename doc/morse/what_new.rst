@@ -15,6 +15,11 @@ General
 Components
 ----------
 
+- Each component now has two new services:
+    - ``get_properties`` returns the list of the properties of the component
+    - ``get_configurations`` returns the value of the different properties of
+      the component.
+
 Robots
 ++++++
 
