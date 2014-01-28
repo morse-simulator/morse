@@ -62,7 +62,7 @@ class ArmatureTest(MorseTestCase):
 
 
 
-    def _test_object_attach(self):
+    def test_object_attach(self):
         """ Checks that attached object are indeed attached at the right place.
         """
         precision = 0.02
@@ -77,7 +77,7 @@ class ArmatureTest(MorseTestCase):
             simu.sleep(0.1)
             self._check_pose(simu, 2., 0., 0.3105, math.radians(90))
 
-    def _test_immediate_api(self):
+    def test_immediate_api(self):
         """ Tests the services that have an immediate result
         (no speed limit taken into account)
 
@@ -104,7 +104,7 @@ class ArmatureTest(MorseTestCase):
 
             # note that set_rotations is tested in armature_pose_testing
 
-    def _test_motion_services(self):
+    def test_motion_services(self):
         """ Tests the services that have take some time to move
         (joint speed limit taken into account)
         """
@@ -132,7 +132,7 @@ class ArmatureTest(MorseTestCase):
             simu.sleep(1.1)
             self.assertTrue(act.done())
 
-    def _test_trajectory(self):
+    def test_trajectory(self):
 
         traj0 = {'points': [
                     {'position': [0.0, 1.57, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -260,4 +260,4 @@ class ArmatureTest(MorseTestCase):
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(ArmatureTest, time_modes = [TimeStrategies.BestEffort])
+    main(ArmatureTest)
