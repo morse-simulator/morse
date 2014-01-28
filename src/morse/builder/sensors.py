@@ -368,11 +368,13 @@ class DepthCamera(VideoCamera):
         self.properties(cam_near=1.0, cam_far=20.0, retrieve_depth=True,
                         Vertical_Flip=False)
 
-class VelodyneZB(DepthCamera):
+class Velodyne(DepthCamera):
     def __init__(self, name=None):
         DepthCamera.__init__(self, name)
         self.properties(classpath="morse.sensors.depth_camera.DepthCameraRotationZ")
         self.properties(rotation=self.camera._bpy_object.data.angle)
+
+VelodyneZB = Velodyne # morse 1.1 compatible
 
 class SemanticCamera(VideoCamera):
     def __init__(self, name=None):
@@ -381,7 +383,8 @@ class SemanticCamera(VideoCamera):
                              "semantic_camera")
         self.properties(cam_width = 512, cam_height = 512, Vertical_Flip = False)
 
-class Velodyne(LaserSensorWithArc):
+
+class VelodyneRayCast(LaserSensorWithArc):
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name,
                                     "morse.sensors.laserscanner.LaserScannerRotationZ", "velodyne")
