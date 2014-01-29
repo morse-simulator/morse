@@ -38,11 +38,12 @@ First, send a motion command to the robot's MotionVW actuator::
 
 - ``pub`` stands for publish
 - ``-1`` will publish 1 message
-- ``/atrv/motion`` correspond to the topic for the motion actuator on the atrv robot
-- ``geometry_msgs/Twist`` is the type of the message
+- ``/atrv/motion`` correspond to the robots's motion controller topic
+- ``geometry_msgs/Twist`` is the message's type
 - ``"{linear: {x: .8}, angular: {z: .5}}"`` the message in json
-  * 0.8 m/s for ``v`` (linear.x)
-  * 0.5 rad/s for ``w`` (angular.z)
+
+  - 0.8 m/s for the linear speed ``v``
+  - 0.5 rad/s for the angular speed ``w``
 
 
 Second, look at its pose::
@@ -51,16 +52,17 @@ Second, look at its pose::
 
 - ``echo`` will subscribe and print
 - ``-n10`` will print 10 messages
-- ``/atrv/pose`` correspond to the topic for the pose sensor on the atrv robot
+- ``/atrv/pose`` correspond to the robots's pose sensor topic
 
 
-rxplot
-------
+rqt_plot
+--------
 
 Once you sent a motion command, you can plot the pose in realtime with::
 
-    rxplot /atrv/pose/pose/position/x,/atrv/pose/pose/position/y /atrv/pose/pose/orientation/z
+    rqt_plot /atrv/pose/pose/position/x,/atrv/pose/pose/position/y /atrv/pose/pose/orientation/z
 
+..note: in former ROS versions, this tool was called ``rxplot``
 
 rxgrah
 ------
