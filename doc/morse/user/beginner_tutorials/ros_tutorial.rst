@@ -25,7 +25,7 @@ Run morse with::
 
     morse run examples/tutorials/tutorial-1-ros.py
 
-In another terminal, use the ``rostopic``, ``rxplot`` and ``rxgraph``
+In another terminal, use the ``rostopic``, ``rqt_plot`` and ``rqt_graph``
 commands to control the robot.
 
 
@@ -64,8 +64,9 @@ Once you sent a motion command, you can plot the pose in realtime with::
 
 .. note:: in former ROS versions, this tool was called ``rxplot``
 
-rxgrah
-------
+
+rqt_grah
+--------
 
 It's an alternative to ``rostopic list`` showing a connexion of nodes and topics.
 
