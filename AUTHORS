@@ -1,5 +1,15 @@
 (as ordered by 'git shortlog -sn TAG1..TAG2')
 
+MORSE 1.2
+---------
+
+Arnaud Degroote (LAAS-CNRS, then ISAE)
+Pierrick Koch (LAAS-CNRS)
+Séverin Lemaignan (EPFL)
+Johannes Horvath (InMach GmbH)
+Felix Ruess (DLR-RMC)
+Gregoire Milliez (LAAS-CNRS)
+
 MORSE 1.1
 ---------
 Arnaud Degroote (LAAS-CNRS)
