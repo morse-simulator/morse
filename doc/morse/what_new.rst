@@ -76,6 +76,8 @@ API changes
 
 - ``place_camera`` and ``aim_camera`` has been deprecated in favor of
   ``set_camera_location`` and ``set_camera_rotation``. 
+- ``Velodyne`` became ``VelodyneRayCast`` and ``VelodyneZB`` became ``Velodyne``
+  ``VelodyneZB`` still works for compatibility.
 
 API addition
 ++++++++++++
