@@ -62,7 +62,7 @@ Once you sent a motion command, you can plot the pose in realtime with::
 
     rqt_plot /atrv/pose/pose/position/x,/atrv/pose/pose/position/y /atrv/pose/pose/orientation/z
 
-..note: in former ROS versions, this tool was called ``rxplot``
+.. note:: in former ROS versions, this tool was called ``rxplot``
 
 rxgrah
 ------
