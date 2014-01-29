@@ -141,7 +141,7 @@ or if you have already download the repository ::
   $ git checkout -b 1.2_STABLE -t origin/1.2_STABLE
   
 You can get a `tarball version here
-<ftp://ftp.openrobots.org/pub/openrobots/morse/morse-2.1.tar.bz2>`_.
+<ftp://ftp.openrobots.org/pub/openrobots/morse/morse-1.2.tar.bz2>`_.
 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
