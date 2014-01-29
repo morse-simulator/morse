@@ -13,7 +13,7 @@ from morse.testing.testing import testlogger
 import roslib
 import rospy
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CameraInfo
 
 # Include this import to be able to use your test file as a regular
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
@@ -58,12 +58,19 @@ class VideoCameraRosTest(RosTestCase):
 
         motion_topic = '/robot/motion'
         camera_topic = '/robot/camera/image'
+        camnfo_topic = '/robot/camera/camera_info'
 
         pub_vw(motion_topic, 1, 1)
 
         old = []
         for step in range(2):
+            msg = rospy.wait_for_message(camnfo_topic, CameraInfo, 10)
+            camera_info_frame = msg.header.frame_id
+            # might want to add more CameraInfo test here
+
             msg = rospy.wait_for_message(camera_topic, Image, 10)
+
+            self.assertEqual(msg.header.frame_id, camera_info_frame)
 
             self.assertEqual(len(msg.data), 128*128*4) # RGBA
             self.assertTrue (msg.data != old)
