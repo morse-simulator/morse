@@ -89,6 +89,9 @@ class DataStreamTest(RosTestCase):
         self.assertAlmostEqual(self.pos.pose.pose.position.y, 0.0, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
+        # sleep to make sure that the other peer can read it ...
+        sleep(1)
+
         send_speed(cmd_stream, 1.0, -math.pi/4.0, 2.0)
         sleep(1)
 
@@ -96,12 +99,8 @@ class DataStreamTest(RosTestCase):
         self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
 
-       # self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=precision)
-       # self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=precision)
-       # self.assertAlmostEqual(pose['z'], 0.0, delta=precision)
-       # self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=precision)
-       # self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
-       # self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
+        # sleep to make sure that the other peer can read it ...
+        sleep(1)
 
         send_speed(cmd_stream, 0.5, -math.pi/8.0, 12.0)
         sleep(1)
@@ -115,15 +114,8 @@ class DataStreamTest(RosTestCase):
         self.assertAlmostEqual(self.pos.pose.pose.position.x, 4.0 / math.pi, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.y, -4.0 / math.pi, delta=precision)
         self.assertAlmostEqual(self.pos.pose.pose.position.z, 0.0, delta=precision)
-       # pose = pose_stream.get()
-       # self.assertAlmostEqual(pose['x'], 4.0/ math.pi , delta=0.08)
-       # self.assertAlmostEqual(pose['y'], -4.0/ math.pi , delta=0.08)
-       # self.assertAlmostEqual(pose['z'], 0.0, delta=0.08)
-       # self.assertAlmostEqual(pose['yaw'], -math.pi/2.0, delta=0.08)
-       # self.assertAlmostEqual(pose['pitch'], 0.0, delta=0.08)
-       # self.assertAlmostEqual(pose['roll'], 0.0, delta=0.08)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(DataStreamTest)
+    main(DataStreamTest, time_modes = [TimeStrategies.BestEffort])
