@@ -48,7 +48,7 @@ class XYW_Test(MorseMoveTestCase):
             morse.deactivate('robot.teleport')
             xyw = morse.robot.motion
 
-            precision = 0.10
+            precision = 0.12
 
             # Read the start position, it must be (0.0, 0.0, 0.0)
             self.assertAlmostEqualPositionThenFix(morse, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
