@@ -6,16 +6,12 @@ This script tests the Sick laser scanner with ROS in MORSE.
 import sys
 import time
 import math
+import struct
 from morse.testing.ros import RosTestCase
 from morse.testing.testing import testlogger
 
 import roslib
-roslib.load_manifest('rospy')
-roslib.load_manifest('nav_msgs')
-roslib.load_manifest('sensor_msgs')
-roslib.load_manifest('geometry_msgs')
 import rospy
-import nav_msgs.msg # do not conflict with morse builder
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
@@ -26,24 +22,27 @@ try:
 except ImportError:
     pass
 
-class SickLaserTest(RosTestCase):
+def pub_vw(topic, v, w):
+    pub = rospy.Publisher(topic, Twist)
+    msg = Twist()
+    msg.linear.x = v
+    msg.angular.z = w
+    # wait 1 second for publisher
+    rospy.sleep(1.0)
+    pub.publish(msg)
+
+class SickLaserRosTest(RosTestCase):
 
     def setUpEnv(self):
-        """ Defines the test scenario, using the Builder API.
-        """
+        """ Defines the test scenario """
 
-        robot = ATRV('ATRV')
+        robot = ATRV()
 
-        motion = MotionVW('MotionVW')
+        motion = MotionVW()
         robot.append(motion)
         motion.add_stream('ros')
 
-        odometry = Odometry('Odometry')
-        odometry.translate(z=0.73)
-        robot.append(odometry)
-        odometry.add_stream('ros')
-
-        sick = Sick('Sick')
+        sick = Sick()
         sick.translate(x = 0.18, z = 0.94)
         robot.append(sick)
         # sick.properties(scan_window = 270, resolution = .25)
@@ -53,74 +52,29 @@ class SickLaserTest(RosTestCase):
         sick.create_laser_arc()
 
         env = Environment('indoors-1/boxes', fastmode=True)
-        env.add_service('socket')
-
-    def send_speed(self, v, w, t):
-        msg = Twist()
-        msg.linear.x = v
-        msg.angular.z = w
-        self.cmd_stream.publish(msg)
-        time.sleep(t)
-        msg.linear.x = 0.0
-        msg.angular.z = 0.0
-        self.cmd_stream.publish(msg)
-
-    def sensor_callback(self, message):
-        self.sensor_message = message
-
-    def subscribe_and_wait_for_message(self, topic, topic_type, timeout=30):
-        if hasattr(self, 'sensor_sub'):
-            self.sensor_sub.unregister()
-        self.sensor_sub = rospy.Subscriber(topic, topic_type, self.sensor_callback)
-        return self.wait_for_message(timeout)
-
-    def wait_for_message(self, timeout=10):
-        self.sensor_message = None
-        timeout_t = time.time() + timeout
-        while not self.sensor_message and timeout_t > time.time():
-            time.sleep(.1)
-        return self.sensor_message
-
-    def init_sensor_test(self, topic, topic_type):
-        rospy.init_node('morse_testing', log_level=rospy.DEBUG)
-
-        testlogger.debug("subscribe and wait %s (%s)"%(topic, topic_type.__name__))
-        self.assertTrue(self.subscribe_and_wait_for_message(topic, topic_type) is not None)
-
-        self.cmd_stream = rospy.Publisher('/ATRV/MotionVW', Twist)
-
-        testlogger.debug("init sensor OK %s"%topic)
-
-        return self.sensor_message
-
-    def cleanup_sensor_test(self):
-        self.sensor_sub.unregister()
-        testlogger.debug("cleanup sensor")
 
     def test_sick_laser(self):
-        msg = self.init_sensor_test('/ATRV/Odometry', nav_msgs.msg.Odometry)
-        precision = 0.15 # we start at the origine
-        self.assertAlmostEqual(msg.pose.pose.position.x, 0.0, delta=precision)
-        self.assertAlmostEqual(msg.pose.pose.position.y, 0.0, delta=precision)
-        self.assertAlmostEqual(msg.pose.pose.position.z, 0.0, delta=precision)
-        # see http://ros.org/doc/api/nav_msgs/html/msg/Odometry.html
+        rospy.init_node('morse_ros_laser_testing', log_level=rospy.DEBUG)
 
-        msg = self.init_sensor_test('/ATRV/Sick', LaserScan)
+        motion_topic = '/robot/motion'
+        laser_topic  = '/robot/sick'
 
-        self.assertEqual(len(msg.ranges), 181)
+        pub_vw(motion_topic, 1, 1)
 
-        # assert that : near <= distance <= far
-        for distance in msg.ranges:
-            self.assertTrue(distance >= 0.1 and distance <= 30)
+        old = []
+        for step in range(5):
+            msg = rospy.wait_for_message(laser_topic, LaserScan, 10)
 
-        self.send_speed(1.0, math.pi / 2.0, 2.0)
-        msg = self.wait_for_message()
+            self.assertEqual(len(msg.ranges), 181) # 180 + center ray
+            self.assertTrue (msg.ranges != old)
+            old = msg.ranges
+            # assert that : near <= distance <= far
+            for distance in msg.ranges:
+                self.assertTrue(0.1 <= distance <= 30)
 
-        # TODO: more test
-
-        self.cleanup_sensor_test()
+            time.sleep(0.2) # wait for turning
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(SickLaserTest)
+    main(SickLaserRosTest, time_modes = [TimeStrategies.BestEffort])
