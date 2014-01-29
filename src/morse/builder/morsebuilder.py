@@ -305,6 +305,8 @@ class Armature(Actuator):
         # default classpath for Armature (can be modified)
         self.properties(classpath="morse.actuators.armature.Armature")
 
+        self.ik_targets = []
+
         # the user may have created IK constraints on the armature, without
         # setting an IK target. In that case, we add such a target
         for bone in self._bpy_object.pose.bones:
@@ -312,8 +314,6 @@ class Armature(Actuator):
                 if c.type == 'IK' and c.ik_type == 'DISTANCE':
                     if not c.target:
                         self.create_ik_targets([bone.name])
-
-        self.ik_targets = []
 
     def _get_posebone(self, bone_name):
         """ Returns a given PoseBone in the armature.
