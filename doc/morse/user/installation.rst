@@ -131,17 +131,17 @@ repository::
 
   $ git clone https://github.com/morse-simulator/morse.git
   
-If you want to get only the latest stable version (1.1) of Morse, you can get
-it in the branch `1.1_STABLE`. You can get it directly using ::
+If you want to get only the latest stable version (1.2) of Morse, you can get
+it in the branch `1.2_STABLE`. You can get it directly using ::
  
-  $ git clone https://github.com/morse-simulator/morse.git -b 1.1_STABLE
+  $ git clone https://github.com/morse-simulator/morse.git -b 1.2_STABLE
 
 or if you have already download the repository ::
   
-  $ git checkout -b 1.1_STABLE -t origin/1.1_STABLE
+  $ git checkout -b 1.2_STABLE -t origin/1.2_STABLE
   
 You can get a `tarball version here
-<ftp://ftp.openrobots.org/pub/openrobots/morse/morse-1.1.tar.bz2>`_.
+<ftp://ftp.openrobots.org/pub/openrobots/morse/morse-2.1.tar.bz2>`_.
 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
@@ -208,7 +208,7 @@ You can check your configuration is ok with::
 
     ``[<refspec>]`` being the branch or tag to sync with, as::
 
-    $ git pull --rebase https://github.com/morse-simulator/morse.git 1.1
+    $ git pull --rebase https://github.com/morse-simulator/morse.git 1.2
     $ git pull --rebase https://github.com/morse-simulator/morse.git master
 
 Time to jump to MORSE's :doc:`Quickstart<../quickstart>` tutorial!
