@@ -6,7 +6,7 @@ General
 
 - morse tools has now some options to easily create custom simulations: check
   'morse {create|rm|add} --help' for more on that topic! Or have a look to the
-  new :doc:`quickstart` tutorial.
+  new :doc:`/quickstart` tutorial.
 
 Components
 ----------
@@ -17,18 +17,18 @@ Components
 Actuators
 +++++++++
 
-- Improve the :doc:`user/actuators/light` actuator, including more
+- Improve the :doc:`/user/actuators/light` actuator, including more
   configurable parameters (in particular, the color of light and its energy).
   A new service 'toggle' allows to control it.
-- New 3D :doc:`user/actuators/sound` actuator {play,pause,stop} from local mp3 file.
-- Add a :doc:`joystick <user/actuators/joystick>` actuator allowing to control directly
+- New 3D :doc:`/user/actuators/sound` actuator {play,pause,stop} from local mp3 file.
+- Add a :doc:`joystick </user/actuators/joystick>` actuator allowing to control directly
   your robot using a joystick.
 
 
 Robots
 ++++++
 
-- Introduce :doc:`Morsy <user/robots/morsy>`, the Morse mascot, now available directly
+- Introduce :doc:`Morsy </user/robots/morsy>`, the Morse mascot, now available directly
   in the simulator.
 - Introduce :doc:`PatrolBot </user/robots/patrolbot>`, a differential robot
   developed by MobileRobots.
@@ -36,14 +36,14 @@ Robots
 Sensors
 +++++++
 
-- A new sensor :doc:`user/sensors/velocity` allows to retrieve properly the
+- A new sensor :doc:`/user/sensors/velocity` allows to retrieve properly the
   velocities of a robot which use a physic controller.
-- The :doc:`user/sensors/semantic_camera` performance has been improved. It
+- The :doc:`/user/sensors/semantic_camera` performance has been improved. It
   has a new option 'noocclusion' to disable occlusion testing and get even
   better performances.
-- The :doc:`user/sensors/thermometer` has been reworked to handle multiple
+- The :doc:`/user/sensors/thermometer` has been reworked to handle multiple
   fire sources, potentially of different nature
-- Introduce a new sensor :doc:`user/sensors/collision` which allows to detect
+- Introduce a new sensor :doc:`/user/sensors/collision` which allows to detect
   if the robot is in collision with some objects of the environment.
 - Fix Camera resolutions ratio issue `#371
   <https://github.com/morse-simulator/morse/issues/371>`_. We now create one
@@ -55,7 +55,7 @@ Builder API
 
 It is now possible to handle loop in builder script (`#357
 <https://github.com/morse-simulator/morse/issues/357>`_). See
-:doc:`user/builder` for documentation about it.
+:doc:`/user/builder` for documentation about it.
 
 API addition
 ++++++++++++
@@ -85,7 +85,7 @@ rewrite, and the interface does not change.
 Multi-node
 ----------
 
-Rewrite the :doc:`user/multinode/socket` client/server (internal). Use JSON
+Rewrite the :doc:`/user/multinode/socket` client/server (internal). Use JSON
 instead of unsafe `pickle`.
 
 Tools

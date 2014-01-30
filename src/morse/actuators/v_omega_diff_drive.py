@@ -28,6 +28,7 @@ class MotionVWDiff(morse.core.actuator.Actuator):
         - **e** is half of the distance between the left and
         right wheels
         - **R** is the radius of the wheels
+
     """
 
     _name = 'Differential Driver Actuator: \

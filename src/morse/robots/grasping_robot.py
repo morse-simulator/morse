@@ -31,11 +31,12 @@ class GraspingRobot(Robot):
 
     @service
     def grasp(self, grab, obj_name=None):
-        """ Grasp near object.
+        """
+        Grasp near object.
 
         :param grab: set to True to take an object and False to release it.
         :param obj_name: when None, the robot will just grasp the nearest
-        object without any consideration for the object name.
+                         object without any consideration for the object name.
         """
         logger.debug("morse grasp request received")
         grasping_robot = self.bge_object
