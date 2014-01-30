@@ -141,6 +141,11 @@ img {
     padding: 5px;
 }
 
+.math {
+    border: 0 !important;
+    padding: 0 !important;
+}
+
 .align-center {
     display: block;
     margin: auto;
