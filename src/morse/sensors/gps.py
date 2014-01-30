@@ -14,7 +14,7 @@ class GPS(morse.core.sensor.Sensor):
 
     - **Noise modifier**: Adds random Gaussian noise to the data
 
-    coordinates in Blender: x -> east and y -> north
+    coordinates in Blender: :math:`x` -> east and :math:`y` -> north
 
     The "heading" is Clockwise (mathematically negative).
 
@@ -25,66 +25,67 @@ class GPS(morse.core.sensor.Sensor):
     Conversion of Geodetic coordinates into ECEF-r
     ++++++++++++++++++++++++++++++++++++++++++++++
 
-    To be able to simulate a GPS-sensor P (the Blender origin) must
+    To be able to simulate a GPS-sensor :math:`P` (the Blender origin) must
     be defined in the properties in Geodetic coordinates (longitude,
     latitude, altitude).  For the transformation [Psas_] the
     coordinates must be in decimal degrees (no North, minutes,
-    etc.). The result is a point x0 in the ECEF-r coordinates.
+    etc.). The result is a point :math:`x_0` in the ``ECEF-r`` coordinates.
 
 
     Conversion of ECEF-r into LTP[Psas_]
     ++++++++++++++++++++++++++++++++++++
 
-    For this conversion x0 is the base. A point xe is given in the
-    ECEF-r coordinates and the goal is to get xt (= xe in the
-    LTP-coordinates).
+    For this conversion :math:`x_0` is the base. A point :math:`x_e` is given
+    in the ``ECEF-r`` coordinates and the goal is to get :math:`x_t` (:math:`=
+    x_e` in the ``LTP``-coordinates).
 
     .. image:: ../../../media/conversion_coordinates.png
 
-    1. Transform P (Blender origin, geodetic coordinates
-    (stored in the properties)) into x0(geocentric (ECEF-r)
+    1. Transform :math:`P` (Blender origin, geodetic coordinates
+    (stored in the properties)) into :math:`x0` (geocentric (``ECEF-r``)
     coordinates)
 
-    2. Calculate Rte[1] with longitude, latitude and altitude;
+    2. Calculate :math:`R_{te}[1]` with longitude, latitude and altitude;
     matrix is the rotation part of the transformation
 
-    3. Transform xe into xt with xt = Rte * (xe-x0)
+    3. Transform :math:`x_e` into :math:`x_t` with :math:`x_t = R_{te} * (x_e-x_0)`
 
 
-    Conversion of LTP into ECEF-r[Psas_]
-    ++++++++++++++++++++++++++++++++++++
+    Conversion of LTP into ECEF-r
+    +++++++++++++++++++++++++++++
 
-    Known: P in Geodetic coordinates (→ x0 in ECEF-r) and xt in LTP-coordinates
+    Known: :math:`P` in Geodetic coordinates (→ :math:`x_0` in ``ECEF-r``) and
+    :math:`x_t` in ``LTP``-coordinates
 
-    Goal: xe (= xt in ECEF-r coordinates)
+    Goal: :math:`x_e` (:math:`= x_t` in ``ECEF-r`` coordinates)
 
-    Based on the transformation described above the transformation
-    is calculated with the transposed matrix Rte: xe = x0 + (Rte)' *
-    xt
+    Based on the transformation described above the transformation is
+    calculated with the transposed matrix :math:`R_{te}`: :math:`x_e = x_0 +
+    (R_{te})' * x_t` [Psas_]
 
-    Conversion of ECEF-r into Geodetic coordinates[FoIz_]
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++
+    Conversion of ECEF-r into Geodetic coordinates
+    ++++++++++++++++++++++++++++++++++++++++++++++
 
-    The last transformation is from ECEF-r coordinates into Geodetic
-    coordinates.  This transformation is calculated with the
-    Vermeille's method [FoIz_].  The result is the point xe in
-    „GPS-coordinates“ in radians.
+    The last transformation is from ``ECEF-r`` coordinates into Geodetic
+    coordinates.  This transformation is calculated with the Vermeille's method
+    [FoIz_].  The result is the point :math:`x_e` in "GPS-coordinates" in
+    radians.
 
     Sources
     +++++++
 
     .. _FoIz: 
 
-     „3.4 Vermeille's Method(2002)“ in
-     „Comparative Analysis of the Performance of Iterative and
+     "3.4 Vermeille's Method(2002)" in
+     "Comparative Analysis of the Performance of Iterative and
      Non-iterative Solutions to the Cartesian to Geodetic Coordinate
-     Transformation“, Hok Sum Fok and H. Bâki Iz,
+     Transformation", Hok Sum Fok and H. Bâki Iz,
      http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
 
     .. _Psas:
 
-     „Conversion of Geodetic coordinates to the Local Tangent
-     Plane“, Version 2.01,
+     "Conversion of Geodetic coordinates to the Local Tangent
+     Plane", Version 2.01,
      http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
     """
 
@@ -147,7 +148,9 @@ class GPS(morse.core.sensor.Sensor):
 
 
     def default_action(self):
-        """ Main function of this component. """
+        """
+        Main function of this component.
+        """
         x = self.position_3d.x
         y = self.position_3d.y
         z = self.position_3d.z
@@ -188,22 +191,22 @@ class RawGPS(GPS):
 
     
     def default_action(self):
-        """ 
+        """
         Calculates speed and GPS-position
-        
+
         Configurations are the GPS-values for the Blenderorigin
         Transforms point from LTP to Geodetic coordinates
+
         Refer to:
-        - „Conversion of Geodetic coordinates to the Local Tangent Plane“, 
-            Version 2.01,
-            http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
-        - „Comparative Analysis of the Performance of Iterative and Non-iterative 
-            Solutions to the Cartesian to Geodetic Coordinate Transformation“, 
-            Hok Sum Fok and H.   Bâki Iz,
-            http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
-            (FoIz)
+        - Conversion of Geodetic coordinates to the Local Tangent Plane,
+          Version 2.01,
+          http://psas.pdx.edu/CoordinateSystem/Latitude_to_LocalTangent.pdf
+        - Comparative Analysis of the Performance of Iterative and Non-iterative
+          Solutions to the Cartesian to Geodetic Coordinate Transformation, 
+          Hok Sum Fok and H.   Bâki Iz,
+          http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
         """
-        
+
         ####
         #Speed
         ####
