@@ -42,7 +42,41 @@ class Armature(morse.core.actuator.Actuator):
         dictionary of pair `(joint name, joint value)`.  Joint values are
         either radians (for revolute joints) or meters (for prismatic joints)
 
+    To use inverse kinematics, you must first define *IK targets* to control
+    your kinematic chain. You can create them :doc:`manually from Blender
+    <../../dev/armature_creation>` or directly in your `Builder script` (refer
+    to the `Examples` section below for an example).
 
+    .. example::
+
+        from morse.builder import *
+
+        robot = ATRV()
+
+        # imports an armature,
+        # either from a Blender file...
+        armature = Armature(model_name = "<blend file>")
+        # ...or by providing the name of an existing armature:
+        # armature = Armature(armature_name = "<name of armature>")
+        # (note that you can combine both options to select an armature in a 
+        # Blender file)
+
+        # if you want to use inverse kinematics, you can create 'IK targets'
+        # here as well:
+        armature.create_ik_targets(["<name of the bone you want to control>", ...])
+
+        # place your armature at the correct location
+        armature.translate(<x>, <y>, <z>)
+        armature.rotate(<rx>, <ry>, <rz>)
+
+        # define one or several communication interfaces, like 'socket' or 'ros'
+        # With ROS, this actuator exposes a JointTrajectoryAction interface.
+        armature.add_interface(<interface>)
+
+        robot.append(armature)
+
+        env = Environment('empty')
+        
     .. note::
 
         :tag:`ros` Armatures can be controlled in ROS through the
@@ -52,6 +86,7 @@ class Armature(morse.core.actuator.Actuator):
 
     :sees: :doc:`armature pose sensor <../sensors/armature_pose>`
 
+    :noautoexample:
     """
     _name = "Armature Actuator"
     _short_desc="An actuator to manipulate Blender armatures in MORSE."
