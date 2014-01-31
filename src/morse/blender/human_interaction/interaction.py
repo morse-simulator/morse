@@ -335,14 +335,13 @@ def lay_down(cont):
     hand = objects['Hand_Grab.R' + suffix]
     
     obj = hand['selected']
-    if obj is None or not pos['LayDown']:
+    if obj is None or not pos['LayDown'] or not 'Collision' in obj.sensors:
         return
 
-    vect = pos.getVectTo(Vector(pos['LayDown']))[1]
-    
     obj_collision = obj.sensors['Collision']
-    
+
     if not (obj_collision.positive and pos['LayDownObj'] in obj_collision.hitObjectList):
+        vect = pos.getVectTo(Vector(pos['LayDown']))[1]
         pos.worldPosition += vect/75
     else:
         obj.removeParent()
