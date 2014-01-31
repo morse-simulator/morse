@@ -362,7 +362,10 @@ class MorseBuilderFailureTestCase(MorseTestCase):
     def _checkMorseException(self):
         return
 
-def main(*test_cases, time_modes = [TimeStrategies.BestEffort, TimeStrategies.FixedSimulationStep]):
+
+def main(*args, **kwargs):
+    test_cases = args
+    time_modes = kwargs.get('time_modes', [TimeStrategies.BestEffort, TimeStrategies.FixedSimulationStep])
     import sys
     if sys.argv[0].endswith('blender'):
         # If we arrive here from within MORSE, we have probably run
