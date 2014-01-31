@@ -113,13 +113,13 @@ class GPS(morse.core.sensor.Sensor):
              'z coordinate of the sensor, in world coordinate, in meter',
              level = "simple")
     add_data('longitude', 0.0, "double",
-             'longitude in degree [-180°,180] or [0°,360°]', level = "raw")
+             'longitude in degree [-180°,180] or [0°,360°]', level = ["raw", "extended"])
     add_data('latitude', 0.0, "double",
-             'latitude in degree [-90°,90°]', level = "raw")
+             'latitude in degree [-90°,90°]', level = ["raw", "extended"])
     add_data('altitude', 0.0, "double",
-             'altitude in m a.s.l.', level = "raw")
+             'altitude in m a.s.l.', level = ["raw", "extended"])
     add_data('velocity', [0.0, 0.0, 0.0], "vec3<float>",
-             'Instantaneous speed in X, Y, Z, in meter sec^-1', level = "raw")
+             'Instantaneous speed in X, Y, Z, in meter sec^-1', level = ["raw", "extended"])
     add_data('date', 0000000, "DDMMYY",
              'current date in DDMMYY-format', level = "extended")
     add_data('time', 000000, "HHMMSS",

@@ -90,7 +90,7 @@ class Object(AbstractObject):
 
         for name, details in all_data_fields.items():
             default_value, type_, doc, level = details
-            if level == "all" or level == self.level:
+            if level == "all" or self.level in level:
                 self.local_data[name] = default_value
 
 

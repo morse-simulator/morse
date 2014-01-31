@@ -430,7 +430,7 @@ def print_levels(out, name, props):
             out.write("\tAt this level, the %s %s these datafields at each simulation step:\n\n" % ( props["type"], "exports" if props["type"] == "sensor" else "reads"))
 
             for fieldname, prop in props["data_fields"].items():
-                if prop[3] == name:
+                if name is "all" or name in prop[3]:
                     out.write('\t- ``' + fieldname + '`` (' + (prop[1] + ', ' if prop[1] else '' ) + 'initial value: ``' + str(prop[0]) + '``): ' + prop[2] + "\n")
 
             out.write("\n\t*Interface support:*\n\n%s\n\n" % supported_interfaces(props["object"].__module__ + '.' + props["object"].__name__, name, tabs = 1))

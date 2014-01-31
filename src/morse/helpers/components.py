@@ -56,6 +56,8 @@ def add_data(name, default_value, type = "", doc = "(no documentation available 
 
     """
 
+    if isinstance(level, str) and level is not "all":
+        level = [level]
     _set_cls_value('_data_fields', name, (default_value, type, doc, level))
 
 def add_property(python_name, default_value, name, type = "", doc = "(no documentation available yet)"):
