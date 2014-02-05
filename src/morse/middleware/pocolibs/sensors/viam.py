@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 from morse.core import blenderapi
 from morse.middleware import AbstractDatastream
-from morse.middleware.pocolibs_datastream import poster_name, Pocolibs
+from morse.middleware.pocolibs_datastream import poster_name, PocolibsDatastreamManager
 
 try:
     from morse.middleware.pocolibs.viam import *
@@ -80,7 +80,7 @@ class ViamPoster(AbstractDatastream):
         pom_robot_position.roll = main_to_origin.roll
 
         # Compute the current time
-        pom_date, t = Pocolibs.compute_date()
+        pom_date, t = PocolibsDatastreamManager.compute_date()
 
         ors_cameras = []
         ors_images = []
