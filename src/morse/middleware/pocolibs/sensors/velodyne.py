@@ -17,7 +17,10 @@ class Velodyne3DImage(AbstractDatastream):
 
     def initialize(self):
         name = poster_name(self.component_name, self.kwargs)
-        num_rotation = int(2 * pi / self.component_instance.rotation) + 1
+        num_rotation = 1
+        # if we want to use a static DepthCamera as a Velodyne
+        if 'rotation' in dir(self.component_instance):
+            num_rotation += int(2 * pi / self.component_instance.rotation)
         logger.info("num_rotation %d" % num_rotation)
         self.obj = Velodyne(name, self.component_instance.image_width,
                                      self.component_instance.image_height, num_rotation)
