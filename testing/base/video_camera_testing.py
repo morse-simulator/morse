@@ -17,6 +17,7 @@ import os
 import sys
 import time
 import base64
+import math
 import struct
 import zlib
 from pymorse import Morse

@@ -13,6 +13,7 @@ except ImportError:
     pass
 
 import sys
+import math
 from pymorse import Morse
 
 

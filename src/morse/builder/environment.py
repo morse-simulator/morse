@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
+import morse.builder.setup
 from morse.builder.morsebuilder import *
 from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
@@ -269,7 +270,7 @@ class Environment(Component):
         # define 'Scene_Script_Holder' as the blender object of Enrivonment
         if not 'Scene_Script_Holder' in bpymorse.get_objects():
             # Add the necessary objects
-            base = Component('props', 'basics')
+            morse.builder.setup.init_morse()
 
         # Set Scene_Script_Holder as core Environment object
         self.set_blender_object(bpymorse.get_object('Scene_Script_Holder'))
