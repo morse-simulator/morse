@@ -173,7 +173,7 @@ def main(argv=[]):
     xsize = image_dem.size[0] * abs(geot[1]) # in meters
     ysize = image_dem.size[1] * abs(geot[5]) # in meters
 
-    translation = (0.0, 0.0, 0.0)
+    translation = [0.0, 0.0, 0.0]
     if 'CUSTOM_X_ORIGIN' in meta and 'CUSTOM_Y_ORIGIN' in meta:
         custom_x_origin = float(meta['CUSTOM_X_ORIGIN'])
         custom_y_origin = float(meta['CUSTOM_Y_ORIGIN'])
