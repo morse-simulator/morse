@@ -100,9 +100,7 @@ class ROSPublisher(AbstractROS):
         return header
 
     def get_time(self):
-        #not yet :)
-        #return rospy.Time.from_sec(self.data['timestamp'] * 1000.0)
-        return rospy.Time.now()
+        return rospy.Time.from_sec(self.data['timestamp'] / 1000.0)
 
     # Generic publish method
     def publish(self, message):
