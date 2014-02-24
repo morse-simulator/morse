@@ -1,3 +1,30 @@
+What's new in MORSE 1.3?
+========================
+
+General
+-------
+
+Components
+----------
+
+Robots
+++++++
+
+Actuators
++++++++++
+
+Sensors
++++++++
+
+Middlewares
+-----------
+
+Socket
+++++++
+
+- Socket middleware now accepts the keyword 'port' to specify on which port
+  you want the socket binds itself.
+
 What's new in MORSE 1.2?
 ========================
 
