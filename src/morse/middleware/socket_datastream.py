@@ -15,8 +15,6 @@ except ImportError:
     # running outside Blender
     mathutils = None
 
-BASE_PORT = 60000
-
 class MorseEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, mathutils.Vector):
@@ -42,10 +40,10 @@ class SocketServ(AbstractDatastream):
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._server.bind(('', BASE_PORT))
+        self._server.bind(('', self.kwargs['port']))
         self._server.listen(1)
 
-        logger.info("Socket Mw Server now listening on port " + str(BASE_PORT) + \
+        logger.info("Socket Mw Server now listening on port " + str(self.kwargs['port']) + \
                     " for component " + str(self.component_name) + ".")
 
     def finalize(self):
@@ -169,6 +167,9 @@ class SocketDatastreamManager(DatastreamManager):
         # component name (string)  -> Port (int)
         self._component_nameservice = {}
 
+        # Base port
+        self._base_port = 60000
+
         # Register two special services in the socket service manager:
 
         # TODO To use a new special component instead of 'simulation',
@@ -205,9 +206,12 @@ class SocketDatastreamManager(DatastreamManager):
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.
         """
-        global BASE_PORT
-
         register_success = False
+        must_inc_base_port = False
+
+        if not 'port' in mw_data[2]:
+            must_inc_base_port = True
+            mw_data[2]['port'] = self._base_port
 
         while not register_success:
             try:
@@ -217,10 +221,13 @@ class SocketDatastreamManager(DatastreamManager):
                 register_success = True
             except socket.error as error_info:
                 if error_info.errno ==  errno.EADDRINUSE:
-                    BASE_PORT += 1
+                    mw_data[2]['port'] += 1
+                    if must_inc_base_port:
+                        self._base_port += 1
                 else:
                     raise
 
-        self._server_dict[BASE_PORT] = serv
-        self._component_nameservice[component_name] = BASE_PORT
-        BASE_PORT += 1
+        self._server_dict[mw_data[2]['port']] = serv
+        self._component_nameservice[component_name] = mw_data[2]['port']
+        if must_inc_base_port:
+            self._base_port += 1
