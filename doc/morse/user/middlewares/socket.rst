@@ -31,7 +31,14 @@ The socket data-stream interface is implemented in :py:mod:`morse.middleware.soc
 Configuration specificities
 ---------------------------
 
-There is no special configuration parameter for the socket middleware.
+When configuring a component to export its data through socket, you can
+specify the wished ``port`` where you want the socket listens on. Note that it
+is only an "hint", in some case, it is not possible to satisfy all the
+constraints.
+
+.. code-block :: python
+
+    foo.add_stream('yarp', port = 60005)
 
 Service interface
 -----------------
