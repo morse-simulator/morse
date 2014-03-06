@@ -6,18 +6,19 @@ import morse.helpers.colors
 
 from morse.helpers import passive_objects
 from morse.helpers.components import add_data, add_property
+from morse.helpers.transformation import Transformation3d
 
 class SemanticCamera(morse.sensors.camera.Camera):
     """
     This sensor emulates a hight level camera that outputs the names of
     the objects that are located within the field of view of the camera.
 
-    The sensor determines first which objects are to be tracked (objects
-    marked with a **Logic Property** called ``Object``, cf documentation
-    on :doc:`passive objects <../others/passive_objects>` for more on
-    that). If the ``Label`` property is defined, it is used as exported
-    name. Else the Blender object name is used. If the ``Type`` property
-    is set, it is exported as well.
+    The sensor determines first which objects are to be tracked. The
+    tracked objects are either marked with a **Logic Property** being
+    the same as the ``tag`` property, of if their ``Type`` has the ``tag`` value.
+    
+    If the ``Label`` property is defined, it is used as exported
+    name. Else the Blender object name is used.
 
     Then a test is made to identify which of these objects are inside of
     the view frustum of the camera. Finally, a single visibility test is
@@ -47,9 +48,15 @@ class SemanticCamera(morse.sensors.camera.Camera):
                 - **orientation** (quaternion): the orientation of the \
                   object, in the blender frame")
 
+    add_property('relative', False, 'relative', 'bool', 'Return object position'
+                 ' relatively to the sensor frame.')
     add_property('noocclusion', False, 'noocclusion', 'bool', 'Do not check for'
                  ' objects possibly hiding each others (faster but less '
                  'realistic behaviour)')
+    add_property('tag', 'Object',  'tag',  "string",  "The type of "
+            "detected objects. This type is looked for as a game property of scene "
+            "objects or as their 'Type' property. You must then add fix this property to the objects you "
+            "want to be detected by the semantic camera.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -76,22 +83,13 @@ class SemanticCamera(morse.sensors.camera.Camera):
         # TrackedObject is a dictionary containing the list of tracked objects
         # (->meshes with a class property set up) as keys
         #  and the bounding boxes of these objects as value.
-        if not 'trackedObjects' in blenderapi.persistantstorage():
-            logger.info('Initialization of tracked objects:')
-            blenderapi.persistantstorage().trackedObjects = \
-                            dict.fromkeys(passive_objects.active_objects())
-
-            # Store the bounding box of the marked objects
-            for obj in blenderapi.persistantstorage().trackedObjects.keys():
-
-                # bound_box returns the bounding box in local space
-                #  instead of world space.
-                blenderapi.persistantstorage().trackedObjects[obj] = \
-                                    blenderapi.objectdata(obj.name).bound_box
-
-                details = passive_objects.details(obj)
-                logger.info('    - {%s} (type:%s)'%
-                            (details['label'], details['type']))
+        self.trackedObjects = {}
+        for o in blenderapi.scene().objects:
+            tagged = ('Type' in o and o['Type'] == self.tag) or (self.tag in o and bool(o[self.tag]))
+                               
+            if tagged:
+                self.trackedObjects[o] = blenderapi.objectdata(o.name).bound_box
+                logger.warning('    - %s' % o.name)
 
         if self.noocclusion:
             logger.info("Semantic camera running in 'no occlusion' mode (fast mode).")
@@ -111,21 +109,29 @@ class SemanticCamera(morse.sensors.camera.Camera):
 
         # Create dictionaries
         self.local_data['visible_objects'] = []
-        for obj in blenderapi.persistantstorage().trackedObjects.keys():
-            if self._check_visible(obj):
+        for obj, bb in self.trackedObjects.items():
+            if self._check_visible(obj, bb):
                 # Create dictionary to contain object name, type,
                 # description, position and orientation
-                obj_dict = {'name': passive_objects.label(obj),
+                if self.relative:
+                    t3d = Transformation3d(obj)
+                    logger.debug("t3d(obj) = {t}".format(t=t3d))
+                    logger.debug("t3d(cam) = {t}".format(t=self.position_3d))
+                    transformation = self.position_3d.transformation3d_with(t3d)
+                    logger.debug("transform = {t}".format(t=transformation))
+                else:
+                    transformation = Transformation3d(obj)
+                obj_dict = {'name': obj.name,
                             'description': obj.get('Description', ''),
                             'type': obj.get('Type', ''),
-                            'position': obj.worldPosition,
-                            'orientation': obj.worldOrientation.to_quaternion()}
+                            'position': transformation.translation,
+                            'orientation': transformation.rotation}
                 self.local_data['visible_objects'].append(obj_dict)
-
+                
         logger.debug("Visible objects: %s" % self.local_data['visible_objects'])
 
 
-    def _check_visible(self, obj):
+    def _check_visible(self, obj, bb):
         """ Check if an object lies inside of the camera frustum. 
         
         The behaviour of this method is impacted by the sensor's 
@@ -135,7 +141,6 @@ class SemanticCamera(morse.sensors.camera.Camera):
         """
         # TrackedObjects was filled at initialization
         #  with the object's bounding boxes
-        bb = blenderapi.persistantstorage().trackedObjects[obj]
         pos = obj.position
         bbox = [[bb_corner[i] + pos[i] for i in range(3)] for bb_corner in bb]
 

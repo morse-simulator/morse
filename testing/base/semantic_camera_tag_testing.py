@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-This script tests the Semantic Camera sensor in MORSE.
+This script tests the Semantic Camera sensor and its 'tag' property in MORSE.
 """
 
 import sys
@@ -26,6 +26,7 @@ class Semantic_Camera_Test(MorseTestCase):
         """
         robot = ATRV()
         camera = SemanticCamera()
+        camera.properties(tag="Box")
         robot.append(camera)
         camera.translate(x=0.3, z=0.762)
         camera.add_stream('socket')
@@ -36,7 +37,8 @@ class Semantic_Camera_Test(MorseTestCase):
 
         env = Environment('indoors-1/boxes')
         env.add_service('socket')
-
+        box = bpymorse.get_object('RedBox')
+        bpymorse.properties(box, Type="Box")
 
     def test_semantic_camera(self):
         """ This test is guaranteed to be started only when the simulator
@@ -53,16 +55,14 @@ class Semantic_Camera_Test(MorseTestCase):
             # Change the orientation of the robot using the v_w socket
             send_dest(teleport_client, morse, 0.0, 0.0, 5.0/4.0 * math.pi)
 
-            # Second test for the sensor, with objects in front
+            # Second test for the sensor, with BlueBox in front
             o = semantic_stream.get()
             objects= o['visible_objects']
-            self.assertEqual(len(objects), 1)
-            self.assertEqual(objects[0]['name'],'BlueBox')
-            self.assertAlmostEqual(objects[0]['position'][0], -3.48, delta=0.1)
-            self.assertAlmostEqual(objects[0]['position'][1], -3.0, delta=0.1)
+            self.assertEqual(objects, [])
 
             send_dest(teleport_client, morse, -5.0, 0.0, math.pi)
 
+            # Third test for the sensor, with RedBox in front
             o = semantic_stream.get()
             objects= o['visible_objects']
             self.assertEqual(len(objects), 1)

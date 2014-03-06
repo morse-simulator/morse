@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-This script tests the Semantic Camera sensor in MORSE.
+This script tests the Semantic Camera sensor and its 'relative' property in MORSE.
 """
 
 import sys
@@ -25,9 +25,12 @@ class Semantic_Camera_Test(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
+        
         camera = SemanticCamera()
+        camera.properties(relative=True)
         robot.append(camera)
         camera.translate(x=0.3, z=0.762)
+        #camera.rotate(x=math.pi/2.0)
         camera.add_stream('socket')
 
         motion = Teleport()
@@ -51,24 +54,21 @@ class Semantic_Camera_Test(MorseTestCase):
             self.assertEqual(objects, [])
 
             # Change the orientation of the robot using the v_w socket
-            send_dest(teleport_client, morse, 0.0, 0.0, 5.0/4.0 * math.pi)
+            send_dest(teleport_client, morse, -5.0, 0.0, math.pi)
 
             # Second test for the sensor, with objects in front
             o = semantic_stream.get()
             objects= o['visible_objects']
             self.assertEqual(len(objects), 1)
-            self.assertEqual(objects[0]['name'],'BlueBox')
-            self.assertAlmostEqual(objects[0]['position'][0], -3.48, delta=0.1)
-            self.assertAlmostEqual(objects[0]['position'][1], -3.0, delta=0.1)
-
-            send_dest(teleport_client, morse, -5.0, 0.0, math.pi)
-
-            o = semantic_stream.get()
-            objects= o['visible_objects']
-            self.assertEqual(len(objects), 1)
             self.assertEqual(objects[0]['name'],'RedBox')
-            self.assertAlmostEqual(objects[0]['position'][0], -7.48, delta=0.1)
-            self.assertAlmostEqual(objects[0]['position'][1], 0.0, delta=0.1)
+            # RedBox in camera frame:
+            position = [0, -0.2, 2.2]
+            quaternion = {'x':0.5, 'y':0.5, 'z':-0.5, 'w':0.5}
+            # quaternion is equal to euler (pi, pi, 0) in XYZ mode
+            for i in [0,1,2]:
+                self.assertAlmostEqual(objects[0]['position'][i], position[i], delta=0.1)
+            for i in ['x', 'y', 'z', 'w']:
+                self.assertAlmostEqual(objects[0]['orientation'][i], quaternion[i], delta=.1)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
