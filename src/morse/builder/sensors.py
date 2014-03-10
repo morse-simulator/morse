@@ -357,6 +357,8 @@ class VideoCamera(SensorCreator):
         # append CameraMesh with its textures
         self.append_meshes(['CameraMesh'], "camera")
         self.rotate(z=math.pi)
+    def rotate(self, x=0, y=0, z=0):
+        SensorCreator.rotate(self, x=y, y=z, z=x)
 
 class DepthCamera(VideoCamera):
     def __init__(self, name=None):

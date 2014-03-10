@@ -31,17 +31,6 @@ Socket
 - Socket middleware now accepts the keyword 'port' to specify on which port
   you want the socket binds itself.
 
-Builder API
------------
-
-API changes
-+++++++++++
-
-- As discussed in `#399
-  <https://github.com/morse-simulator/morse/issues/399>`_,
-  ``VideoCamera::rotate`` does not do anymore magic transformation. If this
-  method was used, you need to upgrade your builder script.
-
 What's new in MORSE 1.2?
 ========================
 
