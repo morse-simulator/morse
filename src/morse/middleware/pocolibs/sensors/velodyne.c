@@ -41,6 +41,14 @@ Velodyne_init(Velodyne *self, PyObject *args, PyObject *kwds)
     if (!PyArg_ParseTuple(args, "snnn", &poster_name, &(self->width), &(self->height), &(self->nb_rot)))
 		return -1;
 
+	self->size = self->width * self->height;
+	if (self->size * self->nb_rot > VELODYNE_3D_IMAGE_WIDTH * VELODYNE_3D_IMAGE_HEIGHT) {
+		PyErr_Format(PyExc_ValueError, "Input image is too large (%zd) for internal buffer (%zd)\n",
+				self->size * self->nb_rot,
+				VELODYNE_3D_IMAGE_HEIGHT * VELODYNE_3D_IMAGE_WIDTH);
+		return -1;
+	}
+
 	size_t poster_size = sizeof(velodyne3DImage);
 
 	STATUS s = posterCreate (poster_name, poster_size, &self->id);
@@ -48,13 +56,14 @@ Velodyne_init(Velodyne *self, PyObject *args, PyObject *kwds)
 	{
 		char buf[1024];
 		h2getErrMsg(errnoGet(), buf, sizeof(buf));
-		printf ("Unable to create the %s poster : %s\n",poster_name, buf);
+		PyErr_Format(PyExc_RuntimeError,
+				"Unable to create the %s poster : %s\n", poster_name, buf);
 		return -1;
 	}
 
+
 	printf("Succesfully created poster %s of size %zd\n", poster_name, poster_size); 
 
-	self->size = self->width * self->height;
 
 	self->img.width = VELODYNE_3D_IMAGE_WIDTH;
 	self->img.maxScanWidth = VELODYNE_3D_IMAGE_WIDTH;
