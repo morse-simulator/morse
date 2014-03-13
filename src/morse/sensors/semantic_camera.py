@@ -28,9 +28,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
     This last check is a bit costly and can be deactivated by setting the
     sensor property ``noocclusion`` to ``True``.
 
-    The cameras make use of Blender's **bge.texture** module, which
-    requires a graphic card capable of GLSL shading. Also, the 3D view
-    window in Blender must be set to draw **Textured** objects.
+    See also :doc:`./camera` for generic informations about Morse cameras.
     """
 
     _name = "Semantic camera"

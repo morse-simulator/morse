@@ -54,6 +54,8 @@ class AbstractDepthCamera(VideoCamera):
 class DepthCamera(AbstractDepthCamera):
     """
     This sensor generates a 3D point cloud from the camera perspective.
+
+    See also :doc:`./camera` for generic informations about Morse cameras.
     """
 
     _name = "Depth (XYZ) camera"
@@ -114,6 +116,8 @@ class DepthVideoCamera(AbstractDepthCamera):
 class RawImage(AbstractDepthCamera):
     """
     This sensor gets raw Z-Buffer from the camera perspective.
+
+    See also :doc:`./camera` for generic informations about Morse cameras.
     """
 
     _name = "Depth camera (raw Z-Buffer)"

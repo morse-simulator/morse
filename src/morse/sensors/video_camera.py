@@ -15,10 +15,6 @@ class VideoCamera(morse.sensors.camera.Camera):
     RGBA images.  Images are encoded as binary char arrays, with 4 bytes
     per pixel.
 
-    The cameras make use of Blender's **bge.texture** module, which
-    requires a graphic card capable of GLSL shading.  Also, the 3D view
-    window in Blender must be set to draw **Textured** objects.
-
     Camera calibration matrix
     -------------------------
 
@@ -27,13 +23,13 @@ class VideoCamera(morse.sensors.camera.Camera):
     represents the distance in Blender unit at which the largest image dimension is
     32.0 Blender units, the camera intrinsic calibration matrix is defined as
 
-      +--------------+-------------+---------+
-      | **alpha_u**  |      0      | **u_0** |
-      +--------------+-------------+---------+
-      |       0      | **alpha_v** | **v_0** |
-      +--------------+-------------+---------+
-      |       0      |      0      |    1    |
-      +--------------+-------------+---------+
+    +--------------+-------------+---------+
+    | **alpha_u**  |      0      | **u_0** |
+    +--------------+-------------+---------+
+    |       0      | **alpha_v** | **v_0** |
+    +--------------+-------------+---------+
+    |       0      |      0      |    1    |
+    +--------------+-------------+---------+
 
     where:
 
@@ -42,6 +38,8 @@ class VideoCamera(morse.sensors.camera.Camera):
       the formula)
     - **u_0** = **cam_height** / 2
     - **v_0** = **cam_width** / 2
+
+    See also :doc:`./camera` for generic informations about Morse cameras.
     """
 
     _name = "Video camera"
