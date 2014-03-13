@@ -108,16 +108,12 @@ class Camera(morse.core.sensor.Sensor):
             # Call the bge.texture method to refresh the image
             blenderapi.cameras()[self.name()].refresh(True)
 
-    def _update_pose(self, obj):
-        copy_pose(self._morse_scene.objects[obj.name], obj)
-
     def _update_scene(self):
-        for obj in self._scene.objects:
-            if obj.name != '__default__cam__':
-                try:
-                    self._update_pose(obj)
-                except Exception as e:
-                    logger.warning(str(e))
+        for _to, _from in self._scene_syncable_objects:
+            try:
+                copy_pose(_from, _to)
+            except Exception as e:
+                logger.warning(str(e))
 
     def _setup_video_texture(self):
         """ Prepare this camera to use the bge.texture module.
@@ -155,6 +151,45 @@ class Camera(morse.core.sensor.Sensor):
         logger.info("Scene %s from %s"% (self.scene_name, repr(scene_map.keys()) ) )
         self._scene = scene_map[self.scene_name]
         self._morse_scene = scene_map['S.MORSE_LOGIC']
+
+        """
+        Compute the relation between objects in the current scene and
+        objects in the main logic scene.
+
+        The logic is a bit complex, as in the case of group, we can have
+        objects with the same name (but different ids). So, in this
+        case, we follow the hierarchy on both scene to find
+        correspondance (assuming no recursive group)
+
+        known_ids is used to track objects alreay referenced and not
+        include it twice (and possibly missing the fact that the same
+        name can reference multiples different objects)
+
+        I'm definitively not sure it is correct at all, it is a really
+        really dark corner of Blender :). But it seems to do the job!
+        """
+        self._scene_syncable_objects = []
+        known_ids = set()
+        for obj in self._scene.objects:
+            if obj.name != '__default__cam__' and id(obj) not in known_ids:
+                members = obj.groupMembers
+                if not members:
+                    self._scene_syncable_objects.append(
+                            (obj, self._morse_scene.objects[obj.name]))
+                    known_ids.add(id(obj))
+                else:
+                    main_members = self._morse_scene.objects[obj.name].groupMembers
+                    for i in range(0, len(main_members)):
+                        self._scene_syncable_objects.append(
+                                (members[i], main_members[i]))
+                        known_ids.add(id(members[i]))
+                        childs = members[i].childrenRecursive
+                        main_childs = main_members[i].childrenRecursive
+                        for child in childs:
+                            self._scene_syncable_objects.append(
+                                    (child, main_childs[child.name]))
+                            known_ids.add(id(child))
+
 
         # Link the objects using bge.texture
         if not blenderapi.hascameras():
