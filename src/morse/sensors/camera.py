@@ -12,9 +12,14 @@ class Camera(morse.core.sensor.Sensor):
     A generic camera class, which is expected to be used as a base class
     for real camera. Concrete instantiation are currently:
 
-        - :doc:`video_camera <../sensors/video_camera>`
-        - :doc:`depth_camera <../sensors/depth_camera>`
-        - :doc:`semantic_camera <../sensors/semantic_camera>`
+    - :doc:`video_camera <../sensors/video_camera>`
+    - :doc:`depth_camera <../sensors/depth_camera>`
+    - :doc:`semantic_camera <../sensors/semantic_camera>`
+
+    .. note::
+        The cameras make use of Blender's **bge.texture** module, which
+        requires a graphic card capable of GLSL shading. Also, the 3D view
+        window in Blender must be set to draw **Textured** objects.
 
     .. note::
         The streaming of data from this sensor can be toggled off and on by
@@ -24,6 +29,12 @@ class Camera(morse.core.sensor.Sensor):
         Toggling off the cameras can help make the simulation run faster,
         specially when there are several cameras. However, the lack of
         data on the stream may cause problems to some middlewares.
+
+    .. warning::
+        Contrary to most of objects in Morse, the X axis of the camera
+        is not "in front" of the camera. Here, Morse follows the
+        "standard convention for camera", i.e.  X and Y are in the image
+        plane, and Z is in the depth axis of the camera.
     """
 
     _name = "Generic Camera"
