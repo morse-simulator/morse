@@ -311,10 +311,7 @@ def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
     get_context_scene().game_settings.physics_step_max = physics_step_max
 
 def get_properties(obj):
-    retvalue = {}
-    for name, prop in obj.game.properties.items():
-        retvalue[name] = prop.value
-    return retvalue
+    return {n: p.value for n,p in obj.game.properties.items()}
 
 def properties(obj, **kwargs):
     """ Add/modify the game properties of the Blender object
@@ -400,7 +397,7 @@ def set_viewport_perspective(perspective='CAMERA'):
         if area.type == 'VIEW_3D':
             for space in area.spaces:
                 if space.type == 'VIEW_3D':
-                    space.region_3d.view_perspective = 'CAMERA'
+                    space.region_3d.view_perspective = perspective
 
 def fullscreen(fullscreen=True):
     """ Run the simulation fullscreen
