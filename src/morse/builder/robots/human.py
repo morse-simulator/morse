@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 from morse.builder import bpymorse
 from morse.builder import Armature, GroundRobot
-from morse.builder.sensors import ArmaturePose
+from morse.builder.sensors import ArmaturePose, Pose
 
 class Human(GroundRobot):
     """ Append a human model to the scene.
@@ -117,3 +117,17 @@ class Human(GroundRobot):
 
     def disable_keyboard_control(self):
         self.properties(disable_keyboard_control = True)
+
+class LocalizedHuman(Human):
+    def __init__(self, filename='human', name = None):
+        Human.__init__(self, filename, name)
+
+        # Sensor
+        self.pose = Pose()
+        self.append(self.pose)
+
+    def add_interface(self, interface):
+
+        Human.add_interface(self, interface)
+        if interface == "ros":
+            self.pose.add_stream("ros", method="morse.middleware.ros.pose.TFPublisher", child_frame_id="/human_base")
