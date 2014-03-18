@@ -150,7 +150,7 @@ class StreamB(asynchat.async_chat):
             except TypeError:
                 data = first.more()
                 if data:
-                    self.producer_fifo.appendleft(data)
+                    self.producer_fifo.extendleft([first, data])
                 continue
 
             if isinstance(data, str) and self.use_encoding:
