@@ -127,4 +127,4 @@ class YARP_MW_Test(MorseTestCase):
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(YARP_MW_Test)
+    main(YARP_MW_Test, time_modes = [TimeStrategies.BestEffort])
