@@ -126,6 +126,7 @@ class LocalizedPR2(BasePR2):
 
         # Motion controller
         self.motion = MotionXYW()
+        self.motion.properties(ControlType = 'Position')
         self.append(self.motion)
 
         # (optionally) keyboard controller
@@ -164,6 +165,7 @@ class NavPR2(BasePR2):
 
         # Motion controller
         self.motion = MotionXYW()
+        self.motion.properties(ControlType = 'Position')
         self.append(self.motion)
 
         # (optionally) keyboard controller
