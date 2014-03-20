@@ -280,6 +280,7 @@ Then, we need to add a motion controller to our robot. Open your ``scenario.py``
 .. code-block:: python
 
     motion = MotionXYW()
+    motion.properties(ControlType = 'Position')
     james.append(motion)
     motion.add_interface('ros', topic='/cmd_vel')
 
