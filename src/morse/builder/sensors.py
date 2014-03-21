@@ -246,6 +246,7 @@ class LaserSensorWithArc(SensorCreator):
         arc.data = mesh
         # Remove collision detection for the object
         arc.game.physics_type = 'NO_COLLISION'
+        arc.hide_render = True
         # Link the new object in the scene
         scene.objects.link( arc )
         # Set the parent to be the laserscanner Empty
