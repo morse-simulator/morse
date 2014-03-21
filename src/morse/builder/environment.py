@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
 import json
+from morse.core import mathutils
 from morse.builder.morsebuilder import *
 from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
@@ -55,6 +56,8 @@ class Environment(Component):
         # Init. camera's properties
         self.set_camera_speed()
         self.set_camera_clip()
+
+        self.set_gravity()
 
     def is_internal_camera(self, camera):
         return not self._multinode_configured or \
@@ -383,6 +386,7 @@ class Environment(Component):
         """
         if isinstance(gravity, float):
             bpymorse.get_context_scene().game_settings.physics_gravity = gravity
+            bpymorse.get_context_scene().gravity = mathutils.Vector((0.0, 0.0, -gravity))
 
     def set_material_mode(self, material_mode='GLSL'):
         """ Material mode to use for rendering
