@@ -13,10 +13,10 @@ class Sensor(morse.core.object.Object):
     """
 
     add_data('timestamp', 0.0, 'float', 
-             'number of milliseconds in simulated time')
+             'number of seconds in simulated time')
     if logger.isEnabledFor(logging.DEBUG):
         add_data('simulator_time', 0.0, 'float', 
-                 "number of milliseconds in real world (Only for debug)")
+                 "number of seconds in real world (Only for debug)")
 
 
     # Make this an abstract class
@@ -66,7 +66,7 @@ class Sensor(morse.core.object.Object):
 
         self.local_data['timestamp'] = self.robot_parent.gettime()
         if logger.isEnabledFor(logging.DEBUG):
-            self.local_data['simulator_time'] = time.time() * 1000.0
+            self.local_data['simulator_time'] = time.time()
 
         # record the time before performing the default action for profiling
         if self.profile:

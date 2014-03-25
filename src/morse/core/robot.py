@@ -44,9 +44,8 @@ class Robot(morse.core.object.Object):
         self.default_action()
 
     def gettime(self):
-        """ Return the current time, as seen by the robot, in milli seconds """
-        return blenderapi.persistantstorage().current_time * 1000.0 +\
-               self.time_shift
+        """ Return the current time, as seen by the robot, in seconds """
+        return blenderapi.persistantstorage().current_time + self.time_shift
 
     def apply_speed(self, kind, linear_speed, angular_speed):
         """

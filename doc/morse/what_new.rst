@@ -16,6 +16,8 @@ Actuators
 Sensors
 +++++++
 
+- The timestamp field is now in seconds instead of milliseconds (`#498 <https://github.com/morse-simulator/morse/issues/498>`_)
+
 - :doc:`user/sensors/semantic_camera` gains two properties (`#396 <https://github.com/morse-simulator/morse/issues/396>`_):
     - `tag` allows to restrict the kind of object you want to detect
     - `relative` returns the position information of the various objects from

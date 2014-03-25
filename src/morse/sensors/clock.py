@@ -3,7 +3,7 @@ import morse.core.sensor
 
 class Clock(morse.core.sensor.Sensor):
     """ 
-    This sensor returns the current time, measured by the robot (in ms).
+    This sensor returns the current time, measured by the robot (in s).
     """
     _name = "Clock"
 

@@ -390,8 +390,8 @@ class Armature(morse.core.actuator.Actuator):
             # and 1.0.  During the rotation execution, we compute the factor
             # based on the current rotation duration and the total expected
             # duration
-            initial_time_rotation = self.robot_parent.gettime() # in milliseconds
-            total_rotation_duration = (radian_distance / radial_speed) * 1000.
+            initial_time_rotation = self.robot_parent.gettime() # in seconds
+            total_rotation_duration = (radian_distance / radial_speed) 
         else:
             current_orientation = final_orientation = None
             initial_time_rotation = total_rotation_duration = None
@@ -685,7 +685,7 @@ class Armature(morse.core.actuator.Actuator):
 
         # TODO: support velocities and accelerations via cubic/quintic spline
         # interpolation
-        starttime = self.robot_parent.gettime() / 1000.0
+        starttime = self.robot_parent.gettime()
         if 'starttime' in trajectory:
             trajectory["starttime"] = max(starttime, trajectory["starttime"])
         else:
@@ -695,7 +695,7 @@ class Armature(morse.core.actuator.Actuator):
 
     def _exec_traj(self):
 
-        t = self.robot_parent.gettime() / 1000.0
+        t = self.robot_parent.gettime()
         trajectory = self._active_trajectory
 
         try:

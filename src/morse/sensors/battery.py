@@ -40,7 +40,7 @@ class Battery(morse.core.sensor.Sensor):
     def default_action(self):
         """ Main function of this component. """
         charge = self.local_data['charge']
-        dt = (self.robot_parent.gettime() - self._time) / 1000.0
+        dt = self.robot_parent.gettime() - self._time 
 
         if self.in_zones(type = 'Charging'):
             charge = charge + dt * self._discharging_rate

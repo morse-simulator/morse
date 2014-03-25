@@ -16,6 +16,8 @@ Actuators
 Sensors
 +++++++
 
+- The timestamp field is now in seconds instead of milliseconds (#498)
+
 - Semantic camera gains two properties (#396):
     - `tag` allows to restrict the kind of object you want to detect
     - `relative` returns the position information of the various objects from
