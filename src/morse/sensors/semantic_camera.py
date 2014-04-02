@@ -79,7 +79,8 @@ class SemanticCamera(morse.sensors.camera.Camera):
         # creates a new instance of the sensor, that tracks all tables.
         # If you do not specify a particular 'tag', the camera tracks by default
         # all object with the properties 'type="Object"' or 'Object=True'.
-        semcam = SemanticCamera(tag = "table")
+        semcam = SemanticCamera()
+        semcam.properties(tag = "table")
 
         # place the camera at the correct location
         semcam.translate(<x>, <y>, <z>)
