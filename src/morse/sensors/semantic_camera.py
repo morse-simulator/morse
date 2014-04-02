@@ -10,26 +10,89 @@ from morse.helpers.transformation import Transformation3d
 
 class SemanticCamera(morse.sensors.camera.Camera):
     """
-    This sensor emulates a hight level camera that outputs the names of
-    the objects that are located within the field of view of the camera.
+    This sensor emulates a high level *abstract* camera that outputs the
+    name and 6D pose of visible objects (*i.e.* objects in the field of
+    view of the camera). It also outputs the *type* of the object if the ``Type``
+    property is set (:python:`my_object.properties(Type="Bottle")` for
+    instance).
 
-    The sensor determines first which objects are to be tracked. The
-    tracked objects are either marked with a **Logic Property** being
-    the same as the ``tag`` property, of if their ``Type`` has the ``tag`` value.
-    
+    General usage
+    -------------
+
+    You need to *tag* the objects you want your camera to track by either
+    adding a boolean property ``Object`` to your object:
+    :python:`my_object.properties(Object=True)`, or by setting a *type* and
+    using this type as the value of the ``tag`` property of the camera:
+
+    .. code-block:: python
+
+        object_to_track = PassiveObject(...)
+        object_to_track.properties(Type="Bottle")
+
+        ...
+
+        semcam = SemanticCamera()
+        semcam.properties(tag="Bottle")
+
+        ...
+
+    See the *Examples* section below for a complete working example.
+
     If the ``Label`` property is defined, it is used as exported
-    name. Else the Blender object name is used.
+    name. Otherwise, the Blender object name is used.
 
-    Then a test is made to identify which of these objects are inside of
+    By default, the pose of the objects is provided in the **world** frame.
+    When setting the ``relative`` property to ``True``
+    (:python:`semcam.properties(relative=True)`), the pose is computed in the
+    **camera** frame instead.
+
+    Details of implementation
+    -------------------------
+
+    A test is made to identify which of these objects are inside of
     the view frustum of the camera. Finally, a single visibility test is
     performed by casting a ray from the center of the camera to the
     center of the object. If anything other than the test object is
     found first by the ray, the object is considered to be occluded by
     something else, even if it is only the center that is being blocked.
-    This last check is a bit costly and can be deactivated by setting the
-    sensor property ``noocclusion`` to ``True``.
+    This occulsion check can be deactivated (for slightly improved
+    performances) by setting the sensor property ``noocclusion`` to ``True``.
 
-    See also :doc:`./camera` for generic informations about Morse cameras.
+    See also :doc:`./camera` for generic informations about MORSE cameras.
+
+    .. example::
+        from morse.builder import *
+
+        # add a 'passive' object visible to the semantic cameras
+        table = PassiveObject('props/objects','SmallTable')
+        table.translate(x=3.5, y=-3, z=0)
+        table.rotate(z=0.2)
+
+        # by setting the 'Object' property to true, this object becomes
+        # visible to the semantic cameras present in the simulation.
+        # Note that you can set this property on any object (other robots, humans,...).
+        table.properties(Type = "table", Label = "MY_FAVORITE_TABLE")
+
+        # then, create a robot
+        robot = Morsy()
+
+        # creates a new instance of the sensor, that tracks all tables.
+        # If you do not specify a particular 'tag', the camera tracks by default
+        # all object with the properties 'type="Object"' or 'Object=True'.
+        semcam = SemanticCamera(tag = "table")
+
+        # place the camera at the correct location
+        semcam.translate(<x>, <y>, <z>)
+        semcam.rotate(<rx>, <ry>, <rz>)
+
+        robot.append(semcam)
+
+        # define one or several communication interface, like 'socket'
+        semcam.add_interface(<interface>)
+
+        env = Environment('empty')
+
+    :noautoexample:
     """
 
     _name = "Semantic camera"
@@ -53,8 +116,9 @@ class SemanticCamera(morse.sensors.camera.Camera):
                  'realistic behaviour)')
     add_property('tag', 'Object',  'tag',  "string",  "The type of "
             "detected objects. This type is looked for as a game property of scene "
-            "objects or as their 'Type' property. You must then add fix this property to the objects you "
-            "want to be detected by the semantic camera.")
+            "objects or as their 'Type' property. You must then add fix this "
+            "property to the objects you want to be detected by the semantic "
+            "camera.")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
