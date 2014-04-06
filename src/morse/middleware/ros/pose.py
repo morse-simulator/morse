@@ -3,59 +3,54 @@ import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Pose, PoseStamped, PoseWithCovarianceStamped, Vector3, Quaternion
 from morse.middleware.ros import ROSPublisher, ROSPublisherTF, mathutils
 
-class PosePublisherHelper():
-    """ Class providing only helper functions to retrieve the pose
-    for ROS Pose, PoseStamped and TF Publishers.
+def get_orientation(self):
+    """ Get the orientation from the local_data
+    and return a ROS geometry_msgs.Quaternion
     """
+    ros_quat = Quaternion()
+    try:
+        mathutils_quat = self.data['orientation']
+    except KeyError:
+        euler = mathutils.Euler((self.data['roll'],
+                                 self.data['pitch'],
+                                 self.data['yaw']))
+        mathutils_quat = euler.to_quaternion()
 
-    def get_orientation(self):
-        """ Get the orientation from the local_data
-        and return a ROS geometry_msgs.Quaternion
-        """
-        ros_quat = Quaternion()
-        try:
-            mathutils_quat = self.data['orientation']
-        except KeyError:
-            euler = mathutils.Euler((self.data['roll'],
-                                     self.data['pitch'],
-                                     self.data['yaw']))
-            mathutils_quat = euler.to_quaternion()
+    ros_quat.x = mathutils_quat.x
+    ros_quat.y = mathutils_quat.y
+    ros_quat.z = mathutils_quat.z
+    ros_quat.w = mathutils_quat.w
 
-        ros_quat.x = mathutils_quat.x
-        ros_quat.y = mathutils_quat.y
-        ros_quat.z = mathutils_quat.z
-        ros_quat.w = mathutils_quat.w
+    return ros_quat
 
-        return ros_quat
+def get_position(self):
+    """ Get the position from the local_data
+    and return a ROS geometry_msgs.Vector3
+    """
+    position = Vector3()
+    try:
+        position.x = self.data['position'][0]
+        position.y = self.data['position'][1]
+        position.z = self.data['position'][2]
+    except KeyError:
+        position.x = self.data['x']
+        position.y = self.data['y']
+        position.z = self.data['z']
 
-    def get_position(self):
-        """ Get the position from the local_data
-        and return a ROS geometry_msgs.Vector3
-        """
-        position = Vector3()
-        try:
-            position.x = self.data['position'][0]
-            position.y = self.data['position'][1]
-            position.z = self.data['position'][2]
-        except KeyError:
-            position.x = self.data['x']
-            position.y = self.data['y']
-            position.z = self.data['z']
+    return position
 
-        return position
+def get_pose(self):
+    """ Get the pose from the local_data
+    and return a ROS geometry_msgs.Pose
+    """
+    pose = Pose()
+    pose.position = get_position(self)
+    pose.orientation = get_orientation(self)
 
-    def get_pose(self):
-        """ Get the pose from the local_data
-        and return a ROS geometry_msgs.Pose
-        """
-        pose = Pose()
-        pose.position = self.get_position()
-        pose.orientation = self.get_orientation()
-
-        return pose
+    return pose
 
 
-class PosePublisher(ROSPublisher, PosePublisherHelper):
+class PosePublisher(ROSPublisher):
     """ Publish the position and orientation of the robot as
     ROS geomeetry_msgs.Pose message.
     """
@@ -69,11 +64,11 @@ class PosePublisher(ROSPublisher, PosePublisherHelper):
             publish = True
 
         if publish:
-            pose = self.get_pose()
+            pose = get_pose(self)
             self.publish(pose)
 
 
-class PoseStampedPublisher(ROSPublisher, PosePublisherHelper):
+class PoseStampedPublisher(ROSPublisher):
     """ Publish the position and orientation of the robot
     as ROS geometry_msgs.PoseStamped message.
     """
@@ -90,11 +85,11 @@ class PoseStampedPublisher(ROSPublisher, PosePublisherHelper):
         if publish:
             pose = PoseStamped()
             pose.header = self.get_ros_header()
-            pose.pose = self.get_pose()
+            pose.pose = get_pose(self)
             self.publish(pose)
 
 
-class PoseWithCovarianceStampedPublisher(ROSPublisher, PosePublisherHelper):
+class PoseWithCovarianceStampedPublisher(ROSPublisher):
     """ Publish the position and orientation of the robot including the covariance. """
     ros_class = PoseWithCovarianceStamped
     default_frame_id = '/map'
@@ -109,7 +104,7 @@ class PoseWithCovarianceStampedPublisher(ROSPublisher, PosePublisherHelper):
         if publish:
             pose = PoseWithCovarianceStamped()
             pose.header = self.get_ros_header()
-            pose.pose.pose = self.get_pose()
+            pose.pose.pose = get_pose(self)
             try:
                 pose.pose.covariance = self.data['covariance_matrix']
             except KeyError:
@@ -117,7 +112,7 @@ class PoseWithCovarianceStampedPublisher(ROSPublisher, PosePublisherHelper):
             self.publish(pose)
 
 
-class TFPublisher(ROSPublisherTF, PosePublisherHelper):
+class TFPublisher(ROSPublisherTF):
     """ Publish the transformation between
     ``frame_id`` and ``child_frame_id`` args, default '/map' and
     '/base_link' through TF.
@@ -143,8 +138,8 @@ class TFPublisher(ROSPublisherTF, PosePublisherHelper):
             header = self.get_ros_header()
     
             # send current odometry transform
-            self.sendTransform(self.get_position(),
-                               self.get_orientation(),
+            self.sendTransform(get_position(self),
+                               get_orientation(self),
                                header.stamp,
                                self.child_frame_id,
                                header.frame_id)
