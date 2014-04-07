@@ -57,13 +57,7 @@ class PosePublisher(ROSPublisher):
     ros_class = Pose
 
     def default(self, ci='unused'):
-
-        try:
-            publish = self.data['valid']
-        except KeyError:
-            publish = True
-
-        if publish:
+        if not 'valid' in self.data or self.data['valid']:
             pose = get_pose(self)
             self.publish(pose)
 
@@ -76,13 +70,7 @@ class PoseStampedPublisher(ROSPublisher):
     default_frame_id = '/map'
 
     def default(self, ci='unused'):
-
-        try:
-            publish = self.data['valid']
-        except KeyError:
-            publish = True
-
-        if publish:
+        if not 'valid' in self.data or self.data['valid']:
             pose = PoseStamped()
             pose.header = self.get_ros_header()
             pose.pose = get_pose(self)
@@ -95,13 +83,7 @@ class PoseWithCovarianceStampedPublisher(ROSPublisher):
     default_frame_id = '/map'
 
     def default(self, ci='unused'):
-
-        try:
-            publish = self.data['valid']
-        except KeyError:
-            publish = True
-
-        if publish:
+        if not 'valid' in self.data or self.data['valid']:
             pose = PoseWithCovarianceStamped()
             pose.header = self.get_ros_header()
             pose.pose.pose = get_pose(self)
@@ -129,12 +111,7 @@ class TFPublisher(ROSPublisherTF):
 
     def default(self, ci='unused'):
         
-        try:
-            publish = self.data['valid']
-        except KeyError:
-            publish = True
-            
-        if publish:
+        if not 'valid' in self.data or self.data['valid']:
             header = self.get_ros_header()
     
             # send current odometry transform
