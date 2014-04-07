@@ -8,9 +8,9 @@ def get_orientation(self):
     and return a ROS geometry_msgs.Quaternion
     """
     ros_quat = Quaternion()
-    try:
+    if 'orientation' in self.data:
         mathutils_quat = self.data['orientation']
-    except KeyError:
+    else:
         euler = mathutils.Euler((self.data['roll'],
                                  self.data['pitch'],
                                  self.data['yaw']))
@@ -28,11 +28,11 @@ def get_position(self):
     and return a ROS geometry_msgs.Vector3
     """
     position = Vector3()
-    try:
+    if 'position' in self.data:
         position.x = self.data['position'][0]
         position.y = self.data['position'][1]
         position.z = self.data['position'][2]
-    except KeyError:
+    else:
         position.x = self.data['x']
         position.y = self.data['y']
         position.z = self.data['z']
@@ -57,7 +57,7 @@ class PosePublisher(ROSPublisher):
     ros_class = Pose
 
     def default(self, ci='unused'):
-        if not 'valid' in self.data or self.data['valid']:
+        if 'valid' not in self.data or self.data['valid']:
             pose = get_pose(self)
             self.publish(pose)
 
@@ -70,7 +70,7 @@ class PoseStampedPublisher(ROSPublisher):
     default_frame_id = '/map'
 
     def default(self, ci='unused'):
-        if not 'valid' in self.data or self.data['valid']:
+        if 'valid' not in self.data or self.data['valid']:
             pose = PoseStamped()
             pose.header = self.get_ros_header()
             pose.pose = get_pose(self)
@@ -83,14 +83,12 @@ class PoseWithCovarianceStampedPublisher(ROSPublisher):
     default_frame_id = '/map'
 
     def default(self, ci='unused'):
-        if not 'valid' in self.data or self.data['valid']:
+        if 'valid' not in self.data or self.data['valid']:
             pose = PoseWithCovarianceStamped()
             pose.header = self.get_ros_header()
             pose.pose.pose = get_pose(self)
-            try:
+            if 'covariance_matrix' in self.data:
                 pose.pose.covariance = self.data['covariance_matrix']
-            except KeyError:
-                pass
             self.publish(pose)
 
 
@@ -110,10 +108,8 @@ class TFPublisher(ROSPublisherTF):
                     "and child_frame_id '%s'", self.frame_id, self.child_frame_id)
 
     def default(self, ci='unused'):
-        
-        if not 'valid' in self.data or self.data['valid']:
+        if 'valid' not in self.data or self.data['valid']:
             header = self.get_ros_header()
-    
             # send current odometry transform
             self.sendTransform(get_position(self),
                                get_orientation(self),
