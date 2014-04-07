@@ -66,10 +66,12 @@ class ComponentCreator(AbstractComponent):
         return imported_objects
 
 class SensorCreator(ComponentCreator):
-    def __init__(self, name="SensorCreator", classpath="morse.core.sensor.Sensor",
-                 blendname=None):
-        ComponentCreator.__init__(self, name, 'sensors', blendname)
-        self.properties(Component_Tag = True, classpath = classpath)
+    _classpath = None
+    _blendname = None
+
+    def __init__(self, name="SensorCreator"):
+        ComponentCreator.__init__(self, name, 'sensors', self.__class__._blendname)
+        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ActuatorCreator(ComponentCreator):
     def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",
