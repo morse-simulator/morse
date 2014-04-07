@@ -245,7 +245,8 @@ for module in modules:
         else:
             desc = ""
         
-        components[name] = {'object': component,
+        components[name] = {'name' : name,
+                            'object': component,
                             'type': ctype,
                             'desc': desc,
                             'module': sys.modules[klass.__module__],
@@ -275,6 +276,22 @@ for name, props in components.items():
                                      'doc': fn.__doc__}
 
     components[name]['services'] = services
+
+# Generate links between builder class and components
+builder_components = {}
+
+from morse.builder import *
+for klass in get_subclasses('morse.builder'):
+    if issubclass(klass, (SensorCreator, ActuatorCreator, ArmatureCreator)):
+        for name, props in components.items():
+            obj = props['object']
+            full_name = obj.__module__ + '.' + obj.__name__
+            if full_name == klass._classpath:
+                builder_components[klass.__name__] = {
+                        'klass' : klass,
+                        'core_component' : props
+                        }
+                continue
 
 # Retrieve serializers documentation
 def get_interface_doc(classpath):
@@ -314,7 +331,7 @@ def print_code_snippet(out, name, props):
     out.write("\nThe following examples show how to use this component in a *Builder* script:\n\n")
 
 def generate_builder_example(out, name, props):
-    args = {'var': props["object"].__name__.lower(), 'name':props["object"].__name__, 'type': props['type']}
+    args = {'var': name.lower(), 'name': name, 'type': props['type']}
 
     code = """
     from morse.builder import *
@@ -539,11 +556,13 @@ for directory in ['actuators', 'sensors', 'modifiers', 'robots']:
     if not os.path.exists(path):
         os.makedirs(path)
 
-for name, props in components.items():
+for builder_name, builder_comp in builder_components.items():
+    props = builder_comp['core_component']
+    name = props['name']
     module = (props['object'].__module__.split('.'))[-1]
-    with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w',
+    with open(os.path.join(PREFIX, props['type'] + 's', builder_name.lower() + ".rst"), 'w',
               encoding='utf-8') as out:
-        out.write(underline(name) + '\n')
+        out.write(underline(builder_name) + '\n')
 
         # if an image if available, use it
         out.write(insert_image(module))
@@ -554,17 +573,17 @@ for name, props in components.items():
         doc, params, returndoc, generate_example, examples = parse_docstring(props['doc'])
         out.write(doc + "\n\n")
 
-        print_properties(out, name, props)
-        if not print_levels(out, name, props) and \
+        print_properties(out, builder_name, props)
+        if not print_levels(out, builder_name, props) and \
                props['type'] not in ['modifier', 'robot']:
-            print_data(out, name, props)
+            print_data(out, builder_name, props)
 
         if props['type'] != 'modifier':
-            print_services(out, name, props)
+            print_services(out, builder_name, props)
             if generate_example or examples:
-                print_code_snippet(out, name, props)
+                print_code_snippet(out, builder_name, props)
                 if generate_example:
-                    generate_builder_example(out, name, props)
+                    generate_builder_example(out, builder_name, props)
                 for example in examples:
                     out.write(insert_code(example))
 
