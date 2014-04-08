@@ -97,6 +97,13 @@ class Transformation3d:
         """
         return self.matrix.to_quaternion()
 
+    @rotation.setter
+    def rotation(self, value):
+        rmat = value.to_matrix()
+        for i in range(0, 3):
+            self.matrix[i][0:3] = rmat[i][0:3]
+        self.euler = self.matrix.to_euler()
+
     @property
     def rotation_matrix(self):
         """
@@ -106,7 +113,12 @@ class Transformation3d:
 
     @property
     def translation(self):
-        return mathutils.Vector((self.x, self.y, self.z))
+        return self.matrix.translation
+
+    @translation.setter
+    def translation(self, value):
+        self.matrix.translation = value
+
 
     def transformation3d_with(self, t3d):
         """
