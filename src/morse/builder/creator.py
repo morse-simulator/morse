@@ -2,7 +2,11 @@ import os
 from morse.builder import Robot, AbstractComponent, bpymorse
 
 class ComponentCreator(AbstractComponent):
-    def __init__(self, cname, category, filename=''):
+    APPEND_EMPTY = 0
+    USE_BLEND = 1
+    LINK_EXISTING_BLEND = 2
+
+    def __init__(self, cname, category, filename, action, make_morseable):
         """ ComponentCreator constructor
 
         This class allow to create Python component for MORSE. It consists of an
@@ -15,11 +19,22 @@ class ComponentCreator(AbstractComponent):
         :param filename: (string, optional) used for the datastream configuration
             name of the Blender file in MORSE_COMPONENTS/category/filename.blend
             see morse.builder.data.MORSE_DATASTREAM_DICT (default: None)
+        :param action: Indicate what to do with the filename. Must be one of
+            [APPEND_EMPTY, USE_BLEND, LINK_EXISTING_BLEND]
+        :param make_morseable: (boolean) Add Morse logic. Make it false
+            if you add some blend file which already contains the
+            necessary logic.
         :return: a new AbstractComponent instance.
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
         bpymorse.deselect_all()
-        bpymorse.add_morse_empty()
+        if action == ComponentCreator.APPEND_EMPTY:
+            bpymorse.add_morse_empty()
+        elif action == ComponentCreator.USE_BLEND:
+            self.append_meshes()
+        elif action == ComponentCreator.LINK_EXISTING_BLEND:
+            bpymorse.select_only(bpymorse.get_object(filename))
+
         obj = bpymorse.get_first_selected_object()
         if cname:
             obj.name = cname
@@ -28,7 +43,8 @@ class ComponentCreator(AbstractComponent):
         obj.game.physics_type = 'NO_COLLISION'
         self.set_blender_object(obj)
         # Add MORSE logic
-        self.morseable()
+        if make_morseable:
+            self.morseable()
 
     def parent_root(self, objects):
         # Parent the root objects with this Component
@@ -69,16 +85,20 @@ class SensorCreator(ComponentCreator):
     _classpath = None
     _blendname = None
 
-    def __init__(self, name="SensorCreator"):
-        ComponentCreator.__init__(self, name, 'sensors', self.__class__._blendname)
+    def __init__(self, name="SensorCreator", action = ComponentCreator.APPEND_EMPTY,
+                                            make_morseable = True):
+        ComponentCreator.__init__(self, name, 'sensors',
+                self.__class__._blendname, action, make_morseable)
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ActuatorCreator(ComponentCreator):
     _classpath = None
     _blendname = None
 
-    def __init__(self, name="ActuatorCreator"):
-        ComponentCreator.__init__(self, name, 'actuators', self.__class__._blendname)
+    def __init__(self, name="ActuatorCreator", action = ComponentCreator.APPEND_EMPTY,
+                                               make_morseable = True):
+        ComponentCreator.__init__(self, name, 'actuators', 
+                self.__class__._blendname, action, make_morseable)
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 # helpers
