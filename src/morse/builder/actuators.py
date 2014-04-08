@@ -1,6 +1,6 @@
-from morse.builder.creator import ActuatorCreator
+from morse.builder.creator import ActuatorCreator, ArmatureCreator
 from morse.builder.blenderobjects import *
-from morse.builder import Actuator, Armature
+from morse.builder import Actuator
 
 class Destination(ActuatorCreator):
     _classpath = "morse.actuators.destination.Destination"
@@ -71,12 +71,10 @@ class Joystick(ActuatorCreator):
         sensor.use_all_events = True
 
 # kuka_lwr uses Actuator from morse.builder
-class KukaLWR(Armature):
+class KukaLWR(ArmatureCreator):
     def __init__(self, name=None):
-        Armature.__init__(self, model_name = "kuka_lwr")
-        self.name = name
+        ArmatureCreator.__init__(self, name, model_name = "kuka_lwr")
         self.create_ik_targets(["kuka_7"])
-
 
 class Mocap(ActuatorCreator):
     _classpath = "morse.actuators.mocap_control.MocapControl",
@@ -84,7 +82,6 @@ class Mocap(ActuatorCreator):
 
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
-                                 
 
 class Orientation(ActuatorCreator):
     _classpath = "morse.actuators.orientation.Orientation"
