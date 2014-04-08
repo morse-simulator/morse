@@ -74,10 +74,12 @@ class SensorCreator(ComponentCreator):
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ActuatorCreator(ComponentCreator):
-    def __init__(self, name="ActuatorCreator", classpath="morse.core.actuator.Actuator",
-                 blendname=None):
-        ComponentCreator.__init__(self, name, 'actuators', blendname)
-        self.properties(Component_Tag = True, classpath = classpath)
+    _classpath = None
+    _blendname = None
+
+    def __init__(self, name="ActuatorCreator"):
+        ComponentCreator.__init__(self, name, 'actuators', self.__class__._blendname)
+        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 # helpers
 
