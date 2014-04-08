@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 from morse.builder import bpymorse
-from morse.builder import Armature, GroundRobot
+from morse.builder import GroundRobot
 from morse.builder.sensors import ArmaturePose
 from morse.builder.creator import ArmatureCreator
 

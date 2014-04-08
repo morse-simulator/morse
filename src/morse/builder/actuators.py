@@ -1,6 +1,5 @@
 from morse.builder.creator import ActuatorCreator, ArmatureCreator
 from morse.builder.blenderobjects import *
-from morse.builder import Actuator
 
 class Destination(ActuatorCreator):
     _classpath = "morse.actuators.destination.Destination"
