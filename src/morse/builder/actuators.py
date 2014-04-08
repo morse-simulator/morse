@@ -3,21 +3,23 @@ from morse.builder.blenderobjects import *
 from morse.builder import Actuator, Armature
 
 class Destination(ActuatorCreator):
+    _classpath = "morse.actuators.destination.Destination"
+    _blendname = "destination"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.destination.Destination",
-                                 "destination")
+        ActuatorCreator.__init__(self, name)
 
 class ForceTorque(ActuatorCreator):
+    _classpath = "morse.actuators.force_torque.ForceTorque",
+    _blendname = "force_torque"
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.force_torque.ForceTorque",
-                                 "force_torque")
+        ActuatorCreator.__init__(self, name)
 
 class MocapControl(ActuatorCreator):
+    _classpath = "morse.actuators.mocap_control.MocapControl"
+
     def __init__(self):
         ActuatorCreator.__init__(self)
-        self.properties(classpath="morse.actuators.mocap_control.MocapControl")
 
 # Gripper uses Actuator from morse.builder
 class Gripper(Actuator):
@@ -36,13 +38,16 @@ class Gripper(Actuator):
 
 
 class Keyboard(ActuatorCreator):
+    _classpath = "morse.actuators.keyboard.Keyboard"
+    _blendname = "keyboard"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.keyboard.Keyboard",
-                                 "keyboard")
+        ActuatorCreator.__init__(self, name)
         self.properties(Speed = 1.0)
 
 class Joystick(ActuatorCreator):
+    _classpath = "morse.actuators.joystick.Joystick"
+
     def __init__(self, name=None, index=0):
         """ Create a new Joystick controller
 
@@ -50,7 +55,6 @@ class Joystick(ActuatorCreator):
         :type index:  int in [0, 7], default 0
         """
         ActuatorCreator.__init__(self, name)
-        self.properties(classpath = "morse.actuators.joystick.Joystick")
         self.properties(Speed = 1.0)
         obj = bpymorse.get_context_object()
         # replace Always sensor by Joystick sensor
@@ -72,16 +76,19 @@ class KukaLWR(Armature):
 
 
 class Mocap(ActuatorCreator):
+    _classpath = "morse.actuators.mocap_control.MocapControl",
+    _blendname = "mocap_control"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.mocap_control.MocapControl",
-                                 "mocap_control")
+        ActuatorCreator.__init__(self, name)
+                                 
 
 class Orientation(ActuatorCreator):
+    _classpath = "morse.actuators.orientation.Orientation"
+    _blendname = "orientation"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.orientation.Orientation",
-                                 "orientation")
+        ActuatorCreator.__init__(self, name)
 
 # pa_10 uses Actuator from morse.builder
 class PA10(Actuator):
@@ -92,59 +99,70 @@ class PA10(Actuator):
         # Sound Game Logic Actuator servo_1.mp3
 
 class PTU(ActuatorCreator):
+    _classpath = "morse.actuators.ptu.PTU"
+    _blendname = "ptu"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.ptu.PTU", "ptu")
+        ActuatorCreator.__init__(self, name)
         self.properties(Speed = 1.0, Manual = False, Tolerance = 0.01)
         # append PanBase with its logic
         self.append_meshes(['PanBase', 'TiltBase'])
 
 class RotorcraftAttitude(ActuatorCreator):
+    _classpath = "morse.actuators.rotorcraft_attitude.RotorcraftAttitude"
+    _blendname = "rotorcraft_attitude"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_attitude.RotorcraftAttitude",
-            "rotorcraft_attitude")
+        ActuatorCreator.__init__(self, name)
 
 class RotorcraftWaypoint(ActuatorCreator):
+    _classpath = "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint"
+    _blendname = "rotorcraft_waypoint"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-            "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint",
-            "rotorcraft_waypoint")
+        ActuatorCreator.__init__(self, name)
 
 class StabilizedQuadrotor(ActuatorCreator):
+    _classpath = "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor"
+    _blendname = "stabilized_quadrotor"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-            "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor",
-            "stabilized_quadrotor")
+        ActuatorCreator.__init__(self, name)
 
 class SteerForce(ActuatorCreator):
+    _classpath = "morse.actuators.steer_force.SteerForce"
+    _blendname = "steer_force"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.steer_force.SteerForce",
-                                 "steer_force")
+        ActuatorCreator.__init__(self, name)
 
 class Teleport(ActuatorCreator):
+    _classpath = "morse.actuators.teleport.Teleport"
+    _blendname = "teleport"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.teleport.Teleport",
-                                 "teleport")
+        ActuatorCreator.__init__(self, name)
 
 class MotionVW(ActuatorCreator):
+    _classpath = "morse.actuators.v_omega.MotionVW"
+    _blendname = "v_omega"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.v_omega.MotionVW",
-                                 "v_omega")
+        ActuatorCreator.__init__(self, name)
 
 class MotionVWDiff(ActuatorCreator):
+    _classpath = "morse.actuators.v_omega_diff_drive.MotionVWDiff"
+    _blendname = "v_omega_diff_drive"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-            "morse.actuators.v_omega_diff_drive.MotionVWDiff",
-            "v_omega_diff_drive")
+        ActuatorCreator.__init__(self, name)
 
 class Waypoint(ActuatorCreator):
+    _classpath = "morse.actuators.waypoint.Waypoint"
+    _blendname = "waypoint"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.waypoint.Waypoint", "waypoint")
+        ActuatorCreator.__init__(self, name)
         self.properties(Target = "")
         # append 2 Radar with logic
         self.add_lr_radars()
@@ -184,17 +202,18 @@ class Waypoint(ActuatorCreator):
         controller.link(sensor = sensor, actuator = actuator)
 
 class MotionXYW(ActuatorCreator):
+    _classpath = "morse.actuators.xy_omega.MotionXYW"
+    _blendname = "xy_omega"
+
     def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.xy_omega.MotionXYW",
-                                 "xy_omega")
+        ActuatorCreator.__init__(self, name)
 
 class Light(ActuatorCreator):
+    _classpath = "morse.actuators.light.Light"
+    _blendname = "light"
     def __init__(self, name=None):
         self.light = None
-        ActuatorCreator.__init__(self, name,
-                                 "morse.actuators.light.Light",
-                                 "light")
+        ActuatorCreator.__init__(self, name)
         self.light = Spot("LightSpot")
         self.append(self.light)
         self.properties(Emit=True)
@@ -213,9 +232,10 @@ class Light(ActuatorCreator):
                     spot.color = tuple(int(v) for v in re.findall("[0-9]+", kwargs['color']))
 
 class Sound(ActuatorCreator):
+    _classpath = "morse.actuators.sound.Sound"
+
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
-        self.properties(classpath="morse.actuators.sound.Sound")
         self.properties(mode="play")
         #self.select()
         bpymorse.add_actuator(type="SOUND", name="MORSE_SOUND")
