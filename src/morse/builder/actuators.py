@@ -90,13 +90,15 @@ class Orientation(ActuatorCreator):
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
 
-# pa_10 uses Actuator from morse.builder
-class PA10(Actuator):
+class PA10(ActuatorCreator):
+    _classpath = "morse.actuators.pa_10.PA10"
+    _blendname = "pa_10"
+
     def __init__(self, name=None):
-        Actuator.__init__(self, "pa_10")
-        self.name = name
-        self.properties(classpath = "morse.actuators.pa_10.PA10", Speed = 1.0)
-        # Sound Game Logic Actuator servo_1.mp3
+        ActuatorCreator.__init__(self, name,
+                action = ComponentCreator.USE_BLEND,
+                make_morseable = False)
+        self.properties(Speed = 1.0)
 
 class PTU(ActuatorCreator):
     _classpath = "morse.actuators.ptu.PTU"
