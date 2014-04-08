@@ -36,7 +36,7 @@ class PoseStampedReader(ROSSubscriber):
         self.data["x"] = message.pose.position.x
         self.data["y"] = message.pose.position.y
         self.data["z"] = message.pose.position.z
-        self.data['position'] = mathutils.Vector((message.position.x, message.position.y, message.position.z))
+        self.data['position'] = mathutils.Vector((message.pose.position.x, message.pose.position.y, message.pose.position.z))
 
         quaternion = mathutils.Quaternion((message.pose.orientation.w,
                                            message.pose.orientation.x,
