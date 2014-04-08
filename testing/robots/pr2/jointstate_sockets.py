@@ -34,8 +34,12 @@ class PR2TorsoTest(MorseTestCase):
         with Morse() as simu:
             joints = simu.pr2.joint_state.get()
 
-            self.assertEqual(len(set(joints.keys())), len(joints.keys()), 'Some joints are duplicated!' )
-            self.assertEqual(set(joints.keys()), PR2_JOINTS, 'Could not find all joints of the PR2. Please check if you named the joints correctly in your pr2_posture sensor and middleware!' )
+            self.assertEqual(len(set(joints.keys())), len(joints.keys()),
+                             'Some joints are duplicated!' )
+            self.assertEqual(set(joints.keys()), PR2_JOINTS | {'timestamp'}, 
+                    'Could not find all joints of the PR2. Please check if you'
+                    'named the joints correctly in your pr2_posture sensor and'
+                    'middleware!' )
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
