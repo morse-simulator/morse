@@ -22,11 +22,14 @@ class MocapControl(ActuatorCreator):
         ActuatorCreator.__init__(self)
 
 # Gripper uses Actuator from morse.builder
-class Gripper(Actuator):
+class Gripper(ActuatorCreator):
+    _classpath = "morse.actuators.gripper.Gripper"
+    _blendname = "gripper"
+
     def __init__(self, name=None):
-        Actuator.__init__(self, "gripper")
-        self.name = name
-        self.properties(classpath = "morse.actuators.gripper.Gripper")
+        ActuatorCreator.__init__(self, name,
+                    action = ActuatorCreator.USE_BLEND,
+                    make_morseable = False)
         self.properties(Angle = 60.0, Distance = 0.5)
     def properties(self, **kwargs):
         radar = self._bpy_object.game.sensors["Radar"]
@@ -34,7 +37,7 @@ class Gripper(Actuator):
             radar.angle = kwargs['Angle']
         if 'Distance' in kwargs:
             radar.distance = kwargs['Distance']
-        Actuator.properties(self, **kwargs)
+        ActuatorCreator.properties(self, **kwargs)
 
 
 class Keyboard(ActuatorCreator):
