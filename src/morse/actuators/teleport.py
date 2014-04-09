@@ -3,6 +3,7 @@ import morse.core.actuator
 from morse.core.services import service
 from morse.core import mathutils
 from morse.helpers.components import add_data
+from morse.helpers.transformation import Transformation3d
 
 class Teleport(morse.core.actuator.Actuator):
     """ 
@@ -37,7 +38,7 @@ class Teleport(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         morse.core.actuator.Actuator.__init__(self, obj, parent)
 
-        pose3d = self.robot_parent.position_3d
+        pose3d = self.position_3d
 
         self.local_data['x'] = pose3d.x
         self.local_data['y'] = pose3d.y
@@ -45,6 +46,8 @@ class Teleport(morse.core.actuator.Actuator):
         self.local_data['roll'] = pose3d.roll
         self.local_data['pitch'] = pose3d.pitch
         self.local_data['yaw'] = pose3d.yaw
+
+        self.actuator2robot = self.position_3d.transformation3d_with(self.robot_parent.position_3d)
 
         logger.info('Component initialized')
 
@@ -92,4 +95,10 @@ class Teleport(morse.core.actuator.Actuator):
                                        self.local_data['pitch'],
                                        self.local_data['yaw']])
 
-        self.robot_parent.force_pose(position, orientation.to_matrix())
+        world2actuator = Transformation3d(None)
+        world2actuator.translation = position
+        world2actuator.rotation = orientation
+
+        (loc, rot, _) = (world2actuator.matrix * self.actuator2robot.matrix).decompose()
+
+        self.robot_parent.force_pose(loc, rot)
