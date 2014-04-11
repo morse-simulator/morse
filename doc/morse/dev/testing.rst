@@ -8,7 +8,7 @@ Unit-tests (using the standard Python unit-testing framework) can be added
 to MORSE by creating a test class inheriting from
 :py:class:`morse.testing.testing.MorseTestCase`.
 
-We contributing code to MORSE, we recommend you to create unit-tests for the new
+When contributing code to MORSE, we recommend you create unit-tests for the new
 features in subdirectories of `$MORSE_ROOT/testing`.
 
 Writing tests
