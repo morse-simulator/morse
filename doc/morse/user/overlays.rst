@@ -6,7 +6,7 @@ that overrides the default component behaviour to better fit into a
 particular architecture.
 
 .. warning::
-  As of `MORSE 1.0`, only :doc:`services <../dev/services>` can be overrided. In future
+  As of `MORSE 1.0`, only :doc:`services <../dev/services>` can be overridden. In future
   versions, the *stream-oriented* interfaces of components (like ROS topics
   or YARP port) may be overridable as well.
 
@@ -21,7 +21,7 @@ tilt angles of the PTU.
 But in your architecture, you are using 2 different methods, ``SetTilt`` and
 ``SetPan``.
 
-The following overlay for maps your functions to MORSE default ones:
+The following overlay maps your functions to the default MORSE ones:
 
 .. code-block:: python
 
@@ -145,7 +145,7 @@ in the module :mod:`morse.middleware.ros.overlays.waypoints`.
 Name remapping
 --------------
 
-Overlays also allow to redefine the component name by overloading the 
+Overlays also allow you to redefine the component name by overloading the 
 :meth:`morse.core.abstractobject.AbstractObject.name` method.
 
 Let's complete our previous example:
@@ -166,5 +166,5 @@ Let's complete our previous example:
 In this case, at initialization, a new (pseudo) component (called ``MyPTU`` in 
 this case) is created, with services as defined in the overlay class.
 
-The original component is also created and remain available as usual.
+The original component is also created and remains available as usual.
 

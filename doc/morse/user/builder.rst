@@ -349,7 +349,7 @@ the :doc:`compatibility matrix <integration>`.
     the module :py:mod:`morse.builder.data`.
 
 .. note::
-    Some middleware allows to configure the behaviour of each stream. Report
+    Some middleware allows you to configure the behaviour of each stream. Refer
     to the documentation of your specific middleware, in the part
     "Configuration specificities" to know more about it.
 
@@ -369,7 +369,7 @@ its services through multiple middlewares. You simply need to call
 
 .. warning::
 
-    Do the nature of some middlewares (in particular ROS or pocolibs), it is
+    Due the nature of some middlewares (in particular ROS or pocolibs), it is
     sometimes not really useful to call the service directly as exposed by
     Morse. You need to use an extra layer of adaption called :doc:`overlays
     <overlays>` and configure it through the ``add_overlay`` method.
