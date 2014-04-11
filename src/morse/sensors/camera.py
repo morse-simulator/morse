@@ -68,7 +68,19 @@ class Camera(morse.core.sensor.Sensor):
         self._camera_running = False
 
         self.scene_name = 'S.%dx%d' % (self.image_width, self.image_height)
-        blenderapi.add_scene(self.scene_name, overlay=0)
+
+        persistantstorage = morse.core.blenderapi.persistantstorage()
+        parent_name = self.robot_parent.name()
+        is_parent_external = False
+
+        for robot in persistantstorage.externalRobotDict.keys():
+            if robot.name == parent_name:
+                is_parent_external = True
+                break
+
+        if not is_parent_external:
+            logger.info("Adding scene %s" % self.scene_name)
+            blenderapi.add_scene(self.scene_name, overlay=0)
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
