@@ -72,13 +72,6 @@ class IMU(SensorCreator):
         mesh.color(.3, .9, .6)
         self.append(mesh)
 
-class JidoPosture(SensorCreator):
-    _classpath = "morse.sensors.jido_posture.JidoPosture"
-
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
-        self.properties(KUKAname = "KUKA_LWR", PTUname = "PTU")
-
 class Odometry(SensorCreator):
     _classpath = "morse.sensors.odometry.Odometry"
 
@@ -294,7 +287,14 @@ class LaserSensorWithArc(SensorCreator):
             self.create_laser_arc()
 
 class Hokuyo(LaserSensorWithArc):
+    """
+    A laser scanner configured to mimick the Hokuyo sensor.
+
+    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    """
     _blendname = "sick"
+    _name = "Hokuyo"
+    _short_desc = "Hokuyo laser scanner"
 
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
@@ -309,7 +309,15 @@ class Hokuyo(LaserSensorWithArc):
         self.frequency(10)
 
 class Sick(LaserSensorWithArc):
+    """
+    A laser scanner configured to mimick the SICK sensor.
+
+    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    """
     _blendname = "sick"
+    _name = "SICK"
+    _short_desc = "SICK laser scanner"
+
 
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
@@ -322,7 +330,15 @@ class Sick(LaserSensorWithArc):
         self.append_meshes(['SickMesh'])
 
 class SickLDMRS(LaserSensorWithArc):
+    """
+    A laser scanner configured to mimick the SICK LD-MRS sensor.
+
+    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    """
     _blendname = "sick"
+    _name = "SICK LD-MRS"
+    _short_desc = "SICK LD-MRS laser scanner"
+
 
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
@@ -338,6 +354,14 @@ class SickLDMRS(LaserSensorWithArc):
         self.frequency(4)
 
 class Infrared(LaserSensorWithArc):
+    """
+    A laser scanner configured to mimick a infra-red proximity sensor.
+
+    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    """
+    _name = "Infrared Proximity Sensor"
+    _short_desc = "Infra-red (IR) proximity sensor."
+
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
         mesh = Cube("InfraredCube")
@@ -405,6 +429,7 @@ class DepthCamera(VideoCamera):
 
 class Velodyne(DepthCamera):
     _classpath = "morse.sensors.depth_camera.DepthCameraRotationZ"
+    _blendname = "velodyne"
 
     def __init__(self, name=None):
         DepthCamera.__init__(self, name)
@@ -446,7 +471,16 @@ class Clock(SensorCreator):
         SensorCreator.__init__(self, name)
 
 class Kinect(SensorCreator):
-    _classpath = "morse.core.sensor.Sensor"
+    """
+    Microsoft Kinect RGB-D camera, implemented as a pair of depth camera and video
+    camera.
+
+    See the general documentation for :doc:`video cameras <./videocamera>` and
+    :doc:`depth cameras <./depthcamera>` for details.
+
+    """
+    _name = "Kinect"
+    _short_desc="Microsoft Kinect RGB-D sensor"
 
     def __init__(self, name="Kinect"):
         # meta sensor composed of 2 cameras (rgb and depth)
