@@ -3,6 +3,9 @@ from morse.builder import AbstractComponent, bpymorse
 from morse.core.exceptions import *
 
 class ComponentCreator(AbstractComponent):
+    _classpath = None
+    _blendname = None
+
     APPEND_EMPTY = 0
     USE_BLEND = 1
     LINK_EXISTING_OBJECT = 2
@@ -10,7 +13,7 @@ class ComponentCreator(AbstractComponent):
     def __init__(self, 
                  name, 
                  category, 
-                 action = ComponentCreator.APPEND_EMPTY, 
+                 action = APPEND_EMPTY, 
                  blendfile = "", 
                  blendobject = None,
                  make_morseable = True):
@@ -66,6 +69,8 @@ class ComponentCreator(AbstractComponent):
         if make_morseable:
             self.morseable()
 
+        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
+
     def parent_root(self, objects):
         # Parent the root objects with this Component
         for child in objects:
@@ -102,9 +107,6 @@ class ComponentCreator(AbstractComponent):
         return imported_objects
 
 class SensorCreator(ComponentCreator):
-    _classpath = None
-    _blendname = None
-
     def __init__(self, name="SensorCreator",
                        action = ComponentCreator.APPEND_EMPTY,
                        make_morseable = True):
@@ -116,129 +118,25 @@ class SensorCreator(ComponentCreator):
                                   blendfile = self.__class__._blendname, 
                                   make_morseable = make_morseable)
 
-        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ActuatorCreator(ComponentCreator):
-    _classpath = None
-    _blendname = None
 
     def __init__(self, name="ActuatorCreator", 
                        action = ComponentCreator.APPEND_EMPTY,
+                       blendfile = None,
+                       blendobject = None,
                        make_morseable = True):
+
+        if not blendfile:
+            blendfile = self.__class__._blendname
 
         ComponentCreator.__init__(self, 
                                 name, 
                                 'actuators', 
                                 action, 
-                                blendfile = self.__class__._blendname, 
-                                make_morseable = make_morseable)
-
-        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
-
-class ArmatureCreator(ComponentCreator):
-    _classpath = None
-    _blendname = None
-
-    def __init__(self, name = None, armature_name = None, model_name = None):
-        """ Initialize an armature
-
-        Either `armature_name` or `model_name` or both must be specified.
-        
-
-        :param armature_name: Armature object name
-        :param model_name: Armature model name, if any
-        """
-        
-        if not armature_name and not model_name:
-            raise MorseBuilderError("You need to specify either the name of " \
-                    "an armature or a Blender model in order to create an " \
-                    "armature actuator.")
-
-        if model_name:
-            ComponentCreator.__init__(self, 
-                                    name, 
-                                    'actuators',  
-                                    action = ComponentCreator.USE_BLEND,
-                                    blendfile = model_name,
-                                    blendobject = armature_name,
-                                    make_morseable = False)
-
-        else:
-            ComponentCreator.__init__(self, 
-                                name, 
-                                'actuators',  
-                                action = ComponentCreator.LINK_EXISTING_OBJECT,
-                                blendobject = armature_name,
-                                make_morseable = False)
-
-
-        self.properties(Component_Tag = True, classpath = self.__class__._classpath)
-
-        self.ik_targets = []
-
-        # the user may have created IK constraints on the armature, without
-        # setting an IK target. In that case, we add such a target
-        for bone in self._bpy_object.pose.bones:
-            for c in bone.constraints:
-                if c.type == 'IK' and c.ik_type == 'DISTANCE':
-                    if not c.target:
-                        self.create_ik_targets([bone.name])
-
-    def _get_posebone(self, bone_name):
-        """ Returns a given PoseBone in the armature.
-
-        If the joint does not exist, throw an exception.
-        """
-        armature = self._bpy_object
-
-        if bone_name not in [c.name for c in armature.pose.bones]:
-            msg = "Joint <%s> does not exist in model %s." % (bone_name, armature.name)
-            msg += " Did you add a skeleton to your model in MakeHuman?"
-            raise MorseBuilderError(msg)
-
-        return armature.pose.bones[bone_name]
-
-    def create_ik_targets(self, bones):
-
-        # Bug with iTaSC! cf http://developer.blender.org/T37894
-        if bpymorse.version() < (2, 70, 0):
-            if self._bpy_object.pose.ik_solver == 'ITASC':
-                logger.warn("Due to a bug in Blender (T37894), only the standard " \
-                            "IK solver can be used with IK targets. Switching " \
-                            "from iTaSC to standard IK solver.")
-                self._bpy_object.pose.ik_solver = 'LEGACY'
-
-        for target in bones:
-            posebone = self._get_posebone(target)
-            bpymorse.add_morse_empty("ARROWS")
-            empty = bpymorse.get_first_selected_object()
-            empty.scale = [0.01, 0.01, 0.01]
-
-            empty.matrix_local = posebone.bone.matrix_local
-            empty.location = posebone.bone.tail_local
-
-            existing_ik = [c for c in posebone.constraints if c.type == 'IK']
-            if len(existing_ik) == 1:
-                ik_constraint = existing_ik[0]
-            elif existing_ik:
-                raise MorseBuilderError("Bone %s has several IK constraints." \
-                        "MORSE supports only one IK constraint per bone. Please " \
-                        "remove other ones.")
-            else:
-                ik_constraint = posebone.constraints.new("IK")
-
-            ik_constraint.ik_type = "DISTANCE"
-            ik_constraint.use_rotation = True
-            ik_constraint.use_tail = True
-            ik_constraint.target = empty
-
-            self.ik_targets.append((empty, target))
-
-
-    def after_renaming(self):
-        for empty, target in self.ik_targets:
-            empty.name = "ik_target." + self.name + "." + target
-
+                                blendfile,
+                                blendobject,
+                                make_morseable)
 
 
 
