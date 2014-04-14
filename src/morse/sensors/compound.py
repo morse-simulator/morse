@@ -14,6 +14,8 @@ class CompoundSensor(morse.core.sensor.Sensor):
 
     Note that services exposed by original sensors *are not* exposed by the
     compound sensor.
+
+    :noautoexample:
     """
     _name = "Compound Sensor"
     _short_desc = "Special sensor that merges other sensors' outputs"
