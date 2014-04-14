@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 from morse.core.sensor import Sensor
-from morse.helpers.components import add_data, add_property
-
+from morse.helpers.components import add_data, add_property, add_level
+from morse.builder import bpymorse
 """
 Important note:
 
@@ -118,18 +118,27 @@ class LaserScanner(Sensor):
     _name = "Laser Scanner Sensors"
     _short_desc = "Generic laser range sensors"
 
+    add_level("raw", None, doc = "raw laserscanner: \
+                    Laserscan with point_list and range_list")
+    add_level("rssi", "morse.sensors.laserscanner.RSSILaserScanner", doc = "laserscanner with rssi: \
+                    Laserscan with point_list, range_list and remission_list")
+
     add_data('point_list', [], "list", "Array that stores the positions of \
             the points found by the laser. The points are given with respect \
             to the location of the sensor, and stored as lists of three \
             elements. The number of points depends on the geometry of the arc \
             parented to the sensor (see below). The point (0, 0, 0) means that\
-            this ray has not it anything in its range")
+            this ray has not it anything in its range", level ="raw" )
     add_data('range_list', [], "list", "Array that stores the distance to the \
             first obstacle detected by each ray. The order indexing of this \
             array is the same as for point_list, so that the element in the \
             same index of both lists will correspond to the measures for the \
             same ray. If the ray does not hit anything in its range it returns \
-            laser_range")
+            laser_range", level ="raw")
+    add_data('remission_list', [], "list", "Array that stores the remission \
+            value for the points found by the laser. The specular intensity \
+            is set as the remission value. If no object is hit, the remission \
+            value is set to 0", level ="rssi")
 
     add_property('laser_range', 30.0, 'laser_range', "float",
                  "The distance in meters from the center of the sensor to which\
@@ -178,6 +187,7 @@ class LaserScanner(Sensor):
         # Create an empty list to store the intersection points
         self.local_data['point_list'] = []
         self.local_data['range_list'] = []
+
 
         # Get the datablock of the arc, to extract its vertices
         ray_object = blenderapi.objectdata(self._ray_arc.name)
@@ -259,7 +269,10 @@ class LaserScanner(Sensor):
             self.local_data['point_list'][index] = new_point[:]
             self.local_data['range_list'][index] = distance
             index += 1
+            self.change_arc()
 
+
+    def change_arc(self):
         # Change the shape of the arc to show what the sensor detects
         # Display only for 1 layer scanner
         if (2, 65, 0) < blenderapi.version() <= (2, 66, 3):
@@ -279,6 +292,7 @@ class LaserScanner(Sensor):
                             point = self._ray_list[v_index-1] * self.laser_range
                         vertex.setXYZ(point)
 
+
 class LaserScannerRotationZ(LaserScanner):
     """Used for Velodyne sensor"""
     def default_action(self):
@@ -287,3 +301,100 @@ class LaserScannerRotationZ(LaserScanner):
     def applyRotationZ(self, rz=.01745):
         # The second parameter specifies a "local" movement
         self.bge_object.applyRotation([0, 0, rz], True)
+
+class RSSILaserScanner(LaserScanner):
+
+    def __init__(self, obj, parent=None):
+        LaserScanner.__init__(self, obj, parent)
+        self.local_data['remission_list'] = []
+        ray_object = blenderapi.objectdata(self._ray_arc.name)
+        for vertex in ray_object.data.vertices:
+            # Skip the first vertex.
+            # It is the one located at the center of the sensor
+            if vertex.index == 0:
+                continue
+
+            # Insert zeros in the remission list
+            self.local_data['remission_list'].append(0.0) 
+       
+    def getRSSIValue(self, target):
+
+        """
+        IMPORTANT:
+        To get the material property a workaround is needed.
+        The material from the targets is KX_BlenderMaterial (and not
+        KX_PolygonMaterial). So the properties are not accessible.
+        Workaround:
+        Get material name of the GameObject and then use the method
+        bpymorse.get_material(name).
+        Material name must be parsed because of the prefix 'MA' in Blender;
+        before the name is used to get the material properties.
+        """
+        mat_name = target.getMaterialName()
+
+        if ( not(mat_name[0:2] == "MA") ):
+            #ERROR
+            logger.error("Could not parse material name %s. \
+                        The leading 'MA' (prefix in Blender) is missing. \
+                        Please check on the material name and the source file \
+                        /src/morse/sensors/laserscanner.py the method \
+                        'default_action' in the class LaserScannner_RSSI, \
+                        where the name is parsed."%mat_name)
+        else:
+            mat_name = mat_name[2:]
+            if bpymorse.get_material(mat_name):
+                mat = bpymorse.get_material(mat_name)
+                return mat.specular_intensity
+               
+
+    def default_action(self):
+        inverse = self.position_3d.matrix.inverted()
+
+        index = 0
+        for ray in self._ray_list:
+            # Transform the ray to the current position and rotation
+            #  of the sensor
+            correct_ray = self.position_3d.matrix * ray
+
+            # Shoot a ray towards the target
+            """
+            target, point, normal = self.bge_object.rayCast(correct_ray, None,
+                                                             self.laser_range)
+            would be possible, but longer way to get material name:
+            target -> (list)meshes -> (list)materials -> (string)getMaterialName(id)
+            
+            target_poly is shorter
+            """
+            target, point, normal, target_poly = self.bge_object.rayCast(correct_ray, None,
+                                                             self.laser_range, "", 1, 1, 1)
+
+            #logger.debug("\tTarget, point, normal: %s, %s, %s" %
+            #               (target, point, normal))
+
+            # Register when an intersection occurred
+
+
+            if target_poly:
+                distance = self.bge_object.getDistanceTo(point)
+                new_point = inverse * point
+
+                rssi = self.getRSSIValue(target_poly)                        
+                            
+                # Return the point to the reference of the sensor
+
+
+                #logger.debug("\t\tGOT INTERSECTION WITH RAY: [%.4f, %.4f, %.4f]" % (correct_ray[0], correct_ray[1], correct_ray[2]))
+                #logger.debug("\t\tINTERSECTION AT: [%.4f, %.4f, %.4f] = %s" % (point[0], point[1], point[2], target))
+            # If there was no intersection, store the default values
+            else:
+                distance = self.laser_range
+                new_point = [0.0, 0.0, 0.0]
+                rssi = 0
+
+            # Save the information gathered
+            self.local_data['point_list'][index] = new_point[:]
+            self.local_data['range_list'][index] = distance
+            self.local_data['remission_list'][index] = rssi
+            index += 1
+            LaserScanner.change_arc(self)
+

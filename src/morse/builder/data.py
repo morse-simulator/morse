@@ -190,13 +190,16 @@ MORSE_DATASTREAM_DICT = {
             }
         },
     "morse.sensors.laserscanner.LaserScanner": {
-        "default": {
+        "raw": {
             "ros": ['morse.middleware.ros.laserscanner.LaserScanPublisher',
                     'morse.middleware.ros.laserscanner.PointCloud2Publisher'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": 'morse.middleware.yarp.laserscanner.YarpLaserScannerPublisher',
             'moos': 'morse.middleware.moos.sick.LIDARNotifier'
             },
+        "rssi": {
+            "socket": INTERFACE_DEFAULT_OUT
+            },        
         "range": {
             "ros": 'morse.middleware.ros.infrared.RangePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
