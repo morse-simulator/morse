@@ -67,6 +67,7 @@ from copy import copy
 from morse.core.actuator import Actuator
 from morse.core.robot import Robot
 from morse.core.sensor import Sensor
+from morse.builder.creator import SensorCreator, ActuatorCreator, ComponentCreator
 from morse.modifiers.abstract_modifier import AbstractModifier
 
 from morse.builder.data import MORSE_DATASTREAM_DICT
@@ -145,6 +146,10 @@ def parse_docstring(doc):
     # Try to 'safely' remove leading spaces introduced by natural Python
     # docstring formatting. We can not simply strip leading withspaces,
     # because they may be significant for rst (like in ..note:)
+    if not doc:
+        print("No docstring found! Bouhouh!")
+        return ("", None, None, None, None)
+
     orig = doc.split('\n')
     if (orig[0].strip()):
         print("XXX Invalid docstring (first line of MORSE docstrings " \
@@ -206,51 +211,71 @@ def parse_docstring(doc):
 
     return (doc, paramsdoc,returndoc, generate_example, examples)
 
+
+# contains only classes that implement components and have
+# an explicit name (ie, MyComponent._name = ...)
 components = {}
+
+def process_component_class(klass, builder_component = False):
+    """
+    :param builder_component: should be set to true for components that are pure
+    Builder scripts (ie, no specific implementation in MORSE/{actuators|sensors})
+    """
+    global components
+
+    print("process %s"%str(klass))
+    if issubclass(klass, (Actuator, ActuatorCreator)):
+        ctype = 'actuator'
+    elif issubclass(klass, (Sensor, SensorCreator)):
+        ctype = 'sensor'
+    elif issubclass(klass, AbstractModifier):
+        ctype = 'modifier'
+    elif issubclass(klass, Robot):
+        ctype = 'robot'
+    else:
+        print('not subclass %s'%str(klass))
+        return
+
+    component = klass
+
+    if hasattr(component, '_name'):
+        name = component._name
+        
+        try:
+            parent_name = component.mro()[1]._name
+            if name == parent_name:
+                print("Component %s does not declare its own _name (name identical to parent <%s>). Skipping it." % (component.__name__, name))
+                return
+        except AttributeError:
+            pass
+    else:
+        print("Component %s does not declare a _name. Skipping it." % component.__name__)
+        return
+    
+    if hasattr(component, '_short_desc'):
+        desc = getattr(component, '_short_desc')
+    else:
+        desc = ""
+    
+    modulename = klass.__name__.lower() if builder_component else sys.modules[klass.__module__].__name__
+
+    components[name] = {'name' : name,
+                        'object': component,
+                        'type': ctype,
+                        'desc': desc,
+                        'module': modulename,
+                        'doc': component.__doc__,
+                        'builder_component': builder_component,
+                        'services':[]} # default to no services. Those are filled in later on
+
 
 # browse morse components modules
 for module in modules:
     print("browse %s classes"%module)
     for klass in get_subclasses(module):
-        print("process %s"%str(klass))
-        if issubclass(klass, Actuator):
-            ctype = 'actuator'
-        elif issubclass(klass, Sensor):
-            ctype = 'sensor'
-        elif issubclass(klass, AbstractModifier):
-            ctype = 'modifier'
-        elif issubclass(klass, Robot):
-            ctype = 'robot'
-        else:
-            print('not subclass %s'%str(klass))
-            continue
-        
-        component = klass
-        if hasattr(component, '_name'):
-            name = component._name
-            
-            try:
-                parent_name = component.mro()[1]._name
-                if name == parent_name:
-                    print("Component %s does not declare its own _name (name identical to parent <%s>). Skipping it." % (component.__name__, name))
-                    continue
-            except AttributeError:
-                pass
-        else:
-            print("Component %s does not declare a _name. Skipping it." % component.__name__)
-            continue
-        
-        if hasattr(component, '_short_desc'):
-            desc = getattr(component, '_short_desc')
-        else:
-            desc = ""
-        
-        components[name] = {'name' : name,
-                            'object': component,
-                            'type': ctype,
-                            'desc': desc,
-                            'module': sys.modules[klass.__module__],
-                            'doc': component.__doc__}
+        process_component_class(klass)
+
+
 
 # Extract levels, data_fields and properties
 for name, props in components.items():
@@ -277,21 +302,34 @@ for name, props in components.items():
 
     components[name]['services'] = services
 
-# Generate links between builder class and components
-builder_components = {}
+# 'Orphans' are components that only exist as Builder scripts (they do not have
+# explicit components implementations in morse/{actuators|sensors}).
+# We need to generate documentation for them as well.
+orphans = []
 
 from morse.builder import *
 for klass in get_subclasses('morse.builder'):
-    if issubclass(klass, (SensorCreator, ActuatorCreator, ArmatureCreator)):
-        for name, props in components.items():
-            obj = props['object']
-            full_name = obj.__module__ + '.' + obj.__name__
-            if full_name == klass._classpath:
-                builder_components[klass.__name__] = {
-                        'klass' : klass,
-                        'core_component' : props
-                        }
-                continue
+    if issubclass(klass, (ComponentCreator)):
+        # _classpath should be manually set when subclassing a *Creator
+        if klass._classpath:
+
+            try:
+                if klass._classpath == klass.mro()[1]._classpath:
+                    print("Component %s does not declare its own _classpath (identical to parent <%s>). Adding it to orphans." % (klass.__name__, klass.mro()[1].__name__))
+                    orphans.append(klass)
+                    continue
+            except AttributeError:
+                pass
+
+        elif klass not in [SensorCreator, ActuatorCreator, ComponentCreator]:
+            print("%s has no _classpath. Adding it to orphans." % klass.__name__)
+            orphans.append(klass)
+
+# Document orphans as well as possible
+print("\n\nDocumenting orphan components\n")
+for cmpt in orphans:
+    process_component_class(cmpt, 
+                            builder_component = True)
 
 # Retrieve serializers documentation
 def get_interface_doc(classpath):
@@ -380,10 +418,10 @@ def print_files(out, name, props):
         title = "Other sources of examples"
         out.write(underline(title, '+') + '\n')
 
-    module_name = components[name]['module'].__name__.split('.')[-1]
+    module_name = components[name]['module'].split('.')[-1]
 
     out.write("- `Source code <../../_modules/" +
-              components[name]['module'].__name__.replace('.', '/') +
+              components[name]['module'].replace('.', '/') +
               ".html>`_\n")
     out.write("- `Unit-test <../../_modules/base/" +
                 module_name + "_testing.html>`_\n")
@@ -556,13 +594,11 @@ for directory in ['actuators', 'sensors', 'modifiers', 'robots']:
     if not os.path.exists(path):
         os.makedirs(path)
 
-for builder_name, builder_comp in builder_components.items():
-    props = builder_comp['core_component']
-    name = props['name']
-    module = (props['object'].__module__.split('.'))[-1]
-    with open(os.path.join(PREFIX, props['type'] + 's', builder_name.lower() + ".rst"), 'w',
+for name, props in components.items():
+    module = (props['module'].split('.'))[-1]
+    with open(os.path.join(PREFIX, props['type'] + 's', module + ".rst"), 'w',
               encoding='utf-8') as out:
-        out.write(underline(builder_name) + '\n')
+        out.write(underline(name) + '\n')
 
         # if an image if available, use it
         out.write(insert_image(module))
@@ -573,21 +609,22 @@ for builder_name, builder_comp in builder_components.items():
         doc, params, returndoc, generate_example, examples = parse_docstring(props['doc'])
         out.write(doc + "\n\n")
 
-        print_properties(out, builder_name, props)
-        if not print_levels(out, builder_name, props) and \
-               props['type'] not in ['modifier', 'robot']:
-            print_data(out, builder_name, props)
+        if not props["builder_component"]:
+            print_properties(out, name, props)
+            if not print_levels(out, name, props) and \
+                props['type'] not in ['modifier', 'robot']:
+                print_data(out, name, props)
 
-        if props['type'] != 'modifier':
-            print_services(out, builder_name, props)
-            if generate_example or examples:
-                print_code_snippet(out, builder_name, props)
-                if generate_example:
-                    generate_builder_example(out, builder_name, props)
-                for example in examples:
-                    out.write(insert_code(example))
+            if props['type'] != 'modifier':
+                print_services(out, name, props)
+                if generate_example or examples:
+                    print_code_snippet(out, name, props)
+                    if generate_example:
+                        generate_builder_example(out, name, props)
+                    for example in examples:
+                        out.write(insert_code(example))
 
-        print_files(out, name, props)
+            print_files(out, name, props)
 
         out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
 
