@@ -5,41 +5,60 @@ from morse.core.exceptions import *
 class ComponentCreator(AbstractComponent):
     APPEND_EMPTY = 0
     USE_BLEND = 1
-    LINK_EXISTING_BLEND = 2
+    LINK_EXISTING_OBJECT = 2
 
-    def __init__(self, cname, category, filename, action, make_morseable):
+    def __init__(self, 
+                 name, 
+                 category, 
+                 action = ComponentCreator.APPEND_EMPTY, 
+                 blendfile = "", 
+                 blendobject = None,
+                 make_morseable = True):
         """ ComponentCreator constructor
 
-        This class allow to create Python component for MORSE. It consists of an
-        Empty object, to which you can then add meshs of your choice. It adds
-        automaticaly the logic (Always sensor link to a Python controller). And
-        set the default physics_type to 'NO_COLLISION'.
+        This class allow to create simulation components from MORSE builder
+        scripts. It initially consists in an Empty object, to which you can
+        then add meshs of your choice. It adds automaticaly the logic (Always
+        sensor link to a Python controller). And set the default physics_type
+        to 'NO_COLLISION'.
 
-        :param cname: (string) component name (Empty object in Blender scene)
-        :param category: (string) in ['actuators', 'sensors', 'robots']
-        :param filename: (string, optional) used for the datastream configuration
-            name of the Blender file in MORSE_COMPONENTS/category/filename.blend
-            see morse.builder.data.MORSE_DATASTREAM_DICT (default: None)
-        :param action: Indicate what to do with the filename. Must be one of
-            [APPEND_EMPTY, USE_BLEND, LINK_EXISTING_BLEND]
+        :param name: (string) component name (used as Blender object name)
+        :param category: (string) one of ['actuators', 'sensors', 'robots']
+        :param action: indicate what to do with the `blendfile` and
+        `blendobject` parameters. Must be one of [APPEND_EMPTY, USE_BLEND,
+        LINK_EXISTING_OBJECT]. 
+            - If APPEND_EMPTY (default), a new Blender `Empty` is created and
+            `blendfile` and `blendobject` are ignored.
+            - If USE_BLEND, `blendfile` is treated as the path to a Blender file,
+            and if `blendobject` is also specified, the given object is
+            selected (otherwise, the last object selected in the Blender file
+            is returned).
+            - If LINK_EXISTING_OBJECT, `blendfile` is ignored and `blendobject`
+            is treated as the name of a Blender object which is already present
+            in the scene.
+        :param blendfile: (string, default:"") path to a Blender file (.blend)
+        containing meshes for the component. Must be in MORSE_RESOURCE_PATH.
+        :param blendobject: (string, default:None) Name of the Blender object
+        to use (cf above for details).
         :param make_morseable: (boolean) Add Morse logic. Make it false
             if you add some blend file which already contains the
-            necessary logic.
-        :return: a new AbstractComponent instance.
+            necessary logic (default: True).
         """
-        AbstractComponent.__init__(self, filename=filename, category=category)
+        AbstractComponent.__init__(self, filename=blendfile, category=category)
         bpymorse.deselect_all()
         if action == ComponentCreator.APPEND_EMPTY:
             bpymorse.add_morse_empty()
         elif action == ComponentCreator.USE_BLEND:
             self.append_meshes()
-        elif action == ComponentCreator.LINK_EXISTING_BLEND:
-            bpymorse.select_only(bpymorse.get_object(filename))
+            if blendobject:
+                bpymorse.select_only(bpymorse.get_object(blendobject))
+        elif action == ComponentCreator.LINK_EXISTING_OBJECT:
+            bpymorse.select_only(bpymorse.get_object(blendobject))
 
         obj = bpymorse.get_first_selected_object()
-        if cname:
-            obj.name = cname
-            self.basename = cname
+        if name:
+            obj.name = name
+            self.basename = name
         # no collision by default for components
         obj.game.physics_type = 'NO_COLLISION'
         self.set_blender_object(obj)
@@ -86,27 +105,45 @@ class SensorCreator(ComponentCreator):
     _classpath = None
     _blendname = None
 
-    def __init__(self, name="SensorCreator", action = ComponentCreator.APPEND_EMPTY,
-                                            make_morseable = True):
-        ComponentCreator.__init__(self, name, 'sensors',
-                self.__class__._blendname, action, make_morseable)
+    def __init__(self, name="SensorCreator",
+                       action = ComponentCreator.APPEND_EMPTY,
+                       make_morseable = True):
+
+        ComponentCreator.__init__(self, 
+                                  name, 
+                                  'sensors',
+                                  action,
+                                  blendfile = self.__class__._blendname, 
+                                  make_morseable = make_morseable)
+
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ActuatorCreator(ComponentCreator):
     _classpath = None
     _blendname = None
 
-    def __init__(self, name="ActuatorCreator", action = ComponentCreator.APPEND_EMPTY,
-                                               make_morseable = True):
-        ComponentCreator.__init__(self, name, 'actuators', 
-                self.__class__._blendname, action, make_morseable)
+    def __init__(self, name="ActuatorCreator", 
+                       action = ComponentCreator.APPEND_EMPTY,
+                       make_morseable = True):
+
+        ComponentCreator.__init__(self, 
+                                name, 
+                                'actuators', 
+                                action, 
+                                blendfile = self.__class__._blendname, 
+                                make_morseable = make_morseable)
+
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
 class ArmatureCreator(ComponentCreator):
-    _classpath = "morse.actuators.armature.Armature"
+    _classpath = None
+    _blendname = None
 
     def __init__(self, name = None, armature_name = None, model_name = None):
-        """ Initialize an Armature
+        """ Initialize an armature
+
+        Either `armature_name` or `model_name` or both must be specified.
+        
 
         :param armature_name: Armature object name
         :param model_name: Armature model name, if any
@@ -117,16 +154,24 @@ class ArmatureCreator(ComponentCreator):
                     "an armature or a Blender model in order to create an " \
                     "armature actuator.")
 
-        blendname = None
-        action = None
         if model_name:
-            blendname = model_name
-            action = ComponentCreator.USE_BLEND
-        else:
-            blendname = armature_name
-            action = ComponentCreator.LINK_EXISTING_BLEND
+            ComponentCreator.__init__(self, 
+                                    name, 
+                                    'actuators',  
+                                    action = ComponentCreator.USE_BLEND,
+                                    blendfile = model_name,
+                                    blendobject = armature_name,
+                                    make_morseable = False)
 
-        ComponentCreator.__init__(self, name, 'actuators',  blendname, action, False)
+        else:
+            ComponentCreator.__init__(self, 
+                                name, 
+                                'actuators',  
+                                action = ComponentCreator.LINK_EXISTING_OBJECT,
+                                blendobject = armature_name,
+                                make_morseable = False)
+
+
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
 
         self.ik_targets = []
