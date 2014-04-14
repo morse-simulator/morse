@@ -5,7 +5,6 @@ from morse.builder.blenderobjects import *
 
 class Accelerometer(SensorCreator):
     _classpath = "morse.sensors.accelerometer.Accelerometer"
-    _blendname = "accelerometer"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -16,14 +15,12 @@ class Accelerometer(SensorCreator):
 
 class ArmaturePose(SensorCreator):
     _classpath = "morse.sensors.armature_pose.ArmaturePose"
-    _blendname = "armature_pose"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
 
 class Battery(SensorCreator):
     _classpath = "morse.sensors.battery.Battery"
-    _blendname = "battery"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -47,7 +44,6 @@ class CompoundSensor(SensorCreator):
 
 class GPS(SensorCreator):
     _classpath  = "morse.sensors.gps.GPS"
-    _blendname = "gps"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -58,7 +54,6 @@ class GPS(SensorCreator):
 
 class Gyroscope(SensorCreator):
     _classpath = "morse.sensors.gyroscope.Gyroscope"
-    _blendname = "gyroscope"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -69,7 +64,6 @@ class Gyroscope(SensorCreator):
 
 class IMU(SensorCreator): 
     _classpath = "morse.sensors.imu.IMU"
-    _blendname = "imu"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -80,7 +74,6 @@ class IMU(SensorCreator):
 
 class JidoPosture(SensorCreator):
     _classpath = "morse.sensors.jido_posture.JidoPosture"
-    _blendname = "jido_posture"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -88,7 +81,6 @@ class JidoPosture(SensorCreator):
 
 class Odometry(SensorCreator):
     _classpath = "morse.sensors.odometry.Odometry"
-    _blendname = "odometry"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -99,7 +91,6 @@ class Odometry(SensorCreator):
 
 class Pose(SensorCreator):
     _classpath = "morse.sensors.pose.Pose"
-    _blendname = "pose"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -110,7 +101,6 @@ class Pose(SensorCreator):
 
 class Proximity(SensorCreator):
     _classpath = "morse.sensors.proximity.Proximity"
-    _blendname = "proximity"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -123,7 +113,6 @@ class Proximity(SensorCreator):
 
 class PTUPosture(SensorCreator):
     _classpath = "morse.sensors.ptu_posture.PTUPosture"
-    _blendname = "ptu_posture"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -172,7 +161,6 @@ class SearchAndRescue(SensorCreator):
 
 class StereoUnit(SensorCreator):
     _classpath = "morse.sensors.stereo_unit.StereoUnit"
-    _blendname = "stereo_unit"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -183,7 +171,6 @@ class StereoUnit(SensorCreator):
 
 class Thermometer(SensorCreator):
     _classpath = "morse.sensors.thermometer.Thermometer"
-    _blendname = "thermometer"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -307,7 +294,7 @@ class LaserSensorWithArc(SensorCreator):
             self.create_laser_arc()
 
 class Hokuyo(LaserSensorWithArc):
-    _blendname = "hokuyo"
+    _blendname = "sick"
 
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
@@ -335,7 +322,7 @@ class Sick(LaserSensorWithArc):
         self.append_meshes(['SickMesh'])
 
 class SickLDMRS(LaserSensorWithArc):
-    _blendname = "sick-ld-mrs"
+    _blendname = "sick"
 
     def __init__(self, name=None):
         LaserSensorWithArc.__init__(self, name)
@@ -367,7 +354,6 @@ class Infrared(LaserSensorWithArc):
 
 class Velocity(SensorCreator):
     _classpath = "morse.sensors.velocity.Velocity"
-    _blendname = "velocity"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
@@ -378,7 +364,7 @@ class Velocity(SensorCreator):
 
 class VideoCamera(SensorCreator):
     _classpath = "morse.sensors.video_camera.VideoCamera"
-    _blendname = "video_camera"
+    _blendname = "camera"
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
         self.camera = Camera("CameraRobot")
@@ -410,7 +396,7 @@ class VideoCamera(SensorCreator):
 
 class DepthCamera(VideoCamera):
     _classpath = "morse.sensors.depth_camera.DepthCamera"
-    _blendname = "depth_camera"
+    _blendname = "camera"
 
     def __init__(self, name=None):
         VideoCamera.__init__(self, name)
@@ -428,7 +414,7 @@ VelodyneZB = Velodyne # morse 1.1 compatible
 
 class SemanticCamera(VideoCamera):
     _classpath = "morse.sensors.semantic_camera.SemanticCamera"
-    _blendname = "semantic_camera"
+    _blendname = "camera"
 
     def __init__(self, name=None):
         VideoCamera.__init__(self, name)
@@ -455,14 +441,12 @@ class VelodyneRayCast(LaserSensorWithArc):
 
 class Clock(SensorCreator):
     _classpath = "morse.sensors.clock.Clock"
-    _blendname = "clock"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
 
 class Kinect(SensorCreator):
     _classpath = "morse.core.sensor.Sensor"
-    _blendname = "kinect"
 
     def __init__(self, name="Kinect"):
         # meta sensor composed of 2 cameras (rgb and depth)
