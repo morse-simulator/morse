@@ -1,4 +1,5 @@
-from morse.builder.creator import ActuatorCreator, ArmatureCreator
+import logging; logger = logging.getLogger("morsebuilder." + __name__)
+from morse.builder.creator import ComponentCreator, ActuatorCreator
 from morse.builder.blenderobjects import *
 
 class Destination(ActuatorCreator):
@@ -8,7 +9,7 @@ class Destination(ActuatorCreator):
         ActuatorCreator.__init__(self, name)
 
 class ForceTorque(ActuatorCreator):
-    _classpath = "morse.actuators.force_torque.ForceTorque",
+    _classpath = "morse.actuators.force_torque.ForceTorque"
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
 
@@ -65,17 +66,6 @@ class Joystick(ActuatorCreator):
         sensor.joystick_index = index
         sensor.event_type = 'AXIS'
         sensor.use_all_events = True
-
-class KukaLWR(ArmatureCreator):
-    def __init__(self, name=None):
-        ArmatureCreator.__init__(self, name, model_name = "kuka_lwr")
-        self.create_ik_targets(["kuka_7"])
-
-class Mocap(ActuatorCreator):
-    _classpath = "morse.actuators.mocap_control.MocapControl",
-
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class Orientation(ActuatorCreator):
     _classpath = "morse.actuators.orientation.Orientation"
@@ -236,5 +226,120 @@ class Sound(ActuatorCreator):
         actuator.sound = bpymorse.get_last_sound()
         actuator.use_sound_3d = True
         actuator.distance_3d_max = 10000.0
+
+class Armature(ActuatorCreator):
+    _classpath = "morse.actuators.armature.Armature"
+
+    def __init__(self, name = None, armature_name = None, model_name = None):
+        """ Initialize an armature
+
+        Either `armature_name` or `model_name` or both must be specified.
+        
+
+        :param armature_name: Armature object name
+        :param model_name: Armature model name, if any
+        """
+        
+        if not armature_name and not model_name:
+            raise MorseBuilderError("You need to specify either the name of " \
+                    "an armature or a Blender model in order to create an " \
+                    "armature actuator.")
+
+        if model_name:
+            ActuatorCreator.__init__(self, 
+                                    name, 
+                                    action = ComponentCreator.USE_BLEND,
+                                    blendfile = model_name,
+                                    blendobject = armature_name,
+                                    make_morseable = False)
+
+        else:
+            ActuatorCreator.__init__(self, 
+                                name, 
+                                action = ComponentCreator.LINK_EXISTING_OBJECT,
+                                blendobject = armature_name,
+                                make_morseable = False)
+
+
+        self.ik_targets = []
+
+        # the user may have created IK constraints on the armature, without
+        # setting an IK target. In that case, we add such a target
+        for bone in self._bpy_object.pose.bones:
+            for c in bone.constraints:
+                if c.type == 'IK' and c.ik_type == 'DISTANCE':
+                    if not c.target:
+                        self.create_ik_targets([bone.name])
+
+    def _get_posebone(self, bone_name):
+        """ Returns a given PoseBone in the armature.
+
+        If the joint does not exist, throw an exception.
+        """
+        armature = self._bpy_object
+
+        if bone_name not in [c.name for c in armature.pose.bones]:
+            msg = "Joint <%s> does not exist in model %s." % (bone_name, armature.name)
+            msg += " Did you add a skeleton to your model in MakeHuman?"
+            raise MorseBuilderError(msg)
+
+        return armature.pose.bones[bone_name]
+
+    def create_ik_targets(self, bones):
+
+        # Bug with iTaSC! cf http://developer.blender.org/T37894
+        if bpymorse.version() < (2, 70, 0):
+            if self._bpy_object.pose.ik_solver == 'ITASC':
+                logger.warn("Due to a bug in Blender (T37894), only the standard " \
+                            "IK solver can be used with IK targets. Switching " \
+                            "from iTaSC to standard IK solver.")
+                self._bpy_object.pose.ik_solver = 'LEGACY'
+
+        for target in bones:
+            posebone = self._get_posebone(target)
+            bpymorse.add_morse_empty("ARROWS")
+            empty = bpymorse.get_first_selected_object()
+            empty.scale = [0.01, 0.01, 0.01]
+
+            empty.matrix_local = posebone.bone.matrix_local
+            empty.location = posebone.bone.tail_local
+
+            existing_ik = [c for c in posebone.constraints if c.type == 'IK']
+            if len(existing_ik) == 1:
+                ik_constraint = existing_ik[0]
+            elif existing_ik:
+                raise MorseBuilderError("Bone %s has several IK constraints." \
+                        "MORSE supports only one IK constraint per bone. Please " \
+                        "remove other ones.")
+            else:
+                ik_constraint = posebone.constraints.new("IK")
+
+            ik_constraint.ik_type = "DISTANCE"
+            ik_constraint.use_rotation = True
+            ik_constraint.use_tail = True
+            ik_constraint.target = empty
+
+            self.ik_targets.append((empty, target))
+
+
+    def after_renaming(self):
+        for empty, target in self.ik_targets:
+            empty.name = "ik_target." + self.name + "." + target
+
+class KukaLWR(Armature):
+    """
+    This actuator provides a KUKA LWR mesh with the associated kinematic chain.
+
+    An IK target is available on the last join, allowing for cartesian control of
+    the arm.
+
+    See :doc:`the general documentation on armatures <./armature>` for details.
+    """
+    _name = "KUKA LWR"
+    _short_desc="7DoF KUKA Lightweight Robotic Arm (LWR)"
+
+    def __init__(self, name=None):
+        Armature.__init__(self, name, model_name = "kuka_lwr")
+        self.create_ik_targets(["kuka_7"])
 
 # end morse.builder.actuators

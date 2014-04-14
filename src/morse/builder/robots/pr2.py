@@ -35,27 +35,27 @@ class BasePR2(BarePR2):
         # The armatures are already present in the PR2 blender model.
 
          # torso
-        self.torso = ArmatureCreator(armature_name = "torso_armature")
+        self.torso = Armature(armature_name = "torso_armature")
         self.torso_pose = ArmaturePose()
         self.torso_pose.name = "pose"
         self.torso.append(self.torso_pose)
         self.append(self.torso)
 
         # head
-        self.head = ArmatureCreator(armature_name = "head_armature")
+        self.head = Armature(armature_name = "head_armature")
         self.head_pose = ArmaturePose()
         self.head_pose.name = "pose"
         self.head.append(self.head_pose)
         self.torso.append(self.head)
 
         # arms
-        self.l_arm = ArmatureCreator(armature_name = "l_arm_armature")
+        self.l_arm = Armature(armature_name = "l_arm_armature")
         self.l_arm_pose = ArmaturePose()
         self.l_arm_pose.name = "pose"
         self.l_arm.append(self.l_arm_pose)
         self.torso.append(self.l_arm)
 
-        self.r_arm = ArmatureCreator(armature_name = "r_arm_armature")
+        self.r_arm = Armature(armature_name = "r_arm_armature")
         self.r_arm_pose = ArmaturePose()
         self.r_arm_pose.name = "pose"
         self.r_arm.append(self.r_arm_pose)

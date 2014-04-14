@@ -1,8 +1,8 @@
 import logging; logger = logging.getLogger("morserobots." + __name__)
 from morse.builder import bpymorse
 from morse.builder import GroundRobot
+from morse.builder.actuators import Armature
 from morse.builder.sensors import ArmaturePose
-from morse.builder.creator import ArmatureCreator
 
 class Human(GroundRobot):
     """ Append a human model to the scene.
@@ -45,7 +45,7 @@ class Human(GroundRobot):
             self.properties(classpath="morse.robots.human.Human")
 
         try:
-            self.armature = ArmatureCreator(armature_name = "HumanArmature" + self.suffix)
+            self.armature = Armature(armature_name = "HumanArmature" + self.suffix)
             self.append(self.armature)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
