@@ -39,7 +39,7 @@ class VideoCamera(morse.sensors.camera.Camera):
     - **u_0** = **cam_height** / 2
     - **v_0** = **cam_width** / 2
 
-    See also :doc:`./camera` for generic informations about Morse cameras.
+    See also :doc:`../sensors/camera` for generic informations about Morse cameras.
     """
 
     _name = "Video camera"
