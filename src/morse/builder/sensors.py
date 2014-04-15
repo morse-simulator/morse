@@ -290,7 +290,7 @@ class Hokuyo(LaserSensorWithArc):
     """
     A laser scanner configured to mimick the Hokuyo sensor.
 
-    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    See :doc:`the laser scanners general documentation <../sensors/laserscanner>` for details.
     """
     _blendname = "sick"
     _name = "Hokuyo"
@@ -312,7 +312,7 @@ class Sick(LaserSensorWithArc):
     """
     A laser scanner configured to mimick the SICK sensor.
 
-    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    See :doc:`the laser scanners general documentation <../sensors/laserscanner>` for details.
     """
     _blendname = "sick"
     _name = "SICK"
@@ -333,7 +333,7 @@ class SickLDMRS(LaserSensorWithArc):
     """
     A laser scanner configured to mimick the SICK LD-MRS sensor.
 
-    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    See :doc:`the laser scanners general documentation <../sensors/laserscanner>` for details.
     """
     _blendname = "sick"
     _name = "SICK LD-MRS"
@@ -357,7 +357,7 @@ class Infrared(LaserSensorWithArc):
     """
     A laser scanner configured to mimick a infra-red proximity sensor.
 
-    See :doc:`the laser scanners general documentation <./laserscanner>` for details.
+    See :doc:`the laser scanners general documentation <../sensors/laserscanner>` for details.
     """
     _name = "Infrared Proximity Sensor"
     _short_desc = "Infra-red (IR) proximity sensor."
@@ -475,8 +475,9 @@ class Kinect(SensorCreator):
     Microsoft Kinect RGB-D camera, implemented as a pair of depth camera and video
     camera.
 
-    See the general documentation for :doc:`video cameras <./videocamera>` and
-    :doc:`depth cameras <./depthcamera>` for details.
+    See the general documentation for :doc:`video cameras
+    <../sensors/video_camera>` and :doc:`depth cameras
+    <../sensors/depth_camera>` for details.
 
     """
     _name = "Kinect"

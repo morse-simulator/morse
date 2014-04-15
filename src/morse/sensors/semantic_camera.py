@@ -58,7 +58,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
     This occulsion check can be deactivated (for slightly improved
     performances) by setting the sensor property ``noocclusion`` to ``True``.
 
-    See also :doc:`./camera` for generic informations about MORSE cameras.
+    See also :doc:`../sensors/camera` for generic informations about MORSE cameras.
 
     .. example::
         from morse.builder import *

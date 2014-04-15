@@ -333,7 +333,7 @@ class KukaLWR(Armature):
     An IK target is available on the last join, allowing for cartesian control of
     the arm.
 
-    See :doc:`the general documentation on armatures <./armature>` for details.
+    See :doc:`the general documentation on armatures <../actuators/armature>` for details.
     """
     _name = "KUKA LWR"
     _short_desc="7DoF KUKA Lightweight Robotic Arm (LWR)"
