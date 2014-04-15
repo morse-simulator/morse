@@ -43,38 +43,37 @@ MORSE_DATASTREAM_MODULE = {
 
 MORSE_MODIFIER_DICT = {
     'NED': {
-        'pose': "morse.modifiers.ned.CoordinatesToNED",
-        'gps': "morse.modifiers.ned.CoordinatesToNED",
-        'gyroscope': "morse.modifiers.ned.AnglesToNED",
-        'destination': "morse.modifiers.ned.CoordinatesFromNED",
-        'waypoint': "morse.modifiers.ned.CoordinatesFromNED",
-        'orientation': "morse.modifiers.ned.AnglesFromNED",
-        'teleport': "morse.modifiers.ned.CoordinatesFromNED",
+        'morse.sensors.pose.Pose': "morse.modifiers.ned.CoordinatesToNED",
+        'morse.sensors.gps.GPS': "morse.modifiers.ned.CoordinatesToNED",
+        'morse.sensors.gyroscope.Gyroscope': "morse.modifiers.ned.AnglesToNED",
+        'morse.actuators.destination.Destination': "morse.modifiers.ned.CoordinatesFromNED",
+        'morse.actuators.waypoint.Waypoint': "morse.modifiers.ned.CoordinatesFromNED",
+        'morse.actuators.orientation.Orientation': "morse.modifiers.ned.AnglesFromNED",
+        'morse.actuators.teleport.Teleport': "morse.modifiers.ned.CoordinatesFromNED",
     },
     'UTM' : {
-        'pose': "morse.modifiers.utm.CoordinatesToUTM",
-        'gps': "morse.modifiers.utm.CoordinatesToUTM",
-        'destination': "morse.modifiers.utm.CoordinatesFromUTM",
-        'waypoint': "morse.modifiers.utm.CoordinatesFromUTM",
+        'morse.sensors.pose.Pose': "morse.modifiers.utm.CoordinatesToUTM",
+        'morse.sensors.gps.GPS': "morse.modifiers.utm.CoordinatesToUTM",
+        'morse.actuators.destination.Destination': "morse.modifiers.utm.CoordinatesFromUTM",
+        'morse.actuators.waypoint.Waypoint': "morse.modifiers.utm.CoordinatesFromUTM",
     },                  
     'PoseNoise' : {
-        'odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
-        'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
-        'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
-        'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
+        'morse.sensors.odometry.Odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'morse.sensors.pose.Pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'morse.sensors.gps.GPS': "morse.modifiers.pose_noise.PositionNoiseModifier",
+        'morse.sensors.gyroscope.Gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
     },
     'IMUNoise' : {
-        'imu': "morse.modifiers.imu_noise.IMUNoiseModifier",
+        'morse.sensors.imu.IMU': "morse.modifiers.imu_noise.IMUNoiseModifier",
     },
     'Noise' : {
-        'imu': "morse.modifiers.imu_noise.IMUNoiseModifier",
-        'odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
-        'pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
-        'gps': "morse.modifiers.pose_noise.PositionNoiseModifier",
-        'gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
+        'morse.sensors.imu.IMU': "morse.modifiers.imu_noise.IMUNoiseModifier",
+        'morse.sensors.odometry.Odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'morse.sensors.pose.Pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
+        'morse.sensors.gps.GPS': "morse.modifiers.pose_noise.PositionNoiseModifier",
+        'morse.sensors.gyroscope.Gyroscope': "morse.modifiers.pose_noise.OrientationNoiseModifier",
     }
 }
-
 
 INTERFACE_DEFAULT_OUT = {
         "socket": "morse.middleware.socket_datastream.SocketPublisher",

@@ -452,7 +452,8 @@ class AbstractComponent(object):
         # Configure the modifier for this component
         config = []
         if not classpath:
-            classpath = MORSE_MODIFIER_DICT[modifier_name][self._blender_filename]
+            obj_classpath = self.property_value('classpath')
+            classpath = MORSE_MODIFIER_DICT[modifier_name][obj_classpath]
         config.append(classpath)
         config.append(kwargs)
         Configuration.link_modifier(self, config)
