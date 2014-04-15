@@ -259,7 +259,7 @@ def process_component_class(klass, builder_component = False):
     
     modulename = klass.__name__.lower() if builder_component else sys.modules[klass.__module__].__name__
 
-    components[name] = {'name' : name,
+    components[name] = {'klassname' : klass.__name__,
                         'object': component,
                         'type': ctype,
                         'desc': desc,
@@ -368,8 +368,8 @@ def print_code_snippet(out, name, props):
 
     out.write("\nThe following examples show how to use this component in a *Builder* script:\n\n")
 
-def generate_builder_example(out, name, props):
-    args = {'var': name.lower(), 'name': name, 'type': props['type']}
+def generate_builder_example(out, props):
+    args = {'var': props['klassname'].lower(), 'name': props['klassname'], 'type': props['type']}
 
     code = """
     from morse.builder import *
@@ -377,7 +377,8 @@ def generate_builder_example(out, name, props):
 
     if props['type'] != 'robot':
         code += """
-    robot = ATRV()
+    # adds a default robot (the MORSE mascott!)
+    robot = Morsy()
     """
 
     code += """
@@ -516,7 +517,7 @@ def print_data(out, name, props):
 def print_properties(out, name, props):
 
         out.write(".. cssclass:: properties morse-section\n\n")
-        title = "Configuration parameters for " + name.lower()
+        title = "Configuration parameters for " + name
         out.write(underline(title, '-') + '\n')
 
         if props['type'] == 'robot':
@@ -620,7 +621,7 @@ for name, props in components.items():
                 if generate_example or examples:
                     print_code_snippet(out, name, props)
                     if generate_example:
-                        generate_builder_example(out, name, props)
+                        generate_builder_example(out, props)
                     for example in examples:
                         out.write(insert_code(example))
 
