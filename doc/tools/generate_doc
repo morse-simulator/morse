@@ -658,8 +658,12 @@ def supported_interfaces_csv(props, datastreams, level = "default"):
             else:
                 return "%s" % (type_name)
 
-    cmpt = props["object"].__module__ + '.' + props["object"].__name__
-    module = (props['object'].__module__.split('.'))[-1]
+    if props['builder_component']:
+        module = props['module']
+        cmpt = getattr(props['object'], '_classpath', 'to be or not to be ...')
+    else:
+        module = (props['object'].__module__.split('.'))[-1]
+        cmpt = props["object"].__module__ + '.' +  props["object"].__name__
 
     module_name = ":doc:`" + props['type'] + 's/' + module + "`"
     if (level != 'default'):
