@@ -58,6 +58,9 @@ def look_robot(camera):
     global robots, current_robot
     if not robots:
         robots = [r for r in blenderapi.persistantstorage().robotDict]
+        if not robots: # if current node is just a 'watcher'
+            logger.warning("no robots on current node")
+            return
 
     robot = robots[ current_robot ]
     camera.worldTransform = robot.worldTransform * camera_to_robot_transform
