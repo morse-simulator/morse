@@ -22,7 +22,9 @@ Sensors
     - `tag` allows to restrict the kind of object you want to detect
     - `relative` returns the position information of the various objects from
       the camera sensor frame (and not the global frame).
-  
+
+- :doc:`user/sensors/laserscanner` gain the possibility to return also a
+  remission value at the `rssi` level.
 
 Middlewares
 -----------
