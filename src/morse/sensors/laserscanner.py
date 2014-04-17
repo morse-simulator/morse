@@ -44,6 +44,41 @@ class LaserScanner(Sensor):
     |   Hokuyo                                                  |                                                                  |
     +-----------------------------------------------------------+------------------------------------------------------------------+
 
+    LaserScanner with remission values
+    ___________________________________
+
+    Remission "is the reflection or scattering of light by a material." 
+    (http://en.wikipedia.org/wiki/Remission_%28spectroscopy%29)
+
+    The level "rssi" adds a list of remission values to the LaserScanner. If a ray 
+    during the scan hits an object the rssi-value is the specular intenisty of the 
+    object's material; If it does not hit an object with a material the remission 
+    value is set to 0. 
+
+    The intensity of the material can be changed in Blender (Property -> Material -> 
+    Specular -> Intensity). The important options are highlighted in the first image.
+
+    +---------------------------------------------------------------------------------+
+    | .. figure:: ../../../media/rssi_blender_intensity_material.png                  |
+    |    :width: 300                                                                  |
+    |                                                                                 |
+    |    Specular intensity of a material in Blender                                  |
+    +---------------------------------------------------------------------------------+
+    | .. figure:: ../../../media/rssi_laserscanner_example.png                        |
+    |    :width: 300                                                                  |
+    |                                                                                 |
+    |    Example of the LaserScanner with remission values                            |
+    +---------------------------------------------------------------------------------+
+
+    In the second image the sensor is illustrated. Above every box the material 
+    properties and a corresponding excerpt from the socket stream is displayed.
+
+    .. note::
+        
+        The remission values are **not** comparable to any physical remission value 
+        and are **not** calculated. They are just based on a property of a visual effect.
+    
+
     Configuration of the scanning parameters
     ----------------------------------------
 
@@ -119,7 +154,7 @@ class LaserScanner(Sensor):
     _short_desc = "Generic laser range sensors"
 
     add_level("raw", None, doc = "raw laserscanner: \
-                    Laserscan with point_list and range_list")
+                    Laserscan with point_list and range_list", default = True )
     add_level("rssi", "morse.sensors.laserscanner.RSSILaserScanner", doc = "laserscanner with rssi: \
                     Laserscan with point_list, range_list and remission_list")
 
@@ -128,13 +163,13 @@ class LaserScanner(Sensor):
             to the location of the sensor, and stored as lists of three \
             elements. The number of points depends on the geometry of the arc \
             parented to the sensor (see below). The point (0, 0, 0) means that\
-            this ray has not it anything in its range", level ="raw" )
+            this ray has not it anything in its range", level =["raw", "rssi"] )
     add_data('range_list', [], "list", "Array that stores the distance to the \
             first obstacle detected by each ray. The order indexing of this \
             array is the same as for point_list, so that the element in the \
             same index of both lists will correspond to the measures for the \
             same ray. If the ray does not hit anything in its range it returns \
-            laser_range", level ="raw")
+            laser_range", level =["raw", "rssi"])
     add_data('remission_list', [], "list", "Array that stores the remission \
             value for the points found by the laser. The specular intensity \
             is set as the remission value. If no object is hit, the remission \
@@ -331,21 +366,20 @@ class RSSILaserScanner(LaserScanner):
         before the name is used to get the material properties.
         """
         mat_name = target.getMaterialName()
-
-        if ( not(mat_name[0:2] == "MA") ):
-            #ERROR
-            logger.error("Could not parse material name %s. \
-                        The leading 'MA' (prefix in Blender) is missing. \
-                        Please check on the material name and the source file \
-                        /src/morse/sensors/laserscanner.py the method \
-                        'default_action' in the class LaserScannner_RSSI, \
-                        where the name is parsed."%mat_name)
-        else:
+        try: 
             mat_name = mat_name[2:]
-            if bpymorse.get_material(mat_name):
-                mat = bpymorse.get_material(mat_name)
+            mat = bpymorse.get_material(mat_name)
+            if mat:
                 return mat.specular_intensity
-               
+
+        except:
+            logger.error("Error: Could not parse material name %s. \
+                    The leading 'MA' (prefix in Blender) is missing. \
+                    Please check on the material name and the source file \
+                    /src/morse/sensors/laserscanner.py the method \
+                    'default_action' in the class LaserScannner_RSSI, \
+                    where the name is parsed."%mat_name)
+            return -1              
 
     def default_action(self):
         inverse = self.position_3d.matrix.inverted()
