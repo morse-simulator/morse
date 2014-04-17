@@ -22,12 +22,12 @@ be skipped by setting the frequency in the Game Logic Sensor or more
 conveniently specifying the desired frequency in the builder script (using
 :py:meth:`morse.builder.abstractcomponent.AbstractComponent.frequency`). The
 real frequency the ``default_action`` is called can be computed using the
-properpy :py:meth:`morse.core.object.Object.frequency`.
+property :py:meth:`morse.core.object.Object.frequency`.
 
 Time management
 ---------------
 
-At the moment, there is two strategies to handle time at the Morse level:
+At the moment, there are two strategies for handling time at the Morse level:
 
 - the **Best effort** strategy try to handle your requirement in "real-time",
   i.e. one second of time in simulation is equal to one second of time in the
@@ -51,8 +51,8 @@ simulated time as the number of seconds (in float) since Epoch, as done by
 :py:meth:`time.time`. More precisely, at startup, the simulated is initialized
 with :py:meth:`time.time` and then progress depending of the selected
 strategy. The precision depends of the underlaying implementation of
-:py:meth:`time.time` and the speed of simulation. If you runs a simulation at
-60 Hz, the simulator clock will be upgraded about every 15 ms.
+:py:meth:`time.time` and the speed of simulation. If you run a simulation at
+60 Hz, the simulator clock will be updated about every 15 ms.
 
 .. note::
 
@@ -61,12 +61,12 @@ strategy. The precision depends of the underlaying implementation of
     exists, for compatibility purpose, but will be removed in the future.
 
 
-Moreover, in a lot of situations, you do not want to access directly to the
-simulated time, but at the time as seen by the current robot. To do that, you
-must call the method :py:meth:`morse.core.robot.Robot.gettime`. It allows to
-add different modifiers for different robots, triggering all the nice temporal
+Moreover, in a lot of situations, you do not want to access the
+simulated time directly, but at the time as seen by the current robot. To do that, you
+must call the method :py:meth:`morse.core.robot.Robot.gettime`. It allows
+different modifiers to be added for different robots, triggering all the nice temporal
 issues you must address in multi-robot situations. The
-:doc:`../user/sensors/clock` allows to expose the time, as seen by a specific
+:doc:`../user/sensors/clock` exposes the time, as seen by a specific
 robot.
 
 Last, a set of services in :py:mod:`morse.services.time_services` allows to

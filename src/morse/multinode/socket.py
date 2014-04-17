@@ -27,10 +27,10 @@ class SocketNode(SimulationNodeClass):
             self.async_thread.start()
             if self.node_stream.connected:
                 logger.info("Connected to %s:%s" % (self.host, self.port) )
-        except Exception as e:
+        except Exception as err:
             logger.info("Multi-node simulation not available!")
             logger.warning("Unable to connect to %s:%s"%(self.host, self.port) )
-            logger.info(str(e))
+            logger.warning(str(err))
 
     def _exchange_data(self, out_data):
         """ Send and receive pickled data through a socket """
@@ -78,6 +78,7 @@ class SocketNode(SimulationNodeClass):
 
     def finalize(self):
         """ Close the communication socket. """
-        self.node_stream.close()
-        # asyncore.close_all() # make sure all connection are closed
-        self.async_thread.join(timeout=1)
+        if self.node_stream:
+            self.node_stream.close()
+            # asyncore.close_all() # make sure all connection are closed
+            self.async_thread.join(timeout=1)
