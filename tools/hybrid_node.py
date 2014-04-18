@@ -34,15 +34,17 @@ class StreamB(asynchat.async_chat):
 
     def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
         self.error = False
-        asynchat.async_chat.__init__(self, sock=sock)
         if not sock:
-            self.create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-            self.connect( (host, port) )
-        self.set_terminator(MSG_SEPARATOR)
+            sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+            sock.connect( (host, port) )
         self._in_buffer  = b""
         self._in_queue   = deque([], maxlen)
         self._callbacks  = []
         self._cv_new_msg = threading.Condition()
+        # init asynchat after connect and setting all locals avoids EBADF
+        # and others undesirable effects of the asyncore.loop thread.
+        asynchat.async_chat.__init__(self, sock=sock)
+        self.set_terminator(MSG_SEPARATOR)
 
     def is_up(self):
         """
@@ -146,7 +148,7 @@ class StreamB(asynchat.async_chat):
             except TypeError:
                 data = first.more()
                 if data:
-                    self.producer_fifo.appendleft(data)
+                    self.producer_fifo.extendleft([first, data])
                 continue
 
             if isinstance(data, str) and self.use_encoding:
