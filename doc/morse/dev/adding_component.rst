@@ -132,7 +132,7 @@ internal logic. There are two important functions that you want to override.
 
 - the init function (``__init__``). In this function, you can create and
   initialize private attributes (which won't be exported to other MORSE
-  layer). Do not forget to call the ``__init__`` method of your mother
+  layer). Do not forget to call the ``__init__`` method of your parent
   class, to properly initialize the component.
 
 - the ``default_action`` method contains the logic of our component.  Avoid
