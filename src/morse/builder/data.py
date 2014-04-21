@@ -316,6 +316,13 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": 'morse.middleware.pocolibs.actuators.lwr.LwrPoster'
             }
         },
+    "morse.actuators.arucomarker.Arucomarker": {
+        "default": {
+            "ros": 'morse.middleware.ros.read_pose.PoseReader',
+            "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
+            }
+        },
     "morse.actuators.destination.Destination": {
         "default": {
             "ros": 'morse.middleware.ros.destination.PointReader',

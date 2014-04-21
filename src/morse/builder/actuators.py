@@ -2,6 +2,14 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 from morse.builder.creator import ComponentCreator, ActuatorCreator
 from morse.builder.blenderobjects import *
 
+class Arucomarker(ActuatorCreator):
+    _classpath = "morse.actuators.arucomarker.Arucomarker"
+    _blendname = "arucomarker"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+        self.append_meshes(['white_plane', 'arplane', 'arplane.back'])
+
 class Destination(ActuatorCreator):
     _classpath = "morse.actuators.destination.Destination"
 
