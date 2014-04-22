@@ -281,7 +281,13 @@ class Environment(Component):
         self.properties(**_properties)
 
         # Write the configuration of the datastreams, and node configuration
-        Configuration.write_config()
+        if not self.multinode_distribution:
+            robot_list = None
+        else:
+            robot_list = self.multinode_distribution.get(self._node_name, [])
+            if not isinstance(robot_list, list):
+                robot_list = [robot_list]
+        Configuration.write_config(robot_list)
         self._write_multinode(self._node_name)
 
         # Change the Screen material
