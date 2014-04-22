@@ -110,8 +110,8 @@ Nao.
 
 
 
-10. Parent meshes to bones: select a bone, then select the mesh you want to
-    attach to the bone, then add the *armature* to the selection
+10. Parent meshes to bones: select the mesh, then select the bone you want to
+    be attached to the mesh, then add the *armature* to the selection
     (:kbd:`Shift+click` the armature), then :kbd:`Ctrl+P` and select `Set parent
     to... Bone`. Repeat this step for each bone.
 
