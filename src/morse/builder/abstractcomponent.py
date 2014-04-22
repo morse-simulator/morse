@@ -67,20 +67,42 @@ class Configuration(object):
         except KeyError:
             return False
 
-    def write_config():
+    def _remove_entries(dict_, robot_list):
+        if robot_list is None:
+            return dict_
+        else:
+            res = {}
+            for k, v in dict_.items():
+                for robot in robot_list:
+                    if k.startswith(robot):
+                        res[k] = v
+                        break
+            return res
+
+
+    def write_config(robot_list):
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpymorse.get_texts().keys():
             bpymorse.new_text()
             bpymorse.get_last_text().name = 'component_config.py'
         cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
-        cfg.write('component_datastream = ' + json.dumps(Configuration.datastream, indent=1) )
+        cfg.write('component_datastream = ' + json.dumps(
+            Configuration._remove_entries(Configuration.datastream, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('component_modifier = ' + json.dumps(Configuration.modifier, indent=1) )
+        cfg.write('component_modifier = ' + json.dumps(
+            Configuration._remove_entries(Configuration.modifier, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('component_service = ' + json.dumps(Configuration.service, indent=1) )
+        cfg.write('component_service = ' + json.dumps(
+            Configuration._remove_entries(Configuration.service, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('overlays = ' + json.dumps(Configuration.overlay, indent=1) )
+        cleaned_overlays = {}
+        for k, v in Configuration.overlay.items():
+            cleaned_overlays[k] = Configuration._remove_entries(v, robot_list)
+        cfg.write('overlays = ' + json.dumps(cleaned_overlays, indent=1) )
         cfg.write('\n')
 
 class AbstractComponent(object):
