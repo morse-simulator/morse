@@ -370,8 +370,8 @@ class Waypoint(morse.core.actuator.Actuator):
 
             try:
                 dt = 1 / self.frequency
-                if projection_distance < speed * dt:
-                    v = projection_distance  / dt
+                if distance < speed * dt:
+                    v = distance  / dt
                 else:
                     v = speed
 
