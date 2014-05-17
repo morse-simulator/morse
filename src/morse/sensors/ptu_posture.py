@@ -58,7 +58,7 @@ class PTUPosture(morse.core.sensor.Sensor):
         logger.info('Component <%s> initialized, runs at %.2f Hz' % (self.bge_object.name, self.frequency))
 
     def _get_ptu(self, obj):
-        if "PanBase" in [c.name for c in obj.children]:
+        if len([c for c in obj.children if "PanBase" in c.name])>0:
             return obj
         elif not obj.parent:
             return None
