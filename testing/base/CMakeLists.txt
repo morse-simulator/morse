@@ -44,6 +44,7 @@ add_morse_test(xyw_testing)
 # Sensor + Actuator 
 
 add_morse_test(ptu_testing)
+add_morse_test(multiple_ptu_testing)
 
 # Modifier
 
