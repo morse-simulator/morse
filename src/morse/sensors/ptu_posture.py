@@ -1,4 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+import re
+
 from morse.core import blenderapi
 import morse.core.sensor
 from morse.helpers.components import add_data
@@ -58,7 +60,15 @@ class PTUPosture(morse.core.sensor.Sensor):
         logger.info('Component <%s> initialized, runs at %.2f Hz' % (self.bge_object.name, self.frequency))
 
     def _get_ptu(self, obj):
-        if "PanBase" in [c.name for c in obj.children]:
+        """
+        Retrieve the associated PTU actuator
+
+        Need to carefully deal with possible renaming scheme from Blender,
+        in the case of multiples PTU in the scene.
+        """
+        regexp_ = "^PanBase(\.[0-9]{3})?$"
+        regexp = re.compile(regexp_)
+        if len([c for c in obj.children if re.match(regexp, c.name)]) > 0:
             return obj
         elif not obj.parent:
             return None
