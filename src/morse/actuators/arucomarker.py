@@ -12,7 +12,27 @@ class Arucomarker(morse.core.actuator.Actuator):
     http://www.uco.es/investiga/grupos/ava/node/26        
     """
     _name = "ArUco Marker"
-    _short_desc = "This is a virtual representation of the Aruco Marker"
+    _short_desc = """
+                  The ArUco marker is an AR-Marker that allows to compute the camera pose 
+                  from images in the 'real world'. 
+                  See: http://www.uco.es/investiga/grupos/ava/node/26
+                  The purpose of this actuator is to  provide a virtual instance of such a 
+                  marker in MORSE. By adding an ArUco marker to a MORSE simulation you can 
+                  subsequently stream/export a (virtual) camera image and eventually use an 
+                  AR Marker without a physical camera setup or, i.e, test algorithms or simulate 
+                  visual servoring.
+
+                  .. example::
+                      ### Add a virtual ArUco marker to the scene
+                      robot = ATRV()
+
+                      aruco = Arucomarker()	
+                      aruco.add_stream('ros', topic="/aruco_pose")
+                      aruco.properties(zoffset=0.3, xoffset=-0.09, yoffset=.0)
+
+                      robot.append(aruco) 
+  
+                  """
 
     add_data('x',     0.0, 'float', 'X axis translation metres')
     add_data('y',     0.0, 'float', 'Y axis translation metres')
