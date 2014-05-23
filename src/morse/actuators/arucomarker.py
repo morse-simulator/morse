@@ -11,6 +11,7 @@ class Arucomarker(morse.core.actuator.Actuator):
     A virtual representation of the ArUco Marker
     http://www.uco.es/investiga/grupos/ava/node/26        
     """
+
     _name = "ArUco Marker"
     _short_desc = """
                   The ArUco marker is an AR-Marker that allows to compute the camera pose 
@@ -33,6 +34,7 @@ class Arucomarker(morse.core.actuator.Actuator):
                       robot.append(aruco) 
   
                   """
+
 
     add_data('x',     0.0, 'float', 'X axis translation metres')
     add_data('y',     0.0, 'float', 'Y axis translation metres')
