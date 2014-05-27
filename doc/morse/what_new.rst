@@ -13,6 +13,9 @@ Robots
 Actuators
 +++++++++
 
+- Introduce the new actuator :doc:`user/actuators/arucomarker`, allowing to
+  simulate the ArUco augmented-reality marker.
+
 Sensors
 +++++++
 
