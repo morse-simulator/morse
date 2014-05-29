@@ -1,8 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+import math
 from morse.helpers.morse_math import normalise_angle
 import morse.core.sensor
 import copy
-from morse.helpers.components import add_data, add_level
+from morse.helpers.components import add_data, add_level, add_property
 
 class Odometry(morse.core.sensor.Sensor):
     """
@@ -11,6 +12,16 @@ class Odometry(morse.core.sensor.Sensor):
     robot with respect to its original position, and the associated speed.
 
     The angles for yaw, pitch and roll are given in radians.
+
+    It also supports a lower-level mode that returns encoder pulses
+    (`encoders` abstraction level). It assumes in that case a differential
+    drive robot whose forward direction is +X.
+
+
+    In the `encoders` mode, the properties `wheel_base` (distance between the
+    wheels), `wheel_radius` and `encoders_resolution` should be set according
+    to your robot (respective defaults are 0.3m, 0.1m and 32767).
+
 
     .. note::
       This sensor always provides perfect data.
@@ -21,11 +32,13 @@ class Odometry(morse.core.sensor.Sensor):
     """
 
     _name = "Odometry"
-    _short_desc = "An odometry sensor that returns raw, partially integrated or fully integrated displacement information."
+    _short_desc = "An odometry sensor that returns encoder pulses, raw, partially " \
+                  "integrated or fully integrated displacement information."
 
     add_level("raw", "morse.sensors.odometry.RawOdometry", doc = "raw odometry: only dS is exported")
     add_level("differential", None, doc = "differential odometry, corresponding to standard 'robot level' odometry")
     add_level("integrated", "morse.sensors.odometry.IntegratedOdometry", doc = "integrated odometry: absolution position is exported", default=True)
+    add_level("encoders", "morse.sensors.odometry.Encoders", doc = "returns encoder ticks, assuming a differential drive model")
 
     add_data('dS', 0.0, "float","curvilinear distance since last tick", level = "raw")
     add_data('dx', 0.0, "float","delta of X coordinate of the sensor", level = "differential")
@@ -46,6 +59,20 @@ class Odometry(morse.core.sensor.Sensor):
     add_data('wz', 0.0, "float","angular velocity related to the Z coordinate of the sensor", level = "integrated")
     add_data('wy', 0.0, "float","angular velocity related to the Y coordinate of the sensor", level = "integrated")
     add_data('wx', 0.0, "float","angular velocity related to the X coordinate of the sensor", level = "integrated")
+
+    add_data('l_encoder', 0, "int", 'pulses of the left encoder', level = "encoders")
+    add_data('r_encoder', 0, "int", 'pulses of the right encoder', level = "encoders")
+
+
+    add_property("wheel_base", 0.3, "wheel_base", "int", 
+            "distance (in m) between the drive wheels (**note**: only useful "
+            "with the `encoders` mode)")
+    add_property("wheel_radius", 0.1, "wheel_radius", "int", "radius (in m)"
+            "of the wheels (**note**: only useful with the `encoders` mode)")
+    add_property("encoders_resolution", 32767, "encoders_resolution", "int", 
+            "number of encoder pulses for a 360° rotation (**note**: only "
+            "useful with the `encoders` mode)")
+
 
 
     def __init__(self, obj, parent=None):
@@ -136,4 +163,46 @@ class IntegratedOdometry(Odometry):
 
         # Store the 'new' previous data
         self.previous_pos = current_pos
+
+class Encoders(Odometry):
+
+
+    def __init__(self, obj, parent=None):
+        # Call the constructor of the parent class
+        Odometry.__init__(self, obj, parent)
+
+        # Amount of pulses the encoders would generate if this robot drives
+        # 1 meter
+        self.pulses_per_meter = self.encoders_resolution / (2 * math.pi * self.wheel_radius)
+
+        # keeps those as float
+        self.l_encoder = 0.
+        self.r_encoder = 0.
+
+    def default_action(self):
+        """ Odometry calculation for the a differential drive robot, based on
+        ROS differential_drive package.
+
+        Note that this simple computation assumes that dtheta remains small
+        between two measurements.
+        """
+        # Compute the position of the sensor within the original frame
+        current_pos = self.original_pos.transformation3d_with(self.position_3d)
+
+        # Compute the difference in positions with the previous loop
+        delta_pos = self.previous_pos.transformation3d_with(current_pos)
+        dt = delta_pos.x
+        dw = delta_pos.yaw
+
+        # Store the 'new' previous data
+        self.previous_pos = current_pos
+
+        dl = dt - (self.wheel_base * dw) / 2.
+        dr = dt + (self.wheel_base * dw) / 2.
+
+        self.l_encoder += dl * self.pulses_per_meter
+        self.r_encoder += dr * self.pulses_per_meter
+
+        self.local_data['l_encoder'] = int(self.l_encoder)
+        self.local_data['r_encoder'] = int(self.r_encoder)
 
