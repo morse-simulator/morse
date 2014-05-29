@@ -264,6 +264,10 @@ footer {
   bottom:50px;
 }
 
+select {
+    font: 14px Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 @media print, screen and (max-width: 960px) {
   
   div.wrapper {
