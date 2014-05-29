@@ -42,6 +42,7 @@ IF(EXISTS ${SOURCE_DIR}/version.py)
 	# Yes, use it. This is a stable version.
 	FILE(COPY ${SOURCE_DIR}/version.py DESTINATION ${CMAKE_BINARY_DIR})
 	SET(PROJECT_STABLE True)
+	FILE(APPEND ${CMAKE_BINARY_DIR}/version.py "PROJECT_STABLE=${PROJECT_STABLE}\n")
 ELSE(EXISTS ${SOURCE_DIR}/version.py)
 	# No, there is no 'version.py' file. Deduce the version from git.
 
@@ -112,6 +113,6 @@ ELSE(EXISTS ${SOURCE_DIR}/version.py)
 	IF(PROJECT_DIRTY)
 		SET(PROJECT_VERSION "${PROJECT_VERSION}-dirty")
 	ENDIF()
-	FILE(WRITE version.py "VERSION=\"${PROJECT_VERSION}\"\n")
+	FILE(WRITE version.py "VERSION=\"${PROJECT_VERSION}\"\nPROJECT_STABLE=${PROJECT_STABLE}\n")
 ENDIF(EXISTS ${SOURCE_DIR}/version.py)
 
