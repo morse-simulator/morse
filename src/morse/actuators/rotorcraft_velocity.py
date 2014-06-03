@@ -7,7 +7,7 @@ from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_data, add_property
 
 import morse.core.actuator
-from morse.core.services import service, async_service, interruptible
+from morse.core.services import service
 from morse.core import status
 
 
@@ -71,7 +71,7 @@ class RotorcraftVelocity(morse.core.actuator.Actuator):
         self.inertia = Vector(tuple(robot_inertia))
         logger.info("robot inertia: (%.3f %.3f %.3f)" % tuple(self.inertia))
 
-        self.nominal_thrust = robot_obj.mass * 9.81
+        self.nominal_thrust = robot_obj.mass * abs(blenderapi.gravity()[2])
         logger.info("nominal thrust: %.3f", self.nominal_thrust)
         self._attitude_compensation_limit = cos(self._max_bank_angle) ** 2
 
@@ -146,7 +146,7 @@ class RotorcraftVelocity(morse.core.actuator.Actuator):
         # convert the commands in body frame to blender frame
         # in which frame do we want to command??
 
-        #body2blender = Matrix.Rotation(radians(180), 3, 'X') * Matrix.Rotation(yaw, 3, 'Z')
+        #body2blender = Matrix.Rotation(math.pi, 3, 'X') * Matrix.Rotation(yaw, 3, 'Z')
         body2blender = Matrix.Rotation(yaw, 3, 'Z')
         vel_blender_sp = body2blender * vel_body_sp
 
