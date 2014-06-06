@@ -144,7 +144,7 @@ def get_gdalinfo(filepath):
         "g=gdal.Open('%s',gdalconst.GA_ReadOnly);"
         "print(json.dumps({'transform':g.GetGeoTransform(),"
             "'minmax':g.GetRasterBand(1).ComputeRasterMinMax(),"
-            "'meta':g.GetMetadata()}))"%filepath)
+            "'meta':g.GetMetadata()}))"%filepath, 'python2')
     return json.loads(meta) # {'transform':(0,1,0,0,0,1)}
 
 def main(argv=[]):
