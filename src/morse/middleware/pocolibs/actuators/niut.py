@@ -59,7 +59,9 @@ class NiutPoster(PocolibsDataStreamInput):
                     joints = human_list.users[i].skeleton.joint
                     for target, idx in self.couples:
                         self._store_joint_position(joints, target, idx)
-                    return
+                    return True
+        return False
+
 
 
 def _create_transform_matrix():
