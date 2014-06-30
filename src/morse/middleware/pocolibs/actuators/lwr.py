@@ -20,4 +20,5 @@ class LwrPoster(PocolibsDataStreamInput):
             self.data['kuka_5'] = gbm_conf.q5
             self.data['kuka_6'] = gbm_conf.q6
             self.data['kuka_7'] = gbm_conf.q7
+        return gbm_conf
 
