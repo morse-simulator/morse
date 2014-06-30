@@ -119,6 +119,8 @@ class SocketReader(SocketServ):
         except socket.error:
             pass
 
+        got_new_information = False
+
         for i in inputready:
             if i == self._server:
                 sock, addr = self._server.accept()
@@ -148,8 +150,11 @@ class SocketReader(SocketServ):
                     if len(msg)>1:
                         logger.warning("Messages missed on socket datastream! <%s>" % msg[:-1])
                     self.component_instance.local_data = self.decode(msg[-1]) # keep only the last msg if we got several in row
+                    got_new_information = True
                 except socket.error as detail:
                     self.close_socket(i)
+
+        return got_new_information
 
     def decode(self, msg):
         return json.loads(msg)
