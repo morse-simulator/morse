@@ -298,10 +298,6 @@ class AbstractComponent(object):
 
         return None
 
-    def configure_mw(self, datastream, method=None, path=None, component=None):
-        logger.warning("configure_mw is deprecated, use add_stream instead")
-        return self.add_stream(datastream, method, path, component)
-
     def add_stream(self, datastream, method=None, path=None, classpath=None, direction = None, **kwargs):
         """ Add a data stream interface to the component
 
@@ -445,10 +441,6 @@ class AbstractComponent(object):
         config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
-    def configure_service(self, interface, component=None, config=None):
-        logger.warning("configure_service is deprecated, use add_service instead")
-        return self.add_service(interface, component, config)
-
     def add_service(self, interface, component=None, config=None):
         """ Add a service interface to the component
 
@@ -480,10 +472,6 @@ class AbstractComponent(object):
         config.append(kwargs)
         Configuration.link_modifier(self, config)
 
-    def configure_modifier(self, mod, config=None, **kwargs):
-        logger.error("configure_modifier is deprecated, use alter instead")
-        return self.alter(mod, config, **kwargs)
-
     def add_overlay(self, datastream, overlay, config=None, **kwargs):
         """ Add a service overlay for a specific service manager to the component
 
@@ -493,10 +481,6 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay, kwargs)
-
-    def configure_overlay(self, datastream, overlay, config=None, **kwargs):
-        logger.warning("configure_overlay is deprecated, use add_overlay instead")
-        return self.add_overlay(datastream, overlay, config, **kwargs)
 
     def level(self, level):
         """ Set the 'realism level' of the component.
