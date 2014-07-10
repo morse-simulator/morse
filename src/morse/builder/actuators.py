@@ -51,7 +51,7 @@ class Keyboard(ActuatorCreator):
 
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
-        self.properties(Speed = 1.0)
+        self.mark_unexportable()
 
 class Joystick(ActuatorCreator):
     _classpath = "morse.actuators.joystick.Joystick"
@@ -63,7 +63,7 @@ class Joystick(ActuatorCreator):
         :type index:  int in [0, 7], default 0
         """
         ActuatorCreator.__init__(self, name)
-        self.properties(Speed = 1.0)
+        self.mark_unexportable()
         obj = bpymorse.get_context_object()
         # replace Always sensor by Joystick sensor
         sensor = obj.game.sensors[-1]

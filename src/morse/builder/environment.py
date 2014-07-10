@@ -155,9 +155,10 @@ class Environment(Component):
         for component in AbstractComponent.components:
             if isinstance(component, Robot) and component.default_interface:
                 for child in component.children:
-                    if child.is_morseable():
+                    if child.is_morseable(): 
                         if not Configuration.has_datastream_configuration(
-                                child, component.default_interface):
+                                child, component.default_interface) and \
+                            child.is_exportable():
                             child.add_stream(component.default_interface)
                         if not Configuration.has_service_configuration(
                                 child, component.default_interface):

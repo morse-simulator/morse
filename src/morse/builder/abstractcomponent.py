@@ -5,6 +5,7 @@ import copy
 
 from morse.builder import bpymorse
 from morse.builder.data import *
+from morse.core.exceptions import MorseBuilderUnexportableError
 
 from morse.helpers.loading import get_class, load_module_attribute
 
@@ -115,6 +116,7 @@ class AbstractComponent(object):
         self._category = category # for morseable
         self.basename = None
         self.children = []
+        self._exportable = True
 
         AbstractComponent.components.append(self)
 
@@ -318,6 +320,8 @@ class AbstractComponent(object):
             component.add_stream('ros', topic='/myrobots/data')
 
         """
+        self._err_if_not_exportable()
+
         if not classpath:
             classpath = self.property_value("classpath")
 
@@ -446,7 +450,8 @@ class AbstractComponent(object):
 
         Similar to the previous function. Its argument is the name of the
         interface to be used.
-        """ 
+        """
+
         if not component:
             component = self
         if not config:
@@ -459,7 +464,8 @@ class AbstractComponent(object):
         Its argument is the name of the interface to be used.
         """
         self.add_service(interface)
-        self.add_stream(interface, **kwargs)
+        if self._exportable:
+            self.add_stream(interface, **kwargs)
 
     def alter(self, modifier_name, classpath=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
@@ -706,6 +712,16 @@ class AbstractComponent(object):
 
     def __str__(self):
         return self.name
+
+    def is_exportable(self):
+        return self._exportable
+
+    def mark_unexportable(self):
+        self._exportable = False
+
+    def _err_if_not_exportable(self):
+        if not self._exportable:
+            raise MorseBuilderUnexportableError(self.name)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"
