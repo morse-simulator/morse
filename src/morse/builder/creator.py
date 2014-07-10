@@ -137,32 +137,3 @@ class ActuatorCreator(ComponentCreator):
                                 blendfile,
                                 blendobject,
                                 make_morseable)
-
-
-
-# helpers
-
-def get_properties_str(name):
-    """ Returns the Game properties of the Blender object represented by the name
-
-    get_properties_str('Sick') gives
-    laser_range = 30.0, Component_Tag = True, scan_window = 180.0, 
-    Visible_arc = True, resolution = 0.25,
-    classpath = 'morse.sensors.sick.LaserScannerClass'
-    """
-    obj = bpymorse.get_object(name)
-    properties_dictionary = get_properties(obj)
-    return ", ".join(["%s = %s"%(pname, properties_dictionary[pname]) \
-                      for pname in properties_dictionary])
-
-def get_properties(obj):
-    import json
-    properties_dictionary = {}
-    properties = obj.game.properties
-    for name in properties.keys():
-        properties_dictionary[name] = properties[name].value
-        if properties[name].type == 'TIMER':
-            properties_dictionary[name] = "timer(%f)"%properties_dictionary[name]
-        elif type(properties_dictionary[name]) is str:
-            properties_dictionary[name] = json.dumps(properties_dictionary[name])
-    return properties_dictionary
