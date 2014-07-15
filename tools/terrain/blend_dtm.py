@@ -1,9 +1,17 @@
-""" Generate DTM in Blender
+"""
+Generate DTM in Blender
 
 Using the Displace and Decimate modifiers to generate a terrain 3D model from
 (geo)images (png, tif, geotif, etc)
 
-usage: blender -b -P blend_dtm.py -- dsm.tif image.jpg 1
+usage: blender -b -P blend_dtm.py -- dsm.tif image.jpg [terrain_resolution [strength]]
+
+The DSM must be Float32, Blender does not support Float64, If you get the error:
+    imb_loadtiff: Failed to read tiff image.
+    IMB_ibImageFromMemory: unknown fileformat
+Convert first using: gdal_translate -ot Float32 dsm.tif dsm32.tif
+
+You can safely ignore the "unknown field with tag" TIFFReadDirectory Warning.
 """
 import os
 import sys
@@ -39,8 +47,13 @@ def new_image_texture(material, image, name='img'):
 
 def new_grid(name='Grid', x_subdivisions=10, y_subdivisions=10, radius=1, scale=(1,1,1)):
     bpy.ops.object.select_all(action='DESELECT')
-    bpy.ops.mesh.primitive_grid_add(x_subdivisions=x_subdivisions, \
-        y_subdivisions=y_subdivisions, radius=radius)
+    # if blender version < 2.68 : radius -> size
+    if bpy.app.version < (2,68):
+        bpy.ops.mesh.primitive_grid_add(x_subdivisions=x_subdivisions, \
+        y_subdivisions=y_subdivisions, size=radius)
+    else:
+        bpy.ops.mesh.primitive_grid_add(x_subdivisions=x_subdivisions, \
+            y_subdivisions=y_subdivisions, radius=radius)
     bpy.context.object.scale = scale
     bpy.context.object.name = name
     return bpy.context.object
@@ -119,7 +132,7 @@ def setup():
     bpy.context.scene.game_settings.show_framerate_profile = True
 
 def usage():
-    sys.stderr.write('usage: blender -b -P blend_dtm.py -- dsm.tif image.jpg [terrain_resolution]\n')
+    sys.stderr.write(__doc__)
 
 def ext_exec(cmd, python=None):
     if not python:
@@ -156,8 +169,11 @@ def main(argv=[]):
         usage()
         return 1
 
+    strength = 1
     if len(args) > 2:
         terrain_resolution = float(args[2])
+        if len(args) > 3:
+            strength = float(args[3])
     else:
         terrain_resolution = TERRAIN_RESOLUTION
 
@@ -204,14 +220,16 @@ def main(argv=[]):
 
     material.active_texture_index += 1
 
-    image_dem.colorspace_settings.name = 'Linear'
+    if bpy.app.version > (2,63):
+        # since 2.64, default colorspace is sRGB which breaks decimate modifier
+        image_dem.colorspace_settings.name = 'Linear'
     texture_dem = new_image_texture(material, image_dem, 'dem')
     # do not show on the material (use only later for the terrain modifier)
     material.use_textures[material.active_texture_index] = False
 
     #bpy.ops.object.shade_smooth()
     # displace from image_dem (gdal)
-    add_displace_modifier(ground, texture_dem, apply=True)
+    add_displace_modifier(ground, texture_dem, strength=strength, apply=True)
     # unlink dem after apply (reduce size)
     material.texture_slots.clear(1)
     image_dem.user_clear()
