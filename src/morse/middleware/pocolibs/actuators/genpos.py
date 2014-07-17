@@ -14,3 +14,4 @@ class GenPosPoster(PocolibsDataStreamInput):
         if speed:
             self.data['v'] = speed.v
             self.data['w'] = speed.w
+        return speed

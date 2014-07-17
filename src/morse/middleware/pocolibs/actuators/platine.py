@@ -15,6 +15,7 @@ class PlatinePoster(PocolibsDataStreamInput):
             euler = pos.seConfig.euler
             self.data['pan'] = euler.yaw
             self.data['tilt'] = euler.pitch
+        return pos
 
 class PlatineAxisPoster(PocolibsDataStreamInput):
     _type_name = "PLATINE_AXIS_STR"
@@ -28,4 +29,5 @@ class PlatineAxisPoster(PocolibsDataStreamInput):
         if pos:
             self.data['pan'] = pos.pan
             self.data['tilt'] = pos.tilt
+        return pos
 

@@ -3,6 +3,21 @@
 #}
 {% extends "default/layout.html" %}
 
+{% block rootrellink %}
+    <li><a href="{{ pathto(master_doc) }}">{{ project }}</a>{{ reldelim1 }}
+        <select onchange="
+            selector = document.getElementById('release_selector'); 
+            window.location.href=
+                window.location.href.replace(
+                    selector.options[(selector.selectedIndex + 1) % 2].value, 
+                    selector.options[selector.selectedIndex].value)" 
+                id="release_selector">
+            <option value={{ "'stable'>stable" if "unstable" not in release else "'latest'>unstable"}}</option>
+            <option value={{ "'stable'>stable" if "unstable" in release else "'latest'>unstable"}}</option>
+        </select>
+    </li>
+{% endblock %}
+
 {% block extrahead %}
     <script type="text/javascript">
         $(document).ready(function() {

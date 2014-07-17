@@ -16,16 +16,25 @@ class MotionReader(AbstractMOOS):
         # get latest mail from the MOOS comm client
         messages = self.m.FetchRecentMail()
 
+        new_information = False
+
         # look for command messages: cYawRate and cVelocity
         for message in messages:
             if (message.GetKey() =="cVelocity") and (message.IsDouble()):
                 self.data['v'] = message.GetDouble() # command linear velocity [m/s]
+                new_information = True
             elif  (message.GetKey()=="cYawRate") and (message.IsDouble()):
                 self.data['w'] = message.GetDouble() # command angular velocity [m/s]
+                new_information = True
             elif  (message.GetKey() =="cSteer") and (message.IsDouble()):
                 self.data['steer'] = message.GetDouble() # command steer angle [deg]
+                new_information = True
             elif  (message.GetKey( )=="cThrottle") and (message.IsDouble()):
                 self.data['force'] = message.GetDouble() # command engine force
+                new_information = True
             elif  (message.GetKey() =="cBrake") and (message.IsDouble()):
                 self.data['brake'] = message.GetDouble() # command angular velocity [m/s]
+                new_information = True
+
+        return new_information
 

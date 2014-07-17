@@ -5,6 +5,7 @@ import copy
 
 from morse.builder import bpymorse
 from morse.builder.data import *
+from morse.core.exceptions import MorseBuilderUnexportableError
 
 from morse.helpers.loading import get_class, load_module_attribute
 
@@ -67,20 +68,42 @@ class Configuration(object):
         except KeyError:
             return False
 
-    def write_config():
+    def _remove_entries(dict_, robot_list):
+        if robot_list is None:
+            return dict_
+        else:
+            res = {}
+            for k, v in dict_.items():
+                for robot in robot_list:
+                    if k.startswith(robot):
+                        res[k] = v
+                        break
+            return res
+
+
+    def write_config(robot_list):
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpymorse.get_texts().keys():
             bpymorse.new_text()
             bpymorse.get_last_text().name = 'component_config.py'
         cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
-        cfg.write('component_datastream = ' + json.dumps(Configuration.datastream, indent=1) )
+        cfg.write('component_datastream = ' + json.dumps(
+            Configuration._remove_entries(Configuration.datastream, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('component_modifier = ' + json.dumps(Configuration.modifier, indent=1) )
+        cfg.write('component_modifier = ' + json.dumps(
+            Configuration._remove_entries(Configuration.modifier, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('component_service = ' + json.dumps(Configuration.service, indent=1) )
+        cfg.write('component_service = ' + json.dumps(
+            Configuration._remove_entries(Configuration.service, robot_list),
+            indent=1) )
         cfg.write('\n')
-        cfg.write('overlays = ' + json.dumps(Configuration.overlay, indent=1) )
+        cleaned_overlays = {}
+        for k, v in Configuration.overlay.items():
+            cleaned_overlays[k] = Configuration._remove_entries(v, robot_list)
+        cfg.write('overlays = ' + json.dumps(cleaned_overlays, indent=1) )
         cfg.write('\n')
 
 class AbstractComponent(object):
@@ -93,6 +116,7 @@ class AbstractComponent(object):
         self._category = category # for morseable
         self.basename = None
         self.children = []
+        self._exportable = True
 
         AbstractComponent.components.append(self)
 
@@ -276,10 +300,6 @@ class AbstractComponent(object):
 
         return None
 
-    def configure_mw(self, datastream, method=None, path=None, component=None):
-        logger.warning("configure_mw is deprecated, use add_stream instead")
-        return self.add_stream(datastream, method, path, component)
-
     def add_stream(self, datastream, method=None, path=None, classpath=None, direction = None, **kwargs):
         """ Add a data stream interface to the component
 
@@ -300,6 +320,8 @@ class AbstractComponent(object):
             component.add_stream('ros', topic='/myrobots/data')
 
         """
+        self._err_if_not_exportable()
+
         if not classpath:
             classpath = self.property_value("classpath")
 
@@ -423,16 +445,13 @@ class AbstractComponent(object):
         config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
-    def configure_service(self, interface, component=None, config=None):
-        logger.warning("configure_service is deprecated, use add_service instead")
-        return self.add_service(interface, component, config)
-
     def add_service(self, interface, component=None, config=None):
         """ Add a service interface to the component
 
         Similar to the previous function. Its argument is the name of the
         interface to be used.
-        """ 
+        """
+
         if not component:
             component = self
         if not config:
@@ -445,7 +464,8 @@ class AbstractComponent(object):
         Its argument is the name of the interface to be used.
         """
         self.add_service(interface)
-        self.add_stream(interface, **kwargs)
+        if self._exportable:
+            self.add_stream(interface, **kwargs)
 
     def alter(self, modifier_name, classpath=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
@@ -458,10 +478,6 @@ class AbstractComponent(object):
         config.append(kwargs)
         Configuration.link_modifier(self, config)
 
-    def configure_modifier(self, mod, config=None, **kwargs):
-        logger.error("configure_modifier is deprecated, use alter instead")
-        return self.alter(mod, config, **kwargs)
-
     def add_overlay(self, datastream, overlay, config=None, **kwargs):
         """ Add a service overlay for a specific service manager to the component
 
@@ -471,10 +487,6 @@ class AbstractComponent(object):
         if not config:
             config = MORSE_SERVICE_DICT[datastream]
         Configuration.link_overlay(self, config, overlay, kwargs)
-
-    def configure_overlay(self, datastream, overlay, config=None, **kwargs):
-        logger.warning("configure_overlay is deprecated, use add_overlay instead")
-        return self.add_overlay(datastream, overlay, config, **kwargs)
 
     def level(self, level):
         """ Set the 'realism level' of the component.
@@ -700,6 +712,16 @@ class AbstractComponent(object):
 
     def __str__(self):
         return self.name
+
+    def is_exportable(self):
+        return self._exportable
+
+    def mark_unexportable(self):
+        self._exportable = False
+
+    def _err_if_not_exportable(self):
+        if not self._exportable:
+            raise MorseBuilderUnexportableError(self.name)
 
 class timer(float):
     __doc__ = "this class extends float for the game properties configuration"

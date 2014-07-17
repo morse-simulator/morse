@@ -2,6 +2,14 @@ import logging; logger = logging.getLogger("morsebuilder." + __name__)
 from morse.builder.creator import ComponentCreator, ActuatorCreator
 from morse.builder.blenderobjects import *
 
+class Arucomarker(ActuatorCreator):
+    _classpath = "morse.actuators.arucomarker.Arucomarker"
+    _blendname = "arucomarker"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+        self.append_meshes(['white_plane', 'arplane', 'arplane.back'])
+
 class Destination(ActuatorCreator):
     _classpath = "morse.actuators.destination.Destination"
 
@@ -43,7 +51,7 @@ class Keyboard(ActuatorCreator):
 
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
-        self.properties(Speed = 1.0)
+        self.mark_unexportable()
 
 class Joystick(ActuatorCreator):
     _classpath = "morse.actuators.joystick.Joystick"
@@ -55,7 +63,7 @@ class Joystick(ActuatorCreator):
         :type index:  int in [0, 7], default 0
         """
         ActuatorCreator.__init__(self, name)
-        self.properties(Speed = 1.0)
+        self.mark_unexportable()
         obj = bpymorse.get_context_object()
         # replace Always sensor by Joystick sensor
         sensor = obj.game.sensors[-1]
@@ -96,6 +104,11 @@ class PTU(ActuatorCreator):
 class RotorcraftAttitude(ActuatorCreator):
     _classpath = "morse.actuators.rotorcraft_attitude.RotorcraftAttitude"
 
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class RotorcraftVelocity(ActuatorCreator):
+    _classpath = "morse.actuators.rotorcraft_velocity.RotorcraftVelocity"
     def __init__(self, name=None):
         ActuatorCreator.__init__(self, name)
 
@@ -251,14 +264,14 @@ class Armature(ActuatorCreator):
                                     action = ComponentCreator.USE_BLEND,
                                     blendfile = model_name,
                                     blendobject = armature_name,
-                                    make_morseable = False)
+                                    make_morseable = True)
 
         else:
             ActuatorCreator.__init__(self, 
                                 name, 
                                 action = ComponentCreator.LINK_EXISTING_OBJECT,
                                 blendobject = armature_name,
-                                make_morseable = False)
+                                make_morseable = True)
 
 
         self.ik_targets = []

@@ -84,3 +84,15 @@ class MorseBuilderBadSyntaxError(MorseBuilderError):
         self.value = value
         import sys
         sys.exit("Method or object name not found. Check builder script for typos.\nExectution terminated!")
+
+class MorseBuilderUnexportableError(MorseBuilderError):
+    """ Morse Error caused by a call to add_{stream, service, interface}
+    on an unexportable component
+    """
+    def __init__(self, value):
+        self.value = value
+        import sys
+        sys.exit("Invalid call on add_stream, add_service or add_interface on"
+                 " an unexportable component. Check your builder script.\n"
+                 "Execution terminated!")
+
