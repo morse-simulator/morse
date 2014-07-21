@@ -7,7 +7,7 @@ class @classname@(GroundRobot):
     def __init__(self, name = None, debug = True):
 
         # @name@.blend is located in the data/robots directory
-        Robot.__init__(self, '@env@/robots/@name@.blend', name)
+        GroundRobot.__init__(self, '@env@/robots/@name@.blend', name)
         self.properties(classpath = "@env@.robots.@name@.@classname@")
 
         ###################################
