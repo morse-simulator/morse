@@ -67,7 +67,7 @@ if not fake:
     LEFTCTRLKEY = bge.events.LEFTCTRLKEY
     LEFTALTKEY = bge.events.LEFTALTKEY
     AKEY = bge.events.AKEY
-    BKEY = bge.events.AKEY
+    BKEY = bge.events.BKEY
     DKEY = bge.events.DKEY
     EKEY = bge.events.EKEY
     FKEY = bge.events.FKEY
