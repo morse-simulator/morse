@@ -494,7 +494,7 @@ class Morse(object):
 
         services = details.get('services', [])
 
-        name = fqn.split('.') # [1:] # the first token is always the robot name. Remove it
+        name = fqn.split('.')[1:] # the first token is always the robot name. Remove it
 
         if not name:
             logger.error("Component <%s> of robot <%s> has an invalid name! " \
