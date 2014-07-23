@@ -295,6 +295,7 @@ import json
 import logging
 import asyncore
 import threading
+import re
 
 from .future import MorseExecutor
 from .stream import Stream, StreamJSON, PollThread
@@ -480,6 +481,24 @@ class Morse(object):
             # created before children
             for component in sorted(components.keys()):
                 self._add_component(robot, component, components[component])
+
+        # Handle robots created in loop. Basically, consider robot where
+        # name match the pattern 'robot_XXX' and puts them in a list
+        # called 'robots', allowing to iterate easily on them
+        robot_names = self.robots.copy()
+        robot_names.sort()
+        while robot_names:
+            name = robot_names.pop(0)
+            regexp_name = "^" + name + "_[0-9]{3}$"
+            regexp = re.compile(regexp_name)
+            loop_name = [name for name in robot_names if regexp.match(name)]
+            if loop_name:
+                list_robots = []
+                list_robots.append(getattr(self, name))
+                for _name in loop_name:
+                    list_robots.append(getattr(self, _name))
+                    robot_names.remove(_name)
+                setattr(self, name + "s", list_robots)
 
     def _add_component(self, robot, fqn, details):
         stream = details.get('stream', None)

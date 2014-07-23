@@ -87,6 +87,12 @@ class RenamingTest(MorseTestCase):
             p10 = morse.m_003.arm.pose
             # ...
 
+            self.assertEqual(len(morse.ms), 10)
+            self.assertEqual(morse.m, morse.ms[0])
+            self.assertEqual(morse.m_001, morse.ms[1])
+            self.assertEqual(morse.m_002, morse.ms[2])
+
+
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
