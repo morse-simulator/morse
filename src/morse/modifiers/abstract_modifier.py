@@ -1,5 +1,5 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
-
 from morse.core import blenderapi
 
 class AbstractModifier(object):
