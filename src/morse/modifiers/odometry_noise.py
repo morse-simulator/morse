@@ -1,9 +1,10 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
-from morse.modifiers.abstract_modifier import AbstractModifier
 from math import cos, sin
+from morse.modifiers.abstract_modifier import AbstractModifier
+from morse.helpers.morse_math import normalise_angle
 
-class OdometryNoiseModifier(AbstractModifier):
+class OdometryNoise(AbstractModifier):
     """
     This modifier allows to simulate two common issues when calculating odometry :
 
@@ -34,13 +35,15 @@ class OdometryNoiseModifier(AbstractModifier):
     - ``noisify``: Simulate drift of gyroscope and possible error in the scale
       factor
     """
-    
     def initialize(self):
         self._factor = float(self.parameter("factor", default=1.05))
         self._gyro_drift = float(self.parameter("gyro_drift", default=0))
         self._drift_x = 0.0
         self._drift_y = 0.0
         self._drift_yaw = 0.0
+        self.previous_pos = self.component_instance.previous_pos
+        if not 'dS' in self.data:
+            self.data['dS'] = 0
 
     def modify(self):
         # Basic 2D odometry implementation dx = dS * sin(yaw) and
@@ -51,31 +54,44 @@ class OdometryNoiseModifier(AbstractModifier):
         #           factor * dS * cos(yaw)  * sin(drift_yaw)
         #         = factor * ( dx * cos(drift_yaw) +  dy * sin(drift_yaw))
         # Same thing to compute dy
-        try:
-            self._drift_yaw += self._gyro_drift
-            dx = self._factor * ( self.data['dx'] * cos(self._drift_yaw) +
-                                  self.data['dy'] * sin(self._drift_yaw))
-            dy = self._factor * ( self.data['dy'] * cos(self._drift_yaw) -
-                                  self.data['dx'] * sin(self._drift_yaw))
-            
-            self._drift_x +=  dx - self.data['dx']
-            self._drift_y +=  dy - self.data['dy']
-            
-            self.data['dS'] *= self._factor
-            self.data['dx'] = dx
-            self.data['dy'] = dy
-            self.data['dyaw'] += self._gyro_drift
-            
-            self.data['x'] += self._drift_x
-            self.data['y'] += self._drift_y
-            self.data['yaw'] += self._drift_yaw
-            
-            freq = self.component_instance.frequency
-            
-            self.data['vx'] = self.data['dx'] / freq
-            self.data['vy'] = self.data['dy'] / freq
-            self.data['wz'] = self.data['dyaw'] / freq
-        
-        except KeyError as detail:
-            self.key_error(detail)
+        self._drift_yaw += self._gyro_drift
+        current_pos = self.component_instance.previous_pos
 
+        # Compute the difference in positions with the previous loop
+        self.data['dx'] = current_pos.x - self.previous_pos.x
+        self.data['dy'] = current_pos.y - self.previous_pos.y
+        self.data['dz'] = current_pos.z - self.previous_pos.z
+
+        # Compute the difference in orientation with the previous loop
+        dyaw = current_pos.yaw - self.previous_pos.yaw
+        dpitch = current_pos.pitch - self.previous_pos.pitch
+        droll = current_pos.roll - self.previous_pos.roll
+        self.data['dyaw'] = normalise_angle(dyaw)
+        self.data['dpitch'] = normalise_angle(dpitch)
+        self.data['droll'] = normalise_angle(droll)
+
+        dx = self._factor * ( self.data['dx'] * cos(self._drift_yaw) +
+                              self.data['dy'] * sin(self._drift_yaw))
+        dy = self._factor * ( self.data['dy'] * cos(self._drift_yaw) -
+                              self.data['dx'] * sin(self._drift_yaw))
+        
+        self._drift_x +=  dx - self.data['dx']
+        self._drift_y +=  dy - self.data['dy']
+        
+        self.data['dS'] *= self._factor
+        self.data['dx'] = dx
+        self.data['dy'] = dy
+        self.data['dyaw'] += self._gyro_drift
+        
+        self.data['x'] += self._drift_x
+        self.data['y'] += self._drift_y
+        self.data['yaw'] += self._drift_yaw
+        
+        freq = self.component_instance.frequency
+        
+        self.data['vx'] = self.data['dx'] / freq
+        self.data['vy'] = self.data['dy'] / freq
+        self.data['wz'] = self.data['dyaw'] / freq
+
+        # Store the 'new' previous data
+        self.previous_pos = current_pos
