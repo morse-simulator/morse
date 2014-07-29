@@ -51,31 +51,31 @@ class OdometryNoiseModifier(AbstractModifier):
         #           factor * dS * cos(yaw)  * sin(drift_yaw)
         #         = factor * ( dx * cos(drift_yaw) +  dy * sin(drift_yaw))
         # Same thing to compute dy
-        try:
-            self._drift_yaw += self._gyro_drift
-            dx = self._factor * ( self.data['dx'] * cos(self._drift_yaw) +
-                                  self.data['dy'] * sin(self._drift_yaw))
-            dy = self._factor * ( self.data['dy'] * cos(self._drift_yaw) -
-                                  self.data['dx'] * sin(self._drift_yaw))
-            
-            self._drift_x +=  dx - self.data['dx']
-            self._drift_y +=  dy - self.data['dy']
-            
+        if self.component_instance.level == "raw":
             self.data['dS'] *= self._factor
-            self.data['dx'] = dx
-            self.data['dy'] = dy
-            self.data['dyaw'] += self._gyro_drift
-            
-            self.data['x'] += self._drift_x
-            self.data['y'] += self._drift_y
-            self.data['yaw'] += self._drift_yaw
-            
-            freq = self.component_instance.frequency
-            
-            self.data['vx'] = self.data['dx'] / freq
-            self.data['vy'] = self.data['dy'] / freq
-            self.data['wz'] = self.data['dyaw'] / freq
-        
-        except KeyError as detail:
-            self.key_error(detail)
+        else:
+            self._drift_yaw += self._gyro_drift
+            real_dx = self.component_instance._dx
+            real_dy = self.component_instance._dy
+            dx = self._factor * ( real_dx * cos(self._drift_yaw) +
+                                  real_dy * sin(self._drift_yaw))
+            dy = self._factor * ( real_dy * cos(self._drift_yaw) -
+                                  real_dx  * sin(self._drift_yaw))
 
+            self._drift_x +=  dx - real_dx
+            self._drift_y +=  dy - real_dy
+
+            if self.component_instance.level == "integrated":
+                self.data['x'] += self._drift_x
+                self.data['y'] += self._drift_y
+                self.data['yaw'] += self._drift_yaw
+
+                freq = self.component_instance.frequency
+
+                self.data['vx'] = real_dx / freq
+                self.data['vy'] = real_dy / freq
+                self.data['wz'] = self.component_instance._dyaw / freq
+            else:
+                self.data['dx'] = dx
+                self.data['dy'] = dy
+                self.data['dyaw'] += self._gyro_drift
