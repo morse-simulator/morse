@@ -37,18 +37,11 @@ class AbstractModifier(object):
         2. get from the scene properties
         3. set to None 
         """
-        ssr = blenderapi.getssr()
         if arg in self.kwargs:
             return self.kwargs[arg]
         else:
-            try:
-                if prop:
-                    x = ssr[prop]
-                else:
-                    x = ssr[arg]
-                return x
-            except KeyError:
-                return default
+            ssr = blenderapi.getssr()
+            return ssr.get(prop, ssr.get(arg, default))
 
     def __str__(self):
         return '%s(%s)'%(self.__class__.__name__, self.component_name)
