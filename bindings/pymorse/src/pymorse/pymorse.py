@@ -434,6 +434,17 @@ class ResponseCallback:
                 condition.notify_all()
         del ResponseCallback._conditions[:] # clear list
 
+class PollThread(threading.Thread):
+    def __init__(self, timeout=0.01):
+        threading.Thread.__init__(self)
+        self.keep_polling = True
+        self.timeout = timeout
+    def run(self):
+        while asyncore.socket_map and self.keep_polling:
+            asyncore.poll(self.timeout, asyncore.socket_map)
+    def syncstop(self, timeout=None):
+        self.keep_polling = False
+        return self.join(timeout)
 
 class Morse(object):
     _asyncore_thread = None
@@ -449,7 +460,7 @@ class Morse(object):
         self.simulator_service = Stream(host, port)
         self.simulator_service_id = 0
         if not Morse._asyncore_thread:
-            Morse._asyncore_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': 0.01} )
+            Morse._asyncore_thread = PollThread()
             Morse._asyncore_thread.start()
             logger.debug("Morse thread started")
         else:
@@ -580,10 +591,9 @@ class Morse(object):
         else:
             logger.info('Waiting for all asynchronous requests to complete...')
         self.executor.shutdown(wait = True)
-        self.simulator_service.close()
         # Close all other asyncore sockets (StreanJSON)
+        Morse._asyncore_thread.syncstop(TIMEOUT)
         asyncore.close_all()
-        Morse._asyncore_thread.join(TIMEOUT)
         Morse._asyncore_thread = None # in case we want to re-create
         logger.info('Done. Bye bye!')
 
