@@ -117,6 +117,10 @@ class Object(AbstractObject):
 
         """
         all_properties = self.fetch_properties()
+        for prop in all_properties.items():
+            l = list(prop[1])
+            l[0] = getattr(self, l[3])
+            all_properties[prop[0]] = tuple(l)
 
         return {'properties': all_properties}
 
