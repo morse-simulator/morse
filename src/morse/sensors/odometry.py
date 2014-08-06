@@ -75,8 +75,10 @@ class Odometry(morse.core.sensor.Sensor):
         current_pos = self.original_pos.transformation3d_with(self.position_3d)
 
         # Compute the difference in positions with the previous loop
-        self.local_data['dx'] = current_pos.x - self.previous_pos.x
-        self.local_data['dy'] = current_pos.y - self.previous_pos.y
+        self._dx = current_pos.x - self.previous_pos.x
+        self._dy = current_pos.y - self.previous_pos.y
+        self.local_data['dx'] = self._dx
+        self.local_data['dy'] = self._dy
         self.local_data['dz'] = current_pos.z - self.previous_pos.z
 
         # Compute the difference in orientation with the previous loop
@@ -118,6 +120,10 @@ class IntegratedOdometry(Odometry):
         current_pos = self.original_pos.transformation3d_with(self.position_3d)
 
         # Integrated version
+        self._dx = current_pos.x - self.previous_pos.x
+        self._dy = current_pos.y - self.previous_pos.y
+        self._dyaw = normalise_angle(current_pos.yaw - self.previous_pos.yaw)
+
         self.local_data['x'] = current_pos.x
         self.local_data['y'] = current_pos.y
         self.local_data['z'] = current_pos.z

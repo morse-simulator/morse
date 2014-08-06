@@ -72,7 +72,12 @@ A basic builder script looks like:
 - The second is a comment, it's where you will add robots, sensors and actuators.
 - Then we create an environment. The environment instance, here ``env``, will let you
   tune some simulation parameters. See :py:mod:`morse.builder.environment` for a
-  list of methods.
+  list of methods. 
+
+.. note::
+
+    The Environment object must be the last thing created in the builder
+    script.
 
 If your edit this script in MORSE, you should see the ``'indoors-1/indoor-1'``
 scene:
@@ -283,6 +288,10 @@ outliner, you see that the hierarchy of objects looks like that:
     components that were appended to a component which is visible.
 
 .. note::
+    The renaming process works only for object created before the Environment
+    object. Make sure to create this one at the end of the builder script.
+
+.. note::
     If name collisions occur anyway, Blender automatically adds an incremental
     suffix like ``.001``, ``.002``, etc.
 
@@ -293,6 +302,9 @@ outliner, you see that the hierarchy of objects looks like that:
     .. code-block:: python
 
         env = Environment('indoors-1/indoor-1', component_renaming = False)
+
+    If you want to have pymorse working properly without automatic renaming,
+    you need to specify name of kind <robot>.<object>
 
 Component properties
 --------------------
