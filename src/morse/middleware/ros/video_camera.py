@@ -4,12 +4,13 @@ import rospy
 from sensor_msgs.msg import Image, CameraInfo
 from morse.middleware.ros import ROSPublisherTF
 
-class VideoCameraPublisher(ROSPublisherTF):
+class CameraPublisher(ROSPublisherTF):
     """ Publish the image from the Camera perspective.
     And send the intrinsic matrix information in a separate topic of type
     `sensor_msgs/CameraInfo <http://ros.org/wiki/rviz/DisplayTypes/Camera>`_.
     """
     ros_class = Image
+    encoding = 'tbd'
 
     def initialize(self):
         self.kwargs['topic_suffix'] = '/image'
@@ -32,7 +33,7 @@ class VideoCameraPublisher(ROSPublisherTF):
         image.header = self.get_ros_header()
         image.height = self.component_instance.image_height
         image.width = self.component_instance.image_width
-        image.encoding = 'rgba8'
+        image.encoding = self.encoding
         image.step = image.width * 4
 
         # VideoTexture.ImageRender implements the buffer interface
@@ -61,3 +62,10 @@ class VideoCameraPublisher(ROSPublisherTF):
 
         self.publish_with_robot_transform(image)
         self.topic_camera_info.publish(camera_info)
+
+class VideoCameraPublisher(CameraPublisher):
+    encoding = 'rgba8'
+
+class DepthCameraPublisher(CameraPublisher):
+    encoding = '32FC1'
+
