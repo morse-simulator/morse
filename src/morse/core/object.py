@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from morse.core.abstractobject import AbstractObject
+from morse.core.exceptions import MorseRPCInvokationError
 
 import morse.helpers.transformation
 from morse.core.services import service
@@ -117,9 +118,32 @@ class Object(AbstractObject):
 
         """
         all_properties = self.fetch_properties()
+        for prop in all_properties.items():
+            l = list(prop[1])
+            l[0] = getattr(self, l[3])
+            all_properties[prop[0]] = tuple(l)
 
         return {'properties': all_properties}
 
+    @service
+    def set_property(self, prop_name, prop_val):
+        """
+        Modify one property on a component
+
+        :param prop_name: the name of the property to modify (as shown
+        the documentation)
+        :param prop_val: the new value of the property. Note that there
+        is no checking about the type of the value so be careful
+
+        :return: nothing
+        """
+        props = self.fetch_properties()
+        if prop_name in props:
+            setattr(self, props[prop_name][3], prop_val)
+        else:
+            raise MorseRPCInvokationError(
+            "Property %s does not exist for object %s" %
+            (prop_name, self.name()))
 
     @service
     def get_configurations(self):

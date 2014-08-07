@@ -3,6 +3,7 @@ import socket
 import select
 import json
 
+from morse.middleware.socket_datastream import MorseEncoder
 from morse.core.request_manager import RequestManager, MorseRPCInvokationError
 from morse.core import status
 
@@ -192,10 +193,10 @@ class SocketRequestManager(RequestManager):
                         return_value = None
                         try:
                             if r[1][1]:
-                                return_value = json.dumps(r[1][1])
+                                return_value = json.dumps(r[1][1], cls=MorseEncoder)
                         except TypeError as te:
                             logger.error("Error while serializing a service return value to JSON!\n" +\
-                                    "Details:" + te.value)
+                                    "Details:" + str(te))
                         response = "%s %s%s" % (r[0], r[1][0], (" " + return_value) if return_value else "")
                         try:
                             o.send((response + "\n").encode())
