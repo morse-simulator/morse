@@ -470,7 +470,7 @@ class Clock(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
 
-class Kinect(SensorCreator):
+class Kinect(CompoundSensor):
     """
     Microsoft Kinect RGB-D camera, implemented as a pair of depth camera and video
     camera.
@@ -485,7 +485,7 @@ class Kinect(SensorCreator):
 
     def __init__(self, name="Kinect"):
         # meta sensor composed of 2 cameras (rgb and depth)
-        SensorCreator.__init__(self, name)
+        CompoundSensor.__init__(self, [], name)
         mesh = Cube("KinectMesh")
         mesh.scale = (.02, .1, .02)
         mesh.color(.8, .8, .8)
@@ -500,6 +500,7 @@ class Kinect(SensorCreator):
         # TODO find Kinect spec for cameras positions
         self.video_camera.location = (.06, +.08, .04)
         self.depth_camera.location = (.06, -.08, .04)
+        self.sensors = [self.video_camera, self.depth_camera]
     def add_stream(self, *args, **kwargs):
         # Override AbstractComponent method
         self.video_camera.add_stream(*args, **kwargs)
