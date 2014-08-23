@@ -35,7 +35,7 @@ class PymorseTest(MorseTestCase):
 
         motion = Waypoint()
         motion.add_stream('socket')
-        motion.configure_service('socket')
+        motion.add_service('socket')
         robot1.append(motion)
 
         ##### Robot2
@@ -167,8 +167,5 @@ class PymorseTest(MorseTestCase):
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
-    import unittest
-    from morse.testing.testing import MorseTestRunner
-    suite = unittest.TestLoader().loadTestsFromTestCase(PymorseTest)
-    sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
-
+    from morse.testing.testing import main
+    main(PymorseTest)

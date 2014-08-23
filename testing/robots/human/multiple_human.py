@@ -19,6 +19,7 @@ class MultipleHumanTest(MorseTestCase):
         """ Defines the test scenario, using the Builder API.
         """
         human1 = Human()
+        human1.name = "roger"
         human1.append(Pose("pose"))
         human1.disable_keyboard_control()
         human1.use_world_camera()
@@ -26,6 +27,7 @@ class MultipleHumanTest(MorseTestCase):
         human1.add_default_interface('socket')
 
         human2 = Human()
+        human2.name = "rafael"
         human2.append(Pose("pose"))
         human2.disable_keyboard_control()
         human2.use_world_camera()
@@ -33,6 +35,7 @@ class MultipleHumanTest(MorseTestCase):
         human2.add_default_interface('socket')
 
         human3 = Human()
+        human3.name = "novak"
         human3.append(Pose("pose"))
         human3.add_default_interface('socket')
 
