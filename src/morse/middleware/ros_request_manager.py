@@ -329,7 +329,7 @@ class RosRequestManager(RequestManager):
                 # Here, we 'hope' that the return value of the MORSE
                 # service is a valid dataset to construct the
                 # ServiceResponse expected by ROS
-                return result,
+                return result
             else:
                 # failure!
                 raise rospy.service.ServiceException(result)
