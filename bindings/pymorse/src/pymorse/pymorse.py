@@ -592,7 +592,8 @@ class Morse(object):
             logger.info('Waiting for all asynchronous requests to complete...')
         self.executor.shutdown(wait = True)
         # Close all other asyncore sockets (StreanJSON)
-        Morse._asyncore_thread.syncstop(TIMEOUT)
+        if Morse._asyncore_thread:
+            Morse._asyncore_thread.syncstop(TIMEOUT)
         asyncore.close_all()
         Morse._asyncore_thread = None # in case we want to re-create
         logger.info('Done. Bye bye!')
