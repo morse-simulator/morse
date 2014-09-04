@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
-import json
+import pprint
 from morse.core import mathutils
 from morse.builder.morsebuilder import *
 from morse.builder.abstractcomponent import Configuration
@@ -105,7 +105,7 @@ class Environment(Component):
             bpymorse.get_last_text().name = 'multinode_config.py'
         cfg = bpymorse.get_text('multinode_config.py')
         cfg.clear()
-        cfg.write('node_config = ' + json.dumps(node_config, indent=1) )
+        cfg.write('node_config = ' + pprint.pformat(node_config) )
         cfg.write('\n')
 
     def _rename_components(self):

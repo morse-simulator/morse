@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import os
-import json
+import pprint
 import copy
 
 from morse.builder import bpymorse
@@ -88,22 +88,19 @@ class Configuration(object):
             bpymorse.get_last_text().name = 'component_config.py'
         cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
-        cfg.write('component_datastream = ' + json.dumps(
-            Configuration._remove_entries(Configuration.datastream, robot_list),
-            indent=1) )
+        cfg.write('component_datastream = ' + pprint.pformat(
+            Configuration._remove_entries(Configuration.datastream, robot_list)))
         cfg.write('\n')
-        cfg.write('component_modifier = ' + json.dumps(
-            Configuration._remove_entries(Configuration.modifier, robot_list),
-            indent=1) )
+        cfg.write('component_modifier = ' + pprint.pformat(
+            Configuration._remove_entries(Configuration.modifier, robot_list)))
         cfg.write('\n')
-        cfg.write('component_service = ' + json.dumps(
-            Configuration._remove_entries(Configuration.service, robot_list),
-            indent=1) )
+        cfg.write('component_service = ' + pprint.pformat(
+            Configuration._remove_entries(Configuration.service, robot_list)))
         cfg.write('\n')
         cleaned_overlays = {}
         for k, v in Configuration.overlay.items():
             cleaned_overlays[k] = Configuration._remove_entries(v, robot_list)
-        cfg.write('overlays = ' + json.dumps(cleaned_overlays, indent=1) )
+        cfg.write('overlays = ' + pprint.pformat(cleaned_overlays))
         cfg.write('\n')
 
 class AbstractComponent(object):
