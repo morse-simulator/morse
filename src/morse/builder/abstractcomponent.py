@@ -464,7 +464,7 @@ class AbstractComponent(object):
         if self._exportable:
             self.add_stream(interface, **kwargs)
 
-    def alter(self, modifier_name, classpath=None, **kwargs):
+    def alter(self, modifier_name=None, classpath=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
         config = []
