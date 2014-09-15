@@ -32,6 +32,8 @@ add_sensor = empty_method
 add_controller = empty_method
 add_actuator = empty_method
 link_append = empty_method
+link = empty_method # 2.71.6
+append = empty_method # 2.71.6
 collada_import = empty_method
 add_object = empty_method
 add_empty = empty_method
@@ -60,7 +62,11 @@ if bpy:
     add_sensor = bpy.ops.logic.sensor_add
     add_controller = bpy.ops.logic.controller_add
     add_actuator = bpy.ops.logic.actuator_add
-    link_append = bpy.ops.wm.link_append
+    if bpy.app.version >= (2, 71, 6):
+        link = bpy.ops.wm.link
+        append = bpy.ops.wm.append
+    else: # link_append dropped in 2.71.6
+        link_append = bpy.ops.wm.link_append
     collada_import = bpy.ops.wm.collada_import
     add_object = bpy.ops.object.add
     if bpy.app.version >= (2, 65, 0):

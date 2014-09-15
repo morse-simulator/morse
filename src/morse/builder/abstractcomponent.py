@@ -621,19 +621,23 @@ class AbstractComponent(object):
                              "or default path, typically $PREFIX/share/morse/data)."% (component, looked_dirs))
                 raise FileNotFoundError("%s '%s' not found"%(self.__class__.__name__, component))
 
-        if not objects: # link_append all objects from blend file
+        if not objects: # append all objects from blend file
             objects = bpymorse.get_objects_in_blend(filepath)
 
         if prefix: # filter (used by PassiveObject)
             objects = [obj for obj in objects if obj.startswith(prefix)]
 
-        # Format the objects list for link_append
+        # Format the objects list to append
         objlist = [{'name':obj} for obj in objects]
 
         bpymorse.deselect_all()
         # Append the objects to the scene, and (auto)select them
-        bpymorse.link_append(directory=filepath + '/Object/', link=False,
-                             autoselect=True, files=objlist)
+        if bpymorse.version() >= (2, 71, 6):
+            bpymorse.append(directory=filepath + '/Object/',
+                            autoselect=True, files=objlist)
+        else:
+            bpymorse.link_append(directory=filepath + '/Object/', link=False,
+                                 autoselect=True, files=objlist)
 
         return bpymorse.get_selected_objects()
 
