@@ -35,12 +35,12 @@ calling cmake! *eg.*::
 
         sudo apt-get install python3-setuptools
 
-  or get from `sources <https://pypi.python.org/pypi/setuptools#unix-wget>`_
+   or get from `sources <https://pypi.python.org/pypi/setuptools#unix-wget>`_::
 
         wget https://bootstrap.pypa.io/ez_setup.py
         sudo python3 ez_setup.py
 
-  then
+   then::
 
         git clone git://github.com/ros/rospkg.git
         cd rospkg
