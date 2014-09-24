@@ -44,7 +44,7 @@ except ImportError as exn:
 #Blender version must be egal or bigger than...
 MIN_BLENDER_VERSION = "2.62"
 #Blender version must be smaller than...
-STRICT_MAX_BLENDER_VERSION = "2.72"
+STRICT_MAX_BLENDER_VERSION = "2.73"
 
 #Unix-style path to the MORSE default scene and templates, within the prefix
 DEFAULT_SCENE_PATH = "share/morse/data/morse_default.blend"
