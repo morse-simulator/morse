@@ -39,7 +39,8 @@ MORSE_DATASTREAM_MODULE = {
     'pocolibs': 'morse.middleware.pocolibs_datastream.PocolibsDatastreamManager',
     'text': 'morse.middleware.text_datastream.TextDatastreamManager',
     'moos': 'morse.middleware.moos_datastream.MOOSDatastreamManager',
-    'hla': 'morse.middleware.hla_datastream.HLADatastreamManager'
+    'hla': 'morse.middleware.hla_datastream.HLADatastreamManager',
+    'mavlink': 'morse.middleware.mavlink_datastream.MavlinkDatastreamManager',
 }
 
 MORSE_MODIFIER_DICT = {
