@@ -26,6 +26,7 @@ class HumanPoseTest(MorseTestCase):
         pose.add_stream('socket')
 
         motion = Waypoint()
+        motion.properties(ControlType= 'Position')
         human.append(motion)
         motion.add_stream('socket')
         motion.add_service('socket')
@@ -47,7 +48,7 @@ class HumanPoseTest(MorseTestCase):
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.1)
 
-    def _test_movement(self):
+    def test_movement(self):
         """ Tests the human can accept an actuator, and that it
         work as expected to move around the human.
 
