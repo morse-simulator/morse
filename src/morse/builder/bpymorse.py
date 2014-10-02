@@ -405,12 +405,15 @@ def set_viewport_perspective(perspective='CAMERA'):
                 if space.type == 'VIEW_3D':
                     space.region_3d.view_perspective = perspective
 
-def fullscreen(fullscreen=True):
+def fullscreen(fullscreen=True, desktop=True):
     """ Run the simulation fullscreen
 
     :param fullscreen: Start player in a new fullscreen display
     :type  fullscreen: Boolean, default: True
+    :param desktop: Use the current desktop resolution in fullscreen mode
+    :type  desktop: Boolean, default: True
     """
     if not bpy:
         return
     bpy.context.scene.game_settings.show_fullscreen = fullscreen
+    bpy.context.scene.game_settings.use_desktop = desktop
