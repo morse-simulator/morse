@@ -27,6 +27,9 @@ class GraspingRobot(Robot):
         Robot.__init__(self, obj, parent)
 
         self.hand_name = 'todefine'
+
+        self.bge_object['DraggedObject'] = None
+
         logger.info('Component initialized')
 
     @service
