@@ -68,6 +68,8 @@ class Human(GroundRobot):
                 for i, actuator in enumerate(armature_object.game.actuators):
                     actuator.layer = i
 
+        self.make_grasper('Hand_Grab.R')
+
     def after_renaming(self):
         if self._blender_filename == 'mocap_human':
             # no need for mocap
