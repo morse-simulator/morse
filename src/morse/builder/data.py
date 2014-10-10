@@ -254,6 +254,13 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": 'morse.middleware.pocolibs.sensors.platine_posture.PlatinePoster'
             }
         },
+    "morse.sensors.radar_altimeter.RadarAltimeter": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
+            }
+        },
     "morse.sensors.stereo_unit.StereoUnit": {
         "default": {
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'

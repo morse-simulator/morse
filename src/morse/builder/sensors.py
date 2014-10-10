@@ -547,3 +547,9 @@ class Collision(SensorCreator):
                 sensor.property = kwargs['collision_property']
             except KeyError:
                 pass
+
+class RadarAltimeter(SensorCreator):
+    _classpath = "morse.sensors.radar_altimeter.RadarAltimeter"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
