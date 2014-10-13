@@ -29,6 +29,9 @@ Sensors
 - :doc:`user/sensors/laserscanner` gain the possibility to return also a
   remission value at the `rssi` level.
 
+- Introduce the new sensor :doc:`user/sensors/radar_altimeter`, allowing to
+  retrieve the distance to the ground.
+
 Middlewares
 -----------
 

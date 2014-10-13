@@ -29,6 +29,9 @@ Sensors
 - Laser Scanner sensors gain the possibility to return also a
   remission value at the `rssi` level.
 
+- Introduce the new sensor "Radar Altimeter", allowing to retrieve the
+  distance to the ground.
+
 Middlewares
 -----------
 
