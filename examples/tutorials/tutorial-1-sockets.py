@@ -11,8 +11,8 @@ motion = MotionVW()
 atrv.append(motion)
 
 # Scene configuration
-motion.configure_service('socket')
-pose.configure_service('socket')
+motion.add_service('socket')
+pose.add_service('socket')
 
 env = Environment('indoors-1/indoor-1')
 env.set_camera_location([5, -5, 6])

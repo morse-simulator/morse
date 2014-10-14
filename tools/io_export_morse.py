@@ -155,9 +155,9 @@ def scan_scene (file_out):
 
 def scan_config(file_out):
     """ Parse the contents of 'component_config.py'
-    
+
     Produce a configuration file that 'morsebuilder' can use to
-    configure the robot/middleware bindings in a scene. 
+    configure the robot/middleware bindings in a scene.
     """
     import component_config
     file_out.write("# Scene configuration\n")
@@ -185,7 +185,7 @@ def scan_config(file_out):
         for key,value in component_config.component_service.items():
             component = re.sub('\.', '_', key)
             mw = re.search('(\w+)_request_manager', value[0])
-            file_out.write("%s.configure_service('%s')\n" % (component, mw.group(1)))
+            file_out.write("%s.add_service('%s')\n" % (component, mw.group(1)))
     except AttributeError as detail:
         print ("\tNo services configured")
 

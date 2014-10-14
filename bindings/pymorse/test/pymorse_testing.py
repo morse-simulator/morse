@@ -9,7 +9,7 @@ from morse.testing.testing import MorseTestCase
 import logging;logger = logging.getLogger("morsetesting.general")
 
 try:
-    # Include this import to be able to use your test file as a regular 
+    # Include this import to be able to use your test file as a regular
     # builder script, ie, usable with: 'morse [run|exec] <your test>.py
     from morse.builder import *
 except ImportError:
@@ -22,7 +22,7 @@ from concurrent.futures._base import TimeoutError
 class PymorseTest(MorseTestCase):
 
     def setUpEnv(self):
-        
+
         ##### Robot1
         # Names come from the variable name
 
@@ -48,7 +48,7 @@ class PymorseTest(MorseTestCase):
 
         # Environment
         env = Environment('empty', fastmode = True)
-        env.configure_service('socket')
+        env.add_service('socket')
 
     def _test_base(self):
         with Morse() as simu:
@@ -88,8 +88,8 @@ class PymorseTest(MorseTestCase):
             motion = morse.robot1.motion
 
             # Try to write on a stream
-            motion.publish({'x' : 10.0, 'y': 5.0, 'z': 0.0, 
-                            'tolerance' : 0.5, 
+            motion.publish({'x' : 10.0, 'y': 5.0, 'z': 0.0,
+                            'tolerance' : 0.5,
                             'speed' : 1.0})
 
             time.sleep(1.0)

@@ -155,7 +155,7 @@ class Environment(Component):
         for component in AbstractComponent.components:
             if isinstance(component, Robot) and component.default_interface:
                 for child in component.children:
-                    if child.is_morseable(): 
+                    if child.is_morseable():
                         if not Configuration.has_datastream_configuration(
                                 child, component.default_interface) and \
                             child.is_exportable():
@@ -536,7 +536,7 @@ class Environment(Component):
 
             env = Environement('indoors-1/indoor-1', fastmode = True)
             # Set the simulation management services to be available from ROS:
-            env.configure_service('ros')
+            env.add_service('ros')
 
         """
         AbstractComponent.add_service(self, datastream, "simulation")
@@ -591,7 +591,7 @@ class Environment(Component):
                 compress=compress)
 
     def set_log_level(self, component, level):
-        """ 
+        """
         Set the debug level of the component to the level level.
 
         :param component: the class name of the component
