@@ -70,6 +70,15 @@ class Human(GroundRobot):
 
         self.make_grasper('Hand_Grab.R')
 
+    @property
+    def name(self):
+        return self._bpy_object.name
+
+
+    @name.setter
+    def name(self, value):
+        raise SyntaxError("Human names can not be set explicitely. Use '%s = Human()' syntax instead. See issue #558 for details." % value)
+
     def after_renaming(self):
         if self._blender_filename == 'mocap_human':
             # no need for mocap
