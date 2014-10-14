@@ -43,9 +43,9 @@ class MultipleHumanTest(MorseTestCase):
 
     def test_pose(self):
         with Morse() as morse:
-            p1 = morse.human1.pose.get()
-            p2 = morse.human2.pose.get()
-            p3 = morse.human3.pose.get()
+            p1 = morse.roger.pose.get()
+            p2 = morse.rafael.pose.get()
+            p3 = morse.novak.pose.get()
 
             self.assertAlmostEquals(p1['x'], 5.0, delta=0.01)
             self.assertAlmostEquals(p2['x'], -5.0, delta=0.01)
