@@ -195,7 +195,7 @@ def scan_config(file_out):
         for key,value in component_config.component_modifier.items():
             component = re.sub('\.', '_', key)
             mod = value[0]
-            file_out.write("%s.configure_modifier(%s)\n" % (component, mod))
+            file_out.write("%s.alter(%s)\n" % (component, mod))
     except AttributeError as detail:
         print ("\tNo modifiers configured")
 

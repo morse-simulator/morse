@@ -77,9 +77,9 @@ motion.add_stream('pocolibs')
 stereo.add_stream('pocolibs')
 gyroscope.add_stream('pocolibs')
 
-gps01.configure_modifier('NED')
-motion01.configure_modifier('NED')
-gyroscope01.configure_modifier('NED')
+gps01.alter('NED')
+motion01.alter('NED')
+gyroscope01.alter('NED')
 
 #env = Environment('land-1/buildings_2')
 env = Environment('land-1/trees')

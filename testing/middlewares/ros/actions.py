@@ -5,7 +5,7 @@ This script tests ROS actions within MORSE.
 
 from morse.testing.ros import RosTestCase
 
-# Include this import to be able to use your test file as a regular 
+# Include this import to be able to use your test file as a regular
 # builder script, ie, usable with: 'morse [run|exec] base_testing.py
 try:
     from morse.builder import *
@@ -30,7 +30,7 @@ class RosActionsTest(RosTestCase):
 
     def setUpEnv(self):
         # Identical to ROS service testing
-        
+
         print("Adding a robot...")
         robot = ATRV()
 
@@ -40,11 +40,11 @@ class RosActionsTest(RosTestCase):
 
         waypoint = Waypoint()
         robot.append(waypoint)
-        
+
         waypoint.add_service('ros')
-        
-        waypoint.configure_overlay('ros', 'morse.middleware.ros.overlays.waypoints.WayPoint')
-        
+
+        waypoint.add_overlay('ros', 'morse.middleware.ros.overlays.waypoints.WayPoint')
+
         env = Environment('empty', fastmode = True)
         env.add_service('ros')
 
@@ -89,7 +89,7 @@ class RosActionsTest(RosTestCase):
 
 
     def test_move_advanced(self):
-            
+
         rospy.loginfo("Starting ROS test case for actions (advanced behaviour).")
         rospy.init_node('move_base_client')
         client = actionlib.SimpleActionClient('robot/waypoint/move_base', MoveBaseAction)
