@@ -303,7 +303,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
             "socket": 'morse.middleware.sockets.video_camera.VideoCameraPublisher',
-            "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
+            "yarp": 'morse.middleware.yarp.video_camera.YarpImagePublisher',
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }
         },
