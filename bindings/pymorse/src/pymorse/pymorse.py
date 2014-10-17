@@ -583,7 +583,18 @@ class Morse(object):
         """
         self.simulator_service.publish("%i cancel"%int(service_id))
 
-    def close(self, cancel_async_services = False):
+    def get_publisher_streams(self):
+        for name in self.robots:
+            for elt in getattr(self, name).values():
+                if type(elt) is Component and 'publish' in dir(elt):
+                    yield elt.stream
+
+    def close(self, cancel_async_services = False, wait_publishers = True):
+        if wait_publishers:
+            import time
+            for stream in self.get_publisher_streams():
+                while len(stream.producer_fifo) > 0:
+                    time.sleep(0.001)
         if cancel_async_services:
             logger.info('Cancelling all running asynchronous requests...')
             ResponseCallback.cancel_all()
