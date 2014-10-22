@@ -43,3 +43,13 @@ IF(BUILD_MOOS_SUPPORT)
 	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
 		)
 ENDIF(BUILD_MOOS_SUPPORT)
+
+IF(BUILD_HLA_SUPPORT)
+  INSTALL(DIRECTORY hla
+        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+        REGEX .*py.$ EXCLUDE
+        )
+	INSTALL(FILES hla_datastream.py
+			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+			)
+ENDIF(BUILD_HLA_SUPPORT)
