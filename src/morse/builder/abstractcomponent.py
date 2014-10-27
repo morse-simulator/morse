@@ -11,6 +11,7 @@ from morse.helpers.loading import get_class, load_module_attribute
 
 class Configuration(object):
     datastream = {}
+    stream_manager = {}
     modifier = {}
     service = {}
     overlay = {}
@@ -49,6 +50,9 @@ class Configuration(object):
 
     def link_overlay(component,  manager, overlay_cfg, kwargs):
         Configuration.overlay.setdefault(manager, {})[component.name] = [overlay_cfg, kwargs]
+
+    def link_stream_manager_config(manager, kwargs):
+        Configuration.stream_manager.setdefault(manager, {}).update(kwargs)
 
     def has_datastream_configuration(component, stream):
         try:
@@ -101,6 +105,8 @@ class Configuration(object):
         for k, v in Configuration.overlay.items():
             cleaned_overlays[k] = Configuration._remove_entries(v, robot_list)
         cfg.write('overlays = ' + pprint.pformat(cleaned_overlays))
+        cfg.write('\n')
+        cfg.write('stream_manager = ' + pprint.pformat(Configuration.stream_manager))
         cfg.write('\n')
 
 class AbstractComponent(object):

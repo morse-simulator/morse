@@ -129,10 +129,10 @@ class YarpReader(YarpPort):
 class YarpDatastreamManager(DatastreamManager):
     """ Handle communication between Blender and YARP."""
 
-    def __init__(self):
+    def __init__(self, args, kwargs):
         """ Initialize the network and connect to the yarp server."""
         # Call the constructor of the parent class
-        DatastreamManager.__init__(self)
+        DatastreamManager.__init__(self, args, kwargs)
 
         yarp.Network.init()
 
