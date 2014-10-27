@@ -705,6 +705,12 @@ def simulation_main(contr):
 
     We do here all homeworks to manage the simulation at whole.
     """
+    # Call datastream manager action handler
+    # Call it early at the synchronisation management may be done here
+    if 'datastreamDict' in persistantstorage:
+        for ob in persistantstorage.datastreamDict.values():
+            ob.action()
+
     # Update the time variable
     try:
         persistantstorage.time.update()
