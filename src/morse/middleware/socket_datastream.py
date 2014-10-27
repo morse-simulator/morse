@@ -161,10 +161,10 @@ class SocketReader(SocketServ):
 class SocketDatastreamManager(DatastreamManager):
     """ External communication using sockets. """
 
-    def __init__(self):
+    def __init__(self, args, kwargs):
         """ Initialize the socket connections """
         # Call the constructor of the parent class
-        DatastreamManager.__init__(self)
+        DatastreamManager.__init__(self, args, kwargs)
 
         # port -> MorseSocketServ
         self._server_dict = {}
