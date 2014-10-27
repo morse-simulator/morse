@@ -60,3 +60,7 @@ class DatastreamManager(object):
                                                          datastream_args)
 
 
+    def action(self):
+        """ Main action, called each simulation round """
+        pass
+
