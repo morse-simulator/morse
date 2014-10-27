@@ -48,7 +48,7 @@ class HumanPoseTest(MorseTestCase):
                 if key != 'timestamp':
                     self.assertAlmostEqual(coord, 0.0, delta=0.1)
 
-    def test_movement(self):
+    def _test_movement(self):
         """ Tests the human can accept an actuator, and that it
         work as expected to move around the human.
 
@@ -71,6 +71,33 @@ class HumanPoseTest(MorseTestCase):
 
             self.assertAlmostEqual(pose['x'], 2.0, delta=0.5)
             self.assertAlmostEqual(pose['y'], 3.0, delta=0.5)
+
+    def _test_ik_motion(self):
+
+        IK_TARGET = "ik_target.robot.arm."
+
+        with Morse() as simu:
+            self.assertEqual(simu.robot.arm.list_IK_targets(), [IK_TARGET])
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [0,0,2], None, False).result() # absolute location
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [1,0,0.3105], None, False).result()
+            self._check_pose(simu, 0.778, 0., 0.363, 0.02)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [1,0,0.3105], [math.pi/2, -math.pi/2, -math.pi], False).result() # arm should be horizontal
+            self._check_pose(simu, 1.0, 0., 0.3105, math.radians(90))
+
+            # back to original position
+            simu.robot.arm.move_IK_target(IK_TARGET, [0,0,2], [math.pi/2, 0., -math.pi], False).result() # absolute location
+            self._check_pose(simu, 0., 0., 1.3105, 0.)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [-1, 0, -1.6895], None).result() # relative position
+            self._check_pose(simu, -0.778, 0., 0.363, -0.02)
+
+            simu.robot.arm.move_IK_target(IK_TARGET, [0.,0.,0.], [0., -math.pi/2, 0.]).result() # relative rotation
+            self._check_pose(simu, -1.0, 0., 0.3105, -math.radians(90))
 
 
 ########################## Run these tests ##########################

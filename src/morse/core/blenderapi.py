@@ -227,6 +227,13 @@ def getalwayssensors(obj):
     else:
         return []
 
+def get_armatures(obj):
+    if not fake:
+        return [child for child in obj.children if isinstance(child, bge.types.BL_ArmatureObject)]
+    else:
+        return []
+
+
 def getfrequency():
     if not fake:
         return bge.logic.getLogicTicRate()
