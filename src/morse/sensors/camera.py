@@ -47,7 +47,7 @@ class Camera(morse.core.sensor.Sensor):
     add_property('image_focal', 25.0, 'cam_focal')
     add_property('near_clipping', 0.1, 'cam_near')
     add_property('far_clipping', 100.0, 'cam_far')
-    add_property('vertical_flip', False, 'Vertical_Flip')
+    add_property('vertical_flip', True, 'Vertical_Flip')
     add_property('retrieve_depth', False, 'retrieve_depth')
     add_property('retrieve_zbuffer', False, 'retrieve_zbuffer')
 
@@ -214,7 +214,7 @@ class Camera(morse.core.sensor.Sensor):
         # Set the focal length of the camera using the Game Logic Property
         camera.lens = self.image_focal
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
-        
+
         # Set the clipping distances of the camera using the Game Logic Property
         camera.near = self.near_clipping
         logger.info("\tNear clipping distance of the camera is: %s" %
