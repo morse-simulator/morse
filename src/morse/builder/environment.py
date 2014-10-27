@@ -3,6 +3,7 @@ import os
 import pprint
 from morse.core import mathutils
 from morse.builder.morsebuilder import *
+from morse.builder.data import MORSE_DATASTREAM_MODULE
 from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
 
@@ -520,6 +521,14 @@ class Environment(Component):
         if distribution is not None:
             self.multinode_distribution = distribution
         self._multinode_configured = True
+
+    def configure_stream_manager(self, stream_manager, **kwargs):
+        if stream_manager in MORSE_DATASTREAM_MODULE:
+            stream_manager_classpath = MORSE_DATASTREAM_MODULE[stream_manager]
+        else:
+            stream_manager_classpath = stream_manager
+
+        Configuration.link_stream_manager_config(stream_manager_classpath, kwargs)
 
     def configure_service(self, datastream):
         logger.warning("configure_service is deprecated, use add_service instead")

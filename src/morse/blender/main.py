@@ -382,7 +382,11 @@ def link_datastreams():
                     break
 
             if not found:
-                datastream_instance = create_instance(datastream_name)
+                try:
+                    kwargs = component_config.stream_manager.get(datastream_name, {})
+                except (AttributeError, NameError) as detail:
+                    kwargs = {}
+                datastream_instance = create_instance(datastream_name, None, kwargs)
                 if datastream_instance is not None:
                     persistantstorage.datastreamDict[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)

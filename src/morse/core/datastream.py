@@ -44,6 +44,9 @@ class DatastreamManager(object):
     # Make this an abstract class
     __metaclass__ = ABCMeta
 
+    def __init__(self, args, kwargs):
+        pass
+
     def __del__(self):
         """ Destructor method. """
         logger.info("Closing datastream interface <%s>." % self.__class__.__name__)
