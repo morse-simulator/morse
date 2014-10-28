@@ -59,3 +59,5 @@ add_morse_test(imu_noise_testing)
 # Services
 
 add_morse_test(communication_service_testing)
+
+add_morse_test(socket_sync_testing)
