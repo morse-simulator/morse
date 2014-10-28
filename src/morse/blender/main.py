@@ -295,24 +295,6 @@ def check_dictionaries():
     logger.info("------------------------------------")
     logger.info ("")
 
-
-def get_components_of_type(classname):
-    components = []
-    for component in persistantstorage.componentDict.values():
-        logger.debug("Get component for class " + component.name() + ": " + component.__class__.__name__)
-        if component.__class__.__name__ == classname:
-            components.append(component)
-    
-    return components
-
-
-def get_datastream_of_type(classname):
-    for datastream_instance in persistantstorage.datastreamDict.values():
-        if datastream_instance.__class__.__name__ == classname:
-            return datastream_instance
-    return None
-    
-
 def link_datastreams():
     """ Read the configuration script (inside the .blend file)
         and assign the correct datastream and options to each component. """
