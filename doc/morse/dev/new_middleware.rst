@@ -15,6 +15,9 @@ implementation is enough. You can find some example of overloading in
 :py:meth:`morse.middleware.socket_datastream.Socket.register_component` where we
 store additional informations for the sake of different services.
 
+If you need to run some general datastream/middleware code once by simulation
+turn, you can also override the :py:meth:`morse.core.datastream.DatastreamManager.action`` method.
+
 Module Organisation
 -------------------
 
