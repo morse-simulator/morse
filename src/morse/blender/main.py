@@ -357,7 +357,13 @@ def link_datastreams():
             datastream_instance = persistantstorage.stream_managers.get(datastream_name, None)
             if not datastream_instance:
                 kwargs = component_config.stream_manager.get(datastream_name, {})
-                datastream_instance = create_instance(datastream_name, None, kwargs)
+                try:
+                    datastream_instance = create_instance(datastream_name, None, kwargs)
+                except Exception as e:
+                    logger.error("Catched exception %s in the construction of %s" %
+                                 (e, datastream_name))
+                    return False
+
                 if datastream_instance:
                     persistantstorage.stream_managers[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
@@ -367,7 +373,7 @@ def link_datastreams():
                                  " Could not import modules required for the "
                                  "desired datastream interface. Check that "
                                  "they can be found inside your PYTHONPATH "
-                                 "variable.")
+                                 "variable." % datastream_name)
                     return False
 
             datastream_instance.register_component(component_name, instance, datastream_data)
