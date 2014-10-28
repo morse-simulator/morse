@@ -29,8 +29,10 @@ Morse subsystems. It includes:
   with (:py:data:`morse.core.blender.persistantstorage.componentDict`)
 - Create the dictionary of modifiers
   (:py:data:`morse.core.blender.persistantstorage.modifierDict`)
+- Create the dictionary of datastream managers
+  (:py:data:`morse.core.blender.persistantstorage.stream_managers`)
 - Create the dictionary of datastream handlers
-  (:py:data:`morse.core.blender.persistantstorage.datastreamDict`)
+  (:py:data:`morse.core.blender.persistantstorage.datastreams`)
 - Create the dictionary of services
   (:py:data:`morse.core.blender.persistantstorage.morse_services`)
 - Create the dictionary of overlays

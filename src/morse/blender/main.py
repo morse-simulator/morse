@@ -137,7 +137,7 @@ def create_dictionaries ():
     persistantstorage.modifierDict = {}
 
     # Create a dictionary with the datastream interfaces used
-    persistantstorage.datastreamDict = {}
+    persistantstorage.stream_managers = {}
 
     # this dictionary stores, for each components, the direction and the
     # configured datastream interfaces. Direction is 'IN' for streams
@@ -287,10 +287,10 @@ def check_dictionaries():
 
     logger.info ("")
 
-    if persistantstorage.datastreamDict:
+    if persistantstorage.stream_managers:
         logger.info ("Datastream interfaces configured:")
-        for obj, datastream_variables in persistantstorage.datastreamDict.items():
-            logger.info ("\t- '{0}'".format(obj))
+        for key in persistantstorage.stream_managers.keys():
+            logger.info ("\t- '%s'" % key)
 
     logger.info("------------------------------------")
     logger.info ("")
@@ -352,25 +352,14 @@ def link_datastreams():
 
             datastream_name = datastream_data[0]
             logger.info("Component: '%s' using datastream '%s'" % (component_name, datastream_name))
-            found = False
-            missing_component = False
-            
-            # Look for the listed datastream in the dictionary of active datastream's
-            for datastream_obj, datastream_instance in persistantstorage.datastreamDict.items():
-                logger.debug("Looking for '%s' in '%s'" % (datastream_name, datastream_obj))
-                if datastream_name in datastream_obj:
-                    found = True
-                    # Make the datastream object take note of the component
-                    break
 
-            if not found:
-                try:
-                    kwargs = component_config.stream_manager.get(datastream_name, {})
-                except (AttributeError, NameError) as detail:
-                    kwargs = {}
+            # Look for the listed datastream in the dictionary of active datastream's
+            datastream_instance = persistantstorage.stream_managers.get(datastream_name, None)
+            if not datastream_instance:
+                kwargs = component_config.stream_manager.get(datastream_name, {})
                 datastream_instance = create_instance(datastream_name, None, kwargs)
-                if datastream_instance is not None:
-                    persistantstorage.datastreamDict[datastream_name] = datastream_instance
+                if datastream_instance:
+                    persistantstorage.stream_managers[datastream_name] = datastream_instance
                     logger.info("\tDatastream interface '%s' created" % datastream_name)
                 else:
                     logger.error("INITIALIZATION ERROR: Datastream '%s' module"
@@ -380,9 +369,9 @@ def link_datastreams():
                                  "they can be found inside your PYTHONPATH "
                                  "variable.")
                     return False
-            
+
             datastream_instance.register_component(component_name, instance, datastream_data)
-            
+
     # Will return true always (for the moment)
     return True
 
@@ -689,8 +678,8 @@ def simulation_main(contr):
     """
     # Call datastream manager action handler
     # Call it early at the synchronisation management may be done here
-    if 'datastreamDict' in persistantstorage:
-        for ob in persistantstorage.datastreamDict.values():
+    if 'stream_managers' in persistantstorage:
+        for ob in persistantstorage.stream_managers.values():
             ob.action()
 
     # Update the time variable
@@ -762,14 +751,14 @@ def close_all(contr):
 
     logger.log(ENDSECTION, 'CLOSING DATASTREAMS...')
     # Force the deletion of the datastream objects
-    if 'datastreamDict' in persistantstorage:
-        for obj, datastream_instance in persistantstorage.datastreamDict.items():
+    if 'stream_managers' in persistantstorage:
+        for obj, datastream_instance in persistantstorage.stream_managers.items():
             if datastream_instance:
                 import gc # Garbage Collector
                 logger.debug("At closing time, %s has %s references" %
                         (datastream_instance,
                          gc.get_referents(datastream_instance)))
-                del obj
+                del datastream_instance
 
     logger.log(ENDSECTION, 'CLOSING OVERLAYS...')
     del persistantstorage.overlayDict

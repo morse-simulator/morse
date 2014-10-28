@@ -170,7 +170,7 @@ class Supervision(AbstractObject):
                 robot["services_interfaces"] = services_iface[r.name()]
             return robot
 
-        for n, i in simu.datastreamDict.items():
+        for n, i in simu.stream_managers.items():
             pass
 
 
