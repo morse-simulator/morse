@@ -5,8 +5,9 @@ from morse.core.datastream import DatastreamManager
 from morse.core import blenderapi
 
 class MorseBaseAmbassador(rti.FederateAmbassador):
-    def __init__(self, rtia, time_sync):
+    def __init__(self, rtia, federation, time_sync):
         self._rtia = rtia
+        self.federation = federation
         self._time_sync = time_sync
 
         self.synchronisation_points = {}
@@ -20,7 +21,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
     def initialize_time_regulation(self):
         self.logical_time = self._rtia.queryFederateTime()
-        logger.debug("federation time %f" % self.logical_time)
+        logger.debug("federation %s time %f" % (self.federation, self.logical_time))
 
         self.constraint_enabled = False
         self.regulator_enabled = False
@@ -138,8 +139,8 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self.synchronisation_points[label] = True
 
 
-class HLANode:
-    def __init__(self, fom, node_name, federation, sync_point, time_sync):
+class HLABaseNode:
+    def __init__(self, klass, fom, node_name, federation, sync_point, time_sync):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         """
@@ -165,7 +166,7 @@ class HLANode:
                     "Please check the '.fed' file syntax.")
                 raise
             logger.debug("Creating MorseAmbassador...")
-            self.morse_ambassador = MorseBaseAmbassador(self.rtia, time_sync)
+            self.morse_ambassador = klass(self.rtia, federation, time_sync)
             try:
                 self.rtia.joinFederationExecution(node_name, 
                     federation, self.morse_ambassador)
@@ -220,7 +221,8 @@ class HLADatastreamManager(DatastreamManager):
             sync_point = kwargs.get("sync_point", None)
             time_sync = kwargs.get("time_sync", False)
 
-            self.node = HLANode(fom, node_name, federation, sync_point, time_sync)
+            self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
+                                    federation, sync_point, time_sync)
         except KeyError as error:
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")
