@@ -440,6 +440,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
+            'moos' : 'morse.middleware.moos.motion.MotionReader'
             }
         },
     "morse.actuators.waypoint.Waypoint": {
