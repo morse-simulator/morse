@@ -40,4 +40,3 @@ class MotionReader(AbstractMOOS):
                 new_information = True
 
         return new_information
-

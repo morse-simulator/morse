@@ -355,6 +355,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.light.BoolReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
+            "moos": 'morse.middleware.moos.light.LightReader',
             }
         },
     "morse.actuators.mocap_control.MocapControl": {
