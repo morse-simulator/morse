@@ -15,6 +15,22 @@ class AbstractMOOS(AbstractDatastream):
     def initialize(self):
         """ Initialize the MOOS app"""
         logger.info("MOOS datastream initialize %s"%self)
+
+        if 'moos_host' in self.kwargs:
+            self.moos_host = self.kwargs['moos_host']
+        else:
+            self.moos_host = "127.0.0.1"
+
+        if 'moos_port' in self.kwargs:
+            self.moos_port = self.kwargs['moos_port']
+        else:
+            self.moos_port = 9000
+
+        if 'moos_freq' in self.kwargs:
+            self.moos_freq = self.kwargs['moos_freq']
+        else:
+            self.moos_freq = 10 # [Hz]
+
         if not AbstractMOOS._moosapp:
             m = pymoos.MOOSCommClient.MOOSApp()
             #m.SetOnConnectCallBack( m.DoRegistrations )
@@ -22,8 +38,9 @@ class AbstractMOOS(AbstractDatastream):
 
             logger.info("%s" % m.GetLocalIPAddress())
 
-            fundamental_frequency = 10 # [Hz]
-            m.Run( "127.0.0.1", 9000, "MORSE_SIM", fundamental_frequency)
+            m.Run(self.moos_host, self.moos_port, "uMorse", self.moos_freq)
+            logger.info("MOOS datastream: host=%s:port=%d"%
+                        (self.moos_host, self.moos_port))
             AbstractMOOS._moosapp = m
             logger.info("MOOS datastream interface initialized")
         # all instance share the same static MOOSApp
