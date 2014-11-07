@@ -10,10 +10,11 @@ class AbstractMOOS(AbstractDatastream):
     # used to generate documentation, TODO fill in subclasses
     _type_name = "db entries"
     _type_url = ""
-    _moosapp = None
+    _moosapps = {}
+    _save_messages = {}
 
     def initialize(self):
-        """ Initialize the MOOS app"""
+        """ Initialize the MOOS app. """
         logger.info("MOOS datastream initialize %s"%self)
 
         if 'moos_host' in self.kwargs:
@@ -31,32 +32,46 @@ class AbstractMOOS(AbstractDatastream):
         else:
             self.moos_freq = 10 # [Hz]
 
-        if not AbstractMOOS._moosapp:
-            m = pymoos.MOOSCommClient.MOOSApp()
-            #m.SetOnConnectCallBack( m.DoRegistrations )
-            #m.SetOnMailCallBack( m.MailCallback )
+        mh = self.moos_host
+        mp = self.moos_port
+        mf = self.moos_freq
 
-            logger.info("%s" % m.GetLocalIPAddress())
+        if not (mh, mp) in AbstractMOOS._moosapps:
+            AbstractMOOS._save_messages[mh, mp] = []
+            AbstractMOOS._moosapps[mh, mp] = pymoos.MOOSCommClient.MOOSApp()
+            AbstractMOOS._moosapps[mh, mp].Run(mh, mp, "uMorse", mf)
+            logger.info("\tdatastream: host=%s:port=%d (freq: %.2fHz)"%(mh, mp, mf))
+            logger.info("\tnew interface initialized")
 
-            m.Run(self.moos_host, self.moos_port, "uMorse", self.moos_freq)
-            logger.info("MOOS datastream: host=%s:port=%d"%
-                        (self.moos_host, self.moos_port))
-            AbstractMOOS._moosapp = m
-            logger.info("MOOS datastream interface initialized")
-        # all instance share the same static MOOSApp
-        self.m = AbstractMOOS._moosapp
+        # all instance share the same static MOOSApp according to host and port
+        self.m = AbstractMOOS._moosapps[mh, mp]
+
+    def getRecentMail(self):
+        """ Get recent messages from MOOS. """
+        mh = self.moos_host
+        mp = self.moos_port
+        messages = self.m.FetchRecentMail()
+
+        # a call to FetchRecentMail empties the mail list in MOOSCommClient.MOOSApp
+        # because multiple actuators can share the same MOOSApp instance, 
+        # it is necessary to save new mails statically
+
+        # when there are new messages, the static list is updated
+        if len(messages) != 0:
+            AbstractMOOS._save_messages[mh, mp] = messages
+        
+        return AbstractMOOS._save_messages[mh, mp]
 
     def finalize(self):
         """ Kill the morse MOOS app."""
-        if AbstractMOOS._moosapp:
-            AbstractMOOS._moosapp.Close()
-            AbstractMOOS._moosapp = None
-        logger.info("MOOS datastream finalize %s"%self)
+        mh = self.moos_host
+        mp = self.moos_port
+        if (mh, mp) in AbstractMOOS._moosapps:
+            AbstractMOOS._moosapps[mh, mp].Close()
+            AbstractMOOS._moosapps.pop((mh, mp))
+            AbstractMOOS._save_messages.pop((mh, mp))
+            logger.info("MOOS datastream finalized: %s:%d"%(mh, mp))
 
-
-#
-# Example (String)
-#
 
 class StringPublisher(AbstractMOOS):
     """ Publish a string containing a printable representation of the
@@ -73,7 +88,6 @@ class StringPublisher(AbstractMOOS):
             self.m.Notify(name, str(data), current_time)
 
 
-
 class StringReader(AbstractMOOS):
     """ Log messages. """
 
@@ -84,4 +98,3 @@ class StringReader(AbstractMOOS):
         # log messages
         for message in messages:
             logger.info("message: %s" % str(message))
-

@@ -17,7 +17,7 @@ class MotionReader(AbstractMOOS):
     def default(self, ci='unused'):
         current_time = pymoos.MOOSCommClient.MOOSTime()
         # get latest mail from the MOOS comm client
-        messages = self.m.FetchRecentMail()
+        messages = self.getRecentMail()
 
         new_information = False
 
