@@ -311,7 +311,7 @@ class AbstractComponent(object):
         component can make several calls to this function to add bindings with
         more than one middleware.
 
-        :param datastream: enum in ['ros', 'socket', 'yarp', 'text', 'pocolibs']
+        :param datastream: enum in ['ros', 'socket', 'yarp', 'text', 'pocolibs', 'moos']
         :param classpath: if set, force to use the configuration of the given
                           component, instead of our own (default=None).
 
@@ -321,6 +321,7 @@ class AbstractComponent(object):
         .. code-block:: python
 
             component.add_stream('ros', topic='/myrobots/data')
+            component.add_stream('moos', moos_host=127.0.0.1, moos_port=9000, moos_freq=10)
 
         """
         self._err_if_not_exportable()
