@@ -300,7 +300,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.depth_camera.DepthVideoCamera": {
         "default": {
-            "ros": 'morse.middleware.ros.video_camera.VideoCameraPublisher',
+            "ros": 'morse.middleware.ros.depth_camera.DepthVideoCameraPublisher',
             "socket": 'morse.middleware.sockets.video_camera.VideoCameraPublisher',
             "yarp": 'morse.middleware.yarp_datastream.YarpImagePublisher',
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
