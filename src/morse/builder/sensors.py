@@ -62,7 +62,7 @@ class Gyroscope(SensorCreator):
         mesh.color(.8, .4, .1)
         self.append(mesh)
 
-class IMU(SensorCreator): 
+class IMU(SensorCreator):
     _classpath = "morse.sensors.imu.IMU"
 
     def __init__(self, name=None):
@@ -373,8 +373,6 @@ class Infrared(LaserSensorWithArc):
                 scan_window = 20.0, resolution = 1.0)
         # set the frequency to 10 Hz
         self.frequency(10)
-        # create default Arc_
-        self.create_laser_arc()
 
 class Velocity(SensorCreator):
     _classpath = "morse.sensors.velocity.Velocity"
