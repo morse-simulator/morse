@@ -1,9 +1,7 @@
 """
-import asyncore
-import threading
-from stream import Stream
+from stream import Stream, PollThread
 s = Stream('python.org', 80)
-threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} ).start()
+PollThread().start()
 s.is_up()
 s.publish("GET /\r\n")
 s.get(.5) or s.last()
@@ -11,6 +9,7 @@ s.get(.5) or s.last()
 import json
 import socket
 import logging
+import asyncore
 import asynchat
 import threading
 # Double-ended queue, thread-safe append/pop.
@@ -21,6 +20,18 @@ logger.setLevel(logging.WARNING)
 # logger.addHandler( logging.NullHandler() )
 
 MSG_SEPARATOR=b"\n"
+
+class PollThread(threading.Thread):
+    def __init__(self, timeout=0.01):
+        threading.Thread.__init__(self)
+        self.keep_polling = True
+        self.timeout = timeout
+    def run(self):
+        while asyncore.socket_map and self.keep_polling:
+            asyncore.poll(self.timeout, asyncore.socket_map)
+    def syncstop(self, timeout=None):
+        self.keep_polling = False
+        return self.join(timeout)
 
 class StreamB(asynchat.async_chat):
     """ Asynchrone I/O stream handler (raw bytes)
