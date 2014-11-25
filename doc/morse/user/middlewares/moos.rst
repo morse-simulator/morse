@@ -25,4 +25,20 @@ The names of the MOOS database variables are generated in the following way:
 Configuration specificities
 ---------------------------
 
-There is no special configuration parameter for the MOOS middleware.
+When configuring a component to export its data through MOOS, you can pass
+the options ``moos_host`` and ``moos_port`` to define the host and port of
+the MOOS community in which you want to communicate. Default values are 
+``127.0.0.1:9000``.
+
+
+.. code-block :: python
+
+    foo.add_stream('moos', moos_port=9002, moos_host="127.0.0.2")
+
+
+The same way, the option ``moos_freq`` defines the frequency with which 
+data should be exported. The default value is 10Hz.
+
+.. code-block :: python
+
+    foo.add_stream('moos', moos_freq=20)
