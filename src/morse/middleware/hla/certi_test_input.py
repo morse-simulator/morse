@@ -1,6 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware import AbstractDatastream
-from hla.message_buffer import MessageBufferReader
+from morse.middleware.hla.message_buffer import MessageBufferReader
 
 class CertiTestInput(AbstractDatastream):
     def initialize(self):
