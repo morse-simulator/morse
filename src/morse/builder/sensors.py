@@ -318,8 +318,6 @@ class Infrared(LaserSensorWithArc):
                 scan_window = 20.0, resolution = 1.0)
         # set the frequency to 10 Hz
         self.frequency(10)
-        # create default Arc_
-        self.create_laser_arc()
 
 class Velocity(SensorCreator):
     def __init__(self, name=None):
