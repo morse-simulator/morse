@@ -626,9 +626,9 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None, scr
                     tmpF.close()
                     os.unlink(tmpF.name)
         logger.info("Executing Blender script: " + script)
-        os.execle(blender_exec, blender_exec, scene, "-y", "-P", script, *other_params)
+        os.execle(blender_exec, blender_exec, scene, "-y", "--no-native-pixels", "-P", script, *other_params)
     else:
-        os.execle(blender_exec, blender_exec, scene, "-y", *other_params)
+        os.execle(blender_exec, blender_exec, scene, "-y", "--no-native-pixels", *other_params)
 
 def do_check(args):
     try:
