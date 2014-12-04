@@ -606,6 +606,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
         exec_args += ["-setaudio", "NULL"]
 
     exec_args += [scene, "-y"]
+    exec_args += ["--no-native-pixels"]
 
     #Replace the current process by Blender
     if script is not None:
