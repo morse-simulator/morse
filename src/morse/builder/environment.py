@@ -41,6 +41,7 @@ class Environment(Component):
         self._created = False
         self._camera_location = [5, -5, 5]
         self._camera_rotation = [0.7854, 0, 0.7854]
+        self._focal_length = 20.0
         self._environment_file = filename
         self._multinode_configured = False
         self._display_camera = None
@@ -215,6 +216,18 @@ class Environment(Component):
         """
         self._camera_speed = speed
 
+    def set_camera_focal_length(self, focal_length=20.0):
+        """ Set the focal length of the default camera
+
+        :param focal_length: focal length im mm (default 20.0)
+
+        .. code-block:: python
+
+            env.set_camera_focal_length(50.0)
+
+        """
+        self._focal_length = focal_length
+
     def _cfg_camera_scene(self):
         scene = bpymorse.get_context_scene()
         scene.name = 'S.MORSE_LOGIC'
@@ -333,7 +346,7 @@ class Environment(Component):
         camera_fp.game.properties['Speed'].value = self._camera_speed
         camera_fp.data.clip_start = self._camera_clip_start
         camera_fp.data.clip_end   = self._camera_clip_end
-        camera_fp.data.lens = 20 # set focal length in mm
+        camera_fp.data.lens = self._focal_length # set focal length in mm
         # Make CameraFP the active camera
         bpymorse.deselect_all()
         camera_fp.select = True
