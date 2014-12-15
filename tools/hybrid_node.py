@@ -73,7 +73,7 @@ class HybridNode(object):
         """ Send and receive pickled data through a socket """
         # Use the existing socket connection
         self.node_stream.publish(['hybrid', self.out_data])
-        # Wait 1ms for incomming data or return the last one recieved
+        # Wait 1ms for incomming data or return the last one received
         return self.node_stream.get(timeout=.001) or self.node_stream.last()
 
     def synchronize(self):

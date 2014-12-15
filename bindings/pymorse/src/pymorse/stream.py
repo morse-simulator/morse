@@ -114,7 +114,7 @@ class StreamB(asynchat.async_chat):
 
     # TODO implement last n msg decode and msg_queue with hash(msg) -> decoded msg
     def last(self, n=1):
-        """ get the last message recieved
+        """ get the last message received
 
         :returns: decoded message or None if no message available
         """
