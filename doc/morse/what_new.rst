@@ -47,6 +47,21 @@ Socket
 - Socket middleware now accepts the keyword 'port' to specify on which port
   you want the socket binds itself.
 
+Moos
+++++
+
+- Support for Moos has been enhanced, allowing to use multiples Moos nodes.
+  Moreover, it supports additional actuators such as
+  :doc:`user/actuators/teleport` and :doc:`user/actuators/light`.
+
+HLA
++++
+
+- HLA can be now used as a general purpose middleware, i.e. it is possible to
+  import / export any actuator / sensor using the HLA interface. Through, for
+  moment, no Simulation Object Model (SOM) has been formally defined for
+  Morse.
+
 
 Builder API
 -----------
