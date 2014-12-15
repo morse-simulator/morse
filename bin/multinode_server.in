@@ -4,17 +4,16 @@
 TEST
 ====
 
-import asyncore
-import threading
-from pymorse import StreamJSON
+from pymorse.stream import StreamJSON, PollThread
 node_stream = StreamJSON('localhost', 65000)
-async_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} )
-async_thread.start()
+poll_thread = PollThread()
+poll_thread.start()
 node_stream.publish(['node1', {'robot1': [[0, 0, 0], [0, 0, 0]]}])
 node_stream.publish(['node1', {'robot2': [[0, 0, 1], [1, 0, 0]]}])
 node_stream.publish(['node1', {'robot3': [[0, 1, 0], [0, 1, 0]]}])
 node_stream.last()
 node_stream.close()
+poll_thread.syncstop()
 """
 
 import socket
@@ -28,7 +27,7 @@ handler.setFormatter( logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] 
 logger.addHandler( handler )
 logger.setLevel(logging.INFO)
 
-from pymorse import StreamJSON
+from pymorse.stream import StreamJSON, PollThread
 
 class MorseMultinode(asyncore.dispatcher):
     def __init__(self, host='0.0.0.0', port=65000):
@@ -45,6 +44,13 @@ class MorseMultinode(asyncore.dispatcher):
         logger.info("Incoming connection from %s" % repr(addr))
         #self.nodes[addr] = MorseNode(sock, self)
         MorseNode(sock, self)
+
+def check_pose(rot, loc):
+    inf = float('inf')
+    return len(rot) == 3 and len(loc) == 3 and \
+           [-inf < val < +inf for val in rot] == \
+           [-inf < val < +inf for val in loc] == \
+           [True, True, True]
 
 class MorseNode(object):
     def __init__(self, sock, master):
@@ -65,10 +71,13 @@ class MorseNode(object):
         # Build/update the list of robots from
         #  the data received from all the clients
         for robot_name, robot_position in client_robots.items():
-            self._master.robots[robot_name] = robot_position
+            if type(robot_name) is str and check_pose(*robot_position):
+                self._master.robots[robot_name] = robot_position
+            else:
+                logger.info("received unexpected robot data, discarding.")
 
         # (self._master.robots - client_robots.keys())
-        # do not send back the data we just recieved
+        # do not send back the data we just received
         data = self._master.robots.copy()
         for robot in client_robots.keys():
             del data[robot] # faster than: data.pop(robot)

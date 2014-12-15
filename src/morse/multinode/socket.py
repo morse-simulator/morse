@@ -4,12 +4,10 @@ import mathutils
 from morse.core import blenderapi
 from morse.core.multinode import SimulationNodeClass
 
-import asyncore
-import threading
-from pymorse import StreamJSON
+from pymorse.stream import StreamJSON, PollThread
 
 class SocketNode(SimulationNodeClass):
-    """ 
+    """
     Implements multinode simulation using sockets.
     """
 
@@ -23,8 +21,8 @@ class SocketNode(SimulationNodeClass):
         logger.debug("Connecting to %s:%d" % (self.host, self.port) )
         try:
             self.node_stream = StreamJSON(self.host, self.port)
-            self.async_thread = threading.Thread( target = asyncore.loop, kwargs = {'timeout': .1} )
-            self.async_thread.start()
+            self.poll_thread = PollThread()
+            self.poll_thread.start()
             if self.node_stream.connected:
                 logger.info("Connected to %s:%s" % (self.host, self.port) )
         except Exception as err:
@@ -47,10 +45,11 @@ class SocketNode(SimulationNodeClass):
             return
 
         # Get the coordinates of local robots
-        for obj, local_robot_data in blenderapi.persistantstorage().robotDict.items():
+        for obj in blenderapi.persistantstorage().robotDict.keys():
             #self.out_data[obj.name] = [obj.worldPosition.to_tuple()]
             euler_rotation = obj.worldOrientation.to_euler()
-            self.out_data[obj.name] = [obj.worldPosition.to_tuple(), [euler_rotation.x, euler_rotation.y, euler_rotation.z]]
+            self.out_data[obj.name] = [obj.worldPosition.to_tuple(), \
+                [euler_rotation.x, euler_rotation.y, euler_rotation.z]]
         # Send the encoded dictionary through a socket
         #  and receive a reply with any changes in the other nodes
         in_data = self._exchange_data(self.out_data)
@@ -80,5 +79,7 @@ class SocketNode(SimulationNodeClass):
         """ Close the communication socket. """
         if self.node_stream:
             self.node_stream.close()
-            # asyncore.close_all() # make sure all connection are closed
-            self.async_thread.join(timeout=1)
+            self.node_stream = None
+        if self.poll_thread:
+            self.poll_thread.syncstop(1)
+            self.poll_thread = None
