@@ -8,6 +8,7 @@ class RangePublisher(ROSPublisher):
 
     def default(self, ci='unused'):
         msg = Range()
+        msg.header = self.get_ros_header()
         msg.radiation_type = Range.INFRARED
         msg.field_of_view = 20
         msg.min_range = 0

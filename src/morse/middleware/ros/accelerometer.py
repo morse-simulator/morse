@@ -10,6 +10,7 @@ class TwistPublisher(ROSPublisher):
 
     def default(self, ci='unused'):
         twist = Twist()
+        twist.header = self.get_ros_header()
 
         # Fill twist-msg with the values from the sensor
         twist.linear.x = self.data['velocity'][0]
