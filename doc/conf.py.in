@@ -42,7 +42,7 @@ master_doc = 'morse'
 
 # General information about the project.
 project = u'MORSE'
-copyright = u'2009-2010, LAAS-CNRS/ONERA ; 2010-2014, LAAS-CNRS'
+copyright = u'2009-2010, LAAS-CNRS/ONERA ; 2010-2015, LAAS-CNRS'
 
 
 # The version info for the project you're documenting, acts as replacement for

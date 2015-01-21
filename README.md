@@ -1,7 +1,7 @@
 OpenRobots Simulator
 ====================
 
-    (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2014
+    (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2015
 
 [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
 
@@ -63,4 +63,3 @@ The development of MORSE is partially funded by the Foundation RTRA
 within the ROSACE project framework, and by DGA
 <http://www.defense.gouv.fr/dga> through the ACTION
 <http://action.onera.fr> project.
-

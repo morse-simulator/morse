@@ -1,6 +1,6 @@
 ===============================================================================
                          Modular OpenRobots Simulator Engine
-                          (c) LAAS/ONERA 2009-2010 LAAS 2011-2014
+                       (c) LAAS/ONERA 2009-2010 LAAS 2011-2015
 ===============================================================================
 
 
@@ -92,13 +92,13 @@ Prerequisites
   If you decide to install Python by hand, the compilation must be done
   according to your operating system, to match the Python compiled in
   Blender:
-  
+
   - On **Linux** compile with the --with-wide-unicode flag. This will
     provide you with 4-byte Unicode characters (max size: 1114111)
 
   - On **Mac OS** do not use the --with-wide-unicode flag. This will
     provide you with 2-byte Unicode characters (max size: 65535)
- 
+
   It the unicode sizes between Python and Blender do not match, you will get
   errors about undefined symbols with names starting with  PyUnicodeUCS4
 
@@ -109,8 +109,8 @@ Download the latest version of the source code. It is stored in a git
 repository::
 
   $ git clone https://github.com/laas/morse.git
-  
-You can also get a tarball version here. 
+
+You can also get a tarball version here.
 
 Go to the directory where you have previously downloaded the MORSE source.
 Then type these commands::
