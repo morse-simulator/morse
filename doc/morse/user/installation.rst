@@ -84,7 +84,7 @@ you want to use HLA, you have to first install the CERTI and ``PyHLA`` packages:
     :glob:
     :maxdepth: 1
     
-    installation/hla
+    installation/mw/hla
 
 
 Manual installation
@@ -160,8 +160,7 @@ these additional parameters.
   ON by default
 - ``BUILD_DOC_SUPPORT`` controls the build of the documentation (require
   sphinx)
-- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support for multi-node
-  simulations in MORSE.
+- ``BUILD_HLA_SUPPORT`` controls the builds of HLA support in MORSE.
 - ``BUILD_POCOLIBS_SUPPORT`` controls the build of pocolibs support in MORSE.
 - ``BUILD_YARP2_SUPPORT`` controls the build of YARP support in MORSE.
 - ``BUILD_ROS_SUPPORT`` controls the build of ROS support in MORSE.
