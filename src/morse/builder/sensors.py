@@ -411,10 +411,16 @@ class VideoCamera(SensorCreator):
         # looking in +X
         SensorCreator.rotate(self, x=math.pi/2, z=math.pi/2)
         # append CameraMesh with its textures
-        self.append_meshes(['CameraMesh'], "camera")
+        self.mesh = self.append_meshes(['CameraMesh'], "camera")[0]
         self.rotate(z=math.pi)
     def rotate(self, x=0, y=0, z=0):
         SensorCreator.rotate(self, x=y, y=z, z=x)
+    def hide_mesh(self, hide=True):
+        """ Hide the camera mesh
+
+        Can be used to hide a third person camera attached to a robot.
+        """
+        self.mesh.hide_render = hide
 
 class DepthCamera(VideoCamera):
     _classpath = "morse.sensors.depth_camera.DepthCamera"
