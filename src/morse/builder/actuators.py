@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morsebuilder." + __name__)
 from morse.builder.creator import ComponentCreator, ActuatorCreator
 from morse.builder.blenderobjects import *
+from morse.core.exceptions import MorseBuilderError
 
 class Arucomarker(ActuatorCreator):
     _classpath = "morse.actuators.arucomarker.Arucomarker"
