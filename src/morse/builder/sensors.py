@@ -438,6 +438,11 @@ class Velodyne(DepthCamera):
     def __init__(self, name=None):
         DepthCamera.__init__(self, name)
         self.properties(rotation=self.camera._bpy_object.data.angle)
+        self.mesh = self.append_meshes(['VelodyneMesh'])[0]
+        self.mesh.rotation_euler.x = math.pi / 2
+        self.mesh.rotation_euler.y = -math.pi / 2
+        self.mesh.scale = [1.1]*3
+
 
 VelodyneZB = Velodyne # morse 1.1 compatible
 
