@@ -102,7 +102,7 @@ def _associate_child_to_robot(obj, robot_instance, unset_default):
                                      + obj.name + " is an External robot.")
         else:
             logger.info("Component %s %s added to %s" %
-                        (child.name, 
+                        (child.name,
                          "(level: %s)" % child.get("abstraction_level") \
                                  if child.get("abstraction_level") else "",
                          obj.name)
@@ -198,7 +198,7 @@ def create_dictionaries ():
                              "using the new builder classes"%str(obj.name))
                 return False
             # Create an object instance and store it
-            instance = create_instance_level(obj['classpath'], 
+            instance = create_instance_level(obj['classpath'],
                                              obj.get('abstraction_level'),
                                              obj)
 
@@ -222,17 +222,17 @@ def create_dictionaries ():
     for obj in scene.objects:
         if 'Zone_Tag' in obj:
             persistantstorage.zone_manager.add(obj)
-    
+
     # Get the robot and its instance
     for obj, robot_instance in persistantstorage.robotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, False):
             return False
-    
+
     # Get the external robot and its instance
     for obj, robot_instance in persistantstorage.externalRobotDict.items():
         if not _associate_child_to_robot(obj, robot_instance, True):
             return False
-  
+
     # Check we have no 'free' component (they all must belong to a robot)
     for obj in scene.objects:
         try:
@@ -244,7 +244,7 @@ def create_dictionaries ():
                 return False
         except KeyError as detail:
             pass
-    
+
     # Will return true always (for the moment)
     return True
 
@@ -344,7 +344,7 @@ def link_datastreams():
         else:
             assert False
 
-        persistantstorage.datastreams[component_name] = (direction, 
+        persistantstorage.datastreams[component_name] = (direction,
                                      [d[0] for d in datastream_list])
 
         # Register all datastream's in the list
@@ -395,7 +395,7 @@ def link_services():
 
     for component_name, request_manager_data in component_list.items():
         # Get the instance of the object
-        
+
         if component_name == "simulation": # Special case for the pseudo-component 'simulation'
             continue
 
@@ -420,19 +420,19 @@ def link_services():
             # Load required request managers
             if not persistantstorage.morse_services.add_request_manager(request_manager):
                 return False
-            
+
             persistantstorage.morse_services.register_request_manager_mapping(component_name, request_manager)
             instance.register_services()
             logger.info("Component: '%s' using middleware '%s' for services" %
                         (component_name, request_manager))
-    
+
     return True
 
 
 def load_overlays():
     """ Read and initialize overlays from the configuration script.
     """
-    
+
     try:
         overlays_list = component_config.overlays
     except (AttributeError, NameError) as detail:
@@ -542,7 +542,7 @@ def init(contr):
 
     Here, all components, modifiers and middlewares are initialized.
     """
-    
+
     init_logging()
 
     logger.log(SECTION, 'PRE-INITIALIZATION')
@@ -588,14 +588,14 @@ def init(contr):
         contr = morse.core.blenderapi.controller()
         close_all(contr)
         quit(contr)
-    
+
     # Set the default value of the logic tic rate to 60
     #bge.logic.setLogicTicRate(60.0)
     #bge.logic.setPhysicsTicRate(60.0)
 
 def init_logging():
     from morse.core.ansistrm import ColorizingStreamHandler
-    
+
     if "with-colors" in sys.argv:
         if "with-xmas-colors" in sys.argv:
             ch = ColorizingStreamHandler(scheme = "xmas")
@@ -603,17 +603,17 @@ def init_logging():
             ch = ColorizingStreamHandler(scheme = "dark")
         else:
             ch = ColorizingStreamHandler()
-        
+
     else:
         ch = ColorizingStreamHandler(scheme = "mono")
-    
+
     from morse.helpers.morse_logging import MorseFormatter
     # create logger
     logger = logging.getLogger('morse')
     logger.setLevel(logging.INFO)
 
     # create console handler and set level to debug
-    
+
     ch.setLevel(logging.DEBUG)
 
     # create formatter
@@ -630,7 +630,7 @@ def init_supervision_services():
     virtual 'simulation' component to it, loads any other request
     manager mapped to the 'simulation' component and register all
     simulation management services declared in
-    :py:mod:`morse.core.supervision_services` 
+    :py:mod:`morse.core.supervision_services`
     """
 
     from morse.services.supervision_services import Supervision
@@ -708,7 +708,7 @@ def simulation_main(contr):
     if "morse_services" in persistantstorage:
         # let the service managers process their inputs/outputs
         persistantstorage.morse_services.process()
-    
+
     if MULTINODE_SUPPORT:
         # Register the locations of all the robots handled by this node
         persistantstorage.node_instance.synchronize()
@@ -721,8 +721,9 @@ def switch_camera(contr):
     # Activate only once for each key press
     if sensor.positive and sensor.triggered:
         scene = morse.core.blenderapi.scene()
+        cameras = [c for c in scene.cameras if not 'NOT_F9_ABLE' in c]
         index = persistantstorage.current_camera_index
-        next_camera = scene.cameras[index]
+        next_camera = cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
         # Disable mouse cursor for Human camera
@@ -731,7 +732,7 @@ def switch_camera(contr):
         else:
             morse.core.blenderapi.mousepointer(visible = True)
         # Update the index for the next call
-        index = (index + 1) % len(scene.cameras)
+        index = (index + 1) % len(cameras)
         persistantstorage.current_camera_index = index
 
 
@@ -749,7 +750,7 @@ def close_all(contr):
     # Force the deletion of the robot objects
     if 'robotDict' in persistantstorage:
         for robot_instance in persistantstorage.robotDict.values():
-           robot_instance.finalize() 
+           robot_instance.finalize()
 
     logger.log(ENDSECTION, 'CLOSING REQUEST MANAGERS...')
     del persistantstorage.morse_services

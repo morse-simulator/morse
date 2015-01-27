@@ -437,6 +437,7 @@ class Velodyne(DepthCamera):
 
     def __init__(self, name=None):
         DepthCamera.__init__(self, name)
+        self.camera.properties(NOT_F9_ABLE=1)
         self.properties(rotation=self.camera._bpy_object.data.angle)
         self.mesh = self.append_meshes(['VelodyneMesh'])[0]
         self.mesh.rotation_euler.x = math.pi / 2
