@@ -39,6 +39,7 @@ examples in the following tutorials:
 - :doc:`beginner_tutorials/tutorial`
 - :doc:`beginner_tutorials/yarp_tutorial`
 - :doc:`beginner_tutorials/ros_tutorial`
+- :doc:`advanced_tutorials/hla_tutorial`
 
 
 Extending middleware support of MORSE

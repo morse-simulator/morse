@@ -93,6 +93,7 @@ with specific requirements.
     user/advanced_tutorials/mocap_tutorial
     user/advanced_tutorials/request_tutorial
     user/advanced_tutorials/noise_ghost_tutorial
+    user/advanced_tutorials/hla_tutorial
     
 Multi-node tutorials
 --------------------
