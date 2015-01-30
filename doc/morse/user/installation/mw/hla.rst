@@ -1,5 +1,5 @@
-HLA
----
+HLA :tag:`hla`
+--------------
 
 The High Level Architecture (HLA) is a standard framework that supports
 simulations composed of different simulation components. Some introductory

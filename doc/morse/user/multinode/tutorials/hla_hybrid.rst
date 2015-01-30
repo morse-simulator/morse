@@ -1,5 +1,5 @@
-HLA-based hybrid simulation
-===========================
+HLA-based hybrid simulation :tag:`hla`
+======================================
 
 In this tutorial, we learn how to use HLA to setup a hybrid simulation. A hybrid 
 simulation in the MORSE context is made of at least one MORSE node, connected

@@ -1,5 +1,5 @@
-HLA-based multi-node simulation
-===============================
+HLA-based multi-node simulation :tag:`hla`
+==========================================
 
 In this tutorial you can experiment distributing your MORSE simulation using HLA.
 You'll be able to connect two simulation nodes, each one controlling one robot.
