@@ -25,4 +25,5 @@ class CertiTestInput(AbstractDatastream):
             logger.info("%s pose %f %f" % (hla_name, x, y))
             self.data['x'] = x
             self.data['y'] = y
+            self.data['z'] = 0.0
 
