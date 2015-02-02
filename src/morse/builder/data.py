@@ -264,7 +264,8 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
-                         'morse.middleware.pocolibs.sensors.pom.PomPoster']
+                         'morse.middleware.pocolibs.sensors.pom.PomPoster'],
+            "mavlink": 'morse.middleware.mavlink.odometry_to_local_ned.OdometrySensor'
             }
         },
     "morse.sensors.magnetometer.Magnetometer": {
