@@ -1,8 +1,9 @@
 from morse.builder.creator import SensorCreator
 
 class @classname@(SensorCreator):
+    _classpath = "@env@.sensors.@name@.@classname@"
+    _blendname = "@name@"
+
     def __init__(self, name=None):
-        SensorCreator.__init__(self, name, \
-                               "@env@.sensors.@name@.@classname@",\
-                               "@name@")
+        SensorCreator.__init__(self, name)
 
