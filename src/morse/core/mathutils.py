@@ -6,7 +6,7 @@ documentation generation purposes).
 import sys
 
 # running in Blender?
-if not sys.executable.endswith('blender'):
+if not "blender" in sys.executable:
     print("WARNING: MORSE is running outside Blender! "
           "(sys.executable != blender)")
 

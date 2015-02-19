@@ -8,7 +8,7 @@ import sys
 fake = False
 
 # running in Blender?
-if sys.executable.endswith('blender'):
+if "blender" in sys.executable:
     import bpy
     try:
         import bge
