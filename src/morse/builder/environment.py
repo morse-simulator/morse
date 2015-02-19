@@ -376,6 +376,48 @@ class Environment(Component):
         # Set the color at the horizon to dark azure
         bpymorse.get_context_scene().world.horizon_color = color
 
+    def enable_mist(self,value=True):
+        """ Enables or disables mist
+
+        See `World/Mist on the Blender Manual
+        <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Mist>`_
+        for more information about this particular setting.
+
+        :param value: indicate whether to enable/disable mist
+        """
+        if isinstance(value, bool):
+            bpymorse.get_context_scene().world.mist_settings.use_mist = value
+
+    def set_mist_settings(self, **settings):
+        """ Sets the mist settings for the scene
+
+        See `World/Mist on the Blender Manual
+        <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Mist>`_
+        for more information about this particular setting.
+
+        Optional arguments need to be specified with identifyer:
+        :param enable:     Enables or disables mist
+        :param intensity:  Overall minimum intensity of the mist effect in [0,1]
+        :param start:      Starting distance of the mist, measured from the camera
+        :param depth:      Distance over which the mist effect fades in
+        :param falloff:     Type of transition used to fade mist enum in ['QUADRATIC', 'LINEAR', 'INVERSE_QUADRATIC'], default 'QUADRATIC'
+
+        """
+
+        # set the values through bpymorse interface, erronous values are taken care of elsewhere
+        if 'falloff' in settings:
+            bpymorse.get_context_scene().world.mist_settings.falloff = settings['falloff']
+        if 'intensity' in settings:
+            bpymorse.get_context_scene().world.mist_settings.intensity = settings['intensity']
+        if 'start' in settings:
+            bpymorse.get_context_scene().world.mist_settings.start = settings['start']
+        if 'depth' in settings:
+            bpymorse.get_context_scene().world.mist_settings.depth = settings['depth']
+        if 'enable' in settings:
+            self.enable_mist(settings['enable'])
+
+
+
     def show_debug_properties(self, value=True):
         """ Display the value of the game-properties marked as debug
 
