@@ -3,6 +3,9 @@ for all the cases we need to run MORSE code outside Blender (mostly for
 documentation generation purposes).
 """
 from morse.core.exceptions import MorseBuilderNoComponentError
+import logging
+
+logger = logging.getLogger('morse')
 
 bpy = None
 
