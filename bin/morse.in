@@ -599,7 +599,8 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
         other_params += script_options
 
     other_params.append(env) # must be the last option
-    exec_args = [blender_exec, blender_exec]
+    blender_exec_encoded = os.fsencode(blender_exec)
+    exec_args = [blender_exec_encoded, blender_exec]
 
     if noaudio:
         exec_args += ["-setaudio", "NULL"]
@@ -616,7 +617,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
                 script_path = os.path.abspath(script)
                 script_path = script_path.replace ('\\', '/')
                 tmpF.write(("import sys\n").encode())
-                for element in sys.path.split(os.pathsep):
+                for element in sys.path:
                     element = element.replace('\\', '/')
                     tmpF.write(("sys.path.append('" + element + "')\n").encode())
                 tmpF.write(("exec(compile(open('" + script_path + "').read(), '" + script_path + "', 'exec'), globals (), locals ())\n").encode())
