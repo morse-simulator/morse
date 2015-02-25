@@ -4,6 +4,8 @@ try:
     import roslib
 except ImportError as error:
     logger.error("Could not find ROS. source setup.[ba]sh ?")
+    logger.error("Please follow the installation instructions at:\n"
+        "http://www.openrobots.org/morse/doc/latest/user/installation/mw/ros.html")
     raise error
 import rospy
 
