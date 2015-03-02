@@ -14,12 +14,18 @@ Manually
 ++++++++
 
 CERTI is available on http://download.savannah.gnu.org/releases/certi/. The
-version 2.4.3 is known to work properly with Morse. PyHLA can be found in
+version 3.4.3 is known to work properly with Morse. PyHLA can be found in
 http://download.savannah.gnu.org/releases/certi/contrib/PyHLA/. The version
 1.1.1 is known to work with Morse.
 
 Once you have downloaded and untarred the two projects, you can simply build
-them using cmake. For pyHLA, do not forget to precise the python version you
+them using cmake. 
+For CERTI, you need to add the flag ``-DCERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL=ON``
+for better performance::
+
+    $ cmake -DCERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL=ON .
+
+For pyHLA, do not forget to precise the python version you
 want to build it using::
 
     $ cmake -DPYTHON_EXECUTABLE=/path/to/python3.{3,4} .
