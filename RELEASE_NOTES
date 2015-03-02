@@ -70,6 +70,8 @@ API addition
 
 - Add a method Environment.configure_stream_manager allowing to pass
   option/information to each datastream manager.
+It is now possible to control the mist settings in Morse, using
+  Environment.enable_mist`` and ``Environment.set_mist_settings.
 
 MORSE 1.2
 =========
