@@ -25,7 +25,7 @@ console and execute::
 We will now add our first instance to the federation, ``billard`` ,a poolroom
 model provided by CERTI. So, in another console, start::
 
-  $ billard -n foo -f test -F Test.fed
+  $ billard -n foo -f Test -F Test.fed
 
 where:
 
