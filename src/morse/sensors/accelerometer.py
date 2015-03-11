@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 from morse.helpers.components import add_data
+from morse.core.mathutils import *
 
 class Accelerometer(morse.core.sensor.Sensor):
     """ 
@@ -33,63 +34,91 @@ class Accelerometer(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         morse.core.sensor.Sensor.__init__(self, obj, parent)
 
-        # Variables to store the previous position
-        self.ppx = 0.0
-        self.ppy = 0.0
-        self.ppz = 0.0
-        # Variables to store the previous velocity
-        self.pvx = 0.0
-        self.pvy = 0.0
-        self.pvz = 0.0
-        # Make a new reference to the sensor position
-        self.p = self.bge_object.position
-        self.v = [0.0, 0.0, 0.0]            # Velocity
-        self.pv = [0.0, 0.0, 0.0]           # Previous Velocity
-        self.a = [0.0, 0.0, 0.0]            # Acceleration
+        self.pp = Vector((0.0, 0.0, 0.0)) # previous position
+        self.plv = Vector((0.0, 0.0, 0.0)) # previous linear velocity
+        self.pav = Vector((0.0, 0.0, 0.0)) # previous angular velocity
+        self.dp = Vector((0.0, 0.0, 0.0))  # diff position
+        self.pt = 0.0 # previous timestamp
+        self.dt = 0.0 # diff
+
+        self.v = Vector((0.0, 0.0, 0.0)) # current linear velocity
+        self.a = Vector((0.0, 0.0, 0.0)) # current angular velocity
+
+        self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+
+        # imu2body will transform a vector from imu frame to body frame
+        self.imu2body = self.sensor_to_robot_position_3d()
+        # rotate vector from body to imu frame
+        self.rot_b2i = self.imu2body.rotation.conjugated()
+
+        if self.imu2body.translation.length > 0.01:
+            self.compute_offset_acceleration = True
+        else:
+            self.compute_offset_acceleration = False
+
+        if self.has_physics:
+            # make new references to the robot velocities and use those.
+            self.robot_w = self.robot_parent.bge_object.localAngularVelocity
+            self.robot_vel = self.robot_parent.bge_object.worldLinearVelocity
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
+    def _sim_simple(self):
+        self.v = self.dp / self.dt
+        self.a = (self.v - self.plv) / self.dt
+
+        # Update the data for the velocity
+        self.plv = self.v.copy()
+
+        # Store the important data
+        w2a = self.position_3d.rotation_matrix.transposed()
+        self.local_data['velocity'] = w2a * self.v
+        self.local_data['acceleration'] = w2a * self.a
+
+    def _sim_physics(self):
+        w2a = self.position_3d.rotation_matrix.transposed()
+        # rotate the angular rates from the robot frame into the imu frame
+        rates = self.rot_b2i * self.robot_w
+
+        # differentiate linear velocity in world (inertial) frame
+        # and rotate to imu frame
+        self.a = w2a * (self.robot_vel - self.plv) / self.dt
+
+        if self.compute_offset_acceleration:
+            # acceleration due to rotation (centripetal)
+            # is zero if imu is mounted in robot center (assumed axis of rotation)
+            a_centripetal = self.rot_b2i * rates.cross(rates.cross(self.imu2body.translation))
+            #logger.debug("centripetal acceleration (% .4f, % .4f, % .4f)", a_rot[0], a_rot[1], a_rot[2])
+
+            # linear acceleration due to angular acceleration
+            a_alpha = self.rot_b2i * (self.robot_w - self.pav).cross(self.imu2body.translation) / self.dt
+
+            # final measurement includes acceleration due to rotation center not in IMU
+            self.a += a_centripetal + a_alpha
+
+        # save velocity for next step
+        self.plv = self.robot_vel.copy()
+        self.pav = self.robot_w.copy()
+
+        self.local_data['velocity'] = w2a * self.robot_vel
+        self.local_data['acceleration'] = self.a
 
     def default_action(self):
-        """ Compute the speed and accleration of the robot
-
-        The speed and acceleration are computed using the blender tics
-        to measure time.
-        When computing velocity as v = d / t, and t = 1 / frequency, then
-        v = d * frequency
-        where frequency is computed from the blender tics and number of skipped
-        logic steps for this sensor.
-        """
+        """ Compute the speed and accleration of the robot """
         # Compute the difference in positions with the previous loop
-        dx = self.p[0] - self.ppx
-        dy = self.p[1] - self.ppy
-        dz = self.p[2] - self.ppz
-        self.local_data['distance'] = math.sqrt(dx**2 + dy**2 + dz**2)
+        self.dp = self.position_3d.translation - self.pp
+        self.local_data['distance'] = \
+            math.sqrt(self.dp[0]**2 + self.dp[1]**2 + self.dp[2]**2)
         logger.debug("DISTANCE: %.4f" % self.local_data['distance'])
 
         # Store the position in this instant
-        self.ppx = self.p[0]
-        self.ppy = self.p[1]
-        self.ppz = self.p[2]
+        self.pp = self.position_3d.translation
 
-        # Scale the speeds to the time used by Blender
-        self.v[0] = dx * self.frequency
-        self.v[1] = dy * self.frequency
-        self.v[2] = dz * self.frequency
-        logger.debug("SPEED: (%.4f, %.4f, %.4f)" %
-                    (self.v[0], self.v[1], self.v[2]))
+        self.dt = self.robot_parent.gettime() - self.pt
+        self.pt = self.robot_parent.gettime()
 
-        self.a[0] = (self.v[0] - self.pvx) * self.frequency
-        self.a[1] = (self.v[1] - self.pvy) * self.frequency
-        self.a[2] = (self.v[2] - self.pvz) * self.frequency
-        logger.debug("ACCELERATION: (%.4f, %.4f, %.4f)" %
-                     (self.a[0], self.a[1], self.a[2]))
+        if self.has_physics:
+            self._sim_physics()
+        else:
+            self._sim_simple()
 
-        # Update the data for the velocity
-        self.pvx = self.v[0]
-        self.pvy = self.v[1]
-        self.pvz = self.v[2]
-
-        # Store the important data
-        self.local_data['velocity'] = self.v
-        self.local_data['acceleration'] = self.a
