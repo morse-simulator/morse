@@ -34,18 +34,8 @@ class Gyroscope(morse.core.sensor.Sensor):
 
 
     def default_action(self):
-        """ Get the yaw, pitch and roll of the blender object. """
-        yaw = self.position_3d.yaw
-        pitch = self.position_3d.pitch
-        roll = self.position_3d.roll
-
-        # Store the values in the robot's object
-        self.robot_parent.yaw = yaw
-        self.robot_parent.pitch = pitch
-        self.robot_parent.roll = roll
-
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
-        self.local_data['yaw'] = float(yaw)
-        self.local_data['pitch'] = float(pitch)
-        self.local_data['roll'] = float(roll)
+        self.local_data['yaw'] = self.position_3d.yaw
+        self.local_data['pitch'] = self.position_3d.pitch
+        self.local_data['roll'] = self.position_3d.roll
