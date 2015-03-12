@@ -4,7 +4,8 @@ This script tests some of the base functionalities of MORSE.
 """
 
 import sys
-from morse.testing.testing import MorseTestCase
+import math
+from morse.testing.testing import MorseMoveTestCase
 from pymorse import Morse
 
 # Include this import to be able to use your test file as a regular 
@@ -14,109 +15,89 @@ try:
 except ImportError:
     pass
 
-def send_speed(s, v, w):
-    s.publish({'v' : v, 'w' : w})
-
-class Velocity_Test(MorseTestCase):
+class Velocity_Test(MorseMoveTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
         robot = ATRV()
 
-        motion = MotionVW()
-        motion.properties(ControlType = 'Velocity')
+        motion = MotionXYW()
         robot.append(motion)
         motion.add_stream('socket')
+        motion.add_service('socket')
 
         vel = Velocity()
         robot.append(vel)
         vel.add_stream('socket')
 
-        teleport = Teleport()
-        robot.append(teleport)
-        teleport.add_stream('socket')
+        vel_pi = Velocity()
+        robot.append(vel_pi)
+        vel_pi.rotate(z = math.pi / 2, y = math.pi / 2)
+        vel_pi.add_stream('socket')
         
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
 
-    def expect_value(self, linear_velocity,
-                           angular_velocity,
-                           world_linear_velocity):
+    def assert_velocity(self, morse, command, expected):
+        delta = 0.1
 
-        precision=0.1
+        self.xyw.publish(command)
+        morse.sleep(0.1)
 
-        means = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        vel = self.vel_stream.get()
+        vel_pi = self.vel_pi_stream.last()
 
-        # compute the mean on number_iteration (here 60, so normally
-        # something like 1 sec). As it is a physical controller, there
-        # is no guarantee that at each instant, we have exactly the
-        # expected speed, but, in mean, we must have the requested
-        # value.
-        number_iteration = 60
-        for i in range(0, number_iteration):
-            vel = self.vel_stream.get()
-            for j in range(3):
-                means[j] += vel['linear_velocity'][j]
-            for j in range(3):
-                means[j+3] += vel['angular_velocity'][j]
-            for j in range(3):
-                means[j+6] += vel['world_linear_velocity'][j]
+        self.assertAlmostEqual(vel['linear_velocity'][0], expected[0], delta = delta)
+        self.assertAlmostEqual(vel['linear_velocity'][1], expected[1], delta = delta)
+        self.assertAlmostEqual(vel['linear_velocity'][2], expected[2], delta = delta)
 
-        for i in range(9):
-            means[i] = means[i] / number_iteration
+        self.assertAlmostEqual(vel['angular_velocity'][0], expected[3], delta = delta)
+        self.assertAlmostEqual(vel['angular_velocity'][1], expected[4], delta = delta)
+        self.assertAlmostEqual(vel['angular_velocity'][2], expected[5], delta = delta)
 
-        expected = linear_velocity + angular_velocity + world_linear_velocity
-
-        for i in range(9):
-            self.assertAlmostEqual(means[i], expected[i], delta=precision)
-
-    def test_vw_controller(self):
-        with Morse() as simu:
-
-            self.vel_stream = simu.robot.vel
-            v_w = simu.robot.motion
-
-            simu.deactivate('robot.teleport')
-
-            # wait a few sec that physics stop its fun
-            simu.sleep(0.5)
-            self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
-            send_speed(v_w, 1.0, 0.0)
-            simu.sleep(0.5)
-            self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 0.0, 0.0])
-
-            send_speed(v_w, 0.0, 0.0)
-            simu.sleep(0.5)
-            self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
-            send_speed(v_w, 0.0, math.pi / 4.0)
-            simu.sleep(0.5)
-            self.expect_value([0.0, 0.0, 0.0], [0.0, 0.0, math.pi / 4.0], [0.0, 0.0, 0.0])
-
-            send_speed(v_w, 0.0, 0.0)
-            simu.sleep(0.1)
-
-            simu.deactivate('robot.motion')
-            simu.activate('robot.teleport')
-            simu.robot.teleport.publish({'x' : 1.0, 'y' : 0.0, 'z': 0.0,
-                                         'yaw': math.pi/2, 'pitch': 0.0,
-                                         'roll': 0.0})
-            simu.sleep(0.1)
-            simu.deactivate('robot.teleport')
-            simu.activate('robot.motion')
-            simu.sleep(0.1)
-
-            send_speed(v_w, 1.0, 0.0)
-            simu.sleep(0.5)
-            self.expect_value([1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
+        self.assertAlmostEqual(vel['world_linear_velocity'][0], expected[0], delta = delta)
+        self.assertAlmostEqual(vel['world_linear_velocity'][1], expected[1], delta = delta)
+        self.assertAlmostEqual(vel['world_linear_velocity'][2], expected[2], delta = delta)
 
 
+        self.assertAlmostEqual(vel_pi['linear_velocity'][0], expected[2], delta = delta)
+        self.assertAlmostEqual(vel_pi['linear_velocity'][1], - expected[0], delta = delta)
+        self.assertAlmostEqual(vel_pi['linear_velocity'][2], expected[1], delta = delta)
 
+        self.assertAlmostEqual(vel_pi['angular_velocity'][0], - expected[5], delta = delta)
+        self.assertAlmostEqual(vel_pi['angular_velocity'][1], expected[3], delta = delta)
+        self.assertAlmostEqual(vel_pi['angular_velocity'][2], expected[2], delta = delta)
 
+        self.assertAlmostEqual(vel_pi['world_linear_velocity'][0], expected[0], delta = delta)
+        self.assertAlmostEqual(vel_pi['world_linear_velocity'][1], expected[1], delta = delta)
+        self.assertAlmostEqual(vel_pi['world_linear_velocity'][2], expected[2], delta = delta)
+
+    def test_velocity_sensor(self):
+        with Morse() as morse:
+
+            self.xyw = morse.robot.motion
+            self.vel_stream = morse.robot.vel
+            self.vel_pi_stream = morse.robot.vel_pi
+
+            self.assert_velocity(morse, {"x": 1.0, "y": 0.0, "w": 0.0},
+                                 [1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
+            self.assert_velocity(morse, {"x": 0.0, "y": 0.0, "w": 0.0},
+                                 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
+            self.assert_velocity(morse, {"x": 0.0, "y": -1.0, "w": 0.0},
+                                 [0.0, -1.0, 0.0, 0.0, 0.0, 0.0])
+
+            self.assert_velocity(morse, {"x": 0.0, "y": 0.0, "w": 0.0},
+                                 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
+            self.assert_velocity(morse, {"x": 1.0, "y": 0.0, "w": 1.0},
+                                 [1.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+
+            self.assert_velocity(morse, {"x": 0.0, "y": 0.0, "w": 0.0},
+                                 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
     main(Velocity_Test)
-
