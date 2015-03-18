@@ -32,6 +32,12 @@ Sensors
 - Introduce the new sensor :doc:`user/sensors/radar_altimeter`, allowing to
   retrieve the distance to the ground.
 
+- Improvement of :doc:`user/sensors/accelerometer`, :doc:`user/sensors/imu`
+  and :doc:`user/sensors/velocity`. They now works properly with robots with
+  or without physics, and returns properly information in the sensor frame.
+  The computation method is configurable using the `ComputationMode` property,
+  counterpart of the `ControlType` in several actuators.
+
 Middlewares
 -----------
 

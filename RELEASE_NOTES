@@ -32,6 +32,12 @@ Sensors
 - Introduce the new sensor "Radar Altimeter", allowing to retrieve the
   distance to the ground.
 
+- Improvement of Acceleromter, IMU and Velocity sensor.  They now works
+  properly with robots with or without physics, and returns properly
+  information in the sensor frame.  The computation method is configurable
+  using the `ComputationMode` property, counterpart of the `ControlType` in
+  several actuators.
+
 Middlewares
 -----------
 
