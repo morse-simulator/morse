@@ -75,6 +75,7 @@ Now, we need to connect this stuff to the HLA world. We use the
     from morse.builder import *
 
     foo = Morsy()
+    foo.scale = [10.0, 10.0, 1]
 
     teleport = Teleport()
     teleport.add_stream('hla', 'morse.middleware.hla.certi_test_input.CertiTestInput')
@@ -85,10 +86,23 @@ Now, we need to connect this stuff to the HLA world. We use the
             'hla', 
             fom = 'Test.fed', name = 'Morse', federation = 'Test', sync_point = 'Init', time_sync = True)
 
+    ground = bpymorse.get_object('Ground')
+    ground.scale = [255.0, 55.0, 0.0065]
+    ground.location = [250.0, 50.0, -0.06]
+    env.set_camera_clip(0.1, 1000)
+    env.set_camera_location([250, 50, 350])
+    env.set_camera_rotation([0.0, 0.0, 0.0])
+    env.set_camera_speed(10.0)
+
 .. warning::
 
     The parameters in ``configure_stream_manager`` are really important, see
     :doc:`the hla middleware documentation <../middlewares/hla>` for a complete description.
+
+.. note::
+
+    The ``ground`` and ``env`` configuration here is not very important, but
+    used to look like more a poolroom.
 
 Now, start again the billard, and in another console, morse. Normally, Morse
 should be blocked, waiting for the synchronisation point. Press enter in the
@@ -116,3 +130,5 @@ keyboard to control it.
 If you start again the billard and Morse, you now must see a new black ball on
 the billard. Moreover, if you move the robot in Morse with the keyboard, you
 should see the black ball also moving in the billard.
+
+At the end, your file must look like ``$MORSE_ROOT/share/morse/examples/tutorials/tutorial_hla.py``.
