@@ -595,15 +595,17 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
     else:
         other_params = ["-w"]
 
-    if noaudio:
-        other_params += ["-setaudio", "NULL"]
-
     if script_options:
         other_params.append('--')
         other_params += script_options
 
     other_params.append(env) # must be the last option
-    exec_args = [blender_exec, blender_exec, scene, "-y"]
+    exec_args = [blender_exec, blender_exec]
+
+    if noaudio:
+        exec_args += ["-setaudio", "NULL"]
+
+    exec_args += [scene, "-y"]
 
     #Replace the current process by Blender
     if script is not None:
