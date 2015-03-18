@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import hla.rti as rti
+import sys
 
 from morse.core.datastream import DatastreamManager
 from morse.core import blenderapi
@@ -41,6 +42,10 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
                 self._rtia.tick(0, self.lookahead)
         else:
             self._rtia.tick()
+
+    def register_sync_point(self, label):
+        self._rtia.registerFederationSynchronizationPoint(label,
+                "Waiting for other simulators")
 
     def wait_until_sync(self, label):
         # Make sure that we receive the announce sync point
@@ -140,7 +145,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
 
 class HLABaseNode:
-    def __init__(self, klass, fom, node_name, federation, sync_point, time_sync):
+    def __init__(self, klass, fom, node_name, federation, sync_point, sync_register, time_sync):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         """
@@ -190,7 +195,12 @@ class HLABaseNode:
                 "Please check your HLA network configuration.", error)
             raise
 
+
         if sync_point:
+            if sync_register:
+                self.morse_ambassador.register_sync_point(sync_point)
+                print("Press ENTER when all simulators are ready")
+                sys.stdin.read(1)
             self.morse_ambassador.wait_until_sync(sync_point)
 
         if time_sync:
@@ -219,10 +229,11 @@ class HLADatastreamManager(DatastreamManager):
             node_name = kwargs["name"]
             federation = kwargs["federation"]
             sync_point = kwargs.get("sync_point", None)
+            sync_register = kwargs.get("sync_register", False)
             time_sync = kwargs.get("time_sync", False)
 
             self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
-                                    federation, sync_point, time_sync)
+                                    federation, sync_point, sync_register, time_sync)
         except KeyError as error:
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")
