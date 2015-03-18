@@ -59,6 +59,9 @@ class Velocity(morse.core.sensor.Sensor):
         self.dt = self.robot_parent.gettime() - self.pt
         self.pt = self.robot_parent.gettime()
 
+        if self.dt < 1e-6:
+            return
+
         v = (self.position_3d.translation - self.pp) / self.dt
         dq = self.pq.rotation_difference(self.position_3d.rotation)
         w = Vector(dq.to_euler('ZYX')) / self.dt

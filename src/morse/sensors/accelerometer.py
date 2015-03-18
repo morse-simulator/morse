@@ -106,6 +106,12 @@ class Accelerometer(morse.core.sensor.Sensor):
     def default_action(self):
         """ Compute the speed and accleration of the robot """
         # Compute the difference in positions with the previous loop
+        self.dt = self.robot_parent.gettime() - self.pt
+        self.pt = self.robot_parent.gettime()
+
+        if self.dt < 1e-6:
+            return
+
         self.dp = self.position_3d.translation - self.pp
         self.local_data['distance'] = \
             math.sqrt(self.dp[0]**2 + self.dp[1]**2 + self.dp[2]**2)
@@ -114,8 +120,6 @@ class Accelerometer(morse.core.sensor.Sensor):
         # Store the position in this instant
         self.pp = self.position_3d.translation
 
-        self.dt = self.robot_parent.gettime() - self.pt
-        self.pt = self.robot_parent.gettime()
 
         if self.has_physics:
             self._sim_physics()
