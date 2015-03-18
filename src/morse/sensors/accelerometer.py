@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
 
 class Accelerometer(morse.core.sensor.Sensor):
@@ -23,6 +23,11 @@ class Accelerometer(morse.core.sensor.Sensor):
              'Instantaneous speed in X, Y, Z, in meter sec^-1')
     add_data('acceleration', [0.0, 0.0, 0.0], "vec3<float>", 
              'Instantaneous acceleration in X, Y, Z, in meter sec^-2')
+    add_property('_type', 'Automatic', 'ComputationMode', 'string',
+                 "Kind of computation, can be one of ['Velocity', 'Position']. "
+                 "Only robot with dynamic and Velocity control can choose Velocity "
+                 "computation. Default choice is Velocity for robot with physics, "
+                 "and Position for others")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -44,7 +49,18 @@ class Accelerometer(morse.core.sensor.Sensor):
         self.v = Vector((0.0, 0.0, 0.0)) # current linear velocity
         self.a = Vector((0.0, 0.0, 0.0)) # current angular velocity
 
-        self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        if self._type == 'Automatic':
+            if has_physics: 
+                self._type = 'Velocity'
+            else:
+                self._type = 'Position'
+
+        if self._type == 'Velocity' and not has_physics:
+            logger.error("Invalid configuration : Velocity computation without "
+                        "physics")
+            return
+
 
         # imu2body will transform a vector from imu frame to body frame
         self.imu2body = self.sensor_to_robot_position_3d()
@@ -56,7 +72,7 @@ class Accelerometer(morse.core.sensor.Sensor):
         else:
             self.compute_offset_acceleration = False
 
-        if self.has_physics:
+        if self._type == 'Velocity':
             # make new references to the robot velocities and use those.
             self.robot_w = self.robot_parent.bge_object.localAngularVelocity
             self.robot_vel = self.robot_parent.bge_object.worldLinearVelocity
@@ -120,8 +136,7 @@ class Accelerometer(morse.core.sensor.Sensor):
         # Store the position in this instant
         self.pp = self.position_3d.translation
 
-
-        if self.has_physics:
+        if self._type == 'Velocity':
             self._sim_physics()
         else:
             self._sim_simple()

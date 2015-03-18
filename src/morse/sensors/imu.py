@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import math
 import morse.core.sensor
 from morse.core import mathutils, blenderapi
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 
 """
 Important note:
@@ -33,6 +33,11 @@ class IMU(morse.core.sensor.Sensor):
              'rates in IMU x, y, z axes (in radian . sec ^ -1)')
     add_data('linear_acceleration', [0.0, 0.0, 0.0], "vec3<float>",
              'acceleration in IMU x, y, z axes (in m . sec ^ -2)')
+    add_property('_type', 'Automatic', 'ComputationMode', 'string',
+                 "Kind of computation, can be one of ['Velocity', 'Position']. "
+                 "Only robot with dynamic and Velocity control can choose Velocity "
+                 "computation. Default choice is Velocity for robot with physics, "
+                 "and Position for others")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -44,15 +49,19 @@ class IMU(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         morse.core.sensor.Sensor.__init__(self, obj, parent)
 
-        # The robot needs a physics controller!
-        # Since the imu does not have physics,
-        self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        if self._type == 'Automatic':
+            if has_physics: 
+                self._type = 'Velocity'
+            else:
+                self._type = 'Position'
 
-        if not self.has_physics:
-            logger.warning("The robot doesn't have a physics controller,"
-                           "falling back to simple IMU sensor.")
+        if self._type == 'Velocity' and not has_physics:
+            logger.error("Invalid configuration : Velocity computation without "
+                        "physics")
+            return
 
-        if self.has_physics:
+        if self._type == 'Velocity':
             # make new references to the robot velocities and use those.
             self.robot_w = self.robot_parent.bge_object.localAngularVelocity
             self.robot_vel = self.robot_parent.bge_object.worldLinearVelocity
@@ -160,7 +169,7 @@ class IMU(morse.core.sensor.Sensor):
         """
         Get the speed and acceleration of the robot and transform it into the imu frame
         """
-        if self.has_physics:
+        if self._type == 'Velocity':
             (rates, accel) = self.sim_imu_with_physics()
         else:
             (rates, accel) = self.sim_imu_simple()

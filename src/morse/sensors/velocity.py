@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
 import morse.core.sensor
-from morse.helpers.components import add_data
+from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import * 
 from math import degrees
 
@@ -25,6 +25,12 @@ class Velocity(morse.core.sensor.Sensor):
     add_data('world_linear_velocity', [0.0, 0.0, 0.0], "vec3<float>",
              'velocity in world x, y, z axes (in meter . sec ^ -1)')
 
+    add_property('_type', 'Automatic', 'ComputationMode', 'string',
+                 "Kind of computation, can be one of ['Velocity', 'Position']. "
+                 "Only robot with dynamic and Velocity control can choose Velocity "
+                 "computation. Default choice is Velocity for robot with physics, "
+                 "and Position for others")
+
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -40,7 +46,18 @@ class Velocity(morse.core.sensor.Sensor):
         self.pt = 0.0 # previous timestamp
         self.dt = 0.0 # diff
 
-        self.has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        has_physics = bool(self.robot_parent.bge_object.getPhysicsId())
+        if self._type == 'Automatic':
+            if has_physics: 
+                self._type = 'Velocity'
+            else:
+                self._type = 'Position'
+
+        if self._type == 'Velocity' and not has_physics:
+            logger.error("Invalid configuration : Velocity computation without "
+                        "physics")
+            return
+
 
         # make new references to the robot velocities and use those.
         self.robot_w = self.robot_parent.bge_object.localAngularVelocity
@@ -78,7 +95,7 @@ class Velocity(morse.core.sensor.Sensor):
     def default_action(self):
         """ Get the linear and angular velocity of the blender object. """
 
-        if self.has_physics:
+        if self._type == 'Velocity':
             # Store the important data
             self.local_data['linear_velocity'] = self.rot_b2s * self.robot_v
             self.local_data['angular_velocity'] = self.rot_b2s * self.robot_w
