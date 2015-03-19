@@ -16,9 +16,9 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
         self._object_handles = {} # string -> obj_handle
         self._attributes_handles = {} # (obj_handle, string) -> attr_handle
-        self._attributes_subscribed = {} # obj_handle -> [attr_handle]
+        self._attributes_subscribed = {} # obj_name -> [attr_handle]
         
-        self._attributes_values = {} # obj_handle -> { attr_handle -> value }
+        self._attributes_values = {} # obj_name -> { attr_handle -> value }
 
     def initialize_time_regulation(self):
         self.logical_time = self._rtia.queryFederateTime()
@@ -80,20 +80,16 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
             self._attributes_handles[(obj_handle, name)] = handle
         return handle
 
-    def suscribe_attributes(self, obj_handle, attr_handles):
-        logger.debug("suscribe_attributes %s => %s" % (obj_handle, attr_handles))
-        curr_tracked_attr = set(self._attributes_subscribed.get(obj_handle, []))
+    def suscribe_attributes(self, name, obj_handle, attr_handles):
+        logger.debug("suscribe_attributes %s %s => %s" % (name, obj_handle, attr_handles))
+        curr_tracked_attr = set(self._attributes_subscribed.get(name, []))
         res = list(curr_tracked_attr.union(attr_handles))
-        self._attributes_subscribed[obj_handle] = res
+        self._attributes_subscribed[name] = res
 
         self._rtia.subscribeObjectClassAttributes(obj_handle, res)
 
     def get_attributes(self, obj_name):
-        for key, attr in self._attributes_values.items():
-            if self._rtia.getObjectInstanceName(key) == obj_name:
-                return attr
-
-        return None
+        return self._attributes_values.get(obj_name, None)
 
     def update_attribute(self, obj_handle, value):
         if self._time_sync:
@@ -105,17 +101,18 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
     # Callbacks for FedereteAmbassadors 
     def discoverObjectInstance(self, obj, objectclass, name):
         logger.debug("DISCOVER %s %s %s" % (name, obj, objectclass))
-        subscribed_attributes = self._attributes_subscribed.get(objectclass, None)
+        subscribed_attributes = self._attributes_subscribed.get(name, None)
         if subscribed_attributes:
             self._rtia.requestObjectAttributeValueUpdate(obj, subscribed_attributes)
             default_value = {}
             for attr in subscribed_attributes:
                 default_value[attr] =  None
-            self._attributes_values[obj] = default_value
+            self._attributes_values[name] = default_value
 
     def reflectAttributeValues(self, obj, attributes, tag, order, transport, time=None, retraction=None):
-        logger.debug("reflectAttributeValues for %s %s" % (self._rtia.getObjectInstanceName(obj), attributes))
-        attr_entry = self._attributes_values.get(obj, None)
+        obj_name = self._rtia.getObjectInstanceName(obj)
+        logger.debug("reflectAttributeValues for %s %s" % (obj_name, attributes))
+        attr_entry = self._attributes_values.get(obj_name, None)
         if not attr_entry:
             return
         for key in attr_entry.keys():
