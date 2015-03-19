@@ -1,22 +1,22 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from morse.middleware import AbstractDatastream
 from morse.middleware.hla.message_buffer import MessageBufferWriter
+from morse.middleware.hla.abstract_hla import AbstractHLAOutput
 
 
-class CertiTestOutput(AbstractDatastream):
+class CertiTestOutput(AbstractHLAOutput):
     def initialize(self):
-        self._amb = self.kwargs['__hla_node'].morse_ambassador
+        AbstractHLAOutput.initialize(self)
 
-        boule_handle = self._amb.object_handle('Boule')
+        boule_handle = self.amb.object_handle('Boule')
 
-        self.handle_x = self._amb.attribute_handle("PositionX", boule_handle)
-        self.handle_y = self._amb.attribute_handle("PositionY", boule_handle)
+        self.handle_x = self.amb.attribute_handle("PositionX", boule_handle)
+        self.handle_y = self.amb.attribute_handle("PositionY", boule_handle)
 
-        self._amb._rtia.publishObjectClass(boule_handle, [self.handle_x, self.handle_y])
-        self.boule = self._amb.register_object(boule_handle, self.component_instance.robot_parent.name())
+        self.amb._rtia.publishObjectClass(boule_handle, [self.handle_x, self.handle_y])
+        self.register_object(boule_handle)
 
     def default(self, ci = 'unused'):
         to_send =  \
                 {self.handle_x: MessageBufferWriter().write_double(self.data['x']),
                  self.handle_y: MessageBufferWriter().write_double(self.data['y'])}
-        self._amb.update_attribute(self.boule, to_send)
+        self.update_attribute(to_send)
