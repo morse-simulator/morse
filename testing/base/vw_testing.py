@@ -54,7 +54,7 @@ class VW_Test(MorseMoveTestCase):
 
             simu.deactivate('robot.teleport')
 
-            precision = 0.12
+            precision = 0.125
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
