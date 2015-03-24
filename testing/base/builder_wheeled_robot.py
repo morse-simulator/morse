@@ -43,15 +43,17 @@ class BuilderWheeledRobotTest(MorseTestCase):
             p1 = morse.robot.p1
             p2 = morse.robot.p2
 
+            delta = 0.05 
+
             pose1 = p1.get()
-            self.assertAlmostEquals(pose1['x'], 1.0, delta=0.03)
-            self.assertAlmostEquals(pose1['y'], 0.0, delta=0.03)
-            self.assertAlmostEquals(pose1['yaw'], 0.0, delta=0.03)
+            self.assertAlmostEquals(pose1['x'], 1.0, delta=delta)
+            self.assertAlmostEquals(pose1['y'], 0.0, delta=delta)
+            self.assertAlmostEquals(pose1['yaw'], 0.0, delta=delta)
 
             pose2 = p2.get()
-            self.assertAlmostEquals(pose2['x'], 2.0, delta=0.03)
-            self.assertAlmostEquals(pose2['y'], 0.0, delta=0.03)
-            self.assertAlmostEquals(pose2['yaw'], 0.0, delta=0.03)
+            self.assertAlmostEquals(pose2['x'], 2.0, delta=delta)
+            self.assertAlmostEquals(pose2['y'], 0.0, delta=delta)
+            self.assertAlmostEquals(pose2['yaw'], 0.0, delta=delta)
 
 
 ########################## Run these tests ##########################
