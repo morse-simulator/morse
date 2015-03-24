@@ -24,7 +24,7 @@ class Battery(morse.core.sensor.Sensor):
                   "Battery discharging rate, in percent per seconds")
 
     add_data('charge', 100.0, "float", "Initial battery level, in percent")
-    add_data('status', "NotCharging", "string", "Charging Status")
+    add_data('status', "Charged", "string", "Charging Status")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -51,7 +51,7 @@ class Battery(morse.core.sensor.Sensor):
                 status = "Charged"
         else:
             charge = charge - dt * self._discharging_rate
-            status = "NotCharging"
+            status = "Discharging"
             if charge < 0.0:
                 charge = 0.0
 
