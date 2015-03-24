@@ -24,6 +24,7 @@ class Battery(morse.core.sensor.Sensor):
                   "Battery discharging rate, in percent per seconds")
 
     add_data('charge', 100.0, "float", "Initial battery level, in percent")
+    add_data('status', "Charged", "string", "Charging Status")
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -44,15 +45,19 @@ class Battery(morse.core.sensor.Sensor):
 
         if self.in_zones(type = 'Charging'):
             charge = charge + dt * self._discharging_rate
+            status = "Charging"
             if charge > 100.0:
                 charge = 100.0
+                status = "Charged"
         else:
             charge = charge - dt * self._discharging_rate
+            status = "Discharging"
             if charge < 0.0:
                 charge = 0.0
 
         # Store the data acquired by this sensor that could be sent
         #  via a middleware.
         self.local_data['charge'] = float(charge)
+        self.local_data['status'] = status
         # update the current time
         self._time = self.robot_parent.gettime()
