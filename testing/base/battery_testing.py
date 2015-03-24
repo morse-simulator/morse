@@ -57,11 +57,13 @@ class BatteryTest(MorseTestCase):
             # about when we get data
             self.assertAlmostEqual(bat['charge'] - cur_bat, -20.0, delta=0.5)
             cut_bat = bat['charge']
+            self.assertEqual(bat['status'], 'Discharging')
 
             # Now the battery must be empty
             morse.sleep(10.0)
             bat = bat_stream.get()
             self.assertAlmostEqual(bat['charge'], 0.0, delta=0.001)
+            self.assertEqual(bat['status'], 'Discharging')
 
             # Teleport in the charging zone and check the battery charge
             # grows up
@@ -69,6 +71,7 @@ class BatteryTest(MorseTestCase):
             morse.sleep(2.0)
             bat = bat_stream.get()
             self.assertAlmostEqual(bat['charge'], 20.0, delta=0.5)
+            self.assertEqual(bat['status'], 'Charging')
 
             # Teleport out of the charging zone, the battery charge must
             # decrease
@@ -76,7 +79,7 @@ class BatteryTest(MorseTestCase):
             morse.sleep(2.5)
             bat = bat_stream.get()
             self.assertAlmostEqual(bat['charge'], 0.0, delta=0.001)
-
+            self.assertEqual(bat['status'], 'Discharging')
 
 
 ########################## Run these tests ##########################
