@@ -47,7 +47,7 @@ class DatastreamManager(object):
     def __init__(self, args, kwargs):
         pass
 
-    def __del__(self):
+    def finalize(self):
         """ Destructor method. """
         logger.info("Closing datastream interface <%s>." % self.__class__.__name__)
 

@@ -136,11 +136,6 @@ class YarpDatastreamManager(DatastreamManager):
 
         yarp.Network.init()
 
-
-    def __del__(self):
-        """ Close all open YARP ports. """
-        self.finalize()
-
     def finalize(self):
         """ Close all currently opened ports and release the network."""
         yarp.Network.fini()

@@ -203,7 +203,7 @@ class HLABaseNode:
         if time_sync:
             self.morse_ambassador.initialize_time_regulation()
             
-    def __del__(self):
+    def finalize(self):
         """
         Close all open HLA connections.
         """
@@ -235,6 +235,10 @@ class HLADatastreamManager(DatastreamManager):
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")
             raise
+
+    def finalize(self):
+        DatastreamManager.finalize(self)
+        self.node.finalize()
 
     def register_component(self, component_name, component_instance, mw_data):
         """ Open the port used to communicate by the specified component.

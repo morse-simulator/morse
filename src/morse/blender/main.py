@@ -759,13 +759,9 @@ def close_all(contr):
     logger.log(ENDSECTION, 'CLOSING DATASTREAMS...')
     # Force the deletion of the datastream objects
     if 'stream_managers' in persistantstorage:
-        for obj, datastream_instance in persistantstorage.stream_managers.items():
-            if datastream_instance:
-                import gc # Garbage Collector
-                logger.debug("At closing time, %s has %s references" %
-                        (datastream_instance,
-                         gc.get_referents(datastream_instance)))
-                del datastream_instance
+        for datastream_instance in persistantstorage.stream_managers.values():
+            datastream_instance.finalize()
+        del persistantstorage.stream_managers
 
     logger.log(ENDSECTION, 'CLOSING OVERLAYS...')
     del persistantstorage.overlayDict
