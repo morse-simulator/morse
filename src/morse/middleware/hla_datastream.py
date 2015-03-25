@@ -12,7 +12,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self._time_sync = time_sync
 
         self.synchronisation_points = {}
-        self.registred_objects = []
+        self.registred_objects = {} # name -> obj_handle
 
         self._object_handles = {} # string -> obj_handle
         self._attributes_handles = {} # (obj_handle, string) -> attr_handle
@@ -58,13 +58,14 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
     def register_object(self, handle, name):
         obj = self._rtia.registerObjectInstance(handle, name)
-        self.registred_objects.append(obj)
+        self.registred_objects[name] = obj
         return obj
 
-    def terminate(self):
-        for obj in self.registred_objects:
-            self._rtia.deleteObjectInstance(obj,
-                self._rtia.getObjectInstanceName(obj))
+    def delete_object(self, name):
+        self._rtia.deleteObjectInstance(
+                self.registred_objects[name],
+                name)
+        del self.registred_objects[name]
 
     def object_handle(self, name):
         handle = self._object_handles.get(name, None)
@@ -149,6 +150,8 @@ class HLABaseNode:
 
         logger.info("Initializing HLA node.")
 
+        self._federation = federation
+
         try:
             logger.debug("Creating RTIA...")
             self.rtia = rti.RTIAmbassador()
@@ -212,6 +215,11 @@ class HLABaseNode:
             del self.morse_ambassador
         self.rtia.resignFederationExecution(
             rti.ResignAction.DeleteObjectsAndReleaseAttributes)
+        try:
+            self.rtia.destroyFederationExecution(self._federation)
+        except:
+            pass
+        del self.rtia
 
 class HLADatastreamManager(DatastreamManager):
     """ External communication using sockets. """

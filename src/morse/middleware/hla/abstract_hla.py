@@ -4,14 +4,17 @@ from morse.middleware import AbstractDatastream
 class AbstractHLAOutput(AbstractDatastream):
     def initialize(self):
         self.amb = self.kwargs['__hla_node'].morse_ambassador
+        self._hla_name = self.component_instance.robot_parent.name() 
         self._obj = None
 
     def register_object(self, handle):
-        self._obj = self.amb.register_object(handle, \
-                    self.component_instance.robot_parent.name())
+        self._obj = self.amb.register_object(handle, self._hla_name)
 
     def update_attribute(self, to_send):
         self.amb.update_attribute(self._obj, to_send)
+
+    def finalize(self):
+        self.amb.delete_object(self._hla_name)
 
 class AbstractHLAInput(AbstractDatastream):
     def initialize(self):
