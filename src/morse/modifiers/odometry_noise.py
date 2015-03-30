@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-
+from morse.core.services import do_service_registration
 from morse.modifiers.abstract_modifier import AbstractModifier
 from math import cos, sin
 
@@ -10,7 +10,7 @@ class OdometryNoiseModifier(AbstractModifier):
     - an error in the scale factor used to compute the distance from the value
       returned by the odometer (parameter **factor**)
     - the gyroscope natural drift (parameter **gyro_drift** (rad by tick))
-    
+
     Modified data
     -------------
 
@@ -34,13 +34,14 @@ class OdometryNoiseModifier(AbstractModifier):
     - ``noisify``: Simulate drift of gyroscope and possible error in the scale
       factor
     """
-    
+
     def initialize(self):
         self._factor = float(self.parameter("factor", default=1.05))
         self._gyro_drift = float(self.parameter("gyro_drift", default=0))
         self._drift_x = 0.0
         self._drift_y = 0.0
         self._drift_yaw = 0.0
+        do_service_registration(self.reset_noise, self.component_instance.name())
 
     def modify(self):
         # Basic 2D odometry implementation dx = dS * sin(yaw) and
@@ -79,3 +80,9 @@ class OdometryNoiseModifier(AbstractModifier):
                 self.data['dx'] = dx
                 self.data['dy'] = dy
                 self.data['dyaw'] += self._gyro_drift
+
+    def reset_noise(self):
+        """ Service allowing to simulate loop-closure """
+        self._drift_x = 0.0
+        self._drift_y = 0.0
+        self._drift_yaw = 0.0
