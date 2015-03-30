@@ -32,13 +32,9 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-INCLUDE(CMakeFindFrameworks)
-# Search for the python framework on Apple.
-CMAKE_FIND_FRAMEWORKS(Python)
-
 SET(_PYTHON1_VERSIONS 1.6 1.5)
 SET(_PYTHON2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
-SET(_PYTHON3_VERSIONS 3.3 3.2 3.1 3.0)
+SET(_PYTHON3_VERSIONS 3.4 3.3 3.2 3.1 3.0)
 
 IF(PythonLibs_FIND_VERSION)
     IF(PythonLibs_FIND_VERSION MATCHES "^[0-9]+\\.[0-9]+(\\.[0-9]+.*)?$")
@@ -99,7 +95,19 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
   IF (PYTHON_EXECUTABLE)
     get_filename_component(_PYTHON_BIN_DIR ${PYTHON_EXECUTABLE} PATH)
     set(_PYTHON_PREFIX_HINT ${_PYTHON_BIN_DIR}/..)
-    unset(_PYTHON_BIN_DIR)
+	EXECUTE_PROCESS(COMMAND
+					${PYTHON_EXECUTABLE} -c "import sysconfig, sys; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))"
+					OUTPUT_VARIABLE _PYTHON_LIBDIR_HINT
+					ERROR_VARIABLE PYTHON_STDERR
+					RESULT_VARIABLE PYTHON_ERR
+				)
+	EXECUTE_PROCESS(COMMAND
+					${PYTHON_EXECUTABLE} -c "import sysconfig, sys; sys.stdout.write(sysconfig.get_paths()['include'])"
+					OUTPUT_VARIABLE _PYTHON_INCDIR_HINT
+					ERROR_VARIABLE PYTHON_STDERR
+					RESULT_VARIABLE PYTHON_ERR
+				)
+	unset(_PYTHON_BIN_DIR)
   ENDIF(PYTHON_EXECUTABLE)
 
   UNSET(PYTHON_LIBRARY CACHE)
@@ -111,6 +119,7 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
     python${_CURRENT_VERSION}u
     python${_CURRENT_VERSION}
     HINTS
+	  ${_PYTHON_LIBDIR_HINT}
       ${_PYTHON_PREFIX_HINT}/lib
     PATHS
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
@@ -122,6 +131,7 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
   FIND_LIBRARY(PYTHON_LIBRARY
     NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
     HINTS
+	  ${_PYTHON_LIBDIR_HINT}
       ${_PYTHON_PREFIX_HINT}/lib
     # Avoid finding the .dll in the PATH.  We want the .lib.
     NO_SYSTEM_ENVIRONMENT_PATH
@@ -136,20 +146,12 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
       "Path to where Python.h is found" FORCE)
   ENDIF(DEFINED PYTHON_INCLUDE_PATH AND NOT DEFINED PYTHON_INCLUDE_DIR)
 
-  SET(PYTHON_FRAMEWORK_INCLUDES)
-  IF(Python_FRAMEWORKS AND NOT PYTHON_INCLUDE_DIR)
-    FOREACH(dir ${Python_FRAMEWORKS})
-      SET(PYTHON_FRAMEWORK_INCLUDES ${PYTHON_FRAMEWORK_INCLUDES}
-        ${dir}/Versions/${_CURRENT_VERSION}/include/python${_CURRENT_VERSION})
-    ENDFOREACH(dir)
-  ENDIF(Python_FRAMEWORKS AND NOT PYTHON_INCLUDE_DIR)
-
   FIND_PATH(PYTHON_INCLUDE_DIR
     NAMES Python.h
     HINTS
+	  ${_PYTHON_INCDIR_HINT}
       ${_PYTHON_PREFIX_HINT}/include
     PATHS
-      ${PYTHON_FRAMEWORK_INCLUDES}
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
       [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
     PATH_SUFFIXES
@@ -157,15 +159,16 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
       python${_CURRENT_VERSION}m
       python${_CURRENT_VERSION}u
       python${_CURRENT_VERSION}
+    NO_DEFAULT_PATH
   )
 
   # Search pyconfig.h because in some distribution, it is not stored in the same place than other stuff
   FIND_PATH(PYTHON_INCLUDE_DIR2
     NAMES pyconfig.h
     HINTS
+	  ${_PYTHON_INCDIR_HINT}
       ${_PYTHON_PREFIX_HINT}/include
     PATHS
-      ${PYTHON_FRAMEWORK_INCLUDES}
       [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
       [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
 	  ${PYTHON_INCLUDE_DIR}
@@ -178,6 +181,7 @@ FOREACH(_CURRENT_VERSION ${_Python_VERSIONS})
       ${CMAKE_LIBRARY_ARCHITECTURE}/python${_CURRENT_VERSION}m
       ${CMAKE_LIBRARY_ARCHITECTURE}/python${_CURRENT_VERSION}u
       ${CMAKE_LIBRARY_ARCHITECTURE}/python${_CURRENT_VERSION}
+    NO_DEFAULT_PATH
   )
 
   IF(PYTHON_INCLUDE_DIR AND EXISTS "${PYTHON_INCLUDE_DIR}/patchlevel.h")
