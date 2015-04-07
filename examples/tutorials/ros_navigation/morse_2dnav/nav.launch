@@ -1,15 +1,25 @@
 <launch>
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/>
+    <param name="robot_description" command="cat $(find morse_2dnav)/pr2.urdf"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find morse_2dnav)/map.yaml"/>
+    <node name="amcl" pkg="amcl" type="amcl">
+        <remap from="/scan" to="/base_scan" />
+    </node>
 
-  <param name="robot_description" command="cat $(find morse_2dnav)/pr2.urdf"/>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
 
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"> 
-    <remap from="/joint_states" to="/pr2/pr2_posture" />
-  </node>
+        <param name="footprint_padding" value="0.01" />
+        <param name="controller_frequency" value="10.0" />
+        <param name="controller_patience" value="100.0" />
+        <param name="planner_frequency" value="2.0" />
 
-  <node pkg="amcl" type="amcl" name="amcl">
-     <remap from="/scan" to="/pr2/Sick" />
-  </node>
+        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/global_costmap_params.yaml" command="load" />
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+        <rosparam file="$(find morse_2dnav)/morse_move_base/dwa_planner_ros.yaml" command="load" />
+    </node>
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
     <remap from="/base_scan" to="/pr2/Sick"/>
@@ -24,3 +34,4 @@
     <rosparam file="$(find morse_2dnav)/morse_move_base/dwa_planner_ros.yaml" command="load" />
   </node>
 </launch>
+
