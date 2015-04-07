@@ -19,6 +19,12 @@ class ArmaturePose(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
 
+class Barometer(SensorCreator):
+    _classpath = "morse.sensors.barometer.Barometer"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+
 class Battery(SensorCreator):
     _classpath = "morse.sensors.battery.Battery"
 

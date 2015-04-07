@@ -38,6 +38,8 @@ Sensors
   using the `ComputationMode` property, counterpart of the `ControlType` in
   several actuators.
 
+- Introduce the new sensor "Barometer" allowing to compute the atmospheric pressure.
+
 Middlewares
 -----------
 

@@ -38,6 +38,9 @@ Sensors
   The computation method is configurable using the `ComputationMode` property,
   counterpart of the `ControlType` in several actuators.
 
+- Introduce the new sensor :doc:`user/sensors/barometer`, allowing to compute
+  the atmospheric pressure.
+
 Middlewares
 -----------
 
