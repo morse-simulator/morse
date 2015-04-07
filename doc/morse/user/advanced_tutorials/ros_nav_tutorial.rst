@@ -17,8 +17,8 @@ Prerequisites
 
 You should be familiar with the basic usage of ROS and how to use TF and
 the ROS navigation stack. You should also know about launchfiles and topic
-remapping as well as the robot state publisher. Also experiences with RVIZ are
-of advantage. Tutorials on all of those topics can be found on
+remapping as well as the robot state publisher. Also experience with RVIZ is
+also useful. Tutorials on all of those topics can be found on
 http://www.ros.org/wiki/ROS/Tutorials.
 
 We also assume you know how to use the MORSE Builder API to equip your robot
@@ -33,13 +33,14 @@ python3-compatible stacks for MORSE-ROS installed. You can find information
 about this in the :doc:`installation notes <../installation/mw/ros>`
 
 .. note::
-    We base the tutorial on ROS Fuerte. The tutorial should however also be
-    compatible with ROS Diamondback, ROS Electric and ROS Groovy.
+    We base the tutorial on ROS Indigo. The tutorial has also been successfully
+    tested with previous ROS versions down to ROS Fuerte. You may however need
+    to adapt some of the instructions.
 
 If you are running Ubuntu, you can simply install the packages
-``ros-fuerte-pr2-navigation`` and ``ros-fuerte-visualization``. They will
-install all required dependencies (but you still need to install ``rospkg``
-for Python 3, see the installation notes linked above).
+``ros-indigo-pr2-navigation``, ``ros-indigo-pr2-common``,
+``ros-indigo-control-msgs`` and ``ros-indigo-viz``. They will install all
+required dependencies.
 
 You also need MORSE installed with ROS support: check that the
 ``BUILD_ROS_SUPPORT`` CMake option is enabled when building MORSE.
@@ -51,26 +52,31 @@ Our first step is to get a robot to show up in RVIZ. In this tutorial, we
 will use the PR2 robot, but any robot (with an URDF file to describe it
 to RVIZ) would do.
 
-Let's create a first simple scenario script (``scenario.py``): a PR2 in a
-kitchen environment, a keyboard actuator to move it around, and an
-:doc:`Odometry sensor <../sensors/odometry>` to get some odometry feedback.
+Let's create a first simple scenario script: a PR2 in a kitchen environment, a
+keyboard actuator to move it around, and an :doc:`Odometry sensor
+<../sensors/odometry>` to get some odometry feedback.  First::
+
+ $ morse create nav_tutorial
+ $ cd nav_tutorial
+
+And edit ``default.py``:
 
 .. code-block:: python
 
     from morse.builder import *
 
     # A 'naked' PR2 robot to the scene
-    james = BarePR2()
-    james.translate(x=2.5, y=3.2, z=0.0)
+    robot = BarePR2()
+    robot.translate(x=2.5, y=3.2, z=0.0)
 
     # An odometry sensor to get odometry information
     odometry = Odometry()
-    james.append(odometry)
+    robot.append(odometry)
     odometry.add_interface('ros', topic="/odom")
 
     # Keyboard control
     keyboard = Keyboard()
-    james.append(keyboard)
+    robot.append(keyboard)
 
     # Set the environment
     env = Environment('tum_kitchen/tum_kitchen')
@@ -84,14 +90,14 @@ kitchen environment, a keyboard actuator to move it around, and an
     data.py
     <http://www.openrobots.org/morse/doc/latest/_modules/morse/builder/data.html>`_.
     If you do not specify a topic name, one is created automatically (here,
-    it would be ``/james/odometry``).
+    it would be ``/robot/odometry``).
 
     If you like, you can also add a ``odometry.add_interface('socket')`` to add
     another output on a socket.
 
 
 Run it by first starting a ROS core (``roscore``) and then ``morse run
-scenario.py``.
+nav_tutorial``.
 
 .. note::
 
@@ -103,10 +109,11 @@ The odometry sensor automatically publishes the TF transformation between the
 more to display than the ``/base_footprint`` of your robot in RVIZ. Launch RVIZ
 (``rosrun rviz rviz``), select ``/odom`` as *Fixed frame*, and add a TF
 display. You should see the frames ``/odom`` and ``/base_footprint`` connected
-together, on a black background.
+together, on a black background. Move the robot within MORSE with the arrow
+keys: the transform should update accordingly in RVIZ.
 
 We will soon build and add a map, but in the meantime, we want to display the
-full robot TF tree (it is needed by the ROS localization stack to know where
+full robot TF tree (it is required by the ROS localization stack to know where
 the laser scanner is).
 
 To do that, we need to publish the TF tree with the ``robot_state_publisher``
@@ -114,16 +121,16 @@ module. This module takes the robot joint state (exported by the
 :doc:`armature_pose sensors <../sensors/armature_pose>` of the arms, head and
 torso in our case) and the URDF file of our robot as input.
 
-First complete the ``scenario.py`` script by replacing the ``BarePR2`` by the ``BasePR2``:
+First complete the ``default.py`` script by replacing the ``BarePR2`` by the ``BasePR2``:
 
 .. code-block:: python
 
     from morse.builder import *
 
     # A PR2 robot to the scene
-    james = BasePR2()
-    james.add_interface('ros')
-    james.translate(x=2.5, y=3.2, z=0.0)
+    robot = BasePR2()
+    robot.add_interface('ros')
+    robot.translate(x=2.5, y=3.2, z=0.0)
 
     [...]
 
@@ -141,10 +148,10 @@ First complete the ``scenario.py`` script by replacing the ``BarePR2`` by the ``
 Then, to make our lives easier, we create a new ROS package and a launch file that will
 start the ``robot_state_publisher`` for us::
 
-  $> mkdir morse_2dnav && cd morse_2dnav
-  $> touch manifest.xml
-  $> touch nav.launch
-  $> export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:`pwd`/..
+  $ mkdir morse_2dnav && cd morse_2dnav
+  $ touch manifest.xml
+  $ touch nav.launch
+  $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:`pwd`/..
 
 Edit ``manifest.xml`` and copy-paste the code below:
 
@@ -196,13 +203,13 @@ The ROS navigation stacks include the powerful ``gmapping`` module that allows u
 
 To do so, we first need to add a laser scanner to our PR2 model.
 
-Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hokuyo laser scanners:
+Edit ``default.py`` to add a SICK sensor, configured to approximate the PR2 Hokuyo laser scanners:
 
 .. code-block:: python
 
     scan = Hokuyo()
     scan.translate(x=0.275, z=0.252)
-    james.append(scan)
+    robot.append(scan)
     scan.properties(Visible_arc = False)
     scan.properties(laser_range = 30.0)
     scan.properties(resolution = 1.0)
@@ -212,7 +219,7 @@ Edit ``scenario.py`` to add a SICK sensor, configured to approximate the PR2 Hok
     scan.add_interface('ros', topic='/base_scan')
 
 We can now build a first map of our environment. Restart the simulation with
-``morse run scenario.py``.
+``morse run nav_tutorial``.
 
 Start your launch file: ``roslaunch morse_2dnav nav.launch``.
 
@@ -253,7 +260,7 @@ Restart the simulation with the map server enabled.
 
 Start the AMCL estimator, passing the laser scans topic as paramter::
 
-  $> rosrun amcl amcl scan:=/base_scan
+  $ rosrun amcl amcl scan:=/base_scan
 
 Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
 display (topic name is ``/base_scan``) to see the simulated laser scans and set
@@ -273,15 +280,17 @@ First, add AMCL to the launch file:
 
 .. code-block:: xml
 
-    <node name="amcl" pkg="amcl" type="amcl" />
+    <node name="amcl" pkg="amcl" type="amcl">
+        <remap from="/scan" to="/base_scan" />
+    </node>
 
-Then, we need to add a motion controller to our robot. Open your ``scenario.py`` and add:
+Then, we need to add a motion controller to our robot. Open your ``default.py`` and add:
 
 .. code-block:: python
 
     motion = MotionXYW()
     motion.properties(ControlType = 'Position')
-    james.append(motion)
+    robot.append(motion)
     motion.add_interface('ros', topic='/cmd_vel')
 
 For the navigation, we will use the high-level ``move_base`` ROS module. The
@@ -315,9 +324,6 @@ and add the following new section to your ``nav.launch`` file:
 
 Run your launch script with ``roslaunch morse_2dnav nav.launch``. This should
 bring up all needed nodes and topics.
-
-In RVIZ, change the *2D Nav Goal* topic in the *Tool properties* panel, and set
-it to ``move_base_simple/goal``.
 
 You can now set a navigation goal by clicking the *2D Nav Goal* button. The
 robot should navigate towards that point on the map.
