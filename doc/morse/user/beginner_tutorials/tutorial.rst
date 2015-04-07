@@ -17,7 +17,7 @@ create your simulation and start it.
 
 .. note:: If you want, you can get the script resulting from this tutorial here:
     ``$MORSE_ROOT/share/morse/examples/tutorials/tutorial-1-sockets.py``, where
-    ``$MORSE_ROOT`` is your installation prefix (typically ``/usr/``).
+    ``$MORSE_ROOT`` is your installation prefix (typically ``/usr/local/``).
 
 Create the script
 -----------------

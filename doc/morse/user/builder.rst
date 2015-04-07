@@ -66,13 +66,16 @@ A basic builder script looks like:
 
     from morse.builder import *
     # [...]
-    env = Environment('indoors-1/indoor-1')
+    env = Environment('indoors-1/indoor-1', fastmode=False)
 
 - The first line tells MORSE that this is a builder script.
 - The second is a comment, it's where you will add robots, sensors and actuators.
 - Then we create an environment. The environment instance, here ``env``, will let you
   tune some simulation parameters. See :py:mod:`morse.builder.environment` for a
-  list of methods. 
+  list of methods. If you set the optional parameter ``fastmode`` to ``True``,
+  MORSE switches to a simpler rendering method (wireframe) which leads to much
+  faster performances, but you can not use vision-based sensors like cameras in
+  this mode.
 
 .. note::
 
