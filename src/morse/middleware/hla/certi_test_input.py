@@ -13,9 +13,6 @@ class CertiTestInput(AbstractHLAInput):
 
         self.suscribe_attributes(bille_handle, [self.handle_x, self.handle_y])
 
-    def finalize(self):
-        pass
-
     def default(self, ci = 'unused'):
         attributes = self.get_attributes()
 

@@ -13,6 +13,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
         self.synchronisation_points = {}
         self.registred_objects = {} # name -> obj_handle
+        self.registred_class_ref = {} # obj_handle -> int
 
         self._object_handles = {} # string -> obj_handle
         self._attributes_handles = {} # (obj_handle, string) -> attr_handle
@@ -88,6 +89,22 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self._attributes_subscribed[name] = res
 
         self._rtia.subscribeObjectClassAttributes(obj_handle, res)
+        ref_cnt = self.registred_class_ref.get(obj_handle, 0)
+        self.registred_class_ref[obj_handle] = ref_cnt + 1
+        logger.debug("registred_class_ref %s => %d" % (obj_handle, ref_cnt + 1))
+
+    def unsuscribe_attributes(self, obj_handle):
+        logger.debug("unsuscribe_attributes %s" % (obj_handle))
+
+        if not obj_handle in self.registred_class_ref:
+            return
+
+        self.registred_class_ref[obj_handle] -= 1
+        logger.debug("registred_class_ref %s => %d" % (obj_handle,
+            self.registred_class_ref[obj_handle]))
+        if self.registred_class_ref[obj_handle] == 0:
+            self._rtia.unsubscribeObjectClass(obj_handle)
+            del self.registred_class_ref[obj_handle]
 
     def get_attributes(self, obj_name):
         return self._attributes_values.get(obj_name, None)

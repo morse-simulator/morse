@@ -21,8 +21,10 @@ class AbstractHLAInput(AbstractDatastream):
         self.amb = self.kwargs['__hla_node'].morse_ambassador
         self._amb = self.kwargs['__hla_node'].morse_ambassador
         self._hla_name = self.component_instance.robot_parent.name() 
+        self._obj_handle = None
 
     def suscribe_attributes(self, obj_handle, attr_handles):
+        self._obj_handle = obj_handle
         self.amb.suscribe_attributes(self._hla_name, obj_handle, attr_handles)
 
     def get_attributes(self):
@@ -30,3 +32,7 @@ class AbstractHLAInput(AbstractDatastream):
 
     def hla_name(self):
         return self._hla_name
+
+    def finalize(self):
+        self.amb.unsuscribe_attributes(self._obj_handle)
+
