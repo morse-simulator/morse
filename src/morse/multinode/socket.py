@@ -18,6 +18,7 @@ class SocketNode(SimulationNodeClass):
         Create the socket that will be used to commmunicate to the server.
         """
         self.node_stream = None
+        self.poll_thread = None
         logger.debug("Connecting to %s:%d" % (self.host, self.port) )
         try:
             self.node_stream = StreamJSON(self.host, self.port)
