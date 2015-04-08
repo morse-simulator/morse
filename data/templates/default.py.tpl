@@ -17,6 +17,7 @@ robot = Morsy()
 # The list of the main methods to manipulate your components
 # is here: http://www.openrobots.org/morse/doc/stable/user/builder_overview.html
 robot.translate(1.0, 0.0, 0.0)
+robot.rotate(0.0, 0.0, 3.5)
 
 # Add a motion controller
 # Check here the other available actuators:
@@ -52,6 +53,6 @@ robot.add_default_interface('socket')
 
 # set 'fastmode' to True to switch to wireframe mode
 env = Environment('sandbox', fastmode = False)
-env.set_camera_location([10.0, -10.0, 10.0])
-env.set_camera_rotation([1.05, 0, 0.78])
+env.set_camera_location([-18.0, -6.7, 10.8])
+env.set_camera_rotation([1.09, 0, -1.14])
 
