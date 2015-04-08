@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import do_service_registration
 from morse.modifiers.abstract_modifier import AbstractModifier
 from math import cos, sin
+from random import gauss
 
 class OdometryNoiseModifier(AbstractModifier):
     """
@@ -37,7 +38,9 @@ class OdometryNoiseModifier(AbstractModifier):
 
     def initialize(self):
         self._factor = float(self.parameter("factor", default=1.05))
+        self._factor_sigma = float(self.parameter("factor_sigma", default=0))
         self._gyro_drift = float(self.parameter("gyro_drift", default=0))
+        self._gyro_drift_sigma = float(self.parameter("gyro_drift_sigma", default=0))
         self._drift_x = 0.0
         self._drift_y = 0.0
         self._drift_yaw = 0.0
@@ -49,19 +52,21 @@ class OdometryNoiseModifier(AbstractModifier):
         # If we have some error on  dS and yaw, we have
         # dx      = factor * dS * sin(yaw + drift_yaw)
         #         = factor * dS * sin(yaw) * cos(drift_yaw) +
-        #           factor * dS * cos(yaw)  * sin(drift_yaw)
-        #         = factor * ( dx * cos(drift_yaw) +  dy * sin(drift_yaw))
+        #           factor * dS * cos(yaw) * sin(drift_yaw)
+        #         = factor * ( dx * cos(drift_yaw) + dy * sin(drift_yaw))
         # Same thing to compute dy
         if self.component_instance.level == "raw":
-            self.data['dS'] *= self._factor
+            self.data['dS'] *= gauss(self._factor, self._factor_sigma)
         else:
-            self._drift_yaw += self._gyro_drift
+            factor = gauss(self._factor, self._factor_sigma)
+            drift = gauss(self._gyro_drift, self._gyro_drift_sigma)
+            self._drift_yaw += drift
             real_dx = self.component_instance._dx
             real_dy = self.component_instance._dy
-            dx = self._factor * ( real_dx * cos(self._drift_yaw) +
-                                  real_dy * sin(self._drift_yaw))
-            dy = self._factor * ( real_dy * cos(self._drift_yaw) -
-                                  real_dx  * sin(self._drift_yaw))
+            dx = factor * ( real_dx * cos(self._drift_yaw) +
+                            real_dy * sin(self._drift_yaw))
+            dy = factor * ( real_dy * cos(self._drift_yaw) -
+                            real_dx * sin(self._drift_yaw))
 
             self._drift_x +=  dx - real_dx
             self._drift_y +=  dy - real_dy
@@ -79,7 +84,7 @@ class OdometryNoiseModifier(AbstractModifier):
             else:
                 self.data['dx'] = dx
                 self.data['dy'] = dy
-                self.data['dyaw'] += self._gyro_drift
+                self.data['dyaw'] += drift
 
     def reset_noise(self):
         """ Service allowing to simulate loop-closure """
