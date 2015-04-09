@@ -101,11 +101,6 @@ class IMU(morse.core.sensor.Sensor):
         """
         Simulate angular velocity and linear acceleration measurements via simple differences.
         """
-
-        # Compute the differences with the previous loop
-        #dp = self.pos - self.pp
-        #deuler = mathutils.Vector(self.position_3d.euler - self.peuler)
-
         # linear and angular velocities
         lin_vel = (self.pos - self.pp) * self.frequency
         att = mathutils.Vector(self.position_3d.euler)
@@ -119,7 +114,7 @@ class IMU(morse.core.sensor.Sensor):
 
         # save current position and attitude for next step
         self.pp = self.pos.copy()
-        self.peuler = att
+        self.patt = att
         # save velocity for next step
         self.plv = lin_vel
         self.pav = ang_vel
