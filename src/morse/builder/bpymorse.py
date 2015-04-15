@@ -69,8 +69,7 @@ if bpy:
         link_append = bpy.ops.wm.link_append
     collada_import = bpy.ops.wm.collada_import
     add_object = bpy.ops.object.add
-    if bpy.app.version >= (2, 65, 0):
-        add_empty = bpy.ops.object.empty_add
+    add_empty = bpy.ops.object.empty_add
     new_mesh = bpy.data.meshes.new
     new_object = bpy.data.objects.new
     apply_transform = bpy.ops.object.transform_apply
@@ -94,10 +93,7 @@ def create_new_material():
 
 def add_morse_empty(shape = 'ARROWS'):
     """Add MORSE Component Empty object which hlods MORSE logic"""
-    if bpy.app.version >= (2, 65, 0):
-        add_empty(type = shape)
-    else:
-        add_object(type='EMPTY')
+    add_empty(type = shape)
 
 def deselect_all():
     select_all(action='DESELECT')
