@@ -42,9 +42,9 @@ except ImportError as exn:
     sys.exit()
 
 #Blender version must be egal or bigger than...
-MIN_BLENDER_VERSION = "2.62"
+MIN_BLENDER_VERSION = "2.65"
 #Blender version must be smaller than...
-STRICT_MAX_BLENDER_VERSION = "2.75"
+LAST_TESTED_BLENDER_VERSION = "2.74"
 
 #Unix-style path to the MORSE default scene and templates, within the prefix
 DEFAULT_SCENE_PATH = "share/morse/data/morse_default.blend"
@@ -98,11 +98,11 @@ def check_blender_version(blender_path):
 
     logger.info("Checking version of " + blender_path + "... Found v." + version)
 
-    if  version.split('.') >= MIN_BLENDER_VERSION.split('.') and \
-        version.split('.') < STRICT_MAX_BLENDER_VERSION.split('.') :
-        return version
-    else:
+    if version.split('.') < MIN_BLENDER_VERSION.split('.'):
         return False
+    if version.split('.') > LAST_TESTED_BLENDER_VERSION.split('.'):
+        logger.warning("Version %s of Blender is untested but should work" % version)
+    return version
 
 def check_blender_python_version(blender_path):
     """ Creates a small Python script to execute within Blender and get the
@@ -284,7 +284,6 @@ def check_setup():
             else:
                 logger.error("Could not find a correct Blender executable, neither in the " + \
                 "path or in MORSE\nprefix. Blender >= " + MIN_BLENDER_VERSION + \
-                " and < " + STRICT_MAX_BLENDER_VERSION + \
                 " is required to run MORSE.\n" + \
                 "You can alternatively set the $MORSE_BLENDER environment variable " + \
                 "to point to\na specific Blender executable")
