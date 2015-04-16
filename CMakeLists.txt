@@ -26,7 +26,7 @@ option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." OFF)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
 
-set(PythonInterp_FIND_VERSION 3.2)
+set(PythonInterp_FIND_VERSION 3.3)
 find_package(PythonInterp REQUIRED)
 
 set(PythonLibs_FIND_VERSION "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")

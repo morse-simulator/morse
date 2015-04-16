@@ -101,27 +101,10 @@ Prerequisites
 +++++++++++++
 
 - ``cmake``
-- Python (3.2 or +)
+- Python (3.3 or +)
 - ``python-dev`` package
-- Blender (>= 2.62) build with Python >= 3.2. You can simply get a binary from
+- Blender (>= 2.65) build with Python >= 3.3. You can simply get a binary from
   `Blender website <http://www.blender.org/download/get-blender/>`_
-
-.. note::
-
-  If you decide to install Python 3.2 by hand, the compilation must be done
-  according to your operating system, to match the Python compiled in
-  Blender:
-  
-  - On **Linux** compile with the ``--with-wide-unicode`` flag. This will
-    provide you with 4-byte Unicode characters (max size: 1114111)
-
-  - On **Mac OS** do not use the ``--with-wide-unicode`` flag. This will
-    provide you with 2-byte Unicode characters (max size: 65535)
- 
-  It the unicode sizes between Python and Blender do not match, you will get
-  errors about undefined symbols with names starting with  PyUnicodeUCS4
-  
-  This is not needed for Python >= 3.3 (Blender >= 2.65) anymore.
 
 
 Middleware-specific instructions

@@ -12,7 +12,7 @@ During installation
     morse/build $ cmake ..
     -- Could NOT find PythonInterp (missing:  PYTHON_EXECUTABLE) 
     CMake Error at CMakeLists.txt:24 (MESSAGE):
-    Can't find python 3.2 on your system
+    Can't find python 3.3 on your system
 
     -- Configuring incomplete, errors occurred!
 
@@ -20,7 +20,7 @@ During installation
   installed in your system.  MORSE should try to find the location of the
   include files and libraries automatically::
 
-    $ cmake -DPYTHON_EXECUTABLE=/usr/local/bin/python3.2 ..
+    $ cmake -DPYTHON_EXECUTABLE=/usr/local/bin/python3.3 ..
 
 
 
@@ -32,10 +32,10 @@ When running morse
     * The $MORSE_BLENDER environment variable doesn't point to a Blender executable! You should fix that! Trying to look for Blender in alternative places...
 
     which: no blender in (/usr/lib/mpich2/bin:/usr/lib/ccache:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin)
-    * Could not find a correct Blender executable, neither in the path or in MORSE
-    prefix. Blender >= 2.59 and < 2.62 is required to run MORSE.
-    You can alternatively set the $MORSE_BLENDER environment variable to point to
-    a specific Blender executable
+    * Could not find a correct Blender executable, neither in the path or in
+    MORSE prefix. Blender >= 2.65 is required to run MORSE.  You can
+    alternatively set the $MORSE_BLENDER environment variable to point to a
+    specific Blender executable
 
     * Your environment is not yet correctly setup to run MORSE!
     Please fix it with above information.
@@ -72,16 +72,16 @@ When running morse
 
   - csh::
 
-    $ echo 'setenv PYTHONPATH $PYTHONPATH\:/usr/local/lib/python3.2\:/usr/local/lib/python3.2/site-packages' >> ~/.cshrc
+    $ echo 'setenv PYTHONPATH $PYTHONPATH\:/usr/local/lib/python3.3\:/usr/local/lib/python3.3/site-packages' >> ~/.cshrc
 
   - bash::
 
-    $ echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.2:/usr/local/lib/python3.2/site-packages' >> ~/.bashrc
+    $ echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.3:/usr/local/lib/python3.3/site-packages' >> ~/.bashrc
 
   .. warning::
     The name of the installation directory may be different depending on your
     Linux distribution. If you use **Ubuntu** or similar distributions, replace
-    the directory name of ``python3.2/site-packages`` for
+    the directory name of ``python3.3/site-packages`` for
     ``python3/dist-packages``. Make sure to indicate the correct path used in
     your computer for all Python 3 libraries.
 
