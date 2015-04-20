@@ -141,6 +141,12 @@ img {
     padding: 5px;
 }
 
+.full-image {
+    max-width:100% !important;
+    border: none !important;
+    padding: 10px !important;
+}
+
 .math {
     border: 0 !important;
     padding: 0 !important;

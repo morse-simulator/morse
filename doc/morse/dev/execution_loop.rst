@@ -3,7 +3,8 @@ MORSE execution loop
 
 The following figure depicts the general behaviour of Morse:
 
-.. image:: ../../media/simulation_main_loop_overview.png
+.. image:: ../../media/simulation_main_loop_overview.svg
+   :class: full_image
    :width: 600
    :align: center
 
