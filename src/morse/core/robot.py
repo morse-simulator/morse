@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
 import morse.core.object
 from morse.core import blenderapi
+from morse.core import mathutils
 from morse.helpers.components import add_property
 
 class Robot(morse.core.object.Object):
@@ -18,7 +19,7 @@ class Robot(morse.core.object.Object):
     add_property('_is_ground_robot', False, 'GroundRobot', 'bool',
                  'Indicate if the robot is a ground robot, i.e. \
                   basically if it has no way to control its position on the \
-                  Z axis')
+                  Z axis, nor this X and Y rotation axis')
 
     # Make this an abstract class
     __metaclass__ = ABCMeta
@@ -72,7 +73,21 @@ class Robot(morse.core.object.Object):
             parent.applyRotation(angular_speed, True)
         elif kind == 'Velocity':
             if self._is_ground_robot:
-                linear_speed[2] = parent.localLinearVelocity[2]
+                """
+                A ground robot cannot control its vz not rx, ry speed in
+                the world frame. So convert {linear, angular}_speed in
+                world frame, remove uncontrolable part and then pass it
+                against in the robot frame"""
+                linear_speed = mathutils.Vector(linear_speed)
+                angular_speed = mathutils.Vector(angular_speed)
+                linear_speed.rotate(parent.worldOrientation)
+                angular_speed.rotate(parent.worldOrientation)
+                linear_speed[2] = parent.worldLinearVelocity[2]
+                angular_speed[0] = parent.worldAngularVelocity[0]
+                angular_speed[1] = parent.worldAngularVelocity[1]
+                linear_speed.rotate(parent.worldOrientation.transposed())
+                angular_speed.rotate(parent.worldOrientation.transposed())
+
             # Workaround against 'strange behaviour' for robot with
             # 'Dynamic' Physics Controller. [0.0, 0.0, 0.0] seems to be
             # considered in a special way, i.e. is basically ignored.
