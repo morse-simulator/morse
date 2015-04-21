@@ -7,7 +7,7 @@ class Morsy(GroundRobot):
         GroundRobot.__init__(self, "morsy", name)
         self.properties(classpath = "morse.robots.morsy.Morsy")
 
-        self.set_dynamic()
+        self.set_rigid_body()
         mesh = self.get_child('morsy_mesh')
         mesh.game.physics_type = 'NO_COLLISION'
 
