@@ -38,7 +38,27 @@ constraints.
 
 .. code-block :: python
 
-    foo.add_stream('yarp', port = 60005)
+    foo.add_stream('socket', port = 60005)
+
+Moreover, it is possible to enable some time synchronisation mechanism using
+the following parameters:
+
+- **time_sync**: Optional: Enable or disable the time synchronisation
+  mechanism. The default value is False
+- **sync_port**: Mandatory if **time_sync** is True. It is the port where the
+  simulator waits for the signal of synchronisation.
+
+To enable time synchronisation using port 12000, you should do:
+
+.. code-block :: python
+
+    env.configure_stream_manager('socket', time_sync = True, sync_port = 12000)
+
+If the time synchronisation mechanism is enabled and once someone is connected
+to the synchronisation port, the simulator will wait for a message (any
+string of length < 2048) at each turn of the simulation. Once the client
+disconnects, the simulator is free again to run at "normal" speed.
+
 
 Service interface
 -----------------
