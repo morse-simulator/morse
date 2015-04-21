@@ -42,6 +42,16 @@ At the moment, there are two strategies for handling time at the Morse level:
 
 These different strategies are implemented in :py:mod:`morse.core.morse_time`.
 
+Since 1.3, it is also possible to synchronise the simulation step, and so the
+time with an external clock for a 'slower than real-time' simulation. This
+synchronisation mechanism makes sense only in **Fixed Simulation Step** or in
+the case where you don't really use the physical engine. For the moment, this
+mechanism is implemented for two middlewares (search for the **time_sync**
+parameter):
+
+- :doc:`../user/middlewares/socket`
+- :doc:`../user/middlewares/hla`
+
 The used strategy is selected at the builder level, through the method
 :py:meth:`morse.builder.environment.Environment.set_time_strategy`.
 
