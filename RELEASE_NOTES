@@ -54,6 +54,8 @@ Socket
 
 - Socket middleware now accepts the keyword 'port' to specify on which port
   you want the socket binds itself.
+- It is now possible to synchronise with an external clock using the socket
+  middleware. See the documentation of **time_sync**.
   
 Moos
 ++++

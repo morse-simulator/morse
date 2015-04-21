@@ -20,7 +20,6 @@ Sensors
 +++++++
 
 - The timestamp field is now in seconds instead of milliseconds (`#498 <https://github.com/morse-simulator/morse/issues/498>`_)
-
 - :doc:`user/sensors/semantic_camera` gains two properties (`#396 <https://github.com/morse-simulator/morse/issues/396>`_):
     - `tag` allows to restrict the kind of object you want to detect
     - `relative` returns the position information of the various objects from
@@ -28,16 +27,13 @@ Sensors
 
 - :doc:`user/sensors/laserscanner` gain the possibility to return also a
   remission value at the `rssi` level.
-
 - Introduce the new sensor :doc:`user/sensors/radar_altimeter`, allowing to
   retrieve the distance to the ground.
-
 - Improvement of :doc:`user/sensors/accelerometer`, :doc:`user/sensors/imu`
   and :doc:`user/sensors/velocity`. They now works properly with robots with
   or without physics, and returns properly information in the sensor frame.
   The computation method is configurable using the `ComputationMode` property,
   counterpart of the `ControlType` in several actuators.
-
 - Introduce the new sensor :doc:`user/sensors/barometer`, allowing to compute
   the atmospheric pressure.
 
@@ -55,6 +51,9 @@ Socket
 
 - Socket middleware now accepts the keyword 'port' to specify on which port
   you want the socket binds itself.
+- It is now possible to synchronise with an external clock using the socket
+  middleware. See the documentation of **time_sync** in
+  :doc:`user/middlewares/socket`.
 
 Moos
 ++++
