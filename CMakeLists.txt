@@ -199,10 +199,8 @@ ELSE()
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymoos/MOOSCommClient.py
 
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/yarp.py
+		COMMAND ${CMAKE_COMMAND} -DSPHINX_FALSE_PYTHON_ENV=${SPHINX_FALSE_PYTHON_ENV} -P ${CMAKE_CURRENT_SOURCE_DIR}/config/generate_false_env.cmake
 	)
-
-	FILE(WRITE ${SPHINX_FALSE_PYTHON_ENV}/hla/omt.py "HLAfloat32LE=0\ndef HLAfixedArray(x,y,z):\n    pass")
-	FILE(WRITE ${SPHINX_FALSE_PYTHON_ENV}/hla/rti.py "class FederateAmbassador:\n    pass")
 
 	# GeNoM fake stuff
 	FOREACH(lib genPos lwr niut pom platine spark stereopixel viam viman)
@@ -216,7 +214,7 @@ ELSE()
 	ENDFOREACH()
 
 
-	ADD_DEPENDENCIES(copy_doc revisiontag ${SPHINX_FALSE_PYTHON_ENV}/hla/omt.py)
+	ADD_DEPENDENCIES(copy_doc revisiontag)
 
 
 	FIND_PROGRAM(SPHINX_APIDOC NAMES sphinx-apidoc)
