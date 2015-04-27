@@ -1,14 +1,16 @@
-OpenRobots Simulator
-====================
+![MORSE logo](doc/media/morse-logo.png)
 
-    (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2015
+MORSE: the Modular Open Robots Simulator Engine
+===============================================
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.14087.svg)](http://dx.doi.org/10.5281/zenodo.14087) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
 
 
-[MORSE](http://morse.openrobots.org) (Modular OpenRobots simulation Engine) is
-a Blender-based robotic simulator.  It is a BSD-licensed project (cf
-[LICENSE](LICENSE)).
+![MORSE screenshot 1](doc/media/morse_ros_navigation.png)
+
+[MORSE](http://morse-simulator.github.io/) (Modular OpenRobots Simulation Engine) is
+an academic robotic simulator, based on the Blender Game Engine and the Bullet
+Physics engine.  It is a BSD-licensed project (cf [LICENSE](LICENSE)).
 
 It is meant to be versatile (simulation of field robotics, indoor
 robotics, human robot interaction, multi-robots systems) and allow
@@ -23,7 +25,7 @@ middlewares](http://www.openrobots.org/morse/doc/latest/user/integration.html):
 - Yarp
 - pocolibs
 - MOOS
-- socket
+- and a generic socket interface (with an intuitive Python API)
 
 Installation
 ------------
@@ -57,10 +59,19 @@ Code is available on [GitHub](https://github.com/morse-simulator/morse).
 
 Feel free to fork, pull request or submit issues to improve the project!
 
-Acknowledgements
-----------------
+Credits
+-------
 
-The development of MORSE is partially funded by the Foundation RTRA
-within the ROSACE project framework, and by DGA
-<http://www.defense.gouv.fr/dga> through the ACTION
-<http://action.onera.fr> project.
+(c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2015
+
+MORSE is developped by a large community of academics, with contributions from
+more that 15 universities world-wide.
+
+![MORSE contributors](doc/media/contributors.png)
+
+The initial development of MORSE has been partially funded by the Fondation RTRA
+within the ROSACE project framework, and by DGA <http://www.defense.gouv.fr/dga>
+through the ACTION <http://action.onera.fr> project.
+
+![MORSE screenshot 2](doc/media/treasure.jpg)
+
