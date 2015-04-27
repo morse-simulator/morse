@@ -3,7 +3,8 @@ OpenRobots Simulator
 
     (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2015
 
-[![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.14087.svg)](http://dx.doi.org/10.5281/zenodo.14087) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
+
 
 [MORSE](http://morse.openrobots.org) (Modular OpenRobots simulation Engine) is
 a Blender-based robotic simulator.  It is a BSD-licensed project (cf
