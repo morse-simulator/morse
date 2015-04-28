@@ -84,23 +84,10 @@ Prerequisites
 +++++++++++++
 
 - cmake
-- Python (3.2 or +)
+- Python (3.3 or +)
 - python-dev package
-- Blender (>= 2.62) build with Python >= 3.2. You can simply get a binary from Blender website
+- Blender (>= 2.65) build with Python >= 3.5. You can simply get a binary from Blender website
 
-
-  If you decide to install Python by hand, the compilation must be done
-  according to your operating system, to match the Python compiled in
-  Blender:
-
-  - On **Linux** compile with the --with-wide-unicode flag. This will
-    provide you with 4-byte Unicode characters (max size: 1114111)
-
-  - On **Mac OS** do not use the --with-wide-unicode flag. This will
-    provide you with 2-byte Unicode characters (max size: 65535)
-
-  It the unicode sizes between Python and Blender do not match, you will get
-  errors about undefined symbols with names starting with  PyUnicodeUCS4
 
 Installation
 ++++++++++++
@@ -120,7 +107,7 @@ Then type these commands::
 
 By default, MORSE will install in /usr/local. You can easily change the
 install directory by giving additional parameters to cmake.  You can also
-change the installation type and select the middleware bindings by using
+change the installation type and disable use middleware bindings by using
 these additional parameters.
 
 - CMAKE_INSTALL_PREFIX controls where will be installed MORSE. The install
@@ -130,9 +117,9 @@ these additional parameters.
 - BUILD_DOC_SUPPORT controls the build of the documentation (require
   sphinx)
 - BUILD_HLA_SUPPORT controls the builds of HLA support for multi-node
-  simulations in MORSE.
+  simulations in MORSE
 - BUILD_POCOLIBS_SUPPORT controls the build of pocolibs support in MORSE.
-- BUILD_YARP2_SUPPORT controls the build of YARP support in MORSE.
+- BUILD_YARP_SUPPORT controls the build of YARP support in MORSE.
 - BUILD_ROS_SUPPORT controls the build of ROS support in MORSE.
 - BUILD_MOOS_SUPPORT controls the build of MOOS support in MORSE.
 - PYMORSE_SUPPORT controls the build and installation of pymorse, a
@@ -141,16 +128,16 @@ these additional parameters.
 - CMAKE_BUILD_TYPE controls the optimization stuff for C/C++ extension
   (Release is a good choice).
 - PYTHON_EXECUTABLE indicate where the python executable is in your system
-  (must be >= 3.2)
+  (must be >= 3.3)
 
 You can set up the different variables using the command line.
 For instance, to build and install MORSE with YARP support in /opt, you need something like::
 
-  $ cmake -DBUILD_YARP2_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
+  $ cmake -DBUILD_YARP_SUPPORT=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt ..
 
 Or to tell MORSE where to find a Python installed in a different location::
 
-  $ cmake -DPYTHON_EXECUTABLE=/usr/local/bin/python3.2 ..
+  $ cmake -DPYTHON_EXECUTABLE=/usr/local/bin/python3.3 ..
 
 Alternatively, you can use ccmake .. to change all of these parameters using a
 graphical interface. You can modify many different variables by switching to
