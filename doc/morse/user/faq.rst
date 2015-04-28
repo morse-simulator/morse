@@ -86,6 +86,17 @@ When running morse
     your computer for all Python 3 libraries.
 
 
+- ``urandom error`` : make sure your ``python3`` version is equal to the one in
+  Blender.
+
+- :tag:`ros` ``No module named 'rospkg'`` : install ``rospkg`` with Python 3
+  support, *ie* ``sudo apt-get install python3-rospkg``
+
+- :tag:`ros` ``No module named 'roslib'`` : ``source /opt/ros/***/setup.bash``.
+
+- ``No module named 'error'`` : ``Yaml`` for Python2 is running instead of
+  Python 3, install ``python3-yaml`` and/or fix your ``PYTHONPATH``.
+
 Developer specific
 ------------------
 

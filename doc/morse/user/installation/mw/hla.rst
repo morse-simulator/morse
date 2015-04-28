@@ -41,8 +41,6 @@ Using robotpkg, you can simply::
 Back to Morse
 +++++++++++++
 
-Once you have installed pyHLA, you can build the HLA support for Morse. Make
-sure your PYTHONPATH is configured properly so the python interpreter can find
-pyHLA. To build HLA support on Morse, you just need to add
-``-DBUILD_HLA_SUPPORT=ON`` to the cmake invocation.
+MORSE installs by default HLA support, so as long as pyHLA is accessible from
+your `PYTHONPATH`, you should be able to run HLA based simulation.
 

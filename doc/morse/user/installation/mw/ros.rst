@@ -1,15 +1,17 @@
 ROS Installation Notes
 ~~~~~~~~~~~~~~~~~~~~~~
 
-MORSE is based on Blender and requires Python 3. Python 3 is
-partially supported by **ROS**.
+**These ROS installation notes are only useful if the default installation does
+not work for you** (for instance, you are running on an older version of Ubuntu
+or Debian).
 
-First, install MORSE using the 
-:doc:`installation instructions  <../../installation>`.
-Make sure to set the **BUILD_ROS_SUPPORT** parameter to **ON** when
-calling cmake! *eg.*::
+If the packages ``python3-rospkg``, ``python3-catkin-tools`` and
+``python3-yaml`` are available for your distribution, install them, and you
+should be done. Head to :doc:`the ROS + MORSE tutorial
+<../../../user/beginner_tutorials/ros_tutorial>`.
 
-    cmake -DBUILD_ROS_SUPPORT=ON ..
+
+Otherwise, follow these steps to install them manually:
 
 #. Install ROS and run ``sudo rosdep init`` and ``rosdep update``
    as mentionned in the `installation wiki <http://wiki.ros.org/indigo/Installation/Ubuntu#Initialize_rosdep>`_
@@ -66,20 +68,8 @@ calling cmake! *eg.*::
 
    ``* Your environment is correctly setup to run MORSE.``
 
-#. Done. You can start having fun with MORSE and ROS!
+#. Done. You can start having fun with MORSE and ROS! Check :doc:`the ROS +
+   MORSE tutorial <../../../user/beginner_tutorials/ros_tutorial>`, for
+   instance.
 
 
-Troubleshooting
----------------
-
-- ``urandom error`` : make sure your ``python3`` version is equal to the one in
-  Blender.
-- ``No module named 'rospkg'`` : install rospkg with Python 3 as in #4
-- ``No module named 'roslib'`` : ``source /opt/ros/***/setup.bash``.
-- ``No module named 'error'`` : Yaml for Python2 is running instead of Python 3,
-  fix your ``PYTHONPATH``.
-
-Resources
----------
-
-- http://wiki.ros.org

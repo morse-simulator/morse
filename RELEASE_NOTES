@@ -3,7 +3,9 @@ What's new in MORSE 1.3?
 
 General
 -------
-
+- MORSE now installs by default support for almost all its supported
+  middlewares (ROS, YARP, MOOS, HLA, and (partially) pocolibs). This should
+  improve end-users' first experience with MORSE (it 'just works')
 - new sandbox environment. Check `the doc for a screenshot <https://www.openrobots.org/morse/doc/latest/quickstart.html>`_.
 
 Components
