@@ -16,7 +16,7 @@ option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
 option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" OFF)
 
 option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" ON)
-option(BUILD_YARP2_SUPPORT "Build yarp framework support" ON)
+option(BUILD_YARP_SUPPORT "Build yarp framework support" ON)
 option(BUILD_ROS_SUPPORT "Build ROS middleware support" ON)
 option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" ON)
 option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." ON)

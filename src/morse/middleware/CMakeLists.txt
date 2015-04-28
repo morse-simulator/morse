@@ -1,3 +1,15 @@
+macro(install_mw name)
+	string(TOUPPER ${name} NAME)
+	if(BUILD_${NAME}_SUPPORT)
+		install(DIRECTORY ${name}
+				DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+				REGEX .*.py.$ EXCLUDE)
+		
+		file(GLOB ${NAME}_SRCS ${name}_*.py)
+		install(FILES ${${NAME}_SRCS}
+				DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
+	endif()
+endmacro()
 
 if (BUILD_CORE_SUPPORT)
 INSTALL(FILES __init__.py abstract_datastream.py socket_datastream.py text_datastream.py socket_request_manager.py 
@@ -5,18 +17,10 @@ INSTALL(FILES __init__.py abstract_datastream.py socket_datastream.py text_datas
 		)
 
 INSTALL(DIRECTORY sockets
-		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
+		 DESTINATION ${PYTHON_INSTDIR}/morse/middleware
+		 REGEX .*.py.$ EXCLUDE)
 endif()
 
-IF(BUILD_YARP2_SUPPORT)
-	INSTALL(DIRECTORY yarp
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py.$ EXCLUDE
-        )
-	INSTALL(FILES yarp_datastream.py yarp_request_manager.py yarp_json_request_manager.py
-		DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-		)
-ENDIF(BUILD_YARP2_SUPPORT)
 
 IF(BUILD_POCOLIBS_SUPPORT)
 	ADD_SUBDIRECTORY(pocolibs)
@@ -24,32 +28,7 @@ IF(BUILD_POCOLIBS_SUPPORT)
 			DESTINATION ${PYTHON_INSTDIR}/morse/middleware)
 ENDIF(BUILD_POCOLIBS_SUPPORT)
 
-IF(BUILD_ROS_SUPPORT)
-  INSTALL(DIRECTORY ros
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py.$ EXCLUDE
-        )
-  INSTALL(FILES ros_datastream.py ros_request_manager.py
-			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-      )
-ENDIF(BUILD_ROS_SUPPORT)
-
-IF(BUILD_MOOS_SUPPORT)
-  INSTALL(DIRECTORY moos
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py.$ EXCLUDE
-        )
-  INSTALL(FILES moos_datastream.py 
-	    DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-		)
-ENDIF(BUILD_MOOS_SUPPORT)
-
-IF(BUILD_HLA_SUPPORT)
-  INSTALL(DIRECTORY hla
-        DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-        REGEX .*py.$ EXCLUDE
-        )
-	INSTALL(FILES hla_datastream.py
-			DESTINATION ${PYTHON_INSTDIR}/morse/middleware
-			)
-ENDIF(BUILD_HLA_SUPPORT)
+install_mw(yarp)
+install_mw(ros)
+install_mw(moos)
+install_mw(hla)

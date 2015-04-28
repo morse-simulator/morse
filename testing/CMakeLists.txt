@@ -19,6 +19,6 @@ if (BUILD_ROS_SUPPORT)
 	add_subdirectory(middlewares/ros)
 endif()
 
-if (BUILD_YARP2_SUPPORT)
+if (BUILD_YARP_SUPPORT)
 	add_subdirectory(middlewares/yarp)
 endif()
