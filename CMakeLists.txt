@@ -15,13 +15,13 @@ endif()
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
 option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" OFF)
 
-option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" OFF)
-option(BUILD_YARP2_SUPPORT "Build yarp framework support" OFF)
-option(BUILD_ROS_SUPPORT "Build ROS middleware support" OFF)
-option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" OFF)
-option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." OFF)
+option(BUILD_POCOLIBS_SUPPORT "Build pocolibs framework support" ON)
+option(BUILD_YARP2_SUPPORT "Build yarp framework support" ON)
+option(BUILD_ROS_SUPPORT "Build ROS middleware support" ON)
+option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" ON)
+option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." ON)
 
-option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." OFF)
+option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
 find_package(PkgConfig REQUIRED)
@@ -58,39 +58,6 @@ ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
 if (BUILD_CORE_SUPPORT)
 	INSTALL(FILES ${CMAKE_BINARY_DIR}/version.py DESTINATION ${PYTHON_INSTDIR}/morse/)
 endif(BUILD_CORE_SUPPORT)
-
-if (BUILD_YARP2_SUPPORT)
-	EXECUTE_PROCESS(COMMAND 
-					${PYTHON_EXECUTABLE} -c "import yarp;"
-					RESULT_VARIABLE YARP_PY_ERR
-				   )
-	if (YARP_PY_ERR)
-		MESSAGE(FATAL_ERROR "BUILD_YARP_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find yarp python binding")
-	endif (YARP_PY_ERR)
-endif(BUILD_YARP2_SUPPORT)
-
-
-# check to make sure pymoos is installed
-if (BUILD_MOOS_SUPPORT)
-	EXECUTE_PROCESS(COMMAND 
-					${PYTHON_EXECUTABLE} -c "import pymoos.MOOSCommClient;"
-					RESULT_VARIABLE MOOS_PY_ERR
-				   )
-	if (MOOS_PY_ERR)
-		#message(${MOOS_PY_ERR})
-		#MESSAGE(FATAL_ERROR "BUILD_MOOS_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find MOOS python binding")
-	endif (MOOS_PY_ERR)
-endif(BUILD_MOOS_SUPPORT)
-
-if (BUILD_HLA_SUPPORT)
-	EXECUTE_PROCESS(COMMAND 
-					${PYTHON_EXECUTABLE} -c "import hla;"
-					RESULT_VARIABLE HLA_PY_ERR
-				   )
-	if (HLA_PY_ERR)
-		MESSAGE(FATAL_ERROR "BUILD_HLA_SUPPORT is required, but '${PYTHON_EXECUTABLE}' can't find 'hla' python binding")
-	endif (HLA_PY_ERR)
-endif(BUILD_HLA_SUPPORT)
 
 ADD_SUBDIRECTORY(src)
 
