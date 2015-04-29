@@ -41,6 +41,7 @@ def tag_role(role, rawtext, text, lineno, inliner,
     node = nodes.literal(rawtext, text)
     node['classes'].append("tag")
     node['classes'].append("tag-" + categories[text][0])
+    node['classes'].append("tag-" + text)
 
     return [node], []
 

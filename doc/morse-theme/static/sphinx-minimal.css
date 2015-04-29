@@ -605,3 +605,23 @@ p.admonition-title {
     background-color: #268bd2;
     color: #fff;
 }
+
+.tag-yarp {
+    background-color: #333333;
+    color: #fff;
+}
+
+.tag-ros {
+    background-color: #53497e;
+    color: #fff;
+}
+
+.tag-moos {
+    background-color: #7e2433;
+    color: #fff;
+}
+
+.tag-pocolibs {
+    background-color: #3a7e25;
+    color: #fff;
+}
