@@ -16,7 +16,7 @@ import os
 import sys
 import pkgutil
 import inspect
-
+from collections import OrderedDict
 #
 # helpers
 #
@@ -695,7 +695,18 @@ def supported_interfaces_csv(props, datastreams, level = "default"):
     return ' ,'.join(supported_interfaces)
 
 def generate_matrix(filename):
-    datastreams = ['text', 'socket', 'yarp', 'ros', 'pocolibs', 'moos', 'hla']
+
+    # Format:
+    #     middleware: [support datastreams, support services]
+    middlewares = OrderedDict()
+    
+    middlewares['socket']= ['✔','✔']
+    middlewares['ros']= ['✔ (topics)','✔ (services + actions)']
+    middlewares['yarp']= ['✔ (ports)','✔']
+    middlewares['pocolibs']= ['✔ (posters)','✔ (requests)']
+    middlewares['moos']= ['✔ (database)','✘']
+    middlewares['hla']=['✔ (attribute update)','✘']
+    middlewares['text']= ['✔','✘']
 
     with open(filename, 'w', encoding='utf-8') as out:
         sensors_list = []
@@ -710,19 +721,17 @@ def generate_matrix(filename):
         sensors_list.sort()
         actuators_list.sort()
         
-        first_line = ['Features']
-        link_datastreams = [':doc:`' + d + ' <middlewares/' + d + '>`' for d in datastreams]
-        first_line.extend(link_datastreams)
-        add_csv_line(out, first_line)
+        add_csv_line(out, [''] + [':tag:`' + d + '`' for d in middlewares.keys()])
+        add_csv_line(out, [''] + [':doc:`Support notes <middlewares/' + d + '>`' for d in middlewares.keys()])
         add_csv_line(out, ['Communications,'])
-        add_csv_line(out, ['``Datastreams``', '✔', '✔', '✔ (ports)', '✔ (topics)',  '✔ (posters)', '✔ (database)', '✔ (attribute update)' ])
-        add_csv_line(out, ['``Services``', '✘', '✔', '✔', '✔ (services + actions)', '✔ (requests)', '✘', '✘'])
+        add_csv_line(out, ['*Datastreams*'] + [mw[0] for name, mw in middlewares.items()])
+        add_csv_line(out, ['*Services*'] + [mw[1] for name, mw in middlewares.items()])
         add_csv_line(out, ['Sensors,'])
         for name in sensors_list:
-            print_csv_data(out, name, datastreams, components[name])
+            print_csv_data(out, name, middlewares.keys(), components[name])
         add_csv_line(out, ['Actuators,'])
         for name in actuators_list:
-            print_csv_data(out, name, datastreams, components[name])
+            print_csv_data(out, name, middlewares.keys(), components[name])
 
 
 generate_matrix(os.path.join(PREFIX, 'compatibility_matrix.csv'))
