@@ -101,6 +101,27 @@ InMach GmbH (Ulm, Germany)
 
 - Johannes Horvath
 
+ENSTA Bretagne (Brest, France)
+++++++++++++++++++++++++++++++
+
+- Simon Rohou 
+- Jeremy Nicola
+
+Gumstix Research Canada
++++++++++++++++++++++++
+
+- Adam YH Lee
+
+DAI-Lab, Technische Universität Berlin (Berlin, Germany)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Christopher-Eyk Hrabia 
+
+Norwegian University of Science and Technology (NTNU) (Trondheim, Norway)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Eirik Hexeberg Henriksen
+
 
 Project funding
 ---------------
