@@ -74,10 +74,10 @@ class RosActionsTest(RosTestCase):
 
     def check_not_moving(self):
         pos1 = self.get_pose()
-        time.sleep(0.5)
+        time.sleep(1.0)
         pos2 = self.get_pose()
-        self.assertAlmostEqual(pos1[0], pos2[0], delta=0.05)
-        self.assertAlmostEqual(pos1[1], pos2[1], delta=0.05)
+        self.assertAlmostEqual(pos1[0], pos2[0], delta=0.15)
+        self.assertAlmostEqual(pos1[1], pos2[1], delta=0.15)
 
     def cb_preempted(self, status, res):
         self.cb_fired = True
@@ -136,4 +136,4 @@ class RosActionsTest(RosTestCase):
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(RosActionsTest)
+    main(RosActionsTest, time_modes = [TimeStrategies.BestEffort])
