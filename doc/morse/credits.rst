@@ -122,6 +122,10 @@ Norwegian University of Science and Technology (NTNU) (Trondheim, Norway)
 
 - Eirik Hexeberg Henriksen
 
+University of Lincoln (Lincoln, England)
+++++++++++++++++++++++++++++++++++++++++
+
+- Joshua G Lock 
 
 Project funding
 ---------------
