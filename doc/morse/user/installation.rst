@@ -124,7 +124,7 @@ Clone with ``git`` or download the latest version of the source code::
   
 (the lastest revision is always reasonably stable, and we recommend you to use
 it. However, if you prefer to use the stable branch, you can checkout the
-``1.2_STABLE`` branch or download it `from here
+``1.3_STABLE`` branch or download it `from here
 <https://github.com/morse-simulator/morse/releases/latest>`_.
 
 MORSE relies on a standard `CMake` workflow: go to the directory where you

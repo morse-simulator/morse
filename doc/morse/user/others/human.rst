@@ -164,7 +164,7 @@ way you can turn the device on and off.
 Sensors and actuators
 ---------------------
 
-Currently (``morse-1.2``), the human component has one sensor already
+Currently (``morse-1.3``), the human component has one sensor already
 integrated, which exports the joint state of the human: the :doc:`human posture
 sensor <../sensors/human_posture>`.  This sensor is already embedded in the
 ``human.blend`` file. You don't need to link it from a separate sensor file.
