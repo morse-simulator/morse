@@ -56,8 +56,8 @@ You can also install the Python bindings with::
 
 You can also easily install MORSE with:
 
-- autoproj
 - robotpkg
+- brew (MacOSX)
 
 See their associated documentation for details.
 
@@ -74,7 +74,8 @@ you want to use HLA, you have to first install the CERTI and PyHLA packages.
 Manual installation
 -------------------
 
-    The directory where MORSE is installed will be referred to as $MORSE_ROOT in this document.
+	The directory where MORSE is installed will be referred to as $MORSE_ROOT
+	in this document.
 
     It is recommended to store this environment variable, as it is necessary to
     use the Builder API scripts to generate simulation
@@ -86,7 +87,8 @@ Prerequisites
 - cmake
 - Python (3.3 or +)
 - python-dev package
-- Blender (>= 2.65) build with Python >= 3.5. You can simply get a binary from Blender website
+- Blender (>= 2.65) build with Python >= 3.3. You can simply get a binary from
+  Blender website
 
 
 Installation
@@ -164,5 +166,5 @@ When updating MORSE to a more recent version, you'll simply have to do::
 Installation troubleshooting
 ----------------------------
 
-In case of problems installing MORSE, verify the
-list of Frequently Asked Questions.
+In case of problems installing MORSE, verify the list of Frequently Asked
+Questions.
