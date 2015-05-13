@@ -64,6 +64,9 @@ The following variables permit to configure HLA behaviour:
   pressing :kbd:`Enter`. The default is False.
 - **time_sync**: Optional : a boolean indicating if the simulation is in
   'Best-effort' mode or synchronised by HLA. The default value is False.
+- **timestep**: Optional : a float indicating how much logic time elapse each
+  game loop. **Do not set it if you use physics from Blender (or sensors
+  relying on Blender time !**.
 
 
 You need to pass them to the ``configure_stream_manager`` method in the

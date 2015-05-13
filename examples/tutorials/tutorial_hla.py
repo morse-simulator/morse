@@ -28,7 +28,7 @@ env = Environment('empty')
 
 env.configure_stream_manager(
         'hla', 
-        fom = 'Test.fed', name = 'Morse', federation = 'Test', sync_point = 'Init', time_sync = True)
+        fom = 'Test.fed', name = 'Morse', federation = 'Test', sync_point = 'Init', time_sync = True, timestep = 1.0)
 
 ground = bpymorse.get_object('Ground')
 ground.scale = [255.0, 55.0, 0.0065]

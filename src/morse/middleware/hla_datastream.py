@@ -6,7 +6,7 @@ from morse.core.datastream import DatastreamManager
 from morse.core import blenderapi
 
 class MorseBaseAmbassador(rti.FederateAmbassador):
-    def __init__(self, rtia, federation, time_sync):
+    def __init__(self, rtia, federation, time_sync, timestep):
         self._rtia = rtia
         self.federation = federation
         self._time_sync = time_sync
@@ -21,24 +21,27 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         
         self._attributes_values = {} # obj_name -> { attr_handle -> value }
 
+        self.timestep = timestep
+
     def initialize_time_regulation(self):
         self.logical_time = self._rtia.queryFederateTime()
-        logger.debug("federation %s time %f" % (self.federation, self.logical_time))
+        logger.debug("federation %s time %f timestep %f" % 
+                (self.federation, self.logical_time, self.timestep))
 
         self.constraint_enabled = False
         self.regulator_enabled = False
         self.granted = False
-        self.lookahead = 1.0
+        self.lookahead = self.timestep
 
         self._rtia.enableTimeConstrained()
-        self._rtia.enableTimeRegulation(self.logical_time, self.lookahead)
+        self._rtia.enableTimeRegulation(self.logical_time, self.timestep)
         while not (self.constraint_enabled and self.regulator_enabled):
             self._rtia.tick(0, self.lookahead)
 
     def advance_time(self):
         if self._time_sync:
             self.granted = False
-            self._rtia.timeAdvanceRequest(self.logical_time + self.lookahead)
+            self._rtia.timeAdvanceRequest(self.logical_time + self.timestep)
             while not self.granted:
                 self._rtia.tick(0, self.lookahead)
         else:
@@ -112,7 +115,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
     def update_attribute(self, obj_handle, value):
         if self._time_sync:
             self._rtia.updateAttributeValues(obj_handle, value, "morse_update",
-                                             self.logical_time + self.lookahead)
+                                             self.logical_time + self.timestep)
         else:
             self._rtia.updateAttributeValues(obj_handle, value, "morse_update")
 
@@ -160,7 +163,8 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
 
 class HLABaseNode:
-    def __init__(self, klass, fom, node_name, federation, sync_point, sync_register, time_sync):
+    def __init__(self, klass, fom, node_name, federation, sync_point, 
+                       sync_register, time_sync, timestep):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         """
@@ -188,7 +192,7 @@ class HLABaseNode:
                     "Please check the '.fed' file syntax.")
                 raise
             logger.debug("Creating MorseAmbassador...")
-            self.morse_ambassador = klass(self.rtia, federation, time_sync)
+            self.morse_ambassador = klass(self.rtia, federation, time_sync, timestep)
             try:
                 self.rtia.joinFederationExecution(node_name, 
                     federation, self.morse_ambassador)
@@ -253,9 +257,10 @@ class HLADatastreamManager(DatastreamManager):
             sync_point = kwargs.get("sync_point", None)
             sync_register = kwargs.get("sync_register", False)
             time_sync = kwargs.get("time_sync", False)
+            timestep = kwargs.get("timestep", 1.0 / blenderapi.getfrequency())
 
             self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
-                                    federation, sync_point, sync_register, time_sync)
+                                    federation, sync_point, sync_register, time_sync, timestep)
         except KeyError as error:
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")

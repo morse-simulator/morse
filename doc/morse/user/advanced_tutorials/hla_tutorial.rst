@@ -84,7 +84,8 @@ Now, we need to connect this stuff to the HLA world. We use the
     env = Environment('empty')
     env.configure_stream_manager(
             'hla', 
-            fom = 'Test.fed', name = 'Morse', federation = 'Test', sync_point = 'Init', time_sync = True)
+            fom = 'Test.fed', name = 'Morse', federation = 'Test', sync_point
+            = 'Init', time_sync = True, timestep = 1.0)
 
     ground = bpymorse.get_object('Ground')
     ground.scale = [255.0, 55.0, 0.0065]
@@ -98,6 +99,11 @@ Now, we need to connect this stuff to the HLA world. We use the
 
     The parameters in ``configure_stream_manager`` are really important, see
     :doc:`the hla middleware documentation <../middlewares/hla>` for a complete description.
+
+.. note::
+
+    You can play with the timestep value to see how it interacts with other
+    simulators
 
 .. note::
 
