@@ -53,10 +53,16 @@ class Object(AbstractObject):
         # New MORSE_LOGIC sensor, see AbstractComponent.morseable()
         morselogic = [s for s in sensors if s.name.startswith('MORSE_LOGIC')]
         if len(morselogic) == 1:
-            self._frequency /= morselogic[0].frequency + 1
+            if blenderapi.version() >= (2, 74, 5):
+                self._frequency /= morselogic[0].skippedTicks + 1
+            else:
+                self._frequency /= morselogic[0].frequency + 1
         # Backward compatible (some actuators got special logic)
         elif len(sensors) == 1:
-            self._frequency /= sensors[0].frequency + 1
+            if blenderapi.version() >= (2, 74, 5):
+                self._frequency /= sensors[0].skippedTicks + 1
+            else:
+                self._frequency /= sensors[0].frequency + 1
         elif len(sensors) == 0:
             logger.warning("Can't get frequency for " + self.name() + \
                            " as the Game Logic sensor calling the action can't be found.")

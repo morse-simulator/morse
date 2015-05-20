@@ -135,7 +135,7 @@ class SearchAndRescue(SensorCreator):
         sensor.angle = 60.0
         sensor.distance = 10.0
         sensor.use_pulse_true_level = True
-        sensor.frequency = 20
+        self._set_sensor_frequency(sensor, 20)
         sensor.property = "Injured"
         # link it to the Python controller
         controller = obj.game.controllers[-1]
