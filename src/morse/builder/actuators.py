@@ -178,7 +178,7 @@ class Waypoint(ActuatorCreator):
         sensor.distance = 3.0
         sensor.axis = 'XAXIS'
         sensor.use_pulse_true_level = True
-        sensor.frequency = 20
+        self._set_sensor_frequency(sensor, 20)
         self.radar_set_collision(obj, sensor, 'LOGIC_AND',  collision, True)
         self.radar_set_collision(obj, sensor, 'LOGIC_NAND', collision, False)
     def radar_set_collision(self, obj, sensor, controller_type, collision, value):

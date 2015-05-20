@@ -502,6 +502,12 @@ class AbstractComponent(object):
         """
         self.properties(abstraction_level = level)
 
+    def _set_sensor_frequency(self, sensor, delay):
+        if bpymorse.version() >= (2, 74, 5):
+            sensor.tick_skip = delay
+        else:
+            sensor.frequency = delay
+
     def frequency(self, frequency=None, delay=0):
         """ Set the frequency of the Python module
 
@@ -520,13 +526,13 @@ class AbstractComponent(object):
             logger.warning(self.name + " has too many MORSE_LOGIC sensors to "+\
                     "tune its frequency, change it through Blender")
         elif len(morselogic) > 0:
-            morselogic[0].frequency = delay
+            self._set_sensor_frequency(morselogic[0], delay)
         # Backward compatible (some actuators got special logic)
         elif len(sensors) > 1:
             logger.warning(self.name + " has too many Game Logic sensors to "+\
                     "tune its frequency, change it through Blender")
         elif len(sensors) > 0:
-            sensors[0].frequency = delay
+            self._set_sensor_frequency(sensors[0], delay)
         else:
             logger.warning(self.name + " has no 'ALWAYS' Game Logic sensor. "+\
                            "Unable to tune its frequency.")
