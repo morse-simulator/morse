@@ -5,7 +5,7 @@ import copy
 
 from morse.builder import bpymorse
 from morse.builder.data import *
-from morse.core.exceptions import MorseBuilderUnexportableError
+from morse.core.exceptions import MorseBuilderUnexportableError, MorseBuilderError
 
 from morse.helpers.loading import get_class, load_module_attribute
 
@@ -131,16 +131,26 @@ class AbstractComponent(object):
             obj.hide = False
         self._bpy_object = obj # bpy object
 
-    def append(self, obj, level=1):
+    def append(self, obj, child = None, level=1):
         """ Add a child to the current object
 
         Add the object given as an argument as a child of this object. The
         argument is an instance to another component. This method is generally
         used to add components to a robot.
         *e.g.*, : robot.append(sensor), will set the robot parent of the sensor.
+
+        If child is not None, the object will be parented to the named
+        child of self instead of the root of self.
         """
         obj._bpy_object.matrix_parent_inverse.identity()
-        obj._bpy_object.parent = self._bpy_object
+        if child:
+            _child = self.get_child(child)
+            if _child:
+                obj._bpy_object.parent = _child
+            else:
+                raise MorseBuilderError("No such child %s" % child)
+        else:
+            obj._bpy_object.parent = self._bpy_object
         obj.parent = self
         self.children.append(obj)
 
