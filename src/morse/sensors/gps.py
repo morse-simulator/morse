@@ -4,6 +4,7 @@ from morse.helpers.components import add_property, add_data, add_level
 import math, time
 from morse.core import mathutils
 from morse.core import blenderapi
+from morse.helpers.coordinates import CoordinateConverter
 
 class GPS(morse.core.sensor.Sensor):
     """
@@ -189,6 +190,7 @@ class RawGPS(GPS):
         self.v = [0.0, 0.0, 0.0] # Velocity
         self.pv = [0.0, 0.0, 0.0] # Previous Velocity
 
+        self.coord_converter = CoordinateConverter(self.latitude, self.longitude, self.altitude)
     
     def default_action(self):
         """
@@ -231,95 +233,13 @@ class RawGPS(GPS):
         self.pvy = self.v[1]
         self.pvz = self.v[2]
 
-
-        ####
-        #GPS
-        ####
-
-        ####
-        #constants in calculations
-        #a: WGS-84 Earth semimajor axis
-        #ecc: first eccentricity
-        ####
-        a  = float(6378137)
-        ecc = 8.181919191e-2
-
-        def convert_GPS_to_ECEF(P):
-            """
-            converts gps-data(radians) to ECEF-r coordinates
-            """
-            N = a/math.sqrt(1-(ecc**2*(math.sin(P[1])**2)))
-            h = P[2]
-            x0 = [ (h + N)*math.cos(P[1])*math.cos(P[0]),
-                   (h + N)*math.cos(P[1])*math.sin(P[0]),
-                   (h + (1 - ecc**2) * N)*math.sin(P[1])]
-            return x0
-
-        def convert_LTP_to_ECEF(P):
-            """
-            converts point in LTP(Blender) to ECEF-r coordinates
-            """
-            x0 = convert_GPS_to_ECEF(P) #P->x0
-            x0 = mathutils.Vector(x0)
-            transform_matrix = [[-math.sin(P[0]), math.cos(P[0]), 0],
-               [-math.cos(P[0]) * math.sin(P[1]), 
-                -math.sin(P[1])*math.sin(P[0]), math.cos(P[1])],
-               [math.cos(P[1])*math.cos(P[0]), math.cos(P[1])*math.sin(P[0]), math.sin(P[1])]]
-            transform_matrix = mathutils.Matrix(transform_matrix)
-            transform_matrix.invert()
-            xe = x0 + transform_matrix*xt  #transformed xt -> xe
-            return xe
-
-        def vermeille_method(xe):
-            """
-            converts point in ECEF-r coordinates into Geodetic (GPS) via
-            Vermeille's method
-            """
-            #"just intermediary parameters" see FoIz
-            p = (xe[0]**2+xe[1]**2)/a**2
-            q = (1-ecc**2)/a**2*xe[2]**2
-            r = (p+q-ecc**4)/6
-            s = ecc**4 * (p*q)/(4*r**3)
-            t = (1+s+math.sqrt(s*(2+s)))**(1/3.0)
-            u = r*(1+t+1/t)
-            v = math.sqrt(u**2+(ecc**4*q))
-            w = ecc**2*((u+v-q)/(2*v))
-            k = math.sqrt(u+v+w**2)-w
-            D = (k*(math.sqrt(xe[0]**2+xe[1]**2)))/(k+ecc**2)
-            gps_coords = [2*math.atan(xe[1]/(xe[0]+(math.sqrt(xe[0]**2+xe[1]**2)))),
-                          2*math.atan(xe[2]/(D+math.sqrt(D**2+xe[2]**2))),
-                         ((k+ecc**2-1)/k)*math.sqrt(D**2+xe[2]**2)]
-            return gps_coords
-
-        #P -> Blender origin in Geodetic coordinates
-        P = [self.longitude, self.latitude, self.altitude]
-
         #current position
-        xt = self.position_3d.translation
-        xt = mathutils.Vector(xt)
-
-        #P (in degrees) to radians
-        for i in range(len(P)-1):
-            P[i] = math.radians(P[i])
-
-        ####
-        #GPS -> ECEF-r
-        ####
-        xe = convert_LTP_to_ECEF(P)
-
-        ####
-        #ECEF-r -> GPS
-        ####
-        gps_coords = vermeille_method(xe)
-
-        #gps_coords (in radians) to degrees
-        for i in range(len(gps_coords)-1):
-            gps_coords[i] = math.degrees(gps_coords[i])
-
+        xt = mathutils.Vector(self.position_3d.translation)
+        gps_coords = self.coord_converter.ltp_to_geodetic(xt)
 
         #compose message as close as possible to a GPS-standardprotocol
-        self.local_data['longitude'] = gps_coords[0]
-        self.local_data['latitude'] = gps_coords[1]
+        self.local_data['longitude'] = math.degrees(gps_coords[0])
+        self.local_data['latitude'] = math.degrees(gps_coords[1])
         self.local_data['altitude'] = gps_coords[2]
         self.local_data['velocity'] = self.v
 
