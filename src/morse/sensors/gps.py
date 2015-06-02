@@ -19,6 +19,13 @@ class GPS(morse.core.sensor.Sensor):
 
     The "heading" is Clockwise (mathematically negative).
 
+    .. warning::
+
+        To work properly in "raw" and "extented" mode, you need to
+        configure the following variables at the environment level:
+            - **longitude** in degrees (double) of Blender origin
+            - **latitude** in degrees (double) of Blender origin
+            - **altitude** in m  of the Blender origin
 
     Conversion of Geodetic coordinates into ECEF-r, LTP into ECEF-r and vice versa
     ------------------------------------------------------------------------------
@@ -129,13 +136,6 @@ class GPS(morse.core.sensor.Sensor):
              'heading in degrees [0°,360°] to geographic north',
              level = "extended")
 
-    add_property('longitude', 0.0, 'longitude', 'double',
-                 'longitude in degree [-180°,180°] or [0°,360°] of the \
-                  Blender origin')
-    add_property('latitude', 0.0, 'latitude', 'double',
-             'latitude in degree [-90°,90°] of the Blender origin')
-    add_property('altitude', 0.0, 'altitude', 'double',
-             'altitude in m a.s.l. of the Blender origin')
 
     def __init__(self, obj, parent=None):
         """ Constructor method.
@@ -190,7 +190,7 @@ class RawGPS(GPS):
         self.v = [0.0, 0.0, 0.0] # Velocity
         self.pv = [0.0, 0.0, 0.0] # Previous Velocity
 
-        self.coord_converter = CoordinateConverter(self.latitude, self.longitude, self.altitude)
+        self.coord_converter = CoordinateConverter.instance()
     
     def default_action(self):
         """

@@ -1,5 +1,7 @@
+import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import mathutils
 from math import sqrt, cos, sin, atan, radians
+from morse.core import blenderapi
 
 class CoordinateConverter:
     """ Allow to convert coordinates from Geodetic to LTP to ECEF-r ... """
@@ -8,6 +10,8 @@ class CoordinateConverter:
     A2 = A**2
     ECC2 = ECC**2
     ECC4 = ECC**4
+
+    _instance = None
     
     def __init__(self, latitude, longitude, altitude):
         self.origin_geodetic = [radians(longitude),
@@ -21,6 +25,20 @@ class CoordinateConverter:
            [cos(P[1]) * cos(P[0]), cos(P[1]) * sin(P[0]), sin(P[1])]]
         self._rot_ecef_ltp = mathutils.Matrix(_rot)
         self._rot_ltp_ecef = self._rot_ecef_ltp.transposed()
+
+    @staticmethod
+    def instance():
+        if not CoordinateConverter._instance:
+            try:
+                ssr = blenderapi.getssr()
+                latitude = ssr["latitude"]
+                longitude = ssr["longitude"]
+                altitude = ssr["altitude"]
+                CoordinateConverter._instance = \
+                    CoordinateConverter(latitude, longitude, altitude)
+            except KeyError as e:
+                logger.error("Missing environment parameter %s\n", e)
+        return CoordinateConverter._instance
 
     def geodetic_to_ecef(self, P):
 

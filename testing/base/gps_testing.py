@@ -29,7 +29,6 @@ class GPSTest(MorseTestCase):
 
         gps_raw = GPS()
         gps_raw.level('raw')
-        gps_raw.properties(longitude = 43.6, latitude = 1.4333, altitude = 135.0)
         gps_raw.add_stream('socket')
         robot.append(gps_raw)
 
@@ -40,6 +39,7 @@ class GPSTest(MorseTestCase):
 
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
+        env.properties(longitude = 43.6, latitude = 1.4333, altitude = 135.0)
 
     def test_read_gps(self):
         """ Test if we can connect to the pose data stream, and read from it.
