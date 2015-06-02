@@ -1,3 +1,38 @@
+What's new in MORSE 1.4?
+========================
+
+General
+-------
+
+Components
+----------
+
+Robots
+++++++
+
+Actuators
++++++++++
+
+Sensors
++++++++
+
+- **longitude**, **latitude** and **altitude** are not anymore properties of
+  :doc:`user/sensors/gps` but must be set at the environment level.
+
+Middlewares
+-----------
+
+General
++++++++
+
+
+Builder API
+-----------
+
+API addition
+++++++++++++
+
+
 What's new in MORSE 1.3?
 ========================
 
