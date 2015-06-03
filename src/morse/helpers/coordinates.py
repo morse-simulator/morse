@@ -88,3 +88,6 @@ class CoordinateConverter:
 
     def ltp_to_geodetic(self, xe):
         return self.ecef_to_geodetic(self.ltp_to_ecef(xe))
+
+    def geodetic_to_ltp(self, xe):
+        return self.ecef_to_ltp(self.geodetic_to_ecef(xe))
