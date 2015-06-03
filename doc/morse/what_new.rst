@@ -19,6 +19,13 @@ Sensors
 - **longitude**, **latitude** and **altitude** are not anymore properties of
   :doc:`user/sensors/gps` but must be set at the environment level.
 
+Modifiers
+++++++++
+
+- Introduce ECEF and Geodetic modifiers, allowing to convert coordinates from
+  Blender world to ECEF-r or Geodetic coordinates (and vice-versa). It should
+  improve interoperability with flight systems in general.
+
 Middlewares
 -----------
 
