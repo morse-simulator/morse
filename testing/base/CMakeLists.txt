@@ -53,6 +53,7 @@ add_morse_test(multiple_ptu_testing)
 
 add_morse_test(ned_testing)
 add_morse_test(utm_testing)
+add_morse_test(ecef_testing)
 add_morse_test(pose_noise_testing)
 add_morse_test(imu_noise_testing)
 

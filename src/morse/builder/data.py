@@ -52,6 +52,13 @@ MORSE_MODIFIER_DICT = {
         'morse.actuators.orientation.Orientation': "morse.modifiers.ned.AnglesFromNED",
         'morse.actuators.teleport.Teleport': "morse.modifiers.ned.CoordinatesFromNED",
     },
+    'ECEF': {
+        'morse.sensors.pose.Pose': "morse.modifiers.ecef.CoordinatesToECEF",
+        'morse.sensors.gps.GPS': "morse.modifiers.ecef.CoordinatesToECEF",
+        'morse.actuators.destination.Destination': "morse.modifiers.ecef.CoordinatesFromECEF",
+        'morse.actuators.waypoint.Waypoint': "morse.modifiers.ecef.CoordinatesFromECEF",
+        'morse.actuators.teleport.Teleport': "morse.modifiers.ecef.CoordinatesFromECEF",
+    },
     'UTM' : {
         'morse.sensors.pose.Pose': "morse.modifiers.utm.CoordinatesToUTM",
         'morse.sensors.gps.GPS': "morse.modifiers.utm.CoordinatesToUTM",
