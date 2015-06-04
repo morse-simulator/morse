@@ -325,21 +325,32 @@ class Component():
         self._morse = morse
         self.name = name
         self.fqn = fqn # fully qualified name
+        
+        self.stream = None
+        self._init = False
+        self._port = port
+        self._stream_dir = stream
 
-        if port:
-            self.stream = StreamJSON(morse.host, port)
+        for service in services:
+            logger.debug("Adding service %s to component %s" % (service, self.name))
+            self._add_service(service)
 
-            if stream == 'IN':
+    def lazy_init(self):
+        if self._init:
+            return
+
+        if self._port:
+            self.stream = StreamJSON(self._morse.host, self._port)
+
+            if self._stream_dir == 'IN':
                 self.publish = self.stream.publish
-            elif stream == 'OUT':
+            elif self._stream_dir == 'OUT':
                 self.get = self.stream.get
                 self.last = self.stream.last
                 self.subscribe = self.stream.subscribe
                 self.unsubscribe = self.stream.unsubscribe
 
-        for service in services:
-            logger.debug("Adding service %s to component %s" % (service, self.name))
-            self._add_service(service)
+        self._init = True
 
     def _add_service(self, method):
         def innermethod(*args):
@@ -360,12 +371,16 @@ class Component():
             self.stream.close()
 
 class Robot(dict, Component):
-    __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
     def __init__(self, morse, name, fqn, services = []):
         Component.__init__(self, morse, name, fqn, None, None, services)
+
+    def __getattr__(self, name):
+        comp = dict.__getitem__(self, name)
+        comp.lazy_init()
+        return comp
 
 def normalize_name(name):
     """Normalize Blender names to get valid Python identifiers"""
