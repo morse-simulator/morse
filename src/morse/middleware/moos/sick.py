@@ -9,7 +9,7 @@ class LIDARNotifier(AbstractMOOS):
     def initialize(self):
         AbstractMOOS.initialize(self)
         # post lidar settings to the database only once at startup
-        cur_time=blenderapi.persistantstorage().current_time
+        cur_time=blenderapi.persistantstorage().time.time
         self.m.Notify('sScanAngle',
             self.component_instance.scan_window, cur_time)
         self.m.Notify('sScanResolution',

@@ -557,7 +557,6 @@ def init(contr):
 
     persistantstorage.morse_initialised = False
     persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'])
-    persistantstorage.current_time = persistantstorage.time.time
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0
 
@@ -691,7 +690,6 @@ def simulation_main(contr):
     # Update the time variable
     try:
         persistantstorage.time.update()
-        persistantstorage.current_time = persistantstorage.time.time
     except AttributeError:
         # If the 'base_clock' variable is not defined, there probably was
         #  a problem while doing the init, so we'll abort the simulation.

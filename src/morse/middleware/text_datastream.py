@@ -50,7 +50,7 @@ class Publisher(BasePublisher):
                  'yaw,pitch,roll: [%.6f %.6f %.6f] | index %d | time %.2f\n'
                  % (parent_position.x, parent_position.y, parent_position.z,
                     parent_position.yaw, parent_position.pitch, parent_position.roll,
-                    self.index, blenderapi.persistantstorage().current_time)]
+                    self.index, blenderapi.persistantstorage().time.time)]
 
         for variable, data in self.data.items():
             if isinstance(data, float):

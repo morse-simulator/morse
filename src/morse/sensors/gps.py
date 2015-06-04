@@ -264,7 +264,7 @@ class ExtendedGPS(RawGPS):
         """
         # Call the default_action of the parent class
         RawGPS.default_action(self)
-        current_time = time.gmtime(blenderapi.persistantstorage().current_time)
+        current_time = time.gmtime(blenderapi.persistantstorage().time.time)
         date = time.strftime("%d%m%y", current_time)
         time_h_m_s = time.strftime("%H%M%S", current_time)
         heading = (2*math.pi - math.atan2(self.dy, self.dx) + math.pi/2)%(2*math.pi)

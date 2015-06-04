@@ -69,7 +69,7 @@ class StringPublisher(AbstractMOOS):
 
     def default(self, ci='unused'):
         logger.debug("Posting message to the MOOS database.")
-        current_time = blenderapi.persistantstorage().current_time
+        current_time = blenderapi.persistantstorage().time.time
         #iterate through all objects of the component_instance and post the data
         for variable, data in self.data.items():
             name = "%s_%s" % (self.component_name, variable)

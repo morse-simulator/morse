@@ -11,7 +11,7 @@ class PoseNotifier(AbstractMOOS):
 
         # post the simulation time so that it can be synced to MOOSTime
         self.m.Notify('actual_time', 
-                      blenderapi.persistantstorage().current_time, cur_time)
+                      blenderapi.persistantstorage().time.time, cur_time)
         # post the robot position
         self.m.Notify('simEast', self.data['x'], cur_time)
         self.m.Notify('simNorth', self.data['y'], cur_time)
