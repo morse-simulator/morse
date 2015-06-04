@@ -64,12 +64,6 @@ strategy. The precision depends of the underlaying implementation of
 :py:meth:`time.time` and the speed of simulation. If you run a simulation at
 60 Hz, the simulator clock will be updated about every 15 ms.
 
-.. note::
-
-    The variable
-    py:data:`morse.core.blenderapi.persistantstorage().current_time` still
-    exists, for compatibility purpose, but will be removed in the future.
-
 
 Moreover, in a lot of situations, you do not want to access the
 simulated time directly, but at the time as seen by the current robot. To do that, you
