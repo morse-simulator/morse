@@ -39,6 +39,15 @@ Builder API
 API addition
 ++++++++++++
 
+Pymorse
+-------
+
+- Robots created in loop are handled smartly. They are still usable as
+  previously, but it is also possible to access them using the list foos (if
+  your robot name is foo) (`#358  <https://github.com/morse-simulator/morse/issues/358>`_).
+- Streams are now created lazily, fixing control with large number of robots /
+  sensors (`#626  <https://github.com/morse-simulator/morse/issues/626>`_).
+
 
 What's new in MORSE 1.3?
 ========================
