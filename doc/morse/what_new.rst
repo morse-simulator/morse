@@ -25,6 +25,8 @@ Modifiers
 - Introduce ECEF and Geodetic modifiers, allowing to convert coordinates from
   Blender world to ECEF-r or Geodetic coordinates (and vice-versa). It should
   improve interoperability with flight systems in general.
+- Introduce Feet modifier, to convert imperial units to meter buts (and
+  vice-versa)
 
 Middlewares
 -----------
