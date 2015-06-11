@@ -6,8 +6,10 @@ import numpy
 class CoordinateConverter:
     """ Allow to convert coordinates from Geodetic to LTP to ECEF-r ... """
     A  = 6378137.0 # WGS-84 Earth semi-major axis
-    B = 6356752.3142 # Second semi-major axis
+    B = 6356752.3142 # WGS-84 Second semi-major axis
     ECC = 8.181919191e-2 # first excentricity
+    F = (A - B) / A # Flatenning
+    R = 6378137.0 # Radius of Earth at equator
     A2 = A**2
     ECC2 = ECC**2
     ECC4 = ECC**4
@@ -95,3 +97,19 @@ class CoordinateConverter:
 
     def geodetic_to_ltp(self, xe):
         return self.ecef_to_ltp(self.geodetic_to_ecef(xe))
+
+    def geodetic_to_geocentric(self, lat, h):
+        """ Convert geodetic latitude to geocentric latitude
+
+        :param: latitude geodetic latitude in degree
+        :param: h height against sea level in meter
+        :return: geocentric latitude in degree
+        """
+        lat_rad = radians(lat)
+        lat_surface = atan((1 - self.F)**2 *tan(lat_rad))
+        sin_lat = sin(lat_rad)
+        cos_lat = cos(lat_rad)
+        s1 = h * sin_lat + self.R * sin(lat_surface)
+        cc = h * cos_lat + self.R * cos(lat_surface)
+        lat_geoc = atan(s1 / cc)
+        return degrees(lat_geoc)
