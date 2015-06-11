@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 
 from morse.modifiers.abstract_modifier import AbstractModifier
 from morse.helpers.coordinates import CoordinateConverter
-from morse.core import mathutils
+import numpy
 
 class ECEFmodifier(AbstractModifier):
     """ 
@@ -28,17 +28,18 @@ class ECEFmodifier(AbstractModifier):
 
     def modify(self):
         try:
-            xe = mathutils.Vector(
-                    (
+            xe = numpy.matrix(
+                    [
                     self.data['x'],
                     self.data['y'],
                     self.data['z']
-                    ))
+                    ])
             xt = self.method(xe)
+            logger.info("%s => %s" % (xe, xt))
 
-            self.data['x'] = xt[0]
-            self.data['y'] = xt[1]
-            self.data['z'] = xt[2]
+            self.data['x'] = xt[0, 0]
+            self.data['y'] = xt[0, 1]
+            self.data['z'] = xt[0, 2]
         except KeyError as detail:
             self.key_error(detail)
 
