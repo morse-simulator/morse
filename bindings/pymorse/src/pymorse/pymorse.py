@@ -320,7 +320,7 @@ class MorseServicePreempted(Exception):
     """ Morse Service Exception thrown when preempted error """
 
 
-class Component():
+class Component(object):
     def __init__(self, morse, name, fqn, stream = None, port = None, services = []):
         self._morse = morse
         self.name = name
@@ -366,6 +366,12 @@ class Component():
         innermethod.__name__ = str(method)
         setattr(self, innermethod.__name__, innermethod)
 
+    def __getattribute__(self, name):
+        comp = object.__getattribute__(self, name)
+        if hasattr(comp, 'lazy_init'):
+            comp.lazy_init()
+        return comp
+
     def close(self):
         if self.stream:
             self.stream.close()
@@ -379,7 +385,8 @@ class Robot(dict, Component):
 
     def __getattr__(self, name):
         comp = dict.__getitem__(self, name)
-        comp.lazy_init()
+        if hasattr(comp, 'lazy_init'):
+            comp.lazy_init()
         return comp
 
 def normalize_name(name):
