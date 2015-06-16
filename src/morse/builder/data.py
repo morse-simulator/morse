@@ -159,6 +159,12 @@ MORSE_DATASTREAM_DICT = {
             'pocolibs': 'morse.middleware.pocolibs.sensors.stereopixel.Spix3DImagePoster'
             }
         },
+    "morse.sensors.depth_camera.DepthVideoCamera": {
+        "default": {
+            "socket": 'morse.middleware.sockets.depth_camera.DepthCameraPublisher',
+            "yarp": 'morse.middleware.yarp.video_depth_camera.YarpImageFloatPublisher',
+            }
+        },
     "morse.sensors.depth_camera.DepthCameraRotationZ": {
         "default": {
             "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
