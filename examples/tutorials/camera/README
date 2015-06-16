@@ -1,0 +1,8 @@
+Run morse:
+
+morse run camera_morse.py 
+
+Run the client:
+
+python3 camera_pymorse.py 
+
