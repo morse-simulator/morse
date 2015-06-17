@@ -9,13 +9,28 @@ echo -e "#! /bin/sh\nblender -setaudio NULL \$@" > blender
 chmod +x blender
 export MORSE_BLENDER=$(pwd)/blender
 
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3/dist-packages
+workspace=$(pwd)
+echo "Install virtualenv and numpy for python3.4"
+version=13.1.0
+wget https://github.com/pypa/virtualenv/archive/${version}.tar.gz
+tar xf ${version}.tar.gz
+cd virtualenv-${version}
+export PATH=${PATH}:${HOME}/.local/bin
+python3.4 setup.py install --user # install in ~/.local
+
+virtualenv pyvenv
+source pyvenv/bin/activate
+pip install numpy
+cd ${workspace}
+
+export PYTHONPATH=${workspace}/pyvenv/lib/python3.4/site-packages:$PYTHONPATH
 
 echo "Build and install MORSE"
 mkdir build && cd build
-cmake -DPYTHON_EXECUTABLE=/usr/bin/python3.4 -DPYMORSE_SUPPORT=ON ..
-make
-sudo make install
+cmake -DPYTHON_EXECUTABLE=$(which python3.4) -DPYMORSE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=${workspace}/pyvenv ..
+make install
+
+export PATH=${PATH}:${workspace}/pyvenv/bin
 
 morse_test() {
     echo "Run $1"
