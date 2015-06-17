@@ -64,7 +64,7 @@ class GPSTest(MorseTestCase):
             # no regression134.88
             self.assertAlmostEqual(pos_raw['latitude'], 1.4333, delta=precision_deg)
             self.assertAlmostEqual(pos_raw['longitude'], 43.6, delta=precision_deg)
-            self.assertAlmostEqual(pos_raw['altitude'], 134.88, delta=precision)
+            self.assertAlmostEqual(pos_raw['altitude'], 135.1, delta=precision)
 
             teleport_stream.publish({'x' : 100.0, 'y' : 200.0, 'z' : 50.0, 'yaw' : 0.0, 'pitch' : 0.0, 'roll' : 0.0})
             morse.sleep(0.01)
@@ -81,7 +81,7 @@ class GPSTest(MorseTestCase):
             # no regression
             self.assertAlmostEqual(pos_raw['latitude'], 1.4351, delta=precision_deg)
             self.assertAlmostEqual(pos_raw['longitude'], 43.6009, delta=precision_deg)
-            self.assertAlmostEqual(pos_raw['altitude'], 184.88, delta=precision)
+            self.assertAlmostEqual(pos_raw['altitude'], 185.003, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

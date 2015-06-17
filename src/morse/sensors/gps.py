@@ -5,6 +5,7 @@ import math, time
 from morse.core import mathutils
 from morse.core import blenderapi
 from morse.helpers.coordinates import CoordinateConverter
+import numpy
 
 class GPS(morse.core.sensor.Sensor):
     """
@@ -234,13 +235,13 @@ class RawGPS(GPS):
         self.pvz = self.v[2]
 
         #current position
-        xt = mathutils.Vector(self.position_3d.translation)
+        xt = numpy.matrix(self.position_3d.translation)
         gps_coords = self.coord_converter.ltp_to_geodetic(xt)
 
         #compose message as close as possible to a GPS-standardprotocol
-        self.local_data['longitude'] = math.degrees(gps_coords[0])
-        self.local_data['latitude'] = math.degrees(gps_coords[1])
-        self.local_data['altitude'] = gps_coords[2]
+        self.local_data['longitude'] = math.degrees(gps_coords[0, 0])
+        self.local_data['latitude'] = math.degrees(gps_coords[0, 1])
+        self.local_data['altitude'] = gps_coords[0, 2]
         self.local_data['velocity'] = self.v
 
 class ExtendedGPS(RawGPS):
