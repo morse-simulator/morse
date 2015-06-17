@@ -34,6 +34,9 @@ def morse_excepthook(*args, **kwargs):
 
 # Uncaught exception quit Blender
 sys.excepthook = morse_excepthook
+# workaround avoid numpy.core.multiarray missmatch ( see #630 )
+sys.path.insert(0, '%s/lib/python%i.%i/site-packages'%(sys.prefix,
+    sys.version_info.major, sys.version_info.minor))
 
 class PassiveObject(AbstractComponent):
     """ Allows to import any Blender object to the scene.
@@ -181,16 +184,16 @@ class Robot(Component):
 
     def make_external(self):
         self._bpy_object.game.properties['Robot_Tag'].name = 'External_Robot_Tag'
-    
+
     def make_ghost(self, alpha=0.3):
         """ Make this robot a ghost
-        
+
         The robot is made transparent, with no collision.
-        
+
         .. note::
              A ghost robot has no influence on other simulated robots
              (no collision, invisible to laser sensors) except for video sensors.
-        
+
         :param alpha: Transparency alpha coefficient (0 for invisible, 1 for opaque, default is 0.3)
         """
         self._make_transparent(self._bpy_object, alpha)
@@ -280,4 +283,3 @@ class WheeledRobot(GroundRobot):
             tmp_x = obj._bpy_object.location[0]
             obj._bpy_object.location[0] = -obj._bpy_object.location[1]
             obj._bpy_object.location[1] = tmp_x
-
