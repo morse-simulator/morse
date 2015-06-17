@@ -65,8 +65,8 @@ class ECEFModifierTest(MorseTestCase):
             # Z = 0.1 : pose of the ATRV's center relative to the world
             self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
-            self.assertAlmostEqual(pos_mod['x'], 4617522.5, delta=precision)
-            self.assertAlmostEqual(pos_mod['y'], 4397221.0, delta=precision)
+            self.assertAlmostEqual(pos_mod['x'], 4617522.748, delta=precision)
+            self.assertAlmostEqual(pos_mod['y'], 4397221.061, delta=precision)
             self.assertAlmostEqual(pos_mod['z'], 158481.296875, delta=precision)
 
             teleport_stream.publish({'x' : 100.0, 'y' : 200.0, 'z' : 50.0, 'yaw' : 0.0, 'pitch' : 0.0, 'roll' : 0.0})
@@ -78,24 +78,26 @@ class ECEFModifierTest(MorseTestCase):
             self.assertAlmostEqual(pos['x'], 100.0, delta=precision)
             self.assertAlmostEqual(pos['y'], 200.0, delta=precision)
             self.assertAlmostEqual(pos['z'], 50.0, delta=precision)
-            self.assertAlmostEqual(pos_mod['x'], 4617493.0, delta=precision)
-            self.assertAlmostEqual(pos_mod['y'], 4397317.5, delta=precision)
-            self.assertAlmostEqual(pos_mod['z'], 158674.484375, delta=precision)
+
+            self.assertAlmostEqual(pos_mod['x'], 4617493.329 , delta=precision)
+            self.assertAlmostEqual(pos_mod['y'], 4397317.326, delta=precision)
+            self.assertAlmostEqual(pos_mod['z'], 158674.47893, delta=precision)
 
             morse.deactivate('robot.teleport')
-            teleport_mod_stream.publish({'x': 4617522.5, 'y': 4397221.0, 'z':158481.296875,  'yaw' : 0.0, 'pitch' : 0.0, 'roll': 0.0})
+            teleport_mod_stream.publish({'x': 4617522.748, 'y': 4397221.061, 'z':158481.296875,  'yaw' : 0.0, 'pitch' : 0.0, 'roll': 0.0})
             morse.sleep(0.03)
 
             pos = gps_stream.get()
             pos_mod = gps_mod_stream.last()
 
-            self.assertAlmostEqual(pos['x'], 10.0, delta=0.15)
-            self.assertAlmostEqual(pos['y'], 8.0, delta=0.15)
-            self.assertAlmostEqual(pos['z'], 0.1, delta=0.15)
+            self.assertAlmostEqual(pos['x'], 10.0, delta=precision)
+            self.assertAlmostEqual(pos['y'], 8.0, delta=precision)
+            self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
-            self.assertAlmostEqual(pos_mod['x'], 4617522.5, delta=precision)
-            self.assertAlmostEqual(pos_mod['y'], 4397221.0, delta=precision)
+            self.assertAlmostEqual(pos_mod['x'], 4617522.748, delta=precision)
+            self.assertAlmostEqual(pos_mod['y'], 4397221.061, delta=precision)
             self.assertAlmostEqual(pos_mod['z'], 158481.296875, delta=precision)
+
 
 
 ########################## Run these tests ##########################

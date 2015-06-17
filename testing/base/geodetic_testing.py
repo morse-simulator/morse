@@ -66,9 +66,9 @@ class GeodeticModifierTest(MorseTestCase):
             # Z = 0.1 : pose of the ATRV's center relative to the world
             self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
-            self.assertAlmostEqual(pos_mod['x'], 43.6000894, delta=geodetic_precision)
+            self.assertAlmostEqual(pos_mod['x'], 43.6000883, delta=geodetic_precision)
             self.assertAlmostEqual(pos_mod['y'], 1.433372470, delta=geodetic_precision)
-            self.assertAlmostEqual(pos_mod['z'], 134.878, delta=precision)
+            self.assertAlmostEqual(pos_mod['z'], 135.1000, delta=precision)
 
             teleport_stream.publish({'x' : 100.0, 'y' : 200.0, 'z' : 50.0, 'yaw' : 0.0, 'pitch' : 0.0, 'roll' : 0.0})
             morse.sleep(0.01)
@@ -79,24 +79,24 @@ class GeodeticModifierTest(MorseTestCase):
             self.assertAlmostEqual(pos['x'], 100.0, delta=precision)
             self.assertAlmostEqual(pos['y'], 200.0, delta=precision)
             self.assertAlmostEqual(pos['z'], 50.0, delta=precision)
-            self.assertAlmostEqual(pos_mod['x'], 43.6009, delta=geodetic_precision)
-            self.assertAlmostEqual(pos_mod['y'], 1.43510876, delta=geodetic_precision)
-            self.assertAlmostEqual(pos_mod['z'], 184.885, delta=precision)
+            self.assertAlmostEqual(pos_mod['x'], 43.6008970, delta=geodetic_precision)
+            self.assertAlmostEqual(pos_mod['y'], 1.43510869, delta=geodetic_precision)
+            self.assertAlmostEqual(pos_mod['z'], 185.0039, delta=precision)
 
             morse.deactivate('robot.teleport')
-            teleport_mod_stream.publish({'x': 43.6000894, 'y': 1.433372470, 'z': 134.878,  'yaw' : 0.0, 'pitch' : 0.0, 'roll': 0.0})
+            teleport_mod_stream.publish({'x': 43.6000883, 'y': 1.433372470, 'z': 135.1000,  'yaw' : 0.0, 'pitch' : 0.0, 'roll': 0.0})
             morse.sleep(0.03)
 
             pos = gps_stream.get()
             pos_mod = gps_mod_stream.last()
 
-            self.assertAlmostEqual(pos['x'], 10.0, delta=0.15)
-            self.assertAlmostEqual(pos['y'], 8.0, delta=0.15)
-            self.assertAlmostEqual(pos['z'], 0.1, delta=0.15)
+            self.assertAlmostEqual(pos['x'], 10.0, delta=precision)
+            self.assertAlmostEqual(pos['y'], 8.0, delta=precision)
+            self.assertAlmostEqual(pos['z'], 0.1, delta=precision)
 
-            self.assertAlmostEqual(pos_mod['x'], 43.6000894, delta=geodetic_precision)
+            self.assertAlmostEqual(pos_mod['x'], 43.6000883, delta=geodetic_precision)
             self.assertAlmostEqual(pos_mod['y'], 1.433372470, delta=geodetic_precision)
-            self.assertAlmostEqual(pos_mod['z'], 134.878, delta=precision)
+            self.assertAlmostEqual(pos_mod['z'], 135.1000, delta=precision)
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
