@@ -1,4 +1,3 @@
-
 What's new in MORSE 1.4?
 ========================
 
@@ -13,6 +12,10 @@ Robots
 
 Actuators
 +++++++++
+
+- the orientation actuator has been enhanced to possibly work more
+  realistically, by limiting the speed of the rotations. The default is still
+  to go directly to the desired orientation.
 
 Sensors
 +++++++

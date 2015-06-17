@@ -13,6 +13,10 @@ Robots
 Actuators
 +++++++++
 
+- the :doc:`user/actuators/orientation` actuator has been enhanced to possibly
+  work more realistically, by limiting the speed of the rotations. The default
+  is still to go directly to the desired orientation.
+
 Sensors
 +++++++
 
