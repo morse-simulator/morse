@@ -28,13 +28,13 @@ Robots
 Actuators
 +++++++++
 
-- :doc:`Armatures <user/actuators/armature>` have received some love, with
+- :doc:`Armatures <../user/actuators/armature>` have received some love, with
   support for placing and controlling inverse kinematics targets to easily
   control the full skeleton with inverse kinematics.
 - The default ``ControlType`` of several actuators
-  (:doc:`user/actuators/v_omega`, :doc:`user/actuators/waypoint`,
-  :doc:`user/actuators/xy_omega`, :doc:`user/actuators/keyboard`,
-  :doc:`user/actuators/joystick`) has been switched from "Position" to
+  (:doc:`../user/actuators/v_omega`, :doc:`../user/actuators/waypoint`,
+  :doc:`../user/actuators/xy_omega`, :doc:`../user/actuators/keyboard`,
+  :doc:`../user/actuators/joystick`) has been switched from "Position" to
   "Velocity". It basically means it relies more on the underlaying physic
   engine, providing a more realistic behaviour, but it may be less repeatable.
   The previous behaviour can be restored by setting explicitly the
@@ -46,11 +46,11 @@ Sensors
 
 - Each sensor has now an additional field ``timestamp`` exporting when the
   data has been computed, in simulated time.
-- the :doc:`user/sensors/gps` has been vastly improved. In addition to (x, y,
+- the :doc:`../user/sensors/gps` has been vastly improved. In addition to (x, y,
   z) position, it can also returns geodesic coordinates and velocity in the
   ``raw`` level of details. Moreover, it exposes also time and heading in the
   ``extended`` level.
-- :doc:`Batteries <user/sensors/battery>` are now rechargeable in
+- :doc:`Batteries <../user/sensors/battery>` are now rechargeable in
   ``ChargingZone``.
 
 Middlewares
@@ -59,7 +59,7 @@ Middlewares
 Pocolibs
 ++++++++
 
-- ``pocolibs`` is now able to export :doc:`velodyne <user/sensors/depth_camera>`
+- ``pocolibs`` is now able to export :doc:`velodyne <../user/sensors/depth_camera>`
   sensor.
 
 Socket
