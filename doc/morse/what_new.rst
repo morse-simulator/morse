@@ -20,7 +20,7 @@ Sensors
   :doc:`user/sensors/gps` but must be set at the environment level.
 
 Modifiers
-++++++++
++++++++++
 
 - Introduce ECEF and Geodetic modifiers, allowing to convert coordinates from
   Blender world to ECEF-r or Geodetic coordinates (and vice-versa). It should
