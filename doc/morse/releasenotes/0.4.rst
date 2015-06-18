@@ -22,7 +22,7 @@ Middlewares
 - Added support for multiple middleware bindings per component
 - Added support for services through Pocolibs middleware
 - ROS support for the robot's cameras
-- Added support for :doc:`HLA <../user/installation/hla>` middleware
+- Added support for :doc:`HLA <../user/installation/mw/hla>` middleware
 - Added support for :doc:`MOOS <../user/installation/mw/moos>` middleware
 
 New components
