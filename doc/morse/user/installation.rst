@@ -12,7 +12,7 @@ Fire a console, type ``sudo apt-get install morse-simulator`` (or click here:
 
 Here you are!
 
-.. image:: ../../media/initial_sim.jpg
+.. image:: ../../media/environments/sandbox.jpg
   :align: center
 
 Installing this package also directly give you full support for :tag:`ros`,

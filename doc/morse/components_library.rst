@@ -43,6 +43,15 @@ Actuators
     user/actuators/*
 
 
+Environments
+++++++++++++
+
+.. image:: ../media/environments/outdoors.jpg
+  :align: center
+
+While you can easily create your own (any Blender scene will do!), MORSE also
+provides :doc:`a set of 3D environments <environments>` for your simulations.
+
 Other components
 ++++++++++++++++
 
@@ -53,6 +62,7 @@ Other components
     :maxdepth: 1
 
     user/others/*
+
 
 Working with components
 -----------------------
