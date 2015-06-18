@@ -21,7 +21,7 @@ This should be enough to launch MORSE and display a sample simulation. You can
 already control the robot with the arrow keys and check collisions with
 surrounding objects. Press :kbd:`h` to display the list of keyboard shortcuts.
 
-.. image:: ../media/initial_sim.jpg
+.. image:: ../media/environments/sandbox.jpg
   :align: center
 
 So, what happened here?

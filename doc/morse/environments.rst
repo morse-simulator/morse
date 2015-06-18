@@ -1,7 +1,8 @@
 Predefined Environments
 =======================
 
-MORSE ships with a set of predefined indoor and outdoor environment you can use.
+MORSE ships with a set of predefined indoor and outdoor 3D environments you can
+use.
 
 You can also use your own environments by simply specifying the full path of a
 Blender file in the ``Environment`` object of your :doc:`Builder script
@@ -19,7 +20,5 @@ Blender file in the ``Environment`` object of your :doc:`Builder script
 
         env = Environment('<path>/<identifier>')
 
-    Check `the source
-    <https://github.com/morse-simulator/morse/tree/master/data/environments>`_ to know the
-    right path (*eg*, ``land-1/tree``).
+    Click on the environments above to get the exact path for each of them.
 
