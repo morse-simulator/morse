@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """
-This tools import various components of MORSE (currently, the sensors and actuators)
-and generates a set of documentation in RST format based on the Python source.
+This tools import various components of MORSE and generates a set of
+documentation in RST format based on the Python source.
 
 It generates doc for:
     - the component itself, based on the component class docstring,
@@ -10,6 +10,9 @@ It generates doc for:
     - the services exported by the conmponent
     - the abstraction levels exposed by the component
     - the interfaces and serialization types for each input/output
+
+The tool also generates simple doc page for each environments available with
+MORSE
 """
 
 import os
@@ -63,6 +66,7 @@ modules = [
 import sys, os, codecs
 import fnmatch
 from copy import copy
+import glob
 
 from morse.core.actuator import Actuator
 from morse.core.robot import Robot
@@ -76,6 +80,9 @@ sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 PREFIX = "."
 MEDIA_PATH = "../../media"
+print("MORSE source is located at " + os.environ['MORSESOURCE'])
+DATA_PATH = os.path.join(os.environ['MORSESOURCE'], "data")
+
 
 # docstring role that, if present, prevent automatic generation of a code sample
 NOAUTOEXAMPLE = ":noautoexample:"
@@ -93,7 +100,7 @@ def insert_code(code):
 def insert_image(name):
     matches = []
     for root, dirnames, filenames in os.walk(MEDIA_PATH):
-      for filename in fnmatch.filter(filenames, '%s.png' % name):
+      for filename in fnmatch.filter(filenames, '%s.*' % name):
             matches.append(os.path.join(root, filename))
 
     if matches:
@@ -590,7 +597,7 @@ def print_services(out, name, props):
 if not os.path.exists(PREFIX):
     os.makedirs(PREFIX)
 
-for directory in ['actuators', 'sensors', 'modifiers', 'robots']:
+for directory in ['actuators', 'sensors', 'modifiers', 'robots', 'environments']:
     path = os.path.join(PREFIX, directory)
     if not os.path.exists(path):
         os.makedirs(path)
@@ -628,6 +635,29 @@ for name, props in components.items():
             print_files(out, name, props)
 
         out.write('\n\n*(This page has been auto-generated from MORSE module %s.)*\n' % (props['object'].__module__) )
+
+environments = glob.glob(os.path.join(DATA_PATH + "/environments/*.blend"))
+environments += glob.glob(os.path.join(DATA_PATH + "/environments/**/*.blend"))
+environments = [env.split(DATA_PATH + "/environments/")[1].split(".blend")[0] for env in environments]
+
+print("Found environments: %s" % environments)
+
+for env in environments:
+    path = env
+    name = env.split("/")[1] if "/" in env else env
+
+    with open(os.path.join(PREFIX, 'environments',  name + ".rst"), 'w',
+              encoding='utf-8') as out:
+        out.write(underline("<%s> environment" % name) + '\n')
+
+        # if an image if available, use it
+        out.write(insert_image(name))
+
+        out.write(underline("To use it", "-") + "\n")
+        out.write(".. code-block:: python\n\n  from morse.builder import *\n\n")
+        out.write("  # your robots...\n\n  env = Environment('%s')\n" % path)
+        out.write('\n\n*(This page has been auto-generated from MORSE available environments.)*\n')
+
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
