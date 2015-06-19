@@ -12,10 +12,13 @@ class JointTrajectoryControllerStatePublisher(ROSPublisher):
         js = JointTrajectoryControllerState()
         js.header = self.get_ros_header()
 
-        js.joint_names = self.data.keys()
-        js.actual.positions = self.data.values()
+        # timestamp is not a joint
+        joints = dict(self.data)
+        del joints['timestamp']
+        js.joint_names = joints.keys()
+        js.actual.positions = joints.values()
 
-        js.actual.velocities = [0.0] * len(self.data)
-        js.actual.accelerations = [0.0] * len(self.data)
+        js.actual.velocities = [0.0] * len(joints)
+        js.actual.accelerations = [0.0] * len(joints)
 
         self.publish(js)
