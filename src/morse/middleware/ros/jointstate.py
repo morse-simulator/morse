@@ -29,6 +29,7 @@ class JointStatePR2Publisher(ROSPublisher):
         js.header = self.get_ros_header()
 
         joints =  fill_missing_pr2_joints(self.data)
+        del joints['timestamp']
         js.name = joints.keys()
         js.position = joints.values()
 
