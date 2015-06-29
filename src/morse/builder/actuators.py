@@ -14,19 +14,11 @@ class Arucomarker(ActuatorCreator):
 class Destination(ActuatorCreator):
     _classpath = "morse.actuators.destination.Destination"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class ForceTorque(ActuatorCreator):
     _classpath = "morse.actuators.force_torque.ForceTorque"
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class MocapControl(ActuatorCreator):
     _classpath = "morse.actuators.mocap_control.MocapControl"
-
-    def __init__(self):
-        ActuatorCreator.__init__(self)
 
 # Gripper uses Actuator from morse.builder
 class Gripper(ActuatorCreator):
@@ -79,9 +71,6 @@ class Joystick(ActuatorCreator):
 class Orientation(ActuatorCreator):
     _classpath = "morse.actuators.orientation.Orientation"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class PA10(ActuatorCreator):
     _classpath = "morse.actuators.pa_10.PA10"
     _blendname = "pa_10"
@@ -105,49 +94,26 @@ class PTU(ActuatorCreator):
 class RotorcraftAttitude(ActuatorCreator):
     _classpath = "morse.actuators.rotorcraft_attitude.RotorcraftAttitude"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class RotorcraftVelocity(ActuatorCreator):
     _classpath = "morse.actuators.rotorcraft_velocity.RotorcraftVelocity"
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class RotorcraftWaypoint(ActuatorCreator):
     _classpath = "morse.actuators.rotorcraft_waypoint.RotorcraftWaypoint"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class StabilizedQuadrotor(ActuatorCreator):
     _classpath = "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor"
-
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class SteerForce(ActuatorCreator):
     _classpath = "morse.actuators.steer_force.SteerForce"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class Teleport(ActuatorCreator):
     _classpath = "morse.actuators.teleport.Teleport"
-
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class MotionVW(ActuatorCreator):
     _classpath = "morse.actuators.v_omega.MotionVW"
 
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
-
 class MotionVWDiff(ActuatorCreator):
     _classpath = "morse.actuators.v_omega_diff_drive.MotionVWDiff"
-
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class Waypoint(ActuatorCreator):
     _classpath = "morse.actuators.waypoint.Waypoint"
@@ -194,9 +160,6 @@ class Waypoint(ActuatorCreator):
 
 class MotionXYW(ActuatorCreator):
     _classpath = "morse.actuators.xy_omega.MotionXYW"
-
-    def __init__(self, name=None):
-        ActuatorCreator.__init__(self, name)
 
 class Light(ActuatorCreator):
     _classpath = "morse.actuators.light.Light"

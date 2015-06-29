@@ -107,7 +107,7 @@ class ComponentCreator(AbstractComponent):
         return imported_objects
 
 class SensorCreator(ComponentCreator):
-    def __init__(self, name="SensorCreator",
+    def __init__(self, name = None, 
                        action = ComponentCreator.APPEND_EMPTY,
                        make_morseable = True):
 
@@ -121,7 +121,7 @@ class SensorCreator(ComponentCreator):
 
 class ActuatorCreator(ComponentCreator):
 
-    def __init__(self, name="ActuatorCreator", 
+    def __init__(self, name = None,
                        action = ComponentCreator.APPEND_EMPTY,
                        blendfile = None,
                        blendobject = None,

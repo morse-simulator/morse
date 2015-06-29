@@ -16,20 +16,11 @@ class Accelerometer(SensorCreator):
 class ArmaturePose(SensorCreator):
     _classpath = "morse.sensors.armature_pose.ArmaturePose"
 
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
-
 class Attitude(SensorCreator):
     _classpath = "morse.sensors.attitude.Attitude"
 
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
-
 class Barometer(SensorCreator):
     _classpath = "morse.sensors.barometer.Barometer"
-
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
 
 class Battery(SensorCreator):
     _classpath = "morse.sensors.battery.Battery"
@@ -118,9 +109,6 @@ class Proximity(SensorCreator):
 
 class PTUPosture(SensorCreator):
     _classpath = "morse.sensors.ptu_posture.PTUPosture"
-
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
 
 class SearchAndRescue(SensorCreator):
     _classpath = "morse.sensors.search_and_rescue.SearchAndRescue"
@@ -489,9 +477,6 @@ class VelodyneRayCast(LaserSensorWithArc):
 class Clock(SensorCreator):
     _classpath = "morse.sensors.clock.Clock"
 
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
-
 class Kinect(CompoundSensor):
     """
     Microsoft Kinect RGB-D camera, implemented as a pair of depth camera and video
@@ -572,6 +557,3 @@ class Collision(SensorCreator):
 
 class RadarAltimeter(SensorCreator):
     _classpath = "morse.sensors.radar_altimeter.RadarAltimeter"
-
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
