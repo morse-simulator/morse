@@ -447,6 +447,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
+            "mavlink": 'morse.middleware.mavlink.local_position_ned_to_waypoint.WaypointActuator',
             }
         },
     "morse.actuators.stabilized_quadrotor.StabilizedQuadrotor": {

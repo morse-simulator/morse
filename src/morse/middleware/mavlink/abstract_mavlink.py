@@ -1,4 +1,6 @@
 from morse.middleware import AbstractDatastream
+import logging; logger = logging.getLogger("morse." + __name__)
+from pymavlink.mavutil import mavlink_connection 
 
 class MavlinkSensor(AbstractDatastream):
     def initialize(self):
@@ -27,3 +29,25 @@ class MavlinkSensor(AbstractDatastream):
     def default(self, ci = 'unused'):
         self.make_msg()
         self._mavlink_client.send(self._msg)
+
+class MavlinkActuator(AbstractDatastream):
+    def initialize(self):
+        self._conn = mavlink_connection(self.kwargs['device'])
+        self._msg = None
+
+
+    def process_msg(self):
+        """
+        The process_msg must be overriden. It should convert mavlink
+        format into the internal Morse format. The last mavlink message
+        is stored in self._msg.
+        """
+        pass
+
+    def default(self, ci = 'unused'):
+        self._msg = self._conn.recv_msg()
+        if not self._msg:
+            return False
+        logger.debug('Received %s' % self._msg)
+        self.process_msg()
+        return True

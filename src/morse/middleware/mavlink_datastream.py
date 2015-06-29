@@ -47,7 +47,8 @@ class MavlinkDatastreamManager(DatastreamManager):
             client = MavlinkClient('127.0.0.1', 14551, 14550) #XXX 
             self._client_by_robot[component_instance.robot_parent.name] = client
 
-        datastream.setup(client, self._boot_time)
+        if hasattr(datastream, 'setup'):
+            datastream.setup(client, self._boot_time)
 
     def action(self):
         for client in self._client_by_robot.values():
