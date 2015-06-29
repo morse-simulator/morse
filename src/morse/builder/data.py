@@ -128,6 +128,13 @@ MORSE_DATASTREAM_DICT = {
             "text": INTERFACE_DEFAULT_OUT
             }
         },
+    "morse.sensors.attitude.Attitude": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT
+            }
+        },
     "morse.sensors.barometer.Barometer": {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,

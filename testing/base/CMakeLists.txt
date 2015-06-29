@@ -10,6 +10,7 @@ add_morse_test(levels)
 
 add_morse_test(accelerometer_testing)
 add_morse_test(armature_pose_testing)
+add_morse_test(attitude_testing)
 add_morse_test(barometer_testing)
 add_morse_test(battery_testing)
 add_morse_test(depth_camera_testing)
