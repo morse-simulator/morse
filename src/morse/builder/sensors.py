@@ -74,6 +74,9 @@ class IMU(SensorCreator):
         mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
         self.append(mesh)
+    
+class Magnetometer(SensorCreator):
+    _classpath = "morse.sensors.magnetometer.Magnetometer"
 
 class Odometry(SensorCreator):
     _classpath = "morse.sensors.odometry.Odometry"

@@ -266,6 +266,13 @@ MORSE_DATASTREAM_DICT = {
                          'morse.middleware.pocolibs.sensors.pom.PomPoster']
             }
         },
+    "morse.sensors.magnetometer.Magnetometer": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_OUT,
+            "yarp": INTERFACE_DEFAULT_OUT,
+            "text": INTERFACE_DEFAULT_OUT,
+        }
+        },
     "morse.sensors.pose.Pose": {
         "default": {
             "ros": ['morse.middleware.ros.pose.PoseStampedPublisher',
