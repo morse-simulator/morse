@@ -133,7 +133,8 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
-            "text": INTERFACE_DEFAULT_OUT
+            "text": INTERFACE_DEFAULT_OUT,
+            "mavlink": 'morse.middleware.mavlink.attitude.AttitudeSensor',
             }
         },
     "morse.sensors.barometer.Barometer": {
