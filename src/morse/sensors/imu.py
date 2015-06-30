@@ -3,6 +3,7 @@ import math
 import morse.core.sensor
 from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data, add_property
+from morse.sensors.magnetometer import MagnetoDriver
 
 """
 Important note:
@@ -17,6 +18,8 @@ class IMU(morse.core.sensor.Sensor):
     This sensor emulates an Inertial Measurement Unit (IMU), measuring
     the angular velocity and linear acceleration including acceleration
     due to gravity.
+    For the magnetic field part, refer to the documentation of
+    :doc:`./magnetometer`.
 
     If the robot has a physics controller, the velocities are directly
     read from it's properties ``localAngularVelocity`` and
@@ -33,6 +36,8 @@ class IMU(morse.core.sensor.Sensor):
              'rates in IMU x, y, z axes (in radian . sec ^ -1)')
     add_data('linear_acceleration', [0.0, 0.0, 0.0], "vec3<float>",
              'acceleration in IMU x, y, z axes (in m . sec ^ -2)')
+    add_data('magnetic_field', [0.0, 0.0, 0.0], "vec3<float>",
+             'magnetic field along x, y, z axes (in nT)')
     add_property('_type', 'Automatic', 'ComputationMode', 'string',
                  "Kind of computation, can be one of ['Velocity', 'Position']. "
                  "Only robot with dynamic and Velocity control can choose Velocity "
@@ -94,6 +99,8 @@ class IMU(morse.core.sensor.Sensor):
 
         # reference for rotating a vector from imu frame to world frame
         self.rot_i2w = self.bge_object.worldOrientation
+
+        self.mag = MagnetoDriver()
 
         logger.info("IMU Component initialized, runs at %.2f Hz ", self.frequency)
 
@@ -172,3 +179,4 @@ class IMU(morse.core.sensor.Sensor):
         # Store the important data
         self.local_data['angular_velocity'] = rates
         self.local_data['linear_acceleration'] = accel
+        self.local_data['magnetic_field'] = self.mag.compute(self.position_3d)
