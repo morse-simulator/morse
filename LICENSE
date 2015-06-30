@@ -33,3 +33,5 @@ at the exception of the following files:
 	  (see OFL.LICENSE)
 	- doc/morse-theme/static/sphinx-minimal.css which is under Creative Commons
 	  Attribution-ShareAlike 3.0
+	- src/morse/sensors/{EGM9615.h, WMM.COF, GeomagnetismHeader.h,
+	  GeomagnetismLibrary.c} which are under public domain license
