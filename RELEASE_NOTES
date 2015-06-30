@@ -22,6 +22,11 @@ Sensors
 
 - **longitude**, **latitude** and **altitude** are not anymore properties of
   the GPS sensor but must be set at the environment level.
+- Introduce the new high-level sensor Attitude, allowing to compute the
+  attitude of the system
+- Introduce the sensor Magnetometer which allows to compute the magnetic field
+  vector of the Earth.
+- Extend the sensor IMU to return also the magnetic field vector.
 
 Modifiers
 ++++++++

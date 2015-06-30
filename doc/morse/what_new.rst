@@ -22,6 +22,12 @@ Sensors
 
 - **longitude**, **latitude** and **altitude** are not anymore properties of
   :doc:`user/sensors/gps` but must be set at the environment level.
+- Introduce the new high-level sensor :doc:`user/sensors/attitude`, allowing
+  to compute the attitude of the system
+- Introduce the sensor :doc:`user/sensors/magnetometer`, which allows to
+  compute the magnetic field vector of the Earth.
+- Extend the sensor :doc:`user/sensors/imu`, to return also the magnetic field
+  vector.
 
 Modifiers
 +++++++++
