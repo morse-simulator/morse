@@ -6,7 +6,7 @@ from morse.core.sensor import Sensor
 from morse.core.actuator import Actuator
 from morse.helpers.loading import create_instance
 
-def register_modifier(classpath, component, args):
+def register_modifier(classpath, component, direction, args):
     modifier = create_instance(classpath, component, args)
     if not modifier:
         logger.error("INITIALIZATION ERROR: Modifier '%s' module could not be "
@@ -23,15 +23,13 @@ def register_modifier(classpath, component, args):
 
     # Determine weither to store the function in input or output list,
     #   what is the direction of our stream?
-    if isinstance(component, Sensor):
-        # -> for Sensors, they *publish*,
+    if direction is 'OUT':
         component.output_modifiers.append(modifier.modify)
-    elif isinstance(component, Actuator):
-        # -> for Actuator, they *read*
+    elif direction is 'IN':
         component.input_modifiers.append(modifier.modify)
     else:
-        logger.error("Component %s is not an instance of Sensor or Actuator" %
-                     component.__class__)
+        logger.error("Direction '%s' for '%s'is not 'IN' or 'OUT'",
+                     direction, component.__class__)
         return None
 
     return modifier

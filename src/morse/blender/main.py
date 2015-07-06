@@ -476,11 +476,12 @@ def add_modifiers():
 
         for mod_data in mod_list:
             modifier_name = mod_data[0]
+            direction = mod_data[1]
             logger.info("Component: '%s' operated by '%s'" %
                         (component_name, modifier_name))
             # Make the modifier object take note of the component
             modifier_instance = register_modifier(modifier_name, instance,
-                                                  mod_data[1])
+                                                  direction, mod_data[2])
             if not modifier_instance:
                 return False
             persistantstorage.modifierDict[modifier_name] = modifier_instance
