@@ -329,7 +329,10 @@ class Component(object):
         self.stream = None
         self._init = False
         self._port = port
-        self._stream_dir = stream
+        if not stream:
+            self._stream_dir = set()
+        else:
+            self._stream_dir = set([s[1] for s in stream])
 
         for service in services:
             logger.debug("Adding service %s to component %s" % (service, self.name))
@@ -342,9 +345,9 @@ class Component(object):
         if self._port:
             self.stream = StreamJSON(self._morse.host, self._port)
 
-            if self._stream_dir == 'IN':
+            if 'IN' in self._stream_dir:
                 self.publish = self.stream.publish
-            elif self._stream_dir == 'OUT':
+            if 'OUT' in self._stream_dir:
                 self.get = self.stream.get
                 self.last = self.stream.last
                 self.subscribe = self.stream.subscribe
@@ -523,7 +526,7 @@ class Morse(object):
                 setattr(self, name + "s", list_robots)
 
     def _add_component(self, robot, fqn, details):
-        stream = details.get('stream', None)
+        stream = details.get('stream_interfaces', None)
         port = None
         if stream:
             try:

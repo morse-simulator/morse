@@ -154,9 +154,8 @@ class Supervision(AbstractObject):
                 cmpt["service_interfaces"] = services_iface[c.name()]
 
             if c.name() in simu.datastreams:
-                stream = simu.datastreams[c.name()]
-                cmpt["stream"] = stream[0]
-                cmpt["stream_interfaces"] = stream[1]
+                streams = simu.datastreams[c.name()]
+                cmpt["stream_interfaces"] = [(stream[0], stream[2]) for stream in streams]
 
             return cmpt
 
