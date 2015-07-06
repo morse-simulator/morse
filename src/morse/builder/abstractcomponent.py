@@ -313,6 +313,23 @@ class AbstractComponent(object):
 
         return None
 
+    def _compute_direction(self, classpath):
+        klass = get_class(classpath)
+
+        from morse.core.actuator import Actuator
+        from morse.core.sensor import Sensor
+
+        if klass:
+            if issubclass(klass, Actuator):
+                return 'IN'
+            elif issubclass(klass, Sensor):
+                return 'OUT'
+            else:
+                logger.error("%s: no direction is precised nor can be "
+                        "computed automatically." % classpath)
+                return None
+
+
     def add_stream(self, datastream, method=None, path=None, classpath=None, direction=None, **kwargs):
         """ Add a data stream interface to the component
 
@@ -345,27 +362,20 @@ class AbstractComponent(object):
             return
 
         level = self.property_value("abstraction_level") or "default"
-        klass = get_class(classpath)
-
-        from morse.core.actuator import Actuator
-        from morse.core.sensor import Sensor
 
         if not direction:
-            if klass:
-                if issubclass(klass, Actuator):
-                    direction = 'IN'
-                elif issubclass(klass, Sensor):
-                    direction = 'OUT'
-                else:
-                    logger.error("%s: no direction is precised nor can be "
-                                 "computed automatically." % classpath)
-                    return
+            direction = self._compute_direction(classpath)
+            if not direction: 
+                return
 
         config = []
         # Configure the datastream for this component
         if not method:
             if not classpath in MORSE_DATASTREAM_DICT:
+                klass = get_class(classpath)
 
+                from morse.core.actuator import Actuator
+                from morse.core.sensor import Sensor
                 # Check if we can use default interface...
                 if klass and \
                    issubclass(klass, Actuator) and \
@@ -495,14 +505,19 @@ class AbstractComponent(object):
         if self._exportable:
             self.add_stream(interface, **kwargs)
 
-    def alter(self, modifier_name=None, classpath=None, **kwargs):
+    def alter(self, modifier_name=None, classpath=None, direction=None, **kwargs):
         """ Add a modifier specified by its first argument to the component """
         # Configure the modifier for this component
         config = []
+        obj_classpath = self.property_value('classpath')
+        if not direction:
+            direction = self._compute_direction(obj_classpath)
+            if not direction:
+                return
         if not classpath:
-            obj_classpath = self.property_value('classpath')
             classpath = MORSE_MODIFIER_DICT[modifier_name][obj_classpath]
         config.append(classpath)
+        config.append(direction)
         config.append(kwargs)
         Configuration.link_modifier(self, config)
 
