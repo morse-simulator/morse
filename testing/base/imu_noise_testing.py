@@ -32,6 +32,7 @@ class NoiseTest(MorseTestCase):
         robot.add_default_interface('socket')
         env = Environment('empty', fastmode = True)
         env.add_interface('socket')
+        env.properties(longitude = 43.6, latitude = 1.4333, altitude = 135.0)
         
     def test_noised_imu(self):
         """ Test if the IMU data is noised
