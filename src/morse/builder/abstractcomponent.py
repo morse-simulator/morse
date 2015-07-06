@@ -313,7 +313,7 @@ class AbstractComponent(object):
 
         return None
 
-    def add_stream(self, datastream, method=None, path=None, classpath=None, direction = None, **kwargs):
+    def add_stream(self, datastream, method=None, path=None, classpath=None, direction=None, **kwargs):
         """ Add a data stream interface to the component
 
         Do the binding between a component and the method to export/import its
@@ -345,6 +345,21 @@ class AbstractComponent(object):
             return
 
         level = self.property_value("abstraction_level") or "default"
+        klass = get_class(classpath)
+
+        from morse.core.actuator import Actuator
+        from morse.core.sensor import Sensor
+
+        if not direction:
+            if klass:
+                if issubclass(klass, Actuator):
+                    direction = 'IN'
+                elif issubclass(klass, Sensor):
+                    direction = 'OUT'
+                else:
+                    logger.error("%s: no direction is precised nor can be "
+                                 "computed automatically." % classpath)
+                    return
 
         config = []
         # Configure the datastream for this component
@@ -352,9 +367,6 @@ class AbstractComponent(object):
             if not classpath in MORSE_DATASTREAM_DICT:
 
                 # Check if we can use default interface...
-                from morse.core.actuator import Actuator
-                from morse.core.sensor import Sensor
-                klass = get_class(classpath)
                 if klass and \
                    issubclass(klass, Actuator) and \
                    datastream in INTERFACE_DEFAULT_IN:
@@ -455,7 +467,9 @@ class AbstractComponent(object):
         else:
             datastream_classpath = datastream
 
+
         config.insert(0, datastream_classpath)
+        config.append(direction)
         config.append(kwargs) # append additional configuration (eg. topic name)
         Configuration.link_datastream(self, config)
 
