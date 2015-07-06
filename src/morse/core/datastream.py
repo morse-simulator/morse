@@ -13,22 +13,15 @@ from morse.middleware import AbstractDatastream
 from morse.helpers.loading import create_instance
 
 
-def register_datastream(classpath, component, args):
+def register_datastream(classpath, component, direction, args):
     datastream = create_instance(classpath, component, args)
     # Check that datastream implements AbstractDatastream
     if not isinstance(datastream, AbstractDatastream):
         logger.warning("%s should implement morse.middleware.AbstractDatastream"%classpath)
-    # Determine weither to store the function in input or output list,
-    #   what is the direction of our stream?
-    if isinstance(component, Sensor):
-        # -> for Sensors, they *publish*,
+    if direction == 'OUT':
         component.output_functions.append(datastream.default)
-    elif isinstance(component, Actuator):
-        # -> for Actuator, they *read*
-        component.input_functions.append(datastream.default)
     else:
-        logger.error("The component is not an instance of Sensor or Actuator")
-        return None
+        component.input_functions.append(datastream.default)
     # from morse.core.abstractobject.AbstractObject
     component.del_functions.append(datastream.finalize)
 
@@ -54,12 +47,14 @@ class DatastreamManager(object):
 
     def register_component(self, component_name, component_instance, mw_data):
         datastream_classpath = mw_data[1] # aka. function name
+        direction = mw_data[2]
         datastream_args = None
-        if len(mw_data) > 2:
-            datastream_args = mw_data[2] # aka. kwargs, a dictonnary of args
+        if len(mw_data) > 3:
+            datastream_args = mw_data[3] # aka. kwargs, a dictonnary of args
 
         # Create a socket server for this component
         return register_datastream(datastream_classpath, component_instance,
+                                                         direction,
                                                          datastream_args)
 
 

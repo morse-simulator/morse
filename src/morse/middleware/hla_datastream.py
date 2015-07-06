@@ -305,7 +305,7 @@ class HLADatastreamManager(DatastreamManager):
         """ Open the port used to communicate by the specified component.
         """
 
-        mw_data[2]['__hla_node'] = self.node
+        mw_data[3]['__hla_node'] = self.node
 
         DatastreamManager.register_component(self, component_name,
                                                    component_instance, mw_data)
