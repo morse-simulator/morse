@@ -334,18 +334,7 @@ def link_datastreams():
         if isinstance (datastream_list[0], str):
             datastream_list = [datastream_list]
 
-        # What is the direction of our stream?
-        # -> for Sensors, they *publish*,
-        # -> for Actuator, they *read*
-        if isinstance(instance, Sensor):
-            direction = OUT
-        elif isinstance(instance, Actuator):
-            direction = IN
-        else:
-            assert False
-
-        persistantstorage.datastreams[component_name] = (direction,
-                                     [d[0] for d in datastream_list])
+        persistantstorage.datastreams[component_name] = datastream_list
 
         # Register all datastream's in the list
         for datastream_data in datastream_list:
