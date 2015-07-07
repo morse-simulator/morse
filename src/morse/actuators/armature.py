@@ -5,7 +5,7 @@ from morse.core.blenderapi import mathutils
 from collections import OrderedDict
 import morse.core.actuator
 from morse.core import status
-from morse.core.blenderapi import version, CONSTRAINT_TYPE_KINEMATIC, CONSTRAINT_IK_DISTANCE
+from morse.core import blenderapi
 from morse.core.services import service, async_service, interruptible
 from morse.core.exceptions import MorseRPCInvokationError
 from morse.core.morse_time import time_isafter
@@ -114,8 +114,8 @@ class Armature(morse.core.actuator.Actuator):
             self.local_data[channel.name] = 0.0
 
         self._ik_targets = {c.target: c for c in armature.constraints \
-                            if c.type == CONSTRAINT_TYPE_KINEMATIC and \
-                               c.ik_type == CONSTRAINT_IK_DISTANCE}
+                            if c.type == blenderapi.CONSTRAINT_TYPE_KINEMATIC and \
+                               c.ik_type == blenderapi.CONSTRAINT_IK_DISTANCE}
 
         # Initially desactivate all IK constraints
         for c in self._ik_targets.values():
@@ -161,7 +161,7 @@ class Armature(morse.core.actuator.Actuator):
     def _suspend_ik_targets(self):
         for c in self._ik_targets.values():
             #Bug in Blender! cf http://developer.blender.org/T37892
-            if version() < (2, 70, 0):
+            if blenderapi.version() < (2, 70, 0):
                 if not c.active:
                     logger.info("Stop tracking IK target <%s>" % c.target.name)
                     c.active = False
@@ -174,7 +174,7 @@ class Armature(morse.core.actuator.Actuator):
     def _restore_ik_targets(self):
         for c in self._ik_targets.values():
             #Bug in Blender! cf http://developer.blender.org/T37892
-            if version() < (2, 70, 0):
+            if blenderapi.version() < (2, 70, 0):
                 if c.active:
                     c.active = True
                     logger.info("Tracking IK target <%s>" % c.target.name)
