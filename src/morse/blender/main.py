@@ -328,12 +328,6 @@ def link_datastreams():
             # Skip the configuration of this component
             continue
 
-        # If the list contains only strings, insert the list inside another one.
-        # This is done for backwards compatibility with the previous
-        #  syntax that allowed only one middleware per component
-        if isinstance (datastream_list[0], str):
-            datastream_list = [datastream_list]
-
         persistantstorage.datastreams[component_name] = datastream_list
 
         # Register all datastream's in the list
