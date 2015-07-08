@@ -620,7 +620,7 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
                 for element in sys.path:
                     element = element.replace('\\', '/')
                     tmpF.write(("sys.path.append('" + element + "')\n").encode())
-                tmpF.write(("exec(compile(open('" + script_path + "').read(), '" + script_path + "', 'exec'), globals (), locals ())\n").encode())
+                tmpF.write(("exec(open('" + script_path + "').read())\n").encode())
                 tmpF.write(("import os\n").encode())
                 tmpF.flush()
                 tmpF.close()
