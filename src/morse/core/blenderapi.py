@@ -4,11 +4,13 @@ documentation generation purposes).
 """
 
 import sys
+import os
 
 fake = False
 
 # running in Blender?
-if sys.executable.endswith('blender'):
+# Note: Run blender-app.exe when blender v2.75 in Window 7
+if os.path.basename(sys.executable) in ['blender', 'blender.exe', 'blender-app.exe']:
     import bpy
     try:
         import bge
@@ -17,7 +19,7 @@ if sys.executable.endswith('blender'):
         # typically at 'Builder' stage.
         fake = True
 else:
-    print("WARNING: MORSE is running outside Blender! (sys.executable != blender)")
+    print("WARNING: MORSE is running outside Blender! (sys.executable == '%s')" % sys.executable)
     fake = True
 
 from morse.core import mathutils
