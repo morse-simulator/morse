@@ -267,7 +267,8 @@ class Environment(Component):
             try:
                 self._node_name = os.environ["MORSE_NODE"]
             except KeyError:
-                self._node_name = os.uname()[1]
+                import socket
+                self._node_name = socket.gethostname()
         else:
             self._node_name = name
 

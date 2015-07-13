@@ -529,7 +529,8 @@ def init_multinode():
     except (NameError, AttributeError) as detail:
         logger.warning("No node name defined. Using host name.\n"
                         "\tException: ", detail)
-        node_name = os.uname()[1]
+        import socket
+        node_name = socket.gethostname()
 
     logger.info ("This is node '%s'" % node_name)
     # Create the instance of the node class
