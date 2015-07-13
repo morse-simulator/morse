@@ -4,9 +4,11 @@ documentation generation purposes).
 """
 
 import sys
+import os
 
 # running in Blender?
-if not sys.executable.endswith('blender'):
+# Note: Run blender-app.exe when blender v2.75 in Window 7
+if os.path.basename(sys.executable) not in ['blender', 'blender.exe', 'blender-app.exe']:
     print("WARNING: MORSE is running outside Blender! "
           "(sys.executable != blender)")
 
