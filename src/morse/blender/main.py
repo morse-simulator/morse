@@ -550,11 +550,10 @@ def init(contr):
     # Get the version of Python used
     # This is used to determine also the version of Blender
     persistantstorage.pythonVersion = sys.version_info
-    logger.info ("Python Version: %s.%s.%s" %
-                    persistantstorage.pythonVersion[:3])
-    logger.info ("Blender Version: %s.%s.%s" % morse.core.blenderapi.version())
-    logger.info  ("Python path: %s" % sys.path)
-    logger.info ("PID: %d" % os.getpid())
+    logger.info("Python Version: %s.%s.%s" % persistantstorage.pythonVersion[:3])
+    logger.info("Blender Version: %s.%s.%s" % morse.core.blenderapi.version())
+    logger.info("Python path: %s" % sys.path)
+    logger.info("PID: %d" % os.getpid())
 
     persistantstorage.morse_initialised = False
     persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'])
@@ -566,7 +565,6 @@ def init(contr):
 
     logger.log(SECTION, 'SUPERVISION SERVICES INITIALIZATION')
     init_ok = init_ok and init_supervision_services()
-
 
     logger.log(SECTION, 'SCENE INITIALIZATION')
 
