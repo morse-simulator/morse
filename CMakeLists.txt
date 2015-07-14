@@ -3,13 +3,14 @@ cmake_minimum_required(VERSION 2.6)
 set(PACKAGE_NAME morse)
 set(PACKAGE_VERSION "1.3")
 
+project(${PACKAGE_NAME})
+
 # only available from cmake-2.8.4
 if(COMMAND cmake_policy)
 	if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 3)
 		cmake_policy(SET CMP0017 OLD)
 	endif()
 endif()
-
 
 
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
@@ -33,9 +34,10 @@ set(PythonLibs_FIND_VERSION "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
 set(PythonLibs_FIND_VERSION_EXACT "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
 find_package(PythonLibs REQUIRED)
 
-SET(ALL_C_PYTHON_MODULES "" CACHE STRING "" FORCE)
+set(ALL_C_PYTHON_MODULES "" CACHE STRING "" FORCE)
 
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+# Add python include and library directories
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 EXECUTE_PROCESS(COMMAND
 					${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(1,0,\"\"))"
