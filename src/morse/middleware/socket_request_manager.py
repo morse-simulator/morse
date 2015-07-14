@@ -123,11 +123,19 @@ class SocketRequestManager(RequestManager):
                 self._client_sockets.append(sock)
 
             else:
-                raw = i.recv(4096)
+                try:
+                    raw = i.recv(4096)
+                except ConnectionResetError as e:
+                    import os
+                    if os.name == 'nt' and e.errno == 10054:
+                        # An existing connection was forcibly closed by the remote host
+                        raw = None
+                    else:
+                        raise
                 if not raw:
                     # an empty read means that the remote host has
                     # disconnected itself
-                    logger.debug("Socket closed by client! Closing it on my side.")
+                    logger.info("Socket closed by client! Closing it on my side.")
                     i.close()
                     self._client_sockets.remove(i)
                     continue
@@ -158,7 +166,7 @@ class SocketRequestManager(RequestManager):
                         else:
                             component, service, params = self._parse_request(req)
 
-                            # on_incoming_request returns either 
+                            # on_incoming_request returns either
                             #(True, result) if it's a synchronous
                             # request that has been immediately executed, or
                             # (False, request_id) if it's an asynchronous request whose
