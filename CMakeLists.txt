@@ -38,9 +38,6 @@ set(ALL_C_PYTHON_MODULES "" CACHE STRING "" FORCE)
 
 # Add python include and library directories
 include_directories(${PYTHON_INCLUDE_DIRS})
-if(WIN32)
-  link_directories(${PYTHON_LIBRARY}/..)
-endif(WIN32)
 
 EXECUTE_PROCESS(COMMAND
 					${PYTHON_EXECUTABLE} -c "import distutils.sysconfig, sys; sys.stdout.write(distutils.sysconfig.get_python_lib(1,0,\"\"))"
