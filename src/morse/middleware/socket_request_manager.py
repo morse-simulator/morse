@@ -126,7 +126,8 @@ class SocketRequestManager(RequestManager):
                 try:
                     raw = i.recv(4096)
                 except ConnectionResetError as e:
-                    if e.errno == 10054:
+                    import os
+                    if os.name == 'nt' and e.errno == 10054:
                         # An existing connection was forcibly closed by the remote host
                         raw = None
                     else:
