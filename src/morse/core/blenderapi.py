@@ -8,6 +8,7 @@ import os
 
 fake = False
 
+# running in Blender?
 if "blender" in sys.executable:
     import bpy
     try:
