@@ -110,9 +110,13 @@ Prerequisites
 - ``python-dev`` package
 - Blender (>= 2.65) build with Python >= 3.3. You can simply get a binary from
   `Blender website <http://www.blender.org/download/get-blender/>`_
+- numpy for python3 (often ``py3-numpy `` or ``python3-numpy``)
 
 .. note::
     If you plan to build packages for MORSE, please read the notes on packaging below.
+
+.. note::
+    If you use a Blender binary, numpy is already shipped within it.
 
 Installation
 ++++++++++++
