@@ -9,6 +9,8 @@ from math import degrees
 import datetime
 import os
 
+import numpy
+
 def _decimal_date(date):
     bisextile = (date.year % 4 == 0 and date.year % 100 != 0) or (date.year % 400 == 0)
     days_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -30,12 +32,12 @@ class MagnetoDriver(object):
             self._date = _decimal_date(datetime.date.today())
 
     def compute(self, pose):
-        pos = pose.translation
+        pos = numpy.matrix(pose.translation)
         pos_lla = self._coord_conv.ltp_to_geodetic(pos)
         (decl, incl, f, h, x, y, z) = self._mag.compute(
-                                 degrees(pos_lla[0]),
-                                 degrees(pos_lla[1]),
-                                 pos_lla[2] / 1000.0, self._date)
+                                 degrees(pos_lla[0, 0]),
+                                 degrees(pos_lla[0, 1]),
+                                 pos_lla[0, 2] / 1000.0, self._date)
         mag_field = mathutils.Vector((x, y, z))
         return mag_field * pose.rotation_matrix
 
