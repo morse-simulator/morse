@@ -4,6 +4,10 @@ What's new in MORSE 1.4?
 General
 -------
 
+- `Numpy <http://www.numpy.org/>`_ is now needed for Morse. It is used in
+  several places where computations using mathutils is not precise enough
+  (float vs double precision).
+
 Components
 ----------
 
