@@ -10,8 +10,16 @@ class AbstractHLAOutput(AbstractDatastream):
     def register_object(self, handle):
         self._obj = self.amb.register_object(handle, self._hla_name)
 
+    def publish_attributes(self, obj_handle, attr_handles):
+        self.amb.publish_attributes(self._hla_name, obj_handle, attr_handles)
+
     def update_attribute(self, to_send):
-        self.amb.update_attribute(self._obj, to_send)
+        if not self._obj:
+            self._obj = self.amb.get_object(self._hla_name)
+        if not self._obj:
+            logger.warning("Cannot find reference for object %s : don't update its attribute" % self._hla_name)
+        else:
+            self.amb.update_attribute(self._obj, to_send)
 
     def finalize(self):
         self.amb.delete_object(self._hla_name)

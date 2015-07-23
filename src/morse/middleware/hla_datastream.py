@@ -17,7 +17,9 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
         self._object_handles = {} # string -> obj_handle
         self._attributes_handles = {} # (obj_handle, string) -> attr_handle
+        self._objects_discovered = {} # obj_name -> obj
         self._attributes_subscribed = {} # obj_name -> [attr_handle]
+        self._attributes_published = {} # obj_name -> [attr_handle]
         
         self._attributes_values = {} # obj_name -> { attr_handle -> value }
 
@@ -71,6 +73,15 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
                 name)
         del self.registred_objects[name]
 
+    def get_object(self, name):
+        if name in self.registred_objects:
+            return self.registred_objects[name]
+
+        if name in self._objects_discovered:
+            return self._objects_discovered[name]
+
+        return None
+
     def object_handle(self, name):
         handle = self._object_handles.get(name, None)
         if not handle:
@@ -96,6 +107,14 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self.registred_class_ref[obj_handle] = ref_cnt + 1
         logger.debug("registred_class_ref %s => %d" % (obj_handle, ref_cnt + 1))
 
+    def publish_attributes(self, name, obj_handle, attr_handles):
+        logger.debug("publish_attributes %s %s" % (name, attr_handles))
+        curr_tracked_attr = set(self._attributes_published.get(name, []))
+        res = list(curr_tracked_attr.union(attr_handles))
+        self._attributes_published[name] = res
+
+        self._rtia.publishObjectClass(obj_handle, attr_handles)
+
     def unsuscribe_attributes(self, obj_handle):
         logger.debug("unsuscribe_attributes %s" % (obj_handle))
 
@@ -113,6 +132,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         return self._attributes_values.get(obj_name, None)
 
     def update_attribute(self, obj_handle, value):
+        logger.debug("update_attributes %s for %s" % (value, obj_handle))
         if self._time_sync:
             self._rtia.updateAttributeValues(obj_handle, value, "morse_update",
                                              self.logical_time + self.timestep)
@@ -122,6 +142,8 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
     # Callbacks for FedereteAmbassadors 
     def discoverObjectInstance(self, obj, objectclass, name):
         logger.debug("DISCOVER %s %s %s" % (name, obj, objectclass))
+        self._objects_discovered[name] = obj
+
         subscribed_attributes = self._attributes_subscribed.get(name, None)
         if subscribed_attributes:
             self._rtia.requestObjectAttributeValueUpdate(obj, subscribed_attributes)
@@ -129,6 +151,15 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
             for attr in subscribed_attributes:
                 default_value[attr] =  None
             self._attributes_values[name] = default_value
+
+        published_attributes = self._attributes_published.get(name, None)
+        if published_attributes:
+            logger.debug("attributeOwnershipAcquisition %s %s %s" % (name, obj, published_attributes))
+            self._rtia.attributeOwnershipAcquisition(obj, published_attributes, "morse_owner")
+
+    def attributeOwnershipAcquisitionNotification(self, obj, attr):
+        obj_name = self._rtia.getObjectInstanceName(obj)
+        logger.debug("attributeOwnershipAcquisitionNotification %s %s %s" % (obj, obj_name, attr))
 
     def reflectAttributeValues(self, obj, attributes, tag, order, transport, time=None, retraction=None):
         obj_name = self._rtia.getObjectInstanceName(obj)
