@@ -279,7 +279,7 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
             # object
             if self._stopped:
                 self.bge_object.applyImpulse(
-                   self.bge_object.position, (0.0, 0.1, -0.000001))
+                   self.bge_object.position, (0.0, 0.0, 0.000001))
 
             # no longer stopped
             self._stopped = False
