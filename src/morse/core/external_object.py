@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta, abstractmethod
 import morse.core.object
+from morse.helpers.components import add_data
 
 class ExternalObject(morse.core.object.Object):
     """ Basic Class for all External Object
@@ -64,7 +65,14 @@ class ExternalObject(morse.core.object.Object):
             function(self)
 
 class ExternalSensor(ExternalObject):
-    pass
+    add_data('timestamp', 0.0, 'float', 
+             'number of seconds in simulated time')
+
+    def action(self):
+        self.local_data['timestamp'] = self.robot_parent.gettime()
+
+        ExternalObject.action(self)
+
 
 class ExternalActuator(ExternalObject):
     pass
