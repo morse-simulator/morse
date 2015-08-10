@@ -12,7 +12,7 @@ buff = base64.b64decode( data['image'] )
 # using scipy and numpy
 import numpy
 import scipy.misc
-image = numpy.ndarray(shape=(width, height, 4), buffer=buff, dtype='uint8')
+image = numpy.ndarray(shape=(height, width, 4), buffer=buff, dtype='uint8')
 scipy.misc.imsave('scipy.png', image)
 
 # using Python Imaging Library (PIL)
