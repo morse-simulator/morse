@@ -218,6 +218,9 @@ class Camera(morse.core.sensor.Sensor):
         logger.info("Camera '%s': Exporting an image of capsize: %s pixels" %
                 (self.name(), vt_camera.source.capsize))
 
+        # Workaround capsize limit to window size
+        self.image_width, self.image_height = vt_camera.source.capsize
+
         # Reverse the image (boolean game-property)
         vt_camera.source.flip = self.vertical_flip
 
