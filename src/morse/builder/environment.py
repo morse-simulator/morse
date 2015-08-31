@@ -7,7 +7,7 @@ from morse.builder.data import MORSE_DATASTREAM_MODULE
 from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
 
-class Environment(Component):
+class Environment(AbstractComponent):
     """ Class to configure the general environment of the simulation
 
     It handles the background environment in which your robots are simulated,
@@ -17,7 +17,7 @@ class Environment(Component):
     """
     multinode_distribution = dict()
 
-    def __init__(self, filename, fastmode = False, component_renaming = True):
+    def __init__(self, filename, main_scene = None, fastmode = False, component_renaming = True):
         """
         :param fastmode: (default: False) if True, disable most visual
                          effects (like lights...) to get the fastest
@@ -27,7 +27,19 @@ class Environment(Component):
                          no video camera)
 
         """
-        Component.__init__(self, 'environments', filename)
+        AbstractComponent.__init__(self, category = 'environments', filename = filename)
+        if main_scene:
+            base_scene = bpymorse.get_context_scene().name
+            self.append_scenes()
+            bpymorse.deselect_all()
+            scene = bpymorse.set_active_scene(main_scene)
+            for obj in scene.objects:
+                obj.select = True
+            bpymorse.make_links_scene(scene=base_scene)
+            bpymorse.del_scene()
+            bpymorse.set_active_scene(base_scene)
+        else:
+            self.append_meshes()
         AbstractComponent.components.remove(self) # remove myself from the list of components to ensure my destructor is called
 
         self._handle_default_interface()

@@ -45,7 +45,9 @@ new_object = empty_method
 apply_transform = empty_method
 open_sound = empty_method
 new_scene = empty_method
+del_scene = empty_method
 armatures = empty_method
+make_links_scene = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -78,7 +80,9 @@ if bpy:
     apply_transform = bpy.ops.object.transform_apply
     open_sound = bpy.ops.sound.open
     new_scene = bpy.ops.scene.new
+    del_scene = bpy.ops.scene.delete
     armatures = bpy.data.armatures
+    make_links_scene = bpy.ops.object.make_links_scene
 
 def version():
     if bpy:
@@ -256,14 +260,15 @@ def get_context_window():
 def set_debug(debug=True):
     bpy.app.debug = debug
 
-def get_objects_in_blend(filepath):
+
+def _get_xxx_in_blend(filepath, kind):
     if not bpy:
         return []
     objects = []
     try:
         with bpy.data.libraries.load(filepath) as (src, _):
             try:
-                objects = [obj for obj in src.objects]
+                objects = [obj for obj in getattr(src, kind)]
             except UnicodeDecodeError as detail:
                 logger.error("Unable to open file '%s'. Exception: %s" % \
                              (filepath, detail))
@@ -271,6 +276,13 @@ def get_objects_in_blend(filepath):
         logger.error(detail)
         raise MorseBuilderNoComponentError("Component not found")
     return objects
+
+
+def get_objects_in_blend(filepath):
+    return _get_xxx_in_blend(filepath, 'objects')
+
+def get_scenes_in_blend(filepath):
+    return _get_xxx_in_blend(filepath, 'scenes')
 
 def save(filepath=None, check_existing=False, compress=True):
     """ Save .blend file

@@ -590,38 +590,12 @@ class AbstractComponent(object):
         controller.module = calling_module
         controller.link(sensor = sensor)
 
-    def append_meshes(self, objects=None, component=None, prefix=None):
-        """ Append the objects to the scene
-
-        The ``objects`` are located either in:
-        MORSE_COMPONENTS/``self._category``/``component``.blend/Object/
-        or in: MORSE_RESOURCE_PATH/``component``/Object/
-
-        If `component` is not set (neither as argument of `append_meshes` nor
-        through the :py:class:`AbstractComponent` constructor), a Blender
-        `Empty` is created instead.
-
-        :param objects: list of the objects names to append
-        :param component: component in which the objects are located
-        :param prefix: filter the objects names to append (used by PassiveObject)
-        :return: list of the imported (selected) Blender objects
-        """
-
-
-        component = component or self._blender_filename
-
-        if not component: # no Blender resource: simply create an empty
-            bpymorse.deselect_all()
-            bpymorse.add_morse_empty()
-            return [bpymorse.get_first_selected_object(),]
-
-
+    def _compute_filepath(self, component):
         if component.endswith('.blend'):
             filepath = os.path.abspath(component) # external blend file
         else:
             filepath = os.path.join(MORSE_COMPONENTS, self._category,
                                     component + '.blend')
-
         looked_dirs = [filepath]
 
         if not os.path.exists(filepath):
@@ -644,6 +618,34 @@ class AbstractComponent(object):
                              "or default path, typically $PREFIX/share/morse/data)."% (component, looked_dirs))
                 raise FileNotFoundError("%s '%s' not found"%(self.__class__.__name__, component))
 
+        return filepath
+
+    def append_meshes(self, objects=None, component=None, prefix=None):
+        """ Append the objects to the scene
+
+        The ``objects`` are located either in:
+        MORSE_COMPONENTS/``self._category``/``component``.blend/Object/
+        or in: MORSE_RESOURCE_PATH/``component``/Object/
+
+        If `component` is not set (neither as argument of `append_meshes` nor
+        through the :py:class:`AbstractComponent` constructor), a Blender
+        `Empty` is created instead.
+
+        :param objects: list of the objects names to append
+        :param component: component in which the objects are located
+        :param prefix: filter the objects names to append (used by PassiveObject)
+        :return: list of the imported (selected) Blender objects
+        """
+
+        component = component or self._blender_filename
+
+        if not component: # no Blender resource: simply create an empty
+            bpymorse.deselect_all()
+            bpymorse.add_morse_empty()
+            return [bpymorse.get_first_selected_object(),]
+
+        filepath = self._compute_filepath(component)
+
         if not objects: # append all objects from blend file
             objects = bpymorse.get_objects_in_blend(filepath)
 
@@ -663,6 +665,25 @@ class AbstractComponent(object):
                                  autoselect=True, files=objlist)
 
         return bpymorse.get_selected_objects()
+
+    def append_scenes(self, component=None):
+        component = component or self._blender_filename
+
+        filepath = self._compute_filepath(component)
+
+        scenes = bpymorse.get_scenes_in_blend(filepath)
+
+        # Format the objects list to append
+        sclist = [{'name':sc} for sc in scenes]
+
+        bpymorse.deselect_all()
+        # Append the objects to the scene, and (auto)select them
+        if bpymorse.version() >= (2, 71, 6):
+            bpymorse.append(directory=filepath + '/Scene/',
+                            autoselect=True, files=sclist)
+        else:
+            bpymorse.link_append(directory=filepath + '/Scene/', link=False,
+                                 autoselect=True, files=sclist)
 
     def append_collada(self, component=None):
         """ Append Collada objects to the scene
