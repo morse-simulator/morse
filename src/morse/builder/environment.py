@@ -681,6 +681,14 @@ class Environment(AbstractComponent):
         my_logger = logging.getLogger('morse.' + component)
         my_logger.setLevel(level.upper())
 
+    def set_background_scene(self, scene):
+        """
+        Set the background scene used by main scene
+
+        :param scene: the name of the scene to use in background
+        """
+        bpymorse.get_context_scene().background_set = bpymorse.get_scene(scene)
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
