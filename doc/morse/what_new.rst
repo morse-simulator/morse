@@ -55,6 +55,12 @@ Builder API
 API addition
 ++++++++++++
 
+- It is now possible to import environment composed of multiples scenes. The
+  user should select which is the ``main_scene`` when importing the environment.
+  Moreover, a method ``Environment.set_background_scene`` has been added to configure the
+  scene to use in background (`#651 <https://github.com/morse-simulator/morse/issues/651>`_).
+
+
 Pymorse
 -------
 
