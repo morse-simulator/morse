@@ -33,6 +33,13 @@ class MessageBufferReader:
     def read_octet(self):
         return self.__read_fom(fom.HLAoctet)
 
+    def read_string(self):
+        len = self.read_int32()
+        res = ""
+        for i in (0, len):
+            res[i] = self.read_octet()
+        return res
+
 class MessageBufferWriter:
     MAGIC_HEADER_SIZE = 5
 
@@ -71,6 +78,16 @@ class MessageBufferWriter:
 
     def __write_data(self, obj, value):
         self.__add_data(obj, value)
+        return self.write()
+
+    def add_string(self, value):
+        len_s = len(value)
+        self.add_int32(len_s)
+        for i in range(0, len_s):
+            self.add_octet(bytes(value[i], 'utf-8'))
+
+    def write_string(self, value):
+        self.add_string(value)
         return self.write()
 
     def write(self):
