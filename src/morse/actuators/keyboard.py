@@ -14,6 +14,10 @@ class Keyboard(Actuator):
 
     :kbd:`Up` forward
     :kbd:`Down` backwards
+    :kbd:`J` left
+    :kbd:`L` left
+    :kbd:`I` up
+    :kbd:`k` down
     :kbd:`Left` turn left
     :kbd:`Right` turn right
     """
@@ -48,15 +52,35 @@ class Keyboard(Actuator):
         vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
+        # move forward
         if keyboard.events[blenderapi.UPARROWKEY] == is_actived:
             vx = self._speed
 
+        # move backward
         if keyboard.events[blenderapi.DOWNARROWKEY] == is_actived:
             vx = -self._speed
+        
+        # move left
+        if keyboard.events[blenderapi.JKEY] == is_actived:
+            vy = self._speed
 
+        # move right
+        if keyboard.events[blenderapi.LKEY] == is_actived:
+            vy = -self._speed
+
+        # move up
+        if keyboard.events[blenderapi.IKEY] == is_actived:
+            vz = self._speed
+
+        # move down
+        if keyboard.events[blenderapi.KKEY] == is_actived:
+            vz = -self._speed
+
+        # turn left
         if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
             rz = self._speed
 
+        # turn right
         if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
             rz = -self._speed
 
