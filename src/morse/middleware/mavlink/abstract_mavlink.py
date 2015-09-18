@@ -6,11 +6,13 @@ class MavlinkSensor(AbstractDatastream):
     def initialize(self):
         self._mavlink_client = None
         self._boot_time = 0
+        self._mav = None
         self._msg = None
 
-    def setup(self, mavlink_client, boot_time):
-        self._mavlink_client = mavlink_client
+    def setup(self, conn_manager, mav, boot_time):
+        self._mavlink_client = conn_manager.get(self.kwargs['device'])
         self._boot_time = boot_time
+        self._mav = mav
 
     """
     common messages requires time in ms since boot, so provide an helper
@@ -28,7 +30,7 @@ class MavlinkSensor(AbstractDatastream):
 
     def default(self, ci = 'unused'):
         self.make_msg()
-        self._mavlink_client.send(self._msg)
+        self._mavlink_client.write(self._msg.pack(self._mav))
 
 class MavlinkActuator(AbstractDatastream):
     def initialize(self):
