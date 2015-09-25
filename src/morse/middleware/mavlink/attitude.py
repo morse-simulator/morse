@@ -3,6 +3,8 @@ from morse.middleware.mavlink.abstract_mavlink import MavlinkSensor
 from pymavlink.dialects.v10 import common as mavlink
 
 class AttitudeSensor(MavlinkSensor):
+    _type_name = "ATTITUDE"
+
     def make_msg(self):
         # Expects the coordinate in aeronautical frame
         self._msg = mavlink.MAVLink_attitude_message(

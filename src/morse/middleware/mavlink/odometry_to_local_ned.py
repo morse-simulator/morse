@@ -3,6 +3,8 @@ from morse.middleware.mavlink.abstract_mavlink import MavlinkSensor
 from pymavlink.dialects.v10 import common as mavlink
 
 class OdometrySensor(MavlinkSensor):
+    _type_name = "LOCAL_POSITION_NED"
+
     def make_msg(self):
         # Expects the coordinate in aeronautical frame
         self._msg = mavlink.MAVLink_local_position_ned_message(

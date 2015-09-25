@@ -2,7 +2,18 @@ from morse.middleware import AbstractDatastream
 import logging; logger = logging.getLogger("morse." + __name__)
 from pymavlink.mavutil import mavlink_connection 
 
-class MavlinkSensor(AbstractDatastream):
+class classproperty(object):
+    def __init__(self, fget):
+        self.fget = fget
+    def __get__(self, owner_self, owner_cls):
+        return self.fget(owner_cls)
+
+class MavlinkDatastream(AbstractDatastream):
+    @classproperty
+    def _type_url(cls):
+        return "https://pixhawk.ethz.ch/mavlink/#" + cls._type_name
+
+class MavlinkSensor(MavlinkDatastream):
     def initialize(self):
         self._mavlink_client = None
         self._boot_time = 0
@@ -32,7 +43,7 @@ class MavlinkSensor(AbstractDatastream):
         self.make_msg()
         self._mavlink_client.write(self._msg.pack(self._mav))
 
-class MavlinkActuator(AbstractDatastream):
+class MavlinkActuator(MavlinkDatastream):
     def initialize(self):
         self._conn = mavlink_connection(self.kwargs['device'])
         self._msg = None
