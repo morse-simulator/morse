@@ -16,10 +16,22 @@ except ImportError:
     pass
 
 class OdometryTest(MorseTestCase):
+
+    WHEEL_RADIUS = 1 / (2 * math.pi) # one full turn == 1 meter
+    WHEEL_BASE = 1 / math.pi # one 360° rotation of the robot leads the wheel to move 1m
+    ENCODERS_RESOLUTION = 10000
+
+
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        
+
+        # (constants need to appear here as well to be visible within MORSE)
+        import math
+        WHEEL_RADIUS = 1 / (2 * math.pi) # one full turn == 1 meter
+        WHEEL_BASE = 1 / math.pi # one 360° rotation of the robot leads the wheel to move 1m
+        ENCODERS_RESOLUTION = 10000
+
         robot = ATRV()
         robot.translate(x = 5.0, y = 2.0)
         robot.rotate(z = math.pi / 2)
@@ -45,6 +57,16 @@ class OdometryTest(MorseTestCase):
         integ_odo = Odometry()
         robot.append(integ_odo)
         integ_odo.add_stream("socket")
+
+        encoders = Odometry()
+        encoders.level("encoders")
+        encoders.properties(wheel_radius = WHEEL_RADIUS,
+                            wheel_base = WHEEL_BASE,
+                            encoders_resolution = ENCODERS_RESOLUTION)
+
+        robot.append(encoders)
+        encoders.add_stream("socket")
+
 
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
@@ -83,15 +105,19 @@ class OdometryTest(MorseTestCase):
 
         pose = self.pose_stream.get()
         integ_odo = self.integ_odo_stream.get()
+
         self.assertAlmostEqual(self.x, expected_x, delta=precision)
         self.assertAlmostEqual(self.y, expected_y, delta=precision)
         self.assertAlmostEqual(self.yaw, expected_yaw, delta=precision)
+
         self.assertAlmostEqual(pose['x'], 5.0 - expected_y, delta=precision)
         self.assertAlmostEqual(pose['y'], 2.0 + expected_x, delta=precision)
         self.assertAlmostEqual(pose['yaw'], expected_yaw + math.pi/2, delta=precision)
+
         self.assertAlmostEqual(integ_odo['x'], expected_x, delta=precision)
         self.assertAlmostEqual(integ_odo['y'], expected_y, delta=precision)
         self.assertAlmostEqual(integ_odo['yaw'], expected_yaw, delta=precision)
+
         self.clear_datas(expected_x, expected_y, expected_yaw)
 
     def test_odometry(self):
@@ -123,6 +149,37 @@ class OdometryTest(MorseTestCase):
             # XXX fail Y with 0.11 delta
             #self.odometry_test_helper(morse, -2.0, math.pi/2.0, 3.0)
             #self.verify(4.0 / math.pi, -4.0/math.pi, -math.pi/2.0)
+
+    def verify_encoders(self, left, right):
+        DELTA = 100
+        encoders = self.encoders_stream.get()
+
+        self.assertAlmostEqual(encoders["l_encoder"], left, delta = DELTA )
+        self.assertAlmostEqual(encoders["r_encoder"], right, delta = DELTA)
+
+    def test_encoders(self):
+
+
+        with Morse() as morse:
+            # Read the start position, it must be (0.0, 0.0, 0.0)
+            self.odo_stream = morse.robot.odo
+            self.encoders_stream = morse.robot.encoders
+            self.motion = morse.robot.motion
+
+            self.verify_encoders(0, 0)
+            self.odometry_test_helper(morse, 1.0, 0.0, 1.0)
+            self.verify_encoders(OdometryTest.ENCODERS_RESOLUTION, OdometryTest.ENCODERS_RESOLUTION)
+            self.odometry_test_helper(morse, -1.0, 0.0, 2.0)
+            self.verify_encoders(-OdometryTest.ENCODERS_RESOLUTION, -OdometryTest.ENCODERS_RESOLUTION)
+            self.odometry_test_helper(morse, 1.0, 0.0, 1.0)
+            self.verify_encoders(0, 0)
+            self.odometry_test_helper(morse, 0, math.pi, 2.0)
+            self.verify_encoders(OdometryTest.ENCODERS_RESOLUTION, -OdometryTest.ENCODERS_RESOLUTION)
+            self.odometry_test_helper(morse, 0, -math.pi, 2.0)
+            self.verify_encoders(0, 0)
+            self.odometry_test_helper(morse, 0, -math.pi, 2.0)
+            self.verify_encoders(-OdometryTest.ENCODERS_RESOLUTION, OdometryTest.ENCODERS_RESOLUTION)
+
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":
