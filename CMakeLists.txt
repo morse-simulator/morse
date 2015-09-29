@@ -168,6 +168,10 @@ ELSE()
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymoos/__init__.py
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymoos/MOOSCommClient.py
 
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${SPHINX_FALSE_PYTHON_ENV}/pymavlink/dialects/v10/
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymavlink/dialects/v10/__init__.py
+		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/pymavlink/dialects/v10/common.py
+
 		COMMAND ${CMAKE_COMMAND} -E touch ${SPHINX_FALSE_PYTHON_ENV}/yarp.py
 		COMMAND ${CMAKE_COMMAND} -DSPHINX_FALSE_PYTHON_ENV=${SPHINX_FALSE_PYTHON_ENV} -P ${CMAKE_CURRENT_SOURCE_DIR}/config/generate_false_env.cmake
 	)
