@@ -735,6 +735,7 @@ def generate_matrix(filename):
     middlewares['yarp']= ['✔ (ports)','✔']
     middlewares['pocolibs']= ['✔ (posters)','✔ (requests)']
     middlewares['moos']= ['✔ (database)','✘']
+    middlewares['mavlink']= ['✔','✘']
     middlewares['hla']=['✔ (attribute update)','✘']
     middlewares['text']= ['✔','✘']
 

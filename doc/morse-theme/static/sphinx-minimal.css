@@ -625,3 +625,8 @@ p.admonition-title {
     background-color: #3a7e25;
     color: #fff;
 }
+
+.tag-mavlink {
+    background-color: #0080ff;
+    color: #fff;
+}
