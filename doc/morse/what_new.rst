@@ -48,6 +48,9 @@ Middlewares
 General
 +++++++
 
+- Introduce a binding for the `Mavlink protocol
+  <http://qgroundcontrol.org/mavlink/start>`_, easing the interoperability of
+  Morse with a lot of free autopilots / architectures.
 
 Builder API
 -----------

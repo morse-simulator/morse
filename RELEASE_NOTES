@@ -46,6 +46,8 @@ Middlewares
 General
 +++++++
 
+- Introduce a binding for the Mavlink protocol  easing the interoperability of
+  Morse with a lot of free autopilots / architectures.
 
 Builder API
 -----------
