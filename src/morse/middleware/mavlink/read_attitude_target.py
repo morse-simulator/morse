@@ -8,8 +8,7 @@ class AttitudeTarget(MavlinkActuator):
     def process_msg(self):
         # the actuator assumes ned control, so don't do any transformation
         q = QuaternionBase(self._msg.q)
-        euler = q.euler()
-        self.data['roll'] = euler[0]
-        self.data['pitch'] = euler[1]
-        self.data['roll'] = euler[2]
+        self.data['roll'] = q.euler[0]
+        self.data['pitch'] = q.euler[1]
+        self.data['yaw'] = q.euler[2]
         self.data['thrust'] = self._msg.thrust
