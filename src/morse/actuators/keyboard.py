@@ -12,10 +12,18 @@ class Keyboard(Actuator):
     When parented to a robot, the user can press the arrow keys to modify the
     linear and angular velocities (V, W) of the robot.
 
-    :kbd:`Up` forward
-    :kbd:`Down` backwards
-    :kbd:`Left` turn left
-    :kbd:`Right` turn right
+    :kbd:`Up` move forward
+    :kbd:`Down` move backwards
+    :kbd:`Left` move left
+    :kbd:`Right` move right
+    :kbd:`I` pitch forward
+    :kbd:`K` pitch backward
+    :kbd:`L` roll left
+    :kbd:`M` roll right
+    :kbd:`U` turn/yaw left
+    :kbd:`O` turn/yaw right
+    :kbd:`T` move up
+    :kbd:`G` move down
     """
 
     _name = "Keyboard Actuator"
@@ -48,17 +56,53 @@ class Keyboard(Actuator):
         vx, vy, vz = 0.0, 0.0, 0.0
         rx, ry, rz = 0.0, 0.0, 0.0
 
+        # move forward
         if keyboard.events[blenderapi.UPARROWKEY] == is_actived:
             vx = self._speed
 
+        # move backward
         if keyboard.events[blenderapi.DOWNARROWKEY] == is_actived:
             vx = -self._speed
-
+        
+        # move left
         if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
+            vy = self._speed
+
+        # move right
+        if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
+            vy = -self._speed
+
+        # move up
+        if keyboard.events[blenderapi.TKEY] == is_actived:
+            vz = self._speed
+
+        # move down
+        if keyboard.events[blenderapi.GKEY] == is_actived:
+            vz = -self._speed
+
+        # turn/yaw left
+        if keyboard.events[blenderapi.UKEY] == is_actived:
             rz = self._speed
 
-        if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
+        # turn/yaw right
+        if keyboard.events[blenderapi.OKEY] == is_actived:
             rz = -self._speed
+
+        # roll left
+        if keyboard.events[blenderapi.JKEY] == is_actived:
+            rx = -self._speed
+
+        # roll right
+        if keyboard.events[blenderapi.LKEY] == is_actived:
+            rx = self._speed
+
+        # pitch forward
+        if keyboard.events[blenderapi.IKEY] == is_actived:
+            ry = self._speed
+
+        # pitch backward
+        if keyboard.events[blenderapi.KKEY] == is_actived:
+            ry = -self._speed
 
         if self._type == 'Position' or self._type == 'Velocity':
             self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
