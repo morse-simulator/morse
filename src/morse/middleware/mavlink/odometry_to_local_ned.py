@@ -6,7 +6,8 @@ class OdometrySensor(MavlinkSensor):
     _type_name = "LOCAL_POSITION_NED"
 
     def make_msg(self):
-        # Expects the coordinate in aeronautical frame
+        # Expects the coordinate in aeronautical frame, so doing ENU ->
+        # NED conversion
         self._msg = mavlink.MAVLink_local_position_ned_message(
                 self.time_since_boot(),
                 self.data['x'],

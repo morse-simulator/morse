@@ -10,9 +10,9 @@ class AttitudeSensor(MavlinkSensor):
         self._msg = mavlink.MAVLink_attitude_message(
                 self.time_since_boot(),
                 self.data['rotation'][0],
-                self.data['rotation'][1],
-                self.data['rotation'][2],
+                - self.data['rotation'][1],
+                - self.data['rotation'][2],
                 self.data['angular_velocity'][0],
-                self.data['angular_velocity'][1],
-                self.data['angular_velocity'][2]
+                - self.data['angular_velocity'][1],
+                - self.data['angular_velocity'][2]
         )
