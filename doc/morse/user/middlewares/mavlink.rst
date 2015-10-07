@@ -12,6 +12,12 @@ ground link communication.
 
 To use this binding with Morse, you need at least pymavlink >= 1.1.62.
 
+.. note::
+
+    As mavlink message have strong semantic about used frame, the middleware
+    part deal with ENU -> aeronautical frame, so mavlink messages have
+    expected semantic. 
+
 Files
 -----
 
