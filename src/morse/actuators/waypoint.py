@@ -318,6 +318,7 @@ class Waypoint(morse.core.actuator.Actuator):
 
         # If the target has been reached, change the status
         if distance - self.local_data['tolerance'] <= 0:
+            self.robot_parent.apply_speed(self._type, [0, 0, 0], [0, 0, 0])
             parent.move_status = "Arrived"
 
             #Do we have a running request? if yes, notify the completion
