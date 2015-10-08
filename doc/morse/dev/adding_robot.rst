@@ -13,8 +13,10 @@ with::
 
  $ morse add robot <name> mysim
 
+This command creates and configures a template model of a robot, and explains
+how to modify it to suit your needs.
 
-Low-poly
+3D Model
 --------
 
 Blender is a 3D modeling software with both Photo-realistic Rendering and
@@ -22,8 +24,26 @@ Game Engine capabilities. In the first case, users want very detailed models
 with high definition textures. In one word, heavy models. Those are not suited
 for the Game Engine, where we want to get **real-time** rendering.
 
-MORSE' 3D models need to be light, with compressed textures, and as few polygons as
-possible.
+As such, it is advisable to prepare a lightweight ("low-poly") model of your
+robot, with compressed textures.
+
+The section :ref:`blender-advices` of :doc:`Adding a new
+component<adding_component>` provides some advices when creating a 3D model in
+Blender.
+
+Resources
++++++++++
+
+Blender got huge amount of models, you can find some on
+`Blendswap <http://www.blendswap.com/>`_. Make sure you look in the
+"**low-poly**" category for Game Engine models.
+
+You can also import many 3D format in Blender, for a full list, see the
+`Import-Export Blender wiki page
+<http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Import-Export>`_.
+
+For more on Blender Game modeling, see `Blender Cookie tutorials
+<http://cgcookie.com/blender/category/tutorials/game-development/>`_.
 
 
 Physics
@@ -131,17 +151,4 @@ See this `playlist of 5 videos on how to build a robot
     </iframe>
 
 
-Resources
----------
-
-Blender got huge amount of models, you can find some on
-`Blendswap <http://www.blendswap.com/>`_. Make sure you look in the
-"**low-poly**" category for Game Engine models.
-
-You can also import many 3D format in Blender, for a full list, see the
-`Import-Export Blender wiki page
-<http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Import-Export>`_.
-
-For more on Blender Game modeling, see `Blender Cookie tutorials
-<http://cgcookie.com/blender/category/tutorials/game-development/>`_.
 
