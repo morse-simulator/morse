@@ -650,7 +650,7 @@ class AbstractComponent(object):
         return filepath
 
     def append_meshes(self, objects=None, component=None, prefix=None):
-        """ Append the objects to the scene
+        """ Append the component's Blender objects to the scene
 
         The ``objects`` are located either in:
         MORSE_COMPONENTS/``self._category``/``component``.blend/Object/
@@ -659,6 +659,13 @@ class AbstractComponent(object):
         If `component` is not set (neither as argument of `append_meshes` nor
         through the :py:class:`AbstractComponent` constructor), a Blender
         `Empty` is created instead.
+
+        .. note::
+            
+            By default, all the objects present in the component's blend file are
+            imported. If you need to exclude some (like lights you may have in your
+            blend file), prefix the name of this objects with ``_`` so that MORSE
+            ignores them.
 
         :param objects: list of the objects names to append
         :param component: component in which the objects are located
@@ -678,11 +685,22 @@ class AbstractComponent(object):
         if not objects: # append all objects from blend file
             objects = bpymorse.get_objects_in_blend(filepath)
 
+        filtered_objects = objects
+
+        # ignore objects starting with '_'
+        filtered_objects = [obj for obj in objects if not obj.startswith('_')]
+
         if prefix: # filter (used by PassiveObject)
-            objects = [obj for obj in objects if obj.startswith(prefix)]
+            filtered_objects = [obj for obj in filtered_objects if obj.startswith(prefix)]
+
+        logger.info("Importing objects from %s: %s" % (filepath,
+                                    str(objects)))
+        excluded = set(objects) - set(filtered_objects)
+        if excluded:
+            logger.info("(excluding %s)" % str(list(excluded)))
 
         # Format the objects list to append
-        objlist = [{'name':obj} for obj in objects]
+        objlist = [{'name':obj} for obj in filtered_objects]
 
         bpymorse.deselect_all()
         # Append the objects to the scene, and (auto)select them

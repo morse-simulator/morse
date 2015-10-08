@@ -282,6 +282,7 @@ An user would configure this sensor in a script that way:
     ...
 
 
+.. _blender-advices:
 
 The 'Blender' part
 ------------------
@@ -293,12 +294,19 @@ The 'Blender' part
   * ``x`` points forward, ``z`` points up.
   * You can of course import meshes in Blender. Just check the scale and orientation.
   * Do not forget that your mesh will be used in a real-time 3D engine: keep
-    the number of polygons low ( > 500 for a single model is probably already
-    too much. Check the ``decimate`` tool in Blender to simplify your model if
-    needed).
+    the number of polygons low (check the ``decimate`` tool in Blender to
+    simplify your model if needed).
   * Do not forget the :doc:`bounding boxes<../user/tips/bounding_boxes>`.
   * If your sensor/actuator has a kinematic structure (not a single rigid part),
-    use Blender's armatures to model it precisely.
+    use Blender's armatures to model it precisely (see below the note on
+    armatures)..
+
+.. note::
+
+    You may have some elements in your Blender scene (like lights or a physical
+    floor to test physics) that you would like to keep while creating the model,
+    but you do not want MORSE to import them in the final simulation. Simply
+    prefix their name with ``_`` in Blender: MORSE will ignore those.
 
 - Save the model in ``$MORSE_ROOT/data/<sensors|actuators>/``
 
