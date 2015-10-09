@@ -1,20 +1,3 @@
-######################################################
-#
-#    waypoint.py        Blender 2.5x
-#
-#    A script to control the movement of a robot given
-#    a destination point in space.
-#    The movement includes a basic obstacle avoidance
-#    system, based on the demo by Sebastian Korczak
-#               admin@myinventions.pl
-#
-#
-#    Gilberto Echeverria
-#    27 / 01 / 2011
-#
-######################################################
-
-
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
 from morse.core import status, blenderapi, mathutils
@@ -82,6 +65,10 @@ class Waypoint(morse.core.actuator.Actuator):
             close to an object of a certain kind")
     add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
+    add_property('_remain_at_destination', False, 'RemainAtDestination', 'bool',
+                "If true (default: false), the robot actively attempts to \
+                remain at the waypoint once reached. This is especially \
+                useful for flying robots that would otherwise typically fall.")
 
     add_data('x', 0.0, "float",
               "X coordinate of the destination, in world frame, in meter")
@@ -119,6 +106,10 @@ class Waypoint(morse.core.actuator.Actuator):
         # Waypoint tolerance (in meters)
         self.local_data['tolerance'] = 0.5
         self.local_data['speed'] = self._speed
+
+        # Initially (ie, before receiving a waypoint), 
+        # the robot is in 'Arrived' state
+        self.robot_parent.move_status = "Arrived"
 
         # Identify an object as the target of the motion
         try:
@@ -195,6 +186,8 @@ class Waypoint(morse.core.actuator.Actuator):
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
 
+        self.robot_parent.move_status = "Transit"
+
         return True
 
 
@@ -218,6 +211,8 @@ class Waypoint(morse.core.actuator.Actuator):
         self.local_data['z'] = z
         self.local_data['tolerance'] = tolerance
         self.local_data['speed'] = speed
+
+        self.robot_parent.move_status = "Transit"
 
     def interrupt(self):
         self.local_data['x'] = self.position_3d.x
@@ -280,12 +275,23 @@ class Waypoint(morse.core.actuator.Actuator):
         v = 0
         rz = 0
 
+        self._previous_destination = self._destination
+
         self._destination = [ self.local_data['x'],
                               self.local_data['y'],
                               self.local_data['z'] ]
         self._projection = [ self.local_data['x'],
                              self.local_data['y'],
                              self.bge_object.worldPosition[2] ]
+
+        # Do nothing at all if:
+        # - we were not ask to actively remain at the last wp
+        # - we already are at destination
+        # - no new destination has been received.
+        if not self._remain_at_destination and \
+           parent.move_status == "Arrived" and \
+           self._destination == self._previous_destination:
+               return
 
         logger.debug("Robot {0} move status: '{1}'".format(
                      parent.bge_object.name, parent.move_status))
