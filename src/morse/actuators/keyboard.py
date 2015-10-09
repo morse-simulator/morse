@@ -35,8 +35,10 @@ class Keyboard(Actuator):
         # Correct the speed considering the Blender clock
         if self._type == 'Position':
             self._speed = self._speed / self.frequency
-        logger.info('Component initialized')
 
+        self.zero_motion = True
+
+        logger.info('Component initialized')
 
     def default_action(self):
         """ Interpret keyboard presses and assign them to movement
@@ -60,9 +62,19 @@ class Keyboard(Actuator):
         if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
             rz = -self._speed
 
+        # Send a 'zero motion' only once in a row.
+        if self.zero_motion and (vx,vy,vz,rx,ry,rz) == (0,0,0,0,0,0):
+            return
+
         if self._type == 'Position' or self._type == 'Velocity':
             self.robot_parent.apply_speed(self._type, [vx, vy, vz], [rx, ry, rz / 2.0])
         elif self._type == 'Differential':
             self.robot_parent.apply_vw_wheels(vx, rz)
+
+
+        if (vx,vy,vz,rx,ry,rz) == (0,0,0,0,0,0):
+            self.zero_motion = True
+        else:
+            self.zero_motion = False
 
 
