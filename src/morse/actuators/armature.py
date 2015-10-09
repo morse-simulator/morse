@@ -447,6 +447,8 @@ class Armature(morse.core.actuator.Actuator):
         independantly.
 
         Translations must be ordered from the root to the tip of the armature.
+        Use the service ``get_joints()`` to retrieve the list of joints
+        in the correct order.
 
         If more translations are provided than the number of joints, the
         remaining ones are discarded. If less translations are provided, the
@@ -498,6 +500,32 @@ class Armature(morse.core.actuator.Actuator):
         logger.info("Initiating translation of joint %s to %s"%(joint, translation))
         self.local_data[joint] = translation
 
+    @interruptible
+    @async_service
+    def translate_joints(self, joint_translations, speed = None):
+        """
+        Translates a set of joints at a given speed (in m/s).
+
+        .. note::
+
+            Setting different speeds for each joints is not yet supported (but
+            if you need it, ping morse-dev@laas.fr: it is fairly easy to add).
+
+        :param joint_translations: a list of mapping {name of the armature's joint: translation in meters}
+        :param speed: (default: value of 'linear_speed' property) rotation speed for all joints, in m/s
+        """
+
+        self._suspend_ik_targets()
+
+        for joint, translation in joint_translations.items():
+            channel = self._get_prismatic(joint) # checks the joint exist and is prismatic
+            translation = self._clamp_joint(channel, translation)
+            self.joint_speed[joint] = speed
+
+            logger.info("Initiating translation of joint %s to %s"%(joint, translation))
+            self.local_data[joint] = translation
+
+
     @service
     def set_rotation(self, joint, rotation):
         """
@@ -538,7 +566,9 @@ class Armature(morse.core.actuator.Actuator):
         Has the same effect as applying `set_rotation` on each of the joints
         independantly.
 
-        Rotations must be ordered from the root to the tip of the armature.
+        Rotations must be ordered from the root to the tip of the armature. Use
+        the service ``get_joints()`` to retrieve the list of joints in the
+        correct order.
 
         If more rotations are provided than the number of joints, the remaining
         ones are discarded. If less rotations are provided, the maximum are
@@ -589,6 +619,33 @@ class Armature(morse.core.actuator.Actuator):
         logger.info("Initiating rotation of %s to pos. %f (along the joint rotation axis)"%(joint, rotation))
         self.local_data[joint] = rotation
 
+    @interruptible
+    @async_service
+    def rotate_joints(self, joint_rotations, speed = None):
+        """
+        Rotates a set of joints at a given speed (in rad/s).
+
+        :sees: `Blender documentation on joint rotation <http://www.blender.org/documentation/blender_python_api_2_64_release/bge.types.html#bge.types.BL_ArmatureChannel.joint_rotation>`_
+
+        .. note::
+
+            Setting different speeds for each joints is not yet supported (but
+            if you need it, ping morse-dev@laas.fr: it is fairly easy to add).
+
+        :param joint_rotations: a list of mapping {name of the armature's joint: rotation in radian}
+        :param speed: (default: value of 'radial_speed' property) rotation speed for all joints, in rad/s
+        """
+
+        self._suspend_ik_targets()
+
+        for joint, rotation in joint_rotations.items():
+            channel = self._get_revolute(joint) # checks the joint exist and is revolute
+            rotation = self._clamp_joint(channel, rotation)
+            self.joint_speed[joint] = speed
+
+            logger.info("Initiating rotation of %s to pos. %f (along the joint rotation axis)"%(joint, rotation))
+            self.local_data[joint] = rotation
+
     def find_dof(self, channel):
         """
         Method that finds and returns the degree of freedom (dof) corresponding
@@ -604,7 +661,12 @@ class Armature(morse.core.actuator.Actuator):
     def get_dofs(self):
         """
         Returns a dictionary with keys the channels
-        of the armature and as values the rotation axis of the joint.
+        of the armature and as values the rotation axes of the joint.
+
+        Rotation axes are represented as a list of boolean. For instance,
+        ``[True, False, True]`` means that the `x` and `z` axes of the joint are
+        free to rotate (or translate, depending on the type of the joint).
+
         """
         armature = self.bge_object
         dofs = {}
@@ -613,6 +675,16 @@ class Armature(morse.core.actuator.Actuator):
             dofs[channel.name] = self.find_dof(channel)
 
         return dofs
+
+    @service
+    def get_joints(self):
+        """
+        Returns the names of all the joints in this armature, ordered from the
+        root to the tip.
+        """
+        armature = self.bge_object
+        return [channel.name for channel in armature.channels]
+
 
     @service
     def get_IK_limits(self, joint):
@@ -664,16 +736,17 @@ class Armature(morse.core.actuator.Actuator):
                 }
 
         .. warning::
-            
+
             Currently, both `velocities` and `accelerations` are ignored.
 
-        The trajectory execution starts after `starttime` timestamp passed
-        (if omitted, the trajectory execution starts right away).
-        
+        The trajectory execution starts after `starttime` timestamp passed (if
+        omitted, the trajectory execution starts right away).
+
         `points` is the list of trajectory waypoints. It is assumed that the
-        values in the waypoints are ordered the same way as in the set of
-        joint of the armature (ie, from the root to the tip of the armature).
-        `velocities` and `accelerations` are optional.
+        values in the waypoints are ordered the same way as in the set of joint
+        of the armature (ie, from the root to the tip of the armature. Use the
+        service ``get_joints()`` to retrieve the list of joints in the correct
+        order.) `velocities` and `accelerations` are optional.
 
         The component attempts to achieve each waypoint at the time obtained
         by adding that waypoint's `time_from_start` value to `starttime`.

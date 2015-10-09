@@ -61,6 +61,9 @@ class ArmatureTest(MorseTestCase):
             self.assertAlmostEqual(simu.robot.arm.pose.get()['pitch'], pitch, delta = precision)
 
 
+    def test_joints_names(self):
+        with Morse() as simu:
+            self.assertEquals(simu.robot.arm.get_joints(), JOINTS)
 
     def test_object_attach(self):
         """ Checks that attached object are indeed attached at the right place.
@@ -131,6 +134,12 @@ class ArmatureTest(MorseTestCase):
             self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 0.5, delta = precision)
             simu.sleep(1.1)
             self.assertTrue(act.done())
+
+            kuka_4 = simu.robot.arm.arm_pose.get()["kuka_4"]
+            simu.robot.arm.rotate_joints({"kuka_2": 0.5, "kuka_3" : 0.2}).result()
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_2"], 0.5, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_3"], 0.2, delta = precision)
+            self.assertAlmostEqual(simu.robot.arm.arm_pose.get()["kuka_4"], kuka_4, delta = precision)
 
     def test_trajectory(self):
 
