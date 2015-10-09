@@ -10,9 +10,9 @@ class Orientation(morse.core.actuator.Actuator):
 
     This actuator reads the values of angles of rotation around the 3
     axis and applies them to the associated robot. This rotation is
-    applied with the speed provided in properties. To keep previous
-    behaviour, the default speed is infinite, so the rotation is
-    instantaneous. Angles are expected in radians.
+    applied with the speed provided in properties. For backward compatibility
+    reasons, the default speed is infinite, so the rotation is instantaneous.
+    Angles are expected in radians.
     """
 
     _name = "Orientation Actuator"
