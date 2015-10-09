@@ -46,6 +46,10 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
     add_property('_max_bank_angle', radians(30), 'MaxBankAngle', 'float',
                  'limit the maximum roll/pitch angle of the robot. This \
                   effectively limits the horizontal acceleration of the robot')
+    add_property('_remain_at_destination', True, 'RemainAtDestination', 'bool',
+                "If true (default), the robot actively attempts to \
+                remain at the waypoint once reached. This is especially \
+                useful for flying robots that would otherwise typically fall.")
     add_property('_target', 'wp_target', 'Target', 'string',
                  'name of a blender object in the scene. When specified, \
                   this object will be placed at the coordinates given to \
@@ -93,6 +97,10 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
 
         #previous attitude error
         self.prev_err = Vector((0.0, 0.0, 0.0))
+
+        # Initially (ie, before receiving a waypoint), 
+        # the robot is in 'Arrived' state
+        self.robot_parent.move_status = "Arrived"
 
         # Identify an object as the target of the motion
         try:
@@ -145,6 +153,8 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         self.local_data['yaw'] = yaw
         self.local_data['tolerance'] = tolerance
 
+        self.robot_parent.move_status = "Transit"
+
         return True
 
 
@@ -170,6 +180,7 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         self.local_data['yaw'] = yaw
         self.local_data['tolerance'] = tolerance
 
+        self.robot_parent.move_status = "Transit"
 
     @service
     def get_status(self):
@@ -183,6 +194,8 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
         """ Move the object towards the destination. """
         robot = self.robot_parent
 
+        self._previous_destination = self._destination
+
         if self._pos_initalized:
             self._destination = Vector((self.local_data['x'], self.local_data['y'], self.local_data['z']))
         else:
@@ -192,6 +205,15 @@ class RotorcraftWaypoint(morse.core.actuator.Actuator):
             self.local_data['z'] = self._destination[2]
             self.local_data['yaw'] = self.robot_parent.position_3d.yaw
             self._pos_initalized = True
+
+        # Do nothing at all if:
+        # - we were not ask to actively remain at the last wp
+        # - we already are at destination
+        # - no new destination has been received.
+        if not self._remain_at_destination and \
+           robot.move_status == "Arrived" and \
+           self._destination == self._previous_destination:
+               return
 
         #logger.debug("Robot %s move status: '%s'", robot.bge_object.name, robot.move_status)
         # Place the target marker where the robot should go
