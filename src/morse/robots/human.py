@@ -2,12 +2,17 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 from morse.robots.grasping_robot import GraspingRobot
 from morse.core.services import service
+from morse.helpers.components import add_property
 
 class Human(GraspingRobot):
     """ Class definition for the human as a robot entity.
 
     Sub class of GraspingRobot.
     """
+
+    add_property('_animations', True, 'Animations', 'bool', "if "
+            "true (default), will enable various animations like"
+            " the walk cycle animation.")
 
     def __init__(self, obj, parent=None):
         """ Call the constructor of the parent class """
@@ -52,14 +57,14 @@ class Human(GraspingRobot):
         WALK_START_FRAME = 9
         WALK_END_FRAME = 32
 
-        logger.warning("Applying speed " + str(linear_speed))
-        if linear_speed[0] != 0 or angular_speed[2] != 0:
-            self.armature.playAction("walk", 
-                                     WALK_START_FRAME, WALK_END_FRAME, 
-                                     speed=speed_factor)
-        else:
-            self.armature.playAction("walk", 
-                                     WALK_START_FRAME, WALK_START_FRAME)
+        if self._animations:
+            if linear_speed[0] != 0 or angular_speed[2] != 0:
+                self.armature.playAction("walk", 
+                                        WALK_START_FRAME, WALK_END_FRAME, 
+                                        speed=speed_factor)
+            else:
+                self.armature.playAction("walk", 
+                                        WALK_START_FRAME, WALK_START_FRAME)
 
 
         if kind != 'Position':
