@@ -17,9 +17,29 @@ Robots
 Actuators
 +++++++++
 
+- the semantic of the :doc:`user/actuators/waypoint` and
+  :doc:`user/actuators/destination` actuators has slightly changed: once the
+  destination is reached, they do not attempt anymore to actively stay at this
+  position. This permits another motion actuator to 'take over' the control of
+  the robot. The previous behaviour is still desirable in certain cases (notably
+  for flying robots), and can be re-enabled by setting the property
+  ``RemainAtDestination`` to true:
+  ``motion.properties(RemainAtDestination=True)``. This option is also added to
+  the :doc:`user/actuators/rotorcraft_waypoint` actuator, but it defaults to
+  true (hence, no behaviour change compared to MORSE 1.3).
 - the :doc:`user/actuators/orientation` actuator has been enhanced to possibly
   work more realistically, by limiting the speed of the rotations. The default
   is still to go directly to the desired orientation.
+- The :doc:`user/actuators/keyboard` and :doc:`user/actuators/joystick`
+  actuators do not call anymore the robot ``apply_speed`` method with values set
+  to zero when no input is received. The previous behaviour prevented them to be
+  used in combination with another motion actuator (they would always overwrite
+  other motion commands with zeros).
+- The :doc:`user/actuators/armature` actuator has two new services
+  (``rotate_joints`` and ``translate_joints``) that let the user set the
+  rotations/translations of only a subset of the armature's joints by providing
+  a custom mapping ``{joint name: value}``.
+
 
 Sensors
 +++++++

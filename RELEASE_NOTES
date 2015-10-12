@@ -3,7 +3,7 @@ What's new in MORSE 1.4?
 
 General
 -------
-- Numpyis now needed for Morse. It is used in several places where
+- Numpy is now needed for Morse. It is used in several places where
   computations using mathutils is not precise enough (float vs double
   precision).
 
@@ -16,9 +16,27 @@ Robots
 Actuators
 +++++++++
 
+- the semantic of the Waypoint and Destination actuators has slightly changed:
+  once the destination is reached, they do not attempt anymore to actively stay
+  at this position. This permits another motion actuator to 'take over' the
+  control of the robot. The previous behaviour is still desirable in certain
+  cases (notably for flying robots), and can be re-enabled by setting the
+  property `RemainAtDestination` to true:
+  `motion.properties(RemainAtDestination=True)`. This option is also added to
+  the RotorcraftWaypoint actuator, but it defaults to true (hence, no
+  behaviour change compared to MORSE 1.3).
 - the orientation actuator has been enhanced to possibly work more
   realistically, by limiting the speed of the rotations. The default is still
   to go directly to the desired orientation.
+- The keyboard and joystick actuators do not call anymore the robot
+  `apply_speed` method with values set to zero when no input is received. The
+  previous behaviour prevented them to be used in combination with another
+  motion actuator (they would always overwrite other motion commands with
+  zeros).
+- The Armature actuator has two new services (`rotate_joints` and
+  `translate_joints`) that let the user set the rotations/translations of only
+  a subset of the armature's joints by providing a custom mapping {joint name:
+  value}.
 
 Sensors
 +++++++
