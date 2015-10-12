@@ -22,7 +22,10 @@ class Destination(morse.core.actuator.Actuator):
     add_property('_speed', 5.0, 'Speed')
     add_property('_type', 'Velocity', 'ControlType', 'string',
                  "Kind of control, can be one of ['Velocity', 'Position']")
-
+    add_property('_remain_at_destination', False, 'RemainAtDestination', 'bool',
+                "If true (default: false), the robot actively attempts to \
+                remain at the destination once reached. This is especially \
+                useful for flying robots that would otherwise typically fall.")
 
     def __init__(self, obj, parent=None):
 
@@ -30,12 +33,12 @@ class Destination(morse.core.actuator.Actuator):
         # Call the constructor of the parent class
         morse.core.actuator.Actuator.__init__(self, obj, parent)
 
-        self.destination = self.bge_object.position
+        self._destination = self.bge_object.position
 
         #self.local_data['speed'] = 0.0
-        self.local_data['x'] = self.destination[0]
-        self.local_data['y'] = self.destination[1]
-        self.local_data['z'] = self.destination[2]
+        self.local_data['x'] = self._destination[0]
+        self.local_data['y'] = self._destination[1]
+        self.local_data['z'] = self._destination[2]
 
         logger.info('Component initialized')
 
@@ -44,13 +47,24 @@ class Destination(morse.core.actuator.Actuator):
         """ Move the object towards the destination. """
         parent = self.robot_parent
 
-        self.destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
+        self._previous_destination = self._destination
 
-        logger.debug("STRAIGHT GOT DESTINATION: {0}".format(self.destination))
+        self._destination = [ self.local_data['x'], self.local_data['y'], self.local_data['z'] ]
+
+        # Do nothing at all if:
+        # - we were not ask to actively remain at the last wp
+        # - we already are at destination
+        # - no new destination has been received.
+        if not self._remain_at_destination and \
+           parent.move_status == "Stop" and \
+           self._destination == self._previous_destination:
+               return
+
+        logger.debug("STRAIGHT GOT DESTINATION: {0}".format(self._destination))
         logger.debug("Robot {0} move status: '{1}'".format(parent.bge_object.name, parent.move_status))
 
         # Vectors returned are already normalised
-        distance, global_vector, local_vector = self.bge_object.getVectTo(self.destination)
+        distance, global_vector, local_vector = self.bge_object.getVectTo(self._destination)
 
         logger.debug("My position: {0}".format(self.bge_object.position))
         logger.debug("GOT DISTANCE: {0}".format(distance))
