@@ -528,8 +528,9 @@ class Collision(SensorCreator):
     _classpath = "morse.sensors.collision.Collision"
 
     def __init__(self, name=None):
-        """ Sensor to detect objects colliding with the current object,
-        with more settings than the Touch sensor
+        """ Sensor to detect objects colliding with the current object.
+
+        Doc: https://www.blender.org/manual/game_engine/logic/sensors/collision.html
         """
         SensorCreator.__init__(self, name)
         obj = bpymorse.get_context_object()
@@ -538,23 +539,24 @@ class Collision(SensorCreator):
         obj.game.physics_type = 'SENSOR'
         # Specify a collision bounds type other than the default
         obj.game.use_collision_bounds = True
+        obj.scale = (0.02,0.02,0.02)
         # replace Always sensor by Collision sensor
         sensor = obj.game.sensors[-1]
         sensor.type = 'COLLISION'
         # need to get the new Collision Sensor object
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True # FIXME doesnt seems to have any effect
+        sensor.use_material = False # we want to filter by property, not by material
         # Component mesh (eye sugar)
         mesh = Cube("CollisionMesh")
-        mesh.scale = (.02, .02, .02)
         mesh.color(.8, .2, .1)
         self.append(mesh)
     def properties(self, **kwargs):
         SensorCreator.properties(self, **kwargs)
-        if 'collision_property' in kwargs:
+        if 'only_objects_with_property' in kwargs:
             try:
                 sensor = self._bpy_object.game.sensors[-1]
-                sensor.property = kwargs['collision_property']
+                sensor.property = kwargs['only_objects_with_property']
             except KeyError:
                 pass
 
