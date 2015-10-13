@@ -48,6 +48,9 @@ Sensors
 - Introduce the sensor Magnetometer which allows to compute the magnetic field
   vector of the Earth.
 - Extend the sensor IMU to return also the magnetic field vector.
+- Fixed the collision sensor: it now detects collision only when it is actually
+  colliding (before, any object in a 1x1x1m box around the sensor would return
+  a collision). While here, improve the documentation with a complete example.
 
 Modifiers
 ++++++++

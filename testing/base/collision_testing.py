@@ -17,8 +17,10 @@ from pymorse import Morse
 
 def send_speed(s, sim, v=0, w=0, t=0):
     s.publish({'v': v, 'w': w})
-    sim.sleep(t)
-    s.publish({'v': 0.0, 'w': 0.0})
+
+    if t:
+        sim.sleep(t)
+        s.publish({'v': 0.0, 'w': 0.0})
 
 class CollisionTest(MorseTestCase):
     def setUpEnv(self):
@@ -34,7 +36,7 @@ class CollisionTest(MorseTestCase):
         robot.append(motion)
 
         collision = Collision()
-        collision.properties(collision_property="obstacle")
+        collision.properties(only_objects_with_property="obstacle")
         collision.add_stream('socket')
         collision.translate(x = 0.7, z = 0.2)
         robot.append(collision)
@@ -50,6 +52,11 @@ class CollisionTest(MorseTestCase):
 
             send_speed(sim.robot.motion, sim, 1.0, 0.0, 1.0)
 
+
+            collision = sim.robot.collision.get(timeout=0.1)
+            self.assertEqual(collision, None)
+            send_speed(sim.robot.motion, sim, 1.0, 0.0)
+            sim.sleep(1.0)
             collision = sim.robot.collision.get(timeout=0.1)
             self.assertNotEqual(collision, None)
             self.assertEqual(collision['objects'], "dala")
