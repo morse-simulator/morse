@@ -122,21 +122,32 @@ def extract_examples(doc):
 
     remaining_doc = []
 
-    i = 0
-    while i < len(doc):
-        if doc[i].strip() == ".. example::":
+    in_example = False
+    example = []
+
+    for line in doc:
+
+        # examples are in an indented block (but may contain empty lines)
+        # when we leave such a block, the example is complete, we add it
+        # to the 'examples' list.
+        if in_example and line and line[0] != " ":
+            in_example = False
+            # remove the first element, which is always an empty line 
+            # (RST syntax for blocks)
+            examples.append("\n".join(example[1:]))
+
+        if in_example:
+            example.append(line)
+
+        # check if we enter an example block at the end to avoid adding the
+        # line '.. example::' to 'example'.
+        if line.strip() == ".. example::":
+            in_example = True
             example = []
-            while True:
-                i += 1
-                if len(doc[i]) > 0 and doc[i][0] != ' ':
-                    remaining_doc.append(doc[i])
-                    break
-                else:
-                    example.append(doc[i])
-            examples.append("\n".join(example))
         else:
-            remaining_doc.append(doc[i])
-        i += 1
+            # we do not want to add '.. example::' to the remaining doc either
+            if not in_example:
+                remaining_doc.append(line)
 
     return examples, remaining_doc
 
