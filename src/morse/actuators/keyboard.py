@@ -16,6 +16,23 @@ class Keyboard(Actuator):
     :kbd:`Down` backwards
     :kbd:`Left` turn left
     :kbd:`Right` turn right
+
+    .. example::
+
+        from morse.builder import *
+
+        # adds a default robot (the MORSE mascott!)
+        robot = Morsy()
+
+        # creates a new instance of the actuator
+        keyboard = Keyboard()
+        robot.append(keyboard)
+
+        env = Environment('empty')
+
+        # Run this simulation: you can move the robot with the arrow keys.
+
+    :noautoexample:
     """
 
     _name = "Keyboard Actuator"

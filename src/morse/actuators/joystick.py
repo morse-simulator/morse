@@ -8,6 +8,24 @@ class Joystick(Actuator):
     This actuator does not require a connection with external data. It
     simply responds to the joystick to generate movement instructions for
     the robot attached.
+
+
+    .. example::
+
+        from morse.builder import *
+
+        # adds a default robot (the MORSE mascott!)
+        robot = Morsy()
+
+        # creates a new instance of the joystick actuator
+        joystick = Joystick()
+        robot.append(keyboard)
+
+        env = Environment('empty')
+
+        # Run this simulation: you can move the robot with your joystick.
+
+    :noautoexample:
     """
 
     _name = "Joystick Actuator"
