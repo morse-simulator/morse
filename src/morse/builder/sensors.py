@@ -544,12 +544,14 @@ class Collision(SensorCreator):
         obj.game.physics_type = 'SENSOR'
         # Specify a collision bounds type other than the default
         obj.game.use_collision_bounds = True
+        obj.scale = (0.02,0.02,0.02)
         # replace Always sensor by Collision sensor
         sensor = obj.game.sensors[-1]
         sensor.type = 'COLLISION'
         # need to get the new Collision Sensor object
         sensor = obj.game.sensors[-1]
         sensor.use_pulse_true_level = True # FIXME doesnt seems to have any effect
+        sensor.use_material = False # we want to filter by property, not by material
         # Component mesh (eye sugar)
         mesh = Cube("CollisionMesh")
         mesh.scale = (.02, .02, .02)
