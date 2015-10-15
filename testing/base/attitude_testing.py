@@ -17,7 +17,7 @@ import math
 from pymorse import Morse
 
 
-class OrientationTest(MorseTestCase):
+class AttitudeTest(MorseTestCase):
 
     def setUpEnv(self):
         
@@ -44,9 +44,10 @@ class OrientationTest(MorseTestCase):
 
     def _test_attitude(self, yaw, pitch, roll, wx, wy, wz):
         precision = 0.05
+        precision_speed = 0.003
 
-        attitude = self.att_stream.get()
-        attitude_pos = self.att_pos_stream.last()
+        attitude_pos = self.att_pos_stream.get()
+        attitude = self.att_stream.last()
 
         self.assertAlmostEqual(attitude['rotation']['yaw'], yaw, delta = precision)
         self.assertAlmostEqual(attitude['rotation']['pitch'], pitch, delta = precision)
@@ -56,18 +57,18 @@ class OrientationTest(MorseTestCase):
         self.assertAlmostEqual(attitude_pos['rotation']['pitch'], pitch, delta = precision)
         self.assertAlmostEqual(attitude_pos['rotation']['roll'], roll, delta = precision)
 
-        self.assertAlmostEqual(attitude['angular_velocity'][0], wx, delta = precision)
-        self.assertAlmostEqual(attitude['angular_velocity'][1], wy, delta = precision)
-        self.assertAlmostEqual(attitude['angular_velocity'][2], wz, delta = precision)
+        self.assertAlmostEqual(attitude['angular_velocity'][0], wx, delta = precision_speed)
+        self.assertAlmostEqual(attitude['angular_velocity'][1], wy, delta = precision_speed)
+        self.assertAlmostEqual(attitude['angular_velocity'][2], wz, delta = precision_speed)
 
-        self.assertAlmostEqual(attitude_pos['angular_velocity'][0], wx, delta = precision)
-        self.assertAlmostEqual(attitude_pos['angular_velocity'][1], wy, delta = precision)
-        self.assertAlmostEqual(attitude_pos['angular_velocity'][2], wz, delta = precision)
+        self.assertAlmostEqual(attitude_pos['angular_velocity'][0], wx, delta = precision_speed)
+        self.assertAlmostEqual(attitude_pos['angular_velocity'][1], wy, delta = precision_speed)
+        self.assertAlmostEqual(attitude_pos['angular_velocity'][2], wz, delta = precision_speed)
 
     def send_angles(self, yaw, pitch, roll):
         self.orientation_stream.publish({'yaw' : yaw, 'pitch' : pitch, 'roll' : roll})
 
-    def test_orientation(self):
+    def test_attitude(self):
         """ Test if we can connect to the pose data stream, and read from it.
         """
 
@@ -75,6 +76,8 @@ class OrientationTest(MorseTestCase):
             self.att_stream = morse.robot.attitude
             self.att_pos_stream = morse.robot.attitude_pos
             self.orientation_stream = morse.robot.orientation
+
+            morse.sleep(0.01)
 
             self._test_attitude(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
@@ -100,7 +103,11 @@ class OrientationTest(MorseTestCase):
             morse.sleep(2.0)
             self._test_attitude(2.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
+            self.send_angles(3.0, 1.0, 0.0)
+            morse.sleep(0.5)
+            self._test_attitude(2.25, 0.25, 0.0, 0.0, 0.5, 0.5)
+
 ########################## Run these tests ##########################
 if __name__ == "__main__":
     from morse.testing.testing import main
-    main(OrientationTest)
+    main(AttitudeTest)
