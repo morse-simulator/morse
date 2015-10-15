@@ -2,6 +2,8 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data, add_property
+from morse.helpers.velocity import angular_velocities
+from copy import copy
 
 class Attitude(morse.core.sensor.Sensor):
     """
@@ -54,7 +56,7 @@ class Attitude(morse.core.sensor.Sensor):
             self.robot_w = self.robot_parent.bge_object.localAngularVelocity
         else:
             # previous attitude euler angles as vector
-            self.patt = mathutils.Vector(self.position_3d.euler)
+            self.pp = copy(self.position_3d)
 
         # previous angular velocity
 
@@ -70,11 +72,10 @@ class Attitude(morse.core.sensor.Sensor):
         Simulate angular velocity measurements via simple differences.
         """
         # linear and angular velocities
-        att = mathutils.Vector(self.position_3d.euler)
-        ang_vel = (att - self.patt) * self.frequency
-        self.patt = att
+        rates = angular_velocities(self.pp, self.position_3d, 1 / self.frequency)
+        self.pp = copy(self.position_3d)
 
-        return ang_vel
+        return rates
 
     def sim_attitude_with_physics(self):
         """

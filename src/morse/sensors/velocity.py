@@ -4,6 +4,8 @@ import morse.core.sensor
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import * 
 from math import degrees
+from morse.helpers.velocity import linear_velocities, angular_velocities
+from copy import copy
 
 class Velocity(morse.core.sensor.Sensor):
     """
@@ -41,8 +43,7 @@ class Velocity(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         morse.core.sensor.Sensor.__init__(self, obj, parent)
 
-        self.pp = Vector((0.0, 0.0, 0.0)) # previous position
-        self.pq = Quaternion((1.0, 0.0, 0.0, 0.0)) # previous quaternion
+        self.pp = copy(self.position_3d)
         self.pt = 0.0 # previous timestamp
         self.dt = 0.0 # diff
 
@@ -79,12 +80,10 @@ class Velocity(morse.core.sensor.Sensor):
         if self.dt < 1e-6:
             return
 
-        v = (self.position_3d.translation - self.pp) / self.dt
-        dq = self.pq.rotation_difference(self.position_3d.rotation)
-        w = Vector(dq.to_euler('ZYX')) / self.dt
+        v = linear_velocities(self.pp, self.position_3d, self.dt)
+        w = angular_velocities(self.pp, self.position_3d, self.dt)
 
-        self.pp = self.position_3d.translation
-        self.pq = self.position_3d.rotation
+        self.pp = copy(self.position_3d)
 
         w2a = self.position_3d.rotation_matrix.transposed()
 

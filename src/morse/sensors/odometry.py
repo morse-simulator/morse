@@ -3,6 +3,7 @@ from morse.helpers.morse_math import normalise_angle
 import morse.core.sensor
 import copy
 from morse.helpers.components import add_data, add_level
+from morse.helpers.velocity import linear_velocities, angular_velocities
 
 class Odometry(morse.core.sensor.Sensor):
     """
@@ -132,13 +133,15 @@ class IntegratedOdometry(Odometry):
         self.local_data['roll'] = current_pos.roll
 
         # speed in the sensor frame, related to the robot pose
-        self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
-        self.local_data['vx'] = self.delta_pos.x * self.frequency
-        self.local_data['vy'] = self.delta_pos.y * self.frequency
-        self.local_data['vz'] = self.delta_pos.z * self.frequency
-        self.local_data['wz'] = self.delta_pos.yaw * self.frequency
-        self.local_data['wy'] = self.delta_pos.pitch * self.frequency
-        self.local_data['wx'] = self.delta_pos.roll * self.frequency
+        lin_vel = linear_velocities(self.previous_pos, current_pos, 1/self.frequency)
+        ang_vel = angular_velocities(self.previous_pos, current_pos,1/self.frequency)
+
+        self.local_data['vx'] = lin_vel[0]
+        self.local_data['vy'] = lin_vel[1]
+        self.local_data['vz'] = lin_vel[2]
+        self.local_data['wx'] = ang_vel[0]
+        self.local_data['wy'] = ang_vel[1]
+        self.local_data['wz'] = ang_vel[2]
 
         # Store the 'new' previous data
         self.previous_pos = current_pos

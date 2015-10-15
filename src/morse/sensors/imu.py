@@ -4,6 +4,8 @@ import morse.core.sensor
 from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data, add_property
 from morse.sensors.magnetometer import MagnetoDriver
+from morse.helpers.velocity import linear_velocities, angular_velocities
+from copy import copy
 
 """
 Important note:
@@ -71,12 +73,7 @@ class IMU(morse.core.sensor.Sensor):
             self.robot_w = self.robot_parent.bge_object.localAngularVelocity
             self.robot_vel = self.robot_parent.bge_object.worldLinearVelocity
         else:
-            # reference to sensor position
-            self.pos = self.bge_object.worldPosition
-            # previous position
-            self.pp = self.pos.copy()
-            # previous attitude euler angles as vector
-            self.patt = mathutils.Vector(self.position_3d.euler)
+            self.pp = copy(self.position_3d)
 
         # previous linear velocity
         self.plv = mathutils.Vector((0.0, 0.0, 0.0))
@@ -109,9 +106,8 @@ class IMU(morse.core.sensor.Sensor):
         Simulate angular velocity and linear acceleration measurements via simple differences.
         """
         # linear and angular velocities
-        lin_vel = (self.pos - self.pp) * self.frequency
-        att = mathutils.Vector(self.position_3d.euler)
-        ang_vel = (att - self.patt) * self.frequency
+        lin_vel = linear_velocities(self.pp, self.position_3d, 1 / self.frequency)
+        ang_vel = angular_velocities(self.pp, self.position_3d, 1 / self.frequency)
 
         # linear acceleration in imu frame
         dv_imu = self.rot_i2w.transposed() * (lin_vel - self.plv) * self.frequency
@@ -120,8 +116,8 @@ class IMU(morse.core.sensor.Sensor):
         accel_meas = dv_imu + self.rot_i2w.transposed() * self.gravity
 
         # save current position and attitude for next step
-        self.pp = self.pos.copy()
-        self.patt = att
+        self.pp = copy(self.position_3d)
+
         # save velocity for next step
         self.plv = lin_vel
         self.pav = ang_vel
