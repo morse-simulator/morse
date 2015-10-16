@@ -89,6 +89,8 @@ class Attitude(morse.core.sensor.Sensor):
         else:
             rates = self.sim_attitude_simple()
 
+        logger.info("rates %s %s" % (self._type, rates))
+
         # Store the important data
         self.local_data['rotation'] = self.position_3d.euler
         self.local_data['angular_velocity'] = rates
