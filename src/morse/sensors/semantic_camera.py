@@ -2,7 +2,6 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 
 import morse.sensors.camera
-import morse.helpers.colors
 
 from morse.helpers import passive_objects
 from morse.helpers.components import add_data, add_property
