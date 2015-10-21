@@ -1,9 +1,11 @@
-language: c
+sudo: required
+dist: trusty
+
+language: generic
 
 before_install:
- - sudo add-apt-repository ppa:irie/blender -y
  - sudo apt-get update -qq
- - sudo apt-get install -qq cmake blender python3.4-dev libgl1-mesa-dev libsdl1.2debian xvfb
+ - sudo apt-get install -qq cmake blender python3.4-dev python3-numpy libgl1-mesa-dev libsdl1.2debian xvfb
 
 script: "time ./.travis.bash"
 
