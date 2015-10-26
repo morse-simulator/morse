@@ -17,6 +17,7 @@ import time
 from morse.core import blenderapi
 from morse.helpers.statistics import Stats
 
+
 class BestEffortStrategy:
     def __init__ (self):
         self.time = time.time()
@@ -27,10 +28,19 @@ class BestEffortStrategy:
         self._last_time = 0.0
         self._nb_frame = 0
 
+        scene = blenderapi.scene()
+        for obj in scene.objects:
+            if obj.name == '__morse_dt_analyser':
+                self._morse_dt_analyser = obj
+
+        self._prepare_compute_dt()
+
         logger.info('Morse configured in Best Effort Mode')
 
     def update (self):
-        self.time = time.time()
+        self._dt = self._morse_dt_analyser.worldPosition[0] - self.px
+        self.time += self._dt
+        self._prepare_compute_dt()
         self._update_statistics()
 
     def name(self):
@@ -39,6 +49,10 @@ class BestEffortStrategy:
     @property
     def mean(self):
         return self._stat_jitter.mean
+
+    def _prepare_compute_dt(self):
+        self.px = self._morse_dt_analyser.worldPosition[0]
+        self._morse_dt_analyser.setLinearVelocity([1.0, 0.0, 0.0], True)
 
     def statistics(self):
         return {
