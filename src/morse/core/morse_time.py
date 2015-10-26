@@ -17,6 +17,7 @@ import time
 from morse.core import blenderapi
 from morse.helpers.statistics import Stats
 
+
 class BestEffortStrategy:
     def __init__ (self):
         self.time = time.time()
@@ -27,10 +28,31 @@ class BestEffortStrategy:
         self._last_time = 0.0
         self._nb_frame = 0
 
+        scene = blenderapi.scene()
+        for obj in scene.objects:
+            if obj.name == '__morse_dt_analyser':
+                self._morse_dt_analyser = obj
+
+        self._prepare_compute_dt()
+
         logger.info('Morse configured in Best Effort Mode')
 
     def update (self):
-        self.time = time.time()
+        """
+        The exact physical time elapsed between two logic call is hard
+        to guess. In the nominal case, it is easy, as long as you have
+        one logical step per render step. In other case, it depends on 
+        logic_max_step, physics_max_step, and "complex" internal logic.
+
+        So, instead of guessing it, observe it. Assuming the physical engine
+        is perfect, put a solid at one meter by sec on x axis, and observe
+        its displacement between two frame. We have:
+            dx = vx * dt
+        where vw = 1.0. So we have dx = dt.
+        """
+        self._dt = self._morse_dt_analyser.worldPosition[0] - self.px
+        self.time += self._dt
+        self._prepare_compute_dt()
         self._update_statistics()
 
     def name(self):
@@ -39,6 +61,10 @@ class BestEffortStrategy:
     @property
     def mean(self):
         return self._stat_jitter.mean
+
+    def _prepare_compute_dt(self):
+        self.px = self._morse_dt_analyser.worldPosition[0]
+        self._morse_dt_analyser.setLinearVelocity([1.0, 0.0, 0.0], True)
 
     def statistics(self):
         return {
