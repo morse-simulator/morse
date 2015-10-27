@@ -597,7 +597,8 @@ class Morse(object):
                 self.simulator_service.publish(raw)
                 # if self.is_up() and response_callback.condition.wait(timeout):
                 # XXX Python 3.2.2 is_up() returns False when connecting...
-                if response_callback.condition.wait(timeout):
+                response_callback.condition.wait(timeout)
+                if response_callback.response:
                     return rpc_get_result(response_callback.response)
         finally:
             self.simulator_service.unsubscribe(response_callback.callback)
