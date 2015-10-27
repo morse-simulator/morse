@@ -510,7 +510,7 @@ class Morse(object):
         # Handle robots created in loop. Basically, consider robot where
         # name match the pattern 'robot_XXX' and puts them in a list
         # called 'robots', allowing to iterate easily on them
-        robot_names = self.robots.copy()
+        robot_names = self.robots[:]
         robot_names.sort()
         while robot_names:
             name = robot_names.pop(0)
