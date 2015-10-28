@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data, add_property
+from morse.helpers.coordinates import CoordinateConverter
 from morse.helpers.velocity import angular_velocities
 from copy import copy
 
@@ -23,6 +24,11 @@ class Attitude(morse.core.sensor.Sensor):
              'rotation of the sensor, in radian')
     add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>",
              'rates in the sensors axis x, y, z axes (in radian . sec ^ -1)')
+    add_property('_use_angle_against_north', 'False', 'UseAngleAgainstNorth', 'bool',
+                 "If set to true, return the absolute yaw against North. The whole "
+                 "geodetic coordinates (longitude, latitude, altitude, angle_against_north)"
+                 " must be configured. Otherwise, return the yaw against the Blender "
+                 "coordinates")
     add_property('_type', 'Automatic', 'ComputationMode', 'string',
                  "Kind of computation, can be one of ['Velocity', 'Position']. "
                  "Only robot with dynamic and Velocity control can choose Velocity "
@@ -58,7 +64,8 @@ class Attitude(morse.core.sensor.Sensor):
             # previous attitude euler angles as vector
             self.pp = copy(self.position_3d)
 
-        # previous angular velocity
+        if self._use_angle_against_north:
+            self._coord_converter = CoordinateConverter.instance()
 
         # imu2body will transform a vector from imu frame to body frame
         self.imu2body = self.sensor_to_robot_position_3d()
@@ -91,4 +98,7 @@ class Attitude(morse.core.sensor.Sensor):
 
         # Store the important data
         self.local_data['rotation'] = self.position_3d.euler
+        if self._use_angle_against_north:
+            self.local_data['rotation'][2] = \
+            self._coord_converter.angle_against_north(self.position_3d.euler)
         self.local_data['angular_velocity'] = rates
