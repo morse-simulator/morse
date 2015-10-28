@@ -33,7 +33,8 @@ class MagnetoDriver(object):
 
     def compute(self, pose):
         pos = numpy.matrix(pose.translation)
-        pos_lla = self._coord_conv.ltp_to_geodetic(pos)
+        pos_ltp = self._coord_conv.blender_to_ltp(pos)
+        pos_lla = self._coord_conv.ltp_to_geodetic(pos_ltp)
         (decl, incl, f, h, x, y, z) = self._mag.compute(
                                  degrees(pos_lla[0, 0]),
                                  degrees(pos_lla[0, 1]),

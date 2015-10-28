@@ -37,7 +37,8 @@ class CoordinatesToGeodetic(Geodeticmodifier):
                     self.data['y'],
                     self.data['z']
                     ])
-            xt = self.converter.ltp_to_geodetic(xe)
+            xt = self.converter.ltp_to_geodetic(
+                    self.converter.blender_to_ltp(xe))
 
             logger.debug("%s => %s" % (xe, xt))
 
@@ -58,7 +59,8 @@ class CoordinatesFromGeodetic(Geodeticmodifier):
                     radians(self.data['y']),
                     self.data['z']
                     ])
-            xt = self.converter.geodetic_to_ltp(xe)
+            xt = self.converter.ltp_to_blender(
+                    self.converter.geodetic_to_ltp(xe))
 
             logger.debug("%s => %s" % (xe, xt))
 

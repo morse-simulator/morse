@@ -1,6 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from math import sqrt, cos, sin, tan, atan, radians, degrees
+from math import sqrt, cos, sin, tan, atan, radians, degrees, pi
 from morse.core import blenderapi
+from morse.helpers.morse_math import normalise_angle
 import numpy
 
 class CoordinateConverter:
@@ -113,3 +114,13 @@ class CoordinateConverter:
         cc = h * cos_lat + self.R * cos(lat_surface)
         lat_geoc = atan(s1 / cc)
         return degrees(lat_geoc)
+
+    def blender_to_ltp(self, xt):
+        return xt
+
+    def ltp_to_blender(self, xt):
+        return xt
+
+    def angle_against_north(self, orientation):
+        return pi / 2 - orientation[2]
+
