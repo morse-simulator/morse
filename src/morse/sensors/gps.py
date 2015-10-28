@@ -128,7 +128,7 @@ class GPS(morse.core.sensor.Sensor):
     add_data('altitude', 0.0, "double",
              'altitude in m a.s.l.', level = ["raw", "extended"])
     add_data('velocity', [0.0, 0.0, 0.0], "vec3<float>",
-             'Instantaneous speed in X, Y, Z, in meter sec^-1', level = ["raw", "extended"])
+             'Instantaneous speed along East, North, Up in meter sec^-1', level = ["raw", "extended"])
     add_data('date', 0000000, "DDMMYY",
              'current date in DDMMYY-format', level = "extended")
     add_data('time', 000000, "HHMMSS",
@@ -177,19 +177,9 @@ class RawGPS(GPS):
         # Call the constructor of the parent class
         GPS.__init__(self, obj, parent)
         
-        ##copied from accelerometer
-        # Variables to store the previous position
-        self.ppx = 0.0
-        self.ppy = 0.0
-        self.ppz = 0.0
-        # Variables to store the previous velocity
-        self.pvx = 0.0
-        self.pvy = 0.0
-        self.pvz = 0.0
-        # Make a new reference to the sensor position
-        self.p = self.bge_object.position
-        self.v = [0.0, 0.0, 0.0] # Velocity
-        self.pv = [0.0, 0.0, 0.0] # Previous Velocity
+        # Variables to store the previous LTP position
+        self.pltp = None
+        self.v = [0.0, 0.0, 0.0]
 
         self.coord_converter = CoordinateConverter.instance()
     
@@ -210,33 +200,13 @@ class RawGPS(GPS):
           http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
         """
 
-        ####
-        #Speed
-        ####
-        ##copied from accelerometer
-        # Compute the difference in positions with the previous loop
-        self.dx = self.p[0] - self.ppx
-        self.dy = self.p[1] - self.ppy
-        self.dz = self.p[2] - self.ppz
-
-        # Store the position in this instant
-        self.ppx = self.p[0]
-        self.ppy = self.p[1]
-        self.ppz = self.p[2]
-
-        # Scale the speeds to the time used by Blender
-        self.v[0] = self.dx * self.frequency
-        self.v[1] = self.dy * self.frequency
-        self.v[2] = self.dz * self.frequency
-
-        # Update the data for the velocity
-        self.pvx = self.v[0]
-        self.pvy = self.v[1]
-        self.pvz = self.v[2]
-
         #current position
         xt = numpy.matrix(self.position_3d.translation)
         ltp = self.coord_converter.blender_to_ltp(xt)
+        if self.pltp is not None:
+            v = (ltp - self.pltp) * self.frequency
+            self.v = [v[0, 0], v[0, 1], v[0, 2]]
+        self.pltp = ltp
         gps_coords = self.coord_converter.ltp_to_geodetic(ltp)
 
         #compose message as close as possible to a GPS-standardprotocol
