@@ -17,7 +17,7 @@ class CoordinateConverter:
 
     _instance = None
     
-    def __init__(self, latitude, longitude, altitude):
+    def __init__(self, latitude, longitude, altitude, angle_east_blender_x):
         P = [radians(longitude), radians(latitude), altitude]
         self.origin_ecef = self.geodetic_to_ecef(numpy.matrix(P))
         _rot = \
@@ -26,6 +26,13 @@ class CoordinateConverter:
            [cos(P[1]) * cos(P[0]), cos(P[1]) * sin(P[0]), sin(P[1])]]
         self._rot_ltp_ecef = numpy.matrix(_rot)
         self._rot_ecef_ltp = self._rot_ltp_ecef.T
+        _rot_east_x = \
+         [[cos(angle_east_blender_x), -sin(angle_east_blender_x), 0],
+          [sin(angle_east_blender_x), cos(angle_east_blender_x),  0],
+          [0, 0, 1]]
+        self._angle_east = angle_east_blender_x
+        self._rot_blender_ltp = numpy.matrix(_rot_east_x )
+        self._rot_ltp_blender = self._rot_blender_ltp.T
 
     @staticmethod
     def instance():
@@ -35,10 +42,16 @@ class CoordinateConverter:
                 latitude = ssr["latitude"]
                 longitude = ssr["longitude"]
                 altitude = ssr["altitude"]
+                try:
+                    angle_against_east = radians(ssr["angle_against_north"]) - pi / 2
+                except KeyError as e:
+                    angle_against_east = 0.0
                 CoordinateConverter._instance = \
-                    CoordinateConverter(latitude, longitude, altitude)
+                    CoordinateConverter(latitude, longitude, altitude, 
+                                        angle_against_east)
             except KeyError as e:
                 logger.error("Missing environment parameter %s\n", e)
+
         return CoordinateConverter._instance
 
     def geodetic_to_ecef(self, P):
@@ -116,11 +129,11 @@ class CoordinateConverter:
         return degrees(lat_geoc)
 
     def blender_to_ltp(self, xt):
-        return xt
+        return xt * self._rot_blender_ltp
 
-    def ltp_to_blender(self, xt):
-        return xt
+    def ltp_to_blender(self,  xt):
+        return xt * self._rot_ltp_blender
 
     def angle_against_north(self, orientation):
-        return pi / 2 - orientation[2]
+        return pi / 2 - (orientation[2] - self._angle_east)
 

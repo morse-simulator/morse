@@ -27,6 +27,10 @@ class GPS(morse.core.sensor.Sensor):
             - **longitude** in degrees (double) of Blender origin
             - **latitude** in degrees (double) of Blender origin
             - **altitude** in m  of the Blender origin
+            - optionnaly **angle_against_north** in degrees is the angle
+              between geographic north and the blender X axis.
+              **angle_against_north** is positive when the blender X-axis is
+              east of true north, and negative when it is to the west.
 
     Conversion of Geodetic coordinates into ECEF-r, LTP into ECEF-r and vice versa
     ------------------------------------------------------------------------------
