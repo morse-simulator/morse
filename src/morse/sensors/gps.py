@@ -236,7 +236,8 @@ class RawGPS(GPS):
 
         #current position
         xt = numpy.matrix(self.position_3d.translation)
-        gps_coords = self.coord_converter.ltp_to_geodetic(xt)
+        ltp = self.coord_converter.blender_to_ltp(xt)
+        gps_coords = self.coord_converter.ltp_to_geodetic(ltp)
 
         #compose message as close as possible to a GPS-standardprotocol
         self.local_data['longitude'] = math.degrees(gps_coords[0, 0])
@@ -268,8 +269,12 @@ class ExtendedGPS(RawGPS):
         current_time = time.gmtime(blenderapi.persistantstorage().time.time)
         date = time.strftime("%d%m%y", current_time)
         time_h_m_s = time.strftime("%H%M%S", current_time)
-        heading = (2*math.pi - math.atan2(self.dy, self.dx) + math.pi/2)%(2*math.pi)
+        if abs(self.v[0]) < 1e-6 and abs(self.v[1]) < 1e-6:
+            # Not observable if we do not move
+            self.local_data['heading'] = float("inf")
+        else:
+            heading = self.coord_converter.angle_against_north(self.position_3d.euler)
+            self.local_data['heading'] = math.degrees(heading)
         self.local_data['date'] = date
         self.local_data['time'] = time_h_m_s   
-        self.local_data['heading'] = math.degrees(heading)
 

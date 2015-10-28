@@ -36,7 +36,6 @@ class GPSTest(MorseTestCase):
         robot.append(teleport)
         teleport.add_stream('socket')
 
-
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
         env.properties(longitude = 43.6, latitude = 1.4333, altitude = 135.0)

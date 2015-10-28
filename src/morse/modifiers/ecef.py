@@ -24,7 +24,6 @@ class ECEFmodifier(AbstractModifier):
 
     def initialize(self):
         self.converter = CoordinateConverter.instance()
-        self.method = None
 
     def modify(self):
         try:
@@ -48,11 +47,15 @@ class CoordinatesToECEF(ECEFmodifier):
     """
     def initialize(self):
         ECEFmodifier.initialize(self)
-        self.method = self.converter.ltp_to_ecef
+
+    def method(self, xt):
+        return self.converter.ltp_to_ecef(self.converter.blender_to_ltp(xt))
 
 class CoordinatesFromECEF(ECEFmodifier):
     """ Converts from UTM coordinates to Blender coordinates.
     """
     def initialize(self):
         ECEFmodifier.initialize(self)
-        self.method = self.converter.ecef_to_ltp
+
+    def method(self, xt):
+        return self.converter.blender_to_ltp(self.converter.ecef_to_ltp(xt))
