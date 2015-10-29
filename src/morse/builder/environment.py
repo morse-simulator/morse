@@ -380,6 +380,7 @@ class Environment(AbstractComponent):
         cube_obj = bpymorse.get_object(_dt_name)
         cube_obj.game.physics_type = 'DYNAMIC'
         cube_obj.hide_render = True
+        cube_obj.game.lock_location_z = True
 
         self._created = True
         # in case we are in edit mode, do not exit on error with CLI

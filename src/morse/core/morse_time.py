@@ -38,6 +38,18 @@ class BestEffortStrategy:
         logger.info('Morse configured in Best Effort Mode')
 
     def update (self):
+        """
+        The exact physical time elapsed between two logic call is hard
+        to guess. In the nominal case, it is easy, as long as you have
+        one logical step per render step. In other case, it depends on 
+        logic_max_step, physics_max_step, and "complex" internal logic.
+
+        So, instead of guessing it, observe it. Assuming the physical engine
+        is perfect, put a solid at one meter by sec on x axis, and observe
+        its displacement between two frame. We have:
+            dx = vx * dt
+        where vw = 1.0. So we have dx = dt.
+        """
         self._dt = self._morse_dt_analyser.worldPosition[0] - self.px
         self.time += self._dt
         self._prepare_compute_dt()
