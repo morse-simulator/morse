@@ -319,4 +319,11 @@ class KukaLWR(Armature):
         Armature.__init__(self, name, model_name = "kuka_lwr")
         self.create_ik_targets(["kuka_7"])
 
+class Drag(ActuatorCreator):
+    _classpath = "morse.actuators.drag.Drag"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+        self.mark_unexportable()
+
 # end morse.builder.actuators
