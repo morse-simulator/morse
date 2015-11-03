@@ -8,14 +8,16 @@ from morse.helpers.components import add_data, add_property
 
 class RotorcraftAttitude(morse.core.actuator.Actuator):
     """
-    This actuator reads roll,pitch, yaw rate and thrust commands as e.g.
-    used to manually control a quadrotor via RC or by higher level
-    control loops. This controller is meant to be used by quadrotors and
-    similar flying robots with Rigid Body physics in blender. It is a
-    simple PD-controller which applies torques to the robot to change
-    and control the attitude. The yaw-rate input is integrated to yield
-    an absolute yaw setpoint for the controller. Thrust is directly
-    applied as force in z-direction of the robot.
+    This actuator reads roll,pitch, yaw rate (or yaw, depending the
+    control mode) and thrust commands as e.g.  used to manually control
+    a quadrotor via RC or by higher level control loops. This controller
+    is meant to be used by quadrotors and similar flying robots with
+    Rigid Body physics in blender. It is a simple PD-controller which
+    applies torques to the robot to change and control the attitude. In
+    YawRateControl, the yaw-rate input is integrated to yield an
+    absolute yaw setpoint for the controller, otherwise yaw is
+    considered directly as the order. Thrust is directly applied as
+    force in z-direction of the robot.
 
     .. note:: Angle are given in aerospace North East Down convention (NED)
     """
@@ -25,7 +27,8 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
     
     add_data('roll', 0.0, 'float', "roll angle in radians")
     add_data('pitch', 0.0, 'float', "pitch angle in radians")
-    add_data('yaw', 0.0, 'float', "yaw angle in radians")
+    add_data('yaw', 0.0, 'float', "If YawRateControl yaw rate in radians/sec,"
+                                  " otherwise yaw angle in radian")
     add_data('thrust', 0.0, 'float', "collective thrust: 0 .. 1 (= 0 .. 100%)")
 
     add_property('_rp_pgain', 100.0, 'RollPitchPgain', 'float',
@@ -37,6 +40,8 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
     add_property('_yaw_dgain', 4.0, 'YawDgain', 'float',
                  'derivative gain for yaw control')
     add_property('_thrust_factor', 40.0, 'ThrustFactor', 'float',
+                 'multiplication factor for applied thrust force in N')
+    add_property('_yaw_rate_control', True, 'YawRateControl', 'bool',
                  'multiplication factor for applied thrust force in N')
 
     def __init__(self, obj, parent=None):
@@ -68,13 +73,16 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
         robot = self.robot_parent
 
         if self.local_data['thrust'] > 0:
-            # yaw_rate and yaw_setpoint in NED
-            self.yaw_setpoint += self.local_data['yaw'] / self.frequency
-            # wrap angle
-            self.yaw_setpoint = normalise_angle(self.yaw_setpoint)
+            if self._yaw_rate_control:
+                # yaw_rate and yaw_setpoint in NED
+                self.yaw_setpoint += self.local_data['yaw'] / self.frequency
+                # wrap angle
+                self.yaw_setpoint = normalise_angle(self.yaw_setpoint)
 
-            logger.debug("yaw setpoint: %.3f", degrees(self.yaw_setpoint))
-            logger.debug("yaw current: %.3f   setpoint: %.3f", -degrees(self.position_3d.yaw), degrees(self.yaw_setpoint))
+                logger.debug("yaw setpoint: %.3f", degrees(self.yaw_setpoint))
+                logger.debug("yaw current: %.3f   setpoint: %.3f", -degrees(self.position_3d.yaw), degrees(self.yaw_setpoint))
+            else:
+                self.yaw_setpoint = normalise_angle(self.local_data['yaw'])
 
             # Compute errors
             #
