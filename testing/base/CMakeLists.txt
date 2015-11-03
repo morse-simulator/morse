@@ -34,6 +34,7 @@ add_morse_test(collision_testing)
 # Actuator
 
 add_morse_test(armature_testing)
+add_morse_test(external_force_testing)
 add_morse_test(destination_testing)
 add_morse_test(gripper_testing)
 add_morse_test(light_testing)
