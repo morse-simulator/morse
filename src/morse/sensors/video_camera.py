@@ -36,8 +36,8 @@ class VideoCamera(morse.sensors.camera.Camera):
     - **alpha_u** == **alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose
       here that **cam_width** > **cam_height**. If not, then use **cam_height** in
       the formula)
-    - **u_0** = **cam_height** / 2
-    - **v_0** = **cam_width** / 2
+    - **u_0** = **cam_width** / 2
+    - **v_0** = **cam_height** / 2
 
     See also :doc:`../sensors/camera` for generic informations about Morse cameras.
     """
