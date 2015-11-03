@@ -326,4 +326,7 @@ class Drag(ActuatorCreator):
         ActuatorCreator.__init__(self, name)
         self.mark_unexportable()
 
+class ExternalForce(ActuatorCreator):
+    _classpath = "morse.actuators.external_force.ExternalForce"
+
 # end morse.builder.actuators
