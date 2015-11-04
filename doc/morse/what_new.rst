@@ -39,6 +39,16 @@ Actuators
   (``rotate_joints`` and ``translate_joints``) that let the user set the
   rotations/translations of only a subset of the armature's joints by providing
   a custom mapping ``{joint name: value}``.
+- The :doc:`user/actuators/rotorcraft_attitude` has been extended to be able
+  to control the rotorcraft in yaw rate or in absolute yaw (using the
+  ``YawRateControl`` property).
+- Introduce the :doc:`user/actuators/drag` "actuator" which allows to simulate
+  the drag (air resistance) force opposite to the move of the robot. It allows
+  more realistic simulation (if desired).
+- Introduce the :doc:`user/actuators/external_force` actuator which allows to 
+  apply external force (typically force from the environment such as wind) to
+  a robot. It has the same interface than :doc:`user/actuators/force_torque`,
+  but apply force in the global frame.
 
 
 Sensors
