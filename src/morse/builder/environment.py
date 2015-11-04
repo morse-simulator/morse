@@ -129,8 +129,17 @@ class Environment(AbstractComponent):
         If a name is already set (with 'obj.name=...'), it is used as it,
         and only the hierarchy is added to the name.
         """
+        import inspect
+        frame = inspect.currentframe()
+        frames = inspect.getouterframes(frame)
+        size_stack = len(frames)
+        for i in range(size_stack - 1, 0, -1):
+            if frames[i][3] == '__init__':
+                break
+        del frame
+        del frames
 
-        AbstractComponent.close_context(3)
+        AbstractComponent.close_context(i + 2)
 
         for component in AbstractComponent.components:
             if isinstance(component, Robot):
