@@ -45,7 +45,10 @@ Sensors
 +++++++
 
 - **longitude**, **latitude** and **altitude** are not anymore properties of
-  :doc:`user/sensors/gps` but must be set at the environment level.
+  :doc:`user/sensors/gps` but must be set at the environment level. Moreover,
+  the property **angle_against_north** allows to configure the angle between
+  the X-axis and the geographic north (must be positive when the Blender
+  X-axis is East of true North, negative if is West of true North).
 - Introduce the new high-level sensor :doc:`user/sensors/attitude`, allowing
   to compute the attitude of the system
 - Introduce the sensor :doc:`user/sensors/magnetometer`, which allows to
