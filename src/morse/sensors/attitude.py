@@ -100,5 +100,5 @@ class Attitude(morse.core.sensor.Sensor):
         self.local_data['rotation'] = self.position_3d.euler
         if self._use_angle_against_north:
             self.local_data['rotation'][2] = \
-            self._coord_converter.angle_against_north(self.position_3d.euler)
+            self._coord_converter.angle_against_geographic_north(self.position_3d.euler)
         self.local_data['angular_velocity'] = rates

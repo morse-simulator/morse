@@ -247,7 +247,7 @@ class ExtendedGPS(RawGPS):
             # Not observable if we do not move
             self.local_data['heading'] = float("inf")
         else:
-            heading = self.coord_converter.angle_against_north(self.position_3d.euler)
+            heading = self.coord_converter.angle_against_geographic_north(self.position_3d.euler)
             self.local_data['heading'] = math.degrees(heading)
         self.local_data['date'] = date
         self.local_data['time'] = time_h_m_s   
