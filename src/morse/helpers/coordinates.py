@@ -134,6 +134,6 @@ class CoordinateConverter:
     def ltp_to_blender(self,  xt):
         return xt * self._rot_ltp_blender
 
-    def angle_against_north(self, orientation):
+    def angle_against_geographic_north(self, orientation):
         return pi / 2 - (orientation[2] - self._angle_east)
 
