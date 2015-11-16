@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from math import sqrt, cos, sin, tan, atan, radians, degrees, pi
+from math import sqrt, cos, sin, tan, atan, atan2, radians, degrees, pi
 from morse.core import blenderapi
 from morse.helpers.morse_math import normalise_angle
 import numpy
@@ -7,9 +7,8 @@ import numpy
 class CoordinateConverter:
     """ Allow to convert coordinates from Geodetic to LTP to ECEF-r ... """
     A  = 6378137.0 # WGS-84 Earth semi-major axis
-    B = 6356752.3142 # WGS-84 Second semi-major axis
+    F = 1 / 298.257223563 # WGS-84 flattening
     ECC = 8.181919191e-2 # first excentricity
-    F = (A - B) / A # Flatenning
     R = 6378137.0 # Radius of Earth at equator
     A2 = A**2
     ECC2 = ECC**2
@@ -127,6 +126,29 @@ class CoordinateConverter:
         cc = h * cos_lat + self.R * cos(lat_surface)
         lat_geoc = atan(s1 / cc)
         return degrees(lat_geoc)
+
+    def geocentric_to_ecef(self, xt):
+        longitude = xt[0, 0]
+        latitude = xt[0, 1]
+        radius =  xt[0, 2]
+        clon = cos(longitude)
+        slon = sin(longitude)
+        clat = cos(latitude)
+        slat = sin(latitude)
+        return radius * numpy.matrix([
+            clat * clon,
+            clat * slon,
+            slat])
+
+    def ecef_to_geocentric(self, xt):
+        x = xt[0, 0]
+        y = xt[0, 1]
+        z = xt[0, 2]
+        longitude = atan2(y, x)
+        nxy = sqrt(x * x + y * y)
+        latitude = atan2(z, nxy);
+        radius = sqrt(x * x + y * y + z * z)
+        return numpy.matrix([longitude, latitude, radius])
 
     def blender_to_ltp(self, xt):
         return xt * self._rot_blender_ltp

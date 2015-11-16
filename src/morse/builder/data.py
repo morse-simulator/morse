@@ -74,6 +74,13 @@ MORSE_MODIFIER_DICT = {
         'morse.actuators.waypoint.Waypoint': "morse.modifiers.geodetic.CoordinatesFromGeodetic",
         'morse.actuators.teleport.Teleport': "morse.modifiers.geodetic.CoordinatesFromGeodetic",
     },
+    'geocentric': {
+        'morse.sensors.pose.Pose': "morse.modifiers.geocentric.CoordinatesToGeocentric",
+        'morse.sensors.gps.GPS': "morse.modifiers.geocentric.CoordinatesToGeocentric",
+        'morse.actuators.destination.Destination': "morse.modifiers.geocentric.CoordinatesFromGeocentric",
+        'morse.actuators.waypoint.Waypoint': "morse.modifiers.geocentric.CoordinatesFromGeocentric",
+        'morse.actuators.teleport.Teleport': "morse.modifiers.geocentric.CoordinatesFromGeocentric",
+    },
     'UTM' : {
         'morse.sensors.pose.Pose': "morse.modifiers.utm.CoordinatesToUTM",
         'morse.sensors.gps.GPS': "morse.modifiers.utm.CoordinatesToUTM",
