@@ -294,6 +294,7 @@ class HLADatastreamManager(DatastreamManager):
             sync_register = kwargs.get("sync_register", False)
             time_sync = kwargs.get("time_sync", False)
             timestep = kwargs.get("timestep", 1.0 / blenderapi.getfrequency())
+            self.stop_time = kwargs.get("stop_time", float("inf"))
 
             self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
                                     federation, sync_point, sync_register, time_sync, timestep)
@@ -317,3 +318,5 @@ class HLADatastreamManager(DatastreamManager):
 
     def action(self):
         self.node.morse_ambassador.advance_time()
+        if self.stop_time < self.node.morse_ambassador.logical_time:
+            blenderapi.persistantstorage().serviceObjectDict["simulation"].quit()
