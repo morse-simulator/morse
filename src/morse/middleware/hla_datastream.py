@@ -63,6 +63,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
             self._rtia.tick()
 
     def register_object(self, handle, name):
+        logger.debug("REGISTER object %s => %s" % (name, handle))
         obj = self._rtia.registerObjectInstance(handle, name)
         self.registred_objects[name] = obj
         return obj
@@ -162,14 +163,18 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         logger.debug("attributeOwnershipAcquisitionNotification %s %s %s" % (obj, obj_name, attr))
 
     def reflectAttributeValues(self, obj, attributes, tag, order, transport, time=None, retraction=None):
-        obj_name = self._rtia.getObjectInstanceName(obj)
-        logger.debug("reflectAttributeValues for %s %s" % (obj_name, attributes))
-        attr_entry = self._attributes_values.get(obj_name, None)
-        if not attr_entry:
-            return
-        for key in attr_entry.keys():
-            if key in attributes:
-                attr_entry[key] = attributes[key]
+        try:
+            obj_name = self._rtia.getObjectInstanceName(obj)
+            logger.debug("reflectAttributeValues for %s %s" % (obj_name, attributes))
+            attr_entry = self._attributes_values.get(obj_name, None)
+            if not attr_entry:
+                return
+            for key in attr_entry.keys():
+                if key in attributes:
+                    attr_entry[key] = attributes[key]
+        except rti.ObjectNotKnown:
+            logger.warning("Receive an RAV for object %s but it is not anymore "
+                           "in the simulation" % obj)
 
     def timeConstrainedEnabled(self, time):
         logger.debug("Constrained at time %f" % time)
