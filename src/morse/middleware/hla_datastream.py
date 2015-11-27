@@ -292,12 +292,13 @@ class HLADatastreamManager(DatastreamManager):
             federation = kwargs["federation"]
             sync_point = kwargs.get("sync_point", None)
             sync_register = kwargs.get("sync_register", False)
-            time_sync = kwargs.get("time_sync", False)
+            self.time_sync = kwargs.get("time_sync", False)
             timestep = kwargs.get("timestep", 1.0 / blenderapi.getfrequency())
             self.stop_time = kwargs.get("stop_time", float("inf"))
 
             self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
-                                    federation, sync_point, sync_register, time_sync, timestep)
+                                    federation, sync_point, sync_register, 
+                                    self.time_sync, timestep)
         except KeyError as error:
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")
@@ -318,5 +319,6 @@ class HLADatastreamManager(DatastreamManager):
 
     def action(self):
         self.node.morse_ambassador.advance_time()
-        if self.stop_time < self.node.morse_ambassador.logical_time:
+        if self.time_sync and \
+            self.stop_time < self.node.morse_ambassador.logical_time:
             blenderapi.persistantstorage().serviceObjectDict["simulation"].quit()

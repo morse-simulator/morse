@@ -68,7 +68,8 @@ The following variables permit to configure HLA behaviour:
   game loop. **Do not set it if you use physics from Blender (or sensors
   relying on Blender time !**.
 - **stop_time**: Optional : a float indicating when the simulation must stop.
-  If not configured, the simulation continues infinitely.
+  If not configured, the simulation continues infinitely. It only works if
+  **time_sync** is enabled.
 
 
 You need to pass them to the ``configure_stream_manager`` method in the
