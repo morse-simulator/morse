@@ -4,6 +4,7 @@ from morse.core import mathutils, blenderapi
 from morse.helpers.components import add_data, add_property
 from morse.helpers.coordinates import CoordinateConverter
 from morse.helpers.velocity import angular_velocities
+from morse.helpers.morse_math import normalise_angle
 from copy import copy
 
 class Attitude(morse.core.sensor.Sensor):
@@ -100,5 +101,6 @@ class Attitude(morse.core.sensor.Sensor):
         self.local_data['rotation'] = self.position_3d.euler
         if self._use_angle_against_north:
             self.local_data['rotation'][2] = \
-            self._coord_converter.angle_against_geographic_north(self.position_3d.euler)
+            normalise_angle(
+                - self._coord_converter.angle_against_geographic_north(self.position_3d.euler))
         self.local_data['angular_velocity'] = rates

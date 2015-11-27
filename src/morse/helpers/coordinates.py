@@ -157,5 +157,9 @@ class CoordinateConverter:
         return xt * self._rot_ltp_blender
 
     def angle_against_geographic_north(self, orientation):
+        """
+        Return the angle against geographic_north, as returned by a compass, i.e.
+        between [0, 2 pi], clockwise
+        """
         return pi / 2 - (orientation[2] - self._angle_east)
 
