@@ -5,6 +5,7 @@ from math import degrees
 from morse.core.mathutils import Vector
 from morse.helpers.morse_math import normalise_angle
 from morse.helpers.components import add_data, add_property
+from morse.helpers.coordinates import CoordinateConverter
 
 class RotorcraftAttitude(morse.core.actuator.Actuator):
     """
@@ -42,7 +43,13 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
     add_property('_thrust_factor', 40.0, 'ThrustFactor', 'float',
                  'multiplication factor for applied thrust force in N')
     add_property('_yaw_rate_control', True, 'YawRateControl', 'bool',
-                 'multiplication factor for applied thrust force in N')
+                 'If set to true, the robot is controlled in YawRate, otherwise '
+                 'yaw is considered directly as the order')
+    add_property('_use_angle_against_north', 'False', 'UseAngleAgainstNorth', 'bool',
+                 "If set to true, return the absolute yaw against North. The whole "
+                 "geodetic coordinates (longitude, latitude, altitude, angle_against_north)"
+                 " must be configured. Otherwise, return the yaw against the Blender "
+                 "coordinates")
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -63,6 +70,9 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
         self.yaw_setpoint = 0.0
 
         self.prev_err = Vector((0.0, 0.0, 0.0))
+
+        if self._use_angle_against_north:
+            self._coord_converter = CoordinateConverter.instance()
 
         logger.info("Component initialized, runs at %.2f Hz ", self.frequency)
 
@@ -90,7 +100,11 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
             # current angles to horizontal plane in NED
             roll = self.position_3d.roll
             pitch = -self.position_3d.pitch
-            yaw = -self.position_3d.yaw
+            if self._use_angle_against_north:
+                yaw = - normalise_angle(-self._coord_converter.angle_against_geographic_north(self.position_3d.euler))
+            else:
+                yaw = -self.position_3d.yaw
+
             roll_err = self.local_data['roll'] - roll
             pitch_err = self.local_data['pitch'] - pitch
             # wrapped yaw error
