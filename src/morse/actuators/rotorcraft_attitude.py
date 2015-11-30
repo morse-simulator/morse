@@ -42,6 +42,11 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
                  'derivative gain for yaw control')
     add_property('_thrust_factor', 40.0, 'ThrustFactor', 'float',
                  'multiplication factor for applied thrust force in N')
+    add_property('_linear_thrust', True, 'LinearThrust', 'bool',
+                 'If set to true, the force thrust is linear w.r.t. the collective '
+                 'thrust input (Force = ThrustFactor*thrust). '
+                 'If set to false, the force thrust is quadratic w.r.t. the '
+                 'collective thrust input (Force = ThrustFactor*thrust^2)')
     add_property('_yaw_rate_control', True, 'YawRateControl', 'bool',
                  'If set to true, the robot is controlled in YawRate, otherwise '
                  'yaw is considered directly as the order')
@@ -127,8 +132,11 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
             # convert to blender frame and scale with thrust
             torque = Vector((t[0], -t[1], -t[2])) * self.local_data['thrust']
             logger.debug("applied torques: (% .3f % .3f % .3f)", torque[0], torque[1], torque[2])
-
-            force = Vector((0.0, 0.0, self.local_data['thrust'] * self._thrust_factor))
+            if self._linear_thrust:
+                force = Vector((0.0, 0.0, self.local_data['thrust'] * self._thrust_factor))
+            else:
+                force = Vector((0.0, 0.0, self.local_data['thrust'] * self.local_data['thrust'] \
+                 * self._thrust_factor))
             logger.debug("applied thrust force: %.3f", force[2])
 
             self.prev_err = err.copy()
