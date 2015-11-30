@@ -67,6 +67,8 @@ The following variables permit to configure HLA behaviour:
 - **timestep**: Optional : a float indicating how much logic time elapse each
   game loop. **Do not set it if you use physics from Blender (or sensors
   relying on Blender time !**.
+- **lookahead** Optional : a flow indicating the lookahead used by HLA. The
+  default value is **timestep**.
 - **stop_time**: Optional : a float indicating when the simulation must stop.
   If not configured, the simulation continues infinitely. It only works if
   **time_sync** is enabled.

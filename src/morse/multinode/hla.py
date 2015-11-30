@@ -93,7 +93,7 @@ class HLANode(SimulationNodeClass):
         os.environ["CERTI_TCP_PORT"] = str(self.port)
 
         self.node = HLABaseNode(MorseAmbassador, self.fom, self.node_name,
-                self.federation, None, self.time_sync, 1.0)
+                self.federation, None, None, self.time_sync, 1.0, 1.0)
 
         self.node.morse_ambassador.initialize()
 

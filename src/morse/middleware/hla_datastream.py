@@ -6,7 +6,7 @@ from morse.core.datastream import DatastreamManager
 from morse.core import blenderapi
 
 class MorseBaseAmbassador(rti.FederateAmbassador):
-    def __init__(self, rtia, federation, time_sync, timestep):
+    def __init__(self, rtia, federation, time_sync, timestep, lookahead):
         self._rtia = rtia
         self.federation = federation
         self._time_sync = time_sync
@@ -24,6 +24,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self._attributes_values = {} # obj_name -> { attr_handle -> value }
 
         self.timestep = timestep
+        self.lookahead = lookahead
 
     def initialize_time_regulation(self):
         self.logical_time = self._rtia.queryFederateTime()
@@ -33,7 +34,6 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
         self.constraint_enabled = False
         self.regulator_enabled = False
         self.granted = False
-        self.lookahead = self.timestep
 
         self._rtia.enableTimeConstrained()
         self._rtia.enableTimeRegulation(self.logical_time, self.timestep)
@@ -200,7 +200,7 @@ class MorseBaseAmbassador(rti.FederateAmbassador):
 
 class HLABaseNode:
     def __init__(self, klass, fom, node_name, federation, sync_point, 
-                       sync_register, time_sync, timestep):
+                       sync_register, time_sync, timestep, lookahead):
         """
         Initializes HLA (connection to RTIg, FOM file, publish robots...)
         """
@@ -228,7 +228,7 @@ class HLABaseNode:
                     "Please check the '.fed' file syntax.")
                 raise
             logger.debug("Creating MorseAmbassador...")
-            self.morse_ambassador = klass(self.rtia, federation, time_sync, timestep)
+            self.morse_ambassador = klass(self.rtia, federation, time_sync, timestep, lookahead)
             try:
                 self.rtia.joinFederationExecution(node_name, 
                     federation, self.morse_ambassador)
@@ -294,11 +294,12 @@ class HLADatastreamManager(DatastreamManager):
             sync_register = kwargs.get("sync_register", False)
             self.time_sync = kwargs.get("time_sync", False)
             timestep = kwargs.get("timestep", 1.0 / blenderapi.getfrequency())
+            lookahead = kwargs.get("lookahead", timestep)
             self.stop_time = kwargs.get("stop_time", float("inf"))
 
             self.node = HLABaseNode(MorseBaseAmbassador, fom, node_name,
                                     federation, sync_point, sync_register, 
-                                    self.time_sync, timestep)
+                                    self.time_sync, timestep, lookahead)
         except KeyError as error:
             logger.error("One of [fom, name, federation] attribute is not configured: "
                          "Cannot create HLADatastreamManager")
