@@ -41,7 +41,10 @@ Actuators
   a custom mapping ``{joint name: value}``.
 - The :doc:`user/actuators/rotorcraft_attitude` has been extended to be able
   to control the rotorcraft in yaw rate or in absolute yaw (using the
-  ``YawRateControl`` property).
+  ``YawRateControl`` property). If it is the case, you can configure if you
+  want to configure to use ``normal yaw`` or ``north`` using the
+  property ``UseAngleAgainstNorth``. Last, you can configure the actuator to
+  use a linear or quadratic thrust model using ``LinearThrust``.
 - Introduce the :doc:`user/actuators/drag` "actuator" which allows to simulate
   the drag (air resistance) force opposite to the move of the robot. It allows
   more realistic simulation (if desired).
