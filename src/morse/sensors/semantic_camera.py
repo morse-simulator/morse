@@ -183,7 +183,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
                     logger.debug("transform = {t}".format(t=transformation))
                 else:
                     transformation = Transformation3d(obj)
-                obj_dict = {'name': obj.name,
+                obj_dict = {'name': obj.get('Label', obj.name),
                             'description': obj.get('Description', ''),
                             'type': obj.get('Type', ''),
                             'position': transformation.translation,
