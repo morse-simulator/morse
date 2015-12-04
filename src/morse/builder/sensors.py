@@ -565,3 +565,15 @@ class RadarAltimeter(SensorCreator):
 
 class Airspeed(SensorCreator):
     _classpath = "morse.sensors.airspeed.Airspeed"
+
+class AircraftHILSensor(CompoundSensor):
+    "A compound sensor used to test autopilot"
+    def __init__(self, name=None):
+        CompoundSensor.__init__(self, [], name)
+        self.imu = IMU('imu')
+        self.barometer = Barometer('barometer')
+        self.airspeed = Airspeed('airspeed')
+        self.thermometer = Thermometer('thermomether')
+        self.sensors = [self.imu, self.barometer, self.airspeed, self.thermometer]
+        for sensor in self.sensors:
+            self.append(sensor)
