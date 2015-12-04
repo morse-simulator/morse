@@ -562,3 +562,6 @@ class Collision(SensorCreator):
 
 class RadarAltimeter(SensorCreator):
     _classpath = "morse.sensors.radar_altimeter.RadarAltimeter"
+
+class Airspeed(SensorCreator):
+    _classpath = "morse.sensors.airspeed.Airspeed"
