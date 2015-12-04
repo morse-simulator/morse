@@ -203,6 +203,7 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
+            "mavlink": 'morse.middleware.mavlink.gps_hil.GPSHILSensor',
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
