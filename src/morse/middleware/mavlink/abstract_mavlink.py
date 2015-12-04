@@ -1,6 +1,5 @@
 from morse.middleware import AbstractDatastream
 import logging; logger = logging.getLogger("morse." + __name__)
-from pymavlink.mavutil import mavlink_connection 
 
 class classproperty(object):
     def __init__(self, fget):
@@ -13,17 +12,17 @@ class MavlinkDatastream(AbstractDatastream):
     def _type_url(cls):
         return "https://pixhawk.ethz.ch/mavlink/#" + cls._type_name
 
+    def setup(self, conn_manager, mav, boot_time):
+        self._conn = conn_manager.get(self.kwargs['device'])
+        self._boot_time = boot_time
+        self._mav = mav
+
 class MavlinkSensor(MavlinkDatastream):
     def initialize(self):
         self._mavlink_client = None
         self._boot_time = 0
         self._mav = None
         self._msg = None
-
-    def setup(self, conn_manager, mav, boot_time):
-        self._mavlink_client = conn_manager.get(self.kwargs['device'])
-        self._boot_time = boot_time
-        self._mav = mav
 
     """
     common messages requires time in ms since boot, so provide an helper
@@ -41,13 +40,12 @@ class MavlinkSensor(MavlinkDatastream):
 
     def default(self, ci = 'unused'):
         self.make_msg()
-        self._mavlink_client.write(self._msg.pack(self._mav))
+        self._conn.write(self._msg.pack(self._mav))
 
 class MavlinkActuator(MavlinkDatastream):
     def initialize(self):
-        self._conn = mavlink_connection(self.kwargs['device'])
+        self._conn = None
         self._msg = None
-
 
     def process_msg(self):
         """
