@@ -444,6 +444,7 @@ MORSE_DATASTREAM_DICT = {
             "default": {
                 "socket": INTERFACE_DEFAULT_IN,
                 "yarp": INTERFACE_DEFAULT_IN,
+                "mavlink": "morse.middleware.mavlink.hil_controls.HILControls",
                 }
             },
     "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
