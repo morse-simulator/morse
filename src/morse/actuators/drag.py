@@ -2,6 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.core.mathutils import Vector
 from morse.helpers.components import add_property
+from math import copysign
 
 class Drag(morse.core.actuator.Actuator):
     """
@@ -53,7 +54,7 @@ class Drag(morse.core.actuator.Actuator):
         drag = Vector((0.0, 0.0, 0.0))
         for i in range(3):
             v = self.robot_vel[i]
-            drag[i] = - v * v * self._drag_coeff[i]
+            drag[i] = - copysign(1.0, v) * v  * v * self._drag_coeff[i]
 
         logger.debug("Drag force %s" % drag)
         robot.bge_object.applyForce(drag, True)
