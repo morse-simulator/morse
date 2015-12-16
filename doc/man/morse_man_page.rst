@@ -96,6 +96,10 @@ Environment
 			variable to determine the name of the node. If it does not exist,
 			rely on the name of the host.
 
+:MORSE_SILENT_PYTHON_CHECK:
+			Do not restrict matching system vs. Blender Python version. Use at
+			your own risk.
+
 Morse relying on Python to execute itself, the run of Morse is influenced by
 all Python variables, in particular **PYTHONPATH**. See :manpage:`python(1)` for
 details.
