@@ -275,6 +275,24 @@ class Supervision(AbstractObject):
         return position
 
     @service
+    def get_camarafp_position(self):
+        """ Get the CamaraFP (MORSE' environment camera) world position. [x, y, z]
+
+        :returns: The camera's world position. [x, y, z].
+        """
+        blender_object = get_obj_by_name('CameraFP')
+        return blender_object.worldPosition
+
+    @service
+    def get_camarafp_transform(self):
+        """ Get the CamaraFP (MORSE' environment camera) world space transform matrix.
+
+        :returns: The camera's world space transform matrix. 4x4 Matrix [[float]]
+        """
+        blender_object = get_obj_by_name('CameraFP')
+        return blender_object.worldTransform
+
+    @service
     def set_camarafp_transform(self, transform):
         """ Set the CamaraFP (MORSE' environment camera) world space transform matrix.
 
