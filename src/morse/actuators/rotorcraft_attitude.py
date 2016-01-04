@@ -50,7 +50,7 @@ class RotorcraftAttitude(morse.core.actuator.Actuator):
     add_property('_yaw_rate_control', True, 'YawRateControl', 'bool',
                  'If set to true, the robot is controlled in YawRate, otherwise '
                  'yaw is considered directly as the order')
-    add_property('_use_angle_against_north', 'False', 'UseAngleAgainstNorth', 'bool',
+    add_property('_use_angle_against_north', False, 'UseAngleAgainstNorth', 'bool',
                  "If set to true, return the absolute yaw against North. The whole "
                  "geodetic coordinates (longitude, latitude, altitude, angle_against_north)"
                  " must be configured. Otherwise, return the yaw against the Blender "

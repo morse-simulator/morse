@@ -25,7 +25,7 @@ class Attitude(morse.core.sensor.Sensor):
              'rotation of the sensor, in radian')
     add_data('angular_velocity', [0.0, 0.0, 0.0], "vec3<float>",
              'rates in the sensors axis x, y, z axes (in radian . sec ^ -1)')
-    add_property('_use_angle_against_north', 'False', 'UseAngleAgainstNorth', 'bool',
+    add_property('_use_angle_against_north', False, 'UseAngleAgainstNorth', 'bool',
                  "If set to true, return the absolute yaw against North. The whole "
                  "geodetic coordinates (longitude, latitude, altitude, angle_against_north)"
                  " must be configured. Otherwise, return the yaw against the Blender "
