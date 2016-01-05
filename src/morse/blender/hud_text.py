@@ -9,7 +9,6 @@ def change_text(contr):
   * A, D :      move main camera left/right
   * R, F :      move main camera up/down
   * Left CTRL:  hold to aim main camera with mouse
-  * F5 :        toggle camera/human movement
   * F7 :        move CameraFP to robots
   * F8 :        reset position of CameraFP
   * F9 :        switch camera view

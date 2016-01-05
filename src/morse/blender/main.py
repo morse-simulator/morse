@@ -707,11 +707,6 @@ def switch_camera(contr):
         next_camera = cameras[index]
         scene.active_camera = next_camera
         logger.info("Showing view from camera: '%s'" % next_camera.name)
-        # Disable mouse cursor for Human camera
-        if next_camera.name == "Human_Camera":
-            morse.core.blenderapi.mousepointer(visible = False)
-        else:
-            morse.core.blenderapi.mousepointer(visible = True)
         # Update the index for the next call
         index = (index + 1) % len(cameras)
         persistantstorage.current_camera_index = index

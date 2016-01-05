@@ -7,6 +7,7 @@ class HumanPoster(PocolibsDataStreamOutput):
     _type_url = "http://trac.laas.fr/git/spark-genom/tree/sparkStruct.h#n226"
 
     def initialize(self):
+        raise NotImplementedError("This Pocolibs exporter has not been updated for the current human avatar, and won't work")
         PocolibsDataStreamOutput.initialize(self, STRUCT_SPARK_CONFIGURATION)
 
         self.obj = STRUCT_SPARK_CONFIGURATION()
