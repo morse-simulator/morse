@@ -48,8 +48,7 @@ class Human(GroundRobot):
     IK_TARGETS = ["head", "wrist_L", "wrist_R", "foot_L", "foot_R"]
 
     def __init__(self, filename='human_rig', name = None):
-        """ The 'style' parameter is only to switch to the mocap_human file.
-
+        """
         :param filename: the human model. Default: 'human_rig'
         """
         GroundRobot.__init__(self, filename, name)
@@ -58,7 +57,7 @@ class Human(GroundRobot):
         self.skeleton = None
 
         try:
-            self.skeleton = Armature(armature_name = "HumanSkeleton")
+            self.skeleton = Armature(armature_name = self.get_child("HumanSkeleton").name)
             self.append(self.skeleton)
         except KeyError:
             logger.error("Could not find the human armature! (I was looking " +\
