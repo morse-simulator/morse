@@ -1,3 +1,3 @@
-add_morse_test(human_pose)
+add_morse_test(human_base)
+add_morse_test(human_ik)
 add_morse_test(multiple_human)
-add_morse_test(human_service)

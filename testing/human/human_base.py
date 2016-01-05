@@ -28,13 +28,13 @@ class HumanBaseTest(MorseTestCase):
         #motion = Keyboard()
 
         motion = Waypoint()
-        motion.properties(ControlType= 'Position')
+        motion.properties(ControlType='Position')
         motion.add_stream('socket')
         motion.add_service('socket')
 
         human.append(motion)
 
-        env = Environment('empty', fastmode = True)
+        env = Environment('empty', fastmode=True)
         env.add_service('socket')
 
     def test_movement(self):
@@ -45,6 +45,10 @@ class HumanBaseTest(MorseTestCase):
 
             #Read the start position, it must be (0.0, 0.0, 0.0)
             pose_stream = morse.human.pose
+            pose = pose_stream.get()
+            self.assertAlmostEqual(pose['x'], 0.0, delta=0.1)
+            self.assertAlmostEqual(pose['y'], 0.0, delta=0.1)
+
 
             # waypoint controller socket
             human_ctl = morse.human.motion
