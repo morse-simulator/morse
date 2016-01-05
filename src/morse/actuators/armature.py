@@ -883,6 +883,7 @@ class Armature(morse.core.actuator.Actuator):
 
         if posReached and oriReached:
             self.completed(status.SUCCESS, None)
+            del self._ik_targets_destinations[target]
 
     def default_action(self):
         """
@@ -897,7 +898,7 @@ class Armature(morse.core.actuator.Actuator):
 
         if self._ik_targets_destinations:
 
-            for k,v in self._ik_targets_destinations.items():
+            for k,v in list(self._ik_targets_destinations.items()): # make a copy, as we may delete targets if they are reached
                 self._exec_ik_move(k,*v)
 
             # if we move IK targets, we do not want to do anything else.
