@@ -5,12 +5,23 @@ from morse.core.services import service
 from morse.helpers.components import add_property
 
 class Human(GraspingRobot):
-    """ Class definition for the human as a robot entity.
+    """
+    MORSE allows the simulation of humans: you can add a human model in your
+    scene, you can control it like any other robot (including from the keyboard
+    or via external scripts), and export from your simulation various data like
+    the full body pose.
 
-    Sub class of GraspingRobot.
+    The human is managed by MORSE as a regular robot, which means it can have
+    sensors and actuators attached to it.
+
+    For a general introduction to human-robot interaction simulation with MORSE,
+    check the :doc:`HRI main page <../../hri>`.
+
     """
 
-    add_property('_animations', True, 'Animations', 'bool', "if "
+    _name = "Human avatar"
+
+    add_property('_animations', True, 'Animations', 'bool', "If "
             "true (default), will enable various animations like"
             " the walk cycle animation.")
 

@@ -1,14 +1,12 @@
 Human-Robot Interaction simulation
 ==================================
 
-.. image:: ../media/hri_human.jpg
+.. image:: ../media/human/hri.jpg
    :align: center
    :width: 400px
 
-You can add a human model to MORSE to smimulation human-robot interaction.
-
-The human can be controlled directly in the simulator by an user (in first person
-perspective), or remotely, via remote services.
+MORSE lets you add human avatars to your scene to simulation human-robot
+interaction scenarios.
 
 .. vimeo:: 27862605
    :width: 400px 
@@ -21,19 +19,6 @@ Check the :doc:`HRI tutorial <user/beginner_tutorials/hri_tutorial>`.
 Adding a human
 --------------
 
-The :doc:`human documentation <user/others/human>` page gives all details regarding
-addition and control of a human in a simulation.
-
-Objects manipulation
---------------------
-
-The human model can interact with objects in the simulation.
-
-.. image:: ../media/hri_manipulation_mode.jpg
-   :align: center
-   :width: 400px
-
-The objects you want to manipulate need to be marked so. See
-:doc:`objects<user/others/passive_objects>` documentation for
-details.
+The :doc:`human documentation <user/robots/human>` page gives details regarding
+how to add and control a human in a simulation.
 
