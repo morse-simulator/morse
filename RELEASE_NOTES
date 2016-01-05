@@ -13,6 +13,12 @@ Components
 Robots
 ++++++
 
+- the human avatar in MORSE has been entierly rewritten. The new human model is
+  much simpler, yet much nicer (in particular, it features mesh skinning for
+  good looking animations).  On the downside, the interactive mode is gone for
+  now. Depending on interest, it can be revived in a future version (possibly
+  through external scripts, for added flexibility).
+
 Actuators
 +++++++++
 
