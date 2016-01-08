@@ -167,6 +167,18 @@ class Environment(AbstractComponent):
 
                 renametree(component, [])
 
+    def _configure_default_interface(self, component, interface):
+        for child in component.children:
+            if child.is_morseable():
+                if not Configuration.has_datastream_configuration(child, interface) and \
+                   child.is_exportable():
+                    child.add_stream(interface)
+
+                if not Configuration.has_service_configuration(child, interface):
+                    child.add_service(interface)
+
+                self._configure_default_interface(child, interface)
+
     def _handle_default_interface(self):
         """
         Handle the semantic of default interface.
@@ -177,15 +189,7 @@ class Environment(AbstractComponent):
         """
         for component in AbstractComponent.components:
             if isinstance(component, Robot) and component.default_interface:
-                for child in component.children:
-                    if child.is_morseable():
-                        if not Configuration.has_datastream_configuration(
-                                child, component.default_interface) and \
-                            child.is_exportable():
-                            child.add_stream(component.default_interface)
-                        if not Configuration.has_service_configuration(
-                                child, component.default_interface):
-                            child.add_service(component.default_interface)
+                self._configure_default_interface(component, component.default_interface)
 
 
 
