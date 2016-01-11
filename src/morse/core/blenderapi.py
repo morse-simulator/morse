@@ -298,3 +298,21 @@ def gravity():
             return mathutils.Vector((0.0, 0.0, -9.81))
     else:
         return None
+
+def clock_time():
+    if not fake:
+        if hasattr(bge.logic, 'getClockTime'):
+            return bge.logic.getClockTime()
+        else:
+            return -1
+    else:
+        return -1
+
+def frame_time():
+    if not fake:
+        if hasattr(bge.logic, 'getFrameTime'):
+            return bge.logic.getFrameTime()
+        else:
+            return -1
+    else:
+        return -1

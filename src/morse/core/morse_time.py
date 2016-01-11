@@ -24,6 +24,7 @@ class BestEffortStrategy:
 
         self._stat_jitter = Stats()
         self._stat_nb_frame = Stats()
+        self._time_offset = time.time()
         self._time_frame = 0.0
         self._last_time = 0.0
         self._nb_frame = 0
@@ -49,10 +50,18 @@ class BestEffortStrategy:
         its displacement between two frame. We have:
             dx = vx * dt
         where vw = 1.0. So we have dx = dt.
+
+        Modern version of Blender (>= 2.77) provides the method
+        bge.logic.getFrameTime() so if this information is available,
+        just use it.
         """
-        self._dt = self._morse_dt_analyser.worldPosition[0] - self.px
-        self.time += self._dt
-        self._prepare_compute_dt()
+        current_time = blenderapi.frame_time()
+        if current_time == -1:
+            self._dt = self._morse_dt_analyser.worldPosition[0] - self.px
+            self.time += self._dt
+            self._prepare_compute_dt()
+        else:
+            self.time = current_time + self._time_offset
         self._update_statistics()
 
     def name(self):
@@ -95,6 +104,7 @@ class BestEffortStrategy:
 class FixedSimulationStepStrategy:
     def __init__ (self):
         self.time = time.time()
+        self._time_offset = time.time()
         self._incr = 1.0 / blenderapi.getfrequency()
 
         self._stat_jitter = Stats()
@@ -105,7 +115,11 @@ class FixedSimulationStepStrategy:
                     (self._incr, blenderapi.getfrequency()))
 
     def update (self):
-        self.time = self.time + self._incr
+        current_time = blenderapi.frame_time()
+        if current_time == -1:
+            self.time = self.time + self._incr
+        else:
+            self.time = current_time + self._time_offset
         self._update_statistics()
 
     def name (self):
