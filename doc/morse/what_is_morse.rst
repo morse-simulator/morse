@@ -96,7 +96,7 @@ Performances
 MORSE is able to handle dozen of robots in a single environment as long as
 cameras are not simulated (because of bandwidth limitation).
 
-For instance, MORSE running on an Opteron quadcore 2GHz, in headless mode (i.e.
+For instance, MORSE running on an Opteron quadcore 2GHz, in :doc:`headless mode <headless>` (i.e.
 **without 3D acceleration**), can simulate:
 
 - one robot with a pose sensor at 250Hz
