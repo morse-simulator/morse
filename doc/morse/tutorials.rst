@@ -94,6 +94,7 @@ with specific requirements.
     user/advanced_tutorials/request_tutorial
     user/advanced_tutorials/noise_ghost_tutorial
     user/advanced_tutorials/hla_tutorial
+    user/screencast
     
 Multi-node tutorials
 --------------------
@@ -118,7 +119,3 @@ its functionality.
 
     user/blender_tutorials/basic_blender
     user/blender_tutorials/advanced_blender
-
-
-
-
