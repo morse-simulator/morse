@@ -8,6 +8,7 @@ class TimeServices(AbstractObject):
     def __init__(self):
         AbstractObject.__init__(self)
         self.time = blenderapi.persistantstorage().time
+        self.ref_fps = blenderapi.getfrequency()
         self._alarm_time = None
 
     def name(self):
@@ -37,6 +38,7 @@ class TimeServices(AbstractObject):
         Modify the time_scale parameter, allowing to slowing or
         accelerating time
         """
+        blenderapi.setfrequency(self.ref_fps * value)
         return blenderapi.set_time_scale(value)
 
     @async_service
