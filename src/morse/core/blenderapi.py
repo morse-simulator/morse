@@ -248,6 +248,12 @@ def getfrequency():
     else:
         return 0
 
+def setfrequency(value):
+    if not fake:
+        return bge.logic.setLogicTicRate(value)
+    else:
+        return 0
+
 class PersistantStorage(dict):
         __getattr__= dict.__getitem__
         __setattr__= dict.__setitem__

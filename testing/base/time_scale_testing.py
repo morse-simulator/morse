@@ -63,7 +63,7 @@ class TimeScale_Test(MorseMoveTestCase):
             simu.deactivate('robot.teleport')
 
             precision = 0.125
-            time_precision = 0.02
+            time_precision = 0.04
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
@@ -85,13 +85,13 @@ class TimeScale_Test(MorseMoveTestCase):
             real_time_elapsed = self.send_speed(v_w, simu, 1.0, 0.0, 2.0)
             self.assertAlmostEqualPositionThenFix(simu, [2.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
             self.assertAlmostEqual(real_time_elapsed, 4.0, delta=time_precision)
-            self.assertEqual(self._count, 241)
+            self.assertEqual(self._count, 121)
 
             simu.rpc('time', 'set_time_scale', 2.0)
             real_time_elapsed = self.send_speed(v_w, simu, -1.0, 0.0, 2.0)
             self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)
             self.assertAlmostEqual(real_time_elapsed, 1.0, delta=precision)
-            self.assertEqual(self._count, 61)
+            self.assertEqual(self._count, 121)
 
 
 ########################## Run these tests ##########################
