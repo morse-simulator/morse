@@ -31,6 +31,14 @@ class TimeServices(AbstractObject):
         """
         return self.time.statistics()
 
+    @service
+    def set_time_scale(self, value):
+        """
+        Modify the time_scale parameter, allowing to slowing or
+        accelerating time
+        """
+        return blenderapi.set_time_scale(value)
+
     @async_service
     def sleep(self, time):
         """

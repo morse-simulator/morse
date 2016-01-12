@@ -23,6 +23,8 @@ else:
     fake = True
 
 from morse.core import mathutils
+import logging
+logger = logging.getLogger("morse." + __name__)
 
 UPARROWKEY = None
 DOWNARROWKEY = None
@@ -316,3 +318,12 @@ def frame_time():
             return -1
     else:
         return -1
+
+def set_time_scale(time_scale):
+    if not fake:
+        if hasattr(bge.logic, 'setTimeScale'):
+            bge.logic.setTimeScale(time_scale)
+            return True
+        else:
+            logger.warning("setTimeScale requires at least Blender 2.77")
+    return False
