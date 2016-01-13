@@ -92,6 +92,14 @@ General
 - Introduce a binding for the Mavlink protocol  easing the interoperability of
   Morse with a lot of free autopilots / architectures.
 
+ROS
++++
+
+- Some ROS 'housekeeping' has been performed in this release, including
+  removing the need for rospkg (easier installation!), removing ROS interface
+  with the non-standard (and unused?) JointPositions message and removing
+  references roslib.load_manifest(), a memory of rosbuild-era.
+
 Builder API
 -----------
 
