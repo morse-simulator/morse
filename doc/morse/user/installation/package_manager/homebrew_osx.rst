@@ -91,14 +91,10 @@ To uninstall MORSE::
     brew uninstall morse-simulator
 
 
-ROS Installation Issues
------------------------
+ROS Installation
+----------------
 
 ROS for OSX can be installed from source using Homebrew with the 
 `instructions <http://www.ros.org/wiki/groovy/Installation/OSX/Homebrew/Source>`_.
 
-In addition to the instructions provided on the ROS website, a Python 3
-version of rospkg must be installed for MORSE to operate properly::
-
-    sudo pip3 install rospkg
-
+Once installed, ROS should work out-of-the-box in MORSE.

@@ -162,7 +162,7 @@ Middleware-specific notes
 +++++++++++++++++++++++++
 
 - :tag:`ros` Since MORSE runs with Python 3, you need to install the packages
-  ``python3-rospkg``, ``python3-catkin-tools`` and ``python3-yaml``.  If these
+  ``python3-catkin-tools`` and ``python3-yaml``.  If these
   packages are not available for your distribution, :doc:`check the manual
   instructions <installation/mw/ros>`.
 - :tag:`yarp` If needed, instructions to install YARP on your system are :doc:`available here <installation/mw/yarp>`.

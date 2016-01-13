@@ -5,7 +5,7 @@ ROS Installation Notes
 not work for you** (for instance, you are running on an older version of Ubuntu
 or Debian).
 
-If the packages ``python3-rospkg``, ``python3-catkin-tools`` and
+If the packages ``python3-catkin-tools`` and
 ``python3-yaml`` are available for your distribution, install them, and you
 should be done. Head to :doc:`the ROS + MORSE tutorial
 <../../../user/beginner_tutorials/ros_tutorial>`.
@@ -26,27 +26,9 @@ Otherwise, follow these steps to install them manually:
 
         sudo apt-get install python3-yaml
 
-   or get the sources from http://pyyaml.org and build it using python3::
+   or get it via ``pip``  the sources from http://pyyaml.org and build it using python3::
 
-        wget http://pyyaml.org/download/pyyaml/PyYAML-3.10.tar.gz
-        tar xvf PyYAML-3.10.tar.gz
-        cd PyYAML-3.10
-        sudo python3 setup.py install
-
-#. Install rospkg using Python 3::
-
-        sudo apt-get install python3-setuptools
-
-   or get from `sources <https://pypi.python.org/pypi/setuptools#unix-wget>`_::
-
-        wget https://bootstrap.pypa.io/ez_setup.py
-        sudo python3 ez_setup.py
-
-   then::
-
-        git clone git://github.com/ros/rospkg.git
-        cd rospkg
-        sudo python3 setup.py install
+        sudo pip3 install pyyaml
 
 #. Install catkin for Python 3 support::
 
