@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('geometry_msgs')
 import math
 from geometry_msgs.msg import Quaternion
 from morse.middleware.ros import ROSSubscriber, mathutils

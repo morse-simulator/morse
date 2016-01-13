@@ -1,4 +1,3 @@
-import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Point
 from morse.middleware.ros import ROSSubscriber
 

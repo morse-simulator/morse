@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('geometry_msgs')
 from geometry_msgs.msg import Pose, PoseStamped, PoseWithCovarianceStamped, Vector3, Quaternion
 from morse.middleware.ros import ROSPublisher, ROSPublisherTF, mathutils
 

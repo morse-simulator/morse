@@ -1,6 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import json
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('std_msgs')
 import rospy
 from std_msgs.msg import String
 from morse.middleware.ros import ROSPublisherTF

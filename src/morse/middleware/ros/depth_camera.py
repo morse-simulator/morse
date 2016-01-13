@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('sensor_msgs')
 from sensor_msgs.msg import PointCloud2, PointField
 from morse.middleware.ros import ROSPublisherTF
 

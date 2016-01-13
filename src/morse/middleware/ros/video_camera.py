@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('sensor_msgs'); roslib.load_manifest('rospy')
 import rospy
 from sensor_msgs.msg import Image, CameraInfo
 from morse.middleware.ros import ROSPublisher, ROSPublisherTF

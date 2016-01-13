@@ -1,4 +1,3 @@
-import roslib; roslib.load_manifest('std_msgs')
 from std_msgs.msg import Bool
 from morse.middleware.ros import ROSSubscriber
 

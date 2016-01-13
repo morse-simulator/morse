@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('sensor_msgs')
 import math
 import struct
 import itertools

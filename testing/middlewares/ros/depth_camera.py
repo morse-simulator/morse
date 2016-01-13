@@ -10,7 +10,6 @@ import struct
 from morse.testing.ros import RosTestCase
 from morse.testing.testing import testlogger
 
-import roslib
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2

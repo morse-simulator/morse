@@ -1,4 +1,3 @@
-import roslib; roslib.load_manifest('sensor_msgs')
 from sensor_msgs.msg import JointState
 from morse.middleware.ros import ROSPublisher
 

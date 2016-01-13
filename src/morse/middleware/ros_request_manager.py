@@ -8,7 +8,6 @@ from morse.core import status, services
 from morse.core.request_manager import RequestManager
 
 try:
-    import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('actionlib_msgs')
     import rospy
     import actionlib_msgs
 except ImportError as ie:

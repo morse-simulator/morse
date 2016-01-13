@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import roslib; roslib.load_manifest('rospy'); roslib.load_manifest('nav_msgs'); roslib.load_manifest('geometry_msgs')
 import rospy
 from geometry_msgs.msg import Vector3, Quaternion, Pose, Twist
 from nav_msgs.msg import Odometry
