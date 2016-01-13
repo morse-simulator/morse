@@ -46,9 +46,7 @@ import math
 
 import rospy
 
-from morse.middleware.ros.helpers import ros_add_to_syspath
-ros_add_to_syspath("pr2_controllers_msgs")
-from pr2_controllers_msgs.msg import *
+from control_msgs.msg import *
 
 from trajectory_msgs.msg import *
 import actionlib

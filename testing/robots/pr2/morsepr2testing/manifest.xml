@@ -9,7 +9,7 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://morse.openrobots.org</url>
-  <depend package="pr2_controllers_msgs"/>
+  <depend package="control_msgs"/>
 </package>
 
 

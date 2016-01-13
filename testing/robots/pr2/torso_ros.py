@@ -13,16 +13,16 @@ except ImportError:
     pass
 
 import sys
-
-import rospy
-from pr2_controllers_msgs.msg import *
 import time
 
-def getjoint(self, name):
-    
-    import rospy
-    from sensor_msgs.msg import JointState
-    
+import rospy
+from control_msgs.msg import SingleJointPositionAction, SingleJointPositionGoal
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from sensor_msgs.msg import JointState
+import actionlib
+
+def getjoint(name):
+
     data = rospy.wait_for_message("/pr2/joint_states", JointState)
     idx = data.name.index(name)
     return data.position[idx]
@@ -38,12 +38,10 @@ class PR2TorsoTest(RosTestCase):
         env.set_camera_rotation([1.0470, 0, 0.7854])
 
     def test_controller(self):
-        
-        from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
         topic = "/pr2/torso_controller/command"
 
-        rospy.init_node('test_pr2_torso_controller', log_level = rospy.DEBUG, disable_signals=True)
+        rospy.init_node('test_pr2_torso', log_level = rospy.DEBUG, disable_signals=True)
 
         rospy.loginfo("Preparing to publish on %s" % topic)
         ctl = rospy.Publisher(topic, JointTrajectory)
@@ -83,10 +81,9 @@ class PR2TorsoTest(RosTestCase):
 
     def test_action(self):
 
-        from pr2_controllers_msgs.msg import SingleJointPositionAction, SingleJointPositionGoal
 
         rospy.loginfo("Trying to move PR2 torso at action level.")
-        rospy.init_node('test_pr2_torso_action', log_level = rospy.DEBUG, disable_signals=True)
+        rospy.init_node('test_pr2_torso', log_level = rospy.DEBUG, disable_signals=True)
         client = actionlib.SimpleActionClient('torso_controller/position_joint_action', SingleJointPositionAction)
         self.assertTrue(client.wait_for_server(rospy.Duration(5)))
 
