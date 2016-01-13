@@ -51,7 +51,7 @@ def get_pose(self):
 
 class PosePublisher(ROSPublisher):
     """ Publish the position and orientation of the robot as
-    ROS geomeetry_msgs.Pose message.
+    ROS geometry_msgs.Pose message.
     """
     ros_class = Pose
 

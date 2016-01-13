@@ -20,8 +20,6 @@ import rospy
 import actionlib
 import nav_msgs.msg # do not conflict with morse builder
 
-from morse.middleware.ros.helpers import ros_add_to_syspath
-ros_add_to_syspath("move_base_msgs")
 from move_base_msgs.msg import *
 
 from geometry_msgs.msg import *

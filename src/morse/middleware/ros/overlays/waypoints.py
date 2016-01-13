@@ -5,8 +5,6 @@ from morse.middleware.ros_request_manager import ros_action
 from morse.core.overlay import MorseOverlay
 from morse.core import status
 
-from morse.middleware.ros.helpers import ros_add_to_syspath
-ros_add_to_syspath("move_base_msgs")
 from move_base_msgs.msg import *
 
 class WayPoint(MorseOverlay):
