@@ -82,6 +82,7 @@ CONFIGURE_FILE(
    ${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server.py
    )
 INSTALL(PROGRAMS
+	   ${CMAKE_CURRENT_SOURCE_DIR}/bin/morse_sync
        ${CMAKE_CURRENT_BINARY_DIR}/bin/morserun.py
        ${CMAKE_CURRENT_SOURCE_DIR}/bin/morse_inspector
        ${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server.py
@@ -103,6 +104,7 @@ CONFIGURE_FILE(
 INSTALL(PROGRAMS
 		${CMAKE_CURRENT_BINARY_DIR}/bin/morse
 		${CMAKE_CURRENT_BINARY_DIR}/bin/morseexec
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/morse_sync
 		${CMAKE_CURRENT_SOURCE_DIR}/bin/morse_inspector
 		${CMAKE_CURRENT_BINARY_DIR}/bin/multinode_server
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/bin

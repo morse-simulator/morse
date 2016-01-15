@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+import socket
+import time
+import argparse
+import sys
+
+class SyncSocket:
+    def __init__(self, timeout, host, port):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.dest = (host, port)
+        self.timeout = timeout
+
+    def connect(self):
+        begin = time.time()
+        connected = False
+        while not connected and (time.time() - begin < self.timeout):
+            try:
+                self.sock.connect(self.dest)
+                connected = True
+            except ConnectionRefusedError:
+                time.sleep(0.5)
+        return connected
+
+    def send(self):
+        self.sock.send(b'sync')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='MORSE syncer')
+
+    parser.add_argument('-p', '--period', help="period of synchronisation (in s)", type=float)
+    parser.add_argument('-t', '--timeout', default=10.0, help="connect timeout (in s)", type=float)
+    parser.add_argument('-H', '--host', default="localhost", help="MORSE socket sync addr")
+    parser.add_argument('-P', '--port', help="MORSE socket sync port", type=int)
+
+    args = parser.parse_args()
+
+    s = SyncSocket(args.timeout, args.host, args.port)
+    if not s.connect():
+        print("Failed to connect to (%s, %s)" % (args.host, args.port))
+        sys.exit()
+
+    while True:
+        s.send()
+        time.sleep(args.period)
