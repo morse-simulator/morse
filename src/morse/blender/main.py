@@ -623,6 +623,12 @@ def init_supervision_services():
     communication_service = Communication()
     time_service= TimeServices()
 
+    try:
+        time_scale = morse.core.blenderapi.getssr()['time_scale']
+        time_service.set_time_scale(time_scale)
+    except KeyError as e:
+        pass
+
     persistantstorage.serviceObjectDict[simulation_service.name()] = simulation_service
     persistantstorage.serviceObjectDict[communication_service.name()] = communication_service
     persistantstorage.serviceObjectDict[time_service.name()] = time_service
