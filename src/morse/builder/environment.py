@@ -525,6 +525,29 @@ class Environment(AbstractComponent):
 
         self.properties(time_management = strategy)
 
+    def set_time_scale(self, slowdown_by = None, accelerate_by = None):
+        """ Slow down or accelerate the simulation relative to real-time
+        (default behaviour: real-time simulation) by modifying the *time
+        scale* of the simulation.
+
+        :param slowndown_by: factor by which the simulation should be
+        slowed down, relative to real-time
+        :param accelerate_by: factor by which the simulation should be
+        accelerated, relative to real-time
+        You must pass only one of these options
+        """
+        if (not slowdown_by and not accelerate_by) or \
+           (slowdown_by and accelerate_by):
+            logger.error("You must call set_time_scale with exacltly one of "
+                         "the arguments \"slowdown_by\" or \"accelerate_by\"")
+            return
+
+        if slowdown_by:
+            self.properties(time_scale = 1.0 / slowdown_by)
+        else:
+            self.properties(time_scale = accelerate_by)
+
+
     def fullscreen(self, fullscreen=True):
         """ Run the simulation fullscreen
 
