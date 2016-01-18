@@ -38,6 +38,10 @@ class TimeServices(AbstractObject):
         Modify the time_scale parameter, allowing to slowing or
         accelerating time
         """
+        logger.info("Changing time scale to %f. Your simulation is now running"
+                    " %f times %s than real-time." % (
+                    value, value if value >= 1.0 else 1.0 / value,
+                           "faster" if value >= 1.0 else "slower"))
         blenderapi.setfrequency(self.ref_fps * value)
         return blenderapi.set_time_scale(value)
 
