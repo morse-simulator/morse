@@ -4,6 +4,13 @@ import socket
 import time
 import argparse
 import sys
+import threading
+import re
+
+quit = False
+# lock is used to protect the period modification
+lock = threading.Lock()
+period = -1.0
 
 class SyncSocket:
     def __init__(self, timeout, host, port):
@@ -25,6 +32,37 @@ class SyncSocket:
     def send(self):
         self.sock.send(b'sync')
 
+
+class InputThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self._set_period_pattern = re.compile("^set_period (\d+\.?\d*)")
+
+    def run(self):
+        global quit
+        while not quit:
+            text_in = input()
+            self._process(text_in)
+
+    def _process(self, text_in):
+        if text_in == "quit":
+            # unlocked access, but should be fine
+            global quit
+            quit = True
+            return
+
+        set_period_match = self._set_period_pattern.match(text_in)
+        if set_period_match:
+            new_period = float(set_period_match.group(1))
+            if new_period < 0.0:
+                print("Invalid period value %f" % new_period)
+                return
+
+            global lock
+            global period
+            with lock:
+                period = new_period
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MORSE syncer')
 
@@ -36,10 +74,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     s = SyncSocket(args.timeout, args.host, args.port)
+
+    input_thr = InputThread()
+    input_thr.start()
+
+    period = args.period
+
     if not s.connect():
         print("Failed to connect to (%s, %s)" % (args.host, args.port))
         sys.exit()
 
-    while True:
+    while not quit:
         s.send()
-        time.sleep(args.period)
+        with lock:
+            time.sleep(period)
+
+    input_thr.join()
