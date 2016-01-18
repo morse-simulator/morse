@@ -45,10 +45,10 @@ the following parameters:
 
 - **time_sync**: Optional: Enable or disable the time synchronisation
   mechanism. The default value is False
-- **sync_port**: Mandatory if **time_sync** is True. It is the port where the
-  simulator waits for the signal of synchronisation.
+- **sync_port**: Optional: It is the port where the simulator waits for the
+  signal of synchronisation. The default value is 6000.
 
-To enable time synchronisation using port 12000, you should do:
+To enable time synchronisation using the custom port 12000, you should do:
 
 .. code-block :: python
 
