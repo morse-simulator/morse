@@ -167,14 +167,10 @@ class SocketDatastreamManager(DatastreamManager):
         DatastreamManager.__init__(self, args, kwargs)
 
         self.time_sync = kwargs.get('time_sync', False)
-        self.sync_port = kwargs.get('sync_port', -1)
+        self.sync_port = kwargs.get('sync_port', 6000)
 
         if self.time_sync:
-            if self.sync_port == -1:
-                logger.error("time_sync is required, but sync_port is not configured")
-                raise MorseMiddlewareError("sync_port is not configured")
-            else:
-                self._init_trigger()
+            self._init_trigger()
 
         # port -> MorseSocketServ
         self._server_dict = {}

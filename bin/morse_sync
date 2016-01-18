@@ -69,7 +69,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--period', help="period of synchronisation (in s)", type=float)
     parser.add_argument('-t', '--timeout', default=10.0, help="connect timeout (in s)", type=float)
     parser.add_argument('-H', '--host', default="localhost", help="MORSE socket sync addr")
-    parser.add_argument('-P', '--port', help="MORSE socket sync port", type=int)
+    parser.add_argument('-P', '--port', default=6000, help="MORSE socket sync port", type=int)
 
     args = parser.parse_args()
 
