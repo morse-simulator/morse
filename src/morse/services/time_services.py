@@ -38,12 +38,18 @@ class TimeServices(AbstractObject):
         Modify the time_scale parameter, allowing to slowing or
         accelerating time
         """
-        logger.info("Changing time scale to %f. Your simulation is now running"
-                    " %f times %s than real-time." % (
-                    value, value if value >= 1.0 else 1.0 / value,
-                           "faster" if value >= 1.0 else "slower"))
-        blenderapi.setfrequency(self.ref_fps * value)
-        return blenderapi.set_time_scale(value)
+        success = blenderapi.set_time_scale(value)
+        if success:
+            logger.info("Changing time scale to %f. Your simulation is now running"
+                        " %f times %s than real-time." % (
+                        value, value if value >= 1.0 else 1.0 / value,
+                               "faster" if value >= 1.0 else "slower"))
+            new_fps = self.ref_fps * value
+            internal_syncer = blenderapi.persistantstorage().internal_syncer
+            if internal_syncer:
+                internal_syncer.set_period(1.0 / new_fps)
+            blenderapi.setfrequency(new_fps)
+        return success
 
     @async_service
     def sleep(self, time):
