@@ -41,8 +41,11 @@ class InputThread(threading.Thread):
     def run(self):
         global quit
         while not quit:
-            text_in = input()
-            self._process(text_in)
+            try:
+                text_in = input()
+                self._process(text_in)
+            except EOFError:
+                quit = True
 
     def _process(self, text_in):
         if text_in == "quit":
@@ -85,7 +88,10 @@ if __name__ == '__main__':
         sys.exit()
 
     while not quit:
-        s.send()
+        try:
+            s.send()
+        except (BrokenPipeError, ConnectionResetError):
+            quit = True
         with lock:
             time.sleep(period)
 
