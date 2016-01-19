@@ -547,6 +547,9 @@ class Environment(AbstractComponent):
         else:
             self.properties(time_scale = accelerate_by)
 
+    def use_internal_syncer(self):
+        self.properties(use_internal_syncer = True)
+        self.configure_stream_manager('socket', time_sync = True)
 
     def fullscreen(self, fullscreen=True):
         """ Run the simulation fullscreen

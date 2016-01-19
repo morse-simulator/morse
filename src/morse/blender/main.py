@@ -3,6 +3,7 @@ from morse.helpers.morse_logging import SECTION, ENDSECTION
 import sys
 import os
 import imp
+from subprocess import Popen, PIPE
 
 # Force the full import of blenderapi so python computes correctly all
 # values in its  namespace
@@ -522,6 +523,22 @@ def init_multinode():
     persistantstorage.node_instance = create_instance(classpath,
                                                       node_name, server_address, server_port)
 
+class MorseSyncProcess:
+    def __init__(self):
+        args = ['morse_sync', '-p', str(1.0/morse.core.blenderapi.getfrequency())]
+        socket_properties = component_config.stream_manager['morse.middleware.socket_datastream.SocketDatastreamManager']
+        if 'sync_port' in socket_properties:
+            args = args + ['-P', str(socket_properties['sync_port'])]
+        self.proc = Popen(args, stdin=PIPE)
+
+    def set_period(self, new_value):
+        msg = "set_period " + str(new_value) + "\n\n"
+        self.proc.stdin.write(bytes(msg, encoding='ascii'))
+        self.proc.stdin.flush()
+
+    def __del__(self):
+        self.proc.communicate(b"quit", timeout = None)
+
 def init(contr):
     """ General initialization of MORSE
 
@@ -547,8 +564,19 @@ def init(contr):
     init_ok = True
     init_ok = init_ok and create_dictionaries()
 
+    persistantstorage.internal_syncer = None
+
     logger.log(SECTION, 'SUPERVISION SERVICES INITIALIZATION')
     init_ok = init_ok and init_supervision_services()
+
+    # Make sure to start the internal syncer after initialization of
+    # time_scale (done in in init_supervision_services)
+    try:
+        use_ = morse.core.blenderapi.getssr()['use_internal_syncer']
+        if use_:
+            persistantstorage.internal_syncer = MorseSyncProcess()
+    except KeyError:
+        pass
 
     logger.log(SECTION, 'SCENE INITIALIZATION')
 
