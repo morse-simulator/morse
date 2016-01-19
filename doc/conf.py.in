@@ -216,4 +216,5 @@ man_pages = [("morse_man_page", "morse", "A robotics simulator based upon the Bl
              ("morse-add_man_page", "morse-add", "Adds a component to a MORSE simulation environment", "", 1),
              ("morse-rm_man_page", "morse-rm", "Removes a MORSE simulation environment", "", 1),
              ("morseexec_man_page", "morseexec", "Run a Python script with the default scene", "", 1),
+             ("morse_sync_man_page", "morse_sync", "Tool to synchronize the MORSE simulator", "", 1),
              ("multinode_server_man_page", "multinode_server", "Server program to synchronise several instances of MORSE", "", 1)]

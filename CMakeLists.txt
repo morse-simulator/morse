@@ -238,6 +238,7 @@ ELSE()
 					  ${SPHINX_MAN_OUTPUT}/morse-add.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-rm.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morseexec.1.gz 
+					  ${SPHINX_MAN_OUTPUT}/morse_sync.1.gz
 					  ${SPHINX_MAN_OUTPUT}/multinode_server.1.gz
 			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man/man1
 		)
