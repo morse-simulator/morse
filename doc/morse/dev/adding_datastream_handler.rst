@@ -140,7 +140,7 @@ Yarp middleware :tag:`yarp`
 Yarp middleware provide the
 :py:class:`morse.middleware.yarp_datastream.YarpPort` which provides basic
 encapsulation of the Yarp protocol. A specialized class
-:py:class:`morse.middleare.yarp_datastream.YarpPublisher` provides facilities
+:py:class:`morse.middleware.yarp_datastream.YarpPublisher` provides facilities
 to send content through a `Yarp::Bottle`. If you want to use such transport,
 you can override the method
 :py:meth:`morse.middleware.yarp_datastream.YarpPublisher.encode` to provide
@@ -195,7 +195,7 @@ Pocolibs middleware :tag:`pocolibs`
 Pocolibs middleware provides
 :py:class:`morse.middleware.pocolibs_datastream.PocolibsDataStreamOutput` for sensors,
 and :py:class:`morse.middleware.pocolibs_datastream.PocolibsDataStreamInput` for
-actuators which deals with the low-level details of pocolib. To write a custom
+actuators which deals with the low-level details of Pocolibs. To write a custom
 encoder, you need to subclass the correct class, and provides both overriding
 for ``initialize`` and ``default``. In ``initialize``, do not forget to call
 the mother ``initialize`` method which the desired type. In the ``default``
@@ -258,3 +258,55 @@ with some low-level details of Moos. You still need to write your specialized
             self.m.Notify('zEast', self.data['x'], cur_time)
             self.m.Notify('zNorth', self.data['y'], cur_time)
             self.m.Notify('zHeight', self.data['z'], cur_time)
+
+HLA middleware :tag:`hla`
++++++++++++++++++++++++++
+
+HLA middleware provides several facilities, i.e.
+:py:class:`morse.middleware.hla.abstract_hla.AbstractHLAOutput` for sensors, and
+:py:class:`morse.middleware.hla.abstract_hla.AbstractHLAInput` for actuators, to
+deal with common HLA stuff. An important thing for HLA datastream handler is
+``_hla_name``, which defines the name desired / expected from the federation.
+The default name is the robot parent name. Otherwise, the structure of a
+HLA actuator datastream handler looks like:
+
+.. code-block:: python
+
+    from morse.middleware.hla.message_buffer import MessageBufferReader
+    from morse.middleware.hla.abstract_hla import AbstractHLAInput
+
+    class CertiTestInput(AbstractHLAInput):
+        def initialize(self):
+            AbstractHLAInput.initialize(self)
+
+            # Grab handler to objects and attribute handles
+            bille_handle = self.amb.object_handle('Bille')
+
+            self.handle_x = self.amb.attribute_handle("PositionX", bille_handle)
+            self.handle_y = self.amb.attribute_handle("PositionY", bille_handle)
+
+            self.suscribe_attributes(bille_handle, [self.handle_x, self.handle_y])
+
+        def default(self, ci = 'unused'):
+            attributes = self.get_attributes()
+
+            # Check if we receives attributes
+            if attributes and attributes[self.handle_x] and attributes[self.handle_y]:
+                # Decode the attributes
+                x = MessageBufferReader(attributes[self.handle_x]).read_double()
+                y = MessageBufferReader(attributes[self.handle_y]).read_double()
+                ...
+
+On the other side, the initialize is quite symmetric (i.e. get handles over
+objects and attributes, and then publish them. The construction of the output
+is done in the following way
+
+.. code-block:: python
+
+    class CertiTestOutput(AbstractHLAOutput):
+        def default(self, ci = 'unused'):
+            to_send =  \
+                    {self.handle_x: MessageBufferWriter().write_double(self.data['x']),
+                     self.handle_y: MessageBufferWriter().write_double(self.data['y'])}
+            self.update_attribute(to_send)
+
