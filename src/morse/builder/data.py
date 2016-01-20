@@ -203,6 +203,7 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
+            "mavlink": 'morse.middleware.mavlink.gps_hil.GPSHILSensor',
             }
         },
     "morse.sensors.gyroscope.Gyroscope": {
@@ -439,6 +440,13 @@ MORSE_DATASTREAM_DICT = {
                          'morse.middleware.pocolibs.actuators.platine.PlatineAxisPoster']
             }
         },
+    "morse.actuators.quadrotor_dynamic_control.QuadrotorDynamicControl": {
+            "default": {
+                "socket": INTERFACE_DEFAULT_IN,
+                "yarp": INTERFACE_DEFAULT_IN,
+                "mavlink": "morse.middleware.mavlink.hil_controls.HILControls",
+                }
+            },
     "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,

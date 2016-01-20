@@ -5,23 +5,6 @@ from morse.core import blenderapi
 from pymavlink.dialects.v10 import common as mavlink
 from pymavlink.mavutil import mavlink_connection 
 
-import socket
-
-
-class MavlinkClient:
-    def __init__(self, ip, input_port, output_port):
-        self._udp = socket.socket(socket.AF_INET,  socket.SOCK_DGRAM)
-        self._udp.bind((ip, input_port))
-        self._out_addr = (ip, output_port)
-        self._mav = mavlink.MAVLink(None)
-
-    def send(self, msg):
-        err = self._udp.sendto(msg.pack(self._mav), self._out_addr)
-        logger.debug("Sending %s (%d bytes)" % (msg, err))
-
-    def __finalize__(self):
-        self._udp.close()
-
 class MavlinkConnManager:
     def __init__(self, mav):
         self._manager = {}
@@ -59,8 +42,7 @@ class MavlinkDatastreamManager(DatastreamManager):
         # Create a socket server for this component
         datastream  = DatastreamManager.register_component(self, component_name,
                                          component_instance, mw_data)
-        if hasattr(datastream, 'setup'):
-            datastream.setup(self._conn_manager, self._mav, self._boot_time)
+        datastream.setup(self._conn_manager, self._mav, self._boot_time)
 
     def action(self):
         self._conn_manager.send_hearbeat()

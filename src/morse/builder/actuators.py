@@ -329,4 +329,7 @@ class Drag(ActuatorCreator):
 class ExternalForce(ActuatorCreator):
     _classpath = "morse.actuators.external_force.ExternalForce"
 
+class QuadrotorDynamicControl(ActuatorCreator):
+    _classpath = "morse.actuators.quadrotor_dynamic_control.QuadrotorDynamicControl"
+
 # end morse.builder.actuators

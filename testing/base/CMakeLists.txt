@@ -9,6 +9,7 @@ add_morse_test(levels)
 # Sensor
 
 add_morse_test(accelerometer_testing)
+add_morse_test(airspeed_testing)
 add_morse_test(armature_pose_testing)
 add_morse_test(attitude_testing)
 add_morse_test(barometer_testing)
