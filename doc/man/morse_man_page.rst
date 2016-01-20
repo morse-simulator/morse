@@ -20,8 +20,8 @@ A robot and its environment are created in MORSE by building a model in
 Blender. Actuator and sensor objects are attached to robot models, and may be
 interacted with via a variety of middleware protocols. Simulations can be
 programmed via Python scripts or inside of Blender itself. Currently supported
-middleware includes YARP, MOOS, ROS, Pocolibs, as well as a plain socket
-interface.
+middleware includes YARP, MOOS, ROS, Pocolibs, Mavlink, HLA as well as a plain
+socket interface.
 
 Options
 -------

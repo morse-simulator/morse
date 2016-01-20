@@ -25,6 +25,8 @@ middlewares](http://www.openrobots.org/morse/doc/latest/user/integration.html):
 - Yarp
 - pocolibs
 - MOOS
+- HLA
+- mavlink
 - and a generic socket interface (with an intuitive Python API)
 
 Installation
