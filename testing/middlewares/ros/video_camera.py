@@ -72,7 +72,9 @@ class VideoCameraRosTest(RosTestCase):
             self.assertEqual(msg.header.frame_id, camera_info_frame)
 
             self.assertEqual(len(msg.data), 128*128*4) # RGBA
-            self.assertTrue (msg.data != old)
+            # dont use assertNotEqual here
+            #   dumping raw image data in log is not relevant
+            self.assertTrue(msg.data != old)
             old = msg.data
 
             time.sleep(0.2) # wait for turning

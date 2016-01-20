@@ -75,7 +75,7 @@ class LightTest(MorseTestCase):
                 if (img[i] < 5 and img[i+1] > 110 and img[i+2] < 5):
                     res.append(i)
 
-            self.assertTrue(len(res) > 10000)
+            self.assertGreater(len(res), 10000)
 
 
 ########################## Run these tests ##########################

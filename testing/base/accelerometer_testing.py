@@ -41,7 +41,8 @@ class Accelero_Test(MorseMoveTestCase):
     # The Blender control is not 'perfect' and the speed is so not
     # perfectly constant, leading to 'small' acceleration.
     def assert_accel_almost_null(self, acc, idx):
-        self.assertTrue(acc['acceleration'][idx] > -1.2 and acc['acceleration'][idx] < 1.2)
+        self.assertGreater(acc['acceleration'][idx], -1.2)
+        self.assertLess(acc['acceleration'][idx], 1.2)
 
     def test_accel_sensor(self):
         with Morse() as morse:
@@ -58,13 +59,13 @@ class Accelero_Test(MorseMoveTestCase):
             acc = accel_stream.get() 
             acc_pi = accel_pi_stream.last() 
 
-            self.assertTrue(acc['acceleration'][0] > 50)
+            self.assertGreater(acc['acceleration'][0], 50)
             self.assert_accel_almost_null(acc, 1)
             self.assertAlmostEqual(acc['velocity'][0], 1.0, delta = delta)
             self.assertAlmostEqual(acc['velocity'][1], 0.0, delta = delta)
 
             # acceleration phase
-            self.assertTrue(acc_pi['acceleration'][1] < -50)
+            self.assertLess(acc_pi['acceleration'][1], -50)
             self.assert_accel_almost_null(acc_pi, 0)
             self.assertAlmostEqual(acc_pi['velocity'][0], 0.0, delta = delta)
             self.assertAlmostEqual(acc_pi['velocity'][1], -1.0, delta = delta)
@@ -92,14 +93,14 @@ class Accelero_Test(MorseMoveTestCase):
             acc = accel_stream.last() 
             acc_pi = accel_pi_stream.last() 
 
-            self.assertTrue(acc['acceleration'][0] < -50)
+            self.assertLess(acc['acceleration'][0], -50)
             self.assert_accel_almost_null(acc, 1)
             self.assertAlmostEqual(acc['velocity'][0], 0.0, delta = delta)
             self.assertAlmostEqual(acc['velocity'][1], 0.0, delta = delta)
             self.assertAlmostEquals(acc['distance'], 0.0, delta = delta)
 
             self.assert_accel_almost_null(acc_pi, 0)
-            self.assertTrue(acc_pi['acceleration'][1] > 50)
+            self.assertGreater(acc_pi['acceleration'][1], 50)
             self.assertAlmostEqual(acc_pi['velocity'][0], 0.0, delta = delta)
             self.assertAlmostEqual(acc_pi['velocity'][1], 0.0, delta = delta)
             self.assertAlmostEquals(acc_pi['distance'], 0.0, delta = delta)

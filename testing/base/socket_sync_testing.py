@@ -42,7 +42,7 @@ class SocketSyncTest(MorseTestCase):
             time.sleep(0.2)
             clock = clock_stream.last()
 
-            self.assertTrue(clock['timestamp'] > prev_clock['timestamp'])
+            self.assertGreater(clock['timestamp'], prev_clock['timestamp'])
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sync:
                 sync.connect(('localhost', 5000))
@@ -53,7 +53,7 @@ class SocketSyncTest(MorseTestCase):
                 prev_clock = clock_stream.last()
                 time.sleep(0.2)
                 clock = clock_stream.last()
-                self.assertTrue(clock['timestamp'] == prev_clock['timestamp'])
+                self.assertEqual(clock['timestamp'], prev_clock['timestamp'])
 
                 # triggering once
                 sync.send(bytes('foo', 'utf-8'))
@@ -67,7 +67,7 @@ class SocketSyncTest(MorseTestCase):
             time.sleep(0.2)
             clock = clock_stream.last()
 
-            self.assertTrue(clock['timestamp'] > prev_clock['timestamp'])
+            self.assertGreater(clock['timestamp'], prev_clock['timestamp'])
 
 ########################## Run these tests ##########################
 if __name__ == "__main__":

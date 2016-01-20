@@ -50,7 +50,7 @@ class SearchAndRescueTest(MorseTestCase):
             self.assertEqual(abilities, [1, 2, 3, 4, 5])
 
             victim_status = victim_stream.get()
-            self.assertTrue(len(victim_status['victim_dict']) == 0)
+            self.assertEqual(len(victim_status['victim_dict']), 0)
 
             # Move closer of the victim but not close enough to heal it
             send_dest(teleport_client, morse, 8.0, 0.0, 0.0)
@@ -75,7 +75,7 @@ class SearchAndRescueTest(MorseTestCase):
             send_dest(teleport_client, morse, 8.0, 0.0, math.pi)
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
-            self.assertTrue(len(victim_dict) == 0)
+            self.assertEqual(len(victim_dict), 0)
 
             with self.assertRaises(MorseServiceFailed):
                 morse.rpc('robot.victim_detector', 'get_victim_severity')
@@ -106,7 +106,7 @@ class SearchAndRescueTest(MorseTestCase):
             morse.sleep(0.2)
             victim_status = victim_stream.get()
             victim_dict = victim_status['victim_dict']
-            self.assertTrue(len(victim_dict) == 1)
+            self.assertEqual(len(victim_dict), 1)
             self.assertEqual(victim_dict['Victim']['requirements'], [])
             self.assertEqual(victim_dict['Victim']['severity'], 0)
 

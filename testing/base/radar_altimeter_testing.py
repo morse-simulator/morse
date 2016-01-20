@@ -62,7 +62,7 @@ class RadarAltimeterTest(MorseTestCase):
             morse.sleep(0.1)
 
             altitude = altimeter_stream.get()
-            self.assertTrue(altitude['z'] == float('inf'))
+            self.assertEqual(altitude['z'], float('inf'))
 
             teleport_stream.publish({'x': 0.0, 'y': 0.0, 'z': 12.0,
                 'yaw': 0.0, 'pitch': math.pi/2, 'roll': math.pi/2})

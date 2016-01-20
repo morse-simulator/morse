@@ -118,9 +118,9 @@ class DestinationTest(MorseTestCase):
             self.assertAlmostEqual(pose['yaw'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['pitch'], 0.0, delta=precision)
             self.assertAlmostEqual(pose['roll'], 0.0, delta=precision)
-            self.assertTrue(math.fabs(pose['x']) < 0.3)
-            self.assertTrue(math.fabs(pose['y'] -200) < 0.3)
-            self.assertTrue(math.fabs(pose['z'] + 20) < 0.3)
+            self.assertLess(math.fabs(pose['x']), 0.3)
+            self.assertLess(math.fabs(pose['y'] -200), 0.3)
+            self.assertLess(math.fabs(pose['z'] + 20), 0.3)
 
 
 ########################## Run these tests ##########################

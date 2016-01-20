@@ -52,7 +52,8 @@ class DepthCameraTest(MorseTestCase):
                 # assert that : near <= z <= far
                 for i in range(0, len(data) - 12, 12):
                     xyz = struct.unpack('fff', data[i:i+12])
-                    self.assertTrue(xyz[2] >= 1 and xyz[2] <= 20)
+                    self.assertGreaterEqual(xyz[2], 1)
+                    self.assertLessEqual(xyz[2], 20)
 
                 morse.sleep(0.2) # wait for turning
 

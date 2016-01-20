@@ -76,13 +76,13 @@ class ProximityTest(MorseTestCase):
             send_dest(teleport_client, morse, 9.0, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
-            self.assertTrue('Target1' in prox['near_objects'])
+            self.assertIn('Target1', prox['near_objects'])
 
             # Don't care about the direction, only check the distance
             send_dest(teleport_client, morse, -2.8, 0.0, 0.0)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
-            self.assertTrue('Target3' in prox['near_objects'])
+            self.assertIn('Target3', prox['near_objects'])
 
             # Call the set_range service and check if we can catch the
             # two objects
@@ -90,8 +90,8 @@ class ProximityTest(MorseTestCase):
             morse.sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 2)
-            self.assertTrue('Target1' in prox['near_objects'])
-            self.assertTrue('Target3' in prox['near_objects'])
+            self.assertIn('Target1', prox['near_objects'])
+            self.assertIn('Target3', prox['near_objects'])
 
             # Call the set_tracked_tag service and check if we catch
             # target2
@@ -99,7 +99,7 @@ class ProximityTest(MorseTestCase):
             morse.sleep(0.1)
             prox = prox_stream.get()
             self.assertEqual(len(prox['near_objects']), 1)
-            self.assertTrue('Target2' in prox['near_objects'])
+            self.assertIn('Target2', prox['near_objects'])
 
 
 ########################## Run these tests ##########################
