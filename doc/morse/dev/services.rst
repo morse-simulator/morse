@@ -69,7 +69,7 @@ The example below shows a simple Python client that would use the
   import socket
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.connect(("localhost", 4000))
-  s.send("id1 human move (1.0, 1.6)\n")
+  s.send("id1 human move [1.0, 1.6]\n")
 
 In this example, we assume that ``human`` is the name of the Blender
 object that instantiates a ``HumanClass``.
@@ -178,10 +178,10 @@ actuator defines an asynchronous ``goto`` service:
             [...]
 
         @async_service
-        def goto(self, x, y):
+        def goto(self, x, y, z, tolerance=0.5, speed=1.0):
             self.local_data['x'] = float(x)
             self.local_data['y'] = float(y)
-            self.local_data['z'] = 0 
+            self.local_data['z'] = float(z)
 
         [...]
 
@@ -223,7 +223,7 @@ object.
 Interruption policy for asynchronous services
 ---------------------------------------------
 
-As of ``morse-1.3``, only one asynchronous service may run at a given time.
+As of ``morse-1.4``, only one asynchronous service may run at a given time.
 
 You can define the behaviour of the simulator when a second request is received
 either at the middleware level (*global policy*) or at the individual service
@@ -250,9 +250,11 @@ method, as shown in the example below).
     class Waypoint(morse.core.actuator.Actuator):
 
          def interrupt(self):
-             self.local_data['x'] = self.bge_object.worldPosition[0]
-             self.local_data['y'] = self.bge_object.worldPosition[1]
-             self.local_data['z'] = self.bge_object.worldPosition[2]
+             self.local_data['x'] = self.position_3d.x
+             self.local_data['y'] = self.position_3d.y
+             self.local_data['z'] = self.position_3d.z
+             self.local_data['speed_local'] = 0
+
              morse.core.actuator.Actuator.interrupt(self)
 
 .. note::
