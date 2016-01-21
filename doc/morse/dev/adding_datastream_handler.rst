@@ -310,3 +310,36 @@ is done in the following way
                      self.handle_y: MessageBufferWriter().write_double(self.data['y'])}
             self.update_attribute(to_send)
 
+Mavlink middleware :tag:`mavlink`
++++++++++++++++++++++++++++++++++
+
+Morse provides facilities to help the interoperability with Mavlink, with the
+classes :py:class:`morse.middleware.mavlink.abstract_mavlink.MavlinkSensor`
+and :py:class:`morse.middleware.mavlink.abstract_mavlink.MavlinkActuator`.
+These classes provides a generic ``default`` implementation, so one just need
+to override the method ``make_msg`` (for sensors) and ``process_msg`` (for
+actuators). These methods must generate (or read) the ``self._msg`` field,
+which contains a message under Mavlink protocol. Another important thing (for
+documentation purpose) is to provide the ``_type_name`` for the class,
+corresponding to the name of the associated Mavlink type. See for example the
+implementation for the attitude Mavlink message:
+
+.. code-block:: python
+
+    from morse.middleware.mavlink.abstract_mavlink import MavlinkSensor
+    from pymavlink.dialects.v10 import common as mavlink
+
+    class AttitudeSensor(MavlinkSensor):
+        _type_name = "ATTITUDE"
+
+        def make_msg(self):
+            # Expects the coordinate in aeronautical frame
+            self._msg = mavlink.MAVLink_attitude_message(
+                    self.time_since_boot(),
+                    self.data['rotation'][0],
+                    - self.data['rotation'][1],
+                    - self.data['rotation'][2],
+                    self.data['angular_velocity'][0],
+                    - self.data['angular_velocity'][1],
+                    - self.data['angular_velocity'][2]
+            )
