@@ -208,6 +208,9 @@ class HLABaseNode:
         logger.info("Initializing HLA node.")
 
         self._federation = federation
+        self._sync_point = sync_point
+        self._sync_register = sync_register
+        self._time_sync = time_sync
 
         try:
             logger.debug("Creating RTIA...")
@@ -253,14 +256,15 @@ class HLABaseNode:
             raise
 
 
-        if sync_point:
-            if sync_register:
-                self.morse_ambassador.register_sync_point(sync_point)
+    def init_time(self):
+        if self._sync_point:
+            if self._sync_register:
+                self.morse_ambassador.register_sync_point(self._sync_point)
                 print("Press ENTER when all simulators are ready")
                 sys.stdin.read(1)
-            self.morse_ambassador.wait_until_sync(sync_point)
+            self.morse_ambassador.wait_until_sync(self._sync_point)
 
-        if time_sync:
+        if self._time_sync:
             self.morse_ambassador.initialize_time_regulation()
             
     def finalize(self):
@@ -285,6 +289,7 @@ class HLADatastreamManager(DatastreamManager):
         """ Initialize the socket connections """
         # Call the constructor of the parent class
         DatastreamManager.__init__(self, args, kwargs)
+        self._time_initialized = False
 
         try:
             fom = kwargs["fom"]
@@ -319,7 +324,11 @@ class HLADatastreamManager(DatastreamManager):
                                                    component_instance, mw_data)
 
     def action(self):
-        self.node.morse_ambassador.advance_time()
+        if self._time_initialized:
+            self.node.morse_ambassador.advance_time()
+        else:
+            self.node.init_time()
+            self._time_initialized = True
         if self.time_sync and \
             self.stop_time < self.node.morse_ambassador.logical_time:
             blenderapi.persistantstorage().serviceObjectDict["simulation"].quit()
