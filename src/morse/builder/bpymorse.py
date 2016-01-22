@@ -301,24 +301,27 @@ def save(filepath=None, check_existing=False, compress=True):
     bpy.ops.wm.save_mainfile(filepath=filepath, check_existing=check_existing,
             compress=compress)
 
-def set_speed(fps=0, logic_step_max=0, physics_step_max=0):
+def set_speed(fps=60, logic_step_max=20, physics_step_max=20):
     """ Tune the speed of the simulation
 
     :param fps: Nominal number of game frames per second
         (physics fixed timestep = 1/fps, independently of actual frame rate)
-    :type fps: int in [1, 250], default 0
+    :type fps: default 60
     :param logic_step_max: Maximum number of logic frame per game frame if
         graphics slows down the game, higher value allows better
         synchronization with physics
-    :type logic_step_max: int in [1, 5], default 0
+    :type logic_step_max: default value : 20
     :param physics_step_max: Maximum number of physics step per game frame
         if graphics slows down the game, higher value allows physics to keep
         up with realtime
-    :type physics_step_max: int in [1, 5], default 0
+    :type physics_step_max: default value : 20
 
     usage::
 
         bpymorse.set_speed(120, 5, 5)
+
+    .. note:: It is recommended to use the same value for logic_step_max
+      | physics_step_max
 
     .. warning:: This method must be called at the top of your Builder script,
       before creating any component.
