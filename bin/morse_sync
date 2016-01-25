@@ -8,9 +8,8 @@ import threading
 import re
 
 quit = False
-# lock is used to protect the period modification
+# lock is used to protect the PeriodController call
 lock = threading.Lock()
-period = -1.0
 
 class SyncSocket:
     def __init__(self, timeout, host, port):
@@ -62,9 +61,49 @@ class InputThread(threading.Thread):
                 return
 
             global lock
-            global period
+            global period_ctrl
             with lock:
-                period = new_period
+                period_ctrl.update_period(new_period)
+
+class PeriodController:
+    """
+    A simple P controller to compute the right "time" to sleep to
+    enforce  the wished period
+    """
+    def __init__(self, wished_period):
+        self.update_period(wished_period)
+
+    def _mean(self):
+        return sum(self._samples) / len(self._samples)
+
+    def update_period(self, period):
+        self._wished_period = period
+        self._computed_period = period
+        self._samples = []
+        self._last_call = None
+
+    def compute_period(self):
+        if not self._last_call:
+            self._last_call = time.time()
+            return self._wished_period
+
+        self._samples.append(time.time() - self._last_call)
+        self._last_call = time.time()
+
+        if len(self._samples) == 5:
+            mean = self._mean()
+            if mean != self._wished_period:
+            #if abs(mean_ - self._wished_period) > 10e-5:
+                adjustement = 0.5 * (self._wished_period - mean)
+                self._computed_period += adjustement
+                self._samples.clear()
+            return self._computed_period
+
+        else:
+            return self._computed_period
+
+        return self._computed_period
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MORSE syncer')
@@ -81,7 +120,7 @@ if __name__ == '__main__':
     input_thr = InputThread()
     input_thr.start()
 
-    period = args.period
+    period_ctrl = PeriodController(args.period)
 
     if not s.connect():
         print("Failed to connect to (%s, %s)" % (args.host, args.port))
@@ -93,6 +132,7 @@ if __name__ == '__main__':
         except (BrokenPipeError, ConnectionResetError):
             quit = True
         with lock:
-            time.sleep(period)
+            sleep_time = period_ctrl.compute_period()
+            time.sleep(sleep_time)
 
     input_thr.join()
