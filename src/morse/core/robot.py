@@ -39,6 +39,10 @@ class Robot(morse.core.object.Object):
 
     def action(self):
         """ Call the regular action function of the component. """
+
+        if not self.periodic_call():
+            return
+
         # Update the component's position in the world
         self.position_3d.update(self.bge_object)
 
