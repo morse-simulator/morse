@@ -32,6 +32,9 @@ class Actuator(morse.core.object.Object):
         if not self._active:
             return
 
+        if not self.periodic_call():
+            return
+
         # Update the component's position in the world
         self.position_3d.update(self.bge_object)
 

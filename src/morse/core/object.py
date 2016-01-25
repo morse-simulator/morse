@@ -9,6 +9,10 @@ from morse.core.services import service
 
 from morse.core import blenderapi
 
+import time
+from copy import copy
+from morse.core.morse_time import time_isafter
+
 class Object(AbstractObject):
     """ Basic Class for all 3D objects (components) used in the simulation.
         Provides common attributes.
@@ -50,25 +54,12 @@ class Object(AbstractObject):
         # e.g. game sensor frequency = 0 -> sensor runs at full logic rate
         sensors = blenderapi.getalwayssensors(obj)
         self._frequency = blenderapi.getfrequency()
-        # New MORSE_LOGIC sensor, see AbstractComponent.morseable()
-        morselogic = [s for s in sensors if s.name.startswith('MORSE_LOGIC')]
-        if len(morselogic) == 1:
-            if blenderapi.version() >= (2, 74, 5):
-                self._frequency /= morselogic[0].skippedTicks + 1
-            else:
-                self._frequency /= morselogic[0].frequency + 1
-        # Backward compatible (some actuators got special logic)
-        elif len(sensors) == 1:
-            if blenderapi.version() >= (2, 74, 5):
-                self._frequency /= sensors[0].skippedTicks + 1
-            else:
-                self._frequency /= sensors[0].frequency + 1
-        elif len(sensors) == 0:
-            logger.warning("Can't get frequency for " + self.name() + \
-                           " as the Game Logic sensor calling the action can't be found.")
-        else:
-            logger.warning(self.name() + " has too many Game Logic sensors to get " + \
-                    "an unambiguous frequency for the action.")
+
+        if 'frequency' in self.bge_object:
+            self._frequency = self.bge_object['frequency']
+            self._last_call = None
+            self._component_period = 1.0 / self._frequency
+            self.__time = blenderapi.persistantstorage().time
 
     def check_level(self):
 
@@ -192,6 +183,35 @@ class Object(AbstractObject):
 
     def name(self):
         return self.bge_object.name
+
+    def periodic_call(self):
+        """
+        Return true if the component must be called on this loop call, False otherwise
+        """
+        # must be called on each loop occurence
+        if not hasattr(self, '_component_period'):
+            return True
+
+        # First call
+        if  not self._last_call:
+            self._last_call = self.__time.time
+            self._nb_call = 1
+            return True
+        else:
+            """
+            We deal with a complete simulated second to deal with
+            frequencies that are not a fraction of the main simulator frequency.
+            For that purpose, we integrate until self._nb_call ==
+            self._frequency, i.e.  self._nb_call * self._component_period == 1.0
+            """
+            must_call = time_isafter(self.__time.time, self._last_call + self._nb_call * self._component_period)
+            if must_call:
+                if (self._nb_call == self._frequency):
+                    self._nb_call = 1
+                    self._last_call = copy(self.__time.time)
+                else:
+                    self._nb_call += 1
+            return must_call
 
     def action(self):
         """ Call the regular action function of the component.

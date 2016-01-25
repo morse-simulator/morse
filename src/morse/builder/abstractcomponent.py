@@ -547,34 +547,14 @@ class AbstractComponent(object):
         else:
             sensor.frequency = delay
 
-    def frequency(self, frequency=None, delay=0):
+    def frequency(self, frequency=None):
         """ Set the frequency of the Python module
 
         :param frequency: (int) Desired frequency,
             0 < frequency < logic tics
-        :param delay: (int) Delay between repeated pulses
-            (in logic tics, 0 = no delay)
-            if frequency is set, delay is obtained by fps / frequency.
         """
         if frequency:
-            delay = max(0, bpymorse.get_fps() // frequency - 1)
-        sensors = [s for s in self._bpy_object.game.sensors if s.type == 'ALWAYS']
-        # New MORSE_LOGIC sensor, see AbstractComponent.morseable() bellow
-        morselogic = [s for s in sensors if s.name.startswith('MORSE_LOGIC')]
-        if len(morselogic) > 1:
-            logger.warning(self.name + " has too many MORSE_LOGIC sensors to "+\
-                    "tune its frequency, change it through Blender")
-        elif len(morselogic) > 0:
-            self._set_sensor_frequency(morselogic[0], delay)
-        # Backward compatible (some actuators got special logic)
-        elif len(sensors) > 1:
-            logger.warning(self.name + " has too many Game Logic sensors to "+\
-                    "tune its frequency, change it through Blender")
-        elif len(sensors) > 0:
-            self._set_sensor_frequency(sensors[0], delay)
-        else:
-            logger.warning(self.name + " has no 'ALWAYS' Game Logic sensor. "+\
-                           "Unable to tune its frequency.")
+            self.properties(frequency = frequency)
 
     def is_morseable(self):
         for sensor in self._bpy_object.game.sensors:
