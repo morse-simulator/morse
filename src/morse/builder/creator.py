@@ -70,6 +70,7 @@ class ComponentCreator(AbstractComponent):
             self.morseable()
 
         self.properties(Component_Tag = True, classpath = self.__class__._classpath)
+        self.frequency(60)
 
     def parent_root(self, objects):
         # Parent the root objects with this Component
