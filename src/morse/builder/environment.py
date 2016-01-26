@@ -787,6 +787,13 @@ class Environment(AbstractComponent):
         scene.game_settings.logic_step_max = logic_step_max
         scene.game_settings.physics_step_max = physics_step_max
 
+    def use_vsync(self, vsync):
+        """  Configure vsync parameter for the current scene
+
+        :param vsync: should be one ['ON', 'OFF', 'ADAPTIVE']
+        """
+        bpymorse.get_context_scene().game_settings.vsync = vsync
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
