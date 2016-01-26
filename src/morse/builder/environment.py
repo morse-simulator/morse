@@ -297,6 +297,28 @@ class Environment(AbstractComponent):
         else:
             self._node_name = name
 
+        # Check time properties
+        scene = bpymorse.get_context_scene()
+        fps = scene.game_settings.fps
+        max_frequency_requested = Configuration.max_frequency()
+        if max_frequency_requested > fps:
+            logger.warning("You are requesting a component at %d Hz, but the "
+                           "simulator main loop is running only at %d Hz. Try "
+                           "to raise the frequency of the simulation using "
+                           "env.set_simulator_frequency(%d)" %
+                           (max_frequency_requested, fps, max_frequency_requested))
+        
+        time_scale = self.property_value('time_scale')
+        if time_scale:
+            real_fps_requested = max_frequency_requested * time_scale
+            if real_fps_requested > 1000.0:
+                logger.warning("You are requesting a component at %d Hz, with "
+                               " time acceleration factor of %f, leading to a "
+                               " real frequency of %d Hz. It will probably hard "
+                               " to reach this value with Morse, so consider to "
+                               " reduce frequency of component or speed factor " %
+                               (max_frequency_requested, time_scale, real_fps_requested))
+
         # Create a new scene for each camera, with specific render resolution
         # Must be done at the end of the builder script, after renaming
         # and before adding 'Scene_Script_Holder'
