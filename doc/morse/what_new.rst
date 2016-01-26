@@ -122,6 +122,8 @@ API addition
   scene to use in background (`#651 <https://github.com/morse-simulator/morse/issues/651>`_).
 - The method ``bpymorse.set_speed``, used to changed the frequency of Morse
   main loop is now deprecated in favor of ``Environment.set_simulator_frequency``.
+- The new method ``Environment.use_vsync`` allows to control the vsync
+  parameter
 
 
 Pymorse
