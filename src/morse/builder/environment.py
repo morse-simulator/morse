@@ -738,6 +738,33 @@ class Environment(AbstractComponent):
         """
         bpymorse.get_context_scene().background_set = bpymorse.get_scene(scene)
 
+    def set_simulator_frequency(self, fps=60, logic_step_max=20, physics_step_max=20):
+        """ Tune the frequency of the simulation
+
+        :param fps: Nominal number of game frames per second
+            (physics fixed timestep = 1/fps, independently of actual frame rate)
+        :type fps: default 60
+        :param logic_step_max: Maximum number of logic frame per game frame if
+            graphics slows down the game, higher value allows better
+            synchronization with physics
+        :type logic_step_max: default value : 20
+        :param physics_step_max: Maximum number of physics step per game frame
+            if graphics slows down the game, higher value allows physics to keep
+            up with realtime
+        :type physics_step_max: default value : 20
+
+        usage::
+
+            env.set_simulator_frequency(120, 5, 5)
+
+        .. note:: It is recommended to use the same value for
+           logic_step_max and physics_step_max
+        """
+        scene = bpymorse.get_context_scene()
+        scene.game_settings.fps = fps
+        scene.game_settings.logic_step_max = logic_step_max
+        scene.game_settings.physics_step_max = physics_step_max
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
