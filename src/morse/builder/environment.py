@@ -17,7 +17,8 @@ class Environment(AbstractComponent):
     """
     multinode_distribution = dict()
 
-    def __init__(self, filename, main_scene = None, fastmode = False, component_renaming = True):
+    def __init__(self, filename, main_scene = None, fastmode = False, component_renaming = True,
+                                                                      auto_tune_time = True):
         """
         :param fastmode: (default: False) if True, disable most visual
                          effects (like lights...) to get the fastest
@@ -25,7 +26,17 @@ class Environment(AbstractComponent):
                          instance, or in simulations where realistic
                          environment texturing is not required (*e.g.*,
                          no video camera)
-
+        :param component_renaming: (default: True): if True,
+            automatically rename Blender object on the base of builder
+            python object. It is the recommanded settings, and is mandatory
+            if you use pymorse. Only set to False if you notice trouble with
+            it, and report the issue to the Morse project
+        :param auto_tune_time: (default: True): If True, Morse will try
+            to compute a good setting for your simulation, on the basis on the
+            described scene. The feature is automatically disabled if you make
+            an explicit call to some time-related method, such as set_simulator_frequency.
+            Note that it is an experimental feature, so disable it if you see
+            problem with your simulation, and report it to the Morse project.
         """
         AbstractComponent.__init__(self, category = 'environments', filename = filename)
         if main_scene:
@@ -49,6 +60,7 @@ class Environment(AbstractComponent):
             self._rename_components()
 
         self.fastmode = fastmode
+        self.auto_tune_time = auto_tune_time
 
         self._created = False
         self._camera_location = [5, -5, 5]
@@ -301,23 +313,29 @@ class Environment(AbstractComponent):
         scene = bpymorse.get_context_scene()
         fps = scene.game_settings.fps
         max_frequency_requested = Configuration.max_frequency()
-        if max_frequency_requested > fps:
-            logger.warning("You are requesting a component at %d Hz, but the "
-                           "simulator main loop is running only at %d Hz. Try "
-                           "to raise the frequency of the simulation using "
-                           "env.set_simulator_frequency(%d)" %
-                           (max_frequency_requested, fps, max_frequency_requested))
-        
         time_scale = self.property_value('time_scale')
-        if time_scale:
-            real_fps_requested = max_frequency_requested * time_scale
-            if real_fps_requested > 1000.0:
-                logger.warning("You are requesting a component at %d Hz, with "
-                               " time acceleration factor of %f, leading to a "
-                               " real frequency of %d Hz. It will probably hard "
-                               " to reach this value with Morse, so consider to "
-                               " reduce frequency of component or speed factor " %
-                               (max_frequency_requested, time_scale, real_fps_requested))
+        if self.auto_tune_time:
+            self.use_vsync('OFF')
+            self.use_internal_syncer()
+            if max_frequency_requested > fps:
+                self.set_simulator_frequency(max_frequency_requested)
+        else:
+            # Just report bad looking configuration
+            if max_frequency_requested > fps:
+                logger.warning("You are requesting a component at %d Hz, but the "
+                               "simulator main loop is running only at %d Hz. Try "
+                               "to raise the frequency of the simulation using "
+                               "env.set_simulator_frequency(%d)" %
+                               (max_frequency_requested, fps, max_frequency_requested))
+            if time_scale:
+                real_fps_requested = max_frequency_requested * time_scale
+                if real_fps_requested > 1000.0:
+                    logger.warning("You are requesting a component at %d Hz, with "
+                                   " time acceleration factor of %f, leading to a "
+                                   " real frequency of %d Hz. It will probably hard "
+                                   " to reach this value with Morse, so consider to "
+                                   " reduce frequency of component or speed factor " %
+                                   (max_frequency_requested, time_scale, real_fps_requested))
 
         # Create a new scene for each camera, with specific render resolution
         # Must be done at the end of the builder script, after renaming
@@ -540,6 +558,7 @@ class Environment(AbstractComponent):
         """
         if strategy == TimeStrategies.FixedSimulationStep:
             bpymorse.get_context_scene().game_settings.use_frame_rate = 0
+            self.auto_tune_time = False
         elif strategy == TimeStrategies.BestEffort:
             bpymorse.get_context_scene().game_settings.use_frame_rate = 1
         else:
@@ -570,6 +589,7 @@ class Environment(AbstractComponent):
             self.properties(time_scale = accelerate_by)
 
     def use_internal_syncer(self):
+        self.auto_tune_time = False
         self.properties(use_internal_syncer = True)
         self.configure_stream_manager('socket', time_sync = True)
 
@@ -786,6 +806,7 @@ class Environment(AbstractComponent):
         scene.game_settings.fps = fps
         scene.game_settings.logic_step_max = logic_step_max
         scene.game_settings.physics_step_max = physics_step_max
+        self.auto_tune_time = False
 
     def use_vsync(self, vsync):
         """  Configure vsync parameter for the current scene
