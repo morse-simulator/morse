@@ -21,7 +21,6 @@ from pymorse import Morse
 class SocketSyncTest(MorseTestCase):
 
     def setUpEnv(self):
-        bpymorse.set_speed(fps=10)
 
         robot = Morsy()
 
@@ -30,6 +29,7 @@ class SocketSyncTest(MorseTestCase):
         robot.append(clock)
 
         env = Environment('empty')
+        env.set_simulator_frequency(10)
         env.configure_stream_manager('socket', time_sync = True, sync_port = 5000)
 
     def test_read_clock(self):
