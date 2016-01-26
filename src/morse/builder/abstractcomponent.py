@@ -15,6 +15,7 @@ class Configuration(object):
     modifier = {}
     service = {}
     overlay = {}
+    frequency = {}
 
     def link_datastream(component, datastream_cfg):
         Configuration.datastream.setdefault(component.name, []).append(datastream_cfg)
@@ -34,6 +35,7 @@ class Configuration(object):
         Configuration._update_name(old_name, new_name, Configuration.datastream)
         Configuration._update_name(old_name, new_name, Configuration.modifier)
         Configuration._update_name(old_name, new_name, Configuration.service)
+        Configuration._update_name(old_name, new_name, Configuration.frequency)
         for k,v in Configuration.overlay.items():
             Configuration._update_name(old_name, new_name, v)
 
@@ -71,6 +73,20 @@ class Configuration(object):
                     return True
         except KeyError:
             return False
+
+    def set_frequency(component, freq):
+        Configuration.frequency[component.name] = freq
+
+    def max_frequency():
+        """ Returns the highest update frequency requested in the
+        Builder script for any component (via component.frequency(...)).
+        If no specific frequency has been set, returns MORSE's default
+        (60Hz) """
+        values = Configuration.frequency.values()
+        if not values:
+            return 60
+        else:
+            return max(values)
 
     def _remove_entries(dict_, robot_list):
         if robot_list is None:
@@ -554,6 +570,7 @@ class AbstractComponent(object):
             0 < frequency < logic tics
         """
         if frequency:
+            Configuration.set_frequency(self, frequency)
             self.properties(frequency = frequency)
 
     def is_morseable(self):
