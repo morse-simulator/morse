@@ -311,22 +311,22 @@ class Environment(AbstractComponent):
 
         # Check time properties
         scene = bpymorse.get_context_scene()
-        fps = scene.game_settings.fps
+        base_frequency = scene.game_settings.fps
         max_frequency_requested = Configuration.max_frequency()
         time_scale = self.property_value('time_scale')
         if self.auto_tune_time:
             self.use_vsync('OFF')
             self.use_internal_syncer()
-            if max_frequency_requested > fps:
+            if max_frequency_requested > base_frequency:
                 self.simulator_frequency(max_frequency_requested)
         else:
             # Just report bad looking configuration
-            if max_frequency_requested > fps:
+            if max_frequency_requested > base_frequency:
                 logger.warning("You are requesting a component at %d Hz, but the "
                                "simulator main loop is running only at %d Hz. Try "
                                "to raise the frequency of the simulation using "
                                "env.simulator_frequency(%d)" %
-                               (max_frequency_requested, fps, max_frequency_requested))
+                               (max_frequency_requested, base_frequency, max_frequency_requested))
             if time_scale:
                 real_fps_requested = max_frequency_requested * time_scale
                 if real_fps_requested > 1000.0:
@@ -780,12 +780,13 @@ class Environment(AbstractComponent):
         """
         bpymorse.get_context_scene().background_set = bpymorse.get_scene(scene)
 
-    def simulator_frequency(self, fps=60, logic_step_max=20, physics_step_max=20):
+    def simulator_frequency(self, base_frequency=60, logic_step_max=20, physics_step_max=20):
         """ Tune the frequency of the simulation
 
-        :param fps: Nominal number of game frames per second
-            (physics fixed timestep = 1/fps, independently of actual frame rate)
-        :type fps: default 60
+        :param base_frequency: Nominal number of game frames per second
+            (physics fixed timestep = 1/ (base_frequency * time_scale),
+            independently of actual frame rate)
+        :type base_frequency: default 60
         :param logic_step_max: Maximum number of logic frame per game frame if
             graphics slows down the game, higher value allows better
             synchronization with physics
@@ -803,7 +804,7 @@ class Environment(AbstractComponent):
            logic_step_max and physics_step_max
         """
         scene = bpymorse.get_context_scene()
-        scene.game_settings.fps = fps
+        scene.game_settings.fps = base_frequency
         scene.game_settings.logic_step_max = logic_step_max
         scene.game_settings.physics_step_max = physics_step_max
         self.auto_tune_time = False
