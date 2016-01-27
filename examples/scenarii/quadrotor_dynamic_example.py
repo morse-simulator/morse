@@ -40,7 +40,7 @@ quadrotor.append(imu)
 
 env = Environment('indoors-1/indoor-1')
 env.show_framerate(True)
-env.set_simulator_frequency(fps=60, logic_step_max=5, physics_step_max=5)
+env.simulator_frequency(fps=60, logic_step_max=5, physics_step_max=5)
 #env.show_physics(True)
 
 env.create()

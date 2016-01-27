@@ -34,7 +34,7 @@ class Environment(AbstractComponent):
         :param auto_tune_time: (default: True): If True, Morse will try
             to compute a good setting for your simulation, on the basis on the
             described scene. The feature is automatically disabled if you make
-            an explicit call to some time-related method, such as set_simulator_frequency.
+            an explicit call to some time-related method, such as simulator_frequency.
             Note that it is an experimental feature, so disable it if you see
             problem with your simulation, and report it to the Morse project.
         """
@@ -318,14 +318,14 @@ class Environment(AbstractComponent):
             self.use_vsync('OFF')
             self.use_internal_syncer()
             if max_frequency_requested > fps:
-                self.set_simulator_frequency(max_frequency_requested)
+                self.simulator_frequency(max_frequency_requested)
         else:
             # Just report bad looking configuration
             if max_frequency_requested > fps:
                 logger.warning("You are requesting a component at %d Hz, but the "
                                "simulator main loop is running only at %d Hz. Try "
                                "to raise the frequency of the simulation using "
-                               "env.set_simulator_frequency(%d)" %
+                               "env.simulator_frequency(%d)" %
                                (max_frequency_requested, fps, max_frequency_requested))
             if time_scale:
                 real_fps_requested = max_frequency_requested * time_scale
@@ -780,7 +780,7 @@ class Environment(AbstractComponent):
         """
         bpymorse.get_context_scene().background_set = bpymorse.get_scene(scene)
 
-    def set_simulator_frequency(self, fps=60, logic_step_max=20, physics_step_max=20):
+    def simulator_frequency(self, fps=60, logic_step_max=20, physics_step_max=20):
         """ Tune the frequency of the simulation
 
         :param fps: Nominal number of game frames per second
@@ -797,7 +797,7 @@ class Environment(AbstractComponent):
 
         usage::
 
-            env.set_simulator_frequency(120, 5, 5)
+            env.simulator_frequency(120, 5, 5)
 
         .. note:: It is recommended to use the same value for
            logic_step_max and physics_step_max
