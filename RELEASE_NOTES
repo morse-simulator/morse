@@ -6,6 +6,13 @@ General
 - Numpy is now needed for Morse. It is used in several places where
   computations using mathutils is not precise enough (float vs double
   precision).
+- Time management has been improved in various way. A **morse_sync** tool has
+  been introduced to improve precision and timing of high-frequency components
+  (#683). If available in Blender (Blender > 2.77), it is also possible to
+  accelerate or slow-down the simulation (#388).  Moreover, Morse now try to
+  compute automatically the right time settings.  If you meet any problem
+  related to time, make sure to read the Time and Event documentation and / or
+  report issue to the Morse project.
 
 Components
 ----------
@@ -112,6 +119,8 @@ API addition
   scene to use in background (#651).
 - The method "bpymorse.set_speed", used to changed the frequency of Morse
   main loop is now deprecated in favor of "Environment.simulator_frequency".
+- The method ``Environmement.set_time_scale`` allows to accelerate or
+  slow-down the simulation (#388).
 - The new method "Environment.use_vsync" allows to control the vsync parameter
 
 Pymorse

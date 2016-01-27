@@ -7,6 +7,14 @@ General
 - `Numpy <http://www.numpy.org/>`_ is now needed for Morse. It is used in
   several places where computations using mathutils is not precise enough
   (float vs double precision).
+- Time management has been improved in various way. A **morse_sync** tool has
+  been introduced to improve precision and timing of high-frequency components 
+  (`#683 <https://github.com/morse-simulator/morse/issues/683>`_).
+  If available in Blender (Blender > 2.77), it is also possible to accelerate
+  or slow-down the simulation (`#388 <https://github.com/morse-simulator/morse/issues/388>`_).
+  Moreover, Morse now try to compute automatically the right time settings.
+  If you meet any problem related to time, make sure to read the
+  :doc:`dev/time_event` and / or report issue to the Morse project.
 
 Components
 ----------
@@ -14,7 +22,7 @@ Components
 Robots
 ++++++
 
-- the :doc:`user/robots/human` in MORSE has been entierly rewritten. The new
+- the :doc:`user/robots/human` in MORSE has been entirely rewritten. The new
   human model is much simpler, yet much nicer (in particular, it features mesh
   skinning for good looking animations).  On the downside, the interactive mode
   is gone for now. Depending on interest, it can be revived in a future version
@@ -122,6 +130,8 @@ API addition
   scene to use in background (`#651 <https://github.com/morse-simulator/morse/issues/651>`_).
 - The method ``bpymorse.set_speed``, used to changed the frequency of Morse
   main loop is now deprecated in favor of ``Environment.simulator_frequency``.
+- The method ``Environmement.set_time_scale`` allows to accelerate or
+  slow-down the simulation (`#388 <https://github.com/morse-simulator/morse/issues/388>`_).
 - The new method ``Environment.use_vsync`` allows to control the vsync
   parameter
 
