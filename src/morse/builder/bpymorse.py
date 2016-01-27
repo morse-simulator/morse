@@ -327,7 +327,7 @@ def set_speed(fps=60, logic_step_max=20, physics_step_max=20):
       before creating any component.
     """
     logger.warning("`bpymorse.set_speed` is deprecated, "
-                     "use `Environment.set_simulator_frequency` instead")
+                     "use `Environment.simulator_frequency` instead")
 
     get_context_scene().game_settings.fps = fps
     get_context_scene().game_settings.logic_step_max = logic_step_max
