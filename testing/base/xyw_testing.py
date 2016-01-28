@@ -17,7 +17,7 @@ except ImportError:
 
 def send_speed(s, morse, x, y, w, t):
     s.publish({'x' : x, 'y' : y, 'w' : w})
-    morse.sleep(t)
+    morse.sleep(t + 0.1)
     s.publish({'x' : 0.0, 'y' : 0.0, 'w' : 0.0})
 
 class XYW_Test(MorseMoveTestCase):

@@ -17,7 +17,7 @@ except ImportError:
 
 def send_speed(s, morse, v, w, t):
     s.publish({'v' : v, 'w' : w})
-    morse.sleep(t)
+    morse.sleep(t + 0.1)
     s.publish({'v' : 0.0, 'w' : 0.0})
 
 def send_service_speed(s, morse, v, w, t):
@@ -54,7 +54,7 @@ class VW_Test(MorseMoveTestCase):
 
             simu.deactivate('robot.teleport')
 
-            precision = 0.125
+            precision = 0.1
         
             # Read the start position, it must be (0.0, 0.0, 0.0)
             self.assertAlmostEqualPositionThenFix(simu, [0.0, 0.0, 0.10, 0.0, 0.0, 0.0], precision)

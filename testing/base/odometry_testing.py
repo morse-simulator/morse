@@ -72,7 +72,7 @@ class OdometryTest(MorseTestCase):
     def odometry_test_helper(self, morse, v, w, t):
         self.odo_stream.subscribe(self.record_datas)
         self.motion.publish({'v':v, 'w':w})
-        morse.sleep(t)
+        morse.sleep(t + 0.1)
         self.odo_stream.unsubscribe(self.record_datas)
 
     
