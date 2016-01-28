@@ -65,7 +65,7 @@ class ExternalForceTest(MorseTestCase):
         The acceleration stay positive in both case.
         """
         with Morse() as morse:
-            delta = 0.10
+            delta = 0.15
 
             force_ref = morse.robot_ref.force
             accel_ref = morse.robot_ref.accel
