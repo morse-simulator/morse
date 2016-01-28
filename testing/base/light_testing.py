@@ -58,7 +58,7 @@ class LightTest(MorseTestCase):
             img = base64.b64decode( cam['image'] )
             for i in range(0, 320*240*4, 4):
                 # Value computed with gimp help ...
-                if (img[i] < 5 and img[i+1] > 110 and img[i+2] < 5):
+                if (img[i] < 10 and img[i+1] > 170 and img[i+2] < 30):
                     res.append(i)
 
             self.assertEqual(len(res), 0)
@@ -72,10 +72,10 @@ class LightTest(MorseTestCase):
             # search the green block in the image
             for i in range(0, 320*240*4, 4):
                 # Value computed with gimp help ...
-                if (img[i] < 5 and img[i+1] > 110 and img[i+2] < 5):
+                if (img[i] < 10 and img[i+1] > 170 and img[i+2] < 30):
                     res.append(i)
 
-            self.assertGreater(len(res), 10000)
+            self.assertGreater(len(res), 7000)
 
 
 ########################## Run these tests ##########################
