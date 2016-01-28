@@ -34,7 +34,7 @@ class DestinationTest(MorseTestCase):
         destination = Destination('destination')
         robot.append(destination)
         destination.add_stream('socket')
-        destination.properties(Speed=2.0, Tolerance=0.3)
+        destination.properties(Speed=2.0, Tolerance=0.3, RemainAtDestination = True)
 
         env = Environment('empty', fastmode = True)
         env.add_service('socket')
