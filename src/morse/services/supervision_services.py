@@ -206,7 +206,8 @@ class Supervision(AbstractObject):
 
         scene = blenderapi.scene()
         # Special Morse items to remove from the list
-        remove_items = ['Scene_Script_Holder', 'CameraFP', '__default__cam__']
+        remove_items = ['Scene_Script_Holder', 'CameraFP', '__default__cam__',
+                        'MORSE.Properties', '__morse_dt_analyser']
         top_levelers = [o for o in scene.objects
                         if o.parent is None and
                         not o.name in remove_items]
