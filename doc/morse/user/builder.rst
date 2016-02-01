@@ -461,3 +461,113 @@ to your builder script::
     # Change its size and move it around (10.0, 0.0, 2.0)
     charging_zone_1.size = [5.0, 5.0, 5.0]
     charging_zone_1.translate(x = 10.0, z = 2.0)
+
+.. _configure_time:
+
+Configuring time in Morse
+-------------------------
+
+Time management in simulation is a complex matter: you may want to simulate
+different sensors at different speeds, you may want to run
+faster-than-real-time simulations, you may want to synchronize the simulator
+with an external time reference, etc.
+
+MORSE tries hard to make easy things easy, and complex scenarios possible.
+
+Consider the following simple example:
+
+.. code-block:: python
+
+    from morse.builder import *
+    
+    # Append ATRV robot to the scene
+    robot = ATRV()
+    
+    # Append an actuator
+    motion = MotionVW()
+    robot.append(motion)
+    
+    # Append a sensor
+    pose = Pose()
+    pose.translate(z = 0.75)
+    pose.frequency(200)
+    robot.append(pose)
+    
+    # Configure the robot on the 'socket' interface
+    robot.add_default_interface('socket')
+    
+    env = Environment('indoors-1/indoor-1')
+
+This is the typical scenario: we tell MORSE that the pose sensor should output
+values at 200Hz, and we let MORSE manage all other time-related questions. In
+this case, MORSE will run its main loop at 200Hz (hardware permitting!
+otherwise, MORSE will warn you that the desired frequency can not be reached),
+and will attempt to update the physics at real-time speed. Note that we did not
+have to specify a frequency for our motion actuator: by default, all MORSE
+components run at 60Hz.
+
+Now, imagine you want to accelerate your simulation. Just add the following
+lines to your builder script:
+
+.. code-block:: python
+
+    # [...]
+    env = Environment('indoors-1/indoor-1')
+    env.set_time_scale(1.5)
+
+Now, MORSE will attempt (again, hardware permitting!) to run the simulation at
+x1.5 real-time. It means that, during 1 real-time second, Morse will simulation
+1.5 second. Accordingly, the pose sensor, for instance, will produce reading at
+1.5 X 200 = 300Hz. The physics engine will accordingly run faster, etc.
+
+Handling more complex scenario
+++++++++++++++++++++++++++++++
+
+To handle more complex scenario, you need to read :doc:`this page
+<../dev/time_event>` which describes the time handling in Morse. For now, we
+have identified two advanced scenarios. If you have specific requirements, or
+the default settings cause issues on your computer, pleas report the issue to
+the Morse project.
+
+Synchronisation with other(s) simulator(s)
+__________________________________________
+
+In this situation, you want to use **Fixed Simulation Step** strategy with
+well-defined ``base_frequency``. v-sync can be turned off.
+
+.. code-block :: python
+
+    ...
+
+    env = Env(...)
+    env.simulator_frequency(100)
+    env.use_vsync('OFF')
+    env.set_time_strategy(FixedSimulationStep)
+    # in this example, we use HLA, a middleware that is designed to support
+    # synchronization amongst heterogeneous systems.
+    env.configure_stream_manager('hla', time_sync = True)
+
+Accelerating the simulation by a large factor
+_____________________________________________
+
+If you want to accelerate time by a factor of 20 for example, it would
+probably be hard (depending your hardware) to provide data at 1200 (60 * 20)
+Hz. You may want to lower the frequency of the different components, and
+reduce accordingly the ``base_frequency`` of your simulation. As in the
+default case, you want to disable v-sync and enable **morse_sync**.
+
+
+.. code-block :: python
+
+    robot = Morsy()
+    robot.frequency(3) 
+
+    pose = Pose()
+    robot.append(pose)
+    pose.frequency()
+
+    env = Env(...)
+    env.simulator_frequency(3)
+    env.set_time_scale(20)
+    env.use_vsync('OFF')
+    env.use_internal_syncer()
