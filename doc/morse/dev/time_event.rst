@@ -1,6 +1,10 @@
 Time and event in MORSE
 =======================
 
+This page presents the inner working of time in MORSE. If you are not yet
+familiar with time issues and you simply want to configure the time-related
+settings of your simulation, you should start :ref:`here <configure_time>`.
+
 Understand time handling in the Blender's Game Engine
 -----------------------------------------------------
 
@@ -9,9 +13,15 @@ Blender < 2.78 at least) is the following:
 
 .. code-block:: pascal
 
+    # main loop
     while not_quit:
+        # logic / physics loop
         for i in 0..n:
             execute_logic
+                ...
+                synchronise_with_external_clock # optionally
+                ...
+                ...
             execute_physics
         end
 
@@ -20,29 +30,31 @@ Blender < 2.78 at least) is the following:
 The loop is centered around the graphic update. By default in Blender, `v-sync
 <https://en.wikipedia.org/wiki/Screen_tearing>`_ is enabled, so the main loop
 is caped by the frequency of your screen (often 60 Hz). It is possible to
-disable v-sync using
-:py:meth:`morse.builder.environment.Environment.use_vsync`.  Through, as shown
+disable v-sync (this lets MORSE reach higher frequencies, assuming your
+hardware permits) using
+:py:meth:`morse.builder.environment.Environment.use_vsync`.  Though, as shown
 in the pseudo-code, it is possible to run the logic / physics at higher
-frequency. The behaviour can be configured using the builder API using the
+frequency. This behaviour can be configured using the builder API using the
 method
-:py:meth:`morse.builder.environment.Environment.simulator_frequency`.  The
-``base_frequency`` is the frequency of the main loop by (simulated) second. It
-will be adjusted automatically if you try to accelerate or slow-down the time
-(see below). The ``logic_step_max`` and ``physics_step_max`` are used to
-compute the maximum possible ``n`` in the previous loop (through the BGE logic
-on this question is a bit strange).
+:py:meth:`morse.builder.environment.Environment.simulator_frequency`. For
+instance, ``env.simulator_frequency(20)`` means that the main loop will run at
+20Hz (if your hardware is powerful enough). The ``base_frequency`` is the
+frequency of the main loop by second. It will be adjusted automatically if you
+try to accelerate or slow-down the time (see below). The ``logic_step_max``
+and ``physics_step_max`` are used to compute the maximum possible ``n`` in the
+previous loop.
 
-While the simulation is running, during the ``execute_logic`` phase, the Logic
-Bricks of each component will make regular calls to their ``default_action``
-method. At this point the component will perform its task and update its
-internal data.
+While the simulation is running, during the ``execute_logic`` step, components
+actually invoke their `default_action` method via the Blender *logic bricks*.
+At this point the component will perform its task and update its internal
+data.
 
-To run a component at a lower frequency, some calls to ``default_action`` can
-be skipped by setting the frequency in the Game Logic Sensor or more
-conveniently specifying the desired frequency in the builder script (using
-:py:meth:`morse.builder.abstractcomponent.AbstractComponent.frequency`). The
-real frequency of the ``default_action`` is called can be computed using the
-property :py:meth:`morse.core.object.Object.frequency`.
+To run a component at a lower frequency, Morse will skip call to
+``default_action`` to match desired frequency, as specified in the builder
+script (using
+:py:meth:`morse.builder.abstractcomponent.AbstractComponent.frequency`).
+Internally, The execution frequency of the sensor | actuator | robot  can be
+retrieved using the property :py:meth:`morse.core.object.Object.frequency`.
 
 Time management related settings
 --------------------------------
