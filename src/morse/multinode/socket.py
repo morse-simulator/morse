@@ -1,5 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import mathutils
+import time
 
 from morse.core import blenderapi
 from morse.core.multinode import SimulationNodeClass
@@ -19,6 +20,7 @@ class SocketNode(SimulationNodeClass):
         """
         self.node_stream = None
         self.poll_thread = None
+        self.simulation_time = blenderapi.persistantstorage().time
         logger.debug("Connecting to %s:%d" % (self.host, self.port) )
         try:
             self.node_stream = StreamJSON(self.host, self.port)
@@ -51,6 +53,7 @@ class SocketNode(SimulationNodeClass):
             euler_rotation = obj.worldOrientation.to_euler()
             self.out_data[obj.name] = [obj.worldPosition.to_tuple(), \
                 [euler_rotation.x, euler_rotation.y, euler_rotation.z]]
+        self.out_data['__time'] = [self.simulation_time.time, 1.0/ blenderapi.getfrequency(), self.simulation_time.real_time]
         # Send the encoded dictionary through a socket
         #  and receive a reply with any changes in the other nodes
         in_data = self._exchange_data(self.out_data)
