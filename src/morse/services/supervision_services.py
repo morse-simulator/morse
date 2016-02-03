@@ -174,6 +174,7 @@ class Supervision(AbstractObject):
 
 
         details['robots'] = [robotdetails(r) for n, r in simu.robotDict.items()]
+        details['environment'] = blenderapi.getssr()['environment_file']
         return details
 
 
