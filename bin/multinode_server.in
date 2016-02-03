@@ -62,16 +62,31 @@ class MorseNode(object):
         client_name   = message[0]
         client_robots = message[1]
         try:
-            self.handle_robots(client_robots)
+            self.handle_robots(client_name, client_robots)
         except Exception as e:
             logger.warning("error while processing data from %s" % client_name)
         logger.debug("%s"%str(message))
 
-    def handle_robots(self, client_robots):
+    def handle_robots(self, client_name, client_robots):
         # Build/update the list of robots from
-        #  the data received from all the clients
+        # the data received from all the clients
+        # XXX The special key __time is not a robot, but some specific
+        # time information. Process them differently
         for robot_name, robot_position in client_robots.items():
-            if type(robot_name) is str and check_pose(*robot_position):
+            if type(robot_name) is str and robot_name == '__time':
+                simulated_time, dt, real_time = robot_position
+                if '__time' in self._master.robots:
+                    # Here, we are supposed to test that messages are
+                    # well-ordered, but, it does not seem to work really
+                    # correctly for now, at least for two Blender local
+                    # nodes
+                    # current_time = self._master.robots['__time']
+                    # if simulated_time + dt < current_time[0]:
+                    #     logger.warning("%s seems to be late in the federation (last %f, received %f)" \
+                    #             % (client_name, current_time[0], simulated_time))
+                    pass
+                self._master.robots[robot_name] = robot_position
+            elif type(robot_name) is str and check_pose(*robot_position):
                 self._master.robots[robot_name] = robot_position
             else:
                 logger.info("received unexpected robot data, discarding.")
@@ -80,7 +95,8 @@ class MorseNode(object):
         # do not send back the data we just received
         data = self._master.robots.copy()
         for robot in client_robots.keys():
-            del data[robot] # faster than: data.pop(robot)
+            if robot is not '__time':
+                del data[robot] # faster than: data.pop(robot)
         self._stream.publish(data)
 
 def main(argv):
