@@ -6,7 +6,7 @@ morse_sync manual page
 Synopsis
 --------
 
-**morse_sync** [-h] [-H host] [-P port] [-t timeout]  -p <period> 
+**morse_sync** [-h] [-d] [-H host] [-P port] [-t timeout]  -p <period> 
 
 Description
 -----------
@@ -26,6 +26,8 @@ commands:
 Options
 -------
 
+:-d, --debug: 
+        Enable debug information
 :-H, --host <host>:
         Configure the host where Morse is running
 :-P, --port <port>:

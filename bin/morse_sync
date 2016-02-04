@@ -7,6 +7,15 @@ import sys
 import threading
 import re
 
+import logging
+
+# initialize the logger
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter( logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] %(message)s') )
+logger.addHandler( handler )
+logger.setLevel(logging.INFO)
+
 quit = False
 # lock is used to protect the PeriodController call
 lock = threading.Lock()
@@ -16,6 +25,7 @@ class SyncSocket:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.dest = (host, port)
         self.timeout = timeout
+        self.last_call = time.time()
 
     def connect(self):
         begin = time.time()
@@ -30,6 +40,9 @@ class SyncSocket:
 
     def send(self):
         self.sock.send(b'sync')
+        now = time.time()
+        logger.debug("Send sync message after %f" % (now - self.last_call))
+        self.last_call = now
 
 
 class InputThread(threading.Thread):
@@ -57,7 +70,7 @@ class InputThread(threading.Thread):
         if set_period_match:
             new_period = float(set_period_match.group(1))
             if new_period < 0.0:
-                print("Invalid period value %f" % new_period)
+                logger.error("Invalid period value %f" % new_period)
                 return
 
             global lock
@@ -112,8 +125,12 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--timeout', default=10.0, help="connect timeout (in s)", type=float)
     parser.add_argument('-H', '--host', default="localhost", help="MORSE socket sync addr")
     parser.add_argument('-P', '--port', default=6000, help="MORSE socket sync port", type=int)
+    parser.add_argument('-d', '--debug', action='store_true', help="Enable debug information")
 
     args = parser.parse_args()
+
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
 
     s = SyncSocket(args.timeout, args.host, args.port)
 
@@ -123,7 +140,9 @@ if __name__ == '__main__':
     period_ctrl = PeriodController(args.period)
 
     if not s.connect():
-        print("Failed to connect to (%s, %s)" % (args.host, args.port))
+        logger.error("Failed to connect to (%s, %s)" % (args.host, args.port))
+        quit = True
+        input_thr.join()
         sys.exit()
 
     while not quit:
