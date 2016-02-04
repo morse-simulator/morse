@@ -3,6 +3,7 @@ import socket
 import select
 import json
 import errno
+import time
 from morse.core.datastream import DatastreamManager
 from morse.helpers.transformation import Transformation3d
 from morse.middleware import AbstractDatastream
@@ -207,6 +208,9 @@ class SocketDatastreamManager(DatastreamManager):
         if self._sync_client:
             logger.debug("Waiting trigger")
             msg = self._sync_client.recv(2048)
+            now = time.time()
+            logger.debug('Synced after %f' % (now - self._last_sync_time))
+            self._last_sync_time = now
             if not msg: #deconnection of client
                 self._sync_client = None
         else:
@@ -223,6 +227,7 @@ class SocketDatastreamManager(DatastreamManager):
 
             if self._sync_server in inputready:
                 self._sync_client, _ = self._sync_server.accept()
+                self._last_sync_time = time.time()
 
     def _end_trigger(self):
         self._sync_client.close()
