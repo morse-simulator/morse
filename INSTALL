@@ -1,6 +1,11 @@
 ===============================================================================
-                         Modular OpenRobots Simulator Engine
-                       (c) LAAS/ONERA 2009-2010 LAAS 2011-2015
+                     Modular OpenRobots Simulator Engine
+                       Copyright (c) 2009-2010 ONERA
+                       Copyright (c) 2009-2016 LAAS-CNRS
+                       Copyright (c) 2015-2016 ISAE-SUPAERO
+    Copyright held by the MORSE authors or the institutions employing them,
+    refer to the AUTHORS file for the list. The list of the contributors to 
+    each file can be obtained from the commit history ('git log <file>').
 ===============================================================================
 
 
@@ -74,8 +79,8 @@ you want to use HLA, you have to first install the CERTI and PyHLA packages.
 Manual installation
 -------------------
 
-	The directory where MORSE is installed will be referred to as $MORSE_ROOT
-	in this document.
+    The directory where MORSE is installed will be referred to as $MORSE_ROOT
+    in this document.
 
     It is recommended to store this environment variable, as it is necessary to
     use the Builder API scripts to generate simulation
