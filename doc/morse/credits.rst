@@ -16,7 +16,7 @@ LAAS-CNRS (Toulouse, France)
 - Gregoire Milliez
 - Pierrick Koch
 - Matthieu Herrb
-- Harmish khambhaita
+- Harmish Khambhaita
 
 TUM (Munich, Germany)
 +++++++++++++++++++++
