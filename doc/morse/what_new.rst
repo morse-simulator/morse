@@ -67,6 +67,9 @@ Actuators
   apply external force (typically force from the environment such as wind) to
   a robot. It has the same interface than :doc:`user/actuators/force_torque`,
   but apply force in the global frame.
+- Introduce the :doc:`user/actuators/quadrotor_dynamic_control` actuator which
+  allows to control a quadrotor from the speed of its four engine, using
+  simple dynamic equation.
 
 
 Sensors
@@ -87,7 +90,8 @@ Sensors
   when it is actually colliding (before, any object in a 1x1x1m box around the
   sensor would return a collision). While here, improve the documentation with a
   complete example.
-
+- Introduce the sensor :doc:`user/sensors/airspeed`, which allows to compute
+  the speed of a vehicle relative to the air.
 
 Modifiers
 +++++++++
