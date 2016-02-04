@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(PACKAGE_NAME morse)
-set(PACKAGE_VERSION "1.3")
+set(PACKAGE_VERSION "1.4")
 
 project(${PACKAGE_NAME})
 
