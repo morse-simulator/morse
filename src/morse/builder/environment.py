@@ -816,6 +816,14 @@ class Environment(AbstractComponent):
         """
         bpymorse.get_context_scene().game_settings.vsync = vsync
 
+    def use_relative_time(self, relative_time):
+        """ Configure if Morse should exports relative time (time since
+        Morse start) or "absolute" start (time since Epoch)
+        """
+        self.properties(use_relative_time = relative_time)
+
+
+
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
