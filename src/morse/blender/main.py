@@ -296,6 +296,30 @@ def check_dictionaries():
     logger.info("------------------------------------")
     logger.info ("")
 
+def load_datastream_manager(datastream_name):
+    datastream_instance = persistantstorage.stream_managers.get(datastream_name, None)
+    if not datastream_instance:
+        kwargs = component_config.stream_manager.get(datastream_name, {})
+        try:
+            datastream_instance = create_instance(datastream_name, None, kwargs)
+        except Exception as e:
+            logger.error("Catched exception %s in the construction of %s" %
+                         (e, datastream_name))
+            return None 
+
+        if datastream_instance:
+            persistantstorage.stream_managers[datastream_name] = datastream_instance
+            logger.info("\tDatastream interface '%s' created" % datastream_name)
+        else:
+            logger.error("INITIALIZATION ERROR: Datastream '%s' module"
+                         " could not be found! \n"
+                         " Could not import modules required for the "
+                         "desired datastream interface. Check that "
+                         "they can be found inside your PYTHONPATH "
+                         "variable." % datastream_name)
+            return None
+    return datastream_instance
+
 def link_datastreams():
     """ Read the configuration script (inside the .blend file)
         and assign the correct datastream and options to each component. """
@@ -337,28 +361,9 @@ def link_datastreams():
             datastream_name = datastream_data[0]
             logger.info("Component: '%s' using datastream '%s'" % (component_name, datastream_name))
 
-            # Look for the listed datastream in the dictionary of active datastream's
-            datastream_instance = persistantstorage.stream_managers.get(datastream_name, None)
-            if not datastream_instance:
-                kwargs = component_config.stream_manager.get(datastream_name, {})
-                try:
-                    datastream_instance = create_instance(datastream_name, None, kwargs)
-                except Exception as e:
-                    logger.error("Catched exception %s in the construction of %s" %
-                                 (e, datastream_name))
-                    return False
-
-                if datastream_instance:
-                    persistantstorage.stream_managers[datastream_name] = datastream_instance
-                    logger.info("\tDatastream interface '%s' created" % datastream_name)
-                else:
-                    logger.error("INITIALIZATION ERROR: Datastream '%s' module"
-                                 " could not be found! \n"
-                                 " Could not import modules required for the "
-                                 "desired datastream interface. Check that "
-                                 "they can be found inside your PYTHONPATH "
-                                 "variable." % datastream_name)
-                    return False
+            datastream_instance = load_datastream_manager(datastream_name)
+            if not datastream_name:
+                return False
 
             datastream_instance.register_component(component_name, instance, datastream_data)
 
@@ -526,10 +531,13 @@ def init_multinode():
 class MorseSyncProcess:
     def __init__(self):
         args = ['morse_sync', '-p', str(1.0/morse.core.blenderapi.getfrequency())]
-        socket_properties = component_config.stream_manager['morse.middleware.socket_datastream.SocketDatastreamManager']
+        socket_manager = 'morse.middleware.socket_datastream.SocketDatastreamManager'
+        socket_properties = component_config.stream_manager[socket_manager]
         if 'sync_port' in socket_properties:
             args = args + ['-P', str(socket_properties['sync_port'])]
         self.proc = Popen(args, stdin=PIPE)
+        # always load datastream manager if we use use_internal_syncer
+        load_datastream_manager(socket_manager)
 
     def set_period(self, new_value):
         msg = "set_period " + str(new_value) + "\n\n"
