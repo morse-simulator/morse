@@ -14,17 +14,23 @@ At the moment, it provides two implementations:
 import logging
 logger = logging.getLogger("morse." + __name__)
 import time
+import copy
 from morse.core import blenderapi
 from morse.helpers.statistics import Stats
 
 
 class BestEffortStrategy:
-    def __init__ (self):
-        self.time = time.time()
+    def __init__ (self, relative_time):
+        if relative_time:
+            self.time = 0.0
+            self._real_time_offset = time.time()
+        else:
+            self.time = time.time()
+            self._real_time_offset = 0.0
+        self._time_offset = copy.copy(self.time)
 
         self._stat_jitter = Stats()
         self._stat_nb_frame = Stats()
-        self._time_offset = time.time()
         self._time_frame = 0.0
         self._last_time = 0.0
         self._nb_frame = 0
@@ -101,10 +107,19 @@ class BestEffortStrategy:
             else:
                 self._nb_frame = self._nb_frame + 1
 
+    @property
+    def real_time(self):
+        return time.time() - self._real_time_offset
+
 class FixedSimulationStepStrategy:
-    def __init__ (self):
-        self.time = time.time()
-        self._time_offset = time.time()
+    def __init__ (self, relative_time):
+        if relative_time:
+            self.time = 0.0
+            self._real_time_offset = time.time()
+        else:
+            self.time = time.time()
+            self._real_time_offset = 0.0
+        self._time_offset = copy.copy(self.time)
         self._incr = 1.0 / blenderapi.getfrequency()
 
         self._stat_jitter = Stats()
@@ -124,6 +139,10 @@ class FixedSimulationStepStrategy:
 
     def name (self):
         return 'Fixed Simulation Step'
+
+    @property
+    def real_time(self):
+        return time.time() - self._real_time_offset
 
     @property
     def mean(self):
@@ -161,9 +180,9 @@ class TimeStrategies:
         }
 
     @staticmethod
-    def make(strategy):
+    def make(strategy, use_relative_time):
         try:
-            return TimeStrategies.internal_mapping[strategy]["impl"]()
+            return TimeStrategies.internal_mapping[strategy]["impl"](use_relative_time)
         except KeyError:
             return None
     @staticmethod

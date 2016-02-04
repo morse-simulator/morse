@@ -557,7 +557,8 @@ def init(contr):
     logger.info("PID: %d" % os.getpid())
 
     persistantstorage.morse_initialised = False
-    persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'])
+    persistantstorage.time = TimeStrategies.make(morse.core.blenderapi.getssr()['time_management'],
+                                                 morse.core.blenderapi.getssr().get('use_relative_time', False))
     # Variable to keep trac of the camera being used
     persistantstorage.current_camera_index = 0
 
