@@ -328,5 +328,21 @@ class Supervision(AbstractObject):
         blender_object = get_obj_by_name('CameraFP')
         return [list(vec) for vec in blender_object.projection_matrix]
 
+    @service
+    def set_object_position(self, object_name, position, orientation = None):
+        """ Set the position (and optionally orientation of an object in
+            the simulation. [x, y, z]
+
+             :param position: The objects's world position. [x, y, z].
+             :type  position: list(float)
+             :param orientation: (optional) The object's world
+             orientation [roll pitch yaw] in radians
+             :type: orientation: list(float)
+        """
+        blender_object = get_obj_by_name(object_name)
+        blender_object.worldPosition = position
+        if orientation:
+            blender_object.worldOrientation = orientation
+
     def action(self):
         pass

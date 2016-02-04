@@ -51,6 +51,9 @@ Available services
   physic level)
 - ``set_object_dynamics`` ``cmpnt`` (string) ``state`` (bool): enable or
   disable the dynamics (physics) associated to component ``cmpnt``.
+- ``set_object_position`` ``cmpnt`` (string) ``[x, y, z]`` (list) ``[roll
+  pitch yaw]`` (optional list): move the object referenced by ``cmpnt`` to the
+  specified ``position`` and optionally ``orientation``.
 - ``set_camarafp_far_clip`` Set the CamaraFP (MORSE' environment camera) far
   clipping distance. (float)
 - ``set_camarafp_position`` Set the CamaraFP world position. [x, y, z]
