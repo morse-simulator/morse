@@ -23,8 +23,9 @@ class MorseAmbassador(MorseBaseAmbassador):
     The Federate Ambassador of the MORSE node.
     
     """
-    def __init__(self, rtia, federation, time_regulation):
-        MorseBaseAmbassador.__init__(self, rtia, federation, time_regulation)
+    def __init__(self, rtia, federation, time_regulation, timestep, lookahead):
+        MorseBaseAmbassador.__init__(self, rtia, federation, time_regulation,
+                                           timestep, lookahead)
         logger.debug("MorseAmbassador created.")
     
     def initialize(self):
@@ -50,7 +51,7 @@ class MorseAmbassador(MorseBaseAmbassador):
         in_robot = self.object_handle("Robot")
         self.in_position = self.attribute_handle("position", in_robot)
         self.in_orientation = self.attribute_handle("orientation", in_robot)
-        self.suscribe_attributes(in_robot, [self.in_position, self.in_orientation])
+        self.suscribe_attributes(obj.name, in_robot, [self.in_position, self.in_orientation])
 
     def discoverObjectInstance(self, object, objectclass, name):
         logger.info(
@@ -108,7 +109,7 @@ class HLANode(SimulationNodeClass):
             return
 
         scene = blenderapi.scene()
-        for obj in self.node.morse_ambassador.registred_objects:
+        for obj in self.node.morse_ambassador.registred_objects.values():
             obj_name = self.node.rtia.getObjectInstanceName(obj)
             obj_pos = scene.objects[obj_name].worldPosition.to_tuple()
             obj_ori = scene.objects[obj_name].worldOrientation.to_euler()
