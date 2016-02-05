@@ -65,6 +65,9 @@ Credits
 -------
 
 (c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2014 ISAE-SUPAERO/LAAS-CNRS 2015-2016
+Copyright held by the MORSE authors or the institutions employing them, refer
+to the AUTHORS file for the list. The list of the contributors to each file
+can be obtained from the commit history ('git log <file>').
 
 MORSE is developped by a large community of academics, with contributions from
 more that 15 universities world-wide.
