@@ -42,7 +42,10 @@ master_doc = 'morse'
 
 # General information about the project.
 project = u'MORSE'
-copyright = u'2009-2010, LAAS-CNRS/ONERA ; 2010-2014, LAAS-CNRS; 2015-2016, LAAS-CNRS/ISAE-SUPAERO, \
+copyright = u'\
+Copyright (c) 2009-2010 ONERA\n\
+Copyright (c) 2009-2016 LAAS-CNRS\n\
+Copyright (c) 2015-2016 ISAE-SUPAERO\n\
 Copyright held by the MORSE authors or the institutions employing them, refer \
 to the AUTHORS file for the list. The list of the contributors to each file \
 can be obtained from the commit history (\'git log <file>\').'

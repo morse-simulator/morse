@@ -1,8 +1,9 @@
 The whole code of Morse is licensed under a BSD-3 clause license that you can
 find below:
 
-Copyright (c) 2009-2010, LAAS-CNRS / ONERA -- 2011-2014, LAAS-CNRS --
-2015-2016, LAAS-CNRS / ISAE-SUPAERO
+Copyright (c) 2009-2010 ONERA
+Copyright (c) 2009-2016 LAAS-CNRS
+Copyright (c) 2015-2016 ISAE-SUPAERO
 Copyright held by the MORSE authors or the institutions employing them, refer
 to the AUTHORS file for the list. The list of the contributors to each file
 can be obtained from the commit history ('git log <file>').

@@ -64,7 +64,9 @@ Feel free to fork, pull request or submit issues to improve the project!
 Credits
 -------
 
-(c) LAAS-CNRS/ONERA 2009-2010 LAAS-CNRS 2011-2014 ISAE-SUPAERO/LAAS-CNRS 2015-2016
+Copyright (c) 2009-2010 ONERA
+Copyright (c) 2009-2016 LAAS-CNRS
+Copyright (c) 2015-2016 ISAE-SUPAERO
 Copyright held by the MORSE authors or the institutions employing them, refer
 to the AUTHORS file for the list. The list of the contributors to each file
 can be obtained from the commit history ('git log <file>').
