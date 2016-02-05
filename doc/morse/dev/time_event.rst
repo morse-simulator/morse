@@ -120,7 +120,6 @@ settings are the following:
 - base_frequency is selected according to the faster component specified in
   the builder script
 - v-sync is disabled
-- **morse_sync** is enabled automatically.
 
 
 Accessing time

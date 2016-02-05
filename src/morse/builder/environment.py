@@ -316,7 +316,8 @@ class Environment(AbstractComponent):
         time_scale = self.property_value('time_scale')
         if self.auto_tune_time:
             self.use_vsync('OFF')
-            self.use_internal_syncer()
+            # notyet :D
+            # self.use_internal_syncer()
             if max_frequency_requested > base_frequency:
                 self.simulator_frequency(max_frequency_requested)
         else:

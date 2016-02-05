@@ -520,6 +520,15 @@ x1.5 real-time. It means that, during 1 real-time second, Morse will simulation
 1.5 second. Accordingly, the pose sensor, for instance, will produce reading at
 1.5 X 200 = 300Hz. The physics engine will accordingly run faster, etc.
 
+If you note that sensors do not publish data at a really stable rate, you can
+enable **morse_sync**. It may lead to some graphical frame lose, but it will
+improve the stability of the sensor rate.
+
+.. code-block:: python
+
+    ...
+    env.use_internal_syncer()
+
 Handling more complex scenario
 ++++++++++++++++++++++++++++++
 
