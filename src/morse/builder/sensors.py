@@ -521,8 +521,13 @@ class Kinect(CompoundSensor):
         self.depth_camera.profile()
     def frequency(self, frequency):
         # Override AbstractComponent method
-        self.video_camera.frequency(frequency)
-        self.depth_camera.frequency(frequency)
+
+        # XXX frequency() is called in SensorCreator, while the
+        # sub-objects are not yet created. Through, it is not too bad,
+        # as the different sub-objects have specific default frequency.
+        if hasattr(self, 'video_camera'):
+            self.video_camera.frequency(frequency)
+            self.depth_camera.frequency(frequency)
 
 class Collision(SensorCreator):
     _classpath = "morse.sensors.collision.Collision"
