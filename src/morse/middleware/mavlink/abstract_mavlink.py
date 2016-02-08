@@ -56,9 +56,18 @@ class MavlinkActuator(MavlinkDatastream):
         pass
 
     def default(self, ci = 'unused'):
+        last_msg = None
+        missed = -1
         self._msg = self._conn.recv_msg()
-        if not self._msg:
+        while self._msg:
+            last_msg = self._msg
+            self._msg = self._conn.recv_msg()
+            missed += 1
+        if not last_msg:
             return False
+        self._msg = last_msg
+        if missed != 0:
+            logger.warning('Dropped %d messages' % missed)
         logger.debug('Received %s' % self._msg)
         self.process_msg()
         return True
