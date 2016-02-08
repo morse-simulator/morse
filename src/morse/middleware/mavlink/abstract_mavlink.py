@@ -58,7 +58,7 @@ class MavlinkActuator(MavlinkDatastream):
     def default(self, ci = 'unused'):
         last_msg = None
         missed = -1
-        self._msg = self._conn.recv_msg()
+        self._msg = self._conn.recv_match(type=self._type_name, blocking=False)
         while self._msg:
             last_msg = self._msg
             self._msg = self._conn.recv_msg()
