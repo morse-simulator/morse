@@ -111,6 +111,19 @@ ROS
   with the non-standard (and unused?) JointPositions message and removing
   references roslib.load_manifest(), a memory of rosbuild-era.
 
+HLA
++++
+
+- Handle automatically the case where attributed published by Morse are not
+  owned by it.
+- Allow to specify a ``stop_time`` for the simulation (in simulated seconds)
+- Make ``lookahead`` configurable for the Morse federate
+
+YARP
+++++
+
+- Add an adapter for Depth Cameras.
+
 Builder API
 -----------
 
