@@ -84,11 +84,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
 
         logger.debug("get_wheels %s" % self._wheels)
 
-        # Add a free rotating wheel if indicated in the robot
-        if caster_wheel_name and caster_wheel_name != 'None':
-            wheel = scene.objects[caster_wheel_name]
-            wheel_position = mathutils.Vector(wheel.worldPosition)
-            self.attach_wheel_to_body(wheel, self.bge_object, wheel_position)
 
     def get_track_width(self):
         # get lateral positions of the wheels
@@ -208,13 +203,19 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
                     self._wheels[index], self.bge_object,
                     self._wheel_positions[index])
 
+        # Add a free rotating wheel if indicated in the robot
+        scene = blenderapi.scene()
+        caster_wheel_name = self.bge_object.get('CasterWheelName', None)
+        if caster_wheel_name and caster_wheel_name != 'None':
+            wheel = scene.objects[caster_wheel_name]
+            self.attach_wheel_to_body(wheel, self.bge_object, wheel.worldPosition)
+
     def attach_wheel_to_body(self, wheel, parent, wheel_pos):
         """ Attaches the wheel to the given parent using a 6DOF constraint
 
         Set the wheel positions relative to the robot in case the
         chassis was moved by the builder script or manually in blender
         """
-
         result = parent.getVectTo(wheel)
         ## result is a unit vector (result[2]) and a length(result[0])
         ## multiply them together to get the complete vector
