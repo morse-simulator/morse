@@ -28,8 +28,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
     def __init__(self, obj, parent):
         morse.core.robot.Robot.__init__(self, obj, parent)
         self._wheels = {}
-        self._wheel_positions = {}
-        self._wheel_orientations = {}
         self._wheel_joints = {}
 
     def action(self):
@@ -40,7 +38,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         self.position_3d.update_Y_forward(self.bge_object)
 
         self.default_action()
-
 
     def get_wheels(self):
         # get pointers to and physicsIds of all objects
@@ -60,40 +57,21 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
             #  of the parent robot
             try:
                 wheel = scene.objects[self.bge_object[name]]
-            except:
-                #import traceback
-                #traceback._exc()
-                wheel = None
-
-            if wheel:
                 self._wheels[index] = wheel
                 logger.info("\tWheel %s: %s" % (index, wheel.name))
-                self._wheel_positions[index] = \
-                    mathutils.Vector(wheel.worldPosition)
-                self._wheel_orientations[index] = \
-                    mathutils.Matrix(wheel.worldOrientation)
-                # Make the wheels orphans
                 wheel.removeParent()
-                # Keep their transformations
-                #wheel.worldPosition = self._wheel_positions[index]
-                #wheel.worldOrientation = self._wheel_orientations[index]
 
                 # get wheel radius if not already computed
                 if wheel.name != caster_wheel_name and not self._wheel_radius:
                     self._wheel_radius = self.get_wheel_radius(self.bge_object[name])
+            except:
+                pass
 
         logger.debug("get_wheels %s" % self._wheels)
 
-
     def get_track_width(self):
-        # get lateral positions of the wheels
-        pos_l = self._wheel_positions['FL']
-        pos_r = self._wheel_positions['FR']
-
-        diff_x = pos_l[0] - pos_r[0]
-        diff_y = pos_l[1] - pos_r[1]
-        diff_z = pos_l[2] - pos_r[2]
-        return sqrt( diff_x ** 2 + diff_y ** 2 + diff_z ** 2)
+        vec = self._wheels['FL'].getVectTo(self._wheels['FR'])
+        return vec[0]
 
     def get_wheel_radius(self, wheel_name):
         dims = blenderapi.objectdata(wheel_name).dimensions
@@ -200,17 +178,16 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         """ Add all the constraints to attach the wheels to the body """
         for index in self._wheels.keys():
             self._wheel_joints[index] = self.attach_wheel_to_body(
-                    self._wheels[index], self.bge_object,
-                    self._wheel_positions[index])
+                    self._wheels[index], self.bge_object)
 
         # Add a free rotating wheel if indicated in the robot
         scene = blenderapi.scene()
         caster_wheel_name = self.bge_object.get('CasterWheelName', None)
         if caster_wheel_name and caster_wheel_name != 'None':
             wheel = scene.objects[caster_wheel_name]
-            self.attach_wheel_to_body(wheel, self.bge_object, wheel.worldPosition)
+            self.attach_wheel_to_body(wheel, self.bge_object)
 
-    def attach_wheel_to_body(self, wheel, parent, wheel_pos):
+    def attach_wheel_to_body(self, wheel, parent):
         """ Attaches the wheel to the given parent using a 6DOF constraint
 
         Set the wheel positions relative to the robot in case the
