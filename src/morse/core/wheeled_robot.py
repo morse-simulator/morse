@@ -88,7 +88,7 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         if caster_wheel_name and caster_wheel_name != 'None':
             wheel = scene.objects[caster_wheel_name]
             wheel_position = mathutils.Vector(wheel.worldPosition)
-            self.attach_caster_wheel_to_body(wheel, self.bge_object, wheel_position)
+            self.attach_wheel_to_body(wheel, self.bge_object, wheel_position)
 
     def get_track_width(self):
         # get lateral positions of the wheels
@@ -238,30 +238,6 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         joint.setParam(5, 0.0, 0.0) # no rotation about Z axis - min=0, max=0
         return joint # return a reference to the constraint
 
-    def attach_caster_wheel_to_body(self, wheel, parent, wheel_pos):
-        """ Attaches a freely rotating wheel to the given parent
-        using a 6DOF constraint. It can also rotate around the Z axis """
-
-        result = parent.getVectTo(wheel)
-        ## result is a unit vector (result[2]) and a length(result[0])
-        ## multiply them together to get the complete vector
-        wheel_pos = result[0] * result[2]
-
-        logger.debug("Added caster wheel '%s' at ('%f','%f','%f')" %
-                (wheel.name, wheel_pos[0], wheel_pos[1], wheel_pos[2]))
-
-        # create constraint to allow wheel to spin
-        joint = blenderapi.constraints().createConstraint(
-                parent.getPhysicsId(),  # get physics ID of the parent object
-                wheel.getPhysicsId(),   # get physics ID of the wheel object
-                12,                     # 6dof constraint
-                wheel_pos[0], wheel_pos[1], wheel_pos[2],  # pivot position
-                0, 0, 0,                  # pivot axis
-                128)    # flag, 128=disable collision between wheel and parent
-        # no parameters are set on x and z axis to allow full rotation about it
-        joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
-        joint.setParam(5, 0.0, 0.0) # no rotation about Z axis - min=0, max=0
-        return joint # return a reference to the constraint
 
     def apply_vw_wheels(self, vx, vw):
         """ Apply (v, w) to the parent robot. """
