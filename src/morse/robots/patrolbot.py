@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
-class PatrolBot(morse.core.wheeled_robot.MorsePhysicsRobot):
+class PatrolBot(morse.core.wheeled_robot.PhysicsDifferentialRobot):
     """
     The Research PatrolBot, developed by MobileRobots, is a
     differential-drive robot to carry payloads and sensors over all
@@ -15,7 +15,7 @@ class PatrolBot(morse.core.wheeled_robot.MorsePhysicsRobot):
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
         logger.info('%s initialization' % obj.name)
-        morse.core.wheeled_robot.MorsePhysicsRobot.__init__(self, obj, parent)
+        morse.core.wheeled_robot.PhysicsDifferentialRobot.__init__(self, obj, parent)
 
         logger.info('Component initialized')
 

@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 
-class Pioneer3DX(morse.core.wheeled_robot.MorsePhysicsRobot):
+class Pioneer3DX(morse.core.wheeled_robot.PhysicsDifferentialRobot):
     """ 
     This robot uses the Physics Constraints in Blender to allow the wheels to
     behave more realistically. The wheels turn as the robot moves, and they have
@@ -24,7 +24,7 @@ class Pioneer3DX(morse.core.wheeled_robot.MorsePhysicsRobot):
         logger.info('%s initialization' % obj.name)
 
         # Call the constructor of the parent class
-        morse.core.wheeled_robot.MorsePhysicsRobot.__init__(self, obj, parent)
+        morse.core.wheeled_robot.PhysicsDifferentialRobot.__init__(self, obj, parent)
 
         logger.info('Component initialized')
 
