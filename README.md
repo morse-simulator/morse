@@ -3,7 +3,7 @@
 MORSE: the Modular Open Robots Simulator Engine
 ===============================================
 
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.14087.svg)](http://dx.doi.org/10.5281/zenodo.14087) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45965.svg)](http://dx.doi.org/10.5281/zenodo.45965) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
 
 
 ![MORSE screenshot 1](doc/media/morse_ros_navigation.png)
@@ -81,4 +81,3 @@ within the ROSACE project framework, and by DGA <http://www.defense.gouv.fr/dga>
 through the ACTION <http://action.onera.fr> project.
 
 ![MORSE screenshot 2](doc/media/treasure.jpg)
-
