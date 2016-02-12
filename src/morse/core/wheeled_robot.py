@@ -1,9 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from abc import ABCMeta
-from math import sqrt
 import morse.core.robot
 from morse.core import blenderapi
-from morse.core import mathutils
 from morse.helpers.components import add_property
 
 class PhysicsWheelRobot(morse.core.robot.Robot):
@@ -30,20 +28,11 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         self._wheels = {}
         self._wheel_joints = {}
 
-    def action(self):
-        """ Overload the 'action' method of the Robot
-            This one will compute the transformations considering the different
-            axis orientation used by this kind of robots """
-        # Update the component's position in the world
-        self.position_3d.update_Y_forward(self.bge_object)
-
-        self.default_action()
-
     def get_wheels(self):
-        # get pointers to and physicsIds of all objects
-        # get wheel pointers - needed by wheel speed sensors and to
-        # set up constraints
-        # bullet vehicles always have 4 wheels
+        """
+        Get pointers to and physicsIds of all objects
+        Compute wheel_radius too
+        """
         scene = blenderapi.scene()
 
         self._wheel_radius = None
@@ -193,38 +182,32 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
         Set the wheel positions relative to the robot in case the
         chassis was moved by the builder script or manually in blender
         """
-        result = parent.getVectTo(wheel)
-        ## result is a unit vector (result[2]) and a length(result[0])
-        ## multiply them together to get the complete vector
-        wheel_pos = result[0] * result[2]
-
-        logger.debug("Added wheel '%s' at ('%f','%f','%f')" %
-                (wheel.name, wheel_pos[0], wheel_pos[1], wheel_pos[2]))
-
         # create constraint to allow wheel to spin
         # For an explanation on the parameters, see:
         # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
         joint = blenderapi.constraints().createConstraint(
-                parent.getPhysicsId(),  # get physics ID of the parent object
                 wheel.getPhysicsId(),   # get physics ID of the wheel object
+                parent.getPhysicsId(),  # get physics ID of the parent object
                 12,                     # 6dof constraint
-                wheel_pos[0], wheel_pos[1], wheel_pos[2],  # pivot position
+                0.0, 0.0, 0.0,          # Pivot around the center of the wheel
                 0,0,0,                  # pivot axis
                 128)    # flag, 128=disable collision between wheel and parent
         # no parameters are set on x axis to allow full rotation about it
+        joint.setParam(3, 0.0, 0.0) # no rotation about X axis - min=0, max=0
         joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
-        joint.setParam(5, 0.0, 0.0) # no rotation about Z axis - min=0, max=0
         return joint # return a reference to the constraint
 
 
     def apply_vw_wheels(self, vx, vw):
         """ Apply (v, w) to the parent robot. """
 
+        angle_control = 11 # Z axis angle
+
         # calculate desired wheel speeds and set them
         if abs(vx) < 0.001 and abs(vw) < 0.001:
             # stop the wheel when velocity is below a given threshold
             for index in self._wheels.keys():
-                self._wheel_joints[index].setParam(9, 0, 100.0)
+                self._wheel_joints[index].setParam(angle_control, 0, 100.0)
 
             self._stopped = True
         else:
@@ -239,23 +222,23 @@ class MorsePhysicsRobot(PhysicsWheelRobot):
             self._stopped = False
 
             # Another formula for computing left and right wheel speeds:
-            # http://arri.uta.edu/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
+            # http://www.uta.edu/utari/acs/jmireles/Robotics/KinematicsMobileRobots.pdf
             v_ws_l = vx - (self._trackWidth / 2.0) * vw
             v_ws_r = vx + (self._trackWidth / 2.0) * vw
 
             # convert to angular speeds
-            w_ws_l = v_ws_l / self._wheel_radius
-            w_ws_r = v_ws_r / self._wheel_radius
+            w_ws_l =   -1.0 * v_ws_l / self._wheel_radius
+            w_ws_r =   -1.0 * v_ws_r / self._wheel_radius
 
             # set wheel speeds - front and rear wheels have the same speed
             # Left side wheels
-            self._wheel_joints['FL'].setParam(9, w_ws_l, 100.0)
+            self._wheel_joints['FL'].setParam(angle_control, w_ws_l, 100.0)
             if 'RL' in self._wheels:
-                self._wheel_joints['RL'].setParam(9, w_ws_l, 100.0)
+                self._wheel_joints['RL'].setParam(angle_control, w_ws_l, 100.0)
             # Right side wheels
-            self._wheel_joints['FR'].setParam(9, w_ws_r, 100.0)
+            self._wheel_joints['FR'].setParam(angle_control, w_ws_r, 100.0)
             if 'RR' in self._wheels:
-                self._wheel_joints['RR'].setParam(9, w_ws_r, 100.0)
+                self._wheel_joints['RR'].setParam(angle_control, w_ws_r, 100.0)
 
             logger.debug("New speeds set: left=%.4f, right=%.4f" %
                          (w_ws_l, w_ws_r))

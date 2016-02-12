@@ -275,11 +275,3 @@ class WheeledRobot(GroundRobot):
 
     def after_renaming(self):
         self.unparent_wheels()
-        for obj in self.children:
-            old = obj._bpy_object.rotation_euler
-            obj._bpy_object.rotation_euler = (old[0], old[1], old[2]+math.pi/2)
-
-            # Switch the values of X and Y location
-            tmp_x = obj._bpy_object.location[0]
-            obj._bpy_object.location[0] = -obj._bpy_object.location[1]
-            obj._bpy_object.location[1] = tmp_x
