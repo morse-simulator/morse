@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.wheeled_robot
 from morse.helpers.components import add_property
 
-class SegwayRMP400(morse.core.wheeled_robot.MorsePhysicsRobot):
+class SegwayRMP400(morse.core.wheeled_robot.PhysicsDifferentialRobot):
     """
     Simple definition of the RMP400 platform distributed by Segway.
 
@@ -29,7 +29,7 @@ class SegwayRMP400(morse.core.wheeled_robot.MorsePhysicsRobot):
         logger.info('%s initialization' % obj.name)
 
         # Call the constructor of the parent class
-        morse.core.wheeled_robot.MorsePhysicsRobot.__init__(self, obj, parent)
+        morse.core.wheeled_robot.PhysicsDifferentialRobot.__init__(self, obj, parent)
 
         logger.info('Component initialized')
 

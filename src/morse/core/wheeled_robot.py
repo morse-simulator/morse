@@ -69,10 +69,12 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
         return radius
 
 
-class MorsePhysicsRobot(PhysicsWheelRobot):
-    """ Basic Class for robots using individual physics constraints
+class PhysicsDifferentialRobot(PhysicsWheelRobot):
+    """
+    Base class for mobile robots using a differential drive motion model.
 
-    Inherits from the base robot class.
+    This base class handles the simulation of the physical interactions
+    between differential-drive robots and the ground.
     """
 
     add_property('_fix_turning', 0.0, 'FixTurningSpeed', 'double', 
