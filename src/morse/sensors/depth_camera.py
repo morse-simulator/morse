@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status, mathutils
-import morse.core.blenderapi
 from morse.sensors.camera import Camera
 from morse.sensors.video_camera import VideoCamera
 from morse.helpers.components import add_data, add_property
@@ -38,7 +37,7 @@ class AbstractDepthCamera(VideoCamera):
             # Call the action of the Camera class
             Camera.default_action(self)
 
-            self.process_image(morse.core.blenderapi.cameras()[self.name()].source)
+            self.process_image(self.image_data)
 
             self.capturing = True
 
