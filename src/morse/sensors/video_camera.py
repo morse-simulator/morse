@@ -1,7 +1,6 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core.services import async_service
 from morse.core import status
-import morse.core.blenderapi
 from morse.core import mathutils
 import morse.sensors.camera
 from morse.helpers.components import add_data
@@ -110,14 +109,12 @@ class VideoCamera(morse.sensors.camera.Camera):
             # Call the action of the parent class
             morse.sensors.camera.Camera.default_action(self)
 
-            # NOTE: Blender returns the image as a binary string
-            #  encoded as RGBA
-            image_data = morse.core.blenderapi.cameras()[self.name()].source
 
             self.robot_pose = copy.copy(self.robot_parent.position_3d)
-
             # Fill in the exportable data
-            self.local_data['image'] = image_data
+            # NOTE: Blender returns the image as a binary string
+            #  encoded as RGBA
+            self.local_data['image'] = self.image_data
             self.capturing = True
 
             if self._n > 0:

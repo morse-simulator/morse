@@ -173,25 +173,6 @@ def render():
         return None
 
 
-def hascameras():
-    if not fake:
-        return hasattr(bge.logic, 'cameras')
-    else:
-        return None
-
-
-def initcameras():
-    if not fake:
-        bge.logic.cameras = {}
-
-
-def cameras():
-    if not fake:
-        return bge.logic.cameras
-    else:
-        return None
-
-
 def mousepointer(visible = True):
     if not fake:
         bge.logic.mouse.visible = visible
