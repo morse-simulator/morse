@@ -16,9 +16,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
                  'Determine if the underlaying robot has suspension, \
                   i.e. wheels can move independently of the body of the \
                   robot')
-    add_property('_has_steering', True, 'HasSteering', 'bool',
-                 'Determine if the wheels turn independently of the body \
-                  of the robot.')
 
     # Local dictionaries to store references to the wheels
     _wheel_index = ['FL', 'FR', 'RL', 'RR']
