@@ -129,9 +129,6 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
     def build_vehicle(self):
         """ Apply the constraints to the vehicle parts. """
 
-        # chassis ID - main object should be chassis model
-        self._chassis_ID = self.bge_object.getPhysicsId()
-
         # get track width
         self._trackWidth = self.get_track_width()
 
@@ -141,50 +138,6 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
             self.build_model_with_suspension()
         else:
             self.build_model_without_suspension()
-
-#    def build_model_with_suspension(self):
-#        """ Add all the constraints to attach the wheels to
-#        the a-arms and then the a-arms to the body """
-#        scene = blenderapi.scene()
-#        # get suspension arm ID's
-#        # front left A-arm
-#        try:
-#            if self.bge_object['ArmFLName']:
-#                self._armFL=scene.objects[self.bge_object['ArmFLName']]
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # front right A-arm
-#        try:
-#            if self.bge_object['ArmFRName']:
-#                self._armFR=scene.objects[self.bge_object['ArmFRName']]
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # rear left arm
-#        try:
-#            if self.bge_object['ArmRLName']:
-#                self._armRL=self.bge_object['ArmRLName']
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # rear right arm
-#        try:
-#            if self.bge_object['ArmRRName']:
-#                self._armRR=self.bge_object['ArmRRName']
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # put together front wheels and suspension
-#        self._wheelFLJoint=self.AttachWheelWithSuspension(self._wheelFL,self.bge_object,self._armFL)
-#        self._wheelFRJoint=self.AttachWheelWithSuspension(self._wheelFR,self.bge_object,self._armFR)
-#
-#        self._wheelRLJoint=self.AttachWheelWithSuspension(self._wheelRL,self.bge_object,self._armRL)
-#        self._wheelRRJoint=self.AttachWheelWithSuspension(self._wheelRR,self.bge_object,self._armRR)
 
     def build_model_without_suspension(self):
         """ Add all the constraints to attach the wheels to the body """
@@ -255,38 +208,6 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
             logger.debug("New speeds set: left=%.4f, right=%.4f" %
                          (w_ws_l, w_ws_r))
 
-
-
-    def AttachWheelWithSuspension(self, wheel, parent, suspensionArm):
-        """ Attaches the wheel to the a-arm and then the a-arm to the body """
-        # TODO: fill this in later - model after Bueraki code
-        pass
-
-#    def getWheelSpeeds(self):
-#        """ Returns the angular wheel velocity in rad/sec"""
-#        # true parameters tell it velocities are local
-#        # wheels should be rotating about local Z axis
-#        wsFL=self._wheelFL.getAngularVelocity(True)
-#        wsFR=self._wheelFR.getAngularVelocity(True)
-#        wsRL=self._wheelRL.getAngularVelocity(True)
-#        wsRR=self._wheelRR.getAngularVelocity(True)
-#        return [wsFL[2], wsFR[2], wsRL[2], wsRR[2]]
-#
-#    def getWheelAngle(self):
-#        """ Returns the accumulated wheel angle in radians"""
-#        # true parameters tell it velocities are local
-#        # wheels should be rotating about local Z axis
-#        wcFL=self._wheelFL.localOrientation.to_euler()
-#        wcFR=self._wheelFR.localOrientation.to_euler()
-#        wcRL=self._wheelRL.localOrientation.to_euler()
-#        wcRR=self._wheelRR.localOrientation.to_euler()
-#        return [wcFL[1], wcFR[1], wcRL[1], wcRR[1]]
-#
-#    def AttachWheelToWheel(self,wheel1,wheel2):
-#        # add both wheels on each side to each other but with no
-#        # constraints on their motion so that no collision can be set
-#        # between them
-#        pass
 
 class PhysicsAckermannRobot(PhysicsWheelRobot):
     """
