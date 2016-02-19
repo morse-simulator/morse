@@ -247,31 +247,20 @@ class WheeledRobot(GroundRobot):
         # Force Blender to update the transformation matrices of objects
         bpymorse.get_context_scene().update()
 
-        wheels = [child for child in self._bpy_object.children if \
-                  "wheel" in child.name.lower()]
-        wnames = ['None'] * 5
         keys = ['WheelFLName', 'WheelFRName', 'WheelRLName',
                 'WheelRRName', 'CasterWheelName']
         properties = bpymorse.get_properties(self._bpy_object)
-        for i in range(5):
-            key = keys[i]
+        for key in keys:
             expected_wheel = properties.get(key, None)
             if expected_wheel:
-                for wheel in wheels:
-                    if wheel.name.startswith(expected_wheel):
-                        wnames[i] = wheel.name
-
-        self.properties(WheelFLName = wnames[0], WheelFRName = wnames[1],
-                        WheelRLName = wnames[2], WheelRRName = wnames[3],
-                        CasterWheelName = wnames[4])
-        for wheel in wheels:
-            # Make a copy of the current transformation matrix
-            transformation = wheel.matrix_world.copy()
-            wheel.parent = None
-            wheel.matrix_world = transformation
-            # This method should be easier, but does not seem to work
-            #  because of an incorrect context error
-            #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+                wheel = self.get_child(expected_wheel)
+                if wheel:
+                    # Make a copy of the current transformation matrix
+                    transformation = wheel.matrix_world.copy()
+                    wheel.parent = None
+                    wheel.matrix_world = transformation
+                else:
+                    logger.error('Wheel %s is required but not found' % expected_wheel)
 
     def after_renaming(self):
         self.unparent_wheels()
