@@ -79,7 +79,7 @@ class Pioneer3DX(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "pioneer3dx", name)
         self.properties(classpath = "morse.robots.pioneer3dx.Pioneer3DX",
-                        HasSuspension = False, HasSteering = False,
+                        HasSuspension = False, 
                         Influence = 0.1, Friction = 0.8,
                         WheelFLName = "Wheel_L", WheelFRName = "Wheel_R",
                         WheelRLName = "None", WheelRRName = "None",
@@ -112,7 +112,7 @@ class SegwayRMP400(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "segwayrmp400", name)
         self.properties(classpath = "morse.robots.segwayrmp400.SegwayRMP400",
-                        HasSuspension = False, HasSteering = False,
+                        HasSuspension = False, 
                         Influence = 0.1, Friction = 0.8, FixTurningSpeed = 1.16,
                         WheelFLName = "wheel1", WheelFRName = "wheel2",
                         WheelRLName = "wheel3", WheelRRName = "wheel4")
@@ -137,7 +137,7 @@ class PatrolBot(WheeledRobot):
     def __init__(self, name=None):
         WheeledRobot.__init__(self, "patrolbot", name)
         self.properties(classpath = "morse.robots.patrolbot.PatrolBot",
-                        HasSuspension = False, HasSteering = False,
+                        HasSuspension = False, 
                         Influence = 0.1, Friction = 0.8,
                         WheelFLName = "Wheel_L", WheelFRName = "Wheel_R",
                         WheelRLName = "None", WheelRRName = "None",

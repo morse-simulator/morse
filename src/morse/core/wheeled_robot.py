@@ -3,6 +3,7 @@ from abc import ABCMeta
 import morse.core.robot
 from morse.core import blenderapi
 from morse.helpers.components import add_property
+import math
 
 class PhysicsWheelRobot(morse.core.robot.Robot):
     """ Abstract base class for robots with wheels that turn as
@@ -16,9 +17,6 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
                  'Determine if the underlaying robot has suspension, \
                   i.e. wheels can move independently of the body of the \
                   robot')
-    add_property('_has_steering', True, 'HasSteering', 'bool',
-                 'Determine if the wheels turn independently of the body \
-                  of the robot.')
 
     # Local dictionaries to store references to the wheels
     _wheel_index = ['FL', 'FR', 'RL', 'RR']
@@ -58,8 +56,31 @@ class PhysicsWheelRobot(morse.core.robot.Robot):
 
         logger.debug("get_wheels %s" % self._wheels)
 
+    def attach_wheel_to_body(self, wheel, parent):
+        """ Attaches the wheel to the given parent using a 6DOF constraint
+
+        Set the wheel positions relative to the robot in case the
+        chassis was moved by the builder script or manually in blender
+        """
+        # create constraint to allow wheel to spin
+        # For an explanation on the parameters, see:
+        # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
+        joint = blenderapi.constraints().createConstraint(
+                wheel.getPhysicsId(),   # get physics ID of the wheel object
+                parent.getPhysicsId(),  # get physics ID of the parent object
+                12,                     # 6dof constraint
+                0.0, 0.0, 0.0,          # Pivot around the center of the wheel
+                0,0,0,                  # pivot axis
+                128)    # flag, 128=disable collision between wheel and parent
+        return joint # return a reference to the constraint
+
+
     def get_track_width(self):
         vec = self._wheels['FL'].getVectTo(self._wheels['FR'])
+        return vec[0]
+
+    def get_distance_axle(self):
+        vec = self._wheels['FL'].getVectTo(self._wheels['RL'])
         return vec[0]
 
     def get_wheel_radius(self, wheel_name):
@@ -108,9 +129,6 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
     def build_vehicle(self):
         """ Apply the constraints to the vehicle parts. """
 
-        # chassis ID - main object should be chassis model
-        self._chassis_ID = self.bge_object.getPhysicsId()
-
         # get track width
         self._trackWidth = self.get_track_width()
 
@@ -120,50 +138,6 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
             self.build_model_with_suspension()
         else:
             self.build_model_without_suspension()
-
-#    def build_model_with_suspension(self):
-#        """ Add all the constraints to attach the wheels to
-#        the a-arms and then the a-arms to the body """
-#        scene = blenderapi.scene()
-#        # get suspension arm ID's
-#        # front left A-arm
-#        try:
-#            if self.bge_object['ArmFLName']:
-#                self._armFL=scene.objects[self.bge_object['ArmFLName']]
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # front right A-arm
-#        try:
-#            if self.bge_object['ArmFRName']:
-#                self._armFR=scene.objects[self.bge_object['ArmFRName']]
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # rear left arm
-#        try:
-#            if self.bge_object['ArmRLName']:
-#                self._armRL=self.bge_object['ArmRLName']
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # rear right arm
-#        try:
-#            if self.bge_object['ArmRRName']:
-#                self._armRR=self.bge_object['ArmRRName']
-#        except:
-#            import traceback
-#            traceback.print_exc()
-#
-#        # put together front wheels and suspension
-#        self._wheelFLJoint=self.AttachWheelWithSuspension(self._wheelFL,self.bge_object,self._armFL)
-#        self._wheelFRJoint=self.AttachWheelWithSuspension(self._wheelFR,self.bge_object,self._armFR)
-#
-#        self._wheelRLJoint=self.AttachWheelWithSuspension(self._wheelRL,self.bge_object,self._armRL)
-#        self._wheelRRJoint=self.AttachWheelWithSuspension(self._wheelRR,self.bge_object,self._armRR)
 
     def build_model_without_suspension(self):
         """ Add all the constraints to attach the wheels to the body """
@@ -184,21 +158,10 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
         Set the wheel positions relative to the robot in case the
         chassis was moved by the builder script or manually in blender
         """
-        # create constraint to allow wheel to spin
-        # For an explanation on the parameters, see:
-        # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
-        joint = blenderapi.constraints().createConstraint(
-                wheel.getPhysicsId(),   # get physics ID of the wheel object
-                parent.getPhysicsId(),  # get physics ID of the parent object
-                12,                     # 6dof constraint
-                0.0, 0.0, 0.0,          # Pivot around the center of the wheel
-                0,0,0,                  # pivot axis
-                128)    # flag, 128=disable collision between wheel and parent
-        # no parameters are set on x axis to allow full rotation about it
+        joint = PhysicsWheelRobot.attach_wheel_to_body(self, wheel, parent)
         joint.setParam(3, 0.0, 0.0) # no rotation about X axis - min=0, max=0
         joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
         return joint # return a reference to the constraint
-
 
     def apply_vw_wheels(self, vx, vw):
         """ Apply (v, w) to the parent robot. """
@@ -246,33 +209,144 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
                          (w_ws_l, w_ws_r))
 
 
-    def AttachWheelWithSuspension(self, wheel, parent, suspensionArm):
-        """ Attaches the wheel to the a-arm and then the a-arm to the body """
-        # TODO: fill this in later - model after Bueraki code
-        pass
+class PhysicsAckermannRobot(PhysicsWheelRobot):
+    """
+    Base class for mobile robots following the Ackermann steering principle
 
-#    def getWheelSpeeds(self):
-#        """ Returns the angular wheel velocity in rad/sec"""
-#        # true parameters tell it velocities are local
-#        # wheels should be rotating about local Z axis
-#        wsFL=self._wheelFL.getAngularVelocity(True)
-#        wsFR=self._wheelFR.getAngularVelocity(True)
-#        wsRL=self._wheelRL.getAngularVelocity(True)
-#        wsRR=self._wheelRR.getAngularVelocity(True)
-#        return [wsFL[2], wsFR[2], wsRL[2], wsRR[2]]
-#
-#    def getWheelAngle(self):
-#        """ Returns the accumulated wheel angle in radians"""
-#        # true parameters tell it velocities are local
-#        # wheels should be rotating about local Z axis
-#        wcFL=self._wheelFL.localOrientation.to_euler()
-#        wcFR=self._wheelFR.localOrientation.to_euler()
-#        wcRL=self._wheelRL.localOrientation.to_euler()
-#        wcRR=self._wheelRR.localOrientation.to_euler()
-#        return [wcFL[1], wcFR[1], wcRL[1], wcRR[1]]
-#
-#    def AttachWheelToWheel(self,wheel1,wheel2):
-#        # add both wheels on each side to each other but with no
-#        # constraints on their motion so that no collision can be set
-#        # between them
-#        pass
+    This base class handles the simulation of the physical interactions
+    between Ackermann-like vehicle and the ground.
+    It assumes the vehicle has 4 wheels.
+    """
+
+    add_property('_max_steering_angle', 45.0, 'max_steering_angle', 'double', 
+                 'The bigger angle possible the vehicle is able to turn \
+                 its front wheel (in degree)')
+
+    def __init__ (self, obj, parent=None):
+        """ Constructor method. """
+        # Call the constructor of the parent class
+        PhysicsWheelRobot.__init__(self, obj, parent)
+
+        # get wheel references and ID's
+        self.get_wheels()
+
+        self._max_steering_angle = math.radians(self._max_steering_angle)
+
+        # construct the vehicle
+        self.build_vehicle()
+
+        self._axle_distance = self.get_distance_axle()
+
+        logger.warn("Using wheel separation of %.4f" % self._trackWidth)
+
+        # Force speed at 0.0 at startup
+        self.apply_vw_wheels(0.0, 0.0)
+
+
+    def build_vehicle(self):
+        """ Apply the constraints to the vehicle parts. """
+        # get track width
+        self._trackWidth = self.get_track_width()
+
+        # set up wheel constraints
+        # add wheels to either suspension arms or vehicle chassis
+        if self._has_suspension:
+            self.build_model_with_suspension()
+        else:
+            self.build_model_without_suspension()
+
+    def build_model_without_suspension(self):
+        """ Add all the constraints to attach the wheels to the body """
+        for index in ['FR', 'FL']:
+            self._wheel_joints[index] = self.attach_front_wheel_to_body(
+                    self._wheels[index], self.bge_object)
+        for index in ['RR', 'RL']:
+            self._wheel_joints[index] = self.attach_rear_wheel_to_body(
+                    self._wheels[index], self.bge_object)
+
+    def attach_front_wheel_to_body(self, wheel, parent):
+        """ Attaches the wheel to the given parent using a 6DOF constraint
+
+        Set the wheel positions relative to the robot in case the
+        chassis was moved by the builder script or manually in blender
+        """
+        joint = self.attach_wheel_to_body(wheel, parent)
+        joint.setParam(3, 0.0, 0.0) # no rotation about X axis - min=0, max=0
+        joint.setParam(4, -self._max_steering_angle, self._max_steering_angle)
+        return joint # return a reference to the constraint
+
+
+    def attach_rear_wheel_to_body(self, wheel, parent):
+        """ Attaches the wheel to the given parent using a 6DOF constraint
+
+        Set the wheel positions relative to the robot in case the
+        chassis was moved by the builder script or manually in blender
+        """
+        joint = self.attach_wheel_to_body(wheel, parent)
+        joint.setParam(3, 0.0, 0.0) # no rotation about X axis - min=0, max=0
+        joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
+        return joint # return a reference to the constraint
+
+    def apply_vw_wheels(self, vx, vw):
+        """ Apply (v, w) to the parent robot. """
+
+        velocity_control = 11 # Z axis angle
+        steering_control = 10
+
+        # calculate desired wheel speeds and set them
+        if abs(vx) < 0.001 and abs(vw) < 0.001:
+            # stop the wheel when velocity is below a given threshold
+            for index in ['RL', 'RR']:
+                self._wheel_joints[index].setParam(velocity_control, 0, 100.0)
+            for index in ['FR', 'FL']:
+                self._wheel_joints[index].setParam(steering_control, 0, 100.0)
+
+            self._stopped = True
+        else:
+            # this is need to "wake up" the physic objects if they have
+            # gone to sleep apply a tiny impulse straight down on the
+            # object
+            if self._stopped:
+                self.bge_object.applyImpulse(
+                   self.bge_object.position, (0.0, 0.0, 0.000001))
+
+            # no longer stopped
+            self._stopped = False
+
+            # speed of rear wheels
+            wx =   -1.0 * vx / self._wheel_radius
+            self._wheel_joints['RL'].setParam(velocity_control, wx, 100.0)
+            self._wheel_joints['RR'].setParam(velocity_control, wx, 100.0)
+
+            logger.debug("Rear wheel speeds set to %.4f" % wx)
+
+            # Compute angle of steering wheels
+            if abs(vw) > 0.01:
+                radius = vx / vw
+                if abs(radius) < (self._trackWidth / 2):
+                    l_angle = math.copysign(self._max_steering_angle, radius)
+                    r_angle = math.copysign(self._max_steering_angle, radius)
+                else:
+                    l_angle = self._axle_distance / (radius + (self._trackWidth / 2))
+                    r_angle = self._axle_distance / (radius -  (self._trackWidth / 2))
+                    logger.info('virtual angle %f' % (self._axle_distance / radius))
+            else:
+                l_angle = r_angle = 0.0
+
+            if abs(l_angle) >= self._max_steering_angle or \
+               abs(r_angle) >= self._max_steering_angle:
+                logger.warning("Constraint (v = %f, w = %f) is not applicable \
+                               due to physical limitation" % (vx, vw))
+
+            current_l_angle = self._wheel_joints['FL'].getParam(4)
+            current_r_angle = self._wheel_joints['FR'].getParam(4)
+
+            diff_l_angle = l_angle - current_l_angle
+            diff_r_angle = l_angle - current_l_angle
+
+            self._wheel_joints['FL'].setParam(steering_control, diff_l_angle, 100.0)
+            self._wheel_joints['FR'].setParam(steering_control, diff_r_angle, 100.0)
+
+            logger.debug("Angle left w %f right w %f" % (diff_l_angle, diff_r_angle))
+
+
