@@ -3,6 +3,7 @@ from abc import ABCMeta
 import morse.core.robot
 from morse.core import blenderapi
 from morse.helpers.components import add_property
+from morse.helpers.joints import Joint6DoF
 
 class PhysicsWheelRobot(morse.core.robot.Robot):
     """ Abstract base class for robots with wheels that turn as
@@ -168,48 +169,27 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
     def build_model_without_suspension(self):
         """ Add all the constraints to attach the wheels to the body """
         for index in self._wheels.keys():
-            self._wheel_joints[index] = self.attach_wheel_to_body(
-                    self._wheels[index], self.bge_object)
+            self._wheel_joints[index] = Joint6DoF(self._wheels[index], self.bge_object)
+            self._wheel_joints[index].free_rotation_dof('Z')
 
         # Add a free rotating wheel if indicated in the robot
         scene = blenderapi.scene()
         caster_wheel_name = self.bge_object.get('CasterWheelName', None)
         if caster_wheel_name and caster_wheel_name != 'None':
             wheel = scene.objects[caster_wheel_name]
-            self.attach_wheel_to_body(wheel, self.bge_object)
-
-    def attach_wheel_to_body(self, wheel, parent):
-        """ Attaches the wheel to the given parent using a 6DOF constraint
-
-        Set the wheel positions relative to the robot in case the
-        chassis was moved by the builder script or manually in blender
-        """
-        # create constraint to allow wheel to spin
-        # For an explanation on the parameters, see:
-        # http://www.tutorialsforblender3d.com/GameModule/ClassKX_PyConstraintBinding_1f.html
-        joint = blenderapi.constraints().createConstraint(
-                wheel.getPhysicsId(),   # get physics ID of the wheel object
-                parent.getPhysicsId(),  # get physics ID of the parent object
-                12,                     # 6dof constraint
-                0.0, 0.0, 0.0,          # Pivot around the center of the wheel
-                0,0,0,                  # pivot axis
-                128)    # flag, 128=disable collision between wheel and parent
-        # no parameters are set on x axis to allow full rotation about it
-        joint.setParam(3, 0.0, 0.0) # no rotation about X axis - min=0, max=0
-        joint.setParam(4, 0.0, 0.0) # no rotation about Y axis - min=0, max=0
-        return joint # return a reference to the constraint
-
+            joint = Joint6DoF(wheel, self.bge_object)
+            joint.free_rotation_dof('Z')
 
     def apply_vw_wheels(self, vx, vw):
         """ Apply (v, w) to the parent robot. """
 
-        angle_control = 11 # Z axis angle
+        angle_control = 'Z'
 
         # calculate desired wheel speeds and set them
         if abs(vx) < 0.001 and abs(vw) < 0.001:
             # stop the wheel when velocity is below a given threshold
             for index in self._wheels.keys():
-                self._wheel_joints[index].setParam(angle_control, 0, 100.0)
+                self._wheel_joints[index].angular_velocity(angle_control, 0)
 
             self._stopped = True
         else:
@@ -234,13 +214,13 @@ class PhysicsDifferentialRobot(PhysicsWheelRobot):
 
             # set wheel speeds - front and rear wheels have the same speed
             # Left side wheels
-            self._wheel_joints['FL'].setParam(angle_control, w_ws_l, 100.0)
+            self._wheel_joints['FL'].angular_velocity(angle_control, w_ws_l)
             if 'RL' in self._wheels:
-                self._wheel_joints['RL'].setParam(angle_control, w_ws_l, 100.0)
+                self._wheel_joints['RL'].angular_velocity(angle_control, w_ws_l)
             # Right side wheels
-            self._wheel_joints['FR'].setParam(angle_control, w_ws_r, 100.0)
+            self._wheel_joints['FR'].angular_velocity(angle_control, w_ws_r)
             if 'RR' in self._wheels:
-                self._wheel_joints['RR'].setParam(angle_control, w_ws_r, 100.0)
+                self._wheel_joints['RR'].angular_velocity(angle_control, w_ws_r)
 
             logger.debug("New speeds set: left=%.4f, right=%.4f" %
                          (w_ws_l, w_ws_r))
