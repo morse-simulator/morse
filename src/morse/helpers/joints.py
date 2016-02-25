@@ -78,3 +78,9 @@ class Joint6DoF(object):
     def angular_spring(self, axis, spring, damping):
         self._joint.setParam(_param_id(15, axis), spring, damping)
 
+    def pos(self, axis):
+        return self._joint.getParam(_param_id(0, axis))
+
+    def euler_angle(self, axis):
+        return self._joint.getParam(_param_id(3, axis))
+
