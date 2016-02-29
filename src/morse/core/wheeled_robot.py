@@ -4,6 +4,7 @@ import morse.core.robot
 from morse.core import blenderapi
 from morse.helpers.components import add_property
 from morse.helpers.joints import Joint6DoF
+from morse.helpers.controller import PIDController
 import math
 
 class PhysicsWheelRobot(morse.core.robot.Robot):
@@ -190,11 +191,32 @@ class PhysicsAckermannRobot(PhysicsWheelRobot):
     This base class handles the simulation of the physical interactions
     between Ackermann-like vehicle and the ground.
     It assumes the vehicle has 4 wheels.
+
+    To ensure proper (v, w) enforcement, the model relies on some
+    internal PID controller, hence the different properties.
     """
 
     add_property('_max_steering_angle', 45.0, 'max_steering_angle', 'double', 
                  'The bigger angle possible the vehicle is able to turn \
                  its front wheel (in degree)')
+
+    add_property('_vkp', 1.0, 'velocity_p_gain', 'double',
+                'the proportional gain for linear velocity')
+    add_property('_vkd', 1.0, 'velocity_d_gain', 'double',
+                'the differiential gain for linear velocity')
+    add_property('_vki', 1.0, 'velocity_i_gain', 'double',
+                'the integral gain for linear velocity')
+    add_property('_vki_limits', 1.0, 'velocity_integral_limits', 'double',
+                'limits of the integral term for velocity')
+
+    add_property('_wkp', 1.0, 'angular_velocity_p_gain', 'double',
+                'the proportional gain for angular velocity')
+    add_property('_wkd', 1.0, 'angular_velocity_d_gain', 'double',
+                'the differiential gain for angular velocity')
+    add_property('_wki', 1.0, 'angular_velociy_i_gain', 'double',
+                'the integral gain for angular velocity')
+    add_property('_wki_limits', 1.0, 'angular_velocity_integral_limits', 'double',
+                'limits of the integral term for velocity')
 
     def __init__ (self, obj, parent=None):
         """ Constructor method. """
@@ -213,6 +235,10 @@ class PhysicsAckermannRobot(PhysicsWheelRobot):
 
         logger.warn("Using wheel separation of %.4f" % self._trackWidth)
 
+        self.pid_v = PIDController(kp =self._vkp, kd =self._vkd, 
+                                   ki =self._vki, limits_integrator =self._vki_limits)
+        self.pid_w = PIDController(kp =self._wkp, kd =self._wkd,
+                                   ki = self._wki, limits_integrator = self._wki_limits) 
         # Force speed at 0.0 at startup
         self.apply_vw_wheels(0.0, 0.0)
 
@@ -261,7 +287,27 @@ class PhysicsAckermannRobot(PhysicsWheelRobot):
         return joint # return a reference to the constraint
 
     def apply_vw_wheels(self, vx, vw):
-        """ Apply (v, w) to the parent robot. """
+        """
+        Apply (v, w) on the parent robot.
+
+        We cannot rely on the theoric ackermann model due to important
+        friction generation by front wheel. So, use a simple PID to
+        guarantee the constraints
+        """
+        self.pid_v.setpoint = vx
+        vel = self.bge_object.localLinearVelocity 
+        computed_vx = self.pid_v.update(vel[0])
+
+        self.pid_w.setpoint = vw
+        angular_vel = self.bge_object.localAngularVelocity
+        computed_vw = self.pid_w.update(angular_vel[2])
+        self._apply_vw_wheels(computed_vx, computed_vw)
+
+    def _apply_vw_wheels(self, vx, vw):
+        """ Apply (v, w) to the parent robot. 
+        
+        Implement theoric Ackermann model
+        """
 
         velocity_control = 'Z' 
         steering_control = 'Y'
@@ -293,9 +339,10 @@ class PhysicsAckermannRobot(PhysicsWheelRobot):
 
             logger.debug("Rear wheel speeds set to %.4f" % wx)
 
+            vel = self.bge_object.localLinearVelocity
             # Compute angle of steering wheels
             if abs(vw) > 0.01:
-                radius = vx / vw
+                radius = vel[0] / vw
                 if abs(radius) < (self._trackWidth / 2):
                     l_angle = math.copysign(self._max_steering_angle, radius)
                     r_angle = math.copysign(self._max_steering_angle, radius)
@@ -312,8 +359,8 @@ class PhysicsAckermannRobot(PhysicsWheelRobot):
 
             if abs(l_angle) >= self._max_steering_angle or \
                abs(r_angle) >= self._max_steering_angle:
-                logger.warning("Constraint (v = %f, w = %f) is not applicable \
-                               due to physical limitation" % (vx, vw))
+                logger.warning("wz = %f is not applicable at current speed %f\
+                               due to physical limitation" % (vw, vel[0]))
 
             current_l_angle = self._wheel_joints['FL'].euler_angle(steering_control)
             current_r_angle = self._wheel_joints['FR'].euler_angle(steering_control)
