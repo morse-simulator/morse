@@ -456,7 +456,6 @@ class SemanticCamera(VideoCamera):
 
     def __init__(self, name=None):
         VideoCamera.__init__(self, name)
-        self.properties(cam_width = 512, cam_height = 512, Vertical_Flip = False)
 
 
 class VelodyneRayCast(LaserSensorWithArc):
