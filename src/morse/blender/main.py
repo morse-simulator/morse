@@ -830,14 +830,15 @@ def reset_objects(contr):
     """
     for b_obj, state in persistantstorage.blender_objects.items():
         # Stop physics simulation
-        b_obj.suspendDynamics()
         b_obj.setLinearVelocity([0.0, 0.0, 0.0], True)
         b_obj.setAngularVelocity([0.0, 0.0, 0.0], True)
         b_obj.applyForce([0.0, 0.0, 0.0], True)
         b_obj.applyTorque([0.0, 0.0, 0.0], True)
 
+        b_obj.suspendDynamics()
         logger.debug("%s goes to %s" % (b_obj, state[0]))
         b_obj.worldPosition = state[0]
         b_obj.worldOrientation = state[1]
         # Reset physics simulation
         b_obj.restoreDynamics()
+
