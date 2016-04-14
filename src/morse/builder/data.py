@@ -448,6 +448,7 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
         "default": {
+            "ros": 'morse.middleware.ros.rotorcraft_attitude.RotorcraftAttitudeReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
             "mavlink": "morse.middleware.mavlink.read_attitude_target.AttitudeTarget",
