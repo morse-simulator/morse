@@ -440,11 +440,12 @@ MORSE_DATASTREAM_DICT = {
             }
         },
     "morse.actuators.quadrotor_dynamic_control.QuadrotorDynamicControl": {
-            "default": {
-                "socket": INTERFACE_DEFAULT_IN,
-                "yarp": INTERFACE_DEFAULT_IN,
-                }
-            },
+        "default": {
+            "ros": 'morse.middleware.ros.quadrotor_dynamic.QuadrotorDynamicReader',
+            "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
+            }
+        },
     "morse.actuators.rotorcraft_attitude.RotorcraftAttitude": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
