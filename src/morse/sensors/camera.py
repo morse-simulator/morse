@@ -118,7 +118,10 @@ class Camera(morse.core.sensor.Sensor):
 
     @property
     def image_data(self):
-        return self._camera_image.source
+        if self._camera_image is not None:
+            return self._camera_image.source
+        logger.debug("image_data not yet available")
+        return None
 
     def _update_scene(self):
         for _to, _from in self._scene_syncable_objects:
