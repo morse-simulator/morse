@@ -1,4 +1,13 @@
+#
+# This list is used by git-shortlog to fix a few botched name translations
+# in the git archive, either because the author's full name was messed up
+# and/or not always written the same way, making contributions from the
+# same person appearing not to be so.
+#
+
 Arnaud Degroote <arnaud.degroote@laas.fr> Degroote <adegroot@tournefeuille>
+Arnaud Degroote <arnaud.degroote@laas.fr> Arnaud Degroote <arnaud.degroote@isae-supaero.fr>
+Arnaud Degroote <arnaud.degroote@laas.fr> Arnaud Degroote <arnaud.degroote@isae.fr>
 Charles Lesire-Cabaniols <charles.lesire@onera.fr> Charles Lesire <charles.lesire@onera.fr>
 Cyril Robin <cyril.robin@laas.fr>
 David Hodo <david.hodo@gmail.com>
@@ -35,3 +44,6 @@ Séverin Lemaignan <severin.lemaignan@laas.fr> Severin Lemaignan <severin.lemaig
 Séverin Lemaignan <severin.lemaignan@laas.fr> Severin Lemaignan <slemaign@goedel>
 Séverin Lemaignan <severin.lemaignan@laas.fr> LAAS-CNRS <slemaign@laas.fr>
 Séverin Lemaignan <severin.lemaignan@laas.fr> Séverin Lemaignan <skadge@gmail.com>
+Séverin Lemaignan <severin.lemaignan@laas.fr> Séverin Lemaignan <severin.lemaignan@epfl.ch>
+Séverin Lemaignan <severin.lemaignan@laas.fr> Séverin Lemaignan <severin.lemaignan@plymouth.ac.uk>
+Séverin Lemaignan <severin.lemaignan@laas.fr> Séverin Lemaignan <severin@guakamole.org>
