@@ -66,15 +66,20 @@ class MorseError(Exception):
         return repr(self.value)
 
 def retrieve_blender_from_path():
+    candidates = []
     try:
         blenders_in_path = subprocess.Popen(
                                 ['which', '-a', 'blender'],
                                 stdout=subprocess.PIPE).communicate()[0]
-        res = blenders_in_path.decode().splitlines()
-    except OSError:
-        return []
+        candidates = blenders_in_path.decode().splitlines()
+    except OSError as err:
+        logger.error(str(err))
 
-    return res
+    # TODO test if os.name is 'MacOS' ?
+    if os.path.isfile('/Applications/Blender.app/Contents/MacOS/blender'):
+        candidates.append('/Applications/Blender.app/Contents/MacOS/blender')
+
+    return candidates
 
 def check_blender_version(blender_path):
     version = None
