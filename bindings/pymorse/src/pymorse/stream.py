@@ -12,6 +12,7 @@ import logging
 import asyncore
 import asynchat
 import threading
+import traceback
 # Double-ended queue, thread-safe append/pop.
 from collections import deque
 
@@ -80,6 +81,7 @@ class StreamB(asynchat.async_chat):
 
     def handle_error(self):
         self.error = True
+        logger.error('Exception occurred in asynchronous socket handler:\n%s'%traceback.format_exc())
         self.handle_close()
 
     #### IN ####
