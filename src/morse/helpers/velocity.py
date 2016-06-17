@@ -9,7 +9,7 @@ def linear_velocities(prev, now, dt):
     :param now: the current pose, as a Transformation3d
     :param dt: time elapsed between the two poses acquisition, in sec
     """
-    return (prev.translation - now.translation) / dt
+    return (now.translation - prev.translation) / dt
 
 def angular_velocities(prev, now, dt):
     """
