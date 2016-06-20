@@ -33,6 +33,15 @@ class PollThread(threading.Thread):
     def syncstop(self, timeout=None):
         self.keep_polling = False
         return self.join(timeout)
+    #### with statement ####
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_type:
+            self.syncstop(2 * self.timeout)
+        else:
+            self.syncstop(0)
+            return False # re-raise exception
 
 class StreamB(asynchat.async_chat):
     """ Asynchrone I/O stream handler (raw bytes)
@@ -46,7 +55,7 @@ class StreamB(asynchat.async_chat):
 
     use_encoding = 0 # Python2 compat.
 
-    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
+    def __init__(self, host='localhost', port=1234, maxlen=100, sock=None):
         self.error = False
         if not sock:
             sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
@@ -194,7 +203,7 @@ class StreamB(asynchat.async_chat):
 
 class Stream(StreamB):
     """ String Stream """
-    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
+    def __init__(self, host='localhost', port=1234, maxlen=100, sock=None):
         StreamB.__init__(self, host, port, maxlen, sock)
 
     #### CODEC ####
@@ -209,7 +218,7 @@ class Stream(StreamB):
 
 class StreamJSON(Stream):
     """ JSON Stream """
-    def __init__(self, host='localhost', port='1234', maxlen=100, sock=None):
+    def __init__(self, host='localhost', port=1234, maxlen=100, sock=None):
         Stream.__init__(self, host, port, maxlen, sock)
 
     def decode(self, msg_bytes):
