@@ -208,6 +208,14 @@ class Robot(Component):
         """ Configure this robot to not use physics at all """
         self._bpy_object.game.physics_type = 'NO_COLLISION'
 
+    def set_physics_type(self, physics_type='STATIC'):
+        """ Configure this robot physics type """
+        self._bpy_object.game.physics_type = physics_type
+
+    def set_use_record_animation(self, use_record_animation=True):
+        """ Record animation objects without physics """
+        self._bpy_object.game.use_record_animation = use_record_animation
+
     def set_dynamic(self):
         self._bpy_object.game.physics_type = 'DYNAMIC'
         self._bpy_object.game.use_actor = True
