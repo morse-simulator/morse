@@ -48,9 +48,8 @@ class MorseMultinode(asyncore.dispatcher):
 def check_pose(rot, loc):
     inf = float('inf')
     return len(rot) == 3 and len(loc) == 3 and \
-           [-inf < val < +inf for val in rot] == \
-           [-inf < val < +inf for val in loc] == \
-           [True, True, True]
+           all([-inf < val < +inf for val in rot]) and \
+           all([-inf < val < +inf for val in loc])
 
 class MorseNode(object):
     def __init__(self, sock, master):
