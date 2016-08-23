@@ -585,7 +585,14 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
     # Redefine the PYTHONPATH to include both the user-set path plus
     # default system paths (like '/usr/lib/python*')
     env = os.environ
-    env["PYTHONPATH"] = os.pathsep.join(sys.path)
+    if 'MORSE_POP_PYTHONLIB' in os.environ:
+        if os.environ['MORSE_POP_PYTHONLIB'] not in sys.path:
+            raise MorseError('MORSE_POP_PYTHONLIB not in sys.path')
+        tmp = sys.path
+        tmp.remove(os.environ['MORSE_POP_PYTHONLIB'])
+        env["PYTHONPATH"] = os.pathsep.join(tmp)
+    else:
+        env["PYTHONPATH"] = os.pathsep.join(sys.path)
 
     # Add the MORSE node name to env.
     if node_name:
