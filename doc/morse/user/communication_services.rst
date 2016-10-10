@@ -1,10 +1,10 @@
 Communication services
 ======================
 
-MORSE exposes services which allow to extract geometric information from
-the simulator which can be next used as input for communication simulation. It
-can be seen as a simple example about how to query information about the inner
-geometric model of Morse simulator.
+MORSE exposes services which allow you to extract geometric information from
+the simulator which can then be used as input for communication simulation. It
+can be seen as a simple example of how to query information about the inner
+geometric model of the Morse simulator.
 
 The services is automatically exposed on a socket interface, on port 4000.
 
@@ -14,8 +14,8 @@ its primary purpose is to serve as a base for a simple communication model.
 Available services
 ------------------
 
-- ``distance_and_view`` takes two robot names in parameter and returns, if the
-  two robots exists, a tuple with the distance between the two robots, and a
+- ``distance_and_view`` takes two robot names as parameters and returns, if the
+  two robots exist, a tuple with the distance between the two robots, and a
   boolean representing the direct visibility between these two robots.
 
 Examples
