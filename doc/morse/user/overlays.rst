@@ -13,12 +13,12 @@ particular architecture.
 Overlay example
 ---------------
 
-The example below present a typical use for overlays: MORSE provides a
+The example below presents a typical use for overlays: MORSE provides a
 :doc:`pan-tilt unit <actuators/ptu>` actuator that offers a method,
 :meth:`morse.actuators.ptu.PTU.set_pan_tilt`, to set the pan and 
 tilt angles of the PTU.
 
-But in your architecture, you are using 2 different methods, ``SetTilt`` and
+But in your architecture, you are using two different methods, ``SetTilt`` and
 ``SetPan``.
 
 The following overlay maps your functions to the default MORSE ones:
@@ -33,7 +33,7 @@ The following overlay maps your functions to the default MORSE ones:
         
         def __init__(self, overlaid_object):
             # Call the constructor of the parent class
-            MorseOverlay.__init__(self, overlaid_object)
+            super().__init__(overlaid_object)
             
             self.last_tilt = 0.0
             self.last_pan = 0.0
@@ -53,12 +53,12 @@ The following overlay maps your functions to the default MORSE ones:
 You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
 file, accessible from MORSE Python path.
 
-For asynchronous service, it is a bit more complex, as we need to provide a 
-callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` takes care
-about this operation. You can pass an optional function to this method to
-modify the returned data, or modify the state of your object.
+For an asynchronous service, it is a bit more complex, as we need to provide a 
+callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` taking care
+of this situation. You can pass an optional function to this method to
+modify the returned data, or just modify the state of your object.
 
-This new callback *must* take one parameter (a tuple ``(status,
+If provided, the callback *must* take one parameter (a tuple ``(status,
 result)``) and return a new tuple ``(status, result)``:
 
 .. code-block:: python
@@ -71,7 +71,7 @@ result)``) and return a new tuple ``(status, result)``:
         
         def __init__(self, overlaid_object):
             # Call the constructor of the parent class
-            MorseOverlay.__init__(self, overlaid_object)
+            super().__init__(overlaid_object)
             
             self.last_tilt = 0.0
             self.last_pan = 0.0
@@ -79,7 +79,7 @@ result)``) and return a new tuple ``(status, result)``:
         def format_pan_tilt_return(self, result):
             # this callback will be called when SetTilt or SetPan
             # completes.
-            # It simply re-format the return value of the asynchronous
+            # It simply re-formats the return value of the asynchronous
             # services.
 
             status, value = result
@@ -91,14 +91,14 @@ result)``) and return a new tuple ``(status, result)``:
         def SetTilt(self, tilt):
             self.last_tilt = float(tilt)
             self.overlaid_object.set_tilt_pan(
-                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.chain_callback(self.format_pan_tilt_return),
                     self.last_tilt, self.last_pan)
 
         @async_service
         def SetPan(self, pan):
             self.last_pan = float(pan)
             self.overlaid_object.set_tilt_pan(
-                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.chain_callback(self.format_pan_tilt_return),
                     self.last_tilt, self.last_pan)
 
 
@@ -112,13 +112,13 @@ Scene setup
 With the MORSE Builder API
 ++++++++++++++++++++++++++
 
-Components can be easily overlaid from the :doc:`MORSE Builder API
+Components can easily be overlaid using the :doc:`MORSE Builder API
 <../user/builder>` with the method
 :meth:`morse.builder.abstractcomponent.AbstractComponent.add_overlay`.
 
-This method takes two parameters, the middleware to use (cf
-:mod:`morse.builder.data` for the list of available options) and the
-full-qualified Python name of the overlay class (for instance,
+This method takes two parameters, the middleware to use (see
+:mod:`morse.builder.data` for the list of available options), and the
+fully-qualified Python name of the overlay class (for instance,
 ``morse.my_overlays.MyPTU``)
 
 The following example is taken from one of the ROS unit-tests:
@@ -139,7 +139,7 @@ The following example is taken from one of the ROS unit-tests:
    env = Environment('indoors-1/indoor-1')
 
 
-Here, the ``waypoint`` actuator get overlaid by the ``WayPoint`` class defined
+Here, the ``waypoint`` actuator has been overlaid by the ``WayPoint`` class defined
 in the module :mod:`morse.middleware.ros.overlays.waypoints`.
 
 Name remapping
