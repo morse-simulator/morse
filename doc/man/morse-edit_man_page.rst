@@ -12,7 +12,7 @@ Description
 -----------
 
 Open the given Blender scene or Python script in the Blender
-interface for edition. The simulation can be started by 
+interface for editing. The simulation can be started by 
 pressing P.
 
 Options
