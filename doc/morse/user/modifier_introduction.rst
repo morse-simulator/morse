@@ -2,7 +2,7 @@ Modifiers
 =========
 
 Modifier processing is a specific phase between datastream processing and real
-component processing. It allows to make some generic transformations on the data
+component processing. It allows you to apply some generic transformations on the data
 (for example, convert them from one frame convention to another one) or to alter 
 the ``qualities`` of data to make them more realistic. 
 

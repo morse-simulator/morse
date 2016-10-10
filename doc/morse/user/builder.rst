@@ -270,8 +270,8 @@ Let take an example. Consider this script, with two robots::
     env = Environment('indoors-1/indoor-1')
 
 
-If you open it in MORSE for edition (with ``morse edit``) and you look at the
-outliner, you see that the hierarchy of objects looks like that:
+If you open it in MORSE for editing (with ``morse edit``) and you look at the
+outliner, you see that the hierarchy of objects looks like this:
 
 .. code-block:: none
 

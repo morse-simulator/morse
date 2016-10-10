@@ -56,7 +56,7 @@ See "man morse-<command>" for a documentation of each commands.
         The environment is added to 'sites' in ~/.morse/config
 :edit:
         Open the given Blender scene or Python script in the Blender
-        interface for edition. The simulation can be started by 
+        interface for editing. The simulation can be started by 
         pressing P.
 :import:
         Imports a pre-existing simulation as a new simulation environment.

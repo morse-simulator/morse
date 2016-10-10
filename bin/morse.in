@@ -826,7 +826,7 @@ if __name__ == '__main__':
     run_parser.set_defaults(func=process_run_edit)
 
     # edit
-    edit_parser = subparsers.add_parser('edit', help="opens an existing scene for edition.")
+    edit_parser = subparsers.add_parser('edit', help="opens an existing scene for editing.")
     edit_parser.add_argument('env', default="", nargs='?',
             help="the simulation environment to edit.")
     edit_parser.add_argument('file', default="", nargs='?',

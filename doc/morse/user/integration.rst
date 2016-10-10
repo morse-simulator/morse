@@ -3,8 +3,8 @@ Integrate MORSE in your software architecture
 
 The core of MORSE is pure and independent of any specific robotic
 implementation. To make it possible to integrate easily with your architecture,
-MORSE proposes a *middleware* layers which bridge this gap, both for services
-with the concept of :doc:`overlays` and for datastream with the concept of
+MORSE provides *middleware* layers which bridge the gap, both for services
+with the concept of :doc:`overlays` and for datastreams with the concept of
 `datastream handler` (this page).
 
 .. _compatibility-matrix:
@@ -13,7 +13,7 @@ Features compatibility matrix
 -----------------------------
 
 The table below summarizes the level of support of MORSE features for each middleware.
-Further information can be found in clicking on the desired component.
+Further information can be found by clicking on the desired component.
 
 When a component is supported (✔), we specify the middleware-specific format
 we use (like ``Viam`` or ``YarpImage``). 
@@ -31,9 +31,9 @@ Configuring Morse to export data in a specified way
 ---------------------------------------------------
 
 To configure a component to export or import data using a specific method, you
-need to call the
+need to call
 :py:meth:`morse.builder.abstractcomponent.AbstractComponent.add_stream` on
-your component. The process is explained in more details and with numerous
+your component. The process is explained in more detail and with numerous
 examples in the following tutorials:
 	
 - :doc:`beginner_tutorials/tutorial`
@@ -59,4 +59,4 @@ have bindings for the Python language but contributions are welcome! These
 bindings are documented :doc:`here <../pymorse>`.
 
 For other middlewares, you can, of course, rely on standard tools provided by
-these middlewares (that the main purpose of the middleware layer after all!).
+these middlewares (that's the main purpose of the middleware layer after all!).
