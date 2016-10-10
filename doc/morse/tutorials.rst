@@ -3,13 +3,13 @@ Tutorials
 
 Welcome in the MORSE tutorials section!
 
-As a academic simulator for robotics, MORSE is a large piece of software which
-may require some time to master.
+As an academic simulator for robotics, MORSE is a large piece of software which
+may take some time to master.
 
-However, you should hopefully be able to get very quickly your first
-simulation running.
+However, you should hopefully be able to get your first
+simulation running very quickly.
 
-If you did not check it, we recommend you to first go over the
+If you haven't yet read it, we recommend you to first read the
 :doc:`Quickstart<quickstart>` page and come back here afterwards.
 
 
@@ -18,8 +18,8 @@ What is the general workflow?
 
 MORSE relies on the Blender 3D package to run your simulation. To create a
 simulation scene, you need to describe it using the **Builder** python API,
-which allows you to simply describes simulation scenes. More about that in a
-second.
+which allows you to simply describe simulation scenes. More about that in a
+moment.
 
 Once you have a description of your simulation, you can run it:: 
 
@@ -30,7 +30,7 @@ the simulator instead of the real robot, and start your control softwares as
 you would do on a real robot. If you are not relying on an explicit middleware,
 you can also use the :doc:`socket interface <user/middlewares/socket>` :tag:`socket`
 or the :doc:`Python API <pymorse>` :tag:`pymorse`. MORSE supports the two
-classic interaction mechanism provided by most robotic middlewares:
+classic interaction mechanisms provided by most robotic middleware:
 
 1. Using **RPC**-oriented calls :tag:`service`
 2. Using **stream**-oriented interfaces. :tag:`datastream`
@@ -44,8 +44,8 @@ classic interaction mechanism provided by most robotic middlewares:
 The first simulation
 --------------------
 
-First of all, :doc:`install MORSE<user/installation>` if it is not already
-done.
+First of all, :doc:`install MORSE<user/installation>` if you haven't already
+done so.
 
 Next step, :doc:`user/beginner_tutorials/tutorial`. :tag:`builder`
 :tag:`socket`
@@ -53,8 +53,8 @@ Next step, :doc:`user/beginner_tutorials/tutorial`. :tag:`builder`
 Basic MORSE user interface
 --------------------------
 
-The next tutorial describes precisely how to launch the MORSE simulation, and
-how to basically interact with him.
+The next tutorial describes how to launch the MORSE simulation, and
+how to do basic interaction with it.
 
 
 .. toctree::
@@ -111,8 +111,8 @@ These tutorials help setting up a multi-node simulation environment.
 Blender specific instructions
 -----------------------------
 
-Since MORSE is completely built over Blender, it is important to know some of
-its functionality.
+Since MORSE is completely dependent on Blender, it is important to know some of
+Blender's functionality.
 
 .. toctree::
     :maxdepth: 1
