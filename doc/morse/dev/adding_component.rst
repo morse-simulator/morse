@@ -2,11 +2,11 @@ Adding a new component
 ======================
 
 
-Components in MORSE are either **robots**, **sensors** or **actuators**.
+Every MORSE component is a **robot**, a **sensor** or an **actuator**.
 
 **Robots** are mainly containers for **sensors** and **actuators**.
 
-This page present how to create and add new sensors or actuators to MORSE.
+This page describes how to create and add new sensors or actuators to MORSE.
 Check :doc:`adding_robot` to learn about robots.
 
 General overview
@@ -20,14 +20,14 @@ special cases, some specific logic. It is however not needed in general.
 
 Depending on your sensors/actuators, you may need to write serialization code
 for various middlewares. It is only required if your new component
-export/import data structures that are not already supported by existing
+exports/imports data in formats that are not already supported by existing
 sensors/actuators.
 
 Finally, you may want to add your component to the :doc:`Builder
-API<../user/builder>` to make it easy for other user to use your component.
+API<../user/builder>` to make it easy for other users to use your component.
 
-This four steps may look intimidating, but most of the boring parts are
-automatically generated from templates. We will see an example in a second.
+These four steps may look intimidating, but most of the boring parts are
+automatically generated from templates. We will see an example in a moment.
 
 As a starting point, it is also useful to :doc:`browse the component
 gallery<../components_library>` and look for a component similar to the one you
@@ -48,18 +48,18 @@ or, for actuators::
 
  $ morse add actuator <name> mysim
 
-MORSE asks for a short description, and then create the initial template for
+MORSE asks for a short description, and then creates an initial template for
 your component.
 
 
 The Python part
 ---------------
 
-You need to implement a sub-class of :py:class:`morse.core.sensor.Sensor`, 
-respectively of :py:class:`morse.core.actuator.Actuator`.
+You need to implement a sub-class of :py:class:`morse.core.sensor.Sensor` if creating a new sensor, 
+or of :py:class:`morse.core.actuator.Actuator` if creating a new actuator.
 
-Let start to write a custom sensor to read image. First, you must define the
-``_name`` field and the ``_short_desr`` field to describe your component.
+Let's begin by creating a custom sensor to read an image. First, you must define the
+``_name`` field and the ``_short_descr`` field to describe your component.
 
 .. code-block:: python
 
@@ -75,10 +75,9 @@ Defining exported data fields
 +++++++++++++++++++++++++++++
 
 Components import (for actuators) or export (for sensors) data. These data are
-declared as a set of *data field* specific to the component, accessible
+declared as a set of *data field*s specific to the component, accessible
 through the ``local_data`` map. You must use the
-:py:meth:`morse.helpers.components.add_data` to declare the different fields
-of your component.
+:py:meth:`morse.helpers.components.add_data` method to declare your component's fields.
 
 .. code-block:: python
 
@@ -97,9 +96,9 @@ Defining properties for your component
 ++++++++++++++++++++++++++++++++++++++
 
 It is possible to define properties for your components, i.e. some variables
-which allow to configure your component. For example, you may want to set the
+which allow your component to be configured. For example, you may want to set the
 size of your image. To declare such properties, you need to use the
-:py:meth:`morse.helpers.components.add_property`. 
+:py:meth:`morse.helpers.components.add_property` method. 
 
 .. code-block:: python
 
@@ -114,15 +113,15 @@ size of your image. To declare such properties, you need to use the
         add_data("image", None, 'rgba buffer', 'the data captured by the ImageSensor, stored as a Python Buffer ...')
         add_data('matrix', None, "mat3<float>", 'long description')
 
-        add_property('image_width', 256, 'image_width', 'int', 'width of the image, in pixel')
-        add_property('image_length', 256, 'image_length', 'int', 'width of the image, in pixel')
+        add_property('image_width', 256, 'image_width', 'int', 'width of the image, in pixels')
+        add_property('image_length', 256, 'image_length', 'int', 'width of the image, in pixels')
 
 .. warning::
 
-    Contrary to ``add_data``, you must only pass basic type in
+    Unlike ``add_data``, you may only use basic types with
     ``add_property`` (bool, float, int, string). Indeed, here, we rely on the
     blender game property system to pass values between the builder script and
-    the code logic, and it only supports these basic types.
+    the code logic, and this only supports these basic types.
 
 Defining the logic of your component
 ++++++++++++++++++++++++++++++++++++
@@ -132,21 +131,20 @@ internal logic. There are two important functions that you want to override.
 
 - the init function (``__init__``). In this function, you can create and
   initialize private attributes (which won't be exported to other MORSE
-  layer). Do not forget to call the ``__init__`` method of your parent
+  layers). Do not forget to call the ``__init__`` method of your parent
   class, to properly initialize the component.
 
 - the ``default_action`` method contains the logic of our component.  Avoid
-  to do some big computation here: the function is called often, and it will
-  slow down the whole processing of the Game Engine.
+  doing any big computations here: the function is called often, and it will
+  slow down the whole simulation if it takes too much time to execute.
 
   * For a sensor, you want to compute the values of the different elements
-    of your ``local_data`` using the current simulator step. See for
-    instance :py:meth:`morse.sensors.pose.Pose.default_action`.
+    of your ``local_data`` using the current simulator step. See, for
+    instance, :py:meth:`morse.sensors.pose.Pose.default_action`.
 
   * For an actuator, you want to **modify** the simulated scene based on
-    the values stored in the ``local_data`` dictionary. Have a look at
-    :py:meth:`morse.actuators.v_omega.MotionVW.default_action` for
-    instance.
+    the values stored in the ``local_data`` dictionary. See, for instance,
+    :py:meth:`morse.actuators.v_omega.MotionVW.default_action`.
 
 .. code-block:: python
 
@@ -166,7 +164,7 @@ internal logic. There are two important functions that you want to override.
 
         def __init__(self, obj, parent = None):
             # Call the constructor of the parent class
-            Sensor.__init__(self, obj, parent)
+            super().__init__(obj, parent)
 
             # Initialize some private variable
             self.capturing = False
@@ -186,17 +184,17 @@ internal logic. There are two important functions that you want to override.
             self.local_data["image"] = self.get_raw_image()
 
 .. note::
-    Note that you never directly discuss with a middleware inside a component.
+    Note that you never directly communicate with middleware inside a component.
     Everything goes through the ``local_data`` structure. This lets your code
-    be largely middleware independant.
+    be largely middleware independent.
 
     To put it another way: your component **must not** have any middleware
     specific code.
 
 .. note::
     
-    You may want to add services to your component. Please follow
-    :doc:`services` to learn how to add service to one component.
+    You may want to add services to your component. Please read
+    :doc:`services` to learn how to add services to a component.
 
 
 Defining abstraction levels
@@ -207,7 +205,7 @@ A component can define several levels of abstraction, also called levels of
 which defines three levels of realism, corresponding to different degrees of
 integration.
 
-These levels consist in:
+These levels consist of:
 
 - a custom set of data fields,
 - and/or a custom component class implementation.
@@ -216,7 +214,7 @@ Levels are defined with the helper function
 :py:meth:`morse.helpers.components.add_level`. The function
 :py:meth:`morse.helpers.components.add_data` can take an extra argument, which
 represents the level of the data (data will appears only at this level of
-realism). If not present, the data is available to all realism level.
+realism). If not present, the data is available to all realism levels.
 
 .. code-block:: python
 
@@ -263,11 +261,11 @@ Here, we define two level of realism, the `raw` one and the `processed`
 one. The `raw` level is implemented directly by `MyImageSensor` while the
 `processed` level is handled by `MyProcessedImageSensor` class.
 
-We may observe that the `processed` level as a flag `default=True`. While not
-mandatory, it is recommended to define a default level to allow the usage of
+We may observe that the `processed` level has a flag `default=True`. While not
+mandatory, it is recommended to define a default level to allow the use of
 your component with minimal configuration.
 
-An user would configure this sensor in a script that way:
+A user would configure this sensor in a script like this:
 
 .. code-block:: python
 
@@ -282,7 +280,7 @@ An user would configure this sensor in a script that way:
     ...
 
 
-.. _blender-advices:
+.. _blender-advice:
 
 The 'Blender' part
 ------------------
@@ -293,13 +291,13 @@ The 'Blender' part
   * 1 Blender unit = 1 m
   * ``x`` points forward, ``z`` points up.
   * You can of course import meshes in Blender. Just check the scale and orientation.
-  * Do not forget that your mesh will be used in a real-time 3D engine: keep
+  * Remember that your mesh will be used in a real-time 3D engine: keep
     the number of polygons low (check the ``decimate`` tool in Blender to
     simplify your model if needed).
-  * Do not forget the :doc:`bounding boxes<../user/tips/bounding_boxes>`.
+  * Remember the :doc:`bounding boxes<../user/tips/bounding_boxes>`.
   * If your sensor/actuator has a kinematic structure (not a single rigid part),
-    use Blender's armatures to model it precisely (see below the note on
-    armatures)..
+    use Blender's armatures to model it precisely (see the note on
+    armatures below)..
 
 .. note::
 
@@ -333,9 +331,9 @@ to the :doc:`armature creation<armature_creation>` page for details.
 The Builder Part
 ----------------
 
-Now that you created the logic of your component, you need to define a builder
+Now that you've created your component's logic, you need to define a builder
 class. This will allow you to create an object in the Blender interface, which
-will call your logic code every *n* frame of the simulation.
+will call your logic code every *n* frames of the simulation.
 
 - Sensors must extend :py:class:`morse.builder.creator.SensorCreator`. Have a
   look at :py:class:`morse.builder.sensors.Pose` for a simple example.
@@ -350,10 +348,10 @@ will call your logic code every *n* frame of the simulation.
 
     class PTUPosture(SensorCreator):
         def __init__(self, name=None):
-            SensorCreator.__init__(self, name, "morse.sensors.ptu_posture.PTUPosture")
+            super().__init__(name, "morse.sensors.ptu_posture.PTUPosture")
 
 
-For basic mesh, you can use classes from :py:mod:`morse.builder.blenderobjects`
+For a basic mesh, you can use classes from the :py:mod:`morse.builder.blenderobjects`
 module.
 
 .. code-block:: python
@@ -363,7 +361,7 @@ module.
 
     class GPS(SensorCreator):
         def __init__(self, name=None):
-            SensorCreator.__init__(self, name, "morse.sensors.gps.GPS")
+            super().__init__(name, "morse.sensors.gps.GPS")
             mesh = Sphere("GPSSphere")
             mesh.scale = (.04, .04, .01)
             mesh.color(.5, .5, .5)
@@ -378,7 +376,7 @@ use :py:meth:`morse.builder.creator.ComponentCreator.append_meshes`.
 
     class Sick(LaserSensorWithArc):
         def __init__(self, name=None):
-            LaserSensorWithArc.__init__(self, name, \
+            super().__init__(name,
                     "morse.sensors.laserscanner.LaserScanner", "sick")
             # set components-specific properties
             self.properties(Visible_arc = False, laser_range = 30.0,
