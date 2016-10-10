@@ -1,7 +1,7 @@
 Build your simulations
 ======================
 
-If you did not check it, we recommend you to first go over the
+If you haven't read it, we recommend you start by reading the
 :doc:`Quickstart<../quickstart>` page.
 
 For a practical reference of the Builder API module methods, see the
@@ -11,12 +11,12 @@ Creating a new simulation
 -------------------------
 
 In MORSE, we call a *simulation environment* a main *simulation scenario* (a
-Python script that describe the environment, the static objects, the robots,
+Python script that describes the environment, the static objects, the robots,
 the sensors and/or actuators, etc.) and a set of optional resources, that
-may comprise models (as Blender ``.blend`` files) and implementation of custom
+may comprise models (as Blender ``.blend`` files) and implementations of custom
 components.
 
-These files are usually stored in a single self-contained folder (which ease
+These files are usually stored in a single self-contained folder (for convenient
 sharing), but since regular Python's ``import`` mechanism works as expected,
 you can also organize your files differently (for instance, to share a
 complex robot description between several simulation scenarios).
@@ -30,7 +30,7 @@ For instance::
  $ morse create my_project
 
 creates a new folder called ``my_project`` in the current directory, and also
-add an entry to the MORSE configuration file (usually located in
+adds an entry to the MORSE configuration file (usually located in
 ``$HOME/.morse/config``) that allows you to run your simulation from anywhere,
 with a simple ``morse run my_project``.
 
@@ -43,8 +43,8 @@ it works.
 connect to MORSE through Python. You can safely delete it if you do not need
 it.
 
-How to build a simulation scenario suitable to your need? The remaining of this
-page details MORSE's ``Builder API``. It is a set of components and methods
+How do you build a simulation scenario suitable to your needs? The rest of this
+page describes MORSE's ``Builder API``. It is a set of components and methods
 that let you build a simulation scene.
 
 Builder scripts
@@ -57,7 +57,7 @@ scripts to build the complete simulation as a Blender scene, configures the
 components, and starts the Blender 3D Engine.
 
 Since these scripts are regular Python scripts, you can easily create one
-function or class for each of your robots. This way, you can quickly reuse them
+function or class for each of your robots. This way, you can easily reuse them
 in different contexts.
 
 A basic builder script looks like:
@@ -74,7 +74,7 @@ A basic builder script looks like:
   tune some simulation parameters. See :py:mod:`morse.builder.environment` for a
   list of methods. If you set the optional parameter ``fastmode`` to ``True``,
   MORSE switches to a simpler rendering method (wireframe) which leads to much
-  faster performances, but you can not use vision-based sensors like cameras in
+  faster performance, but you cannot use vision-based sensors like cameras in
   this mode.
 
 .. note::
@@ -82,7 +82,7 @@ A basic builder script looks like:
     The Environment object must be the last thing created in the builder
     script.
 
-If your edit this script in MORSE, you should see the ``'indoors-1/indoor-1'``
+If you edit this script in MORSE, you should see the ``'indoors-1/indoor-1'``
 scene:
 
 .. image:: ../../media/builder/morse_builder_1empty.png
@@ -102,7 +102,7 @@ You can also set a ``MORSE_RESOURCE_PATH`` environment variable with::
 
     export MORSE_RESOURCE_PATH="/path/number/one:/path/number/two"
 
-where MORSE will be looking for components. The default place it looks in is
+where MORSE will look for components. The default place it looks in is
 ``$MORSE_ROOT/share/morse/data`` (typically ``/usr/local/share/morse/data``)
 
 An additional option is to place and aim the default camera, by using the methods
@@ -117,7 +117,7 @@ An additional option is to place and aim the default camera, by using the method
 
 .. note::
     You can also edit a builder script directly in MORSE, by calling ``morse edit my_builder_script.py``.
-    This let you build your environment with Blender's GUI. Save it as a regular Blender file, and 
+    This lets you build your environment with Blender's GUI. Save it as a regular Blender file, and 
     run it directly: ``morse run my_sim.blend``. Be aware that MORSE does not support converting such a Blender
     simulation back to a Python Builder script.
 
@@ -145,9 +145,9 @@ You should see the ``ATRV`` at the center of the scene.
 
 .. warning::
 
-    Handling of loop in builder script is a bit complex. There is two possible
-    solution to handle properly loop at the builder level. The first one is
-    to name explicitly your robot such as:
+    Handling loops in builder scripts is a bit complex. There is two possible
+    solutions to properly handle loops at the builder level. The first one is
+    to explicitly name your robot, for example:
 
     .. code-block:: python
 
@@ -170,7 +170,7 @@ Adding sensors and actuators
 ++++++++++++++++++++++++++++
 
 A robot needs informations about it's location, and to apply some movements.
-There are different way to achieve this, in our example, we will use a ``Pose``
+There are different ways to achieve this, in our example, we will use a ``Pose``
 sensor and a ``Motion`` controller 'v-omega'.
 
 .. code-block:: python
@@ -194,8 +194,8 @@ sensor and a ``Motion`` controller 'v-omega'.
 
     env = Environment('indoors-1/indoor-1')
 
-The last line configure the robot's components on socket, for more information
-about services and datastreams, go to `Middleware configuration`_
+The last line configures the robot's components to use the socket interface,
+for more information about services and datastreams, go to `Middleware configuration`_
 
 
 .. note::
@@ -205,7 +205,7 @@ about services and datastreams, go to `Middleware configuration`_
     The name is used by MORSE to refer to the component in the simulator
     interface. Each middleware has it's own naming convention, but for
     instance with the basic ``socket`` interface, you can send a command to
-    the motion controller like that::
+    the motion controller like this::
 
         $ telnet localhost 4000
         Connected to localhost.
@@ -216,7 +216,7 @@ about services and datastreams, go to `Middleware configuration`_
 Position a component
 ++++++++++++++++++++
 
-There are 2 transformations you can give to a component: ``translate(x, y, z)``
+There are two transformations you can apply to a component: ``translate(x, y, z)``
 and ``rotate(x, y, z)``.
 
 * The translation will add (x, y, z) to the current object location
@@ -241,7 +241,7 @@ You can set the name of a component through the setter ``name``::
     mouse.name = "jerry"
 
 
-If you do not explicitly set the name of your components, MORSE name them
+If you do not explicitly set the name of your components, MORSE names them
 automatically (including the Blender objects representing your components)
 based on **the name of the variable used in your Builder script**.
 
@@ -270,8 +270,8 @@ Let take an example. Consider this script, with two robots::
     env = Environment('indoors-1/indoor-1')
 
 
-If you open it in MORSE for edition (with ``morse edit``) and you look at the
-outliner, you see that the hierarchy of objects looks like that:
+If you open it in MORSE for editing (with ``morse edit``) and you look at the
+outliner, you will see that the hierarchy of objects looks like this:
 
 .. code-block:: none
 
@@ -286,13 +286,13 @@ outliner, you see that the hierarchy of objects looks like that:
 
 .. note::
     Automatic renaming only works for components *visible* from your script
-    (*ie*, a component declared in a function or class, which is not assigned to
+    (*i.e.*, a component declared in a function or class, which is not assigned to
     a variable that belongs to your ``Builder`` script, will not be renamed) or
     components that were appended to a component which is visible.
 
 .. note::
     The renaming process works only for object created before the Environment
-    object. Make sure to create this one at the end of the builder script.
+    object. Make sure to create this at the end of the builder script.
 
 .. note::
     If name collisions occur anyway, Blender automatically adds an incremental
@@ -337,13 +337,13 @@ Middleware configuration
 Datastream handlers
 +++++++++++++++++++
 
-For usual sensors and actuators, configuring a middleware to access the
+For standard sensors and actuators, configuring a middleware to access the
 component is as easy as::
 
     motion.add_stream('ros')
 
-One component can be made accessible through several middleware by simply
-calling again ``add_stream``::
+One component can be made accessible through several middlewares by simply
+calling ``add_stream`` again::
 
     motion.add_stream('yarp')
 
@@ -356,43 +356,43 @@ the :doc:`compatibility matrix <integration>`.
 
         motion.add_stream('ros', 'morse.middleware.ros.motion_vw.TwistReader')
 
-    In that case, we instruct MORSE to use ROS with the ``TwistReader`` class
+    In this case, we have told MORSE to use ROS with the ``TwistReader`` class
     defined in the :py:mod:`morse.middleware.ros.motion_vw` module.
 
 .. note::
-    Configuration for standard sensors and actuators are defined in
+    Configurations for standard sensors and actuators are defined in
     the module :py:mod:`morse.builder.data`.
 
 .. note::
     Some middleware allows you to configure the behaviour of each stream. Refer
     to the documentation of your specific middleware, in the part
-    "Configuration specificities" to know more about it.
+    "Configuration specificities" to learn more about this.
 
 Service handlers
 ++++++++++++++++
 
-To use :doc:`services <../dev/services>` of a sensor or an actuator, you
+To use the :doc:`services <../dev/services>` of a sensor or an actuator, you
 should configure your builder script explicitly.  For example, to export the
 service of the actuator ``motion`` through the middleware ``socket``, you must
 write::
 
     motion.add_service('socket')
 
-As for datastream handler, it is possible to configure one component to export
+As for datastream handlers, it is possible to configure one component to export
 its services through multiple middlewares. You simply need to call
-``add_service`` several times.
+``add_service`` once for each one.
 
 .. warning::
 
-    Due the nature of some middlewares (in particular ROS or pocolibs), it is
+    Due the nature of some middleware (in particular ROS and pocolibs), it is
     sometimes not really useful to call the service directly as exposed by
-    Morse. You need to use an extra layer of adaption called :doc:`overlays
+    MORSE. You need to use an extra layer of adaption called :doc:`overlays
     <overlays>` and configure it through the ``add_overlay`` method.
 
 Related methods
 +++++++++++++++
 
-The method ``add_interface`` allows to configure both datastream and service
+The method ``add_interface`` allows you to configure both datastream and service
 handling for one component. So::
 
     motion.add_stream('socket')
@@ -404,7 +404,7 @@ is equivalent to::
 
 Last, the method ``add_default_interface`` configures the default interface
 for each sensor / actuator owned by a robot. If an interface is configured for
-one sensor, it is used, otherwise the default  one is used. In the following
+one sensor, it is used, otherwise the default one is used. In the following
 example
 
 .. code-block:: python
@@ -427,7 +427,7 @@ example
 Adding modifiers
 ----------------
 
-Sensors or actuators data can be modifier by assigning modifiers to them.
+Sensors' or actuators' data can be modified by assigning modifiers to them.
 Modifiers are used to either make some convenient conversions, for instance
 when you need to export data related to another frame than the Blender one 
 (see the :doc:`UTM <modifiers/utm>` or :doc:`NED <modifiers/ned>` modifiers),
@@ -448,7 +448,7 @@ your builder script::
 Adding a zone
 -------------
 
-A zone is a 3d zone, more precisely a rectangular parallelepiped. It is
+A zone is a 3D zone, more precisely a rectangular parallelepiped. It is
 possible to attach specific properties to each zone, in particular its name
 and its type. In the simulator, different behaviours can be implemented. At
 the moment, the only Morse component using the concept of zone is the
@@ -501,7 +501,7 @@ Consider the following simple example:
 This is the typical scenario: we tell MORSE that the pose sensor should output
 values at 200Hz, and we let MORSE manage all other time-related questions. In
 this case, MORSE will run its main loop at 200Hz (hardware permitting!
-otherwise, MORSE will warn you that the desired frequency can not be reached),
+otherwise, MORSE will warn you that the desired frequency cannot be achieved),
 and will attempt to update the physics at real-time speed. Note that we did not
 have to specify a frequency for our motion actuator: by default, all MORSE
 components run at 60Hz.
@@ -516,12 +516,12 @@ lines to your builder script:
     env.set_time_scale(1.5)
 
 Now, MORSE will attempt (again, hardware permitting!) to run the simulation at
-x1.5 real-time. It means that, during 1 real-time second, Morse will simulation
-1.5 second. Accordingly, the pose sensor, for instance, will produce reading at
-1.5 X 200 = 300Hz. The physics engine will accordingly run faster, etc.
+1.5x real-time. This means that, during 1 real second, MORSE will simulate the passing of
+1.5 seconds. Accordingly, the pose sensor, for instance, will produce readings at
+1.5 x 200 = 300Hz. The physics engine will accordingly run faster, etc.
 
-If you note that sensors do not publish data at a really stable rate, you can
-enable **morse_sync**. It may lead to some graphical frame lose, but it will
+If you note that sensors do not publish data at a reliably stable rate, you can
+enable **morse_sync**. This may lead to some graphical frame loss, but it will
 improve the stability of the sensor rate.
 
 .. code-block:: python
@@ -529,20 +529,20 @@ improve the stability of the sensor rate.
     ...
     env.use_internal_syncer()
 
-Handling more complex scenario
-++++++++++++++++++++++++++++++
+Handling more complex scenarios
++++++++++++++++++++++++++++++++
 
-To handle more complex scenario, you need to read :doc:`this page
+To handle a more complex scenario, you need to read :doc:`this page
 <../dev/time_event>` which describes the time handling in Morse. For now, we
 have identified two advanced scenarios. If you have specific requirements, or
-the default settings cause issues on your computer, pleas report the issue to
+the default settings cause issues on your computer, please report the issue to
 the Morse project.
 
-Synchronisation with other(s) simulator(s)
-__________________________________________
+Synchronisation with other simulator(s)
+_______________________________________
 
-In this situation, you want to use **Fixed Simulation Step** strategy with
-well-defined ``base_frequency``. v-sync can be turned off.
+In this situation, you want to use the **Fixed Simulation Step** strategy with
+a well-defined ``base_frequency``. v-sync can be turned off.
 
 .. code-block :: python
 
