@@ -77,7 +77,7 @@ Standard keyboard functions
 
 The following are the default key bindings defined in any simulation scene
 
-- :kbd:`p` key: start the simulation (initiate the Game Engine)
+- :kbd:`p` key: start the simulation (initialise the Game Engine)
 
 - :kbd:`h` key: show an on screen display with this list of keyboard functions
 
