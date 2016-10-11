@@ -31,7 +31,7 @@ documentation <http://wiki.blender.org/index.php/Doc:2.6/Manual/Rigging/Armature
     <https://github.com/morse-simulator/morse/issues/382>`_ to learn more about
     this problem and possible workarounds.
 
-Besides, the Blender armature need some special configuration,
+In addition, the Blender armature needs some special configuration,
 detailed below.
 
 Creating armatures
@@ -42,7 +42,7 @@ The following procedure should help you to create Blender armatures suitable for
 simulation. It assumes you already have a correct mesh for your system (one
 independent Blender object for each rigid body).
 
-As example, we will walkthrough the creation of an armature for the left arm of
+As an example, we will walkthrough the creation of an armature for the left arm of
 Nao.
 
 .. image:: ../../media/armatures/armatures1.png
@@ -62,13 +62,13 @@ Nao.
 
 4. Select the last bone of the armature, switch to `Edit Mode` (:kbd:`Tab`),
    select the head, snap the selection to the 3D cursor (:kbd:`space` and ``Snap
-   selection to cursor``). This places the bone correctly between the 2 rigid
-   bodies. Rename the bone into ``BodyA2BodyB`` (for instance,
+   selection to cursor``). This places the bone correctly between the two rigid
+   bodies. Rename the bone using the form ``BodyA2BodyB`` (for instance,
    ``Torso2LShoulder``)
 
 5. Extrude the bone (:kbd:`E`)
 
-6. Repeat steps 3,4 and 5 until the armature is complete
+6. Repeat steps 3, 4 and 5 until the armature is complete
 
 .. image:: ../../media/armatures/armatures2.png
    :width: 633
@@ -99,10 +99,10 @@ Nao.
 
 9. For each of your bones, set the correct IK limits from their `Bone > Inverse
    Kinematics` menu. Select the enabled rotation axis and the rotation limits.
-   If the joint is a slider (ie, a translation), use the `Stretch` value to set
+   If the joint is a slider (i.e., a translation), use the `Stretch` value to set
    the maximum translation allowed, in meters (in that case, you must use the
    `Legacy` IK solver). Setting rotation limits should lead to a nice 3D display
-   of reachable position for the joint.
+   of reachable positions for the joint.
 
 .. image:: ../../media/armatures/armatures5.png
    :width: 633
