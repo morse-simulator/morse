@@ -1,37 +1,37 @@
-Understanding Morse code organisation
-=====================================
+Understanding Morse's code organisation
+=======================================
 
-The source code of Morse is organised in the following way :
+Morse's source code is organised in the following way :
 
-- ``addons``: it contains various addons for blender, useful for MORSE simulation
-- ``bin``: it contains the main entry point of the MORSE simulation
-- ``bindings``: it contains some python library to access to MORSE data, through
+- ``addons``: this contains various addons for blender, useful for MORSE simulation
+- ``bin``: this contains the main entry point for the MORSE simulation
+- ``bindings``: this contains some Python libraries for accessing MORSE data, through
   the socket middleware
-- ``config``: it contains stuff for Cmake 
-- ``data``: it contains the blender model of sensors / actuators
-- ``doc``: the documentation (in rest format)
-- ``examples``: it contains examples about :
+- ``config``: this contains things needed for CMake 
+- ``data``: this contains the blender model of sensors / actuators
+- ``doc``: the documentation (in reStructuredText format)
+- ``examples``: this contains examples that show :
 
   - how to control the simulator (in ``clients``)
-  - more or less elaborate test scenarii (in ``scenarii``)
-- ``src``: it contains all the python scripts used by the simulator : it is the
-  core of the simulator
+  - various test scenarios (in ``scenarii``)
+- ``src``: this contains all the Python scripts used by the simulator : it is the
+  simulator's core
 
-  - ``morse/actuators``: it contains implementation for various robot actuators
-  - ``morse/blender``: it contains some scripts needed at the initialization of
+  - ``morse/actuators``: this contains some predefined robot actuators
+  - ``morse/blender``: this contains some scripts needed for the initialization of
     the game engine
-  - ``morse/builder``: it contains the scripts for the API that permits creating a
+  - ``morse/builder``: this contains the scripts for the API that permits creating a
     simulation scenario from a Python file. See the :doc:`Builder API
     <../user/builder>` documentation.
-  - ``morse/core``: it contains core classes for the MORSE project (services, base
-    objects, sensors, ...) 
-  - ``morse/helpers``: it contains various helpers (math transformation)
-  - ``morse/middleware``: it contains the code for linking with different
-    middlewares, both for service or datastream. Each middleware has a separate
-    directory.
-  - ``morse/modifiers``: it contains implementation for various modifiers to basic
+  - ``morse/core``: this contains core classes for the MORSE project (services, base
+    objects, sensors, etc.) 
+  - ``morse/helpers``: this contains various helper functions (e.g., math transformations)
+  - ``morse/middleware``: this contains the code for linking with different
+    middlewares, both for services and datastreams. Each middleware has its own separate
+    subdirectory.
+  - ``morse/modifiers``: this contains implementations of various modifiers for basic
     components
-  - ``morse/robots``: it contains instantiation of different robot classes
-  - ``morse/sensors``: it contains implementation for various robot sensors
+  - ``morse/robots``: this contains some predefined robot classes
+  - ``morse/sensors``: this contains some predefined robot sensors
 
-- ``testing``: it contains "unit-test" for various part of MORSE.
+- ``testing``: this contains unit tests for various part of MORSE.
