@@ -18,7 +18,7 @@ Prerequisites
 You should be familiar with the basic usage of ROS and how to use TF and
 the ROS navigation stack. You should also know about launchfiles and topic
 remapping as well as the robot state publisher. Also experience with RVIZ is
-also useful. Tutorials on all of those topics can be found on
+helpful. Tutorials on all of these topics can be found on
 http://www.ros.org/wiki/ROS/Tutorials.
 
 We also assume you know how to use the MORSE Builder API to equip your robot
@@ -33,14 +33,14 @@ python3-compatible stacks for MORSE-ROS installed. You can find information
 about this in the :doc:`installation notes <../installation/mw/ros>`
 
 .. note::
-    We base the tutorial on ROS Indigo. The tutorial has also been successfully
-    tested with previous ROS versions down to ROS Fuerte. You may however need
-    to adapt some of the instructions.
+    This tutorial uses ROS Indigo. The tutorial has also been successfully
+    tested with previous ROS versions down to ROS Fuerte. However, you may need
+    to adapt some of the instructions if using a different ROS version.
 
-If you are running Ubuntu, you can simply install the packages
+If you are using Ubuntu, you can simply install the packages
 ``ros-indigo-pr2-navigation``, ``ros-indigo-pr2-common``,
 ``ros-indigo-control-msgs`` and ``ros-indigo-viz``. They will install all
-required dependencies.
+their required dependencies.
 
 You also need MORSE installed with ROS support: check that the
 ``BUILD_ROS_SUPPORT`` CMake option is enabled when building MORSE.
@@ -50,7 +50,7 @@ Bringing up your robot in RVIZ
 
 Our first step is to get a robot to show up in RVIZ. In this tutorial, we
 will use the PR2 robot, but any robot (with an URDF file to describe it
-to RVIZ) would do.
+to RVIZ) will do.
 
 Let's create a first simple scenario script: a PR2 in a kitchen environment, a
 keyboard actuator to move it around, and an :doc:`Odometry sensor
@@ -65,7 +65,7 @@ And edit ``default.py``:
 
     from morse.builder import *
 
-    # A 'naked' PR2 robot to the scene
+    # Add a 'naked' PR2 robot to the scene
     robot = BarePR2()
     robot.translate(x=2.5, y=3.2, z=0.0)
 
@@ -92,7 +92,7 @@ And edit ``default.py``:
     If you do not specify a topic name, one is created automatically (here,
     it would be ``/robot/odometry``).
 
-    If you like, you can also add a ``odometry.add_interface('socket')`` to add
+    If you like, you can also add an ``odometry.add_interface('socket')`` to add
     another output on a socket.
 
 
@@ -127,7 +127,7 @@ First complete the ``default.py`` script by replacing the ``BarePR2`` by the ``B
 
     from morse.builder import *
 
-    # A PR2 robot to the scene
+    # Add a PR2 robot to the scene
     robot = BasePR2()
     robot.add_interface('ros')
     robot.translate(x=2.5, y=3.2, z=0.0)
@@ -153,7 +153,7 @@ start the ``robot_state_publisher`` for us::
   $ touch nav.launch
   $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:`pwd`/..
 
-Edit ``manifest.xml`` and copy-paste the code below:
+Edit ``manifest.xml`` and copy and paste the code below:
 
 .. code-block:: xml
 
@@ -171,7 +171,7 @@ Edit ``manifest.xml`` and copy-paste the code below:
         <depend package="robot_state_publisher"/>
     </package>
 
-Edit ``nav.launch`` and copy-paste this code:
+Edit ``nav.launch`` and copy and paste this code:
 
 .. code-block:: xml
 
@@ -227,7 +227,7 @@ You can now run the ROS GMapping stack:
 
 ``rosrun gmapping slam_gmapping scan:=/base_scan _odom_frame:=/odom``
 
-Move around the robot in the simulation using the keyboard to fill the map
+Move the robot around in the simulation using the keyboard to fill in the map
 (displayed in RVIZ).
 
 .. image:: ../../../media/MORSE_ROS-tutorial-2.jpg
@@ -235,7 +235,7 @@ Move around the robot in the simulation using the keyboard to fill the map
 
 When you are satisfied, save it with ``rosrun map_server map_saver``.
 
-This will create a pair ``map.pgm`` and ``map.yaml`` in your home directory
+This will create two files, ``map.pgm`` and ``map.yaml``, in your home directory
 that should be similar to the one provided with the tutorial in
 ``$MORSE_PREFIX/share/morse/examples/tutorials/ros_navigation/maps/``
 
@@ -264,8 +264,8 @@ Start the AMCL estimator, passing the laser scans topic as paramter::
 
 Now, open RVIZ.  Set the *Fixed Frame* to ``/map``, enable the laser scan
 display (topic name is ``/base_scan``) to see the simulated laser scans and set
-an initial pose estimate (*ie* an estimate of the pose of the robot in MORSE)
-by clicking on the *2D Pose Estimate* button in RVIZ interface.
+an initial pose estimate (*i.e.* an estimate of the pose of the robot in MORSE)
+by clicking on the RVIZ interface's *2D Pose Estimate* button.
 
 Now, move the robot in the simulator with the arrow keys. You should see the
 localization of the robot in RVIZ improving with time and displacements.
@@ -294,7 +294,7 @@ Then, we need to add a motion controller to our robot. Open your ``default.py`` 
     motion.add_interface('ros', topic='/cmd_vel')
 
 For the navigation, we will use the high-level ``move_base`` ROS module. The
-*2D Nav Goal* button in RVIZ interface will allow us to easily send navigation
+*2D Nav Goal* button in RVIZ's interface will allow us to easily send navigation
 goals to our robot.
 
 ``move_base`` requires numerous settings to be set. Visit
