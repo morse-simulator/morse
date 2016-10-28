@@ -13,7 +13,7 @@ particular architecture.
 Overlay example
 ---------------
 
-The example below present a typical use for overlays: MORSE provides a
+The example below presents a typical use for overlays: MORSE provides a
 :doc:`pan-tilt unit <actuators/ptu>` actuator that offers a method,
 :meth:`morse.actuators.ptu.PTU.set_pan_tilt`, to set the pan and 
 tilt angles of the PTU.
@@ -51,11 +51,11 @@ The following overlay maps your functions to the default MORSE ones:
             self.overlaid_object.set_tilt_pan(self.last_tilt, self.last_pan)
 
 You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
-file, accessible from MORSE Python path.
+file, accessible from MORSE's Python path.
 
-For asynchronous service, it is a bit more complex, as we need to provide a 
+For asynchronous services, it is a bit more complex, as we need to provide a 
 callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` takes care
-about this operation. You can pass an optional function to this method to
+of this operation. You can pass an optional function to this method to
 modify the returned data, or modify the state of your object.
 
 This new callback *must* take one parameter (a tuple ``(status,
@@ -79,7 +79,7 @@ result)``) and return a new tuple ``(status, result)``:
         def format_pan_tilt_return(self, result):
             # this callback will be called when SetTilt or SetPan
             # completes.
-            # It simply re-format the return value of the asynchronous
+            # It simply re-formats the return value of the asynchronous
             # services.
 
             status, value = result
@@ -91,19 +91,19 @@ result)``) and return a new tuple ``(status, result)``:
         def SetTilt(self, tilt):
             self.last_tilt = float(tilt)
             self.overlaid_object.set_tilt_pan(
-                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.chain_callback(self.format_pan_tilt_return),
                     self.last_tilt, self.last_pan)
 
         @async_service
         def SetPan(self, pan):
             self.last_pan = float(pan)
             self.overlaid_object.set_tilt_pan(
-                    self.chain_callback(self.format_pan_tilt_return), \
+                    self.chain_callback(self.format_pan_tilt_return),
                     self.last_tilt, self.last_pan)
 
 
 .. warning::
-    The behaviour is currently undefined in case of service name collision
+    The behaviour is currently undefined in the case of a service name collision
     between the original sensor services and the services defined in the overlay.
 
 Scene setup
@@ -116,8 +116,8 @@ Components can be easily overlaid from the :doc:`MORSE Builder API
 <../user/builder>` with the method
 :meth:`morse.builder.abstractcomponent.AbstractComponent.add_overlay`.
 
-This method takes two parameters, the middleware to use (cf
-:mod:`morse.builder.data` for the list of available options) and the
+This method takes two parameters, the middleware to use (see
+:mod:`morse.builder.data` for the list of available options), and the
 full-qualified Python name of the overlay class (for instance,
 ``morse.my_overlays.MyPTU``)
 
@@ -158,7 +158,7 @@ Let's complete our previous example:
         
         # [...]
         
-        def name():
+        def name(self):
             return "MyPTU"
         
         # [...]
