@@ -1,28 +1,28 @@
 Basic interaction with another simulator using HLA : the Billard example :tag:`hla`
 ===================================================================================
 
-In this tutorial, you will learn / test how to connect Morse with another
+In this tutorial, you will learn how to connect Morse with another
 simulator engine, using HLA. We will use the default example simulator
 provided by the CERTI implementation, a billard simulator.
 
 .. warning::
 
-    The tutorial assumes that you are familiar with HLA concept.
+    The tutorial assumes that you are familiar with the HLA concept.
 
 Setup
 -----
 
-First, verify that you have installed the needed Morse HLA stuff, by following 
+First, verify that you have installed the required Morse HLA software, by following 
 the HLA section in the :doc:`installation notes <../installation/mw/hla>`.
 
 Before running a distributed simulation using HLA/CERTI, it is necessary to
-launch the RTIG (Run Time Interface Gateway) which will basically do the
-synchronisation between the different simulators of the federation. So, open a
+launch the RTIG (Run Time Interface Gateway) which will handle the
+synchronisation between the different simulators in the federation. So, open a
 console and execute::
 
   $ rtig
 
-We will now add our first instance to the federation, ``billard`` ,a poolroom
+We will now add our first instance to the federation, ``billard``, a poolroom
 model provided by CERTI. So, in another console, start::
 
   $ billard -n foo -f Test -F Test.fed
@@ -34,7 +34,7 @@ where:
 - **Test.fed** is the name of the file describing the FOM of the federation.
   It is provided by CERTI.
 
-You can press enter, and normally, you will see a red ball moving. Stop it now.
+You can press Enter, and normally, you will see a red ball moving. Stop it now.
 
 Reflecting attributes in Morse
 ------------------------------
@@ -47,7 +47,7 @@ First, we need to create one robot to reflect the ball in the poolroom.
 
 .. warning::
 
-    As, for the moment, there is no dynamic creation of the robot, robot name
+    Currently, there is no support for dynamic robot creation, so the robot name
     should be carefully chosen to match instances from other federates.
 
 
@@ -55,7 +55,7 @@ First, we need to create one robot to reflect the ball in the poolroom.
 
     foo = Morsy()
 
-The ``Test.fed`` shows basically two interesting attributes ``PositionX`` and
+The ``Test.fed`` exposes two interesting attributes ``PositionX`` and
 ``PositionY``. In Morse, we will consider the :doc:`teleport actuator
 <../actuators/teleport>` to reflect the position of an external robot.
 
@@ -67,8 +67,8 @@ The ``Test.fed`` shows basically two interesting attributes ``PositionX`` and
     foo.append(teleport)
     
 
-Now, we need to connect this stuff to the HLA world. We use the
-``test_certi_intput`` which is written exactly for this specific purpose.
+Now, we need to connect this to the HLA world. We use the
+``test_certi_intput`` which is designed for this specific purpose.
 
 .. code-block:: python
 
@@ -103,15 +103,15 @@ Now, we need to connect this stuff to the HLA world. We use the
 .. note::
 
     You can play with the timestep value to see how it interacts with other
-    simulators
+    simulators.
 
 .. note::
 
     The ``ground`` and ``env`` configuration here is not very important, but
     used to look like more a poolroom.
 
-Now, start again the billard, and in another console, morse. Normally, Morse
-should be blocked, waiting for the synchronisation point. Press enter in the
+Now, restart the billard, and in another console, morse. Normally, Morse
+should be blocked, waiting for the synchronisation point. Press Enter in the
 billard console, and you should see Morsy moving according the ball movement.
 
 Exporting attributes from Morse
@@ -133,8 +133,8 @@ keyboard to control it.
     bar.append(pose)
     pose.add_stream('hla', 'morse.middleware.hla.certi_test_output.CertiTestOutput')
 
-If you start again the billard and Morse, you now must see a new black ball on
-the billard. Moreover, if you move the robot in Morse with the keyboard, you
-should see the black ball also moving in the billard.
+If you restart the billard and Morse, you should now see a new black ball on
+the billard board. Moreover, if you move the robot in Morse with the keyboard, you
+should see the black ball also moving in the billard board.
 
-At the end, your file must look like ``$MORSE_ROOT/share/morse/examples/tutorials/tutorial_hla.py``.
+At the end, your file should look like ``$MORSE_ROOT/share/morse/examples/tutorials/tutorial_hla.py``.
