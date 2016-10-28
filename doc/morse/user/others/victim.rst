@@ -8,7 +8,7 @@ This object has three important **Game Properties** that are used in the test sc
 
 - **Victim_Tag**: (boolean) Indicates that this object can be considered as a target for
     the robots, and can be healed
-- **Injured**: (boolean) Flag to indicate the victim is in problems. By default it is
+- **Injured**: (boolean) Flag to indicate the victim is in trouble. By default it is
     True, and will change to False once a robot has helped it using the
     :doc:`Rosace sensor<../sensors/search_and_rescue>`
 - **Severity**: (integer) Indicator of how injured this target is. In simulation, higher
