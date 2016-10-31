@@ -22,17 +22,17 @@ Options
 :file:
                   the exact scene (.py or .blend) to run (if 'env' is
                   given, within this environment).
-                  See section FILE RESOLUTION below for details.
+                  See the FILE RESOLUTION section below for details.
 
 :pyoptions:
-                  optional parameters, passed to the Blender python
+                  optional parameters, passed to the Blender Python
                   engine in sys.argv
 :-h, --help:
             show this help message and exit
 
 :--name NAME:
             when running in multi-node mode, sets the name of this
-            node (defaults to either MORSE_NODE if defined or
+            node (defaults to either MORSE_NODE if defined or the
             current hostname).
 :-g GEOM, --geometry GEOM:
             sets the simulator window geometry. Expected format:
@@ -44,7 +44,7 @@ Refer to :manpage:`morse(1)` for global MORSE options.
 File Resolution
 ---------------
 
-MORSE tries to figure out which simulation you want to open with the following strategy:
+MORSE tries to figure out which simulation you want to open using the following strategy:
 
 
 **If only one parameter *arg* is given:**
@@ -55,16 +55,16 @@ MORSE tries to figure out which simulation you want to open with the following s
      one (in alphanumerical order) 
    - else if a file called *arg* exists in the current directory, launch it.
    - else, fail
-- else check if a file called *arg* exists, and launch it (note that in that
-  case, *arg* can contain an absolute path or a path relative to the current 
+- else check if a file called *arg* exists, and launch it (note that in this
+  case, *arg* may contain an absolute path or a path relative to the current 
   directory).
 
 **If two parameters *arg1* and *arg2* are given:**
 
 - if *arg1* is a configured simulation environment with prefix $ENVROOT:
     - if *$ENVROOT/arg2* exists, launch it
-    - else, add $ENVROOT to MORSE environment, and if *arg2* exists, launch it (note
-      that *arg2* can contain an absolute path or a path relative to the current 
+    - else, add $ENVROOT to the MORSE environment, and if *arg2* exists, launch it (note
+      that *arg2* may contain an absolute path or a path relative to the current 
       directory)
 - else fail
 
