@@ -11,9 +11,9 @@ Synopsis
 Description
 -----------
 
-Imports a directory as a simulation environment, ie, adds an entry to MORSE's
-"sites" section of the configuration file (typically, $HOME/.morse/config) that
-refers to this directory.
+Imports a directory as a simulation environment, i.e., adds an entry to MORSE's
+configuration file's "sites" section that refers to this directory.
+(The configuration file is usually $HOME/.morse/config)
 
 Options
 -------
