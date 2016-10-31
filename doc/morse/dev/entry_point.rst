@@ -1,27 +1,27 @@
 Entry points of the simulation
 ==============================
 
-The internal functioning of MORSE is based on Blender's Game Engine events.
+MORSE's internal functioning is based on Blender's Game Engine events.
 These are defined in the Logic buttons window, using the graphical interface
 called "Logic Bricks". These are a set of predefined **Sensor**, **Controller**
 and **Actuator** events which can be linked together.  **Actuators** in
 particular are important because they are the places where Python scripts are
 called.
 
-Each object in Blender have its own set of Logic Bricks. The entry point of a
-Morse scene is defined in the ``Scene_Script_Holder`` object which is available
+Each object in Blender has its own set of Logic Bricks. A Morse scene's entry point
+is defined in the ``Scene_Script_Holder`` object which is available
 in ``${MORSE_ROOT}/data/props/basics.blend`` (this object is automatically
 added by the Builder API if it is not found in the simulation). This specific
 object contains the entry point :py:meth:`morse.blender.main.init` and the
-finalisation point :py:meth:`morse.blender.main.finish`. It contains also the
-"Logic Bricks" to control cameras, reset the simulation, ...
+finalisation point :py:meth:`morse.blender.main.finish`. It also contains the
+"Logic Bricks" to control cameras, reset the simulation, etc.
 
 Let's take a look at the module :py:mod:`morse.blender.main`.
 
 The init method
 ---------------
 
-The :py:meth:`morse.blender.main.init` is responsible to initialize all the
+The :py:meth:`morse.blender.main.init` is responsible for initializing all the
 Morse subsystems. It includes:
 
 - Create the dictionary of robots (:py:data:`morse.core.blender.persistantstorage.robotDict`)
@@ -37,33 +37,33 @@ Morse subsystems. It includes:
   (:py:data:`morse.core.blender.persistantstorage.morse_services`)
 - Create the dictionary of overlays
   (:py:data:`morse.core.blender.persistantstorage.overlayDict`)
-- Link the modifiers, middlewares, services overlays to their respective
+- Link the modifiers, middlewares, and services overlays to their associated
   components, as specified in the file ``component_config.py`` (see
   :doc:`arguments_passing`).
 - Initialise the logging system.
 
-The initialization of all components, including middlewares and modifiers, is
+The initialization of all the components, including middlewares and modifiers, is
 done by instantiating an object of the Python class specified in each
-component by the variable **classpath**. This **classpath** is not stored in
-blender file anymore, but described in the builder component (see
+component by the variable **classpath**. This **classpath** is not stored in a
+Blender file, but described in the builder component (see
 :py:mod:`morse.builder.sensors` for example).
 
 
 The finalization method
 -----------------------
 
-The method which terminates the simulation (called when you press :kbd:`ESC`) is the
-:py:meth:`morse.blender.main.finish`). However, the real cleaning logic is in
-:py:meth:`morse.blender.main.close_all`, which attempts to properly finalize all
+The method which terminates the simulation (called when you press :kbd:`Esc`) is
+:py:meth:`morse.blender.main.finish`). However, the real cleanup logic is in
+:py:meth:`morse.blender.main.close_all` method, which attempts to properly finalize all
 resources used by the simulator, in particular, resources used by the
 different middlewares.
 
 The main method
 ---------------
 
-The ``Scene_Script_Holder`` defines too a method which it calls at each
-simulator loop. It is the method :py:meth:`morse.blender.main.simulation_main`
-which:
+The ``Scene_Script_Holder`` also defines a method which it calls at each
+simulator loop. It is the :py:meth:`morse.blender.main.simulation_main`
+method which:
 
 - updates the simulation clock
 - dispatches services, if any
