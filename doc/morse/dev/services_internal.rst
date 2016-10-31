@@ -4,38 +4,40 @@ Understanding service internals
 Registering synchronous services
 --------------------------------
 
-What exactly happens when a method is decorated with ``@service``?
+What happens when a method is decorated with ``@service``?
 
 The ``@service`` decorator simply marks the method as a service by
-setting the attribute ``_morse_service`` to ``True`` on the function.
+setting adding an attribute called ``_morse_service`` of type ``bool``
+and with value ``True`` to the method.
 
 Before actually registering the service, a mapping between the component
 and one or several middlewares that will manage incoming requests must
-be defined (for instance, we may want the ``goto`` service of the
-:py:class:`morse.actuators.waypoint.Waypoint` to be managed
-by the YARP middleware for the component ``MainRobot``).
+be defined (for instance, we may want the
+:py:class:`morse.actuators.waypoint.Waypoint`'s ``goto`` service to be
+managed by the YARP middleware for the component ``MainRobot``).
 
-These mapping are defined by your builder script (it is so
-simulation-dependant).
+These mappings are defined by your builder script (so they are
+simulation-dependent).
 
-At start up, :py:func:`morse.blender.main.init`...
+At start up, :py:func:`morse.blender.main.init` does the following
 
-1. Reads the configuration, 
-2. Instantiates classes associated to each component, 
+1. Reads the configuration;
+2. Instantiates classes associated with each component;
 3. Registers the mappings (with 
-   :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`),
+   :py:meth:`morse.core.services.MorseServices.register_request_manager_mapping`);
 4. Calls :py:meth:`morse.core.abstractobject.AbstractObject.register_services`
    on each component instance.
 
-:py:meth:`morse.core.abstractobject.AbstractObject.register_services` iterates over
-every methods marked as MORSE service within the class, and call
-:py:func:`morse.core.services.do_service_registration`.
+The :py:meth:`morse.core.abstractobject.AbstractObject.register_services`
+method iterates over
+every method marked as a MORSE service within the class, and calls
+:py:func:`morse.core.services.do_service_registration` on it.
 
-This method finds the middleware(s) in charge of managing services for
-this component, and calls
+This method finds the middlewares responsible for managing this
+component's services, and calls
 :py:meth:`morse.core.request_manager.RequestManager.register_service`.
 
-It is up to each middleware to manage registration of new services. They
+It is up to each middleware to manage the registration of new services. They
 may have to, for instance, expose the new service into a shared directory
 (*yellow pages*), etc.
 
@@ -43,8 +45,9 @@ Upon incoming request...
 ------------------------
 
 When a new request comes in, the middleware-specific part receives it,
-deserializes it and hands it over to
-:py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`.
+deserializes it calls
+:py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
+with it.
 This method dispatches the request to the correct component, and executes
 it (for synchronous services) or starts the execution and returns an
 internal request ID (for asynchronous services).
@@ -60,10 +63,10 @@ client.
 Asynchronous services
 ---------------------
 
-Registration of asynchronous services is mostly identical to synchronous
+Registration of asynchronous services is almost the same as for synchronous
 services. The ``@async_service`` decorator simply calls the ``@service``
-decorator with the ``async`` parameter set to ``True``, which leads to
-wrap the original method in a new method that takes one more parameter
+decorator with the ``async`` parameter set to ``True``, which results in
+the original method being wrapped in a new method that takes an extra parameter
 (a callback) and calls
 :py:meth:`morse.core.abstractobject.AbstractObject.set_service_callback`.
 
@@ -88,13 +91,13 @@ Simplified version of the ``@service`` decorator:
 However, asynchronous services behaviour differs when a request comes
 in:
 
-* :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
-  creates a new callback function for this service,
-* It invokes the original method with this callback,
+* The :py:meth:`morse.core.request_manager.RequestManager.on_incoming_request`
+  method creates a new callback function for this service;
+* It invokes the original method with this callback.
 * When :py:meth:`morse.core.abstractobject.AbstractObject.completed`
   is invoked (i.e., when the service is completed), the callback 
   is executed.
-* This causes in turn the 
+* This in turn causes the 
   :py:meth:`morse.core.request_manager.RequestManager.on_service_completion`
   method to be invoked, to notify middleware-specific request 
   managers that the task is complete.
@@ -104,11 +107,11 @@ in:
 Manually registering services
 -----------------------------
 
-While usually not necessary, you may have sometimes to manually register
-services (i.e. without using decorators).
+While usually unnecessary, it is possible to to manually register
+services (i.e., without using decorators).
 
 This first code snippet shows how to register a synchronous service that uses
-sockets as communication interface:
+sockets as the communication interface:
 
 .. code-block:: python
 
@@ -121,11 +124,11 @@ sockets as communication interface:
    req_manager.register_service("test_component", add)
 
    while True:
-       # This calls the middleware specific part, in charge of reading
-       # incoming request and writing back pending results.
+       # This calls the middleware specific part, responsible for reading
+       # incoming requests and writing back pending results.
        req_manager.process()
        # In a real case, you don't want to block on such a loop, and MORSE
-       # takes care itself to call req_manager.process()
+       # calls req_manager.process() on your behalf
 
 If you run this sample code, you can test it with a simple Telnet session::
 
@@ -136,8 +139,8 @@ If you run this sample code, you can test it with a simple Telnet session::
 
 .. note::
    The socket-based protocol is fairly simple: you provide a request id, the
-   name of the component that offers the service, the name of the service and
-   (if necessary) parameters. Parameters must be contained in a valid Python
+   name of the component that offers the service, the name of the
+   service, and (optionally) parameters. Parameters must be contained in a valid Python
    iterable (a tuple, like in the example, or an array).
 
    Here, ``req1`` is the custom request id, chosen by the client.
@@ -149,35 +152,34 @@ This second code snippet shows an example of asynchronous service:
 
 .. code-block:: python
 
+   import types
+
    from morse.core import status
    from morse.middleware.socket_request_manager import SocketRequestManager
    
-   result_cb = None
-   run_computation = False
-   value = None
+   State = types.SimpleNamespace()
+   State.result_cb = None
+   State.run_computation = False
+   State.value = None
 
-   # We start here our asynchronous service.
-   # an arbitrary amount of parameters can be passed, but the first one
+   # Here is where we start our asynchronous service.
+   # Arbitrary parameters may be passed, but the first one
    # must be the callback to set the service result upon completion.
    def start_computation(result_setter, start_value):
-        global result_cb, value, run_computation
-
-        result_cb = result_setter
-        value = start_value
-        run_computation = True
+        State.result_cb = result_setter
+        State.value = start_value
+        State.run_computation = True
 
         # the service must return true if the task was successfully started
         return True
 
    # This is the actual code called at each simulation step in our component
    def complex_computation(a):
-       global run_computation
-
        if a == 0:
            # At the end of the computation, we set the result.
            # the result can be any valid Python object
-           result_cb((status.SUCCESS, "done!"))
-           run_computation = False
+           State.result_cb((status.SUCCESS, "done!"))
+           State.run_computation = False
 
        morse.sleep(1)
        return a - 1
@@ -192,9 +194,9 @@ This second code snippet shows an example of asynchronous service:
    while True:
        req_manager.process()
 
-       if run_computation:
-          value = complex_computation(value)
-          print("Value is now %i" % value)
+       if State.run_computation:
+          State.value = complex_computation(State.value)
+          print("Value is now %i" % State.value)
 
 
 If you test the code with Telnet::
@@ -207,5 +209,5 @@ If you test the code with Telnet::
 
 .. note::
     When passing a single parameter, you still need to pass a valid Python iterable,
-    with only one element.  Hence the ``(5,)``.
+    even if it has only one element.  Hence the ``(5,)``.
  
