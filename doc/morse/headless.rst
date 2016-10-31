@@ -2,14 +2,14 @@ Running MORSE headless
 ======================
 
 Running MORSE "headless" means running MORSE without launching a graphical
-interface (GUI) at all.
+user interface (GUI) at all.
 
-This is useful in several scenarios like: running MORSE on a distance server;
+This is useful in several scenarios. For example, running MORSE on a remote server;
 integrating MORSE in a Continuous Integration (CI) pipeline; running automated
 tests, etc.
 
 While "headless" really means "no GUI", it is also related to: "how
-to run MORSE without 3D acceleration (ie, without a GPU)". We address both
+to run MORSE without 3D acceleration (i.e., without a GPU)". We address both
 points below.
 
 .. important::
@@ -19,20 +19,20 @@ points below.
 Overview
 --------
 
-It is first important to understand that MORSE *does require OpenGL*. There is
-currently no way around, and, as a 3D simulator, we are likely to keep this
-requirement in the foreseeable future.  So, running a "headless" MORSE still
+It is important to understand that MORSE *requires OpenGL*. There is
+currently no way around this, and, as a 3D simulator, we are likely to keep this
+requirement for the foreseeable future.  So, running a "headless" MORSE still
 requires that your OS provides an OpenGL implementation.
 
-OpenGL *does not* mandate a GPU, though. It is hence perfectly possible to run
+OpenGL *does not* mandate a GPU, though. So, it is perfectly possible to run
 MORSE on a CPU-only computer (on a server, on a cluster in the cloud without
 GPUs, etc). Obviously, no GPU means no 3D hardware acceleration, but depending
-on your application, performances may still be perfectly ok. Some non-scientific
+on your application, performance may still be perfectly okay. Some non-scientific
 benchmarks are provided below, for reference.
 
-To run "headless", we also need to prevent MORSE's main window to show up. This
-can be easily achieved by using `Xvfb <https://en.wikipedia.org/wiki/Xvfb>`_ a
-special graphic server that renders 3D application to memory instead of the
+To run "headless", we also need to prevent MORSE's main window from appearing. This
+can easily be achieved by using `Xvfb <https://en.wikipedia.org/wiki/Xvfb>`_ a
+special graphic server that renders 3D applications to memory instead of to the
 screen.
 
 .. important::
@@ -76,11 +76,12 @@ Some quick performance results with the default environment:
 Then, edit ``test/default.py`` and add ``env.show_framerate()`` at the end
 to display the FPS.
 
-With `mesa-11.0.7` with LLVMpipe on an Intel Core i7-4790 @ 3.6GHz, 16GB RAM, I
-get 30 FPS vs 60 FPS with 3D acceleration.
+On a test computer
+with `mesa-11.0.7` and LLVMpipe on an Intel Core i7-4790 @ 3.6GHz and 16GB RAM,
+we achieved 30 FPS vs 60 FPS with 3D acceleration.
 
-By only rendering wireframes (ie, MORSE's *fast mode*: edit ``test/default.py``
-and switch ``fastmode`` to ``True``), I reach 60 FPS.
+By only rendering wireframes (i.e., using MORSE's *fast mode*: edit ``test/default.py``
+and switch ``fastmode`` to ``True``), we reached 60 FPS.
 
 .. note::
 
@@ -91,7 +92,7 @@ and switch ``fastmode`` to ``True``), I reach 60 FPS.
 Going headless
 --------------
 
-To prevent MORSE to open a window, you can use ``Xvfb`` to create
+To prevent MORSE from opening a window, you can use ``Xvfb`` to create
 a 'fake' display to run MORSE. On debian/Ubuntu, ``apt-get install xvfb``.
 
 ::
@@ -104,10 +105,10 @@ ROS at 20Hz.
 
 .. note::
 
-    While you need to create a display with a color depth of
-    24 bit, the size can be made smaller, for further improved performances. For
-    instance, 100x100px is big enough to run MORSE. Attention, however if you
-    use video cameras: you can not stream images larger than the window size.
+    While you need to create a display with a 24-bit color depth,
+    the size can be made smaller, for further improved performances. For
+    instance, 100x100px is big enough to run MORSE. However, if you
+    use video cameras, note that you can't stream images larger than the window size.
 
 
 .. note::
