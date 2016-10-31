@@ -1,16 +1,17 @@
 Adding new service
 ==================
 
-MORSE has a concept of *services*: services are remote procedure call commonly
-used to configure or control the behaviour of the simulation.
+MORSE has a concept of *services*: services are remote procedure calls commonly
+used to configure or control the simulation's behaviour.
 
 Each component can register services that are made publicly available to the
 outside world through middleware-specific channels.
 
 Services can be either *synchronous* or *asynchronous*. Synchronous services
-block the simulation until they complete. They must remain fast to execute.
+block the simulation until they complete. They must be fast to execute
+to avoid slowing down the simulation.
 Asynchronous services may span computations on several simulation steps (but
-each individual cycle must remain fast).
+each individual cycle must be fast).
 
 Exposing methods as services
 ----------------------------
@@ -19,13 +20,14 @@ Most of the time, adding a new service is as easy as adding ``@service``
 in front of a function declared within a component.
 
 .. note::
-    Arguments coming from remote caller are passed to service using string, so
-    be sure to convert your data in the expected type.
+    Arguments coming from remote callers are passed to services as strings, so
+    be sure to convert your data to the expected type.
 
 .. warning::
-    Do not use ``eval()`` to convert your data from string to expected type, as
+    Do not use ``eval()`` to convert your data from strings to the expected type, as
     this would cause a serious security threat. Use type specific functions
-    (like ``int()``, ``float()``,...) instead.
+    (like ``int()``, ``float()``,...) instead (or pass the data as JSON
+    strings).
 
 Lets have a look at ``human.py``, the component that allows us to control
 a human character in the simulation.
@@ -38,7 +40,7 @@ a human character in the simulation.
     class HumanClass(morse.core.robot.Robot):
 
         def __init__(self, obj, parent=None):
-            [...]
+            ...
  
         @service
         def move(self, speed, rotation):
@@ -48,17 +50,17 @@ a human character in the simulation.
             human.applyMovement( [float(speed), 0, 0], True )
             human.applyRotation( [0, 0 , float(rotation)], True )
 
-        [...]
+        ...
 
 By adding the ``@service`` decorator to the ``move`` method, we expose
 ``move`` as a MORSE service.
 
-During the simulation initialization, MORSE registers these services for
-each instances of the component, maps them to one (or several)
+During the simulation initialization, MORSE registers any services for
+each instance of the component, maps them to one (or several)
 middlewares (as specified by the scene description), and starts listening for
-incoming request.
+incoming requests.
 
-Each middleware has its own naming scheme for services, but one can
+Each middleware has its own naming scheme for services, but you can
 expect the services to be available as ``component_name.service_name``.
 
 The example below shows a simple Python client that would use the
@@ -79,7 +81,7 @@ object that instantiates a ``HumanClass``.
   to the implementation of the services with sockets and used only by the
   client to track requests and responses.
 
-Using pymorse, the previous code can be rewrite as:
+Using pymorse, the previous code can be rewritten as:
 
 .. code-block:: python
     
@@ -91,7 +93,7 @@ Returning values
 ----------------
 
 A service can return any valid Python object (``None``, a string, a
-dictionary, a complex object...). The serialization is left to the
+dictionary, a complex object, etc.). The serialization is left to the
 middleware.
 
 If the service call fails, you are expected to raise a
@@ -107,20 +109,20 @@ If the service call fails, you are expected to raise a
     class HumanClass(morse.core.robot.Robot):
 
         def __init__(self, obj, parent=None):
-            [...]
+            ...
  
         @service
         def move(self, speed, rotation):
             
             if float(speed) < 0:
-                raise MorseRPCInvokationError("Our human can not walk backward!")
+                raise MorseRPCInvokationError("Our human cannot walk at negative speed!")
 
             human = self.bge_object
             
             human.applyMovement( [float(speed), 0, 0], True )
             human.applyRotation( [0, 0, float(rotation)], True )
 
-        [...]
+        ...
 
 *MORSE* will answer the request with a
 :data:`morse.core.status.FAILED` status.
@@ -135,7 +137,7 @@ In this case, the decorator takes one parameter, the (pseudo) component.
 
 For instance, :py:mod:`morse.services.supervision_services` declares such
 services. The following example shows the ``list_robots`` service that
-returns the list of robot declared in the simulation:
+returns the list of robots declared in the simulation:
 
 .. code-block:: python
 
@@ -146,7 +148,7 @@ returns the list of robot declared in the simulation:
     def list_robots():
         return [obj.name for obj in blenderapi.persistantstorage().robotDict.keys()]
 
-The pseudo-component ``simulation`` is used as *namespace* for the
+The pseudo-component ``simulation`` is used as a *namespace* for the
 service: this one is accessible as ``simulation.list_robots``.
 
 Asynchronous services
@@ -159,9 +161,9 @@ In such cases, **asynchronous services** can be used to initialize and start
 the task. MORSE automatically notifies the client when the task is
 completed.
 
-Declaring new asynchronous services is slightly more complex: we need
-first an *initialization method* and secondly, a way to tell when the
-task is achieved.
+Declaring new asynchronous services is slightly more complex: we
+first need an *initialization method* and secondly, a way to tell when the
+task is completed.
 
 Declaring an initialization method is very similar to synchronous
 services. For instance, the :doc:`waypoint <../user/actuators/waypoint>`
@@ -175,7 +177,7 @@ actuator defines an asynchronous ``goto`` service:
     class Waypoint(morse.core.actuator.Actuator):
 
         def __init__(self, obj, parent=None):
-            [...]
+            ...
 
         @async_service
         def goto(self, x, y, z, tolerance=0.5, speed=1.0):
@@ -183,28 +185,28 @@ actuator defines an asynchronous ``goto`` service:
             self.local_data['y'] = float(y)
             self.local_data['z'] = float(z)
 
-        [...]
+        ...
 
 The ``@service`` decorator is simply replaced by ``@async_service``. By
 doing so, MORSE automatically registers a callback that is used to
-monitor the status of the task and notify the client upon completion.
+monitor the status of the task and to notify the client upon completion.
 
-In this example we simply set a new target position in the actuator
-``local_data`` dictionary, but any kind of initialization can be started
-here. It must only remain short (since the simulator blocks until the
+In this example we simply set a new target position in the actuator using the
+``local_data`` dictionary, but any kind of initialization can be done
+here. However, the work must be done quickly (since the simulator blocks until the
 initialization method returns).
 
 The execution of the task itself takes place at each simulation step in
-the component
+the component's
 :py:meth:`morse.core.object.Object.default_action` method.
-Each execution step should remain short since the simulator blocks on
-the ``default_action`` as well.
+Each execution step should remain fast since the simulator also blocks on
+calls to the ``default_action`` method.
 
-When the task is achieved, the component must notify it by calling
+When the task is completed, the component must notify it by calling
 ``self.completed(status, result)``.
 
-``status`` is one of the status defined in :py:mod:`morse.core.status`
-(mainly ``SUCCESS`` and ``FAILED``), ``result`` is any valid Python
+``status`` is one of the status value defined in :py:mod:`morse.core.status`
+(e.g., ``SUCCESS`` or ``FAILED``), ``result`` is any valid Python
 object.
 
 .. note::
@@ -238,9 +240,10 @@ To set a local policy, simply decorate your services with the
 An **interruptible** service is preempted when a new asynchronous service is
 started by calling the ``interrupt`` method. The ``interrupt`` method is
 defined in :py:class:`morse.core.abstractobject.AbstractObject` to send back
-to the caller the status :data:`morse.core.status.PREEMPTED`. It is advised to
-overload this behaviour in the component class to ensure the service is
-actually interrupted (do not forget however to call overloaded ``interrupt``
+to the caller the status :data:`morse.core.status.PREEMPTED`. It is
+recommended that you 
+override this behaviour in the component class to ensure the service is
+actually interrupted (and remember to call the base class' ``interrupt``
 method, as shown in the example below). 
 
 .. code-block:: python
@@ -258,8 +261,8 @@ method, as shown in the example below).
              morse.core.actuator.Actuator.interrupt(self)
 
 .. note::
-    It is recommended to always implement the ``interrupt`` method even if the
-    default policy is *non-interruptible*, as a caller can decide to manually
+    It is recommended that you always reimplement the ``interrupt`` method even if the
+    default policy is *non-interruptible*, as a caller may choose to manually
     interrupt the service.
 
 A **non-interruptible** service triggers a failure (status
