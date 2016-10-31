@@ -21,19 +21,19 @@ Compared to the standard `TestCase <http://docs.python.org/library/unittest.html
 class, the :py:class:`morse.testing.testing.MorseTestCase` takes care of starting/closing
 MORSE and initializing it with a specified environment.
 
-This environment is defined by overloading the :py:meth:`morse.testing.testing.MorseTestCase.setUpEnv`
+This environment is defined by overridding the :py:meth:`morse.testing.testing.MorseTestCase.setUpEnv`
 with a description of the environment using the :doc:`Builder API <../user/builder>`.
-Moreover, you can overload the
+Moreover, you can override the
 :py:meth:`morse.testing.testing.MorseTestCase.setUpMw` and
-:py:meth:`morse.testing.testing.MorseTestCase.tearDownMw` if you want to
+:py:meth:`morse.testing.testing.MorseTestCase.tearDownMw` methods if you want to
 create some specific environment before launching the Morse simulator, and to
-clean it
+clean up afterwards.
 
 Complete example
 ++++++++++++++++
 
-This example create a new scenario with two robots in an indoor environment, and then
-checks that MORSE `list_robots` control service actually returns both robots.
+This example creates a new scenario with two robots in an indoor environment, and then
+checks that the MORSE `list_robots` control service actually returns both robots.
 
 .. code-block:: python
 
@@ -57,7 +57,7 @@ checks that MORSE `list_robots` control service actually returns both robots.
             robot3 = ATRV()
             robot3.name = 'dala'
 
-            # no name provided, use variable name, old school style
+            # no name provided, use variable name
             atrv = ATRV()
             
             env = Environment('empty', fastmode = True)
@@ -106,8 +106,8 @@ After the installation is complete, you will now be able to run::
 
   $ make test
 
-This will start launching MORSE with a series of unit tests, to evaluate that
-the creation of scenes and some of the components are running properly on your
+This will start launching MORSE with a series of unit tests, to check that
+the creation of scenes and some of the components is running properly on your
 system.
 
 
@@ -122,7 +122,7 @@ The MORSE tests infrastructure is integrated with cmake, so you can run `make
 test` to check that all currently defined unit-tests for MORSE pass.
 Alternatively, you can use `ctest --verbose` to have a more verbose output. 
 
-If you want to run one specific test, you can call directly using a python3
+If you want to run one specific test, you can do so directly using a Python 3
 interpreter. For example, to run ``base_testing.py``, you can call::
 
     $ python3 ${MORSE_SRC_ROOT}/testing/base/base_testing.py
@@ -131,8 +131,8 @@ interpreter. For example, to run ``base_testing.py``, you can call::
 Tests log
 +++++++++
 
-The complete log of a test is available in the `${testName}.log` file, created
-in the current directory, where testName is the name of your class test (in
+The complete log of a test is available in the `${TestName}.log` file, created
+in the current directory, where TestName is the name of your class test (in
 the previous example, it will create the `BaseTest.log` file.
 
 Running a test as a standalone application
@@ -144,7 +144,7 @@ We can run tests case by invoking:
 
   MorseTestRunner().run(tests)
 
-It is convenient to add at the end of a test-case the following lines:
+It is convenient to add the following lines at the end of a test-case:
 
 .. code-block:: python
 
@@ -154,4 +154,4 @@ It is convenient to add at the end of a test-case the following lines:
         suite = unittest.TestLoader().loadTestsFromTestCase(<Your test class>)
         sys.exit(not MorseTestRunner().run(suite).wasSuccessful())
 
-Thus, you can run your test by simply call it with the Python VM.
+Thus, you can run your test by simply calling it with the Python VM.
