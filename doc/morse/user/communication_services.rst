@@ -1,22 +1,23 @@
 Communication services
 ======================
 
-MORSE exposes services which allow to extract geometric information from
-the simulator which can be next used as input for communication simulation. It
-can be seen as a simple example about how to query information about the inner
-geometric model of Morse simulator.
+MORSE exposes services which allow us to extract, say, geometric information from
+the simulator, which can then be used as the next input to the simulation.
+Using these services can show how to query information about the Morse
+simulator's internal geometric model.
 
-The services is automatically exposed on a socket interface, on port 4000.
+The services are automatically exposed on a socket interface, by default on port 4000.
 
-All these services belongs to a virtual component called ``communication`` as
-its primary purpose is to serve as a base for a simple communication model.
+All these services belongs to a virtual component called ``communication`` whose
+primary purpose is to serve as the foundation of a simple communication model.
 
 Available services
 ------------------
 
-- ``distance_and_view`` takes two robot names in parameter and returns, if the
-  two robots exists, a tuple with the distance between the two robots, and a
-  boolean representing the direct visibility between these two robots.
+- ``distance_and_view`` takes two robot names as parameters and returns, if the
+  two robots exist, a tuple with the distance between the two robots, and a
+  boolean indicating whether there is a clear line of sight between the
+  two robots.
 
 Examples
 ++++++++
@@ -26,19 +27,20 @@ Considering the scene
 .. code-block:: python
 
     from morse.builder import *
-    mana = ATRV()
-    minnie = ATRV()
-    minnie.translate(x = 10.0)
+
+    roberta = ATRV()
+    robbie = ATRV()
+    robbie.translate(x = 10.0)
     env = Environment('indoors-1/boxes', fastmode = True)
 
-you can access to the service using telnet::
+you can access the service using telnet::
 
   > telnet localhost 4000
   Connected to localhost.
-  > id1 communication distance_and_view ["mana", "minnie"]
+  > id1 communication distance_and_view ["roberta", "robbie"]
   id1 SUCCESS [10.004696135303144, true]
 
-Using pymorse API :tag:`pymorse`, you can access the service in the following
+Using the pymorse API :tag:`pymorse`, you can access the service in the following
 way:
 
 .. code-block:: python
@@ -46,12 +48,13 @@ way:
     from pymorse import Morse
 
     with Morse() as morse:
-        res = morse.rpc('communication', 'distance_and_view', 'mana', 'minnie')
-        # res[0] = 10.004696135303144
-        # res[1] = True
+        res = morse.rpc('communication', 'distance_and_view', 'roberta', 'robbie')
+        distance, line_of_site = res
+        # distance == 10.004696135303144
+        # line_of_site == True
         # ...
 
 
 .. note::
 
-  Communication services are implemented in :py:mod:`morse.services.communication_services`.
+Communication services are implemented in :py:mod:`morse.services.communication_services`.
