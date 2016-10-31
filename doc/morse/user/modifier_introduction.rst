@@ -2,8 +2,8 @@ Modifiers
 =========
 
 Modifier processing is a specific phase between datastream processing and real
-component processing. It allows to make some generic transformations on the data
-(for example, convert them from one frame convention to another one) or to alter 
+component processing. It allows us to apply some generic transformations on the data
+(for example, convert from one frame convention to another), or to alter 
 the ``qualities`` of data to make them more realistic. 
 
 List of existing modifiers 
@@ -41,13 +41,13 @@ UTM reference frame, you can use the :doc:`UTM conversion modifier
 
 Sometimes, you need to pass some arguments to your modifier, for example to set
 the standard deviation of your :doc:`gaussian noise
-<../../user/modifiers/pose_noise>`. In this case, you can use the following
+<../../user/modifiers/pose_noise>`. In such cases, you can use the following
 syntax:
 
 .. code-block:: python
 
-    from morse.builder import *
     import math
+    from morse.builder import *
 
     robot = ATRV()
 
@@ -61,4 +61,4 @@ syntax:
 Creating a new modifier 
 -----------------------
 
-Please refer to the developer documentation: :doc:`Creating a modifier <../dev/adding_modifier>`.
+Please see the developer documentation: :doc:`Creating a modifier <../dev/adding_modifier>`.
