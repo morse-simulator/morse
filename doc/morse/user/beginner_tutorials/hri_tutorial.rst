@@ -26,18 +26,18 @@ Create a new scene ``hri.py`` and add these lines:
     # Import the human model.
     human = Human()
 
-    # Use the standard environment 'sandox.blend'. You could use any other.
+    # Use the standard environment 'sandox.blend'. You could use any of them.
     env = Environment('sandbox')
 
-Launch MORSE with this script (``morse run hri.py``). You can move around the
-human with the arrow keys.
+Launch MORSE with this script (``morse run hri.py``). You can move the
+human using the arrow keys.
 
 .. note:: 
-    If you are running MORSE on a Unix machine, you can start your script with
-    ``#! /usr/bin/env morseexec``.
+    If you are running MORSE on a Unix machine, you can make the first
+    line of your script: ``#! /usr/bin/env morseexec``.
     
-    Mark then your script as executable (``chmod +x hri.py``). You can now quickly
-    start your simulation by calling ``./hri.py``.
+    You can then make your script executable with ``chmod +x hri.py``.
+    You can now quickly start your simulation simply by running ``./hri.py``.
 
 
 Where is my human?
@@ -85,7 +85,7 @@ You can now re-run the simulation, as usual. The human pose is now exported.
 Reading the position outside of MORSE
 +++++++++++++++++++++++++++++++++++++
 
-We can retrieve the pose of the human from a regular Python script
+We can retrieve the human's pose human using a normal Python script
 :tag:`pymorse`:
 
 .. code-block:: python
@@ -106,11 +106,11 @@ We can retrieve the pose of the human from a regular Python script
         morse.sleep(10)
 
 You can run this script from any terminal, on the same machine as MORSE (or on
-a distant one, just replace ``Morse()`` by ``Morse(<hostname or ip>)``).
+a remote one, just replace ``Morse()`` with ``Morse(<hostname or ip>)``).
 
-It prints on the terminal the pose of the human avatar for 10 seconds. Try to
+It prints the human avatar's pose on the terminal for 10 seconds. Try to
 move the human with the keyboard within the simulator. The output should look
-like this::
+something like this::
 
     Pose={'x': 0.16082972288131714, 'y': 0.00014015310443937778, 'z': 0.047640468925237656, 'pitch': -2.1290716745170357e-08, 'roll': 1.0065883238041806e-08, 'timestamp': 1444319642.4115114, 'yaw': 0.0001225958694703877}
     Pose={'x': 0.16082972288131714, 'y': 0.00014015310443937778, 'z': 0.047640468925237656, 'pitch': -2.1494560797918894e-08, 'roll': 1.0039565623287672e-08, 'timestamp': 1444319642.4276326, 'yaw': 0.0001225958694703877}
@@ -118,13 +118,13 @@ like this::
     Pose={'x': 0.16082972288131714, 'y': 0.00014015310443937778, 'z': 0.047640468925237656, 'pitch': -1.7940088525847386e-08, 'roll': 1.0114515447412487e-08, 'timestamp': 1444319642.4619052, 'yaw': 0.0001225958694703877}
     ...
 
-Moving around the human
------------------------
+Moving the human
+----------------
 
-As you have noticed, you can move the human avatar with the arrow keys. However,
+As noted earlier, you can move the human avatar with the arrow keys. However,
 it is also useful to program the motion of the simulated human. Indeed, like any
 other robot in MORSE, the human avatar can be externally controlled (for
-instance, to perform a predefined trajectory).
+instance, to move along a predefined path).
 
 Getting the human to follow a path
 ++++++++++++++++++++++++++++++++++
@@ -150,7 +150,7 @@ To get the human to follow a path, we first need to add a :doc:`waypoint actuato
 
 
 You can now re-run the simulation. Using the updated :tag:`pymorse` script
-below, you can now send waypoints that the human will follow everytime you press
+below, you can now send waypoints that the human will move towards every time you press
 :kbd:`Enter`.
 
 .. code-block:: python
@@ -183,7 +183,7 @@ allows you to control the head direction.
 Picking objects
 ---------------
 
-Our human can pick and release objects. Let's add a new object (a cornflakes
+Our human can pick up and drop objects. Let's add a new object (a cornflakes
 box, from the kitchen objects library) on one of the tables. Exit the
 simulation (:kbd:`Esc`), and re-open your script.
 
@@ -208,10 +208,10 @@ You can learn more on :doc:`passive objects here <../others/passive_objects>`.
 .. image:: ../../../media/hri_cornflakes.jpg 
   :align: center
 
-Start again the simulation (``morse run hri.py``), and press the :kbd:`x` key
+Restart the simulation (``morse run hri.py`` or ``./hri.py``), and press the :kbd:`x` key
 to switch to the **manipulation mode**. You can control the hand with the mouse
 while holding :kbd:`Middle Mouse Button`. Press the :kbd:`Left Mouse Button`
-with the crosshairs over an object to pick it, and press :kbd:`Right Mouse
+with the crosshairs over an object to pick it up, and press :kbd:`Right Mouse
 Button` to drop the object.
 
 .. image:: ../../../media/hri_cornflakes_pickup.jpg 
