@@ -22,5 +22,5 @@ Blender file in the ``Environment`` object of your :doc:`Builder script
 
     Check `the source
     <https://github.com/morse-simulator/morse/tree/master/data/environments>`_ to know the
-    right path (*eg*, ``land-1/tree``).
+    right path (*e.g.*, ``land-1/tree``).
 
