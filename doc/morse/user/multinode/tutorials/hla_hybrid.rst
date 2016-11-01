@@ -1,10 +1,10 @@
 HLA-based hybrid simulation :tag:`hla`
 ======================================
 
-In this tutorial, we learn how to use HLA to setup a hybrid simulation. A hybrid 
-simulation in the MORSE context is made of at least one MORSE node, connected
-in a HLA federation to other nodes, being either other simulators (e.g., think about
-a simulation model for a quadrotor available as a standalone library/binary) or
+In this tutorial, we show how to use HLA to setup a hybrid simulation. A hybrid 
+simulation in the MORSE context is made up of at least one MORSE node, connected
+in an HLA federation to other nodes, which may be other simulators (e.g., think about
+a simulation model for a quadrotor available as a standalone library/binary), or
 even real robots.
 
 Prerequisites
@@ -23,12 +23,13 @@ The MORSE scenario
 You can find the scenario file 
 in ``$MORSE_ROOT/share/morse/examples/tutorials/multinode/tutorial-hla-hybrid.py``.
 
-This file is very close to the multi-node scenario. It is made of one robot located 
+This file is very close to the multi-node scenario. It has one robot located 
 in the "grande-salle" scene:
 
 .. code-block:: python
 
 	from morse.builder import *
+
 	atrv = ATRV()
 	env = Environment('laas/grande_salle')
 	env.show_framerate(True)
@@ -50,10 +51,10 @@ the environment:
 .. note::
 
 	The node name in distribution is only relevant to indicate to MORSE
-	if it has to export the robot position or not. This name will not
+	if it has to export the robot's position or not. This name will not
 	be used by non-MORSE federates.
 	
-To launch the MORSE node, just launch MORSE with the tutorial scenarion::
+To launch the MORSE node, just run MORSE with the tutorial scenarion::
 
 	$ morse run ${MORSE_ROOT}/share/morse/examples/tutorials/multinode/tutorial-hla-hybrid.py
 
@@ -62,8 +63,8 @@ Publishing the ATRV position using Python
 
 You can find the example file in ``$MORSE_ROOT/share/morse/clients/hla/hybrid-client.py``.
 
-This sample code is dedicated to be integrated in a non-MORSE federate (another simulator
-or a real robot architecture) in order to publish the robot position so that
+This sample code is designed to be integrated in a non-MORSE federate (another simulator
+or a real robot architecture), in order to publish the robot position so that
 it is correctly reflected into MORSE. Let's look at some relevant parts of the code.
 
 .. code-block:: python
@@ -72,13 +73,13 @@ it is correctly reflected into MORSE. Let's look at some relevant parts of the c
 	import hla.rti as rti
 	import hla.omt as fom
 	
-These lines import the HLA python modules. They are installed by the pyHLA library.
+These lines import the HLA python modules. They are provided by the pyHLA library.
 
 .. code-block:: python
 
 	MorseVector = fom.HLAfixedArray("MorseVector", fom.HLAfloat32LE, 3)
 	
-This line define the vector type used for MORSE robots position and orientation.
+This line defines the vector type used for MORSE robots' position and orientation.
 
 .. code-block:: python
 
@@ -92,10 +93,10 @@ This line define the vector type used for MORSE robots position and orientation.
 			os.environ["CERTI_HOST"] = str(host)
 			os.environ["CERTI_TCP_PORT"] = str(port)
 
-The MorseHLAClient is the main class of the example. The first lines of its constructor
+The MorseHLAClient is the example's main class. The first lines of its constructor
 define some useful variables. The fom and federation name must not be changed: they are defined
-in the HLA plugin of MORSE. The CERTI environment variables are used to locate where
-the rtig has been launched on the network.
+in MORSE's HLA plugin. The CERTI environment variables are used to locate where
+the RTIG has been launched on the network.
         
 .. code-block:: python
 
@@ -115,7 +116,7 @@ the federation and joins it.
 		self.rtia.publishObjectClass(self.robot_t, [self.position_t, self.orientation_t])
 		self.robot = self.rtia.registerObjectInstance(self.robot_t, robot_name)
 
-Then, it gets from the RTIG some handlers on the data types that will be manipulated,
+Then, it gets from the RTIG some handlers for the data types that will be manipulated,
 declares that is will publish a robot object with attributes position and orientation,
 and finally register the "ATRV" robot.
 
@@ -127,9 +128,9 @@ and finally register the "ATRV" robot.
 			self.rtia.updateAttributeValues(self.robot, hla_att, "update")
 			self.rtia.tick()
         
-The send function sends the robot position to the HLA federation.
+The send method is used to send the robot's position to the HLA federation.
 
-You can send this client with::
+You can start this client with::
 
 	$ python3 $MORSE_ROOT/share/morse/clients/hla/hybrid-client.py
 	
@@ -145,11 +146,11 @@ about a communication simulator that needs the robot position to simulate the
 communication quality without using the Blender physics).
 
 Subscribing to an object in HLA is based on callbacks, called when receiving
-messages (existence of new object, new data published, ...) The python code is hence
-a bit less strait-forward than for publishing.
+messages (existence of new object, new data published, etc.) The Python code is hence
+a bit less straightforward than for publishing.
 
-If you are interesting in such a behavior, look at the HLA plugin for MORSE, that
-actually implements publishing/subscribing behaviors. You can find it in
+If you are interested in doing this, look at the MORSE HLA plugin, since this
+implements publishing/subscribing behaviours. You can find it in
 ``$MORSE_ROOT/lib/python3.2/site-packages/morse/multinode/hla.py``.
 
 
