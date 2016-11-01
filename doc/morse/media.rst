@@ -10,33 +10,33 @@ Videos
 |         .. vimeo:: 44505701              |            .. vimeo:: 23244699           |
 |            :width: 400                   |                :width: 400               |
 |                                          |                                          |
-|  A compilation of simulated scenarios    |  Using ROS RVIZ visualisation tool to    |
-|  used in several research laboratories.  |  display the video stream of a simulated |
-|                                          |  camera                                  |
+|  A compilation of simulated scenarios    |  Using the ROS RVIZ visualisation tool   |
+|  used in several research laboratories.  |  to display a simulated camera's         |
+|                                          |  video stream                            |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
 |         .. vimeo:: 27862570              |            .. vimeo:: 19258005           |
 |            :width: 400                   |               :width: 400                |
 |                                          |                                          |
 |  Some examples of integration between    | MORSE can take care of navigation if     |
-|  MORSE and ROS in human-robot interaction| you do not want to manage this part.     |
-|  context.                                |                                          |
+|  MORSE and ROS in a human-robot          | you do not want to manage this part.     |
+|  interaction context.                    |                                          |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
 |         .. vimeo:: 22246759              |            .. vimeo:: 9825826            |
 |            :width: 400                   |               :width: 400                |
 |                                          |                                          |
-| Here, a robot builds a 2.5D terrain model|   Several robots following each other.   |
-|  map from simulated stereo-cameras, and  |     Each robot streams its camera, here  |
-|  uses it to navigate.                    |                with YARP.                |
+| Here, a robot builds a 2.5D terrain model|  Several robots following each other.    |
+| map from simulated stereo-cameras, and   |  Each robot streams its camera, here     |
+| uses it to navigate.                     |  with YARP.                              |
 +------------------------------------------+------------------------------------------+
 |                                          |                                          |
 |         .. vimeo:: 27862605              |            .. vimeo:: 80372226           |
 |            :width: 400                   |               :width: 400                |
 |                                          |                                          |
 |  MORSE can be used to test human-robot   |    MORSE simulates a Velodyne            |
-|  interaction scenarii, where a human     |    used to build a map of the            |
-|  is controlled as in a video game.       |    environment.                          |
+|  interaction scenarios, where a human    |    used to build a map of the            |
+|  avatar is controlled as in a video game.|    environment.                          |
 +------------------------------------------+------------------------------------------+
 
 More videos are available on the `Blender for Robotics Vimeo group 
@@ -50,13 +50,13 @@ Screenshots
 | .. figure:: ../media/caylus.jpg          |  .. figure:: ../media/indoors_sick.jpg   | 
 |    :width: 422                           |                                          |
 |                                          |     Real-time simulation of a SICK       |
-|    Simulation of ground-air cooperation. |     laser range finder in an indoors     |
+|    Simulation of ground-air cooperation. |     laser range finder in an indoor      |
 |                                          |     environment.                         |
 +------------------------------------------+------------------------------------------+
 | .. figure:: ../media/outdoor_example.jpg |  .. figure:: ../media/ocean.jpg          | 
 |                                          |     :width: 422                          |
 |                                          |                                          |
-|    An ATRV in an outdoor scenario.       |     Cooperation between an helicopter    |
+|    An ATRV in an outdoor scenario.       |     Cooperation between a helicopter     |
 |                                          |     and a submarine for mine hunting.    |
 |                                          |                                          |
 +------------------------------------------+------------------------------------------+
@@ -65,7 +65,7 @@ Screenshots
 |                                          |                                          |
 |    Simulation of human-robot             |     The MORSE interface (crude Blender   |
 |    interaction: the robot tracks the     |     :-) )                                |
-|    posture of the human.                 |                                          |
+|    human's posture.                      |                                          |
 +------------------------------------------+------------------------------------------+
 
 MORSE related academic publications
