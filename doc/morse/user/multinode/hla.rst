@@ -15,14 +15,14 @@ High Level Architecture
 HLA (High-Level Architecture) is a specification for software architectures
 that defines the management and deployment of a global simulation made
 of distributed simulators. Each simulator (called a *federate*) is
-connected to other simulators thourgh the Run-Time Infrastructure (RTI).
+connected to other simulators through the Run-Time Infrastructure (RTI).
 
 Run-Time Infrastructure
 +++++++++++++++++++++++
 
 RTI is the fundamental component of HLA. It provides a set of software services 
 that are necessary to support federates to coordinate their operations and data 
-exchange during a runtime execution. In other sense, it is the implementation 
+exchange during a runtime execution. In other words, it is the implementation 
 of the HLA interface specification but is not itself part of specification. 
 Modern RTI implementations conform to the IEEE 1516 and/or HLA 1.3 API 
 specifications. These specifications do not include a network protocol for RTI. 
@@ -56,7 +56,7 @@ Federation Object Model
 
 Data exchange in an HLA simulation (called a *federation*)
 is specified in a set of tables, that compose a FOM (Federation Object Model).
-The two tables that are relevant for the MORSE federation given here-after.
+Below are the two tables that are relevant for the MORSE federation.
 
 .. table:: Object Class Sructure
 
@@ -66,7 +66,7 @@ The two tables that are relevant for the MORSE federation given here-after.
     |                    |  Robot *(PS)*      |
     +--------------------+--------------------+
 
-- *PS* stands for *publishable/subscrible*
+- *PS* stands for *publishable/subscribable*
 - *N* stands for *neither P nor S*
 
 The Object Class Structure describes the objects available in the federation, their
@@ -110,8 +110,8 @@ its robots' states as fast as it can (once per Blender frame), and updates the
 external robots' states as it receives them. The nodes are not really synchronized:
 nothing guarantees that the node worlds are the same at any moment.
 Moreover, the Blender engines are not constrained: each Blender node runs as fast
-as it can, then leading to different simulation rates on each node.
-However, if your network is fast enough, and if you do not rely on the Blender logical
+as it can, resulting in different simulation rates in each node.
+However, if your network is fast enough, and if you do not use Blender logical
 time for your simulation, this multi-node simulation mode should be sufficient
 for most cases.
 
@@ -119,7 +119,7 @@ for most cases.
 moment. Here, understand *logical time*, or *Blender time*: the number of frames executed
 each second on each Blender node will be identical. This simulation mode guarantees
 that all the nodes will have the same simulation state at each time step.
-The time synchronization integration in MORSE is still work-in-progress.
+The time synchronization integration in MORSE is still a work-in-progress.
 
 
 HLA Multi-node simulation
@@ -134,7 +134,7 @@ gives some information about the configurable variables. The environment variabl
 that may be relevant to MORSE are described below:
 
 * ``CERTI_HTTP_PROXY``: if you have to use a proxy in order to join the RTIG, you 
-  have to indicate it using the ``CERTI_HTTP_PROXY`` variable; if you proxy is already 
+  must use the ``CERTI_HTTP_PROXY`` variable; if your proxy is already 
   defined in the ``http_proxy`` variable, please, reset it using::
   
   $ export CERTI_HTTP_PROXY=$http_proxy
@@ -142,10 +142,10 @@ that may be relevant to MORSE are described below:
   The ``http_proxy`` variable is not directly used in MORSE/HLA as, most of the time, it
   causes some simulation mistakes.
   
-* ``CERTI_FOM_PATH``: this variable is only relevant for the RTIG. It indicates
-  where to find the FOM file, that lists all the messages that can be exchanged
-  on the HLA simulation. This FOM file is installed with MORSE, so if you have
-  installed MORSE on the computer where you launch the RTIG, you have to
+* ``CERTI_FOM_PATH``: this variable is only relevant for the RTIG. It says
+  where to find the FOM file that lists all the messages that can be exchanged
+  in the HLA simulation. This FOM file is installed with MORSE, so if you have
+  installed MORSE on the computer where you launch the RTIG, you must
   define this variable as::
   
   $ export CERTI_FOM_PATH=$MORSE_ROOT/share/federations:$CERTI_FOM_PATH
@@ -160,7 +160,7 @@ HLA in the Builder API
 ++++++++++++++++++++++
 
 The Builer API provides an ``Environment`` object  that must also be configured 
-for HLA multinode simulation::
+for HLA multi-node simulation::
 
     env.configure_multinode(protocol="hla", server_address="140.93.0.93", server_port="60400",
                             distribution={
@@ -171,7 +171,7 @@ for HLA multinode simulation::
 - The ``server_address`` is the IP address of the computer hosting the RTIG.
 - The ``server_port`` is the TCP port used to connect to the RTIG. By default, the TCP port number is 60400.
 
-If you want to use an other port, you have to specify it in the Builder configuration (as described above),
+If you want to use another port, you must specify it in the Builder configuration (as described above),
 and set the ``CERTI_TCP_PORT`` environment variable before launching the RTIG.
 
 HLA-related tutorials
