@@ -11,8 +11,8 @@ Please follow the instructions in the :doc:`installation procedure  <../installa
 
 - Python: ``$MORSE_ROOT/src/morse/modifiers/moos_datastream.py``
 
-Generation of MOOS app and variables
-------------------------------------
+Generation of MOOS application and variables
+--------------------------------------------
 
 The MOOS middleware creates a MOOS application called "MORSE_SIM" and posts a
 message to the MOOS database for each variable output by a sensor. 
@@ -22,8 +22,8 @@ The names of the MOOS database variables are generated in the following way:
 
 .. _moos_ds_configuration:
 
-Configuration specificities
----------------------------
+Configuration specifics
+-----------------------
 
 When configuring a component to export its data through MOOS, you can pass
 the options ``moos_host`` and ``moos_port`` to define the host and port of
@@ -36,7 +36,7 @@ the MOOS community in which you want to communicate. Default values are
     foo.add_stream('moos', moos_port=9002, moos_host="127.0.0.2")
 
 
-The same way, the option ``moos_freq`` defines the frequency with which 
+Similarly, the option ``moos_freq`` can be used to define the frequency with which 
 data should be exported. The default value is 10Hz.
 
 .. code-block :: python
