@@ -46,7 +46,7 @@ and the puts ``z`` to a constant value (set from a parameter).
     class MyModifier(AbstractModifier):
         def initialize(self):
             """ initialization of parameters ... """
-            self.z = self.pamateter("z", default=0)
+            self.z = self.parameter("z", default=0)
 
         def modify(self):
             """" modify the data in this method """
@@ -70,10 +70,9 @@ Now, you can test your new modifier directly in the builder:
     env = Environment('empty', fastmode=True)
 
 Lastly, if you want to use it more easily, you can add some entries in
-:py:data:`morse.builder.data.MORSE_DATASTREAM_DICT`.
+:py:data:`morse.builder.data.MORSE_MODIFIER_DICT`.
 
 Examples
 --------
 
 :py:mod:`morse.modifiers.ned` shows a simple example for a modifier.
-
