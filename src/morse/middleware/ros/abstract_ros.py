@@ -117,9 +117,15 @@ class ROSPublisherTF(ROSPublisher):
     topic_tf = None
 
     def initialize(self):
-        ROSPublisher.initialize(self)
+        AbstractROS.initialize(self)
+        if self.default_frame_id is 'USE_TOPIC_NAME':  # morse convention
+            self.frame_id = self.kwargs.get('frame_id', self.topic_name)
+        else:  # default_frame_id was overloaded in subclass
+            self.frame_id = self.kwargs.get('frame_id', self.default_frame_id)
+        self.sequence = 0  # for ROS msg Header
         if not ROSPublisherTF.topic_tf:
             ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage)
+        logger.info('ROS TF publisher initialized for %s' % self)
 
     def finalize(self):
         ROSPublisher.finalize(self)
