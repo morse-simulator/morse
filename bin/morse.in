@@ -339,6 +339,9 @@ def get_site(name):
     config = configparser.SafeConfigParser()
     config.read(get_config_file())
 
+    if name.endswith('/'):
+        name = name[:-1]
+
     if not config.has_option("sites", name):
         return None
 
