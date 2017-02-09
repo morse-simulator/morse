@@ -1,42 +1,36 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import pymoos.MOOSCommClient
-from morse.middleware.moos import AbstractMOOS
+from morse.middleware.moos import MOOSSubscriber
 
-class MotionReader(AbstractMOOS):
+class MotionReader(MOOSSubscriber):
     """ Read motion commands and update local data. """
 
     def initialize(self):
-        AbstractMOOS.initialize(self)
+        MOOSSubscriber.initialize(self)
         # register for control variables from the database
-        self.m.Register("cVelocity")
-        self.m.Register("cYawRate")
-        self.m.Register("cSteer")
-        self.m.Register("cThrottle")
-        self.m.Register("cBrake")
+        self.register_message_to_queue("MORSE_MOTION_VELOCITY",
+                    'motion_queue', self.on_motion_msgs)
+        self.register_message_to_queue("MORSE_MOTION_YAWRATE",
+                    'motion_queue', self.on_motion_msgs)
+        self.register_message_to_queue("MORSE_MOTION_STEER",
+                    'motion_queue', self.on_motion_msgs)
+        self.register_message_to_queue("MORSE_MOTION_THROTTLE",
+                    'motion_queue', self.on_motion_msgs)
+        self.register_message_to_queue("MORSE_MOTION_BRAKE",
+                    'motion_queue', self.on_motion_msgs)
 
-    def default(self, ci='unused'):
-        current_time = pymoos.MOOSCommClient.MOOSTime()
-        # get latest mail from the MOOS comm client
-        messages = self.getRecentMail()
+    def on_motion_msgs(self, msg):
+        if (msg.key() == "MORSE_MOTION_VELOCITY") and (msg.is_double()):
+            self.data['v'] = msg.double() # command linear velocity [m/s]
+        elif  (msg.key() == "MORSE_MOTION_YAWRATE") and (msg.is_double()):
+            self.data['w'] = msg.double() # command angular velocity [m/s]
+        elif  (msg.key() == "MORSE_MOTION_STEER") and (msg.is_double()):
+            self.data['steer'] = msg.double() # command steer angle [deg]
+        elif  (msg.key() == "MORSE_MOTION_THROTTLE") and (msg.is_double()):
+            self.data['force'] = msg.double() # command engine force
+        elif  (msg.key() == "MORSE_MOTION_BRAKE") and (msg.is_double()):
+            self.data['brake'] = msg.double() # command angular velocity [m/s]
+        self._new_messages = True
+        return True
 
-        new_information = False
-
-        for message in messages:
-            # look for command messages
-            if (message.GetKey() == "cVelocity") and (message.IsDouble()):
-                self.data['v'] = message.GetDouble() # command linear velocity [m/s]
-                new_information = True
-            elif  (message.GetKey() == "cYawRate") and (message.IsDouble()):
-                self.data['w'] = message.GetDouble() # command angular velocity [m/s]
-                new_information = True
-            elif  (message.GetKey() == "cSteer") and (message.IsDouble()):
-                self.data['steer'] = message.GetDouble() # command steer angle [deg]
-                new_information = True
-            elif  (message.GetKey() == "cThrottle") and (message.IsDouble()):
-                self.data['force'] = message.GetDouble() # command engine force
-                new_information = True
-            elif  (message.GetKey() == "cBrake") and (message.IsDouble()):
-                self.data['brake'] = message.GetDouble() # command angular velocity [m/s]
-                new_information = True
-
-        return new_information
+    def update_morse_data(self):
+        logger.debug('MotionReader.update_morse_data() called.')

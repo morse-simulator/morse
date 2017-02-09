@@ -295,8 +295,8 @@ class AbstractComponent(object):
         bpymorse.select_only(self._bpy_object)
 
     def get_child(self, name, objects=None, recursive=True):
-        """ get_child returns the child named :param name: 
-        
+        """ get_child returns the child named :param name:
+
         If several children match the name, a warning is printed and
         the first one is returned.
 
@@ -320,7 +320,7 @@ class AbstractComponent(object):
                 logger.warning(test_prefix + ": more than 1 candidate: " + \
                                str(candidates))
             return candidates[0]
-        
+
         # nothing found yet. Start to search recursively:
         if recursive:
             for obj in objects:
@@ -364,7 +364,8 @@ class AbstractComponent(object):
         .. code-block:: python
 
             component.add_stream('ros', topic='/myrobots/data')
-            component.add_stream('moos', moos_host=127.0.0.1, moos_port=9000, moos_freq=10)
+            component.add_stream('moos', moos_host='127.0.0.1', moos_port=9000,
+                                    moos_name='iMorse')
 
         """
         self._err_if_not_exportable()
@@ -381,7 +382,7 @@ class AbstractComponent(object):
 
         if not direction:
             direction = self._compute_direction(classpath)
-            if not direction: 
+            if not direction:
                 return
 
         config = []
@@ -658,7 +659,7 @@ class AbstractComponent(object):
         `Empty` is created instead.
 
         .. note::
-            
+
             By default, all the objects present in the component's blend file are
             imported. If you need to exclude some (like lights you may have in your
             blend file), prefix the name of this objects with ``_`` so that MORSE
@@ -778,7 +779,7 @@ class AbstractComponent(object):
 
     def set_color(self, r, g, b):
         """ Set the color of the component.
-        
+
         Will try to apply the RGB color to the active material
         of all the meshes that are children of this component.
         """

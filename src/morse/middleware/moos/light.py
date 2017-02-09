@@ -1,26 +1,14 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import pymoos.MOOSCommClient
-from morse.middleware.moos import AbstractMOOS
+from morse.middleware.moos import MOOSSubscriber
 
-class LightReader(AbstractMOOS):
+class LightReader(MOOSSubscriber):
     """ Read light commands. """
 
     def initialize(self):
-        AbstractMOOS.initialize(self)
-        # register for control variables from the database
-        self.m.Register("cLight")
+        MOOSSubscriber.initialize(self)
+        self.register_message_to_queue('MORSE_LIGHT',
+                    'light_queue', self.on_light_msg)
 
-    def default(self, ci='unused'):
-        current_time = pymoos.MOOSCommClient.MOOSTime()
-        # get latest mail from the MOOS comm client
-        messages = self.getRecentMail()
-
-        new_information = False
-
-        for message in messages:
-            # look for command messages
-            if (message.GetKey() == "cLight"):
-                self.data['emit'] = (message.GetString()=="true")
-                new_information = True
-
-        return new_information
+    def on_light_msg(self, msg):
+        if msg.key() == 'MORSE_LIGHT':
+            self.data['emit'] = (msg.string().lower()=="true")
