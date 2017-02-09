@@ -89,7 +89,7 @@ Text middleware only supports sensors output. It provides a base class
 with file handling, name selection, etc. To write a specific text handler, you
 want to derive from this base class and reimplement the ``header`` method
 (what to write in the head of the file) and the ``encode_data`` method (how
-to write data in the file). 
+to write data in the file).
 
 .. code-block:: python
 
@@ -234,30 +234,48 @@ method, remember to call ``read`` or ``write`` as appropriate.
 Moos middleware :tag:`moos`
 +++++++++++++++++++++++++++
 
-Moos middleware interface provides
-:py:class:`morse.middleware.moos.abstract_moos.AbstractMOOS`. This class deals
-with some low-level details of Moos. You still need to write your specialized
-`default` implementation, calling:
+Moos middleware interface provides two base classes:
+:py:class:`morse.middleware.moos.abstract_moos.MOOSNotifier`, and
+:py:class:`morse.middleware.moos.abstract_moos.MOOSSubscriber`.
+The first ``MOOSNotifier`` can be used for sensors to notify `MOOSDB` of
+new data,
+the second ``MOOSSubscriber`` can be used for actuators to receive data from the
+`MOOSDB`.
 
-- ``self.m.Notify()`` to export data to the databases (sensor from Morse's point of
-  view)
-- ``self.m.FetchRecentMail()`` to get last messages from the databases
-  (actuator from Morse's point of view).
+When writing a ``MOOSNotifier`` subclass, you need to override the ``default()``
+method to do the publications:
 
 .. code-block:: python
 
-    import pymoos.MOOSCommClient
-    from morse.middleware.moos import AbstractMOOS
+    from morse.middleware.moos import MOOSNotifier
 
-    class GPSNotifier(AbstractMOOS):
-        """ Notify GPS """
+    class ExampleNotifier(MOOSNotifier):
+        """ Example of MOOSNotifier """
 
         def default(self, ci='unused'):
-            cur_time = pymoos.MOOSCommClient.MOOSTime()
-            
-            self.m.Notify('zEast', self.data['x'], cur_time)
-            self.m.Notify('zNorth', self.data['y'], cur_time)
-            self.m.Notify('zHeight', self.data['z'], cur_time)
+            self.notify('MORSE_TEST', 'true')
+
+When writing a ``MOOSSubscriber`` subclass, you need to override the
+``initialize()`` method to be able to register properly and create the proper
+callback:
+
+.. code-block:: python
+
+    from morse.middleware.moos import MOOSSubscriber
+
+    class ExampleSubscriber(MOOSSubscriber):
+        """ Example of MOOSSubscriber """
+
+        def initialize(self):
+            # initialize the parent class
+            MOOSSubscriber.initialize(self)
+            # register and set callback
+            self.register_message_to_queue('MORSE_EXAMPLE',
+                              'example_queue', self.on_msg)
+
+        def on_msg(self, msg):
+            logger.info('ExampleSubscriber.on_msg received %s with val= %s'%(
+                  msg.key(), msg.string()))
 
 HLA middleware :tag:`hla`
 +++++++++++++++++++++++++
