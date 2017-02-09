@@ -1,64 +1,52 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import pymoos.MOOSCommClient
-from morse.middleware.moos import AbstractMOOS
+from morse.middleware.moos import MOOSNotifier, MOOSSubscriber
 from morse.core import blenderapi
 
-class PoseNotifier(AbstractMOOS):
+class PoseNotifier(MOOSNotifier):
     """ Notify Pose """
 
     def default(self,  ci='unused'):
-        cur_time=pymoos.MOOSCommClient.MOOSTime()
-
         # post the simulation time so that it can be synced to MOOSTime
-        self.m.Notify('actual_time', 
-                      blenderapi.persistantstorage().time.time, cur_time)
+        self.notify('MORSE_TIME',
+                      blenderapi.persistantstorage().time.time)
         # post the robot position
-        self.m.Notify('simEast', self.data['x'], cur_time)
-        self.m.Notify('simNorth', self.data['y'], cur_time)
-        self.m.Notify('simHeight', self.data['z'], cur_time)
-        self.m.Notify('simYaw', self.data['yaw'], cur_time)
-        self.m.Notify('simRoll', self.data['roll'], cur_time)
-        self.m.Notify('simPitch', self.data['pitch'], cur_time)
+        self.notify('MORSE_SIM_X', self.data['x'])
+        self.notify('MORSE_SIM_Y', self.data['y'])
+        self.notify('MORSE_SIM_Z', self.data['z'])
+        self.notify('MORSE_SIM_YAW', self.data['yaw'])
+        self.notify('MORSE_SIM_ROLL', self.data['roll'])
+        self.notify('MORSE_SIM_PITCH', self.data['pitch'])
 
-class PoseReader(AbstractMOOS):
+class PoseReader(MOOSSubscriber):
     """ Read pose commands and update local data. """
 
     def initialize(self):
-        AbstractMOOS.initialize(self)
+        MOOSSubscriber.initialize(self)
         # register for position variables from the database
-        self.m.Register("pX")
-        self.m.Register("pY")
-        self.m.Register("pZ")
-        self.m.Register("pRoll")
-        self.m.Register("pPitch")
-        self.m.Register("pYaw")
+        self.register_message_to_queue("MORSE_SET_X",
+                    'pose_queue', self.on_pose_msgs)
+        self.register_message_to_queue("MORSE_SET_Y",
+                    'pose_queue', self.on_pose_msgs)
+        self.register_message_to_queue("MORSE_SET_Z",
+                    'pose_queue', self.on_pose_msgs)
+        self.register_message_to_queue("MORSE_SET_ROLL",
+                    'pose_queue', self.on_pose_msgs)
+        self.register_message_to_queue("MORSE_SET_PITCH",
+                    'pose_queue', self.on_pose_msgs)
+        self.register_message_to_queue("MORSE_SET_YAW",
+                    'pose_queue', self.on_pose_msgs)
 
-    def default(self, ci='unused'):
-        current_time = pymoos.MOOSCommClient.MOOSTime()
-        # get latest mail from the MOOS comm client
-        messages = self.getRecentMail()
-
-        new_information = False
-
-        for message in messages:
-            # look for position messages
-            if  (message.GetKey() == "pX") and (message.IsDouble()):
-                self.data['x'] = message.GetDouble() # robot X position [m]
-                new_information = True
-            elif  (message.GetKey() == "pY") and (message.IsDouble()):
-                self.data['y'] = message.GetDouble() # robot Y position [m]
-                new_information = True
-            elif  (message.GetKey() == "pZ") and (message.IsDouble()):
-                self.data['z'] = message.GetDouble() # robot Z position [m]
-                new_information = True
-            elif  (message.GetKey() == "pRoll") and (message.IsDouble()):
-                self.data['roll'] = message.GetDouble() # robot roll [rad]
-                new_information = True
-            elif  (message.GetKey() == "pPitch") and (message.IsDouble()):
-                self.data['pitch'] = message.GetDouble() # robot pitch [rad]
-                new_information = True
-            elif  (message.GetKey() == "pYaw") and (message.IsDouble()):
-                self.data['yaw'] = message.GetDouble() # robot yaw [rad]
-                new_information = True
-
-        return new_information
+    def on_pose_msgs(self, msg):
+        # look for position msgs
+        if  (msg.key() == "MORSE_SET_X") and (msg.is_double()):
+            self.data['x'] = msg.double() # robot X position [m]
+        elif  (msg.key() == "MORSE_SET_Y") and (msg.is_double()):
+            self.data['y'] = msg.double() # robot Y position [m]
+        elif  (msg.key() == "MORSE_SET_Z") and (msg.is_double()):
+            self.data['z'] = msg.double() # robot Z position [m]
+        elif  (msg.key() == "MORSE_SET_ROLL") and (msg.is_double()):
+            self.data['roll'] = msg.double() # robot roll [rad]
+        elif  (msg.key() == "MORSE_SET_PITCH") and (msg.is_double()):
+            self.data['pitch'] = msg.double() # robot pitch [rad]
+        elif  (msg.key() == "MORSE_SET_YAW") and (msg.is_double()):
+            self.data['yaw'] = msg.double() # robot yaw [rad]
