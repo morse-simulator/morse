@@ -29,8 +29,8 @@ In another termianl, run morse with::
 
     morse run examples/tutorials/tutorial-1-moos.py
 
-Start uMS (requires ui-moos package) as a simple way to control the robot and
-view its sensor output.  The ATRV can be controlled by publishing a
-longitudinal speed in m/s to ``cVelocity`` and publishing a yaw rate in rad/sec
-to ``cYawRate``.  The output of the Pose sensor should also be visible in uMS
-under the ``zPitch``, ``zRoll``, and ``zYaw`` variables.
+``gyroscope`` will then publishes its data ``MORSE_GYRO_YAW``,
+``MORSE_GYRO_YAW``, and``MORSE_GYRO_YAW`` to the `MOOSDB`.
+``motion`` will be waiting for: ``MORSE_MOTION_VELOCITY`` or
+``MORSE_MOTION_YAWRATE``to drive the vehicle.
+One cans verify that all is working by scoping and poking the `MOOSDB`
