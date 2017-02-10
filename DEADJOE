@@ -1,0 +1,60 @@
+
+*** These modified files were found in JOE when it aborted on Tue Jul  3 16:42:10 2012
+*** JOE was aborted because the terminal closed
+
+*** Datei '(Unbenannt)'
+.git/COMMIT_EDITMSG
+
+*** Datei '.git/COMMIT_EDITMSG'
+
+
+
+# Please enter the commit message for your changes. Lines startidfosadfjsdafljsadflkjsaf
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   src/morse/actuators/torque.py
+#	new file:   src/morse/sensors/imu_dynamic.py
+#
+
+*** These modified files were found in JOE when it aborted on Tue Jul  3 16:54:52 2012
+*** JOE was aborted because the terminal closed
+
+*** Datei '(Unbenannt)'
+.git/COMMIT_EDITMSG
+
+*** Datei '.git/COMMIT_EDITMSG'
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   src/morse/actuators/torque.py
+#	new file:   src/morse/sensors/imu_dynamic.py
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	DEADJOE
+
+*** These modified files were found in JOE when it aborted on Tue Jul  3 17:14:49 2012
+*** JOE was aborted because the terminal closed
+
+*** Datei '(Unbenannt)'
+.git/COMMIT_EDITMSG
+
+*** Datei '.git/COMMIT_EDITMSG'
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+	new file:   src/morse/actuators/torque.py
+	new file:   src/morse/sensors/imu_dynamic.py
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
