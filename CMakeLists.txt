@@ -20,6 +20,7 @@ option(BUILD_YARP_SUPPORT "Build yarp framework support" ON)
 option(BUILD_ROS_SUPPORT "Build ROS middleware support" ON)
 option(BUILD_MOOS_SUPPORT "Build MOOS middleware support" ON)
 option(BUILD_MAVLINK_SUPPORT "Build Mavlink middleware support" ON)
+option(BUILD_PPRZLINK_SUPPORT "Build Pprzlink middleware support" ON)
 option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distributed HLA simulation." ON)
 option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." ON)
 

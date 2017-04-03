@@ -749,6 +749,7 @@ def generate_matrix(filename):
     middlewares['mavlink']= ['✔','✘']
     middlewares['hla']=['✔ (attribute update)','✘']
     middlewares['text']= ['✔','✘']
+    middlewares['pprzlink']= ['✔','✘']
 
     with open(filename, 'w', encoding='utf-8') as out:
         sensors_list = []
