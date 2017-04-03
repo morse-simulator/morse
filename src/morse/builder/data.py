@@ -41,6 +41,7 @@ MORSE_DATASTREAM_MODULE = {
     'moos': 'morse.middleware.moos_datastream.MOOSDatastreamManager',
     'hla': 'morse.middleware.hla_datastream.HLADatastreamManager',
     'mavlink': 'morse.middleware.mavlink_datastream.MavlinkDatastreamManager',
+    'pprzlink': 'morse.middleware.pprzlink_datastream.PprzlinkDatastreamManager',
 }
 
 MORSE_MODIFIER_DICT = {
@@ -527,7 +528,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "moos" : 'morse.middleware.moos.pose.PoseReader'
+            "moos" : 'morse.middleware.moos.pose.PoseReader',
+            "pprzlink" : 'morse.middleware.pprzlink.set_rotorcraft_pose.RotorcraftPose'
             }
         },
     "morse.actuators.waypoint.Waypoint": {

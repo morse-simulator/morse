@@ -360,3 +360,45 @@ implementation for the attitude Mavlink message:
                     - self.data['angular_velocity'][1],
                     - self.data['angular_velocity'][2]
             )
+
+PPRZLink middleware :tag:`pprzlink`
++++++++++++++++++++++++++++++++++++
+
+The support of PPRZLink is very similar to the one of Mavlink describe above.
+It provides the two classes
+:py:class:`morse.middleware.pprzlink.abstract_pprzlink.PprzlinkSensor`
+and :py:class:`morse.middleware.pprzlink.abstract_pprzlink.PprzlinkActuator`.
+These classes provides a generic ``default`` implementation, so you just need
+to override the method ``make_msg`` (for sensors) or ``process_msg`` (for
+actuators). These methods must generate (or read) the ``self._msg`` field.
+It is necessary to provide the ``_type_name`` field for reading objects as it
+is used for binding to the correct PPRZLink message. See for example the
+implementation for receiving the ROTORCRAFT_FP message used to set the
+position of a quadrotor in an environment:
+
+.. code-block:: python
+
+    from morse.middleware.pprzlink.abstract_pprzlink import PprzlinkActuator
+    from pprzlink.message import PprzMessage 
+    
+    # convenience function to convert integer position value to float
+    def pos_of_int(pos):
+        return float(pos) / 2**8
+    
+    # convenience function to convert integer angle value to float
+    def angle_of_int(angle):
+        return float(angle) / 2**12
+    
+    """ Set rotorcraft pose using the Teleport actuator """
+    class RotorcraftPose(PprzlinkActuator):
+        _type_name = "ROTORCRAFT_FP"
+    
+        def process_msg(self):
+            # the actuator assumes ned control, so don't do any transformation
+            self.data['x'] = pos_of_int(self._msg['east'])
+            self.data['y'] = pos_of_int(self._msg['north'])
+            self.data['z'] = pos_of_int(self._msg['up'])
+            self.data['roll']   = angle_of_int(self._msg['phi'])
+            self.data['pitch']  = angle_of_int(self._msg['theta'])
+            self.data['yaw']    = angle_of_int(self._msg['psi'])
+
