@@ -97,7 +97,7 @@ Your class must extend :py:class:`morse.builder.morsebuilder.Robot` (or
 
     class WallE(Robot):
         def __init__(self, name = None):
-            Robot.__init__(self, "wallE.blend", name)
+            super().__init__("wallE.blend", name)
 
 
 Advanced
@@ -122,7 +122,7 @@ And back in your builder script, set the classpath with:
 
     class WallE(Robot):
         def __init__(self, name = None):
-            Robot.__init__(self, "wallE.blend", name)
+            super().__init__("wallE.blend", name)
             self.properties(classpath="module.in.pythonpath.WallE")
 
 Where ``module.in.pythonpath.WallE`` is a class extending
