@@ -164,7 +164,7 @@ internal logic. There are two important functions that you want to override.
 
         def __init__(self, obj, parent = None):
             # Call the constructor of the parent class
-            Sensor.__init__(self, obj, parent)
+            super().__init__(obj, parent)
 
             # Initialize some private variable
             self.capturing = False
@@ -348,7 +348,7 @@ will call your logic code every *n* frames of the simulation.
 
     class PTUPosture(SensorCreator):
         def __init__(self, name=None):
-            SensorCreator.__init__(self, name, "morse.sensors.ptu_posture.PTUPosture")
+            super().__init__(name, "morse.sensors.ptu_posture.PTUPosture")
 
 
 For a basic mesh, you can use classes from the :py:mod:`morse.builder.blenderobjects`
@@ -361,7 +361,7 @@ module.
 
     class GPS(SensorCreator):
         def __init__(self, name=None):
-            SensorCreator.__init__(self, name, "morse.sensors.gps.GPS")
+            super().__init__(name, "morse.sensors.gps.GPS")
             mesh = Sphere("GPSSphere")
             mesh.scale = (.04, .04, .01)
             mesh.color(.5, .5, .5)
@@ -376,7 +376,7 @@ use :py:meth:`morse.builder.creator.ComponentCreator.append_meshes`.
 
     class Sick(LaserSensorWithArc):
         def __init__(self, name=None):
-            LaserSensorWithArc.__init__(self, name, \
+            super().__init__(name,
                     "morse.sensors.laserscanner.LaserScanner", "sick")
             # set components-specific properties
             self.properties(Visible_arc = False, laser_range = 30.0,
