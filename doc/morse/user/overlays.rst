@@ -33,7 +33,7 @@ The following overlay maps your functions to the default MORSE ones:
         
         def __init__(self, overlaid_object):
             # Call the constructor of the parent class
-            MorseOverlay.__init__(self, overlaid_object)
+            super().__init__(overlaid_object)
             
             self.last_tilt = 0.0
             self.last_pan = 0.0
@@ -71,7 +71,7 @@ result)``) and return a new tuple ``(status, result)``:
         
         def __init__(self, overlaid_object):
             # Call the constructor of the parent class
-            MorseOverlay.__init__(self, overlaid_object)
+            super().__init__(overlaid_object)
             
             self.last_tilt = 0.0
             self.last_pan = 0.0
