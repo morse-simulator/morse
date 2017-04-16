@@ -9,8 +9,7 @@ import os
 fake = False
 
 # running in Blender?
-# Note: Run blender-app.exe when blender v2.75 in Window 7
-if os.path.basename(sys.executable) in ['blender', 'blender.exe', 'blender-app.exe']:
+if "blender" in sys.executable:
     import bpy
     try:
         import bge

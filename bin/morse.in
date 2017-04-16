@@ -648,10 +648,10 @@ def launch_simulator(scene=None, script=None, node_name=None, geometry=None,
                 if not tmpF.closed:
                     tmpF.close()
         logger.info("Executing Blender script: " + script)
-        exec_args += ["-P", script]
-
-    exec_args += other_params
-    os.execle(*exec_args)
+        blender_exec_encoded = os.fsencode(blender_exec)
+        os.execle(blender_exec_encoded, blender_exec, scene, "-y", "-P", script, *other_params)
+    else:
+        os.execle(blender_exec, blender_exec, scene, "-y", *other_params)
 
 def do_check(args):
     try:
