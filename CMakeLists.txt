@@ -238,6 +238,7 @@ ELSE()
 									   ${CMAKE_CURRENT_SOURCE_DIR}/doc/man
         								   ${SPHINX_MAN_OUTPUT} &&
 						  ${GZIP} -f ${SPHINX_MAN_OUTPUT}/*.1)
+		ADD_DEPENDENCIES(man revisiontag)
 		INSTALL(FILES ${SPHINX_MAN_OUTPUT}/morse.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-run.1.gz 
 					  ${SPHINX_MAN_OUTPUT}/morse-create.1.gz 
