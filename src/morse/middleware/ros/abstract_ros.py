@@ -85,13 +85,20 @@ class ROSPublisher(AbstractROS):
         # do not create a topic if no ros_class set (for TF publish only)
         if self.ros_class != Header:
             # Generate a publisher for the component
-            self.topic = rospy.Publisher(topic_name, self.ros_class)
+            self.topic = rospy.Publisher(topic_name, self.ros_class, queue_size=self.determine_queue_size())
         if self.default_frame_id is 'USE_TOPIC_NAME': # morse convention
             self.frame_id = self.kwargs.get('frame_id', self.topic_name)
         else: # default_frame_id was overloaded in subclass
             self.frame_id = self.kwargs.get('frame_id', self.default_frame_id)
         self.sequence = 0 # for ROS msg Header
         logger.info('ROS publisher initialized for %s'%self)
+
+    def determine_queue_size(self):
+        """
+        Determine a suitable queue_size for the ros publisher
+        :return: queue_size
+        """
+        return max(1, self.component_instance.frequency)
 
     def get_ros_header(self):
         header = Header()
@@ -119,7 +126,7 @@ class ROSPublisherTF(ROSPublisher):
     def initialize(self):
         ROSPublisher.initialize(self)
         if not ROSPublisherTF.topic_tf:
-            ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage)
+            ROSPublisherTF.topic_tf = rospy.Publisher("/tf", tfMessage, queue_size=self.determine_queue_size())
 
     def finalize(self):
         ROSPublisher.finalize(self)

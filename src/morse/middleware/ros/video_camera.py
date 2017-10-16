@@ -21,7 +21,8 @@ class CameraPublisher(ROSPublisherTF):
         else:
             ROSPublisher.initialize(self)
         # Generate a publisher for the CameraInfo
-        self.topic_camera_info = rospy.Publisher(self.topic_name+'/camera_info', CameraInfo)
+        self.topic_camera_info = rospy.Publisher(self.topic_name+'/camera_info', CameraInfo,
+                                                 queue_size=self.determine_queue_size())
 
     def finalize(self):
         if self.pub_tf:
