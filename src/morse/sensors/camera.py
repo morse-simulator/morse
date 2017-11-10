@@ -30,11 +30,18 @@ class Camera(morse.core.sensor.Sensor):
         specially when there are several cameras. However, the lack of
         data on the stream may cause problems to some middlewares.
 
+    .. note::
+        The **cam_focal** and **cam_fov** properties are linked
+        together. Blender automatically computes one when setting the
+        other. Therefore when setting **cam_fov** to something other than None,
+        the **cam_focal** parameter is ignored.
+
     .. warning::
         Contrary to most of objects in Morse, the X axis of the camera
         is not "in front" of the camera. Here, Morse follows the
         "standard convention for camera", i.e.  X and Y are in the image
         plane, and Z is in the depth axis of the camera.
+
     """
 
     _name = "Generic Camera"
@@ -45,6 +52,7 @@ class Camera(morse.core.sensor.Sensor):
     add_property('image_width', 256, 'cam_width')
     add_property('image_height', 256, 'cam_height')
     add_property('image_focal', 25.0, 'cam_focal')
+    add_property('image_fov',   None, 'cam_fov')
     add_property('near_clipping', 0.1, 'cam_near')
     add_property('far_clipping', 100.0, 'cam_far')
     add_property('vertical_flip', True, 'Vertical_Flip')
@@ -218,9 +226,16 @@ class Camera(morse.core.sensor.Sensor):
         self._camera_image = blenderapi.texture().Texture(screen, mat_id)
         self._camera_image.source = img_renderer
 
-        # Set the focal length of the camera using the Game Logic Property
-        camera.lens = self.image_focal
+        # Set the focal length of the camera using the Game Logic Property. One
+        # can use either focal (lens) or fov parameter: setting one computes the
+        # other accordingly. Fov supersedes focal.
+        if self.image_fov is not None:
+            camera.fov = self.image_fov
+            self.image_focal = camera.lens
+        else:
+            camera.lens = self.image_focal
         logger.info("\tFocal length of the camera is: %s" % camera.lens)
+        logger.info("\tFOV of the camera is: %s" % camera.fov)
 
         # Set the clipping distances of the camera using the Game Logic Property
         camera.near = self.near_clipping
