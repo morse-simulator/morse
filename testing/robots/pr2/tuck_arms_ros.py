@@ -94,7 +94,7 @@ class PR2TuckTest(RosTestCase):
 
   def test_tuck(self):
 
-    rospy.init_node('test_pr2_tuck', log_level = rospy.DEBUG, disable_signals=True)
+    rospy.init_node('test_pr2_tuck', disable_signals=True)
 
     # arm state: -1 unknown, 0 tucked, 1 untucked
     self.l_arm_state = -1

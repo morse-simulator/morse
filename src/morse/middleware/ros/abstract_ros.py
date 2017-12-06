@@ -49,7 +49,7 @@ class AbstractROS(AbstractDatastream):
         morse_ps = persistantstorage() # dict
         if 'node_instance' in morse_ps:
             name = 'morse_%s' % morse_ps.node_instance.node_name
-        rospy.init_node(name, log_level=rospy.DEBUG, disable_signals=True)
+        rospy.init_node(name, disable_signals=True)
 
         logger.info("ROS node %s initialized %s" % (name, self) )
         self.topic = None

@@ -41,7 +41,7 @@ class PR2TorsoTest(RosTestCase):
 
         topic = "/pr2/torso_controller/command"
 
-        rospy.init_node('test_pr2_torso', log_level = rospy.DEBUG, disable_signals=True)
+        rospy.init_node('test_pr2_torso', disable_signals=True)
 
         rospy.loginfo("Preparing to publish on %s" % topic)
         ctl = rospy.Publisher(topic, JointTrajectory)
@@ -83,7 +83,7 @@ class PR2TorsoTest(RosTestCase):
 
 
         rospy.loginfo("Trying to move PR2 torso at action level.")
-        rospy.init_node('test_pr2_torso', log_level = rospy.DEBUG, disable_signals=True)
+        rospy.init_node('test_pr2_torso', disable_signals=True)
         client = actionlib.SimpleActionClient('torso_controller/position_joint_action', SingleJointPositionAction)
         self.assertTrue(client.wait_for_server(rospy.Duration(5)))
 
