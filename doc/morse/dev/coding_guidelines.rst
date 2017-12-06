@@ -4,22 +4,22 @@ Coding guidelines
 Style
 -----
 
-Coding conventions in *MORSE* follows Python's :pep:`008`.
-It means in particular:
+Coding conventions in *MORSE* follow Python's :pep:`008`.
+This means in particular:
 
-- use space for indentation, not tab (4 space)
-- 80 character max by lines
-- class name are in CamelCase, variables and methods are in lower case,
-  possibly with underscores.
-- variable starting by an underscore are private
-- comment the code.
+- use spaces for indentation, not tabs (4 spaces per level of indentation)
+- at most 80 characters per line
+- class names should use CamelCase, variables and methods should be lower case,
+  possibly with underscores
+- variables starting with an underscore are private
+- comment the code
 
 Logging
 -------
 
-Moreover, we rely on the standard `Python logging framework
-<http://docs.python.org/3.2/library/logging.html>`_. Please use it, and don't
-use ``print()``! Using print is cumbersome on big projects!
+Morse uses the standard `Python logging framework
+<http://docs.python.org/3.2/library/logging.html>`_. Please use this module in your own Morse code,
+and don't use ``print()``! Using print is cumbersome on big projects!
 
 To use logging in your module:
 
@@ -33,8 +33,8 @@ To use logging in your module:
     # logger.debug("...")
     # ...etc
 
-*MORSE* is set to use by default the ``INFO`` logging level.  You can easily
-set the logging level to ``DEBUG`` in a specific module by adding to it:
+By default, *MORSE* uses the ``INFO`` logging level.  You can easily
+change the logging level, e.g., to ``DEBUG``, in a specific module by adding a line like this:
 
 .. code-block:: python
 
@@ -44,6 +44,6 @@ set the logging level to ``DEBUG`` in a specific module by adding to it:
 Test
 ----
 
-*MORSE* have a cool :doc:`unit-testing system <testing>`. When you submit new
-stuff, it is nice to add some tests which demonstrate how it is supposed to
-work. It helps the maintenance of the project on the long-term.
+*MORSE* comes with a useful :doc:`unit-testing system <testing>`. When you submit changes or new
+code, please add some tests to demonstrate how your work is supposed to be used.
+Adding such tests helps us to maintain the quality of the project's code in the long-term.
