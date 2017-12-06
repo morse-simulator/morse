@@ -28,7 +28,7 @@ def ros_timer(callable_obj, frequency):
             rospy.logdebug("Sleep interrupted")
 
 
-class RosAction:
+class RosAction(object):
     """ Implements a minimal action state machine.
 
     See http://www.ros.org/wiki/actionlib/DetailedDescription
@@ -57,17 +57,19 @@ class RosAction:
         self.result_type = types[1]
         self.feedback_type = types[2]
 
-        # Create the 5 topics required by an action server
-        self.goal_topic = rospy.Subscriber(self.name + "/goal", types[0], self.on_goal)
-        self.result_topic = rospy.Publisher(self.name + "/result", types[1])
-        self.feedback_topic = rospy.Publisher(self.name + "/feedback", types[2])
-
-        self.cancel_topic = rospy.Subscriber(self.name + "/cancel", actionlib_msgs.msg.GoalID, self.on_cancel)
-        self.status_topic = rospy.Publisher(self.name + "/status", actionlib_msgs.msg.GoalStatusArray)
-
         # read the frequency with which to publish status from the parameter server
         # (taken from actionlib/action_server.py)
         self.status_frequency = rospy.get_param(self.name + "/status_frequency", 5.0)
+        queue_size = max(1, self.status_frequency)
+
+        # Create the 5 topics required by an action server
+        self.goal_topic = rospy.Subscriber(self.name + "/goal", types[0], self.on_goal)
+        self.result_topic = rospy.Publisher(self.name + "/result", types[1], queue_size=queue_size)
+        self.feedback_topic = rospy.Publisher(self.name + "/feedback", types[2], queue_size=queue_size)
+
+        self.cancel_topic = rospy.Subscriber(self.name + "/cancel", actionlib_msgs.msg.GoalID, self.on_cancel)
+        self.status_topic = rospy.Publisher(self.name + "/status", actionlib_msgs.msg.GoalStatusArray,
+                                            queue_size=queue_size)
 
         status_list_timeout = rospy.get_param(self.name + "/status_list_timeout", 5.0)
         self.status_list_timeout = rospy.Duration(status_list_timeout)
@@ -181,8 +183,8 @@ class RosAction:
         with self.goal_lock:
             goal_status = self._pending_goals[goal_id]['status']
 
-        res = self.result_type(status = goal_status,
-                               result = result)
+        res = self.result_type(status=goal_status,
+                               result=result)
         
         self.result_topic.publish(res)
 

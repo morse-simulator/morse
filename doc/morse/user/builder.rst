@@ -271,7 +271,6 @@ Let's take an example. Consider this script, with two robots::
 
     env = Environment('indoors-1/indoor-1')
 
-
 If you open this in MORSE for editing (with ``morse edit``) and look at the
 outliner, you will see that the hierarchy of objects looks like this:
 

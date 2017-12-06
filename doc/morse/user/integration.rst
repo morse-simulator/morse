@@ -31,7 +31,7 @@ Configuring Morse to handle data in a specified way
 ---------------------------------------------------
 
 To configure a component to export or import data using a specific method, you
-need to implement an
+need to call
 :py:meth:`morse.builder.abstractcomponent.AbstractComponent.add_stream`
 method for your component. This is explained in detail and with examples
 in the following tutorials:

@@ -19,7 +19,7 @@ To start the simulation right away, do::
 Where ``filename`` can be a Blender file or a Python script that uses the
 :doc:`Builder API <../user/builder>` to describe a simulation scenario.
 
-To load the simulation scenario in the Blender interface::
+To load the simulation scene in the Blender interface::
 
   $ morse edit <filename>
 
@@ -107,7 +107,7 @@ The following key bindings are predefined in any simulation scene
 
 - :kbd:`F12` key: emergency exit from the simulation, without clean up. Useful
   when the :kbd:`Esc` key does not make the simulation finish (generally happens
-  when the simulation could not properly initialise)
+  when the simulation could not properly initialise).
 
 .. note::  
   If this doesn't work either, switch to the command terminal where MORSE was

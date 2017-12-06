@@ -1,8 +1,8 @@
 MORSE FAQ
 =========
 
-Here are some of the commonly found problems while installing or using MORSE,
-and their solution:
+Here are some of the common problems that may arise when installing or using MORSE,
+and their solutions:
 
 During installation
 -------------------

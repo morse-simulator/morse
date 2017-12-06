@@ -9,6 +9,7 @@ All these services belongs to a virtual component called ``simulation`` and
 follows the normal syntax for socket requests.  Thus, a request to retrieve the
 list of robots would look like this::
 
+
   > telnet localhost 4000
   Connected to localhost.
   > req1 simulation list_robots
@@ -30,13 +31,13 @@ Available services
 - ``list_robots`` (no parameter): returns the list of the robots currently
   available in the simulation
 - ``reset_objects`` (no parameter): reset the position of all objects in the
-  simulation (in other word, restart the simulation)
+  simulation (in other words, restart the simulation)
 - ``quit`` (no parameter): quit the game mode and so terminate the simulation
 - ``activate`` (component_name): Activate the functionality of the specified component
 - ``deactivate`` (component_name): Deactivate  the functionality of the specified component
 - ``suspend_dynamics`` (no parameter): suspend the physics at the game engine
   level
-- ``restore_dynamics`` (no parameter): reenable the physics at the game
+- ``restore_dynamics`` (no parameter): re-enable the physics at the game
   engine level
 - ``details`` (no parameter): returns a structure containing the details about
   the simulation currently running, including the list of robots, the list of

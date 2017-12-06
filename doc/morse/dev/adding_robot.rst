@@ -19,26 +19,26 @@ how to modify it to suit your needs.
 3D Model
 --------
 
-Blender is a 3D modeling software with both Photo-realistic Rendering and
+Blender is a 3D modeling application with both Photo-realistic Rendering and
 Game Engine capabilities. In the first case, users want very detailed models
-with high definition textures. In one word, heavy models. Those are not suited
-for the Game Engine, where we want to get **real-time** rendering.
+with high definition textures. In other words, heavy models. Those are not well suited
+to the Game Engine, where we want to get **real-time** rendering.
 
 As such, it is advisable to prepare a lightweight ("low-poly") model of your
 robot, with compressed textures.
 
 The section :ref:`blender-advices` of :doc:`Adding a new
-component<adding_component>` provides some advices when creating a 3D model in
+component<adding_component>` provides some advice on creating a 3D model in
 Blender.
 
 Resources
 +++++++++
 
-Blender got huge amount of models, you can find some on
+Blender has a huge number of models, you can find some on
 `Blendswap <http://www.blendswap.com/>`_. Make sure you look in the
 "**low-poly**" category for Game Engine models.
 
-You can also import many 3D format in Blender, for a full list, see the
+You can also import many 3D formats into Blender, for a full list, see the
 `Import-Export Blender wiki page
 <http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Import-Export>`_.
 
@@ -73,8 +73,8 @@ for more.
 Only one root
 -------------
 
-Your model can be composed by different objects, but must have only one root
-object, the others being his children.
+Your model can be composed of many different objects, but there may be only one root
+object, all the others being its children.
 
 
 Builder part
@@ -83,7 +83,7 @@ Builder part
 Let say your 3D model is in "``/home/bob/models/wallE.blend``".
 
 The best practice is to set a ``MORSE_RESOURCE_PATH`` environment variable.
-Containing a list of path to models accessible by MORSE, separated by colon
+Containing a list of paths to models accessible by MORSE, each separated by a colon
 (``:``)::
 
     export MORSE_RESOURCE_PATH="/home/bob/models:/home/bob/models2012"
@@ -106,7 +106,7 @@ Advanced
 Core part
 +++++++++
 
-By default, :py:class:`morse.builder.morsebuilder.Robot` use
+By default, :py:class:`morse.builder.morsebuilder.Robot` uses the
 ":py:class:`morse.core.robot.Robot`" classpath.
 
 If you want a specific behaviour, you need to create a class like the ones in

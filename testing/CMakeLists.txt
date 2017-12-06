@@ -19,6 +19,10 @@ if (BUILD_ROS_SUPPORT)
 	add_subdirectory(middlewares/ros)
 endif()
 
+if (BUILD_MOOS_SUPPORT)
+	add_subdirectory(middlewares/moos)
+endif()
+
 if (BUILD_YARP_SUPPORT)
 	add_subdirectory(middlewares/yarp)
 endif()

@@ -1,5 +1,5 @@
-Understanding Morse code organisation
-=====================================
+Understanding Morse's code organisation
+=======================================
 
 The Morse source code is organised in the following way :
 

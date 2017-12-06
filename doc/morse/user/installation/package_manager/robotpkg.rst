@@ -5,7 +5,7 @@ With ``robotpkg``
 It supports Linux, * BSD and Darwin (MacOS X).
 
 .. Note::
-	If you are upgrading an previous morse installation, skip directly to step 2.
+	If you are upgrading a previous morse installation, skip directly to step 2.
 
 #. Install and bootstrap ``robotpkg`` and ``robotpkg-wip`` using these
    instructions: `robotpkg installation <http://robotpkg.openrobots.org>`_ and 
@@ -23,7 +23,7 @@ It supports Linux, * BSD and Darwin (MacOS X).
 
 #. Go to ``$ROBOTPKG/simulation/morse``
 #. Type ``make update``
-#. Go have a coffee :-) ``robotpkg`` will download and compile for you all the
+#. Go have a coffee :-) ``robotpkg`` will download and compile all the
    required dependencies, including Blender.
 #. The previous package only installs middleware support for text and socket.
    If you want support for additional middlewares, repeat the operation in

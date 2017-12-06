@@ -1,7 +1,7 @@
 MORSE execution loop
 ====================
 
-The following figure depicts the general behaviour of Morse:
+The following figure depicts Morse's general behaviour:
 
 .. image:: ../../media/simulation_main_loop_overview.svg
    :class: full_image
@@ -25,6 +25,7 @@ sensor position, etc.).
 
 	If the behaviour of one component takes too much time, it is the whole
 	simulation loop which will slow down (including the physics). Make sure your
+
 	components are fast enough. It is possible to rewrite the logic in C if
 	the Python version is too slow.
 

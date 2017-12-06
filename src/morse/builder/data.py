@@ -41,6 +41,7 @@ MORSE_DATASTREAM_MODULE = {
     'moos': 'morse.middleware.moos_datastream.MOOSDatastreamManager',
     'hla': 'morse.middleware.hla_datastream.HLADatastreamManager',
     'mavlink': 'morse.middleware.mavlink_datastream.MavlinkDatastreamManager',
+    'pprzlink': 'morse.middleware.pprzlink_datastream.PprzlinkDatastreamManager',
 }
 
 MORSE_MODIFIER_DICT = {
@@ -86,7 +87,7 @@ MORSE_MODIFIER_DICT = {
         'morse.sensors.gps.GPS': "morse.modifiers.utm.CoordinatesToUTM",
         'morse.actuators.destination.Destination': "morse.modifiers.utm.CoordinatesFromUTM",
         'morse.actuators.waypoint.Waypoint': "morse.modifiers.utm.CoordinatesFromUTM",
-    },                  
+    },
     'PoseNoise' : {
         'morse.sensors.odometry.Odometry': "morse.modifiers.pose_noise.PoseNoiseModifier",
         'morse.sensors.pose.Pose': "morse.modifiers.pose_noise.PoseNoiseModifier",
@@ -125,6 +126,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.accelerometer.TwistPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
@@ -133,6 +135,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.jointstate.JointStatePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT
             }
         },
@@ -140,6 +143,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "mavlink": 'morse.middleware.mavlink.attitude.AttitudeSensor',
             }
@@ -148,6 +152,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
@@ -157,6 +162,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             }
         },
     "morse.sensors.clock.Clock": {
@@ -220,6 +226,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": 'morse.middleware.pocolibs.sensors.human_posture.HumanPoster'
             }
@@ -243,7 +250,7 @@ MORSE_DATASTREAM_DICT = {
             },
         "rssi": {
             "socket": INTERFACE_DEFAULT_OUT
-            },        
+            },
         "range": {
             "ros": 'morse.middleware.ros.infrared.RangePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
@@ -253,16 +260,19 @@ MORSE_DATASTREAM_DICT = {
         "differential": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT
             },
         "raw": {
             "socket": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT
             },
         "integrated": {
             "ros": 'morse.middleware.ros.odometry.OdometryPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": ['morse.middleware.pocolibs.sensors.pom.PomSensorPoster',
@@ -274,6 +284,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
         }
         },
@@ -295,6 +306,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
@@ -303,6 +315,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.jointstate.JointStatePublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": 'morse.middleware.pocolibs.sensors.platine_posture.PlatinePoster'
             }
@@ -311,6 +324,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT
             }
         },
@@ -324,6 +338,7 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             "pocolibs": 'morse.middleware.pocolibs.sensors.target.TargetPoster'
             }
@@ -341,6 +356,7 @@ MORSE_DATASTREAM_DICT = {
         "default": {
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
@@ -349,6 +365,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": ['morse.middleware.ros.velocity.TwistStampedPublisher'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
+            "moos": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
             }
         },
@@ -511,7 +528,8 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.read_pose.PoseReader',
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
-            "moos" : 'morse.middleware.moos.pose.PoseReader'
+            "moos" : 'morse.middleware.moos.pose.PoseReader',
+            "pprzlink" : 'morse.middleware.pprzlink.set_rotorcraft_pose.RotorcraftPose'
             }
         },
     "morse.actuators.waypoint.Waypoint": {

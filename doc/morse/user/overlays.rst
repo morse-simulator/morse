@@ -18,7 +18,7 @@ The example below presents a typical use for overlays: MORSE provides a
 :meth:`morse.actuators.ptu.PTU.set_pan_tilt`, to set the pan and 
 tilt angles of the PTU.
 
-But in your architecture, you are using 2 different methods, ``SetTilt`` and
+But in your architecture, you are using two different methods, ``SetTilt`` and
 ``SetPan``.
 
 The following overlay maps your functions to the default MORSE ones:
@@ -58,7 +58,7 @@ callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` takes care
 of this operation. You can pass an optional function to this method to
 modify the returned data, or modify the state of your object.
 
-This new callback *must* take one parameter (a tuple ``(status,
+If provided, the callback *must* take one parameter (a tuple ``(status,
 result)``) and return a new tuple ``(status, result)``:
 
 .. code-block:: python
@@ -112,7 +112,7 @@ Scene setup
 With the MORSE Builder API
 ++++++++++++++++++++++++++
 
-Components can be easily overlaid from the :doc:`MORSE Builder API
+Components can easily be overlaid using the :doc:`MORSE Builder API
 <../user/builder>` with the method
 :meth:`morse.builder.abstractcomponent.AbstractComponent.add_overlay`.
 
@@ -139,7 +139,7 @@ The following example is taken from one of the ROS unit-tests:
    env = Environment('indoors-1/indoor-1')
 
 
-Here, the ``waypoint`` actuator get overlaid by the ``WayPoint`` class defined
+Here, the ``waypoint`` actuator has been overlaid by the ``WayPoint`` class defined
 in the module :mod:`morse.middleware.ros.overlays.waypoints`.
 
 Name remapping

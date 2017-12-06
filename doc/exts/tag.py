@@ -17,6 +17,7 @@ def tag_role(role, rawtext, text, lineno, inliner,
                   'moos': ('middleware', 'user/middlewares/moos'),
                   'mavlink': ('middleware', 'user/middlewares/mavlink'),
                   'hla': ('middleware', 'user/middlewares/hla', 'multinode'),
+                  'pprzlink': ('middleware', 'user/middlewares/pprzlink'),
                   'builder': ('api', 'user/builder'),
                   'datastream': ('access', None),
                   'service': ('access', 'dev/services')}

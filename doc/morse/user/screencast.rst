@@ -16,12 +16,12 @@ Install using::
 
     sudo apt-get install recordmydesktop
 
-Here is an usefull alias to select a window to record::
+Here is a useful alias to select a window to record::
 
     alias scast='recordmydesktop --v_bitrate 5000000 --full-shots --fps 10 --no-sound --windowid $(xwininfo | grep "Window id:" | sed -e "s/xwininfo\:\ Window id:\ // ;s/\ .*//")'
 
 
-The most efficient way to capture is to use low compression,
+The most efficient way to make a screencast is to use low compression,
 so then you must know how to re-encode your video before sending it.
 
 The official recommendations from
@@ -29,7 +29,7 @@ The official recommendations from
 `Vimeo <https://vimeo.com/help/compression>`_ (as of January 2015)
 are: MP4 + H.264 + AAC-LC.
 
-You can use to following command to re-encode properly::
+You can use the following command to re-encode properly::
 
     avconv -i out.ogv -vcodec libx264 -s hd720 -b 5000k -an out.mp4
 

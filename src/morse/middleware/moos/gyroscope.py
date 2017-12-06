@@ -1,13 +1,11 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import pymoos.MOOSCommClient
-from morse.middleware.moos import AbstractMOOS
+from morse.middleware.moos import MOOSNotifier
 
-class GyroscopeNotifier(AbstractMOOS):
+class GyroscopeNotifier(MOOSNotifier):
     """ Notify Gyroscope """
 
     def default(self, ci = 'unused'):
-        cur_time = pymoos.MOOSCommClient.MOOSTime()
-        
-        self.m.Notify('zYaw', self.data['yaw'], cur_time)
-        self.m.Notify('zRoll', self.data['roll'], cur_time)
-        self.m.Notify('zPitch', self.data['pitch'], cur_time)
+        logger.debug('GyroscopeNotifier is publising!')
+        self.notify('MORSE_GYRO_YAW', self.data['yaw'])
+        self.notify('MORSE_GYRO_ROLL', self.data['roll'])
+        self.notify('MORSE_GYRO_PITCH', self.data['pitch'])

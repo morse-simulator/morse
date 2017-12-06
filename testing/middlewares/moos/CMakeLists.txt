@@ -1,0 +1,1 @@
+add_morse_test(moos_datastream_testing)

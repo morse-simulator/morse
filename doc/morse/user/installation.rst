@@ -1,7 +1,7 @@
 MORSE installation
 ==================
 
-MORSE in two minutes (if you run Debian/Ubuntu!)
+MORSE in two minutes (if you run Debian or Ubuntu!)
 ------------------------------------------------
 
 Open a console, type ``sudo apt-get install morse-simulator`` (or click here:
@@ -72,6 +72,7 @@ Packaged versions
 MORSE is available on Debian >= Wheezy and Ubuntu >= 13.04. You can install
 the package ``morse-simulator`` with your preferred software package manager::
 
+
   $ sudo apt-get install morse-simulator
 
 You can also install the Python bindings with::
@@ -83,7 +84,7 @@ You can also install the Python bindings with::
   Automatic installation of middlewares' support requires MORSE >=1.3! **Ubuntu =<
   15.04 and Debian Wheezy/Jessie only ship MORSE 1.2.2**: in that case, you
   need to install MORSE manually if you want to use MORSE with
-  ROS/YARP/MOOS/pocolibs. Continue to next section.
+  ROS/YARP/MOOS/pocolibs. Continue to the next section.
 
 
 You can also easily install MORSE with:
@@ -112,6 +113,7 @@ Prerequisites
 - Blender (>= 2.65) built with Python >= 3.3. You can simply get a binary from
   `Blender website <http://www.blender.org/download/get-blender/>`_
 - numpy for Python 3 (often ``py3-numpy `` or ``python3-numpy``)
+
 
 .. note::
     If you plan to build packages for MORSE, please read the notes on packaging below.
