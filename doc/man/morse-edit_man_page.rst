@@ -21,8 +21,8 @@ Options
 :env:                   the simulation environment to edit.
 :file:                  the exact scene (.py or .blend) to edit (if 'env' is
                         given, within this environment).
-                        See section FILE RESOLUTION of :manpage:`morse-run(1)` for details.
-:pyoptions:             optional parameters, passed to the Blender python
+                        See section FILE RESOLUTION in :manpage:`morse-run(1)` for details.
+:pyoptions:             optional parameters, passed to the Blender Python
                         engine in sys.argv
 
 :-h, --help:            show this help message and exit

@@ -3,16 +3,16 @@ Pocolibs
 
 Pocolibs middleware is mainly used with the robot architecture established at
 LAAS. It relies heavily on the ctypes library, and for some more complex
-poster, on 'hand-tuned C'.
+posters, on 'hand-tuned C'.
 
 For the moment, the Pocolibs middleware relies only on the concept of *posters*
 to export and import data. It requires the use of the ``h2`` program to
 manage the posters running in the computer.
 
 Each of the posters has a very specific data structure that is used to store
-and transfer the information. For this reason, there is no generic methods for
-this middleware, and all of the methods are defined as extensions to the basic
-functionality of the middleware.
+and transfer the information. For this reason, there are no generic methods for
+this middleware, and all of the methods are defined as extensions of the
+middleware's basic functionality.
 
 Files
 -----

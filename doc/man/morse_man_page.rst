@@ -19,8 +19,8 @@ environment with physics simulation.
 A robot and its environment are created in MORSE by building a model in
 Blender. Actuator and sensor objects are attached to robot models, and may be
 interacted with via a variety of middleware protocols. Simulations can be
-programmed via Python scripts or inside of Blender itself. Currently supported
-middleware includes YARP, MOOS, ROS, Pocolibs, Mavlink, HLA, PPRZLink as well as a plain
+programmed using Python scripts or inside of Blender itself. Currently supported
+middleware includes YARP, MOOS, ROS, Pocolibs, Mavlink, and HLA, as well as a plain
 socket interface.
 
 Options
@@ -33,7 +33,7 @@ These options apply to any MORSE command.
         adapted to terminals with a dark background.
 :--reverse-color:
         Uses an alternate color theme for MORSE output, well adapted to
-        terminals with a bright background.
+        terminals with a light background.
 :-h, --help:
         Displays information regarding the program use.
 :--version:
@@ -43,7 +43,7 @@ These options apply to any MORSE command.
 Commands
 --------
 
-See "man morse-<command>" for a documentation of each commands.
+See "man morse-<command>" for a particular command's documentation.
 
 :add:
         Adds templates for a new component (sensor, actuator, robot)
@@ -51,7 +51,8 @@ See "man morse-<command>" for a documentation of each commands.
 :check:
         Checks the environment is correctly setup to run morse.
 :create:
-        Creates a new simulation environment in the current directory.
+        Creates a new simulation environment in a subdirectory of the
+        current directory.
         A template simulation scene is also created.
         The environment is added to 'sites' in ~/.morse/config
 :edit:
@@ -69,39 +70,39 @@ See "man morse-<command>" for a documentation of each commands.
 Files
 -----
 
-Configuration files are stored in each user $HOME/.morse
+Configuration files are stored in each user's $HOME/.morse directory.
 
 :config:
         General MORSE configuration.
-        Section 'sites' contains the list of simulation environments
+        The 'sites' section contains the list of simulation environments
         MORSE will look for at startup.
 
 Environment
 -----------
 
 :MORSE_ROOT:
-			Use this variable to determine where are localised data. This
-			variable is mandatory
+			Use this variable to determine where localised data is held. This
+			variable must exist
 
 :MORSE_BLENDER:
-			Determine which blender binary is started. If it does not exist, 
-			rely on the first blender in the PATH
+			Determine which Blender binary is used. If it does not exist, 
+			rely on the first Blender in the PATH
 
 :MORSE_RESOURCE_PATH:
-			Determine where morse will search for blender components. It is a
+			Determine where morse will search for Blender components. It is a
 			colon-separated list of directories, similar to PATH. 
 
 :MORSE_NODE:
-			In multi-node mode, if no name has been given, look for this
+			In multi-node mode, if no node name has been given, look for this
 			variable to determine the name of the node. If it does not exist,
-			rely on the name of the host.
+			use the hostname.
 
 :MORSE_SILENT_PYTHON_CHECK:
 			Do not restrict matching system vs. Blender Python version. Use at
 			your own risk.
 
-Morse relying on Python to execute itself, the run of Morse is influenced by
-all Python variables, in particular **PYTHONPATH**. See :manpage:`python(1)` for
+Since Morse relies on Python, at runtime Morse is affected by the standard
+Python variables, in particular **PYTHONPATH**. See :manpage:`python(1)` for
 details.
 
 See Also

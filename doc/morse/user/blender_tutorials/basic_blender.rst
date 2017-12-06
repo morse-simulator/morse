@@ -3,34 +3,36 @@ Basic Blender commands
 
 The global environment used within MORSE is based on Blender.
 While it is not necessary to know a lot of Blender to use MORSE, it can be useful
-when tweaking existing objects, adjusting the positions of the elements on a scene.
-We present here the most useful commands to know from Blender.
+when tweaking existing objects, for example, when adjusting the
+positions of the elements on a scene. Here we present the most useful
+Blender commands for use with MORSE.
 
-Blender's interface is very particular and different from almost any other computer program available.
+Blender's user interface is very unusual, and works differently from
+most other graphical user interface programs.
 Follow this link for a good tutorial on `the use of Blender's interface <http://www.blendercookie.com/getting-started-with-blender/>`_.
 Here we present the most useful commands necessary to operate MORSE.
 
 .. note:: The Blender interface is divided in various panels (windows).
-    The mouse and keyboard shortcuts used change depending on the panel over
+    The mouse and keyboard shortcuts vary depending on the panel over
     which the mouse pointer is located.
     All the following commands are valid for when the **mouse pointer is located
     inside the 3D View panel**.
 
-Selection of an object 
-----------------------
+Object Selection
+----------------
 
-:kbd:`Right Mouse Click` over the object
+:kbd:`Right Mouse Click` the object
 
 Pressing :kbd:`a` will toggle selection of all or none of the objects in the current scene.
 
-Geometric transformations of an object
---------------------------------------
+Object Geometric Transformations
+--------------------------------
 
 Keyboard input
 ++++++++++++++
 
 To enter exact transformation values with the keyboard, press :kbd:`N` to display the
-**Transform Properties** sub-window of the selected object.
+**Transform Properties** sub-window for the selected object.
 Then change the values of the **Location**, **Rotation** or **Scale** fields.
 
 With the mouse
@@ -42,10 +44,10 @@ Press :kbd:`Left Mouse Click` to accept transformation, or :kbd:`Right Mouse Cli
 
 Tips:
 
-- Hold down :kbd:`Ctrl` key while transforming, to use discrete intervals. 
-- Hold down :kbd:`Shift` key to make more precise transformations (mouse movements produce smaller changes)
+- Hold down the :kbd:`Ctrl` key while transforming, to use discrete intervals. 
+- Hold down the :kbd:`Shift` key to make more precise transformations (mouse movements produce smaller changes)
 - Press :kbd:`x`, :kbd:`y` or :kbd:`z` immediately after the transformation shortcut 
-    to constraint the transformation on one axis.
+    to constrain the transformation to one axis.
 
 Camera view shortcuts
 ---------------------

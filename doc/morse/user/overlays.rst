@@ -51,12 +51,12 @@ The following overlay maps your functions to the default MORSE ones:
             self.overlaid_object.set_tilt_pan(self.last_tilt, self.last_pan)
 
 You can save this overlay anywhere, for instance in a ``morse.my_overlays.py``
-file, accessible from MORSE Python path.
+file, accessible from MORSE's Python path.
 
-For an asynchronous service, it is a bit more complex, as we need to provide a 
-callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` taking care
-of this situation. You can pass an optional function to this method to
-modify the returned data, or just modify the state of your object.
+For asynchronous services, it is a bit more complex, as we need to provide a 
+callback. The :meth:`morse.core.overlay.MorseOverlay.chain_callback` takes care
+of this operation. You can pass an optional function to this method to
+modify the returned data, or modify the state of your object.
 
 If provided, the callback *must* take one parameter (a tuple ``(status,
 result)``) and return a new tuple ``(status, result)``:
@@ -103,7 +103,7 @@ result)``) and return a new tuple ``(status, result)``:
 
 
 .. warning::
-    The behaviour is currently undefined in case of service name collision
+    The behaviour is currently undefined in the case of a service name collision
     between the original sensor services and the services defined in the overlay.
 
 Scene setup
@@ -118,7 +118,7 @@ Components can easily be overlaid using the :doc:`MORSE Builder API
 
 This method takes two parameters, the middleware to use (see
 :mod:`morse.builder.data` for the list of available options), and the
-fully-qualified Python name of the overlay class (for instance,
+full-qualified Python name of the overlay class (for instance,
 ``morse.my_overlays.MyPTU``)
 
 The following example is taken from one of the ROS unit-tests:
@@ -158,7 +158,7 @@ Let's complete our previous example:
         
         # [...]
         
-        def name():
+        def name(self):
             return "MyPTU"
         
         # [...]

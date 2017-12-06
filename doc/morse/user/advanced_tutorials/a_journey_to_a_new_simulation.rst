@@ -12,14 +12,14 @@ A Journey to a New Simulation
 
 .. note::
   This tutorial will guide you through the development of a complete
-  simulation, including the creation of a robot and a new actuators from
+  simulation, including the creation of a robot and new actuators from
   scratch.
 
 Chapter Zero
 ------------
 
-To start this journey, you need a working installation of MORSE. If it is not
-the case, refer to the :doc:`installation notes <../installation>` first, and come back after!
+To start this journey, you need a working installation of MORSE. If you
+don't yet have MORSE, refer to the :doc:`installation notes <../installation>` first, and come back after!
 
 Chapter One: The Ranger robot
 -----------------------------
@@ -34,8 +34,8 @@ The **Ranger** is a robot developped at EPFL, at the `CHILI
 <http://lsro.epfl.ch/>`_ labs. The project aims at creating a nice, funny robot
 that would help children to tidy up their rooms.
 
-It is basically a wooden box, with two wheels, animated eyes. It can play
-sounds and have a large amount of LEDs on the faces.
+It is basically a wooden box, with two wheels and animated eyes. It can play
+sounds and has a large number of LEDs on its faces.
 
 After spending some minutes in the :doc:`MORSE component library
 <../../components_library>`, it appears that the
@@ -44,7 +44,7 @@ wheels.
 
 However, for the eyes and the LEDs, we will need to create something new.
 
-But first, we want to create a 3D model for our robot.
+But first, we want to create a 3D model of our robot.
 
 
 Chapter Two: Making a robot mesh
@@ -54,20 +54,20 @@ Creating a new robot
 ++++++++++++++++++++
 
 Making a new robot model does not require anything beyond creating a 3D mesh in
-`Blender <http://blender.org>`_ (which also mean you can import existing meshes
-in a variety of format in Blender).
+`Blender <http://blender.org>`_ (which also means you can import existing meshes
+in a variety of formats in Blender).
 
 .. note::
     Creating a realistic robot model may become more complex, especially if you
-    want/need to use :doc:`armatures <../../dev/armature_creation>` to
+    need to use :doc:`armatures <../../dev/armature_creation>` to
     represent complex kinematic chains, or if you want to :doc:`create low-poly
-    bounding boxes <../tips/bounding_boxes>` for good performances when
+    bounding boxes <../tips/bounding_boxes>` for good performance when
     simulating collisions.
 
 In the MORSE data directory (typically, ``/usr/local/share/morse/data``), many 3D
 models are available that can be good starting points.
 
-In our case, ``props/crates.blend`` contains 3 models of wooden box that we can
+In our case, ``props/crates.blend`` contains three models of wooden box that we can
 use as starting point.
 
 But first, let's create a new MORSE project.
@@ -76,11 +76,11 @@ Choose a location where you would like to store your simulation, and run::
 
     $ morse create ranger_sim
 
-This creates a new directory called ``ranger_sim``, with a file called
-``default.py``, and two sub-directories: ``scripts/`` and ``src/`` (currently empty).
-``scripts/`` contains a sample test client, we come back to that in chapter 3.
+This creates a new directory called ``ranger_sim``, containing a file called
+``default.py``, and two sub-directories: ``scripts/``, and ``src/`` (initially empty).
+The ``scripts/`` directory contains a sample test client; we will return to it in chapter 3.
 
-We can straight away test our simulation::
+We can test our simulation immediately::
 
     $ morse run ranger_sim
 
@@ -89,34 +89,34 @@ After MORSE has loaded, it should display something similar to this:
 .. image:: ../../../media/journey_ranger/initial_sim.jpg
   :align: center
 
-You can already move around the robot (*Morsy*, the MORSE mascot!) with the arrow
-keys, and it should create collision if you drive it to an obstacle.
+You can already move the robot (*Morsy*, the MORSE mascot!) with the arrow
+keys, and if you drive it to an obstacle it should respond to the collision.
 
 .. note::
-  You can control the camera by maintaining down the :kbd:`Ctrl` key and moving
-  around the mouse, and with the :kbd:`WASD` keys.
+  You can control the camera by holding down the :kbd:`Ctrl` key and moving
+  the mouse, and with the :kbd:`WASD` keys.
 
 
 Let's now create our own robot model.
 
-First, ask MORSE to create for us the templates for a new robot called *ranger*
+First, ask MORSE to create the templates for a new robot called *ranger*
 inside our ``ranger_sim`` simulation::
 
     $ morse add robot ranger ranger_sim
 
-This create several new files in ``ranger_sim/``:
+This creates several new files in ``ranger_sim/``:
 ``data/ranger_sim/robots/ranger.blend`` contains a default mesh for our robot,
 ``src/ranger_sim/robots/ranger.py`` describes the behaviour of our simulated
-robot (currently, it does nothing particular) and
-``src/ranger_sim/builder/robots/ranger.py`` describes the equipment of the
-Ranger. Initially, a simple motion controller and a position sensor.
+robot (currently, it does nothing in particular), and
+``src/ranger_sim/builder/robots/ranger.py`` describes the Ranger's equipment,
+initially, a simple motion controller and a position sensor.
 
 To use this new robot in our simulation, open ``ranger_sim/default.py`` with
 your favorite editor, and replace the default robot with the *Ranger*: add
-:python:`from ranger_sim.builder.robots import Ranger` at the top of your file,
-and replace on line 15 :python:`Morsy` by :python:`Ranger`. You can also remove
+:python:`from ranger_sim.builder.robots import Ranger` at the top of the file,
+and on line 15 replace :python:`Morsy` with :python:`Ranger`. You can also remove
 the lines that add the motion controller, the keyboard controller and the pose
-sensor since these are already part of the default equipment of our robot.
+sensor since our robot already includes these as part of its default equipment.
 
 The new ``default.py`` should look like that:
 
@@ -134,18 +134,18 @@ The new ``default.py`` should look like that:
     env.set_camera_location([10.0, -10.0, 10.0])
     env.set_camera_rotation([1.05, 0, 0.78])
 
-Run again this simulation with::
+Re-run the simulation with::
 
     $ morse run ranger_sim
 
 You should see... no differences! The robot template created by MORSE uses the
-same mesh as the *Morsy* robot. We will fix that now.
+same mesh as the *Morsy* robot. We will change that now.
 
 
 Editing the robot mesh in Blender
 +++++++++++++++++++++++++++++++++
 
-Open the current default mesh of the *Ranger* with Blender::
+Open the *Ranger*'s current default mesh with Blender::
 
     $ cd ranger_sim
     $ blender data/ranger_sim/robots/ranger.blend
@@ -161,8 +161,9 @@ wireframe to the solid model.
 Now:
 
 - Select all objects (:kbd:`a`) and delete them (:kbd:`x`)
-- `File > Append`, then browse to MORSE ``props`` directory (typically, ``/usr/local/share/morse/data/props``), locate and select ``crates.blend``
-- Click on `Group`, then `small_crate`, then validate by clicking on `Link/Append from Library` button.
+- Click `File > Append`, then browse into the MORSE ``props`` directory
+  (typically, ``/usr/local/share/morse/data/props``), and locate and select ``crates.blend``
+- Click on `Group`, then `small_crate`, then validate by clicking on the `Link/Append from Library` button.
 - If you do not see the object, check it is not on another layer:
 
 .. figure:: ../../../media/journey_ranger/layers.png
@@ -187,7 +188,7 @@ Re-open ``ranger.blend`` in Blender and follow these steps:
 
 - Select the crate (right-click on it)
 
-- Switch to `Edit mode` (:kbd:`tab`)
+- Switch to `Edit mode` (:kbd:`Tab`)
 
 - Remove one by one the diagonal wood boards by selecting
   one vertex of the board, pressing :kbd:`l` to select the connected vertices,
@@ -201,7 +202,7 @@ Re-open ``ranger.blend`` in Blender and follow these steps:
 .. image:: ../../../media/journey_ranger/ranger_edit_2.jpg
     :align: center
 
-- ...and extrude (:kbd:`e` followed by :kbd:`z` to constrain extrusion on the Z
+- ...and extrude (:kbd:`e` followed by :kbd:`z` to constrain extrusion in the Z
   axis) it to create the inner of the box.
 
 .. image:: ../../../media/journey_ranger/ranger_edit_3.jpg
@@ -212,11 +213,11 @@ Re-open ``ranger.blend`` in Blender and follow these steps:
 
 .. warning:: 
     In MORSE, the X axis is the forward axis: that is not the Blender
-    convention. You want to add eyes on the `Right Ortho` face in Blender
+    convention. You want to add eyes on the `Right Ortho` face in the Blender
     interface.
 
-- Add a new cylinder (:kbd:`Shift + a`), rotate it by 90deg
-  on Y axis (:kbd:`r y 90 <return>`), and scale it (:kbd:`s`). Adjust the
+- Add a new cylinder (:kbd:`Shift + a`), rotate it by 90 degrees
+  on the Y axis (:kbd:`r y 90 <return>`), and scale it (:kbd:`s`). Adjust the
   thickness by scaling again along the X axis (:kbd:`s x`). Name your object
   `right_eye` (by double-clicking it in the outliner).
 
@@ -237,7 +238,7 @@ Re-open ``ranger.blend`` in Blender and follow these steps:
     :align: center
 
 
-- Leave the `Edit mode` and apply the scale transformation: :kbd:`Ctrl + a`,
+- Leave `Edit mode` and apply the scale transformation: :kbd:`Ctrl + a`,
   then `Scale`. Duplicate the eye (:kbd:`Shift + d`) and move it along the Y
   axis (:kbd:`g y`).
 
@@ -245,17 +246,17 @@ Re-open ``ranger.blend`` in Blender and follow these steps:
     :align: center
 
 
-Save you file, quit Blender and run your simulation: that should be enough to
-start playing a bit around!
+Save you file, quit Blender, and run your simulation: that should be enough to
+start playing around a bit!
 
 .. image:: ../../../media/journey_ranger/ranger_sim_1.jpg
     :align: center
 
 
-In the next chapter, we'll see how to control the movement of the robot from an
+In the next chapter, we'll see how to control the robot's movement from an
 external application (your robot controller), and in the following chapter, we
 will try to move the eyes (we will have to create a new dedicated actuator to
-this end).
+achieve this).
 
 
 Chapter Three: Our first robot controller
@@ -265,12 +266,12 @@ MORSE is all about integrating simulation as transparently as possible in your
 usual workflow: we want you to be able to switch almost transparently from a
 real robot to the simulated robot.
 
-To achieve that, MORSE relies on intermediate *middlewares*, like ROS, YARP,
-etc. You can get an idea of which features of each middlewares are supported by
+To achieve this, MORSE relies on intermediate *middlewares*, like ROS, YARP,
+etc. You can get an idea of which features of which middlewares are supported by
 MORSE `on this page
 <http://www.openrobots.org/morse/doc/stable/user/integration.html>`_.
 
-Sometimes, for quick prototyping, or simply to evaluate what is actually
+Sometimes, for quick prototyping, or simply to evaluate what it is actually
 possible to simulate, you do not want to use a full middleware, but a more
 lightweight interface. MORSE comes with a simple socket-based interface for
 that purpose, and also a simple-to-use Python binding that will enable us to
@@ -279,7 +280,7 @@ quickly test our robot controller.
 Moving the robot
 ++++++++++++++++
 
-Let write a first test right away. Open your favorite editor and copy-paste
+Let write a first test right away. Open your favorite editor and copy and paste
 this example:
 
 .. code-block:: python
@@ -314,7 +315,7 @@ this example:
 
 
 Save it somewhere (for instance, as ``ranger_sim/scripts/keyboard_ctrl.py``),
-launch the simulation (``$ morse run ranger_sim``) and run your script::
+launch the simulation (``$ morse run ranger_sim``), and run your script::
 
     $ morse run ranger_sim &
     $ python3 ranger_sim/scripts/keyboard_ctrl.py
@@ -329,22 +330,23 @@ launch the simulation (``$ morse run ranger_sim``) and run your script::
     ``pymorse`` the Python bindings for MORSE, require Python 3
 
 
-Press :kbd:`Ctrl + c` to interrupt the ``keyboard_ctrl.py`` script, and let examine the detail of this first example.
+Press :kbd:`Ctrl + c` to interrupt the ``keyboard_ctrl.py`` script.
+Now let's examine this first example in detail.
 
-On line 1, we import the ``pymorse`` bindings. To use them, we create on line 5
-a *context*: at creation, the connection is established with the simulator (by
-default, on ``localhost``, but you can `change that
+On line 1, we import the ``pymorse`` bindings. To use them, on line 5 we create
+a *context*: on entering the context, the connection is established with the simulator (by
+default, on ``localhost``, but you can `change this
 <http://www.openrobots.org/morse/doc/latest/pymorse.html#pymorse.pymorse.Morse>`_),
 and when we exit the context, the connections are properly closed. In this
 example, the context object is stored in the ``simu`` variable.
 
-On line 7, we retrieve the motion controller *end-point*. The names to access
-it is the same as the way we named our components in the simulation script
+On line 7, we retrieve the motion controller *end-point*. The name used to access
+it is the same as how we named our components in the simulation script
 (``default.py`` and ``ranger.py``).
 
 .. note::
     Here, in ``default.py``, on line 5, we called our robot ``robot`` by simply
-    naming that way the ``Ranger()`` object:
+    using that name when creating the ``Ranger()`` object:
 
     .. code-block:: python
         :linenos:
@@ -361,15 +363,15 @@ it is the same as the way we named our components in the simulation script
 
         [...]
 
-    If you check ``src/ranger_sim/builder/robots/ranger.py``, you will find out that
+    If you check ``src/ranger_sim/builder/robots/ranger.py``, you will find that
     the Ranger's motion controller has been called ``motion``. So with
     ``pymorse``, we access the motion controller simply as
     :python:`simu.robot.motion`.
 
 
 Then, at line 12, we start the main loop: we read a keyboard input, we change the
-linear ``v`` and radial ``w`` speeds depending on the user input, and, line 26,
-we send to the simulator the new command.
+linear ``v`` and radial ``w`` speeds depending on the user input, and,
+in line 26, we send the simulator the new command.
 
 The command is a plain Python dictionary, whose content depends on the
 actuator. In our case, we are using a ``MotionVW`` actuator (see
@@ -381,8 +383,8 @@ Accessing sensors
 
 ``motion`` is an actuator. If you open ``robots/ranger.py``, you will see the
 template also declare a :doc:`Pose sensor <../sensors/pose>`. We can access it
-to print the current position of the robot. Open ``scripts/keyboard_ctrl.py``
-and modify it that way:
+to print the robot's current position. Open ``scripts/keyboard_ctrl.py``
+and modify it as follows:
 
 .. code-block:: python
   :linenos:
@@ -424,7 +426,7 @@ Restart the ``scripts/keyboard_ctrl.py`` script::
 
     $ python3 ranger_sim/scripts/keyboard_ctrl.py
 
-It should start quickly filling your console with the position of the robot.
+It should start quickly filling your console with the robot's position.
 You can still control it with :kbd:`WASD` as you did previously, and you should
 see the position values changing.
 
@@ -435,7 +437,7 @@ Chapter Four: Creating a new actuator to move the eyes
 A First Skeleton
 ++++++++++++++++
 
-Let now create a new custom actuator for the eyes of our robot.
+Let's now create a new custom actuator for the robot's eyes.
 
 - Add a new actuator template called ``eyes`` to the ``ranger_sim``
   simulation::
@@ -445,14 +447,14 @@ Let now create a new custom actuator for the eyes of our robot.
 MORSE asks you for a short description of your actuator (enter something like
 "*Controls the eyes of the EPFL Ranger robot*") , and then create a new set of
 templates: ``src/actuators/eyes.py`` defines the behaviour of the actuator (how
-the actuator interacts with the simulation) and
+the actuator interacts with the simulation), and
 ``src/builder/actuators/eyes.py`` provides the *Builder API* interface to use
 the actuator in simulation scripts.
 
 .. note::
-  Contrary to robots, where you are encouraged to modify their *Builder API* to
+  Unlike with robots, where you are encouraged to modify their *Builder API* to
   define the robot equipment, you usually do not need to change it for
-  actuators (or sensors).
+  actuators or sensors.
 
   The only case where it may be useful is to specify a special 3D mesh for your
   component (like the casing of a laser scanner, etc.)
@@ -551,7 +553,7 @@ to generate the component documentation for instance.
       add_data('right', -0.1, 'float', 'Right eye rotation, in radians')
  
 These two lines define the *data interface* of our actuator. For the eyes, we
-need to provide to the actuator two angles, one per eye.
+need to provide to the actuator with two angles, one per eye.
 
 We first set the name of the data field, then its default value, its type and a
 short description.
@@ -575,8 +577,8 @@ The data set by the simulator clients can be later accessed through the
 The class constructor has nothing special. :python:`self.left_eye` and
 :python:`self.right_eye` are set to point to the Blender objects for the eyes
 (``parent`` is the robot body, ``parent.bge_object`` represents the Blender
-mesh of the robot body, ``parent.bge_object.children`` contains all children of
-the robot mesh).
+mesh of the robot body, ``parent.bge_object.children`` contains all the
+robot mesh's children).
 
 .. code-block:: python
 
@@ -588,18 +590,18 @@ the robot mesh).
           r_orientation = mathutils.Euler([self.local_data['right'], 0.0, 0.0])
           self.right_eye.orientation = r_orientation.to_matrix()
 
-:python:`default_action()` is the most important method of a component. It is
+:python:`default_action()` is a component's most important method. It is
 called at each simulation step. The behaviour of the actuator is implemented
 here.
 
 For our eyes, we simply apply a rotation along the ``X`` axis (Blender uses
-rotation matrices., so we first create the rotation matrix from a vector of
+rotation matrices, so we first create the rotation matrix from a vector of
 Euler angles).
 
 
 To test the eyes, we must complete our test client.
 
-Re-open ``scripts/keyboard_ctrl.py``, and update it this way:
+Re-open ``scripts/keyboard_ctrl.py``, and change it to this:
 
 .. code-block:: python
 
@@ -645,7 +647,7 @@ Re-open ``scripts/keyboard_ctrl.py``, and update it this way:
             motion.publish({"v": v, "w": w})
             eyes.publish({"left": left, "right": right})
 
-Besides ``(v, ω)``, we now also publish on the ``eyes`` channel a pair ``(left, right)``.
+Besides ``(v, w)``, we now also publish on the ``eyes`` channel a pair ``(left, right)``.
 
 Run the simulation and launch your client::
     

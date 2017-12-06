@@ -23,7 +23,7 @@ Options
 :{robot,sensor,actuator}:
                         the type of component you want to add.
 :name:                  the name of the new component.
-:env:                   the environment where to add.
+:env:                   the environment in which to add the component.
 
 :-h, --help:            show this help message and exit
 :-f, --force:           forces the creation (possibly overwriting files).

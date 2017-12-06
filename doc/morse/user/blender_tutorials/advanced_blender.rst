@@ -1,11 +1,11 @@
 Advanced Blender commands
 =========================
 
-This section provides further instructions on how to use Blender to setup
+This section provides more information on how to use Blender to setup
 simulation scenarios.
 
-.. note:: The Blender interface is divided in various panels (windows).
-    The mouse and keyboard shortcuts used change depending on the panel over
+.. note:: The Blender interface is divided into various panels (windows).
+    The mouse and keyboard shortcuts vary depending on the panel over
     which the mouse pointer is located.
 
 Viewing the scene
@@ -15,7 +15,7 @@ Follow these recommendations to better visualise a simulation scenario.
 Before launching a simulation:
 
 - Select the **Blender Game** context, on the menu bar at the top of the
-  Blender window.  This will affect the information you can change on other
+  Blender window.  This will affect the information you can change in other
   panels.
 
 .. image:: ../../../media/configure_display-1.1.png
@@ -35,7 +35,7 @@ Before launching a simulation:
  :align: center
 
 - To maximise the size of a **3D View** window, press :kbd:`Ctrl-Up` while the
-  mouse pointer this window.
+  mouse pointer is in the window.
 
 Physics
 -------
@@ -53,7 +53,8 @@ simulation for the selected object. The most useful settings are:
 - **Rigid Body**: The object will behave accordingly to its shape.
 
 Another property that can be toggled is the **Actor** flag.  Only objects with
-this flag and a **Collision Bound** will be considered by some of the sensors
+this flag and a **Collision Bound** will be considered by some of the
+sensors.
 
 For Dynamic and Rigid Body objects, it is possible to define further
 properties, most importantly their mass and Collision Bounds.  The mass will
@@ -69,10 +70,10 @@ Logic Bricks
 ------------
 
 The **Logic Editor** window can be used to give behaviour to different objects
-in the scene. This is done using three different kind of blocks, called
-**Sensors**, **Controllers** and **Actuators** (NOTE: This is different to the
-robotics components provided by MORSE).
-By combining this three types of blocks, objects can react to certain events
+in the scene. This is done using three different kinds of blocks, called
+**Sensors**, **Controllers** and **Actuators** (NOTE: These are
+different from the robotics components provided by MORSE).
+By combining these three types of blocks, objects can react to certain events
 and produce an action in response.
 
 An explanation of all the different options available for configuring the
@@ -94,7 +95,7 @@ least a **3D View** and an **Outliner** panel.  Follow these steps:
 - Select the robot from the **Outliner** list, using the :kbd:`Left Mouse
   Button`
 - Move the mouse over to the **3D View** panel
-- Press :kbd:`Shift-G`, then press :kbd:`enter`. This should choose the first
+- Press :kbd:`Shift-G`, then press :kbd:`Enter`. This should choose the first
   option: 'Children'
 - Move the mouse back to the **Outliner** panel
 - Hold the :kbd:`Shift` key, while selecting the robot again with the
@@ -103,7 +104,7 @@ least a **3D View** and an **Outliner** panel.  Follow these steps:
 The two main operations that require selecting the robot and all of its
 components are:
 
-- **Delete the robot**: Press :kbd:`X` and then :kbd:`enter`.
+- **Delete the robot**: Press :kbd:`X` and then :kbd:`Enter`.
 - **Duplicate the robot**: Press :kbd:`Shift-D` and then move the new copy
   with the mouse. Select the desired position of the copy by pressing the
   :kbd:`Left Mouse Button`

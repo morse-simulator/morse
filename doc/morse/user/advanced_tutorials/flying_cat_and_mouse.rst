@@ -1,18 +1,17 @@
 Flying cat and mouse game tutorial :tag:`builder` :tag:`socket` :tag:`pymorse`
 ==============================================================================
 
-This tutorial is a complement of :doc:`cat and mouse tutorial <./cat_and_mouse>` 
+This tutorial complements the :doc:`cat and mouse tutorial <./cat_and_mouse>` 
 and provides a similar scenario, with a clear objective to accomplish 
 for an autonomous flying robot (namely a quadrotor) : to chase another 
 human-controlled robot. 
 It will show how to "close the loop" of sensors and actuators simulated in MORSE
-and provides example of how to simply control a quadrotor.
+and provides examples of how to easily control a quadrotor.
 
 We will make a variant of the previous chase game, where a ground robot 
 controlled by a human (the mouse) will be chased by a second autonomous 
 *flying* robot (the cat) that is running software external to MORSE. 
-This will be accomplished by the use of sensor and actuators configured
-properly.
+This will be accomplished by the use of appropriately configured sensors and actuators.
 
 .. image:: ../../../media/Morse_flying_cat_tutorial.png
    :alt: Image from the simulator running the tutorial
@@ -22,13 +21,13 @@ Pre-requisites
 --------------
 
 - You must have completed the :doc:`first tutorial <../beginner_tutorials/tutorial>`.
-- It is recommended to have completed the :doc:`cat and mouse tutorial <./cat_and_mouse>`.
+- We recommended that you have completed the :doc:`cat and mouse tutorial <./cat_and_mouse>`.
 
 Creating the scenario
 ---------------------
 
-We'll use the Builder API to configure the robots in the scenario.
-First we will configure the *mouse* robot, which is a lot simpler.
+We'll use the Builder API to configure the scenario's robots.
+First we will configure the *mouse* robot, which is the simplest.
 
 - Create a new ATRV robot, the *mouse* and place it in the world :
 
@@ -43,7 +42,7 @@ First we will configure the *mouse* robot, which is a lot simpler.
     mouse.rotate(z=0.70*pi)
 
 - Next we make it controllable by the keyboard, using the correct actuator.
-  Also, we change the default speed, to make it more agile.
+  Also, we change the default speed, to make it more responsive.
 
   .. code-block:: python
 
@@ -63,11 +62,11 @@ to know its position, and an actuator to follow it.
     cat.rotate(z=pi/3)
 
 - Next add one :doc:`semantic camera <../sensors/semantic_camera>` to the
-  robot. This will provide us the cat vision, to appreciate how good it
-  follows our target. Note that compare the classical cat and mouse tutorial,
-  the vision is not used to find the target but only to appreciate the 
-  outcome of the chase. (It is a visual feedback.) 
-  ``Vertical_Flip=False`` allows to correctly display the image stream
+  robot. This will allow us to see from the cat's point of view, to see how well it
+  follows the mouse target. Note that compared with the classic cat and mouse tutorial,
+  the vision is not used to find the target but only to watch the 
+  the chase. (It is purely for visual feedback.) 
+  ``Vertical_Flip=False`` ensures that the image stream is correctly displayed
   (otherwise the images are upside-down).
 
   .. code-block:: python
@@ -80,7 +79,7 @@ to know its position, and an actuator to follow it.
 
 - To move our cat robot, we will not directly control the quadrotor (using the
   roll, pitch, yaw and thrust like :doc:`here  <../actuators/rotorcraft_attitude>`)
-  but rather used :doc:`waypoints commands <../actuators/rotorcraft_waypoint>`)
+  but rather use :doc:`waypoint commands <../actuators/rotorcraft_waypoint>`)
   (x,y,z,yaw) and let the actuator manage the roll, pitch and thrust automatically. 
   We configure this component to use the :doc:`sockets middleware <../middlewares/socket>`:
 
@@ -91,8 +90,8 @@ to know its position, and an actuator to follow it.
     waypoint.add_stream('socket')
 
 - We also want to know where the cat is, and thus we will use a 
-  :doc:`pose sensor <../sensors/pose>`). You can think about it like 
-  GPS + gyroscope sensor. It will also use socket. 
+  :doc:`pose sensor <../sensors/pose>`). You can think about it as a
+  GPS plus gyroscope sensor. It will also use socket. 
 
   .. code-block:: python
 
@@ -102,9 +101,9 @@ to know its position, and an actuator to follow it.
 
 Now we want the cat to be able to "see" the mouse. Whereas in the
 cat and mouse tutorial the tracker robot uses stereo semantic vision 
-to look after the target, here we will *cheat* and also use a pose sensor
-on the mouse (which will be used by the cat!) Imagine it's a *"super-ultra
-mouse detector"*, or a cookie. 
+to track the target, here we will *cheat* and also use a pose sensor
+on the mouse (which will be used by the cat!). It is as if the mouse has
+been tagged with a tiny GPS transmitter.
 
 .. code-block:: python
 
@@ -121,7 +120,7 @@ And finally we complete the scene configuration:
     env.set_camera_rotation([1.0470, 0, 0.7854])
     env.select_display_camera(semanticC)
 
-The last line indicates to MORSE that you want the images seen from the cat 
+The last line tells MORSE that you want the images seen from the cat 
 camera to be displayed on the HUD screen, visible when you press :kbd:`v`
 during the simulation.
 
@@ -133,12 +132,12 @@ Control program
 .. note::
 
     This script uses ``pymorse``, you need to have built MORSE with
-    ``-DPYMORSE_SUPPORT=ON`` flag.
+    the ``-DPYMORSE_SUPPORT=ON`` flag.
 
 
 As a very simple example of how to use the data from a sensor to drive the
 robot, we'll create a Python script to connect to MORSE and provide the
-"reasoning" of the *cat* robot.
+the *cat* robot's "reasoning".
 
 The whole program can be found at: ``$MORSE_SRC/examples/clients/quadrotor/Cat_waypoints_pymorse_socket_script.py``
 Here we'll explain the main parts of it:
@@ -150,7 +149,7 @@ Here we'll explain the main parts of it:
     from pymorse import Morse
     
 - The function ``where_is`` will use the specified pose sensor to
-  know where is the *mouse* / *cat* robot :
+  know where the *mouse* or *cat* robot is :
 
   .. code-block:: python
 
@@ -207,7 +206,7 @@ able to control the *mouse* robot with the arrow keys on the keyboard::
   $ morse run flying_outdoor_cat_mouse_game.py
 
 On the terminal you will get messages indicating the components, the
-available services and the datastream interfaces::
+available services, and the datastream interfaces::
 
     [    0.269] ------------------------------------
     [    0.269] -        SIMULATION SUMMARY        -
@@ -252,21 +251,21 @@ This example is very basic, but already provides a test of how the use of
 sensor data can help drive a robot.  You can substitute the simple Python
 client that controls the *cat* for a more complex piece of software,
 implemented in other languages and middlewares.  Here are some ideas of what
-you could do to improve the "intelligence" of the *cat*.
+you could do to improve the *cat*'s "intelligence".
 
 - Control the orientation of the semantic camera :doc:`Pose sensor <../sensors/pose>` 
   to maintain a viewline to the mouse. You can use the label ``MOUSE`` 
   (see the cat and mouse tutorial).
  
 - Adapt the height of the quadrotor to the field. Until there the height is constant
-  and is related to the ``z=0`` plan. Problem is when the field is higher than the
+  and is related to the ``z=0`` plan. A problem occurs when the field is higher than the
   quadrotor height (imagine a big hill). 
   You may use a :doc:`Laser Scanner<../sensors/laserscanner>` to make the *cat* detect 
   the current elevation and keep a constant relative height to the field (instead of
   a constant absolute height).
 
 - Use a :doc:`Laser Scanner<../sensors/laserscanner>` to make the *cat* detect and
-  avoid obstacles. This is more complex, since you have to handle a lot of data
+  avoid obstacles. This is more complex, since you must handle a lot of data
   that is streamed by the Sick.
 
 - The target could hide behind an obstacle, so you could implement a strategy

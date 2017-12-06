@@ -32,6 +32,6 @@ Here is a quick overview of what you can do with the Builder API:
 |             |                                                                         |
 +-------------+-------------------------------------------------------------------------+
 
-For a full doc on the Builder API, see :doc:`Build your simulations <builder>`.
+For full documentation on the Builder API, see :doc:`Build your simulations <builder>`.
 
-You will find detailed documentation in the :py:mod:`morse.builder` page.
+You will also find detailed documentation in the :py:mod:`morse.builder` page.

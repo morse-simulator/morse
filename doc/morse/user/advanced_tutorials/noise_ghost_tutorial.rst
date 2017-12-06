@@ -13,12 +13,12 @@ Pre-requisites
 --------------
 
 - You must have completed the :doc:`first tutorial <../beginner_tutorials/tutorial>`.
-- It is also advised to have completed the :doc:`cat and mouse tutorial <cat_and_mouse>`.
+- We recommed that you also complete the :doc:`cat and mouse tutorial <cat_and_mouse>`.
 
 Creating the scenario
 ---------------------
 
-We'll use the Builder API to configure the robots in the scenario.
+We'll use the Builder API to configure the scenario's robots.
 First we will configure the real ATRV robot.
 
 - Create a new ATRV robot:
@@ -44,7 +44,7 @@ First we will configure the real ATRV robot.
     keyboard = Keyboard()
     robot.append(keyboard)
 
-- Finally we alter the initial pose data with a Gaussian noise:
+- Finally we alter the initial pose data with some Gaussian noise:
 
   .. code-block:: python
     
@@ -54,7 +54,7 @@ First we will configure the real ATRV robot.
   
     The noise parameters are documented in the :doc:`Noise modifier <../modifiers/pose_noise>`.
 
-Now we'll create the ghost robot: it is aimed to represent some
+Now we'll create the ghost robot: it is intended to represent some
 external computation, without conflicting with the simulated robots.
 
 - Create another ATRV robot, the *ghost*:
@@ -120,7 +120,7 @@ Ghost is filtered script
 ------------------------
 
 Using the ghost robot to show the noise applied to the position data
-is actually not very interesting. In this script, we will see how we can
+isn't very interesting. In this script, we will see how we can
 use the ghost to display more useful information, for instance the
 robot position estimated from the noisy position.
 
@@ -134,8 +134,8 @@ or::
   
 The whole program can be found at: ``$MORSE_SRC/examples/clients/atrv/ghost_estimation_script.py``
 
-It differs from the previous one in the fact that the robot position
-is estimated from the measured noisy position of the robot, by using an unknown input Kalman filter.
+It differs from the previous one in that the robot position
+is estimated from the robot's measured noisy position, by using an unknown input Kalman filter.
 To this end, a very simple extended autonomous state-space dynamic model of the robot has 
 been considered:
 
@@ -151,8 +151,8 @@ been considered:
     \dot{X}_{ext} &= A_{ext} * X_{ext}
     
 where ``x``, ``ux``, ``y``, ``uy`` are the position and control variables along the
-``x`` and ``y`` axis, respectively.            
-The x-y positions of the robot are subject to a white Gaussian noise (with zero mean). Thus,
+``x`` and ``y`` axes.            
+The robot's x-y positions are subject to a white Gaussian noise (with zero mean). Thus,
 following the dynamic model notations, the measured vector is
 
 .. math::
@@ -164,8 +164,8 @@ following the dynamic model notations, the measured vector is
 where ``w`` stands for the white noise.
 Grounded on the above model, the derivation of the Kalman filer is obtained by solving 
 the following Riccati equation, using the ``solve_continuous_are`` function,
-where, the symmetric matrices ``Q`` and ``R`` are the design variables providing the confidence one
-have on the measurement and the model (typically, the trade-off is catched by tuning the ratio ``Q/R``,
+where, the symmetric matrices ``Q`` and ``R`` are the design variables providing the confidence we
+have in the measurement and the model (typically, the trade-off is adjusted by tuning the ratio ``Q/R``,
 available in the script through the ``measure_confidence`` variable).
 The solution of the Riccati equation is then used to compute the Kalman gain ``L`` as follows:
 

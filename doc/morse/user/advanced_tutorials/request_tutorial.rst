@@ -1,11 +1,11 @@
 Services tutorial :tag:`service` :tag:`socket`
 ==============================================
 
-MORSE has a concept of services: services are remote procedure call commonly
-used to configure or control the behaviour of the simulation.
+MORSE has a concept of services: services are remote procedure calls commonly
+used to configure or control the simulation's behaviour.
 
-This tutorial shows how to use those services. Different middleware are
-supported refer to the :doc:`Middleware support in MORSE <../integration>`
+This tutorial shows how to use these services. Different middlewares are
+supported; refer to the :doc:`Middleware support in MORSE <../integration>`
 (search requests in the :ref:`compatibility-matrix`).
 
 
@@ -19,18 +19,18 @@ Pre-requisites
 Using the services
 ------------------
 
-In order to use a service, you have to know the exact name of this service, and
+In order to use a service, you must know the exact name of this service, and
 its parameters (You can refer to the component page, available :doc:`here
 <../../../components_library>`).
 
-Here is an example using human component (the services available are
+Here is an example using a human component (the services available are
 documented :doc:`here <../others/human>`).
 
 Scene description
 +++++++++++++++++
 
 Let's start to describe the Morse scene. Here, the interesting part is that we
-activate the service for human using ``add_service`` method.
+activate the service for human using the ``add_service`` method.
 
 .. code-block:: python
 
@@ -54,12 +54,12 @@ Now, let's see how we can control it using telnet::
 
 where ``id1`` is the arbitrary id of the request, ``human`` is the name of the
 used component, ``move`` and ``[0.1 ,0.0]`` are respectively the name of the
-request and its parameters. This parameters have to be in a json list.
+request and its parameters. This parameters must be in a JSON list.
 
 Controlling the human with socket :tag:`socket`
 +++++++++++++++++++++++++++++++++++++++++++++++
 
-Here is a simple example of using services with sockets in python (available at
+Here is a simple example of using services with sockets in Python (available at
 ``$MORSE_ROOT/tools/simple_exemple.py``):
 
 .. code-block:: python
@@ -110,7 +110,7 @@ Here is a simple example of using services with sockets in python (available at
 		if not sock:
 			sys.exit(1)
 
-		print("sock connected")
+		print("socket connected")
 		print("Please press q to quit and use 8456 to move")
 		esc = 0
 		_id = 0
@@ -143,7 +143,7 @@ Here is a simple example of using services with sockets in python (available at
 
 
 .. note::
-  You can find a more complete example of python file using services to move
+  You can find a more complete example of a Python file using services to move
   the human here: ``$MORSE_ROOT/tools/wiimote_human_client.py``. (using wiimote
   to control the human)
 

@@ -2,7 +2,7 @@ Components library
 ==================
 
 MORSE offers an extended set of predefined sensors and actuators that cover 
-reasonably well common simulation needs in robotics. It proposes also some 
+reasonably well the common robotics simulation needs. It also includes some 
 fully equipped robots.
 
 Available components
@@ -60,8 +60,8 @@ Environments
 .. image:: ../media/environments/outdoors.jpg
   :align: center
 
-While you can easily create your own (any Blender scene will do!), MORSE also
-provides :doc:`a set of 3D environments <environments>` for your simulations.
+While you can easily create your own environment (any Blender scene will do!), MORSE also
+provides :doc:`a set of predefined 3D environments <environments>` for your simulations.
 
 
 Working with components
@@ -91,7 +91,7 @@ Modifiers: Post-process your data
 ---------------------------------
 
 MORSE also provides ways to alter input or output data (like adding noise to
-a GPS position) by so-called :doc:`modifiers <user/modifier_introduction>`. 
+a GPS position) using :doc:`modifiers <user/modifier_introduction>`. 
 
 .. toctree::
     :hidden:
@@ -107,5 +107,6 @@ easily create pseudo-sensors or actuators that fit your specific architecture.
 Adding your own components
 --------------------------
 
-To learn how to create new components (sensors, robots...), please refer to the 
-:doc:`developer documentation <contributing>`.
+To learn how to create new components (e.g., actuators, sensors, and
+robots), please refer to the :doc:`developer documentation
+<contributing>`.

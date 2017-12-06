@@ -6,8 +6,9 @@ MORSE exposes several services to remotely manage and monitor the simulator.
 These services are automatically exposed on a socket interface, on port 4000.
 
 All these services belongs to a virtual component called ``simulation`` and
-use the standard syntax for socket requests.  Thus, a request to retrieve the
-list of robots looks like this::
+follows the normal syntax for socket requests.  Thus, a request to retrieve the
+list of robots would look like this::
+
 
   > telnet localhost 4000
   Connected to localhost.
@@ -40,15 +41,15 @@ Available services
   engine level
 - ``details`` (no parameter): returns a structure containing the details about
   the simulation currently running, including the list of robots, the list of
-  services and datastreams, ...
+  services and datastreams, etc.
 - ``set_log_level`` ``cmpnt`` (string) ``level`` (string): changes the
   level of logging for the component ``cmpnt`` to the level ``level``.
-- ``get_scene_objects`` (no parameter): returns an hierarchical dictionary
-  structure of all objects in the scene along with their positions and
+- ``get_scene_objects`` (no parameter): returns a hierarchical dictionary
+  structure of all the objects in the scene along with their positions and
   orientations (as quaternions).
 - ``set_object_visibility`` ``cmpnt`` (string) ``visible`` (bool): make the
   object referenced by ``cmpnt`` visible or invisible (it still exists at
-  the physical level)
+  the physics level)
 - ``set_object_dynamics`` ``cmpnt`` (string) ``state`` (bool): enable or
   disable the dynamics (physics) associated with component ``cmpnt``.
 - ``set_object_position`` ``cmpnt`` (string) ``[x, y, z]`` (list) ``[roll

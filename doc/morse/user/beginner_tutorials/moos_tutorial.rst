@@ -4,8 +4,8 @@ MOOS and MORSE tutorial :tag:`moos`
 This is an extension of the current :doc:`tutorial <../beginner_tutorials/tutorial>`
 using MOOS as our middleware (instead of raw sockets).
 
-The builder script is the same as the one used in the sockets tutorial.
-Except the part on the interface, which in this case is MOOS.  You can find it
+The builder script is almost the same as the one used in the sockets tutorial.
+The difference is the interface, which in this case is MOOS.  You can find it
 in ``examples/tutorials/tutorial-1-moos.py``.
 
 
@@ -23,14 +23,14 @@ Running the simulation
 
 Start a MOOS DB instance with::
 
-    MOOSDB
+    $ MOOSDB
 
 In another termianl, run morse with::
 
-    morse run examples/tutorials/tutorial-1-moos.py
+    $ morse run examples/tutorials/tutorial-1-moos.py
 
-``gyroscope`` will then publishes its data ``MORSE_GYRO_YAW``,
-``MORSE_GYRO_YAW``, and``MORSE_GYRO_YAW`` to the `MOOSDB`.
-``motion`` will be waiting for: ``MORSE_MOTION_VELOCITY`` or
-``MORSE_MOTION_YAWRATE``to drive the vehicle.
-One cans verify that all is working by scoping and poking the `MOOSDB`
+Start uMS (which requires the ui-moos package) as a simple way to control the robot and
+view its sensor output.  The ATRV can be controlled by publishing a
+longitudinal speed in m/s to ``cVelocity`` and publishing a yaw rate in rad/sec
+to ``cYawRate``.  The output of the Pose sensor should also be visible in uMS
+under the ``zPitch``, ``zRoll``, and ``zYaw`` variables.

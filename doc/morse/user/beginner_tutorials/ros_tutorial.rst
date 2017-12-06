@@ -4,8 +4,8 @@ ROS and MORSE tutorial :tag:`ros`
 This is an extension of the current :doc:`tutorial <../beginner_tutorials/tutorial>`
 using the ROS as our middleware (instead of raw sockets).
 
-The builder script is the same as the one used in the sockets tutorial.
-Except the part on the inteface, which in this case is ROS.
+The builder script is almost the same as the one used in the sockets tutorial.
+The difference is in the interface, which in this case is ROS.
 You can find it in ``examples/tutorials/tutorial-1-ros.py``.
 
 
@@ -38,9 +38,9 @@ First, send a motion command to the robot's MotionVW actuator::
 
 - ``pub`` stands for publish
 - ``-1`` will publish 1 message
-- ``/atrv/motion`` correspond to the robots's motion controller topic
+- ``/atrv/motion`` corresponds to the robots's motion controller topic
 - ``geometry_msgs/Twist`` is the message's type
-- ``"{linear: {x: .8}, angular: {z: .5}}"`` the message in json
+- ``"{linear: {x: .8}, angular: {z: .5}}"`` the message in JSON format
 
   - 0.8 m/s for the linear speed ``v``
   - 0.5 rad/s for the angular speed ``w``
@@ -52,13 +52,13 @@ Second, look at its pose::
 
 - ``echo`` will subscribe and print
 - ``-n10`` will print 10 messages
-- ``/atrv/pose`` correspond to the robots's pose sensor topic
+- ``/atrv/pose`` corresponds to the robots's pose sensor topic
 
 
 rqt_plot
 --------
 
-Once you sent a motion command, you can plot the pose in realtime with::
+Once you send a motion command, you can plot the pose in realtime with::
 
     rqt_plot /atrv/pose/pose/position/x,/atrv/pose/pose/position/y /atrv/pose/pose/orientation/z
 
@@ -68,14 +68,14 @@ Once you sent a motion command, you can plot the pose in realtime with::
 rqt_grah
 --------
 
-It's an alternative to ``rostopic list`` showing a connexion of nodes and topics.
+This is an alternative to ``rostopic list`` showing a collection of nodes and topics.
 
 
 rospy
 -----
 
-From a terminal, start an interactive Python session typing ``python``
-and paste the following code:
+From a terminal, start an interactive Python session by typing ``python3``
+and type the following code:
 
 .. code-block:: python
 
@@ -86,23 +86,23 @@ and paste the following code:
     cmd = rospy.Publisher("/atrv/motion", Twist)
     motion = Twist()
     def callback(msg):
-        position = msg.pose.position
-            if position.x < 1:
-                motion.linear.x = +0.5
-            if position.x > 2:
-                motion.linear.x = -0.5
-        cmd.publish(motion)
+         position = msg.pose.position
+         if position.x < 1:
+            motion.linear.x = +0.5
+         if position.x > 2:
+            motion.linear.x = -0.5
+         cmd.publish(motion)
 
     rospy.init_node("rostuto1")
     rospy.Subscriber("/atrv/pose", PoseStamped, callback)
-    rospy.spin() # this will block untill you hit Ctrl+C
+    rospy.spin() # this will block until you press Ctrl+C
 
-You should see the robot move forward then backward after 1m.
+You should see the robot move forward then backward after one minute.
 
 
-etc
----
+Notes
+-----
 
-For more, visit ROS wiki, where you will find many well written
+For more information, visit the ROS wiki, where you will find many well written
 `tutorials <http://ros.org/wiki/ROS/Tutorials>`_
 

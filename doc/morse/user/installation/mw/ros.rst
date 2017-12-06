@@ -6,18 +6,18 @@ not work for you** (for instance, you are running on an older version of Ubuntu
 or Debian).
 
 If the packages ``python3-catkin-tools`` and
-``python3-yaml`` are available for your distribution, install them, and you
-should be done. Head to :doc:`the ROS + MORSE tutorial
-<../../../user/beginner_tutorials/ros_tutorial>`.
+``python3-yaml`` are available for your distribution, install them, and
+that should be sufficient. In this case you're ready to read
+:doc:`the ROS + MORSE tutorial <../../../user/beginner_tutorials/ros_tutorial>`.
 
 
 Otherwise, follow these steps to install them manually:
 
 #. Install ROS and run ``sudo rosdep init`` and ``rosdep update``
-   as mentionned in the `installation wiki <http://wiki.ros.org/indigo/Installation/Ubuntu#Initialize_rosdep>`_
+   as explained in the `installation wiki <http://wiki.ros.org/indigo/Installation/Ubuntu#Initialize_rosdep>`_
 
 #. Install Python 3 using your system package manager (available in Ubuntu >=
-   11.04) or manually from the sources, and make sure your ``$PYTHONPATH``
+   11.04) or manually from the source, and make sure your ``$PYTHONPATH``
    variable includes the Python 3 libraries::
 
         sudo apt-get install python3-dev
@@ -28,9 +28,9 @@ Otherwise, follow these steps to install them manually:
 
    or get it via ``pip``  the sources from http://pyyaml.org and build it using python3::
 
-        sudo pip3 install pyyaml
+        sudo python3 -m pip install pyyaml
 
-#. Install catkin for Python 3 support::
+#. Install catkin with Python 3 support::
 
     git clone git://github.com/ros-infrastructure/catkin_pkg.git
     cd catkin_pkg
@@ -50,8 +50,7 @@ Otherwise, follow these steps to install them manually:
 
    ``* Your environment is correctly setup to run MORSE.``
 
-#. Done. You can start having fun with MORSE and ROS! Check :doc:`the ROS +
-   MORSE tutorial <../../../user/beginner_tutorials/ros_tutorial>`, for
-   instance.
+Now you can start having fun with MORSE and ROS! For example, start reading
+:doc:`the ROS + MORSE tutorial <../../../user/beginner_tutorials/ros_tutorial>`.
 
 

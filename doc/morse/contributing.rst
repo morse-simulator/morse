@@ -7,7 +7,7 @@ Get involved!
 As an open-source project driven by the research community, your 
 contributions are very welcome!
 
-You can write to the list of developers of the project, writing to this 
+You can write to the project's developers at this 
 address: `morse-dev@laas.fr <mailto:morse-dev@laas.fr>`_.
 
 MORSE development can be tracked on the `MORSE GitHub repository
@@ -15,7 +15,7 @@ MORSE development can be tracked on the `MORSE GitHub repository
 
     git clone git://github.com/morse-simulator/morse.git
 
-If you want your feature to be merged in MORSE:
+If you want your feature to be merged into MORSE:
 
 - First, `fork <https://help.github.com/articles/fork-a-repo>`_ ``morse-simulator/morse``
   on GitHub.

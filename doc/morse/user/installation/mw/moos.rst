@@ -1,7 +1,8 @@
 MOOS
 ~~~~
 
-To build the MOOS middleware, you need to install MOOS and ``pymoos`` (MOOS Python bindings) on your system.
+To build the MOOS middleware, you need to install MOOS and ``pymoos``
+(MOOS Python bindings) on your system.
 
 The instructions below install the new MOOS V10 release.  Information on
 installing previous versions of MOOS and ``pymoos`` can be found on their respective

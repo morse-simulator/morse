@@ -9,16 +9,16 @@ MOOS and pymoos must both be installed in order to use the MOOS middleware.
 Please follow the instructions in the :doc:`installation procedure  <../installation>`.
 
 
-Generation of MOOS app and variables
-------------------------------------
+Generation of MOOS application and variables
+--------------------------------------------
 
 The MOOS middleware creates a MOOS application called "iMorse" and posts a
 message to the MOOS database for each variable output by a sensor.
 The names of the MOOS variables all start with ``MORSE_*``.
 
 
-Configuration specificities
----------------------------
+Configuration specifics
+-----------------------
 
 When configuring a component to export its data through MOOS, you can pass
 the options ``moos_host`` and ``moos_port`` to define the host and port of
@@ -32,3 +32,10 @@ If for a specific component you don't want to pass through the default
 
     foo.add_stream('moos', moos_port=9002, moos_host="127.0.0.2")
     bar.add_stream('moos', moos_name='iMorse_bar')
+
+Similarly, the option ``moos_freq`` can be used to define the frequency with which 
+data should be exported. The default value is 10Hz.
+
+.. code-block :: python
+
+    bar.add_stream('moos', moos_freq=20)

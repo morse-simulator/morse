@@ -1,7 +1,7 @@
 With Homebrew on OSX
 ++++++++++++++++++++
 
-`Homebrew <http://brew.sh>`_ is a package manager for OSX.
+`Homebrew <http://brew.sh>`_ is a package manager for Mac OS X (macOS).
 It can be installed in OSX with a single Ruby command::
 
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -19,12 +19,12 @@ Installing MORSE
    as a recipe in Homebrew.
 
    .. note::
-    ``MORSE_BLENDER`` should be added to your .bashrc and must point to the
-    actual executable, not the app directory::
+    ``MORSE_BLENDER`` should be added to your .bashrc file and must point to the
+    actual executable, not to the app directory, e.g.::
 
             MORSE_BLENDER=/Applications/Blender.app/Contents/MacOS/blender
 
-#. Check which version of Python is used by Blender. For that purpose, in a
+#. Check which version of Python is used by Blender. This can be done in a
    console, 
 
    .. code-block:: sh
@@ -34,7 +34,7 @@ Installing MORSE
 
 
 #. Once you get the version used by Blender, grab the exact same version from 
-   `python website <http://www.python.org>` and install it. 
+   the `python website <http://www.python.org>` and install it. 
 
 
 #. Install MORSE using Homebrew::
@@ -45,14 +45,14 @@ Installing MORSE
 
 .. note::
 
-    If you have multiples version of Python3 installed in ``/usr/local/bin``,
-    please specify the right one with ``--with-python=/usr/local/bin/python3.x.y`.
+    If you have multiples version of Python 3 installed in ``/usr/local/bin``,
+    please specify the right one with ``--with-python=/usr/local/bin/python3.x.y``.
 
 
 Formula Options
 ---------------
 
-The default Homebrew formula configures and installs MORSE with support
+The default the Homebrew formula configures and installs MORSE with support
 for only the sockets middleware.  The following formula options are
 available to enable support for other middlewares:
 
@@ -61,13 +61,13 @@ available to enable support for other middlewares:
 - ``--with-pocolibs``
 - ``--with-yarp2``
 
-Additionally documentation generating documentation and HLA support can
+Additionally, generating documentation and HLA support can
 be enabled with the following flags:
 
 - ``--with-doc``
 - ``--with-hla``
 
-Pymorse bindings can be enabled used the flag:
+Pymorse bindings can be enabled with the flag:
 
 - ``--with-pymorse``
 

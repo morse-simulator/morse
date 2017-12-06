@@ -1,37 +1,37 @@
 Understanding Morse's code organisation
 =======================================
 
-Morse's source code is organised in the following way :
+The Morse source code is organised in the following way :
 
-- ``addons``: this contains various addons for blender, useful for MORSE simulation
-- ``bin``: this contains the main entry point for the MORSE simulation
-- ``bindings``: this contains some Python libraries for accessing MORSE data, through
+- ``addons`` this contains various addons for Blender, useful for MORSE simulation
+- ``bin`` this contains the MORSE simulation's main entry point
+- ``bindings`` this contains some Python libraries to access to MORSE data, through
   the socket middleware
-- ``config``: this contains things needed for CMake 
-- ``data``: this contains the blender model of sensors / actuators
+- ``config`` this contains support for CMake 
+- ``data`` this contains the Blender model of sensors and actuators
 - ``doc``: the documentation (in reStructuredText format)
-- ``examples``: this contains examples that show :
+- ``examples`` this contains examples about :
 
   - how to control the simulator (in ``clients``)
-  - various test scenarios (in ``scenarii``)
-- ``src``: this contains all the Python scripts used by the simulator : it is the
-  simulator's core
+  - more or less elaborate test scenarios (in ``scenarii``)
+- ``src`` this contains all the Python scripts used by the simulator; this is the
+  core of the simulator
 
-  - ``morse/actuators``: this contains some predefined robot actuators
-  - ``morse/blender``: this contains some scripts needed for the initialization of
+  - ``morse/actuators`` this contains implementations for various robot actuators
+  - ``morse/blender`` this contains some scripts needed at the initialization of
     the game engine
-  - ``morse/builder``: this contains the scripts for the API that permits creating a
+  - ``morse/builder`` this contains the scripts for the API that permits creating a
     simulation scenario from a Python file. See the :doc:`Builder API
     <../user/builder>` documentation.
-  - ``morse/core``: this contains core classes for the MORSE project (services, base
+  - ``morse/core`` this contains core classes for the MORSE project (services, base
     objects, sensors, etc.) 
-  - ``morse/helpers``: this contains various helper functions (e.g., math transformations)
-  - ``morse/middleware``: this contains the code for linking with different
-    middlewares, both for services and datastreams. Each middleware has its own separate
-    subdirectory.
-  - ``morse/modifiers``: this contains implementations of various modifiers for basic
+  - ``morse/helpers`` this contains various helper functions (e.g., math transformation)
+  - ``morse/middleware`` this contains the code for linking with different
+    middlewares, both for service or datastream. Each middleware has a separate
+    directory.
+  - ``morse/modifiers`` this contains implementations for various modifiers to basic
     components
-  - ``morse/robots``: this contains some predefined robot classes
-  - ``morse/sensors``: this contains some predefined robot sensors
+  - ``morse/robots`` this contains implementations of various robot classes
+  - ``morse/sensors`` this contains implementations of various robot sensors
 
-- ``testing``: this contains unit tests for various part of MORSE.
+- ``testing`` this contains unit tests for various parts of MORSE.

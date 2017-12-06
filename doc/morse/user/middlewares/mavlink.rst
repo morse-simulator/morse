@@ -6,7 +6,7 @@ micro air vehicles.
 
 It can pack C-structs over serial channels with high effiency and send these
 packets to the ground control station. It is extensively tested on the PX4,
-PIXHAWK, APM and Parrot AR.Drone platforms and serves there as communication
+PIXHAWK, APM and Parrot AR.Drone platforms and serves as the communication
 backbone for the MCU/IMU communication as well as for Linux interprocess and
 ground link communication. 
 
@@ -14,9 +14,9 @@ To use this binding with Morse, you need at least pymavlink >= 1.1.62.
 
 .. note::
 
-    As mavlink message have strong semantic about used frame, the middleware
-    part deal with ENU -> aeronautical frame, so mavlink messages have
-    expected semantic. 
+    As mavlink messages have strong semantics about used frames, the middleware
+    part deals with ENU -> aeronautical frames, so mavlink messages have the
+    expected semantics. 
 
 Files
 -----
@@ -25,21 +25,21 @@ Files
 
 .. _mavlink_ds_configuration:
 
-Configuration specificities
----------------------------
+Configuration specifics
+-----------------------
 
 When configuring a component to export its data through mavlink, you can pass
-several options to tune the behaviour of the {ex, im}porter.
+several options to tune the behaviour of the exporter and importer.
 
-The option ``device`` allows to configure the link which is used to exchange
-data trough Mavlink. Valid configurations are for now:
+The option ``device`` allows you to configure the link which is used to exchange
+data trough Mavlink. Valid configurations are currently:
     - 'udpout:host:port'
     - 'udpin:host:port'
     - 'tcp:host:port'
 
 .. note ::
     
-    Contrarily to numerous middlewares, in Mavlink, multiple sensors /
+    Unlike many other middlewares, in Mavlink, multiple sensors /
     actuators can use the same device.
 
 .. code-block :: python

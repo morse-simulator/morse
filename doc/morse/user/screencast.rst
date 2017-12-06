@@ -1,14 +1,16 @@
 Screencast
 ==========
 
-Since many people want to create screencasts of their simulations, here we provide
-some tips on how this can be done.
+Many users have asked how to make a screencast of their simulation. Here
+we show one solution to this question.
 
-As mentioned in `Ubuntu's wiki <https://wiki.ubuntu.com/ScreenCasts>`_, there are
-many ways to record your desktop, from `VLC <http://www.videolan.org>`_ to
-`ffmpeg <https://trac.ffmpeg.org/wiki/Capture/Desktop>`_. Here, we show how to use
-`recordmydesktop <http://recordmydesktop.sourceforge.net/>`_, a command line tool
-(although a graphical user interface version is also available called gtk-recordmydesktop).
+As mentioned in `Ubuntu's wiki <https://wiki.ubuntu.com/ScreenCasts>`_, you can
+use may ways to record your desktop, from `VLC <http://www.videolan.org>`_ to
+`ffmpeg <https://trac.ffmpeg.org/wiki/Capture/Desktop>`_. Here we will
+show how to use
+`recordmydesktop <http://recordmydesktop.sourceforge.net/>`_. This is a
+command line tool, although a graphical user interface version is also
+available (gtk-recordmydesktop).
 
 Install using::
 

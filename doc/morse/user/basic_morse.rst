@@ -45,9 +45,9 @@ Additionally, the following options can be given to the MORSE executable:
 MORSE controls
 --------------
 
-A simulation in MORSE is executed using the Game Engine mode of Blender. When
-in this mode, the button panels of Blender are disabled and the controls
-change.  When running ``morse edit <filename>``, we recommended switching
+A simulation in MORSE is executed using Blender's Game Engine mode. When
+in this mode, Blender's button panels are disabled and the controls
+change.  When running ``morse edit <filename>``, it is recommended to switch
 the Blender 3D View window to full screen before starting a simulation. Press
 :kbd:`Ctrl-Up` when the mouse is over a window to toggle it to full screen and
 back.
@@ -55,36 +55,36 @@ back.
 Simulation camera control
 +++++++++++++++++++++++++
 
-The default MORSE scene, as well as most of the provided scene files,
-contains an object called **CameraFP**.  It allows the user to control the
-view of the scene during the simulation, using the mouse and keyboard,
-in the same way as a First Person Shooter game. The camera can be moved around
+The default MORSE scene, as well as most of the provided scenario files,
+contain an object called **CameraFP**.  This allows the user to control the
+view of the scene during the simulation using the mouse and keyboard,
+in the same way as in a First Person Shooter game. The camera can be moved around
 using:
     
 - :kbd:`w`/:kbd:`z`, :kbd:`s` to move forward and backward
 - :kbd:`a`/:kbd:`q`, :kbd:`d` to move left and right
 - :kbd:`r`, :kbd:`f` to move up and down
 
-The direction the camera points to is controlled with the mouse. Hold down the
+The direction the camera points in is controlled by the mouse. Hold down the
 :kbd:`Ctrl` key while moving the mouse.
 
-It is possible to adjust the speed of the camera movement, by selecting the
-**CameraFP** object in the scene, and adjusting the game properties of the
-camera object: **Sensitivity** for the mouse, and **Speed** for the keyboard.
+It is possible to adjust the speed of the camera's movement by selecting the
+**CameraFP** object in the scene, and adjusting the camera object's game
+properties: **Sensitivity** for the mouse, and **Speed** for the keyboard.
 
 Standard keyboard functions
 +++++++++++++++++++++++++++
 
-The following are the default key bindings defined in any simulation scene
+The following key bindings are predefined in any simulation scene
 
-- :kbd:`p` key: start the simulation (initialise the Game Engine)
+- :kbd:`p` key: start the simulation (start the Game Engine)
 
 - :kbd:`h` key: show an on screen display with this list of keyboard functions
 
 - :kbd:`v` key: toggle the display of a "picture-in-picture" screen that can
   display the image viewed from a specified camera. The camera to display is
-  determined using the **select_display_camera** option of the
-  :doc:`Builder API <../user/builder>` Environment class
+  determined from the :doc:`Builder API <../user/builder>` Environment class'
+  **select_display_camera** option.
 
 - :kbd:`Esc` key: stop and exit the simulation (cleaning up the connections)
 
@@ -93,16 +93,16 @@ The following are the default key bindings defined in any simulation scene
 - :kbd:`F8` key: reset the position and orientation of the **CameraFP** to its
   initial state
 
-- :kbd:`F9` key: cycle through the camera views of all Blender camera objects
-  in the scene.  This includes the cameras mounted on robots, as well as the
-  default **CameraFP**
+- :kbd:`F9` key: cycle through the camera views of all the scene's
+  Blender camera objects. This includes the cameras mounted on robots,
+  as well as the default **CameraFP**
 
-- :kbd:`F11` key: reset all objects to their original position at the start of
+- :kbd:`F11` key: reset all objects to their original positions at the start of
   the simulation
 
 .. warning::  
-  There is a bug in the code, which will make any forces acting on an object
-  continue to be active when the position is reset. This can cause an object to start
+  There is a bug in the code, which will make any forces acting on an
+  object continue to be active when the position is reset. This can cause an object to start
   rotating or moving for no apparent reason.
 
 - :kbd:`F12` key: emergency exit from the simulation, without clean up. Useful

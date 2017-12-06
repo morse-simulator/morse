@@ -1,14 +1,13 @@
 Cat and mouse game tutorial :tag:`builder` :tag:`socket`
 ========================================================
 
-This tutorial will provide a more complex scenario, with a clear objective to
-accomplish for a robot, and that will show how to "close the loop" of sensors
+This tutorial will provide a more complex scenario, with a clear
+objective for a robot to accomplish, and that will show how to "close the loop" of sensors
 and actuators simulated in MORSE.
 
 We will make a chase game, where a robot controlled by a human (the mouse) will
 be chased by a second robot (the cat) that is running software external to
-MORSE.  This will be accomplished by the use of sensor and actuators configured
-properly.
+MORSE.  This will be accomplished by the use of appropriately configured sensors and actuators.
 
 .. image:: ../../../media/MORSE-cat_mouse.png
    :align: center
@@ -22,7 +21,7 @@ Creating the scenario
 ---------------------
 
 We'll use the Builder API to configure the robots in the scenario.
-First we will configure the *mouse* robot, which is a lot simpler.
+First we will configure the *mouse* robot, which is the simplest.
 
 - Create a new ATRV robot, the *mouse*:
 
@@ -41,7 +40,7 @@ First we will configure the *mouse* robot, which is a lot simpler.
     mouse.properties(Object = True, Graspable = False, Label = "MOUSE")
 
 - Next we make it controllable by the keyboard, using the correct actuator.
-  Also, we change the default speed, to make it more agile
+  Also, we change the default speed, to make it more responsive.
 
   .. code-block:: python
 
@@ -62,7 +61,7 @@ actuator to follow it.
 
 - Next add two :doc:`semantic cameras <../sensors/semantic_camera>` to the
   robot. This will provide us with an easy way to follow our target.
-  One is placed right and one left, to provide a fake stereo vision:
+  One is placed right and one left, to provide fake stereo vision:
 
   .. code-block:: python
 
@@ -74,7 +73,7 @@ actuator to follow it.
     semanticR.translate(x=0.2, y=-0.3, z=0.9)
     cat.append(semanticR)
 
-- Add also a :doc:`v, omega actuator <../actuators/v_omega>` that will make
+- Also add a :doc:`v, omega actuator <../actuators/v_omega>` that will make
   the robot move:
 
   .. code-block:: python
@@ -82,7 +81,7 @@ actuator to follow it.
     motion = MotionVW()
     cat.append(motion)
 
-- We configure these two components to use the :doc:`sockets middleware <../middlewares/socket>`:
+- We configure all these components to use the :doc:`sockets middleware <../middlewares/socket>`:
 
   .. code-block:: python
 
@@ -92,7 +91,7 @@ actuator to follow it.
 
 And finally we complete the scene configuration:
 
-- We add ``data/environments/land-1/trees.blend`` environment:
+- We add the ``data/environments/land-1/trees.blend`` environment:
 
   .. code-block:: python
 
@@ -106,7 +105,7 @@ And finally we complete the scene configuration:
     env.set_camera_rotation([1.0470, 0, 0.7854])
     env.select_display_camera(semanticL)
 
-The last line indicates to MORSE that you want the images seen from the left
+The last line tells MORSE that you want the images seen from the left
 camera to be displayed on the HUD screen, visible when you press :kbd:`v`
 during the simulation.
 You can easily change it to display the view of the right camera.
@@ -119,18 +118,18 @@ Control program
 .. note::
 
     This script uses ``pymorse``, you need to have built MORSE with
-    ``-DPYMORSE_SUPPORT=ON`` flag.
+    the ``-DPYMORSE_SUPPORT=ON`` flag.
 
 
 As a very simple example of how to use the data from a sensor to drive the
 robot, we'll create a Python script to connect to MORSE and provide the
-"reasoning" of the *cat* robot.
+the *cat* robot's "reasoning".
 
 The whole program can be found at: ``$MORSE_SRC/examples/clients/atrv/cat_script.py``
 Here we'll explain the main parts of it:
 
 - The function ``is_mouse_visible`` will use the specified semantic camera to
-  check if the *mouse* robot is anywhere in front:
+  check if the *mouse* robot is visible in front of the *cat*:
 
   .. code-block:: python
 
@@ -148,10 +147,10 @@ Here we'll explain the main parts of it:
 - The main decision to move is made based on the information from the
   semantic cameras.
   There are four cases possible: The *mouse* can be seen by both cameras at
-  once, only by the right, only by the left or by none of them.
+  once, or only by the right, or only by the left, or by neither of them.
   The *cat*'s logic is very simple, it will move forward when the *mouse*
   is seen by both cameras, turn to the side of the only camera that sees the
-  target or turn in place until it sees the target ``MOUSE``.
+  target, or turn in place until it sees the target ``MOUSE``.
 
   .. code-block:: python
 
@@ -185,7 +184,7 @@ able to control the *mouse* robot with the arrow keys on the keyboard::
   $ morse run cat_mouse_game.py
 
 On the terminal you will get messages indicating the components, the
-available services and the datastream interfaces::
+available services, and the datastream interfaces::
 
     [    0.171] ------------------------------------
     [    0.172] -        SIMULATION SUMMARY        -
@@ -213,7 +212,7 @@ moving and using the data from the semantic cameras to chase after the *mouse*::
   $ python3 cat_script.py
 
 Note: *The following consideration is deprecated but you may find it useful.* 
-As we use sockets for the introduced actuators and sensors, you can connect these
+As we use sockets for the actuators and sensors, you can connect these
 ports using the ``telnet`` program on another terminal and you will seee the datastream 
 of object visibility coming from the cameras. 
 The socket port numbers are usually 60000+ (e.g. 60001 or 60002...)::
@@ -231,12 +230,12 @@ This example is very basic, but already provides a test of how the use of
 sensor data can help drive a robot.  You can substitute the simple Python
 client that controls the *cat* for a more complex piece of software,
 implemented in other languages and middlewares.  Here are some ideas of what
-you could do to improve the "intelligence" of the *cat*.
+you could do to improve the *cat*'s "intelligence".
 
 - Use a single semantic camera and a :doc:`Pose sensor <../sensors/pose>` to
   follow the mouse. You don't really need two semantic cameras, since among the
-  data one provides is the location of the detected object. Using that and the
-  current position of the *cat*, it will be possible to chase, but you need
+  data each provides is the location of the detected object. Using that and the
+  current position of the *cat*, it is possible to chase, but you need
   to do some calculations to determine in which direction to turn. 
 
 - Use other kinds of robots, like in the :doc:`flying cat and mouse tutorial <./flying_cat_and_mouse>` 

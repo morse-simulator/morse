@@ -2,9 +2,9 @@ Import path from text middleware output into MORSE
 ==================================================
 
 This add-on is accessible from the ``File>Import>Load MORSE path from log(.txt)`` menu.
-When executed, it will open a file browser to select the desired file to load.
+When invoked, it will open a file browser from which you can select the file to load.
 It will generate a mesh that represents the points of the path.
-Some parameters can be changed to adjust the color and density of the mesh.
+Some parameters can be changed to adjust the mesh's color and density.
 
 The resulting path is always placed with respect to the Blender origin.
 
@@ -12,8 +12,9 @@ The resulting path is always placed with respect to the Blender origin.
 Input file
 ----------
 
-It expects as input files generated using the :doc:`text middleware <../middlewares/text>`.
-It will extract the position and orientation of the robot stored in such files
+The file must be one that was generated using the :doc:`text middleware <../middlewares/text>`.
+
+This add-on will extract the position and orientation of the robot stored in such files
 for every lecture of the sensor. It does not matter which sensor generated the output,
 since all of them produce the necessary data.
 
