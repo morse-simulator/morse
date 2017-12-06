@@ -62,7 +62,6 @@ if bpy:
     add_lamp = bpy.ops.object.lamp_add
     add_camera = bpy.ops.object.camera_add
     new_material = bpy.ops.material.new
-    new_text = bpy.ops.text.new
     new_game_property = bpy.ops.object.game_property_new
     add_sensor = bpy.ops.logic.sensor_add
     add_controller = bpy.ops.logic.controller_add
@@ -146,6 +145,15 @@ def get_material(name_or_id):
 
 def get_last_material():
     return get_material(-1)
+
+def new_text():
+    if bpy:
+        texts_before = set(get_texts())
+        bpy.ops.text.new()
+        texts_after = set(get_texts())
+        return (texts_before ^ texts_after).pop()
+    else:
+        return None
 
 def get_texts():
     if bpy:

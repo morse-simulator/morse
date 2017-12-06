@@ -104,10 +104,7 @@ class Configuration(object):
     def write_config(robot_list):
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpymorse.get_texts().keys():
-            texts_before = set(bpymorse.get_texts())
-            bpymorse.new_text()
-            texts_after = set(bpymorse.get_texts())
-            last_text = (texts_before ^ texts_after).pop()
+            last_text = bpymorse.new_text()
             last_text.name = 'component_config.py'
         cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
