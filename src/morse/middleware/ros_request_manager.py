@@ -217,7 +217,7 @@ class RosRequestManager(RequestManager):
     def initialization(self):
 
         # Init MORSE-node in ROS
-        rospy.init_node('morse', log_level = rospy.DEBUG, disable_signals=True)
+        rospy.init_node('morse', disable_signals=True)
         logger.info("ROS node 'morse' successfully created.")
 
         return True

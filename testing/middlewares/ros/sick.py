@@ -53,7 +53,7 @@ class SickLaserRosTest(RosTestCase):
         env = Environment('indoors-1/boxes', fastmode=True)
 
     def test_sick_laser(self):
-        rospy.init_node('morse_ros_laser_testing', log_level=rospy.DEBUG)
+        rospy.init_node('morse_ros_laser_testing')
 
         motion_topic = '/robot/motion'
         laser_topic  = '/robot/sick'

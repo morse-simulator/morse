@@ -53,7 +53,7 @@ class VideoCameraRosTest(RosTestCase):
         # 'KX_PolygonMaterial' object has no attribute 'getMaterialIndex'
 
     def test_video_camera(self):
-        rospy.init_node('morse_ros_video_testing', log_level=rospy.DEBUG)
+        rospy.init_node('morse_ros_video_testing')
 
         motion_topic = '/robot/motion'
         camera_topic = '/robot/camera/image'

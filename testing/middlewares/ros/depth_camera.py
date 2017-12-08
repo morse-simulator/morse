@@ -52,7 +52,7 @@ class DepthCameraRosTest(RosTestCase):
         # 'KX_PolygonMaterial' object has no attribute 'getMaterialIndex'
 
     def test_depth_camera(self):
-        rospy.init_node('morse_ros_depth_testing', log_level=rospy.DEBUG)
+        rospy.init_node('morse_ros_depth_testing')
 
         motion_topic = '/robot/motion'
         camera_topic = '/robot/camera'
