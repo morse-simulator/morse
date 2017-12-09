@@ -104,8 +104,8 @@ class Configuration(object):
     def write_config(robot_list):
         """ Write the 'component_config.py' file with the supplied settings """
         if not 'component_config.py' in bpymorse.get_texts().keys():
-            bpymorse.new_text()
-            bpymorse.get_last_text().name = 'component_config.py'
+            last_text = bpymorse.new_text()
+            last_text.name = 'component_config.py'
         cfg = bpymorse.get_text('component_config.py')
         cfg.clear()
         cfg.write('component_datastream = ' + pprint.pformat(
