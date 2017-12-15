@@ -118,7 +118,7 @@ class IntegratedOdometry(Odometry):
 
     def default_action(self):
         # Compute the position of the sensor within the original frame
-        current_pos = self.original_pos.transformation3d_with(self.position_3d)
+        current_pos = copy.copy(self.position_3d)
 
         # Integrated version
         self._dx = current_pos.x - self.previous_pos.x
@@ -132,16 +132,13 @@ class IntegratedOdometry(Odometry):
         self.local_data['pitch'] = current_pos.pitch
         self.local_data['roll'] = current_pos.roll
 
-        # speed in the sensor frame, related to the robot pose
-        lin_vel = linear_velocities(self.previous_pos, current_pos, 1/self.frequency)
-        ang_vel = angular_velocities(self.previous_pos, current_pos,1/self.frequency)
-
-        self.local_data['vx'] = lin_vel[0]
-        self.local_data['vy'] = lin_vel[1]
-        self.local_data['vz'] = lin_vel[2]
-        self.local_data['wx'] = ang_vel[0]
-        self.local_data['wy'] = ang_vel[1]
-        self.local_data['wz'] = ang_vel[2]
+        self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
+        self.local_data['vx'] = self.delta_pos.x * self.frequency
+        self.local_data['vy'] = self.delta_pos.y * self.frequency
+        self.local_data['vz'] = self.delta_pos.z * self.frequency
+        self.local_data['wz'] = self.delta_pos.yaw * self.frequency
+        self.local_data['wy'] = self.delta_pos.pitch * self.frequency
+        self.local_data['wx'] = self.delta_pos.roll * self.frequency
 
         # Store the 'new' previous data
         self.previous_pos = current_pos
