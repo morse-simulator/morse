@@ -28,17 +28,11 @@ Otherwise, follow these steps to install them manually:
 
    or get it via ``pip``  the sources from http://pyyaml.org and build it using python3::
 
-        sudo python3 -m pip install pyyaml
+        pip3 install pyyaml
 
 #. Install catkin with Python 3 support::
 
-    git clone git://github.com/ros-infrastructure/catkin_pkg.git
-    cd catkin_pkg
-    sudo python3 setup.py install
-
-    git clone git://github.com/ros/catkin.git
-    cd catkin
-    sudo python3 setup.py install
+    pip3 install catkin_pkg rospkg
 
 #. Open a terminal and check if everything is correctly set. Therefore, open
    a terminal and type:
