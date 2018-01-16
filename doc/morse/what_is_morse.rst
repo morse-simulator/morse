@@ -74,9 +74,9 @@ Integration in your workflow
 ----------------------------
 
 MORSE does not make any assumptions about your architecture. MORSE currently
-supports **6 open-source middlewares (ROS, YARP, Pocolibs, MOOS, HLA and
-Mavlink)**. :doc:`Check here for the exact list of features supported for each
-middleware <user/integration>`.
+supports **7 open-source middlewares (ROS, YARP, Pocolibs, MOOS, HLA, Mavlink
+and PPRZLink)**. :doc:`Check here for the exact list of features supported for
+each middleware <user/integration>`.
 
 It also supports a **simple socket-based protocol** for easy integration with
 other languages/toolboxes. **Complete bindings for Python** are provided.
