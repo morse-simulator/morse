@@ -91,11 +91,8 @@ def version():
 
 
 def create_new_material():
-    all_materials = get_materials().keys()
     new_material()
-    material_name = [name for name in get_materials().keys() \
-                     if name not in all_materials].pop()
-    return get_material(material_name)
+    return get_materials()[-1]
 
 def add_morse_empty(shape = 'ARROWS'):
     """Add MORSE Component Empty object which hlods MORSE logic"""
