@@ -3,16 +3,12 @@ from mathutils import Vector, Matrix, Euler
 import copy
 #from morse.builder import bpymorse
 
-from urdf_parser_py.urdf import URDF
-
-URDFMODEL="/home/slemaignan/src/naoqi_driver/share/urdf/pepper.urdf"
+from urdf_parser_py.urdf import URDF, Mesh, Box, Cylinder, Sphere
 
 # Meshes are referenced in the URDF file relative to their package, eg:
 # 'package://pepper_meshes/meshes/1.0/Torso.dae'
 # MORSE will replace 'package://' by 'ROS_SHARE_ROOT':
-ROS_SHARE_ROOT="/home/slemaignan/ros-dev/share"
-
-robot = URDF.from_xml_string(open(URDFMODEL,'r').read())
+ROS_SHARE_ROOT=""
 
 class URDFLink:
 
@@ -39,10 +35,10 @@ class URDFLink:
         if self.inertial and self.inertial.origin:
             xyz = self.inertial.origin.xyz
             rpy = self.inertial.origin.rpy
-        elif self.collision:
+        elif self.collision and self.collision.origin:
             xyz = self.collision.origin.xyz
             rpy = self.collision.origin.rpy
-        elif self.visual:
+        elif self.visual and self.visual.origin:
             xyz = self.visual.origin.xyz
             rpy = self.visual.origin.rpy
 
@@ -65,13 +61,22 @@ class URDFJoint:
         
         self.name = urdf_joint.name
         self.type = urdf_joint.type
-        self.xyz = Vector(urdf_joint.origin.xyz)
-        if urdf_joint.origin.rpy:
-            # self.rot is the *orientation* of the frame of the joint, in
-            # *world coordinates*
-            self.rot = Euler(urdf_joint.origin.rpy, 'XYZ').to_quaternion()
+
+        xyz = (0,0,0)
+        rpy = None
+
+        if urdf_joint.origin:
+            xyz = urdf_joint.origin.xyz
+            if urdf_joint.origin.rpy:
+                # self.rot is the *orientation* of the frame of the joint, in
+                # *world coordinates*
+                rpy = urdf_joint.origin.rpy
+
+        self.xyz = Vector(xyz)
+        if rpy:
+            self.rot = Euler(rpy, 'XYZ').to_quaternion()
         else:
-            self.rot = Euler((0, 0, 0)).to_quaternion()
+            self.rot = Euler((0,0,0)).to_quaternion()
 
         self.link = URDFLink(urdf_link)
 
@@ -196,8 +201,12 @@ class URDFJoint:
             offset = self.link.xyz
         
         if offset == Vector((0,0,0)):
-            #TODO: compute an offset based on the joint axis direction
-            offset = parent.editbone.tail - parent.editbone.head
+            if parent:
+                #TODO: compute an offset based on the joint axis direction
+                offset = parent.editbone.tail - parent.editbone.head
+            else:
+                #TODO: remove this
+                offset = Vector((0,0,0.1))
         self.editbone.tail = self.editbone.head + offset
 
         for child in self.children:
@@ -289,21 +298,53 @@ class URDFJoint:
 
 
         visuals = []
+        geometry = None
 
-        if self.link.visual:
-            path = self.link.visual.geometry.filename.replace("package:/", ROS_SHARE_ROOT)
-            # Save a list of objects names before importing Collada
-            objects_names = [obj.name for obj in bpy.data.objects]
-            # Import Collada from filepath
-            bpy.ops.wm.collada_import(filepath=path)
-            # Get a list of the imported objects
-            visuals = [obj for obj in bpy.data.objects \
-                          if obj.name not in objects_names]
+        if self.link.visual and self.link.visual.geometry:
+            geometry = self.link.visual.geometry
 
-            for v in visuals:
-                v.scale = [v.scale[0] * self.link.visual.geometry.scale[0],
-                           v.scale[1] * self.link.visual.geometry.scale[1],
-                           v.scale[2] * self.link.visual.geometry.scale[2]]
+            if isinstance(geometry, Mesh):
+
+                path = geometry.filename.replace("package:/", ROS_SHARE_ROOT)
+                # Save a list of objects names before importing Collada/STL
+                objects_names = [obj.name for obj in bpy.data.objects]
+
+                if ('.dae' in geometry.filename):
+                    # Import Collada from filepath
+                    bpy.ops.wm.collada_import(filepath=path)
+                    # Get a list of the imported objects
+                    visuals = [obj for obj in bpy.data.objects \
+                                  if obj.name not in objects_names]
+                elif ('.stl' in geometry.filename):
+                    bpy.ops.import_mesh.stl(filepath=path)
+                    # Get a list of the imported objects
+                    visuals = [obj for obj in bpy.data.objects \
+                                  if obj.name not in objects_names]
+
+                if geometry.scale:
+                    for v in visuals:
+                        v.scale = [v.scale[0] * geometry.scale[0],
+                                   v.scale[1] * geometry.scale[1],
+                                   v.scale[2] * geometry.scale[2]]
+
+            elif isinstance(geometry, Box):
+                bpy.ops.mesh.primitive_cube_add()
+                ob = bpy.context.active_object
+                ob.dimensions = geometry.size
+                visuals = [ob]
+
+            elif isinstance(geometry, Cylinder):
+                radius = geometry.radius
+                length = geometry.length
+                bpy.ops.mesh.primitive_cylinder_add(radius=radius, depth=length)
+                ob = bpy.context.active_object
+                visuals = [ob]
+
+            elif isinstance(geometry, Sphere):
+                bpy.ops.mesh.primitive_uv_sphere_add(size=geometry.radius)
+                ob = bpy.context.active_object
+                visuals = [ob]
+
         else:
             bpy.ops.object.empty_add(type = "ARROWS")
 
@@ -384,5 +425,10 @@ class URDFArmature:
         for root in self.roots:
             root.build_objectmode(ob)
 
-armature = URDFArmature("pepper", robot)
-armature.build()
+def create_urdf_model(urdf, name, ros_path):
+    global ROS_SHARE_ROOT
+    ROS_SHARE_ROOT = ros_path
+
+    robot = URDF.from_xml_string(open(urdf,'r').read())
+    armature = URDFArmature(name, robot)
+    armature.build()
