@@ -10,6 +10,8 @@ from urdf_parser_py.urdf import URDF, Mesh, Box, Cylinder, Sphere
 # MORSE will replace 'package://' by 'ROS_SHARE_ROOT':
 ROS_SHARE_ROOT=""
 
+MATERIALS = {}
+
 class URDFLink:
 
     def __init__(self, urdf_link):
@@ -215,7 +217,9 @@ class URDFJoint:
     def build_objectmode(self, armature, parent = None):
 
         if not self.children and self.type == self.FIXED:
-            assert(parent)
+            if not parent:
+                return
+
             target = self.add_link_frame(armature, parent, self.xyz, self.rot)
             
             # Disabled generation of IK targets for now: would require one
@@ -272,18 +276,21 @@ class URDFJoint:
         if self.axis[0]:
             posebone.lock_ik_x = False
             posebone.use_ik_limit_x = True
-            posebone.ik_max_x = self.limit.upper
-            posebone.ik_min_x = self.limit.lower
+            if self.limit:
+                posebone.ik_max_x = self.limit.upper
+                posebone.ik_min_x = self.limit.lower
         elif self.axis[1]:
             posebone.lock_ik_y = False
             posebone.use_ik_limit_y = True
-            posebone.ik_max_y = self.limit.upper
-            posebone.ik_min_y = self.limit.lower
+            if self.limit:
+                posebone.ik_max_y = self.limit.upper
+                posebone.ik_min_y = self.limit.lower
         elif self.axis[2]:
             posebone.lock_ik_z = False
             posebone.use_ik_limit_z = True
-            posebone.ik_max_z = self.limit.upper
-            posebone.ik_min_z = self.limit.lower
+            if self.limit:
+                posebone.ik_max_z = self.limit.upper
+                posebone.ik_min_z = self.limit.lower
 
     def add_link_frame(self, armature, joint = None, xyz = None, rot = None):
         """
@@ -362,6 +369,8 @@ class URDFJoint:
             elif xyz:
                 v.location += xyz
 
+            self.rescale_object(geometry, v)
+            self.add_material(v)
 
             # parent the visuals to the armature
             armature.data.bones[str(hash(joint.name))].use_relative_parent = True
@@ -369,6 +378,68 @@ class URDFJoint:
             v.parent_bone = str(hash(joint.name))
             v.parent_type = "BONE"
 
+    def rescale_object(self, geometry, obj):
+        if isinstance(geometry, Mesh):
+            if geometry.scale:
+                obj.scale = [obj.scale[0] * geometry.scale[0],
+                             obj.scale[1] * geometry.scale[1],
+                             obj.scale[2] * geometry.scale[2]]
+
+        elif isinstance(geometry, Box):
+            obj.dimensions = geometry.size
+
+        elif isinstance(geometry, Cylinder):
+            diameter = geometry.radius*2
+            length = geometry.length
+            obj.dimensions = (diameter, diameter, length)
+
+        elif isinstance(geometry, Sphere):
+            diameter = geometry.radius*2
+            obj.dimensions = (diameter, diameter, diameter)
+
+    def add_material(self, obj):
+        """ Adding material to scene if not exist and let
+            the object use it. We differentiate between local
+            and global material (local is first priority).
+            We ignore the alpha value of the material color.
+            TODO: Adding Texture
+        """
+        if not self.link.visual or not self.link.visual.material:
+            return
+
+        material = self.link.visual.material
+
+        if not material.name:
+            print("Found material without name: {}".format(self.link.material))
+            return
+
+        rgba = None
+        texture = None
+
+        # local material
+        if material.color or material.texture:
+            if material.color:
+                rgba = material.color.rgba
+
+            if material.texture:
+                texture = material.texture
+
+        # global material
+        else:
+            if material.name not in MATERIALS:
+                print("Global material not found: {}".format(material.name))
+                return
+
+            rgba = MATERIALS[material.name]['color']
+            texture = MATERIALS[material.name]['texture']
+
+
+        mat = bpy.data.materials.get(material.name)
+        if not mat:
+            mat = bpy.data.materials.new(name=material.name)
+
+        obj.data.materials.append(mat)
+        mat.diffuse_color = (rgba[0], rgba[1], rgba[2])
 
 
     def __repr__(self):
@@ -380,6 +451,9 @@ class URDFArmature:
 
         self.name = name
         self.urdf = urdf
+
+        for mat in urdf.materials:
+            add_material(mat)
 
         self.roots = self._walk_urdf(self.urdf.link_map[urdf.get_root()])
 
@@ -424,6 +498,21 @@ class URDFArmature:
         bpy.ops.object.mode_set(mode='OBJECT')
         for root in self.roots:
             root.build_objectmode(ob)
+
+def add_material(urdf_material):
+    global MATERIALS
+
+    if urdf_material.name in MATERIALS:
+        return
+
+    MATERIALS[urdf_material.name] = {'color': None, 'texture': None}
+
+    if urdf_material.color and urdf_material.color.rgba:
+        MATERIALS[urdf_material.name]['color'] = urdf_material.color.rgba
+
+    if urdf_material.texture and urdf_material.texture.filename:
+        MATERIALS[urdf_material.name]['texture'] = urdf_material.texture.filename
+
 
 def create_urdf_model(urdf, name, ros_path):
     global ROS_SHARE_ROOT
