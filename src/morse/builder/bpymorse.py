@@ -38,8 +38,10 @@ link_append = empty_method
 link = empty_method # 2.71.6
 append = empty_method # 2.71.6
 collada_import = empty_method
+stl_import = empty_method
 add_object = empty_method
 add_empty = empty_method
+mode_set = empty_method
 new_mesh = empty_method
 new_object = empty_method
 apply_transform = empty_method
@@ -72,8 +74,10 @@ if bpy:
     else: # link_append dropped in 2.71.6
         link_append = bpy.ops.wm.link_append
     collada_import = bpy.ops.wm.collada_import
+    stl_import = bpy.ops.import_mesh.stl
     add_object = bpy.ops.object.add
     add_empty = bpy.ops.object.empty_add
+    mode_set = bpy.ops.object.mode_set
     new_mesh = bpy.data.meshes.new
     new_object = bpy.data.objects.new
     apply_transform = bpy.ops.object.transform_apply
@@ -110,6 +114,13 @@ def get_first_selected_object():
     else:
         return None
 
+def active_object():
+    if bpy:
+        return bpy.context.active_object
+    else:
+        return None
+
+
 def get_selected_objects():
     if bpy:
         return bpy.context.selected_objects
@@ -139,7 +150,7 @@ def get_materials():
 
 def get_material(name_or_id):
     if bpy and bpy.data.materials:
-        return bpy.data.materials[name_or_id]
+        return bpy.data.materials.get(name_or_id)
     else:
         return None
 

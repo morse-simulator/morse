@@ -1,14 +1,19 @@
-import bpy, math
-from mathutils import Vector, Matrix, Euler
+import math
+from morse.core.mathutils import Vector, Matrix, Euler
 import copy
-#from morse.builder import bpymorse
 
-from urdf_parser_py.urdf import URDF, Mesh, Box, Cylinder, Sphere
+from morse.builder import bpymorse
+
+from morse.builder.creator import ComponentCreator
+
+from urdf_parser_py.urdf import URDF as URDFparser
+from urdf_parser_py.urdf import Mesh, Box, Cylinder, Sphere
 
 # Meshes are referenced in the URDF file relative to their package, eg:
 # 'package://pepper_meshes/meshes/1.0/Torso.dae'
 # MORSE will replace 'package://' by 'ROS_SHARE_ROOT':
-ROS_SHARE_ROOT=""
+import os
+ROS_SHARE_ROOT=os.environ["ROS_PACKAGE_PATH"].split(":")[0] + "/"
 
 MATERIALS = {}
 
@@ -202,13 +207,9 @@ class URDFJoint:
         else:
             offset = self.link.xyz
         
-        if offset == Vector((0,0,0)):
-            if parent:
-                #TODO: compute an offset based on the joint axis direction
-                offset = parent.editbone.tail - parent.editbone.head
-            else:
-                #TODO: remove this
-                offset = Vector((0,0,0.1))
+        if parent and offset == Vector((0,0,0)):
+            #TODO: compute an offset based on the joint axis direction
+            offset = parent.editbone.tail - parent.editbone.head
         self.editbone.tail = self.editbone.head + offset
 
         for child in self.children:
@@ -237,7 +238,11 @@ class URDFJoint:
 
             return
 
-        self.posebone = armature.pose.bones[str(hash(self.name))]
+        try:
+            self.posebone = armature.pose.bones[str(hash(self.name))]
+        except KeyError:
+            print("Error: bone %s not yet added to the armature" % self.name)
+            return
 
         # Prevent moving or rotating bones that are not end-effectors (outside of IKs)
         if self.children:
@@ -314,18 +319,18 @@ class URDFJoint:
 
                 path = geometry.filename.replace("package:/", ROS_SHARE_ROOT)
                 # Save a list of objects names before importing Collada/STL
-                objects_names = [obj.name for obj in bpy.data.objects]
+                objects_names = [obj.name for obj in bpymorse.get_objects()]
 
                 if ('.dae' in geometry.filename):
                     # Import Collada from filepath
-                    bpy.ops.wm.collada_import(filepath=path)
+                    bpymorse.collada_import(filepath=path)
                     # Get a list of the imported objects
-                    visuals = [obj for obj in bpy.data.objects \
+                    visuals = [obj for obj in bpymorse.get_objects() \
                                   if obj.name not in objects_names]
                 elif ('.stl' in geometry.filename):
-                    bpy.ops.import_mesh.stl(filepath=path)
+                    bpymorse.stl_import(filepath=path)
                     # Get a list of the imported objects
-                    visuals = [obj for obj in bpy.data.objects \
+                    visuals = [obj for obj in bpymorse.get_objects() \
                                   if obj.name not in objects_names]
 
                 if geometry.scale:
@@ -335,28 +340,27 @@ class URDFJoint:
                                    v.scale[2] * geometry.scale[2]]
 
             elif isinstance(geometry, Box):
-                bpy.ops.mesh.primitive_cube_add()
-                ob = bpy.context.active_object
+                bpymorse.add_mesh_cube()
+                ob = bpymorse.active_object()
                 ob.dimensions = geometry.size
                 visuals = [ob]
 
             elif isinstance(geometry, Cylinder):
                 radius = geometry.radius
                 length = geometry.length
-                bpy.ops.mesh.primitive_cylinder_add(radius=radius, depth=length)
-                ob = bpy.context.active_object
+                bpymorse.add_mesh_cylinder(radius=radius, depth=length)
+                ob = bpymorse.active_object()
                 visuals = [ob]
 
             elif isinstance(geometry, Sphere):
-                bpy.ops.mesh.primitive_uv_sphere_add(size=geometry.radius)
-                ob = bpy.context.active_object
+                bpymorse.add_mesh_uv_sphere(size=geometry.radius)
+                ob = bpymorse.active_object()
                 visuals = [ob]
 
         else:
-            bpy.ops.object.empty_add(type = "ARROWS")
+            bpymorse.add_empty(type = "ARROWS")
 
-            #empty = bpymorse.get_first_selected_object()
-            empty = bpy.context.selected_objects[0]
+            empty = bpymorse.get_first_selected_object()
             empty.name = self.link.name
             empty.scale = [0.01, 0.01, 0.01]
             visuals = [empty]
@@ -434,9 +438,9 @@ class URDFJoint:
             texture = MATERIALS[material.name]['texture']
 
 
-        mat = bpy.data.materials.get(material.name)
+        mat = bpymorse.get_material(material.name)
         if not mat:
-            mat = bpy.data.materials.new(name=material.name)
+            mat = bpymorse.get_materials().new(name=material.name)
 
         obj.data.materials.append(mat)
         mat.diffuse_color = (rgba[0], rgba[1], rgba[2])
@@ -445,17 +449,25 @@ class URDFJoint:
     def __repr__(self):
         return "URDF joint<%s>" % self.name
 
-class URDFArmature:
+class URDF(ComponentCreator):
+
+    _classpath="morse.robots.urdf.URDF"
 
     def __init__(self, name, urdf):
 
-        self.name = name
-        self.urdf = urdf
+        ComponentCreator.__init__(self, 
+                                name, 
+                                'robots')
 
-        for mat in urdf.materials:
+        self.urdf_file = urdf
+        self.urdf = URDFparser.from_xml_string(open(urdf,'r').read())
+
+        for mat in self.urdf.materials:
             add_material(mat)
 
-        self.roots = self._walk_urdf(self.urdf.link_map[urdf.get_root()])
+        self.roots = self._walk_urdf(self.urdf.link_map[self.urdf.get_root()])
+
+        self.build()
 
     def _walk_urdf(self, link, parent_bone = None):
         bones = []
@@ -480,22 +492,22 @@ class URDFArmature:
 
     def build(self):
         # Create armature and object
-        bpy.ops.object.add(
+        bpymorse.add_object(
             type='ARMATURE', 
             enter_editmode=True,
             location=(0,0,0))
-        ob = bpy.context.object
+        ob = bpymorse.get_context_object()
         ob.show_x_ray = True
         ob.name = self.name
         amt = ob.data
         amt.name = self.name+'_armature'
         amt.show_axes = True
 
-        bpy.ops.object.mode_set(mode='EDIT')
+        bpymorse.mode_set(mode='EDIT')
         for root in self.roots:
             root.build_editmode(ob)
 
-        bpy.ops.object.mode_set(mode='OBJECT')
+        bpymorse.mode_set(mode='OBJECT')
         for root in self.roots:
             root.build_objectmode(ob)
 
@@ -514,10 +526,3 @@ def add_material(urdf_material):
         MATERIALS[urdf_material.name]['texture'] = urdf_material.texture.filename
 
 
-def create_urdf_model(urdf, name, ros_path):
-    global ROS_SHARE_ROOT
-    ROS_SHARE_ROOT = ros_path
-
-    robot = URDF.from_xml_string(open(urdf,'r').read())
-    armature = URDFArmature(name, robot)
-    armature.build()
