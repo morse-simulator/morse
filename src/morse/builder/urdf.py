@@ -342,6 +342,7 @@ class URDFJoint:
             elif isinstance(geometry, Box):
                 bpymorse.add_mesh_cube()
                 ob = bpymorse.active_object()
+                ob.name = self.link.name
                 ob.dimensions = geometry.size
                 visuals = [ob]
 
@@ -350,11 +351,13 @@ class URDFJoint:
                 length = geometry.length
                 bpymorse.add_mesh_cylinder(radius=radius, depth=length)
                 ob = bpymorse.active_object()
+                ob.name = self.link.name
                 visuals = [ob]
 
             elif isinstance(geometry, Sphere):
                 bpymorse.add_mesh_uv_sphere(size=geometry.radius)
                 ob = bpymorse.active_object()
+                ob.name = self.link.name
                 visuals = [ob]
 
         else:
