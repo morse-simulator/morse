@@ -304,7 +304,7 @@ class LaserScanner(Sensor):
             self.local_data['point_list'][index] = new_point[:]
             self.local_data['range_list'][index] = distance
             index += 1
-            self.change_arc()
+        self.change_arc()
 
 
     def change_arc(self):
