@@ -325,7 +325,7 @@ class LaserScanner(Sensor):
                             # If there was no intersection, move the vertex
                             # to the laser range
                             point = self._ray_list[v_index-1] * self.laser_range
-                        vertex.setXYZ(point)
+                        vertex.setXYZ(point[:3])
 
 
 class LaserScannerRotationZ(LaserScanner):
