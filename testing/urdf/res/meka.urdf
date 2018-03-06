@@ -1,0 +1,2528 @@
+<?xml version="1.0" ?>
+<robot name="meka">
+   <material name="GreyA">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+  <material name="GreyB">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="GreyC">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+  <link name="base_link">
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.8 0.6 0.025"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="laser_front_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.306 0.0 0.4"/>
+    <child link="laser_front"/>
+    <parent link="base_link"/>
+  </joint>
+  <link name="laser_front"> 
+	</link>
+  <joint name="laser_rear_joint" type="fixed">
+    <origin rpy="0 0 3.14159265359" xyz="-0.306 0.0 0.4"/>
+    <child link="laser_rear"/>
+    <parent link="base_link"/>
+  </joint>
+  <link name="laser_rear"> 
+	</link>
+  <joint name="fixed_base_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    <parent link="base_link"/>
+    <child link="fixed_base"/>
+  </joint>
+  <link name="fixed_base">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.0 0 0.20"/>
+      <mass value="100.0"/>
+      <inertia ixx="2.28416666667" ixy="0.0" ixz="0.0" iyy="4.26166666667" iyz="0.0" izz="5.50416666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry name="b1r1_3_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/B1R1/meka_mobile_base+backpack.dae"/>
+      </geometry>
+    </visual>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0" xyz="0.17654 0 0.32141"/>
+      <geometry name="b1r1_3_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/B1R1/meka_zlift.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0.2"/>
+      <geometry>
+        <box size="0.46 0.46 0.25"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0.2"/>
+      <geometry>
+        <box size="0.68 0.27 0.25"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.23 0.12 0.265"/>
+      <geometry>
+        <cylinder length="0.325" radius="0.11"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.23 -0.12 0.265"/>
+      <geometry>
+        <cylinder length="0.325" radius="0.11"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.23 0.12 0.375"/>
+      <geometry>
+        <cylinder length="0.55" radius="0.11"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.23 -0.12 0.375"/>
+      <geometry>
+        <cylinder length="0.55" radius="0.11"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.13 0 0.4375"/>
+      <geometry>
+        <box size="0.20 0.46 0.225"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.23 0 0.4375"/>
+      <geometry>
+        <box size="0.22 0.27 0.225"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.06 0 0.95"/>
+      <geometry>
+        <box size="0.22 0.1 1.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="backpack_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    <parent link="fixed_base"/>
+    <child link="backpack"/>
+    <origin rpy="0 0 0" xyz="-0.185 0 0.36"/>
+  </joint>
+  <link name="backpack">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="10.0"/>
+      <inertia ixx="0.216666666667" ixy="0.0" ixz="0.0" iyy="0.115333333333" iyz="0.0" izz="0.251333333333"/>
+    </inertial>
+  </link>
+  <joint name="zlift_j0" type="prismatic">
+    <origin rpy="0 0 0" xyz="0.17513 0.0 0.43"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="zlift_link"/>
+    <limit effort="30" lower="0.0" upper="0.678933079026" velocity="34.8"/>
+    <dynamics damping="10.0"/>
+  </joint>
+  <link name="zlift_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <mass value="10.0"/>
+      <inertia ixx="0.0312966666667" ixy="0.0" ixz="0.0" iyy="0.0270466666667" iyz="0.0" izz="0.0124166666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="z_lift_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/B1R1/meka_festo-chest_mount_assy.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.108 0 0.035"/>
+      <geometry>
+        <box size="0.2 0.21 0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.004 0 0.09"/>
+      <geometry>
+        <box size="0.008 0.08 0.18"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="zlift_j0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="zlift_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="zlift_j0_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="chest_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.263 0.0 0.006"/>
+    <parent link="zlift_link"/>
+    <child link="panplate"/>
+  </joint>
+  <link name="panplate">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+      <mass value="2.0"/>
+      <inertia ixx="0.0683333333333" ixy="0.0" ixz="0.0" iyy="0.101666666667" iyz="0.0" izz="0.0866666666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="panplate_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/T2R3/T2R3_TJ0_base.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.11 0 0.025"/>
+      <geometry>
+        <box size="0.22 0.19 0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 0.05"/>
+      <geometry>
+        <cylinder length="0.1" radius="0.095"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_j0" type="revolute">
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1658"/>
+    <parent link="panplate"/>
+    <child link="torso"/>
+    <limit effort="25" lower="-2.09439510239" upper="2.09439510239" velocity="0.436332312999"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="torso">
+    <inertial>
+      <origin xyz="0.00011774 0.0038073 -0.0522753"/>
+      <mass value="4.411"/>
+      <inertia ixx="0.0441467583333" ixy="0.0" ixz="0.0" iyy="0.0266497916667" iyz="0.0" izz="0.0248486333333"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="torso_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/T2R3/T2R3_TJ1_pan.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.0615"/>
+      <geometry>
+        <cylinder length="0.015" radius="0.088"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.0615"/>
+      <geometry>
+        <box size="0.08 0.23 0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0.0 0.105 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.052"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0  " xyz="0.0 -0.105 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.052"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_j1" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="torso"/>
+    <child link="mid"/>
+    <limit effort="200" lower="-0.205835230801" upper="0.930146870379" velocity="0.174532925199"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="mid">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+      <mass value="5.0"/>
+      <inertia ixx="0.170833333333" ixy="0.0" ixz="0.0" iyy="0.120833333333" iyz="0.0" izz="0.0833333333333"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry name="mid_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/T2R3/T2R3_TJ2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 0.0684"/>
+      <geometry>
+        <box size="0.114 0.241 0.1368"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0.0 0.0 0"/>
+      <geometry>
+        <cylinder length="0.241" radius="0.057"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0.0 0.0 0.1368"/>
+      <geometry>
+        <cylinder length="0.241" radius="0.057"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_j2" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1397"/>
+    <parent link="mid"/>
+    <child link="upper"/>
+    <limit effort="200" lower="-0.205835230801" upper="0.930146870379" velocity="0.174532925199"/>
+    <dynamics damping="1.0"/>
+    <mimic joint="torso_j1" multiplier="1.0"/>
+  </joint>
+  <link name="upper">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+      <mass value="3.0"/>
+      <inertia ixx="0.13" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.05"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry name="upper_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T4_Chest.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 0.1346"/>
+      <geometry>
+        <box size="0.14 0.22 0.1978"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0.0 0.0 0.2335"/>
+      <geometry>
+        <cylinder length="0.22" radius="0.0644"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="torso_j0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="torso_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="torso_j0_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="torso_j1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="torso_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="torso_j1_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="head_j1" type="revolute">
+    <axis xyz="0 0 1"/>
+    <limit effort="100" lower="-0.977384381117" upper="0.977384381117" velocity="1.308996939"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.2757"/>
+    <parent link="upper"/>
+    <child link="neck_pan"/>
+    <child link="xtion"/>
+  </joint>
+  <link name="neck_pan">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.000104166666667" ixy="0.0" ixz="0.0" iyy="0.000104166666667" iyz="0.0" izz="0.000166666666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="neck_tilt_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/S3R1/neck.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 0.00833"/>
+      <geometry>
+        <cylinder length="0.0166" radius="0.034"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 0.0473"/>
+      <geometry>
+        <cylinder length="0.0614" radius="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_j0" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0.314159265 0" xyz="0 0 0.1103"/>
+    <parent link="neck_pan"/>
+    <child link="shell"/>
+    <limit effort="100" lower="-0.698131700798" upper="0.0349065850399" velocity="0.349065850399"/>
+  </joint>
+  <link name="shell">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.00416666666667" ixy="0.0" ixz="0.0" iyy="0.00416666666667" iyz="0.0" izz="0.00666666666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="shell_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/S3R1/S3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0  0.0 " xyz="0.0 0 0.0"/>
+      <geometry>
+        <cylinder length="0.09" radius="0.0335"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.005 0 0.07"/>
+      <geometry>
+        <box size="0.222 0.2 0.09"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_xtion_dummy" type="fixed">
+    <origin rpy="-1.49304175558102 0.0465121191942754 -1.5830006092006217" xyz="0.0865 0.0095 0.0542"/>
+    <axis xyz="0 0 1"/>
+    <parent link="shell"/>
+    <child link="_xtion_link"/>
+  </joint>
+  <link name="_xtion_link">
+    <parent link="shell"/>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.000104166666667" ixy="0.0" ixz="0.0" iyy="0.000104166666667" iyz="0.0" izz="0.000166666666667"/>
+    </inertial>
+  </link>
+  <joint name="head_xtion_dummy2" type="fixed">
+    <limit effort="100" lower="-0.977384381117" upper="0.977384381117" velocity="1.308996939"/>
+    <origin rpy="0 -1.5708 1.5708" xyz="-0.04 0 0"/>
+    <axis xyz="0 0 1"/>
+    <parent link="_xtion_link"/>
+    <child link="xtion_link"/>
+  </joint>
+  <link name="xtion_link">
+    <parent link="_xtion_link"/>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.000104166666667" ixy="0.0" ixz="0.0" iyy="0.000104166666667" iyz="0.0" izz="0.000166666666667"/>
+    </inertial>
+  </link>
+  <transmission name="head_j0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="head_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="head_j0_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="head_j1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="head_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="head_j1_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="right_arm_j0" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0.0 -0.18465 0.2337"/>
+    <parent link="upper"/>
+    <child link="shoulderupper_right"/>
+    <limit effort="40" lower="-1.3962634016" upper="3.49065850399" velocity="0.523598775598"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="shoulderupper_right">
+    <inertial>
+      <mass value="2.0310"/>
+      <inertia ixx="0.003461" ixy="0.000428" ixz="0.000002" iyy="0.003097" iyz="0.000000" izz="0.005416"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0.0 0 0 " xyz="0 0 0"/>
+      <geometry name="right_shoulder_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT1_shoulderRoll.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0.035 0.0"/>
+      <geometry>
+        <box size="0.128 0.07 0.072"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="-0.011 0.0 0"/>
+      <geometry>
+        <cylinder length="0.15" radius="0.036"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j1" type="revolute">
+    <axis xyz="-1 0 0"/>
+    <limit effort="40" lower="-0.418879020479" upper="2.61799387799" velocity="0.523598775598"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="shoulderupper_right"/>
+    <child link="shoulderpitch_right"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="shoulderpitch_right">
+    <inertial>
+      <mass value="0.566"/>
+      <origin rpy="0 0 0" xyz="0.000944 -0.026331 -0.043257"/>
+      <inertia ixx="0.000754" ixy="0.000015" ixz="0.000014" iyy="0.000921" iyz="0.000142" izz="0.000834"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0.0" xyz="0 0 0"/>
+      <geometry name="shoulderpitch_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT2_shoulderPitch.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="-0.58 0.0 0.0 " xyz="0.0 -0.0256 -0.04"/>
+      <geometry>
+        <box size="0.09 0.07 0.072"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 -0.0319 -0.0595"/>
+      <geometry>
+        <cylinder length="0.0262" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="-0.0407 0.0 0"/>
+      <geometry>
+        <cylinder length="0.008" radius="0.0352"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="0.0407 0.0 0"/>
+      <geometry>
+        <cylinder length="0.008" radius="0.0352"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j2" type="revolute">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0 -0.03175 -0.27857"/>
+    <parent link="shoulderpitch_right"/>
+    <child link="bicep_right"/>
+    <limit effort="20" lower="-1.4835298642" upper="1.4835298642" velocity="0.872664625997"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="bicep_right">
+    <inertial>
+      <origin xyz="-0.005767 -0.001385 0.084539 "/>
+      <mass value="2.296"/>
+      <inertia ixx="0.0128958666667" ixy="0.0" ixz="0.0" iyy="0.0138716666667" iyz="0.0" izz="0.00285086666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0.00502 0 0"/>
+      <geometry name="bicep_right_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT3_bicep.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="-0.03 0 0.1"/>
+      <geometry>
+        <box size="0.07 0.08 0.15"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="-0.0047 0 0.15"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 0.0 0"/>
+      <geometry>
+        <cylinder length="0.077" radius="0.0362"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j3" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0.00502 0  0"/>
+    <parent link="bicep_right"/>
+    <child link="elbowclevis_right"/>
+    <limit effort="20" lower="-0.00486908464063" upper="2.31810267927" velocity="0.872664625997"/>
+    <dynamics damping="10.0"/>
+  </joint>
+  <link name="elbowclevis_right">
+    <inertial>
+      <mass value="0.223"/>
+      <origin xyz="-0.000002 0.000278 -0.026124"/>
+      <inertia ixx="0.000470" ixy="0.000000" ixz="0.000000" iyy="0.000233" iyz="0.000019" izz="0.000425"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0.0 " xyz="0 0 0"/>
+      <geometry name="elbowclevis_right_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT4_elbow.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="0 0 -0.048"/>
+      <geometry>
+        <box size="0.0712 0.0868 0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 0.0443 -0.024"/>
+      <geometry>
+        <box size="0.0652 0.01 0.048"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 -0.046 -0.024"/>
+      <geometry>
+        <box size="0.0652 0.01 0.048"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0.0443 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.0356"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 -0.0485 0"/>
+      <geometry>
+        <cylinder length="0.015" radius="0.0356"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j4" type="revolute">
+    <axis xyz="0 0 -1"/>
+    <limit effort="4" lower="-0.343829862643" upper="3.32834288355" velocity="2.61799387799"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.27747"/>
+    <parent link="elbowclevis_right"/>
+    <child link="wrist_right"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="wrist_right">
+    <inertial>
+      <mass value="1.468"/>
+      <origin xyz="-0.004404 0.000124 0.130931"/>
+      <inertia ixx="0.006099" ixy="0.000004" ixz="-0.000043" iyy="0.006120" iyz="0.000015" izz="0.001179"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="wrist_right_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T5_forearmRoll.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="0.0 0 0.1317"/>
+      <geometry>
+        <cylinder length="0.18" radius="0.041"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0.0307 0.025"/>
+      <geometry>
+        <box size="0.03 0.0154 0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 -0.0307 0.025"/>
+      <geometry>
+        <box size="0.03 0.0154 0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 0.027 0"/>
+      <geometry>
+        <cylinder length="0.007" radius="0.024"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 -0.027 0"/>
+      <geometry>
+        <cylinder length="0.007" radius="0.024"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j5" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="wrist_right"/>
+    <child link="w_differential_right"/>
+    <limit effort="8" lower="-1.02677719895" upper="1.02677719895" velocity="0.698131700798"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="w_differential_right">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="1.5"/>
+      <inertia ixx="0.00625" ixy="0.0" ixz="0.0" iyy="0.00625" iyz="0.0" izz="0.0025"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="w_differential_right_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T6_wristDiff.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0" xyz="0 0 0"/>
+      <geometry name="w_differential_right_collision">
+        <cylinder length="0.044" radius="0.027"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_arm_j6" type="revolute">
+    <axis xyz="-1 0 0"/>
+    <limit effort="8" lower="-1.0471975512" upper="1.0471975512" velocity="0.698131700798"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="w_differential_right"/>
+    <child link="handmount_right"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="handmount_right">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.00208333333333" ixy="0.0" ixz="0.0" iyy="0.00208333333333" iyz="0.0" izz="0.00333333333333"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="handmount_right_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T7_wristYaw.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 -0.043"/>
+      <geometry>
+        <box size="0.04 0.0412 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.1 0.0" xyz="-0.025 0.0 -0.0302"/>
+      <geometry>
+        <box size="0.03 0.03 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 2.04 0.0" xyz="0.025 0.0 -0.0302"/>
+      <geometry>
+        <box size="0.03 0.03 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0" xyz="-0.0275 0.0 0"/>
+      <geometry>
+        <cylinder length="0.014" radius="0.0206"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0" xyz="0.0275 0.0 0"/>
+      <geometry>
+        <cylinder length="0.014" radius="0.0206"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="right_arm_t0" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a0"/>
+    <joint name="right_arm_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t1" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a1"/>
+    <joint name="right_arm_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t2" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a2"/>
+    <joint name="right_arm_j2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t3" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a3">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="right_arm_j3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t4" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a4">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="right_arm_j4">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t5" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a5">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="right_arm_j5">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="right_arm_t6" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="right_arm_a6">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="right_arm_j6">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <joint name="palm_joint_right" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 -0.04414"/>
+    <parent link="handmount_right"/>
+    <child link="palm_right"/>
+  </joint>
+  <link name="palm_right">
+    <inertial>
+      <origin xyz="0.001459 0.001619 -0.051312"/>
+      <mass value="0.663"/>
+      <inertia ixx="0.130152425" ixy="0.0" ixz="0.0" iyy="0.1289314" iyz="0.0" izz="0.134926025"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="palm_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_T8_palm_right.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0112 0 -0.057"/>
+      <geometry>
+        <box size="0.04 0.0972 0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.02 -0.06 -0.030"/>
+      <geometry>
+        <box size="0.022 0.023 0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.5235 0.0 " xyz="-0.0058 0 -0.072"/>
+      <geometry>
+        <box size="0.025 0.0972 0.047"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 0.0 -0.0166"/>
+      <geometry>
+        <cylinder length="0.0325" radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 -0.02 -0.05"/>
+      <geometry>
+        <cylinder length="0.0572" radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="-0.0023 0.0 -0.1"/>
+      <geometry>
+        <cylinder length="0.08" radius="0.013"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0.029 -0.015"/>
+      <geometry>
+        <box size="0.055 0.02 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="fts_frame_joint_right" type="fixed">
+    <parent link="handmount_right"/>
+    <child link="m3loadx6_ma29_l0"/>
+    <origin rpy="0.0 3.14159265359 0.0" xyz="0.0 0.0 -0.055"/>
+  </joint>
+  <link name="m3loadx6_ma29_l0"/>
+  <joint name="hand_right_tool_frame_joint" type="fixed">
+    <parent link="handmount_right"/>
+    <child link="hand_tool_frame_right"/>
+    <origin rpy="-1.5708 0 1.5708" xyz="-0.02 0 -0.12"/>
+  </joint>
+  <link name="hand_tool_frame_right">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.01"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="red"/>
+    </collision>
+    <inertial>
+      <mass value="1.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <joint name="right_hand_j0" type="revolute">
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 -1.57079632679" xyz="-0.02 0.028 -0.03"/>
+    <parent link="palm_right"/>
+    <child link="thumb0_right"/>
+    <limit effort="100" lower="0.0" upper="2.09439510239" velocity="0.349065850399"/>
+  </joint>
+  <link name="thumb0_right">
+    <inertial>
+      <mass value="0.0117"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb0_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_abductlink.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.0272" radius="0.0061"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00945 -0.008 0"/>
+      <geometry>
+        <box size="0.0189 0.002 0.0190"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00945 0.008 0"/>
+      <geometry>
+        <box size="0.0189 0.002 0.0190"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="-0.0189 0 0"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.0095"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j1" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_right"/>
+    <child link="thumb_motor_right"/>
+    <limit effort="100" lower="0.0" upper="2.96705972839" velocity="0.872664625997"/>
+  </joint>
+  <link name="thumb_motor_right">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="right_hand_j1a" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <limit effort="100" lower="0.0" upper="1.4835298642" velocity="1.308996939"/>
+    <origin rpy="0 0 0" xyz="-0.018 0 0"/>
+    <parent link="thumb0_right"/>
+    <child link="thumb1_right"/>
+    <mimic joint="right_hand_j1" multiplier="0.4"/>
+  </joint>
+  <link name="thumb1_right">
+    <inertial>
+      <mass value="0.0344"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb1_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.022 0 -0.00134"/>
+      <geometry>
+        <box size="0.026 0.016 0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.022 0 -0.00178"/>
+      <geometry>
+        <box size="0.023 0.011 0.019"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j1b" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="-0.044 0 0"/>
+    <parent link="thumb1_right"/>
+    <child link="thumb2_right"/>
+    <limit effort="100" lower="0.0" upper="1.4835298642" velocity="0.872664625997"/>
+    <mimic joint="right_hand_j1" multiplier="0.4"/>
+  </joint>
+  <link name="thumb2_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb_knuckle2_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="thumb_knuckle2_collision_right">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_thumb_knuckle2convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_thumb_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.035 0 0"/>
+    <parent link="thumb2_right"/>
+    <child link="thumb_tip_right"/>
+  </joint>
+  <link name="thumb_tip_right"/>
+  <joint name="right_hand_j2" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_right"/>
+    <child link="index_motor_right"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="index_motor_right">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="right_hand_j2a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0.028 -0.101"/>
+    <parent link="palm_right"/>
+    <child link="index0_right"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="right_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index0_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index0_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j2b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="index0_right"/>
+    <child link="index1_right"/>
+    <mimic joint="right_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index1_right">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index1_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j2c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="index1_right"/>
+    <child link="index2_right"/>
+    <mimic joint="right_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index2_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index2_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="index2_collision_right">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_index_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="index2_right"/>
+    <child link="index_tip_right"/>
+  </joint>
+  <link name="index_tip_right"/>
+  <joint name="right_hand_j3" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_right"/>
+    <child link="ring_motor_right"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="ring_motor_right">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="right_hand_j3a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.101"/>
+    <parent link="palm_right"/>
+    <child link="ring0_right"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="right_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring0_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring0_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j3b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="ring0_right"/>
+    <child link="ring1_right"/>
+    <mimic joint="right_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring1_right">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring1_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j3c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="ring1_right"/>
+    <child link="ring2_right"/>
+    <mimic joint="right_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring2_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring2_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="ring2_collision_right">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_ring_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="ring2_right"/>
+    <child link="ring_tip_right"/>
+  </joint>
+  <link name="ring_tip_right"/>
+  <joint name="right_hand_j4" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_right"/>
+    <child link="pinky_motor_right"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="pinky_motor_right">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="right_hand_j4a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 -0.028 -0.101"/>
+    <parent link="palm_right"/>
+    <child link="pinky0_right"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="right_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky0_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky0_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j4b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="pinky0_right"/>
+    <child link="pinky1_right"/>
+    <mimic joint="right_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky1_right">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky1_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_j4c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="pinky1_right"/>
+    <child link="pinky2_right"/>
+    <mimic joint="right_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky2_right">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky2_geom_right">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="pinky2_collision_right">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_pinky_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="pinky2_right"/>
+    <child link="pinky_tip_right"/>
+  </joint>
+  <link name="pinky_tip_right"/>
+  <transmission name="right_hand_j0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_j0_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_hand_j1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_j1_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_hand_j2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_j2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_j2_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_hand_j3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_j3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_j3_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_hand_j4_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_j4">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_j4_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="left_arm_j0" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0.0 0.18465 0.2337"/>
+    <parent link="upper"/>
+    <child link="shoulderupper_left"/>
+    <limit effort="40" lower="-1.3962634016" upper="3.49065850399" velocity="0.523598775598"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="shoulderupper_left">
+    <inertial>
+      <mass value="2.0310"/>
+      <inertia ixx="0.003461" ixy="0.000428" ixz="0.000002" iyy="0.003097" iyz="0.000000" izz="0.005416"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="3.14159265359 0 0 " xyz="0 0 0"/>
+      <geometry name="left_shoulder_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT1_shoulderRoll.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 -0.035 0.0"/>
+      <geometry>
+        <box size="0.128 0.07 0.072"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="-0.011 0.0 0"/>
+      <geometry>
+        <cylinder length="0.15" radius="0.036"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j1" type="revolute">
+    <axis xyz="-1 0 0"/>
+    <limit effort="40" lower="-2.61799387799" upper="0.418879020479" velocity="0.523598775598"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="shoulderupper_left"/>
+    <child link="shoulderpitch_left"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="shoulderpitch_left">
+    <inertial>
+      <mass value="0.566"/>
+      <origin rpy="0 0 0" xyz="0.000944 0.026331 -0.043257"/>
+      <inertia ixx="0.000754" ixy="0.000015" ixz="0.000014" iyy="0.000921" iyz="0.000142" izz="0.000834"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 3.14159265359" xyz="0 0 0"/>
+      <geometry name="shoulderpitch_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT2_shoulderPitch.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.58 0.0 0.0 " xyz="0.0 0.0256 -0.04"/>
+      <geometry>
+        <box size="0.09 0.07 0.072"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 0.0319 -0.0595"/>
+      <geometry>
+        <cylinder length="0.0262" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="-0.0407 0.0 0"/>
+      <geometry>
+        <cylinder length="0.008" radius="0.0352"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0 " xyz="0.0407 0.0 0"/>
+      <geometry>
+        <cylinder length="0.008" radius="0.0352"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j2" type="revolute">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0 0.03175 -0.27857"/>
+    <parent link="shoulderpitch_left"/>
+    <child link="bicep_left"/>
+    <limit effort="20" lower="-1.4835298642" upper="1.4835298642" velocity="0.872664625997"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="bicep_left">
+    <inertial>
+      <origin xyz="-0.005767 0.001385 0.084539 "/>
+      <mass value="2.296"/>
+      <inertia ixx="0.0128958666667" ixy="0.0" ixz="0.0" iyy="0.0138716666667" iyz="0.0" izz="0.00285086666667"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0.00502 0 0"/>
+      <geometry name="bicep_left_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_LT3_bicep.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="-0.03 0 0.1"/>
+      <geometry>
+        <box size="0.07 0.08 0.15"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="-0.0047 0 0.15"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 0.0 0"/>
+      <geometry>
+        <cylinder length="0.077" radius="0.0362"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j3" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0.00502 0  0"/>
+    <parent link="bicep_left"/>
+    <child link="elbowclevis_left"/>
+    <limit effort="20" lower="-0.00486908464063" upper="2.31810267927" velocity="0.872664625997"/>
+    <dynamics damping="10.0"/>
+  </joint>
+  <link name="elbowclevis_left">
+    <inertial>
+      <mass value="0.223"/>
+      <origin xyz="-0.000002 -0.000278 -0.026124"/>
+      <inertia ixx="0.000470" ixy="0.000000" ixz="0.000000" iyy="0.000233" iyz="0.000019" izz="0.000425"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 3.14159265359 " xyz="0 0 0"/>
+      <geometry name="elbowclevis_left_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_RT4_elbow.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="0 0 -0.048"/>
+      <geometry>
+        <box size="0.0712 0.0868 0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 -0.0443 -0.024"/>
+      <geometry>
+        <box size="0.0652 0.01 0.048"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 0.046 -0.024"/>
+      <geometry>
+        <box size="0.0652 0.01 0.048"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 -0.0443 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.0356"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0.0485 0"/>
+      <geometry>
+        <cylinder length="0.015" radius="0.0356"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j4" type="revolute">
+    <axis xyz="0 0 -1"/>
+    <limit effort="4" lower="-3.32834288355" upper="0.343829862643" velocity="2.61799387799"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.27747"/>
+    <parent link="elbowclevis_left"/>
+    <child link="wrist_left"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="wrist_left">
+    <inertial>
+      <mass value="1.468"/>
+      <origin xyz="-0.004404 -0.000124 0.130931"/>
+      <inertia ixx="0.006099" ixy="0.000004" ixz="-0.000043" iyy="0.006120" iyz="0.000015" izz="0.001179"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="wrist_left_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T5_forearmRoll.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0.0 " xyz="0.0 0 0.1317"/>
+      <geometry>
+        <cylinder length="0.18" radius="0.041"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0.0307 0.025"/>
+      <geometry>
+        <box size="0.03 0.0154 0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 -0.0307 0.025"/>
+      <geometry>
+        <box size="0.03 0.0154 0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 0.027 0"/>
+      <geometry>
+        <cylinder length="0.007" radius="0.024"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0 " xyz="0 -0.027 0"/>
+      <geometry>
+        <cylinder length="0.007" radius="0.024"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j5" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="wrist_left"/>
+    <child link="w_differential_left"/>
+    <limit effort="8" lower="-1.02677719895" upper="1.02677719895" velocity="0.698131700798"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="w_differential_left">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="1.5"/>
+      <inertia ixx="0.00625" ixy="0.0" ixz="0.0" iyy="0.00625" iyz="0.0" izz="0.0025"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="w_differential_left_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T6_wristDiff.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.5707 0.0 0.0" xyz="0 0 0"/>
+      <geometry name="w_differential_left_collision">
+        <cylinder length="0.044" radius="0.027"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_arm_j6" type="revolute">
+    <axis xyz="-1 0 0"/>
+    <limit effort="8" lower="-1.0471975512" upper="1.0471975512" velocity="0.698131700798"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="w_differential_left"/>
+    <child link="handmount_left"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="handmount_left">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.00208333333333" ixy="0.0" ixz="0.0" iyy="0.00208333333333" iyz="0.0" izz="0.00333333333333"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="handmount_left_geom">
+        <mesh filename="res/meka_meshes/meshes/mid_res/A2R3/A2R3_T7_wristYaw.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 -0.043"/>
+      <geometry>
+        <box size="0.04 0.0412 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.1 0.0" xyz="-0.025 0.0 -0.0302"/>
+      <geometry>
+        <box size="0.03 0.03 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 2.04 0.0" xyz="0.025 0.0 -0.0302"/>
+      <geometry>
+        <box size="0.03 0.03 0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0" xyz="-0.0275 0.0 0"/>
+      <geometry>
+        <cylinder length="0.014" radius="0.0206"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5707 0.0" xyz="0.0275 0.0 0"/>
+      <geometry>
+        <cylinder length="0.014" radius="0.0206"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="left_arm_t0" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a0"/>
+    <joint name="left_arm_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t1" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a1"/>
+    <joint name="left_arm_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t2" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a2"/>
+    <joint name="left_arm_j2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t3" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a3">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="left_arm_j3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t4" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a4">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="left_arm_j4">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t5" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a5">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="left_arm_j5">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <transmission name="left_arm_t6" type="pr2_mechanism_model/SimpleTransmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="left_arm_a6">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="left_arm_j6">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <joint name="palm_joint_left" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 -0.04414"/>
+    <parent link="handmount_left"/>
+    <child link="palm_left"/>
+  </joint>
+  <link name="palm_left">
+    <inertial>
+      <origin xyz="0.001459 0.001619 -0.051312"/>
+      <mass value="0.663"/>
+      <inertia ixx="0.130152425" ixy="0.0" ixz="0.0" iyy="0.1289314" iyz="0.0" izz="0.134926025"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="palm_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_T8_palm_left.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0112 0 -0.057"/>
+      <geometry>
+        <box size="0.04 0.0972 0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.02 0.06 -0.030"/>
+      <geometry>
+        <box size="0.022 0.023 0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.5235 0.0 " xyz="-0.0058 0 -0.072"/>
+      <geometry>
+        <box size="0.025 0.0972 0.047"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0.0 " xyz="0 0.0 -0.0166"/>
+      <geometry>
+        <cylinder length="0.0325" radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0.02 -0.05"/>
+      <geometry>
+        <cylinder length="0.0572" radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="-0.0023 0.0 -0.1"/>
+      <geometry>
+        <cylinder length="0.08" radius="0.013"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 -0.029 -0.015"/>
+      <geometry>
+        <box size="0.055 0.02 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="fts_frame_joint_left" type="fixed">
+    <parent link="handmount_left"/>
+    <child link="m3loadx6_ma30_l0"/>
+    <origin rpy="0.0 3.14159265359 0.0" xyz="0.0 0.0 -0.055"/>
+  </joint>
+  <link name="m3loadx6_ma30_l0"/>
+  <joint name="hand_left_tool_frame_joint" type="fixed">
+    <parent link="handmount_left"/>
+    <child link="hand_tool_frame_left"/>
+    <origin rpy="-1.5708 0 1.5708" xyz="-0.02 0 -0.12"/>
+  </joint>
+  <link name="hand_tool_frame_left">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.01"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="red"/>
+    </collision>
+    <inertial>
+      <mass value="1.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <joint name="left_hand_j0" type="revolute">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 1.57079632679" xyz="-0.02 -0.028 -0.03"/>
+    <parent link="palm_left"/>
+    <child link="thumb0_left"/>
+    <limit effort="100" lower="0.0" upper="2.09439510239" velocity="0.349065850399"/>
+  </joint>
+  <link name="thumb0_left">
+    <inertial>
+      <mass value="0.0117"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb0_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_abductlink.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.0272" radius="0.0061"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00945 -0.008 0"/>
+      <geometry>
+        <box size="0.0189 0.002 0.0190"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00945 0.008 0"/>
+      <geometry>
+        <box size="0.0189 0.002 0.0190"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="-0.0189 0 0"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.0095"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j1" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_left"/>
+    <child link="thumb_motor_left"/>
+    <limit effort="100" lower="0.0" upper="2.96705972839" velocity="0.872664625997"/>
+  </joint>
+  <link name="thumb_motor_left">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="left_hand_j1a" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <limit effort="100" lower="0.0" upper="1.4835298642" velocity="1.308996939"/>
+    <origin rpy="0 0 0" xyz="-0.018 0 0"/>
+    <parent link="thumb0_left"/>
+    <child link="thumb1_left"/>
+    <mimic joint="left_hand_j1" multiplier="0.4"/>
+  </joint>
+  <link name="thumb1_left">
+    <inertial>
+      <mass value="0.0344"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb1_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.022 0 -0.00134"/>
+      <geometry>
+        <box size="0.026 0.016 0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.022 0 -0.00178"/>
+      <geometry>
+        <box size="0.023 0.011 0.019"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j1b" type="revolute">
+    <axis xyz="0 -1 0"/>
+    <origin rpy="0 0 0" xyz="-0.044 0 0"/>
+    <parent link="thumb1_left"/>
+    <child link="thumb2_left"/>
+    <limit effort="100" lower="0.0" upper="1.4835298642" velocity="0.872664625997"/>
+    <mimic joint="left_hand_j1" multiplier="0.4"/>
+  </joint>
+  <link name="thumb2_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="thumb_knuckle2_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_thumb_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="thumb_knuckle2_collision_left">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_thumb_knuckle2convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_thumb_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.035 0 0"/>
+    <parent link="thumb2_left"/>
+    <child link="thumb_tip_left"/>
+  </joint>
+  <link name="thumb_tip_left"/>
+  <joint name="left_hand_j2" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_left"/>
+    <child link="index_motor_left"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="index_motor_left">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="left_hand_j2a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 -0.028 -0.101"/>
+    <parent link="palm_left"/>
+    <child link="index0_left"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="left_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index0_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index0_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j2b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="index0_left"/>
+    <child link="index1_left"/>
+    <mimic joint="left_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index1_left">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index1_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j2c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="index1_left"/>
+    <child link="index2_left"/>
+    <mimic joint="left_hand_j2" multiplier="0.3"/>
+  </joint>
+  <link name="index2_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="index2_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="index2_collision_left">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_index_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="index2_left"/>
+    <child link="index_tip_left"/>
+  </joint>
+  <link name="index_tip_left"/>
+  <joint name="left_hand_j3" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_left"/>
+    <child link="ring_motor_left"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="ring_motor_left">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="left_hand_j3a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.101"/>
+    <parent link="palm_left"/>
+    <child link="ring0_left"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="left_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring0_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring0_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j3b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="ring0_left"/>
+    <child link="ring1_left"/>
+    <mimic joint="left_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring1_left">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring1_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j3c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="ring1_left"/>
+    <child link="ring2_left"/>
+    <mimic joint="left_hand_j3" multiplier="0.3"/>
+  </joint>
+  <link name="ring2_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="ring2_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="ring2_collision_left">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_ring_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="ring2_left"/>
+    <child link="ring_tip_left"/>
+  </joint>
+  <link name="ring_tip_left"/>
+  <joint name="left_hand_j4" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="palm_left"/>
+    <child link="pinky_motor_left"/>
+    <limit effort="100" lower="0.0" upper="5.23598775598" velocity="0.872664625997"/>
+  </joint>
+  <link name="pinky_motor_left">
+    <inertial>
+      <mass value="2e-06"/>
+      <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
+    </inertial>
+  </link>
+  <joint name="left_hand_j4a" type="revolute">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0.028 -0.101"/>
+    <parent link="palm_left"/>
+    <child link="pinky0_left"/>
+    <limit effort="100" lower="-0.123429684701" upper="0.647028460299" velocity="0.872664625997"/>
+    <mimic joint="left_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky0_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyA"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky0_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00134 0 -0.022"/>
+      <geometry>
+        <box size="0.015 0.016 0.026"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.00178 0 -0.022"/>
+      <geometry>
+        <box size="0.019 0.011 0.023"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.011" radius="0.0115"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j4b" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.610690705273" upper="0.610690705273" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.044"/>
+    <parent link="pinky0_left"/>
+    <child link="pinky1_left"/>
+    <mimic joint="left_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky1_left">
+    <inertial>
+      <mass value="0.0429"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyB"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky1_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0.0 0 -0.015"/>
+      <geometry>
+        <box size="0.015 0.016 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="-0.001 0 -0.015"/>
+      <geometry>
+        <box size="0.017 0.011 0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707 0 0.0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.009" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_j4c" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-0.597077137107" upper="0.597129496985" velocity="27.9252680319"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.032"/>
+    <parent link="pinky1_left"/>
+    <child link="pinky2_left"/>
+    <mimic joint="left_hand_j4" multiplier="0.3"/>
+  </joint>
+  <link name="pinky2_left">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <visual>
+      <material name="GreyC"/>
+      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <geometry name="pinky2_geom_left">
+        <mesh filename="res/meka_meshes/meshes/mid_res/H2R3/H2R3_finger_knuckle3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0 " xyz="0 0 0"/>
+      <geometry name="pinky2_collision_left">
+        <mesh filename="res/meka_meshes/meshes/low_res/H2R3/H2R3_finger_knuckle3convexhull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_pinky_dummy" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.008 -0.025"/>
+    <parent link="pinky2_left"/>
+    <child link="pinky_tip_left"/>
+  </joint>
+  <link name="pinky_tip_left"/>
+  <transmission name="left_hand_j0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_j0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_j0_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="left_hand_j1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_j1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_j1_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="left_hand_j2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_j2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_j2_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="left_hand_j3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_j3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_j3_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="left_hand_j4_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_j4">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_j4_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <m3_wheel alpha="0.523598775598" fb="front" l="0.2678" lr="right" parent="base_link"/>
+  <m3_wheel alpha="2.61799387799" fb="back" l="0.2678" lr="right" parent="base_link"/>
+  <m3_wheel alpha="-2.61799387799" fb="back" l="0.2678" lr="left" parent="base_link"/>
+  <m3_wheel alpha="-0.523598775598" fb="front" l="0.2678" lr="left" parent="base_link"/>
+  <joint name="xtion_jointgz" type="fixed">
+    <origin rpy="0 0 0" xyz="0.12 0 0.06"/>
+    <parent link="shell"/>
+    <child link="xtion_linkgz"/>
+  </joint>
+  <link name="xtion_linkgz">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.000416666666667" ixy="0.0" ixz="0.0" iyy="8.33333333333e-05" iyz="0.0" izz="0.000416666666667"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="res/meka_meshes/meshes/asus_camera/asus_camera_simple.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.035 0.185 0.025"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="xtion_depth_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.049 0.0"/>
+    <parent link="xtion_linkgz"/>
+    <child link="xtion_depth_frame"/>
+  </joint>
+  <link name="xtion_depth_frame"/>
+  <joint name="xtion_depth_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0.0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="xtion_depth_frame"/>
+    <child link="xtion_depth_optical_frame"/>
+  </joint>
+  <link name="xtion_depth_optical_frame"/>
+  <joint name="xtion_rgb_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.022 0.0"/>
+    <parent link="xtion_linkgz"/>
+    <child link="xtion_rgb_frame"/>
+  </joint>
+  <link name="xtion_rgb_frame"/>
+  <joint name="xtion_rgb_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0.0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="xtion_rgb_frame"/>
+    <child link="xtion_rgb_optical_frame"/>
+  </joint>
+  <link name="xtion_rgb_optical_frame"/>
+</robot>
