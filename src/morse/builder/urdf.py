@@ -17,6 +17,8 @@ ROS_SHARE_ROOT=os.environ["ROS_PACKAGE_PATH"].split(":")[0] + "/"
 
 MATERIALS = {}
 
+EPSILON = 0.05
+
 class URDFLink:
 
     def __init__(self, urdf_link):
@@ -29,7 +31,7 @@ class URDFLink:
 
         self._get_origin()
 
-        print("Link %s at %s" % (self.name, self.xyz))
+        print("..Create Link {} at {} with {}".format(urdf_link.name, self.xyz, self.rot))
 
     def _get_origin(self):
         """ Links do not define proper origin. We still try to extract one
@@ -37,23 +39,20 @@ class URDFLink:
         is not connected to any other child bone).
         """
         xyz = (0,0,0)
-        rpy = None
+        rpy = (0,0,0)
 
-        if self.inertial and self.inertial.origin:
-            xyz = self.inertial.origin.xyz
-            rpy = self.inertial.origin.rpy
-        elif self.collision and self.collision.origin:
-            xyz = self.collision.origin.xyz
-            rpy = self.collision.origin.rpy
-        elif self.visual and self.visual.origin:
+        #if self.inertial and self.inertial.origin:
+        #    xyz = self.inertial.origin.xyz
+        #    rpy = self.inertial.origin.rpy
+        #elif self.collision and self.collision.origin:
+        #    xyz = self.collision.origin.xyz
+        #    rpy = self.collision.origin.rpy
+        if self.visual and self.visual.origin:
             xyz = self.visual.origin.xyz
             rpy = self.visual.origin.rpy
 
         self.xyz = Vector(xyz)
-        if rpy:
-            self.rot = Euler(rpy, 'XYZ').to_quaternion()
-        else:
-            self.rot = Euler((0,0,0)).to_quaternion()
+        self.rot = Euler(rpy, 'XYZ').to_quaternion()
 
 class URDFJoint:
 
@@ -61,16 +60,18 @@ class URDFJoint:
     FIXED = "fixed"
     PRISMATIC = "prismatic"
     REVOLUTE = "revolute"
+    CONTINUOUS = "continuous"
 
-    TYPES = [FIXED, PRISMATIC, REVOLUTE]
+    TYPES = [FIXED, PRISMATIC, REVOLUTE, CONTINUOUS]
 
     def __init__(self, urdf_joint, urdf_link):
+        print("Create Joint {}".format(urdf_joint.name))
         
         self.name = urdf_joint.name
         self.type = urdf_joint.type
 
         xyz = (0,0,0)
-        rpy = None
+        rpy = (0,0,0)
 
         if urdf_joint.origin:
             xyz = urdf_joint.origin.xyz
@@ -80,19 +81,17 @@ class URDFJoint:
                 rpy = urdf_joint.origin.rpy
 
         self.xyz = Vector(xyz)
-        if rpy:
-            self.rot = Euler(rpy, 'XYZ').to_quaternion()
-        else:
-            self.rot = Euler((0,0,0)).to_quaternion()
+        self.rot = Euler(rpy, 'XYZ').to_quaternion()
 
         self.link = URDFLink(urdf_link)
 
-        self.axis = urdf_joint.axis
-        self.limit = urdf_joint.limit
+        if not urdf_joint.axis:
+            # defaults to (1,0,0)
+            self.axis = (1, 0, 0)
+        else:
+            self.axis = urdf_joint.axis
 
-        # this list contains all the URDF joints that need to be merged into a 
-        # single Blender bone
-        self.subjoints = []
+        self.limit = urdf_joint.limit
 
         self.children = []
 
@@ -103,165 +102,47 @@ class URDFJoint:
         self.posebone = None
 
     def add_child(self, urdf_joint, urdf_link):
-
         child = URDFJoint(urdf_joint, urdf_link)
-        
-        if child.xyz == Vector((0.,0.,0.)):
-            print("Zero lenght link (ie, multi DoF joints)! Merging it into a single Blender bone.")
-            if not self.subjoints:
-                self.subjoints.append(copy.deepcopy(self))
-            self.subjoints.append(child)
-
-            self.name += ">%s" % urdf_joint.name
-            self.rot = self.rot * child.rot
-            return self
-
-        else:
-            self.children.append(child)
-            return child
+        self.children.append(child)
+        return child
 
     def build_editmode(self, armature, parent = None):
         # Create Blender bones
         #
-        # URDF joints map to bones, URDF links map to objects whose origin is
-        # an empty located at the joint's bone's HEAD, and whose orientation
-        # match the URDF's joint frame.
-        #
-        # Since Blender does not support zero-lenght bones, joints connected by
-        # zero-length links are combined into a single Blender bone (named
-        # "joint1>joint2>...")
-        # 
-        # Special care must be given to the definition of the URDF joint frame.
-        # In Blender, bones *always* have their own frame with Y pointing from
-        # the head of the bone to the tail of the bone. X and Z can rotate
-        # around this axis with the 'roll' parameter. This is especially
-        # important because the joint rotation axis (for revolute joints) needs
-        # to be one of the X, Y or Z axis of the Blender bone. Hence, to match
-        # the URDF joint axis (defined as a vector in the URDF joint frame),
-        # the Blender bone must be carefully build.
-        #
-        # Here the proposed procedure:
-        # for each joint:
-        #    - When existing and unique, let Vj be the vector (joint origin, child
-        #    joint origin)
-        #    - Mj is the transformation matrix from the parent joint frame to
-        #    the joint frame
-        #    - if Vj exists and if the joint axis is orthogonal to Vj,
-        #    create a Blender bone that match Vj
-        #    - if not, place the bone tail such as the bone is orthogonal with
-        #    the rotation axis, and if possible, coplanar with the parent and/or
-        #    the child bones
-        #    - roll it so that the bone's X axis is aligned with the joint axis
-        #    - creates an empty, name it after the *link*, place it with Mj,
-        #    parent it to the bone
-        #
-        # After following this procedure, the rotation axis is *always* the X
-        # axis of the bone.
-        #
-        # Attention: this procedure does not provide support for multi-DoFs links!
-        # For multi-DoFs links, a maximum of 3 DoFs can be supported, as long
-        # as they correspond to *independant rotations on independant axis*
-        # (ie, rotations on mutually orthogonal axis). The orientation of the
-        # bone must then be computed such as each of these rotations axis match
-        # one of the bone main axis.
-        #
-        # If more than 3 DoFs are needed, or if the rotations are not independant,
-        # then an artifical non-null link must be added. If this can be done
-        # automatically has yet to be researched.
-        #
-        # If the joints at the end of the kinematic chains (ie, joints whose
-        # child links are not connected to any other link) are *fixed* joints,
-        # we consider them as 'static frames' and we do not create a bone for
-        # them (only an empty is created, named after the link).
-        #
-        # Note that one link may be connected to several other (child) links at
-        # different places: corresponding Blender bones may not be "visually"
-        # connected.
+        # URDF joints map to bones, URDF links map to objects.
+        # Procedure:
+        #   - create bone and set it to joint-position
+        #   - give the bone an lenght close to 0 (=> EPSILON)
+        #   - repeat it for each child
 
-        if not self.children and self.type == self.FIXED:
-            print("Processing %s as a static frame at the end of the armature. Do not create bone for it" % self.name)
-            return
-
-        print("Building %s..." % self.name)
-        self.editbone = armature.data.edit_bones.new(str(hash(self.name)))
+        self.editbone = armature.data.edit_bones.new(self.name)
 
         if parent:
-            self.editbone.use_inherit_rotation = True
             self.editbone.parent = parent.editbone
-
-            if len(parent.children) == 1:
-
-                # this joint is the only child of the parent joint: connect
-                # them with parent's tail
-                parent.editbone.tail = self.rot * self.xyz + parent.editbone.head
-                self.editbone.use_connect = True
-            else:
-                self.editbone.head = self.rot * self.xyz + parent.editbone.head
-
+            self.editbone.head = parent.editbone.head + (parent.rot * self.xyz)
+            self.rot = parent.rot * self.rot
         else:
-            self.editbone.head = (0, 0, 0)
+            self.editbone.head = self.xyz
 
-        if self.subjoints:
-            # if we have subjoints, we place the tail of the bone at the origin of the last joint's link.
-            offset = self.subjoints[-1].link.xyz
-        else:
-            offset = self.link.xyz
-        
-        if parent and offset == Vector((0,0,0)):
-            #TODO: compute an offset based on the joint axis direction
-            offset = parent.editbone.tail - parent.editbone.head
-        self.editbone.tail = self.editbone.head + offset
+        #print(self.name, self.editbone.matrix, sep='\n')
+
+        # y-axis of the bone is going toward the bones tails
+        # so we give it the global direction here.
+        self.editbone.tail = self.rot * Vector((0, EPSILON, 0)) + self.editbone.head
 
         for child in self.children:
             child.build_editmode(armature, self)
 
     def build_objectmode(self, armature, parent = None):
 
-        if not self.children and self.type == self.FIXED:
-            if not parent:
-                return
-
-            target = self.add_link_frame(armature, parent, self.xyz, self.rot)
-            
-            # Disabled generation of IK targets for now: would require one
-            # armature per 'kinematic group' to work well (currently, it creates 
-            # cycles
-            #
-            ## if the parent has only one such 'end frame', use it as IK target
-            ## TODO: if more than one, select one randomly?
-            #if len(parent.children) == 1:
-            #    ik = parent.posebone.constraints.new("IK")
-            #    ik.use_rotation = True
-            #    ik.use_tail = True
-            #    ik.target = target
-            ####################################################################
-
-            return
 
         try:
-            self.posebone = armature.pose.bones[str(hash(self.name))]
+            self.posebone = armature.pose.bones[self.name]
         except KeyError:
             print("Error: bone %s not yet added to the armature" % self.name)
             return
 
-        # Prevent moving or rotating bones that are not end-effectors (outside of IKs)
-        if self.children:
-            self.posebone.lock_location = (True, True, True)
-            self.posebone.lock_rotation = (True, True, True)
-            self.posebone.lock_scale = (True, True, True)
-
-        # initially, lock the IK
-        self.posebone.lock_ik_x = True
-        self.posebone.lock_ik_y = True
-        self.posebone.lock_ik_z = True
-
-
-        if self.subjoints:
-            print("Configuring multi-DoF joint %s" % self.name)
-            for j in self.subjoints:
-                j.configure_joint(self.posebone)
-        else:
-             self.configure_joint(self.posebone)
+        self.configure_joint(self.posebone)
 
         self.add_link_frame(armature)
 
@@ -269,130 +150,149 @@ class URDFJoint:
             child.build_objectmode(armature, self)
 
     def configure_joint(self, posebone):
+        self.posebone.lock_location = (True, True, True)
+        self.posebone.lock_rotation = (True, True, True)
+        self.posebone.lock_scale = (True, True, True)
 
-        # First, configure joint axis
-        if not self.axis:
+        ax = self.axis[0]
+        ay = self.axis[1]
+        az = self.axis[2]
+
+        if self.limit:
+            lu = self.limit.upper
+            ll = self.limit.lower
+
+            # if we have negativ axis like axis="0 -1 0"
+            # we have to reverse the limits and negate them
+            limit_x_lower = ll if (ax > 0) else -lu
+            limit_x_upper = lu if (ax > 0) else -ll
+
+            limit_y_lower = ll if (ay > 0) else -lu
+            limit_y_upper = lu if (ay > 0) else -ll
+
+            limit_z_lower = ll if (az > 0) else -lu
+            limit_z_upper = lu if (az > 0) else -ll
+
+        if self.type == self.FIXED:
+            # This is not really a joint because it cannot move.
+            # All degrees of freedom are locked.
             return
 
-        print("Joint axis for <%s> (%s): %s" % (self.name, self.type, self.axis))
+        elif self.type == self.REVOLUTE:
+            # a hinge joint that rotates along the axis and has
+            # a limited range specified by the upper and lower limits. 
+
+            if self.limit:
+                c = self.posebone.constraints.new('LIMIT_ROTATION')
+                c.owner_space = 'LOCAL'
+
+            if ax: # x-axis
+                self.posebone.lock_rotation[0] = False
+
+                if self.limit:
+                    c.use_limit_x = True
+                    c.min_x = limit_x_lower
+                    c.max_x = limit_x_upper
+
+            if ay: # y-axis
+                self.posebone.lock_rotation[1] = False
+
+                if self.limit:
+                    c.use_limit_y = True
+                    c.min_y = limit_y_lower
+                    c.max_y = limit_y_upper
+
+            if az: # z-axis
+                self.posebone.lock_rotation[2] = False
+
+                if self.limit:
+                    c.use_limit_z = True
+                    c.min_z = limit_z_lower
+                    c.max_z = limit_z_upper
 
 
-        # Then, IK limits
-        if self.axis[0]:
-            posebone.lock_ik_x = False
-            posebone.use_ik_limit_x = True
-            if self.limit:
-                posebone.ik_max_x = self.limit.upper
-                posebone.ik_min_x = self.limit.lower
-        elif self.axis[1]:
-            posebone.lock_ik_y = False
-            posebone.use_ik_limit_y = True
-            if self.limit:
-                posebone.ik_max_y = self.limit.upper
-                posebone.ik_min_y = self.limit.lower
-        elif self.axis[2]:
-            posebone.lock_ik_z = False
-            posebone.use_ik_limit_z = True
-            if self.limit:
-                posebone.ik_max_z = self.limit.upper
-                posebone.ik_min_z = self.limit.lower
+        elif self.type == self.PRISMATIC:
+            # a sliding joint that slides along the axis, and has a
+            # limited range specified by the upper and lower limits
 
-    def add_link_frame(self, armature, joint = None, xyz = None, rot = None):
+            if self.limit:
+                c = self.posebone.constraints.new('LIMIT_LOCATION')
+                c.owner_space = 'LOCAL'
+
+            if ax: # x-axis
+                self.posebone.lock_location[0] = False
+
+                if self.limit:
+                    c.use_min_x = True
+                    c.use_max_x = True
+                    c.min_x = limit_x_lower
+                    c.max_x = limit_x_upper
+
+            if ay: # y-axis
+                self.posebone.lock_location[1] = False
+
+                if self.limit:
+                    c.use_min_y = True
+                    c.use_max_y = True
+                    c.min_y = limit_y_lower
+                    c.max_y = limit_y_upper
+
+            if az: # z-axis
+                self.posebone.lock_location[2] = False
+
+                if self.limit:
+                    c.use_min_z = True
+                    c.use_max_z = True
+                    c.min_z = limit_z_lower
+                    c.max_z = limit_z_upper
+
+        elif self.type == self.CONTINUOUS:
+            # a continuous hinge joint that rotates around
+            # the axis and has no upper and lower limits 
+
+            if ax: # x-axis
+                self.posebone.lock_rotation[0] = False
+
+            if ay: # y-axis
+                self.posebone.lock_rotation[1] = False
+
+            if az: # z-axis
+                self.posebone.lock_rotation[2] = False
+
+        else:
+            print("Joint type ({}) configuration not implemented yet".format(self.type))
+
+    def add_link_frame(self, armature, joint = None):
         """
-
         :param joint: if the link has no proper bone (case for fixed joints at
         the end of an armature), we need to specify the joint we want to attach
         the link to (typically, the parent joint)
 
         """
+        if not self.link.visual:
+            return
+
         if not joint:
             joint = self
 
-
-        visuals = []
-        geometry = None
-
-        if self.link.visual and self.link.visual.geometry:
-            geometry = self.link.visual.geometry
-
-            if isinstance(geometry, Mesh):
-
-                path = geometry.filename.replace("package:/", ROS_SHARE_ROOT)
-                # Save a list of objects names before importing Collada/STL
-                objects_names = [obj.name for obj in bpymorse.get_objects()]
-
-                if ('.dae' in geometry.filename):
-                    # Import Collada from filepath
-                    bpymorse.collada_import(filepath=path)
-                    # Get a list of the imported objects
-                    visuals = [obj for obj in bpymorse.get_objects() \
-                                  if obj.name not in objects_names]
-                elif ('.stl' in geometry.filename):
-                    bpymorse.stl_import(filepath=path)
-                    # Get a list of the imported objects
-                    visuals = [obj for obj in bpymorse.get_objects() \
-                                  if obj.name not in objects_names]
-
-                if geometry.scale:
-                    for v in visuals:
-                        v.scale = [v.scale[0] * geometry.scale[0],
-                                   v.scale[1] * geometry.scale[1],
-                                   v.scale[2] * geometry.scale[2]]
-
-            elif isinstance(geometry, Box):
-                bpymorse.add_mesh_cube()
-                ob = bpymorse.active_object()
-                ob.name = self.link.name
-                ob.dimensions = geometry.size
-                visuals = [ob]
-
-            elif isinstance(geometry, Cylinder):
-                radius = geometry.radius
-                length = geometry.length
-                bpymorse.add_mesh_cylinder(radius=radius, depth=length)
-                ob = bpymorse.active_object()
-                ob.name = self.link.name
-                visuals = [ob]
-
-            elif isinstance(geometry, Sphere):
-                bpymorse.add_mesh_uv_sphere(size=geometry.radius)
-                ob = bpymorse.active_object()
-                ob.name = self.link.name
-                visuals = [ob]
-
-        else:
-            bpymorse.add_empty(type = "ARROWS")
-
-            empty = bpymorse.get_first_selected_object()
-            empty.name = self.link.name
-            empty.scale = [0.01, 0.01, 0.01]
-            visuals = [empty]
+        visuals = create_objects_by_link(self.link)
 
         for v in visuals:
-            v.matrix_local = armature.data.bones[str(hash(joint.name))].matrix_local
+            v.location = armature.matrix_world * self.posebone.matrix * self.posebone.location
+            v.rotation_quaternion = v.rotation_quaternion * joint.rot
 
-            if xyz and rot:
-                v.location += rot * xyz
-            elif xyz:
-                v.location += xyz
+            self.rescale_object(self.link.visual.geometry, v)
 
-            self.rescale_object(geometry, v)
             self.add_material(v)
 
             # parent the visuals to the armature
-            armature.data.bones[str(hash(joint.name))].use_relative_parent = True
+            armature.data.bones[joint.name].use_relative_parent = True
             v.parent = armature
-            v.parent_bone = str(hash(joint.name))
+            v.parent_bone = joint.name
             v.parent_type = "BONE"
 
     def rescale_object(self, geometry, obj):
-        if isinstance(geometry, Mesh):
-            if geometry.scale:
-                obj.scale = [obj.scale[0] * geometry.scale[0],
-                             obj.scale[1] * geometry.scale[1],
-                             obj.scale[2] * geometry.scale[2]]
-
-        elif isinstance(geometry, Box):
+        if isinstance(geometry, Box):
             obj.dimensions = geometry.size
 
         elif isinstance(geometry, Cylinder):
@@ -445,8 +345,14 @@ class URDFJoint:
         if not mat:
             mat = bpymorse.get_materials().new(name=material.name)
 
-        obj.data.materials.append(mat)
-        mat.diffuse_color = (rgba[0], rgba[1], rgba[2])
+        try:
+            obj.data.materials.append(mat)
+            mat.diffuse_color = (rgba[0], rgba[1], rgba[2])
+        except AttributeError:
+            # ==> Camera, Light .. have no material
+            # TODO: Remove this try-except block and implement a
+            # object-type query for catch this error
+            pass
 
 
     def __repr__(self):
@@ -468,6 +374,7 @@ class URDF(ComponentCreator):
         for mat in self.urdf.materials:
             add_material(mat)
 
+        self.base_link = URDFLink(self.urdf.link_map[self.urdf.get_root()])
         self.roots = self._walk_urdf(self.urdf.link_map[self.urdf.get_root()])
 
         self.build()
@@ -476,10 +383,6 @@ class URDF(ComponentCreator):
         bones = []
         for joint, child_link in self._get_urdf_connections(link):
             if parent_bone:
-                # be careful: if joint is a zero-length joint,
-                # it gets merged into parent bone (because Blender does not
-                # support 0-length joints)! so bone and parent_bone
-                # may be equal.
                 bone = parent_bone.add_child(joint, child_link)
             else:
                 bone = URDFJoint(joint, child_link)
@@ -510,11 +413,20 @@ class URDF(ComponentCreator):
         for root in self.roots:
             root.build_editmode(ob)
 
+        # creating base-link visual, if exist
+        if self.base_link.visual:
+            visuals = create_objects_by_link(self.base_link)
+            for v in visuals:
+                v.parent = ob
+                v.parent_type = "OBJECT"
+
         bpymorse.mode_set(mode='OBJECT')
         for root in self.roots:
             root.build_objectmode(ob)
 
 def add_material(urdf_material):
+    """ Add a urdf_material to the global MATERIALS dictonary.
+    """
     global MATERIALS
 
     if urdf_material.name in MATERIALS:
@@ -528,4 +440,77 @@ def add_material(urdf_material):
     if urdf_material.texture and urdf_material.texture.filename:
         MATERIALS[urdf_material.name]['texture'] = urdf_material.texture.filename
 
+def create_objects_by_link(link):
+    """ Creates a object from a given URDFLink and
+        set the correct origin.
 
+        :param link: related URDFLink
+        :return: list of all created objects
+    """
+    visuals = []
+
+    if link.visual and link.visual.geometry:
+        geometry = link.visual.geometry
+
+        if isinstance(geometry, Mesh):
+
+            path = geometry.filename.replace("package:/", ROS_SHARE_ROOT)
+            # Save a list of objects names before importing Collada/STL
+            objects_names = [obj.name for obj in bpymorse.get_objects()]
+
+            if '.dae' in geometry.filename:
+                # Import Collada from filepath
+                bpymorse.collada_import(filepath=path)
+                # Get a list of the imported objects
+                visuals = [obj for obj in bpymorse.get_objects() \
+                              if obj.name not in objects_names]
+
+            elif '.stl' in geometry.filename:
+                bpymorse.stl_import(filepath=path)
+                # Get a list of the imported objects
+                visuals = [obj for obj in bpymorse.get_objects() \
+                              if obj.name not in objects_names]
+
+            if geometry.scale:
+                for v in visuals:
+                    v.scale = [v.scale[0] * geometry.scale[0],
+                               v.scale[1] * geometry.scale[1],
+                               v.scale[2] * geometry.scale[2]]
+
+        elif isinstance(geometry, Box):
+            bpymorse.add_mesh_cube()
+            ob = bpymorse.active_object()
+            ob.name = link.name
+            ob.dimensions = geometry.size
+            visuals = [ob]
+
+        elif isinstance(geometry, Cylinder):
+            radius = geometry.radius
+            length = geometry.length
+            bpymorse.add_mesh_cylinder(radius=radius, depth=length)
+            ob = bpymorse.active_object()
+            ob.name = link.name
+            visuals = [ob]
+
+        elif isinstance(geometry, Sphere):
+            bpymorse.add_mesh_uv_sphere(size=geometry.radius)
+            ob = bpymorse.active_object()
+            ob.name = link.name
+            visuals = [ob]
+
+    else:
+        bpymorse.add_empty(type = "ARROWS")
+
+        empty = bpymorse.get_first_selected_object()
+        empty.name = link.name
+        empty.scale = [0.01, 0.01, 0.01]
+        visuals = [empty]
+
+    for v in visuals:
+        # set link origin and rotation
+        v.location = v.location + link.xyz
+        v.rotation_mode = "QUATERNION"
+        v.rotation_quaternion = v.rotation_quaternion * link.rot
+        bpymorse.origin_set(type='ORIGIN_CURSOR')
+
+    return visuals

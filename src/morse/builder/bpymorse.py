@@ -50,6 +50,7 @@ new_scene = empty_method
 del_scene = empty_method
 armatures = empty_method
 make_links_scene = empty_method
+origin_set = empty_method
 
 if bpy:
     select_all = bpy.ops.object.select_all
@@ -86,6 +87,7 @@ if bpy:
     del_scene = bpy.ops.scene.delete
     armatures = bpy.data.armatures
     make_links_scene = bpy.ops.object.make_links_scene
+    origin_set = bpy.ops.object.origin_set
 
 def version():
     if bpy:
