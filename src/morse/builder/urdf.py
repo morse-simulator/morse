@@ -21,7 +21,7 @@ except ImportError:
 # 'package://pepper_meshes/meshes/1.0/Torso.dae'
 # MORSE will replace 'package://' by 'ROS_SHARE_ROOT':
 import os
-ROS_SHARE_ROOT=os.environ["ROS_PACKAGE_PATH"].split(":")[0] + "/"
+ROS_SHARE_ROOT=os.environ.get("ROS_PACKAGE_PATH","/opt/ros/kinetic/share").split(":")[0] + "/"
 
 MATERIALS = {}
 
