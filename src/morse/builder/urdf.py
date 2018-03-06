@@ -7,8 +7,15 @@ from morse.builder import bpymorse
 
 from morse.builder.creator import ComponentCreator
 
-from urdf_parser_py.urdf import URDF as URDFparser
-from urdf_parser_py.urdf import Mesh, Box, Cylinder, Sphere
+
+URDFparser = None
+
+try:
+    from urdf_parser_py.urdf import URDF as URDFparser
+    from urdf_parser_py.urdf import Mesh, Box, Cylinder, Sphere
+except ImportError:
+    logger.error("[URDF] to load URDF files, you must first install urdf_parser_py")
+
 
 # Meshes are referenced in the URDF file relative to their package, eg:
 # 'package://pepper_meshes/meshes/1.0/Torso.dae'
@@ -359,26 +366,24 @@ class URDFJoint:
     def __repr__(self):
         return "URDF joint<%s>" % self.name
 
-class URDF(ComponentCreator):
+class URDF:
 
-    _classpath="morse.robots.urdf.URDF"
-
-    def __init__(self, name, urdf):
-
-        ComponentCreator.__init__(self, 
-                                name, 
-                                'robots')
+    def __init__(self, urdf):
 
         self.urdf_file = urdf
+        if URDFparser is None:
+            logger.error("[URDF] Can not load URDF file: urdf_parser_py not available")
+            return
+
         self.urdf = URDFparser.from_xml_string(open(urdf,'r').read())
+
+        self.name = self.urdf.name
 
         for mat in self.urdf.materials:
             add_material(mat)
 
         self.base_link = URDFLink(self.urdf.link_map[self.urdf.get_root()])
         self.roots = self._walk_urdf(self.urdf.link_map[self.urdf.get_root()])
-
-        self.build()
 
     def _walk_urdf(self, link, parent_bone = None):
         bones = []
@@ -398,7 +403,15 @@ class URDF(ComponentCreator):
 
 
     def build(self):
-        # Create armature and object
+        """
+        Create the armature and linked objects from the URDF description given at
+        class instantiation.
+
+        :return: the root object created from the URDF file
+        """
+        if self.urdf is None:
+            return None
+
         bpymorse.add_object(
             type='ARMATURE', 
             enter_editmode=True,
@@ -422,8 +435,11 @@ class URDF(ComponentCreator):
                 v.parent_type = "OBJECT"
 
         bpymorse.mode_set(mode='OBJECT')
+
         for root in self.roots:
             root.build_objectmode(ob)
+
+        return ob
 
 def add_material(urdf_material):
     """ Add a urdf_material to the global MATERIALS dictonary.
@@ -456,6 +472,7 @@ def create_objects_by_link(link):
         if isinstance(geometry, Mesh):
 
             path = geometry.filename.replace("package:/", ROS_SHARE_ROOT)
+            path = path.replace("file://", "")
             # Save a list of objects names before importing Collada/STL
             objects_names = [obj.name for obj in bpymorse.get_objects()]
 

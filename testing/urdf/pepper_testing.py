@@ -18,7 +18,7 @@ class BaseTest(MorseTestCase):
     def setUpEnv(self):
         """ Defines the test scenario, using the Builder API.
         """
-        pepper = URDF('pepper', 'res/pepper.urdf')
+        pepper = Robot('res/pepper.urdf', name='pepper')
         env = Environment('empty', fastmode = True)
 
     def test_urdf(self):
