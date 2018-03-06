@@ -20,6 +20,11 @@ Robots and robotic bases
     user/robots/*
 
 
+.. note::
+
+    You can also load your own URDF robot description. :doc:`Click here for
+    details<user/urdf>`.
+
 Sensors
 +++++++
 

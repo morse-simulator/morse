@@ -3,13 +3,6 @@
 A Journey to a New Simulation
 =============================
 
-
-.. warning::
-
-    This tutorial requires a recent version of MORSE. Follow the instructions
-    :doc:`here <../installation>` to install the latest version.
-
-
 .. note::
   This tutorial will guide you through the development of a complete
   simulation, including the creation of a robot and new actuators from

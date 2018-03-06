@@ -91,7 +91,7 @@ scene:
 .. MORSE Builder empty
 
 
-Since there is no robot yet, you won't be able launch the simulation.
+Since there is no robot yet, you will not be able launch the simulation.
 
 The environment comes from the file ``data/environments/indoors-1/indoor-1.blend``,
 you could also tell MORSE to load an environment from any location on your system
@@ -143,6 +143,15 @@ Let's add a robot to our scene:
 
 
 You should see the ``ATRV`` at the center of the scene.
+
+.. note::
+
+    Here, we are using one of the pre-built robot (ATRV). MORSE comes with
+    several such :doc:`preconfigured robots<../components_library>`. You can also
+    load your own :doc:`URDF file<urdf>`, or a custom robot model built
+    directly in Blender (see a :doc:`tutorial
+    here<advanced_tutorials/a_journey_to_a_new_simulation>`).
+
 
 .. warning::
 
