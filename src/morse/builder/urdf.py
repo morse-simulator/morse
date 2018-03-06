@@ -1,3 +1,4 @@
+import logging; logger = logging.getLogger("morsebuilder." + __name__)
 import math
 from morse.core.mathutils import Vector, Matrix, Euler
 import copy
@@ -31,7 +32,7 @@ class URDFLink:
 
         self._get_origin()
 
-        print("..Create Link {} at {} with {}".format(urdf_link.name, self.xyz, self.rot))
+        logger.debug("[URDF] create Link {} at {} with {}".format(urdf_link.name, self.xyz, self.rot))
 
     def _get_origin(self):
         """ Links do not define proper origin. We still try to extract one
@@ -65,7 +66,7 @@ class URDFJoint:
     TYPES = [FIXED, PRISMATIC, REVOLUTE, CONTINUOUS]
 
     def __init__(self, urdf_joint, urdf_link):
-        print("Create Joint {}".format(urdf_joint.name))
+        logger.debug("[URDF] create Joint {}".format(urdf_joint.name))
         
         self.name = urdf_joint.name
         self.type = urdf_joint.type
@@ -139,7 +140,7 @@ class URDFJoint:
         try:
             self.posebone = armature.pose.bones[self.name]
         except KeyError:
-            print("Error: bone %s not yet added to the armature" % self.name)
+            logger.error("[ERROR][URDF] bone %s not yet added to the armature" % self.name)
             return
 
         self.configure_joint(self.posebone)
@@ -260,7 +261,7 @@ class URDFJoint:
                 self.posebone.lock_rotation[2] = False
 
         else:
-            print("Joint type ({}) configuration not implemented yet".format(self.type))
+            logger.warning("[URDF] joint type ({}) configuration not implemented yet".format(self.type))
 
     def add_link_frame(self, armature, joint = None):
         """
@@ -317,7 +318,7 @@ class URDFJoint:
         material = self.link.visual.material
 
         if not material.name:
-            print("Found material without name: {}".format(self.link.material))
+            logger.warning("[URDF] found material without name: {}".format(self.link.material))
             return
 
         rgba = None
@@ -334,7 +335,7 @@ class URDFJoint:
         # global material
         else:
             if material.name not in MATERIALS:
-                print("Global material not found: {}".format(material.name))
+                logger.warning("[URDF] global material not found: {}".format(material.name))
                 return
 
             rgba = MATERIALS[material.name]['color']
