@@ -206,6 +206,7 @@ MORSE_DATASTREAM_DICT = {
             "moos": 'morse.middleware.moos.gps.GPSNotifier'
             },
         "raw": {
+            "ros": 'morse.middleware.ros.gps.NavSatFixRawPublisher',
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
