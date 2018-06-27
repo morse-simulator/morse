@@ -31,7 +31,8 @@ So, what happened here?
 `morse create mysim` actually created a new subfolder in the current directory.
 
 If you inspect it, you will find a Python file called `default.py` and two
-subfolders. `default.py` is what we call a **Builder script** (because it uses MORSE's :doc:`Builder API<user/builder>`) which describes your simulation.
+subfolders. `default.py` is what we call a **Builder script** (because it uses
+MORSE's :doc:`Builder API<user/builder>`) which describes your simulation.
 
 .. note::
   Note that the script is still Python: besides the Builder API, you can use any
@@ -66,12 +67,17 @@ indicated in the output. You will see that by default, your custom robot has the
 same two actuators and sensor as in `default.py`. You can change them to build
 a robot that matches your needs.
 
-Soo also `morse add actuator` and `morse add sensor` if you need to create
+.. note::
+
+    If you already have a URDF file for your robot, :doc:`check this page<user/urdf>` to learn how
+    to use import it.
+
+You can also use `morse add actuator` and `morse add sensor` to create
 custom actuators/sensors.
 
-That's all folks! You now know the basics of MORSE. Head to the
-:doc:`tutorials` section to learn how to interact with your simulated robots
-and for more advanced examples.
+That's all folks! You now know the basics of MORSE. Head to the :doc:`tutorials`
+section to learn how to interact with your simulated robots and for more
+advanced examples.
 
 
 

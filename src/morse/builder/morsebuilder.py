@@ -127,8 +127,9 @@ class Component(AbstractComponent):
         :param category: The category of the component (folder in
             MORSE_COMPONENTS)
         :param filename: The name of the component (file in
-            MORSE_COMPONENTS/category/name.blend) If ends with '.blend',
-            append the objects from the Blender file.
+            MORSE_COMPONENTS/category/name.{blend, urdf}).
+            If it ends with '.blend', append the objects from the Blender 
+            file. If it ends with '.urdf', it attemps to laod the URDF file.
         :param blender_object_name: If set, use the given Blender object 
             as 'root' for this component. Otherwise, select the first
             available Blender object (the top parent in case of a hierarchy
@@ -137,14 +138,20 @@ class Component(AbstractComponent):
             simulation, append default Morse ones. See self.morseable()
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
-        imported_objects = self.append_meshes()
 
-        if blender_object_name is None:
-            # Here we use the fact that after appending, Blender select the objects
-            # and the root (parent) object first ( [0] )
-            self.set_blender_object(imported_objects[0])
+        if self.has_urdf:
+            root = self.load_urdf()
+            self.set_blender_object(root)
+
         else:
-            self.set_blender_object([o for o in imported_objects if o.name == blender_object_name][0])
+            imported_objects = self.append_meshes()
+
+            if blender_object_name is None:
+                # Here we use the fact that after appending, Blender select the objects
+                # and the root (parent) object first ( [0] )
+                self.set_blender_object(imported_objects[0])
+            else:
+                self.set_blender_object([o for o in imported_objects if o.name == blender_object_name][0])
 
         # If the object has no MORSE logic, add default one
         if make_morseable and category in ['sensors', 'actuators', 'robots'] \
@@ -157,8 +164,9 @@ class Robot(Component):
         """ Initialize a MORSE robot
 
         :param filename: The name of the component (file in
-            MORSE_COMPONENTS/category/name.blend) If ends with '.blend',
-            append the objects from the Blender file.
+            MORSE_COMPONENTS/category/name.{blend, urdf}).
+            If it ends with '.blend', append the objects from the Blender 
+            file. If it ends with '.urdf', it attemps to laod the URDF file.
         :param name: Name of the resulting robot in the simulation, default to 'robot'.
         :param blender_object_name: If set, use the given Blender object 
             in 'filename' as 'root' for this robot. Otherwise, select the first

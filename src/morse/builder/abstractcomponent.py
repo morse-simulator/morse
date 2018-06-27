@@ -131,7 +131,9 @@ class AbstractComponent(object):
 
     def __init__(self, obj=None, filename='', category=''):
         self.set_blender_object(obj)
-        self._blender_filename = filename # filename for datastream configuration
+        self._resource_filename = filename # filename for datastream configuration
+        self.has_urdf = True if self._resource_filename.endswith(".urdf") else False
+
         self._category = category # for morseable
         self.basename = None
         self.children = []
@@ -647,6 +649,20 @@ class AbstractComponent(object):
 
         return filepath
 
+    def load_urdf(self):
+        """
+        Loads the URDF file passed to the AbstractComponent constructor.
+
+        :return: the root object created from the URDF file.
+        """
+        if not self.has_urdf:
+            return []
+
+        from morse.builder.urdf import URDF
+
+        self.urdf = URDF(self._resource_filename)
+        return self.urdf.build()
+
     def append_meshes(self, objects=None, component=None, prefix=None):
         """ Append the component's Blender objects to the scene
 
@@ -671,7 +687,11 @@ class AbstractComponent(object):
         :return: list of the imported (selected) Blender objects
         """
 
-        component = component or self._blender_filename
+        if component is None and self.has_urdf:
+            logger.warning("calling AbstractComponent.append_meshes with a URDF component. Skipping it.")
+            return []
+
+        component = component or self._resource_filename
 
         if not component: # no Blender resource: simply create an empty
             bpymorse.deselect_all()
@@ -712,7 +732,7 @@ class AbstractComponent(object):
         return bpymorse.get_selected_objects()
 
     def append_scenes(self, component=None):
-        component = component or self._blender_filename
+        component = component or self._resource_filename
 
         filepath = self._compute_filepath(component)
 
@@ -737,7 +757,7 @@ class AbstractComponent(object):
         :return: list of the imported Blender objects
         """
         if not component:
-            component = self._blender_filename
+            component = self._resource_filename
 
         if component.endswith('.dae'):
             filepath = os.path.abspath(component) # external blend file
