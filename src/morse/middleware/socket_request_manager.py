@@ -212,7 +212,8 @@ class SocketRequestManager(RequestManager):
                         except socket.error:
                             logger.warning("It seems that a socket client left while I was sending stuff to it. Closing the socket.")
                             o.close()
-                            self._client_sockets.remove(o)
+                            if o in self._client_sockets:
+                                self._client_sockets.remove(o)
 
                     del self._results_to_output[o]
 
