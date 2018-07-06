@@ -443,15 +443,30 @@ class Environment(AbstractComponent):
     def set_horizon_color(self, color=(0.05, 0.22, 0.4)):
         """ Set the horizon color
 
-        See `World/Background on the Blender Manual
-        <http://wiki.blender.org/index.php/Doc:2.6/Manual/World/Background>`_
-        for more information about this particular setting.
+        :sees: `Blender documentation
+        <https://docs.blender.org/manual/en/dev/game_engine/world.html#id1>`_
+
 
         :param color: (0.0, 0.0, 0.0) < (R, B, G) < (1.0, 1.0, 1.0)
                       default: dark azure (0.05, 0.22, 0.4)
         """
         # Set the color at the horizon to dark azure
         bpymorse.get_context_scene().world.horizon_color = color
+
+    def set_ambient_color(self, color=(0.05, 0.05, 0.05)):
+        """ Set the ambient color
+
+        Useful to quickly brighten up or colorize your all scene.
+
+        :sees: `Blender documentation
+        <https://docs.blender.org/manual/en/dev/game_engine/world.html#id1>`_
+
+        :param color: (0.0, 0.0, 0.0) < (R, B, G) < (1.0, 1.0, 1.0)
+                      default: dark grey (0.05, 0.05, 0.05)
+        """
+        # Set the color at the horizon to dark azure
+        bpymorse.get_context_scene().world.horizon_color = color
+
 
     def enable_mist(self,value=True):
         """ Enables or disables mist
