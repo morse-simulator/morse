@@ -59,6 +59,12 @@ class SemanticCamera(morse.sensors.camera.Camera):
 
     See also :doc:`../sensors/camera` for generic informations about MORSE cameras.
 
+   .. note::
+
+        As any other MORSE camera, the semantic camera *only* works if the
+        rendering mode is set to `GLSL` (default). In particular, it does 
+        not work in `fastmode` (ie, wireframe mode).
+
     .. example::
         from morse.builder import *
 
@@ -151,7 +157,7 @@ class SemanticCamera(morse.sensors.camera.Camera):
                                
             if tagged:
                 self.trackedObjects[o] = blenderapi.objectdata(o.name).bound_box
-                logger.warning('    - %s' % o.name)
+                logger.warning('    - tracking %s' % o.name)
 
         if self.noocclusion:
             logger.info("Semantic camera running in 'no occlusion' mode (fast mode).")
