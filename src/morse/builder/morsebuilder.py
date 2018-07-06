@@ -137,15 +137,19 @@ class Component(AbstractComponent):
             simulation, append default Morse ones. See self.morseable()
         """
         AbstractComponent.__init__(self, filename=filename, category=category)
-        imported_objects = self.append_meshes()
+
 
         if blender_object_name is None:
-            # Here we use the fact that after appending, Blender select the objects
-            # and the root (parent) object first ( [0] )
-            self.set_blender_object(imported_objects[0])
+            imported_objects = self.append_meshes()
         else:
-            self.set_blender_object([o for o in imported_objects if o.name == blender_object_name][0])
+            imported_objects = self.append_meshes(objects=[blender_object_name])
+            if not imported_objects:
+                raise MorseBuilderNoComponentError("No object named <%s> in %s" % (blender_object_name, filename))
 
+        
+        # Here we use the fact that after appending, Blender select the objects
+        # and the root (parent) object first ( [0] )
+        self.set_blender_object(imported_objects[0])
         # If the object has no MORSE logic, add default one
         if make_morseable and category in ['sensors', 'actuators', 'robots'] \
                 and not self.is_morseable():
