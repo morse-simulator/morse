@@ -131,6 +131,11 @@ def move(contr):
                 reset_position(camera)
             if key[0] == blenderapi.F7KEY and keyboard.positive:
                 look_robot(camera)
+            if key[0] == blenderapi.F5KEY and keyboard.positive:
+                logger.info("Current camera pose: %s, %s" % 
+                        (camera.worldPosition,
+                         camera.worldOrientation.to_euler()))
+
 
 
 def rotate(contr):
