@@ -75,7 +75,10 @@ class MorseBuilderNoComponentError(MorseBuilderError):
     def __init__(self, value):
         self.value = value
         import sys
-        sys.exit("Unable to create simulation scene. Check builder script for typos.\nExecution terminated!")
+        if self.value is not None:
+            sys.exit("Unable to create simulation scene: %s.\nCheck builder script for typos.\nExecution terminated!" % self.value)
+        else:
+            sys.exit("Unable to create simulation scene. Check builder script for typos.\nExecution terminated!")
 
 class MorseBuilderBadSyntaxError(MorseBuilderError):
     """ Morse Error caused by a mistyped method or object name in Builder.
