@@ -20,6 +20,7 @@ class AbstractDepthCamera(VideoCamera):
         # Call the constructor of the VideoCamera class
         VideoCamera.__init__(self, obj, parent)
         # Component specific initialize (converters)
+        self.pts = None
         self.initialize()
 
     # abstractmethod
@@ -75,9 +76,9 @@ class DepthCamera(AbstractDepthCamera):
                                      self.image_width, self.image_height)
 
     def process_image(self, image):
-        pts = self.converter.recover(image)
-        self.local_data['points'] = pts
-        self.local_data['nb_points'] = int(len(pts) / 12)
+        self.pts = self.converter.recover(image)
+        self.local_data['points'] = self.pts
+        self.local_data['nb_points'] = int(len(self.pts) / 12)
 
 
 class DepthVideoCamera(AbstractDepthCamera):
