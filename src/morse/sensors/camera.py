@@ -82,8 +82,13 @@ class Camera(morse.core.sensor.Sensor):
         synchronisation of these scenes before rendering (which makes
         the process potentially slower and may introduce some glitches
         if some objects are not properly synchronised).
+
+        Unfortunabely, it seems that the current FBO handling do not work
+        properly for Z-Buffer. Turn off temporarly until we find a solution (on
+        Morse side), or the issue has been fixed (if needed) on Blender side.
         """
-        self._offscreen_create = getattr(blenderapi.render(), 'offScreenCreate', None)
+        #self._offscreen_create = getattr(blenderapi.render(), 'offScreenCreate', None)
+        self._offscreen_create = False
 
         if not self._offscreen_create:
             self.scene_name = 'S.%dx%d' % (self.image_width, self.image_height)
