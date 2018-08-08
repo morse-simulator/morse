@@ -12,6 +12,7 @@ if(COMMAND cmake_policy)
 	endif()
 endif()
 
+set(CMAKE_C_STANDARD 99)
 
 option(BUILD_CORE_SUPPORT "Build and install morse core" ON)
 option(BUILD_DOC_SUPPORT "Build and install morse documentation (Requiere Sphinx)" OFF)
