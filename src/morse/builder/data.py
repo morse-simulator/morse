@@ -183,8 +183,15 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.sensors.depth_camera.DepthCameraRotationZ": {
         "default": {
+            "socket": 'morse.middleware.sockets.depth_camera.DepthCameraPublisher',
             "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
             'pocolibs': 'morse.middleware.pocolibs.sensors.velodyne.Velodyne3DImage'
+            }
+        },
+    "morse.sensors.depth_camera_aggregator.DepthCameraAggregator": {
+        "default": {
+            "socket": 'morse.middleware.sockets.depth_camera.DepthCameraPublisher',
+            "ros": 'morse.middleware.ros.depth_camera.DepthCameraPublisher',
             }
         },
     "morse.sensors.gps.GPS": {
