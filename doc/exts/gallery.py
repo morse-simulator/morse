@@ -4,8 +4,7 @@
 import os
 import glob
 from docutils import nodes
-from docutils.parsers.rst import directives
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import directives, Directive
 
 IMAGE_PATH="_images/"
 HTML_PATH="user/"
