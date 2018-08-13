@@ -67,13 +67,23 @@ class DepthCamera(AbstractDepthCamera):
     add_data('nb_points', 0, 'int', "the number of points found in the "
              "points list. It must be inferior to cam_width * cam_height")
 
+    add_property('_keep_list', None, 'keep_list', 'list(int)',
+"a list of lines number we preserve. Other lines are discared. It allows to "
+"better simulate sparse sensor such as velodyne. If not specified, keep the "
+"image dense")
+
     def initialize(self):
         from morse.sensors.zbufferto3d import ZBufferTo3D
+        if self._keep_list is None:
+            keep_list = list(range(self.image_height))
+        else:
+            keep_list = eval(self._keep_list)
         # Store the camera parameters necessary for image processing
         self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],
                                      self.local_data['intrinsic_matrix'][1][1],
                                      self.near_clipping, self.far_clipping,
-                                     self.image_width, self.image_height)
+                                     self.image_width, self.image_height,
+                                     keep_list)
 
     def process_image(self, image):
         self.pts = self.converter.recover(image)

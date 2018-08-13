@@ -13,6 +13,9 @@ typedef struct {
     int height;
     int u_0;
     int v_0;
+    // the list of lines we want to process
+    int * to_keep;
+    int to_keep_size;
     // The buffer to return values
     float * points;
     int points_size;
@@ -21,6 +24,7 @@ typedef struct {
 static void
 ZBufferTo3D_dealloc(PyZBufferTo3D* self)
 {
+    free(self->to_keep);
     free(self->points);
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -40,6 +44,9 @@ ZBufferTo3D_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         self->height = 0;
         self->u_0;
         self->v_0;
+        // keep part
+        self->to_keep = NULL;
+        self->to_keep_size = 0;
         // The buffer to return values
         self->points = NULL;
         self->points_size = 0;
@@ -51,9 +58,12 @@ ZBufferTo3D_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 ZBufferTo3D_init(PyZBufferTo3D* self, PyObject* args)
 {
+    PyObject * listObj;
+
     // Get the data as a Python object
-    if (!PyArg_ParseTuple(args, "ffffII", &self->alpha_u, &self->alpha_v,
-                          &self->near, &self->far, &self->width, &self->height))
+    if (!PyArg_ParseTuple(args, "ffffIIO!", &self->alpha_u, &self->alpha_v,
+                          &self->near, &self->far, &self->width, &self->height,
+                          &PyList_Type, &listObj))
     {
         printf("Error while parsing ZBufferTo3D parameters\n");
         return -1;
@@ -65,6 +75,21 @@ ZBufferTo3D_init(PyZBufferTo3D* self, PyObject* args)
     // Allocate the buffer to store the points
     self->points_size = self->width * self->height * 3 * sizeof(float);
     self->points = malloc(self->points_size);
+
+    int len = PyList_Size(listObj);
+
+    if (len > 0)
+    {
+        self->to_keep = malloc(sizeof(int) * len);
+        self->to_keep_size = len;
+
+        int* to_keep = self->to_keep;
+
+        for (int i = 0; i < len; ++i, to_keep++)
+        {
+            *to_keep = PyLong_AsLong(PyList_GetItem(listObj, i));
+        }
+    }
 
     return 0;
 }
@@ -94,37 +119,43 @@ ZBufferTo3D_recover(PyZBufferTo3D* self, PyObject* args)
     fbuffer = (float *) img_buffer.buf;
     npixels = img_buffer.len / 4; // rgba (sizeof float = 4B)
 
-    for (i = 0, pixel = 0; pixel < npixels; pixel++)
+    int* to_keep = self->to_keep;
+    int* to_keep_end = self->to_keep + self->to_keep_size;
+
+    i = 0;
+    while (to_keep < to_keep_end)
     {
-        z_b = fbuffer[pixel];
-        if (z_b >= 1.0)
-            continue; // nothing seen within the far clipping
+        pixel = *to_keep * self->width;
+        for (int j = 0; j < self->width; ++j, ++pixel)
+        {
+            z_b = fbuffer[pixel];
+            if (z_b >= 1.0)
+                continue; // nothing seen within the far clipping
 
-        z_n = 2.0 * z_b - 1.0;
-        z_e = 2.0 * self->near * self->far / (self->far + self->near - z_n * (self->far - self->near));
+            z_n = 2.0 * z_b - 1.0;
+            z_e = 2.0 * self->near * self->far / (self->far + self->near - z_n * (self->far - self->near));
 
-        // The image we receive is stored as a single array of floats.
-        // Pixel 0, 0 in the data is located at the bottom left, according to
-        // the OpenGL conventions.
-        // We need to convert this frame of reference to (u, v), starting at the
-        // top left
-        u = pixel % self->width;
-        v = self->height - (pixel / self->width);
+            // The image we receive is stored as a single array of floats.
+            // Pixel 0, 0 in the data is located at the bottom left, according to
+            // the OpenGL conventions.
+            // We need to convert this frame of reference to (u, v), starting at the
+            // top left
+            u = pixel % self->width;
+            v = self->height - (pixel / self->width);
 
-        // Use the intrinsic matrix of the camera view to get the 3D coordinates
-        // corresponding to each pixel, with respect to the camera
-        x = z_e * (u - self->u_0) / self->alpha_u;
-        y = z_e * (v - self->v_0) / self->alpha_v;
+            // Use the intrinsic matrix of the camera view to get the 3D coordinates
+            // corresponding to each pixel, with respect to the camera
+            x = z_e * (u - self->u_0) / self->alpha_u;
+            y = z_e * (v - self->v_0) / self->alpha_v;
 
-        // Store the x, y, z coordinates in the buffer
-        self->points[i] = x;
-        self->points[i+1] = y;
-        self->points[i+2] = z_e;
-        i += 3;
+            // Store the x, y, z coordinates in the buffer
+            self->points[i] = x;
+            self->points[i+1] = y;
+            self->points[i+2] = z_e;
+            i += 3;
+        }
+        ++to_keep;
     }
-
-    // release the Python buffers
-    PyBuffer_Release(&img_buffer);
 
     return PyMemoryView_FromMemory((char *)self->points, i*sizeof(float), PyBUF_READ);
 }
