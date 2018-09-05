@@ -5,6 +5,7 @@ from morse.blender.main import reset_objects as main_reset, close_all as main_cl
 from morse.core.abstractobject import AbstractObject
 from morse.core.exceptions import *
 import json
+import os.path
 
 def get_structured_children_of(blender_object):
     """ Returns a nested dictionary of the given objects children, recursively.
@@ -43,6 +44,45 @@ def get_obj_by_name(name):
         raise MorseRPCInvokationError(
                 "Object '%s' does not appear in the scene." % name)
     return scene.objects[name]
+
+def load_texture(obj, path, mat_id=0, tex_id=0):
+    """Load a picture into a texture
+
+        :param obj: blender object
+        :param string path: path to an image file
+        :param int mat_id: material ID (default: 0)
+        :param int tex_id: texture ID (default: 0)
+    """
+    # Based on https://blender.stackexchange.com/a/79277
+
+    # The texture has to be stored in a place associated with other game data
+    # so we store it in a game property. This name includes the mat ID's and
+    # tex ID's so that a single object with a complex setup does not have the
+    # textures overwrite each other.
+    # If a bge.texture object already exists for this object/mat_id/tex_id, then
+    # we retrieve that.
+
+    if not blenderapi.app().has_texture_ffmpeg:
+        raise MorseRPCInvokationError("Blender hasn't been compiled with ffmpeg support")
+
+    prop_name = 'SHOW_PICTURE{}:{}'.format(mat_id, tex_id)
+    if prop_name not in obj:
+        tex = blenderapi.texture().Texture(obj, mat_id, tex_id)
+        obj[prop_name] = tex
+    else:
+        tex = obj[prop_name]
+
+    # Load the image from the path
+    raw = blenderapi.texture().ImageFFmpeg(os.path.join(path))
+
+    # Check to see that it loaded
+    if raw.status == blenderapi.texture().SOURCE_ERROR:
+        # Error in loading image
+        raise MorseRPCInvokationError("Unable to load image at {}".format(path))
+
+    # Assign the new image to the texture and update the texture.
+    tex.source = raw
+    tex.refresh(True)
 
 class Supervision(AbstractObject):
     def __init__(self):
@@ -344,6 +384,11 @@ class Supervision(AbstractObject):
         blender_object.worldPosition = position
         if orientation:
             blender_object.worldOrientation = orientation
+
+    @service
+    def set_texture(self, object_name, texture_path):
+        blender_object = get_obj_by_name(object_name)
+        load_texture(blender_object, texture_path)
 
     def action(self):
         pass
