@@ -481,13 +481,13 @@ class VLP16_180(DepthCameraAggregator):
             Hence, the keep_list is a reasonnably fair approximation of the real angle of VLP16
             """
             cam.properties(cam_width=512, cam_height=256, cam_focal = 27.7,
-                           keep_list=str([0, 17, 34, 51, 68, 85, 102, 120, 137, 154, 171, 188, 205, 222, 239, 256]))
+                           keep_list=str([1, 17, 34, 51, 68, 85, 102, 120, 137, 154, 171, 188, 205, 222, 239, 255]))
             cam.rotate(x=(i-1) * math.pi / 3)
             cam.frequency(10)
             cam.hide_mesh()
             self.append(cam)
 
-        self.append_meshes(['VelodyneMesh'])
+        # self.append_meshes(['VelodyneMesh'])
         self.set_master(1)
 
     def after_renaming(self):
