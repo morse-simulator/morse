@@ -421,7 +421,7 @@ MORSE_DATASTREAM_DICT = {
             "ros": 'morse.middleware.ros.force_torque.WrenchReader',
             }
         },
-    "morse.actuators.externalForce.ExternalForce": {
+    "morse.actuators.external_force.ExternalForce": {
         "default": {
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
