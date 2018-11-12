@@ -1,4 +1,5 @@
 #include <Python.h>
+#include <stdbool.h>
 #include "structmember.h"
 
 // http://docs.python.org/3/extending/newtypes.html
@@ -21,6 +22,7 @@ typedef struct {
     // The buffer to return values
     float * points;
     int points_size;
+    bool keep_resolution;
 } PyZBufferTo3D;
 
 static void
@@ -56,6 +58,8 @@ ZBufferTo3D_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         // The buffer to return values
         self->points = NULL;
         self->points_size = 0;
+        // Keep points (including over Far)
+        self->keep_resolution = false;
     }
 
     return (PyObject *)self;
@@ -67,9 +71,9 @@ ZBufferTo3D_init(PyZBufferTo3D* self, PyObject* args)
     PyObject * listObj;
 
     // Get the data as a Python object
-    if (!PyArg_ParseTuple(args, "ffffIIO!", &self->alpha_u, &self->alpha_v,
+    if (!PyArg_ParseTuple(args, "ffffIIbO!", &self->alpha_u, &self->alpha_v,
                           &self->near, &self->far, &self->width, &self->height,
-                          &PyList_Type, &listObj))
+                          &self->keep_resolution, &PyList_Type, &listObj))
     {
         printf("Error while parsing ZBufferTo3D parameters\n");
         return -1;
@@ -148,17 +152,27 @@ ZBufferTo3D_recover(PyZBufferTo3D* self, PyObject* args)
 
         for (int u = 0; u < self->width; ++u, ++buf, ++u_factor)
         {
+            float x, y, z_e;
             float z_b = *buf;
+
             if (z_b >= 1.0)
-                continue; // nothing seen within the far clipping
+            {
+                if(!self->keep_resolution)
+                    continue; // nothing seen within the far clipping
 
-            float z_n = 2.0 * z_b - 1.0;
-            float z_e = A / (B - z_n * C);
+                // Add a dummy point at 0,0,0 in order to keep the sensor resolution in the PointCloud
+                x = 0.;
+                y = 0.;
+                z_e = 0.;
+            }else{
+              float z_n = 2.0 * z_b - 1.0;
+              z_e = A / (B - z_n * C);
 
-            // Use the intrinsic matrix of the camera view to get the 3D coordinates
-            // corresponding to each pixel, with respect to the camera
-            float x = z_e * *u_factor;
-            float y = z_e * v_factor;
+              // Use the intrinsic matrix of the camera view to get the 3D coordinates
+              // corresponding to each pixel, with respect to the camera
+              x = z_e * *u_factor;
+              y = z_e * v_factor;
+            }
 
             // Store the x, y, z coordinates in the buffer
             *points = x; ++points;
@@ -195,6 +209,8 @@ static PyMemberDef ZBufferTo3D_members[] = {
      "PyZBufferTo3D points"},
     {"points_size", T_INT, offsetof(PyZBufferTo3D, points_size), 0,
      "PyZBufferTo3D points_size"},
+    {"keep_resolution", T_BOOL, offsetof(PyZBufferTo3D, keep_resolution), 0,
+     "PyZBufferTo3D keep_resolution"},
     {NULL}  /* Sentinel */
 };
 
