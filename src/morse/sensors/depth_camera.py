@@ -72,6 +72,10 @@ class DepthCamera(AbstractDepthCamera):
 "better simulate sparse sensor such as velodyne. If not specified, keep the "
 "image dense")
 
+    add_property('_keep_resolution', False, 'keep_resolution', 'boolean',
+    "By default the clipping of the camera removes unreals points"
+    "This option allows adding dummy points (0,0,0) for keeping the sensor resolution")
+
     def initialize(self):
         from morse.sensors.zbufferto3d import ZBufferTo3D
         if self._keep_list is None:
@@ -82,7 +86,7 @@ class DepthCamera(AbstractDepthCamera):
         self.converter = ZBufferTo3D(self.local_data['intrinsic_matrix'][0][0],
                                      self.local_data['intrinsic_matrix'][1][1],
                                      self.near_clipping, self.far_clipping,
-                                     self.image_width, self.image_height,
+                                     self.image_width, self.image_height, self._keep_resolution,
                                      keep_list)
 
     def process_image(self, image):
