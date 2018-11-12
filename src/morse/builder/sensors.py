@@ -74,7 +74,7 @@ class IMU(SensorCreator):
         mesh.scale = (.04, .04, .02)
         mesh.color(.3, .9, .6)
         self.append(mesh)
-    
+
 class Magnetometer(SensorCreator):
     _classpath = "morse.sensors.magnetometer.Magnetometer"
 
@@ -476,12 +476,13 @@ class VLP16_180(DepthCameraAggregator):
         for i in range(3):
             cam = DepthCamera("cam%i"%i)
             """
-            cam_focal = 27.7 => hfov ~= 60.0. 
+            cam_focal = 27.7 => hfov ~= 60.0.
             As cam_height is half the cam_width, vfov ~= 30.0, so each pixel represent around 0.117°
             Hence, the keep_list is a reasonnably fair approximation of the real angle of VLP16
             """
             cam.properties(cam_width=512, cam_height=256, cam_focal = 27.7,
-                           keep_list=str([1, 17, 34, 51, 68, 85, 102, 120, 137, 154, 171, 188, 205, 222, 239, 255]))
+                           keep_list=str([1, 17, 34, 51, 68, 85, 102, 120, 137, 154, 171, 188, 205, 222, 239, 255]),
+                           keep_resolution=True)
             cam.rotate(x=(i-1) * math.pi / 3)
             cam.frequency(10)
             cam.hide_mesh()
