@@ -107,7 +107,7 @@ class MorseServices:
             instance.process()
 
 
-def do_service_registration(fn, component_name = None, service_name = None, async = False, request_managers = None):
+def do_service_registration(fn, component_name = None, service_name = None, asynchronous = False, request_managers = None):
 
     if blenderapi.fake: #doc mode
         return
@@ -122,7 +122,7 @@ def do_service_registration(fn, component_name = None, service_name = None, asyn
     for manager in request_managers:
         name = service_name if service_name else fn.__name__
         logger.debug("Registering service " + name + " in " + component_name + " (using " + manager.__class__.__name__ + ")")
-        manager.register_service(component_name, fn, name, async)
+        manager.register_service(component_name, fn, name, asynchronous)
 
 def async_service(fn = None, component = None, name = None):
     """  The @async_service decorator.
@@ -138,9 +138,9 @@ def async_service(fn = None, component = None, name = None):
       explaining why the initialization failed.  
 
       """
-    return service(fn, component, name, async = True)
+    return service(fn, component, name, asynchronous = True)
 
-def service(fn = None, component = None, name = None, async = False):
+def service(fn = None, component = None, name = None, asynchronous = False):
     """ The @service decorator.
 
     This decorator can be used to automagically register a service in
@@ -163,7 +163,7 @@ def service(fn = None, component = None, name = None, async = False):
       functions. Cf explanation above.
     :param string name: by default, the name of the service is the name
       of the method. You can override it by setting the 'name' argument.
-    :param boolean async: if set to True (default value when using 
+    :param boolean asynchronous: if set to True (default value when using
       @async_service), a new 'callback' parameter is added to the method.
       This callback is used to notify the service initiator that the service
       completed. The callback does not need to be build manually: 
@@ -180,7 +180,7 @@ def service(fn = None, component = None, name = None, async = False):
             # this method as a service.
             logger.debug("In @service: Decorating method "+ fn.__name__)
             dfn = fn
-            if async:
+            if asynchronous:
                 def decorated_fn(self, callback, *param):
                     # Stores in the callback the original calling
                     # service.
@@ -210,22 +210,22 @@ def service(fn = None, component = None, name = None, async = False):
 
             dfn._morse_service = True
             dfn._morse_service_name = name
-            dfn._morse_service_is_async = async
+            dfn._morse_service_is_async = asynchronous
 
             return dfn
 
         else:
-            if async:
+            if asynchronous:
                 logger.warning("asynchronous service must be declared within a MorseObject class.")
                 return
 
             logger.debug("In @service: Decorating free function "+ fn.__name__)
             # We assume it's a free function, and we register it.
-            do_service_registration(fn, component, name, async)
+            do_service_registration(fn, component, name, asynchronous)
             return fn
     else:
          # ...else, we build a new decorator
-        return partial(service, component = component, name = name, async = async)
+        return partial(service, component = component, name = name, asynchronous = asynchronous)
 
 def interruptible(fn):
     """ The @interruptible decorator.
