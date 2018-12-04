@@ -65,7 +65,7 @@ Asynchronous services
 
 Registration of asynchronous services is almost the same as for synchronous
 services. The ``@async_service`` decorator simply calls the ``@service``
-decorator with the ``async`` parameter set to ``True``, which results in
+decorator with the ``asynchronous`` parameter set to ``True``, which results in
 the original method being wrapped in a new method that takes an extra parameter
 (a callback) and calls
 :py:meth:`morse.core.abstractobject.AbstractObject.set_service_callback`.
@@ -74,9 +74,9 @@ Simplified version of the ``@service`` decorator:
 
 .. code-block:: python
 
-    def service(fn, async=False):
+    def service(fn, asynchronous=False):
       dfn = fn
-      if async:
+      if asynchonous:
          def decorated_fn(self, callback, *param):
             self._set_service_callback(callback)
             fn(self, *param)

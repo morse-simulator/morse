@@ -137,7 +137,7 @@ class RequestManager(object):
         self.register_service(component_name, callback, service_name, True)
 
 
-    def register_service(self, component_name, callback, service_name = None, async = False):
+    def register_service(self, component_name, callback, service_name = None, asynchronous = False):
         """ Allows a component to register a synchronous RPC method that is made
         publicly available to the outside world.
 
@@ -146,10 +146,10 @@ class RequestManager(object):
                request.
                If service_name is not defined, it will also be used as
                the public name of the service.
-               If async is false (synchronous service), the method is expected to
+               If asynchronous is false (synchronous service), the method is expected to
                return immediately. In this case, its return value is immediately
                send back to the original caller.
-        :param boolean async: if true, the service is asynchronous: it can last for
+        :param boolean asynchronous: if true, the service is asynchronous: it can last for
                several cycles without blocking the communication interface.
                See :py:meth:`register_async_service` for details.
         :param service_name: if defined, service_name is used as public
@@ -159,11 +159,11 @@ class RequestManager(object):
         if hasattr(callback, '__call__'):
             service_name = service_name if service_name else callback.__name__
 
-            self._services[(component_name, service_name)] = (callback, async)
+            self._services[(component_name, service_name)] = (callback, asynchronous)
 
-            if self.post_registration(component_name, service_name, async):
+            if self.post_registration(component_name, service_name, asynchronous):
                 logger.info(str(self) + ": " + \
-                    ("Asynchronous" if async else "Synchronous") + \
+                    ("Asynchronous" if asynchronous else "Synchronous") + \
                     " service '" + service_name + "' for component '" + \
                     component_name + "' successfully registered")
             else:
