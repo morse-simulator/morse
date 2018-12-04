@@ -395,8 +395,8 @@ def ros_action(fn = None, type = None, name = None):
         return partial(ros_action, type = type, name = name)
         
     fn._ros_action_type = type
-    return services.service(fn, component = None, name = name, async = True)
-        
+    return services.service(fn, component = None, name = name, asynchronous = True)
+
 
 def ros_service(fn = None, type = None, component = None, name = None):
     """ The @ros_service decorator.
@@ -433,4 +433,4 @@ def ros_service(fn = None, type = None, component = None, name = None):
         return partial(ros_service, type = type, component = component, name = name)
 
     fn._ros_service_type = type
-    return services.service(fn, component = component, name = name, async = False)
+    return services.service(fn, component = component, name = name, asynchronous = False)
