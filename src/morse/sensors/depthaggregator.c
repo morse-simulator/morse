@@ -1,7 +1,6 @@
 #include <Python.h>
 #include "structmember.h"
 
-
 typedef struct {
     PyObject_HEAD
     // The buffer to return values
@@ -58,9 +57,6 @@ Aggregator_merge(PyAggregator* self, PyObject* args)
 
     int len = PyList_Size(listObj);
     int j = 0;
-
-    struct timeval begin, end, res;
-    gettimeofday(&begin, NULL);
 
     for (int i = 0; i < len; ++i)
     {
