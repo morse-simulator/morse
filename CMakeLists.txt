@@ -26,7 +26,9 @@ option(BUILD_HLA_SUPPORT "Build HLA middleware support. Also used for distribute
 option(PYMORSE_SUPPORT "Build and install the Python bindings for MORSE." ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config/)
-find_package(PkgConfig REQUIRED)
+IF(NOT WIN32)
+    find_package(PkgConfig REQUIRED)
+endif(NOT WIN32)
 
 set(PythonInterp_FIND_VERSION 3.3)
 find_package(PythonInterp REQUIRED)
