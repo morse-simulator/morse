@@ -43,8 +43,7 @@ distributions.
 
 Other UNIXes systems probably work as well (like FreeBSD or Apple MacOSX).
 
-MORSE does not currently officially support Microsoft Windows, although some
-users reported success. Testers/maintainers for Windows are welcome!
+Windows is supported, but not fully tested.
 
 Packaged versions
 -----------------
@@ -94,15 +93,21 @@ Prerequisites
 - python-dev package
 - Blender (>= 2.65) build with Python >= 3.3. You can simply get a binary from
   Blender website
+  
+If building on Windows, ensure that your Python version and architecture matches
+the bundled Python in Blender (currently Python 3.5.3 for Blender 2.79).
 
 
 Installation
 ++++++++++++
 
+Linux
+-----
+
 Download the latest version of the source code. It is stored in a git
 repository::
 
-  $ git clone https://github.com/laas/morse.git
+  $ git clone https://github.com/morse-simulator/morse.git
 
 You can also get a tarball version here.
 
@@ -167,6 +172,26 @@ When updating MORSE to a more recent version, you'll simply have to do::
     $ git checkout [version]
     $ cd build
     $ make install
+
+Windows
+-------
+
+Download the latest version of the source code. It is stored in a git
+repository::
+
+  $ git clone https://github.com/morse-simulator/morse.git
+
+The MORSE_BLENDER environment variable should be set to the location and filename
+of the Blender executable (ie "C:\Program Files\Blender\blender.exe").
+
+Additionally, both cmake and Python should be on the system path.
+
+Go to the directory where you have previously downloaded the MORSE source.
+Then run the winbuild.bat script.
+
+By default, MORSE will install in C:\morse. You can easily change the
+install directory by editing the CMAKE_INSTALL_PREFIX variable in
+winbuild.bat
 
 Installation troubleshooting
 ----------------------------
