@@ -43,8 +43,7 @@ It should also work on UNIX systems more generally, such as FreeBSD and Apple Ma
 Some successful testing has been done on OSX 10.8 (see
 below for the Homebrew recipe).
 
-As yet, there is no official support for Microsoft Windows, although some
-users have reported success. Testers/maintainers for Windows are welcome!
+Windows is supported, but not fully tested.
 
 
 Hardware
@@ -121,9 +120,15 @@ Prerequisites
 .. note::
     If you use a Blender binary, numpy is included within it.
 
+.. note::
+    If building on Windows, ensure that your Python version and architecture matches
+    the bundled Python in Blender (currently Python 3.5.3 for Blender 2.79).
+
 Installation
 ++++++++++++
 
+Linux
+-----
 
 Clone with ``git`` or download the latest version of the source code::
 
@@ -160,6 +165,26 @@ You can check your configuration is okay with::
 
 Once MORSE is successfully installed and checked you are read for the
 :doc:`Quickstart<../quickstart>` tutorial!
+
+Windows
+-------
+
+Download the latest version of the source code. It is stored in a git
+repository::
+
+  $ git clone https://github.com/morse-simulator/morse.git
+
+The MORSE_BLENDER environment variable should be set the the location and filename
+of the Blender executable (ie "C:\Program Files\Blender\blender.exe").
+
+Additionally, both cmake and Python should be on the system path.
+
+Go to the directory where you have previously downloaded the MORSE source.
+Then run the winbuild.bat script.
+
+By default, MORSE will install in C:\morse. You can easily change the
+install directory by editing the CMAKE_INSTALL_PREFIX variable in
+winbuild.bat
 
 Middleware-specific notes
 +++++++++++++++++++++++++
