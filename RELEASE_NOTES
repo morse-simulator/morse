@@ -13,7 +13,7 @@ General
   compute automatically the right time settings.  If you meet any problem
   related to time, make sure to read the Time and Event documentation and / or
   report issue to the Morse project.
-- Windows is now supported for building MORSE.
+- Windows is now supported for building MORSE and running the unit test suite.
 
 Components
 ----------

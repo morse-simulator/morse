@@ -2,7 +2,7 @@ import logging
 #testrunnerlogger = logging.getLogger("test.runner")
 testlogger = logging.getLogger("morsetesting.general")
 
-import sys, os
+import sys, os, platform
 from abc import ABCMeta, abstractmethod
 import unittest
 import inspect
@@ -201,11 +201,16 @@ class MorseTestCase(unittest.TestCase):
 
             if prefix == "":
                 cmd = 'morse'
+            elif platform.system() == 'Windows':
+                cmd = os.path.join(prefix.strip('\"').strip('\''), "bin", "morserun.py")
             else:
                 cmd = prefix + "/bin/morse"
 
             self.logfile = open(self.logfile_name, 'w')
-            self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=self.logfile, stderr=subprocess.STDOUT)
+            if platform.system() == 'Windows':
+                self.morse_process = subprocess.Popen(['python', cmd, 'run', temp_builder_script], stdout=self.logfile, stderr=subprocess.STDOUT)
+            else:
+                self.morse_process = subprocess.Popen([cmd, 'run', temp_builder_script], stdout=self.logfile, stderr=subprocess.STDOUT)
         except OSError as ose:
             testlogger.error("Error while launching MORSE! Check you can run it from command-line\n" + \
                     " and if you use the $MORSE_ROOT env variable, check it points to a correct " + \
