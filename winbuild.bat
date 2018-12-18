@@ -17,9 +17,23 @@ rem only make the build folder if it doesn't exist
 if not exist "build" mkdir build
 
 rem and build and install into C:\morse
-rem if you want a different folder for more to be installed into, change the -DCMAKE_INSTALL_PREFIX="" below
+rem if you want a different folder for more to be installed into, change the MORSE_ROOT below
+set MORSE_ROOT=C:\morse
 
 cd build
-cmake .. -DPYTHON_INCLUDE_DIR="%PYINC%" %ISBIT% -DPYTHON_LIBRARY="%PYTHONPATH%libs\python35.lib" -DCMAKE_INSTALL_PREFIX="C:\morse"
+cmake .. -DPYMORSE_SUPPORT=ON -DPYTHON_INCLUDE_DIR="%PYINC%" %ISBIT% -DPYTHON_LIBRARY="%PYTHONPATH%libs\python35.lib" -DCMAKE_INSTALL_PREFIX="%MORSE_ROOT%" -DCMAKE_VERBOSE_MAKEFILE=ON
 cmake --build . --config Release --target install
+
+CHOICE /M "Run unit tests for 30min?"
+IF ERRORLEVEL 2 GOTO END
+IF ERRORLEVEL 1 GOTO RUNTESTS
+GOTO END
+
+:RUNTESTS
+rem the unit tests take ~30min to run, so optional for user to run these
+set PYTHONPATH=%PYTHONPATH%;%MORSE_ROOT%\Lib\site-packages\
+"C:\Program Files\CMake\bin\ctest" . --verbose -C Release
+GOTO END
+
+:END
 pause

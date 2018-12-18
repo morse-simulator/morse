@@ -110,6 +110,8 @@ This will start launching MORSE with a series of unit tests, to check that
 the creation of scenes and some of the components is running properly on your
 system.
 
+Windows users can run the ``winbuild.bat`` file to build and run the tests
+automatically.
 
 
 Running tests
