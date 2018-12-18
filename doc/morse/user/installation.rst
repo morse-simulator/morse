@@ -183,8 +183,8 @@ Go to the directory where you have previously downloaded the MORSE source.
 Then run the winbuild.bat script.
 
 By default, MORSE will install in C:\morse. You can easily change the
-install directory by editing the CMAKE_INSTALL_PREFIX variable in
-winbuild.bat
+install directory by editing the MORSE_ROOT variable in
+``winbuild.bat``
 
 Middleware-specific notes
 +++++++++++++++++++++++++
