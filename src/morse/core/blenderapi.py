@@ -184,6 +184,11 @@ def constraints():
     else:
         return None
 
+def app():
+    if not fake:
+        return bge.app
+    else:
+        return None
 
 def texture():
     if not fake:
