@@ -97,8 +97,8 @@ test_script:
 after_test:
   # If tests are successful, create binary packages for the project.
   - cd %APPVEYOR_BUILD_FOLDER%
-  - xcopy morse.spec "%MORSE_ROOT%\\bin"
-  - pyinstaller %MORSE_ROOT%\\bin\\morse.spec
+  - xcopy morse-windows.spec "%MORSE_ROOT%\\bin"
+  - pyinstaller %MORSE_ROOT%\\bin\\morse-windows.spec
   
   #run setup
   - "ISCC.exe /dMyAppVersion=%APP_VERSION% /dMyAppArch=%ISS_ARCH% morse.iss"

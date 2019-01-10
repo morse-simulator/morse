@@ -65,8 +65,8 @@ run your simulation in ``fastmode`` (:doc:`refer to the simulation's Builder
 API <../user/builder>`) for vastly improved load time and runtime performance.
 
 
-Packaged versions
------------------
+Packaged versions (Debian, Ubuntu, Windows)
+-------------------------------------------
 
 MORSE is available on Debian >= Wheezy and Ubuntu >= 13.04. You can install
 the package ``morse-simulator`` with your preferred software package manager::
@@ -85,6 +85,9 @@ You can also install the Python bindings with::
   need to install MORSE manually if you want to use MORSE with
   ROS/YARP/MOOS/pocolibs. Continue to the next section.
 
+Windows users can find a convenient Morse installer on the Morse Github page. Note that
+Blender is required to be installed first. Blender and Morse must both 32-bit installs
+or both be 64-bit installs to ensure compatibility between the two packages.
 
 You can also easily install MORSE with:
 
