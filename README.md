@@ -3,7 +3,7 @@
 MORSE: the Modular Open Robots Simulator Engine
 ===============================================
 
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45965.svg)](http://dx.doi.org/10.5281/zenodo.45965) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45965.svg)](http://dx.doi.org/10.5281/zenodo.45965) [![Build Status](https://travis-ci.org/morse-simulator/morse.png?branch=master)](https://travis-ci.org/morse-simulator/morse) [![Build status](https://ci.appveyor.com/api/projects/status/github/morse-simulator/morse?branch=master)](https://ci.appveyor.com/api/projects/status/github/morse-simulator/morse)
 
 
 ![MORSE screenshot 1](doc/media/morse_ros_navigation.png)
