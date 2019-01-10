@@ -1,0 +1,122 @@
+environment:
+  global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+    MORSE_ROOT: "%APPVEYOR_BUILD_FOLDER%\\morseroot" 
+    APP_VERSION: 1.4
+
+  matrix:
+    #Building a 32 and 64bit version of Morse, as it needs to match the architecture
+    #of the user's Blender install
+    
+    #Not actually using Appveyor's Python. This (Python dir) is just a placeholder
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.3" # Need Python 3.5.3 for Blender
+      PYTHON_ARCH: "64"
+      ISS_ARCH: "x64"
+      ISBIT: "-DCMAKE_GENERATOR_PLATFORM=x64"
+      MINICONDA: C:\\Miniconda35-x64
+      CINSTEXT: ""
+      MORSE_BLENDER: C:\Program Files\Blender Foundation\Blender\blender.exe
+
+    #Not actually using Appveyor's Python. This (Python dir) is just a placeholder
+    - PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5.3" # Need Python 3.5.3 for Blender
+      PYTHON_ARCH: "32"
+      ISBIT: ""
+      MINICONDA: C:\\Miniconda35
+      ISS_ARCH: ""
+      CINSTEXT: --x86
+      MORSE_BLENDER: C:\Program Files (x86)\Blender Foundation\Blender\blender.exe
+      
+install:
+  # If there is a newer build queued for the same PR, cancel this one.
+  # The AppVeyor 'rollout builds' option is supposed to serve the same
+  # purpose but it is problematic because it tends to cancel builds pushed
+  # directly to master instead of just PR builds (or the converse).
+  # credits: JuliaLang developers.
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+          throw "There are newer queued builds for this pull request, failing early." }
+
+  #We're using Inno Setup to build an installer, and blender for running tests and build
+  - cinst %CINSTEXT% -y InnoSetup blender
+
+  #Need Python 3.5.3, not the 3.5.4 shipped with Appveyor
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda install python=3.5.3
+  - "conda create -q -n test-environment python=%PYTHON_VERSION%"
+  - activate test-environment
+  - conda install -c conda-forge numpy
+  - python -m pip install --upgrade pip
+  - pip install -U pywin32 pyinstaller setuptools packaging
+  
+  #Set up build vars
+  - for /f "delims=" %%i in ('python -c "from sysconfig import get_paths; print(get_paths()['include'])"') do set PYINC=%%i
+  - for /f "delims=" %%i in ('python -c "import os,sys; print(os.path.dirname(sys.executable))"') do set PYTHON_PATH=%%i
+   
+  # Check that we have the expected version and architecture for Python
+  - "where python"
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - "\"%MORSE_BLENDER%\" --version"
+  
+  #Debug for getting a list of what packages/version were used for this build
+  - pip list
+  
+build_script:
+  # Build Morse
+  - if not exist "build" mkdir build
+  - cd build
+  - cmake .. -DPYMORSE_SUPPORT=ON -DPYTHON_INCLUDE_DIR="%PYINC%" %ISBIT% -DPYTHON_LIBRARY="%PYTHON_PATH%\libs\python35.lib" -DCMAKE_INSTALL_PREFIX="%MORSE_ROOT%" -DCMAKE_VERBOSE_MAKEFILE=ON
+  - cmake --build . --config Release --target install
+
+test_script:
+  # Run the project tests
+  - cd %APPVEYOR_BUILD_FOLDER%\\build
+  - if not exist "..\\testlogs" mkdir ..\\testlogs
+
+  - set PYTHONPATH=%MORSE_ROOT%\\Lib\\site-packages
+  - echo %PYTHONPATH%
+  
+  # Check morse is working
+  - "\"%MORSE_ROOT%\\bin\\morserun.py\" check"
+  
+  # These tests don't work due to having issues finding the Blender python. Appears to be a 
+  # CI environment issue
+  #- ctest -R gps_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\GPSTest.log
+  #- ctest -R pose_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\PoseTest.log
+  #- ctest -R sick_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\Sick_Test.log
+      
+after_test:
+  # If tests are successful, create binary packages for the project.
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - xcopy morse.spec "%MORSE_ROOT%\\bin"
+  - pyinstaller %MORSE_ROOT%\\bin\\morse.spec
+  
+  #run setup
+  - "ISCC.exe /dMyAppVersion=%APP_VERSION% /dMyAppArch=%ISS_ARCH% morse.iss"
+
+artifacts:
+  # Archive the generated packages in the ci.appveyor.com build report.
+  - path: morseroot
+    name: MorseBuild
+  - path: testlogs
+    name: TestLogs
+  - path: dist
+    name: Morse_exe    
+  - path: Output
+    name: MorseInstaller 
+    
+#on_success:
+#  - TODO: upload the content of dist/*.whl to a public wheelhouse
+#
+
+on_finish:
+  # Upload test results to AppVeyor
