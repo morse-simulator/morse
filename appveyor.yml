@@ -13,24 +13,28 @@ environment:
     
     #Not actually using Appveyor's Python. This (Python dir) is just a placeholder
     - PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5.3" # Need Python 3.5.3 for Blender
+      PYTHON_VERSION: "3.5.1" # Need Python 3.5.1 for Blender
       PYTHON_ARCH: "64"
       ISS_ARCH: "x64"
       ISBIT: "-DCMAKE_GENERATOR_PLATFORM=x64"
       MINICONDA: C:\\Miniconda35-x64
       CINSTEXT: ""
       MORSE_BLENDER: C:\Program Files\Blender Foundation\Blender\blender.exe
+      OPENGL_DL: http://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-64-mesa_11_2_2.7z
+      OPENGL_DL_LOC: C:\Program Files\Blender Foundation\Blender\opengl32.dll
 
     #Not actually using Appveyor's Python. This (Python dir) is just a placeholder
     - PYTHON: "C:\\Python35"
-      PYTHON_VERSION: "3.5.3" # Need Python 3.5.3 for Blender
+      PYTHON_VERSION: "3.5.1" # Need Python 3.5.1 for Blender
       PYTHON_ARCH: "32"
       ISBIT: ""
       MINICONDA: C:\\Miniconda35
       ISS_ARCH: ""
       CINSTEXT: --x86
       MORSE_BLENDER: C:\Program Files (x86)\Blender Foundation\Blender\blender.exe
-      
+      OPENGL_DL: http://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-32-mesa_12_0_rc2.7z
+      OPENGL_DL_LOC: C:\Program Files (x86)\Blender Foundation\Blender\opengl32.dll
+
 install:
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
@@ -43,14 +47,15 @@ install:
           throw "There are newer queued builds for this pull request, failing early." }
 
   #We're using Inno Setup to build an installer, and blender for running tests and build
-  - cinst %CINSTEXT% -y InnoSetup blender
+  - cinst %CINSTEXT% -y InnoSetup
+  - cinst %CINSTEXT% -y blender --version 2.78
 
   #Need Python 3.5.3, not the 3.5.4 shipped with Appveyor
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda install python=3.5.3
+  - conda install python=3.5.1
   - "conda create -q -n test-environment python=%PYTHON_VERSION%"
   - activate test-environment
   - conda install -c conda-forge numpy
@@ -66,6 +71,11 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   - "\"%MORSE_BLENDER%\" --version"
+  
+  # Need software OpenGL drivers, so Blender actually starts on the VM
+  - ps: Invoke-WebRequest "$env:OPENGL_DL" -OutFile "opengl_qt_mesa.7z"
+  - 7z x opengl_qt_mesa.7z
+  - move opengl32sw.dll "%OPENGL_DL_LOC%"
   
   #Debug for getting a list of what packages/version were used for this build
   - pip list
@@ -90,9 +100,9 @@ test_script:
   
   # These tests don't work due to having issues finding the Blender python. Appears to be a 
   # CI environment issue
-  #- ctest -R gps_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\GPSTest.log
-  #- ctest -R pose_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\PoseTest.log
-  #- ctest -R sick_testing --verbose -C Release -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\Sick_Test.log
+  - ctest -R gps_testing --verbose -C Release --timeout 150 -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\GPSTest.log
+  - ctest -R pose_testing --verbose -C Release --timeout 150 -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\PoseTest.log
+  - ctest -R sick_testing --verbose -C Release --timeout 150 -O %APPVEYOR_BUILD_FOLDER%\\testlogs\\Sick_Test.log
       
 after_test:
   # If tests are successful, create binary packages for the project.
@@ -113,7 +123,7 @@ artifacts:
     name: Morse_exe    
   - path: Output
     name: MorseInstaller 
-    
+
 #on_success:
 #  - TODO: upload the content of dist/*.whl to a public wheelhouse
 #
