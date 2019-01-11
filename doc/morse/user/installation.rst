@@ -86,8 +86,11 @@ You can also install the Python bindings with::
   ROS/YARP/MOOS/pocolibs. Continue to the next section.
 
 Windows users can find a convenient Morse installer on the Morse Github page. Note that
-Blender is required to be installed first. Blender and Morse must both 32-bit installs
-or both be 64-bit installs to ensure compatibility between the two packages.
+Blender (must be V2.78) is required to be installed first. Blender and Morse must both
+32-bit installs or both be 64-bit installs to ensure compatibility between the two packages.
+
+Blender V2.78 can be downloaded from the
+`Blender website <https://download.blender.org/release/Blender2.78/>`_.
 
 You can also easily install MORSE with:
 

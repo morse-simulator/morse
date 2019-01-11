@@ -65,7 +65,7 @@ begin
     CreateInputFilePage(
       wpSelectDir,
       'Select Location of Blender Executable',
-      'Morse requires the Blender application. Ensure Blender is installed before installing Morse',
+      'Morse requires the Blender application (V2.78). Ensure Blender is installed before installing Morse',
       'Select where the Blender executable is located (usually in the Blender install folder), then click Next.');
 
   BlenderFilePage.Add(
