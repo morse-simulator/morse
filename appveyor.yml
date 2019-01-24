@@ -60,7 +60,7 @@ install:
   - activate test-environment
   - conda install -c conda-forge numpy
   - python -m pip install --upgrade pip
-  - pip install -U pywin32 pyinstaller setuptools packaging
+  - pip install -U pywin32 pyinstaller setuptools packaging --no-use-pep517
   
   #Set up build vars
   - for /f "delims=" %%i in ('python -c "from sysconfig import get_paths; print(get_paths()['include'])"') do set PYINC=%%i
