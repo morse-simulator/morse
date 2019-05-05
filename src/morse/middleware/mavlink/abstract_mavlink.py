@@ -66,8 +66,8 @@ class MavlinkActuator(MavlinkDatastream):
         if not last_msg:
             return False
         self._msg = last_msg
-        if missed != 0:
-            logger.warning('Dropped %d messages' % missed)
+        # if missed != 0:
+        #     logger.warning('Dropped %d messages' % missed)
         logger.debug('Received %s' % self._msg)
         self.process_msg()
         return True
