@@ -35,12 +35,13 @@ class MagnetoDriver(object):
         pos = numpy.matrix(pose.translation)
         pos_ltp = self._coord_conv.blender_to_ltp(pos)
         pos_lla = self._coord_conv.ltp_to_geodetic(pos_ltp)
-        (decl, incl, f, h, x, y, z) = self._mag.compute(
+        (decl, incl, f, h, n, e, d) = self._mag.compute(
                                  degrees(pos_lla[0, 0]),
                                  degrees(pos_lla[0, 1]),
                                  pos_lla[0, 2] / 1000.0, self._date)
-        mag_field = mathutils.Vector((x, y, z))
-        return mag_field * pose.rotation_matrix
+        mag_field_enu = mathutils.Vector((e, n, -d))
+
+        return mag_field_enu * pose.rotation_matrix
 
 class Magnetometer(morse.core.sensor.Sensor):
     """ 
@@ -90,7 +91,7 @@ class Magnetometer(morse.core.sensor.Sensor):
 
 
     def default_action(self):
-        mag_field = self._mag.compute(self.position_3d)
-        self.local_data['x'] = mag_field[0]
-        self.local_data['y'] = mag_field[1]
-        self.local_data['z'] = mag_field[2]
+        mag_field_enu = self._mag.compute(self.position_3d)
+        self.local_data['x'] =  mag_field_enu[1]
+        self.local_data['y'] =  mag_field_enu[0]
+        self.local_data['z'] = -mag_field_enu[2]
