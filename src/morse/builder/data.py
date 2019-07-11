@@ -123,7 +123,8 @@ INTERFACE_DEFAULT_IN = {
 MORSE_DATASTREAM_DICT = {
     "morse.sensors.accelerometer.Accelerometer": {
         "default": {
-            "ros": 'morse.middleware.ros.accelerometer.TwistPublisher',
+            "ros": ['morse.middleware.ros.accelerometer.AccelWithCovarianceStampedPublisher',
+                    'morse.middleware.ros.accelerometer.TwistPublisher'],
             "socket": INTERFACE_DEFAULT_OUT,
             "yarp": INTERFACE_DEFAULT_OUT,
             "moos": INTERFACE_DEFAULT_OUT,
