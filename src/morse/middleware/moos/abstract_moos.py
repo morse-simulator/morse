@@ -129,6 +129,9 @@ class MOOSNotifier(AbstractMOOS):
         """
         self._comms.notify(msg_key, data, time)
 
+    def notify_binary(self, msg_key, data, time=-1):
+
+        self._comms.notify_binary(msg_key, data, time)
 
 class StringPublisher(MOOSNotifier):
     """ Publish a string containing a printable representation of the
