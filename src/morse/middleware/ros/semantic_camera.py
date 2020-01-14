@@ -13,7 +13,7 @@ class SemanticCameraPublisher(ROSPublisherTF):
 
     def initialize(self):
         if not self.component_instance.relative:
-            self.default_frame_id = '/map'
+            self.default_frame_id = 'map'
         ROSPublisherTF.initialize(self)
 
     def default(self, ci='unused'):
@@ -36,7 +36,7 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
 
     def initialize(self):
         if not self.component_instance.relative:
-            self.default_frame_id = '/map'
+            self.default_frame_id = 'map'
         ROSPublisherTF.initialize(self)
 
     def default(self, ci='unused'):

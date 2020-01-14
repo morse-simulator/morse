@@ -35,4 +35,4 @@ Similarly, you can set a custom ``frame_id`` and ``child_frame_id``:
 
 .. code-block :: python
 
-    foo.add_stream('ros', frame_id = '/world', child_frame_id = '/footprint')
+    foo.add_stream('ros', frame_id = 'world', child_frame_id = 'footprint')
