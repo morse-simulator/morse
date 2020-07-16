@@ -427,7 +427,7 @@ class VideoCamera(SensorCreator):
 
 class DepthCamera(VideoCamera):
     _classpath = "morse.sensors.depth_camera.DepthCamera"
-    _blendname = "camera"
+    _blendname = "camera" 
 
     def __init__(self, name=None):
         VideoCamera.__init__(self, name)
@@ -616,3 +616,27 @@ class RadarAltimeter(SensorCreator):
 
 class Airspeed(SensorCreator):
     _classpath = "morse.sensors.airspeed.Airspeed"
+
+
+# ----------------- Mission systems additions -----------------------
+#
+class Lidar(SensorCreator):
+    _classpath  = "morse.sensors.Lidar.Lidar"
+    _short_desc = "Configurable lidar beam"
+    _blendname  = "lidar"
+    _name = "Lidar"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        #self.append_meshes(None,'vertiia_sim/sensors/lidar.blend')
+        self.append_meshes(['lidar'])
+        
+        
+
+class Objectserver(SensorCreator):
+    _classpath = "morse.sensors.ObjectServer.Objectserver"
+    _blendname = ""
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+ 
