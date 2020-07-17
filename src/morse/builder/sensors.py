@@ -640,3 +640,12 @@ class Objectserver(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
  
+
+class Optixcamera(SensorCreator):
+    _classpath = "morse.sensors.OptixCamera.Optixcamera"
+    _blendname = "OptixCamera"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        # May need to include a .blend file at some point
+
