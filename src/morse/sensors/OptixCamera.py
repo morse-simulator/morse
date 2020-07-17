@@ -26,13 +26,11 @@ class Optixcamera(morse.sensors.camera.Camera):
     add_data('optix_camera_status', 'ON', 'string', 'Status of this optix camera device - ON/OFF')  # maybe we wont need all of these. some might have been used for the debug lines?
 
     # format is: field name, default initial value, name (must match the blender name), type, description
-    add_property('image_width', 256, 'cam_width in pixels')
-    add_property('image_height', 256, 'cam_height in pixels')
-    add_property('image_focal', 25.0, 'cam_focal length in mm')
-    add_property('vertical_flip', True, 'Vertical_Flip the final image')
-    add_property('horizontal_fov',  120.0,  'Horizontal_fov' ,'float','Camera horizontal feild of view in degrees')
-    add_property('vertical_fov', 60.0,  'Vertical_fov' ,'float','Camera vertical feild of view in degrees')
-    add_property('max_range',      200.0,  'Max_range','float','Camera range in m')
+    add_property('image_width',     256,    'cam_width in pixels')
+    add_property('image_height',    256,    'cam_height in pixels')
+    add_property('image_focal',     25.0,   'cam_focal length in mm')
+    add_property('vertical_flip',   True,   'Vertical_Flip the final image')
+    add_property('max_range',       200.0,  'Max_range','float','Camera range in m')
 
     def __init__(self, obj, parent=None):
         logger.info("%s initialization" % obj.name)
@@ -70,8 +68,6 @@ class Optixcamera(morse.sensors.camera.Camera):
         optix_camera_pose = {
            'optix_camera_name' : self.local_data['optix_camera_name'],
            'max_range'         : self.max_range,
-           'horizontal_fov'    : self.horizontal_fov,
-           'vertical_fov'      : self.vertical_fov,
            'pos'               : list(optix_camera_pos),
            'X'                 : list(optix_camera_mat.col[1]),
            'Y'                 : list(optix_camera_mat.col[2]),
