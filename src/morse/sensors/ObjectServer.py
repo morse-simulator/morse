@@ -30,6 +30,10 @@ __status__     = "Production"
 
 flatten = lambda l: [item for sublist in l for item in sublist]
 
+# Set logger level - DEBUG used for timing of all messages sent
+logger.setLevel(logging.INFO)
+LOG_QUEUE_INTERVAL_SIZE = 100
+
 def get_pose(obj):
 
     position = obj.worldPosition
@@ -234,11 +238,13 @@ class Objectserver(morse.core.sensor.Sensor):
                     triangulated = False
 
             if not triangulated:
-                logger.info('WARNING: Object %s must be triangulated...' % (bpy_obj.name))
+                logger.warning('WARNING: Object %s must be triangulated...' % (bpy_obj.name))
                 triangulate_object(bpy_obj)
 
         logger.info('Found %d dynamic objects in scene' % len(self.Dynamic_objects))
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
+
+        self.prev_queue_size = 0
 
     def default_action(self):
 
@@ -262,6 +268,12 @@ class Objectserver(morse.core.sensor.Sensor):
                     # Is there a noun?
                     if len(query) > 1:
 
+                        # Log queue size increases and at intervals which processing
+                        queue_size = len(queue)
+                        if queue_size > self.prev_queue_size or queue_size % LOG_QUEUE_INTERVAL_SIZE == 0:
+                            logger.info('Message queue length: ' + str(queue_size))
+                        self.prev_queue_size = queue_size
+
                         # Yes: the noun is the object name
                         obj_name = query[1]
 
@@ -284,12 +296,12 @@ class Objectserver(morse.core.sensor.Sensor):
                             props = obj.game.properties
 
                             # Always send as binary capnp
-                            send_as_binary = True
+                            send_as_binary = data_name not in self.data_blocks_sent
 
                             if send_as_binary:
                                 # Send as binary capnp
                                 log_string += ' as a capnp binary message...'
-                                logger.info(log_string);
+                                logger.debug(log_string);
 
                                 # Create new capnp message
                                 blender_object = blender_object_capnp.BlenderObject.new_message()
@@ -306,28 +318,30 @@ class Objectserver(morse.core.sensor.Sensor):
 
                                 # Track progress
                                 deltat_partial = time.time() - start_time
-                                logger.info('\t... created blender object in ' + str(deltat_partial) + ' s ...')
+                                logger.debug('\t... created blender object in ' + str(deltat_partial) + ' s ...')
 
                                 # Is this a new data block?
                                 if not data_name in self.data_blocks_sent:
                                     fill_data_block( blender_object.dataBlock, obj )
+                                    self.data_blocks_sent.append(data_name)
+
                                     # Track progress
                                     deltat_partial_2 = time.time() - start_time - deltat_partial
-                                    logger.info('\t... filled data block in ' + str(deltat_partial_2) + ' s ...')
+                                    logger.debug('\t... filled data block in ' + str(deltat_partial_2) + ' s ...')
                                 else:
                                     deltat_partial_2 = 0
-                                    logger.info('\t... ' + data_name + ' data block has already been filled ...')
+                                    logger.debug('\t... ' + data_name + ' data block has already been filled ...')
 
                                 self.local_data['object_data_binary'] = blender_object.to_bytes()
                                 msg_len = len( self.local_data['object_data_binary'] )
 
                                 # Track progress
                                 deltat_partial_3 = time.time() - start_time - deltat_partial - deltat_partial_2
-                                logger.info('\t... converted to bytes and length calculated in ' + str(deltat_partial_3) + ' s ...')
+                                logger.debug('\t... converted to bytes and length calculated in ' + str(deltat_partial_3) + ' s ...')
                             else:
                                 # Send as JSON
                                 log_string += ' as a json string message...'
-                                logger.info(log_string);
+                                logger.debug(log_string);
 
                                 data = {
                                    'Obj_name'  : obj_name,
@@ -342,7 +356,7 @@ class Objectserver(morse.core.sensor.Sensor):
 
                                 # Track progress
                                 deltat_partial = time.time() - start_time
-                                logger.info('\t... created json struct in ' + str(deltat_partial) + ' s ...')
+                                logger.debug('\t... created json struct in ' + str(deltat_partial) + ' s ...')
 
                                 # Is this a new data block?
                                 if not data_name in self.data_blocks_sent:
@@ -354,10 +368,10 @@ class Objectserver(morse.core.sensor.Sensor):
 
                                     # Track progress
                                     deltat_partial_2 = time.time() - start_time - deltat_partial
-                                    logger.info('\t... obtained data block in ' + str(deltat_partial_2) + ' s ...')
+                                    logger.debug('\t... obtained data block in ' + str(deltat_partial_2) + ' s ...')
                                 else:
                                     deltat_partial_2 = 0
-                                    logger.info('\t... ' + data_name + ' data block has already been filled ...')
+                                    logger.debug('\t... ' + data_name + ' data block has already been filled ...')
 
                                 # Publish the encoded object data
                                 self.local_data['scene_data'] = json.dumps(data)
@@ -365,12 +379,12 @@ class Objectserver(morse.core.sensor.Sensor):
 
                                 # Track progress
                                 deltat_partial_3 = time.time() - start_time - deltat_partial - deltat_partial_2
-                                logger.info('\t... converted to string and length calculated in ' + str(deltat_partial_3) + ' s ...')
+                                logger.debug('\t... converted to string and length calculated in ' + str(deltat_partial_3) + ' s ...')
 
                             # How long did the encoding take?
                             deltat = time.time() - start_time
 
-                            logger.info('\t... object converted in total time ' + str(deltat) + ' s.')
+                            logger.debug('\t... object converted in total time ' + str(deltat) + ' s.')
                         else:
                             print('Error: unrecognized object (%s).' % obj_name)
                     else:
