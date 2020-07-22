@@ -20,7 +20,11 @@ class objectServerReader(MOOSSubscriber):
 
             # Store new queries received from MOOS.
             # We implement a queue so we don't lose any
-            self.data['scene_query'].append(msg.string())
+
+            # We skip "get" inventory calls from piling up by not processing 
+            # them if there are other messages in the queue
+            if msg.string() != "get" or len(self.data['scene_query']) == 0:
+                self.data['scene_query'].append(msg.string())
 
         self._new_messages = True
 
