@@ -331,5 +331,61 @@ class ExternalForce(ActuatorCreator):
 
 class QuadrotorDynamicControl(ActuatorCreator):
     _classpath = "morse.actuators.quadrotor_dynamic_control.QuadrotorDynamicControl"
-
 # end morse.builder.actuators
+
+
+
+# Mission Systems Actuator additions ----------------------------------------------------
+#----------------------------------------------------------------------------------------
+
+class Hydrodynamics(ActuatorCreator):
+    _classpath = "morse.actuators.bluefin21_hydrodynamics.Hydrodynamics" 
+    _blendname = "hydrodynamics"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class Buoyancy(ActuatorCreator):
+    _classpath = "morse.actuators.buoyancy.Buoyancy"
+    _blendname = "buoyancy"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class Current(ActuatorCreator):
+    _classpath = "morse.actuators.current.Current"
+    _blendname = "current"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class Tracker(ActuatorCreator):
+    _classpath = "morse.actuators.tracker.Tracker"
+    _blendname = "tracker"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+
+
+class GenericHydrodynamicDrag(ActuatorCreator):
+    _classpath = "morse.actuators.GenericHydrodynamicDrag.GenericHydrodynamicDrag"
+    _blendname = "drag"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class WamVHydrodynamics(ActuatorCreator):
+    _classpath = "morse.actuators.WamVHydrodynamics.WamVHydrodynamics"
+    _blendname = "dynamics"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
+class Fixedthrusters(ActuatorCreator):
+    _classpath = "morse.actuators.fixedthrusters.Fixedthrusters"
+    _blendname = ""
+
+    def __init__(self, name=None):
+
+        ActuatorCreator.__init__(self, name)
