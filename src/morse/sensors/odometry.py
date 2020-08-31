@@ -134,6 +134,10 @@ class IntegratedOdometry(Odometry):
 
         self.delta_pos = self.previous_pos.transformation3d_with(current_pos)
         self.local_data['vx'] = self.delta_pos.x * self.frequency
+        #print("vx ",self.delta_pos.x * self.frequency)
+        #print("vy ",self.delta_pos.y * self.frequency)
+        #print("vz ",self.delta_pos.z * self.frequency)
+        #print()
         self.local_data['vy'] = self.delta_pos.y * self.frequency
         self.local_data['vz'] = self.delta_pos.z * self.frequency
         self.local_data['wz'] = self.delta_pos.yaw * self.frequency

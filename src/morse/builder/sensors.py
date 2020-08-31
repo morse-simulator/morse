@@ -649,3 +649,30 @@ class Optixcamera(SensorCreator):
         SensorCreator.__init__(self, name)
         # May need to include a .blend file at some point
 
+class DVL(SensorCreator):
+    _classpath = "morse.sensors.Dvl.DVL"
+    _blendname = "DVL"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+
+class Sonar(SensorCreator): 
+    _classpath =  "morse.sensors.Sonar.Sonar"
+    _short_desc = "Configurable sonar beam"
+    _blendname  = "beam"
+    _name = "Sonar"
+
+    def __init__(self, name=None):
+
+        SensorCreator.__init__(self, name)
+        self.append_meshes(None,'beam')
+ 
+class FLS(SensorCreator):
+    _classpath = "morse.sensors.Fls.FLS"
+    _short_desc = "Forward looking sonar"
+    _blendname = "FLS"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+
+ 

@@ -90,7 +90,7 @@ class Velocity(morse.core.sensor.Sensor):
         self.local_data['linear_velocity'] = w2a * v
         self.local_data['angular_velocity'] =  w
         self.local_data['world_linear_velocity'] = v
-
+        
     def default_action(self):
         """ Get the linear and angular velocity of the blender object. """
 
