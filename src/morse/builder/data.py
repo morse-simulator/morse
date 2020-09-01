@@ -393,6 +393,14 @@ MORSE_DATASTREAM_DICT = {
             "pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
             }
         },
+    "morse.sensors.Dvl.DvlPublisher": {
+        "default": {
+            #"socket":   'morse.middleware.sockets.depth_camera.DepthCameraPublisher',
+            "ros":      'morse.middleware.ros.dvl.DvlPublisher'
+            #"yarp":     'morse.middleware.yarp.video_depth_camera.YarpImageFloatPublisher',
+            #"pocolibs": 'morse.middleware.pocolibs.sensors.viam.ViamPoster'
+            }
+        },
 
     "morse.actuators.armature.Armature": {
         "default": {
@@ -545,6 +553,16 @@ MORSE_DATASTREAM_DICT = {
             "socket": INTERFACE_DEFAULT_IN,
             "yarp": INTERFACE_DEFAULT_IN,
             "yarp_json": INTERFACE_DEFAULT_IN,
+            }
+        },
+    "morse.actuators.bluefin21_hydrodynamics.Hydrodynamics": {
+        "default": {
+            "ros": 'morse.middleware.ros.thruster.CtrlReader'
+            }
+        },
+    "morse.actuators.fixedthrusters.Fixedthrusters": {
+        "default": {
+            "ros": 'morse.middleware.ros.thruster.CtrlReader'
             }
         }
 }

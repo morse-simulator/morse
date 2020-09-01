@@ -26,7 +26,7 @@ class Bluefin21IMUModifier(AbstractModifier):
 class WamVIMUModifier(AbstractModifier):
     def initialize(self):
         """ initialization of parameters ... """
-
+        
     def modify(self):
         # Place where the data modification occurs
 
@@ -36,4 +36,3 @@ class WamVIMUModifier(AbstractModifier):
 
         self.data['linear_acceleration'].y = -self.data['linear_acceleration'].y
         self.data['linear_acceleration'].z = -self.data['linear_acceleration'].z
- 

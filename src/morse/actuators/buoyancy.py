@@ -10,7 +10,7 @@ import numpy as np
 __author__     = "David Battle"
 __copyright__  = "Copyright 2017, Mission Systems Pty Ltd"
 __license__    = "BSD"
-__version__    = "1.0.3"
+__version__    = "1.0.4"
 __maintainer__ = "David Battle"
 __email__      = "david.battle@missionsystems.com.au"
 __status__     = "Production"
@@ -39,7 +39,7 @@ class Spheres(object):
                              (scale.z*vertex.z)**2)
 
             # Return mean distance
-            return sum/nVertices
+            return sum / nVertices
 
         # Useful properties of spheres
         self.rad = meanRadius(object)
@@ -108,7 +108,7 @@ class Buoyancy(morse.core.actuator.Actuator):
             # Parent mass
             mass = parent.mass
 
-            # Parent trim
+            # Parent trim (defaults to zero)
             trim = parent.get('trim',0)
 
             # The total buoyancy force will equal the weight
@@ -152,24 +152,24 @@ class Buoyancy(morse.core.actuator.Actuator):
                 _,point,_ = s.obj.rayCast(target, None, 10000, "castable", False, True)
 
             if point:
-                z = depth-point.z
+                z = depth - point.z
             else:
                 logger.info("WARNING: Can't find water surface!")
                 z = depth            
             
             # Buoyancy vector for sphere in world frame
-            Bworld = s.buoy*Spheres.fraction(s,z)
+            Bworld = s.buoy * Spheres.fraction(s,z)
 
             # Buoyancy in body frame
             Bbody = Ri2b.dot(Bworld)
             
             # Buoyancy moment in body frame
-            Mbody = np.cross(s.obj.localPosition,Bbody)
+            Mbody = s.obj.localPosition.cross(Bbody)
        
-            # Vehicle forces in body frame
+            # Buoyancy forces in body frame
             s.obj.parent.applyForce(Bbody,True)
 
-            # Vehicle moments in body frame
+            # Buoyancy moments in body frame
             s.obj.parent.applyTorque(Mbody,True)
 
             #logger.info('Executed default action')
