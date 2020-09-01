@@ -28,8 +28,8 @@ class Bluefin21PoseModifier(AbstractModifier):
 class WamVPoseModifier(AbstractModifier):
     def initialize(self):
         """ initialization of parameters ... """
-
+        
     def modify(self):
         # Place where the data modification occurs
         self.data['yaw'] = self.data['yaw'] - pi/2.0
- 
+        

@@ -389,3 +389,11 @@ class Fixedthrusters(ActuatorCreator):
     def __init__(self, name=None):
 
         ActuatorCreator.__init__(self, name)
+
+class Sealevel(ActuatorCreator):
+    _classpath = "morse.actuators.sealevel.Sealevel"
+    _blendname = "sealevel"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+

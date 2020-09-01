@@ -1,5 +1,6 @@
 from morse.builder import *
 from morse.builder.actuators import Hydrodynamics
+from morse.builder.actuators import MotionVW
 from morse.modifiers.abstract_modifier import AbstractModifier
 from morse.builder.sensors import *
 #from BF21_sim.builder.sensors import DVL
@@ -21,8 +22,8 @@ class Bf21(GroundRobot):
         ###################################
 
         # AUV hydrodynamics
-        self.hydrodynamics = Hydrodynamics()
-        self.append(self.hydrodynamics) 
+        self.control = Hydrodynamics()
+        self.append(self.control) 
 
         ###################################
         # Sensors
@@ -69,10 +70,11 @@ class Bf21(GroundRobot):
         self.gps = GPS()
         self.append(self.gps)
 
+
     # This function sets the communications streams for various devices
     def set_moos(self, moos_host='127.0.0.1', moos_port=9000, moos_name='iMorse'):
 
-        self.hydrodynamics.add_stream('moos','morse.middleware.moos.thruster.CtrlReader',
+        self.control.add_stream('moos','morse.middleware.moos.thruster.CtrlReader',
             moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
 
         self.pose.add_stream('moos',
@@ -90,10 +92,20 @@ class Bf21(GroundRobot):
         self.gps.add_stream('moos',
             moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
 
+    def set_ros(self, namespace=""):
+        
+        self.gps.add_stream('ros', 
+            frame_id=namespace+self.name+"gps_frame" )
+        self.imu.add_stream('ros', 
+            frame_id=namespace+self.name+"imu_frame" )
+        self.control.add_stream('ros')
+
+
+
     # This function sets the frequencies of some devices
     def frequency(self, frequency=None):
         GroundRobot.frequency(frequency)
-        self.hydrodynamics.frequency(frequency)
+        self.control.frequency(frequency)
         self.pose.frequency(frequency)
         self.imu.frequency(frequency)
         self.dvl.frequency(frequency)
