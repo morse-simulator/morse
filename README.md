@@ -1,3 +1,5 @@
+⚠️ **As of 2020, MORSE is not maintained/updated anymore. The code will remain available for the foreseeable future for adventurous researchers and/or archeologists, but do not expect much support!** ⚠️
+
 ![MORSE logo](doc/media/morse-logo.png)
 
 MORSE: the Modular Open Robots Simulator Engine
