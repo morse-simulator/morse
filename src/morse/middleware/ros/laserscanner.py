@@ -8,7 +8,7 @@ from morse.middleware.ros import ROSPublisher, ROSPublisherTF
 class LaserScanPublisher(ROSPublisher):
     """ Publish the ``range_list`` of the laser scanner. """
     ros_class = LaserScan
-    default_frame_id = '/base_laser_link'
+    default_frame_id = 'base_laser_link'
 
     def default(self, ci='unused'):
         laserscan = LaserScan()
