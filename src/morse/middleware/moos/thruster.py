@@ -18,10 +18,13 @@ class CtrlReader(MOOSSubscriber):
 
     def on_thruster_msgs(self, msg):
         if (msg.key() == "DESIRED_RUDDER") and (msg.is_double()):
-            self.data['desired_rudder'] = radians(msg.double())
+            #print('desired_rudder = ', msg.double() )
+            self.data['desired_rudder'] = msg.double()
         elif  (msg.key() == "DESIRED_ELEVATOR") and (msg.is_double()):
+            #print('desired_elevator = ', -radians(msg.double()) )
             self.data['desired_elevator'] = -radians(msg.double())
         elif  (msg.key() == "DESIRED_THRUST") and (msg.is_double()):
+            #print('DESIRED_THRUST = ', msg.double() )
             self.data['desired_thrust'] = msg.double()
 
         self._new_messages = True
