@@ -9,7 +9,7 @@ class FixedCtrlReader(MOOSSubscriber):
     def initialize(self):
 
         # initialize the parent class
-        MOOSSubscriber.initialize(self)
+        MOOSSubscriber.initialize(self) 
         
         # register for control variables from the database
         self.register_message_to_queue("DESIRED_RUDDER",'rudder_queue', self.on_thruster_msgs)
