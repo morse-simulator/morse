@@ -74,7 +74,7 @@ class Bf21(GroundRobot):
     # This function sets the communications streams for various devices
     def set_moos(self, moos_host='127.0.0.1', moos_port=9000, moos_name='iMorse'):
 
-        self.control.add_stream('moos','morse.middleware.moos.thruster.CtrlReader',
+        self.control.add_stream('moos','morse.middleware.moos.thruster.TailconeCtrlReader',
             moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
 
         self.pose.add_stream('moos',

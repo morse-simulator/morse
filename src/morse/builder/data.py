@@ -557,12 +557,12 @@ MORSE_DATASTREAM_DICT = {
         },
     "morse.actuators.bluefin21_hydrodynamics.Hydrodynamics": {
         "default": {
-            "ros": 'morse.middleware.ros.thruster.CtrlReader'
+            "ros": 'morse.middleware.ros.thruster.TailconeCtrlReader'
             }
         },
     "morse.actuators.fixedthrusters.Fixedthrusters": {
         "default": {
-            "ros": 'morse.middleware.ros.thruster.CtrlReader'
+            "ros": 'morse.middleware.ros.thruster.FixedCtrlReader'
             }
         }
 }
