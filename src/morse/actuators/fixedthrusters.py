@@ -1,24 +1,10 @@
-# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ Mission Systems Pty Ltd ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Project: WamV-Morse-Sim
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Primary Author:
-# david battle <david.battle@missionsystems.com.au>
-# Other Author(s):
-# none
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Date Created:
-# 29/01/2019
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.actuator
 from morse.core import status
 from morse.helpers.components import add_data, add_property
 from morse.core import blenderapi
 from morse.core.mathutils import *
+from morse.helpers.compound import *
 from math import radians
 
 __author__     = "David Battle"
@@ -33,7 +19,7 @@ __status__     = "Production"
 def submerged(bge_object):
 
     # Vector pointing up
-    up = Vector([0,0,100])
+    up = Vector([0,0,1000])
 
     target = bge_object.localPosition + up
     _,point,_ = bge_object.rayCast(target, None, 100, "castable", False, True)
@@ -74,8 +60,8 @@ class Fixedthrusters(morse.core.actuator.Actuator):
     add_property('max_RPM',     1200, 'Max_rpm'  ,   'float', 'Max motor RPM')
     add_property('prop_diam',    0.3, 'Prop_diam',   'float', 'Propeller diameter')
     add_property('thrust_scale', 100, 'Thrust_scale','float', 'Scaling factor to [-1:1] thrust values')
-    add_property('thrust_rate', 0.25, 'Thrust_rate', 'float', 'Normalised slew rate for thruster')
-    add_property('rudder_scale', 100, 'Rudder_scale','float', 'Scaling factor to [-1:1] rudder values')
+    add_property('thrust_rate', 0.25, 'Thrust_rate', 'float', 'Normalised slew rate for thruster')    
+    add_property('rudder_scale', 100, 'Rudder_scale','float', 'Scaling factor to [-1:1] rudder values')    
 
     def __init__(self, obj, parent=None):
         logger.info("%s initialization" % obj.name)
@@ -86,19 +72,40 @@ class Fixedthrusters(morse.core.actuator.Actuator):
         # Get every bge object in the scene
         objs = blenderapi.scene().objects
 
-        # Get game object handles
-        # Only the boundaries are unparented
-        # and hence have physics controllers
-        self.port_thruster = objs['port_thruster_boundary']
-        self.stbd_thruster = objs['stbd_thruster_boundary']
-        self.port_prop     = objs['port_prop']
-        self.stbd_prop     = objs['stbd_prop']
+        # Get the parent robot
+        robot = self.robot_parent.bge_object
 
-        # Instantaneous thrust
+        # Get the names of everything connected to this robot
+        names = list( find_family(robot) )
+        compound_names = names
+
+        for n in names:
+            children = objs[n].childrenRecursive
+            compound_names.extend(c.name for c in children)
+
+        # All bge objects comprising the robot
+        compound_objs = [objs[n] for n in compound_names]
+
+        # Get game objects belonging to this robot (Blender can rename them)
+        self.port_thruster = next(c for c in compound_objs if 'port_thruster_boundary' in c.name)
+        self.stbd_thruster = next(c for c in compound_objs if 'stbd_thruster_boundary' in c.name)
+        self.port_prop     = next(c for c in compound_objs if 'port_prop_boundary' in c.name)
+        self.stbd_prop     = next(c for c in compound_objs if 'stbd_prop_boundary' in c.name)
+        self.port_prop_vis = next(c for c in compound_objs if 'port_prop' in c.name)
+        self.stbd_prop_vis = next(c for c in compound_objs if 'stbd_prop' in c.name)
+
+        # Initialise thrust
         self.port_thrust = 0
         self.stbd_thrust = 0
 
-        logger.info('Component initialized')
+        # Get current object
+        try:
+            self.current = objs['fake.current']
+        except:
+            self.current = None
+            logger.info('No current simulation found...')
+
+        logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
 
@@ -134,34 +141,49 @@ class Fixedthrusters(morse.core.actuator.Actuator):
 
         #----------------------------------------------------------
         # Propeller rotation increments:
-        # Mostly eye candy, but useful for
+        # Mostly eye candy, but useful for 
         # seeing what the thrusters are doing
-        dphi = radians(40)*self.port_thrust
+        dphi = radians(100)*self.port_thrust
 
         if dphi:
-
+            
             rot = Euler([dphi,0.0,0.0])
-            self.port_prop.applyRotation(rot,True)
+            self.port_prop_vis.applyRotation(rot,True)
 
-        dphi = radians(40)*self.stbd_thrust
+        dphi = radians(100)*self.stbd_thrust
 
         if dphi:
-
+            
             rot = Euler([dphi,0.0,0.0])
-            self.stbd_prop.applyRotation(rot,True)
+            self.stbd_prop_vis.applyRotation(rot,True)
 
-        #----------------------------------------------------------
-        # Apply thrust to props (if submerged):
-        # (Water level may not be zero)
+        #--------------------------------------------------------------------
+        # Apply thrust to props (if submerged): (Water level may not be zero)
+        # The following treatment is required on account of Blender
+        # incorrectly handling applyImpulse in the body frame.
+
+        if self.current:
+            # Current vector in world frame 
+            current_world = self.current['vec']
+        else:
+            current_world = Vector([0,0,0])
 
         if submerged(self.port_prop):
-            u_port = self.port_thruster.localLinearVelocity.x
-            port_force = prop_force(self,self.port_thrust,u_port)
-            port_impulse = [port_force / self.frequency,0,0]
-            self.port_thruster.applyImpulse(self.port_prop.localPosition,port_impulse,True)
+            port_mat = self.port_thruster.worldOrientation
+            port_inv = port_mat.transposed()
+            current_rel = port_inv * current_world
+            u_port = self.port_thruster.localLinearVelocity.x - current_rel.x
+            port_force = [prop_force(self,self.port_thrust,u_port), 0, 0]
+            port_moment = self.port_prop.localPosition.cross(port_force)
+            self.port_thruster.applyForce(port_force, True)
+            self.port_thruster.applyTorque(port_moment, True)
 
         if submerged(self.stbd_prop):
-            u_stbd = self.stbd_thruster.localLinearVelocity.x
-            stbd_force = prop_force(self,self.stbd_thrust,u_stbd)
-            stbd_impulse = [stbd_force / self.frequency,0,0]
-            self.stbd_thruster.applyImpulse(self.stbd_prop.localPosition,stbd_impulse,True)
+            stbd_mat = self.stbd_thruster.worldOrientation
+            stbd_inv = stbd_mat.transposed()
+            current_rel = stbd_inv * current_world
+            u_stbd = self.stbd_thruster.localLinearVelocity.x - current_rel.x
+            stbd_force = [prop_force(self,self.stbd_thrust,u_stbd), 0, 0]
+            stbd_moment = self.stbd_prop.localPosition.cross(stbd_force)
+            self.stbd_thruster.applyForce(stbd_force, True)
+            self.stbd_thruster.applyTorque(stbd_moment, True)
