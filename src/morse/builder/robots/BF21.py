@@ -11,7 +11,7 @@ class Bf21(GroundRobot):
     """
     A template robot model for BF21, with an articulated tailcone.
     """
-    def __init__(self, name = None, debug = True, use_sonar = False, timewarp = 1):
+    def __init__(self, name = None, debug = True, use_sonar = False, use_multiStaticSonar = False, timewarp = 1):
 
         # BF21.blend is located in the data/robots directory
         GroundRobot.__init__(self, 'BF21', name)
@@ -52,6 +52,13 @@ class Bf21(GroundRobot):
             stbd_beam.add_stream('moos','morse.middleware.moos.SonarCtrl.sonarNotifier')
             stbd_beam.frequency(30 * timewarp)
             self.append(stbd_beam)
+
+        if ( use_multiStaticSonar ):
+            self.multiStaticSonar = MultiStaticSonar()
+            self.multiStaticSonar.translate(-0.15,0,0.3)
+            self.multiStaticSonar.add_stream('moos','morse.sensors.multiStaticSonarCtrl.multiStaticSimNotifier')
+            self.multiStaticSonar.frequency(10)
+            self.append(self.multiStaticSonar)
 
         self.pose = Pose() 
         self.append(self.pose)
