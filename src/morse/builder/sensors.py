@@ -33,6 +33,16 @@ class Battery(SensorCreator):
         self.append(mesh)
         self.properties(DischargingRate = 0.05)
 
+class MultiStaticSonar(SensorCreator):
+    _classpath  = "morse.sensors.multiStaticSonar.MultiStaticSonar"
+    _short_desc = "Acoustic modem transducer"
+    _blendname  = "modem"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(['modem'])
+
+
 class CompoundSensor(SensorCreator):
     _classpath = "morse.sensors.compound.CompoundSensor"
 
