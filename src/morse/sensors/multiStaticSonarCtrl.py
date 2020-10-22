@@ -10,14 +10,20 @@ class multiStaticSimNotifier(MOOSNotifier):
 
         # Don't send any message
         # if there's no lidar pose data
-        str = self.data['node_pose']
+        publish_list = self.data['node_pose']
+        
+        # printing the list using loop 
+        for x in range(len(publish_list)):
 
-        #logger.debug('lidarNotifier is publishing!')
-        ts = self.data['timestamp']
+            str1 = publish_list[x]
+            json_data = json.loads(str1)
+            #print(json_data['node_name'])
+            #logger.debug('lidarNotifier is publishing!')
+            ts = self.data['timestamp']
 
-        # Acomms message
-        msg_name = self.data['node_name'].upper() + '_UPDATE'
-        self.notify(msg_name, str ,ts)
+            # Acomms message
+            msg_name = json_data['node_name'].upper() + '_UPDATE'
+            self.notify(msg_name, str1 ,ts)
 
     def update_morse_data(self):
         logger.debug('multiStaticSimNotifier.update_morse_data() called.')

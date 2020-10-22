@@ -6,6 +6,9 @@ from morse.builder.morsebuilder import *
 from morse.builder.data import MORSE_DATASTREAM_MODULE
 from morse.builder.abstractcomponent import Configuration
 from morse.core.morse_time import TimeStrategies
+from morse.core import blenderapi
+import json
+
 
 class Environment(AbstractComponent):
     """ Class to configure the general environment of the simulation
@@ -844,3 +847,4 @@ class Environment(AbstractComponent):
         """ Call the create method if the user has not explicitly called it """
         if not self._created:
             self.create()
+
