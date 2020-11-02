@@ -17,12 +17,11 @@
 from morse.builder import GroundRobot
 from morse.builder.actuators import WamVHydrodynamics
 from morse.builder.actuators import Fixedthrusters
-from morse.builder.sensors import *
+from morse.builder.sensors import IMU
 from morse.builder.sensors import DVL
 from morse.builder.sensors import GPS
 from morse.builder.sensors import Pose
 from morse.builder.sensors import Battery
-
 
 class Wamv(GroundRobot):
     """
@@ -31,13 +30,8 @@ class Wamv(GroundRobot):
     def __init__(self, name = None, debug = True):
 
         # wamv.blend is located in the data/robots directory
-        GroundRobot.__init__(self, 'wamv', name)
+        GroundRobot.__init__(self, 'robots/wamv.blend',name,blender_object_name='platform_boundary')
         self.properties(classpath = "morse.robots.wamv.Wamv")
-        
-        # GroundRobot.__init__(self, 'wamv_sim/robots/wamv.blend',name,blender_object_name='platform_boundary')
-        #GroundRobot.__init__(self, 'morse/robots/wamv.blend',name,blender_object_name='platform_boundary')
-        # GroundRobot.__init__(self, 'wamv_sim/robots/wamv_orig_with_load.blend',name,blender_object_name='platform_boundary')
-        #self.properties(classpath = "morse.robots.wamv.Wamv")
 
         ###################################
         # Actuators
@@ -115,8 +109,6 @@ class Wamv(GroundRobot):
         self.imu.add_stream('ros', 
             frame_id=namespace+self.name+"imu_frame" )
         self.control.add_stream('ros')
-
-
 
     # This function sets the frequencies of some devices
     def frequency(self, frequency=None):
