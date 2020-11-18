@@ -22,6 +22,7 @@ from morse.builder.sensors import DVL
 from morse.builder.sensors import GPS
 from morse.builder.sensors import Pose
 from morse.builder.sensors import Battery
+from morse.builder.sensors import Odometry
 
 class Wamv(GroundRobot):
     """
@@ -67,6 +68,10 @@ class Wamv(GroundRobot):
         self.append(self.bat)
         self.bat.frequency(1)
 
+        self.odom = Odometry()
+        self.append(self.odom)
+
+
         # NOTE: Adding cameras makes the GLSL water renderer flash annoyingly!
 
         # self.rear_camera = VideoCamera()
@@ -102,12 +107,17 @@ class Wamv(GroundRobot):
         self.bat.add_stream('moos',
             moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
 
+        self.odom.add_stream('moos',
+            moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
+
     def set_ros(self, namespace=""):
 
         self.gps.add_stream('ros', 
             frame_id=namespace+self.name+"gps_frame" )
         self.imu.add_stream('ros', 
             frame_id=namespace+self.name+"imu_frame" )
+        self.odom.add_stream('ros', 
+            frame_id=namespace+self.name+"odom_frame" )
         self.control.add_stream('ros')
 
     # This function sets the frequencies of some devices

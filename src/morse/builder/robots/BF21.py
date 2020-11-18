@@ -8,6 +8,7 @@ from morse.builder.sensors import IMU
 from morse.builder.sensors import Battery
 from morse.builder.sensors import DVL
 from morse.builder.sensors import GPS
+from morse.builder.sensors import Odometry
 
 class Bf21(GroundRobot):
     """
@@ -78,7 +79,9 @@ class Bf21(GroundRobot):
 
         self.gps = GPS()
         self.append(self.gps)
-
+        
+        self.odom = Odometry()
+        self.append(self.odom)
 
     # This function sets the communications streams for various devices
     def set_moos(self, moos_host='127.0.0.1', moos_port=9000, moos_name='iMorse'):
@@ -101,12 +104,17 @@ class Bf21(GroundRobot):
         self.gps.add_stream('moos',
             moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
 
+        self.odom.add_stream('moos',
+            moos_host=moos_host, moos_port=moos_port, moos_name=moos_name)
+
     def set_ros(self, namespace=""):
         
         self.gps.add_stream('ros', 
             frame_id=namespace+self.name+"gps_frame" )
         self.imu.add_stream('ros', 
             frame_id=namespace+self.name+"imu_frame" )
+        self.odom.add_stream('ros', 
+            frame_id=namespace+self.name+"odom_frame" )
         self.control.add_stream('ros')
 
 
