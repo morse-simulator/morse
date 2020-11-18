@@ -8,10 +8,7 @@ from morse.builder.sensors import IMU
 from morse.builder.sensors import Battery
 from morse.builder.sensors import DVL
 from morse.builder.sensors import GPS
-<<<<<<< HEAD
 from morse.builder.sensors import Odometry
-=======
->>>>>>> 36b6dd57d9e96fc06c19ee7e66d8ff2e5bb4832f
 
 class Bf21(GroundRobot):
     """
