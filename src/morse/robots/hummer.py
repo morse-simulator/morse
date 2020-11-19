@@ -24,6 +24,8 @@ class Hummer(morse.core.robot.Robot):
                  affects steering wheel's ability to turn the vehicle.\
                  A value of ``0`` gives very low acceleration. Higher \
                  values permit a higher acceleration.  ")
+    add_property('scale', 1.0, 'scale', 'double',
+                 "pass scale of the robot to have correct wheel locations")
 
     def __init__(self, obj, parent=None):
         # Call the constructor of the parent class
@@ -54,9 +56,9 @@ class Hummer(morse.core.robot.Robot):
         self.vehicle = PhysicsConstraints.getVehicleConstraint(obj['cid'])
 
         # Wheel location from vehicle center
-        wx = 1.3
-        wy = 1.6
-        wz = -.5
+        wx = 1.6 * self.scale
+        wy = 1.3 * self.scale
+        wz = -.5 * self.scale
 
         #wheelAttachDirLocal:
         #Direction the suspension is pointing
@@ -65,18 +67,18 @@ class Hummer(morse.core.robot.Robot):
         #wheelAxleLocal:
         #Determines the rotational angle where the
         #wheel is mounted.
-        wheelAxleLocal = [-1, 0, 0]
+        wheelAxleLocal = [0, 1, 0]
 
         #suspensionRestLength:
         #The length of the suspension when it's fully
         #extended:
-        suspensionRestLength = .3
+        suspensionRestLength = .3 * self.scale
 
         #wheelRadius:
         #Radius of the Physics Wheel.
         #Turn on Game:Show Physics Visualization to see
         #a purple line representing the wheel radius.
-        wheelRadius = .5
+        wheelRadius = .5 * self.scale
 
         #hasSteering:
         #Determines whether or not the coming wheel
@@ -94,15 +96,15 @@ class Hummer(morse.core.robot.Robot):
         #on the vehicle's Center
         wheelAttachPosLocal = [wx, wy, wz]
 
-        #creates the first wheel using all of the variables
+        #creates the first (left) wheel using all of the variables
         #created above:
         self.vehicle.addWheel(wheel1, wheelAttachPosLocal, wheelAttachDirLocal,
                                       wheelAxleLocal, suspensionRestLength,
                                       wheelRadius, hasSteering)
 
-        #Positions this wheel on the opposite side of the car by using a
+        #Positions this wheel (right) on the opposite side of the car by using a
         #negative values for the x position.
-        wheelAttachPosLocal = [-wx, wy, wz]
+        wheelAttachPosLocal = [wx, -wy, wz]
 
         #creates the second wheel:
         self.vehicle.addWheel(wheel2, wheelAttachPosLocal, wheelAttachDirLocal,
@@ -118,19 +120,19 @@ class Hummer(morse.core.robot.Robot):
         hasSteering = 0
 
         # Adjust the location the rear wheels are attached. 
-        wx = 1.3
-        wy = 2.3
+        wx = 2.3 * self.scale
+        wy = 1.3 * self.scale
 
         # Set the wheelAttachPosLocal to the new location for rear wheels:
         # -y moves the position toward the back of the car
-        wheelAttachPosLocal = [wx, -wy, wz]
+        wheelAttachPosLocal = [-wx, wy, wz]
 
-        #Creates the 3rd wheel (first rear wheel)
+        #Creates the 3rd wheel (first/left rear wheel)
         self.vehicle.addWheel(wheel3, wheelAttachPosLocal, wheelAttachDirLocal,
                                       wheelAxleLocal, suspensionRestLength,
                                       wheelRadius, hasSteering)
 
-        #Adjust the attach position for the next wheel:
+        #Adjust the attach position for the next/right wheel:
         # changed to -x to place the wheel on the opposite side of the car
         # the same distance away from the vehicle's center
         wheelAttachPosLocal = [-wx, -wy, wz]
@@ -140,7 +142,7 @@ class Hummer(morse.core.robot.Robot):
                                       wheelAxleLocal, suspensionRestLength,
                                       wheelRadius, hasSteering)
 
-      #The Rolling Influence:
+        #The Rolling Influence:
         #How easy it will be for the vehicle to roll over while turning:
         #0 = Little to no rolling over
         # .1 and higher easier to roll over
