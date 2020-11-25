@@ -36,7 +36,13 @@ class Tracker(morse.core.actuator.Actuator):
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
-    def default_action(self):
+    def default_action(self):        
+        # Game loop frequency
+        delta_t = 1/self.frequency
+        if delta_t == 0:
+            return # Not ready yet!
+
+        # Loop through the game objects to choose which one to track
         keyboard = blenderapi.keyboard()
         is_actived = blenderapi.input_active()
         
@@ -44,11 +50,6 @@ class Tracker(morse.core.actuator.Actuator):
             self.prev_target()
         if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
             self.next_target()
-        
-        # Game loop frequency
-        delta_t = 1/self.frequency
-        if delta_t == 0:
-            return # Not ready yet!
 
         # Figure out which camera is active and
         # publish its position and view vector.
