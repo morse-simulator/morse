@@ -32,11 +32,27 @@ class Tracker(morse.core.actuator.Actuator):
 
         # Get the water surface object
         self.robot_idx = 0
-        self.set_target()
+        self.set_target() 
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):        
+
+        self.robots_dict = blenderapi.persistantstorage()
+        print( self.robots_dict )
+        print( "")
+        print( "")
+        print( "")
+        print( "")
+        
+        ##del self.robots_dict["fake"]
+        #self.robots_names = list( self.robots_dict )
+        #self.num_robots = len( self.robots_names )
+#
+        #target_name = self.robots_names[ self.robot_idx ]
+        #self.target_obj = self.robots_dict[ target_name ]
+
+
         # Game loop frequency
         delta_t = 1/self.frequency
         if delta_t == 0:

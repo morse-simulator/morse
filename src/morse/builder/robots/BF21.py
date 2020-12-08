@@ -2,7 +2,6 @@ from morse.builder import *
 from morse.builder.actuators import Hydrodynamics
 from morse.builder.actuators import MotionVW
 from morse.modifiers.abstract_modifier import AbstractModifier
-from morse.builder.actuators import Hydrodynamics
 from morse.builder.sensors import Pose
 from morse.builder.sensors import IMU
 from morse.builder.sensors import Battery
