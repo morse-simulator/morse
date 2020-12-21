@@ -1,0 +1,29 @@
+# Unique file ID
+@0x940bb1aef1e15f74;
+
+using Cxx = import "/capnp/c++.capnp";
+$Cxx.namespace("enc");
+
+struct Object {
+    objName @0 :Text;
+    kd @1 :Float32;
+    ks @2 :Float32;
+    scaleX @3 :Float32;
+    scaleY @4 :Float32;
+    scaleZ @5 :Float32;
+
+    dataName @6 :Text;
+    dataBlock @7 :DataBlock;
+}
+
+struct DataBlock {
+    dims @0 :List(Int32);       # rows, cols
+    texture @1 :List(Float32);  # vector<float> flattened from vector<RGBA>
+    uvs @2 :List(Float32);		# vector<float> flattened from vector<2xfloat>
+    mesh @3 :Mesh;
+}
+
+struct Mesh {
+    vertices @0 :List(Float32); # vector<float> flattened from vector<point> where point=(3xfloat)
+    faces @1 :List(Int32);		# vector<face vertex id>
+}

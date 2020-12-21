@@ -10,7 +10,7 @@ import bpy
 import capnp
 import json
 import time
-import blender_object_capnp     # need to add /path/to/plidarsim to PYTHONPATH
+from . import Object_capnp
 
 __author__     = "David Battle"
 __copyright__  = "Copyright 2017, Mission Systems Pty Ltd"
@@ -116,7 +116,7 @@ def get_data_block(obj):
 # The easiest way to create the Cap'n Proto structures is to create them fully
 # as plain python objects then assign them once. This is easier (and safer) than
 # using things like init_resizable_list().
-def fill_data_block( bl_data_block, obj ):
+def fill_data_block( data_block, obj ):
 
     # New faster code for object export
     vertices = flatten([list(v.co) for v in obj.data.vertices])
@@ -128,8 +128,8 @@ def fill_data_block( bl_data_block, obj ):
     slots = obj.material_slots
     
     # Add faces and vertices
-    bl_data_block.mesh.vertices = vertices
-    bl_data_block.mesh.faces = faces;
+    data_block.mesh.vertices = vertices
+    data_block.mesh.faces = faces;
 
     if len( slots ):
         # Get the first material
@@ -147,12 +147,12 @@ def fill_data_block( bl_data_block, obj ):
                 im = mat.texture_slots[0].texture.image
 
                 # Image dimensions
-                bl_data_block.dims = im.size[:]
+                data_block.dims = im.size[:]
 
                 # Append RGBA texture
                 if( im.channels != 4 ): logger.warning( 'expected four channel images: got %s' % im.channels )
 
-                bl_data_block.blenderTexture = im.pixels[:]
+                data_block.texture = im.pixels[:]
 
                 # Per-vertex UV coordinates
                 uvs = np.zeros((len(vertices)//3,2))
@@ -163,9 +163,7 @@ def fill_data_block( bl_data_block, obj ):
                     uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
 
                 # Convert numpy array to flat list
-                bl_data_block.blenderUVs = uvs.flatten().tolist() # uvs.tolist() not provably faster
-
-    bl_data_block.meshColour = mesh_colour
+                data_block.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
 
 class Objectserver(morse.core.sensor.Sensor):
 
@@ -304,17 +302,17 @@ class Objectserver(morse.core.sensor.Sensor):
                                 logger.debug(log_string);
 
                                 # Create new capnp message
-                                blender_object = blender_object_capnp.BlenderObject.new_message()
-                                blender_object.objName = obj_name
-                                blender_object.dataName = data_name
-                                blender_object.scaleX = obj_scale[0]
-                                blender_object.scaleY = obj_scale[1]
-                                blender_object.scaleZ = obj_scale[2]
+                                sim_object = Object_capnp.Object.new_message()
+                                sim_object.objName = obj_name
+                                sim_object.dataName = data_name
+                                sim_object.scaleX = obj_scale[0]
+                                sim_object.scaleY = obj_scale[1]
+                                sim_object.scaleZ = obj_scale[2]
                                 # defaults - see plidarsim/BlenderObject.cpp
-                                blender_object.kd = 1.0
-                                blender_object.ks = 0.0
-                                if 'Kd' in props: blender_object.kd = props['Kd'].value
-                                if 'Ks' in props: blender_object.ks = props['Ks'].value
+                                sim_object.kd = 1.0
+                                sim_object.ks = 0.0
+                                if 'Kd' in props: sim_object.kd = props['Kd'].value
+                                if 'Ks' in props: sim_object.ks = props['Ks'].value
 
                                 # Track progress
                                 deltat_partial = time.time() - start_time
@@ -322,7 +320,7 @@ class Objectserver(morse.core.sensor.Sensor):
 
                                 # Is this a new data block?
                                 if not data_name in self.data_blocks_sent:
-                                    fill_data_block( blender_object.dataBlock, obj )
+                                    fill_data_block( sim_object.dataBlock, obj )
                                     self.data_blocks_sent.append(data_name)
 
                                     # Track progress
@@ -332,7 +330,7 @@ class Objectserver(morse.core.sensor.Sensor):
                                     deltat_partial_2 = 0
                                     logger.debug('\t... ' + data_name + ' data block has already been filled ...')
 
-                                self.local_data['object_data_binary'] = blender_object.to_bytes()
+                                self.local_data['object_data_binary'] = sim_object.to_bytes()
                                 msg_len = len( self.local_data['object_data_binary'] )
 
                                 # Track progress
