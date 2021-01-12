@@ -37,13 +37,9 @@ class Tracker(morse.core.actuator.Actuator):
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):        
-
+ 
         self.robots_dict = blenderapi.persistantstorage()
         print( self.robots_dict )
-        print( "")
-        print( "")
-        print( "")
-        print( "")
         
         ##del self.robots_dict["fake"]
         #self.robots_names = list( self.robots_dict )
