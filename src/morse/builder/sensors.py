@@ -33,25 +33,6 @@ class Battery(SensorCreator):
         self.append(mesh)
         self.properties(DischargingRate = 0.05)
 
-class MultiStaticSonar(SensorCreator):
-    _classpath  = "morse.sensors.multiStaticSonar.MultiStaticSonar"
-    _short_desc = "Acoustic modem transducer"
-    _blendname  = "modem"
-
-    def __init__(self, name=None):
-        SensorCreator.__init__(self, name)
-        self.append_meshes(['modem'])
-
-class SoccerBall(AbstractComponent):
-    _classpath  = "morse.sensors.multiStaticReceiver.SoccerBall"
-    _short_desc = "Acoustic receiver to be added to the soccerballs"
-    _blendname  = "modem"
-
-    def __init__(self, name = None):
-       AbstractComponent.__init__(self, name)
-       self.append_meshes(['modem'])
-
-
 class CompoundSensor(SensorCreator):
     _classpath = "morse.sensors.compound.CompoundSensor"
 
@@ -686,6 +667,7 @@ class Sonar(SensorCreator):
         SensorCreator.__init__(self, name)
         self.append_meshes(None,'beam')
  
+
 class FLS(SensorCreator):
     _classpath = "morse.sensors.Fls.FLS"
     _short_desc = "Forward looking sonar"
@@ -695,3 +677,21 @@ class FLS(SensorCreator):
         SensorCreator.__init__(self, name)
 
  
+class MultiStaticSonar(SensorCreator):
+    _classpath  = "morse.sensors.MultiStaticSonar.MultiStaticSonar"
+    _short_desc = "Acoustic modem transducer"
+    _blendname  = "modem"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(['modem'])
+
+class SoccerBall(AbstractComponent):
+    _classpath  = "morse.sensors.multiStaticReceiver.SoccerBall"
+    _short_desc = "Acoustic receiver to be added to the soccerballs"
+    _blendname  = "modem"
+
+    def __init__(self, name = None):
+       AbstractComponent.__init__(self, name)
+       self.append_meshes(['modem'])
+
