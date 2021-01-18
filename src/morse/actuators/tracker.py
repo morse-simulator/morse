@@ -7,6 +7,7 @@ from morse.core import status
 from morse.helpers.components import add_data, add_property
 from morse.core import blenderapi
 from morse.core.mathutils import *
+import time 
 
 class Tracker(morse.core.actuator.Actuator):
     """Write here the general documentation of your actuator.
@@ -28,23 +29,34 @@ class Tracker(morse.core.actuator.Actuator):
         self.scene = morse.core.blenderapi.scene()
 
         # Get every bge object in the scene
-        objs = blenderapi.scene().objects
-
+        self.objs = blenderapi.scene().objects
+        
+    
         # Get the water surface object
-        self.robot_idx = 0
-        self.set_target() 
+        try:
+            self.targets = json.loads( self.target )
+            self.num_targets = len( self.targets["robots"] )
+            self.multiple_targets = True
+        except:
+            self.multiple_targets = False
+            self.target_obj = self.objs[ self.target ]
+
+        if self.multiple_targets:
+            self.target_idx = 0
+            self.set_target() 
+
+
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):        
  
         self.robots_dict = blenderapi.persistantstorage()
-        print( self.robots_dict )
         
         ##del self.robots_dict["fake"]
         #self.robots_names = list( self.robots_dict )
         #self.num_robots = len( self.robots_names )
-#
+
         #target_name = self.robots_names[ self.robot_idx ]
         #self.target_obj = self.robots_dict[ target_name ]
 
@@ -54,14 +66,15 @@ class Tracker(morse.core.actuator.Actuator):
         if delta_t == 0:
             return # Not ready yet!
 
-        # Loop through the game objects to choose which one to track
-        keyboard = blenderapi.keyboard()
-        is_actived = blenderapi.input_active()
-        
-        if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
-            self.prev_target()
-        if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
-            self.next_target()
+        # # Loop through the game objects to choose which one to track
+        # if self.multiple_targets:
+        #     keyboard = blenderapi.keyboard()
+        #     is_actived = blenderapi.input_just_activated()
+            
+        #     if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
+        #         self.set_target("prev")
+        #     if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
+        #         self.set_target("next")
 
         # Figure out which camera is active and
         # publish its position and view vector.
@@ -83,41 +96,39 @@ class Tracker(morse.core.actuator.Actuator):
             camera.worldPosition += delta_t * speed * direction/direction.length
 
 
-    def next_target(self):
-        try:
-            target = json.loads( self.target )
-            num_robots = len( target["robots"] )
-            self.robot_idx = self.robot_idx + 1
-            if( self.robot_idx > num_robots-1 ):
-                self.robot_idx = 0
-            self.set_target()
-        except:
-            print("Failed to go to next target")
 
-        return
+    def set_target(self, key="current"):
+        
+        if key == "current":
+            self.target_obj = self.objs[ self.targets["robots"][ self.target_idx ] ] #objs[self.target]
+        
+        elif key == "next":
+            self.prev_target_obj = self.objs[ self.targets["robots"][ self.target_idx ] ] #objs[self.target]
+            self.target_idx = self.target_idx+1
+            if self.target_idx > (self.num_targets-1):
+                self.target_idx = 0
+            self.target_obj = self.objs[ self.targets["robots"][ self.target_idx ] ] #objs[self.target]
 
-    def prev_target(self):
-        try:
-            target = json.loads( self.target )
-            num_robots = len( target["robots"] )
-            self.robot_idx = self.robot_idx - 1
-            if( self.robot_idx < 0 ):
-                self.robot_idx = num_robots-1
-            self.set_target()
-        except: 
-            print("Failed to go to previous target")
+            self.update_camera_position()
 
-        return
+        elif key == "prev":
+            self.prev_target_obj = self.objs[ self.targets["robots"][ self.target_idx ] ] #objs[self.target]
+            self.target_idx = self.target_idx-1
+            if self.target_idx < 0:
+                self.target_idx = self.num_targets-1
+            self.target_obj = self.objs[ self.targets["robots"][ self.target_idx ] ] #objs[self.target]
 
-    def set_target(self):
-        print("Setting camera tracker target")
-        objs = blenderapi.scene().objects
-        try:
-            target = json.loads( self.target )
-            self.target_obj = objs[ target["robots"][ self.robot_idx ] ] #objs[self.target]
-        except:
-            self.target_obj = objs[ self.target ] 
+            self.update_camera_position()
+        else: 
+            print("Error getting next target")
 
 
+    def update_camera_position(self):
+        # Move the camera so that it has the same offset to the new robot
+        # that it had to the old robot
+        self.prev_target_pos = self.prev_target_obj.worldPosition
+        camera_pos = self.scene.active_camera.worldPosition
+        relative_position = camera_pos - self.prev_target_pos
 
-
+        new_target_pos = self.target_obj.worldPosition
+        self.scene.active_camera.worldPosition = new_target_pos + relative_position
