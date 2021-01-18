@@ -125,8 +125,8 @@ def fill_data_block( data_block, obj ):
     mesh_colour = ( 1.0, 1.0, 1.0 )
 
     # Check for materials
-    slots = obj.material_slots
-    
+    slots = obj.material_slots 
+
     # Add faces and vertices
     data_block.mesh.vertices = vertices
     data_block.mesh.faces = faces;
@@ -136,6 +136,7 @@ def fill_data_block( data_block, obj ):
         mat = slots[0].material
         # Get the basic mesh colour as an RGB tuple,
         mesh_colour = mat.diffuse_color[:]
+        data_block.meshColour = mesh_colour
         # Get game properties
         props = obj.game.properties
         # Do we need texture?

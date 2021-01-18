@@ -17,10 +17,11 @@ struct Object {
 }
 
 struct DataBlock {
-    dims @0 :List(Int32);       # rows, cols
-    texture @1 :List(Float32);  # vector<float> flattened from vector<RGBA>
-    uvs @2 :List(Float32);		# vector<float> flattened from vector<2xfloat>
-    mesh @3 :Mesh;
+    meshColour @0 :List(Float32);   # 3 x float
+    dims @1 :List(Int32);           # rows, cols
+    texture @2 :List(Float32);      # vector<float> flattened from vector<RGBA>
+    uvs @3 :List(Float32);		    # vector<float> flattened from vector<2xfloat>
+    mesh @4 :Mesh;
 }
 
 struct Mesh {
