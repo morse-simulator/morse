@@ -10,7 +10,7 @@ class multiStaticSimNotifier(MOOSNotifier):
 
         # Don't send any message
         # if there's no lidar pose data
-        publish_list = self.data['node_pose']
+        publish_list = self.data['transducer_pose_list']
         
         # printing the list using loop 
         for x in range(len(publish_list)):

@@ -8,6 +8,7 @@ class Bf21(morse.core.robot.Robot):
 
     _name = 'BF21'
 
+
     def __init__(self, obj, parent=None):
         """ Constructor method
 
