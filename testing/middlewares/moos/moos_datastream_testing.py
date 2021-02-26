@@ -6,7 +6,10 @@ MORSE.
 import sys
 import math
 import subprocess
-from pymoos import pymoos as moos
+try:
+    from pymoos import pymoos as moos
+except:
+    import pymoos as moos
 
 from morse.testing.moos import MOOSTestCase
 from morse.testing.testing import testlogger

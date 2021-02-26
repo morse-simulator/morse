@@ -1,6 +1,9 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.moos import MOOSNotifier
-from pymoos import pymoos
+try:
+    from pymoos import pymoos
+except:
+    import pymoos
 
 class DVLNotifier(MOOSNotifier):
     """ Notify DVL """
