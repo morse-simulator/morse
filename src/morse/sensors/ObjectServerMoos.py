@@ -3,6 +3,10 @@ from morse.middleware.moos import MOOSSubscriber, MOOSNotifier
 from morse.core import blenderapi
 import numpy as np
 
+import sys
+sys.path.append("/usr/local/etc/cortex")
+import cortex_capnp as cortex
+
 class objectServerReader(MOOSSubscriber):
     """ Read radar commands and update local data. """
 
@@ -12,53 +16,37 @@ class objectServerReader(MOOSSubscriber):
         MOOSSubscriber.initialize(self)
 
         # Register for scene query messages of type 'get' or 'get object'
-        return self.register_message_to_queue('SCENE_QUERY','scene_query_queue', self.on_query_msgs)
+        success = True
+        success = self.register_message_to_queue('INVENTORY_REQUEST', 'moos_msg_queue', self.moos_msg_queue) and success
+        success = self._comms.add_message_route_to_active_queue('moos_msg_queue', 'OBJECT_REQUEST') and self.register('OBJECT_REQUEST') and success
+        if not success:
+            logger.error("Failed to register messages to queue")
+        return success
 
-    def on_query_msgs(self, msg):
-
-        if (msg.key() == 'SCENE_QUERY') and (msg.is_string()):
-
-            # Store new queries received from MOOS.
-            # We implement a queue so we don't lose any
-
-            # We skip "get" inventory calls from piling up by not processing 
-            # them if there are other messages in the queue
-            if msg.string() != "get" or len(self.data['scene_query']) == 0:
-                self.data['scene_query'].append(msg.string())
-
-        self._new_messages = True
-
+    def moos_msg_queue(self, msg):
+        if msg.key() == 'INVENTORY_REQUEST':
+            self.data['inventory_requests'].put(int(msg.double()))
+        elif msg.key() == 'OBJECT_REQUEST':
+            self.data['object_requests'].put(msg.binary_data())
+        self._new_messages = False
         return True
 
 class objectServerNotifier(MOOSNotifier):
 
     def default(self, ci = 'unused'):
 
-        #logger.debug('objectServerNotifier is publishing!')
-
-        # Time stamp for outgoing data
-        ts = self.data['timestamp']
-
-        if self.data['scene_data']:
-            # Send the JSON data to MOOS
-            self.notify('SCENE_DATA', self.data['scene_data'], ts)
-            # Cancel message for next cycle
-            self.data['scene_data'] = ''
-
-        if self.data['object_data_binary']:
-            # notify_binary() is not exposed through the MOOSNotifier base class
-            # so we go via the _comms object
-            self._comms.notify_binary('OBJECT_DATA_BINARY', self.data['object_data_binary'], ts)
-            # Cancel message for next cycle
-            self.data['object_data_binary'] = ''
-
-        if self.data['test_data']:
-            # Send the test data to MOOS
-            # notify_binary() is not exposed through the MOOSNotifier base class
-            # so we go via the _comms object
-            self._comms.notify_binary('TEST_DATA', self.data['test_data'], ts)
-            # Cancel message for next cycle
-            self.data['test_data'] = ''
+        if not self.data['inventory_responses'].empty():
+            self._comms.notify_binary('INVENTORY_FULL', self.data['inventory_responses'].get().to_bytes())
+        elif not self.data['object_responses'].empty():
+            object_data = self.data['object_responses'].get()
+            if isinstance(object_data, cortex.Mesh):
+                self._comms.notify_binary('MESH', object_data.to_bytes())
+            else:
+                logger.error('Unknown object data type - cannot send data')
+        
+        if self.data['inventory_updates'] is not None:
+            self._comms.notify_binary('INVENTORY_UPDATE', self.data['inventory_updates'].to_bytes())
+            self.data['inventory_updates'] = None
 
     def update_morse_data(self):
         logger.debug('objectServerNotifier.update_morse_data() called.')

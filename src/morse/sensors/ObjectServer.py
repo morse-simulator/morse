@@ -9,38 +9,45 @@ import bmesh
 import bpy
 import capnp
 import json
+from queue import Queue
 import time
-from . import Object_capnp
 
-__author__     = "David Battle"
-__copyright__  = "Copyright 2017, Mission Systems Pty Ltd"
-__license__    = "BSD"
-__version__    = "1.0.9"
-__maintainer__ = "David Battle"
-__email__      = "david.battle@missionsystems.com.au"
-__status__     = "Production"
-
-#########################################################################
-# A simple object server for Morse. Currently it only accepts two verbs #
-# (get) which either returns data corresponding to a specific object    #
-# (noun), or just returns a nested inventory if no noun is given.       #
-# (reset) resets the local cache of data blocks that have been sent.    #
-# We might think of some other verbs later on.                          #
-#########################################################################
+import sys
+sys.path.append("/usr/local/etc/cortex")
+import cortex_capnp as cortex
 
 flatten = lambda l: [item for sublist in l for item in sublist]
 
 # Set logger level - DEBUG used for timing of all messages sent
 logger.setLevel(logging.INFO)
-LOG_QUEUE_INTERVAL_SIZE = 100
 
-def get_pose(obj):
-
-    position = obj.worldPosition
-    orientation = obj.worldOrientation.to_euler()
-    pose = {obj.name: [list(position), list(orientation)]}
-
-    return pose
+def fill_instance(instance, bge_obj, bpy_obj):
+    instance.instanceName   = bge_obj.name
+    instance.objectName   = bpy_obj.data.name
+    position = bge_obj.worldPosition
+    instance.position.x     = position.x
+    instance.position.y     = position.y
+    instance.position.z     = position.z
+    instance.scale.x        = bpy_obj.scale.x
+    instance.scale.y        = bpy_obj.scale.y
+    instance.scale.z        = bpy_obj.scale.z
+    orientation = bge_obj.worldOrientation.to_euler() # TODO should this be quaternion?
+    instance.orientation.x  = orientation.x
+    instance.orientation.y  = orientation.y
+    instance.orientation.z  = orientation.z
+    try:
+        linear_velocity = bge_obj.worldLinearVelocity
+        instance.velocity.x     = linear_velocity.x
+        instance.velocity.y     = linear_velocity.y
+        instance.velocity.z     = linear_velocity.z
+        angular_velocity = bge_obj.worldAngularVelocity
+        # instance.angular_velocity.x = angular_velocity.x
+        # instance.angular_velocity.y = angular_velocity.y
+        # instance.angular_velocity.z = angular_velocity.z
+    except: pass
+    properties = bpy_obj.game.properties
+    if 'Kd' in properties: instance.reflectance.kd = properties['Kd'].value
+    if 'Ks' in properties: instance.reflectance.ks = properties['Ks'].value
 
 def triangulate_object(obj):
 
@@ -55,126 +62,129 @@ def triangulate_object(obj):
     bm.to_mesh(me)
     bm.free()
 
-def get_data_block(obj):
+# def get_mesh(obj):
+#     # Create mesh msg instance
+#     mesh = cortex.Mesh.new_message()
+
+#     # New faster code for object export
+#     flat_vertices = flatten([list(v.co) for v in obj.data.vertices])
+#     flat_faces = flatten([list(f.vertices) for f in obj.data.polygons])
+
+#     vertices = mesh.init('vertices', len(flat_vertices))
+#     vertices[:] = flat_vertices
+#     faces = mesh.init('faces', len(flat_faces))
+#     faces[:] = flat_faces
+#     texture_dims = mesh.init('textureDims', 2)
+#     texture_dims[0] = 0
+#     texture_dims[1] = 0
+
+#     # Check for materials
+#     slots = obj.material_slots
+
+#     if len(slots):
+
+#         # Get the first material
+#         mat = slots[0].material
+
+#         # Get game properties
+#         props = obj.game.properties
+
+#         # Do we need a texture?
+#         if 'texture' in props:
+#             if props['texture'].value:
+
+#                 # Get first material
+#                 mat = obj.material_slots[0].material
+
+#                 # Get first texture image
+#                 im = mat.texture_slots[0].texture.image
+
+#                 # Image dimensions
+#                 texture_dims[0] = im.size[0]
+#                 texture_dims[1] = im.size[1]
+#                 texture = mesh.init('texture', len(im.size[0]*im.size[1]))
+
+#                 # Append texture values [0:1]
+#                 texture[:] = im.pixels[:]
+
+#                 # Per-vertex UV coordinates
+#                 uvs_array = np.zeros((len(vertices)//3,2))
+#                 uv_layer = obj.data.uv_layers.active.data
+
+#                 # Loop over loops
+#                 for loop in obj.data.loops:
+#                     uvs_array[loop.vertex_index,:] = uv_layer[loop.index].uv
+
+#                 # Flatten
+#                 uvs_array = uvs_array.flatten().tolist()
+
+#                 # Convert numpy array to flat list
+#                 uvs = mesh.init('uvs', len(uvs_array))
+#                 uvs[:] = uvs_array
+
+#     return mesh
+
+def fill_mesh(mesh, bpy_obj):
 
     # New faster code for object export
-    vertices = flatten([list(v.co) for v in obj.data.vertices])
-    faces = flatten([list(f.vertices) for f in obj.data.polygons])
+    # vertices = flatten([list(v.co) for v in obj.data.vertices])
+    # faces = flatten([list(f.vertices) for f in obj.data.polygons])
+    # vertices_msg = mesh.init('vertices', len(vertices))
+    # vertices_msg[:] = vertices
+    # faces_msg = mesh.init('vertices', len(vertices))
+    # faces_msg[:] = faces
 
-    # Default mesh colour
-    default = (1.0, 1.0, 1.0)
-
-    data_block = {
-       'Vertices' : vertices,
-       'Faces'    : faces,
-       'Colour'   : default
-    }
+    # Fill mesh
+    mesh.objectName = bpy_obj.data.name
+    mesh.vertices = flatten([list(v.co) for v in bpy_obj.data.vertices])
+    mesh.faces = flatten([list(f.vertices) for f in bpy_obj.data.polygons])
+    mesh.textureDims = [0, 0]
 
     # Check for materials
-    slots = obj.material_slots
+    slots = bpy_obj.material_slots
 
     if len(slots):
-
-        # Get the first material
-        mat = slots[0].material
-
-        # Get the basic mesh colour as an RGB tuple,
-        data_block['Colour'] = mat.diffuse_color[:]
-
         # Get game properties
-        props = obj.game.properties
+        props = bpy_obj.game.properties
+        # Check for texture
+        if 'texture' in props and props['texture'].value:
+            # Get the first material
+            mat = slots[0].material
 
-        # Do we need a texture?
-        if 'texture' in props:
-            if props['texture'].value:
+            # Get first texture image
+            im = mat.texture_slots[0].texture.image
 
-                # Get first material
-                mat = obj.material_slots[0].material
+            # Image dimensions
+            mesh.textureDims = im.size[:]
 
-                # Get first texture image
-                im = mat.texture_slots[0].texture.image
+            # Append RGBA texture
+            if (im.channels != 4):
+                logger.warning( 'expected four channel images: got %s' % im.channels )
 
-                # Image dimensions
-                data_block['Dims'] = im.size[:]
+            mesh.texture = im.pixels[:]
 
-                # Append texture values [0:1]
-                data_block['Texture'] = im.pixels[:]
+            # Per-vertex UV coordinates
+            uvs = np.zeros((len(mesh.vertices)//3,2))
+            uv_layer = bpy_obj.data.uv_layers.active.data
 
-                # Per-vertex UV coordinates
-                uvs = np.zeros((len(vertices)//3,2))
-                uv_layer = obj.data.uv_layers.active.data
+            # Loop over loops
+            for loop in bpy_obj.data.loops:
+                uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
 
-                # Loop over loops
-                for loop in obj.data.loops:
-                    uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
-
-                # Convert numpy array to flat list
-                data_block['UVs'] = uvs.flatten().tolist()
-
-    return data_block
-
-# The easiest way to create the Cap'n Proto structures is to create them fully
-# as plain python objects then assign them once. This is easier (and safer) than
-# using things like init_resizable_list().
-def fill_data_block( data_block, obj ):
-
-    # New faster code for object export
-    vertices = flatten([list(v.co) for v in obj.data.vertices])
-    faces = flatten([list(f.vertices) for f in obj.data.polygons])
-
-    mesh_colour = ( 1.0, 1.0, 1.0 )
-
-    # Check for materials
-    slots = obj.material_slots 
-
-    # Add faces and vertices
-    data_block.mesh.vertices = vertices
-    data_block.mesh.faces = faces;
-
-    if len( slots ):
-        # Get the first material
-        mat = slots[0].material
-        # Get the basic mesh colour as an RGB tuple,
-        mesh_colour = mat.diffuse_color[:]
-        data_block.meshColour = mesh_colour
-        # Get game properties
-        props = obj.game.properties
-        # Do we need texture?
-        if 'texture' in props:
-            if props['texture'].value:
-                logger.debug( "adding texture" )
-
-                # Get first texture image
-                im = mat.texture_slots[0].texture.image
-
-                # Image dimensions
-                data_block.dims = im.size[:]
-
-                # Append RGBA texture
-                if( im.channels != 4 ): logger.warning( 'expected four channel images: got %s' % im.channels )
-
-                data_block.texture = im.pixels[:]
-
-                # Per-vertex UV coordinates
-                uvs = np.zeros((len(vertices)//3,2))
-                uv_layer = obj.data.uv_layers.active.data
-
-                # Loop over loops
-                for loop in obj.data.loops:
-                    uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
-
-                # Convert numpy array to flat list
-                data_block.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
+            # Convert numpy array to flat list
+            mesh.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
 
 class Objectserver(morse.core.sensor.Sensor):
 
     _name = 'Objectserver'
     _short_desc = 'MOOS server to publish serialised object data'
 
-    add_data('scene_query',[],'list','Queue for query strings')
-    add_data('scene_data' ,'','string','Scene data output in JSON format')
-    add_data('object_data_binary', '', 'binary', 'Object data in binary format')
-    add_data('test_data', '', 'binary', 'test binary data')
+    # add_data('scene_query',[],'list','Queue for query strings')
+    add_data('inventory_requests', Queue(), 'queue', 'Queue for inventory requests')
+    add_data('inventory_responses', Queue(), 'queue', 'Queue for inventory responses')
+    add_data('inventory_updates', None, 'inventory', 'Inventory for inventory updates')
+    add_data('object_requests', Queue(), 'queue', 'Queue for object requests')
+    add_data('object_responses', Queue(), 'queue', 'Queue for object responses')
 
     def __init__(self, obj, parent=None):
 
@@ -195,9 +205,7 @@ class Objectserver(morse.core.sensor.Sensor):
         self.data_blocks_sent = []
 
         # Special Morse items to remove from inventory
-        remove_items = ['Scene_Script_Holder','CameraFP',
-                        '__default__cam__','MORSE.Properties',
-                        '__morse_dt_analyser']
+        remove_items = ['Scene_Script_Holder','CameraFP', '__default__cam__','MORSE.Properties', '__morse_dt_analyser']
 
         self.Dynamic_objects = []
 
@@ -243,206 +251,68 @@ class Objectserver(morse.core.sensor.Sensor):
         logger.info('Found %d dynamic objects in scene' % len(self.Dynamic_objects))
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
-        self.prev_queue_size = 0
+        self.prev_queue_size = 0 # TODO delete
+
+        self.object_request_dict = {}
+        self.object_request_queue = Queue()
 
     def default_action(self):
 
-        # Get the potential scene query
-        queue = self.local_data['scene_query']
+        # Convert object request queue to queue+map data structure (for efficient impl)
+        while not self.local_data['object_requests'].empty():
+            # Read the object request
+            object_request = cortex.ObjectRequest.read(self.local_data['object_requests'].get())
+            # Process request efficiently
+            if not object_request.objectName in self.object_request_dict:
+                self.object_request_dict[object_request.objectName] = set()
+                self.object_request_queue.put(object_request.objectName)
+            for data_type in object_request.dataTypes:
+                # Add to set (duplicates automatically removed)
+                self.object_request_dict[object_request.objectName].add(data_type)
 
-        # Get every object in the scene
-        objects = bpymorse.get_objects()
+        bpy_objs = bpymorse.get_objects()
 
-        # Are there any queries?
-        if len(queue):
+        if not self.local_data['inventory_requests'].empty():
+            # Create message with pid
+            inventory = cortex.UniqueInventory.new_message()
+            pid = self.local_data['inventory_requests'].get()
+            inventory.uid = pid
 
-            # Get query verb and noun
-            query = queue.pop(0).split()
+            # Add the instances
+            instances = inventory.inventory.init('instances', len(self.Optix_objects))
+            for i in range(len(self.Optix_objects)):
+                fill_instance(instances[i], self.Optix_objects[i], bpy_objs[self.Optix_objects[i].name])
+                
+            # Add the inventory to the responses
+            self.local_data['inventory_responses'].put(inventory)
+        elif not self.object_request_queue.empty():
+            # Obtain object request data
+            object_name = self.object_request_queue.get()
+            data_types = self.object_request_dict.pop(object_name)
 
-            if query:
-
-                # Look for a verb
-                if query[0] == 'get':
-
-                    # Is there a noun?
-                    if len(query) > 1:
-
-                        # Log queue size increases and at intervals which processing
-                        queue_size = len(queue)
-                        if queue_size > self.prev_queue_size or queue_size % LOG_QUEUE_INTERVAL_SIZE == 0:
-                            logger.info('Message queue length: ' + str(queue_size))
-                        self.prev_queue_size = queue_size
-
-                        # Yes: the noun is the object name
-                        obj_name = query[1]
-
-                        # Check it exists
-                        if obj_name in objects:
-
-                            # Prepare a string for later logging
-                            log_string = 'Processing Object \"' + obj_name + '\" '
-
-                            # Initialise the timer
-                            start_time = time.time()
-
-                            obj = objects[obj_name]
-                            data_name = obj.data.name
-                            obj_scale = (obj.scale.x,
-                                         obj.scale.y,
-                                         obj.scale.z)
-
-                            # Get game properties
-                            props = obj.game.properties
-
-                            # Always send as binary capnp
-                            send_as_binary = data_name not in self.data_blocks_sent
-
-                            if send_as_binary:
-                                # Send as binary capnp
-                                log_string += ' as a capnp binary message...'
-                                logger.debug(log_string);
-
-                                # Create new capnp message
-                                sim_object = Object_capnp.Object.new_message()
-                                sim_object.objName = obj_name
-                                sim_object.dataName = data_name
-                                sim_object.scaleX = obj_scale[0]
-                                sim_object.scaleY = obj_scale[1]
-                                sim_object.scaleZ = obj_scale[2]
-                                # defaults - see plidarsim/BlenderObject.cpp
-                                sim_object.kd = 1.0
-                                sim_object.ks = 0.0
-                                if 'Kd' in props: sim_object.kd = props['Kd'].value
-                                if 'Ks' in props: sim_object.ks = props['Ks'].value
-
-                                # Track progress
-                                deltat_partial = time.time() - start_time
-                                logger.debug('\t... created blender object in ' + str(deltat_partial) + ' s ...')
-
-                                # Is this a new data block?
-                                if not data_name in self.data_blocks_sent:
-                                    fill_data_block( sim_object.dataBlock, obj )
-                                    self.data_blocks_sent.append(data_name)
-
-                                    # Track progress
-                                    deltat_partial_2 = time.time() - start_time - deltat_partial
-                                    logger.debug('\t... filled data block in ' + str(deltat_partial_2) + ' s ...')
-                                else:
-                                    deltat_partial_2 = 0
-                                    logger.debug('\t... ' + data_name + ' data block has already been filled ...')
-
-                                self.local_data['object_data_binary'] = sim_object.to_bytes()
-                                msg_len = len( self.local_data['object_data_binary'] )
-
-                                # Track progress
-                                deltat_partial_3 = time.time() - start_time - deltat_partial - deltat_partial_2
-                                logger.debug('\t... converted to bytes and length calculated in ' + str(deltat_partial_3) + ' s ...')
-                            else:
-                                # Send as JSON
-                                log_string += ' as a json string message...'
-                                logger.debug(log_string);
-
-                                data = {
-                                   'Obj_name'  : obj_name,
-                                   'Obj_scale' : obj_scale,
-                                   'Data_name' : data_name
-                                }
-
-                                # Append game properties in
-                                # lower case to avoid confusion
-                                for p in props:
-                                    data[p.name.lower()] = p.value
-
-                                # Track progress
-                                deltat_partial = time.time() - start_time
-                                logger.debug('\t... created json struct in ' + str(deltat_partial) + ' s ...')
-
-                                # Is this a new data block?
-                                if not data_name in self.data_blocks_sent:
-
-                                    # A data block will only be attached
-                                    # to an object if it has a single user.
-                                    data['Data_block'] = get_data_block(obj)
-                                    self.data_blocks_sent.append(data_name)
-
-                                    # Track progress
-                                    deltat_partial_2 = time.time() - start_time - deltat_partial
-                                    logger.debug('\t... obtained data block in ' + str(deltat_partial_2) + ' s ...')
-                                else:
-                                    deltat_partial_2 = 0
-                                    logger.debug('\t... ' + data_name + ' data block has already been filled ...')
-
-                                # Publish the encoded object data
-                                self.local_data['scene_data'] = json.dumps(data)
-                                msg_len = len( self.local_data['scene_data'] )
-
-                                # Track progress
-                                deltat_partial_3 = time.time() - start_time - deltat_partial - deltat_partial_2
-                                logger.debug('\t... converted to string and length calculated in ' + str(deltat_partial_3) + ' s ...')
-
-                            # How long did the encoding take?
-                            deltat = time.time() - start_time
-
-                            logger.debug('\t... object converted in total time ' + str(deltat) + ' s.')
-                        else:
-                            print('Error: unrecognized object (%s).' % obj_name)
+            if object_name in self.Optix_objects:
+                # Iterate through data types, create each, and push onto object responses queue
+                for data_type in data_types:
+                    if data_type == cortex.ObjectRequest.DataType.mesh:
+                        mesh = cortex.Mesh.new_message()
+                        fill_mesh(mesh, self.Optix_objects[object_name], bpy_objs[object_name])
+                        self.local_data['object_responses'].put(mesh)
                     else:
+                        logger.error('Unknown data type for object ' + object_name)
+            else:
+                logger.error('Object ' + object_name + ' does not exist')
 
-                        # We only update dynamic objects
-                        # and objects which have stabilised.
-                        # Objects which have stabilised are
-                        # then removed from the inventory.
-                        # Ultimately, there will only be
-                        # dynamic objects in the inventory.
 
-                        obj_list = {}
+        # Scan through object list and add dynamic objects to update list
+        obj_update_list = []
+        for obj in self.Optix_objects:
+            if obj.get('dynamic', False):
+                obj_update_list.append(obj)
 
-                        # Scan through object list
-                        for obj in self.Optix_objects:
-
-                            # Check for dynamic object
-                            if obj.get('dynamic', False):
-
-                                # Update dynamic object
-                                obj_list.update(get_pose(obj))
-
-                            # Update object if non-physics or static
-                            # Objects of this type only get updated once
-                            elif obj.getPhysicsId() == 0 or obj.linearVelocity.length == 0:
-
-                                # Yes - get the latest pose
-                                obj_list.update(get_pose(obj))
-
-                                # Now remove from the list
-                                self.Optix_objects.remove(obj)
-
-                        if len(obj_list):
-
-                            # Compose update message
-                            message = {'Inventory' : obj_list}
-
-                            # Publish the inventory update
-                            self.local_data['scene_data'] = json.dumps(message)
-
-                elif query[0] == 'reset':
-
-                    # New connection - reset cache
-                    self.data_blocks_sent = []
-                    print('Data block cache reset.')
-
-                    obj_list = {}
-
-                    # Generate a full inventory
-                    for obj in self.Optix_objects:
-                        obj_list.update(get_pose(obj))
-
-                    # Compose inventory message
-                    message = {'Inventory' : obj_list}
-
-                    # Publish object inventory
-                    self.local_data['scene_data'] = json.dumps(message)
-
-                    print('Inventory sent.')
-
-                else:
-                    print('Error: unrecognised query (%s).' % query[0])
+        if len(obj_update_list) > 0:
+            # Create and fill out inventory message
+            inventory = cortex.Inventory.new_message()
+            instances = inventory.init('instances', len(obj_update_list))
+            for i in range(len(obj_update_list)):
+                fill_instance(instances[i], obj_update_list[i], bpy_objs[obj_update_list[i].name])
+            self.local_data['inventory_updates'] = inventory
