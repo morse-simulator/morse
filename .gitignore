@@ -26,3 +26,5 @@ scene.*.blend
 .pydevproject
 .settings
 .metadata
+
+.vscode
