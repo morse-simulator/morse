@@ -2,7 +2,7 @@ import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.moos import MOOSSubscriber, MOOSNotifier
 from morse.core import blenderapi
 import numpy as np
-
+import capnp
 import sys
 sys.path.append("/usr/local/etc/cortex")
 import cortex_capnp as cortex
@@ -39,7 +39,7 @@ class objectServerNotifier(MOOSNotifier):
             self._comms.notify_binary('INVENTORY_FULL', self.data['inventory_responses'].get().to_bytes())
         elif not self.data['object_responses'].empty():
             object_data = self.data['object_responses'].get()
-            if isinstance(object_data, cortex.Mesh):
+            if isinstance(object_data, cortex.Mesh.Builder):
                 self._comms.notify_binary('MESH', object_data.to_bytes())
             else:
                 logger.error('Unknown object data type - cannot send data')

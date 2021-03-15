@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse.moos")
-from pymoos import pymoos
+import pymoos
 
 from morse.middleware import AbstractDatastream
 from morse.core import blenderapi

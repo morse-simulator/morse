@@ -21,31 +21,31 @@ flatten = lambda l: [item for sublist in l for item in sublist]
 # Set logger level - DEBUG used for timing of all messages sent
 logger.setLevel(logging.INFO)
 
-def fill_instance(instance, bge_obj, bpy_obj):
-    instance.instanceName   = bge_obj.name
-    instance.objectName   = bpy_obj.data.name
-    position = bge_obj.worldPosition
+def fill_instance(instance, optix_instance, optix_object):
+    instance.instanceName   = optix_instance.name
+    instance.objectName   = optix_object.data.name
+    position = optix_instance.worldPosition
     instance.position.x     = position.x
     instance.position.y     = position.y
     instance.position.z     = position.z
-    instance.scale.x        = bpy_obj.scale.x
-    instance.scale.y        = bpy_obj.scale.y
-    instance.scale.z        = bpy_obj.scale.z
-    orientation = bge_obj.worldOrientation.to_euler() # TODO should this be quaternion?
+    instance.scale.x        = optix_object.scale.x
+    instance.scale.y        = optix_object.scale.y
+    instance.scale.z        = optix_object.scale.z
+    orientation = optix_instance.worldOrientation.to_euler() # TODO should this be quaternion?
     instance.orientation.x  = orientation.x
     instance.orientation.y  = orientation.y
     instance.orientation.z  = orientation.z
     try:
-        linear_velocity = bge_obj.worldLinearVelocity
+        linear_velocity = optix_instance.worldLinearVelocity
         instance.velocity.x     = linear_velocity.x
         instance.velocity.y     = linear_velocity.y
         instance.velocity.z     = linear_velocity.z
-        angular_velocity = bge_obj.worldAngularVelocity
+        angular_velocity = optix_instance.worldAngularVelocity
         # instance.angular_velocity.x = angular_velocity.x
         # instance.angular_velocity.y = angular_velocity.y
         # instance.angular_velocity.z = angular_velocity.z
     except: pass
-    properties = bpy_obj.game.properties
+    properties = optix_object.game.properties
     if 'Kd' in properties: instance.reflectance.kd = properties['Kd'].value
     if 'Ks' in properties: instance.reflectance.ks = properties['Ks'].value
 
@@ -124,7 +124,7 @@ def triangulate_object(obj):
 
 #     return mesh
 
-def fill_mesh(mesh, bpy_obj):
+def fill_mesh(mesh, optix_obj):
 
     # New faster code for object export
     # vertices = flatten([list(v.co) for v in obj.data.vertices])
@@ -135,17 +135,17 @@ def fill_mesh(mesh, bpy_obj):
     # faces_msg[:] = faces
 
     # Fill mesh
-    mesh.objectName = bpy_obj.data.name
-    mesh.vertices = flatten([list(v.co) for v in bpy_obj.data.vertices])
-    mesh.faces = flatten([list(f.vertices) for f in bpy_obj.data.polygons])
+    mesh.objectName = optix_obj.data.name
+    mesh.vertices = flatten([list(v.co) for v in optix_obj.data.vertices])
+    mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
     mesh.textureDims = [0, 0]
 
     # Check for materials
-    slots = bpy_obj.material_slots
+    slots = optix_obj.material_slots
 
     if len(slots):
         # Get game properties
-        props = bpy_obj.game.properties
+        props = optix_obj.game.properties
         # Check for texture
         if 'texture' in props and props['texture'].value:
             # Get the first material
@@ -165,10 +165,10 @@ def fill_mesh(mesh, bpy_obj):
 
             # Per-vertex UV coordinates
             uvs = np.zeros((len(mesh.vertices)//3,2))
-            uv_layer = bpy_obj.data.uv_layers.active.data
+            uv_layer = optix_obj.data.uv_layers.active.data
 
             # Loop over loops
-            for loop in bpy_obj.data.loops:
+            for loop in optix_obj.data.loops:
                 uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
 
             # Convert numpy array to flat list
@@ -200,44 +200,24 @@ class Objectserver(morse.core.sensor.Sensor):
         # All bpy objects in scene
         bpy_objs = bpymorse.get_objects()
 
-        # List of data blocks transferred
-        # Object instances will re-use these...
-        self.data_blocks_sent = []
-
-        # Special Morse items to remove from inventory
-        remove_items = ['Scene_Script_Holder','CameraFP', '__default__cam__','MORSE.Properties', '__morse_dt_analyser']
-
-        self.Dynamic_objects = []
-
-        # Get dynamic objects
+        # Data structures for optix
+        self.dynamic_instances = []
+        self.optix_instances = []
+        self.optix_objects = {}
         for obj in bpy_objs:
-            for prop in obj.game.properties:
-                if 'dynamic' in prop.name.lower():
-                    if prop.value == True:
-                         self.Dynamic_objects.append(bge_objs[obj.name])
-
-        # Not included in Optix updates
-        for obj in bpy_objs:
-            for prop in obj.game.properties:
-                if 'optix' in prop.name.lower():
-                    if prop.value == False:
-                        remove_items.append(obj.name)
-
-        # Get visible top levelers
-        self.Optix_objects = [obj for obj in bge_objs
-                             if obj.parent is None
-                             and not obj.name in remove_items
-                             and obj.meshes and obj.visible]
-
-        # Included in Optix updates
-        for obj in bpy_objs:
-            for prop in obj.game.properties:
-                if 'optix' in prop.name.lower():
-                    if prop.value:
-                        self.Optix_objects.append(bge_objs[obj.name])
+            props = obj.game.properties
+            if 'optix' in props and props['optix']:
+                self.optix_instances.append(bge_objs[obj.name])
+                if not obj.data.name in self.optix_objects:
+                    self.optix_objects[obj.data.name] = obj
+                if 'dynamic' in props and props['dynamic']:
+                    self.dynamic_instances.append(bge_objs[obj.name])
+        print(self.dynamic_instances)
+        print(self.optix_instances)
+        print(self.optix_objects)
 
         # Check objects for triangulation
-        for bge_obj in self.Optix_objects:
+        for bge_obj in self.optix_instances:
             bpy_obj = bpy_objs[bge_obj.name]
             triangulated = True
             for p in bpy_obj.data.polygons:
@@ -248,7 +228,7 @@ class Objectserver(morse.core.sensor.Sensor):
                 logger.warning('WARNING: Object %s must be triangulated...' % (bpy_obj.name))
                 triangulate_object(bpy_obj)
 
-        logger.info('Found %d dynamic objects in scene' % len(self.Dynamic_objects))
+        logger.info('Found %d dynamic objects in scene' % len(self.dynamic_instances))
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
         self.prev_queue_size = 0 # TODO delete
@@ -261,7 +241,7 @@ class Objectserver(morse.core.sensor.Sensor):
         # Convert object request queue to queue+map data structure (for efficient impl)
         while not self.local_data['object_requests'].empty():
             # Read the object request
-            object_request = cortex.ObjectRequest.read(self.local_data['object_requests'].get())
+            object_request = cortex.ObjectRequest.from_bytes(self.local_data['object_requests'].get())
             # Process request efficiently
             if not object_request.objectName in self.object_request_dict:
                 self.object_request_dict[object_request.objectName] = set()
@@ -279,9 +259,9 @@ class Objectserver(morse.core.sensor.Sensor):
             inventory.uid = pid
 
             # Add the instances
-            instances = inventory.inventory.init('instances', len(self.Optix_objects))
-            for i in range(len(self.Optix_objects)):
-                fill_instance(instances[i], self.Optix_objects[i], bpy_objs[self.Optix_objects[i].name])
+            instances = inventory.inventory.init('instances', len(self.optix_instances))
+            for i in range(len(self.optix_instances)):
+                fill_instance(instances[i], self.optix_instances[i], bpy_objs[self.optix_instances[i].name])
                 
             # Add the inventory to the responses
             self.local_data['inventory_responses'].put(inventory)
@@ -290,12 +270,12 @@ class Objectserver(morse.core.sensor.Sensor):
             object_name = self.object_request_queue.get()
             data_types = self.object_request_dict.pop(object_name)
 
-            if object_name in self.Optix_objects:
+            if object_name in self.optix_objects:
                 # Iterate through data types, create each, and push onto object responses queue
                 for data_type in data_types:
                     if data_type == cortex.ObjectRequest.DataType.mesh:
                         mesh = cortex.Mesh.new_message()
-                        fill_mesh(mesh, self.Optix_objects[object_name], bpy_objs[object_name])
+                        fill_mesh(mesh, self.optix_objects[object_name])
                         self.local_data['object_responses'].put(mesh)
                     else:
                         logger.error('Unknown data type for object ' + object_name)
@@ -303,16 +283,27 @@ class Objectserver(morse.core.sensor.Sensor):
                 logger.error('Object ' + object_name + ' does not exist')
 
 
-        # Scan through object list and add dynamic objects to update list
-        obj_update_list = []
-        for obj in self.Optix_objects:
-            if obj.get('dynamic', False):
-                obj_update_list.append(obj)
+        # # Scan through object list and add dynamic objects to update list
+        # obj_update_list = []
+        # for obj in self.optix_instances:
+        #     if obj.get('dynamic', False):
+        #         obj_update_list.append(obj)
 
-        if len(obj_update_list) > 0:
-            # Create and fill out inventory message
-            inventory = cortex.Inventory.new_message()
-            instances = inventory.init('instances', len(obj_update_list))
-            for i in range(len(obj_update_list)):
-                fill_instance(instances[i], obj_update_list[i], bpy_objs[obj_update_list[i].name])
-            self.local_data['inventory_updates'] = inventory
+        # if len(obj_update_list) > 0:
+        #     # Create and fill out inventory message
+        #     inventory = cortex.Inventory.new_message()
+        #     instances = inventory.init('instances', len(obj_update_list))
+        #     for i in range(len(obj_update_list)):
+        #         fill_instance(instances[i], obj_update_list[i], bpy_objs[obj_update_list[i].name])
+        #     self.local_data['inventory_updates'] = inventory
+
+
+        # Create and fill out inventory message
+        inventory = cortex.Inventory.new_message()
+        instances = inventory.init('instances', len(self.dynamic_instances))
+        i = 0
+        for bge_obj in self.dynamic_instances:
+            fill_instance(instances[i], bge_obj, bpy_objs[bge_obj.name])
+            i += 1
+        self.local_data['inventory_updates'] = inventory
+        

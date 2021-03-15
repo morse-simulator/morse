@@ -1,7 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.middleware.moos import MOOSSubscriber, MOOSNotifier
 from morse.core import blenderapi
-from pymoos import pymoos
+# import pymoos
 
 class sonarReader(MOOSSubscriber):
     """ Read sonar commands and update local data. """
