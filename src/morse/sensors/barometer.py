@@ -63,8 +63,3 @@ class Barometer(Sensor):
         dz = self.position_3d.z - self._ref_z
         tmp = 1 - (TEMPERATURE_LAPSE_RATE * dz  / SEA_LEVEL_TEMP)
         self.local_data['pressure'] = self._ref_p * pow(tmp, self._inv_exp)
-        print("baro")
-        print("pos: ", self.position_3d.z)
-        print("dz: ", dz)
-        print("reference:", self._ref_z )
-        print("pressure: ",  self.local_data['pressure'] )
