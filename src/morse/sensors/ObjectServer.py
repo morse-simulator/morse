@@ -46,8 +46,16 @@ def fill_instance(instance, optix_instance, optix_object):
         # instance.angular_velocity.z = angular_velocity.z
     except: pass
     properties = optix_object.game.properties
-    if 'Kd' in properties: instance.reflectance.kd = properties['Kd'].value
-    if 'Ks' in properties: instance.reflectance.ks = properties['Ks'].value
+    if 'Kd' in properties:
+        print(properties['Kd'])
+        instance.reflectance.kd = properties['Kd'].value
+    else:
+        instance.reflectance.kd = 1.0
+    if 'Ks' in properties:
+        print(properties['Ks'])
+        instance.reflectance.ks = properties['Ks'].value
+    else:
+        instance.reflectance.ks = 0.0
 
 def triangulate_object(obj):
 
