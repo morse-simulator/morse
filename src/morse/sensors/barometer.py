@@ -3,8 +3,7 @@ logger = logging.getLogger("morse." + __name__)
 from morse.core.sensor import Sensor
 from morse.core import blenderapi
 from morse.helpers.components import add_data, add_property
-from morse.helpers.coordinates import CoordinateConverter
-import numpy 
+
 from math import pow
 
 MOLAR_MASS = 0.0289644  # kg / mol
@@ -39,27 +38,11 @@ class Barometer(Sensor):
 
         self._inv_exp = (- blenderapi.gravity()[2] * MOLAR_MASS) / \
                         (GAS_CONSTANT * TEMPERATURE_LAPSE_RATE)
-
-        
-        # Reference Z was previously calculated as the height from the origing of the robot. 
-        # I.e. the robot starts at z=30 then z=30 is treated as sea level. This is inaccurate. 
-        # It should instread be based on the MSL geod (EGM2008 for example).
-        # As a simple hack It is based on the ellipsoid altitude as a reference point. 
-        # But this is not accurate & should be updated. 
-        # Additionally, when traversing larger distances this barometer model will fail as it is based on a 
-        # flat plane assumption. 
-        self.coord_converter = CoordinateConverter.instance()
-        xt = numpy.matrix(self.position_3d.translation)
-        ltp = self.coord_converter.blender_to_ltp(xt)
-        gps_coords = self.coord_converter.ltp_to_geodetic(ltp)
-
-        self._ref_z = self.position_3d.z-gps_coords[0, 2]
-
+        self._ref_z = self.position_3d.z
 
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):
-
         dz = self.position_3d.z - self._ref_z
         tmp = 1 - (TEMPERATURE_LAPSE_RATE * dz  / SEA_LEVEL_TEMP)
         self.local_data['pressure'] = self._ref_p * pow(tmp, self._inv_exp)
