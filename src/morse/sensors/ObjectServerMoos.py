@@ -3,6 +3,7 @@ from morse.middleware.moos import MOOSSubscriber, MOOSNotifier
 from morse.core import blenderapi
 import numpy as np
 import capnp
+import json
 import sys
 sys.path.append("/usr/local/etc/cortex")
 import cortex_capnp as cortex
@@ -36,7 +37,12 @@ class objectServerNotifier(MOOSNotifier):
     def default(self, ci = 'unused'):
 
         if not self.data['inventory_responses'].empty():
-            self._comms.notify_binary('INVENTORY_FULL', self.data['inventory_responses'].get().to_bytes())
+            variable = 'INVENTORY_FULL'
+            inventory_response = self.data['inventory_responses'].get()
+            if isinstance(inventory_response, dict):
+                self.notify(variable, json.dumps(inventory_response))
+            else:
+                self._comms.notify_binary(variable, inventory_response.to_bytes())
         elif not self.data['object_responses'].empty():
             object_data = self.data['object_responses'].get()
             if isinstance(object_data, cortex.Mesh.Builder):
@@ -45,7 +51,12 @@ class objectServerNotifier(MOOSNotifier):
                 logger.error('Unknown object data type - cannot send data')
         
         if self.data['inventory_updates'] is not None:
-            self._comms.notify_binary('INVENTORY_UPDATE', self.data['inventory_updates'].to_bytes())
+            variable = 'INVENTORY_UPDATE'
+            inventory_update = self.data['inventory_updates']
+            if isinstance(inventory_update, dict):
+                self.notify(variable, json.dumps(inventory_update))
+            else:
+                self._comms.notify_binary(variable, inventory_update.to_bytes())
             self.data['inventory_updates'] = None
 
     def update_morse_data(self):

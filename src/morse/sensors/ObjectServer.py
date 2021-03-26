@@ -22,79 +22,115 @@ flatten = lambda l: [item for sublist in l for item in sublist]
 # Set logger level - DEBUG used for timing of all messages sent
 logger.setLevel(logging.INFO)
 
-# Create a 
-def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, json = True):
+def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, dict_msg = True):
     if not isinstance(rotation, Quaternion):
         rotation = rotation.to_quaternion()
-    if json:
-        launch_trigger = json.dumps({
-           'position'       : {'x': position.x, 'y': position.y, 'z': position.z},
-           'rotation'       : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
-           'dimensions'     : {'x': dim_x,      'y': dim_y,      'z': dim_z}
-        })
+    if dict_msg:
+        launch_trigger = {
+           'pose': {
+                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
+                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w}
+           },
+           'dimensions'    : {'x': dim_x,      'y': dim_y,      'z': dim_z}
+        }
     else:
         launch_trigger = cortex.LaunchTrigger.new_message()
         launch_trigger.pose.position.x = position.x
         launch_trigger.pose.position.y = position.y
         launch_trigger.pose.position.z = position.z
-        launch_trigger.pose.orientation.w = rotation.w
-        launch_trigger.pose.orientation.x = rotation.x
-        launch_trigger.pose.orientation.y = rotation.y
-        launch_trigger.pose.orientation.z = rotation.z
+        launch_trigger.pose.rotation.w = rotation.w
+        launch_trigger.pose.rotation.x = rotation.x
+        launch_trigger.pose.rotation.y = rotation.y
+        launch_trigger.pose.rotation.z = rotation.z
         launch_trigger.dimensions.x = dim_x
         launch_trigger.dimensions.y = dim_y
         launch_trigger.dimensions.z = dim_z
     return launch_trigger
 
-def fill_instance(instance, optix_instance, optix_object):
+def create_instance_msg(optix_instance, optix_object, dict_msg = True):
     position = optix_instance.worldPosition
-    orientation = optix_instance.worldOrientation
+    rotation = optix_instance.worldOrientation.to_quaternion()
     scale = optix_object.scale
-
-    instance.instanceName              = optix_instance.name
-    instance.objectName                = optix_object.data.name
-    instance.transform.position.x      = position.x
-    instance.transform.position.y      = position.y
-    instance.transform.position.z      = position.z
-    instance.transform.rotation.row0.x = orientation[0][0]
-    instance.transform.rotation.row0.y = orientation[0][1]
-    instance.transform.rotation.row0.z = orientation[0][2]
-    instance.transform.rotation.row1.x = orientation[1][0]
-    instance.transform.rotation.row1.y = orientation[1][1]
-    instance.transform.rotation.row1.z = orientation[1][2]
-    instance.transform.rotation.row2.x = orientation[2][0]
-    instance.transform.rotation.row2.y = orientation[2][1]
-    instance.transform.rotation.row2.z = orientation[2][2]
-    instance.transform.scale.x         = scale.x
-    instance.transform.scale.y         = scale.y
-    instance.transform.scale.z         = scale.z
-    # orientation = optix_instance.worldOrientation.to_euler() # TODO should this be quaternion?
-    # instance.orientation.x  = orientation.x
-    # instance.orientation.y  = orientation.y
-    # instance.orientation.z  = orientation.z
-
-    # Extra properties
-    try:
-        linear_velocity = optix_instance.worldLinearVelocity
-        instance.linearVelocity.x  = linear_velocity.x
-        instance.linearVelocity.y  = linear_velocity.y
-        instance.linearVelocity.z  = linear_velocity.z
-    except: pass
-    try:
-        angular_velocity = optix_instance.worldAngularVelocity
-        instance.angularVelocity.x = angular_velocity.x
-        instance.angularVelocity.y = angular_velocity.y
-        instance.angularVelocity.z = angular_velocity.z
-    except: pass
     properties = optix_object.game.properties
-    if 'Kd' in properties:
-        instance.reflectance.kd = properties['Kd'].value
+
+    if dict_msg:
+        # Core properties
+        instance = {
+            'instanceName' : optix_instance.name,
+            'objectName' : optix_object.data.name,
+            'transform': {
+                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
+                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
+                'scale' :    {'x': scale.x,    'y': scale.y,    'z': scale.z}
+            }
+        }
+
+        # Extra properties
+        try:
+            linear_velocity = optix_instance.worldLinearVelocity
+            lin_vel = {}
+            lin_vel['x']  = linear_velocity.x
+            lin_vel['y']  = linear_velocity.y
+            lin_vel['z']  = linear_velocity.z
+            instance['linearVelocity'] = lin_vel
+        except: pass
+        try:
+            angular_velocity = optix_instance.worldAngularVelocity
+            ang_vel = {}
+            ang_vel['x']  = angular_velocity.x
+            ang_vel['y']  = angular_velocity.y
+            ang_vel['z']  = angular_velocity.z
+            instance['angularVelocity'] = ang_vel
+        except: pass
+        instance['reflectance'] = {}
+        if 'Kd' in properties:
+            instance['reflectance']['kd'] = properties['Kd'].value
+        else:
+            instance['reflectance']['kd'] = 1.0
+        if 'Ks' in properties:
+            instance['reflectance']['ks'] = properties['Ks'].value
+        else:
+            instance['reflectance']['ks'] = 0.0
+        return instance
     else:
-        instance.reflectance.kd = 1.0
-    if 'Ks' in properties:
-        instance.reflectance.ks = properties['Ks'].value
-    else:
-        instance.reflectance.ks = 0.0
+        instance = cortex.Instance.new_message()
+
+        # Core properties
+        instance.instanceName              = optix_instance.name
+        instance.objectName                = optix_object.data.name
+        instance.transform.position.x      = position.x
+        instance.transform.position.y      = position.y
+        instance.transform.position.z      = position.z
+        instance.transform.rotation.w      = rotation.w
+        instance.transform.rotation.x      = rotation.x
+        instance.transform.rotation.y      = rotation.y
+        instance.transform.rotation.z      = rotation.z
+        instance.transform.scale.x         = scale.x
+        instance.transform.scale.y         = scale.y
+        instance.transform.scale.z         = scale.z
+
+        # Extra properties
+        try:
+            linear_velocity = optix_instance.worldLinearVelocity
+            instance.linearVelocity.x  = linear_velocity.x
+            instance.linearVelocity.y  = linear_velocity.y
+            instance.linearVelocity.z  = linear_velocity.z
+        except: pass
+        try:
+            angular_velocity = optix_instance.worldAngularVelocity
+            instance.angularVelocity.x = angular_velocity.x
+            instance.angularVelocity.y = angular_velocity.y
+            instance.angularVelocity.z = angular_velocity.z
+        except: pass
+        if 'Kd' in properties:
+            instance.reflectance.kd = properties['Kd'].value
+        else:
+            instance.reflectance.kd = 1.0
+        if 'Ks' in properties:
+            instance.reflectance.ks = properties['Ks'].value
+        else:
+            instance.reflectance.ks = 0.0
+        return instance
 
 def triangulate_object(obj):
 
@@ -108,68 +144,6 @@ def triangulate_object(obj):
     # Finish up, write the bmesh back to the mesh
     bm.to_mesh(me)
     bm.free()
-
-# def get_mesh(obj):
-#     # Create mesh msg instance
-#     mesh = cortex.Mesh.new_message()
-
-#     # New faster code for object export
-#     flat_vertices = flatten([list(v.co) for v in obj.data.vertices])
-#     flat_faces = flatten([list(f.vertices) for f in obj.data.polygons])
-
-#     vertices = mesh.init('vertices', len(flat_vertices))
-#     vertices[:] = flat_vertices
-#     faces = mesh.init('faces', len(flat_faces))
-#     faces[:] = flat_faces
-#     texture_dims = mesh.init('textureDims', 2)
-#     texture_dims[0] = 0
-#     texture_dims[1] = 0
-
-#     # Check for materials
-#     slots = obj.material_slots
-
-#     if len(slots):
-
-#         # Get the first material
-#         mat = slots[0].material
-
-#         # Get game properties
-#         props = obj.game.properties
-
-#         # Do we need a texture?
-#         if 'texture' in props:
-#             if props['texture'].value:
-
-#                 # Get first material
-#                 mat = obj.material_slots[0].material
-
-#                 # Get first texture image
-#                 im = mat.texture_slots[0].texture.image
-
-#                 # Image dimensions
-#                 texture_dims[0] = im.size[0]
-#                 texture_dims[1] = im.size[1]
-#                 texture = mesh.init('texture', len(im.size[0]*im.size[1]))
-
-#                 # Append texture values [0:1]
-#                 texture[:] = im.pixels[:]
-
-#                 # Per-vertex UV coordinates
-#                 uvs_array = np.zeros((len(vertices)//3,2))
-#                 uv_layer = obj.data.uv_layers.active.data
-
-#                 # Loop over loops
-#                 for loop in obj.data.loops:
-#                     uvs_array[loop.vertex_index,:] = uv_layer[loop.index].uv
-
-#                 # Flatten
-#                 uvs_array = uvs_array.flatten().tolist()
-
-#                 # Convert numpy array to flat list
-#                 uvs = mesh.init('uvs', len(uvs_array))
-#                 uvs[:] = uvs_array
-
-#     return mesh
 
 def fill_mesh(mesh, optix_obj):
 
@@ -187,7 +161,6 @@ def fill_mesh(mesh, optix_obj):
     mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
     mesh.textureDims.x = 0
     mesh.textureDims.y = 0
-    # mesh.textureDims = [0, 0]
 
     # Check for materials
     slots = optix_obj.material_slots
@@ -206,7 +179,6 @@ def fill_mesh(mesh, optix_obj):
             # Image dimensions
             mesh.textureDims.x = im.size[0]
             mesh.textureDims.y = im.size[1]
-            # mesh.textureDims = im.size[:]
 
             # Append RGBA texture
             if (im.channels != 4):
@@ -236,6 +208,8 @@ class Objectserver(morse.core.sensor.Sensor):
     add_data('inventory_updates', None, 'inventory', 'Inventory for inventory updates')
     add_data('object_requests', Queue(), 'queue', 'Queue for object requests')
     add_data('object_responses', Queue(), 'queue', 'Queue for object responses')
+
+    add_property('send_json', True, 'send_json',  'bool', 'Send small messages as json')
 
     def __init__(self, obj, parent=None):
 
@@ -304,18 +278,24 @@ class Objectserver(morse.core.sensor.Sensor):
         bpy_objs = bpymorse.get_objects()
 
         if not self.local_data['inventory_requests'].empty():
-            # Create message with pid
-            inventory = cortex.UniqueInventory.new_message()
             pid = self.local_data['inventory_requests'].get()
-            inventory.uid = pid
+            if self.send_json:
+                inventory = {'inventory': {'instances': []}, 'uid': pid}
+                instances = inventory['inventory']['instances']
 
-            # Add the instances
-            instances = inventory.inventory.init('instances', len(self.optix_instances))
-            for i in range(len(self.optix_instances)):
-                fill_instance(instances[i], self.optix_instances[i], bpy_objs[self.optix_instances[i].name])
-                
-            # Add the inventory to the responses
-            self.local_data['inventory_responses'].put(inventory)
+                # Add the instances
+                for i in range(len(self.optix_instances)):
+                    instances.append(create_instance_msg(
+                        self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
+                self.local_data['inventory_responses'].put(inventory)
+            else:
+                # Create capnp unique inventory
+                inventory = cortex.UniqueInventory.new_message()
+                inventory.uid = pid
+                instances = inventory.inventory.init('instances', len(self.optix_instances))
+                for i in range(len(self.optix_instances)):
+                    instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
+                self.local_data['inventory_responses'].put(inventory)
         elif not self.object_request_queue.empty():
             # Obtain object request data
             object_name = self.object_request_queue.get()
@@ -334,11 +314,18 @@ class Objectserver(morse.core.sensor.Sensor):
                 logger.error('Object ' + object_name + ' does not exist')
 
         # Create and fill out inventory message
-        inventory = cortex.Inventory.new_message()
-        instances = inventory.init('instances', len(self.dynamic_instances))
-        i = 0
-        for bge_obj in self.dynamic_instances:
-            fill_instance(instances[i], bge_obj, bpy_objs[bge_obj.name])
-            i += 1
-        self.local_data['inventory_updates'] = inventory
+        if self.send_json:
+            inventory = {'instances': []}
+            instances = inventory['instances']
+            for bge_obj in self.dynamic_instances:
+                instances.append(create_instance_msg(bge_obj, bpy_objs[bge_obj.name], True))
+            self.local_data['inventory_updates'] = inventory
+        else:
+            inventory = cortex.Inventory.new_message()
+            instances = inventory.init('instances', len(self.dynamic_instances))
+            i = 0
+            for bge_obj in self.dynamic_instances:
+                instances[i] = create_instance_msg(bge_obj, bpy_objs[bge_obj.name], False)
+                i += 1
+            self.local_data['inventory_updates'] = inventory
         
