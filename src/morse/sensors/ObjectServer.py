@@ -4,6 +4,7 @@ from morse.core.services import service, async_service
 from morse.core import status, blenderapi
 from morse.helpers.components import add_data, add_property
 from morse.builder import bpymorse
+from morse.core.mathutils import *
 import numpy as np
 import bmesh
 import bpy
@@ -13,7 +14,7 @@ from queue import Queue
 import time
 
 import sys
-sys.path.append("/usr/local/etc/cortex")
+sys.path.extend(["/usr/local/share/", "/usr/local/share/cortex"])
 import cortex_capnp as cortex
 
 flatten = lambda l: [item for sublist in l for item in sublist]
@@ -21,38 +22,76 @@ flatten = lambda l: [item for sublist in l for item in sublist]
 # Set logger level - DEBUG used for timing of all messages sent
 logger.setLevel(logging.INFO)
 
+# Create a 
+def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, json = True):
+    if not isinstance(rotation, Quaternion):
+        rotation = rotation.to_quaternion()
+    if json:
+        launch_trigger = json.dumps({
+           'position'       : {'x': position.x, 'y': position.y, 'z': position.z},
+           'rotation'       : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
+           'dimensions'     : {'x': dim_x,      'y': dim_y,      'z': dim_z}
+        })
+    else:
+        launch_trigger = cortex.LaunchTrigger.new_message()
+        launch_trigger.pose.position.x = position.x
+        launch_trigger.pose.position.y = position.y
+        launch_trigger.pose.position.z = position.z
+        launch_trigger.pose.orientation.w = rotation.w
+        launch_trigger.pose.orientation.x = rotation.x
+        launch_trigger.pose.orientation.y = rotation.y
+        launch_trigger.pose.orientation.z = rotation.z
+        launch_trigger.dimensions.x = dim_x
+        launch_trigger.dimensions.y = dim_y
+        launch_trigger.dimensions.z = dim_z
+    return launch_trigger
+
 def fill_instance(instance, optix_instance, optix_object):
-    instance.instanceName   = optix_instance.name
-    instance.objectName   = optix_object.data.name
     position = optix_instance.worldPosition
-    instance.position.x     = position.x
-    instance.position.y     = position.y
-    instance.position.z     = position.z
-    instance.scale.x        = optix_object.scale.x
-    instance.scale.y        = optix_object.scale.y
-    instance.scale.z        = optix_object.scale.z
-    orientation = optix_instance.worldOrientation.to_euler() # TODO should this be quaternion?
-    instance.orientation.x  = orientation.x
-    instance.orientation.y  = orientation.y
-    instance.orientation.z  = orientation.z
+    orientation = optix_instance.worldOrientation
+    scale = optix_object.scale
+
+    instance.instanceName              = optix_instance.name
+    instance.objectName                = optix_object.data.name
+    instance.transform.position.x      = position.x
+    instance.transform.position.y      = position.y
+    instance.transform.position.z      = position.z
+    instance.transform.rotation.row0.x = orientation[0][0]
+    instance.transform.rotation.row0.y = orientation[0][1]
+    instance.transform.rotation.row0.z = orientation[0][2]
+    instance.transform.rotation.row1.x = orientation[1][0]
+    instance.transform.rotation.row1.y = orientation[1][1]
+    instance.transform.rotation.row1.z = orientation[1][2]
+    instance.transform.rotation.row2.x = orientation[2][0]
+    instance.transform.rotation.row2.y = orientation[2][1]
+    instance.transform.rotation.row2.z = orientation[2][2]
+    instance.transform.scale.x         = scale.x
+    instance.transform.scale.y         = scale.y
+    instance.transform.scale.z         = scale.z
+    # orientation = optix_instance.worldOrientation.to_euler() # TODO should this be quaternion?
+    # instance.orientation.x  = orientation.x
+    # instance.orientation.y  = orientation.y
+    # instance.orientation.z  = orientation.z
+
+    # Extra properties
     try:
         linear_velocity = optix_instance.worldLinearVelocity
-        instance.velocity.x     = linear_velocity.x
-        instance.velocity.y     = linear_velocity.y
-        instance.velocity.z     = linear_velocity.z
+        instance.linearVelocity.x  = linear_velocity.x
+        instance.linearVelocity.y  = linear_velocity.y
+        instance.linearVelocity.z  = linear_velocity.z
+    except: pass
+    try:
         angular_velocity = optix_instance.worldAngularVelocity
-        # instance.angular_velocity.x = angular_velocity.x
-        # instance.angular_velocity.y = angular_velocity.y
-        # instance.angular_velocity.z = angular_velocity.z
+        instance.angularVelocity.x = angular_velocity.x
+        instance.angularVelocity.y = angular_velocity.y
+        instance.angularVelocity.z = angular_velocity.z
     except: pass
     properties = optix_object.game.properties
     if 'Kd' in properties:
-        print(properties['Kd'])
         instance.reflectance.kd = properties['Kd'].value
     else:
         instance.reflectance.kd = 1.0
     if 'Ks' in properties:
-        print(properties['Ks'])
         instance.reflectance.ks = properties['Ks'].value
     else:
         instance.reflectance.ks = 0.0
@@ -146,7 +185,9 @@ def fill_mesh(mesh, optix_obj):
     mesh.objectName = optix_obj.data.name
     mesh.vertices = flatten([list(v.co) for v in optix_obj.data.vertices])
     mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
-    mesh.textureDims = [0, 0]
+    mesh.textureDims.x = 0
+    mesh.textureDims.y = 0
+    # mesh.textureDims = [0, 0]
 
     # Check for materials
     slots = optix_obj.material_slots
@@ -163,7 +204,9 @@ def fill_mesh(mesh, optix_obj):
             im = mat.texture_slots[0].texture.image
 
             # Image dimensions
-            mesh.textureDims = im.size[:]
+            mesh.textureDims.x = im.size[0]
+            mesh.textureDims.y = im.size[1]
+            # mesh.textureDims = im.size[:]
 
             # Append RGBA texture
             if (im.channels != 4):
@@ -220,9 +263,9 @@ class Objectserver(morse.core.sensor.Sensor):
                     self.optix_objects[obj.data.name] = obj
                 if 'dynamic' in props and props['dynamic']:
                     self.dynamic_instances.append(bge_objs[obj.name])
-        print(self.dynamic_instances)
-        print(self.optix_instances)
-        print(self.optix_objects)
+        logger.info("Dynamic Instances: " + str(self.dynamic_instances))
+        logger.info("Optix Instances: " + str(self.optix_instances))
+        logger.info("Optix Objects: " + str(self.optix_objects))
 
         # Check objects for triangulation
         for bge_obj in self.optix_instances:
@@ -289,22 +332,6 @@ class Objectserver(morse.core.sensor.Sensor):
                         logger.error('Unknown data type for object ' + object_name)
             else:
                 logger.error('Object ' + object_name + ' does not exist')
-
-
-        # # Scan through object list and add dynamic objects to update list
-        # obj_update_list = []
-        # for obj in self.optix_instances:
-        #     if obj.get('dynamic', False):
-        #         obj_update_list.append(obj)
-
-        # if len(obj_update_list) > 0:
-        #     # Create and fill out inventory message
-        #     inventory = cortex.Inventory.new_message()
-        #     instances = inventory.init('instances', len(obj_update_list))
-        #     for i in range(len(obj_update_list)):
-        #         fill_instance(instances[i], obj_update_list[i], bpy_objs[obj_update_list[i].name])
-        #     self.local_data['inventory_updates'] = inventory
-
 
         # Create and fill out inventory message
         inventory = cortex.Inventory.new_message()
