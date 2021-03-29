@@ -57,7 +57,7 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
         # Core properties
         instance = {
             'instanceName' : optix_instance.name,
-            'objectName' : optix_object.data.name,
+            'properties' : [{'identifier': optix_object.data.name, 'propertyType': 'MESH'}],
             'transform': {
                 'position' : {'x': position.x, 'y': position.y, 'z': position.z},
                 'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
@@ -97,7 +97,9 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
 
         # Core properties
         instance.instanceName              = optix_instance.name
-        instance.objectName                = optix_object.data.name
+        instance_props                     = instance.init('properties', 1)
+        instance_props[0].identifier       = optix_object.data.name
+        instance_props[0].propertyType     = cortex.ObjectProperty.PropertyType.mesh
         instance.transform.position.x      = position.x
         instance.transform.position.y      = position.y
         instance.transform.position.z      = position.z
@@ -156,7 +158,7 @@ def fill_mesh(mesh, optix_obj):
     # faces_msg[:] = faces
 
     # Fill mesh
-    mesh.objectName = optix_obj.data.name
+    mesh.identifier = optix_obj.data.name
     mesh.vertices = flatten([list(v.co) for v in optix_obj.data.vertices])
     mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
     mesh.textureDims.x = 0
@@ -258,8 +260,9 @@ class Objectserver(morse.core.sensor.Sensor):
 
         self.prev_queue_size = 0 # TODO delete
 
-        self.object_request_dict = {}
-        self.object_request_queue = Queue()
+        # self.object_request_dict = {}
+        # self.object_request_queue = Queue()
+        self.object_request_set = set() # TODO: change for ordered set
 
     def default_action(self):
 
@@ -267,13 +270,15 @@ class Objectserver(morse.core.sensor.Sensor):
         while not self.local_data['object_requests'].empty():
             # Read the object request
             object_request = cortex.ObjectRequest.from_bytes(self.local_data['object_requests'].get())
-            # Process request efficiently
-            if not object_request.objectName in self.object_request_dict:
-                self.object_request_dict[object_request.objectName] = set()
-                self.object_request_queue.put(object_request.objectName)
-            for data_type in object_request.dataTypes:
-                # Add to set (duplicates automatically removed)
-                self.object_request_dict[object_request.objectName].add(data_type)
+            for prop in object_request.properties:
+                self.object_request_set.add((prop.identifier, prop.propertyType))
+            # # Process request efficiently
+            # if not object_request.objectName in self.object_request_dict:
+            #     self.object_request_dict[object_request.objectName] = set()
+            #     self.object_request_queue.put(object_request.objectName)
+            # for data_type in object_request.dataTypes:
+            #     # Add to set (duplicates automatically removed)
+            #     self.object_request_dict[object_request.objectName].add(data_type)
 
         bpy_objs = bpymorse.get_objects()
 
@@ -296,22 +301,22 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
                 self.local_data['inventory_responses'].put(inventory)
-        elif not self.object_request_queue.empty():
+        elif len(self.object_request_set) > 0:
             # Obtain object request data
-            object_name = self.object_request_queue.get()
-            data_types = self.object_request_dict.pop(object_name)
+            prop = self.object_request_set.pop()
+            identifier = prop[0]
+            prop_type = prop[1]
 
-            if object_name in self.optix_objects:
+            if identifier in self.optix_objects:
                 # Iterate through data types, create each, and push onto object responses queue
-                for data_type in data_types:
-                    if data_type == cortex.ObjectRequest.DataType.mesh:
-                        mesh = cortex.Mesh.new_message()
-                        fill_mesh(mesh, self.optix_objects[object_name])
-                        self.local_data['object_responses'].put(mesh)
-                    else:
-                        logger.error('Unknown data type for object ' + object_name)
+                if prop_type == cortex.ObjectProperty.PropertyType.mesh:
+                    mesh = cortex.Mesh.new_message()
+                    fill_mesh(mesh, self.optix_objects[identifier])
+                    self.local_data['object_responses'].put(mesh)
+                else:
+                    logger.error('Unhandled property type for identifier ' + identifier)
             else:
-                logger.error('Object ' + object_name + ' does not exist')
+                logger.error('Identifier ' + identifier + ' does not exist')
 
         # Create and fill out inventory message
         if self.send_json:
