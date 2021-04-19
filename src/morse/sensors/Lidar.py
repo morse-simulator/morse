@@ -85,55 +85,9 @@ class Lidar(morse.core.sensor.Sensor):
 
         if self.local_data['lidar_status'] == 'OFF':
             return # No data if lidar is OFF
-
-        # # Lidar pose
-        # lidar_pos = self.bge_object.worldPosition
-        # lidar_mat = self.bge_object.worldOrientation
-
-        # lidar_pose = {
-        #    'lidar_name' : self.local_data['lidar_name'],
-        #    'max_range'  : self.max_range,
-        #    'azim_width' : self.azimuth_width,
-        #    'elev_width' : self.elevation_width,
-        #    'azim_beams' : self.azimuth_beams,
-        #    'elev_beams' : self.elevation_beams,
-        #    'lidar_type' : self.lidar_type,
-        #    'pos'        : list(lidar_pos),
-        #    'X'          : list(lidar_mat.col[1]),
-        #    'Y'          : list(lidar_mat.col[2]),
-        #    'Z'          : list(lidar_mat.col[0]),
-        # }
-
-        # # Ray trace with the current lidar beam pose
-        # self.local_data['lidar_pose'] = json.dumps(lidar_pose)
-
-        # Figure out which camera is active and
-        # publish its position and view vector.
-        camera = self.scene.active_camera
-        # pos = camera.worldPosition
-        # mat = camera.worldOrientation
-
-        # X = list(mat.col[0])
-        # Y = list(mat.col[1])
-        # Z = list(mat.col[2])
-
-        # # Z-axes reversed for some reason...
-        # Z = [-z for z in Z]
-
-        # lidar_view = {
-        #    'camera' : camera.name, 
-        #    'pos'    : list(pos),
-        #    'X'      : X,
-        #    'Y'      : Y,
-        #    'Z'      : Z,
-        # }
-
+        
         pos = self.bge_object.worldPosition
         rotation = self.bge_object.worldOrientation.copy()
-        rotation.transpose()
-
-        # Point cloud view will be active camera view
-        # self.local_data['lidar_view'] = json.dumps(lidar_view)
             
         if self.send_json:
             self.local_data['launch_trigger'] = {}
