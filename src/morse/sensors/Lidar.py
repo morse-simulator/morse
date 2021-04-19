@@ -99,7 +99,7 @@ class Lidar(morse.core.sensor.Sensor):
         else:
             import capnp
             import sys
-            sys.path.extend(["/usr/local/share", "/usr/local/share/pLidarSim"])
+            sys.path.extend(["/usr/local/share", "/usr/local/share/lidarsim"])
             import lidarsim_capnp as lidarsim
             self.local_data['launch_trigger'] = lidarsim.RadarLaunchTrigger.new_message()
             self.local_data['launch_trigger'].launchTrigger = create_trigger_msg(pos, rotation, self.azim_beams,
