@@ -630,8 +630,6 @@ class Lidar(SensorCreator):
         SensorCreator.__init__(self, name)
         #self.append_meshes(None,'vertiia_sim/sensors/lidar.blend')
         self.append_meshes(['lidar'])
-        
-        
 
 class Objectserver(SensorCreator):
     _classpath = "morse.sensors.ObjectServer.Objectserver"
@@ -644,6 +642,14 @@ class Objectserver(SensorCreator):
 class Optixcamera(SensorCreator):
     _classpath = "morse.sensors.OptixCamera.Optixcamera"
     _blendname = "OptixCamera"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        # May need to include a .blend file at some point
+
+class CameraSim(SensorCreator):
+    _classpath = "morse.sensors.CameraSim.CameraSim"
+    _blendname = "CameraSim"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)

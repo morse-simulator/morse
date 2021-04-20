@@ -22,8 +22,8 @@ class Lidar(morse.core.sensor.Sensor):
 
     # define here the data fields exported by your sensor
     # format is: field name, default initial value, type, description
-    add_data('lidar_pose',     '', 'string', 'Position and orientation of Lidar beam')
-    add_data('lidar_view',     '', 'string', 'Position and orientation of lidar view')
+    # add_data('lidar_pose',     '', 'string', 'Position and orientation of Lidar beam')
+    # add_data('lidar_view',     '', 'string', 'Position and orientation of lidar view')
     add_data('lidar_name',     '', 'string', 'Name of this lidar device')
     add_data('lidar_status', 'ON', 'string', 'Status of this lidar device - ON/OFF')
 
