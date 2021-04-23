@@ -233,11 +233,11 @@ class Objectserver(morse.core.sensor.Sensor):
         self.optix_objects = {}
         for obj in bpy_objs:
             props = obj.game.properties
-            if 'optix' in props and props['optix']:
+            if 'optix' in props and props['optix'].value:
                 self.optix_instances.append(bge_objs[obj.name])
                 if not obj.data.name in self.optix_objects:
                     self.optix_objects[obj.data.name] = obj
-                if 'dynamic' in props and props['dynamic']:
+                if 'dynamic' in props and props['dynamic'].value:
                     self.dynamic_instances.append(bge_objs[obj.name])
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
