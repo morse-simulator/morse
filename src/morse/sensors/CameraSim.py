@@ -29,7 +29,7 @@ class CameraSim(morse.sensors.camera.Camera):
     add_property('image_height',        256,    'image_height',         'int',      'cam_height in pixels')
     add_property('horizontal_fov_deg',  256,    'horizontal_fov_deg',   'float',    'full horizontal FOV in degrees')
     add_property('vertical_fov_deg',    256,    'vertical_fov_deg',     'float',    'full vertical FOV in degrees')
-    add_property('max_range',       1000.0,  'max_range','float','Camera range in m')
+    add_property('max_range',        5000.0,    'max_range',            'float',    'Camera range in m')
 
     add_data('launch_trigger',   '',   'string', 'Information for a radar beam launch')
     add_property('send_json',       True,  'send_json',       'bool',  'Send small messages as json')
