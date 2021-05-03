@@ -22,20 +22,16 @@ class Lidar(morse.core.sensor.Sensor):
 
     # define here the data fields exported by your sensor
     # format is: field name, default initial value, type, description
-    # add_data('lidar_pose',     '', 'string', 'Position and orientation of Lidar beam')
-    # add_data('lidar_view',     '', 'string', 'Position and orientation of lidar view')
     add_data('lidar_name',     '', 'string', 'Name of this lidar device')
     add_data('lidar_status', 'ON', 'string', 'Status of this lidar device - ON/OFF')
-
-    add_property('azimuth_width',   100.0, 'Beam_width_azimuth',     'float', 'Lidar beam width in degrees')
-    add_property('elevation_width', 40.0,  'Beam_width_elevation',   'float', 'Lidar beam height in degrees')
-    add_property('azimuth_beams',   100,   'Number_beams_azimuth',   'int',   'Number of lidar beams in azimuth direction')
-    add_property('elevation_beams', 40,    'Number_beams_elevation', 'int',   'Number of lidar beams in elevation direction')
-    add_property('lidar_type',      0,     'Lidar_type',             'int',   'Integer value specifying the lidar type')
-    add_property('max_range',       100.0, 'Max_range',              'float', 'Lidar range in m')
-
-    # New
     add_data('launch_trigger',   '',   'string', 'Information for a radar beam launch')
+
+    add_property('azimuth_width',   360.0, 'Beam_width_azimuth',     'float', 'Lidar beam width in degrees')
+    add_property('elevation_width', 180.0,  'Beam_width_elevation',   'float', 'Lidar beam height in degrees')
+    add_property('azimuth_beams',   360,   'Number_beams_azimuth',   'int',   'Number of lidar beams in azimuth direction')
+    add_property('elevation_beams', 180,    'Number_beams_elevation', 'int',   'Number of lidar beams in elevation direction')
+    # add_property('lidar_type',      0,     'Lidar_type',             'int',   'Integer value specifying the lidar type')
+    add_property('max_range',       100.0, 'Max_range',              'float', 'Lidar range in m')
     add_property('send_json',       True,  'send_json',       'bool',  'Send small messages as json')
 
     def __init__(self, obj, parent=None):
