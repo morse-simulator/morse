@@ -39,10 +39,14 @@ class objectServerNotifier(MOOSNotifier):
         if not self.data['inventory_responses'].empty():
             variable = 'INVENTORY_FULL'
             inventory_response = self.data['inventory_responses'].get()
+            uid = -1
             if isinstance(inventory_response, dict):
                 self.notify(variable, json.dumps(inventory_response))
+                uid = inventory_response["uid"]
             else:
                 self._comms.notify_binary(variable, inventory_response.to_bytes())
+                uid = inventory_response.uid
+            logger.info("Sent INVENTORY_FULL on uid " + str(uid))
         elif not self.data['object_responses'].empty():
             object_data = self.data['object_responses'].get()
             if isinstance(object_data, cortex.Mesh.Builder):
