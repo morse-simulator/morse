@@ -231,6 +231,7 @@ class Objectserver(morse.core.sensor.Sensor):
         self.dynamic_instances = []
         self.optix_instances = []
         self.optix_objects = {}
+        self.optix_ignored_instances = []
         for obj in bpy_objs:
             props = obj.game.properties
             if 'optix' in props and props['optix'].value:
@@ -239,9 +240,12 @@ class Objectserver(morse.core.sensor.Sensor):
                     self.optix_objects[obj.data.name] = obj
                 if 'dynamic' in props and props['dynamic'].value:
                     self.dynamic_instances.append(bge_objs[obj.name])
+            else:
+                self.optix_ignored_instances.append(obj.name)
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
+        logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
 
         # Check objects for triangulation
         for bge_obj in self.optix_instances:

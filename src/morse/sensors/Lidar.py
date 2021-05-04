@@ -26,12 +26,12 @@ class Lidar(morse.core.sensor.Sensor):
     add_data('lidar_status', 'ON', 'string', 'Status of this lidar device - ON/OFF')
     add_data('launch_trigger',   '',   'string', 'Information for a radar beam launch')
 
-    add_property('azimuth_width',   360.0, 'Beam_width_azimuth',     'float', 'Lidar beam width in degrees')
-    add_property('elevation_width', 180.0,  'Beam_width_elevation',   'float', 'Lidar beam height in degrees')
-    add_property('azimuth_beams',   360,   'Number_beams_azimuth',   'int',   'Number of lidar beams in azimuth direction')
-    add_property('elevation_beams', 180,    'Number_beams_elevation', 'int',   'Number of lidar beams in elevation direction')
+    add_property('azimuth_width',   360.0, 'azimuth_width',     'float', 'Lidar beam width in degrees')
+    add_property('elevation_width', 180.0,  'elevation_width',   'float', 'Lidar beam height in degrees')
+    add_property('azimuth_beams',   360,   'azimuth_beams',   'int',   'Number of lidar beams in azimuth direction')
+    add_property('elevation_beams', 180,    'elevation_beams', 'int',   'Number of lidar beams in elevation direction')
     # add_property('lidar_type',      0,     'Lidar_type',             'int',   'Integer value specifying the lidar type')
-    add_property('max_range',       100.0, 'Max_range',              'float', 'Lidar range in m')
+    add_property('max_range',       100.0, 'max_range',              'float', 'Lidar range in m')
     add_property('send_json',       True,  'send_json',       'bool',  'Send small messages as json')
 
     def __init__(self, obj, parent=None):
@@ -98,8 +98,8 @@ class Lidar(morse.core.sensor.Sensor):
             sys.path.extend(["/usr/local/share", "/usr/local/share/lidarsim"])
             import lidarsim_capnp as lidarsim
             self.local_data['launch_trigger'] = lidarsim.RadarLaunchTrigger.new_message()
-            self.local_data['launch_trigger'].launchTrigger = create_trigger_msg(pos, rotation, self.azim_beams,
-                                                                                 self.elev_beams, 1, False)
+            self.local_data['launch_trigger'].launchTrigger = create_trigger_msg(pos, rotation, self.azimuth_beams,
+                                                                                 self.elevation_beams, 1, False)
             self.local_data['launch_trigger'].maxRange = self.max_range
             self.local_data['launch_trigger'].azimuthFov = pi * self.azimuth_width / 180.0
             self.local_data['launch_trigger'].elevationFov = pi * self.elevation_width / 180.0
