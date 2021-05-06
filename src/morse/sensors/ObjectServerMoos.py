@@ -22,7 +22,7 @@ class objectServerReader(MOOSSubscriber):
         success = self._comms.add_message_route_to_active_queue('moos_msg_queue', 'OBJECT_REQUEST') and self.register('OBJECT_REQUEST') and success
         if not success:
             logger.error("Failed to register messages to queue")
-        return success
+        # return success
 
     def moos_msg_queue(self, msg):
         if msg.key() == 'INVENTORY_REQUEST':
@@ -33,6 +33,11 @@ class objectServerReader(MOOSSubscriber):
         return True
 
 class objectServerNotifier(MOOSNotifier):
+
+    def initialize(self):
+        MOOSNotifier.initialize(self)
+        # Publish reset
+        self.notify('CORTEX_RESET', '')
 
     def default(self, ci = 'unused'):
 
