@@ -271,8 +271,10 @@ class Objectserver(morse.core.sensor.Sensor):
                     self.optix_objects[obj.data.name] = obj
                     if 'texture' in props and props['texture'].value:
                         if len(obj.data.materials) == 0:
-                            logger.error('texture was specified for ' + obj.name + ' but no materials were found')
-                        self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.material[0].texture_slots[0].texture
+                            raise RuntimeError('texture was specified for ' + obj.name + ' but no materials were found')
+                        if len(obj.data.materials[0].texture_slots) == 0:
+                            raise RuntimeError('texture was specified for ' + obj.name + ' but no texture slots were found for the material')
+                        self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.materials[0].texture_slots[0].texture
                 if 'dynamic' in props and props['dynamic'].value:
                     self.dynamic_instances.append(bge_objs[obj.name])
             else:
