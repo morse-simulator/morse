@@ -8,6 +8,11 @@ import sys
 sys.path.append("/usr/local/etc/cortex")
 import cortex_capnp as cortex
 
+def convert_texture_type_to_string_prefix(texture_type: cortex.TextureDescription.TextureType)->str:
+    if texture_type == cortex.TextureDescription.TextureType.rgbaTexture:
+        return 'RGBA'
+    raise RuntimeError('texture type not handled')
+
 class objectServerReader(MOOSSubscriber):
     """ Read radar commands and update local data. """
 
@@ -19,7 +24,8 @@ class objectServerReader(MOOSSubscriber):
         # Register for scene query messages of type 'get' or 'get object'
         success = True
         success = self.register_message_to_queue('INVENTORY_REQUEST', 'moos_msg_queue', self.moos_msg_queue) and success
-        success = self._comms.add_message_route_to_active_queue('moos_msg_queue', 'OBJECT_REQUEST') and self.register('OBJECT_REQUEST') and success
+        success = self._comms.add_message_route_to_active_queue('moos_msg_queue', 'MESH_REQUEST') and self.register('MESH_REQUEST') and success
+        success = self._comms.add_message_route_to_active_queue('moos_msg_queue', 'TEXTURE_REQUEST') and self.register('TEXTURE_REQUEST') and success
         if not success:
             logger.error("Failed to register messages to queue")
         # return success
@@ -27,8 +33,10 @@ class objectServerReader(MOOSSubscriber):
     def moos_msg_queue(self, msg):
         if msg.key() == 'INVENTORY_REQUEST':
             self.data['inventory_requests'].put(int(msg.double()))
-        elif msg.key() == 'OBJECT_REQUEST':
-            self.data['object_requests'].put(msg.binary_data())
+        elif msg.key() == 'MESH_REQUEST':
+            self.data['mesh_requests'].put(msg.string())
+        elif msg.key() == 'TEXTURE_REQUEST':
+            self.data['texture_requests'].put(msg.binary_data())
         self._new_messages = False
         return True
 
@@ -52,12 +60,32 @@ class objectServerNotifier(MOOSNotifier):
                 self._comms.notify_binary(variable, inventory_response.to_bytes())
                 uid = inventory_response.uid
             logger.info("Sent INVENTORY_FULL on uid " + str(uid))
-        elif not self.data['object_responses'].empty():
-            object_data = self.data['object_responses'].get()
-            if isinstance(object_data, cortex.Mesh.Builder):
-                self._comms.notify_binary('MESH', object_data.to_bytes())
+        elif not self.data['mesh_responses'].empty():
+            mesh_data = self.data['mesh_responses'].get()
+            if isinstance(mesh_data, cortex.Mesh.Builder):
+                self._comms.notify_binary('MESH', mesh_data.to_bytes())
             else:
                 logger.error('Unknown object data type - cannot send data')
+        else:
+            for texture_type, texture_response_queue in self.data['texture_responses']:
+                if not texture_response_queue.empty():
+                    texture = texture_response_queue.pop()
+                    if isinstance(texture, cortex.Texture.Builder):
+                        msg_variable = convert_texture_type_to_string_prefix(texture_type) + '_TEXTURE'
+                        self._comms.notify_binary(msg_variable, texture.to_bytes())
+                    else:
+                        logger.error('Unknown texture data type - cannot send data')
+                    break # after one texture
+            
+            for texture_type, uvs_response_queue in self.data['uvs_responses']:
+                if not uvs_response_queue.empty():
+                    uvs = uvs_response_queue.pop()
+                    if isinstance(uvs, cortex.Uvs.Builder):
+                        msg_variable = convert_texture_type_to_string_prefix(texture_type) + '_UVS'
+                        self._comms.notify_binary(msg_variable, uvs.to_bytes())
+                    else:
+                        logger.error('Unknown uvs data type - cannot send data')
+                    break # after one uvs
         
         if self.data['inventory_updates'] is not None:
             variable = 'INVENTORY_UPDATE'

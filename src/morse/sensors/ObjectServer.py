@@ -52,34 +52,41 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
     rotation = optix_instance.worldOrientation.to_quaternion()
     scale = optix_object.scale
     properties = optix_object.game.properties
+    has_rgba = 'texture' in properties and properties['texture'].value and len(optix_object.data.materials) > 0
+    rgba_texture_name = "" if not has_rgba else optix_object.data.materials[0].texture_slots[0].texture.name
+    rgba_uvs_name = "" if not has_rgba else optix_object.data.name
 
     if dict_msg:
         # Core properties
         instance = {
             'instanceName' : optix_instance.name,
-            'properties' : [{'identifier': optix_object.data.name, 'propertyType': 'MESH'}],
+            'meshName' : optix_object.data.name,
             'transform': {
                 'position' : {'x': position.x, 'y': position.y, 'z': position.z},
                 'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
                 'scale' :    {'x': scale.x,    'y': scale.y,    'z': scale.z}
             }
         }
+        if (has_rgba):
+            instance['textureDescriptions'] = [{'textureIdentifier': rgba_texture_name,
+                                                'uvsIdentifier': rgba_uvs_name,
+                                                'textureType': 'RGBA_TEXTURE'}]
 
         # Extra properties
         try:
             linear_velocity = optix_instance.worldLinearVelocity
             lin_vel = {}
-            lin_vel['x']  = linear_velocity.x
-            lin_vel['y']  = linear_velocity.y
-            lin_vel['z']  = linear_velocity.z
+            lin_vel['x'] = linear_velocity.x
+            lin_vel['y'] = linear_velocity.y
+            lin_vel['z'] = linear_velocity.z
             instance['linearVelocity'] = lin_vel
         except: pass
         try:
             angular_velocity = optix_instance.worldAngularVelocity
             ang_vel = {}
-            ang_vel['x']  = angular_velocity.x
-            ang_vel['y']  = angular_velocity.y
-            ang_vel['z']  = angular_velocity.z
+            ang_vel['x'] = angular_velocity.x
+            ang_vel['y'] = angular_velocity.y
+            ang_vel['z'] = angular_velocity.z
             instance['angularVelocity'] = ang_vel
         except: pass
         instance['reflectance'] = {}
@@ -97,9 +104,12 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
 
         # Core properties
         instance.instanceName              = optix_instance.name
-        instance_props                     = instance.init('properties', 1)
-        instance_props[0].identifier       = optix_object.data.name
-        instance_props[0].propertyType     = cortex.ObjectProperty.PropertyType.mesh
+        instance.meshName                  = optix_object.data.name
+        if (has_rgba):
+            instance_texture_descriptions                      = instance.init('textureDescriptions', 1)
+            instance_texture_descriptions[0].textureIdentifier = rgba_texture_name
+            instance_texture_descriptions[0].uvsIdentifier     = rgba_uvs_name
+            instance_texture_descriptions[0].textureType       = cortex.TextureDescription.TextureType.rgbaTexture
         instance.transform.position.x      = position.x
         instance.transform.position.y      = position.y
         instance.transform.position.z      = position.z
@@ -161,43 +171,60 @@ def fill_mesh(mesh, optix_obj):
     mesh.identifier = optix_obj.data.name
     mesh.vertices = flatten([list(v.co) for v in optix_obj.data.vertices])
     mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
-    mesh.textureDims.x = 0
-    mesh.textureDims.y = 0
+    # mesh.textureDims.x = 0
+    # mesh.textureDims.y = 0
 
-    # Check for materials
-    slots = optix_obj.material_slots
+    # # Check for materials
+    # slots = optix_obj.material_slots
 
-    if len(slots):
-        # Get game properties
-        props = optix_obj.game.properties
-        # Check for texture
-        if 'texture' in props and props['texture'].value:
-            # Get the first material
-            mat = slots[0].material
+    # if len(slots):
+    #     # Get game properties
+    #     props = optix_obj.game.properties
+    #     # Check for texture
+    #     if 'texture' in props and props['texture'].value:
+    #         # Get the first material
+    #         mat = slots[0].material
 
-            # Get first texture image
-            im = mat.texture_slots[0].texture.image
+    #         # Get first texture image
+    #         im = mat.texture_slots[0].texture.image
 
-            # Image dimensions
-            mesh.textureDims.x = im.size[0]
-            mesh.textureDims.y = im.size[1]
+    #         # Image dimensions
+    #         mesh.textureDims.x = im.size[0]
+    #         mesh.textureDims.y = im.size[1]
 
-            # Append RGBA texture
-            if (im.channels != 4):
-                logger.warning( 'expected four channel images: got %s' % im.channels )
+    #         # Append RGBA texture
+    #         if (im.channels != 4):
+    #             logger.warning( 'expected four channel images: got %s' % im.channels )
 
-            mesh.texture = im.pixels[:]
+    #         mesh.texture = im.pixels[:]
 
-            # Per-vertex UV coordinates
-            uvs = np.zeros((len(mesh.vertices)//3,2))
-            uv_layer = optix_obj.data.uv_layers.active.data
+    #         # Per-vertex UV coordinates
+    #         uvs = np.zeros((len(mesh.vertices)//3,2))
+    #         uv_layer = optix_obj.data.uv_layers.active.data
 
-            # Loop over loops
-            for loop in optix_obj.data.loops:
-                uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
+    #         # Loop over loops
+    #         for loop in optix_obj.data.loops:
+    #             uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
 
-            # Convert numpy array to flat list
-            mesh.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
+    #         # Convert numpy array to flat list
+    #         mesh.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
+
+def fill_texture(texture, optix_texture):
+    if (optix_texture.image.channels != 4):
+        logger.error('expected four channel images: got %s' % optix_texture.image.channels)
+    texture.identifier = optix_texture.name
+    texture.dimensions.x = optix_texture.image.size[0]
+    texture.dimensions.y = optix_texture.image.size[1]
+    texture.data = optix_texture.image.pixels[:]
+
+def fill_uvs(uvs, optix_obj):
+    # Get per-vertex uvs
+    uvs_np = np.zeros((len(optix_obj.data.vertices), 2))
+    uv_layer = optix_obj.data.uv_layers.active.data
+    for loop in optix_obj.data.loops:
+        uvs_np[loop.vertex_index, :] = uv_layer[loop.index].uv
+    uvs.identifier = optix_obj.data.name
+    uvs.data = uvs.flatten().tolist() # uvs.tolist() not provably faster
 
 class Objectserver(morse.core.sensor.Sensor):
 
@@ -208,8 +235,11 @@ class Objectserver(morse.core.sensor.Sensor):
     add_data('inventory_requests', Queue(), 'queue', 'Queue for inventory requests')
     add_data('inventory_responses', Queue(), 'queue', 'Queue for inventory responses')
     add_data('inventory_updates', None, 'inventory', 'Inventory for inventory updates')
-    add_data('object_requests', Queue(), 'queue', 'Queue for object requests')
-    add_data('object_responses', Queue(), 'queue', 'Queue for object responses')
+    add_data('mesh_requests', Queue(), 'queue', 'Queue for mesh requests')
+    add_data('texture_requests', Queue(), 'queue', 'Queue for texture requests')
+    add_data('mesh_responses', Queue(), 'queue', 'Queue for mesh responses')
+    add_data('texture_responses', {}, 'dictionary', 'Dictionary of Queues for texture responses, where key is textureType')
+    add_data('uvs_responses', {}, 'dictionary', 'Dictionary of Queues for uvs responses, where key is textureType')
 
     add_property('send_json', True, 'send_json',  'bool', 'Send small messages as json')
 
@@ -231,6 +261,7 @@ class Objectserver(morse.core.sensor.Sensor):
         self.dynamic_instances = []
         self.optix_instances = []
         self.optix_objects = {}
+        self.optix_textures = {}
         self.optix_ignored_instances = []
         for obj in bpy_objs:
             props = obj.game.properties
@@ -238,6 +269,10 @@ class Objectserver(morse.core.sensor.Sensor):
                 self.optix_instances.append(bge_objs[obj.name])
                 if not obj.data.name in self.optix_objects:
                     self.optix_objects[obj.data.name] = obj
+                    if 'texture' in props and props['texture'].value:
+                        if len(obj.data.materials) == 0:
+                            logger.error('texture was specified for ' + obj.name + ' but no materials were found')
+                        self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.material[0].texture_slots[0].texture
                 if 'dynamic' in props and props['dynamic'].value:
                     self.dynamic_instances.append(bge_objs[obj.name])
             else:
@@ -262,27 +297,28 @@ class Objectserver(morse.core.sensor.Sensor):
         logger.info('Found %d dynamic objects in scene' % len(self.dynamic_instances))
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
-        self.prev_queue_size = 0 # TODO delete
-
-        # self.object_request_dict = {}
-        # self.object_request_queue = Queue()
-        self.object_request_set = set() # TODO: change for ordered set
+        # TODO: change these for ordered sets
+        self.mesh_request_set = set() # set of strings
+        self.texture_request_sets = {} # dictionary of sets of strings, keys are textureTypes
+        self.uvs_request_sets = {} # dictionary of sets of strings, keys are textureTypes
 
     def default_action(self):
+        # Convert mesh request queue to data structure for efficient implementation
+        while not self.local_data['mesh_requests'].empty():
+            self.mesh_request_set.add(self.local_data['mesh_requests'].get())
 
-        # Convert object request queue to queue+map data structure (for efficient impl)
-        while not self.local_data['object_requests'].empty():
+        # Convert texture request queue to data structure for efficient implementation
+        while not self.local_data['texture_requests'].empty():
             # Read the object request
-            object_request = cortex.ObjectRequest.from_bytes(self.local_data['object_requests'].get())
-            for prop in object_request.properties:
-                self.object_request_set.add((prop.identifier, prop.propertyType))
-            # # Process request efficiently
-            # if not object_request.objectName in self.object_request_dict:
-            #     self.object_request_dict[object_request.objectName] = set()
-            #     self.object_request_queue.put(object_request.objectName)
-            # for data_type in object_request.dataTypes:
-            #     # Add to set (duplicates automatically removed)
-            #     self.object_request_dict[object_request.objectName].add(data_type)
+            texture_request = cortex.TextureRequest.from_bytes(self.local_data['texture_requests'].get())
+            for texture_description in texture_request.textureDescriptions:
+                tex_type = texture_description.textureType
+                if tex_type not in self.texture_request_sets:
+                    self.texture_request_sets[tex_type] = set()
+                self.texture_request_sets[tex_type].add(texture_description.textureIdentifier)
+                if tex_type not in self.uvs_request_sets:
+                    self.uvs_request_sets[tex_type] = set()
+                self.uvs_request_sets[tex_type].add(texture_description.uvsIdentifier)
 
         bpy_objs = bpymorse.get_objects()
 
@@ -305,22 +341,40 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
                 self.local_data['inventory_responses'].put(inventory)
-        elif len(self.object_request_set) > 0:
-            # Obtain object request data
-            prop = self.object_request_set.pop()
-            identifier = prop[0]
-            prop_type = prop[1]
-
-            if identifier in self.optix_objects:
-                # Iterate through data types, create each, and push onto object responses queue
-                if prop_type == cortex.ObjectProperty.PropertyType.mesh:
-                    mesh = cortex.Mesh.new_message()
-                    fill_mesh(mesh, self.optix_objects[identifier])
-                    self.local_data['object_responses'].put(mesh)
-                else:
-                    logger.error('Unhandled property type for identifier ' + identifier)
+        elif len(self.mesh_request_set) > 0:
+            mesh_name = self.mesh_request_set.pop()
+            if mesh_name in self.optix_objects:
+                mesh = cortex.Mesh.new_message()
+                fill_mesh(mesh, self.optix_objects[mesh_name])
+                self.local_data['object_responses'].put(mesh)
             else:
-                logger.error('Identifier ' + identifier + ' does not exist')
+                logger.error('Mesh ' + mesh_name + ' does not exist')
+        else:
+            for texture_type, texture_request_set in self.texture_request_sets:
+                if not texture_request_set.empty():
+                    texture_identifier = texture_request_set.pop()
+                    if texture_identifier in self.optix_textures:
+                        texture = cortex.Texture.new_message()
+                        fill_texture(texture, self.optix_textures[texture_identifier])
+                        if texture_type not in self.local_data['texture_responses']:
+                            self.local_data['texture_responses'][texture_type] = Queue() 
+                        self.local_data['texture_responses'][texture_type].put(texture)
+                    else:
+                        logger.error('Texture ' + texture_identifier + ' does not exist')
+                    break # after one texture
+
+            for texture_type, uvs_request_set in self.uvs_request_sets:
+                if not uvs_request_set.empty():
+                    uvs_identifier = uvs_request_set.pop()
+                    if uvs_identifier in self.optix_objects:
+                        uvs = cortex.Uvs.new_message()
+                        fill_uvs(uvs, self.optix_objects[uvs_identifier])
+                        if texture_type not in self.local_data['uvs_responses']:
+                            self.local_data['uvs_responses'][texture_type] = Queue() 
+                        self.local_data['uvs_responses'][texture_type].put(uvs)
+                    else:
+                        logger.error('Uvs ' + uvs_identifier + ' does not exist')
+                    break # after one uvs
 
         # Create and fill out inventory message
         if self.send_json:
