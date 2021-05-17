@@ -73,6 +73,7 @@ class objectServerNotifier(MOOSNotifier):
                     if isinstance(texture, cortex.Texture.Builder):
                         msg_variable = convert_texture_type_to_string_prefix(texture_type) + '_TEXTURE'
                         self._comms.notify_binary(msg_variable, texture.to_bytes())
+                        logger.info('Sent ' + texture.identifier + ' on ' + msg_variable)
                     else:
                         logger.error('Unknown texture data type - cannot send data')
                     break # after one texture
@@ -83,6 +84,7 @@ class objectServerNotifier(MOOSNotifier):
                     if isinstance(uvs, cortex.Uvs.Builder):
                         msg_variable = convert_texture_type_to_string_prefix(texture_type) + '_UVS'
                         self._comms.notify_binary(msg_variable, uvs.to_bytes())
+                        logger.info('Sent ' + uvs.identifier + ' on ' + msg_variable)
                     else:
                         logger.error('Unknown uvs data type - cannot send data')
                     break # after one uvs

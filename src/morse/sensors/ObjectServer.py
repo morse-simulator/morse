@@ -282,6 +282,7 @@ class Objectserver(morse.core.sensor.Sensor):
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
+        logger.info("Optix Textures: " + str(self.optix_textures))
         logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
 
         # Check objects for triangulation
