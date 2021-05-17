@@ -224,7 +224,7 @@ def fill_uvs(uvs, optix_obj):
     for loop in optix_obj.data.loops:
         uvs_np[loop.vertex_index, :] = uv_layer[loop.index].uv
     uvs.identifier = optix_obj.data.name
-    uvs.data = uvs.flatten().tolist() # uvs.tolist() not provably faster
+    uvs.data = uvs_np.flatten().tolist() # uvs.tolist() not provably faster
 
 class Objectserver(morse.core.sensor.Sensor):
 
@@ -348,12 +348,12 @@ class Objectserver(morse.core.sensor.Sensor):
             if mesh_name in self.optix_objects:
                 mesh = cortex.Mesh.new_message()
                 fill_mesh(mesh, self.optix_objects[mesh_name])
-                self.local_data['object_responses'].put(mesh)
+                self.local_data['mesh_responses'].put(mesh)
             else:
                 logger.error('Mesh ' + mesh_name + ' does not exist')
         else:
-            for texture_type, texture_request_set in self.texture_request_sets:
-                if not texture_request_set.empty():
+            for texture_type, texture_request_set in self.texture_request_sets.items():
+                if texture_request_set:
                     texture_identifier = texture_request_set.pop()
                     if texture_identifier in self.optix_textures:
                         texture = cortex.Texture.new_message()
@@ -365,8 +365,8 @@ class Objectserver(morse.core.sensor.Sensor):
                         logger.error('Texture ' + texture_identifier + ' does not exist')
                     break # after one texture
 
-            for texture_type, uvs_request_set in self.uvs_request_sets:
-                if not uvs_request_set.empty():
+            for texture_type, uvs_request_set in self.uvs_request_sets.items():
+                if uvs_request_set:
                     uvs_identifier = uvs_request_set.pop()
                     if uvs_identifier in self.optix_objects:
                         uvs = cortex.Uvs.new_message()
