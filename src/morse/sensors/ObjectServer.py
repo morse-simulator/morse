@@ -158,56 +158,10 @@ def triangulate_object(obj):
     bm.free()
 
 def fill_mesh(mesh, optix_obj):
-
-    # New faster code for object export
-    # vertices = flatten([list(v.co) for v in obj.data.vertices])
-    # faces = flatten([list(f.vertices) for f in obj.data.polygons])
-    # vertices_msg = mesh.init('vertices', len(vertices))
-    # vertices_msg[:] = vertices
-    # faces_msg = mesh.init('vertices', len(vertices))
-    # faces_msg[:] = faces
-
     # Fill mesh
     mesh.identifier = optix_obj.data.name
     mesh.vertices = flatten([list(v.co) for v in optix_obj.data.vertices])
     mesh.faces = flatten([list(f.vertices) for f in optix_obj.data.polygons])
-    # mesh.textureDims.x = 0
-    # mesh.textureDims.y = 0
-
-    # # Check for materials
-    # slots = optix_obj.material_slots
-
-    # if len(slots):
-    #     # Get game properties
-    #     props = optix_obj.game.properties
-    #     # Check for texture
-    #     if 'texture' in props and props['texture'].value:
-    #         # Get the first material
-    #         mat = slots[0].material
-
-    #         # Get first texture image
-    #         im = mat.texture_slots[0].texture.image
-
-    #         # Image dimensions
-    #         mesh.textureDims.x = im.size[0]
-    #         mesh.textureDims.y = im.size[1]
-
-    #         # Append RGBA texture
-    #         if (im.channels != 4):
-    #             logger.warning( 'expected four channel images: got %s' % im.channels )
-
-    #         mesh.texture = im.pixels[:]
-
-    #         # Per-vertex UV coordinates
-    #         uvs = np.zeros((len(mesh.vertices)//3,2))
-    #         uv_layer = optix_obj.data.uv_layers.active.data
-
-    #         # Loop over loops
-    #         for loop in optix_obj.data.loops:
-    #             uvs[loop.vertex_index,:] = uv_layer[loop.index].uv
-
-    #         # Convert numpy array to flat list
-    #         mesh.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
 
 def fill_texture(texture, optix_texture):
     if (optix_texture.image.channels != 4):
@@ -215,6 +169,7 @@ def fill_texture(texture, optix_texture):
     texture.identifier = optix_texture.name
     texture.dimensions.x = optix_texture.image.size[0]
     texture.dimensions.y = optix_texture.image.size[1]
+    texture.dimensions.z = optix_texture.image.channels
     texture.data = optix_texture.image.pixels[:]
 
 def fill_uvs(uvs, optix_obj):
