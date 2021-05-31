@@ -21,7 +21,7 @@ class CameraSim(morse.sensors.camera.Camera):
 
     # define here the data fields exported by your sensor
     # format is: field name, default initial value, type, description
-    add_data('camera_name',     'CAMERASIM',    'string',   'Name of this camera device')
+    add_data('camera_name',     '',    'string',   'Name of this camera device')
     add_data('camera_status',   'ON',           'string',   'Status of this camera device - ON/OFF')  # maybe we wont need all of these. some might have been used for the debug lines?
 
     # format is: field name, default initial value, name (must match the blender name), type, description
@@ -42,8 +42,8 @@ class CameraSim(morse.sensors.camera.Camera):
         self.scene = morse.core.blenderapi.scene()
 
         # Get the full name of the current camera
-        # camera_name = self.bge_object.name.upper()
-        # self.local_data['camera_name'] = camera_name.replace(".","_")
+        camera_name = self.bge_object.name.upper()
+        self.local_data['camera_name'] = camera_name.replace(".","_")
 
         logger.info('Component initialized')
 
