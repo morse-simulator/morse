@@ -7,7 +7,7 @@
 # Primary Author:
 # david battle <david.battle@missionsystems.com.au>
 # Other Author(s):
-# none
+# Aspen Eyers
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Date Created:
 # 29/01/2019
@@ -15,6 +15,8 @@
 
 from morse.core.mathutils import *
 from morse.builder import bpymorse
+import numpy as np 
+from scipy.spatial.transform import Rotation
 
 # Some functions to translate and rotate compound robots.
 # Compound robots do not have a parent object in the Blender
@@ -22,26 +24,25 @@ from morse.builder import bpymorse
 # Without special treatment, they fall apart when moved.
 
 __author__     = "David Battle"
+__author__     = "Aspen Eyers"
 __copyright__  = "Copyright 2017, Mission Systems Pty Ltd"
 __license__    = "GPL"
-__version__    = "1.0.0"
+__version__    = "1.0.2"
 __maintainer__ = "David Battle"
 __email__      = "david.battle@missionsystems.com.au"
+__email__      = "aspen.eyers@missionsystems.com.au"
 __status__     = "Production"
 
 # Find all objects in the scene that
 # are constrained to the current object
 def find_family(self):
 
-    objs = bpymorse.get_objects()
-
     # Initialise family to parent
+    objs = bpymorse.get_objects()
     family =[self.name]
 
     while True:
-
         more = 0
-
         for f in family:
             remaining = [o for o in objs if o.name not in family]
             for r in remaining:
@@ -61,36 +62,41 @@ def find_family(self):
                             more += 1
         if not more:
             break
-
     return set(family)
     
 def translate_compound(self, x=0.0, y=0.0, z=0.0):
-
-    objs = bpymorse.get_objects()
-    family = find_family(self)
-
-    # print("found %d objects constrained by %s:" % (len(family)-1, self.name))
-    # print([f for f in family if f != self.name])
-
-    for f in family:
-        oldl = objs[f].location
-        objs[f].location = (oldl.x+x,oldl.y+y,oldl.z+z)  
+    transform_compound(self, x=x, y=y, z=z)
+    return
 
 def rotate_compound(self, x=0.0, y=0.0, z=0.0):
+    transform_compound(self, roll=x, pitch=y, yaw=z)
+    return
 
+def transform_compound(self, x=0.0, y=0.0, z=0.0, roll=0.0, pitch=0.0, yaw=0.0):
     objs = bpymorse.get_objects()
     family = find_family(self)
-
-    # Parent origin
-    origin = self.location
-
-    # Rotation matrix
-    rot = Euler([x,y,z]).to_matrix()
-
+    parent = objs[self.name]
+    
+    TF = get_tf(x,y,z,roll,pitch,yaw)
+    world2parent = np.matrix( parent.matrix_world, dtype="double" )
+        
     for f in family:
-        oldl = objs[f].location
-        oldr = objs[f].rotation_euler
+        obj = objs[f]
+        current_pose = np.matrix( obj.matrix_world, dtype="double" )
+    
+        # Find TF in parent frame   
+        transform = np.dot(world2parent, np.dot(TF, np.linalg.inv(world2parent)) )         
+            
+        new_pose = np.dot(transform, current_pose)
+        obj.matrix_world = Matrix( new_pose.tolist() )
+    return
 
-        # Rotate each object around the parent origin
-        objs[f].rotation_euler = (oldr.x+x,oldr.y+y,oldr.z+z)
-        objs[f].location = rot * (oldl - origin) + origin
+def get_tf(dx=0.0,dy=0.0,dz=0.0,droll=0.0,dpitch=0.0,dyaw=0.0):
+    rot = Rotation.from_euler("zyx", [dyaw,dpitch,droll])
+    rotmat = rot.as_matrix()
+    TF = np.matrix([[1.0,0.0,0.0,dx],
+                    [0.0,1.0,0.0,dy],
+                    [0.0,0.0,1.0,dz],
+                    [0.0,0.0,0.0,1.0]], dtype="double")
+    TF[0:3,0:3] = rotmat[0:3,0:3]
+    return TF
