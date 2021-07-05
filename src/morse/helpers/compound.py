@@ -16,6 +16,7 @@
 from morse.core.mathutils import *
 from morse.builder import bpymorse
 import numpy as np 
+import bpy
 from scipy.spatial.transform import Rotation
 
 # Some functions to translate and rotate compound robots.
@@ -65,14 +66,24 @@ def find_family(self):
     return set(family)
     
 def translate_compound(self, x=0.0, y=0.0, z=0.0):
-    transform_compound(self, x=x, y=y, z=z)
+    
+    objs = bpymorse.get_objects()
+    family = find_family(self)
+    for f in family:
+        print(f)
+        oldl = objs[f].location
+        objs[f].location = (oldl.x+x,oldl.y+y,oldl.z+z)  
+        # update needed so that matrix_world will update
+        # print(objs[f].matrix_world)
+        bpy.context.scene.update()
+
     return
 
 def rotate_compound(self, x=0.0, y=0.0, z=0.0):
-    transform_compound(self, roll=x, pitch=y, yaw=z)
+    transform_compound_local(self, roll=x, pitch=y, yaw=z)
     return
 
-def transform_compound(self, x=0.0, y=0.0, z=0.0, roll=0.0, pitch=0.0, yaw=0.0):
+def transform_compound_local(self, x=0.0, y=0.0, z=0.0, roll=0.0, pitch=0.0, yaw=0.0):
     objs = bpymorse.get_objects()
     family = find_family(self)
     parent = objs[self.name]
@@ -85,7 +96,8 @@ def transform_compound(self, x=0.0, y=0.0, z=0.0, roll=0.0, pitch=0.0, yaw=0.0):
         current_pose = np.matrix( obj.matrix_world, dtype="double" )
     
         # Find TF in parent frame   
-        transform = np.dot(world2parent, np.dot(TF, np.linalg.inv(world2parent)) )         
+        # transform = np.dot(world2parent, np.dot(TF, np.linalg.inv(world2parent)) )         
+        transform = np.dot(np.linalg.inv(world2parent), np.dot(TF, world2parent) )         
             
         new_pose = np.dot(transform, current_pose)
         obj.matrix_world = Matrix( new_pose.tolist() )
@@ -100,3 +112,5 @@ def get_tf(dx=0.0,dy=0.0,dz=0.0,droll=0.0,dpitch=0.0,dyaw=0.0):
                     [0.0,0.0,0.0,1.0]], dtype="double")
     TF[0:3,0:3] = rotmat[0:3,0:3]
     return TF
+
+
