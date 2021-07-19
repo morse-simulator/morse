@@ -631,6 +631,59 @@ class Lidar(SensorCreator):
         #self.append_meshes(None,'vertiia_sim/sensors/lidar.blend')
         self.append_meshes(['lidar'])
 
+class OS1(SensorCreator):
+    _classpath  = "morse.sensors.Lidar.Lidar"
+    _short_desc = "Ouster 1 Lidar"
+    _blendname  = "lidar"
+    _name = "OS1 Lidar"
+
+    def __init__(self, name=None, channels=16, horizontal_beams=512, frequency=10):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(['lidar'])
+
+        # Check that the lidar has a valid configuration
+        assert(channels == 16 or channels == 32 or channels == 64 or channels == 128)
+        assert(horizontal_beams == 512 or horizontal_beams == 1024 or horizontal_beams == 2048)
+        assert(frequency == 10 or frequency == 20)
+
+        # Set properties
+        self.properties(azimuth_width = 360)
+        if channels == 128:
+            self.properties(elevation_width = 45)
+        else:
+            self.properties(elevation_width = 33.2)
+        self.properties(azimuth_beams = horizontal_beams)
+        self.properties(elevation_beams = channels)
+        self.properties(max_range = 120)
+        self.frequency = frequency
+
+class Jaguar(SensorCreator):
+    _classpath  = "morse.sensors.Lidar.Lidar"
+    _short_desc = "Jaguar 65/100 Lidar"
+    _blendname  = "lidar"
+    _name = "Jaguar Lidar"
+
+    def __init__(self, name=None, horizontal_fov=65):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(['lidar'])
+
+        # Check that the lidar has a valid configuration
+        assert(horizontal_fov == 65 or horizontal_fov == 100)
+
+        # Set properties (according to Jaguar Manual which has slight discrepancies compared to the product information)
+        self.properties(azimuth_width = horizontal_fov)
+        self.properties(elevation_width = 40)
+        if horizontal_fov == 65:
+            self.properties(azimuth_beams = horizontal_fov / 0.10)
+        elif horizontal_fov == 100:
+            self.properties(azimuth_beams = horizontal_fov / 0.20)
+        else:
+            raise ValueError("Jaguar misconfiguration occured!")
+        self.properties(elevation_beams = 300)
+        # The 10% lambertian figure is used instead of the absolute max range
+        self.properties(max_range = 200)
+        self.frequency = 10
+
 class Objectserver(SensorCreator):
     _classpath = "morse.sensors.ObjectServer.Objectserver"
     _blendname = ""
