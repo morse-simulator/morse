@@ -655,6 +655,13 @@ class OS1(SensorCreator):
         self.properties(azimuth_beams = horizontal_beams)
         self.properties(elevation_beams = channels)
         self.properties(max_range = 120)
+        # OS1 sensors have variable distance noise and accuracy depending on target type and distance,
+        # which is not yet supported by the object server. From the OS1 manual:
+        # Range Accuracy:
+        #   <5 cm for lambertian targets, <10 cm for retroreflectors
+        # Range Repeatability (1 sigma / standard deviation):
+        #   0.8 - 2 m: ± 3 cm; 2 - 20 m: ± 1.5 cm; 20 - 60 m ± 3 cm; >60 m: ± 10 cm
+        self.properties(distance_noise = 0.03)
         self.frequency = frequency
 
 class Jaguar(SensorCreator):
@@ -682,6 +689,8 @@ class Jaguar(SensorCreator):
         self.properties(elevation_beams = 300)
         # The 10% lambertian figure is used instead of the absolute max range
         self.properties(max_range = 200)
+        # The manual lists precision as < 3cm and product info indicates precision (1 sigma) as < 3cm
+        self.properties(distance_noise = 0.03)
         self.frequency = 10
 
 class Objectserver(SensorCreator):

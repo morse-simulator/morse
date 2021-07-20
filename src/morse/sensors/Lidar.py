@@ -26,12 +26,12 @@ class Lidar(morse.core.sensor.Sensor):
     add_data('lidar_status', 'ON', 'string', 'Status of this lidar device - ON/OFF')
     add_data('launch_trigger',   '',   'string', 'Information for a radar beam launch')
 
-    add_property('azimuth_width',   360.0, 'azimuth_width',     'float', 'Lidar beam width in degrees')
-    add_property('elevation_width', 180.0,  'elevation_width',   'float', 'Lidar beam height in degrees')
+    add_property('azimuth_width',   360.0, 'azimuth_width',   'float', 'Lidar beam width in degrees')
+    add_property('elevation_width', 180.0, 'elevation_width', 'float', 'Lidar beam height in degrees')
     add_property('azimuth_beams',   360,   'azimuth_beams',   'int',   'Number of lidar beams in azimuth direction')
-    add_property('elevation_beams', 180,    'elevation_beams', 'int',   'Number of lidar beams in elevation direction')
-    # add_property('lidar_type',      0,     'Lidar_type',             'int',   'Integer value specifying the lidar type')
-    add_property('max_range',       100.0, 'max_range',              'float', 'Lidar range in m')
+    add_property('elevation_beams', 180,   'elevation_beams', 'int',   'Number of lidar beams in elevation direction')
+    add_property('distance_noise',  0.0,   'distance_noise',  'float', 'Distance noise in metres (1 std dev)')
+    add_property('max_range',       100.0, 'max_range',       'float', 'Lidar range in m')
     add_property('send_json',       True,  'send_json',       'bool',  'Send small messages as json')
 
     def __init__(self, obj, parent=None):
@@ -92,6 +92,7 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger']['maxRange'] = self.max_range
             self.local_data['launch_trigger']['azimuthFov'] = pi * self.azimuth_width / 180.0
             self.local_data['launch_trigger']['elevationFov'] = pi * self.elevation_width / 180.0
+            self.local_data['launch_trigger']['distanceNoise'] = self.distance_noise
         else:
             import capnp
             import sys
@@ -103,4 +104,5 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger'].maxRange = self.max_range
             self.local_data['launch_trigger'].azimuthFov = pi * self.azimuth_width / 180.0
             self.local_data['launch_trigger'].elevationFov = pi * self.elevation_width / 180.0
+            self.local_data['launch_trigger'].elevationFov = self.distance_noise
 
