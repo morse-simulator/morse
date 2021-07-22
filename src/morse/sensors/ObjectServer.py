@@ -283,8 +283,20 @@ class Objectserver(morse.core.sensor.Sensor):
         if not self.local_data['inventory_requests'].empty():
             pid = self.local_data['inventory_requests'].get()
             if self.send_json:
-                inventory = {'inventory': {'instances': []}, 'uid': pid}
+                inventory = {
+                    'inventory': {
+                        'instances': [],
+                        'lights': {
+                            'ambientLights': [],
+                            'directionalLights': [],
+                            'omniLights': [],
+                            'spotlightLights': []
+                        }
+                    },
+                    'uid': pid
+                }
                 instances = inventory['inventory']['instances']
+                lights = inventory['inventory']['lights']
 
                 # Add the instances
                 for i in range(len(self.optix_instances)):
@@ -296,6 +308,11 @@ class Objectserver(morse.core.sensor.Sensor):
                 inventory = cortex.UniqueInventory.new_message()
                 inventory.uid = pid
                 instances = inventory.inventory.init('instances', len(self.optix_instances))
+                lights = inventory.inventory.lights
+                ambient_lights = lights.init('ambientLights', 0)
+                directional_lights = lights.init('directionalLights', 0)
+                omni_lights = lights.init('omniLights', 0)
+                spotlight_lights = lights.init('spotlightLights', 0)
                 for i in range(len(self.optix_instances)):
                     instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
                 self.local_data['inventory_responses'].put(inventory)
@@ -336,7 +353,15 @@ class Objectserver(morse.core.sensor.Sensor):
 
         # Create and fill out inventory message
         if self.send_json:
-            inventory = {'instances': []}
+            inventory = {
+                'instances': [],
+                'lights': {
+                    'ambientLights': [],
+                    'directionalLights': [],
+                    'omniLights': [],
+                    'spotlightLights': []
+                }
+            }
             instances = inventory['instances']
             for bge_obj in self.dynamic_instances:
                 instances.append(create_instance_msg(bge_obj, bpy_objs[bge_obj.name], True))
@@ -344,6 +369,11 @@ class Objectserver(morse.core.sensor.Sensor):
         else:
             inventory = cortex.Inventory.new_message()
             instances = inventory.init('instances', len(self.dynamic_instances))
+            lights = inventory.lights
+            ambient_lights = lights.init('ambientLights', 0)
+            directional_lights = lights.init('directionalLights', 0)
+            omni_lights = lights.init('omniLights', 0)
+            spotlight_lights = lights.init('spotlightLights', 0)
             i = 0
             for bge_obj in self.dynamic_instances:
                 instances[i] = create_instance_msg(bge_obj, bpy_objs[bge_obj.name], False)
