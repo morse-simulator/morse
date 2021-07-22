@@ -1,4 +1,5 @@
-import logging; logger = logging.getLogger("morse." + __name__)
+import logging
+from morse.core import mathutils; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 from morse.core.services import service, async_service
 from morse.core import status, blenderapi
@@ -12,6 +13,7 @@ import capnp
 import json
 from queue import Queue
 import time
+import math
 
 import sys
 sys.path.extend(["/usr/local/share/", "/usr/local/share/cortex"])
@@ -144,6 +146,78 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             instance.reflectance.ks = 0.0
         return instance
 
+def create_light_base(lamp_object, dict_msg = True):
+    decay_length = lamp_object.data.distance
+    falloff_type = 'NONE'
+    try:
+        falloff_type = lamp_object.data.falloff_type
+    except:
+        pass
+    if dict_msg:
+        decay_type = 'NONE'
+        # These all happen to be named identically but new decay types may be different, so check each
+        if falloff_type == 'NONE':
+            decay_type = 'NONE'
+        elif falloff_type == 'CONSTANT':
+            decay_type = 'CONSTANT'
+        elif falloff_type == 'INVERSE_LINEAR':
+            decay_type = 'INVERSE_LINEAR'
+        elif falloff_type == 'INVERSE_SQUARE':
+            decay_type = 'INVERSE_SQUARE'
+        elif falloff_type != 'NONE':
+            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to NONE')
+        base = {
+            'identifier': lamp_object.name,
+            'strength': lamp_object.data.energy,
+            'decayType': decay_type,
+            'decayLength': decay_length
+        }
+        return base
+    else:
+        decay_type = cortex.LightSourceBase.DecayType.none
+        # These all happen to be named identically but new decay types may be different, so check each
+        if falloff_type == 'NONE':
+            decay_type = cortex.LightSourceBase.DecayType.none
+        elif falloff_type == 'CONSTANT':
+            decay_type = cortex.LightSourceBase.DecayType.constant
+        elif falloff_type == 'INVERSE_LINEAR':
+            decay_type = cortex.LightSourceBase.DecayType.inverseLinear
+        elif falloff_type == 'INVERSE_SQUARE':
+            decay_type = cortex.LightSourceBase.DecayType.inverseSquare
+        elif falloff_type != 'NONE':
+            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to none')
+        base = cortex.LightSourceBase.new_message()
+        base.identifier = lamp_object.name
+        base.strength = lamp_object.data.energy
+        base.decayType = decay_type
+        base.decayLength = decay_length
+        return base
+
+def create_directional_light(lamp_object, dict_msg = True):
+    base = create_light_base(lamp_object, dict_msg)
+    # No rotation of Sun in blender points in -Z, but we expect no rotation to point along X axis, so start with -Z
+    direction = mathutils.Euler((0.0, math.radians(90), 0.0), 'XYZ').to_quaternion()
+    direction.rotate(lamp_object.matrix_world.to_3x3().to_quaternion())
+    if dict_msg:
+        light = {
+            'source': base,
+            'direction': {
+                'x': direction.x,
+                'y': direction.y,
+                'z': direction.z,
+                'w': direction.w
+            }
+        }
+        return light
+    else:
+        light = cortex.DirectionalLightSource.new_message()
+        light.source = base
+        light.direction.x = direction.x
+        light.direction.y = direction.y
+        light.direction.z = direction.z
+        light.direction.w = direction.w
+        return light
+
 def triangulate_object(obj):
 
     me = obj.data
@@ -212,6 +286,9 @@ class Objectserver(morse.core.sensor.Sensor):
         # All bpy objects in scene
         bpy_objs = bpymorse.get_objects()
 
+        # All light sources in the scene
+        lamps = bpymorse.get_lamps()
+
         # Data structures for optix
         self.dynamic_instances = []
         self.optix_instances = []
@@ -234,11 +311,18 @@ class Objectserver(morse.core.sensor.Sensor):
                     self.dynamic_instances.append(bge_objs[obj.name])
             else:
                 self.optix_ignored_instances.append(obj.name)
+        self.directional_lights = {}
+        for lamp in lamps:
+            print("lamp: " + str(lamp))
+            if lamp.type == 'SUN':
+                self.directional_lights[lamp.name] = bpy_objs[lamp.name]
+            print(str(self.directional_lights[lamp.name].matrix_world.to_translation()))
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
         logger.info("Optix Textures: " + str(self.optix_textures))
         logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
+        logger.info("Optix Directional Lights: " + str(self.directional_lights))
 
         # Check objects for triangulation
         for bge_obj in self.optix_instances:
@@ -302,6 +386,8 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances.append(create_instance_msg(
                         self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
+                for light in self.directional_lights.values():
+                    lights['directionalLights'].append(create_directional_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
             else:
                 # Create capnp unique inventory
@@ -310,11 +396,15 @@ class Objectserver(morse.core.sensor.Sensor):
                 instances = inventory.inventory.init('instances', len(self.optix_instances))
                 lights = inventory.inventory.lights
                 ambient_lights = lights.init('ambientLights', 0)
-                directional_lights = lights.init('directionalLights', 0)
+                directional_lights = lights.init('directionalLights', len(self.directional_lights))
                 omni_lights = lights.init('omniLights', 0)
                 spotlight_lights = lights.init('spotlightLights', 0)
                 for i in range(len(self.optix_instances)):
                     instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
+                i = 0
+                for light in self.directional_lights.values():
+                    directional_lights[i] = create_directional_light(light, False)
+                    i += 1
                 self.local_data['inventory_responses'].put(inventory)
         elif len(self.mesh_request_set) > 0:
             mesh_name = self.mesh_request_set.pop()
