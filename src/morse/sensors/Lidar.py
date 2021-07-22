@@ -98,7 +98,7 @@ class Lidar(morse.core.sensor.Sensor):
             import sys
             sys.path.extend(["/usr/local/share", "/usr/local/share/lidarsim"])
             import lidarsim_capnp as lidarsim
-            self.local_data['launch_trigger'] = lidarsim.RadarLaunchTrigger.new_message()
+            self.local_data['launch_trigger'] = lidarsim.LidarsimLaunchTrigger.new_message()
             self.local_data['launch_trigger'].launchTrigger = create_trigger_msg(pos, rotation, self.azimuth_beams,
                                                                                  self.elevation_beams, 1, False)
             self.local_data['launch_trigger'].maxRange = self.max_range
