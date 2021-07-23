@@ -1,5 +1,5 @@
-import logging
-from morse.core import mathutils; logger = logging.getLogger("morse." + __name__)
+import logging; logger = logging.getLogger("morse." + __name__)
+from morse.core import mathutils
 import morse.core.sensor
 from morse.core.services import service, async_service
 from morse.core import status, blenderapi
@@ -22,7 +22,7 @@ import cortex_capnp as cortex
 flatten = lambda l: [item for sublist in l for item in sublist]
 
 # Set logger level - DEBUG used for timing of all messages sent
-logger.setLevel(logging.INFO)
+# logger.setLevel(logging.INFO)
 
 def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, dict_msg = True):
     if not isinstance(rotation, Quaternion):
@@ -76,14 +76,6 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
 
         # Extra properties
         try:
-            linear_velocity = optix_instance.worldLinearVelocity
-            lin_vel = {}
-            lin_vel['x'] = linear_velocity.x
-            lin_vel['y'] = linear_velocity.y
-            lin_vel['z'] = linear_velocity.z
-            instance['linearVelocity'] = lin_vel
-        except: pass
-        try:
             angular_velocity = optix_instance.worldAngularVelocity
             ang_vel = {}
             ang_vel['x'] = angular_velocity.x
@@ -91,6 +83,19 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             ang_vel['z'] = angular_velocity.z
             instance['angularVelocity'] = ang_vel
         except: pass
+        try:
+            linear_velocity = optix_instance.worldLinearVelocity
+            lin_vel = {}
+            lin_vel['x'] = linear_velocity.x
+            lin_vel['y'] = linear_velocity.y
+            lin_vel['z'] = linear_velocity.z
+            instance['linearVelocity'] = lin_vel
+        except: pass
+        if 'density' in properties:
+            if properties['density'].type == 'FLOAT':
+                instance['density'] = properties['density'].value
+            else:
+                logger.warn('density should be of type FLOAT but was ' + properties['density'].type)
         instance['reflectance'] = {}
         if 'Kd' in properties:
             instance['reflectance']['kd'] = properties['Kd'].value
@@ -100,6 +105,11 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             instance['reflectance']['ks'] = properties['Ks'].value
         else:
             instance['reflectance']['ks'] = 0.0
+        if 'sound_speed_compression' in properties:
+            if properties['sound_speed_compression'].type == 'FLOAT':
+                instance['soundSpeedCompression'] = properties['sound_speed_compression'].value
+            else:
+                logger.warn('sound_speed_compression should be of type FLOAT but was ' + properties['sound_speed_compression'].type)
         return instance
     else:
         instance = cortex.Instance.new_message()
@@ -125,17 +135,22 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
 
         # Extra properties
         try:
-            linear_velocity = optix_instance.worldLinearVelocity
-            instance.linearVelocity.x  = linear_velocity.x
-            instance.linearVelocity.y  = linear_velocity.y
-            instance.linearVelocity.z  = linear_velocity.z
-        except: pass
-        try:
             angular_velocity = optix_instance.worldAngularVelocity
             instance.angularVelocity.x = angular_velocity.x
             instance.angularVelocity.y = angular_velocity.y
             instance.angularVelocity.z = angular_velocity.z
         except: pass
+        try:
+            linear_velocity = optix_instance.worldLinearVelocity
+            instance.linearVelocity.x  = linear_velocity.x
+            instance.linearVelocity.y  = linear_velocity.y
+            instance.linearVelocity.z  = linear_velocity.z
+        except: pass
+        if 'density' in properties:
+            if properties['density'].type == 'FLOAT':
+                instance.density = properties['density'].value
+            else:
+                logger.warn('density should be of type FLOAT but was ' + properties['density'].type)
         if 'Kd' in properties:
             instance.reflectance.kd = properties['Kd'].value
         else:
@@ -144,6 +159,11 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             instance.reflectance.ks = properties['Ks'].value
         else:
             instance.reflectance.ks = 0.0
+        if 'sound_speed_compression' in properties:
+            if properties['sound_speed_compression'].type == 'FLOAT':
+                instance.soundSpeedCompression = properties['sound_speed_compression'].value
+            else:
+                logger.warn('sound_speed_compression should be of type FLOAT but was ' + properties['sound_speed_compression'].type)
         return instance
 
 def create_light_base(lamp_object, dict_msg = True):
