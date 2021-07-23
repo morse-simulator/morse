@@ -189,6 +189,30 @@ def create_light_base(lamp_object, dict_msg = True):
         base.decayLength = decay_length
         return base
 
+def create_ambient_light(light_name, light, dict_msg = True):
+    energy = light.environment_energy
+    # colour = light.environment_color
+    decay_length = 0.0
+    if dict_msg:
+        light = {
+            'source': {
+                'identifier': light_name,
+                'strength': energy,
+                'decayType': 'CONSTANT',
+                'decayLength': decay_length
+            }
+            #'colour': colour
+        }
+        return light
+    else:
+        light = cortex.AmbientLightSource.new_message()
+        light.source.identifier = light_name
+        light.source.strength = energy
+        light.source.decayType = cortex.LightSourceBase.DecayType.constant
+        light.source.decayLength = decay_length
+        # light.colour = colour
+        return light
+
 def create_directional_light(lamp_object, dict_msg = True):
     base = create_light_base(lamp_object, dict_msg)
     # No rotation of Sun in blender points in -Z, but we expect no rotation to point along X axis, so start with -Z
@@ -275,6 +299,7 @@ class Objectserver(morse.core.sensor.Sensor):
         morse.core.sensor.Sensor.__init__(self, obj, parent)
 
         scene = blenderapi.scene()
+        world = bpymorse.get_context_scene().world
 
         # All bge objects in scene
         bge_objs = scene.objects
@@ -284,6 +309,10 @@ class Objectserver(morse.core.sensor.Sensor):
 
         # All light sources in the scene
         lamps = bpymorse.get_lamps()
+        environment_light = world.light_settings
+        print(str(environment_light.use_environment_light))
+        print(str(environment_light.environment_energy))
+        print(str(environment_light.environment_color))
 
         # Data structures for optix
         self.dynamic_instances = []
@@ -307,17 +336,21 @@ class Objectserver(morse.core.sensor.Sensor):
                     self.dynamic_instances.append(bge_objs[obj.name])
             else:
                 self.optix_ignored_instances.append(obj.name)
+        self.ambient_lights = {}
         self.directional_lights = {}
+        if environment_light.use_environment_light:
+            self.ambient_lights['world_light'] = environment_light
+        else:
+            logger.info("Ambient light is disabled")
         for lamp in lamps:
-            print("lamp: " + str(lamp))
             if lamp.type == 'SUN':
                 self.directional_lights[lamp.name] = bpy_objs[lamp.name]
-            print(str(self.directional_lights[lamp.name].matrix_world.to_translation()))
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
         logger.info("Optix Textures: " + str(self.optix_textures))
         logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
+        logger.info("Optix Ambient Lights: " + str(self.ambient_lights))
         logger.info("Optix Directional Lights: " + str(self.directional_lights))
 
         # Check objects for triangulation
@@ -382,6 +415,8 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances.append(create_instance_msg(
                         self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
+                for light_name, light in self.ambient_lights.items():
+                    lights['ambientLights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
                     lights['directionalLights'].append(create_directional_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
@@ -397,6 +432,10 @@ class Objectserver(morse.core.sensor.Sensor):
                 spotlight_lights = lights.init('spotlightLights', 0)
                 for i in range(len(self.optix_instances)):
                     instances[i] = create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], False)
+                i = 0
+                for light_name, light in self.ambient_lights.items():
+                    ambient_lights[i] = create_ambient_light(light_name, light, False)
+                    i += 1
                 i = 0
                 for light in self.directional_lights.values():
                     directional_lights[i] = create_directional_light(light, False)
