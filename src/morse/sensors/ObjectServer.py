@@ -310,9 +310,6 @@ class Objectserver(morse.core.sensor.Sensor):
         # All light sources in the scene
         lamps = bpymorse.get_lamps()
         environment_light = world.light_settings
-        print(str(environment_light.use_environment_light))
-        print(str(environment_light.environment_energy))
-        print(str(environment_light.environment_color))
 
         # Data structures for optix
         self.dynamic_instances = []
@@ -413,8 +410,7 @@ class Objectserver(morse.core.sensor.Sensor):
 
                 # Add the instances
                 for i in range(len(self.optix_instances)):
-                    instances.append(create_instance_msg(
-                        self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
+                    instances.append(create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
                 for light_name, light in self.ambient_lights.items():
                     lights['ambientLights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
