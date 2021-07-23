@@ -148,24 +148,22 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
 
 def create_light_base(lamp_object, dict_msg = True):
     decay_length = lamp_object.data.distance
-    falloff_type = 'NONE'
+    falloff_type = 'CONSTANT'
     try:
         falloff_type = lamp_object.data.falloff_type
     except:
         pass
     if dict_msg:
-        decay_type = 'NONE'
+        decay_type = 'CONSTANT'
         # These all happen to be named identically but new decay types may be different, so check each
-        if falloff_type == 'NONE':
-            decay_type = 'NONE'
-        elif falloff_type == 'CONSTANT':
+        if falloff_type == 'CONSTANT':
             decay_type = 'CONSTANT'
         elif falloff_type == 'INVERSE_LINEAR':
             decay_type = 'INVERSE_LINEAR'
         elif falloff_type == 'INVERSE_SQUARE':
             decay_type = 'INVERSE_SQUARE'
-        elif falloff_type != 'NONE':
-            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to NONE')
+        else:
+            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to CONSTANT')
         base = {
             'identifier': lamp_object.name,
             'strength': lamp_object.data.energy,
@@ -174,18 +172,16 @@ def create_light_base(lamp_object, dict_msg = True):
         }
         return base
     else:
-        decay_type = cortex.LightSourceBase.DecayType.none
+        decay_type = cortex.LightSourceBase.DecayType.constant
         # These all happen to be named identically but new decay types may be different, so check each
-        if falloff_type == 'NONE':
-            decay_type = cortex.LightSourceBase.DecayType.none
-        elif falloff_type == 'CONSTANT':
+        if falloff_type == 'CONSTANT':
             decay_type = cortex.LightSourceBase.DecayType.constant
         elif falloff_type == 'INVERSE_LINEAR':
             decay_type = cortex.LightSourceBase.DecayType.inverseLinear
         elif falloff_type == 'INVERSE_SQUARE':
             decay_type = cortex.LightSourceBase.DecayType.inverseSquare
         elif falloff_type != 'NONE':
-            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to none')
+            logger.warn('Lamp decay type ' + str(falloff_type) + ' not supported by ObjectServer. Setting to constant')
         base = cortex.LightSourceBase.new_message()
         base.identifier = lamp_object.name
         base.strength = lamp_object.data.energy
