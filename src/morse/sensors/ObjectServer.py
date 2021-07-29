@@ -258,6 +258,27 @@ def create_directional_light(lamp_object, dict_msg = True):
         light.direction.w = direction.w
         return light
 
+def create_omni_light(lamp_object, dict_msg = True):
+    base = create_light_base(lamp_object, dict_msg)
+    position = lamp_object.matrix_world.to_translation()
+    if dict_msg:
+        light = {
+            'source': base,
+            'position': {
+                'x': position.x,
+                'y': position.y,
+                'z': position.z
+            }
+        }
+        return light
+    else:
+        light = cortex.OmniLightSource.new_message()
+        light.source = base
+        light.position.x = position.x
+        light.position.y = position.y
+        light.position.z = position.z
+        return light
+
 def triangulate_object(obj):
 
     me = obj.data
@@ -342,6 +363,7 @@ class Objectserver(morse.core.sensor.Sensor):
         self.optix_textures = {}
         self.optix_ignored_instances = []
         self.directional_lights = {}
+        self.omni_lights = {}
         for obj in bpy_objs:
             props = obj.game.properties
             if 'optix' in props and props['optix'].value:
@@ -349,6 +371,8 @@ class Objectserver(morse.core.sensor.Sensor):
                     lamp = obj.data
                     if lamp.type == 'SUN':
                         self.directional_lights[obj.name] = obj
+                    elif lamp.type == 'POINT':
+                        self.omni_lights[obj.name] = obj
                 else:
                     self.optix_instances.append(bge_objs[obj.name])
                     if not obj.data.name in self.optix_objects:
@@ -370,6 +394,7 @@ class Objectserver(morse.core.sensor.Sensor):
         logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
         logger.info("Optix Ambient Lights: " + str(self.ambient_lights))
         logger.info("Optix Directional Lights: " + str(self.directional_lights))
+        logger.info("Optix Omni Lights: " + str(self.omni_lights))
 
         # Check objects for triangulation
         for bge_obj in self.optix_instances:
@@ -436,6 +461,8 @@ class Objectserver(morse.core.sensor.Sensor):
                     lights['ambientLights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
                     lights['directionalLights'].append(create_directional_light(light, True))
+                for light in self.omni_lights.values():
+                    lights['omniLights'].append(create_omni_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
             else:
                 # Create capnp unique inventory
@@ -456,6 +483,10 @@ class Objectserver(morse.core.sensor.Sensor):
                 i = 0
                 for light in self.directional_lights.values():
                     directional_lights[i] = create_directional_light(light, False)
+                    i += 1
+                i = 0
+                for light in self.omni_lights.values():
+                    omni_lights[i] = create_omni_light(light, False)
                     i += 1
                 self.local_data['inventory_responses'].put(inventory)
         elif len(self.mesh_request_set) > 0:
