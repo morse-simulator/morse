@@ -327,9 +327,13 @@ class Objectserver(morse.core.sensor.Sensor):
         # All bpy objects in scene
         bpy_objs = bpymorse.get_objects()
 
-        # All light sources in the scene
-        lamps = bpymorse.get_lamps()
+        # Environmental ambient light
         environment_light = world.light_settings
+        self.ambient_lights = {}
+        if environment_light.use_environment_light:
+            self.ambient_lights['world_light'] = environment_light
+        else:
+            logger.info("Ambient light is disabled")
 
         # Data structures for optix
         self.dynamic_instances = []
@@ -337,31 +341,28 @@ class Objectserver(morse.core.sensor.Sensor):
         self.optix_objects = {}
         self.optix_textures = {}
         self.optix_ignored_instances = []
+        self.directional_lights = {}
         for obj in bpy_objs:
             props = obj.game.properties
             if 'optix' in props and props['optix'].value:
-                self.optix_instances.append(bge_objs[obj.name])
-                if not obj.data.name in self.optix_objects:
-                    self.optix_objects[obj.data.name] = obj
-                    if 'texture' in props and props['texture'].value:
-                        if len(obj.data.materials) == 0:
-                            raise RuntimeError('texture was specified for ' + obj.name + ' but no materials were found')
-                        if len(obj.data.materials[0].texture_slots) == 0:
-                            raise RuntimeError('texture was specified for ' + obj.name + ' but no texture slots were found for the material')
-                        self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.materials[0].texture_slots[0].texture
-                if 'dynamic' in props and props['dynamic'].value:
-                    self.dynamic_instances.append(bge_objs[obj.name])
+                if obj.type == 'LAMP':
+                    lamp = obj.data
+                    if lamp.type == 'SUN':
+                        self.directional_lights[obj.name] = obj
+                else:
+                    self.optix_instances.append(bge_objs[obj.name])
+                    if not obj.data.name in self.optix_objects:
+                        self.optix_objects[obj.data.name] = obj
+                        if 'texture' in props and props['texture'].value:
+                            if len(obj.data.materials) == 0:
+                                raise RuntimeError('texture was specified for ' + obj.name + ' but no materials were found')
+                            if len(obj.data.materials[0].texture_slots) == 0:
+                                raise RuntimeError('texture was specified for ' + obj.name + ' but no texture slots were found for the material')
+                            self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.materials[0].texture_slots[0].texture
+                    if 'dynamic' in props and props['dynamic'].value:
+                        self.dynamic_instances.append(bge_objs[obj.name])
             else:
                 self.optix_ignored_instances.append(obj.name)
-        self.ambient_lights = {}
-        self.directional_lights = {}
-        if environment_light.use_environment_light:
-            self.ambient_lights['world_light'] = environment_light
-        else:
-            logger.info("Ambient light is disabled")
-        for lamp in lamps:
-            if lamp.type == 'SUN':
-                self.directional_lights[lamp.name] = bpy_objs[lamp.name]
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
