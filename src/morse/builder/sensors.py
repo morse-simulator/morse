@@ -634,10 +634,10 @@ class Lidar(SensorCreator):
 class OS1(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Ouster 1 Lidar"
-    _blendname  = "lidar"
+    _blendname  = "ouster"
     _name = "OS1 Lidar"
 
-    def __init__(self, name=None, channels=16, horizontal_beams=512, frequency=10):
+    def __init__(self, name="os1", channels=16, horizontal_beams=512, frequency=10):
         SensorCreator.__init__(self, name)
         self.append_meshes(['lidar'])
 
@@ -667,10 +667,10 @@ class OS1(SensorCreator):
 class Jaguar(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Jaguar 65/100 Lidar"
-    _blendname  = "lidar"
+    _blendname  = "jaguar"
     _name = "Jaguar Lidar"
 
-    def __init__(self, name=None, horizontal_fov=65):
+    def __init__(self, name="jaguar", horizontal_fov=65):
         SensorCreator.__init__(self, name)
         self.append_meshes(['lidar'])
 
