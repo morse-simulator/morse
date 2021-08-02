@@ -693,6 +693,33 @@ class Jaguar(SensorCreator):
         self.properties(distance_noise = 0.03)
         self.frequency = 10
 
+class GMSLCamera(SensorCreator):
+    _classpath = "morse.sensors.CameraSim.CameraSim"
+    _short_desc = "Leopard Imaging LI-IMX390-GMSL2 Camera"
+    _blendname = "gmsl_camera"
+    _name = "GMSL Camera"
+
+    def __init__(self, name="gmsl_camera", version="060H", width_pixels=1937, height_pixels=1217, frequency=30):
+        SensorCreator.__init__(self, name)
+
+        # Check for a valid configuration
+        assert(version == "060H" or version == "120H" or version == "200H")
+        assert(width_pixels <= 1937 and height_pixels <= 1217)
+
+        # Set properties (according to LI-IMX390-GMSL2 datasheet)
+        self.properties(image_width  = width_pixels)
+        self.properties(image_height = height_pixels)
+        if version == "060H":
+            self.properties(horizontal_fov_deg = 60.6)
+            self.properties(vertical_fov_deg   = 36.1)
+        elif version == "120H":
+            self.properties(horizontal_fov_deg = 122.0)
+            self.properties(vertical_fov_deg   =  74.0)
+        elif version == "200H":
+            self.properties(horizontal_fov_deg = 200.0)
+            self.properties(vertical_fov_deg   = 200.0)
+        self.frequency = frequency
+
 class Objectserver(SensorCreator):
     _classpath = "morse.sensors.ObjectServer.Objectserver"
     _blendname = ""
