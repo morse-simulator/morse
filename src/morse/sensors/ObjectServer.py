@@ -258,6 +258,27 @@ def create_directional_light(lamp_object, dict_msg = True):
         light.direction.w = direction.w
         return light
 
+def create_omni_light(lamp_object, dict_msg = True):
+    base = create_light_base(lamp_object, dict_msg)
+    position = lamp_object.matrix_world.to_translation()
+    if dict_msg:
+        light = {
+            'source': base,
+            'position': {
+                'x': position.x,
+                'y': position.y,
+                'z': position.z
+            }
+        }
+        return light
+    else:
+        light = cortex.OmniLightSource.new_message()
+        light.source = base
+        light.position.x = position.x
+        light.position.y = position.y
+        light.position.z = position.z
+        return light
+
 def triangulate_object(obj):
 
     me = obj.data
@@ -327,9 +348,13 @@ class Objectserver(morse.core.sensor.Sensor):
         # All bpy objects in scene
         bpy_objs = bpymorse.get_objects()
 
-        # All light sources in the scene
-        lamps = bpymorse.get_lamps()
+        # Environmental ambient light
         environment_light = world.light_settings
+        self.ambient_lights = {}
+        if environment_light.use_environment_light:
+            self.ambient_lights['world_light'] = environment_light
+        else:
+            logger.info("Ambient light is disabled")
 
         # Data structures for optix
         self.dynamic_instances = []
@@ -337,31 +362,31 @@ class Objectserver(morse.core.sensor.Sensor):
         self.optix_objects = {}
         self.optix_textures = {}
         self.optix_ignored_instances = []
+        self.directional_lights = {}
+        self.omni_lights = {}
         for obj in bpy_objs:
             props = obj.game.properties
             if 'optix' in props and props['optix'].value:
-                self.optix_instances.append(bge_objs[obj.name])
-                if not obj.data.name in self.optix_objects:
-                    self.optix_objects[obj.data.name] = obj
-                    if 'texture' in props and props['texture'].value:
-                        if len(obj.data.materials) == 0:
-                            raise RuntimeError('texture was specified for ' + obj.name + ' but no materials were found')
-                        if len(obj.data.materials[0].texture_slots) == 0:
-                            raise RuntimeError('texture was specified for ' + obj.name + ' but no texture slots were found for the material')
-                        self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.materials[0].texture_slots[0].texture
-                if 'dynamic' in props and props['dynamic'].value:
-                    self.dynamic_instances.append(bge_objs[obj.name])
+                if obj.type == 'LAMP':
+                    lamp = obj.data
+                    if lamp.type == 'SUN':
+                        self.directional_lights[obj.name] = obj
+                    elif lamp.type == 'POINT':
+                        self.omni_lights[obj.name] = obj
+                else:
+                    self.optix_instances.append(bge_objs[obj.name])
+                    if not obj.data.name in self.optix_objects:
+                        self.optix_objects[obj.data.name] = obj
+                        if 'texture' in props and props['texture'].value:
+                            if len(obj.data.materials) == 0:
+                                raise RuntimeError('texture was specified for ' + obj.name + ' but no materials were found')
+                            if len(obj.data.materials[0].texture_slots) == 0:
+                                raise RuntimeError('texture was specified for ' + obj.name + ' but no texture slots were found for the material')
+                            self.optix_textures[obj.data.materials[0].texture_slots[0].texture.name] = obj.data.materials[0].texture_slots[0].texture
+                    if 'dynamic' in props and props['dynamic'].value:
+                        self.dynamic_instances.append(bge_objs[obj.name])
             else:
                 self.optix_ignored_instances.append(obj.name)
-        self.ambient_lights = {}
-        self.directional_lights = {}
-        if environment_light.use_environment_light:
-            self.ambient_lights['world_light'] = environment_light
-        else:
-            logger.info("Ambient light is disabled")
-        for lamp in lamps:
-            if lamp.type == 'SUN':
-                self.directional_lights[lamp.name] = bpy_objs[lamp.name]
         logger.info("Dynamic Instances: " + str(self.dynamic_instances))
         logger.info("Optix Instances: " + str(self.optix_instances))
         logger.info("Optix Objects: " + str(self.optix_objects))
@@ -369,6 +394,7 @@ class Objectserver(morse.core.sensor.Sensor):
         logger.info("Optix Ignored Instances: " + str(self.optix_ignored_instances))
         logger.info("Optix Ambient Lights: " + str(self.ambient_lights))
         logger.info("Optix Directional Lights: " + str(self.directional_lights))
+        logger.info("Optix Omni Lights: " + str(self.omni_lights))
 
         # Check objects for triangulation
         for bge_obj in self.optix_instances:
@@ -435,6 +461,8 @@ class Objectserver(morse.core.sensor.Sensor):
                     lights['ambientLights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
                     lights['directionalLights'].append(create_directional_light(light, True))
+                for light in self.omni_lights.values():
+                    lights['omniLights'].append(create_omni_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
             else:
                 # Create capnp unique inventory
@@ -455,6 +483,10 @@ class Objectserver(morse.core.sensor.Sensor):
                 i = 0
                 for light in self.directional_lights.values():
                     directional_lights[i] = create_directional_light(light, False)
+                    i += 1
+                i = 0
+                for light in self.omni_lights.values():
+                    omni_lights[i] = create_omni_light(light, False)
                     i += 1
                 self.local_data['inventory_responses'].put(inventory)
         elif len(self.mesh_request_set) > 0:
