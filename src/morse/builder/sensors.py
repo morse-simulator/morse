@@ -634,7 +634,7 @@ class Lidar(SensorCreator):
 class OS1(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Ouster 1 Lidar"
-    _blendname  = "ouster"
+    _blendname  = "lidar"
     _name = "OS1 Lidar"
 
     def __init__(self, name="os1", channels=16, horizontal_beams=512, frequency=10):
@@ -667,7 +667,7 @@ class OS1(SensorCreator):
 class Jaguar(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Jaguar 65/100 Lidar"
-    _blendname  = "jaguar"
+    _blendname  = "lidar"
     _name = "Jaguar Lidar"
 
     def __init__(self, name="jaguar", horizontal_fov=65):
@@ -696,7 +696,7 @@ class Jaguar(SensorCreator):
 class GMSLCamera(SensorCreator):
     _classpath = "morse.sensors.CameraSim.CameraSim"
     _short_desc = "Leopard Imaging LI-IMX390-GMSL2 Camera"
-    _blendname = "gmsl_camera"
+    _blendname = "camera"
     _name = "GMSL Camera"
 
     def __init__(self, name="gmsl_camera", version="060H", width_pixels=1937, height_pixels=1217, frequency=30):
