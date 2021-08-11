@@ -662,7 +662,7 @@ class OS1(SensorCreator):
         # Range Repeatability (1 sigma / standard deviation):
         #   0.8 - 2 m: ± 3 cm; 2 - 20 m: ± 1.5 cm; 20 - 60 m ± 3 cm; >60 m: ± 10 cm
         self.properties(distance_noise = 0.03)
-        self.frequency = frequency
+        self.frequency(frequency)
 
 class Jaguar(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
@@ -691,7 +691,7 @@ class Jaguar(SensorCreator):
         self.properties(max_range = 200)
         # The manual lists precision as < 3cm and product info indicates precision (1 sigma) as < 3cm
         self.properties(distance_noise = 0.03)
-        self.frequency = 10
+        self.frequency(10)
 
 class GMSLCamera(SensorCreator):
     _classpath = "morse.sensors.CameraSim.CameraSim"
@@ -718,7 +718,7 @@ class GMSLCamera(SensorCreator):
         elif version == "200H":
             self.properties(horizontal_fov_deg = 200.0)
             self.properties(vertical_fov_deg   = 200.0)
-        self.frequency = frequency
+        self.frequency(frequency)
 
 class Objectserver(SensorCreator):
     _classpath = "morse.sensors.ObjectServer.Objectserver"
