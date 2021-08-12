@@ -1,17 +1,11 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 
 import morse.core.sensor
-
-from morse.core.services import service, async_service
-from morse.core import status
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
 from morse.sensors.ObjectServer import create_trigger_msg
 from math import radians, pi
-import numpy as np
 import json
-
-from morse.core import blenderapi
 
 class Lidar(morse.core.sensor.Sensor):
     """Write here the general documentation of your sensor.
@@ -94,7 +88,6 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger']['elevationFov'] = pi * self.elevation_width / 180.0
             self.local_data['launch_trigger']['distanceNoise'] = self.distance_noise
         else:
-            import capnp
             import sys
             sys.path.extend(["/usr/local/share", "/usr/local/share/lidarsim"])
             import lidarsim_capnp as lidarsim
@@ -106,3 +99,16 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger'].elevationFov = pi * self.elevation_width / 180.0
             self.local_data['launch_trigger'].elevationFov = self.distance_noise
 
+class LidarNotifier(morse.middleware.moos.MOOSNotifier):
+    """ Notify Lidar """
+
+    def default(self, ci = 'unused'):
+        launch_trigger = self.data['launch_trigger']
+        msg_name = self.data['lidar_name'] + '_TRIGGER'
+        if isinstance(launch_trigger, dict):
+            self.notify(msg_name, json.dumps(launch_trigger))
+        else:
+            self._comms.notify_binary(msg_name, launch_trigger.to_bytes())
+
+    def update_morse_data(self):
+        logger.debug('lidarNotifier.update_morse_data() called.')

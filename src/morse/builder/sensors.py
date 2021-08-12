@@ -631,6 +631,16 @@ class Lidar(SensorCreator):
         #self.append_meshes(None,'vertiia_sim/sensors/lidar.blend')
         self.append_meshes(['lidar'])
 
+class Radar(SensorCreator):
+    _classpath = "morse.sensors.Radar.Radar"
+    _short_desc = "Configurable radar beam"
+    _blendname  = "beam"
+    _name = "Radar"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(None, 'sensors/beam.blend')
+
 class OS1(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Ouster 1 Lidar"
@@ -692,6 +702,27 @@ class Jaguar(SensorCreator):
         # The manual lists precision as < 3cm and product info indicates precision (1 sigma) as < 3cm
         self.properties(distance_noise = 0.03)
         self.frequency(10)
+
+class EchoFlight(SensorCreator):
+    _classpath = "morse.sensors.Radar.Radar"
+    _short_desc = "Echodyne EchoFlight Radar"
+    _blendname  = "beam"
+    _name = "EchoFlight"
+
+    def __init__(self, name="echoflight", azimuth_beams=600, elevation_beams=400, frequency=10):
+        SensorCreator.__init__(self, name)
+        self.append_meshes(None, 'sensors/beam.blend')
+
+        # Check that the beam counts are in the same ratio as the FOV
+        assert(azimuth_beams / elevation_beams == 120.0 / 80.0)
+
+        # Set properties in accordance with echoflight characteristics
+        self.properties(azimuth_width = 120.0)
+        self.properties(elevation_width = 80.0)
+        self.properties(max_range = 3000.0)
+        self.properties(azim_beams = azimuth_beams)
+        self.properties(elev_beams = elevation_beams)
+        self.frequency(frequency)
 
 class GMSLCamera(SensorCreator):
     _classpath = "morse.sensors.CameraSim.CameraSim"

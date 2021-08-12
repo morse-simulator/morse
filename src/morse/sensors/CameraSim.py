@@ -3,13 +3,10 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.sensor
 import morse.sensors.camera
 
-from morse.core.services import service, async_service
-from morse.core import status
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
 from morse.sensors.ObjectServer import create_trigger_msg
-from math import radians, pi
-import numpy as np
+from math import pi
 import json
 
 class CameraSim(morse.sensors.camera.Camera):
@@ -65,7 +62,6 @@ class CameraSim(morse.sensors.camera.Camera):
             self.local_data['launch_trigger']['azimuthFov'] = pi * self.horizontal_fov_deg / 180.0
             self.local_data['launch_trigger']['elevationFov'] = pi * self.vertical_fov_deg / 180.0
         else:
-            import capnp
             import sys
             sys.path.extend(["/usr/local/share", "/usr/local/share/camerasim"])
             import camerasim_capnp as camerasim
@@ -77,4 +73,16 @@ class CameraSim(morse.sensors.camera.Camera):
             self.local_data['launch_trigger'].elevationFov = pi * self.vertical_fov_deg / 180.0
 
         
+class CameraSimNotifier(morse.middleware.moos.MOOSNotifier):
+    """ Notify camerasim """
 
+    def default(self, ci = 'unused'):
+        launch_trigger = self.data['launch_trigger']
+        msg_name = self.data['camera_name'] + '_TRIGGER'
+        if isinstance(launch_trigger, dict):
+            self.notify(msg_name, json.dumps(launch_trigger))
+        else:
+            self._comms.notify_binary(msg_name, launch_trigger.to_bytes())
+
+    def update_morse_data(self):
+        logger.debug('CameraSimNotifier.update_morse_data() called.')
