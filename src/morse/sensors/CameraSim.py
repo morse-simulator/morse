@@ -1,8 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-
+from morse.middleware.moos import MOOSNotifier
 import morse.core.sensor
 import morse.sensors.camera
-
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
 from morse.sensors.ObjectServer import create_trigger_msg
@@ -73,7 +72,7 @@ class CameraSim(morse.sensors.camera.Camera):
             self.local_data['launch_trigger'].elevationFov = pi * self.vertical_fov_deg / 180.0
 
         
-class CameraSimNotifier(morse.middleware.moos.MOOSNotifier):
+class CameraSimNotifier(MOOSNotifier):
     """ Notify camerasim """
 
     def default(self, ci = 'unused'):

@@ -711,10 +711,10 @@ class EchoFlight(SensorCreator):
 
     def __init__(self, name="echoflight", azimuth_beams=600, elevation_beams=400, frequency=10):
         SensorCreator.__init__(self, name)
-        self.append_meshes(None, 'sensors/beam.blend')
+        self.append_meshes(None, 'sensors/xbeam.blend')
 
         # Check that the beam counts are in the same ratio as the FOV
-        assert(azimuth_beams / elevation_beams == 120.0 / 80.0)
+        # assert(azimuth_beams / elevation_beams == 120.0 / 80.0)
 
         # Set properties in accordance with echoflight characteristics
         self.properties(azimuth_width = 120.0)

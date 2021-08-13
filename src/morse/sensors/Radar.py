@@ -1,4 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
+from morse.middleware.moos import MOOSNotifier
 import morse.core.sensor
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
@@ -21,8 +22,6 @@ class Radar(morse.core.sensor.Sensor):
     add_data('ping',     0,   'float', 'Radar ping interval (s)')
 
     # Initialises some properties. They can be changed by Builder scripts
-    add_property('azimuth_angle',   0.0,   'azimuth_angle',   'float', 'Radar beam azimuth in degrees')
-    add_property('elevation_angle', 0.0,   'elevation_angle', 'float', 'Radar beam elevation in degrees')
     add_property('azimuth_width',   30.0,  'azimuth_width',   'float', 'Radar beam width in degrees')
     add_property('elevation_width', 30.0,  'elevation_width', 'float', 'Radar beam height in degrees')
     add_property('max_range',       200.0, 'max_range',       'float', 'Radar range in m')
@@ -54,14 +53,6 @@ class Radar(morse.core.sensor.Sensor):
         # Set shapes of Radar beams
         self.beam.localScale = [x,y,z]
 
-        # We rotate the mesh according to azimuth and elevation angle
-        rot = Euler([0.0, 0.0, 0.0])
-        rot.rotate_axis('Y', -radians(self.elevation_angle))
-        rot.rotate_axis('Z', -radians(self.azimuth_angle))
-
-        # Rotate to desired depression angle
-        self.beam.localOrientation = rot
-
         # Start with beam turned off
         self.beam.setVisible(False, True)
 
@@ -78,8 +69,8 @@ class Radar(morse.core.sensor.Sensor):
                 self.beam.setVisible(True, True)
 
         # Radar pose
-        pos = self.beam.worldPosition
-        rotation = self.beam.worldOrientation.copy()
+        pos = self.bge_object.worldPosition
+        rotation = self.bge_object.worldOrientation.copy()
 
         # Create launch trigger
         if self.send_json:
@@ -103,7 +94,7 @@ class Radar(morse.core.sensor.Sensor):
         # Minimum ping interval without range ambiguity
         self.local_data['ping'] = 2.0 * self.max_range / 3.0e8;
 
-class RadarNotifier(morse.middleware.moos.MOOSNotifier):
+class RadarNotifier(MOOSNotifier):
     """ Notify Radar """
 
     def default(self, ci = 'unused'):

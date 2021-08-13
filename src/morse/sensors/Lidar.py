@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-
+from morse.middleware.moos import MOOSNotifier
 import morse.core.sensor
 from morse.helpers.components import add_data, add_property
 from morse.core.mathutils import *
@@ -99,7 +99,7 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger'].elevationFov = pi * self.elevation_width / 180.0
             self.local_data['launch_trigger'].elevationFov = self.distance_noise
 
-class LidarNotifier(morse.middleware.moos.MOOSNotifier):
+class LidarNotifier(MOOSNotifier):
     """ Notify Lidar """
 
     def default(self, ci = 'unused'):
