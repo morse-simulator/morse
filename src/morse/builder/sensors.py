@@ -732,6 +732,7 @@ class GMSLCamera(SensorCreator):
 
     def __init__(self, name="gmsl_camera", version="060H", width_pixels=1937, height_pixels=1217, frequency=30):
         SensorCreator.__init__(self, name)
+        self.append_meshes(None, 'sensors/camera.blend')
 
         # Check for a valid configuration
         assert(version == "060H" or version == "120H" or version == "200H")
@@ -769,11 +770,11 @@ class Optixcamera(SensorCreator):
 
 class CameraSim(SensorCreator):
     _classpath = "morse.sensors.CameraSim.CameraSim"
-    _blendname = "CameraSim"
+    _blendname = "camera"
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
-        # May need to include a .blend file at some point
+        self.append_meshes(None, 'sensors/camera.blend')
 
 class DVL(SensorCreator):
     _classpath = "morse.sensors.Dvl.DVL"
