@@ -56,18 +56,11 @@ class objectServerReader(MOOSSubscriber):
 class objectServerNotifier(MOOSNotifier):
 
     def initialize(self):
-        ### If cortex is not installed and you do not have access to it then skip
-        if cortex == None:
-            return
-        
         MOOSNotifier.initialize(self)
         # Publish reset
         self.notify('CORTEX_RESET', '')
 
     def default(self, ci = 'unused'):
-        ### If cortex is not installed and you do not have access to it then skip
-        if cortex == None:
-            return
 
         if not self.data['inventory_responses'].empty():
             variable = 'INVENTORY_FULL'

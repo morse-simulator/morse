@@ -345,10 +345,6 @@ class Objectserver(morse.core.sensor.Sensor):
         # Call the constructor of the parent class
         morse.core.sensor.Sensor.__init__(self, obj, parent)
         
-        ### If cortex is not installed and you do not have access to it then skip
-        if cortex == None:
-            return
-
         scene = blenderapi.scene()
         world = bpymorse.get_context_scene().world
 
@@ -427,9 +423,6 @@ class Objectserver(morse.core.sensor.Sensor):
         self.uvs_request_sets = {} # dictionary of sets of strings, keys are textureTypes
 
     def default_action(self):
-        ### If cortex is not installed and you do not have access to it then skip
-        if cortex == None:
-            return
 
         # Convert mesh request queue to data structure for efficient implementation
         while not self.local_data['mesh_requests'].empty():
