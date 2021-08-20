@@ -13,7 +13,7 @@ class Bf21(GroundRobot):
     """
     A template robot model for BF21, with an articulated tailcone.
     """
-    def __init__(self, name = None, debug = True, timewarp = 1):
+    def __init__(self, name = None):
 
         # BF21.blend is located in the data/robots directory
         GroundRobot.__init__(self, 'BF21', name)

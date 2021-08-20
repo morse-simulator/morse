@@ -50,7 +50,6 @@ class Tracker(morse.core.actuator.Actuator):
         logger.info('Component initialized, runs at %.2f Hz', self.frequency)
 
     def default_action(self):        
- 
         self.robots_dict = blenderapi.persistantstorage()
         
         ##del self.robots_dict["fake"]
@@ -67,14 +66,14 @@ class Tracker(morse.core.actuator.Actuator):
             return # Not ready yet!
 
         # # Loop through the game objects to choose which one to track
-        # if self.multiple_targets:
-        #     keyboard = blenderapi.keyboard()
-        #     is_actived = blenderapi.input_just_activated()
+        if self.multiple_targets:
+            keyboard = blenderapi.keyboard()
+            is_actived = blenderapi.input_just_activated()
             
-        #     if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
-        #         self.set_target("prev")
-        #     if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
-        #         self.set_target("next")
+            if keyboard.events[blenderapi.LEFTARROWKEY] == is_actived:
+                self.set_target("prev")
+            if keyboard.events[blenderapi.RIGHTARROWKEY] == is_actived:
+                self.set_target("next")
 
         # Figure out which camera is active and
         # publish its position and view vector.
