@@ -758,8 +758,14 @@ class Objectserver(SensorCreator):
 
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
- 
 
+class ObjectserverDeprecated(SensorCreator):
+    _classpath = "morse.sensors.ObjectServer_deprecated.ObjectserverDeprecated"
+    _blendname = ""
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
+        
 class Optixcamera(SensorCreator):
     _classpath = "morse.sensors.OptixCamera.Optixcamera"
     _blendname = "OptixCamera"

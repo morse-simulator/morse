@@ -6,10 +6,19 @@ import capnp
 import json
 import sys
 sys.path.append("/usr/local/etc/cortex")
-import cortex_capnp as cortex
-
-def convert_texture_type_to_string_prefix(texture_type: cortex.TextureDescription.TextureType)->str:
-    if texture_type == cortex.TextureDescription.TextureType.rgbaTexture:
+cortex = None
+try:
+    import cortex_capnp as cortex
+    CortexTextureType = cortex.TextureDescription.TextureType
+except:
+    print("\033[1;31m")
+    print("Cortex could not be found!")
+    print("\033[0m")
+    ### Needed so that the function convert_texture_type_to_string_prefix can be defined when corex is undefined
+    CortexTextureType = None
+    
+def convert_texture_type_to_string_prefix(texture_type: CortexTextureType)->str:
+    if texture_type == CortexTextureType.rgbaTexture:
         return 'RGBA'
     raise RuntimeError('texture type not handled')
 
@@ -17,6 +26,10 @@ class objectServerReader(MOOSSubscriber):
     """ Read radar commands and update local data. """
 
     def initialize(self):
+        
+        ### If cortex is not installed and you do not have access to it then skip
+        if cortex == None:
+            return
 
         # Initialize the parent class
         MOOSSubscriber.initialize(self)

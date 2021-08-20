@@ -62,12 +62,16 @@ class MultiStaticSonar(morse.core.sensor.Sensor):
         
         node_pos = obj.worldPosition
         node_mat = obj.worldOrientation
+        rotation = self.bge_object.worldOrientation.copy()
+        rotation = rotation.to_quaternion()
         transducer_pose_list = {
            'node_name' : name,
-           'pos'       : list(node_pos),
-           'X'         : list(node_mat.col[1]),
-           'Y'         : list(node_mat.col[2]),
-           'Z'         : list(node_mat.col[0]),
+           'pos'       : list(node_pos),        # Here for backwards compatability 
+           'X'         : list(node_mat.col[1]), # Here for backwards compatability 
+           'Y'         : list(node_mat.col[2]), # Here for backwards compatability 
+           'Z'         : list(node_mat.col[0]), # Here for backwards compatability 
+           'position' : {'x': node_pos.x, 'y': node_pos.y, 'z': node_pos.z},                  # Fits better with the new sensors
+           'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w}, # Fits better with the new sensors
            'direction' : direction,
         }
 

@@ -3,7 +3,7 @@ from morse.middleware.moos import MOOSSubscriber, MOOSNotifier
 from morse.core import blenderapi
 import numpy as np
 
-class objectServerReader(MOOSSubscriber):
+class objectServerReaderDeprecated(MOOSSubscriber):
     """ Read radar commands and update local data. """
 
     def initialize(self):
@@ -30,7 +30,7 @@ class objectServerReader(MOOSSubscriber):
 
         return True
 
-class objectServerNotifier(MOOSNotifier):
+class objectServerNotifierDeprecated(MOOSNotifier):
 
     def default(self, ci = 'unused'):
 

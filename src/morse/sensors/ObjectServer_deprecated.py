@@ -10,7 +10,7 @@ import bpy
 import capnp
 import json
 import time
-from . import Object_capnp
+from . import Object_deprecated_capnp as Object_capnp
 
 __author__     = "David Battle"
 __copyright__  = "Copyright 2017, Mission Systems Pty Ltd"
@@ -166,7 +166,7 @@ def fill_data_block( data_block, obj ):
                 # Convert numpy array to flat list
                 data_block.uvs = uvs.flatten().tolist() # uvs.tolist() not provably faster
 
-class Objectserver(morse.core.sensor.Sensor):
+class ObjectserverDeprecated(morse.core.sensor.Sensor):
 
     _name = 'Objectserver'
     _short_desc = 'MOOS server to publish serialised object data'
