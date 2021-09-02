@@ -619,7 +619,28 @@ class Airspeed(SensorCreator):
 
 
 # ----------------- Mission systems additions -----------------------
-#
+
+class TeleportingCamera(VideoCamera):
+    _classpath  = "morse.sensors.video_camera.TeleportingCamera"
+    _short_desc = "Teleporting Camera"
+    _blendname  = "camera"
+    _name = "teleporting camera"
+
+    def __init__(self, name=None):
+        super().__init__(name=name)
+
+# Shortcut class to make a Teleporting ROS camera
+class TeleportingROSCamera(TeleportingCamera):
+    _short_desc = "Teleporting ROS Camera"
+    _name = "teleporting ROS camera"
+
+    def __init__(self, pose_topic, image_topic, name=None, image_frame_id=None):
+        super().__init__(name=name)
+        if not image_frame_id:
+            image_frame_id = 'morse_teleporting_camera'
+        self.add_stream('ros', 'morse.middleware.ros.video_camera.TeleportingCameraPublisher', topic=image_topic, frame_id=image_frame_id)
+        self.add_stream('ros', 'morse.middleware.ros.read_pose.PoseToQueueReader', topic=pose_topic)
+
 class Lidar(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Configurable lidar beam"
