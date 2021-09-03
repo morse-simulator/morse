@@ -53,5 +53,3 @@ class PoseToQueueReader(PoseReader):
         mat_rot = self.data['orientation'].to_matrix()
         mat_loc = mathutils.Matrix.Translation(self.data['position'])
         self.data['pose_queue'].put(mat_loc * mat_rot.to_4x4())
-        logger.info('added {} to the pose queue'.format(str(mat_loc * mat_rot.to_4x4())))
-        logger.info('pose queue size is {}'.format(self.data['pose_queue'].qsize()))
