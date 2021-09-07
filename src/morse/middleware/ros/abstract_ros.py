@@ -201,12 +201,6 @@ class ROSSubscriber(AbstractROS):
         self.message = None
         # Generate a subscriber for the component
         self.topic = rospy.Subscriber(self.topic_name, self.ros_class, self.callback)
-        print("____________________________________________________________________________")
-        print("____________________________________________________________________________")
-        print("____________________________________________________________________________")
-        print("____________________________________________________________________________")
-        print("____________________________________________________________________________")
-        print("____________________________________________________________________________")
         logger.info('ROS subscriber initialized for %s'%self)
 
     def callback(self, message):
