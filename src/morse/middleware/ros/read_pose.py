@@ -46,3 +46,10 @@ class PoseStampedReader(ROSSubscriber):
         self.data['roll'] = euler.x
         self.data['pitch'] = euler.y
         self.data['yaw'] = euler.z
+
+class PoseToQueueReader(PoseReader):
+    def update(self, message):
+        super().update(message)
+        mat_rot = self.data['orientation'].to_matrix()
+        mat_loc = mathutils.Matrix.Translation(self.data['position'])
+        self.data['pose_queue'].put(mat_loc * mat_rot.to_4x4())

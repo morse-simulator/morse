@@ -5,6 +5,7 @@ from morse.core import mathutils
 import morse.sensors.camera
 from morse.helpers.components import add_data
 import copy
+from queue import Queue
 
 BLENDER_HORIZONTAL_APERTURE = 32.0
 
@@ -123,3 +124,45 @@ class VideoCamera(morse.sensors.camera.Camera):
                     self.completed(status.SUCCESS)
         else:
             self.capturing = False
+
+class TeleportingCamera(VideoCamera):
+    """
+    This sensor is a repositionable camera that produces images according to poses that come from an external stream.
+
+    Currently supports ROS with:
+     - morse.middleware.ros.video_camera.TeleportingCameraPublisher
+     - morse.middleware.ros.read_pose.PoseToQueueReader
+    """
+
+    _name = "TeleportingCamera"
+    _short_desc = "Teleporting (Repositionable) camera"
+
+    add_data('pose_queue', None, 'queue', "Queue of poses to capture from. A pose is a 4x4 matrix given by worldTransform")
+    add_data('image_queue', None, 'queue', "Queue of images to produce to a stream.")
+
+    def __init__(self, obj, parent=None):
+        logger.info('%s initialization' % obj.name)
+        VideoCamera.__init__(self, obj, parent)
+
+        # Initialise queues
+        self.local_data['pose_queue'] = Queue()
+        self.local_data['image_queue'] = Queue()
+
+        # Boolean to indicate if a trigger should occur (see default action)
+        self.trigger = False
+
+    # Note that setting the bge)object worldTransform then calling the video camera default action does not work, but
+    # will update the pose for the next image not the current image. So we process the queue with a slight (1 tick)
+    # delay, i.e. the default action sets up the correct pose for the next default action.
+    def default_action(self):
+        if self.trigger:
+            # Acquire the data
+            VideoCamera.default_action(self)
+            self.local_data['image_queue'].put(self.local_data['image'])
+
+        if self.local_data['pose_queue'].empty():
+            self.trigger = False
+        else:
+            self.trigger = True
+            # Set the pose (popping the pose off the queue in the process)
+            self.bge_object.worldTransform = self.local_data['pose_queue'].get()
