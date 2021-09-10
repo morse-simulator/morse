@@ -156,6 +156,7 @@ class Buoyancy(morse.core.actuator.Actuator):
             else:
                 logger.info("WARNING: Can't find water surface!")
                 z = depth            
+                return
             
             # Buoyancy vector for sphere in world frame
             Bworld = s.buoy * Spheres.fraction(s,z)
