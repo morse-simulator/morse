@@ -61,3 +61,9 @@ class SemanticCameraPublisherLisp(ROSPublisherTF):
 
         string.data += ")"
         self.publish(string)
+
+class TeleportingSemanticCameraPublisher(SemanticCameraPublisher):
+    def default(self, ci='unused'):
+        if not self.data['objects_queue'].empty():
+            self.data['visible_objects'] = self.data['objects_queue'].get()
+            SemanticCameraPublisher.default(self, ci)
