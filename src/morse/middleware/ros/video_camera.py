@@ -83,6 +83,6 @@ class DepthCameraPublisher(CameraPublisher):
 
 class TeleportingCameraPublisher(VideoCameraPublisher):
     def default(self, ci='unused'):
-        if not self.data['image_queue'].empty():
-            self.data['image'] = self.data['image_queue'].get()
+        if self.data['new_image']:
             VideoCameraPublisher.default(self, ci)
+            self.data['new_image'] = False

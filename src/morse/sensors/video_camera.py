@@ -138,7 +138,7 @@ class TeleportingCamera(VideoCamera):
     _short_desc = "Teleporting (Repositionable) camera"
 
     add_data('pose_queue', Queue(), 'queue', "Queue of poses to capture from. A pose is a 4x4 matrix given by worldTransform")
-    add_data('image_queue', Queue(), 'queue', "Queue of images to produce to a stream.")
+    add_data('new_image', False, 'boolean', 'True if there is new data to publish')
 
     def __init__(self, obj, parent=None):
         logger.info('%s initialization' % obj.name)
@@ -154,7 +154,7 @@ class TeleportingCamera(VideoCamera):
         if self.trigger:
             # Acquire the data
             VideoCamera.default_action(self)
-            self.local_data['image_queue'].put(self.local_data['image'])
+            self.local_data['new_image'] = True
 
         if self.local_data['pose_queue'].empty():
             self.trigger = False
