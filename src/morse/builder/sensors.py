@@ -637,12 +637,13 @@ class TeleportingROSCamera(TeleportingCamera):
     # Note that from image_topic_base, the image will be "<image_topic_base>/image" and camera info will be
     # "<image_topic_base>/camera_info"
     def __init__(self, name=None, pose_topic='/morse/teleporting_camera/pose', \
-                 image_topic_base='/morse/teleporting_camera', image_frame_id='morse'):
+                 image_topic_base='/morse/teleporting_camera', image_frame_id='morse_teleporting_camera', \
+                 parent_frame_id='map'):
         super().__init__(name=name)
         if not image_frame_id:
             image_frame_id = 'morse_teleporting_camera'
         self.add_stream('ros', 'morse.middleware.ros.video_camera.TeleportingCameraPublisher', \
-                        topic=image_topic_base, frame_id=image_frame_id)
+                        topic=image_topic_base, frame_id=image_frame_id, parent_frame_id=parent_frame_id)
         self.add_stream('ros', 'morse.middleware.ros.read_pose.PoseToQueueReader', topic=pose_topic)
 
 class TeleportingSemanticCamera(SemanticCamera):
