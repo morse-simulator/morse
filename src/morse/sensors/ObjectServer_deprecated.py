@@ -300,7 +300,7 @@ class ObjectserverDeprecated(morse.core.sensor.Sensor):
                             if send_as_binary:
                                 # Send as binary capnp
                                 log_string += ' as a capnp binary message...'
-                                logger.debug(log_string);
+                                logger.debug(log_string)
 
                                 # Create new capnp message
                                 sim_object = Object_capnp.Object.new_message()
@@ -309,6 +309,13 @@ class ObjectserverDeprecated(morse.core.sensor.Sensor):
                                 sim_object.scaleX = obj_scale[0]
                                 sim_object.scaleY = obj_scale[1]
                                 sim_object.scaleZ = obj_scale[2]
+                                # Default to lossless water material if not specified
+                                sim_object.rho = 1000
+                                sim_object.speed = 1500
+                                sim_object.alpha = 0
+                                if 'rho' in props: sim_object.rho = props['rho'].value
+                                if 'speed' in props: sim_object.speed = props['speed'].value
+                                if 'alpha' in props: sim_object.alpha = props['alpha'].value
                                 # defaults - see plidarsim/BlenderObject.cpp
                                 sim_object.kd = 1.0
                                 sim_object.ks = 0.0

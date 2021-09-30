@@ -11,9 +11,11 @@ struct Object {
     scaleX @3 :Float32;
     scaleY @4 :Float32;
     scaleZ @5 :Float32;
-
-    dataName @6 :Text;
-    dataBlock @7 :DataBlock;
+    rho @6 :Float32;
+    speed @7 :Float32;
+    alpha @8 :Float32;
+    dataName @9 :Text;
+    dataBlock @10 :DataBlock;
 }
     
 struct DataBlock {
