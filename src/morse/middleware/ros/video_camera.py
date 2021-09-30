@@ -81,3 +81,8 @@ class VideoCameraPublisher(CameraPublisher):
 class DepthCameraPublisher(CameraPublisher):
     encoding = '32FC1'
 
+class TeleportingCameraPublisher(VideoCameraPublisher):
+    def default(self, ci='unused'):
+        if self.data['new_image']:
+            VideoCameraPublisher.default(self, ci)
+            self.data['new_image'] = False

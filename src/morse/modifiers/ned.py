@@ -1,5 +1,7 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import math
+from scipy.spatial.transform import Rotation
+from morse.middleware.ros import mathutils
 
 from morse.modifiers.abstract_modifier import AbstractModifier
 
@@ -70,5 +72,24 @@ class AnglesFromNED(NEDModifier):
             self.data['pitch'] = - self.data['pitch']
             self.data['roll'] = self.data['yaw']
             self.data['yaw'] = yaw
+        except KeyError as detail:
+            self.key_error(detail)
+
+class PoseToNED(NEDModifier):
+    """ Convert the coordinates from ENU to NED. """
+    """ Convert the angles from ENU to NED. """
+    def modify(self):
+        try:
+            # ENU to NED x=y, y=x, z=-z
+            tmp = self.data['x']
+            self.data['x'] = self.data['y']
+            self.data['y'] = tmp
+            self.data['z'] = -self.data['z']
+
+            # Rotate about each axis to move from the ENU to NED Frame
+            self.data['roll'] = self.data['roll']
+            self.data['pitch'] = -self.data['pitch']
+            self.data['yaw'] = -self.data['yaw'] + math.radians(90)
+            
         except KeyError as detail:
             self.key_error(detail)

@@ -619,7 +619,54 @@ class Airspeed(SensorCreator):
 
 
 # ----------------- Mission systems additions -----------------------
-#
+
+class TeleportingCamera(VideoCamera):
+    _classpath  = "morse.sensors.video_camera.TeleportingCamera"
+    _short_desc = "Teleporting Camera"
+    _blendname  = "camera"
+    _name = "teleporting camera"
+
+    def __init__(self, name=None):
+        super().__init__(name=name)
+
+# Shortcut class to make a Teleporting ROS camera
+class TeleportingROSCamera(TeleportingCamera):
+    _short_desc = "Teleporting ROS Camera"
+    _name = "teleporting ROS camera"
+
+    # Note that from image_topic_base, the image will be "<image_topic_base>/image" and camera info will be
+    # "<image_topic_base>/camera_info"
+    def __init__(self, name=None, pose_topic='/morse/teleporting_camera/pose', \
+                 image_topic_base='/morse/teleporting_camera', image_frame_id='morse_teleporting_camera', \
+                 parent_frame_id='map'):
+        super().__init__(name=name)
+        if not image_frame_id:
+            image_frame_id = 'morse_teleporting_camera'
+        self.add_stream('ros', 'morse.middleware.ros.video_camera.TeleportingCameraPublisher', \
+                        topic=image_topic_base, frame_id=image_frame_id, parent_frame_id=parent_frame_id)
+        self.add_stream('ros', 'morse.middleware.ros.read_pose.PoseToQueueReader', topic=pose_topic)
+
+class TeleportingSemanticCamera(SemanticCamera):
+    _classpath  = "morse.sensors.semantic_camera.TeleportingSemanticCamera"
+    _short_desc = "Teleporting Semantic Camera"
+    _blendname  = "camera"
+    _name = "teleporting semantic camera"
+
+    def __init__(self, name=None):
+        super().__init__(name=name)
+
+# Shortcut class to make a Teleporting ROS camera
+class TeleportingROSSemanticCamera(TeleportingSemanticCamera):
+    _short_desc = "Teleporting ROS Semantic Camera"
+    _name = "teleporting ROS semantic camera"
+
+    def __init__(self, name=None, pose_topic='/morse/teleporting_semantic_camera/pose',
+            objects_topic='/morse/teleporting_semantic_camera/objects'):
+        super().__init__(name=name)
+        self.add_stream('ros', 'morse.middleware.ros.semantic_camera.TeleportingSemanticCameraPublisher', \
+                        topic=objects_topic)
+        self.add_stream('ros', 'morse.middleware.ros.read_pose.PoseToQueueReader', topic=pose_topic)
+
 class Lidar(SensorCreator):
     _classpath  = "morse.sensors.Lidar.Lidar"
     _short_desc = "Configurable lidar beam"
