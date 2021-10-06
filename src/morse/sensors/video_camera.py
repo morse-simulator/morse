@@ -150,6 +150,9 @@ class TeleportingCamera(VideoCamera):
         logger.info('%s initialization' % obj.name)
         VideoCamera.__init__(self, obj, parent)
 
+        # Start the video camera with 1 pose in queue so that the camera video setup is called
+        self.local_data['pose_queue'].put(mathutils.Matrix.Identity(4))
+
         # Boolean to indicate if a trigger should occur (see default action)
         self.trigger = False
 
