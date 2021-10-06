@@ -203,6 +203,8 @@ class RawGPS(GPS):
           Hok Sum Fok and H.   Bâki Iz,
           http://www.lsgi.polyu.edu.hk/staff/zl.li/Vol_5_2/09-baki-3.pdf
         """
+        # Call the default_action of the parent class
+        GPS.default_action(self)
 
         #current position
         xt = numpy.matrix(self.position_3d.translation)

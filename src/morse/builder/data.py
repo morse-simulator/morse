@@ -212,6 +212,7 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_OUT,
             "yarp_json": INTERFACE_DEFAULT_OUT,
             "text": INTERFACE_DEFAULT_OUT,
+            "moos": 'morse.middleware.moos.gps.GPSRawNotifier'
             },
         "extended": {
             "socket": INTERFACE_DEFAULT_OUT,
