@@ -67,14 +67,7 @@ class VideoCamera(morse.sensors.camera.Camera):
 
         # Prepare the intrinsic matrix for this camera.
         # Note that the matrix is stored in row major
-        intrinsic = mathutils.Matrix.Identity(3)
-        alpha_u = self.image_width  * \
-                  self.image_focal / BLENDER_HORIZONTAL_APERTURE
-        intrinsic[0][0] = alpha_u
-        intrinsic[1][1] = alpha_u
-        intrinsic[0][2] = self.image_width / 2.0
-        intrinsic[1][2] = self.image_height / 2.0
-        self.local_data['intrinsic_matrix'] = intrinsic
+        self.calculate_intrinsic_matrix()
 
         self.capturing = False
         self._n = -1
@@ -101,6 +94,16 @@ class VideoCamera(morse.sensors.camera.Camera):
         """
         self._n = n
 
+    def calculate_intrinsic_matrix(self):
+        intrinsic = mathutils.Matrix.Identity(3)
+        alpha_u = self.image_width  * \
+                  self.image_focal / BLENDER_HORIZONTAL_APERTURE
+        intrinsic[0][0] = alpha_u
+        intrinsic[1][1] = alpha_u
+        intrinsic[0][2] = self.image_width / 2.0
+        intrinsic[1][2] = self.image_height / 2.0
+        self.local_data['intrinsic_matrix'] = intrinsic
+
     def default_action(self):
         """ Update the texture image. """
 
@@ -110,6 +113,9 @@ class VideoCamera(morse.sensors.camera.Camera):
             # Call the action of the parent class
             morse.sensors.camera.Camera.default_action(self)
 
+            # Recalculate the intrinsic matrix, because it can be incorrect
+            # (e.g. if image_fov was used instead of image_focal)
+            self.calculate_intrinsic_matrix()
 
             self.robot_pose = copy.copy(self.robot_parent.position_3d)
             # Fill in the exportable data
