@@ -46,7 +46,7 @@ class Bf21(GroundRobot):
         self.append(self.dvl)
 
         self.gps = GPS()
-        self.gps.level('raw')
+        # self.gps.level('raw')
         self.append(self.gps)
 
 
