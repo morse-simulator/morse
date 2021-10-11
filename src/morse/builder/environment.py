@@ -860,7 +860,16 @@ class Environment(AbstractComponent):
         """
         self.properties(use_relative_time = relative_time)
 
+    def use_display_lists(self, display_lists=True):
+        """ Use display lists to speed up rendering by keeping geometry on the GPU """
+        bpymorse.get_context_scene().game_settings.use_display_lists = display_lists
 
+    def use_material_caching(self, material_caching=True):
+        """ Cache materials in the converter (this is faster, but can cause problems
+        with older Singletexture and Multitexture games).
+        
+        WARNING: Turning off material caching may hang morse."""
+        bpymorse.get_context_scene().game_settings.use_material_caching = material_caching
 
     def __del__(self):
         """ Call the create method if the user has not explicitly called it """
