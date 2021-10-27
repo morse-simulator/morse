@@ -661,10 +661,11 @@ class TeleportingROSSemanticCamera(TeleportingSemanticCamera):
     _name = "teleporting ROS semantic camera"
 
     def __init__(self, name=None, pose_topic='/morse/teleporting_semantic_camera/pose',
-            objects_topic='/morse/teleporting_semantic_camera/objects'):
+            objects_topic='/morse/teleporting_semantic_camera/objects', frame_id='morse_teleporting_semantic_camera',
+            parent_frame_id='map'):
         super().__init__(name=name)
         self.add_stream('ros', 'morse.middleware.ros.semantic_camera.TeleportingSemanticCameraPublisher', \
-                        topic=objects_topic)
+                        topic=objects_topic, frame_id=frame_id, parent_frame_id=parent_frame_id)
         self.add_stream('ros', 'morse.middleware.ros.read_pose.PoseToQueueReader', topic=pose_topic)
 
 class Lidar(SensorCreator):

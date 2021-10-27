@@ -1,7 +1,10 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 from morse.core import blenderapi
 import morse.core.sensor
-from morse.helpers.components import add_property
+from morse.helpers.components import add_property, add_data
+from morse.core import mathutils
+
+BLENDER_HORIZONTAL_APERTURE = 32.0
 
 def copy_pose(obj_from, obj_to):
     obj_to.worldPosition = obj_from.worldPosition
@@ -15,6 +18,30 @@ class Camera(morse.core.sensor.Sensor):
     - :doc:`video_camera <../sensors/video_camera>`
     - :doc:`depth_camera <../sensors/depth_camera>`
     - :doc:`semantic_camera <../sensors/semantic_camera>`
+
+    Camera calibration matrix
+    -------------------------
+
+    The camera configuration parameters implicitly define a geometric camera in
+    blender units. Knowing that the **cam_focal** attribute is a value that
+    represents the distance in Blender unit at which the largest image dimension is
+    32.0 Blender units, the camera intrinsic calibration matrix is defined as
+
+    +--------------+-------------+---------+
+    | **alpha_u**  |      0      | **u_0** |
+    +--------------+-------------+---------+
+    |       0      | **alpha_v** | **v_0** |
+    +--------------+-------------+---------+
+    |       0      |      0      |    1    |
+    +--------------+-------------+---------+
+
+    where:
+
+    - **alpha_u** == **alpha_v** = **cam_width** . **cam_focal** / 32 (we suppose
+      here that **cam_width** > **cam_height**. If not, then use **cam_height** in
+      the formula)
+    - **u_0** = **cam_width** / 2
+    - **v_0** = **cam_height** / 2
 
     .. note::
         The cameras make use of Blender's **bge.texture** module, which
@@ -59,6 +86,9 @@ class Camera(morse.core.sensor.Sensor):
     add_property('retrieve_depth', False, 'retrieve_depth')
     add_property('retrieve_zbuffer', False, 'retrieve_zbuffer')
 
+    add_data('intrinsic_matrix', 'none', 'mat3<float>',
+        'The intrinsic calibration matrix, stored as a 3x3 row major Matrix.')
+
     def __init__(self, obj, parent=None):
         """ Constructor method.
 
@@ -73,6 +103,10 @@ class Camera(morse.core.sensor.Sensor):
         self.bg_color = [143, 143, 143, 255]
 
         self._camera_image = None
+
+        # Prepare the intrinsic matrix for this camera.
+        # Note that the matrix is stored in row major
+        self.calculate_intrinsic_matrix()
 
         """
         Check if the bge.render.offScreenCreate method exists. If it
@@ -128,6 +162,16 @@ class Camera(morse.core.sensor.Sensor):
                 self._update_scene()
             # Call the bge.texture method to refresh the image
             self._camera_image.refresh(True)
+
+    def calculate_intrinsic_matrix(self):
+        intrinsic = mathutils.Matrix.Identity(3)
+        alpha_u = self.image_width  * \
+                  self.image_focal / BLENDER_HORIZONTAL_APERTURE
+        intrinsic[0][0] = alpha_u
+        intrinsic[1][1] = alpha_u
+        intrinsic[0][2] = self.image_width / 2.0
+        intrinsic[1][2] = self.image_height / 2.0
+        self.local_data['intrinsic_matrix'] = intrinsic
 
     @property
     def image_data(self):
@@ -273,3 +317,6 @@ class Camera(morse.core.sensor.Sensor):
         except AttributeError as detail:
             logger.warn("%s\nPlease use Blender > 2.65 for Z-Buffer support" %
                         detail)
+        
+        # Recalculate the intrinsic matrix
+        self.calculate_intrinsic_matrix()
