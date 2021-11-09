@@ -58,7 +58,7 @@ class objectServerNotifier(MOOSNotifier):
     def initialize(self):
         MOOSNotifier.initialize(self)
         # Publish reset
-        self.notify('CORTEX_RESET', '')
+        self.notify('OBJECT_SERVER_RESET', '')
 
     def default(self, ci = 'unused'):
 
