@@ -857,6 +857,13 @@ class FLS(SensorCreator):
     def __init__(self, name=None):
         SensorCreator.__init__(self, name)
 
+class RangeSensor(SensorCreator):
+    _classpath = "morse.sensors.range_sensor.RangeSensor"
+    _short_desc = "Range sensor"
+    _blendname = "RangeSensor"
+
+    def __init__(self, name=None):
+        SensorCreator.__init__(self, name)
  
 class MultiStaticSonar(SensorCreator):
     _classpath  = "morse.sensors.MultiStaticSonar.MultiStaticSonar"
