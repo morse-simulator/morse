@@ -170,6 +170,24 @@ class ROSPublisherTF(ROSPublisher):
         """
         ROSPublisherTF.topic_tf.publish(message)
 
+    def createTransform(self, translation, rotation, time, child, parent):
+        """
+        :param translation: the translation of the transformtion as geometry_msgs/Vector3
+        :param rotation: the rotation of the transformation as a geometry_msgs/Quaternion
+        :param time: the time of the transformation, as a rospy.Time()
+        :param child: child frame in tf, string
+        :param parent: parent frame in tf, string
+
+        Returns TransformStamped
+        """
+        t = TransformStamped()
+        t.header.frame_id = parent
+        t.header.stamp = time
+        t.child_frame_id = child
+        t.transform.translation = translation
+        t.transform.rotation = rotation
+        return t
+
     def sendTransform(self, translation, rotation, time, child, parent):
         """
         :param translation: the translation of the transformtion as geometry_msgs/Vector3
@@ -181,14 +199,7 @@ class ROSPublisherTF(ROSPublisher):
         Broadcast the transformation from tf frame child to parent on ROS topic ``"/tf"``.
         """
 
-        t = TransformStamped()
-        t.header.frame_id = parent
-        t.header.stamp = time
-        t.child_frame_id = child
-        t.transform.translation = translation
-        t.transform.rotation = rotation
-
-        tfm = tfMessage([t])
+        tfm = tfMessage([self.createTransform(translation, rotation, time, child, parent)])
 
         self.publish_tf(tfm)
 
