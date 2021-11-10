@@ -5,6 +5,7 @@ from sensor_msgs.msg import CameraInfo
 from std_msgs.msg import String
 from morse.middleware.ros import ROSPublisherTF
 from morse.middleware.socket_datastream import MorseEncoder
+from morse.middleware.ros.tfMessage import tfMessage
 
 class SemanticCameraPublisher(ROSPublisherTF):
     """ Publish the data of the semantic camera as JSON in a ROS String message.
@@ -23,12 +24,15 @@ class SemanticCameraPublisher(ROSPublisherTF):
                                                      queue_size=self.determine_queue_size())
 
     def default(self, ci='unused'):
+        tfs = []
         for obj in self.data['visible_objects']:
+            tfs.append(self.createTransform(obj['position'], obj['orientation'],
+                                            self.get_time(), str(obj['name']), self.frame_id))
             # send tf-frame for every object
-            self.sendTransform(obj['position'], obj['orientation'],
-                               self.get_time(), str(obj['name']), self.frame_id)
-        string = String()
-        string.data = json.dumps(self.data['visible_objects'], cls=MorseEncoder)
+            # self.sendTransform(obj['position'], obj['orientation'],
+            #                    self.get_time(), str(obj['name']), self.frame_id)
+        if tfs:
+            self.publish_tf(tfMessage(tfs))
         if self.pub_tf:
             self.send_transform_robot()
         if self.pub_camera_info:
@@ -51,6 +55,8 @@ class SemanticCameraPublisher(ROSPublisherTF):
                              intrinsic[1][0], intrinsic[1][1], intrinsic[1][2], Ty,
                              intrinsic[2][0], intrinsic[2][1], intrinsic[2][2], 0]
             self.topic_camera_info.publish(camera_info)
+        string = String()
+        string.data = json.dumps(self.data['visible_objects'], cls=MorseEncoder)
         self.publish(string)
         
 
