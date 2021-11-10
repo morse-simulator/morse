@@ -49,4 +49,3 @@ class RangeSensor(morse.core.sensor.Sensor):
             self.local_data['range'] = self.bge_object.getDistanceTo(point)
         else:
             self.local_data['range'] = float('inf')
-        print("sensor range is: ",  self.local_data['range'])
