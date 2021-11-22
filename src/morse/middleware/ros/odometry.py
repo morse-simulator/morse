@@ -1,5 +1,4 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-import rospy
 from geometry_msgs.msg import Vector3, Quaternion, Pose, Twist
 from nav_msgs.msg import Odometry
 from morse.middleware.ros import ROSPublisherTF, mathutils

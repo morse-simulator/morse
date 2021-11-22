@@ -1,4 +1,3 @@
-import rospy
 from rosgraph_msgs.msg import Clock
 from morse.middleware.ros import ROSPublisher
 
