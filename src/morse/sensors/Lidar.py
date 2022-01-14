@@ -81,12 +81,12 @@ class Lidar(morse.core.sensor.Sensor):
             
         if self.send_json:
             self.local_data['launch_trigger'] = {}
-            self.local_data['launch_trigger']['launchTrigger'] = create_trigger_msg(pos, rotation, self.azimuth_beams,
+            self.local_data['launch_trigger']['launch_trigger'] = create_trigger_msg(pos, rotation, self.azimuth_beams,
                                                                                     self.elevation_beams, 1, True)
-            self.local_data['launch_trigger']['maxRange'] = self.max_range
-            self.local_data['launch_trigger']['azimuthFov'] = pi * self.azimuth_width / 180.0
-            self.local_data['launch_trigger']['elevationFov'] = pi * self.elevation_width / 180.0
-            self.local_data['launch_trigger']['distanceNoise'] = self.distance_noise
+            self.local_data['launch_trigger']['max_range'] = self.max_range
+            self.local_data['launch_trigger']['azimuth_fov'] = pi * self.azimuth_width / 180.0
+            self.local_data['launch_trigger']['elevation_fov'] = pi * self.elevation_width / 180.0
+            self.local_data['launch_trigger']['distance_noise'] = self.distance_noise
         else:
             import sys
             sys.path.extend(["/usr/local/share", "/usr/local/share/lidarsim"])
@@ -97,7 +97,7 @@ class Lidar(morse.core.sensor.Sensor):
             self.local_data['launch_trigger'].maxRange = self.max_range
             self.local_data['launch_trigger'].azimuthFov = pi * self.azimuth_width / 180.0
             self.local_data['launch_trigger'].elevationFov = pi * self.elevation_width / 180.0
-            self.local_data['launch_trigger'].elevationFov = self.distance_noise
+            self.local_data['launch_trigger'].distanceNoise = self.distance_noise
 
 class LidarNotifier(MOOSNotifier):
     """ Notify Lidar """

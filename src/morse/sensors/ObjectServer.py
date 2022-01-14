@@ -67,8 +67,8 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
     if dict_msg:
         # Core properties
         instance = {
-            'instanceName' : optix_instance.name,
-            'meshName' : optix_object.data.name,
+            'instance_name' : optix_instance.name,
+            'mesh_name' : optix_object.data.name,
             'transform': {
                 'position' : {'x': position.x, 'y': position.y, 'z': position.z},
                 'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
@@ -76,9 +76,9 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             }
         }
         if (has_rgba):
-            instance['textureDescriptions'] = [{'textureIdentifier': rgba_texture_name,
-                                                'uvsIdentifier': rgba_uvs_name,
-                                                'textureType': 'RGBA_TEXTURE'}]
+            instance['texture_descriptions'] = [{'texture_identifier': rgba_texture_name,
+                                                'uvs_identifier': rgba_uvs_name,
+                                                'texture_type': 'RGBA_TEXTURE'}]
 
         # Extra properties
         try:
@@ -87,7 +87,7 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             ang_vel['x'] = angular_velocity.x
             ang_vel['y'] = angular_velocity.y
             ang_vel['z'] = angular_velocity.z
-            instance['angularVelocity'] = ang_vel
+            instance['angular_velocity'] = ang_vel
         except: pass
         try:
             linear_velocity = optix_instance.worldLinearVelocity
@@ -95,7 +95,7 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             lin_vel['x'] = linear_velocity.x
             lin_vel['y'] = linear_velocity.y
             lin_vel['z'] = linear_velocity.z
-            instance['linearVelocity'] = lin_vel
+            instance['linear_velocity'] = lin_vel
         except: pass
         if 'density' in properties:
             if properties['density'].type == 'FLOAT':
@@ -113,7 +113,7 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             instance['reflectance']['ks'] = 0.0
         if 'sound_speed_compression' in properties:
             if properties['sound_speed_compression'].type == 'FLOAT':
-                instance['soundSpeedCompression'] = properties['sound_speed_compression'].value
+                instance['sound_speed_compression'] = properties['sound_speed_compression'].value
             else:
                 logger.warn('sound_speed_compression should be of type FLOAT but was ' + properties['sound_speed_compression'].type)
         return instance
@@ -193,8 +193,8 @@ def create_light_base(lamp_object, dict_msg = True):
         base = {
             'identifier': lamp_object.name,
             'strength': lamp_object.data.energy,
-            'decayType': decay_type,
-            'decayLength': decay_length
+            'decay_type': decay_type,
+            'decay_length': decay_length
         }
         return base
     else:
@@ -224,8 +224,8 @@ def create_ambient_light(light_name, light, dict_msg = True):
             'source': {
                 'identifier': light_name,
                 'strength': energy,
-                'decayType': 'CONSTANT',
-                'decayLength': decay_length
+                'decay_type': 'CONSTANT',
+                'decay_length': decay_length
             }
             #'colour': colour
         }
@@ -450,10 +450,10 @@ class Objectserver(morse.core.sensor.Sensor):
                     'inventory': {
                         'instances': [],
                         'lights': {
-                            'ambientLights': [],
-                            'directionalLights': [],
-                            'omniLights': [],
-                            'spotlightLights': []
+                            'ambient_lights': [],
+                            'directional_lights': [],
+                            'omni_lights': [],
+                            'spotlight_lights': []
                         }
                     },
                     'uid': pid
@@ -465,11 +465,11 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances.append(create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
                 for light_name, light in self.ambient_lights.items():
-                    lights['ambientLights'].append(create_ambient_light(light_name, light, True))
+                    lights['ambient_lights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
-                    lights['directionalLights'].append(create_directional_light(light, True))
+                    lights['directional_lights'].append(create_directional_light(light, True))
                 for light in self.omni_lights.values():
-                    lights['omniLights'].append(create_omni_light(light, True))
+                    lights['omni_lights'].append(create_omni_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
             else:
                 # Create capnp unique inventory
@@ -536,10 +536,10 @@ class Objectserver(morse.core.sensor.Sensor):
             inventory = {
                 'instances': [],
                 'lights': {
-                    'ambientLights': [],
-                    'directionalLights': [],
-                    'omniLights': [],
-                    'spotlightLights': []
+                    'ambient_lights': [],
+                    'directional_lights': [],
+                    'omni_lights': [],
+                    'spotlight_lights': []
                 }
             }
             instances = inventory['instances']
