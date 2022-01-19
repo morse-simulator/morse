@@ -36,10 +36,15 @@ def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, dict_msg = True)
     if dict_msg:
         launch_trigger = {
            'pose': {
-                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
-                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w}
+                'position' : [position.x, position.y, position.z],
+                'rotation' : {
+                    'w': rotation.w,
+                    'x': rotation.x,
+                    'y': rotation.y,
+                    'z': rotation.z
+                }
            },
-           'dimensions'    : {'x': dim_x,      'y': dim_y,      'z': dim_z}
+           'dimensions'    : [dim_x, dim_y, dim_z]
         }
     else:
         launch_trigger = cortex.LaunchTrigger.new_message()
@@ -70,9 +75,14 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             'instance_name' : optix_instance.name,
             'mesh_name' : optix_object.data.name,
             'transform': {
-                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
-                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
-                'scale' :    {'x': scale.x,    'y': scale.y,    'z': scale.z}
+                'position' : [position.x, position.y, position.z],
+                'rotation' : {
+                    'w': rotation.w,
+                    'x': rotation.x,
+                    'y': rotation.y,
+                    'z': rotation.z
+                },
+                'scale' :    [scale.x, scale.y, scale.z]
             }
         }
         if (has_rgba):
@@ -83,19 +93,11 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
         # Extra properties
         try:
             angular_velocity = optix_instance.worldAngularVelocity
-            ang_vel = {}
-            ang_vel['x'] = angular_velocity.x
-            ang_vel['y'] = angular_velocity.y
-            ang_vel['z'] = angular_velocity.z
-            instance['angular_velocity'] = ang_vel
+            instance['angular_velocity'] = [angular_velocity.x, angular_velocity.y, angular_velocity.z]
         except: pass
         try:
             linear_velocity = optix_instance.worldLinearVelocity
-            lin_vel = {}
-            lin_vel['x'] = linear_velocity.x
-            lin_vel['y'] = linear_velocity.y
-            lin_vel['z'] = linear_velocity.z
-            instance['linear_velocity'] = lin_vel
+            instance['linear_velocity'] = [linear_velocity.x, linear_velocity.y, linear_velocity.z]
         except: pass
         if 'density' in properties:
             if properties['density'].type == 'FLOAT':
@@ -248,10 +250,10 @@ def create_directional_light(lamp_object, dict_msg = True):
         light = {
             'source': base,
             'direction': {
+                'w': direction.w,
                 'x': direction.x,
                 'y': direction.y,
-                'z': direction.z,
-                'w': direction.w
+                'z': direction.z
             }
         }
         return light
@@ -270,11 +272,7 @@ def create_omni_light(lamp_object, dict_msg = True):
     if dict_msg:
         light = {
             'source': base,
-            'position': {
-                'x': position.x,
-                'y': position.y,
-                'z': position.z
-            }
+            'position': [position.x, position.y, position.z]
         }
         return light
     else:
