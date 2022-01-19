@@ -313,10 +313,10 @@ def fill_texture(texture, optix_texture):
 
 def fill_uvs(uvs, optix_obj):
     # Get per-vertex uvs
-    uvs_np = np.zeros((len(optix_obj.data.vertices), 2))
+    uvs_np = np.zeros((len(optix_obj.data.loops), 2))
     uv_layer = optix_obj.data.uv_layers.active.data
     for loop in optix_obj.data.loops:
-        uvs_np[loop.vertex_index, :] = uv_layer[loop.index].uv
+        uvs_np[loop.index, :] = uv_layer[loop.index].uv
     uvs.identifier = optix_obj.data.name
     uvs.data = uvs_np.flatten().tolist() # uvs.tolist() not provably faster
 
