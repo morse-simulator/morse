@@ -105,7 +105,7 @@ def transform_compound_local(self, x=0.0, y=0.0, z=0.0, roll=0.0, pitch=0.0, yaw
 
 def get_tf(dx=0.0,dy=0.0,dz=0.0,droll=0.0,dpitch=0.0,dyaw=0.0):
     rot = Rotation.from_euler("zyx", [dyaw,dpitch,droll])
-    rotmat = rot.as_matrix()
+    rotmat = rot.as_matrix() # Must have scipy version >= 1.4.0
     TF = np.matrix([[1.0,0.0,0.0,dx],
                     [0.0,1.0,0.0,dy],
                     [0.0,0.0,1.0,dz],
