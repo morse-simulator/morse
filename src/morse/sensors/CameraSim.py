@@ -55,11 +55,11 @@ class CameraSim(morse.sensors.camera.Camera):
 
         if self.send_json:
             self.local_data['launch_trigger'] = {}
-            self.local_data['launch_trigger']['launchTrigger'] = create_trigger_msg(pos, rotation, self.image_width,
+            self.local_data['launch_trigger']['launch_trigger'] = create_trigger_msg(pos, rotation, self.image_width,
                                                                                     self.image_height, 1, True)
-            self.local_data['launch_trigger']['maxRange'] = self.max_range
-            self.local_data['launch_trigger']['azimuthFov'] = pi * self.horizontal_fov_deg / 180.0
-            self.local_data['launch_trigger']['elevationFov'] = pi * self.vertical_fov_deg / 180.0
+            self.local_data['launch_trigger']['max_range'] = self.max_range
+            self.local_data['launch_trigger']['azimuth_fov'] = pi * self.horizontal_fov_deg / 180.0
+            self.local_data['launch_trigger']['elevation_fov'] = pi * self.vertical_fov_deg / 180.0
         else:
             import sys
             sys.path.extend(["/usr/local/share", "/usr/local/share/camerasim"])

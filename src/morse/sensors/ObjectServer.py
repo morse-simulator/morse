@@ -36,10 +36,15 @@ def create_trigger_msg(position, rotation, dim_x, dim_y, dim_z, dict_msg = True)
     if dict_msg:
         launch_trigger = {
            'pose': {
-                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
-                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w}
+                'position' : [position.x, position.y, position.z],
+                'rotation' : {
+                    'w': rotation.w,
+                    'x': rotation.x,
+                    'y': rotation.y,
+                    'z': rotation.z
+                }
            },
-           'dimensions'    : {'x': dim_x,      'y': dim_y,      'z': dim_z}
+           'dimensions'    : [dim_x, dim_y, dim_z]
         }
     else:
         launch_trigger = cortex.LaunchTrigger.new_message()
@@ -67,35 +72,32 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
     if dict_msg:
         # Core properties
         instance = {
-            'instanceName' : optix_instance.name,
-            'meshName' : optix_object.data.name,
+            'instance_name' : optix_instance.name,
+            'mesh_name' : optix_object.data.name,
             'transform': {
-                'position' : {'x': position.x, 'y': position.y, 'z': position.z},
-                'rotation' : {'x': rotation.x, 'y': rotation.y, 'z': rotation.z, 'w': rotation.w},
-                'scale' :    {'x': scale.x,    'y': scale.y,    'z': scale.z}
+                'position' : [position.x, position.y, position.z],
+                'rotation' : {
+                    'w': rotation.w,
+                    'x': rotation.x,
+                    'y': rotation.y,
+                    'z': rotation.z
+                },
+                'scale' :    [scale.x, scale.y, scale.z]
             }
         }
         if (has_rgba):
-            instance['textureDescriptions'] = [{'textureIdentifier': rgba_texture_name,
-                                                'uvsIdentifier': rgba_uvs_name,
-                                                'textureType': 'RGBA_TEXTURE'}]
+            instance['texture_descriptions'] = [{'texture_identifier': rgba_texture_name,
+                                                'uvs_identifier': rgba_uvs_name,
+                                                'texture_type': 'RGBA_TEXTURE'}]
 
         # Extra properties
         try:
             angular_velocity = optix_instance.worldAngularVelocity
-            ang_vel = {}
-            ang_vel['x'] = angular_velocity.x
-            ang_vel['y'] = angular_velocity.y
-            ang_vel['z'] = angular_velocity.z
-            instance['angularVelocity'] = ang_vel
+            instance['angular_velocity'] = [angular_velocity.x, angular_velocity.y, angular_velocity.z]
         except: pass
         try:
             linear_velocity = optix_instance.worldLinearVelocity
-            lin_vel = {}
-            lin_vel['x'] = linear_velocity.x
-            lin_vel['y'] = linear_velocity.y
-            lin_vel['z'] = linear_velocity.z
-            instance['linearVelocity'] = lin_vel
+            instance['linear_velocity'] = [linear_velocity.x, linear_velocity.y, linear_velocity.z]
         except: pass
         if 'density' in properties:
             if properties['density'].type == 'FLOAT':
@@ -113,7 +115,7 @@ def create_instance_msg(optix_instance, optix_object, dict_msg = True):
             instance['reflectance']['ks'] = 0.0
         if 'sound_speed_compression' in properties:
             if properties['sound_speed_compression'].type == 'FLOAT':
-                instance['soundSpeedCompression'] = properties['sound_speed_compression'].value
+                instance['sound_speed_compression'] = properties['sound_speed_compression'].value
             else:
                 logger.warn('sound_speed_compression should be of type FLOAT but was ' + properties['sound_speed_compression'].type)
         return instance
@@ -193,8 +195,8 @@ def create_light_base(lamp_object, dict_msg = True):
         base = {
             'identifier': lamp_object.name,
             'strength': lamp_object.data.energy,
-            'decayType': decay_type,
-            'decayLength': decay_length
+            'decay_type': decay_type,
+            'decay_length': decay_length
         }
         return base
     else:
@@ -224,8 +226,8 @@ def create_ambient_light(light_name, light, dict_msg = True):
             'source': {
                 'identifier': light_name,
                 'strength': energy,
-                'decayType': 'CONSTANT',
-                'decayLength': decay_length
+                'decay_type': 'CONSTANT',
+                'decay_length': decay_length
             }
             #'colour': colour
         }
@@ -248,10 +250,10 @@ def create_directional_light(lamp_object, dict_msg = True):
         light = {
             'source': base,
             'direction': {
+                'w': direction.w,
                 'x': direction.x,
                 'y': direction.y,
-                'z': direction.z,
-                'w': direction.w
+                'z': direction.z
             }
         }
         return light
@@ -270,11 +272,7 @@ def create_omni_light(lamp_object, dict_msg = True):
     if dict_msg:
         light = {
             'source': base,
-            'position': {
-                'x': position.x,
-                'y': position.y,
-                'z': position.z
-            }
+            'position': [position.x, position.y, position.z]
         }
         return light
     else:
@@ -315,10 +313,10 @@ def fill_texture(texture, optix_texture):
 
 def fill_uvs(uvs, optix_obj):
     # Get per-vertex uvs
-    uvs_np = np.zeros((len(optix_obj.data.vertices), 2))
+    uvs_np = np.zeros((len(optix_obj.data.loops), 2))
     uv_layer = optix_obj.data.uv_layers.active.data
     for loop in optix_obj.data.loops:
-        uvs_np[loop.vertex_index, :] = uv_layer[loop.index].uv
+        uvs_np[loop.index, :] = uv_layer[loop.index].uv
     uvs.identifier = optix_obj.data.name
     uvs.data = uvs_np.flatten().tolist() # uvs.tolist() not provably faster
 
@@ -450,10 +448,10 @@ class Objectserver(morse.core.sensor.Sensor):
                     'inventory': {
                         'instances': [],
                         'lights': {
-                            'ambientLights': [],
-                            'directionalLights': [],
-                            'omniLights': [],
-                            'spotlightLights': []
+                            'ambient_lights': [],
+                            'directional_lights': [],
+                            'omni_lights': [],
+                            'spotlight_lights': []
                         }
                     },
                     'uid': pid
@@ -465,11 +463,11 @@ class Objectserver(morse.core.sensor.Sensor):
                 for i in range(len(self.optix_instances)):
                     instances.append(create_instance_msg(self.optix_instances[i], bpy_objs[self.optix_instances[i].name], True))
                 for light_name, light in self.ambient_lights.items():
-                    lights['ambientLights'].append(create_ambient_light(light_name, light, True))
+                    lights['ambient_lights'].append(create_ambient_light(light_name, light, True))
                 for light in self.directional_lights.values():
-                    lights['directionalLights'].append(create_directional_light(light, True))
+                    lights['directional_lights'].append(create_directional_light(light, True))
                 for light in self.omni_lights.values():
-                    lights['omniLights'].append(create_omni_light(light, True))
+                    lights['omni_lights'].append(create_omni_light(light, True))
                 self.local_data['inventory_responses'].put(inventory)
             else:
                 # Create capnp unique inventory
@@ -536,10 +534,10 @@ class Objectserver(morse.core.sensor.Sensor):
             inventory = {
                 'instances': [],
                 'lights': {
-                    'ambientLights': [],
-                    'directionalLights': [],
-                    'omniLights': [],
-                    'spotlightLights': []
+                    'ambient_lights': [],
+                    'directional_lights': [],
+                    'omni_lights': [],
+                    'spotlight_lights': []
                 }
             }
             instances = inventory['instances']
