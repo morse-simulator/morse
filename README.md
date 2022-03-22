@@ -1,5 +1,7 @@
 ⚠️ **As of 2020, MORSE is not maintained/updated anymore. The code will remain available for the foreseeable future for adventurous researchers and/or archeologists, but do not expect much support!** ⚠️
 
+⚠️ Also, MORSE requires Blender to run. **The last supported version of Blender is 2.79b. MORSE can _not_ run with more recent versions!** ⚠️
+
 ![MORSE logo](doc/media/morse-logo.png)
 
 MORSE: the Modular Open Robots Simulator Engine
