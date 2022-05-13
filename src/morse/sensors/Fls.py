@@ -76,10 +76,12 @@ class FLS(morse.core.sensor.Sensor):
         target = source + vect
 
         # Send a ray out infront of the vehicle
-        _, point, _ = self.bge_object.rayCast(target, source, self.max_range)
+        obj, point, _ = self.bge_object.rayCast(target, source, self.max_range)
         logger.debug("FLS points to %s and hits %s" % (target, point))
-
+    
         if point:
             self.local_data['range'] = self.bge_object.getDistanceTo(point)
+            msg = 'x = ' + str(point.x) + ',y = ' + str(point.y) + ',label = ' + obj.name
+            self.local_data['feature'] = msg
         else:
             self.local_data['range'] = float('inf')

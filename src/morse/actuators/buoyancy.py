@@ -1,5 +1,5 @@
 import logging; logger = logging.getLogger("morse." + __name__)
-from math import pi, sqrt
+from math import pi, sqrt, isnan
 import morse.core.actuator
 from morse.core import status
 from morse.helpers.components import add_data, add_property
@@ -139,38 +139,40 @@ class Buoyancy(morse.core.actuator.Actuator):
             # Depth of buoyancy sphere
             depth = pos.z
 
-            up = Vector([0,0,1])
+            if not isnan(depth): 
 
-            # Fire a ray down
-            target = pos - up 
-            _,point,_ = s.obj.rayCast(target, None, 10000, "castable", False, True)
+                up = Vector([0,0,1])
 
-            if not point:
-
-                # Fire a ray up
-                target = pos + up 
+                # Fire a ray down
+                target = pos - up 
                 _,point,_ = s.obj.rayCast(target, None, 10000, "castable", False, True)
 
-            if point:
-                z = depth - point.z
-            else:
-                logger.info("WARNING: Can't find water surface!")
-                z = depth            
-                return
-            
-            # Buoyancy vector for sphere in world frame
-            Bworld = s.buoy * Spheres.fraction(s,z)
+                if not point:
 
-            # Buoyancy in body frame
-            Bbody = Ri2b.dot(Bworld)
-            
-            # Buoyancy moment in body frame
-            Mbody = s.obj.localPosition.cross(Bbody)
-       
-            # Buoyancy forces in body frame
-            s.obj.parent.applyForce(Bbody,True)
+                    # Fire a ray up
+                    target = pos + up 
+                    _,point,_ = s.obj.rayCast(target, None, 10000, "castable", False, True)
 
-            # Buoyancy moments in body frame
-            s.obj.parent.applyTorque(Mbody,True)
+                if point:
+                    z = depth - point.z
+                else:
+                    logger.info("WARNING: Can't find water surface!")
+                    z = depth            
+                    return
 
-            #logger.info('Executed default action')
+                # Buoyancy vector for sphere in world frame
+                Bworld = s.buoy * Spheres.fraction(s,z)
+
+                # Buoyancy in body frame
+                Bbody = Ri2b.dot(Bworld)
+
+                # Buoyancy moment in body frame
+                Mbody = s.obj.localPosition.cross(Bbody)
+
+                # Buoyancy forces in body frame
+                s.obj.parent.applyForce(Bbody,True)
+
+                # Buoyancy moments in body frame
+                s.obj.parent.applyTorque(Mbody,True)
+
+                #logger.info('Executed default action')
