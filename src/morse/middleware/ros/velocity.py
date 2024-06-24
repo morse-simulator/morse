@@ -5,7 +5,7 @@ from morse.middleware.ros import ROSPublisher
 class TwistStampedPublisher(ROSPublisher):
     """ Publish the twist of the robot. """
     ros_class = TwistStamped
-    default_frame_id = '/base_link'
+    default_frame_id = 'base_link'
 
     def default(self, ci='unused'):
         twist = TwistStamped()

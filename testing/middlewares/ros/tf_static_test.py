@@ -41,7 +41,7 @@ class StaticTfTest(RosTestCase):
         
     def _callback(self, m, precision = 0.01):
         t = m.transforms[0]
-        if t.child_frame_id != '/morsy_test_1/pose':
+        if t.child_frame_id != 'morsy_test_1/pose':
             return
         
         p = t.transform.translation
